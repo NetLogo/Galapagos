@@ -13,5 +13,6 @@ import models.SocketActor
  */
 
 object SocketController extends SocketIOController {
+  import play.api.Play.current // Brings current `Application` into context for Akka
   lazy val socketIOActor = Akka.system.actorOf(Props[SocketActor])
 }

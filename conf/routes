@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                               controllers.Application.index
-GET     /socket.io/1/$socketUrl<.*>     controllers.MySocketIOController.handler(socketUrl)
+GET     /socket.io/1/$socketUrl<.*>     controllers.SocketController.handler(socketUrl)
 
 
 # Map static resources from the /public folder to the /assets URL path
