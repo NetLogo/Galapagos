@@ -42,8 +42,11 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
   }
 
   private def generateOutput(resultEither: Either[String, String]) : String = {
-    val errorStr = resultEither fold (("\n" + _), { x => outputAreaBuffer.append(x); "" })
-    outputAreaBuffer.mkString.trim + errorStr
+    val outOpt = outputAreaBuffer.mkString.trim match {
+      case ""  => None
+      case out => Option(out)
+    }
+    resultEither fold ((outOpt.map(_ + "\n").getOrElse("") + _), { _ + outOpt.map("\n" + _).getOrElse("") })
   }
 
   override def sendOutput(oo: org.nlogo.agent.OutputObject, toOutputArea: Boolean) {
