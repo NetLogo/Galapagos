@@ -6,3 +6,4 @@ tmp
 .history
 /.idea/workspace.xml
 *.iml
+*-old
