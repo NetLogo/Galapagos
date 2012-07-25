@@ -7,3 +7,6 @@ tmp
 /.idea/workspace.xml
 *.iml
 *-old
+/.idea/codeStyleSettings.xml
+/.idea/libraries/
+/.idea/projectCodeStyle.xml
