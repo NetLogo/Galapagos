@@ -5,10 +5,11 @@
 # Home page
 GET     /                               controllers.Application.index
 GET     /client                         controllers.Application.client
-GET     /error                          controllers.Application.error
+GET     /client_error                   controllers.Application.clientError
 GET     /netlogo_data                   controllers.Application.handleSocket()
 GET     /socket.io/1/$socketUrl<.*>     controllers.SocketController.handler(socketUrl)
 
+POST    /validate_name                  controllers.Application.validateName
 POST    /netlogo_data                   controllers.Application.netlogoCommand
 
 # Map static resources from the /public folder to the /assets URL path

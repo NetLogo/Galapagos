@@ -32,18 +32,24 @@ var logList = [];
 
 // Onload
 document.body.onload = function() {
+
     startup();
     initSelectors();
     initAgentList();
+
     $agentType.text(agentTypeList.getCurrent());
     var throttledSend = throttle(send, THROTTLE_DELAY);
 
-    socket = io.connect();
+    var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket;
+    var url = "@routes.Application.handleSocket()";
+    socket = new WS(url);
 
+    //@WS
     socket.on('connected', function() {
         socket.emit('name reply', userName);
     });
 
+    //@WS
     socket.on('users changed', function (data) {
         $usersOnline.text("");
         var user, row;
@@ -57,6 +63,7 @@ document.body.onload = function() {
         }
     });
 
+    //@WS
     socket.on('message', function (data) {
 
         var d = new Date();
@@ -146,18 +153,19 @@ document.body.onload = function() {
 
 };
 
-
 /*
  * Basic page functionality
  */
 
 function startup() {
-    userName = prompt("Please type your user name:");
-    $.post('/', { username: userName }, function(data) {
-        if (data === '/error') {
-            document.location.href = data;
+    $.post('/validate_name', { username: prompt("Please type your user name:") }, function(data) {
+        var obj = JSON.parse(data);
+        if (obj['valid'] === 'true') {
+            name = obj['body'];
         }
-        userName = data;
+        else {
+            document.location.href = '/client_error';
+        }
     });
 }
 
