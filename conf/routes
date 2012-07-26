@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                               controllers.Application.index
+GET     /client                         controllers.Application.client
 GET     /error                          controllers.Application.error
 GET     /netlogo_data                   controllers.Application.handleSocket()
 GET     /socket.io/1/$socketUrl<.*>     controllers.SocketController.handler(socketUrl)

@@ -15,10 +15,14 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
+  def client = Action {
+    Ok(views.html.client())
+  }
+
   def error = Action {
     Ok(views.html.error())
   }
-  
+
   def handleSocket() = WebSocket.using[String] {
 
     //@ Could use a bit of improvement...

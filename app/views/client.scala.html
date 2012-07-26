@@ -1,0 +1,60 @@
+@main("NetLogo Web Client") {
+ 
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/lib/mousetrap.min.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/exports-init.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/enhance/string-enhance.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/node/listnode.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/node/mapnode.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/node/textholder.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/circlemap.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/doublelist.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/event/chat-events.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/chat.js")'></script>
+
+  <table>
+    <tr style="text-align: left">
+      <th style="width: 520px">Chat Log</th>
+      <td>
+        <input type="button" value="Clear" onclick="clearChat()" style="width: 50px">
+      </td>
+    </tr>
+  </table>
+  <table id="chat" style="border: none; table-layout: fixed">
+    <tr>
+      <td>
+        <div id="container" style="border: 1px inset #CCCCCC; height: 20em; width: 40em; padding: .385em; margin-right: 10pt; overflow: auto" tabindex="0">
+          <table id="chatLog" style="width: 97%; border-collapse: collapse; table-layout: fixed; margin-right: 1.5%; margin-left: 1.5%"></table>
+        </div>
+      </td>
+      <td>
+        <div id="onlineLog" style="border: 1px inset #CCCCCC; height: 20em; width: 10em; padding: .385em; overflow: auto">
+          <table id="usersTable" style="width: 100%; table-layout: fixed">
+            <thead>
+              <tr>
+                <td style="line-height: 20pt; vertical-align: middle; font-weight: bold;">Online:</td>
+              </tr>
+            </thead>
+            <tbody id="usersOnline"></tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <table id="inputs" style="margin: 5px">
+    <tr style="height: 15px" valign="middle">
+      <td id="agentType" style="font-size: 8pt; width: 50px; height: 100%;" cellspacing="3px" cellpadding="3px"></td>
+      <td style="height: 100%" cellspacing="3px" cellpadding="3px">
+        <input id="inputBuffer" value="" autofocus="autofocus" style="width: 507px;" class="mousetrap">
+      </td>
+    </tr>
+  </table>
+  <div id="blocker1" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; z-index: -1; width: 150px; height: 150px;"><img src='@routes.Assets.at("images/white.png")'></div>
+  <div id="copierWrap" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; padding: 20px; width: 100px; height: 100px; z-index: -2;">
+    <textarea id="copier" name="" style="width: 100%; border: 0; height: 100%; overflow: hidden; resize: none" onfocus="nameSelect(this.name)" onblur="nameDeselect(this.name)" class="mousetrap"></textarea>
+  </div>
+  <div id="blocker2" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; z-index: -3; width: 150px; height: 150px;"><img src='@routes.Assets.at("images/white.png")'></div>
+  <div id="textCopierWrap" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; padding: 20px; width: 100px; height: 100px; z-index: -4;">
+    <textarea id="textCopier" style="width: 100%; border: 0; height: 100%; overflow: hidden, resize: none, white-space: pre-wrap"></textarea>
+  </div>
+
+}
