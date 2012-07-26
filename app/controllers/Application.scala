@@ -15,6 +15,25 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
+  def error = Action {
+    Ok(views.html.error())
+  }
+  
+  def handleSocket() = WebSocket.using[String] {
+
+    //@ Could use a bit of improvement...
+    def processInput(str: String) : (String, String) = {
+      libs.json.Json.parse(str) match { case json => ((json \ "agentType").as[String], (json \ "cmd").as[String]) }
+    }
+
+//    WebSocket.adapter[String] {
+//      request =>
+//        play.api.libs.iteratee.Enumeratee.map[String] { input => val (agentType, cmd) = processInput(input); ws.execute(agentType, cmd) }
+//    }
+    null
+
+  }
+  
   def netlogoCommand = Action {
     implicit request =>
       val bod = request.body.asFormUrlEncoded

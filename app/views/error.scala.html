@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+
+@main("Error") {
+
+  <h1>Error</h1>
+  <p>I'm sorry, the name you chose is invalid or already taken.</p>
+  <p>User names must be no more than twelve characters long.</p>
+  <p>User names must be only alphanumeric characters</p>
+  <p>Please go back and enter another username.</p>
+  <input type='button' value='Try again!' onclick='goBack()' autofocus='autofocus'>
+  <script src="@routes.Assets.at("javascripts/error.js")" type="text/javascript"></script>
+
+}
+
