@@ -17,17 +17,9 @@ object Application extends Controller {
   
   private val nameBuffer = collection.mutable.ArrayBuffer[String]()  //@ Baaaaaad
 
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
-  }
-
-  def client = Action {
-    Ok(views.html.client())
-  }
-
-  def clientError = Action {
-    Ok(views.html.client_error())
-  }
+  def index       = Action { Ok(views.html.index("Your new application is ready.")) }
+  def client      = Action { Ok(views.html.client()) }
+  def clientError = Action { Ok(views.html.client_error()) }
 
   def handleSocket() : WebSocket[String] = {
 
