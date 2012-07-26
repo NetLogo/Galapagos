@@ -5,5 +5,5 @@
  * Time: 4:46 PM
  */
 function goBack(){
-    window.location = "/";
+    window.location = "/client";
 }
