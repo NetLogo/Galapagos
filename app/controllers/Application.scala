@@ -58,7 +58,7 @@ object Application extends Controller {
       }
 
       val name = request.body.asFormUrlEncoded flatMap (_.get("username") map (_(0).trim.replaceAll(" +", " "))) getOrElse("")
-      Ok(if (validName(name)) { nameBuffer append name; makeJson(true, name) } else makeJson(false, Redirect("/error").toString()))
+      Ok(if (validName(name)) { nameBuffer append name; makeJson(true, name) } else makeJson(false, ""))
   
   }
   
