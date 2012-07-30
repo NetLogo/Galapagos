@@ -41,8 +41,7 @@ document.body.onload = function() {
     var throttledSend = throttle(send, THROTTLE_DELAY);
 
     var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket;
-    var url = "@routes.Application.handleSocket()";
-    socket = new WS(url);
+    socket = new WS(socketURL);
 
     //@WS
     socket.on('connected', function() {

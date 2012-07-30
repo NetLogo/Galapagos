@@ -1,5 +1,11 @@
+@()(implicit request: RequestHeader)
+
 @main("NetLogo Web Client") {
- 
+
+  <script type="text/javascript">
+      var socketURL = "@routes.Application.handleSocket().webSocketURL()";
+  </script>
+
   <script type="text/javascript" src='@routes.Assets.at("javascripts/lib/mousetrap.min.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/util/exports-init.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/enhance/string-enhance.js")'></script>

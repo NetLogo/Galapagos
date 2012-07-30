@@ -17,31 +17,13 @@ object Application extends Controller {
   
   private val nameBuffer = collection.mutable.ArrayBuffer[String]()  //@ Baaaaaad
 
-  def index       = Action { Ok(views.html.index("Your new application is ready.")) }
-  def client      = Action { Ok(views.html.client()) }
-  def clientError = Action { Ok(views.html.client_error()) }
+  def index       = Action {                     Ok(views.html.index("Your new application is ready.")) }
+  def client      = Action { implicit request => Ok(views.html.client())                                }
+  def clientError = Action {                     Ok(views.html.client_error())                          }
 
-  def handleSocket() : WebSocket[String] = {
+  def handleSocket() = WebSocket.async[libs.json.JsValue] {
 
-    //@ Could use a bit of improvement...
-    def processInput(str: String) : (String, String) = {
-      Json.parse(str) match { case json => ((json \ "agentType").as[String], (json \ "cmd").as[String]) }
-    }
 
-    WebSocket.adapter[String] {
-      request =>
-        val x = 3
-        play.api.libs.iteratee.Enumeratee.map[String] {
-          input =>
-            val y = 4
-            "derp"
-        }
-    }
-
-//    WebSocket.adapter[String] {
-//      request =>
-//        play.api.libs.iteratee.Enumeratee.map[String] { input => val (agentType, cmd) = processInput(input); ws.execute(agentType, cmd) }
-//    }
 
   }
   
