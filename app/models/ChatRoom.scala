@@ -41,17 +41,24 @@ object ChatRoom {
     roomActor
   }
 
-  def join(username:String):Promise[(Iteratee[JsValue,_],Enumerator[JsValue])] = {
+  def join(username: String) : Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     (default ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] { event => default ! Talk(username, (event \ "text").as[String]) }.
                                 mapDone          { _     => default ! Quit(username) }
         (iteratee, enumerator)
       case CannotConnect(error) =>
-        val iteratee   = Done[JsValue,Unit]((),Input.EOF)
+        val iteratee   = Done[JsValue, Unit]((),Input.EOF)
         val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee, enumerator)
     }
+  }
+  
+  def isUsernameTaken(name: String) : Boolean = {
+    (default ? UsernameQuery(name)).asPromise.map {
+      case UsernameResponse(approved) => approved
+      case x                          => Logger.warn("What is this thing?  `isUsernameTaken` got this back: " + x); false
+    }.await(300).get
   }
 
 }
@@ -66,6 +73,8 @@ class ChatRoom extends Actor {
       val channel = Enumerator.imperative[JsValue](onStart = self ! NotifyJoin(username))
       members = members + (username -> channel)
       sender ! Connected(channel)
+    case UsernameQuery(username) =>
+      sender ! UsernameResponse(members.contains(username))
     case NotifyJoin(username) =>
       notifyAll("join", username, "has entered the room")
     case Talk(username, text) =>
@@ -94,7 +103,13 @@ case class Quit(username: String)
 case class Talk(username: String, text: String)
 case class NotifyJoin(username: String)
 
-case class Connected(enumerator:Enumerator[JsValue])
+case class UsernameQuery(username: String)
+sealed case class UsernameResponse(approved: Boolean)
+object UsernameResponse { def apply(approved: Boolean) = if (approved) UsernameApproved else UsernameRejected }
+object UsernameRejected extends UsernameResponse(false)
+object UsernameApproved extends UsernameResponse(true)
+
+case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
 
 class DumboBox {
