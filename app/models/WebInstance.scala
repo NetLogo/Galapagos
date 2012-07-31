@@ -60,12 +60,12 @@ class BizzleBot(server: ActorRef) {
 
 }
 
-object NetLogoInstance {
+object WebInstance {
 
   implicit val timeout = Timeout(1 second)
 
   //@ This strikes me as a poor implementation...
-  var roomMap = Map(0 -> Akka.system.actorOf(Props[NetLogoInstance]))
+  var roomMap = Map(0 -> Akka.system.actorOf(Props[WebInstance]))
   new BizzleBot(roomMap(0))
   
   // You should always call `isValidUsername` before calling this
@@ -89,7 +89,7 @@ object NetLogoInstance {
 
 }
 
-class NetLogoInstance extends Actor {
+class WebInstance extends Actor {
 
   private val NameLengthLimit = 13
 

@@ -3,7 +3,7 @@ package controllers
 import play.api.libs.json.JsValue
 import play.api.mvc.{ Action, Controller, WebSocket }
 
-import models.NetLogoInstance
+import models.WebInstance
 
 object Application extends Controller {
 
@@ -25,7 +25,7 @@ object Application extends Controller {
 
   def handleSocketConnection(username: String, room: Int = 0) = WebSocket.async[JsValue] {
     request =>
-      NetLogoInstance.join(username, room)
+      WebInstance.join(username, room)
   }
   
 }
