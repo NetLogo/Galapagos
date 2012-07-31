@@ -90,20 +90,14 @@ object NetLogoInstance {
 
 class NetLogoInstance extends Actor {
 
-  val NameLengthLimit = 13
-  
-  var members = Map.empty[String, PushEnumerator[JsValue]]
+  private val NameLengthLimit = 13
 
-  // Logically speaking, chatrooms should be able to define their own restrictions on names
-  protected def isValidUsername(username: String) : (Boolean, String) = {
-    Seq(
-      (username.isEmpty,                   "Username is empty"),
-      (username.length >= NameLengthLimit, "Username is too long (must be %d characters or less)".format(NameLengthLimit)),
-      (members.contains(username),         "Username already taken"),
-      (username.matches(""".*[^ \w].*"""), "Username contains invalid characters (must contain only alphanumeric characters and spaces)"),
-      (username.filter(_ != ' ') == "me",  "Username attempts to deceive others!")
-    ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
-  }
+  //@ Can reverse routing help here?
+  private val modelsURL = "http://localhost:9001/assets/models/"
+  private val modelName = "Wolf Sheep Predation"
+  private lazy val ws = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
+
+  var members = Map.empty[String, PushEnumerator[JsValue]]
 
   def receive = {
     case Join(username) =>
@@ -120,13 +114,14 @@ class NetLogoInstance extends Actor {
     case Chatter(username, message) =>
       notifyAll("chatter", username, message)
     case Command(username, agentType, cmd) =>
-      notifyAll("command", username, cmd)
+      notifyAll("command", "<b><u>NetLogo</u></b>",
+        "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)) //@ I feel like the synchronization can improve here
     case Quit(username) =>
       members = members - username
       notifyAll("quit", username, "has left the room")
   }
 
-  def notifyAll(kind: String, user: String, text: String) {
+  private def notifyAll(kind: String, user: String, text: String) {
     val msg = JsObject(
       Seq(
         "kind"    -> JsString(kind),
@@ -136,6 +131,24 @@ class NetLogoInstance extends Actor {
       )
     )
     members foreach { case (_, channel) => channel.push(msg) }
+  }
+
+  // Logically speaking, chatrooms should be able to define their own restrictions on names
+  protected def isValidUsername(username: String) : (Boolean, String) = {
+    val reservedNames = Seq("me", "NetLogo")
+    Seq(
+      (reservedNames.contains(username.filter(_ != ' ')), "Username attempts to deceive others!"),
+      (username.isEmpty,                                  "Username is empty"),
+      (username.length >= NameLengthLimit,                "Username is too long (must be %d characters or less)".format(NameLengthLimit)),
+      (members.contains(username),                        "Username already taken"),
+      (username.matches(""".*[^ \w].*"""),                "Username contains invalid characters (must contain only alphanumeric characters and spaces)")
+    ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
+  }
+
+  protected def workspace(url: String) : WebWorkspace = {
+    val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
+    wspace.openString(io.Source.fromURL(url).mkString)
+    wspace
   }
 
 }
@@ -151,38 +164,6 @@ case class CannotConnect(msg: String)
 
 class DumboBox {
 
-  //@ Could use a bit of improvement...
-    def processInput(str: String) : (String, String) = {
-      Json.parse(str) match { case json => ((json \ "agentType").as[String], (json \ "cmd").as[String]) }
-    }
 
-    //WebSocket.adapter[String] {
-    //  request =>
-    //    val x = 3
-    //    play.api.libs.iteratee.Enumeratee.map[String] {
-    //      input =>
-    //       val y = 4
-    //        "derp"
-    //    }
-    //}
-
-//    WebSocket.adapter[String] {
-//      request =>
-//        play.api.libs.iteratee.Enumeratee.map[String] { input => val (agentType, cmd) = processInput(input); ws.execute(agentType, cmd) }
-//    }
-
-  private val modelsURL = "http://localhost:9001/assets/models/"
-    private val modelName = "Wolf Sheep Predation"
-    private val ws = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
-
-    private def netlogoCommand = {
-      //ws.execute(paramMap("agentType").head, paramMap("cmd").head))
-    }
-
-    private def workspace(url: String) : WebWorkspace = {
-      val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-      wspace.openString(io.Source.fromURL(url).mkString)
-      wspace
-    }
 
 }
