@@ -21,6 +21,9 @@ var $copier;
 var $textCopier;
 var $agentType;
 var $outputState;
+var $onError;
+var $onErrorSpan;
+var $onChat;
 
 // Other globals
 var userName;
@@ -58,32 +61,13 @@ document.body.onload = function() {
     socket.onmessage = function(event) {
 
         var data = JSON.parse(event.data);
-
-        // Handle errors
-        //@ Cache these jQuery results...
-        if(data.error) {
-          socket.close();
-          $("#onError span").text(data.error);
-          $("#onError").show();
-          return;  //@ Yuck
-        } else {
-          $("#onChat").show();
-        }
-
-        //@
-        // Create the message element
-        //var el = $('<div class="message"><span></span><p></p></div>')
-        //$("span", el).text(data.user)
-        //$("p", el).text(data.message)
-        //$(el).addClass(data.kind)
-        //if(data.user == 'userName') $(el).addClass('me')
-        //$('#messages').append(el)
+        decideShowErrorOrChat(data);
 
         var d       = new Date();
         var time    = d.toTimeString().slice(0, 5);
         var user    = data.user;
         var message = data.message;
-        var kind    = data.kind;  //@ I'm currently ignoring this...
+        var kind    = data.kind;  //@ I'm currently ignoring this... (maybe act on kinds; maybe do something special for messages from self)
 
         logList[state] = new TextHolder(message);
         var difference = $container[0].scrollHeight - $container.scrollTop();
@@ -93,17 +77,6 @@ document.body.onload = function() {
         updateUserList(data.members);
 
     }
-
-    //@ Clean these up if they're working
-    //socket.on('connected', function() {
-    //    socket.emit('name reply', userName);
-    //});
-
-    //socket.on('users changed', function (data) {
-
-
-    //@WS
-    //socket.on('message', function (data) {
 
     var keyString =
             'abcdefghijklmnopqrstuvwxyz' +
@@ -201,11 +174,25 @@ function initSelectors() {
     $textCopier  = $("#textCopier");
     $agentType   = $("#agentType");
     $outputState = $("#outputState");
+    $onError     = $("#onError");
+    $onErrorSpan = $("#onError span");
+    $onChat      = $("#onChat");
 }
 
 function initAgentList() {
     var agentTypes = ['observer', 'turtles', 'patches', 'links', 'chatter'];
     agentTypes.map(function(type) { agentTypeList.append(type) });
+}
+
+
+function decideShowErrorOrChat(data) {
+    if(data.error) {
+        socket.close();
+        $onErrorSpan.text(data.error);
+        $onError.show();
+    } else {
+        $onChat.show();
+    }
 }
 
 function messageSwitcher(user, final_text, time) {
