@@ -24,7 +24,10 @@ object Application extends Controller with ErrorPropagationProtocol {
   }
 
   def handleSocketConnection(username: String, room: Int = 0) = WebSocket.async[JsValue] {
-    request =>
+    implicit request =>
+      //@ This works:
+//      val modelName = "Wolf Sheep Predation"
+//      val x = (controllers.routes.Assets.at("models/" + modelName + ".nlogo")).absoluteURL()
       WebInstance.join(username, room)
   }
   

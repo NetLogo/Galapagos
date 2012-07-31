@@ -91,7 +91,6 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   private val NameLengthLimit = 13
 
-  //@ Can reverse routing help here?
   private val modelsURL = "http://localhost:9001/assets/models/"
   private val modelName = "Wolf Sheep Predation"
   private lazy val ws = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
