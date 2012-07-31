@@ -1,16 +1,45 @@
-@(title: String)(content: Html)
+@(connected: Option[String])(content: Html)
 
 <!DOCTYPE html>
 
 <html>
     <head>
-        <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <script src="@routes.Assets.at("javascripts/lib/jquery-1.7.1.min.js")" type="text/javascript"></script>
+        <title>NetLogo Web Client</title>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bootstrap.css")'>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
+        <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
+        <script src='@routes.Assets.at("javascripts/lib/jquery-1.7.1.min.js")' type="text/javascript"></script>
     </head>
     <body>
-        <h1>@title</h1>
-        @content
+        
+        <div class="topbar">
+            <div class="fill">
+                <div class="container">
+                    <a class="brand" href="@routes.Application.index()">NetLogo Web Client</a>
+                    
+                    @connected.map { username =>
+                        <p class="pull-right">
+                            Logged in as @username —
+                            <a href="@routes.Application.index()">Disconnect</a>
+                        </p>
+                    }.getOrElse {
+                        <form action="@routes.Application.client()" class="pull-right">
+                            <input id="username" name="username" class="input-small" type="text" placeholder="Username">
+                            <button class="btn" type="submit">Sign in</button>
+                        </form>
+                    }
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <div class="content">
+                @content
+            </div>
+
+        </div>
+        
     </body>
 </html>

@@ -1,5 +1,21 @@
-@(message: String)
+@()(implicit flash: Flash)
 
-@main("Welcome to Play 2.0") {
-    @play20.welcome(message)
+@main(None) {
+
+    @flash.get("error").map { errorMessage =>
+
+        <div class="alert-message error">
+            <p>
+                <strong>Oops!</strong> @errorMessage
+            </p>
+        </div>
+
+    }
+
+    <div class="alert-message block-message info">
+        <p>
+            To start, choose a username and sign in using the top right form.
+        </p>
+    </div>
+
 }

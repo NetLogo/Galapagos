@@ -4,13 +4,8 @@
 
 # Home page
 GET     /                               controllers.Application.index
-GET     /client                         controllers.Application.client
-GET     /client_error                   controllers.Application.clientError
-GET     /netlogo_data                   controllers.Application.handleSocket()
-GET     /socket.io/1/$socketUrl<.*>     controllers.SocketController.handler(socketUrl)
-
-POST    /validate_name                  controllers.Application.validateName
-POST    /netlogo_data                   controllers.Application.netlogoCommand
+GET     /client                         controllers.Application.client(username: Option[String] ?= None)
+GET     /connect                        controllers.Application.handleSocketConnection(username, room: Int ?= 0)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

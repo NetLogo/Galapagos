@@ -33,7 +33,6 @@ var logList = [];
 // Onload
 document.body.onload = function() {
 
-    startup();
     initSelectors();
     initAgentList();
 
@@ -43,53 +42,68 @@ document.body.onload = function() {
     var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket;
     socket = new WS(socketURL);
 
-    //@WS
-    socket.on('connected', function() {
-        socket.emit('name reply', userName);
-    });
-
-    //@WS
-    socket.on('users changed', function (data) {
+    function updateUserList(users) {
         $usersOnline.text("");
         var user, row;
-        for (user in data) {
+        for (user in users) {
             row = "<tr><td>" +
-                "<input id='"+user+"' value='"+user+"' type='button' " +
+                "<input id='" + user + "' value='" + user + "' type='button' " +
                 "onclick='copySetup(this.value)' " +
                 "style='border:none; background-color: #FFFFFF; width: 100%; text-align: left'>" +
                 "</td></tr>";
             $usersOnline.append(row);
         }
-    });
+    }
 
-    //@WS
-    socket.on('message', function (data) {
+    socket.onmessage = function(event) {
 
-        var d = new Date();
-        var time = d.toTimeString().slice(0, 5);
-        var user = data.user;
-        var message = data.processed_message;
-        var serverState = data.server_state;
-        var final_text = "";
+        var data = JSON.parse(event.data);
 
-        switch (serverState) {
-            case 0:
-                final_text = message;
-                break;
-            case 1:
-                final_text = message.reverse();
-                break;
-            case 2:
-                final_text = message.wordReverse();
-                break;
+        // Handle errors
+        //@ Cache these jQuery results...
+        if(data.error) {
+          socket.close();
+          $("#onError span").text(data.error);
+          $("#onError").show();
+          return;  //@ Yuck
+        } else {
+          $("#onChat").show();
         }
 
-        logList[state] = new TextHolder(final_text);
+        //@
+        // Create the message element
+        //var el = $('<div class="message"><span></span><p></p></div>')
+        //$("span", el).text(data.user)
+        //$("p", el).text(data.message)
+        //$(el).addClass(data.kind)
+        //if(data.user == 'userName') $(el).addClass('me')
+        //$('#messages').append(el)
+
+        var d       = new Date();
+        var time    = d.toTimeString().slice(0, 5);
+        var user    = data.user;
+        var message = data.message;
+        var kind    = data.kind;  //@ I'm currently ignoring this...
+
+        logList[state] = new TextHolder(message);
         var difference = $container[0].scrollHeight - $container.scrollTop();
-        $chatLog.append(messageSwitcher(user, final_text, time));
+        $chatLog.append(messageSwitcher(user, message, time));
         if ((difference === $container.innerHeight()) || (user === userName)) { textScroll(); }
 
-    });
+        updateUserList(data.members);
+
+    }
+
+    //@ Clean these up if they're working
+    //socket.on('connected', function() {
+    //    socket.emit('name reply', userName);
+    //});
+
+    //socket.on('users changed', function (data) {
+
+
+    //@WS
+    //socket.on('message', function (data) {
 
     var keyString =
             'abcdefghijklmnopqrstuvwxyz' +
@@ -155,18 +169,6 @@ document.body.onload = function() {
 /*
  * Basic page functionality
  */
-
-function startup() {
-    $.post('/validate_name', { username: prompt("Please type your user name:") }, function(data) {
-        var obj = JSON.parse(data);
-        if (obj['valid'] === 'true') {
-            name = obj['body'];
-        }
-        else {
-            document.location.href = '/client_error';
-        }
-    });
-}
 
 // Caching jQuery selector results for easy access throughout the code
 function initSelectors() {
@@ -275,16 +277,11 @@ function scroll(key) {
 }
 
 function send(message) {
-
-    var shout = $agentType.text();
-    var output = $outputState.prop("checked");
-    var packet = { Message: message, Shout: shout, Output: output };
-    socket.json.send(packet);
+    socket.send(JSON.stringify({ AgentType: $agentType.text(), Cmd: message }));
     messageList.append(message, agentTypeList.getCurrent());
     messageList.clearCursor();
     $inputBuffer.val("");
     focusInput();
-
 }
 
 function focusInput() { $inputBuffer.focus() }
