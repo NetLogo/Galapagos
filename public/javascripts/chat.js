@@ -111,6 +111,21 @@ document.body.onload = function() {
             '1234567890!@#$%^&*()' +
             '\<>-_=+[{]};:",.?\\|\'`~';
     var keyArray = keyString.split('');
+
+    //@ Hacky
+    const AgentTypeCount = 5
+    var x = 1;
+    var agentTypeNumArr = new Array(AgentTypeCount);
+
+    while (x <= AgentTypeCount) {
+      agentTypeNumArr[x - 1] = x;
+      x++;
+    }
+
+    var numMorpher = function(modifier) { return function(num) { return modifier + "+shift+" + num } };
+    var ctrlArr = agentTypeNumArr.slice(0).map(numMorpher("ctrl"));
+    var cmdArr  = agentTypeNumArr.slice(0).map(numMorpher("command"));
+
     var notNumberRE = /\D/g;
 
     Mousetrap.bind('tab', function(e) {
@@ -160,6 +175,12 @@ document.body.onload = function() {
         }
     }, 'keydown');
 
+    Mousetrap.bind(ctrlArr.concat(cmdArr), function(e) {
+        var num = extractCharCode(e) - 48; // This will get us keyboard number pressed (1/2/3/4/5)
+        e.preventDefault();
+        setShoutIndex(num - 1);
+    });
+
     Mousetrap.bind('pageup', function() {
         $container.focus();
     });
@@ -183,7 +204,7 @@ function initSelectors() {
 }
 
 function initAgentList() {
-    var agentTypes = ['observer', 'turtles', 'patches', 'links'];
+    var agentTypes = ['observer', 'turtles', 'patches', 'links', 'chatter'];
     agentTypes.map(function(type) { agentTypeList.append(type) });
 }
 
@@ -242,9 +263,13 @@ function extractCharCode(e) {
     }
 }
 
+function setShoutIndex(index) {
+  agentTypeList.setCurrentIndex(index);
+  $agentType.text(agentTypeList.getCurrent());
+}
+
 function setShout() {
-    var newState = agentTypeList.getCurrent();
-    $agentType.text(newState);
+  $agentType.text(agentTypeList.getCurrent());
 }
 
 function scroll(key) {

@@ -43,6 +43,21 @@ exports.CircleMap = (function() {
         this.current = this[hashKey];
     };
 
+    //@ Slow operation...
+    CircleMap.prototype.setCurrentIndex = function(index) {
+
+        var node = this.head;
+        var i = 0;
+
+        while (i < index) {
+          node = node.next;
+          i++;
+        }
+
+        this.current = node;
+
+    }
+
     CircleMap.prototype.next = function() {
         this.current = this.current.next;
     };
