@@ -289,7 +289,7 @@ function scroll(key) {
 }
 
 function send(message) {
-    socket.send(JSON.stringify({ AgentType: $agentType.text(), Cmd: message }));
+    socket.send(JSON.stringify({ agentType: $agentType.text(), cmd: message }));
     messageList.append(message, agentTypeList.getCurrent());
     messageList.clearCursor();
     $inputBuffer.val("");

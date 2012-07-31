@@ -3,9 +3,9 @@ package controllers
 import play.api.libs.json.JsValue
 import play.api.mvc.{ Action, Controller, WebSocket }
 
-import models.WebInstance
+import models.{ WebInstance, ErrorPropagationProtocol }
 
-object Application extends Controller {
+object Application extends Controller with ErrorPropagationProtocol {
 
   def index = Action {
     implicit request =>
@@ -18,7 +18,7 @@ object Application extends Controller {
         username => Ok(views.html.client(username))
       ) getOrElse (
         Redirect(routes.Application.index()).flashing(
-          "error" -> "Please choose a valid username."
+          ErrorKey -> "Please choose a valid username."
         )
       )
   }

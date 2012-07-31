@@ -1,7 +1,7 @@
 package models
 
 import play.api.Logger
-import play.api.libs.json.{ Json, JsArray, JsObject, JsValue, JsString }
+import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString }
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
 import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
 import play.api.Play.current
@@ -21,20 +21,19 @@ import org.nlogo.headless.HeadlessWorkspace
   * Time: 12:17 PM
   */
 
-class BizzleBot(server: ActorRef) {
-
-  //@ Add constants for BizzleBot's name and for all of these text labels
+class BizzleBot(server: ActorRef) extends ChatPacketProtocol {
 
   implicit val timeout = Timeout(1 second)
 
-  val loggerIteratee = Iteratee.foreach[JsValue] {
-    event =>
-      Logger("robot").info(event.toString())
-      (event \ "user").asOpt[String].flatMap (user => (event \ "message").asOpt[String] map ((user, _))).
-                                     foreach { case (username, message) => offerHelp(username, message) }
-  }
+  private val BotName = "BizzleBot"
 
-  server ? (Join("BizzleBot")) map { case Connected(robotChannel) => robotChannel |>> loggerIteratee }
+  server ? (Join(BotName)) map { case Connected(robotChannel) => robotChannel |>> Iteratee.foreach[JsValue] {
+      event =>
+        Logger(BotName).info(event.toString())
+        (event \ UserKey).asOpt[String].flatMap (user => (event \ MessageKey).asOpt[String] map ((user, _))).
+                                        foreach { case (username, message) => offerHelp(username, message) }
+    }
+  }
 
   protected def offerHelp(username: String, message: String) {
     def preprocess(message: String) : Option[String] = {
@@ -55,41 +54,40 @@ class BizzleBot(server: ActorRef) {
         "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
       case "whoami" =>
         "you're <b>%s</b>, obviously!".format(username)
-    } foreach (response => server ! Chatter("BizzleBot", "<b>%s</b>, ".format(username) + response))
+    } foreach (response => server ! Chatter(BotName, "<b>%s</b>, ".format(username) + response))
   }
 
 }
 
-object WebInstance {
+object WebInstance extends ErrorPropagationProtocol {
 
   implicit val timeout = Timeout(1 second)
 
-  //@ This strikes me as a poor implementation...
+  //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   var roomMap = Map(0 -> Akka.system.actorOf(Props[WebInstance]))
   new BizzleBot(roomMap(0))
   
-  // You should always call `isValidUsername` before calling this
   def join(username: String, roomNum: Int) : Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     val room = roomMap(roomNum)
     (room ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
-        val iteratee = Iteratee.foreach[JsValue] { event => room ! Command(username, (event \ "AgentType").as[String], (event \ "Cmd").as[String]) }.
+        val iteratee = Iteratee.foreach[JsValue] { event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) }.
                                 mapDone          { _     => room ! Quit(username) }
         (iteratee, enumerator)
       case CannotConnect(error) =>
         val iteratee   = Done[JsValue, Unit]((), Input.EOF)
-        val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
+        val enumerator = Enumerator[JsValue](JsObject(Seq(ErrorKey -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee,enumerator)
       case x =>
         Logger.error("Unknown event: " + x.toString)
-        throw new Exception("An unknown event has occurred on user join: " + x.toString) //@ Should be done beeter
+        throw new IllegalArgumentException("An unknown event has occurred on user join: " + x.toString)
     }
   }
 
 
 }
 
-class WebInstance extends Actor {
+class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtocol {
 
   private val NameLengthLimit = 13
 
@@ -111,25 +109,25 @@ class WebInstance extends Actor {
           sender ! CannotConnect(reason)
       }
     case NotifyJoin(username) =>
-      notifyAll("join", username, "has entered the room")
+      notifyAll(JoinKey, username, "has entered the room")
     case Chatter(username, message) =>
-      notifyAll("chatter", username, "<i>%s</i>".format(message))
+      notifyAll(ChatterKey, username, "<i>%s</i>".format(message))
     case Command(username, "chatter", message) =>
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) =>
-      notifyAll("command", "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)) //@ I feel like the synchronization can improve here
+      notifyAll(CommandKey, "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd))
     case Quit(username) =>
       members = members - username
-      notifyAll("quit", username, "has left the room")
+      notifyAll(QuitKey, username, "has left the room")
   }
 
   private def notifyAll(kind: String, user: String, text: String) {
     val msg = JsObject(
       Seq(
-        "kind"    -> JsString(kind),
-        "user"    -> JsString(user),
-        "message" -> JsString(text),
-        "members" -> JsArray(members.keySet.toList map (JsString))
+        KindKey    -> JsString(kind),
+        UserKey    -> JsString(user),
+        MessageKey -> JsString(text),
+        MembersKey -> JsArray(members.keySet.toList map (JsString))
       )
     )
     members foreach { case (_, channel) => channel.push(msg) }
@@ -164,8 +162,17 @@ case class NotifyJoin(username: String)
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
 
-class DumboBox {
+sealed trait ChatPacketProtocol {
+  protected val KindKey    = "kind"
+  protected val UserKey    = "user"
+  protected val MessageKey = "message"
+  protected val MembersKey = "members"
+  protected val ErrorKey   = "error"
+}
 
-
-
+sealed trait EventManagerProtocol {
+  protected val JoinKey    = "join"
+  protected val ChatterKey = "chatter"
+  protected val CommandKey = "command"
+  protected val QuitKey    = "quit"
 }
