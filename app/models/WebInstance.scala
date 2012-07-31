@@ -113,7 +113,7 @@ class NetLogoInstance extends Actor {
     case NotifyJoin(username) =>
       notifyAll("join", username, "has entered the room")
     case Chatter(username, message) =>
-      notifyAll("chatter", username, message)
+      notifyAll("chatter", username, "<i>%s</i>".format(message))
     case Command(username, "chatter", message) =>
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) =>
