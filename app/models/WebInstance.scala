@@ -39,15 +39,16 @@ class BizzleBot(server: ActorRef) {
   protected def offerHelp(username: String, message: String) {
     def preprocess(message: String) : Option[String] = {
       val trimmed = message.trim
-      if (trimmed.startsWith(";;")) Some(trimmed drop 2 trim) else None
+      if (trimmed.startsWith("!")) Some(trimmed drop 1 trim) else None
     }
     preprocess(message) map {
       case "help"   =>
         "perhaps this can be of help to you:\n\n" +
         "<ul><li>Press the Tab key to change agent contexts.</li>" +
         "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
+        "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
         "<li>For information about how to use the NetLogo programming language, please consult " +
-        "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo manual</a>.</li></ul>"
+        "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
       case "info"   =>
         "NetLogo is a multi-agent programmable modeling environment, " +
         "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
@@ -113,9 +114,10 @@ class NetLogoInstance extends Actor {
       notifyAll("join", username, "has entered the room")
     case Chatter(username, message) =>
       notifyAll("chatter", username, message)
+    case Command(username, "chatter", message) =>
+      self ! Chatter(username, message)
     case Command(username, agentType, cmd) =>
-      notifyAll("command", "<b><u>NetLogo</u></b>",
-        "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)) //@ I feel like the synchronization can improve here
+      notifyAll("command", "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)) //@ I feel like the synchronization can improve here
     case Quit(username) =>
       members = members - username
       notifyAll("quit", username, "has left the room")
