@@ -1,16 +1,16 @@
 class TextHolder
   constructor: (@text) ->
-    this.command    = @text.split("\n")[0]
-    this.isExpanded = true
+    [@command, contents...] = @text.split("\n")
+    @isExpanded = true
 
   toString: ->
-    if (this.isExpanded)
-      this.text
+    if @isExpanded
+      @text
     else
-      result = this.command + '  ...'
+      result = @command + '  ...'
       result.bold()
 
   change: ->
-    this.isExpanded = !this.isExpanded
+    @isExpanded = not @isExpanded
 
 exports.TextHolder = TextHolder

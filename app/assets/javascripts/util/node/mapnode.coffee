@@ -1,5 +1,5 @@
 class MapNode
   constructor: (@type) ->
-    this.next = null;
+    @next = null
 
 exports.MapNode = MapNode

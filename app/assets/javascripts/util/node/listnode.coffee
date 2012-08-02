@@ -1,7 +1,7 @@
 class ListNode
   constructor: (@data, @type) ->
-    this.next = null
-    this.prev = null
+    @next = null
+    @prev = null
 
 exports.ListNode = ListNode
 
