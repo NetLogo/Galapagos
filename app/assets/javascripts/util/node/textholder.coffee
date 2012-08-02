@@ -3,6 +3,7 @@ class TextHolder
     [@command, contents...] = @text.split("\n")
     @isExpanded = true
 
+  # Return Type: String
   toString: ->
     if @isExpanded
       @text
@@ -10,6 +11,7 @@ class TextHolder
       result = @command + '  ...'
       result.bold()
 
+  # Return Type: Unit
   change: ->
     @isExpanded = not @isExpanded
 
