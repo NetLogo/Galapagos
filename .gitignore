@@ -11,3 +11,4 @@ tmp
 /.idea/libraries/
 /.idea/projectCodeStyle.xml
 /.idea/ant.xml
+.DS_Store
