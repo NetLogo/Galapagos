@@ -7,7 +7,7 @@ class TextHolder
     if (this.isExpanded)
       this.text
     else
-      var result = this.command + '  ...'
+      result = this.command + '  ...'
       result.bold()
 
   change: ->
