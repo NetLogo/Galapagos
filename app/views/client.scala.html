@@ -27,7 +27,7 @@
       <tr style="text-align: left">
         <th style="width: 520px">Chat Log</th>
         <td>
-          <input type="button" value="Clear" onclick="clearChat()" style="width: 50px">
+          <input type="button" value="Clear" onclick="exports.event.clearChat()" style="width: 50px">
         </td>
       </tr>
     </table>
@@ -62,7 +62,7 @@
     </table>
     <div id="blocker1" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; z-index: -1; width: 150px; height: 150px;"><img src='@routes.Assets.at("images/gray.png")'></div>
     <div id="copierWrap" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; padding: 20px; width: 100px; height: 100px; z-index: -2;">
-      <textarea id="copier" name="" style="width: 100%; border: 0; height: 100%; overflow: hidden; resize: none" onfocus="nameSelect(this.name)" onblur="nameDeselect(this.name)" class="mousetrap"></textarea>
+      <textarea id="copier" name="" style="width: 100%; border: 0; height: 100%; overflow: hidden; resize: none" onfocus="exports.event.nameSelect(this.name)" onblur="exports.event.nameDeselect(this.name)" class="mousetrap"></textarea>
     </div>
     <div id="blocker2" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; z-index: -3; width: 150px; height: 150px;"><img src='@routes.Assets.at("images/gray.png")'></div>
     <div id="textCopierWrap" style="position: fixed; margin-top: auto; margin-bottom: auto; right: 0px; padding: 20px; width: 100px; height: 100px; z-index: -4;">

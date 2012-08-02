@@ -51,7 +51,7 @@ document.body.onload = function() {
         for (user in users) {
             row = "<tr><td>" +
                 "<input id='" + user + "' value='" + user + "' type='button' " +
-                "onclick='copySetup(this.value)' " +
+                "onclick='exports.event.copySetup(this.value)' " +
                 "style='border:none; background-color: #FFFFFF; width: 100%; text-align: left'>" +
                 "</td></tr>";
             $usersOnline.append(row);
@@ -205,7 +205,7 @@ function messageSwitcher(user, final_text, time) {
     }
     state++;
 
-    return "<tr style='vertical-align: middle; outline: none; width: 100%; border-collapse: collapse;' onmouseup='handleTextRowOnMouseUp(this)' tabindex='1' id='"+(state-1)+"'>"+
+    return "<tr style='vertical-align: middle; outline: none; width: 100%; border-collapse: collapse;' onmouseup='exports.event.handleTextRowOnMouseUp(this)' tabindex='1' id='"+(state-1)+"'>"+
                "<td style='color: #CC0000; width: 20%; background-color: " + color + "; border-color: " + color + "'>" +
                    user + ":" +
                "</td>" +
