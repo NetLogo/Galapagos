@@ -31,12 +31,12 @@ event =
 
         modText = txt.toString().replace(timestamp, "   [$1]")
         finalText = modText.replace(/\t/g, "   ")
-        $globals.$textCopier.hide()  # Hide to avoid ghostly scrollbar issue on Chrome/Safari (on Mac OS)
-        $globals.$textCopier.val(finalText)
+        @$globals.$textCopier.hide()  # Hide to avoid ghostly scrollbar issue on Chrome/Safari (on Mac OS)
+        @$globals.$textCopier.val(finalText)
 
     # Return Type: Unit
     textCollapse: (row) ->
-      textObj = globals.logList[row.id]
+      textObj = @globals.logList[row.id]
       [middle, others...] = row.getElementsByClassName('middle')
       textObj.change()
       middle.innerHTML = textObj.toString()
@@ -48,10 +48,10 @@ event =
 
   # Return Type: Unit
   clearChat: ->
-    $globals.$chatLog.text('')
+    @$globals.$chatLog.text('')
     state = 0
-    globals.logList = []
-    $globals.$inputBuffer.focus()
+    @globals.logList = []
+    @$globals.$inputBuffer.focus()
 
   # Return Type: Unit
   nameSelect: (id) ->
@@ -65,17 +65,17 @@ event =
 
   # Return Type: Unit
   copySetup: (text) ->
-    $globals.$copier.attr('name', text)
-    $globals.$copier.val(text)
-    $globals.$copier.focus()
-    $globals.$copier.select()
+    @$globals.$copier.attr('name', text)
+    @$globals.$copier.val(text)
+    @$globals.$copier.focus()
+    @$globals.$copier.select()
 
   # Return Type: Boolean
   handleTextRowOnMouseUp: (row) ->
     @util.getSelText()
-    if $globals.$textCopier.val() is ''
+    if @$globals.$textCopier.val() is ''
       @util.textCollapse(row)
-      $globals.$container.focus()
+      @$globals.$container.focus()
     false
 
 # Final export of module
