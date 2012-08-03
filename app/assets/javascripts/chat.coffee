@@ -241,8 +241,9 @@ scroll = (key) ->
     if ml.cursor
       extractInfoAndType(ml.cursor)
     else
+      [info, type] = extractInfoAndType(ml.current)
       ml.clearCursor()
-      extractInfoAndType(ml.current)
+      [info, type]
 
   globals.agentTypeList.setCurrent(type)
   setAgentType()
