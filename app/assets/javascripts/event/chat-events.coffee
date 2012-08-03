@@ -54,12 +54,12 @@ event =
 
   # Return Type: Unit
   nameSelect: (id) ->
-    row = $("#{id}")
+    row = $("##{id}")
     row.css({backgroundColor: '#0033CC', color: '#FFFFFF', fontWeight: 'bold'})
 
   # Return Type: Unit
   nameDeselect: (id) ->
-    row = $("#{id}")
+    row = $("##{id}")
     row.css({backgroundColor: '#FFFFFF', color: '#000000', fontWeight: 'normal'})
 
   # Return Type: Unit
