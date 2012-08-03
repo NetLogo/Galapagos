@@ -4,6 +4,9 @@ Event handlers
 
 event =
 
+  $globals: exports.$chatGlobals
+  globals:  exports.chatGlobals
+
   ###
   Event-handling utilities
   ###
@@ -28,12 +31,12 @@ event =
 
         modText = txt.toString().replace(timestamp, "   [$1]")
         finalText = modText.replace(/\t/g, "   ")
-        $textCopier.hide()  # Hide to avoid ghostly scrollbar issue on Chrome/Safari (on Mac OS)
-        $textCopier.val(finalText)
+        $globals.$textCopier.hide()  # Hide to avoid ghostly scrollbar issue on Chrome/Safari (on Mac OS)
+        $globals.$textCopier.val(finalText)
 
     # Return Type: Unit
     textCollapse: (row) ->
-      textObj = logList[row.id]
+      textObj = globals.logList[row.id]
       [middle, others...] = row.getElementsByClassName('middle')
       textObj.change()
       middle.innerHTML = textObj.toString()
@@ -45,10 +48,10 @@ event =
 
   # Return Type: Unit
   clearChat: ->
-    $chatLog.text('')
+    $globals.$chatLog.text('')
     state = 0
-    logList = []
-    $inputBuffer.focus()
+    globals.logList = []
+    $globals.$inputBuffer.focus()
 
   # Return Type: Unit
   nameSelect: (id) ->
@@ -57,22 +60,22 @@ event =
 
   # Return Type: Unit
   nameDeselect: (id) ->
-    row = $('#{id}')
+    row = $("#{id}")
     row.css({backgroundColor: '#FFFFFF', color: '#000000', fontWeight: 'normal'})
 
   # Return Type: Unit
   copySetup: (text) ->
-    $copier.attr('name', text)
-    $copier.val(text)
-    $copier.focus()
-    $copier.select()
+    $globals.$copier.attr('name', text)
+    $globals.$copier.val(text)
+    $globals.$copier.focus()
+    $globals.$copier.select()
 
   # Return Type: Boolean
   handleTextRowOnMouseUp: (row) ->
     @util.getSelText()
-    if $textCopier.val() is ''
+    if $globals.$textCopier.val() is ''
       @util.textCollapse(row)
-      $container.focus()
+      $globals.$container.focus()
     false
 
 # Final export of module
