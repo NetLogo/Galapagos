@@ -122,7 +122,7 @@ document.body.onload = ->
   Mousetrap.bind(['ctrl+c', 'command+c'], (e) ->
     # If there are only digit characters in e.target.id...
     # This would mean that e.target is a table row in the chat output.
-    if e.target.id is 'container' or (/[\d]*/).test(e.target.id)
+    if e.target.id is 'container' or (/[\d]+/).test(e.target.id)
       $globals.$textCopier.show()  # Show, so we can select the text for copying
       $globals.$textCopier.focus()
       $globals.$textCopier.select()
