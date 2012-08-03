@@ -98,7 +98,7 @@ document.body.onload = ->
   Mousetrap.bind('tab', (e) ->
     e.preventDefault()
     globals.agentTypeList.next()
-    setShout()
+    setAgentType()
   , 'keydown')
 
   Mousetrap.bind(keyArray, (-> focusInput()), 'keydown')
@@ -132,7 +132,7 @@ document.body.onload = ->
   Mousetrap.bind(ctrlArr.concat(cmdArr), (e) ->
     num = extractCharCode(e) - 48  # This will get us keyboard number pressed (1/2/3/4/5)
     e.preventDefault()
-    setShoutIndex(num - 1)
+    setAgentTypeIndex(num - 1)
   )
 
   Mousetrap.bind('pageup', (-> $globals.$container.focus()))
@@ -213,12 +213,12 @@ extractCharCode = (e) ->
     e  # Should pretty much never happen
 
 # Return Type: Unit
-setShoutIndex = (index) ->
+setAgentTypeIndex = (index) ->
   globals.agentTypeList.setCurrentIndex(index)
   $globals.$agentType.text(globals.agentTypeList.getCurrent())
 
 # Return Type: Unit
-setShout = ->
+setAgentType = ->
   $globals.$agentType.text(globals.agentTypeList.getCurrent())
 
 # Return Type: Unit
@@ -245,7 +245,7 @@ scroll = (key) ->
       extractInfoAndType(ml.current)
 
   globals.agentTypeList.setCurrent(type)
-  setShout()
+  setAgentType()
   $globals.$inputBuffer.val(info)
 
 # Return Type: Unit
