@@ -1,12 +1,14 @@
 package models
 
+import collection.mutable.{ Map => MutableMap }
+
 import play.api.Logger
 import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString }
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
 import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
 import play.api.Play.current
 
-import akka.actor.{ Actor, ActorRef, Props }
+import akka.actor.{ Actor, Props }
 import akka.pattern.ask
 import akka.util.duration._
 import akka.util.Timeout
@@ -21,52 +23,19 @@ import org.nlogo.headless.HeadlessWorkspace
   * Time: 12:17 PM
   */
 
-class BizzleBot(server: ActorRef) extends ChatPacketProtocol {
-
-  implicit val timeout = Timeout(1 second)
-
-  private val BotName = "BizzleBot"
-
-  server ? (Join(BotName)) map { case Connected(robotChannel) => robotChannel |>> Iteratee.foreach[JsValue] {
-      event =>
-        Logger(BotName).info(event.toString())
-        (event \ UserKey).asOpt[String].flatMap (user => (event \ MessageKey).asOpt[String] map ((user, _))).
-                                        foreach { case (username, message) => offerHelp(username, message) }
-    }
-  }
-
-  protected def offerHelp(username: String, message: String) {
-    def preprocess(message: String) : Option[String] = {
-      val trimmed = message.trim
-      if (trimmed.startsWith("!")) Some(trimmed drop 1 trim) else None
-    }
-    preprocess(message) map {
-      case "help"   =>
-        "perhaps this can be of help to you:\n\n" +
-        "<ul><li>Press the Tab key to change agent contexts.</li>" +
-        "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
-        "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
-        "<li>For information about how to use the NetLogo programming language, please consult " +
-        "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
-      case "info"   =>
-        "NetLogo is a multi-agent programmable modeling environment, " +
-        "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
-        "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
-      case "whoami" =>
-        "you're <b>%s</b>, obviously!".format(username)
-    } foreach (response => server ! Chatter(BotName, "<b>%s</b>, ".format(username) + response))
-  }
-
-}
+/*
+Description:
+  An automated bot for being a good samaritan towards NetLogo users
+  Created by yours truly, J-Bizzle, botmaker extraordinaire
+*/
 
 object WebInstance extends ErrorPropagationProtocol {
 
   implicit val timeout = Timeout(1 second)
 
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
-  var roomMap = Map(0 -> Akka.system.actorOf(Props[WebInstance]))
-  new BizzleBot(roomMap(0))
-  
+  val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
+
   def join(username: String, roomNum: Int) : Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     val room = roomMap(roomNum)
     (room ? Join(username)).asPromise.map {
@@ -91,37 +60,75 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   private val NameLengthLimit = 13
 
+  //@ Eww; use `Assets.routes` if at all possible...?
   private val modelsURL = "http://localhost:9001/assets/models/"
   private val modelName = "Wolf Sheep Predation"
-  private lazy val ws = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
+  private lazy val room = self // Primarily done so that BizzleBot can talk to the room; cool abstraction, though
+  private lazy val ws   = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
 
-  var members = Map.empty[String, PushEnumerator[JsValue]]
+  private type MemberKey   = String
+  private type MemberValue = PushEnumerator[JsValue]
+  private type MemberTuple = (MemberKey, MemberValue)
+  val members = MutableMap.empty[MemberKey, MemberValue]
+
+  BizzleBot.start()
 
   def receive = {
     case Join(username) =>
-      val channel =  Enumerator.imperative[JsValue](onStart = self ! NotifyJoin(username))
+      val channel = Enumerator.imperative[JsValue](onStart = room ! NotifyJoin(username))
       isValidUsername(username) match {
         case (true, _) =>
-          members = members + (username -> channel)
+          members += username -> channel
           sender ! Connected(channel)
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
     case NotifyJoin(username) =>
-      notifyAll(JoinKey, username, "has entered the room")
+      notifyAll(generateMessage(JoinKey, username, "has entered the room"))
     case Chatter(username, message) =>
-      notifyAll(ChatterKey, username, "<i>%s</i>".format(message))
+      val Seq(botMsg, publicMsg) = generateMultiMessage(ChatterKey, username, message, "%s", "<i>%s</i>")
+      val botBundle              = (Seq(BizzleBot.BotName), botMsg)
+      val publicBundle           = (members collect { case (name, _) if (name != BizzleBot.BotName) => name }, publicMsg)
+      notify(botBundle, publicBundle)
     case Command(username, "chatter", message) =>
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) =>
-      notifyAll(CommandKey, "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd))
+      notifyAll(generateMessage(CommandKey, "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)))
     case Quit(username) =>
-      members = members - username
-      notifyAll(QuitKey, username, "has left the room")
+      members -= username
+      notifyAll(generateMessage(QuitKey, username, "has left the room"))
   }
 
-  private def notifyAll(kind: String, user: String, text: String) {
-    val msg = JsObject(
+  // THIS IS WHY OPTION SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
+  // Also, why did my structural typing fail here...?
+  class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
+    def pushForeach(msg: JsObject) {
+      foreachable foreach { case (_, channel) => channel.push(msg) }
+    }
+  }
+
+  implicit def foreachable2Pushable[T <: Iterable[MemberTuple]](foreachable: T) = new Pushable(foreachable)
+
+  private def notify(messageSets: (Iterable[String], JsObject)*) {
+    messageSets foreach {
+      case (memberNames, msg) => members filter { case (name, _) => memberNames.toSeq.contains(name) } pushForeach msg
+    }
+  }
+
+  private def notify(memberName: String, msg: JsObject) {
+    (members find (_._1 == memberName)).toIterable pushForeach msg
+  }
+
+  private def notifyBut(memberName: String, msg: JsObject) {
+    members filterNot (_._1 == memberName) pushForeach msg
+  }
+
+  private def notifyAll(msg: JsObject) {
+    members pushForeach msg
+  }
+
+  private def generateMessage(kind: String, user: String, text: String) =
+    JsObject(
       Seq(
         KindKey    -> JsString(kind),
         UserKey    -> JsString(user),
@@ -129,10 +136,10 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
         MembersKey -> JsArray(members.keySet.toList map (JsString))
       )
     )
-    members foreach { case (_, channel) => channel.push(msg) }
-  }
 
-  // Logically speaking, chatrooms should be able to define their own restrictions on names
+  private def generateMultiMessage(kind: String, user: String, text: String, formats: String*) =
+    formats map (f => generateMessage(kind, user, f.format(text)))
+
   protected def isValidUsername(username: String) : (Boolean, String) = {
     val reservedNames = Seq("me", "NetLogo")
     Seq(
@@ -148,6 +155,49 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
     wspace.openString(io.Source.fromURL(url).mkString)
     wspace
+  }
+
+  private object BizzleBot extends ChatPacketProtocol {
+
+    implicit val timeout = Timeout(1 second)
+
+    val BotName = "BizzleBot"
+
+    def start() {
+      room ? (Join(BotName)) map {
+        case Connected(robotChannel) =>
+          robotChannel |>> Iteratee.foreach[JsValue] {
+          event =>
+            Logger(BotName).info(event.toString())
+            (event \ UserKey).asOpt[String].flatMap (user => (event \ MessageKey).asOpt[String] map ((user, _))).
+              foreach { case (username, message) => offerHelp(username, message) }
+        }
+      }
+    }
+
+
+    protected def offerHelp(username: String, message: String) {
+      def preprocess(message: String) : Option[String] = {
+        val trimmed = message.trim
+        if (trimmed.startsWith("!")) Some(trimmed drop 1 trim) else None
+      }
+      preprocess(message) map {
+        case "help"   =>
+          "perhaps this can be of help to you:\n\n" +
+            "<ul><li>Press the Tab key to change agent contexts.</li>" +
+            "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
+            "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
+            "<li>For information about how to use the NetLogo programming language, please consult " +
+            "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
+        case "info"   =>
+          "NetLogo is a multi-agent programmable modeling environment, " +
+            "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
+            "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
+        case "whoami" =>
+          "you're <b>%s</b>, obviously!".format(username)
+      } foreach (response => room ! Chatter(BotName, "<b>%s</b>, ".format(username) + response))
+    }
+
   }
 
 }
