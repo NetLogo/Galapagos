@@ -1,0 +1,50 @@
+.chat_message {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.chat_message .user {
+    width: 15%;
+}
+
+.chat_message .context {
+    width: 15%
+}
+
+.chat_message .message {
+    width: 63%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.chat_message .timestamp {
+    width: 7%;
+    text-align: right;
+}
+
+
+/* Color templates; I imagine that this structure will facilitate the creation of customized color schemes.  ...I _imagine_ */
+.background_colored {
+    background-color: #343434;
+}
+
+.contrast_colored {
+    color: #347999;
+}
+
+.common_text_colored {
+    color: #FFFFFF
+}
+
+.other_user_colored {
+    color: #C1601F
+}
+
+.self_user_colored {
+    color: #429B24
+}
+
+.channel_context_colored {
+    color: #6D39FB
+}
