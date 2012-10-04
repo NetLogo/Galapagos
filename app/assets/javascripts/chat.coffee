@@ -185,7 +185,6 @@ messageSwitcher = (user, context, final_text, time) ->
     else
       "other_user_colored"
 
-
   """
     <div class='chat_message background_colored'>
       <table>
