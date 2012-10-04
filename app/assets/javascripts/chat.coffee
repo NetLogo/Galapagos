@@ -30,7 +30,7 @@ $globals =
 globals =
   userName:      undefined
   socket:        undefined
-  state:         0
+  messageCount:  0
   messageList:   new DoubleList(20)
   agentTypeList: new CircleMap()
   logList:       []
@@ -44,6 +44,7 @@ document.body.onload = ->
   initSelectors()
   initAgentList()
 
+  globals.userName = extractParamFromURL("username")
   $globals.$agentType.text(globals.agentTypeList.getCurrent())
   throttledSend = throttle(send, THROTTLE_DELAY)
 
@@ -71,12 +72,13 @@ document.body.onload = ->
     d       = new Date()
     time    = d.toTimeString()[0..4]
     user    = data.user
+    context = data.context
     message = data.message
     kind    = data.kind  # //@ I'm currently ignoring this... (maybe act on kinds; maybe do something special for messages from self)
 
-    globals.logList[globals.state] = new TextHolder(message)
+    globals.logList[globals.messageCount] = new TextHolder(message)
     difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-    $globals.$chatLog.append(messageSwitcher(user, message, time))
+    $globals.$chatLog.append(messageSwitcher(user, context, message, time))
     if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
 
     updateUserList(data.members)
@@ -172,18 +174,39 @@ decideShowErrorOrChat = (data) ->
     $globals.$onChat.show()
 
 # Return Type: String
-messageSwitcher = (user, final_text, time) ->
+messageSwitcher = (user, context, final_text, time) ->
 
-  color = if globals.state % 2 then "#FFFFFF" else "#CCFFFF"
-  globals.state++
+  globals.messageCount++
+  colorClass =
+    if user is globals.userName
+      "self_user_colored"
+    else if globals.agentTypeList.contains(user)
+      "channel_context_colored"
+    else
+      "other_user_colored"
+
 
   """
-  <tr style='vertical-align: middle; outline: none; width: 100%; border-collapse: collapse;' onmouseup='exports.event.handleTextRowOnMouseUp(this)' tabindex='1' id='#{globals.state-1}'>
-    <td style='color: #CC0000; width: 20%; background-color: #{color}; border-color: #{color}'>#{user}:</td>
-    <td class='middle' style='width: 70%; white-space: pre-wrap; word-wrap: break-word; background-color: #{color}; border-color: #{color}'>#{final_text}</td>
-    <td style='color: #00CC00; width: 10%; text-align: right; background-color: #{color}; border-color: #{color}'>#{time}</td>
-  </tr>
+    <div class='chat_message background_colored'>
+      <table>
+        <tr>
+          <td class='user #{colorClass}'>#{user}</td>
+          <td class='context contrast_colored'>@#{context}</td>
+          <td class='message common_text_colored'>#{final_text}</td>
+          <td class='timestamp contrast_colored'>#{time}</td>
+        </tr>
+    </div>
   """
+
+# Return Type: Unit
+extractParamFromURL = (paramName) ->
+  params = window.location.search.substring(1) # `substring` to drop the '?' off of the beginning
+  params.match(///(?:&[^&]*)*#{paramName}=([^&]*).*///)[1]
+
+#  """
+#  <tr style='vertical-align: middle; outline: none; width: 100%; border-collapse: collapse;' onmouseup='exports.event.handleTextRowOnMouseUp(this)' tabindex='1' id='#{globals.state-1}'>
+#  </tr>
+#  """
 
 # Return Type: Unit
 textScroll = ->

@@ -58,7 +58,16 @@ object WebInstance extends ErrorPropagationProtocol {
 
 class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtocol {
 
-  private val NameLengthLimit = 13
+  private val NameLengthLimit = 10
+
+  private val RoomContext     = "room"
+  private val ObserverContext = "observer"
+  private val TurtlesContext  = "turtles"
+  private val LinksContext    = "links"
+  private val PatchesContext  = "patches"
+  private val ChatterContext  = "chatter"
+
+  private val Contexts = List(RoomContext, ObserverContext, TurtlesContext, LinksContext, PatchesContext, ChatterContext)
 
   //@ Eww; use `Assets.routes` if at all possible...?
   private val modelsURL = "http://localhost:9001/assets/models/"
@@ -84,19 +93,17 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
           sender ! CannotConnect(reason)
       }
     case NotifyJoin(username) =>
-      notifyAll(generateMessage(JoinKey, username, "has entered the room"))
+      notifyAll(generateMessage(JoinKey, RoomContext, username, "has entered the room"))
     case Chatter(username, message) =>
-      val Seq(botMsg, publicMsg) = generateMultiMessage(ChatterKey, username, message, "%s", "<i>%s</i>")
-      val botBundle              = (Seq(BizzleBot.BotName), botMsg)
-      val publicBundle           = (members collect { case (name, _) if (name != BizzleBot.BotName) => name }, publicMsg)
-      notify(botBundle, publicBundle)
-    case Command(username, "chatter", message) =>
+      notifyAll(generateMessage(ChatterKey, ChatterContext, username, message))
+    case Command(username, ChatterContext, message) =>
       self ! Chatter(username, message)
-    case Command(username, agentType, cmd) =>
-      notifyAll(generateMessage(CommandKey, "<b><u>NetLogo</u></b>", "<b>%s</b>.".format(username) + ws.execute(agentType, cmd)))
+    case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
+      notifyAll(generateMessage(CommandKey, "netlogo", agentType, ws.execute(agentType, cmd)))
+    case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
     case Quit(username) =>
       members -= username
-      notifyAll(generateMessage(QuitKey, username, "has left the room"))
+      notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
   }
 
   // THIS IS WHY OPTION SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
@@ -127,21 +134,22 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     members pushForeach msg
   }
 
-  private def generateMessage(kind: String, user: String, text: String) =
+  private def generateMessage(kind: String, context: String, user: String, text: String) =
     JsObject(
       Seq(
         KindKey    -> JsString(kind),
+        ContextKey -> JsString(context),
         UserKey    -> JsString(user),
         MessageKey -> JsString(text),
         MembersKey -> JsArray(members.keySet.toList map (JsString))
       )
     )
 
-  private def generateMultiMessage(kind: String, user: String, text: String, formats: String*) =
-    formats map (f => generateMessage(kind, user, f.format(text)))
+  private def generateMultiMessage(kind: String, context: String, user: String, text: String, formats: String*) =
+    formats map (f => generateMessage(kind, context, user, f.format(text)))
 
   protected def isValidUsername(username: String) : (Boolean, String) = {
-    val reservedNames = Seq("me", "NetLogo")
+    val reservedNames = Seq("me", "myself") ++ Contexts
     Seq(
       (reservedNames.contains(username.filter(_ != ' ')), "Username attempts to deceive others!"),
       (username.isEmpty,                                  "Username is empty"),
@@ -212,11 +220,12 @@ case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
 
 sealed trait ChatPacketProtocol {
-  protected val KindKey    = "kind"
-  protected val UserKey    = "user"
-  protected val MessageKey = "message"
-  protected val MembersKey = "members"
-  protected val ErrorKey   = "error"
+  protected val KindKey     = "kind"
+  protected val ContextKey  = "context"
+  protected val UserKey     = "user"
+  protected val MessageKey  = "message"
+  protected val MembersKey  = "members"
+  protected val ErrorKey    = "error"
 }
 
 sealed trait EventManagerProtocol {
