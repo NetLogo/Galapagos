@@ -70,7 +70,7 @@ document.body.onload = ->
     decideShowErrorOrChat(data)
 
     d       = new Date()
-    time    = d.toTimeString()[0..4]
+    time    = getAmericanizedTime()
     user    = data.user
     context = data.context
     message = data.message
@@ -177,6 +177,7 @@ decideShowErrorOrChat = (data) ->
 messageSwitcher = (user, context, final_text, time) ->
 
   globals.messageCount++
+
   colorClass =
     if user is globals.userName
       "self_user_colored"
@@ -202,10 +203,14 @@ extractParamFromURL = (paramName) ->
   params = window.location.search.substring(1) # `substring` to drop the '?' off of the beginning
   params.match(///(?:&[^&]*)*#{paramName}=([^&]*).*///)[1]
 
-#  """
-#  <tr style='vertical-align: middle; outline: none; width: 100%; border-collapse: collapse;' onmouseup='exports.event.handleTextRowOnMouseUp(this)' tabindex='1' id='#{globals.state-1}'>
-#  </tr>
-#  """
+# Return Type: String
+getAmericanizedTime = ->
+  date    = new Date()
+  hours   = date.getHours()
+  minutes = date.getMinutes()
+  suffix  = if (hours > 11) then "pm" else "am"
+  usHours = if (hours % 12) is 0 then 12 else (hours % 12)
+  "#{usHours}:#{minutes}#{suffix}"
 
 # Return Type: Unit
 textScroll = ->
