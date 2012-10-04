@@ -165,7 +165,7 @@ initSelectors = ->
 
 # Return Type: Unit
 initAgentList = ->
-  agentTypes = ['observer', 'turtles', 'patches', 'links', 'chatter']
+  agentTypes = ['chatter', 'observer', 'turtles', 'patches', 'links']
   agentTypes.map((type) -> globals.agentTypeList.append(type))
 
 # Return Type: Unit
