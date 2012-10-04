@@ -8,7 +8,7 @@ class CircleMap
     @current = null
 
   # Return Type: Unit
-  append: (nodeType)  ->
+  append: (nodeType) ->
     newNode = new MapNode(nodeType)
     hashKey = @hash(newNode.type)
     this[hashKey] = newNode
@@ -29,21 +29,26 @@ class CircleMap
       (typeof value) + ' ' + String(value)
 
   # Return Type: MapNode
-  get: (type)  ->
+  get: (type) ->
     hashKey = @hash(type)
     this[hashKey]
+
+  # Return Type: Boolean
+  contains: (type) ->
+    hashKey = @hash(type)
+    this[hashKey] != undefined
 
   # Return Type: String
   getCurrent: ->
     @current.type
 
   # Return Type: Unit
-  setCurrent: (type)  ->
+  setCurrent: (type) ->
     @current = this[@hash(type)]
 
   # //@ Slow operation...
   # Return Type: Unit
-  setCurrentIndex: (index)  ->
+  setCurrentIndex: (index) ->
     i = index + 1
     @current = @head
     @current = @current.next while i -= 1
