@@ -29,6 +29,7 @@ $globals =
 # Other globals
 globals =
   userName:      undefined
+  usersArr:      undefined
   socket:        undefined
   messageCount:  0
   messageList:   new DoubleList(20)
@@ -52,6 +53,7 @@ document.body.onload = ->
   globals.socket = new WS(socketURL)
 
   updateUserList = (users) ->
+    globals.usersArr = users
     $globals.$usersOnline.text("")
     for user in users
       row =
@@ -79,7 +81,8 @@ document.body.onload = ->
     if message
       globals.logList[globals.messageCount] = new TextHolder(message)
       difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-      $globals.$chatLog.append(messageSwitcher(user, context, message, time))
+      enhancedText = if kind is "chatter" then enhanceMsgText(message) else message
+      $globals.$chatLog.append(messageSwitcher(user, context, enhancedText, time))
       if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
 
     updateUserList(data.members)
@@ -215,6 +218,15 @@ getAmericanizedTime = ->
   newMinutes = (if (minutes < 10) then "0" else "") + minutes
 
   "#{newHours}:#{newMinutes}#{suffix}"
+
+enhanceMsgText = (text) ->
+  subFunc = (acc, x) ->
+    substitution = colorifyText("@" + x, if x is globals.userName then "self_user_colored" else "other_user_colored")
+    acc.replace(///@#{x}///g, substitution)
+  _.foldl(globals.usersArr, subFunc, text)
+
+colorifyText = (name, cssClass) ->
+  "<span class='#{cssClass}'>#{name}</span>"
 
 # Return Type: Unit
 textScroll = ->
