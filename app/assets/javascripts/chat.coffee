@@ -208,9 +208,12 @@ getAmericanizedTime = ->
   date    = new Date()
   hours   = date.getHours()
   minutes = date.getMinutes()
-  suffix  = if (hours > 11) then "pm" else "am"
-  usHours = if (hours % 12) is 0 then 12 else (hours % 12)
-  "#{usHours}:#{minutes}#{suffix}"
+
+  suffix     = if (hours > 11) then "pm" else "am"
+  newHours   = if (hours % 12) is 0 then 12 else (hours % 12)
+  newMinutes = (if (minutes < 10) then "0" else "") + minutes
+
+  "#{newHours}:#{newMinutes}#{suffix}"
 
 # Return Type: Unit
 textScroll = ->
