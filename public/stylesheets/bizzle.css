@@ -52,3 +52,11 @@
 .channel_context_colored {
     color: #6D39FB
 }
+
+.join_colored {
+    color: #00FF00
+}
+
+.quit_colored {
+    color: #FF0000
+}

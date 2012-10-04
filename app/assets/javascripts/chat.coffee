@@ -36,6 +36,19 @@ globals =
   agentTypeList: new CircleMap()
   logList:       []
 
+# CSS class names //@ Should probably eventually get its own file
+CSS =
+  BackgroundBackgrounded: "background_backgrounded"
+  ContrastBackgrounded:   "contrast_backgrounded"
+  BackgroundColored:      "background_colored"
+  ChannelContextColored:  "channel_context_colored"
+  CommonTextColored:      "common_text_colored"
+  ContrastColored:        "contrast_colored"
+  JoinColored:            "join_colored"
+  QuitColored:            "quit_colored"
+  OtherUserColored:       "other_user_colored"
+  SelfUserColored:        "self_user_colored"
+
 exports.$chatGlobals = $globals
 exports.chatGlobals  = globals
 
@@ -81,8 +94,7 @@ document.body.onload = ->
     if message
       globals.logList[globals.messageCount] = new TextHolder(message)
       difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-      enhancedText = if kind is "chatter" then enhanceMsgText(message) else message
-      $globals.$chatLog.append(messageSwitcher(user, context, enhancedText, time))
+      $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
       if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
 
     updateUserList(data.members)
@@ -178,26 +190,32 @@ decideShowErrorOrChat = (data) ->
     $globals.$onChat.show()
 
 # Return Type: String
-messageSwitcher = (user, context, final_text, time) ->
+messageHTMLMaker = (user, context, text, time, kind) ->
 
   globals.messageCount++
 
-  colorClass =
+  userColor =
     if user is globals.userName
-      "self_user_colored"
+      CSS.SelfUserColored
     else if globals.agentTypeList.contains(user)
-      "channel_context_colored"
+      CSS.ChannelContextColored
     else
-      "other_user_colored"
+      CSS.OtherUserColored
+
+  boxColor       = CSS.BackgroundColored
+  contextColor   = CSS.ContrastColored
+  enhancedText   = enhanceMsgText(text, kind)
+  textColor      = CSS.CommonTextColored
+  timestampColor = CSS.ContrastColored
 
   """
-    <div class='chat_message background_colored'>
+    <div class='chat_message #{boxColor}'>
       <table>
         <tr>
-          <td class='user #{colorClass}'>#{user}</td>
-          <td class='context contrast_colored'>@#{context}</td>
-          <td class='message common_text_colored'>#{final_text}</td>
-          <td class='timestamp contrast_colored'>#{time}</td>
+          <td class='user #{userColor}'>#{user}</td>
+          <td class='context #{contextColor}'>@#{context}</td>
+          <td class='message #{textColor}'>#{enhancedText}</td>
+          <td class='timestamp #{timestampColor}'>#{time}</td>
         </tr>
     </div>
   """
@@ -220,15 +238,19 @@ getAmericanizedTime = ->
   "#{newHours}:#{newMinutes}#{suffix}"
 
 # Return Type: String
-enhanceMsgText = (text) ->
+enhanceMsgText = (text, kind) ->
   subFunc = (acc, x) ->
     substitution = colorifyText("@" + x, if x is globals.userName then "self_user_colored" else "other_user_colored")
     acc.replace(///@#{x}///g, substitution)
-  _.foldl(globals.usersArr, subFunc, text)
+  switch kind
+    when "chatter" then _.foldl(globals.usersArr, subFunc, text)
+    when "join"    then colorifyText(text, CSS.JoinColored)
+    when "quit"    then colorifyText(text, CSS.QuitColored)
+    else                text
 
 # Return Type: String
-colorifyText = (name, cssClass) ->
-  "<span class='#{cssClass}'>#{name}</span>"
+colorifyText = (text, cssClass) ->
+  "<span class='#{cssClass}'>#{text}</span>"
 
 # Return Type: Unit
 textScroll = ->
