@@ -5,22 +5,26 @@
 }
 
 .chat_message .user {
+    vertical-align: middle;
     width: 15%;
 }
 
 .chat_message .context {
+    vertical-align: middle;
     width: 15%
 }
 
 .chat_message .message {
-    width: 63%;
+    vertical-align: middle;
     white-space: pre-wrap;
+    width: 63%;
     word-wrap: break-word;
 }
 
 .chat_message .timestamp {
-    width: 7%;
     text-align: right;
+    vertical-align: middle;
+    width: 7%;
 }
 
 
