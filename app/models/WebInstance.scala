@@ -113,7 +113,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
   }
 
-  // THIS IS WHY OPTION SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
+  // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
   // Also, why did my structural typing fail here...?
   class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
     def pushForeach(msg: JsObject) {
