@@ -79,35 +79,3 @@ body {
     width: auto;
     height: 40px
 }
-
-.message {
-    padding: 4px 0;
-    border-bottom: 1px solid #eee;
-    position: relative;
-}
-
-.message span {
-    width: 70px;
-    overflow: hidden;
-    text-align: right;
-    font-weight: bold;
-    margin-right: 5px;
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    top: -1px;
-}
-
-.message p {
-    display: inline-block;
-    margin: 0;
-    width: 500px;
-}
-
-.message.me {
-    background: #FFC;
-}
-
-.message.join, .message.quit {
-    background: #D9E7FB;
-}
