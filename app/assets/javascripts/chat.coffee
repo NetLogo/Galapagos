@@ -219,12 +219,14 @@ getAmericanizedTime = ->
 
   "#{newHours}:#{newMinutes}#{suffix}"
 
+# Return Type: String
 enhanceMsgText = (text) ->
   subFunc = (acc, x) ->
     substitution = colorifyText("@" + x, if x is globals.userName then "self_user_colored" else "other_user_colored")
     acc.replace(///@#{x}///g, substitution)
   _.foldl(globals.usersArr, subFunc, text)
 
+# Return Type: String
 colorifyText = (name, cssClass) ->
   "<span class='#{cssClass}'>#{name}</span>"
 
