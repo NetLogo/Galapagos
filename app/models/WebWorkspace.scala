@@ -22,33 +22,29 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
   def execute(agentType: String, cmd: String) : String = {
     outputAreaBuffer.clear()
-    processCommand(agentType, cmd) match { case (input, cmdStr) => generateOutput(runCommand(input, cmdStr)) }
+    generateOutput(runCommand(processCommand(agentType, cmd)))
   }
 
-  private def processCommand(agentType: String, cmd: String) : (String, String) = {
-    val in = "%s> %s\n".format(agentType, cmd)
-    if (agentType != "observer")
-      (in, "ask " + agentType + " [ " + cmd + "\n]")
-    else
-      (in, cmd)
-  }
+  private def processCommand(agentType: String, cmd: String) : String =
+    if (agentType != "observer") "ask " + agentType + " [ " + cmd + "\n]" else cmd
 
-  private def runCommand(input: String, cmdStr: String) : Either[String, String] = {
+  // Returns an error message (if any)
+  private def runCommand(cmdStr: String) : Option[String] = {
     try {
       command(cmdStr)
-      Right(input)
+      None
     }
     catch {
-      case ex: org.nlogo.api.CompilerException => Left("ERROR: " + ex.getLocalizedMessage)
+      case ex: org.nlogo.api.CompilerException => Option("ERROR: " + ex.getLocalizedMessage)
     }
   }
 
-  private def generateOutput(resultEither: Either[String, String]) : String = {
+  private def generateOutput(errorMsg: Option[String]) : String = {
     val outOpt = outputAreaBuffer.mkString.trim match {
       case ""  => None
       case out => Option(out)
     }
-    resultEither fold ((outOpt.map(_ + "\n").getOrElse("") + _), { _ + outOpt.map("\n" + _).getOrElse("") })
+    errorMsg map ((outOpt map (_ + "\n") getOrElse "") + _) getOrElse (outOpt getOrElse "")
   }
 
   override def sendOutput(oo: org.nlogo.agent.OutputObject, toOutputArea: Boolean) {

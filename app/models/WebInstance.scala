@@ -99,7 +99,8 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     case Command(username, ChatterContext, message) =>
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
-      notifyAll(generateMessage(CommandKey, "netlogo", agentType, ws.execute(agentType, cmd)))
+      notifyAll(generateMessage(CommandKey, agentType, username, cmd))
+      notifyAll(generateMessage(ResponseKey, "netlogo", agentType, ws.execute(agentType, cmd)))
     case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
     case Quit(username) =>
       members -= username
@@ -229,8 +230,9 @@ sealed trait ChatPacketProtocol {
 }
 
 sealed trait EventManagerProtocol {
-  protected val JoinKey    = "join"
-  protected val ChatterKey = "chatter"
-  protected val CommandKey = "command"
-  protected val QuitKey    = "quit"
+  protected val JoinKey     = "join"
+  protected val ChatterKey  = "chatter"
+  protected val CommandKey  = "command"
+  protected val ResponseKey = "response"
+  protected val QuitKey     = "quit"
 }

@@ -76,10 +76,11 @@ document.body.onload = ->
     message = data.message
     kind    = data.kind  # //@ I'm currently ignoring this... (maybe act on kinds; maybe do something special for messages from self)
 
-    globals.logList[globals.messageCount] = new TextHolder(message)
-    difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-    $globals.$chatLog.append(messageSwitcher(user, context, message, time))
-    if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
+    if message
+      globals.logList[globals.messageCount] = new TextHolder(message)
+      difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
+      $globals.$chatLog.append(messageSwitcher(user, context, message, time))
+      if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
 
     updateUserList(data.members)
 
