@@ -95,7 +95,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     case NotifyJoin(username) =>
       notifyAll(generateMessage(JoinKey, RoomContext, username, "has entered the room"))
     case Chatter(username, message) =>
-      notifyAll(generateMessage(ChatterKey, ChatterContext, username, message))
+      if (BizzleBot.canFieldMessage(message))
+        BizzleBot.offerAssistance(username, message) foreach {
+          msg =>
+            notify(username, generateMessage(ChatterKey, ChatterContext, BizzleBot.BotName, msg))
+        }
+      else
+        notifyAll(generateMessage(ChatterKey, ChatterContext, username, message))
     case Command(username, ChatterContext, message) =>
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
@@ -172,6 +178,8 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
     val BotName = "BizzleBot"
 
+    private val Commands = List("commands", "help", "info", "whoami")
+
     def start() {
       room ? (Join(BotName)) map {
         case Connected(robotChannel) =>
@@ -179,33 +187,41 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
           event =>
             Logger(BotName).info(event.toString())
             (event \ UserKey).asOpt[String].flatMap (user => (event \ MessageKey).asOpt[String] map ((user, _))).
-              foreach { case (username, message) => offerHelp(username, message) }
+              foreach { case (username, message) => handleChat(username, message) }
         }
       }
     }
 
+    def canFieldMessage(message: String) = message.startsWith("!") && Commands.contains(message.tail)
 
-    protected def offerHelp(username: String, message: String) {
+    def offerAssistance(username: String, message: String) : Option[String] = {
       def preprocess(message: String) : Option[String] = {
         val trimmed = message.trim
         if (trimmed.startsWith("!")) Some(trimmed drop 1 trim) else None
       }
       preprocess(message) map {
-        case "help"   =>
+        case "commands" =>
+          "here are the supported commands: " + Commands.mkString("[", ", ", "]")
+        case "help" =>
           "perhaps this can be of help to you:\n\n" +
             "<ul><li>Press the Tab key to change agent contexts.</li>" +
             "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
             "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
             "<li>For information about how to use the NetLogo programming language, please consult " +
             "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
-        case "info"   =>
+        case "info" =>
           "NetLogo is a multi-agent programmable modeling environment, " +
             "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
             "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
         case "whoami" =>
           "you're <b>%s</b>, obviously!".format(username)
-      } foreach (response => room ! Chatter(BotName, "<b>%s</b>, ".format(username) + response))
+        case _ =>
+          "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
+      } map ("@%s, ".format(username) + _)
     }
+
+    // We can do stuff with this later, if we ever want to have the bot play with more-general chat
+    protected def handleChat(username: String, message: String) {}
 
   }
 
