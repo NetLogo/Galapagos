@@ -137,6 +137,7 @@ document.body.onload = ->
       focusInput()
   )
 
+  ###  //@ Disabling this for now
   Mousetrap.bind(['ctrl+c', 'command+c'], (e) ->
     # If there are only digit characters in e.target.id...
     # This would mean that e.target is a table row in the chat output.
@@ -146,6 +147,7 @@ document.body.onload = ->
       $globals.$textCopier.select()
       setTimeout((-> $globals.$textCopier.hide(); focusInput()), 50)
   , 'keydown')
+  ###
 
   Mousetrap.bind(ctrlArr.concat(cmdArr), (e) ->
     num = extractCharCode(e) - 48  # This will get us keyboard number pressed (1/2/3/4/5)
