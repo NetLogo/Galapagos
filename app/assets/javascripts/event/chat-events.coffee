@@ -46,13 +46,6 @@ event =
   ###
 
   # Return Type: Unit
-  clearChat: ->
-    $globals.$chatLog.text('')
-    state = 0
-    globals.logList = []
-    $globals.$inputBuffer.focus()
-
-  # Return Type: Unit
   nameSelect: (id) ->
     row = $("##{id}")
     row.css({backgroundColor: '#0033CC', color: '#FFFFFF', fontWeight: 'bold'})

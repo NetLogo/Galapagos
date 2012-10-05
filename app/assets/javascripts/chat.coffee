@@ -153,6 +153,8 @@ document.body.onload = ->
     setAgentTypeIndex(num - 1)
   )
 
+  Mousetrap.bind('ctrl+l', (-> clearChat()))
+
   Mousetrap.bind('pageup', (-> $globals.$container.focus()))
 
 
@@ -251,6 +253,13 @@ enhanceMsgText = (text, kind) ->
 # Return Type: String
 colorifyText = (text, cssClass) ->
   "<span class='#{cssClass}'>#{text}</span>"
+
+# Return Type: Unit
+clearChat = ->
+  $globals.$chatLog.text('')
+  state = 0
+  globals.logList = []
+  $globals.$inputBuffer.focus()
 
 # Return Type: Unit
 textScroll = ->

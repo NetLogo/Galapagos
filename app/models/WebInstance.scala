@@ -206,6 +206,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
           "perhaps this can be of help to you:\n\n" +
             "<ul><li>Press the Tab key to change agent contexts.</li>" +
             "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
+            "<li>Press Control + L to clear the chat buffer.</li>" +
             "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
             "<li>For information about how to use the NetLogo programming language, please consult " +
             "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
