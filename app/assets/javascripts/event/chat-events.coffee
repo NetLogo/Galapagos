@@ -62,6 +62,14 @@ event =
     $globals.$copier.focus()
     $globals.$copier.select()
 
+  changeUsernameBG: (username) ->
+    log      = $("#onlineLog");
+    plain    = "username_plain"
+    selected = "username_selected"
+    replaceClassName = (elem, find, replacement) -> elem.className.replace(///\b#{find}\b///, replacement)
+    log.children().each((_, elem) -> elem.className = replaceClassName(elem, selected, plain))
+    username.className = replaceClassName(username, plain, selected)
+
   # Return Type: Boolean
   handleTextRowOnMouseUp: (row) ->
     @util.getSelText()

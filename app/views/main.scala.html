@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html class="not_full_height">
     <head>
         <title>NetLogo Web Client</title>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bootstrap.css")'>
@@ -11,17 +11,18 @@
         <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
         <script src='@routes.Assets.at("javascripts/lib/jquery-1.7.1.min.js")' type="text/javascript"></script>
     </head>
-    <body>
+    <body class="not_full_height">
         
         <div class="topbar">
             <div class="fill">
                 <div class="container">
                     <a class="brand" href="@routes.Application.index()">NetLogo Web Client</a>
-                    
+
                     @connected.map { username =>
                         <p class="pull-right">
-                            Logged in as @username —
-                            <a href="@routes.Application.index()">Disconnect</a>
+                          <span class="top_text">
+                            @username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="@routes.Application.index()">Disconnect</a>
+                          </span>
                         </p>
                     }.getOrElse {
                         <form action="@routes.Application.client()" class="pull-right">
@@ -34,9 +35,9 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container not_full_height">
 
-            <div class="content">
+            <div class="content contrast_backgrounded not_full_height">
                 @content
             </div>
 

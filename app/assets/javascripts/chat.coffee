@@ -15,7 +15,7 @@ THROTTLE_DELAY = 100
 # Variables into which to cache jQuery selector results
 $globals =
   $inputBuffer: undefined
-  $usersOnline: undefined
+  $onlineLog:   undefined
   $chatLog:     undefined
   $container:   undefined
   $copier:      undefined
@@ -67,17 +67,18 @@ document.body.onload = ->
 
   updateUserList = (users) ->
     globals.usersArr = users
-    $globals.$usersOnline.text("")
+    $globals.$onlineLog.text("")
     for user in users
-      row =
+      color = if user is globals.userName then "self_user_colored" else "other_user_colored"
+      row   =
         """
-        <tr><td>
-          <input id='#{user}' value='#{user}' type='button'
-          onclick='exports.event.copySetup(this.value)'
-          style='border:none; background-color: #FFFFFF; width: 100%; text-align: left'>
-        </td></tr>
+        <div id='#{user}' onclick='exports.event.changeUsernameBG(this)' class='username username_plain'>
+          <div class='username_inner'>
+            <span class="username_text #{color}">&nbsp;&nbsp;&nbsp;#{user}</span>
+          </div>
+        </div>
         """
-      $globals.$usersOnline.append(row)
+      $globals.$onlineLog.append(row)
 
   globals.socket.onmessage = (event) ->
 
@@ -168,7 +169,7 @@ Basic page functionality
 # Return Type: Unit
 initSelectors = ->
   $globals.$inputBuffer = $("#inputBuffer")
-  $globals.$usersOnline = $("#usersOnline")
+  $globals.$onlineLog   = $("#onlineLog")
   $globals.$chatLog     = $("#chatLog")
   $globals.$container   = $("#container")
   $globals.$copier      = $("#copier")
@@ -206,14 +207,14 @@ messageHTMLMaker = (user, context, text, time, kind) ->
     else
       CSS.OtherUserColored
 
-  boxColor       = CSS.BackgroundColored
+  boxColor       = CSS.BackgroundBackgrounded
   contextColor   = CSS.ContrastColored
   enhancedText   = enhanceMsgText(text, kind)
   textColor      = CSS.CommonTextColored
   timestampColor = CSS.ContrastColored
 
   """
-    <div class='chat_message #{boxColor}'>
+    <div class='chat_message rounded #{boxColor}'>
       <table>
         <tr>
           <td class='user #{userColor}'>#{user}</td>
