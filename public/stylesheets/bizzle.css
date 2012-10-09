@@ -1,62 +1,174 @@
 .chat_message {
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 7px;
 }
 
 .chat_message .user {
-    vertical-align: middle;
-    width: 15%;
+  vertical-align: middle;
+  width: 15%;
 }
 
 .chat_message .context {
-    vertical-align: middle;
-    width: 15%
+  vertical-align: middle;
+  width: 15%
 }
 
 .chat_message .message {
-    vertical-align: middle;
-    white-space: pre-wrap;
-    width: 63%;
-    word-wrap: break-word;
+  vertical-align: middle;
+  white-space: pre-wrap;
+  width: 63%;
+  word-wrap: break-word;
 }
 
 .chat_message .timestamp {
-    text-align: right;
-    vertical-align: middle;
-    width: 7%;
+  text-align: right;
+  vertical-align: middle;
+  width: 7%;
 }
 
+.username {
+  margin-top: 5px;
+  padding-left: 8px;
+  padding-right: 15px;
+  height: 30px;
+  width: 100%;
+  display: table;
+}
+
+.username .username_inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.username_plain {
+  background: #347999 url('/assets/images/nameplate-plain.png') no-repeat;
+  background-size: cover;
+}
+
+.username_selected {
+  background: #347999 url('/assets/images/nameplate-selected.png') no-repeat;
+  background-size: cover;
+}
+
+.username_plain:hover {
+  background-image: url('/assets/images/nameplate-hover.png');
+}
+
+.username_text {
+  vertical-align: middle;
+  font-size: small;
+}
+
+.top_text {
+  font-size: medium;
+}
+
+.agent_type_text {
+  font-size: medium;
+  color: #FFFFFF;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.main_input {
+  vertical-align: middle;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 94%;
+  font-size: medium;
+  color: black
+}
+
+.inner_box {
+  padding: 20px;
+  margin: 15px;
+  overflow: hidden;
+}
+
+.rounded {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.scrollable {
+  height: 100%;
+  min-height: 100%;
+  overflow: auto;
+}
+
+.spacy_column {
+  border-spacing: 10px;
+  border-collapse: collapse;
+}
+
+/* Firefox only! */
+@-moz-document url-prefix() {
+  .scrollable {
+    height: 1px;
+    min-height: 100%;
+    overflow: auto;
+  }
+}
+
+.not_full_height {
+  height: 95%;
+  min-height: 95%;
+}
+
+.full_height {
+  height: 100%;
+  min-height: 100%;
+}
+
+.hor_centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Element Overrides */
+body, html {
+  background-color: #343434
+}
 
 /* Color templates; I imagine that this structure will facilitate the creation of customized color schemes.  ...I _imagine_ */
+.background_backgrounded {
+  background-color: #343434;
+}
+
+.contrast_backgrounded {
+  background-color: #347999;
+}
+
 .background_colored {
-    background-color: #343434;
+  color: #343434;
 }
 
 .contrast_colored {
-    color: #347999;
+  color: #347999;
 }
 
 .common_text_colored {
-    color: #FFFFFF
+  color: #FFFFFF
 }
 
 .other_user_colored {
-    color: #C1601F
+  color: #C1601F
 }
 
 .self_user_colored {
-    color: #429B24
+  color: #429B24
 }
 
 .channel_context_colored {
-    color: #6D39FB
+  color: #6D39FB
 }
 
 .join_colored {
-    color: #00FF00
+  color: #00FF00
 }
 
 .quit_colored {
-    color: #FF0000
+  color: #FF0000
 }
