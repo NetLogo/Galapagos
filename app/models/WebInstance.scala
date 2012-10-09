@@ -23,12 +23,6 @@ import org.nlogo.headless.HeadlessWorkspace
   * Time: 12:17 PM
   */
 
-/*
-Description:
-  An automated bot for being a good samaritan towards NetLogo users
-  Created by yours truly, J-Bizzle, botmaker extraordinaire
-*/
-
 object WebInstance extends ErrorPropagationProtocol {
 
   implicit val timeout = Timeout(1 second)
@@ -172,6 +166,11 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     wspace
   }
 
+  /*
+  Description:
+    An automated bot for being a good samaritan towards NetLogo users
+    Created by yours truly, J-Bizzle, botmaker extraordinaire
+  */
   private object BizzleBot extends ChatPacketProtocol {
 
     implicit val timeout = Timeout(1 second)
