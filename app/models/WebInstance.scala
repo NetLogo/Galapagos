@@ -197,7 +197,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     def offerAssistance(username: String, message: String) : Option[String] = {
       def preprocess(message: String) : Option[String] = {
         val trimmed = message.trim
-        if (trimmed.startsWith("!")) Some(trimmed drop 1 trim) else None
+        if (trimmed.startsWith("/")) Some(trimmed drop 1 trim) else None
       }
       preprocess(message) map {
         case "commands" =>
