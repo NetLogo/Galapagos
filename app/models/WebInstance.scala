@@ -215,7 +215,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
             "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
             "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
         case "whoami" =>
-          "you're <b>%s</b>, obviously!".format(username)
+          "you're @%s, obviously!".format(username)
         case _ =>
           "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
       } map ("@%s, ".format(username) + _)
