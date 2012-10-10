@@ -90,7 +90,7 @@ document.body.onload = ->
     user    = data.user
     context = data.context
     message = data.message
-    kind    = data.kind  # //@ I'm currently ignoring this... (maybe act on kinds; maybe do something special for messages from self)
+    kind    = data.kind
 
     if message
       globals.logList[globals.messageCount] = new TextHolder(message)
