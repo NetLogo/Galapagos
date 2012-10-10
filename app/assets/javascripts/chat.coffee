@@ -11,6 +11,7 @@ DoubleList = exports.DoubleList
 CircleMap  = exports.CircleMap
 
 THROTTLE_DELAY = 100
+SCROLL_TIME    = 500
 
 # Variables into which to cache jQuery selector results
 $globals =
@@ -31,6 +32,8 @@ globals =
   userName:      undefined
   usersArr:      undefined
   socket:        undefined
+  scrollTimer:   undefined
+  wontScroll:    true
   messageCount:  0
   messageList:   new DoubleList(20)
   agentTypeList: new CircleMap()
@@ -96,7 +99,7 @@ document.body.onload = ->
       globals.logList[globals.messageCount] = new TextHolder(message)
       difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
       $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
-      if difference is $globals.$container.innerHeight() or user is globals.userName then textScroll()
+      if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll()
 
     updateUserList(data.members)
 
@@ -122,7 +125,11 @@ document.body.onload = ->
 
   Mousetrap.bind(keyArray, (-> focusInput()), 'keydown')
 
-  Mousetrap.bind('enter', (e) -> input = $globals.$inputBuffer.val(); throttledSend(input) if e.target.id is 'inputBuffer' and /\S/g.test(input))
+  Mousetrap.bind('enter', (e) ->
+    input = $globals.$inputBuffer.val()
+    throttledSend(input) if e.target.id is 'inputBuffer' and /\S/g.test(input)
+    tempEnableScroll()
+  )
 
   Mousetrap.bind(['up', 'down'], (e) ->
     if e.target.id is 'inputBuffer'
@@ -271,6 +278,11 @@ textScroll = ->
   size = parseInt(font.substr(0, font.length - 2))
   $globals.$container.scrollTop(bottom - size)
   $globals.$container.animate({'scrollTop': bottom}, 'fast')
+
+tempEnableScroll = ->
+  globals.wontScroll = false
+  clearTimeout(globals.scrollTimer)
+  globals.scrollTimer = setTimeout((-> globals.wontScroll = true), SCROLL_TIME)
 
 # Return Type: Int or Event (//@ Yikes!)
 extractCharCode = (e) ->
