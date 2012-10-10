@@ -60,7 +60,7 @@ document.body.onload = ->
 
   globals.userName = extractParamFromURL("username")
   $globals.$agentType.text(globals.agentTypeList.getCurrent())
-  throttledSend = throttle(send, THROTTLE_DELAY)
+  throttledSend = _.throttle(send, THROTTLE_DELAY)
 
   WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
   globals.socket = new WS(socketURL)
@@ -271,16 +271,6 @@ textScroll = ->
   size = parseInt(font.substr(0, font.length - 2))
   $globals.$container.scrollTop(bottom - size)
   $globals.$container.animate({'scrollTop': bottom}, 'fast')
-
-# Credit to Remy Sharp.
-# http://remysharp.com/2010/07/21/throttling-function-calls/
-# Return Type: () => Unit
-throttle = (fn, delay) ->
-  timer = null
-  ->
-    [context, args] = [this, arguments]
-    clearTimeout(timer)
-    timer = setTimeout((-> fn.apply(context, args)), delay)
 
 # Return Type: Int or Event (//@ Yikes!)
 extractCharCode = (e) ->
