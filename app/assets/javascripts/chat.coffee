@@ -256,6 +256,8 @@ textScroll = ->
   $globals.$container.scrollTop(bottom - size)
   $globals.$container.animate({'scrollTop': bottom}, 'fast')
 
+# Enables forced scroll-to-bottom of chat buffer for the next `SCROLL_TIME` milliseconds
+# Return Type: Unit
 tempEnableScroll = ->
   globals.wontScroll = false
   clearTimeout(globals.scrollTimer)
