@@ -9,6 +9,7 @@ Time: 4:50 PM
 TextHolder = exports.TextHolder
 DoubleList = exports.DoubleList
 CircleMap  = exports.CircleMap
+CSS        = exports.CSS
 
 THROTTLE_DELAY = 100
 SCROLL_TIME    = 500
@@ -39,18 +40,6 @@ globals =
   agentTypeList: new CircleMap()
   logList:       []
 
-# CSS class names //@ Should probably eventually get its own file
-CSS =
-  BackgroundBackgrounded: "background_backgrounded"
-  ContrastBackgrounded:   "contrast_backgrounded"
-  BackgroundColored:      "background_colored"
-  ChannelContextColored:  "channel_context_colored"
-  CommonTextColored:      "common_text_colored"
-  ContrastColored:        "contrast_colored"
-  JoinColored:            "join_colored"
-  QuitColored:            "quit_colored"
-  OtherUserColored:       "other_user_colored"
-  SelfUserColored:        "self_user_colored"
 
 exports.$chatGlobals = $globals
 exports.chatGlobals  = globals
@@ -72,12 +61,12 @@ document.body.onload = ->
     globals.usersArr = users
     $globals.$onlineLog.text("")
     for user in users
-      color = if user is globals.userName then "self_user_colored" else "other_user_colored"
+      color = if user is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored
       row   =
         """
-        <div id='#{user}' onclick='exports.event.changeUsernameBG(this)' class='username username_plain'>
-          <div class='username_inner'>
-            <span class="username_text #{color}">&nbsp;&nbsp;&nbsp;#{user}</span>
+        <div id='#{user}' onclick='exports.event.changeUsernameBG(this)' class='#{CSS.Username} #{CSS.UsernamePlain}'>
+          <div class='#{CSS.UsernameInner}'>
+            <span class="#{CSS.UsernameText} #{color}">#{spaceGenerator(3)}#{user}</span>
           </div>
         </div>
         """
@@ -202,20 +191,20 @@ messageHTMLMaker = (user, context, text, time, kind) ->
     else
       CSS.OtherUserColored
 
-  boxColor       = CSS.BackgroundBackgrounded
-  contextColor   = CSS.ContrastColored
-  enhancedText   = enhanceMsgText(text, kind)
-  textColor      = CSS.CommonTextColored
-  timestampColor = CSS.ContrastColored
+  userClassStr      = "class='#{CSS.User} #{userColor}'"
+  contextClassStr   = "class='#{CSS.Context} #{CSS.ContrastColored}'"
+  messageClassStr   = "class='#{CSS.Message} #{CSS.CommonTextColored}'"
+  timestampClassStr = "class='#{CSS.Timestamp} #{CSS.ContrastColored}'"
+  enhancedText      = enhanceMsgText(text, kind)
 
   """
-    <div class='chat_message rounded #{boxColor}'>
+    <div class='#{CSS.ChatMessage} #{CSS.Rounded} #{CSS.BackgroundBackgrounded}'>
       <table>
         <tr>
-          <td class='user #{userColor}'>#{user}</td>
-          <td class='context #{contextColor}'>@#{context}</td>
-          <td class='message #{textColor}'>#{enhancedText}</td>
-          <td class='timestamp #{timestampColor}'>#{time}</td>
+          <td #{userClassStr}>#{user}</td>
+          <td #{contextClassStr}>@#{context}</td>
+          <td #{messageClassStr}>#{enhancedText}</td>
+          <td #{timestampClassStr}>#{time}</td>
         </tr>
     </div>
   """
@@ -328,3 +317,7 @@ send = (message) ->
 
 # Return Type: Unit
 focusInput = -> $globals.$inputBuffer.focus()
+
+# Give me streams, or give me crappy code!
+# Return Type: String
+spaceGenerator = (num) -> _.foldl([0...num], ((str) -> str + "&nbsp;"), "")
