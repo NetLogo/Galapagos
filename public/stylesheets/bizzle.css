@@ -5,25 +5,29 @@
 
 .chat_message .user {
   vertical-align: middle;
-  width: 15%;
+  width: 19%;
+  font-size: medium;
 }
 
 .chat_message .context {
   vertical-align: middle;
-  width: 15%
+  width: 18%;
+  font-size: medium;
 }
 
 .chat_message .message {
   vertical-align: middle;
   white-space: pre-wrap;
-  width: 63%;
+  width: 56%;
   word-wrap: break-word;
+  font-size: medium;
 }
 
 .chat_message .timestamp {
   text-align: right;
   vertical-align: middle;
   width: 7%;
+  font-size: medium;
 }
 
 .username {
@@ -57,7 +61,7 @@
 
 .username_text {
   vertical-align: middle;
-  font-size: small;
+  font-size: medium;
 }
 
 .top_text {
