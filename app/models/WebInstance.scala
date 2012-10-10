@@ -2,6 +2,8 @@ package models
 
 import collection.mutable.{ Map => MutableMap }
 
+import java.io.File
+
 import play.api.Logger
 import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString }
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
@@ -63,11 +65,10 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   private val Contexts = List(RoomContext, ObserverContext, TurtlesContext, LinksContext, PatchesContext, ChatterContext)
 
-  //@ Eww; use `Assets.routes` if at all possible...?
-  private val modelsURL = "http://localhost:9001/assets/models/"
-  private val modelName = "Wolf Sheep Predation"
-  private lazy val room = self // Primarily done so that BizzleBot can talk to the room; cool abstraction, though
-  private lazy val ws   = workspace(modelsURL + java.net.URLEncoder.encode(modelName, "UTF-8") + ".nlogo")
+  private val modelsPath = "public/models/"
+  private val modelName  = "Wolf Sheep Predation"
+  private lazy val room  = self // Primarily done so that BizzleBot can talk to the room; cool abstraction, though
+  private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
   private type MemberKey   = String
   private type MemberValue = PushEnumerator[JsValue]
@@ -160,9 +161,9 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
   }
 
-  protected def workspace(url: String) : WebWorkspace = {
+  protected def workspace(file: File) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    wspace.openString(io.Source.fromURL(url).mkString)
+    wspace.openString(io.Source.fromFile(file).mkString)
     wspace
   }
 
