@@ -33,5 +33,5 @@ You may want to put this up onto a remote web host for some reason or another.  
 * Run the `$DC push <desired name from above> --all` command
   * The `--all` is ___very___ important
 * Wait 10ish minutes for the deployment to complete
-* Connect to the page at the URL that the `push` command eventually spits back at you
+* Connect to the URL that is eventually spit back at you
 
