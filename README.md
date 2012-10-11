@@ -29,8 +29,8 @@ You may want to put this up onto a remote web host for some reason or another.  
 * [Create a dotCloud account](https://www.dotcloud.com/) and [get your command line all set up](http://docs.dotcloud.com/0.4/firststeps/install/#installation-instructions).
 * Clone a copy of [this repo](https://github.com/mchv/play2-on-dotcloud) in a directory we'll call `$DC`
 * Place your application source (as obtained in the __Running Locally__ section) into `$DC/application`
-* From `$DC`, run the `dotcloud create` command
-* Run the `$DC push <name given to application in previous step> --all` command
+* From `$DC`, run the `dotcloud create <desired name>` command
+* Run the `$DC push <desired name from above> --all` command
   * The `--all` is ___very___ important
 * Wait 10ish minutes for the deployment to complete
 * Connect to the page at the URL that the `push` command eventually spits back at you
