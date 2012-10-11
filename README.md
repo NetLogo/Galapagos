@@ -1,14 +1,15 @@
 # Teletortoise
 
 * An experimental version of NetLogo that runs in-browser
+* Structured in such a way that remote NetLogo workspaces run on the host server and feed NetLogo information to browser-based clients
 * Utilizes the Play 2.0.x web framework
-* Server side: Uses Scala to interface with a copy of 'netlogo.jar' to provide headless workspaces
+* Server side: Uses Scala to interface with a 'netlogo.jar' to provide headless workspaces
 * Client side: Uses CoffeeScript to define client behavior, whilst using HTML and CSS to define the visual structure
 
 # Installing
 
 * [Obtain a 2.0.x release of the Play framework](http://www.playframework.org/download)
-* Download the source from this repository
+* Download the source from this very repository
 
 # Running Locally
 
