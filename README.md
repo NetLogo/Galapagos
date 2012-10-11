@@ -35,3 +35,8 @@ You may want to put this up onto a remote web host for some reason or another.  
 * Wait 10ish minutes for the deployment to complete
 * Connect to the URL that is eventually spit back at you
 
+# Previous Influences
+
+* [Seth Tisue's Wolf](https://github.com/SethTisue/Wolf)
+* [Philip Woods's node.js Web Client](https://github.com/NetLogo/NetLogo-Web-Client)
+* [NetLogo](https://github.com/NetLogo/NetLogo)
