@@ -19,6 +19,7 @@ CSS =
   Username:               "username"
   UsernameInner:          "username_inner"
   UsernamePlain:          "username_plain"
+  UsernameSelected:       "username_selected"
   UsernameText:           "username_text"
 
 exports.CSS = CSS

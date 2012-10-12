@@ -1,5 +1,6 @@
 $globals = exports.$chatGlobals
 globals  = exports.chatGlobals
+CSS      = exports.CSS
 
 ###
 Event handlers
@@ -20,8 +21,8 @@ event =
 
   changeUsernameBG: (username) ->
     log      = $("#onlineLog");
-    plain    = "username_plain"
-    selected = "username_selected"
+    plain    = CSS.UsernamePlain
+    selected = CSS.UsernameSelected
     replaceClassName = (elem, find, replacement) -> elem.className.replace(///\b#{find}\b///, replacement)
     log.children().each((_, elem) -> elem.className = replaceClassName(elem, selected, plain))
     username.className = replaceClassName(username, plain, selected)
