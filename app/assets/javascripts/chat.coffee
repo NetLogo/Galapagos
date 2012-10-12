@@ -229,7 +229,7 @@ getAmericanizedTime = ->
 # Return Type: String
 enhanceMsgText = (text, kind) ->
   subFunc = (acc, x) ->
-    substitution = colorifyText("@" + x, if x is globals.userName then "self_user_colored" else "other_user_colored")
+    substitution = colorifyText("@" + x, if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored)
     acc.replace(///@#{x}///g, substitution)
   switch kind
     when "chatter" then _.foldl(globals.usersArr, subFunc, text)
