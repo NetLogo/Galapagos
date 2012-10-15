@@ -192,7 +192,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       }
     }
 
-    def canFieldMessage(message: String) = message.startsWith("!") && Commands.contains(message.tail)
+    def canFieldMessage(message: String) = message.startsWith("/") && Commands.contains(message.tail)
 
     def offerAssistance(username: String, message: String) : Option[String] = {
       def preprocess(message: String) : Option[String] = {
