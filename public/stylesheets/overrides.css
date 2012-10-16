@@ -1,0 +1,14 @@
+/* Contains HTML element overrides, with particular focus on overriding Bootstrap */
+
+table {
+  margin-bottom: 0;
+}
+
+table th, table td {
+  padding: 0;
+}
+
+table td {
+  border-top: none;
+}
+

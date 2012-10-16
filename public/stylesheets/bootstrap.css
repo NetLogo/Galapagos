@@ -1101,14 +1101,14 @@ textarea[readonly] {
  * Tables for, you guessed it, tabular data
  * ---------------------------------------- */
 table {
-  /* //@ width: 100%;
-  margin-bottom: 18px; */
+  width: 100%;
+  margin-bottom: 18px;
   padding: 0;
   font-size: 13px;
   border-collapse: collapse;
 }
 table th, table td {
-  /* //@ padding: 10px 10px 9px; */
+  padding: 10px 10px 9px;
   line-height: 18px;
   text-align: left;
 }
@@ -1119,7 +1119,7 @@ table th {
 }
 table td {
   vertical-align: top;
-  /*@ border-top: 1px solid #ddd; */
+  border-top: 1px solid #ddd;
 }
 table tbody th {
   border-top: 1px solid #ddd;
