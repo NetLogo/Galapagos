@@ -16,17 +16,17 @@ SCROLL_TIME    = 500
 
 # Variables into which to cache jQuery selector results
 $globals =
-  $inputBuffer: undefined
-  $onlineLog:   undefined
-  $chatLog:     undefined
-  $container:   undefined
-  $copier:      undefined
-  $textCopier:  undefined
-  $agentType:   undefined
-  $outputState: undefined
-  $onError:     undefined
-  $onErrorSpan: undefined
-  $onChat:      undefined
+  $inputBuffer:   undefined
+  $onlineLog:     undefined
+  $chatLog:       undefined
+  $container:     undefined
+  $copier:        undefined
+  $textCopier:    undefined
+  $agentType:     undefined
+  $outputState:   undefined
+  $errorPane:     undefined
+  $errorPaneSpan: undefined
+  $chatPane:      undefined
 
 # Other globals
 globals =
@@ -152,17 +152,17 @@ Basic page functionality
 # Caching jQuery selector results for easy access throughout the code
 # Return Type: Unit
 initSelectors = ->
-  $globals.$inputBuffer = $("#inputBuffer")
-  $globals.$onlineLog   = $("#onlineLog")
-  $globals.$chatLog     = $("#chatLog")
-  $globals.$container   = $("#container")
-  $globals.$copier      = $("#copier")
-  $globals.$textCopier  = $("#textCopier")
-  $globals.$agentType   = $("#agentType")
-  $globals.$outputState = $("#outputState")
-  $globals.$onError     = $("#onError")
-  $globals.$onErrorSpan = $("#onError span")
-  $globals.$onChat      = $("#onChat")
+  $globals.$inputBuffer   = $("#inputBuffer")
+  $globals.$onlineLog     = $("#onlineLog")
+  $globals.$chatLog       = $("#chatLog")
+  $globals.$container     = $("#container")
+  $globals.$copier        = $("#copier")
+  $globals.$textCopier    = $("#textCopier")
+  $globals.$agentType     = $("#agentType")
+  $globals.$outputState   = $("#outputState")
+  $globals.$errorPane     = $("#errorPane")
+  $globals.$errorPaneSpan = $("#errorPane span")
+  $globals.$chatPane      = $("#chatPane")
 
 # Return Type: Unit
 initAgentList = ->
@@ -173,10 +173,10 @@ initAgentList = ->
 decideShowErrorOrChat = (data) ->
   if data.error
     globals.socket.close()
-    $globals.$onErrorSpan.text(data.error)
-    $globals.$onError.show()
+    $globals.$errorPaneSpan.text(data.error)
+    $globals.$errorPane.show()
   else
-    $globals.$onChat.show()
+    $globals.$chatPane.show()
 
 # Return Type: String
 messageHTMLMaker = (user, context, text, time, kind) ->

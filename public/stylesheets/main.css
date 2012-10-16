@@ -50,29 +50,3 @@ body {
     color: #888;
 }
 
-#username {
-    width: 200px;
-}
-
-#main {
-    position: relative;
-    overflow: hidden;
-}
-
-#onError, #onChat {
-    display: none;
-}
-
-#messages {
-    position: absolute;
-    bottom: 60px;
-}
-
-#talk {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: 40px
-}
