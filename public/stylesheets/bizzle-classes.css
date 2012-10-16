@@ -130,3 +130,10 @@
   margin-right: auto;
 }
 
+.username_box {
+  width: 60%;
+}
+
+.login_button {
+  width: 30%;
+}
