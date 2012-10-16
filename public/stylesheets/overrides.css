@@ -1,5 +1,9 @@
 /* Contains HTML element overrides, with particular focus on overriding Bootstrap */
 
+/*
+ BOOTSTRAP OVERRIDES
+ */
+
 table {
   margin-bottom: 0;
 }
@@ -10,5 +14,14 @@ table th, table td {
 
 table td {
   border-top: none;
+}
+
+
+/*
+ GENERAL ELEMENT OVERRIDES
+ */
+
+body, html {
+  background-color: #343434
 }
 
