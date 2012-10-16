@@ -25,3 +25,6 @@ body, html {
   background-color: #343434
 }
 
+body {
+  padding-top: 30px; /* 30px to make the container go all the way to the bottom of the topbar */
+}

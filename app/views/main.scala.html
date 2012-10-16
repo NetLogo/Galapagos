@@ -10,7 +10,6 @@
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bizzle-selectors.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bizzle-colors.css")'>
         <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/bizzle-classes.css")'>
-        <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/main.css")'>
         <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
         <script src='@routes.Assets.at("javascripts/lib/jquery-1.7.1.min.js")' type="text/javascript"></script>
     </head>
@@ -18,7 +17,7 @@
         
         <div class="topbar">
             <div class="fill">
-                <div class="container">
+                <div class="core_content_box container">
                     <a class="brand" href="@routes.Application.index()">NetLogo Web Client</a>
 
                     @connected.map { username =>
@@ -38,7 +37,7 @@
             </div>
         </div>
 
-        <div class="container not_full_height">
+        <div class="core_content_box container not_full_height">
 
             <div class="content contrast_backgrounded not_full_height">
                 @content
