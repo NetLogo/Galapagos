@@ -19,4 +19,6 @@ object ApplicationBuild extends Build {
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
   )
 
+  compile in Compile <<= compile.dependsOn(ObtainResources.obtainResources)
+
 }
