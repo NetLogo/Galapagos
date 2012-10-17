@@ -15,10 +15,11 @@ object ApplicationBuild extends Build {
     "com.imaginea" %% "socket.io.play" % "0.0.3-SNAPSHOT"
   )
 
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
+  val resolverSettings = Seq(
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
   )
 
-  compile in Compile <<= compile.dependsOn(ObtainResources.obtainResources)
+  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
+    resolverSettings ++ ObtainResources.settings: _*)
 
 }

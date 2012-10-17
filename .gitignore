@@ -12,3 +12,5 @@ tmp
 /.idea/projectCodeStyle.xml
 /.idea/ant.xml
 .DS_Store
+public/javascripts/managed/
+public/stylesheets/managed/
