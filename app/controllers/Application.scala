@@ -23,6 +23,11 @@ object Application extends Controller with ErrorPropagationProtocol {
       )
   }
 
+  def demo(usernameOpt: Option[String]) = Action {
+    implicit request =>
+      Ok(views.html.demo(usernameOpt))
+  }
+
   def handleSocketConnection(username: String, room: Int = 0) = WebSocket.async[JsValue] {
     implicit request =>
       WebInstance.join(username, room)

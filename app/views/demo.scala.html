@@ -1,0 +1,18 @@
+@(username: Option[String])
+
+@main(username) {
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/playground/agentmodel.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/playground/simpleview.js")'></script>
+  <script type="text/javascript">
+    var controller;
+    function init() {
+      var container = document.getElementsByClassName("view-container")[0];
+      controller = new AgentStreamController(container);
+    }
+
+    window.onload = init;
+  </script>
+
+  <div class="view-container hor_centered inner_box rounded background_backgrounded not_full_height">
+  </div>
+}
