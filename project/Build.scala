@@ -8,8 +8,11 @@ object ApplicationBuild extends Build {
   val appVersion      = "1.0-SNAPSHOT"
 
   val appDependencies = Seq(
+    "asm" % "asm-all" % "3.3.1",
+    "log4j" % "log4j" % "1.2.16",
     "org.picocontainer" % "picocontainer" % "2.13.6",
-    "org.nlogo" % "NetLogo" % "5.0.2" from "http://ccl.northwestern.edu/netlogo/5.0.2/NetLogo.jar"
+    //"org.nlogo" % "NetLogo" % "5.0.2" from "http://ccl.northwestern.edu/netlogo/5.0.2/NetLogo.jar"
+    "org.nlogo" % "NetLogoHeadless" % "5.0.3-SNAPSHOT" from "file:///Users/headb/Development/NetLogo/nl.modelruns/headless/target/NetLogoHeadless.jar"
   )
 
   val resolverSettings = Seq[Setting[_]]()

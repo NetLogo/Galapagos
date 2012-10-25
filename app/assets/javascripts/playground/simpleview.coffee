@@ -12,11 +12,8 @@ class window.AgentStreamController
     @repaint()
 
   repaint: -> 
-    console.log 'Repainting turtle view'
     @turtleView.repaint(@model.world, @model.turtles)
-    console.log 'Repainting patch view'
     @patchView.repaint(@model.world, @model.patches)
-    console.log 'Repainting layered view'
     @layeredView.repaint()
 
   update: (modelUpdate) ->
@@ -33,11 +30,11 @@ class View
   setContainer: (container) -> container.appendChild(@canvas)
 
   matchesWorld: (world) ->
-    (not world.maxPxcor? or world.maxPxcor == @maxPxcor)
-    and (not world.minPxcor? or world.minPxcor == @minPxcor)
-    and (not world.maxPycor? or world.maxPycor == @maxPycor)
-    and (not world.minPycor? or world.minPycor == @minPycor)
-    and (not world.patchSize? or world.patchSize == @patchSize)
+    (not world.maxPxcor? or world.maxPxcor == @maxPxcor) and
+      (not world.minPxcor? or world.minPxcor == @minPxcor) and 
+      (not world.maxPycor? or world.maxPycor == @maxPycor) and
+      (not world.minPycor? or world.minPycor == @minPycor) and
+      (not world.patchSize? or world.patchSize == @patchSize)
 
   transformToWorld: (world) ->
     @maxPxcor = if world.maxPxcor? then world.maxPxcor else 16
@@ -57,13 +54,11 @@ class View
 
 class LayeredView extends View
   setLayers: (layers...) ->
-    console.log 'hi'
-    console.log layers
     @layers = layers
 
   repaint: () ->
     for layer in @layers
-      console.log 'drawing #{layer}'
+      @canvas.width = @canvas.width
       @ctx.drawImage(layer.canvas, 0, 0)
 
 
@@ -93,7 +88,9 @@ class TurtleView extends View
     return
 
 class PatchView extends View
-  constructor: () -> @patchColors = []
+  constructor: () -> 
+    super()
+    @patchColors = []
 
   colorPatch: (patch) ->
 

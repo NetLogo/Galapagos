@@ -159,3 +159,7 @@
   height: 100%;
 }
 
+.contained {
+	height: 92%;
+	min-height: 92%;
+}
