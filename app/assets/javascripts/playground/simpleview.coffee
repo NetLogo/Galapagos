@@ -30,7 +30,8 @@ class View
   setContainer: (container) -> container.appendChild(@canvas)
 
   matchesWorld: (world) ->
-    (not world.maxPxcor? or world.maxPxcor == @maxPxcor) and
+    (@maxPxcor? and @minPxcor? and @maxPycor? and @minPycor? and @patchSize?) and
+      (not world.maxPxcor? or world.maxPxcor == @maxPxcor) and
       (not world.minPxcor? or world.minPxcor == @minPxcor) and 
       (not world.maxPycor? or world.maxPycor == @maxPycor) and
       (not world.minPycor? or world.minPycor == @minPycor) and
@@ -55,10 +56,10 @@ class View
 class LayeredView extends View
   setLayers: (layers...) ->
     @layers = layers
-
   repaint: () ->
+    @canvas.width = Math.max((l.canvas.width for l in @layers)...)
+    @canvas.height = Math.max((l.canvas.height for l in @layers)...)
     for layer in @layers
-      @canvas.width = @canvas.width
       @ctx.drawImage(layer.canvas, 0, 0)
 
 
@@ -67,16 +68,11 @@ class TurtleView extends View
     xcor = turtle.xcor or 0
     ycor = turtle.ycor or 0
     heading = turtle.heading or 0
-    angle = (90-heading)/360 * 2*Math.PI
+    angle = (180-heading)/360 * 2*Math.PI
     @ctx.save()
     @ctx.translate(xcor, ycor)
     @ctx.rotate(angle)
-    @ctx.beginPath()
-    @ctx.moveTo(.5, 0)
-    @ctx.lineTo(-.5, -.5)
-    @ctx.lineTo(-.5, .5)
-    @ctx.closePath()
-    @ctx.fill()
+    window.drawShape(@ctx, turtle.color, heading, turtle.shape)
     @ctx.restore()
 
   repaint: (world, turtles) ->
@@ -92,11 +88,25 @@ class PatchView extends View
     super()
     @patchColors = []
 
+  transformToWorld: (world) ->
+    super(world)
+    for x in [@minPxcor..@maxPxcor]
+      for y in [@maxPycor..@minPycor]
+        @colorPatch({'pxcor': x, 'pycor': y, 'pcolor': 'black'})
+      col = 0
+    return
+
   colorPatch: (patch) ->
+    row = patch.pxcor-@minPxcor
+    col = @maxPycor - patch.pycor
+    patchIndex = row*@patchWidth + col
+    if patch.pcolor != @patchColors[patchIndex]
+      @patchColors[patchIndex] = @ctx.fillStyle = patch.pcolor
+      @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
 
   repaint: (world, patches) ->
     if not @matchesWorld(world)
       @transformToWorld(world)
-    @ctx.fillStyle = 'black'
-    @ctx.fillRect(@minPxcor, @minPycor, @patchWidth, @patchHeight)
+    for _, p of patches
+      @colorPatch(p)
 
