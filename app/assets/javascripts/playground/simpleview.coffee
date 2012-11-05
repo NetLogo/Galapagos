@@ -52,6 +52,9 @@ class View
                       0, -@canvas.height/@patchHeight,
                       -(@minPxcor-.5)*@canvas.width/@patchWidth,
                       (@maxPycor+.5)*@canvas.height/@patchHeight)
+    if @container?
+      @container.style.width = @canvas.width
+      @container.style.height = @canvas.height
 
 class LayeredView extends View
   setLayers: (layers...) ->
@@ -61,7 +64,7 @@ class LayeredView extends View
     @canvas.height = Math.max((l.canvas.height for l in @layers)...)
     for layer in @layers
       @ctx.drawImage(layer.canvas, 0, 0)
-
+    return
 
 class TurtleView extends View
   drawTurtle: (turtle) ->
@@ -90,6 +93,7 @@ class PatchView extends View
 
   transformToWorld: (world) ->
     super(world)
+    @patchColors = []
     for x in [@minPxcor..@maxPxcor]
       for y in [@maxPycor..@minPycor]
         @colorPatch({'pxcor': x, 'pycor': y, 'pcolor': 'black'})
