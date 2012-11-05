@@ -85,12 +85,16 @@ document.body.onload = ->
     kind    = data.kind
 
     if message
-      globals.logList[globals.messageCount] = new TextHolder(message)
-      difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-      $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
-      if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll()
-
-    updateUserList(data.members)
+      switch kind
+        when 'update'
+          controller.update(message)
+        else
+          globals.logList[globals.messageCount] = new TextHolder(message)
+          difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
+          $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
+          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll() 
+          #TODO Only call for joins and leaves
+          updateUserList(data.members)
 
   keyString =
       'abcdefghijklmnopqrstuvwxyz' +
