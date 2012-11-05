@@ -1,6 +1,6 @@
 @(username: String)(implicit request: RequestHeader)
 
-@main(Some(username)) {
+@demo(Some(username)) {
 
   <script type="text/javascript" charset="utf-8">
       var socketURL = "@routes.Application.handleSocketConnection(username).webSocketURL()";
