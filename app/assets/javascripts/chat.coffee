@@ -74,7 +74,10 @@ document.body.onload = ->
 
   globals.socket.onmessage = (event) ->
 
-    data = JSON.parse(event.data)
+    if typeof(event.data) == 'string'
+      data = JSON.parse(event.data)
+    else
+      data = event.data
     decideShowErrorOrChat(data)
 
     d       = new Date()

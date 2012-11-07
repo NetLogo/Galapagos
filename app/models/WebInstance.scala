@@ -16,6 +16,7 @@ import akka.util.duration._
 import akka.util.Timeout
 
 import org.nlogo.headless.HeadlessWorkspace
+import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
 
 
 /**
@@ -75,7 +76,18 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   private type MemberTuple = (MemberKey, MemberValue)
   val members = MutableMap.empty[MemberKey, MemberValue]
 
+  private var finalState: Mirroring.State = Map()
+
   BizzleBot.start()
+  Akka.system.scheduler.schedule(0 milliseconds, 100 milliseconds){
+    println("Sending update "+System.currentTimeMillis())
+    ws.world.synchronized {
+      val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+      val (newState, update) = Mirroring.diffs(finalState, mirrorables)
+      finalState = newState
+      Serializer.serialize(update)
+    }
+  }
 
   def receive = {
     case Join(username) =>
@@ -247,9 +259,10 @@ sealed trait ChatPacketProtocol {
 }
 
 sealed trait EventManagerProtocol {
-  protected val JoinKey     = "join"
-  protected val ChatterKey  = "chatter"
-  protected val CommandKey  = "command"
-  protected val ResponseKey = "response"
-  protected val QuitKey     = "quit"
+  protected val JoinKey       = "join"
+  protected val ChatterKey    = "chatter"
+  protected val CommandKey    = "command"
+  protected val ResponseKey   = "response"
+  protected val QuitKey       = "quit"
+  protected val ViewUpdateKey = "update"
 }
