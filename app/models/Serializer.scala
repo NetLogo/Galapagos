@@ -7,43 +7,65 @@ import org.nlogo.api.AgentVariables
 
 object Serializer {
   def serialize(update: Update): String = {
-    val turtles = toJson(update.births
-      .filter(_.agent.kind == Mirrorables.Turtle).map(serializeBirth).toMap)
-    val patches = toJson(update.births
-      .filter(_.agent.kind == Mirrorables.Patch).map(serializeBirth).toMap)
+    val turtleBirths = JsObject(update.births
+      .filter(_.agent.kind == Mirrorables.Turtle).map(serializeBirth))
+    val patchBirths = JsObject(update.births
+      .filter(_.agent.kind == Mirrorables.Patch).map(serializeBirth))
+    val turtleChanges = JsObject(update.changes
+      .filter(_._1.kind == Mirrorables.Turtle).map(serializeAgentUpdate))
     for (death <- update.deaths) {
       println(death.toString)
     }
     for (change <- update.changes) {
       println(change.toString)
     }
-    Json.stringify(JsObject(
-      "turtles" -> turtles ::
-      "patches" -> patches ::
-      List()
-    ))
+    Json.stringify(JsObject(Seq(
+      "turtles" -> (turtleBirths ++ turtleChanges),
+      "patches" -> patchBirths
+    )))
   }
 
 
   def serializeBirth(birth: Birth): (String, JsValue) = birth match {
-    case Birth(AgentKey(Mirrorables.Turtle, id), values) => {
-      val turtleVarNames = AgentVariables.getImplicitTurtleVariables(false)
-      id.toString -> serializeAgentVariables(values, turtleVarNames)
+    case Birth(AgentKey(kind, id), values) => {
+      val varNames = getImplicitVariables(kind)
+      id.toString -> serializeAgentVariables(values, varNames)
     }
-    case Birth(AgentKey(Mirrorables.Patch, id), values) => {
-      val patchVarNames = AgentVariables.getImplicitPatchVariables(false)
-      id.toString -> serializeAgentVariables(values, patchVarNames)
-    }
-    case other => {
-      println("Unrecognized: " + other.toString)
-      ("-1", JsNull)
+  }
+
+  def serializeAgentUpdate(update: (AgentKey, Seq[Change])): (String, JsObject) = update match {
+    case (AgentKey(kind, id), changes) => {
+      val varNames = getImplicitVariables(kind)
+      id.toString -> JsObject(changes.map {
+        case Change(variable, value) => {
+          (if (varNames.length > variable) varNames(variable) else variable.toString) ->
+            serializeValue(value)
+        }
+      })
     }
   }
 
   def serializeAgentVariables(values: Seq[AnyRef], varNames: Seq[String]): JsObject =
-    JsObject(varNames.zip(values.map {
+  JsObject(varNames.zip(values.map {
       case i: java.lang.Double => JsNumber(i.doubleValue)
       case b: java.lang.Boolean => JsBoolean(b.booleanValue)
       case x => toJson(x.toString)
     }))
+
+  def getImplicitVariables(kind: Kind): Seq[String] = kind match {
+    case Mirrorables.Turtle => AgentVariables.getImplicitTurtleVariables(false)
+    case Mirrorables.Patch => AgentVariables.getImplicitPatchVariables(false)
+    case Mirrorables.Link => AgentVariables.getImplicitLinkVariables
+    case _ => {
+      println("Don't know how to get implicit vars for "+kind.toString)
+      Seq()
+    }
+  }
+
+  def serializeValue(value: AnyRef) = value match {
+    case i: java.lang.Double => JsNumber(i.doubleValue)
+    case b: java.lang.Boolean => JsBoolean(b.booleanValue)
+    case x => toJson(x.toString)
+  }
+
 }
