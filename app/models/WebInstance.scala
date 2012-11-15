@@ -79,7 +79,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   private var finalState: Mirroring.State = Map()
 
   BizzleBot.start()
-  Akka.system.scheduler.schedule(0 milliseconds, 500 milliseconds){
+  Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds){
     ws.world.synchronized {
       val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
       val (newState, update) = Mirroring.diffs(finalState, mirrorables)

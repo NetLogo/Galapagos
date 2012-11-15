@@ -8,15 +8,18 @@ class window.AgentModel
 
   update: (modelUpdate) ->
     for turtleId, varUpdates of modelUpdate.turtles
-      t = @turtles[turtleId]
-      if not t?
-        t = @turtles[turtleId] = {
-          heading: 360*Math.random(),
-          xcor: 0,
-          ycor: 0,
-          shape: window.shapes.default,
-          color: 'hsl('+(360*Math.random())+',100%,50%)'
-        }
+      if varUpdates == null
+        delete @turtles[turtleId]
+      else
+        t = @turtles[turtleId]
+        if not t?
+          t = @turtles[turtleId] = {
+            heading: 360*Math.random(),
+            xcor: 0,
+            ycor: 0,
+            shape: window.shapes.default,
+            color: 'hsl('+(360*Math.random())+',100%,50%)'
+          }
       mergeObjectInto(varUpdates, t)
     for patchId, varUpdates of modelUpdate.patches
       p = @patches[patchId]

@@ -149,4 +149,15 @@ window.shapes =
       {type: 'circle', color: '#8d8d8d', filled: true, marked: false, x: 214, y: 72, diam: 67}
       {type: 'rectangle', color: '#ffffff', filled: true, marked: true, xmin: 164, ymin: 223, xmax: 179, ymax: 298}
     ]
+  wolf:
+    elements: [
+      {
+        type: 'polygon'
+        color: 'grey'
+        filled: 'true'
+        marked: 'true'
+        xcors: [150, 40, 150, 260]
+        ycors: [5, 250, 205, 250]
+      }
+    ]
 

@@ -13,14 +13,11 @@ object Serializer {
       .filter(_.agent.kind == Mirrorables.Patch).map(serializeBirth))
     val turtleChanges = JsObject(update.changes
       .filter(_._1.kind == Mirrorables.Turtle).map(serializeAgentUpdate))
-    for (death <- update.deaths) {
-      println(death.toString)
-    }
-    for (change <- update.changes) {
-      println(change.toString)
-    }
+    val turtleDeaths = JsObject(update.deaths
+      .filter(_.agent.kind == Mirrorables.Turtle).map(serializeDeath))
+
     Json.stringify(JsObject(Seq(
-      "turtles" -> (turtleBirths ++ turtleChanges),
+      "turtles" -> (turtleBirths ++ turtleChanges ++ turtleDeaths),
       "patches" -> patchBirths
     )))
   }
@@ -44,6 +41,8 @@ object Serializer {
       })
     }
   }
+
+  def serializeDeath(death: Death) = death.agent.id.toString -> JsNull
 
   def serializeAgentVariables(values: Seq[AnyRef], varNames: Seq[String]): JsObject =
   JsObject(varNames.zip(values.map {
