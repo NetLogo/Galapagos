@@ -75,7 +75,7 @@ class TurtleView extends View
     @ctx.save()
     @ctx.translate(xcor, ycor)
     @ctx.rotate(angle)
-    window.drawShape(@ctx, turtle.color, heading, turtle.shape)
+    window.drawShape(@ctx, turtle.color, heading, shapes[turtle.shape])
     @ctx.restore()
 
   repaint: (world, turtles) ->
@@ -104,8 +104,11 @@ class PatchView extends View
     row = patch.pxcor-@minPxcor
     col = @maxPycor - patch.pycor
     patchIndex = row*@patchWidth + col
-    if patch.pcolor != @patchColors[patchIndex]
-      @patchColors[patchIndex] = @ctx.fillStyle = patch.pcolor
+    color = patch.pcolor
+    if typeof(color) == 'number'
+      color = netlogoColorToCSS(color)
+    if color != @patchColors[patchIndex]
+      @patchColors[patchIndex] = @ctx.fillStyle = color
       @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
 
   repaint: (world, patches) ->

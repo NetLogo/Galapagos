@@ -29,4 +29,4 @@ class window.AgentModel
 
 mergeObjectInto = (updatedObject, targetObject) ->
   for variable, value of updatedObject
-    targetObject[variable] = value
+    targetObject[variable.toLowerCase()] = value

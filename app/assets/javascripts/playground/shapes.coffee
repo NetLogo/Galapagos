@@ -1,7 +1,11 @@
-javaIntColorToHex = (number) ->
-  if number < 0
-    number = 0xFFFFFF + number + 1
-  '#'+number.toString(16)
+window.netlogoColorToCSS = (number) ->
+  if number <  10
+    "hsl(0, 0%, #{number*10}%)"
+  else
+    h = Math.round((number-15)/10)*36
+    s = 100
+    l = 10*(number%10)
+    "hsl(#{h}, #{s}%, #{l}%)"
 
 window.drawShape = (ctx, turtleColor, heading, shape) ->
   ctx.translate(.5, -.5)
@@ -10,6 +14,8 @@ window.drawShape = (ctx, turtleColor, heading, shape) ->
     draw[elt.type](ctx, turtleColor, elt)
 
 setColoring = (ctx, turtleColor, element) ->
+  if typeof(turtleColor)=='number'
+    turtleColor = netlogoColorToCSS(turtleColor)
   if element.filled
     if element.marked
       ctx.fillStyle = turtleColor
