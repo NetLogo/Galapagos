@@ -80,12 +80,11 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   BizzleBot.start()
   Akka.system.scheduler.schedule(0 milliseconds, 500 milliseconds){
-    println("Sending update "+System.currentTimeMillis())
     ws.world.synchronized {
       val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
       val (newState, update) = Mirroring.diffs(finalState, mirrorables)
       finalState = newState
-      Serializer.serialize(update)
+      notifyAll(generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
     }
   }
 
