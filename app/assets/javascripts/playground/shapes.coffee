@@ -148,6 +148,12 @@ window.shapes =
       {type: 'polygon', color: '#8d8d8d', filled: true, marked: false, xcors: [218, 240, 255, 278], ycors: [120, 165, 165, 120]}
       {type: 'circle', color: '#8d8d8d', filled: true, marked: false, x: 214, y: 72, diam: 67}
       {type: 'rectangle', color: '#ffffff', filled: true, marked: true, xmin: 164, ymin: 223, xmax: 179, ymax: 298}
+      {type: 'polygon', color: '#ffffff', filled: true, marked: true, xcors: [45, 30, 30, 15, 45], ycors: [285, 285, 240, 195, 210]}
+      {type: 'circle', color: '#ffffff', filled: true, marked: true, x: 3, y: 83, diam: 150}
+      {type: 'rectangle', color: '#ffffff', filled: true, marked: true, xmin: 65, ymin: 221, xmax: 80, ymax: 296}
+      {type: 'polygon', color: '#ffffff', filled: true, marked: true, xcors: [195, 210, 210, 240, 195], ycors: [285, 285, 240, 210, 210]}
+      {type: 'polygon', color: '#8d8d8d', filled: true, marked: false, xcors: [276, 285, 302, 294], ycors: [85, 105, 99, 83]}
+      {type: 'polygon', color: '#8d8d8d', filled: true, marked: false, xcors: [219, 210, 193, 201], ycors: [85, 105, 99, 83]}
     ]
   wolf:
     elements: [
@@ -160,4 +166,3 @@ window.shapes =
         ycors: [5, 250, 205, 250]
       }
     ]
-
