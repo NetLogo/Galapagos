@@ -73,13 +73,16 @@ class TurtleView extends View
     heading = turtle.heading or 0
     scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
-    @ctx.save()
-    @ctx.translate(xcor, ycor)
-    @ctx.rotate(angle)
-    @ctx.scale(scale, scale)
     shape = turtle.shape
     if typeof(shape)=='string'
       shape = shapes[shape]
+    @ctx.save()
+    @ctx.translate(xcor, ycor)
+    if shape.rotate
+      @ctx.rotate(angle)
+    else
+      @ctx.rotate(Math.PI)
+    @ctx.scale(scale, scale)
     window.drawShape(@ctx, turtle.color, heading, shape)
     @ctx.restore()
 

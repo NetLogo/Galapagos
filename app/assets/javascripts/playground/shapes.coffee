@@ -71,6 +71,7 @@ window.draw =
 
 window.shapes =
   default:
+    rotate: true
     elements: [
       {
         type: 'polygon'
@@ -93,6 +94,7 @@ window.shapes =
       }
     ]
   circle:
+    rotate: true
     elements: [
       {
         type: 'circle'
@@ -141,6 +143,7 @@ window.shapes =
       }
     ]
   sheep:
+    rotate: false
     elements: [
       {type: 'circle', color: '#ffffff', filled: true, marked: true, x: 203, y: 65, diam: 88}
       {type: 'circle', color: '#ffffff', filled: true, marked: true, x: 70, y: 65, diam: 162}
@@ -156,6 +159,7 @@ window.shapes =
       {type: 'polygon', color: '#8d8d8d', filled: true, marked: false, xcors: [219, 210, 193, 201], ycors: [85, 105, 99, 83]}
     ]
   wolf:
+    rotate: false
     elements: [
       {type: 'polygon', color: '#000000', filled: true, marked: false, xcors: [253, 245, 245], ycors: [133, 131, 133]}
       {type: 'polygon', color: '#8d8d8d', filled: true, marked: true, xcors:[2, 13, 30, 38, 38, 20, 20, 27, 38, 40, 31, 31, 60, 68, 75, 66, 65, 82, 84, 100, 103, 77, 79, 100, 98, 119, 143, 160, 166, 172, 173, 167, 160, 154, 169, 178, 186, 198, 200, 217, 219, 207, 195, 192, 210, 227, 242, 259, 284, 277, 293, 299, 297, 273, 270], ycors: [194, 197, 191, 193, 205, 226, 257, 265, 266, 260, 253, 230, 206, 198, 209, 228, 243, 261, 268, 267, 261, 239, 231, 207, 196, 201, 202, 195, 210, 213, 238, 251, 248, 265, 264, 247, 240, 260, 271, 271, 262, 258, 230, 198, 184, 164, 144, 145, 151, 141, 140, 134, 127, 119, 105]}
