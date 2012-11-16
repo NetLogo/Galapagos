@@ -42,7 +42,7 @@ class View
     @minPxcor = if world.minPxcor? then world.minPxcor else -25
     @maxPycor = if world.maxPycor? then world.maxPycor else 25
     @minPycor = if world.minPycor? then world.minPycor else -25
-    @patchSize = if world.patchSize? then world.patchSize else 13
+    @patchSize = if world.patchSize? then world.patchSize else 9
     @patchWidth = @maxPxcor - @minPxcor + 1
     @patchHeight = @maxPycor - @minPycor + 1
     @canvas.width =  @patchWidth * @patchSize
@@ -71,10 +71,12 @@ class TurtleView extends View
     xcor = turtle.xcor or 0
     ycor = turtle.ycor or 0
     heading = turtle.heading or 0
+    scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
     @ctx.save()
     @ctx.translate(xcor, ycor)
     @ctx.rotate(angle)
+    @ctx.scale(scale, scale)
     shape = turtle.shape
     if typeof(shape)=='string'
       shape = shapes[shape]
