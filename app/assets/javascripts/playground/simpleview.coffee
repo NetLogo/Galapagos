@@ -38,10 +38,10 @@ class View
       (not world.patchSize? or world.patchSize == @patchSize)
 
   transformToWorld: (world) ->
-    @maxPxcor = if world.maxPxcor? then world.maxPxcor else 16
-    @minPxcor = if world.minPxcor? then world.minPxcor else -16
-    @maxPycor = if world.maxPycor? then world.maxPycor else 16
-    @minPycor = if world.minPycor? then world.minPycor else -16
+    @maxPxcor = if world.maxPxcor? then world.maxPxcor else 25
+    @minPxcor = if world.minPxcor? then world.minPxcor else -25
+    @maxPycor = if world.maxPycor? then world.maxPycor else 25
+    @minPycor = if world.minPycor? then world.minPycor else -25
     @patchSize = if world.patchSize? then world.patchSize else 13
     @patchWidth = @maxPxcor - @minPxcor + 1
     @patchHeight = @maxPycor - @minPycor + 1
@@ -75,7 +75,10 @@ class TurtleView extends View
     @ctx.save()
     @ctx.translate(xcor, ycor)
     @ctx.rotate(angle)
-    window.drawShape(@ctx, turtle.color, heading, shapes[turtle.shape])
+    shape = turtle.shape
+    if typeof(shape)=='string'
+      shape = shapes[shape]
+    window.drawShape(@ctx, turtle.color, heading, shape)
     @ctx.restore()
 
   repaint: (world, turtles) ->

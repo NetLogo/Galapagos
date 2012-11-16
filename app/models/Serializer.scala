@@ -13,15 +13,16 @@ object Serializer {
       .filter(_.agent.kind == Mirrorables.Patch).map(serializeBirth))
     val turtleChanges = JsObject(update.changes
       .filter(_._1.kind == Mirrorables.Turtle).map(serializeAgentUpdate))
+    val patchChanges = JsObject(update.changes
+      .filter(_._1.kind == Mirrorables.Patch).map(serializeAgentUpdate))
     val turtleDeaths = JsObject(update.deaths
       .filter(_.agent.kind == Mirrorables.Turtle).map(serializeDeath))
 
     Json.stringify(JsObject(Seq(
       "turtles" -> (turtleBirths ++ turtleChanges ++ turtleDeaths),
-      "patches" -> patchBirths
+      "patches" -> (patchBirths ++ patchChanges)
     )))
   }
-
 
   def serializeBirth(birth: Birth): (String, JsValue) = birth match {
     case Birth(AgentKey(kind, id), values) => {

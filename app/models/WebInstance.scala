@@ -100,6 +100,11 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       }
     case NotifyJoin(username) =>
       notifyAll(generateMessage(JoinKey, RoomContext, username, "has entered the room"))
+      ws.world.synchronized {
+        val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+        val (newState, update) = Mirroring.diffs(Map(), mirrorables)
+        notify(username, generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
+      }
     case Chatter(username, message) =>
       if (BizzleBot.canFieldMessage(message))
         BizzleBot.offerAssistance(username, message) foreach {
