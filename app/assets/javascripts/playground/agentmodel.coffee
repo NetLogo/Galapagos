@@ -7,7 +7,9 @@ class window.AgentModel
     @world = {}
 
   update: (modelUpdate) ->
+    anyUpdates = false
     for turtleId, varUpdates of modelUpdate.turtles
+      anyUpdates = true
       if varUpdates == null
         delete @turtles[turtleId]
       else
@@ -22,13 +24,14 @@ class window.AgentModel
           }
       mergeObjectInto(varUpdates, t)
     for patchId, varUpdates of modelUpdate.patches
+      anyUpdates = true
       p = @patches[patchId]
       if not p?
         p = @patches[patchId] = {}
       mergeObjectInto(varUpdates, p)
     mergeObjectInto(modelUpdate.observer, @observer)
     mergeObjectInto(modelUpdate.world, @world)
-    return
+    return anyUpdates
 
 mergeObjectInto = (updatedObject, targetObject) ->
   for variable, value of updatedObject
