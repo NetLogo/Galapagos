@@ -67,7 +67,7 @@ class LayeredView extends View
     return
 
 class TurtleView extends View
-  drawTurtle: (turtle) ->
+  drawTurtle: (id, turtle) ->
     xcor = turtle.xcor or 0
     ycor = turtle.ycor or 0
     heading = turtle.heading or 0
@@ -90,8 +90,8 @@ class TurtleView extends View
     @transformToWorld(world)
     @ctx.lineWidth = .1
     @ctx.fillStyle = 'red'
-    for _, turtle of turtles
-      @drawTurtle(turtle)
+    for id, turtle of turtles
+      @drawTurtle(id, turtle)
     return
 
 class PatchView extends View

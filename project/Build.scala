@@ -10,8 +10,7 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.picocontainer" % "picocontainer" % "2.13.6",
-    //"org.nlogo" % "NetLogo" % "5.0.2" from "http://ccl.northwestern.edu/netlogo/5.0.2/NetLogo.jar"
-    "org.nlogo" % "NetLogoHeadless" % "5.0.3-SNAPSHOT" from "file:///Users/headb/Development/NetLogo/nl.modelruns/headless/target/NetLogoHeadless.jar"
+    "org.nlogo" % "NetLogoHeadless" % "5.0.3-SNAPSHOT" from "http://ccl.northwestern.edu/devel/NetLogoHeadless-modelruns-220636a.jar"
   )
 
   val resolverSettings = Seq[Setting[_]]()

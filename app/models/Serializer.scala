@@ -34,12 +34,13 @@ object Serializer {
   def serializeAgentUpdate(update: (AgentKey, Seq[Change])): (String, JsObject) = update match {
     case (AgentKey(kind, id), changes) => {
       val varNames = getImplicitVariables(kind)
-      id.toString -> JsObject(changes.map {
+      val serializedVars = JsObject(changes.map {
         case Change(variable, value) => {
           (if (varNames.length > variable) varNames(variable) else variable.toString) ->
             serializeValue(value)
         }
       })
+    id.toString -> serializedVars
     }
   }
 
