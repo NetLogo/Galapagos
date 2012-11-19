@@ -68,7 +68,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   private val modelsPath = "public/models/"
   private val modelName  = "Wolf Sheep Predation"
-  private lazy val room  = self // Primarily done so that BizzleBot can talk to the room; cool abstraction, though
+  private lazy val room  = self
   private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
   private type MemberKey   = String
@@ -80,12 +80,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   BizzleBot.start()
   Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds){
-    ws.world.synchronized {
-      val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-      val (newState, update) = Mirroring.diffs(finalState, mirrorables)
-      finalState = newState
-      notifyAll(generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
-    }
+    room ! RequestViewUpdate // Protect our mutable state by making use of the "actor" model of synchronization
   }
 
   def receive = {
@@ -122,6 +117,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     case Quit(username) =>
       members -= username
       notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
+    case RequestViewUpdate =>
+      ws.world.synchronized {
+        val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+        val (newState, update) = Mirroring.diffs(finalState, mirrorables)
+        finalState = newState
+        notifyAll(generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
+      }
   }
 
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
@@ -244,11 +246,12 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 }
 
-case class Join(username: String)
-case class Quit(username: String)
-case class Chatter(username: String, message: String)
-case class Command(username: String, agentType: String, cmd: String)
-case class NotifyJoin(username: String)
+case class  Join(username: String)
+case class  Quit(username: String)
+case class  Chatter(username: String, message: String)
+case class  Command(username: String, agentType: String, cmd: String)
+case class  NotifyJoin(username: String)
+case object RequestViewUpdate
 
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
