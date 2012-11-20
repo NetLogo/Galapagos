@@ -1,8 +1,8 @@
 package models
 
+import org.nlogo.api
 import org.nlogo.nvm.CompilerInterface
 import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.api.{RendererInterface, AggregateManagerInterface}
 import org.nlogo.agent.World
 import org.nlogo.workspace.AbstractWorkspace
 
@@ -15,8 +15,8 @@ import org.nlogo.workspace.AbstractWorkspace
  *   Manages a NetLogo workspace for use in NetLogo web clients
  */
 
-class WebWorkspace(world: World, compiler: CompilerInterface, renderer: RendererInterface,
-                   aggregateManager: AggregateManagerInterface, hbmFactory: AbstractWorkspace.HubNetManagerFactory)
+class WebWorkspace(world: World, compiler: CompilerInterface, renderer: api.RendererInterface,
+                   aggregateManager: api.AggregateManagerInterface, hbmFactory: AbstractWorkspace.HubNetManagerFactory)
                    extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory) {
 
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
@@ -35,7 +35,10 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
       None
     }
     catch {
-      case ex: org.nlogo.api.CompilerException => Option("ERROR: " + ex.getLocalizedMessage)
+      case ex: api.CompilerException =>
+        Option("ERROR: " + ex.getLocalizedMessage)
+      case ex: api.LogoException =>
+        Option("RUNTIME ERROR: " + ex.getLocalizedMessage)
     }
   }
 
