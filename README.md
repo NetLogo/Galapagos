@@ -31,7 +31,6 @@ You may want to put this up onto a remote web host for some reason or another.  
 * Place your application source (as obtained in the __Running Locally__ section) into `$DC/application`
 * From `$DC`, run the `dotcloud create <desired name>` command
 * Run the `dotcloud push <desired name from above>` command
-  * The `--all` is ___very___ important
 * Wait 10ish minutes for the deployment to complete
 * Connect to the URL that is eventually spit back at you
 
