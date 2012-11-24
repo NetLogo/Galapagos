@@ -5,12 +5,12 @@ import collection.mutable.{ Map => MutableMap }
 import java.io.File
 
 import play.api.Logger
-import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString }
+import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString, JsNull}
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
 import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
 import play.api.Play.current
 
-import akka.actor.{ Actor, Props }
+import akka.actor.{ Actor, Props, Cancellable }
 import akka.pattern.ask
 import akka.util.duration._
 import akka.util.Timeout
@@ -37,8 +37,11 @@ object WebInstance extends ErrorPropagationProtocol {
     val room = roomMap(roomNum)
     (room ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
-        val iteratee = Iteratee.foreach[JsValue] { event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) }.
-                                mapDone          { _     => room ! Quit(username) }
+        val iteratee = Iteratee.foreach[JsValue] {
+          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) 
+        }.mapDone { 
+          _     => room ! Quit(username) 
+        }
         (iteratee, enumerator)
       case CannotConnect(error) =>
         val iteratee   = Done[JsValue, Unit]((), Input.EOF)
@@ -114,9 +117,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       notifyAll(generateMessage(CommandKey, agentType, username, cmd))
       notifyAll(generateMessage(ResponseKey, "netlogo", agentType, ws.execute(agentType, cmd)))
     case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
-    case Quit(username) =>
-      members -= username
-      notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
+    case Quit(username) => quit(username)
     case RequestViewUpdate =>
       ws.world.synchronized {
         val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
@@ -126,11 +127,19 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       }
   }
 
+  private def quit(username: String) = {
+    members -= username
+    notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
+  }
+
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
   // Also, why did my structural typing fail here...?
   class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
     def pushForeach(msg: JsObject) {
-      foreachable foreach { case (_, channel) => channel.push(msg) }
+      foreachable foreach { case (username, channel) =>
+        if (!channel.push(msg))
+          quit(username)
+      }
     }
   }
 
