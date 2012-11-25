@@ -69,21 +69,18 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
   private val Contexts = List(RoomContext, ObserverContext, TurtlesContext, LinksContext, PatchesContext, ChatterContext)
 
-  private val modelsPath = "public/models/"
-  private val modelName  = "Wolf Sheep Predation"
   private lazy val room  = self
-  private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
+  private val nlController = Akka.system.actorOf(Props[NetLogoController])
 
   private type MemberKey   = String
   private type MemberValue = PushEnumerator[JsValue]
   private type MemberTuple = (MemberKey, MemberValue)
   val members = MutableMap.empty[MemberKey, MemberValue]
 
-  private var finalState: Mirroring.State = Map()
 
   BizzleBot.start()
   Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds){
-    room ! RequestViewUpdate // Protect our mutable state by making use of the "actor" model of synchronization
+    nlController ! RequestViewUpdate
   }
 
   def receive = {
@@ -93,11 +90,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
         case (true, _) =>
           members += username -> channel
           sender ! Connected(channel)
-          ws.world.synchronized {
-            val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-            val (newState, update) = Mirroring.diffs(Map(), mirrorables)
-            notify(username, generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
-          }
+          nlController ! RequestViewState
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
@@ -115,16 +108,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       self ! Chatter(username, message)
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
       notifyAll(generateMessage(CommandKey, agentType, username, cmd))
-      notifyAll(generateMessage(ResponseKey, "netlogo", agentType, ws.execute(agentType, cmd)))
+      nlController ! Execute(agentType, cmd)
     case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
+    case CommandOutput(agentType, output) =>
+      notifyAll(generateMessage(ResponseKey, "netlogo", agentType, output))
     case Quit(username) => quit(username)
-    case RequestViewUpdate =>
-      ws.world.synchronized {
-        val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-        val (newState, update) = Mirroring.diffs(finalState, mirrorables)
-        finalState = newState
-        notifyAll(generateMessage(ViewUpdateKey, RoomContext, BizzleBot.BotName, Serializer.serialize(update)))
-      }
+    case ViewUpdate(serializedUpdate: String) =>
+      notifyAll(generateMessage(ViewUpdateKey, RoomContext, "netlogo", serializedUpdate))
   }
 
   private def quit(username: String) = {
@@ -259,8 +249,9 @@ case class  Join(username: String)
 case class  Quit(username: String)
 case class  Chatter(username: String, message: String)
 case class  Command(username: String, agentType: String, cmd: String)
+case class  CommandOutput(agentType: String, cmd: String)
 case class  NotifyJoin(username: String)
-case object RequestViewUpdate
+case class  ViewUpdate(serializedUpdate: String)
 
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
