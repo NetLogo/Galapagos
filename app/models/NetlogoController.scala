@@ -8,10 +8,10 @@ import play.api.Play.current
 import akka.actor.{ Actor, Props }
 
 import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
+import org.nlogo.mirror.{ Mirrorable, Mirrorables, Mirroring, Update }
 
 class NetLogoController extends Actor {
-  private var finalState: Mirroring.State = Map()
+  private var currentState: Mirroring.State = Map()
 
   private val modelsPath = "public/models/"
   private val modelName  = "Wolf Sheep Predation"
@@ -31,19 +31,18 @@ class NetLogoController extends Actor {
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
     case RequestViewUpdate =>
-      ws.world.synchronized {
-        val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-        val (newState, update) = Mirroring.diffs(finalState, mirrorables)
-        finalState = newState
-        sender ! ViewUpdate(Serializer.serialize(update))
-      }
+      val (newState, update) = getStateUpdate(currentState)
+      currentState = newState
+      sender ! ViewUpdate(Serializer.serialize(update))
     case RequestViewState =>
+      sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+  }
+
+  private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
       ws.world.synchronized {
         val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-        val (newState, update) = Mirroring.diffs(Map(), mirrorables)
-        sender ! ViewUpdate(Serializer.serialize(update))
+        Mirroring.diffs(baseState, mirrorables)
       }
-  }
 
   protected def workspace(file: File) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]

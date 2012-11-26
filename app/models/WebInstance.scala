@@ -5,7 +5,7 @@ import collection.mutable.{ Map => MutableMap }
 import java.io.File
 
 import play.api.Logger
-import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString, JsNull}
+import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString, JsNull }
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
 import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
 import play.api.Play.current
@@ -66,6 +66,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   private val LinksContext    = "links"
   private val PatchesContext  = "patches"
   private val ChatterContext  = "chatter"
+  private val NetLogoUsername = "netlogo"
 
   private val Contexts = List(RoomContext, ObserverContext, TurtlesContext, LinksContext, PatchesContext, ChatterContext)
 
@@ -111,10 +112,10 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       nlController ! Execute(agentType, cmd)
     case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
     case CommandOutput(agentType, output) =>
-      notifyAll(generateMessage(ResponseKey, "netlogo", agentType, output))
+      notifyAll(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
     case Quit(username) => quit(username)
     case ViewUpdate(serializedUpdate: String) =>
-      notifyAll(generateMessage(ViewUpdateKey, RoomContext, "netlogo", serializedUpdate))
+      notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
   }
 
   private def quit(username: String) = {
@@ -127,6 +128,9 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
     def pushForeach(msg: JsObject) {
       foreachable foreach { case (username, channel) =>
+        // Note that push is being used for it's side effect here. The return
+        // of push indicates success; ie, whether the server successfully sent
+        // the message to the client.
         if (!channel.push(msg))
           quit(username)
       }
