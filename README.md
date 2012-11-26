@@ -30,8 +30,7 @@ You may want to put this up onto a remote web host for some reason or another.  
 * Clone a copy of [this repo](https://github.com/mchv/play2-on-dotcloud) into a directory we'll call `$DC`
 * Place your application source (as obtained in the __Running Locally__ section) into `$DC/application`
 * From `$DC`, run the `dotcloud create <desired name>` command
-* Run the `$DC push <desired name from above> --all` command
-  * The `--all` is ___very___ important
+* Run the `dotcloud push <desired name from above>` command
 * Wait 10ish minutes for the deployment to complete
 * Connect to the URL that is eventually spit back at you
 
