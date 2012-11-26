@@ -36,6 +36,8 @@ class NetLogoController extends Actor {
       sender ! ViewUpdate(Serializer.serialize(update))
     case RequestViewState =>
       sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+    case Halt => 
+      ws.halt()
   }
 
   private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
@@ -54,3 +56,4 @@ class NetLogoController extends Actor {
 case class Execute(agentType: String, cmd: String)
 case object RequestViewUpdate
 case object RequestViewState
+case object Halt

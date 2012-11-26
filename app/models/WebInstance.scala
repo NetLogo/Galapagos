@@ -199,7 +199,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
     val BotName = "BizzleBot"
 
-    private val Commands = List("commands", "help", "info", "whoami")
+    private val Commands = List("commands", "help", "info", "whoami", "halt")
 
     def start() {
       room ? (Join(BotName)) map {
@@ -237,6 +237,9 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
             "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
         case "whoami" =>
           "you're @%s, obviously!".format(username)
+        case "halt" =>
+          nlController ! Halt
+          "halting"
         case _ =>
           "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
       } map ("@%s, ".format(username) + _)
