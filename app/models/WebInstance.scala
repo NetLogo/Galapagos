@@ -39,7 +39,7 @@ object WebInstance extends ErrorPropagationProtocol {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
           event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) 
-        }.mapDone { 
+        } mapDone { 
           _     => room ! Quit(username) 
         }
         (iteratee, enumerator)
