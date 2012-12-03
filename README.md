@@ -20,19 +20,11 @@
 
 # Running Remotely
 
-You may want to put this up onto a remote web host for some reason or another.  However, this application uses Web Sockets, and many popular hosts do not support Web Sockets at the moment.  Here is the list of known suitable hosts for this application:
+You may want to put Teletortoise up onto a remote web host for some reason or another.  However, Teletortoise uses Web Sockets, and many popular hosts do not support Web Sockets at the moment.  On top of that, there are also several other things to be taken into consideration when launching Teletortoise remotely.  Please see [this page](https://github.com/NetLogo/Teletortoise/wiki/Web-Host-Survey) for a comparison of different web hosting choices considered for Teletortoise.
 
-* dotCloud
+# Accessing the "Official" Remote Instance
 
-# Running on dotCloud
-
-* [Create a dotCloud account](https://www.dotcloud.com/) and [get your command line all set up](http://docs.dotcloud.com/0.4/firststeps/install/#installation-instructions).
-* Clone a copy of [this repo](https://github.com/mchv/play2-on-dotcloud) into a directory we'll call `$DC`
-* Place your application source (as obtained in the __Running Locally__ section) into `$DC/application`
-* From `$DC`, run the `dotcloud create <desired name>` command
-* Run the `dotcloud push <desired name from above>` command
-* Wait 10ish minutes for the deployment to complete
-* Connect to the URL that is eventually spit back at you
+Currently, the official test server is hosted by [Linode](http://www.linode.com/), and is accessible [here](http://li425-91.members.linode.com:9000).  Please view [this page](https://github.com/NetLogo/Teletortoise/wiki/Interacting-with-the-Linode-Server) for instructions of how to access the Play server and code running on the Linode instance.
 
 # Previous Influences
 
