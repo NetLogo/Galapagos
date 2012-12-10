@@ -3,9 +3,9 @@
 * An experimental version of NetLogo that displays in-browser
 * Structured in such a way that a remote NetLogo model runs on the server and feeds NetLogo information to browser-based clients
 
-for further details, see the [wiki](https://github.com/NetLogo/Teletortoise/wiki)
+for technical details and developer info, see the [wiki](https://github.com/NetLogo/Teletortoise/wiki)
 
-# Accessing the "official" remote instance
+# Try it!
 
 [![go_button1.png](https://f.cloud.github.com/assets/161079/4045/c1b9c474-42f2-11e2-81ff-83ffb6402a5b.png)](http://li425-91.members.linode.com:9000)
 
