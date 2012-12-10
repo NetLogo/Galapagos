@@ -7,7 +7,7 @@ for further details, see the [wiki](https://github.com/NetLogo/Teletortoise/wiki
 
 # Accessing the "official" remote instance
 
-it's [here](http://li425-91.members.linode.com:9000)
+[![go_button1.png](https://f.cloud.github.com/assets/161079/4045/c1b9c474-42f2-11e2-81ff-83ffb6402a5b.png)](http://li425-91.members.linode.com:9000)
 
 You may choose any user name when you sign in. There are no user accounts. The name you enter serves to identify you in the chat room.
 
