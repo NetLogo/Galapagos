@@ -9,6 +9,8 @@ for technical details and developer info, see the [wiki](https://github.com/NetL
 
 [![go_button1.png](https://f.cloud.github.com/assets/161079/4045/c1b9c474-42f2-11e2-81ff-83ffb6402a5b.png)](http://li425-91.members.linode.com:9000)
 
+(Not working? Complain to [bugs@ccl.northwestern.edu](mailto:bugs@ccl.northwestern.edu))
+
 You may choose any user name when you sign in. There are no user accounts. The name you enter serves to identify you in the chat room.
 
 Press the Tab key to cycle between chat mode and issuing NetLogo commands to agents.
