@@ -18,14 +18,6 @@ import akka.util.Timeout
 import org.nlogo.headless.HeadlessWorkspace
 import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
 
-
-/**
- * Created by IntelliJ IDEA.
- * User: Jason
- * Date: 7/30/12
-  * Time: 12:17 PM
-  */
-
 object WebInstance extends ErrorPropagationProtocol {
 
   implicit val timeout = Timeout(1 second)
@@ -38,9 +30,9 @@ object WebInstance extends ErrorPropagationProtocol {
     (room ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
-          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) 
-        } mapDone { 
-          _     => room ! Quit(username) 
+          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
+        } mapDone {
+          _     => room ! Quit(username)
         }
         (iteratee, enumerator)
       case CannotConnect(error) =>

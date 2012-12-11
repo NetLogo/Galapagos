@@ -7,13 +7,8 @@ import org.nlogo.agent.World
 import org.nlogo.workspace.AbstractWorkspace
 
 /**
- * Created by IntelliJ IDEA.
- * User: Jason
- * Date: 6/22/12
- * Time: 11:42 AM
- * Description:
- *   Manages a NetLogo workspace for use in NetLogo web clients
- */
+  * Manages a NetLogo workspace for use in NetLogo web clients
+  */
 
 class WebWorkspace(world: World, compiler: CompilerInterface, renderer: api.RendererInterface,
                    aggregateManager: api.AggregateManagerInterface, hbmFactory: AbstractWorkspace.HubNetManagerFactory)

@@ -36,7 +36,7 @@ class NetLogoController extends Actor {
       sender ! ViewUpdate(Serializer.serialize(update))
     case RequestViewState =>
       sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-    case Halt => 
+    case Halt =>
       ws.halt()
   }
 

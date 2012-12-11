@@ -34,7 +34,7 @@
     if world.patch_size!=pixels
       world.patch_size = pixels
       world.resize()
-    
+
   clear_all: ->
     world.clear_patches()
     world.clear_drawing()
@@ -243,7 +243,7 @@ class Patch
   row = Math.round(y-world.min_pycor).mod(rows)
   col = Math.round(x-world.min_pxcor).mod(cols)
   patches[rows*col + row]
-    
+
 @create_turtles = (n, initTurtle = null) ->
   newTurtles = (new Turtle for i in [1..n])
   if initTurtle?

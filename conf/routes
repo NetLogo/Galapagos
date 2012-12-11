@@ -6,7 +6,7 @@
 GET     /                               controllers.Application.index
 GET     /client                         controllers.Application.client(username: Option[String] ?= None)
 GET     /connect                        controllers.Application.handleSocketConnection(username, room: Int ?= 0)
-#GET		/demo							controllers.Application.demo(username: Option[String])
+#GET    /demo                           controllers.Application.demo(username: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                   controllers.Assets.at(path="/public", file)

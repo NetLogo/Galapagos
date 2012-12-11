@@ -1,10 +1,3 @@
-###
-Created with JetBrains WebStorm.
-User: Joe
-Date: 6/22/12
-Time: 4:50 PM
-###
-
 # Imports
 TextHolder = exports.TextHolder
 DoubleList = exports.DoubleList
@@ -96,7 +89,7 @@ document.body.onload = ->
           globals.logList[globals.messageCount] = new TextHolder(message)
           difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
           $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
-          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll() 
+          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll()
           #TODO Only call for joins and leaves
           updateUserList(data.members)
 
