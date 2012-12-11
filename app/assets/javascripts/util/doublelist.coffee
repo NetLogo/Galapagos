@@ -1,6 +1,9 @@
-class DoubleList
+class ListNode
+  constructor: (@data, @type) ->
+    @next = null
+    @prev = null
 
-  ListNode = exports.ListNode
+class DoubleList
 
   constructor: (@maxLen) ->
     @len = 0

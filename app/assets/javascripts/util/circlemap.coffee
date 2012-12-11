@@ -1,6 +1,8 @@
-class CircleMap
+class MapNode
+  constructor: (@type) ->
+    @next = null
 
-  MapNode = exports.MapNode
+class CircleMap
 
   constructor: ->
     @head = null
