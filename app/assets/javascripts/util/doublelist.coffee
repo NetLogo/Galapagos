@@ -1,8 +1,3 @@
-class ListNode
-  constructor: (@data, @type) ->
-    @next = null
-    @prev = null
-
 class DoubleList
 
   constructor: (@maxLen) ->
@@ -12,19 +7,26 @@ class DoubleList
     @cursor = null
     @current = null
 
-  # Return Type: Unit
+  class Node
+    constructor: (@data, @type) ->
+      @next = null
+      @prev = null
+
+  # returns: undefined
   clearCursor: ->
     @cursor = null
     @current = null
+    return
 
-  # Return Type: Unit
+  # returns: undefined
   addCurrent: (cmd, agentType) ->
-    @current = new ListNode(cmd, agentType)
+    @current = new Node(cmd, agentType)
+    return
 
-  # Return Type: Unit
+  # returns: undefined
   append: (text, type) ->
 
-    newNode = new ListNode(text, type)
+    newNode = new Node(text, type)
 
     if @head
       newNode.prev = @head
@@ -38,5 +40,7 @@ class DoubleList
     else
       @tail      = @tail.next
       @tail.prev = null
+
+    return
 
 exports.DoubleList = DoubleList

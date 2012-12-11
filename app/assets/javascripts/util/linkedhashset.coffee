@@ -1,13 +1,13 @@
-class LinkedHashSetNode
-  constructor: (@key) ->
-    @next = null
-
 class LinkedHashSet
 
   constructor: ->
     @head = null
     @last = null
     @current = null
+
+  class Node
+    constructor: (@key) ->
+      @next = null
 
   # returns: String
   # http://stackoverflow.com/questions/368280/javascript-hashmap-equivalent
@@ -19,7 +19,7 @@ class LinkedHashSet
 
   # returns: undefined
   append: (nodeKey) ->
-    newNode = new LinkedHashSetNode(nodeKey)
+    newNode = new Node(nodeKey)
     this[hash(newNode.key)] = newNode
     if @head
       @last.next = newNode
