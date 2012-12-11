@@ -1,5 +1,5 @@
 class MapNode
-  constructor: (@type) ->
+  constructor: (@key) ->
     @next = null
 
 class CircleMap
@@ -9,11 +9,18 @@ class CircleMap
     @last = null
     @current = null
 
-  # Return Type: Unit
-  append: (nodeType) ->
-    newNode = new MapNode(nodeType)
-    hashKey = @hash(newNode.type)
-    this[hashKey] = newNode
+  # returns: String
+  # http://stackoverflow.com/questions/368280/javascript-hashmap-equivalent
+  hash = (value) ->
+    if value instanceof Object
+      (value.__hash ? (value.__hash = 'object ' + ++arguments.callee.current))
+    else
+      (typeof value) + ' ' + String(value)
+
+  # returns: undefined
+  append: (nodeKey) ->
+    newNode = new MapNode(nodeKey)
+    this[hash(newNode.key)] = newNode
     if @head
       @last.next = newNode
       newNode.next = @head
@@ -22,42 +29,30 @@ class CircleMap
       @head = newNode
       @last = newNode
       @current = newNode
+    return
 
-  # Return Type: String
-  hash: (value) ->
-    if value instanceof Object
-      (value.__hash ? (value.__hash = 'object ' + ++arguments.callee.current))
-    else
-      (typeof value) + ' ' + String(value)
+  # returns: Boolean
+  contains: (key) ->
+    this[hash(key)] != undefined
 
-  # Return Type: MapNode
-  get: (type) ->
-    hashKey = @hash(type)
-    this[hashKey]
-
-  # Return Type: Boolean
-  contains: (type) ->
-    hashKey = @hash(type)
-    this[hashKey] != undefined
-
-  # Return Type: String
+  # returns: String
   getCurrent: ->
-    @current.type
+    @current.key
 
-  # Return Type: Unit
-  setCurrent: (type) ->
-    @current = this[@hash(type)]
+  # returns: undefined
+  setCurrent: (key) ->
+    @current = this[hash(key)]
+    return
 
-  # //@ Slow operation...
-  # Return Type: Unit
+  # returns: undefined
   setCurrentIndex: (index) ->
-    i = index + 1
     @current = @head
-    @current = @current.next while i -= 1
+    @current = @current.next for [1..index]
+    return
 
-  # Return Type: Unit
+  # returns: undefined
   next: ->
     @current = @current.next
+    return
 
 exports.CircleMap = CircleMap
-
