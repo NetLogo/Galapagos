@@ -1,8 +1,8 @@
-class MapNode
+class LinkedHashSetNode
   constructor: (@key) ->
     @next = null
 
-class CircleMap
+class LinkedHashSet
 
   constructor: ->
     @head = null
@@ -19,7 +19,7 @@ class CircleMap
 
   # returns: undefined
   append: (nodeKey) ->
-    newNode = new MapNode(nodeKey)
+    newNode = new LinkedHashSetNode(nodeKey)
     this[hash(newNode.key)] = newNode
     if @head
       @last.next = newNode
@@ -55,4 +55,4 @@ class CircleMap
     @current = @current.next
     return
 
-exports.CircleMap = CircleMap
+exports.LinkedHashSet = LinkedHashSet
