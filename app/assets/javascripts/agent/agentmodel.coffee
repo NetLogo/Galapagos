@@ -6,7 +6,7 @@ class window.AgentModel
     @observer = {}
     @world = {}
 
-  update: (modelUpdate) ->
+  update: (modelUpdate) -> # boolean
     anyUpdates = false
     for turtleId, varUpdates of modelUpdate.turtles
       anyUpdates = true
@@ -26,13 +26,13 @@ class window.AgentModel
     for patchId, varUpdates of modelUpdate.patches
       anyUpdates = true
       p = @patches[patchId]
-      if not p?
-        p = @patches[patchId] = {}
+      p ?= @patches[patchId] = {}
       mergeObjectInto(varUpdates, p)
     mergeObjectInto(modelUpdate.observer, @observer)
     mergeObjectInto(modelUpdate.world, @world)
-    return anyUpdates
+    anyUpdates
 
-mergeObjectInto = (updatedObject, targetObject) ->
-  for variable, value of updatedObject
-    targetObject[variable.toLowerCase()] = value
+  mergeObjectInto = (updatedObject, targetObject) ->
+    for variable, value of updatedObject
+      targetObject[variable.toLowerCase()] = value
+    return
