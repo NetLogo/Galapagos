@@ -45,7 +45,6 @@ object WebInstance extends ErrorPropagationProtocol {
     }
   }
 
-
 }
 
 class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtocol {
@@ -102,7 +101,8 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
       notifyAll(generateMessage(CommandKey, agentType, username, cmd))
       nlController ! Execute(agentType, cmd)
-    case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
+    case Command(_, _, _) =>
+      //@ Is it right that we just ignore any command that we don't like?  Probably not.
     case CommandOutput(agentType, output) =>
       notifyAll(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
     case Quit(username) => quit(username)
@@ -244,13 +244,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 }
 
-case class  Join(username: String)
-case class  Quit(username: String)
-case class  Chatter(username: String, message: String)
-case class  Command(username: String, agentType: String, cmd: String)
-case class  CommandOutput(agentType: String, cmd: String)
-case class  NotifyJoin(username: String)
-case class  ViewUpdate(serializedUpdate: String)
+case class Join(username: String)
+case class Quit(username: String)
+case class Chatter(username: String, message: String)
+case class Command(username: String, agentType: String, cmd: String)
+case class CommandOutput(agentType: String, cmd: String)
+case class NotifyJoin(username: String)
+case class ViewUpdate(serializedUpdate: String)
 
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)
