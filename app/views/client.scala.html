@@ -1,7 +1,6 @@
 @(username: String)(implicit request: RequestHeader)
 
 @demo(Some(username)) {
-
   <script type="text/javascript" charset="utf-8">
       var socketURL = "@routes.Application.handleSocketConnection(username).webSocketURL()";
   </script>
@@ -18,40 +17,42 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/chat.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/event/chat-events.js")'></script>
 
-  <div id="errorPane" class="alert-message error">
-    <p>
-      <strong>Oops!</strong> <span></span>
-    </p>
-  </div>
+  <td width="3%"></td>
+  <td height="100%">
+    <div id="errorPane" class="alert-message error">
+      <p>
+        <strong>Oops!</strong> <span></span>
+      </p>
+    </div>
 
-  <div id="chatPane" class="not_full_height">
-    <div class="hor_centered" style="vertical-align: bottom; min-height: 80%; height:80%">
-      <div id="output_group" class="inner_box rounded not_full_height background_backgrounded" style="margin-left: 0px; margin-right: 0px">
-        <table id="chat" class="full_height" style="table-layout: fixed; width: 100%">
-          <tr>
-            <td id="chat_column" class="inner_box rounded not_full_height contrast_backgrounded" style="padding: 15px" width=75%>
-              <div id="container" class="scrollable" tabindex="0">
-                <div id="chatLog" style="table-layout: fixed;"></div>
-              </div>
-            </td>
-            <td id="spacer" class="not_full_height" width=3%>
-            </td>
-            <td id="user_list" class="inner_box rounded not_full_height contrast_backgrounded" style="padding: 7px" width=22%>
-              <div id="onlineLog" class="scrollable not_full_height" style="overflow: auto">
-              </div>
-            </td>
-          </tr>
-        </table>
-      </div>
-      <div id="input_group" class="rounded background_backgrounded" style="overflow: hidden; padding: 10px">
-        <table id="inputs" style="table-layout: fixed; width: 100%">
-          <tr>
-            <td id="agentType" class="agent_type_text" width=12%></td>
-            <td width=88%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input"></td>
-          </tr>
-        </table>
+    <div id="chatPane" class="not_full_height">
+      <div class="hor_centered" style="vertical-align: bottom; min-height: 80%; height:80%">
+        <div id="output_group" class="inner_box rounded not_full_height background_backgrounded" style="margin-left: 0px; margin-right: 0px">
+          <table id="chat" class="full_height" style="table-layout: fixed; width: 100%">
+            <tr>
+              <td id="chat_column" class="inner_box rounded not_full_height contrast_backgrounded" style="padding: 15px" width=75%>
+                <div id="container" class="scrollable" tabindex="0">
+                  <div id="chatLog" style="table-layout: fixed;"></div>
+                </div>
+              </td>
+              <td id="spacer" class="not_full_height" width=3%>
+              </td>
+              <td id="user_list" class="inner_box rounded not_full_height contrast_backgrounded" style="padding: 7px" width=22%>
+                <div id="onlineLog" class="scrollable not_full_height" style="overflow: auto">
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="input_group" class="rounded background_backgrounded" style="overflow: hidden; padding: 10px">
+          <table id="inputs" style="table-layout: fixed; width: 100%">
+            <tr>
+              <td id="agentType" class="agent_type_text" width=12%></td>
+              <td width=88%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input"></td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-
+  </td>
 }

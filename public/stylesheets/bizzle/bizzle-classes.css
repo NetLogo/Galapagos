@@ -13,14 +13,14 @@
 
 .chat_message .context {
   vertical-align: middle;
-  width: 18%;
+  width: 20%;
   font-size: medium;
 }
 
 .chat_message .message {
   vertical-align: middle;
   white-space: pre-wrap;
-  width: 56%;
+  width: 54%;
   font-size: medium;
 }
 
@@ -147,7 +147,7 @@
 }
 
 .core_content_box {
-  width: 60%;
+  width: 83%;
 }
 
 .content {
