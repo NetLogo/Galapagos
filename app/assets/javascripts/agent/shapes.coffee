@@ -110,7 +110,7 @@ window.shapes =
         ycors: [5, 250, 205, 250]
       }
     ]
-  _rtri: 
+  _rtri:
     elements: [
       {
         type: 'polygon'

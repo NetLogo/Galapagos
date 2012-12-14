@@ -18,14 +18,6 @@ import akka.util.Timeout
 import org.nlogo.headless.HeadlessWorkspace
 import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
 
-
-/**
- * Created by IntelliJ IDEA.
- * User: Jason
- * Date: 7/30/12
-  * Time: 12:17 PM
-  */
-
 object WebInstance extends ErrorPropagationProtocol {
 
   implicit val timeout = Timeout(1 second)
@@ -38,9 +30,9 @@ object WebInstance extends ErrorPropagationProtocol {
     (room ? Join(username)).asPromise.map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
-          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String]) 
-        } mapDone { 
-          _     => room ! Quit(username) 
+          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
+        } mapDone {
+          _     => room ! Quit(username)
         }
         (iteratee, enumerator)
       case CannotConnect(error) =>
@@ -52,7 +44,6 @@ object WebInstance extends ErrorPropagationProtocol {
         throw new IllegalArgumentException("An unknown event has occurred on user join: " + x.toString)
     }
   }
-
 
 }
 
@@ -110,7 +101,8 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
       notifyAll(generateMessage(CommandKey, agentType, username, cmd))
       nlController ! Execute(agentType, cmd)
-    case Command(_, _, _) => //@ Is it right that we just ignore any command that we don't like?  Probably not.
+    case Command(_, _, _) =>
+      //@ Is it right that we just ignore any command that we don't like?  Probably not.
     case CommandOutput(agentType, output) =>
       notifyAll(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
     case Quit(username) => quit(username)
@@ -252,13 +244,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 }
 
-case class  Join(username: String)
-case class  Quit(username: String)
-case class  Chatter(username: String, message: String)
-case class  Command(username: String, agentType: String, cmd: String)
-case class  CommandOutput(agentType: String, cmd: String)
-case class  NotifyJoin(username: String)
-case class  ViewUpdate(serializedUpdate: String)
+case class Join(username: String)
+case class Quit(username: String)
+case class Chatter(username: String, message: String)
+case class Command(username: String, agentType: String, cmd: String)
+case class CommandOutput(agentType: String, cmd: String)
+case class NotifyJoin(username: String)
+case class ViewUpdate(serializedUpdate: String)
 
 case class Connected(enumerator: Enumerator[JsValue])
 case class CannotConnect(msg: String)

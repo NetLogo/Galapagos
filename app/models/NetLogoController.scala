@@ -29,22 +29,23 @@ class NetLogoController extends Actor {
   }
 
   def receive = {
-    case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
+    case Execute(agentType, cmd) =>
+      executor.forward(Execute(agentType, cmd))
     case RequestViewUpdate =>
       val (newState, update) = getStateUpdate(currentState)
       currentState = newState
       sender ! ViewUpdate(Serializer.serialize(update))
     case RequestViewState =>
       sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-    case Halt => 
+    case Halt =>
       ws.halt()
   }
 
   private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
-      ws.world.synchronized {
-        val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
-        Mirroring.diffs(baseState, mirrorables)
-      }
+    ws.world.synchronized {
+      val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+      Mirroring.diffs(baseState, mirrorables)
+    }
 
   protected def workspace(file: File) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]

@@ -11,7 +11,7 @@ class window.AgentStreamController
     @model = new AgentModel()
     @repaint()
 
-  repaint: -> 
+  repaint: ->
     @turtleView.repaint(@model.world, @model.turtles)
     @patchView.repaint(@model.world, @model.patches)
     @layeredView.repaint()
@@ -32,7 +32,7 @@ class View
   matchesWorld: (world) ->
     (@maxPxcor? and @minPxcor? and @maxPycor? and @minPycor? and @patchSize?) and
       (not world.maxPxcor? or world.maxPxcor == @maxPxcor) and
-      (not world.minPxcor? or world.minPxcor == @minPxcor) and 
+      (not world.minPxcor? or world.minPxcor == @minPxcor) and
       (not world.maxPycor? or world.maxPycor == @maxPycor) and
       (not world.minPycor? or world.minPycor == @minPycor) and
       (not world.patchSize? or world.patchSize == @patchSize)
@@ -95,7 +95,7 @@ class TurtleView extends View
     return
 
 class PatchView extends View
-  constructor: () -> 
+  constructor: () ->
     super()
     @patchColors = []
 
@@ -124,4 +124,3 @@ class PatchView extends View
       @transformToWorld(world)
     for _, p of patches
       @colorPatch(p)
-

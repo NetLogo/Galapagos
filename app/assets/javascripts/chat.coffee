@@ -1,15 +1,8 @@
-###
-Created with JetBrains WebStorm.
-User: Joe
-Date: 6/22/12
-Time: 4:50 PM
-###
-
 # Imports
-TextHolder = exports.TextHolder
-DoubleList = exports.DoubleList
-CircleMap  = exports.CircleMap
-CSS        = exports.CSS
+TextHolder    = exports.TextHolder
+DoubleList    = exports.DoubleList
+LinkedHashSet = exports.LinkedHashSet
+CSS           = exports.CSS
 
 THROTTLE_DELAY = 100
 SCROLL_TIME    = 500
@@ -37,7 +30,7 @@ globals =
   wontScroll:    true
   messageCount:  0
   messageList:   new DoubleList(20)
-  agentTypeList: new CircleMap()
+  agentTypes:    new LinkedHashSet()
   logList:       []
 
 
@@ -51,7 +44,7 @@ document.body.onload = ->
   initAgentList()
 
   globals.userName = extractParamFromURL("username")
-  $globals.$agentType.text(globals.agentTypeList.getCurrent())
+  $globals.$agentType.text(globals.agentTypes.getCurrent())
   throttledSend = _.throttle(send, THROTTLE_DELAY)
 
   WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
@@ -96,7 +89,7 @@ document.body.onload = ->
           globals.logList[globals.messageCount] = new TextHolder(message)
           difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
           $globals.$chatLog.append(messageHTMLMaker(user, context, message, time, kind))
-          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll() 
+          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then textScroll()
           #TODO Only call for joins and leaves
           updateUserList(data.members)
 
@@ -116,7 +109,7 @@ document.body.onload = ->
 
   Mousetrap.bind('tab', (e) ->
     e.preventDefault()
-    globals.agentTypeList.next()
+    globals.agentTypes.next()
     setAgentType()
   , 'keydown')
 
@@ -174,8 +167,8 @@ initSelectors = ->
 
 # Return Type: Unit
 initAgentList = ->
-  agentTypes = ['chatter', 'observer', 'turtles', 'patches', 'links']
-  agentTypes.map((type) -> globals.agentTypeList.append(type))
+  types = ['chatter', 'observer', 'turtles', 'patches', 'links']
+  types.map((type) -> globals.agentTypes.append(type))
 
 # Return Type: Unit
 decideShowErrorOrChat = (data) ->
@@ -194,7 +187,7 @@ messageHTMLMaker = (user, context, text, time, kind) ->
   userColor =
     if user is globals.userName
       CSS.SelfUserColored
-    else if globals.agentTypeList.contains(user)
+    else if globals.agentTypes.contains(user)
       CSS.ChannelContextColored
     else
       CSS.OtherUserColored
@@ -282,12 +275,12 @@ extractCharCode = (e) ->
 
 # Return Type: Unit
 setAgentTypeIndex = (index) ->
-  globals.agentTypeList.setCurrentIndex(index)
-  $globals.$agentType.text(globals.agentTypeList.getCurrent())
+  globals.agentTypes.setCurrentIndex(index)
+  $globals.$agentType.text(globals.agentTypes.getCurrent())
 
 # Return Type: Unit
 setAgentType = ->
-  $globals.$agentType.text(globals.agentTypeList.getCurrent())
+  $globals.$agentType.text(globals.agentTypes.getCurrent())
 
 # Return Type: Unit
 scroll = (key) ->
@@ -298,7 +291,7 @@ scroll = (key) ->
     if ml.cursor
       ml.cursor = if ml.cursor.prev != null then ml.cursor.prev else ml.cursor
     else
-      ml.addCurrent($globals.$inputBuffer.val(), globals.agentTypeList.getCurrent())
+      ml.addCurrent($globals.$inputBuffer.val(), globals.agentTypes.getCurrent())
       ml.cursor = ml.head
   else if key is 40  # Down arrow
     ml.cursor = ml.cursor.next
@@ -313,14 +306,14 @@ scroll = (key) ->
       ml.clearCursor()
       [info, type]
 
-  globals.agentTypeList.setCurrent(type)
+  globals.agentTypes.setCurrent(type)
   setAgentType()
   $globals.$inputBuffer.val(info)
 
 # Return Type: Unit
 send = (message) ->
   globals.socket.send(JSON.stringify({ agentType: $globals.$agentType.text(), cmd: message }))
-  globals.messageList.append(message, globals.agentTypeList.getCurrent())
+  globals.messageList.append(message, globals.agentTypes.getCurrent())
   globals.messageList.clearCursor()
   $globals.$inputBuffer.val("")
   focusInput()

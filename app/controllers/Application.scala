@@ -27,5 +27,5 @@ object Application extends Controller with ErrorPropagationProtocol {
     implicit request =>
       WebInstance.join(username, room)
   }
-  
+
 }
