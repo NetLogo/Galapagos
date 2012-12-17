@@ -25,6 +25,7 @@ class View
     @canvas = document.createElement('canvas')
     @canvas.width = 500
     @canvas.height = 500
+    @canvas.style.width = "100%"
     @ctx = @canvas.getContext('2d')
 
   setContainer: (container) -> container.appendChild(@canvas)
@@ -52,9 +53,6 @@ class View
                       0, -@canvas.height/@patchHeight,
                       -(@minPxcor-.5)*@canvas.width/@patchWidth,
                       (@maxPycor+.5)*@canvas.height/@patchHeight)
-    if @container?
-      @container.style.width = @canvas.width
-      @container.style.height = @canvas.height
 
 class LayeredView extends View
   setLayers: (layers...) ->
