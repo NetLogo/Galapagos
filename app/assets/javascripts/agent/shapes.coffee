@@ -207,3 +207,39 @@ window.shapes =
       {type: 'polygon', color: '#8d8d8d', filled: true, marked: true, xcors:[2, 13, 30, 38, 38, 20, 20, 27, 38, 40, 31, 31, 60, 68, 75, 66, 65, 82, 84, 100, 103, 77, 79, 100, 98, 119, 143, 160, 166, 172, 173, 167, 160, 154, 169, 178, 186, 198, 200, 217, 219, 207, 195, 192, 210, 227, 242, 259, 284, 277, 293, 299, 297, 273, 270], ycors: [194, 197, 191, 193, 205, 226, 257, 265, 266, 260, 253, 230, 206, 198, 209, 228, 243, 261, 268, 267, 261, 239, 231, 207, 196, 201, 202, 195, 210, 213, 238, 251, 248, 265, 264, 247, 240, 260, 271, 271, 262, 258, 230, 198, 184, 164, 144, 145, 151, 141, 140, 134, 127, 119, 105]}
       {type: 'polygon', color: '#8d8d8d', filled: true, marked: true, xcors:[-1, 14, 36, 40, 53, 82, 134, 159, 188, 227, 236, 238, 268, 269, 281, 269, 269], ycors:[195, 180, 166, 153, 140, 131, 133, 126, 115, 108, 102, 98, 86, 92, 87, 103, 113]}
     ]
+  cloud:
+    rotate: false
+    elements: [
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 86, y: 101, diam: 127}
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 13, y: 118, diam: 94}
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 86, y: 101, diam: 127}
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 51, y: 51, diam: 108}
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 118, y: 43, diam: 95}
+      {type: 'circle', color: 'grey', filled: true, marked: true, x: 158, y: 68, diam: 134}
+    ]
+  co2molecule:
+    rotate: true
+    elements: [
+      {type: 'circle', color: 'white', filled: true, marked: false, x: 183, y: 63, diam: 84}
+      {type: 'circle', color: 'black', filled: false, marked: false, x: 183, y: 63, diam: 84}
+      {type: 'circle', color: '#8d8d8d', filled: true, marked: true, x: 75, y: 75, diam: 150}
+      {type: 'circle', color: 'black', filled: false, marked: false, x: 75, y: 75, diam: 150}
+      {type: 'circle', color: 'white', filled: true, marked: false, x: 33, y: 63, diam: 84}
+      {type: 'circle', color: 'black', filled: false, marked: false, x: 33, y: 63, diam: 84}
+    ]
+  dot:
+    rotate: false
+    elements: [
+      {type: 'circle', color: '#grey', filled: true, marked: true, x: 90, y: 90, diam: 120}
+    ]
+  ray:
+    rotate: true
+    elements: [
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 150, y1: 0, x2: 150, y2: 315}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 120, y1: 255, x2: 150, y2: 225}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 150, y1: 225, x2: 180, y2: 255}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 120, y1: 165, x2: 150, y2: 135}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 120, y1: 75, x2: 150, y2: 45}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 150, y1: 135, x2: 180, y2: 165}
+      {type: 'line', color: '#grey', filled: true, marked: true, x1: 150, y1: 45, x2: 180, y2: 75}
+    ]

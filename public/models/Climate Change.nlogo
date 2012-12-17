@@ -22,7 +22,7 @@ to setup
   set-default-shape IRs "ray"
   set-default-shape clouds "cloud"
   set-default-shape heats "dot"
-  set-default-shape CO2s "CO2-molecule"
+  set-default-shape CO2s "co2molecule"
   setup-world
   set temperature 12
   reset-ticks
@@ -597,7 +597,7 @@ Circle -7500403 true true 51 51 108
 Circle -7500403 true true 118 43 95
 Circle -7500403 true true 158 68 134
 
-co2-molecule
+co2molecule
 true
 0
 Circle -1 true false 183 63 84
