@@ -75,7 +75,7 @@ class TurtleView extends View
     angle = (180-heading)/360 * 2*Math.PI
     shape = turtle.shape
     if typeof(shape)=='string'
-      shape = shapes[shape]
+      shape = shapes[shape] or shapes.default
     @ctx.save()
     @ctx.translate(xcor, ycor)
     if shape.rotate
