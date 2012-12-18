@@ -124,17 +124,6 @@ window.shapes =
         ycors: [5, 250, 205, 250]
       }
     ]
-  _rtri:
-    elements: [
-      {
-        type: 'polygon'
-        color: 'grey'
-        filled: true
-        marked: true,
-        xcors: [30, 240, 240, 30]
-        ycors: [240, 30, 240, 240]
-      }
-    ]
   circle:
     rotate: true
     elements: [
@@ -146,42 +135,6 @@ window.shapes =
         x: 0
         y: 0
         diam: 300
-      }
-    ]
-  _circles:
-    elements: [
-      {
-        type: 'circle'
-        color: 'green'
-        filled: true
-        marked: false
-        x: 171
-        y: 36
-        diam: 108
-      }, {
-        type: 'circle'
-        color: 'red'
-        filled: true
-        marked: false
-        x: 56
-        y: 36
-        diam: 67
-      }, {
-        type: 'circle'
-        color: 'blue'
-        filled: true
-        marked: false
-        x: 69
-        y: 189
-        diam: 42
-      }, {
-        type: 'circle'
-        color: 'yellow'
-        filled: true
-        marked: false
-        x: 210
-        y: 195
-        diam: 30
       }
     ]
   sheep:
