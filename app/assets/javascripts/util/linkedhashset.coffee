@@ -47,7 +47,7 @@ class LinkedHashSet
   # returns: undefined
   setCurrentIndex: (index) ->
     @current = @head
-    @current = @current.next for [1..index]
+    @current = @current.next for [0...index]
     return
 
   # returns: undefined
