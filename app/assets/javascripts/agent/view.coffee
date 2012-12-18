@@ -1,5 +1,5 @@
 if not window.AgentModel?
-  console.log('simpleview.js requires agentmodel.js!')
+  console.log('view.js requires agentmodel.js!')
 
 class window.AgentStreamController
   constructor: (@container) ->
