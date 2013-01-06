@@ -18,6 +18,7 @@ class NetLogoController extends Actor {
   private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
   private val executor = Akka.system.actorOf(Props(new BackgroundExecutor))
+  private val viewDiffer = Akka.system.actorOf(Props(new ViewDiffer))
 
   // Commands should execute in the background so that they don't lock up the
   // whole controller
@@ -28,15 +29,28 @@ class NetLogoController extends Actor {
     }
   }
 
+  // Calculating the state updates can take a while, and thus requests for
+  // view updates can build up, filling the Actor's mailbox. Hence, we execute
+  // diffs in the background so that the NetLogoController is free to deal with
+  // other messages (especially halts).
+  private class ViewDiffer extends Actor {
+    def receive = {
+      case RequestViewUpdate =>
+        val (newState, update) = getStateUpdate(currentState)
+        currentState = newState
+        sender ! ViewUpdate(Serializer.serialize(update))
+      case RequestViewState =>
+        sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+    }
+  }
+
   def receive = {
     case Execute(agentType, cmd) =>
       executor.forward(Execute(agentType, cmd))
     case RequestViewUpdate =>
-      val (newState, update) = getStateUpdate(currentState)
-      currentState = newState
-      sender ! ViewUpdate(Serializer.serialize(update))
+      viewDiffer.forward(RequestViewUpdate)
     case RequestViewState =>
-      sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+      viewDiffer.forward(RequestViewState)
     case Halt =>
       ws.halt()
   }
