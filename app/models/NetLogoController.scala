@@ -17,42 +17,43 @@ class NetLogoController extends Actor {
   private val modelName  = "Wolf Sheep Predation"
   private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
-  private val executor = Akka.system.actorOf(Props(new BackgroundExecutor))
-  private val viewDiffer = Akka.system.actorOf(Props(new ViewDiffer))
+  private val executor = Akka.system.actorOf(Props(new Executor))
+  private val viewGen = Akka.system.actorOf(Props(new ViewUpdateGenerator))
+  private val halter = Akka.system.actorOf(Props(new Halter))
 
-  // Commands should execute in the background so that they don't lock up the
-  // whole controller
-  private class BackgroundExecutor extends Actor {
+  ///////////
+  // Tasks //
+  ///////////
+  private class Executor extends Actor {
     def receive = {
-      case Execute(agentType, cmd) =>
+      case Execute(agentType, cmd) => // possibly long running
         sender ! CommandOutput(agentType, ws.execute(agentType, cmd))
     }
   }
 
-  // Calculating the state updates can take a while, and thus requests for
-  // view updates can build up, filling the Actor's mailbox. Hence, we execute
-  // diffs in the background so that the NetLogoController is free to deal with
-  // other messages (especially halts).
-  private class ViewDiffer extends Actor {
+  private class ViewUpdateGenerator extends Actor {
     def receive = {
-      case RequestViewUpdate =>
+      case RequestViewUpdate => // possibly long running
         val (newState, update) = getStateUpdate(currentState)
         currentState = newState
         sender ! ViewUpdate(Serializer.serialize(update))
-      case RequestViewState =>
+      case RequestViewState => // possibly long running
         sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
     }
   }
 
+  private class Halter extends Actor {
+    def receive = { case Halt => ws.halt() } 
+  }
+
+  ////////////////
+  // Delegation //
+  ////////////////
   def receive = {
-    case Execute(agentType, cmd) =>
-      executor.forward(Execute(agentType, cmd))
-    case RequestViewUpdate =>
-      viewDiffer.forward(RequestViewUpdate)
-    case RequestViewState =>
-      viewDiffer.forward(RequestViewState)
-    case Halt =>
-      ws.halt()
+    case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
+    case RequestViewUpdate => viewGen.forward(RequestViewUpdate)
+    case RequestViewState => viewGen.forward(RequestViewState)
+    case Halt => halter.forward(Halt)
   }
 
   private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
