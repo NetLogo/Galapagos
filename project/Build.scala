@@ -1,7 +1,9 @@
 import
   sbt._,
-    Keys._,
-    PlayProject._
+    Keys._
+
+import
+  play.Project._
 
 object ApplicationBuild extends Build {
 
@@ -17,7 +19,7 @@ object ApplicationBuild extends Build {
 
   val resolverSettings = Seq[Setting[_]]()
 
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
+  val main = play.Project(appName, appVersion, appDependencies).settings(
     resolverSettings ++ ObtainResources.settings: _*)
 
 }

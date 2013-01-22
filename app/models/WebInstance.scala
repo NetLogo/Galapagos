@@ -4,26 +4,30 @@ import
   collection.mutable.{ Map => MutableMap }
 
 import
+  concurrent.{ duration, Future },
+    duration._
+
+import
   java.io.File
 
 import
   akka.{ actor, pattern, util },
     actor.{ Actor, Props },
     pattern.ask,
-    util.{ duration, Timeout },
-      duration._
+    util.Timeout
 
 import
   org.nlogo.headless.HeadlessWorkspace
 
 import
   play.api.{ libs, Logger },
-    libs.{ concurrent, json, iteratee },
-      concurrent.{ Akka, akkaToPlay, Promise },
+    libs.{ concurrent => pconcurrent, json, iteratee },
+      pconcurrent.Akka,
       iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator },
       json.{ JsArray, JsObject, JsString, JsValue }
 
 import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object WebInstance extends ErrorPropagationProtocol {
 
@@ -32,9 +36,9 @@ object WebInstance extends ErrorPropagationProtocol {
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
 
-  def join(username: String, roomNum: Int) : Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
+  def join(username: String, roomNum: Int) : Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     val room = roomMap(roomNum)
-    (room ? Join(username)).asPromise.map {
+    (room ? Join(username)).map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
           event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
@@ -78,13 +82,13 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 
   BizzleBot.start()
-  Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds){
+  Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds) {
     nlController ! RequestViewUpdate
   }
 
   def receive = {
     case Join(username) =>
-      val channel = Enumerator.imperative[JsValue](onStart = room ! NotifyJoin(username))
+      val channel = Enumerator.imperative[JsValue](onStart = () => room ! NotifyJoin(username))
       isValidUsername(username) match {
         case (true, _) =>
           members += username -> channel
