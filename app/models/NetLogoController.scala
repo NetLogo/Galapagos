@@ -64,7 +64,8 @@ class NetLogoController extends Actor {
 
   private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
     ws.world.synchronized {
-      val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+      val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
+      val mirrorables  = Mirrorables.allMirrorables(ws.world, widgetValues)
       Mirroring.diffs(baseState, mirrorables)
     }
 

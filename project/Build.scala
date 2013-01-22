@@ -14,7 +14,7 @@ object ApplicationBuild extends Build {
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.picocontainer" % "picocontainer" % "2.13.6",
     "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-modelruns-220636a.jar"
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-13c1e91.jar"
   )
 
   val resolverSettings = Seq[Setting[_]]()
