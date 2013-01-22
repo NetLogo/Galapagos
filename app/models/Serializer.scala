@@ -2,7 +2,6 @@ package models
 
 import play.api.libs.json._, Json.toJson
 import org.nlogo.mirror._
-import org.nlogo.api.AgentKind
 import org.nlogo.api.AgentVariables
 
 object Serializer {

@@ -5,18 +5,17 @@ import collection.mutable.{ Map => MutableMap }
 import java.io.File
 
 import play.api.Logger
-import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString, JsNull }
+import play.api.libs.json.{ JsArray, JsObject, JsString, JsValue }
 import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
 import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
 import play.api.Play.current
 
-import akka.actor.{ Actor, Props, Cancellable }
+import akka.actor.{ Actor, Props }
 import akka.pattern.ask
 import akka.util.duration._
 import akka.util.Timeout
 
 import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
 
 object WebInstance extends ErrorPropagationProtocol {
 

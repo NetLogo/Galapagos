@@ -8,7 +8,7 @@ import play.api.Play.current
 import akka.actor.{ Actor, Props }
 
 import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirrorable, Mirrorables, Mirroring, Update }
+import org.nlogo.mirror.{ Mirrorables, Mirroring, Update }
 
 class NetLogoController extends Actor {
   private var currentState: Mirroring.State = Map()
