@@ -1,14 +1,20 @@
 package models
 
-import java.io.File
+import
+  java.io.File
 
-import play.api.libs.concurrent.Akka
+import
+  akka.actor.{ Actor, Props }
+
+import
+  org.nlogo.{ headless, mirror },
+    headless.HeadlessWorkspace,
+    mirror.{ Mirrorables, Mirroring, Update }
+
+import
+  play.api.libs.concurrent.Akka
+
 import play.api.Play.current
-
-import akka.actor.{ Actor, Props }
-
-import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirrorables, Mirroring, Update }
 
 class NetLogoController extends Actor {
   private var currentState: Mirroring.State = Map()

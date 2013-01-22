@@ -1,9 +1,12 @@
 package controllers
 
-import play.api.libs.json.JsValue
-import play.api.mvc.{ Action, Controller, WebSocket }
+import
+  play.api.{ libs, mvc },
+    libs.json.JsValue,
+    mvc.{ Action, Controller, WebSocket }
 
-import models.{ WebInstance, ErrorPropagationProtocol }
+import
+  models.{ WebInstance, ErrorPropagationProtocol }
 
 object Application extends Controller with ErrorPropagationProtocol {
 

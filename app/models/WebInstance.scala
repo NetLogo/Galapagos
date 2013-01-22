@@ -1,21 +1,29 @@
 package models
 
-import collection.mutable.{ Map => MutableMap }
+import
+  collection.mutable.{ Map => MutableMap }
 
-import java.io.File
+import
+  java.io.File
 
-import play.api.Logger
-import play.api.libs.json.{ JsArray, JsObject, JsString, JsValue }
-import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
-import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
+import
+  akka.{ actor, pattern, util },
+    actor.{ Actor, Props },
+    pattern.ask,
+    util.{ duration, Timeout },
+      duration._
+
+import
+  org.nlogo.headless.HeadlessWorkspace
+
+import
+  play.api.{ libs, Logger },
+    libs.{ concurrent, json, iteratee },
+      concurrent.{ Akka, akkaToPlay, Promise },
+      iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator },
+      json.{ JsArray, JsObject, JsString, JsValue }
+
 import play.api.Play.current
-
-import akka.actor.{ Actor, Props }
-import akka.pattern.ask
-import akka.util.duration._
-import akka.util.Timeout
-
-import org.nlogo.headless.HeadlessWorkspace
 
 object WebInstance extends ErrorPropagationProtocol {
 

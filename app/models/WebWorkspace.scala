@@ -1,8 +1,9 @@
 package models
 
-import org.nlogo.{ api, nvm, headless, agent, workspace }
-import headless.HeadlessWorkspace
-import workspace.AbstractWorkspace.HubNetManagerFactory
+import
+  org.nlogo.{ api, nvm, headless, agent, workspace },
+    headless.HeadlessWorkspace,
+    workspace.AbstractWorkspace.HubNetManagerFactory
 
 /**
   * Manages a NetLogo workspace for use in NetLogo web clients

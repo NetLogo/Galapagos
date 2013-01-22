@@ -1,6 +1,7 @@
-import sbt._
-import Keys._
-import PlayProject._
+import
+  sbt._,
+    Keys._,
+    PlayProject._
 
 object ApplicationBuild extends Build {
 

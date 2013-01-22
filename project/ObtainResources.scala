@@ -1,8 +1,11 @@
-import sbt._
-import Keys._
+import
+  sbt._,
+    Keys._
 
-import java.io.File
-import java.net.URL
+import
+  java.{ io, net },
+    io.File,
+    net.URL
 
 // Getting JS libraries and stylesheets
 

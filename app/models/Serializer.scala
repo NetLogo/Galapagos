@@ -1,8 +1,13 @@
 package models
 
-import play.api.libs.json._, Json.toJson
-import org.nlogo.mirror._
-import org.nlogo.api.AgentVariables
+import
+  play.api.libs.json._,
+    Json.toJson
+
+import
+  org.nlogo.{ api, mirror },
+    api.AgentVariables,
+    mirror._
 
 object Serializer {
   def serialize(update: Update): String = {
