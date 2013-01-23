@@ -13,28 +13,32 @@ object Serializer {
 
   def serialize(update: Update) : String = {
 
-    val turtleBirths  = JsObject(update.births filter (_.agent.kind == Mirrorables.Turtle) map serializeBirth)
-    val patchBirths   = JsObject(update.births filter (_.agent.kind == Mirrorables.Patch)  map serializeBirth)
+    import Mirrorables.{ Patch, Turtle }
 
-    val turtleChanges = JsObject(update.changes filter (_._1.kind == Mirrorables.Turtle) map serializeAgentUpdate)
-    val patchChanges  = JsObject(update.changes filter (_._1.kind == Mirrorables.Patch)  map serializeAgentUpdate)
+    val birthsMap  = update.births  groupBy (_.agent.kind) mapValues (births  => births  map serializeBirth)
+    val changesMap = update.changes groupBy (_._1.kind)    mapValues (changes => changes map serializeAgentUpdate)
+    val deathsMap  = update.deaths  groupBy (_.agent.kind) mapValues (deaths  => deaths  map serializeDeath)
 
-    val turtleDeaths  = JsObject(update.deaths filter (_.agent.kind == Mirrorables.Turtle) map serializeDeath)
+    val updateMaps   = Seq(birthsMap, changesMap, deathsMap)
+    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch)
 
-    Json.stringify(JsObject(Seq(
-      "turtles" -> (turtleBirths ++ turtleChanges ++ turtleDeaths),
-      "patches" -> (patchBirths ++ patchChanges)
-    )))
+    val keyToJsObjectMap = keyToKindMap mapValues {
+      kind =>
+        val xss = updateMaps map (_.getOrElse(kind, Seq()))
+        xss.foldLeft(JsObject(Seq())){ case (acc, xs) => acc ++ JsObject(xs) }
+    }
+
+    Json.stringify(JsObject(keyToJsObjectMap.toSeq))
 
   }
 
-  def serializeBirth(birth: Birth): (String, JsValue) = birth match {
+  def serializeBirth(birth: Birth) : (String, JsValue) = birth match {
     case Birth(AgentKey(kind, id), values) =>
       val varNames = getImplicitVariables(kind)
       id.toString -> serializeAgentVariables(values, varNames)
   }
 
-  def serializeAgentUpdate(update: (AgentKey, Seq[Change])): (String, JsObject) = update match {
+  def serializeAgentUpdate(update: (AgentKey, Seq[Change])) : (String, JsValue) = update match {
     case (AgentKey(kind, id), changes) =>
       val varNames       = getImplicitVariables(kind)
       val serializedVars = changes map {
@@ -45,7 +49,7 @@ object Serializer {
       id.toString -> JsObject(serializedVars)
   }
 
-  def serializeDeath(death: Death) = death.agent.id.toString -> JsNull
+  def serializeDeath(death: Death) : (String, JsValue) = death.agent.id.toString -> JsNull
 
   def serializeAgentVariables(values: Seq[AnyRef], varNames: Seq[String]) : JsObject =
     JsObject(varNames.zip(values.map{
@@ -54,13 +58,14 @@ object Serializer {
       case x                    => toJson(x.toString)
     }))
 
-  def getImplicitVariables(kind: Kind) : Seq[String] = kind match {
-    case Mirrorables.Turtle => AgentVariables.getImplicitTurtleVariables(false)
-    case Mirrorables.Patch  => AgentVariables.getImplicitPatchVariables(false)
-    case Mirrorables.Link   => AgentVariables.getImplicitLinkVariables
-    case _ =>
-      play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString)
-      Seq()
+  def getImplicitVariables(kind: Kind) : Seq[String] = {
+    import Mirrorables.{ Link, Patch, Turtle }
+    kind match {
+      case Turtle => AgentVariables.getImplicitTurtleVariables(false)
+      case Patch  => AgentVariables.getImplicitPatchVariables(false)
+      case Link   => AgentVariables.getImplicitLinkVariables
+      case _      => play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString); Seq()
+    }
   }
 
   def serializeValue(value: AnyRef) = value match {
