@@ -17,9 +17,11 @@ object ApplicationBuild extends Build {
       "http://ccl.northwestern.edu/devel/NetLogoHeadless-13c1e91.jar"
   )
 
-  val resolverSettings = Seq[Setting[_]]()
+  val moreSettings = Seq[Setting[_]](
+    scalacOptions in ThisBuild += "-feature"
+  )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    resolverSettings ++ ObtainResources.settings: _*)
+    moreSettings ++ ObtainResources.settings: _*)
 
 }

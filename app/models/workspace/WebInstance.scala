@@ -1,7 +1,8 @@
 package models.workspace
 
 import
-  collection.mutable.{ Map => MutableMap }
+  collection.mutable.{ Map => MutableMap },
+  language.implicitConversions
 
 import
   concurrent.{ duration, Future },
@@ -33,7 +34,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object WebInstance extends ErrorPropagationProtocol {
 
-  implicit val timeout = Timeout(1 second)
+  implicit val timeout = Timeout(1.second)
 
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
@@ -84,7 +85,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 
   BizzleBot.start()
-  Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds) {
+  Akka.system.scheduler.schedule(0.milliseconds, 30.milliseconds) {
     nlController ! RequestViewUpdate
   }
 
@@ -200,7 +201,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   */
   private object BizzleBot extends ChatPacketProtocol {
 
-    implicit val timeout = Timeout(1 second)
+    implicit val timeout = Timeout(1.second)
 
     val BotName = "BizzleBot"
 
@@ -223,7 +224,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     def offerAssistance(username: String, message: String) : Option[String] = {
       def preprocess(message: String) : Option[String] = {
         val trimmed = message.trim
-        if (trimmed.startsWith("/")) Some(trimmed drop 1 trim) else None
+        if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
       }
       preprocess(message) map {
         case "commands" =>
