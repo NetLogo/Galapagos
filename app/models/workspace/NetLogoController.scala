@@ -15,9 +15,12 @@ import
   play.api.libs.concurrent.Akka
 
 import play.api.Play.current
-import models.workspace.ViewUpdate
 
 class NetLogoController extends Actor {
+
+  import NetLogoControllerMessages._
+  import WebInstanceMessages._
+
   private var currentState: Mirroring.State = Map()
 
   private val modelsPath = "public/models/"
@@ -25,12 +28,15 @@ class NetLogoController extends Actor {
   private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
   private val executor = Akka.system.actorOf(Props(new Executor))
-  private val viewGen = Akka.system.actorOf(Props(new ViewUpdateGenerator))
-  private val halter = Akka.system.actorOf(Props(new Halter))
+  private val viewGen  = Akka.system.actorOf(Props(new ViewUpdateGenerator))
+  private val halter   = Akka.system.actorOf(Props(new Halter))
+
+
 
   ///////////
   // Tasks //
   ///////////
+
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
@@ -53,17 +59,20 @@ class NetLogoController extends Actor {
     def receive = { case Halt => ws.halt() } 
   }
 
+
+
   ////////////////
   // Delegation //
   ////////////////
+
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
-    case RequestViewUpdate => viewGen.forward(RequestViewUpdate)
-    case RequestViewState => viewGen.forward(RequestViewState)
-    case Halt => halter.forward(Halt)
+    case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
+    case RequestViewState        => viewGen.forward(RequestViewState)
+    case Halt                    => halter.forward(Halt)
   }
 
-  private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
+  private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
     ws.world.synchronized {
       val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
       val mirrorables  = Mirrorables.allMirrorables(ws.world, widgetValues)
@@ -75,9 +84,12 @@ class NetLogoController extends Actor {
     wspace.openString(io.Source.fromFile(file).mkString)
     wspace
   }
+
 }
 
-case class Execute(agentType: String, cmd: String)
-case object RequestViewUpdate
-case object RequestViewState
-case object Halt
+object NetLogoControllerMessages {
+  case class Execute(agentType: String, cmd: String)
+  case object RequestViewUpdate
+  case object RequestViewState
+  case object Halt
+}
