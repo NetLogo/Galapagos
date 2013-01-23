@@ -9,7 +9,7 @@ import
   models.{ ErrorPropagationProtocol, workspace },
     workspace.WebInstance
 
-object Application extends Controller with ErrorPropagationProtocol {
+object Remote extends Controller with ErrorPropagationProtocol {
 
   def index = Action {
     implicit request =>
@@ -21,7 +21,7 @@ object Application extends Controller with ErrorPropagationProtocol {
       usernameOpt map (
         username => Ok(views.html.client(username))
       ) getOrElse (
-        Redirect(routes.Application.index()).flashing(
+        Redirect(routes.Remote.index()).flashing(
           ErrorKey -> "Please choose a valid username."
         )
       )

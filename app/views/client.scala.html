@@ -2,7 +2,7 @@
 
 @demo(Some(username)) {
   <script type="text/javascript" charset="utf-8">
-      var socketURL = "@routes.Application.handleSocketConnection(username).webSocketURL()";
+      var socketURL = "@routes.Remote.handleSocketConnection(username).webSocketURL()";
   </script>
 
   <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/underscore-1.4.2.js")'></script>
