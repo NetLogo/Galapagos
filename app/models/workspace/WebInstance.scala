@@ -124,7 +124,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
   }
 
-  private def quit(username: String) = {
+  private def quit(username: String) {
     members -= username
     notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
   }
