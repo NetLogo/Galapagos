@@ -1,4 +1,4 @@
-package models
+package models.workspace
 
 import
   collection.mutable.{ Map => MutableMap }
@@ -25,6 +25,8 @@ import
       pconcurrent.Akka,
       iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator },
       json.{ JsArray, JsObject, JsString, JsValue }
+
+import models.ErrorPropagationProtocol
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

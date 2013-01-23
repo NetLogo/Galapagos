@@ -1,4 +1,4 @@
-package models
+package models.workspace
 
 import
   java.io.File
@@ -15,6 +15,7 @@ import
   play.api.libs.concurrent.Akka
 
 import play.api.Play.current
+import models.workspace.ViewUpdate
 
 class NetLogoController extends Actor {
   private var currentState: Mirroring.State = Map()

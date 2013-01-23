@@ -6,7 +6,8 @@ import
     mvc.{ Action, Controller, WebSocket }
 
 import
-  models.{ WebInstance, ErrorPropagationProtocol }
+  models.{ ErrorPropagationProtocol, workspace },
+    workspace.WebInstance
 
 object Application extends Controller with ErrorPropagationProtocol {
 

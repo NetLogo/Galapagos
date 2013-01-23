@@ -1,4 +1,4 @@
-package models
+package models.workspace
 
 import
   play.api.libs.json._,
