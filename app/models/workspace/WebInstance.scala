@@ -1,33 +1,49 @@
-package models
+package models.workspace
 
-import collection.mutable.{ Map => MutableMap }
+import
+  collection.mutable.{ Map => MutableMap },
+  language.implicitConversions
 
-import java.io.File
+import
+  concurrent.{ duration, Future },
+    duration._
 
-import play.api.Logger
-import play.api.libs.json.{ JsArray, JsObject, JsValue, JsString, JsNull }
-import play.api.libs.iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator }
-import play.api.libs.concurrent.{ Akka, akkaToPlay, Promise }
+import
+  java.io.File
+
+import
+  akka.{ actor, pattern, util },
+    actor.{ Actor, Props },
+    pattern.ask,
+    util.Timeout
+
+import
+  org.nlogo.headless.HeadlessWorkspace
+
+import
+  play.api.{ libs, Logger },
+    libs.{ concurrent => pconcurrent, json, iteratee },
+      pconcurrent.Akka,
+      iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator },
+      json.{ JsArray, JsObject, JsString, JsValue }
+
+import models.ErrorPropagationProtocol
+
 import play.api.Play.current
-
-import akka.actor.{ Actor, Props, Cancellable }
-import akka.pattern.ask
-import akka.util.duration._
-import akka.util.Timeout
-
-import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirroring, Mirrorable, Mirrorables}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 object WebInstance extends ErrorPropagationProtocol {
 
-  implicit val timeout = Timeout(1 second)
+  import WebInstanceMessages._
+
+  implicit val timeout = Timeout(1.second)
 
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
 
-  def join(username: String, roomNum: Int) : Promise[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
+  def join(username: String, roomNum: Int) : Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     val room = roomMap(roomNum)
-    (room ? Join(username)).asPromise.map {
+    (room ? Join(username)).map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
           event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
@@ -40,7 +56,7 @@ object WebInstance extends ErrorPropagationProtocol {
         val enumerator = Enumerator[JsValue](JsObject(Seq(ErrorKey -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee,enumerator)
       case x =>
-        Logger.error("Unknown event: " + x.toString)
+        Logger.warn("Unknown event: " + x.toString)
         throw new IllegalArgumentException("An unknown event has occurred on user join: " + x.toString)
     }
   }
@@ -48,6 +64,9 @@ object WebInstance extends ErrorPropagationProtocol {
 }
 
 class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtocol {
+
+  import NetLogoControllerMessages._
+  import WebInstanceMessages._
 
   private val NameLengthLimit = 10
 
@@ -71,13 +90,14 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 
   BizzleBot.start()
-  Akka.system.scheduler.schedule(0 milliseconds, 30 milliseconds){
+  Akka.system.scheduler.schedule(0.milliseconds, 30.milliseconds) {
     nlController ! RequestViewUpdate
   }
 
   def receive = {
+
     case Join(username) =>
-      val channel = Enumerator.imperative[JsValue](onStart = room ! NotifyJoin(username))
+      val channel = Enumerator.imperative[JsValue](onStart = () => room ! NotifyJoin(username))
       isValidUsername(username) match {
         case (true, _) =>
           members += username -> channel
@@ -86,38 +106,47 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
+
     case NotifyJoin(username) =>
       notifyAll(generateMessage(JoinKey, RoomContext, username, "has entered the room"))
+
     case Chatter(username, message) =>
       if (BizzleBot.canFieldMessage(message))
         BizzleBot.offerAssistance(username, message) foreach {
-          msg =>
-            notify(username, generateMessage(ChatterKey, ChatterContext, BizzleBot.BotName, msg))
+          msg => notify(username, generateMessage(ChatterKey, ChatterContext, BizzleBot.BotName, msg))
         }
       else
         notifyAll(generateMessage(ChatterKey, ChatterContext, username, message))
+
     case Command(username, ChatterContext, message) =>
       self ! Chatter(username, message)
+
     case Command(username, agentType, cmd) if (Contexts.contains(agentType)) =>
       notifyAll(generateMessage(CommandKey, agentType, username, cmd))
       nlController ! Execute(agentType, cmd)
-    case Command(_, _, _) =>
-      //@ Is it right that we just ignore any command that we don't like?  Probably not.
+
+    case Command(username, agentType, cmd) =>
+      Logger.warn(s"Unhandlable message from user '$username' in context '$agentType': $cmd")
+
     case CommandOutput(agentType, output) =>
       notifyAll(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
-    case Quit(username) => quit(username)
+
+    case Quit(username) =>
+      quit(username)
+
     case ViewUpdate(serializedUpdate: String) =>
       notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
+
   }
 
-  private def quit(username: String) = {
+  private def quit(username: String) {
     members -= username
     notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
   }
 
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
   // Also, why did my structural typing fail here...?
-  class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
+  implicit class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
     def pushForeach(msg: JsObject) {
       foreachable foreach { case (username, channel) =>
         // Note that push is being used for it's side effect here. The return
@@ -128,8 +157,6 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
       }
     }
   }
-
-  implicit def foreachable2Pushable[T <: Iterable[MemberTuple]](foreachable: T) = new Pushable(foreachable)
 
   private def notify(messageSets: (Iterable[String], JsObject)*) {
     messageSets foreach {
@@ -187,7 +214,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
   */
   private object BizzleBot extends ChatPacketProtocol {
 
-    implicit val timeout = Timeout(1 second)
+    implicit val timeout = Timeout(1.second)
 
     val BotName = "BizzleBot"
 
@@ -208,27 +235,36 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
     def canFieldMessage(message: String) = message.startsWith("/") && Commands.contains(message.tail)
 
     def offerAssistance(username: String, message: String) : Option[String] = {
+
       def preprocess(message: String) : Option[String] = {
         val trimmed = message.trim
-        if (trimmed.startsWith("/")) Some(trimmed drop 1 trim) else None
+        if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
       }
+
       preprocess(message) map {
+
         case "commands" =>
           "here are the supported commands: " + Commands.mkString("[", ", ", "]")
+
         case "help" =>
-          "perhaps this can be of help to you:\n\n" +
-            "<ul><li>Press the Tab key to change agent contexts.</li>" +
-            "<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>" +
-            "<li>Press Control + L to clear the chat buffer.</li>" +
-            "<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context." +
-            "<li>For information about how to use the NetLogo programming language, please consult " +
-            "<a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>"
+          """|perhaps this can be of help to you:
+             |
+             |<ul><li>Press the Tab key to change agent contexts.</li>
+             |<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>
+             |<li>Press Control + L to clear the chat buffer.</li>
+             |<li>Press Control + Shift + [any number key 1-5] to directly set yourself to use a specific agent context.</li>
+             |<li>For information about how to use the NetLogo programming language, please consult  <a href=\"http://ccl.northwestern.edu/netlogo/docs/\">the official NetLogo user manual</a>.</li></ul>
+          """.stripMargin
+
         case "info" =>
-          "NetLogo is a multi-agent programmable modeling environment, " +
-            "authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.  " +
-            "For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>."
+          """|NetLogo is a multi-agent programmable modeling environment,
+             | authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.
+             |  For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>.
+          """.stripMargin.replaceAll("""\n|\r""", "") // Remove the newlines; they're just in there to make the string presentable in the code here
+
         case "whoami" =>
           "you're @%s, obviously!".format(username)
+
         case "halt" =>
           nlController ! Halt
           "halting"
@@ -243,6 +279,7 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
           "setting up"
         case _ =>
           "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
+
       } map ("@%s, ".format(username) + _)
     }
 
@@ -253,16 +290,20 @@ class WebInstance extends Actor with ChatPacketProtocol with EventManagerProtoco
 
 }
 
-case class Join(username: String)
-case class Quit(username: String)
-case class Chatter(username: String, message: String)
-case class Command(username: String, agentType: String, cmd: String)
-case class CommandOutput(agentType: String, cmd: String)
-case class NotifyJoin(username: String)
-case class ViewUpdate(serializedUpdate: String)
+object WebInstanceMessages {
 
-case class Connected(enumerator: Enumerator[JsValue])
-case class CannotConnect(msg: String)
+  case class Join(username: String)
+  case class Quit(username: String)
+  case class Chatter(username: String, message: String)
+  case class Command(username: String, agentType: String, cmd: String)
+  case class CommandOutput(agentType: String, cmd: String)
+  case class NotifyJoin(username: String)
+  case class ViewUpdate(serializedUpdate: String)
+
+  case class Connected(enumerator: Enumerator[JsValue])
+  case class CannotConnect(msg: String)
+
+}
 
 sealed trait ChatPacketProtocol {
   protected val KindKey     = "kind"

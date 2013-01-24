@@ -1,8 +1,9 @@
-package models
+package models.workspace
 
-import org.nlogo.{ api, nvm, headless, agent, workspace }
-import headless.HeadlessWorkspace
-import workspace.AbstractWorkspace.HubNetManagerFactory
+import
+  org.nlogo.{ api, nvm, headless, agent, workspace },
+    headless.HeadlessWorkspace,
+    workspace.AbstractWorkspace.HubNetManagerFactory
 
 /**
   * Manages a NetLogo workspace for use in NetLogo web clients
@@ -39,9 +40,7 @@ class WebWorkspace(world: agent.World, compiler: nvm.CompilerInterface, renderer
   }
 
   private def generateOutput(errorMsg: Option[String]): String = {
-    val outOpt =
-      Some(outputAreaBuffer.mkString.trim)
-        .filter(_.nonEmpty)
+    val outOpt = Some(outputAreaBuffer.mkString.trim) filter (_.nonEmpty)
     errorMsg map ((outOpt map (_ + "\n") getOrElse "") + _) getOrElse (outOpt getOrElse "")
   }
 

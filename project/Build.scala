@@ -1,6 +1,9 @@
-import sbt._
-import Keys._
-import PlayProject._
+import
+  sbt._,
+    Keys._
+
+import
+  play.Project._
 
 object ApplicationBuild extends Build {
 
@@ -11,12 +14,14 @@ object ApplicationBuild extends Build {
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.picocontainer" % "picocontainer" % "2.13.6",
     "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-modelruns-220636a.jar"
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-13c1e91.jar"
   )
 
-  val resolverSettings = Seq[Setting[_]]()
+  val moreSettings = Seq[Setting[_]](
+    scalacOptions in ThisBuild += "-feature"
+  )
 
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-    resolverSettings ++ ObtainResources.settings: _*)
+  val main = play.Project(appName, appVersion, appDependencies).settings(
+    moreSettings ++ ObtainResources.settings: _*)
 
 }

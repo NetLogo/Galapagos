@@ -1,17 +1,28 @@
-package models
+package models.workspace
 
-import java.io.File
+import
+  java.io.File
 
-import play.api.libs.concurrent.Akka
-import play.api.Play.current
+import
+  akka.actor.{ Actor, Props }
+
+import
+  org.nlogo.{ headless, mirror },
+    headless.HeadlessWorkspace,
+    mirror.{ Mirrorables, Mirroring, Update }
 
 import akka.actor.{ Actor, Props }
 import akka.util.duration._
+import
+  play.api.libs.concurrent.Akka
 
-import org.nlogo.headless.HeadlessWorkspace
-import org.nlogo.mirror.{ Mirrorable, Mirrorables, Mirroring, Update }
+import play.api.Play.current
 
 class NetLogoController extends Actor {
+
+  import NetLogoControllerMessages._
+  import WebInstanceMessages._
+
   private var currentState: Mirroring.State = Map()
 
   private val modelsPath = "public/models/"
@@ -26,6 +37,7 @@ class NetLogoController extends Actor {
   ///////////
   // Tasks //
   ///////////
+
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
@@ -72,6 +84,7 @@ class NetLogoController extends Actor {
   ////////////////
   // Delegation //
   ////////////////
+
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
     case RequestViewUpdate => viewGen.forward(RequestViewUpdate)
@@ -82,9 +95,10 @@ class NetLogoController extends Actor {
     case Setup => hlController.forward(Setup)
   }
 
-  private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
+  private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
     ws.world.synchronized {
-      val mirrorables = Mirrorables.allMirrorables(ws.world, ws.plotManager.plots, Seq())
+      val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
+      val mirrorables  = Mirrorables.allMirrorables(ws.world, widgetValues)
       Mirroring.diffs(baseState, mirrorables)
     }
 
@@ -93,12 +107,16 @@ class NetLogoController extends Actor {
     wspace.openString(io.Source.fromFile(file).mkString)
     wspace
   }
+
 }
 
-case class Execute(agentType: String, cmd: String)
-case object RequestViewUpdate
-case object RequestViewState
-case object Halt
-case object Go
-case object Stop
-case object Setup
+object NetLogoControllerMessages {
+  case class Execute(agentType: String, cmd: String)
+  case object RequestViewUpdate
+  case object RequestViewState
+  case object Halt
+  case object Halt
+  case object Go
+  case object Stop
+  case object Setup
+}

@@ -16,3 +16,5 @@ public/javascripts/managed/
 public/stylesheets/managed/
 *.swp
 *~
+/.idea/scala_compiler.xml
+/.idea/misc.xml
