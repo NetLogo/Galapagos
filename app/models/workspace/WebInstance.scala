@@ -29,6 +29,7 @@ import
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import models.remote.{ NetLogoController, NetLogoControllerMessages, WebWorkspace }
 
 object WebInstance {
 

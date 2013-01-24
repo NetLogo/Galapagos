@@ -1,4 +1,4 @@
-package models.workspace
+package models.remote
 
 import
   java.io.File
@@ -15,6 +15,7 @@ import
   play.api.libs.concurrent.Akka
 
 import play.api.Play.current
+import models.workspace.WebInstanceMessages
 
 class NetLogoController extends Actor {
 
@@ -88,7 +89,7 @@ class NetLogoController extends Actor {
 }
 
 object NetLogoControllerMessages {
-  case class Execute(agentType: String, cmd: String)
+  case class  Execute(agentType: String, cmd: String)
   case object RequestViewUpdate
   case object RequestViewState
   case object Halt
