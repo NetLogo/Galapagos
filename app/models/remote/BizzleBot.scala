@@ -89,6 +89,7 @@ class BizzleBot(room: ActorRef, nlController: ActorRef) extends ChatPacketProtoc
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
 
     } map ("@%s, ".format(username) + _)
+
   }
 
   // We can do stuff with this later, if we ever want to have the bot play with more-general chat
