@@ -68,9 +68,9 @@ class NetLogoController extends Actor {
 
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
+    case Halt                    => halter.forward(Halt)
     case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
     case RequestViewState        => viewGen.forward(RequestViewState)
-    case Halt                    => halter.forward(Halt)
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
@@ -90,7 +90,7 @@ class NetLogoController extends Actor {
 
 object NetLogoControllerMessages {
   case class  Execute(agentType: String, cmd: String)
+  case object Halt
   case object RequestViewUpdate
   case object RequestViewState
-  case object Halt
 }
