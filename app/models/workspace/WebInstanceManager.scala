@@ -1,41 +1,31 @@
 package models.workspace
 
 import
-  collection.mutable.{ Map => MutableMap }
-
-import
   concurrent.{ duration, Future },
     duration._
 
 import
   akka.{ actor, pattern, util },
-    actor.Props,
+    actor.ActorRef,
     pattern.ask,
     util.Timeout
 
 import
   play.api.{ libs, Logger },
-    libs.{ concurrent => pconcurrent, json, iteratee },
-      pconcurrent.Akka,
+    libs.{ json, iteratee },
       iteratee.{ Done, Enumerator, Input, Iteratee },
       json.{ JsObject, JsString, JsValue }
 
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-object WebInstanceManager {
-
-  import WebInstanceMessages._
+trait WebInstanceManager {
 
   implicit val timeout = Timeout(1.second)
 
-  //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
-  val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
+  protected type RoomType = Future[(Iteratee[JsValue, _], Enumerator[JsValue])]
 
-  def join() = ???
-
-  def join(username: String, roomNum: Int) : Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
-    val room = roomMap(roomNum)
+  protected def connectTo(room: ActorRef, username: String) : RoomType = {
+    import WebInstanceMessages._
     (room ? Join(username)).map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
@@ -55,5 +45,4 @@ object WebInstanceManager {
   }
 
 }
-
 

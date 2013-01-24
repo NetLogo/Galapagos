@@ -27,8 +27,7 @@ Description:
   An automated bot for being a good samaritan towards NetLogo users
   Created by yours truly, J-Bizzle, botmaker extraordinaire
 */
-//@ Make private[remote]
-class BizzleBot(room: ActorRef, nlController: ActorRef) extends ChatPacketProtocol {
+private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends ChatPacketProtocol {
 
   implicit val timeout = Timeout(1.second)
 

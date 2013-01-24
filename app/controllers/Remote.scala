@@ -6,7 +6,7 @@ import
     mvc.{ Action, Controller, WebSocket }
 
 import
-  models.workspace.WebInstanceManager
+  models.remote.RemoteInstance
 
 object Remote extends Controller {
 
@@ -27,8 +27,7 @@ object Remote extends Controller {
   }
 
   def handleSocketConnection(username: String, room: Int = 0) = WebSocket.async[JsValue] {
-    implicit request =>
-      WebInstanceManager.join(username, room)
+    implicit request => RemoteInstance.join(username, room)
   }
 
 }

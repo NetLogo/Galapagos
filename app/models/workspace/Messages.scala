@@ -9,14 +9,12 @@ object WebInstanceMessages {
 
   case class Join(username: String)
   case class Quit(username: String)
-  case class Chatter(username: String, message: String)
+
   case class Command(username: String, agentType: String, cmd: String)
   case class CommandOutput(agentType: String, cmd: String)
-  case class NotifyJoin(username: String)
-  case class ViewUpdate(serializedUpdate: String)
 
-  case class Connected(enumerator: Enumerator[JsValue])
   case class CannotConnect(msg: String)
+  case class Connected(enumerator: Enumerator[JsValue])
 
 }
 
@@ -25,6 +23,7 @@ object NetLogoControllerMessages {
   case object Halt
   case object RequestViewUpdate
   case object RequestViewState
+  case class  ViewUpdate(serializedUpdate: String)
 }
 
 trait ChatPacketProtocol {

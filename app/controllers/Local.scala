@@ -5,7 +5,8 @@ import
     libs.json.JsValue,
     mvc.{ Action, Controller, WebSocket }
 
-import models.workspace.WebInstanceManager
+import
+  models.local.LocalInstance
 
 object Local extends Controller {
 
@@ -15,8 +16,7 @@ object Local extends Controller {
   }
 
   def handleSocketConnection() = WebSocket.async[JsValue] {
-    implicit request =>
-      WebInstanceManager.join()
+    implicit request => LocalInstance.join()
   }
 
 }
