@@ -6,6 +6,7 @@ import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
 import akka.actor.{ Actor, Props }
+import akka.util.duration._
 
 import org.nlogo.headless.HeadlessWorkspace
 import org.nlogo.mirror.{ Mirrorable, Mirrorables, Mirroring, Update }
@@ -20,6 +21,7 @@ class NetLogoController extends Actor {
   private val executor = Akka.system.actorOf(Props(new Executor))
   private val viewGen = Akka.system.actorOf(Props(new ViewUpdateGenerator))
   private val halter = Akka.system.actorOf(Props(new Halter))
+  private val hlController = Akka.system.actorOf(Props(new HighLevelController))
 
   ///////////
   // Tasks //
@@ -27,6 +29,8 @@ class NetLogoController extends Actor {
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
+        // ws.execute returns normally even if NetLogo is interrupted with a
+        // halt, so no zombie processes should be created.
         sender ! CommandOutput(agentType, ws.execute(agentType, cmd))
     }
   }
@@ -46,6 +50,25 @@ class NetLogoController extends Actor {
     def receive = { case Halt => ws.halt() } 
   }
 
+  private class HighLevelController extends Actor {
+    var speed = 30d
+    var going = false
+    private case object GoLoop
+
+    def receive = {
+      case GoLoop =>
+        executor ! Execute("observer", "go")
+        if (going) Akka.system.scheduler.scheduleOnce((speed / 1000d) seconds, self, GoLoop)
+      case Go =>
+        going = true
+        self ! GoLoop
+      case Stop =>
+        going = false
+      case Setup =>
+        executor ! Execute("observer", "setup")
+    }
+  }
+
   ////////////////
   // Delegation //
   ////////////////
@@ -54,6 +77,9 @@ class NetLogoController extends Actor {
     case RequestViewUpdate => viewGen.forward(RequestViewUpdate)
     case RequestViewState => viewGen.forward(RequestViewState)
     case Halt => halter.forward(Halt)
+    case Go => hlController.forward(Go)
+    case Stop => hlController.forward(Stop)
+    case Setup => hlController.forward(Setup)
   }
 
   private def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
@@ -73,3 +99,6 @@ case class Execute(agentType: String, cmd: String)
 case object RequestViewUpdate
 case object RequestViewState
 case object Halt
+case object Go
+case object Stop
+case object Setup
