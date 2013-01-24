@@ -12,13 +12,13 @@ object Remote extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.index())
+      Ok(views.html.remote.index())
   }
 
   def client(usernameOpt: Option[String]) = Action {
     implicit request =>
       usernameOpt map (
-        username => Ok(views.html.client(username))
+        username => Ok(views.html.remote.client(username))
       ) getOrElse (
         Redirect(routes.Remote.index()).flashing(
           "error" -> "Please choose a valid username."

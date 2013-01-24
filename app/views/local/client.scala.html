@@ -1,8 +1,9 @@
-@(username: String)(implicit request: RequestHeader)
+@()(implicit request: RequestHeader)
 
-@demo(Some(username)) {
+@common.component.netLogoView(component.topBarText()) {
+
   <script type="text/javascript" charset="utf-8">
-      var socketURL = "@routes.Remote.handleSocketConnection(username).webSocketURL()";
+    var socketURL = "@routes.Local.handleSocketConnection().webSocketURL()";
   </script>
 
   <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/underscore-1.4.2.js")'></script>
@@ -17,11 +18,7 @@
 
   <td width="3%"></td>
   <td height="100%">
-    <div id="errorPane" class="alert-message error">
-      <p>
-        <strong>Oops!</strong> <span></span>
-      </p>
-    </div>
-    @chatPane()
+    @common.component.chatPane()
   </td>
+
 }

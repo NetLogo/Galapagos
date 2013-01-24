@@ -2,10 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Remote (Teletortoise)
 GET     /                               controllers.Remote.index
 GET     /client                         controllers.Remote.client(username: Option[String] ?= None)
 GET     /connect                        controllers.Remote.handleSocketConnection(username, room: Int ?= 0)
+
+# Local (Tortoise)
+GET     /local                          controllers.Local.index
+GET     /local-connect                  controllers.Local.handleSocketConnection()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                   controllers.Assets.at(path="/public", file)

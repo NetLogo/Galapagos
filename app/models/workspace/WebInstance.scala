@@ -39,6 +39,9 @@ object WebInstance {
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[WebInstance]))
 
+
+  def join() = ???
+
   def join(username: String, roomNum: Int) : Future[(Iteratee[JsValue, _], Enumerator[JsValue])] = {
     val room = roomMap(roomNum)
     (room ? Join(username)).map {

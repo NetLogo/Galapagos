@@ -1,0 +1,18 @@
+@(connected: Option[String])
+
+<a class="brand" href="@routes.Remote.index()">NetLogo Web Client</a>
+
+@connected.map { username =>
+  <p class="pull-right">
+    <span class="top_text">
+      @username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="@routes.Remote.index()">Disconnect</a>
+    </span>
+  <p>
+}.getOrElse {
+  <form action="@routes.Remote.client()" class="pull-right">
+    <input id="username" class="username_box" name="username" class="input-small" type="text" placeholder="Username">
+    <button class="btn login_button" type="submit">Sign in</button>
+  </form>
+}
+
+
