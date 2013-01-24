@@ -1,8 +1,7 @@
 package models.workspace
 
 import
-  collection.mutable.{ Map => MutableMap },
-  language.implicitConversions
+  collection.mutable.{ Map => MutableMap }
 
 import
   concurrent.{ duration, Future },
@@ -15,14 +14,11 @@ import
     util.Timeout
 
 import
-  org.nlogo.headless.HeadlessWorkspace
-
-import
   play.api.{ libs, Logger },
     libs.{ concurrent => pconcurrent, json, iteratee },
       pconcurrent.Akka,
-    iteratee.{ Done, Enumerator, Input, Iteratee },
-    json.{ JsObject, JsString, JsValue }
+      iteratee.{ Done, Enumerator, Input, Iteratee },
+      json.{ JsObject, JsString, JsValue }
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

@@ -1,35 +1,25 @@
 package models.remote
 
 import
-  collection.mutable.{ Map => MutableMap },
-  language.implicitConversions
-
-import
-  concurrent.{ duration, Future },
-    duration._
+  concurrent.duration._
 
 import
   akka.{ actor, pattern, util },
-    actor.{ ActorRef, Props },
+    actor.ActorRef,
     pattern.ask,
     util.Timeout
 
 import
-  org.nlogo.headless.HeadlessWorkspace
-
-import
   play.api.{ libs, Logger },
-    libs.{ concurrent => pconcurrent, json, iteratee },
-      pconcurrent.Akka,
-    iteratee.{ Done, Enumerator, Input, Iteratee },
-    json.{ JsObject, JsString, JsValue }
+    libs.{ json, iteratee },
+      iteratee.Iteratee,
+      json.JsValue
 
 import
   models.workspace.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
     NetLogoControllerMessages.Halt,
-    WebInstanceMessages._
+    WebInstanceMessages.{ Connected, Join }
 
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 /*

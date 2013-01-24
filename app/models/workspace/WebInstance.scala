@@ -1,21 +1,18 @@
 package models.workspace
 
 import
-  collection.mutable.{ Map => MutableMap },
-  language.implicitConversions
+  collection.mutable.{ Map => MutableMap }
 
 import
-  concurrent.{ duration, Future },
-    duration._
+  concurrent.duration._
 
 import
   java.io.File
 
 import
-  akka.{ actor, pattern, util },
+  akka.{ actor, pattern },
     actor.{ Actor, Props },
-    pattern.ask,
-    util.Timeout
+    pattern.ask
 
 import
   org.nlogo.headless.HeadlessWorkspace
