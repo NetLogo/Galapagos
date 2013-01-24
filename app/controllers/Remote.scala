@@ -6,10 +6,9 @@ import
     mvc.{ Action, Controller, WebSocket }
 
 import
-  models.{ ErrorPropagationProtocol, workspace },
-    workspace.WebInstance
+  models.workspace.WebInstance
 
-object Remote extends Controller with ErrorPropagationProtocol {
+object Remote extends Controller {
 
   def index = Action {
     implicit request =>
@@ -22,7 +21,7 @@ object Remote extends Controller with ErrorPropagationProtocol {
         username => Ok(views.html.client(username))
       ) getOrElse (
         Redirect(routes.Remote.index()).flashing(
-          ErrorKey -> "Please choose a valid username."
+          "error" -> "Please choose a valid username."
         )
       )
   }

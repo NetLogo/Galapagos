@@ -27,12 +27,10 @@ import
       iteratee.{ Done, Enumerator, Input, Iteratee, PushEnumerator },
       json.{ JsArray, JsObject, JsString, JsValue }
 
-import models.ErrorPropagationProtocol
-
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-object WebInstance extends ErrorPropagationProtocol {
+object WebInstance {
 
   import WebInstanceMessages._
 
@@ -53,7 +51,7 @@ object WebInstance extends ErrorPropagationProtocol {
         (iteratee, enumerator)
       case CannotConnect(error) =>
         val iteratee   = Done[JsValue, Unit]((), Input.EOF)
-        val enumerator = Enumerator[JsValue](JsObject(Seq(ErrorKey -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
+        val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee,enumerator)
       case x =>
         Logger.warn("Unknown event: " + x.toString)
