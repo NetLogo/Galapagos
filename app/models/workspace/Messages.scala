@@ -20,6 +20,13 @@ object WebInstanceMessages {
 
 }
 
+object NetLogoControllerMessages {
+  case class  Execute(agentType: String, cmd: String)
+  case object Halt
+  case object RequestViewUpdate
+  case object RequestViewState
+}
+
 trait ChatPacketProtocol {
   protected val KindKey     = "kind"
   protected val ContextKey  = "context"

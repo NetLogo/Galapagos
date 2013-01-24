@@ -14,8 +14,10 @@ import
 import
   play.api.libs.concurrent.Akka
 
+import
+  models.workspace.{ NetLogoControllerMessages, WebInstanceMessages }
+
 import play.api.Play.current
-import models.workspace.WebInstanceMessages
 
 class NetLogoController extends Actor {
 
@@ -86,11 +88,4 @@ class NetLogoController extends Actor {
     wspace
   }
 
-}
-
-object NetLogoControllerMessages {
-  case class  Execute(agentType: String, cmd: String)
-  case object Halt
-  case object RequestViewUpdate
-  case object RequestViewState
 }
