@@ -1,6 +1,6 @@
 @(username: String)(implicit request: RequestHeader)
 
-@views.html.common.component.netLogoView(component.topBarText(Option(username))) {
+@views.html.core.component.netLogoView(component.topBarText(Option(username))) {
 
   <script type="text/javascript" charset="utf-8">
       var socketURL = "@controllers.remote.routes.Remote.handleSocketConnection(username).webSocketURL()";
@@ -19,8 +19,8 @@
 
   <td width="3%"></td>
   <td height="100%">
-    @views.html.common.component.errorPane()
-    @views.html.common.component.chatPane()
+    @views.html.core.component.errorPane()
+    @views.html.core.component.chatPane()
   </td>
 
 }
