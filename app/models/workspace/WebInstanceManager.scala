@@ -37,7 +37,7 @@ trait WebInstanceManager {
       case CannotConnect(error) =>
         val iteratee   = Done[JsValue, Unit]((), Input.EOF)
         val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
-        (iteratee,enumerator)
+        (iteratee, enumerator)
       case x =>
         Logger.warn("Unknown event: " + x.toString)
         throw new IllegalArgumentException("An unknown event has occurred on user join: " + x.toString)
