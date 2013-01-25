@@ -212,8 +212,9 @@ messageHTMLMaker = (user, context, text, time, kind) ->
 
 # Return Type: Unit
 extractParamFromURL = (paramName) ->
-  params = window.location.search.substring(1) # `substring` to drop the '?' off of the beginning
-  unescape(params.match(///(?:&[^&]*)*#{paramName}=([^&]*).*///)[1])
+  params  = window.location.search.substring(1) # `substring` to drop the '?' off of the beginning
+  matches = params.match(///(?:&[^&]*)*#{paramName}=([^&]*).*///)
+  if (matches and matches.length > 0) then unescape(matches[1]) else ""
 
 # Return Type: String
 getAmericanizedTime = ->
