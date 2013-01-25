@@ -1,4 +1,4 @@
-package controllers
+package controllers.remote
 
 import
   play.api.{ libs, mvc },

@@ -1,4 +1,4 @@
-package controllers
+package controllers.local
 
 import
   play.api.{ libs, mvc },

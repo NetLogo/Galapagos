@@ -3,7 +3,7 @@
 @common.component.netLogoView(component.topBarText(Option(username))) {
 
   <script type="text/javascript" charset="utf-8">
-      var socketURL = "@routes.Remote.handleSocketConnection(username).webSocketURL()";
+      var socketURL = "@controllers.remote.routes.Remote.handleSocketConnection(username).webSocketURL()";
   </script>
 
   @* //@ Should probably refactor these at some point... need to figure out what's going to be common *@

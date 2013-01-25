@@ -3,13 +3,13 @@
 # ~~~~
 
 # Remote (Teletortoise)
-GET     /                               controllers.Remote.index
-GET     /client                         controllers.Remote.client(username: Option[String] ?= None)
-GET     /connect                        controllers.Remote.handleSocketConnection(username, room: Int ?= 0)
+GET     /                               controllers.remote.Remote.index
+GET     /client                         controllers.remote.Remote.client(username: Option[String] ?= None)
+GET     /connect                        controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
 
 # Local (Tortoise)
-GET     /local                          controllers.Local.index
-GET     /local-connect                  controllers.Local.handleSocketConnection()
+GET     /local                          controllers.local.Local.index
+GET     /local-connect                  controllers.local.Local.handleSocketConnection()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                   controllers.Assets.at(path="/public", file)
