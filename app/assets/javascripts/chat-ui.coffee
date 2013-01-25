@@ -38,18 +38,19 @@ class exports.ChatUI
   # Return Type: Unit
   updateUserList: (users) ->
     globals.usersArr = users
-    $globals.$onlineLog.text("")
-    for user in users
-      color = if user is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored
-      row   =
-        """
-        <div id='#{user}' onclick='exports.event.changeUsernameBG(this)' class='#{CSS.Username} #{CSS.UsernamePlain}'>
-        <div class='#{CSS.UsernameInner}'>
-        <span class="#{CSS.UsernameText} #{color}">#{Util.spaceGenerator(3)}#{user}</span>
-        </div>
-        </div>
-        """
-      $globals.$onlineLog.append(row)
+    if $globals.$onlineLog.length > 0
+      $globals.$onlineLog.text("")
+      for user in users
+        color = if user is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored
+        row   =
+          """
+            <div id='#{user}' onclick='exports.event.changeUsernameBG(this)' class='#{CSS.Username} #{CSS.UsernamePlain}'>
+              <div class='#{CSS.UsernameInner}'>
+                <span class="#{CSS.UsernameText} #{color}">#{Util.spaceGenerator(3)}#{user}</span>
+              </div>
+            </div>
+          """
+        $globals.$onlineLog.append(row)
 
   # Return Type: Unit
   decideShowErrorOrChat: (error) ->
