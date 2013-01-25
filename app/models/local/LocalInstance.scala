@@ -39,7 +39,7 @@ class LocalInstance extends Actor with WebInstance {
       }
 
     case Quit(_) =>
-      broadcast(generateMessage(QuitKey, NetLogoUsername, ObserverContext, "Tortoise is now quitting..."))
+      broadcast(generateMessage(QuitKey, NetLogoUsername, RoomContext, "Tortoise is now quitting..."))
       self ! PoisonPill
 
   }
@@ -49,7 +49,7 @@ class LocalInstance extends Actor with WebInstance {
 
   private def validateConnection = (true, "")
 
-  private def generateModelStateMessage : JsObject = generateMessage(ModelUpdateKey, ObserverContext, NetLogoUsername, "") //@ Fill in model text
+  private def generateModelStateMessage : JsObject = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, "") //@ Fill in model text
 
 }
 
