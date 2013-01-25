@@ -63,9 +63,8 @@ class exports.ChatUtil
 
   # Return Type: String
   enhanceMsgText: (text, kind) ->
-    colorify = @colorifyText
-    subFunc = (acc, x) ->
-      substitution = colorify("@" + x, if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored)
+    subFunc = (acc, x) =>
+      substitution = @colorifyText("@" + x, if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored)
       acc.replace(///@#{x}///g, substitution)
     switch kind
       when "chatter" then _.foldl(globals.usersArr, subFunc, text)
