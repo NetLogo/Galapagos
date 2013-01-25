@@ -93,12 +93,12 @@ class exports.ChatUI
     extractInfoAndType = (source) -> [source.data, source.type]
 
     [info, type] =
-    if ml.cursor
-      extractInfoAndType(ml.cursor)
-    else
-      [info, type] = extractInfoAndType(ml.current)
-      ml.clearCursor()
-      [info, type]
+      if ml.cursor
+        extractInfoAndType(ml.cursor)
+      else
+        [info, type] = extractInfoAndType(ml.current)
+        ml.clearCursor()
+        [info, type]
 
     globals.agentTypes.setCurrent(type)
     @setAgentType()
