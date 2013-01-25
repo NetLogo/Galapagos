@@ -7,8 +7,9 @@ import
   play.api.libs,
     libs.{ concurrent, json, iteratee },
       concurrent.Akka,
-      iteratee.Enumerator,
-      json.{ JsObject, JsValue }
+      iteratee.Concurrent,
+        Concurrent.Channel,
+      json.{ JsObject, JsValue}
 
 import
   models.core.{ WebInstance, WebInstanceManager, WebInstanceMessages }
@@ -20,14 +21,19 @@ class LocalInstance extends Actor with WebInstance {
 
   import WebInstanceMessages._
 
-  protected val channel = Enumerator.imperative[JsValue]()
+  protected var channelOpt: Option[Channel[JsValue]] = None // I wish there were an obvious and better way... --JAB (1/25/13)
 
   override protected def receiveExtras = {
 
     case Join(_) =>
       validateConnection match {
         case (true, _) =>
-          sender ! Connected(channel)
+          val enumer = Concurrent.unicast[JsValue] {
+            channel =>
+              channelOpt = Option(channel)
+              broadcast(generateModelStateMessage)
+          }
+          sender ! Connected(enumer)
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
@@ -38,10 +44,12 @@ class LocalInstance extends Actor with WebInstance {
 
   }
 
-  override protected def broadcast(msg: JsObject) { channel.push(msg) }
+  override protected def broadcast(msg: JsObject) { channelOpt foreach (_.push(msg)) }
   override protected def execute(agentType: String, cmd: String) { ??? } //@ Fill in
 
   private def validateConnection = (true, "")
+
+  private def generateModelStateMessage : JsObject = generateMessage(ModelUpdateKey, ObserverContext, NetLogoUsername, "") //@ Fill in model text
 
 }
 

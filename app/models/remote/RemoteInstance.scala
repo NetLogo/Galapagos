@@ -17,7 +17,8 @@ import
 import
   play.api.libs.{ concurrent => pconcurrent, json, iteratee },
     pconcurrent.Akka,
-    iteratee.{ Enumerator, PushEnumerator },
+    iteratee.Concurrent,
+      Concurrent.Channel,
     json.{ JsArray, JsObject, JsString, JsValue }
 
 import
@@ -50,19 +51,22 @@ class RemoteInstance extends Actor with WebInstance {
   }
 
   protected type MemberKey   = String
-  protected type MemberValue = PushEnumerator[JsValue]
+  protected type MemberValue = Channel[JsValue]
   protected type MemberTuple = (MemberKey, MemberValue)
   val members = MutableMap.empty[MemberKey, MemberValue]
 
   override def receiveExtras = {
 
     case Join(username) =>
-      val channel = Enumerator.imperative[JsValue](onStart = () => room ! NotifyJoin(username))
       isValidUsername(username) match {
         case (true, _) =>
-          members += username -> channel
-          sender ! Connected(channel)
-          nlController ! RequestViewState
+          val enumer = Concurrent.unicast[JsValue] {
+            channel =>
+              members += username -> channel
+              room ! NotifyJoin(username)
+              nlController ! RequestViewState
+          }
+          sender ! Connected(enumer)
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
@@ -116,13 +120,7 @@ class RemoteInstance extends Actor with WebInstance {
   // Also, why did my structural typing fail here...?
   implicit class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
     def pushForeach(msg: JsObject) {
-      foreachable foreach { case (username, channel) =>
-        // Note that push is being used for it's side effect here. The return
-        // of push indicates success; ie, whether the server successfully sent
-        // the message to the client.
-        if (!channel.push(msg))
-          quit(username)
-      }
+      foreachable foreach { case (username, channel) => channel.push(msg) }
     }
   }
 
