@@ -6,16 +6,7 @@
       var socketURL = "@controllers.remote.routes.Remote.handleSocketConnection(username).webSocketURL()";
   </script>
 
-  @* //@ Should probably refactor these at some point... need to figure out what's going to be core *@
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/underscore-1.4.2.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/mousetrap-1.1.1.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/exports-init.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/textholder.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/linkedhashset.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/util/doublelist.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/meta/css.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/chat.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/event/chat-events.js")'></script>
+    @views.html.core.component.clientImports()
 
   <td width="3%"></td>
   <td height="100%">
