@@ -101,6 +101,6 @@ class exports.ChatUI
       [info, type]
 
     globals.agentTypes.setCurrent(type)
-    this.setAgentType()
+    @setAgentType()
     $globals.$inputBuffer.val(info)
 
