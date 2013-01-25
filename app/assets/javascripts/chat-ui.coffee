@@ -21,7 +21,7 @@ class exports.ChatUI
   focusInput: -> $globals.$inputBuffer.focus()
 
   # Caching jQuery selector results for easy access throughout the code
-  # Return Type: Un-t
+  # Return Type: Unit
   initSelectors: ->
     $globals.$inputBuffer   = $("#inputBuffer")
     $globals.$onlineLog     = $("#onlineLog")
