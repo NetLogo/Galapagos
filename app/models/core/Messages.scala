@@ -43,4 +43,5 @@ trait EventManagerProtocol {
   protected val QuitKey        = "quit"
   protected val ViewUpdateKey  = "update"
   protected val ModelUpdateKey = "model_update"
+  protected val JSKey          = "js"
 }

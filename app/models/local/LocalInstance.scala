@@ -44,8 +44,18 @@ class LocalInstance extends Actor with WebInstance {
 
   }
 
-  override protected def broadcast(msg: JsObject) { channelOpt foreach (_.push(msg)) }
-  override protected def execute(agentType: String, cmd: String) { ??? } //@ Fill in
+  override protected def broadcast(msg: JsObject) {
+    channelOpt foreach (_.push(msg))
+  }
+
+  override protected def execute(agentType: String, cmd: String) {
+    val js = netLogoToJavaScript(agentType, cmd)
+    broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
+  }
+
+  private def netLogoToJavaScript(agentType: String, cmd: String) : String = {
+    ???
+  }
 
   private def validateConnection = (true, "")
 

@@ -29,6 +29,8 @@ document.body.onload = ->
         when 'update'
           updateModel = JSON.parse(message)
           controller.update(updateModel)
+        when 'js'
+          eval(message)
         else
           globals.logList[globals.messageCount] = new TextHolder(message)
           difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
