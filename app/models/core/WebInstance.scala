@@ -20,6 +20,7 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
   protected val TurtlesContext  = "turtles"
   protected val LinksContext    = "links"
   protected val PatchesContext  = "patches"
+  protected val RoomContext     = "room"
   protected val NetLogoUsername = "netlogo"
 
   final protected def baseContexts  = ISeq(ObserverContext, TurtlesContext, LinksContext, PatchesContext)

@@ -38,8 +38,7 @@ class RemoteInstance extends Actor with WebInstance {
 
   protected val NameLengthLimit = 10
 
-  protected val RoomContext     = "room"
-  protected val ChatterContext  = "chatter"
+  protected val ChatterContext = "chatter"
   override protected val extraContexts = ISeq(RoomContext, ChatterContext)
 
   private val nlController = Akka.system.actorOf(Props[NetLogoController])
