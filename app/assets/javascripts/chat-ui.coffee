@@ -63,7 +63,6 @@ class exports.ChatUI
   # Return Type: Unit
   clearChat: ->
     $globals.$chatLog.text('')
-    state = 0
     globals.logList = []
     $globals.$inputBuffer.focus()
 
