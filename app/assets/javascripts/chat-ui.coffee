@@ -5,6 +5,7 @@ globals   = exports.ChatGlobals
 Util      = new exports.ChatUtil
 
 class exports.ChatUI
+
   # Return Type: Unit
   send: (message) ->
     globals.socket.send(JSON.stringify({ agentType: $globals.$agentType.text(), cmd: message }))
@@ -13,6 +14,7 @@ class exports.ChatUI
     $globals.$inputBuffer.val("")
     @focusInput()
 
+  # Return Type: () -> Unit
   throttledSend: (message) -> _.throttle(@send(message), Constants.THROTTLE_DELAY)
 
   # Return Type: Unit
@@ -33,6 +35,7 @@ class exports.ChatUI
     $globals.$errorPaneSpan = $("#errorPane span")
     $globals.$chatPane      = $("#chatPane")
 
+  # Return Type: Unit
   updateUserList: (users) ->
     globals.usersArr = users
     $globals.$onlineLog.text("")

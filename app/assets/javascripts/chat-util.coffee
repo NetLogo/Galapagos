@@ -6,6 +6,7 @@ CSS       = exports.CSS
 globals   = exports.ChatGlobals
 
 class exports.ChatUtil
+
   # Return Type: Unit
   extractParamFromURL: (paramName) ->
     params  = window.location.search.substring(1) # `substring` to drop the '?' off of the beginning
@@ -100,6 +101,7 @@ class exports.ChatUtil
     else
       e  # Should pretty much never happen
 
+  # Return Type: [String, String, String, String, String, [String*], String]
   parseData: (event) ->
     data    = if (typeof(event.data) == 'string') then JSON.parse(event.data) else event.data
 
