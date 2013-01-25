@@ -1,6 +1,6 @@
 @()(implicit request: RequestHeader)
 
-@common.component.netLogoView(component.topBarText()) {
+@views.html.common.component.netLogoView(component.topBarText()) {
 
   <script type="text/javascript" charset="utf-8">
     var socketURL = "@controllers.local.routes.Local.handleSocketConnection().webSocketURL()";
@@ -18,7 +18,7 @@
 
   <td width="3%"></td>
   <td height="100%">
-    @common.component.chatPane()
+    @views.html.common.component.chatPane()
   </td>
 
 }

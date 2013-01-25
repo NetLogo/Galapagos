@@ -24,7 +24,7 @@ import
   org.nlogo.headless.HeadlessWorkspace
 
 import
-  models.workspace.{ NetLogoControllerMessages, WebInstance, WebInstanceManager, WebInstanceMessages }
+  models.core.{ NetLogoControllerMessages, WebInstance, WebInstanceManager, WebInstanceMessages }
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

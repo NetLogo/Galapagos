@@ -1,4 +1,4 @@
-package models.workspace
+package models.core
 
 import
   play.api.libs.{ iteratee, json },

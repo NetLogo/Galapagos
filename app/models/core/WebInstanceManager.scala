@@ -1,4 +1,4 @@
-package models.workspace
+package models.core
 
 import
   concurrent.{ duration, Future },

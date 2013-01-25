@@ -1,6 +1,6 @@
 @()(implicit flash: Flash)
 
-@common.component.mainTheme(component.topBarText(None)) {
+@views.html.common.component.mainTheme(component.topBarText(None)) {
 
   @flash.get("error").map { errorMessage =>
     <div class="alert-message error">

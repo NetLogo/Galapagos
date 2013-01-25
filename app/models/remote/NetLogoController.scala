@@ -15,7 +15,7 @@ import
   play.api.libs.concurrent.Akka
 
 import
-  models.workspace.{ NetLogoControllerMessages, WebInstanceMessages }
+  models.core.{ NetLogoControllerMessages, WebInstanceMessages }
 
 import play.api.Play.current
 

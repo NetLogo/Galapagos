@@ -16,7 +16,7 @@ import
       json.JsValue
 
 import
-  models.workspace.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
+  models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
     NetLogoControllerMessages.Halt,
     WebInstanceMessages.{ Connected, Join }
 

@@ -11,7 +11,7 @@ import
       json.{ JsObject, JsValue }
 
 import
-  models.workspace.{ WebInstance, WebInstanceManager, WebInstanceMessages }
+  models.core.{ WebInstance, WebInstanceManager, WebInstanceMessages }
 
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

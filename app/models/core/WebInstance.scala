@@ -1,4 +1,4 @@
-package models.workspace
+package models.core
 
 import
   collection.immutable.{ Seq => ISeq }
