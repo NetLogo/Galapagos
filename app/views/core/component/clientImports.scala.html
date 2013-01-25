@@ -1,3 +1,5 @@
+@(moduleName: String)
+
 <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/underscore-1.4.2.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/mousetrap-1.1.1.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/exports-init.js")'></script>
@@ -5,6 +7,7 @@
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/linkedhashset.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/doublelist.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/meta/css.js")'></script>
+<script type="text/javascript" src='@routes.Assets.at(s"javascripts/$moduleName.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/chat-constants.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/chat-globals.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/chat-util.js")'></script>

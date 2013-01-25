@@ -1,9 +1,10 @@
 # This file contains chat utility functions that don't interact with UI globals,
 # SO THIS DAMN WELL BETTER NOT EVER DEPEND ON ANY UI ELEMENTS/UI GLOBALS --JAB 1/25/13
 
-Constants = exports.ChatConstants
-CSS       = exports.CSS
-globals   = exports.ChatGlobals
+ChatModule = new exports.ChatModule
+Constants  = exports.ChatConstants
+CSS        = exports.CSS
+globals    = exports.ChatGlobals
 
 class exports.ChatUtil
 
@@ -26,9 +27,7 @@ class exports.ChatUtil
     "#{newHours}:#{newMinutes}#{suffix}"
 
   # Return Type: Unit
-  initAgentList: ->
-    types = ['chatter', 'observer', 'turtles', 'patches', 'links']
-    types.map((type) -> globals.agentTypes.append(type))
+  initAgentList: -> ChatModule.agentList.map((type) -> globals.agentTypes.append(type))
 
   # Return Type: String
   messageHTMLMaker: (user, context, text, time, kind) ->
