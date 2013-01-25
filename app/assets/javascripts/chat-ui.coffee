@@ -72,8 +72,7 @@ class exports.ChatUI
     $globals.$agentType.text(globals.agentTypes.getCurrent())
 
   # Return Type: Unit
-  setAgentType: ->
-    $globals.$agentType.text(globals.agentTypes.getCurrent())
+  setAgentType: -> $globals.$agentType.text(globals.agentTypes.getCurrent())
 
   # Return Type: Unit
   scroll: (key) ->
