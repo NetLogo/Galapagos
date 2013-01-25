@@ -36,10 +36,11 @@ trait ChatPacketProtocol {
 }
 
 trait EventManagerProtocol {
-  protected val JoinKey       = "join"
-  protected val ChatterKey    = "chatter"
-  protected val CommandKey    = "command"
-  protected val ResponseKey   = "response"
-  protected val QuitKey       = "quit"
-  protected val ViewUpdateKey = "update"
+  protected val JoinKey        = "join"
+  protected val ChatterKey     = "chatter"
+  protected val CommandKey     = "command"
+  protected val ResponseKey    = "response"
+  protected val QuitKey        = "quit"
+  protected val ViewUpdateKey  = "update"
+  protected val ModelUpdateKey = "model_update"
 }
