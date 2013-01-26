@@ -6,6 +6,8 @@
     var socketURL = "@controllers.local.routes.Local.handleSocketConnection().webSocketURL()";
   </script>
 
+  <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+  <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
   @views.html.core.component.clientImports("chat-local-module")
 
   <td width="3%"></td>
