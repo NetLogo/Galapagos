@@ -49,17 +49,11 @@ class LocalInstance extends Actor with WebInstance {
   }
 
   override protected def execute(agentType: String, cmd: String) {
-    val js = netLogoToJavaScript(agentType, cmd)
-    broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
-  }
-
-  private def netLogoToJavaScript(agentType: String, cmd: String) : String = {
-    ???
+    broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, NetLogoCompiler(agentType, cmd)))
   }
 
   private def validateConnection = (true, "")
-
-  private def generateModelStateMessage : JsObject = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, "") //@ Fill in model text
+  private def generateModelStateMessage = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, NetLogoCompiler.generateModelState)
 
 }
 
