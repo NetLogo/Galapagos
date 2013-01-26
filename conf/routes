@@ -11,5 +11,8 @@ GET     /connect                        controllers.remote.Remote.handleSocketCo
 GET     /local                          controllers.local.Local.index
 GET     /local-connect                  controllers.local.Local.handleSocketConnection()
 
+GET     /netlogo-compat                 controllers.local.Local.compat
+GET     /netlogo-engine                 controllers.local.Local.engine
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                   controllers.Assets.at(path="/public", file)
