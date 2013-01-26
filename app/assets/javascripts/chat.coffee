@@ -1,3 +1,4 @@
+ChatModule  = new exports.ChatModule
 Keybindings = new exports.ChatKeybindings
 UI          = new exports.ChatUI
 Util        = new exports.ChatUtil
@@ -29,8 +30,10 @@ document.body.onload = ->
         when 'update'
           updateModel = JSON.parse(message)
           controller.update(updateModel)
-        when 'js'
-          eval(message)
+        when 'js', 'model_update'
+          updateSet = JSON.parse(ChatModule.runJS(message))
+          for update in updateSet
+            controller.update(update)
         else
           globals.logList[globals.messageCount] = new TextHolder(message)
           difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
