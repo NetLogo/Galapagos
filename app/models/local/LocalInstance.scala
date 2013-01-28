@@ -1,7 +1,14 @@
 package models.local
 
 import
-  akka.actor.{ Actor, PoisonPill, Props }
+  scala.concurrent.{ Await, duration },
+    duration._
+
+import
+  akka.{ actor, pattern, util },
+    actor.{ Actor, PoisonPill, Props },
+    pattern.ask,
+    util.Timeout
 
 import
   play.api.libs,
@@ -20,6 +27,10 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 class LocalInstance extends Actor with WebInstance {
 
   import WebInstanceMessages._
+
+  implicit private val timeout = Timeout(1.second)
+
+  protected val compilerManager = Akka.system.actorOf(Props[CompilerManager])
 
   protected var channelOpt: Option[Channel[JsValue]] = None // I wish there were an obvious and better way... --JAB (1/25/13)
 
@@ -49,11 +60,17 @@ class LocalInstance extends Actor with WebInstance {
   }
 
   override protected def execute(agentType: String, cmd: String) {
-    broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, NetLogoCompiler(agentType, cmd)))
+    import CompilerMessages.Execute
+    val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second) match { case str: String => str }
+    broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
   private def validateConnection = (true, "")
-  private def generateModelStateMessage = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, NetLogoCompiler.generateModelState)
+  private def generateModelStateMessage = {
+    import CompilerMessages.GetModelState
+    val js = Await.result(compilerManager ? GetModelState, 1.second) match { case str: String => str }
+    generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, js)
+  }
 
 }
 
