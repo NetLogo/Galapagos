@@ -6,6 +6,6 @@ class exports.ChatModule
 
   runJS: (js) ->
     preparedJS = js.replace(/world/g, "this.world") # //@ This will do bad things inside of strings!
-    eval(preparedJS)
+    eval.call(window, preparedJS)
     collectUpdates()
 
