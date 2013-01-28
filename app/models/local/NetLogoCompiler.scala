@@ -44,7 +44,7 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
         Logger.warn(s"Execution failed: ${ex.getMessage}")
         None
       case ex: MatchError =>
-        Logger.warn(s"Could not make given primitive: ${ex.getMessage}")
+        Logger.warn(s"Could not match given primitive: ${ex.getMessage}")
         None
     }
   }
