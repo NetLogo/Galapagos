@@ -17,7 +17,7 @@ import
 
 import
   models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-    NetLogoControllerMessages.Halt,
+    NetLogoControllerMessages.{ Go, Halt, Setup, Stop },
     WebInstanceMessages.{ Connected, Join }
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -33,7 +33,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
   val BotName = "BizzleBot"
 
-  private val Commands = List("commands", "help", "info", "whoami", "halt")
+  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup")
 
   def start() {
     room ? (Join(BotName)) map {
@@ -83,6 +83,18 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       case "halt" =>
         nlController ! Halt
         "halting"
+
+      case "go" =>
+        nlController ! Go
+        "going"
+
+      case "stop" =>
+        nlController ! Stop
+        "stopping"
+
+      case "setup" =>
+        nlController ! Setup
+        "setting up"
 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"

@@ -10,7 +10,7 @@ class window.AgentModel
     anyUpdates = false
     for turtleId, varUpdates of modelUpdate.turtles
       anyUpdates = true
-      if varUpdates == null
+      if varUpdates == null or varUpdates['WHO'] == -1
         delete @turtles[turtleId]
       else
         t = @turtles[turtleId]

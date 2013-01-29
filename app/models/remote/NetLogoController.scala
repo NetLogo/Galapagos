@@ -12,12 +12,16 @@ import
     mirror.{ Mirrorables, Mirroring, Update }
 
 import
+  concurrent.duration._
+
+import
   play.api.libs.concurrent.Akka
 
 import
   models.core.{ NetLogoControllerMessages, WebInstanceMessages }
 
 import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class NetLogoController extends Actor {
 
@@ -30,11 +34,10 @@ class NetLogoController extends Actor {
   private val modelName  = "Wolf Sheep Predation"
   private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
 
-  private val executor = Akka.system.actorOf(Props(new Executor))
-  private val viewGen  = Akka.system.actorOf(Props(new ViewUpdateGenerator))
-  private val halter   = Akka.system.actorOf(Props(new Halter))
-
-
+  private val executor     = Akka.system.actorOf(Props(new Executor))
+  private val viewGen      = Akka.system.actorOf(Props(new ViewUpdateGenerator))
+  private val halter       = Akka.system.actorOf(Props(new Halter))
+  private val hlController = Akka.system.actorOf(Props(new HighLevelController))
 
   ///////////
   // Tasks //
@@ -43,6 +46,8 @@ class NetLogoController extends Actor {
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
+        // ws.execute returns normally even if NetLogo is interrupted with a
+        // halt, so no zombie processes should be created.
         sender ! CommandOutput(agentType, ws.execute(agentType, cmd))
     }
   }
@@ -62,7 +67,24 @@ class NetLogoController extends Actor {
     def receive = { case Halt => ws.halt() } 
   }
 
+  private class HighLevelController extends Actor {
+    var speed = 30d
+    var going = false
+    private case object GoLoop
 
+    def receive = {
+      case GoLoop =>
+        executor ! Execute("observer", "go")
+        if (going) {Akka.system.scheduler.scheduleOnce((speed / 1000d).seconds) {self ! GoLoop}}
+      case Go =>
+        going = true
+        self ! GoLoop
+      case Stop =>
+        going = false
+      case Setup =>
+        executor ! Execute("observer", "setup")
+    }
+  }
 
   ////////////////
   // Delegation //
@@ -70,9 +92,12 @@ class NetLogoController extends Actor {
 
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
+    case Go                      => hlController.forward(Go)
     case Halt                    => halter.forward(Halt)
     case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
     case RequestViewState        => viewGen.forward(RequestViewState)
+    case Stop                    => hlController.forward(Stop)
+    case Setup                   => hlController.forward(Setup)
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
@@ -89,3 +114,4 @@ class NetLogoController extends Actor {
   }
 
 }
+

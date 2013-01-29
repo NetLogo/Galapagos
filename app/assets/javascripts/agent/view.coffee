@@ -7,7 +7,7 @@ class window.AgentStreamController
     @patchView = new PatchView()
     @layeredView = new LayeredView()
     @layeredView.setLayers(@patchView, @turtleView)
-    @layeredView.setContainer(@container)
+    @container.appendChild(@layeredView.canvas)
     @model = new AgentModel()
     @repaint()
 
@@ -27,8 +27,6 @@ class View
     @canvas.height = 500
     @canvas.style.width = "100%"
     @ctx = @canvas.getContext('2d')
-
-  setContainer: (container) -> container.appendChild(@canvas)
 
   matchesWorld: (world) ->
     (@maxPxcor? and @minPxcor? and @maxPycor? and @minPycor? and @patchSize?) and
