@@ -1,6 +1,7 @@
-@(username: Option[String])(content: Html)
+@(topBarText: Html)(content: Html)
 
-@main(username) {
+@mainTheme(topBarText) {
+
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/agentmodel.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/colors.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/drawshape.js")'></script>
@@ -13,6 +14,7 @@
   </td>
 
   @content
+
   <script type="text/javascript">
     var controller;
     function init() {
@@ -29,4 +31,5 @@
       }
     }
   </script>
+
 }

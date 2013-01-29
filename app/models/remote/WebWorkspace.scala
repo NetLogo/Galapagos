@@ -1,4 +1,4 @@
-package models.workspace
+package models.remote
 
 import
   org.nlogo.{ api, nvm, headless, agent, workspace },

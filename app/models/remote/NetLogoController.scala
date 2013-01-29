@@ -1,4 +1,4 @@
-package models.workspace
+package models.remote
 
 import
   java.io.File
@@ -13,14 +13,14 @@ import
 
 import
   concurrent.duration._
+
 import
   play.api.libs.concurrent.Akka
 
 import
-  play.api.{Play,libs},
-    Play.current, 
-    libs.concurrent.Execution.Implicits.defaultContext
+  models.core.{ NetLogoControllerMessages, WebInstanceMessages }
 
+import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 class NetLogoController extends Actor {
@@ -92,10 +92,10 @@ class NetLogoController extends Actor {
 
   def receive = {
     case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
+    case Go                      => hlController.forward(Go)
+    case Halt                    => halter.forward(Halt)
     case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
     case RequestViewState        => viewGen.forward(RequestViewState)
-    case Halt                    => halter.forward(Halt)
-    case Go                      => hlController.forward(Go)
     case Stop                    => hlController.forward(Stop)
     case Setup                   => hlController.forward(Setup)
   }
@@ -115,12 +115,3 @@ class NetLogoController extends Actor {
 
 }
 
-object NetLogoControllerMessages {
-  case class Execute(agentType: String, cmd: String)
-  case object RequestViewUpdate
-  case object RequestViewState
-  case object Halt
-  case object Go
-  case object Stop
-  case object Setup
-}

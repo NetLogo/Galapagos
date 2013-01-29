@@ -1,4 +1,4 @@
-package models.workspace
+package models.remote
 
 import
   play.api.libs.json._,

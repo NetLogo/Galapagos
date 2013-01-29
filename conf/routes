@@ -2,10 +2,17 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                               controllers.Application.index
-GET     /client                         controllers.Application.client(username: Option[String] ?= None)
-GET     /connect                        controllers.Application.handleSocketConnection(username, room: Int ?= 0)
+# Remote (Teletortoise)
+GET     /                               controllers.remote.Remote.index
+GET     /client                         controllers.remote.Remote.client(username: Option[String] ?= None)
+GET     /connect                        controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
+
+# Local (Tortoise)
+GET     /local                          controllers.local.Local.index
+GET     /local-connect                  controllers.local.Local.handleSocketConnection()
+
+GET     /netlogo-compat                 controllers.local.Local.compat
+GET     /netlogo-engine                 controllers.local.Local.engine
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                   controllers.Assets.at(path="/public", file)

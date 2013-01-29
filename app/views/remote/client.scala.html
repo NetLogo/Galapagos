@@ -1,0 +1,17 @@
+@(username: String)(implicit request: RequestHeader)
+
+@views.html.core.component.netLogoView(component.topBarText(Option(username))) {
+
+  <script type="text/javascript" charset="utf-8">
+      var socketURL = "@controllers.remote.routes.Remote.handleSocketConnection(username).webSocketURL()";
+  </script>
+
+  @views.html.core.component.clientImports("chat-remote-module")
+
+  <td width="3%"></td>
+  <td height="100%">
+    @views.html.core.component.errorPane()
+    @views.html.core.component.chatPane(component.userList())
+  </td>
+
+}
