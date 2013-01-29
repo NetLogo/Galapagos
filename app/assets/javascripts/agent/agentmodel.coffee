@@ -22,7 +22,7 @@ class window.AgentModel
             shape: window.shapes.default,
             color: 'hsl('+(360*Math.random())+',100%,50%)'
           }
-      mergeObjectInto(varUpdates, t)
+        mergeObjectInto(varUpdates, t)
     for patchId, varUpdates of modelUpdate.patches
       anyUpdates = true
       p = @patches[patchId]
