@@ -14,7 +14,7 @@ object NetLogoModels {
         |  __ask-sorted patches [
         |    if random 100 < 20
         |      [ set pcolor yellow ] ]
-        |  crt 50
+        |  crt 100
         |  __ask-sorted turtles [
         |    set color white
         |    setxy random-xcor random-ycor
@@ -72,7 +72,7 @@ object NetLogoModels {
         |  if pcolor = black
         |    [ set next 1 ]
         |end
-        |""".stripMargin, -20, 20, -20, 20)
+        |""".stripMargin, -25, 25, -25, 25)
 
   def compileLife =
     Compiler.compileProcedures(
