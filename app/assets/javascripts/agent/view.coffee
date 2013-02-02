@@ -17,8 +17,7 @@ class window.AgentStreamController
     @layeredView.repaint()
 
   update: (modelUpdate) ->
-    if @model.update(modelUpdate)
-      @repaint()
+    @model.update(modelUpdate)
 
 class View
   constructor: () ->

@@ -30,10 +30,12 @@ document.body.onload = ->
         when 'update'
           updateModel = JSON.parse(message)
           controller.update(updateModel)
+          controller.repaint()
         when 'js', 'model_update'
           updateSet = JSON.parse(ChatModule.runJS(message))
           for update in updateSet
             controller.update(update)
+          controller.repaint()
         else
           globals.logList[globals.messageCount] = new TextHolder(message)
           difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
