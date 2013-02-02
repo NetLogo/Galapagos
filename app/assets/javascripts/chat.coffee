@@ -32,10 +32,11 @@ document.body.onload = ->
           controller.update(updateModel)
           controller.repaint()
         when 'js', 'model_update'
-          if kind == 'model_update'
-            updateSet = JSON.parse(ChatModule.evalJS(message))
-          else
-            updateSet = JSON.parse(ChatModule.runJS(message))
+          updateSet =
+            if kind == 'model_update'
+              ChatModule.evalJS(message)
+            else
+              ChatModule.runJS(message)
           for update in updateSet
             controller.update(update)
           controller.repaint()
