@@ -5,7 +5,10 @@ class exports.ChatModule
   constructor: ->
     @agentList = ['observer', 'turtles', 'patches', 'links']
 
-  runJS: (js) ->
+  evalJS: (js) ->
     eval.call(window, js)
     collectUpdates()
 
+  runJS: (js) ->
+    (new Function(js)).call(window, js)
+    collectUpdates()

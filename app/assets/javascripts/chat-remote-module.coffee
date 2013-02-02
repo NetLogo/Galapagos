@@ -4,3 +4,5 @@ class exports.ChatModule
     @agentList = ['chatter', 'observer', 'turtles', 'patches', 'links']
 
   runJS: ->
+
+  evalJS: ->
