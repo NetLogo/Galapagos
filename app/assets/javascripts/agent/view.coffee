@@ -68,9 +68,8 @@ class TurtleView extends View
     heading = turtle.heading or 0
     scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
-    shape = turtle.shape
-    if typeof(shape)=='string'
-      shape = shapes[shape] or shapes.default
+    shapeName = turtle.shape
+    shape = shapes[shapeName] or shapes.default
     @ctx.save()
     @ctx.translate(xcor, ycor)
     if shape.rotate
@@ -78,7 +77,7 @@ class TurtleView extends View
     else
       @ctx.rotate(Math.PI)
     @ctx.scale(scale, scale)
-    window.drawShape(@ctx, turtle.color, heading, shape)
+    window.drawShape(@ctx, turtle.color, shapeName)
     @ctx.restore()
 
   repaint: (world, turtles) ->
