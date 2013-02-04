@@ -1,31 +1,45 @@
-# Maps (shape name, color) -> canvas
-# Canvas are 300x300, in line with netlogo shapes.
-# Shape/color combinations are pre-rendered to these canvases so they can be
-# quickly rendered to display.
-#
-# If memory is a problem, this can be turned into FIFO, LRU, or LFU cache.
-# Alternatively, each turtle could have it's own personal image pre-rendered.
-# This should be overall better, though, since it will perform well even if
-# turtles are constantly changing shape or color.
-#
-# Currently, the scaling makes shapes look ugly.
-# TODO: Make the shapes prettier. This may require prerendering to different
-# sizes or something.
-shapeCache = {}
+class window.ShapeDrawer
+  drawShape: (ctx, turtleColor, shapeName) ->
+    ctx.translate(.5, -.5)
+    ctx.scale(-1/300, 1/300)
+    @drawRawShape(ctx, turtleColor, shapeName)
+    return
 
-window.drawShape = (ctx, turtleColor, shapeName) ->
-  shape = window.shapes[shapeName] or window.shapes.default
-  if not shapeCache[[shapeName, turtleColor]]?
-    shapeCanvas = document.createElement('canvas')
-    shapeCanvas.width = shapeCanvas.height = 300
-    shapeCtx = shapeCanvas.getContext('2d')
+  drawRawShape: (ctx, turtleColor, shapeName) ->
+    shape = window.shapes[shapeName] or window.shapes.default
     for elt in shape.elements
-      draw[elt.type](shapeCtx, turtleColor, elt)
-    shapeCache[[shapeName, turtleColor]] = shapeCanvas
-  ctx.translate(.5, -.5)
-  ctx.scale(-1/300, 1/300)
-  ctx.drawImage(shapeCache[[shapeName, turtleColor]], 0, 0)
-  return
+      draw[elt.type](ctx, turtleColor, elt)
+    return
+
+class window.CachingShapeDrawer extends ShapeDrawer
+  constructor: () ->
+    # Maps (shape name, color) -> canvas
+    # Canvas are 300x300, in line with netlogo shapes.
+    # Shape/color combinations are pre-rendered to these canvases so they can be
+    # quickly rendered to display.
+    #
+    # If memory is a problem, this can be turned into FIFO, LRU, or LFU cache.
+    # Alternatively, each turtle could have it's own personal image pre-rendered.
+    # This should be overall better, though, since it will perform well even if
+    # turtles are constantly changing shape or color.
+    #
+    # Currently, the scaling makes shapes look ugly.
+    # TODO: Make the shapes prettier. This may require prerendering to different
+    # sizes or something.
+    @shapeCache = {}
+
+  drawShape: (ctx, turtleColor, shapeName) ->
+    shapeCanvas = @shapeCache[[shapeName, turtleColor]]
+    if not shapeCanvas?
+      shapeCanvas = document.createElement('canvas')
+      shapeCanvas.width = shapeCanvas.height = 300
+      shapeCtx = shapeCanvas.getContext('2d')
+      @drawRawShape(shapeCtx, turtleColor, shapeName)
+      @shapeCache[[shapeName, turtleColor]] = shapeCanvas
+    ctx.translate(.5, -.5)
+    ctx.scale(-1/300, 1/300)
+    ctx.drawImage(shapeCanvas, 0, 0)
+    return
 
 setColoring = (ctx, turtleColor, element) ->
   if typeof(turtleColor)=='number'
