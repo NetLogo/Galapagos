@@ -8,11 +8,14 @@ class exports.ChatUI
 
   # Return Type: Unit
   send: (message) ->
-    globals.socket.send(JSON.stringify({ agentType: $globals.$agentType.text(), cmd: message }))
+    @run($globals.$agentType.text(), message)
     globals.messageList.append(message, globals.agentTypes.getCurrent())
     globals.messageList.clearCursor()
     $globals.$inputBuffer.val("")
     @focusInput()
+
+  run: (agentType, cmd) ->
+    globals.socket.send(JSON.stringify({ agentType: agentType, cmd: cmd }))
 
   # Return Type: () -> Unit
   throttledSend: (message) -> _.throttle(@send(message), Constants.THROTTLE_DELAY)
