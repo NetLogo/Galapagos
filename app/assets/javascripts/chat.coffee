@@ -48,5 +48,20 @@ document.body.onload = ->
           #TODO Only call for joins and leaves
           UI.updateUserList(members)
 
+  receiveMessage = (event) ->
+    if messageOriginValid(event.origin)
+      message = JSON.parse(event.data)
+      if message.agentType? and message.cmd?
+        UI.run(message.agentType, message.cmd)
+      else
+        console.log("Received invalid message:")
+        console.log(event)
+  
+  messageOriginValid = (origin) ->
+    # TODO Origin validation. Otherwise we're begging for XSS attacks
+    true
+
+  window.addEventListener('message', receiveMessage, false)
+
   Keybindings.initKeybindings()
 
