@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Embedding Demo</title>
+    <script type="text/javascript">
+      function send(agentType, cmd) {
+        var iframe = document.getElementById("teletortoise");
+        iframe.contentWindow.postMessage(JSON.stringify({
+          agentType: agentType,
+          cmd: cmd
+        }), "*");
+      }
+
+      function setup() {
+        send("observer", "setup");
+      }
+      function go() {
+        send("chatter", "/go");
+      }
+      function stop() {
+        send("chatter", "/stop");
+      }
+    </script>
+  </head>
+  <body>
+    This page demonstrates how to embed teletortoise in another web application.
+    <button onclick="setup();">Setup</button>
+    <button onclick="go();">Go</button>
+    <button onclick="stop();">Stop</button>
+    <iframe id="teletortoise" 
+      src="/client?username=embedded" 
+      style="width:100%; min-height:90%;"></iframe>
+  </body>
+</html>

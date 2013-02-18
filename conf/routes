@@ -5,6 +5,7 @@
 # Remote (Teletortoise)
 GET     /                               controllers.remote.Remote.index
 GET     /client                         controllers.remote.Remote.client(username: Option[String] ?= None)
+GET     /embedded                       controllers.remote.Remote.embedded
 GET     /connect                        controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
 
 # Local (Tortoise)
