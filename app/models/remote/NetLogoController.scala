@@ -78,8 +78,10 @@ class NetLogoController extends Actor {
         executor ! Execute("observer", "go")
         if (going) {Akka.system.scheduler.scheduleOnce((1d / speed).seconds) {self ! GoLoop}}
       case Go =>
-        going = true
-        self ! GoLoop
+        if (!going) {
+          going = true
+          self ! GoLoop
+        }
       case Stop =>
         going = false
       case Setup =>
