@@ -102,7 +102,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         "setting up"
 
       case "open" =>
-        nlController ! Open(args(1))
+        nlController ! Open(args(0))
         "Doesn't work yet"
 
       case _ =>
