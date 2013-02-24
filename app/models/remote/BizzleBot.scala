@@ -47,9 +47,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
     }
   }
 
-  def canFieldMessage(message: String) = {
-    val words = message.split(' ') 
-    words(0).startsWith("/") && Commands.contains(words(0).tail)
+  def canFieldMessage(message: String) = message.split(' ').head.toList match {
+    case '/' :: cmd if (Commands.contains(cmd)) => true
+    case _                                      => false
   }
 
   def offerAssistance(username: String, message: String) : Option[String] = {
@@ -59,9 +59,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
     }
 
-    val words = message.split(' ')
+    val cmd :: args = message.split(' ').toList
 
-    preprocess(words(0)) map {
+    preprocess(cmd) map {
 
       case "commands" =>
         "here are the supported commands: " + Commands.mkString("[", ", ", "]")
@@ -102,7 +102,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         "setting up"
 
       case "open" =>
-        nlController ! Open(words.view(1, words.length).mkString(" "))
+        nlController ! Open(args(1))
         "Doesn't work yet"
 
       case _ =>
