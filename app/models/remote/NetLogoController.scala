@@ -38,6 +38,7 @@ class NetLogoController extends Actor {
   private val viewGen      = Akka.system.actorOf(Props(new ViewUpdateGenerator))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
+  private val modelManager = Akka.system.actorOf(Props(new ModelManager))
 
   ///////////
   // Tasks //
@@ -68,14 +69,14 @@ class NetLogoController extends Actor {
   }
 
   private class HighLevelController extends Actor {
-    var speed = 30d
+    var speed = 60d
     var going = false
     private case object GoLoop
 
     def receive = {
       case GoLoop =>
         executor ! Execute("observer", "go")
-        if (going) {Akka.system.scheduler.scheduleOnce((speed / 1000d).seconds) {self ! GoLoop}}
+        if (going) {Akka.system.scheduler.scheduleOnce((1d / speed).seconds) {self ! GoLoop}}
       case Go =>
         going = true
         self ! GoLoop
@@ -84,6 +85,12 @@ class NetLogoController extends Actor {
       case Setup =>
         executor ! Execute("observer", "setup")
     }
+  }
+
+  private class ModelManager extends Actor {
+    def receive = {
+      case Open(modelName) =>
+    } 
   }
 
   ////////////////
@@ -98,6 +105,7 @@ class NetLogoController extends Actor {
     case RequestViewState        => viewGen.forward(RequestViewState)
     case Stop                    => hlController.forward(Stop)
     case Setup                   => hlController.forward(Setup)
+    case Open(modelName)         => modelManager.forward(Open(modelName))
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =

@@ -27,6 +27,7 @@ object NetLogoControllerMessages {
   case object Setup
   case object Stop
   case class  ViewUpdate(serializedUpdate: String)
+  case class  Open(modelName: String)
 }
 
 trait ChatPacketProtocol {

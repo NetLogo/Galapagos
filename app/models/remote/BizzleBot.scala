@@ -17,7 +17,7 @@ import
 
 import
   models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-    NetLogoControllerMessages.{ Go, Halt, Setup, Stop },
+    NetLogoControllerMessages.{ Go, Halt, Setup, Stop, Open},
     WebInstanceMessages.{ Connected, Join }
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -33,7 +33,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
   val BotName = "BizzleBot"
 
-  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup")
+  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open")
 
   def start() {
     room ? (Join(BotName)) map {
@@ -47,7 +47,10 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
     }
   }
 
-  def canFieldMessage(message: String) = message.startsWith("/") && Commands.contains(message.tail)
+  def canFieldMessage(message: String) = {
+    val words = message.split(' ') 
+    words(0).startsWith("/") && Commands.contains(words(0).tail)
+  }
 
   def offerAssistance(username: String, message: String) : Option[String] = {
 
@@ -56,7 +59,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
     }
 
-    preprocess(message) map {
+    val words = message.split(' ')
+
+    preprocess(words(0)) map {
 
       case "commands" =>
         "here are the supported commands: " + Commands.mkString("[", ", ", "]")
@@ -95,6 +100,10 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       case "setup" =>
         nlController ! Setup
         "setting up"
+
+      case "open" =>
+        nlController ! Open(words.view(1, words.length).mkString(" "))
+        "Doesn't work yet"
 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
