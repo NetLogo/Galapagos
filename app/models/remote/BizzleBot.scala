@@ -106,7 +106,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         "Doesn't work yet"
 
       case "models" =>
-        ModelManager.modelNames mkString("<br><br><ul><li>", "</li>\n<li>", "</li></ul>")
+        "the available models are:<br><br>" + ModelManager.modelNames.mkString("<ul><li>", "</li>\n<li>", "</li></ul>")
 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
