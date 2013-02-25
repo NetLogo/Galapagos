@@ -48,8 +48,8 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
   }
 
   def canFieldMessage(message: String) = message.split(' ').head.toList match {
-    case '/' :: cmd if (Commands.contains(cmd)) => true
-    case _                                      => false
+    case '/' :: cmd if (Commands.contains(cmd.mkString)) => true
+    case _                                               => false
   }
 
   def offerAssistance(username: String, message: String) : Option[String] = {
