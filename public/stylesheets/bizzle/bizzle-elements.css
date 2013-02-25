@@ -16,6 +16,10 @@ table td {
   border-top: none;
 }
 
+li {
+  color: inherit;
+  line-height: inherit;
+}
 
 /*
  GENERAL ELEMENT OVERRIDES
