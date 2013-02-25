@@ -33,7 +33,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
   val BotName = "BizzleBot"
 
-  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open")
+  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open", "models")
 
   def start() {
     room ? (Join(BotName)) map {
@@ -104,6 +104,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       case "open" =>
         nlController ! Open(args(0))
         "Doesn't work yet"
+
+      case "models" =>
+        ModelManager.modelNames mkString("<br><br><ul><li>", "</li>\n<li>", "</li></ul>")
 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
