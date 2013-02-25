@@ -67,7 +67,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         "here are the supported commands: " + Commands.mkString("[", ", ", "]")
 
       case "help" =>
-        """|perhaps this can be of help to you:
+        """perhaps this can be of help to you:
           |
           |<ul><li>Press the Tab key to change agent contexts.</li>
           |<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>
@@ -77,7 +77,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         """.stripMargin
 
       case "info" =>
-        """|NetLogo is a multi-agent programmable modeling environment,
+        """NetLogo is a multi-agent programmable modeling environment,
           | authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.
           |  For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>.
         """.stripMargin.replaceAll("""\n|\r""", "") // Remove the newlines; they're just in there to make the string presentable in the code here
