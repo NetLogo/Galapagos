@@ -98,14 +98,14 @@ class NetLogoController extends Actor {
   ////////////////
 
   def receive = {
-    case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
-    case Go                      => hlController.forward(Go)
-    case Halt                    => halter.forward(Halt)
-    case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
-    case RequestViewState        => viewGen.forward(RequestViewState)
-    case Stop                    => hlController.forward(Stop)
-    case Setup                   => hlController.forward(Setup)
-    case Open(modelName)         => modelManager.forward(Open(modelName))
+    case msg @ Execute(_, _)     =>     executor.forward(msg)
+    case msg @ Go                => hlController.forward(msg)
+    case msg @ Halt              =>       halter.forward(msg)
+    case msg @ RequestViewUpdate =>  viewManager.forward(msg)
+    case msg @ RequestViewState  =>  viewManager.forward(msg)
+    case msg @ Stop              => hlController.forward(msg)
+    case msg @ Setup             => hlController.forward(msg)
+    case msg @ Open(_)           => modelManager.forward(msg)
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
