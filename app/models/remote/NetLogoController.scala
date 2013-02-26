@@ -67,24 +67,27 @@ class NetLogoController extends Actor {
   }
 
   private class HighLevelController extends Actor {
-    var speed = 60d
-    var going = false
-    private case object GoLoop
+
+    var speed   = 60d
+    var isGoing = false
 
     def receive = {
-      case GoLoop =>
-        executor ! Execute("observer", "go")
-        if (going) {Akka.system.scheduler.scheduleOnce((1d / speed).seconds) {self ! GoLoop}}
       case Go =>
-        if (!going) {
-          going = true
-          self ! GoLoop
+        if (!isGoing) {
+          isGoing = true
+          go()
         }
       case Stop =>
-        going = false
+        isGoing = false
       case Setup =>
         executor ! Execute("observer", "setup")
     }
+
+    def go() {
+      executor ! Execute("observer", "go")
+      if (isGoing) Akka.system.scheduler.scheduleOnce((1d / speed).seconds){ go() }
+    }
+
   }
 
   private class ModelManager extends Actor {
