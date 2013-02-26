@@ -52,7 +52,8 @@ class RemoteInstance extends Actor with WebInstance {
   protected type MemberKey   = String
   protected type MemberValue = Channel[JsValue]
   protected type MemberTuple = (MemberKey, MemberValue)
-  val members = MutableMap.empty[MemberKey, MemberValue]
+
+  private val members = MutableMap.empty[MemberKey, MemberValue]
 
   override def receiveExtras = {
 
