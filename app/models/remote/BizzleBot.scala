@@ -111,7 +111,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
 
-    } map ("@%s, ".format(username) + _)
+    } map (msg => s"@$username, $msg")
 
   }
 
