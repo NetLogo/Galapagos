@@ -11,16 +11,22 @@ import
 
 import
   play.api.{ libs, Logger },
-    libs.{ json, iteratee },
+    libs.{ concurrent, json, iteratee },
+      concurrent.Akka,
       iteratee.Iteratee,
       json.JsValue
 
+import 
+  play.api.libs.concurrent.Akka
+import play.api.Play.current
+
 import
   models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-    NetLogoControllerMessages.{ Go, Halt, Setup, Stop, Open},
+    NetLogoControllerMessages._,
     WebInstanceMessages.{ Connected, Join }
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.Play.current
 
 /*
 Description:
@@ -102,8 +108,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         "setting up"
 
       case "open" =>
-        nlController ! Open(words.view(1, words.length).mkString(" "))
-        "Doesn't work yet"
+        val modelName = args(0)
+        nlController ! NewModel(modelName)
+        s"""opening the "$modelName" model"""
 
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"

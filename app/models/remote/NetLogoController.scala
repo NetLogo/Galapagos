@@ -30,9 +30,7 @@ class NetLogoController extends Actor {
 
   private var currentState: Mirroring.State = Map()
 
-  private val modelsPath = "public/models/"
-  private val modelName  = "Wolf Sheep Predation"
-  private lazy val ws    = workspace(new File(modelsPath + modelName + ".nlogo"))
+  private var ws = workspace(ModelManager("Wolf_Sheep_Predation").get)
 
   private val executor     = Akka.system.actorOf(Props(new Executor))
   private val viewGen      = Akka.system.actorOf(Props(new ViewUpdateGenerator))
@@ -91,8 +89,12 @@ class NetLogoController extends Actor {
 
   private class ModelManager extends Actor {
     def receive = {
-      case Open(modelName) =>
-    } 
+      case NewModel(modelName) =>
+        ws.clearAll()
+        ws.dispose()
+        ws = workspace(ModelManager(modelName).get) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+        viewManager ! ResetViewState
+    }
   }
 
   ////////////////
@@ -100,14 +102,14 @@ class NetLogoController extends Actor {
   ////////////////
 
   def receive = {
-    case Execute(agentType, cmd) => executor.forward(Execute(agentType, cmd))
-    case Go                      => hlController.forward(Go)
-    case Halt                    => halter.forward(Halt)
-    case RequestViewUpdate       => viewGen.forward(RequestViewUpdate)
-    case RequestViewState        => viewGen.forward(RequestViewState)
-    case Stop                    => hlController.forward(Stop)
-    case Setup                   => hlController.forward(Setup)
-    case Open(modelName)         => modelManager.forward(Open(modelName))
+    case msg @ Execute(_, _)     =>     executor.forward(msg)
+    case msg @ Go                => hlController.forward(msg)
+    case msg @ Halt              =>       halter.forward(msg)
+    case msg @ NewModel(_)       =>    wsManager.forward(msg)
+    case msg @ RequestViewUpdate =>  viewManager.forward(msg)
+    case msg @ RequestViewState  =>  viewManager.forward(msg)
+    case msg @ Stop              => hlController.forward(msg)
+    case msg @ Setup             => hlController.forward(msg)
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =

@@ -22,12 +22,12 @@ object NetLogoControllerMessages {
   case class  Execute(agentType: String, cmd: String)
   case object Go
   case object Halt
+  case class  NewModel(modelName: String)
   case object RequestViewUpdate
   case object RequestViewState
   case object Setup
   case object Stop
   case class  ViewUpdate(serializedUpdate: String)
-  case class  Open(modelName: String)
 }
 
 trait ChatPacketProtocol {
