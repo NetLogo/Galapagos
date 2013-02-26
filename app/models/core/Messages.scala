@@ -24,6 +24,7 @@ object NetLogoControllerMessages {
   case object Halt
   case object RequestViewUpdate
   case object RequestViewState
+  case object ResetViewState
   case object Setup
   case object Stop
   case class  ViewUpdate(serializedUpdate: String)

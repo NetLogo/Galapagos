@@ -33,7 +33,7 @@ class NetLogoController extends Actor {
   private val ws = workspace(ModelManager("Wolf Sheep Predation").get)
 
   private val executor     = Akka.system.actorOf(Props(new Executor))
-  private val viewGen      = Akka.system.actorOf(Props(new ViewUpdateGenerator))
+  private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
   private val modelManager = Akka.system.actorOf(Props(new ModelManager))
@@ -51,7 +51,7 @@ class NetLogoController extends Actor {
     }
   }
 
-  private class ViewUpdateGenerator extends Actor {
+  private class ViewStateManager extends Actor {
     def receive = {
       case RequestViewUpdate => // possibly long running
         val (newState, update) = getStateUpdate(currentState)
@@ -59,6 +59,8 @@ class NetLogoController extends Actor {
         sender ! ViewUpdate(Serializer.serialize(update))
       case RequestViewState => // possibly long running
         sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+      case ResetViewState =>
+        currentState = Map()
     }
   }
 
