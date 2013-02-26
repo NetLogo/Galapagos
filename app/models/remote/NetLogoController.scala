@@ -36,7 +36,7 @@ class NetLogoController extends Actor {
   private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
-  private val modelManager = Akka.system.actorOf(Props(new ModelManager))
+  private val wsManager    = Akka.system.actorOf(Props(new WorkspaceManager))
 
   ///////////
   // Tasks //
@@ -92,7 +92,7 @@ class NetLogoController extends Actor {
 
   }
 
-  private class ModelManager extends Actor {
+  private class WorkspaceManager extends Actor {
     def receive = {
       case Open(modelName) =>
     } 
@@ -110,7 +110,7 @@ class NetLogoController extends Actor {
     case msg @ RequestViewState  =>  viewManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
     case msg @ Setup             => hlController.forward(msg)
-    case msg @ Open(_)           => modelManager.forward(msg)
+    case msg @ Open(_)           => wsManager.forward(msg)
   }
 
   private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
