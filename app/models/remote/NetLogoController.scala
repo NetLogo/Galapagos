@@ -23,6 +23,8 @@ import
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+//@ One day, I'll kill all of this insane, unscalable, impossible-to-reason-about actor proliferation
+//  and implement a priority mailbox, like things should have been done to begin with.  --Jason (2/26/13)
 class NetLogoController extends Actor {
 
   import NetLogoControllerMessages._
