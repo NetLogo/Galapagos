@@ -117,13 +117,11 @@ class RemoteInstance extends Actor with WebInstance {
   }
 
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
-  // Also, why did my structural typing fail here...?
-  implicit class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
+  implicit class Pushable[T <: { def foreach[U](f: MemberTuple => U) }](foreachable: T) {
     def pushForeach(msg: JsObject) {
       foreachable foreach { case (username, channel) => channel.push(msg) }
     }
   }
-
 
   override def broadcast(msg: JsObject)                { notifyAll(msg) }
   override def execute(agentType: String, cmd: String) = nlController ! Execute(agentType, cmd)
