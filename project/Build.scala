@@ -18,10 +18,11 @@ object ApplicationBuild extends Build {
   )
 
   val moreSettings = Seq[Setting[_]](
-    scalacOptions in ThisBuild += "-feature"
+    scalacOptions += "-language:_"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    moreSettings ++ ObtainResources.settings: _*)
+    moreSettings ++ ObtainResources.settings: _*
+  )
 
 }
