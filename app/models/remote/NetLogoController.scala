@@ -4,7 +4,7 @@ import
   java.io.File
 
 import
-  akka.actor.{ Actor, Props }
+  akka.actor.{ Actor, ActorRef, Props }
 
 import
   org.nlogo.{ headless, mirror },
@@ -25,7 +25,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 //@ One day, I'll kill all of this insane, unscalable, impossible-to-reason-about actor proliferation
 //  and implement a priority mailbox, like things should have been done to begin with.  --Jason (2/26/13)
-class NetLogoController extends Actor {
+class NetLogoController(channel: ActorRef) extends Actor {
 
   import NetLogoControllerMessages._
   import WebInstanceMessages._
@@ -49,7 +49,7 @@ class NetLogoController extends Actor {
       case Execute(agentType, cmd) => // possibly long running
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
-        sender ! CommandOutput(agentType, ws.execute(agentType, cmd))
+        channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
     }
   }
 
@@ -58,9 +58,9 @@ class NetLogoController extends Actor {
       case RequestViewUpdate => // possibly long running
         val (newState, update) = getStateUpdate(currentState)
         currentState = newState
-        sender ! ViewUpdate(Serializer.serialize(update))
+        channel ! ViewUpdate(Serializer.serialize(update))
       case RequestViewState => // possibly long running
-        sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+        channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
       case ResetViewState =>
         currentState = Map()
     }

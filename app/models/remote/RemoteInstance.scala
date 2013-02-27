@@ -41,7 +41,7 @@ class RemoteInstance extends Actor with WebInstance {
   protected val ChatterContext = "chatter"
   override protected val extraContexts = ISeq(RoomContext, ChatterContext)
 
-  private val nlController = Akka.system.actorOf(Props[NetLogoController])
+  private val nlController = Akka.system.actorOf(Props(new NetLogoController(self)))
   private val BizzleBot    = new BizzleBot(room, nlController)
 
   BizzleBot.start()
