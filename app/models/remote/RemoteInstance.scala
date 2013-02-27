@@ -41,7 +41,7 @@ class RemoteInstance extends Actor with WebInstance {
   protected val ChatterContext = "chatter"
   override protected val extraContexts = ISeq(RoomContext, ChatterContext)
 
-  private val nlController = Akka.system.actorOf(Props[NetLogoController])
+  private val nlController = Akka.system.actorOf(Props(new NetLogoController(self)))
   private val BizzleBot    = new BizzleBot(room, nlController)
 
   BizzleBot.start()
@@ -52,7 +52,8 @@ class RemoteInstance extends Actor with WebInstance {
   protected type MemberKey   = String
   protected type MemberValue = Channel[JsValue]
   protected type MemberTuple = (MemberKey, MemberValue)
-  val members = MutableMap.empty[MemberKey, MemberValue]
+
+  private val members = MutableMap.empty[MemberKey, MemberValue]
 
   override def receiveExtras = {
 
@@ -116,13 +117,11 @@ class RemoteInstance extends Actor with WebInstance {
   }
 
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
-  // Also, why did my structural typing fail here...?
-  implicit class Pushable[T <: Iterable[MemberTuple]](foreachable: T) {
+  implicit class Pushable[T <: { def foreach[U](f: MemberTuple => U) }](foreachable: T) {
     def pushForeach(msg: JsObject) {
       foreachable foreach { case (username, channel) => channel.push(msg) }
     }
   }
-
 
   override def broadcast(msg: JsObject)                { notifyAll(msg) }
   override def execute(agentType: String, cmd: String) = nlController ! Execute(agentType, cmd)

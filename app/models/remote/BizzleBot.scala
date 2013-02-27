@@ -39,7 +39,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
   val BotName = "BizzleBot"
 
-  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open")
+  private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open", "models")
 
   def start() {
     room ? (Join(BotName)) map {
@@ -53,9 +53,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
     }
   }
 
-  def canFieldMessage(message: String) = {
-    val words = message.split(' ') 
-    words(0).startsWith("/") && Commands.contains(words(0).tail)
+  def canFieldMessage(message: String) = message.split(' ').head.toList match {
+    case '/' :: cmd if (Commands.contains(cmd.mkString)) => true
+    case _                                               => false
   }
 
   def offerAssistance(username: String, message: String) : Option[String] = {
@@ -65,15 +65,15 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
     }
 
-    val words = message.split(' ')
+    val cmd :: args = message.split(' ').toList
 
-    preprocess(words(0)) map {
+    preprocess(cmd) map {
 
       case "commands" =>
         "here are the supported commands: " + Commands.mkString("[", ", ", "]")
 
       case "help" =>
-        """|perhaps this can be of help to you:
+        """perhaps this can be of help to you:
           |
           |<ul><li>Press the Tab key to change agent contexts.</li>
           |<li>Press the Up Arrow/Down Arrow to navigate through previously-entered commands.</li>
@@ -83,7 +83,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         """.stripMargin
 
       case "info" =>
-        """|NetLogo is a multi-agent programmable modeling environment,
+        """NetLogo is a multi-agent programmable modeling environment,
           | authored by Uri Wilensky and developed at Northwestern University's Center for Connected Learning.
           |  For additional information, please visit <a href=\"http://ccl.northwestern.edu/netlogo/\">the NetLogo website</a>.
         """.stripMargin.replaceAll("""\n|\r""", "") // Remove the newlines; they're just in there to make the string presentable in the code here
@@ -112,10 +112,13 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         nlController ! NewModel(modelName)
         s"""opening the "$modelName" model"""
 
+      case "models" =>
+        "the available models are:<br><br>" + ModelManager.modelNames.mkString("<ul><li>", "</li>\n<li>", "</li></ul>")
+
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
 
-    } map ("@%s, ".format(username) + _)
+    } map (msg => s"@$username, $msg")
 
   }
 

@@ -4,7 +4,7 @@ import
   java.io.File
 
 import
-  akka.actor.{ Actor, Props }
+  akka.actor.{ Actor, ActorRef, Props }
 
 import
   org.nlogo.{ headless, mirror },
@@ -23,7 +23,9 @@ import
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-class NetLogoController extends Actor {
+//@ One day, I'll kill all of this insane, unscalable, impossible-to-reason-about actor proliferation
+//  and implement a priority mailbox, like things should have been done to begin with.  --Jason (2/26/13)
+class NetLogoController(channel: ActorRef) extends Actor {
 
   import NetLogoControllerMessages._
   import WebInstanceMessages._
@@ -33,10 +35,10 @@ class NetLogoController extends Actor {
   private var ws = workspace(ModelManager("Wolf_Sheep_Predation").get)
 
   private val executor     = Akka.system.actorOf(Props(new Executor))
-  private val viewGen      = Akka.system.actorOf(Props(new ViewUpdateGenerator))
+  private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
-  private val modelManager = Akka.system.actorOf(Props(new ModelManager))
+  private val wsManager    = Akka.system.actorOf(Props(new WorkspaceManager))
 
   ///////////
   // Tasks //
@@ -47,18 +49,20 @@ class NetLogoController extends Actor {
       case Execute(agentType, cmd) => // possibly long running
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
-        sender ! CommandOutput(agentType, ws.execute(agentType, cmd))
+        channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
     }
   }
 
-  private class ViewUpdateGenerator extends Actor {
+  private class ViewStateManager extends Actor {
     def receive = {
       case RequestViewUpdate => // possibly long running
         val (newState, update) = getStateUpdate(currentState)
         currentState = newState
-        sender ! ViewUpdate(Serializer.serialize(update))
+        channel ! ViewUpdate(Serializer.serialize(update))
       case RequestViewState => // possibly long running
-        sender ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+        channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+      case ResetViewState =>
+        currentState = Map()
     }
   }
 
@@ -67,27 +71,30 @@ class NetLogoController extends Actor {
   }
 
   private class HighLevelController extends Actor {
-    var speed = 60d
-    var going = false
-    private case object GoLoop
+
+    var speed   = 60d
+    var isGoing = false
 
     def receive = {
-      case GoLoop =>
-        executor ! Execute("observer", "go")
-        if (going) {Akka.system.scheduler.scheduleOnce((1d / speed).seconds) {self ! GoLoop}}
       case Go =>
-        if (!going) {
-          going = true
-          self ! GoLoop
+        if (!isGoing) {
+          isGoing = true
+          go()
         }
       case Stop =>
-        going = false
+        isGoing = false
       case Setup =>
         executor ! Execute("observer", "setup")
     }
+
+    def go() {
+      executor ! Execute("observer", "go")
+      if (isGoing) Akka.system.scheduler.scheduleOnce((1d / speed).seconds){ go() }
+    }
+
   }
 
-  private class ModelManager extends Actor {
+  private class WorkspaceManager extends Actor {
     def receive = {
       case NewModel(modelName) =>
         ws.clearAll()

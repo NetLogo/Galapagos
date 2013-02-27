@@ -25,6 +25,7 @@ object NetLogoControllerMessages {
   case class  NewModel(modelName: String)
   case object RequestViewUpdate
   case object RequestViewState
+  case object ResetViewState
   case object Setup
   case object Stop
   case class  ViewUpdate(serializedUpdate: String)
