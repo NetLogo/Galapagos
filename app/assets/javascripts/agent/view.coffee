@@ -85,7 +85,6 @@ class TurtleView extends View
     @ctx.restore()
 
   repaint: (world, turtles) ->
-    if not @matchesWorld(world)
     @transformToWorld(world)
     @ctx.lineWidth = .1
     @ctx.fillStyle = 'red'
@@ -114,9 +113,9 @@ class PatchView extends View
     color = patch.pcolor
     if typeof(color) == 'number'
       color = netlogoColorToCSS(color)
-      #if color != @patchColors[patchIndex]
-    @patchColors[patchIndex] = @ctx.fillStyle = color
-    @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
+    if color != @patchColors[patchIndex]
+      @patchColors[patchIndex] = @ctx.fillStyle = color
+      @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
 
   repaint: (world, patches) ->
     if not @matchesWorld(world)
