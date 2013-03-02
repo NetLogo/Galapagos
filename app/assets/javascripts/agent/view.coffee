@@ -28,28 +28,28 @@ class View
     @ctx = @canvas.getContext('2d')
 
   matchesWorld: (world) ->
-    (@maxPxcor? and @minPxcor? and @maxPycor? and @minPycor? and @patchSize?) and
-      (not world.maxPxcor? or world.maxPxcor == @maxPxcor) and
-      (not world.minPxcor? or world.minPxcor == @minPxcor) and
-      (not world.maxPycor? or world.maxPycor == @maxPycor) and
-      (not world.minPycor? or world.minPycor == @minPycor) and
-      (not world.patchSize? or world.patchSize == @patchSize)
+    (@maxpxcor? and @minpxcor? and @maxpycor? and @minpycor? and @patchsize?) and
+      (not world.maxpxcor? or world.maxpxcor == @maxpxcor) and
+      (not world.minpxcor? or world.minpxcor == @minpxcor) and
+      (not world.maxpycor? or world.maxpycor == @maxpycor) and
+      (not world.minpycor? or world.minpycor == @minpycor) and
+      (not world.patchsize? or world.patchsize == @patchsize)
 
   transformToWorld: (world) ->
-    @maxPxcor = if world.maxPxcor? then world.maxPxcor else 25
-    @minPxcor = if world.minPxcor? then world.minPxcor else -25
-    @maxPycor = if world.maxPycor? then world.maxPycor else 25
-    @minPycor = if world.minPycor? then world.minPycor else -25
-    @patchSize = if world.patchSize? then world.patchSize else 9
-    @patchWidth = @maxPxcor - @minPxcor + 1
-    @patchHeight = @maxPycor - @minPycor + 1
-    @canvas.width =  @patchWidth * @patchSize
-    @canvas.height = @patchHeight * @patchSize
+    @maxpxcor = if world.maxpxcor? then world.maxpxcor else 25
+    @minpxcor = if world.minpxcor? then world.minpxcor else -25
+    @maxpycor = if world.maxpycor? then world.maxpycor else 25
+    @minpycor = if world.minpycor? then world.minpycor else -25
+    @patchsize = if world.patchsize? then world.patchsize else 9
+    @patchWidth = @maxpxcor - @minpxcor + 1
+    @patchHeight = @maxpycor - @minpycor + 1
+    @canvas.width =  @patchWidth * @patchsize
+    @canvas.height = @patchHeight * @patchsize
     # Argument rows are the matrix columns. See spec.
     @ctx.setTransform(@canvas.width/@patchWidth, 0,
                       0, -@canvas.height/@patchHeight,
-                      -(@minPxcor-.5)*@canvas.width/@patchWidth,
-                      (@maxPycor+.5)*@canvas.height/@patchHeight)
+                      -(@minpxcor-.5)*@canvas.width/@patchWidth,
+                      (@maxpycor+.5)*@canvas.height/@patchHeight)
 
 class LayeredView extends View
   setLayers: (layers...) ->
@@ -85,6 +85,7 @@ class TurtleView extends View
     @ctx.restore()
 
   repaint: (world, turtles) ->
+    if not @matchesWorld(world)
     @transformToWorld(world)
     @ctx.lineWidth = .1
     @ctx.fillStyle = 'red'
@@ -100,22 +101,22 @@ class PatchView extends View
   transformToWorld: (world) ->
     super(world)
     @patchColors = []
-    for x in [@minPxcor..@maxPxcor]
-      for y in [@maxPycor..@minPycor]
+    for x in [@minpxcor..@maxpxcor]
+      for y in [@maxpycor..@minpycor]
         @colorPatch({'pxcor': x, 'pycor': y, 'pcolor': 'black'})
       col = 0
     return
 
   colorPatch: (patch) ->
-    row = patch.pxcor-@minPxcor
-    col = @maxPycor - patch.pycor
+    row = patch.pxcor-@minpxcor
+    col = @maxpycor - patch.pycor
     patchIndex = row*@patchWidth + col
     color = patch.pcolor
     if typeof(color) == 'number'
       color = netlogoColorToCSS(color)
-    if color != @patchColors[patchIndex]
-      @patchColors[patchIndex] = @ctx.fillStyle = color
-      @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
+      #if color != @patchColors[patchIndex]
+    @patchColors[patchIndex] = @ctx.fillStyle = color
+    @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
 
   repaint: (world, patches) ->
     if not @matchesWorld(world)

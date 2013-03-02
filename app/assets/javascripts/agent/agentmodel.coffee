@@ -29,7 +29,10 @@ class window.AgentModel
       p ?= @patches[patchId] = {}
       mergeObjectInto(varUpdates, p)
     mergeObjectInto(modelUpdate.observer, @observer)
-    mergeObjectInto(modelUpdate.world, @world)
+    if modelUpdate.world?
+      # TODO: This is really not okay. The model and the updates should be the
+      # same format.
+      mergeObjectInto(modelUpdate.world[0], @world)
     anyUpdates
 
   mergeObjectInto = (updatedObject, targetObject) ->
