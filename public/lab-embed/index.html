@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>NetLogo Model and Lab Grapher</title>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="modernizr/modernizr.js"></script>
+    <script type="text/javascript">
+      if (!Modernizr.svg) { window.location = 'browser-upgrade.html'; }
+    </script>
+    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="d3/d3.v2.js"></script>
+    <script type="text/javascript" src="lab/lab.grapher.js"></script>
+  </head>
+  <body>
+    <h1>NetLogo Models integrated with Lab Grapher</h1>
+    <p>
+      Select NetLogo model:
+      <select id='select-netlogo-model'>
+        <option value="Climate_Change">Climate Change</option>
+        <option value="Wolf_Sheep_Predation" selected>Wolf-Sheep Predation</option>
+      </select>
+    </p>
+    <div class="top">
+      <div id="graph-list"></div>
+      <div id="appletwrapper">
+        <ul id="netlogo-button-list" class="hlist component_group"></ul>
+        <div id="applet-container" >
+          <iframe id="netlogo-applet" src="http://localhost:9000/" style="width: 100%; min-height: 90%" width="700" height="500"></iframe>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="bottom">
+      <div id="globals">
+        <h2>NetLogo Global Variables</h2>
+        <p>
+          A list of all the Global variables in the NetLogo Applet and their values.
+        </p>
+        <p>
+          After running the model click <b>Update Values</b> to display the latest values.
+        </p>
+        <table>
+          <thead><tr>
+            <th>index</th>
+            <th>Globals</th>
+            <th><button id="update-globals-button" class="nlogo component_group">Update Values</button></th>
+          </tr></thead>
+          <tbody id="globals-table"></tbody>
+        </table>
+      </div>
+      <div id="modelstate">
+        <h2>NetLogo Model State</h2>
+        <p>
+          Click <b>Save State</b> to save a text representation of the NetLogo Applet model
+          state into the container below. Click <b>Restore State</b> to restore the saved
+          state back into the NetLogo Applet.
+        </p>
+        <ul class="hlist">
+          <li><button id="save-state-button" class="nlogo component_group">Save State</button></li>
+          <li><button id="restore-state-button" class="nlogo component_group">Restore State</button></li>
+        </ul>
+        <pre id="world-state"></pre>
+      </div>
+    </div>
+    <script src="netlogo.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var selectNetLogoModel = document.getElementById("select-netlogo-model"),
+          buttonList = document.getElementById("netlogo-button-list"),
+          graphList = document.getElementById("graph-list"),
+          globalsTable = document.getElementById("globals-table"),
+          worldState = document.getElementById("world-state"),
+          graph,
+          world_state             = document.getElementById("world-state"),
+          globals_table           = document.getElementById("globals-table"),
+          save_state_button       = document.getElementById("save-state-button"),
+          restore_state_button    = document.getElementById("restore-state-button"),
+          update_globals_button   = document.getElementById("update-globals-button"),
+          run_button              = document.getElementById("run-button"),
+          reset_button            = document.getElementById("reset-button"),
+          blankGraphOptions = {
+            title: "Graph",
+            xlabel: "Time (s)",
+            xmin: 0, xmax: 60,
+            ylabel: "Y Axis",
+            ymin: 10, ymax: 40,
+            points: [],
+            circleRadius: false,
+            dataChange: false
+          },
+          applet,
+          appletWrapper = document.getElementById("appletwrapper"),
+          appletContainer = document.getElementById("applet-container"),
+          modelConfigurations = {
+            "Climate_Change": {
+              "graphs": [
+                {
+                  "graphVariables": [3],
+                  "graphOptions": {
+                    title: "Temperature of Atmosphere",
+                    xlabel:    "Time",
+                    xmin: 0, xmax: 300,
+                    ylabel:    "Temperature",
+                    ymin: 0, ymax: 20,
+                    points: [],
+                    circleRadius: false,
+                    dataChange: false
+                  }
+                }
+              ],
+              "modelInitialization": "",
+              "netLogoButtons": [
+                {
+                  "name": "add cloud",
+                  "cmd": "add-cloud"
+                },
+                {
+                  "name": "remove cloud",
+                  "cmd": "remove-cloud"
+                },
+                {
+                  "name": "add CO2",
+                  "cmd": "add-co2"
+                },
+                {
+                  "name": "remove CO2",
+                  "cmd": "remove-co2"
+                }
+              ],
+              "netLogoSliders": [
+                {
+                  "name": "sun-brightness",
+                  "min": 0,
+                  "max": 5,
+                  "step": .2,
+                  "value": 1
+                },
+                {
+                  "name": "albedo",
+                  "min": 0,
+                  "max": 1,
+                  "step": .05,
+                  "value": .6
+                }
+              ], 
+              "netLogoCheckboxes": [
+              ],
+            },
+
+            "Wolf_Sheep_Predation": {
+              "graphs": [
+                {
+                  "graphVariables": [13, 10],
+                  "graphOptions": {
+                    title: "Global Temperature",
+                    xlabel:    "Date",
+                    xmin: 2000, xmax: 2100,
+                    ylabel:    "Temperature",
+                    ymin: 0, ymax: 35,
+                    points: [],
+                    circleRadius: false,
+                    dataChange: false
+                  }
+                },
+                {
+                  "graphVariables": [13, 22],
+                  "graphOptions": {
+                    title: "CO2 PPM in Air",
+                    xlabel:    "Date",
+                    xmin: 2000, xmax: 2100,
+                    ylabel:    "PPM",
+                    ymin: 0, ymax: 400,
+                    points: [],
+                    circleRadius: false,
+                    dataChange: false
+                  }
+                }
+              ],
+              "size": {
+                "width": 931,
+                "height": 611
+              },
+              "modelInitialization": "",
+              "netLogoButtons": [
+              ],
+              "netLogoSliders": [
+                {
+                  "name": "grass-regrowth-time",
+                  "min": 0,
+                  "max": 100,
+                  "value": 30
+                },
+                {
+                  "name": "initial-number-sheep",
+                  "min": 0,
+                  "max": 250,
+                  "value": 100
+                },
+                {
+                  "name": "initial-number-wolves",
+                  "min": 0,
+                  "max": 250,
+                  "value": 50
+                },
+                {
+                  "name": "sheep-gain-from-food",
+                  "min": 0,
+                  "max": 50,
+                  "value": 4
+                },
+                {
+                  "name": "wolf-gain-from-food",
+                  "min": 0,
+                  "max": 50,
+                  "value": 20
+                }
+              ], 
+              "netLogoCheckboxes": [
+                {
+                  "name": "grass?",
+                  "value": false,
+                  "cmd": "watch one-of air-CO2"
+                }
+              ],
+              "appletString": [''].join('\n')
+          }
+        };
+      
+      appletContainer 
+
+      function selectNetLogoModelHandler() {
+        modelSelection = selectNetLogoModel.value;
+        modelConfig = modelConfigurations[modelSelection];
+        d3.selectAll(".modelbuttons").remove();
+        buttonList.innerHTML = "";
+        applet = document.getElementById("netlogo-applet");
+        $(appletWrapper).width(parseInt(applet.width) + 20);
+        $(appletWrapper).height(parseInt(applet.height) + 70);
+        applet_grapher = new netlogo.AppletGrapher(applet, modelSelection, modelConfig, buttonList, graphList, globalsTable, worldState);
+      }
+      selectNetLogoModel.onchange = selectNetLogoModelHandler;
+      selectNetLogoModelHandler();
+    </script>
+
+  </body>
+</html>
