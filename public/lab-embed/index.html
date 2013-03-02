@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-    <title>NetLogo Model and Lab Grapher</title>
+    <title>Embedded NetLogo Model</title>
     <link href="styles.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="modernizr/modernizr.js"></script>
     <script type="text/javascript">
@@ -13,7 +13,7 @@
     <script type="text/javascript" src="lab/lab.grapher.js"></script>
   </head>
   <body>
-    <h1>NetLogo Models integrated with Lab Grapher</h1>
+    <h1>Embedded NetLogo Model</h1>
     <p>
       Select NetLogo model:
       <select id='select-netlogo-model'>
@@ -26,43 +26,11 @@
       <div id="appletwrapper">
         <ul id="netlogo-button-list" class="hlist component_group"></ul>
         <div id="applet-container" >
-          <iframe id="netlogo-applet" src="http://localhost:9000/" style="width: 100%; min-height: 90%" width="700" height="500"></iframe>
+          <iframe id="netlogo-applet" src="http://localhost:9000/" style="width: 100%; min-height: 90%" width="700" height="600"></iframe>
         </div>
       </div>
     </div>
     <hr>
-    <div class="bottom">
-      <div id="globals">
-        <h2>NetLogo Global Variables</h2>
-        <p>
-          A list of all the Global variables in the NetLogo Applet and their values.
-        </p>
-        <p>
-          After running the model click <b>Update Values</b> to display the latest values.
-        </p>
-        <table>
-          <thead><tr>
-            <th>index</th>
-            <th>Globals</th>
-            <th><button id="update-globals-button" class="nlogo component_group">Update Values</button></th>
-          </tr></thead>
-          <tbody id="globals-table"></tbody>
-        </table>
-      </div>
-      <div id="modelstate">
-        <h2>NetLogo Model State</h2>
-        <p>
-          Click <b>Save State</b> to save a text representation of the NetLogo Applet model
-          state into the container below. Click <b>Restore State</b> to restore the saved
-          state back into the NetLogo Applet.
-        </p>
-        <ul class="hlist">
-          <li><button id="save-state-button" class="nlogo component_group">Save State</button></li>
-          <li><button id="restore-state-button" class="nlogo component_group">Restore State</button></li>
-        </ul>
-        <pre id="world-state"></pre>
-      </div>
-    </div>
     <script src="netlogo.js" type="text/javascript"></script>
     <script type="text/javascript">
       var selectNetLogoModel = document.getElementById("select-netlogo-model"),

@@ -78,9 +78,9 @@ netlogo.AppletGrapher.prototype.isAppletReady = function() {
   }
   if(self.applet.ready) {
     self.nl_setup_objects();
+    self.commandLater("/stop", "chatter");
+    self.commandLater("/open " + this.modelName, "chatter");
     if (this.modelInitialization) {
-      self.commandLater("/stop", "chatter");
-      self.commandLater("/open " + this.modelName, "chatter");
       self.commandLater(this.modelInitialization);
     }
     self.AddButtons();
@@ -178,7 +178,7 @@ netlogo.AppletGrapher.prototype.nl_cmd_reset = function() {
 //
 netlogo.AppletGrapher.prototype.startNLDataPoller = function() {
   var self = this;
-  self.applet.data_poller = window.setInterval(function() { self.nlDataPoller(); }, 200);
+  //self.applet.data_poller = window.setInterval(function() { self.nlDataPoller(); }, 200);
 };
 
 netlogo.AppletGrapher.prototype.stopNLDataPoller = function() {
@@ -294,7 +294,7 @@ netlogo.AppletGrapher.prototype.AddButtons = function() {
     var self = this;
     return function() {
       self.nl_cmd_reset();
-      self.resetGraphs();
+      //self.resetGraphs();
       return true;
     };
   };
