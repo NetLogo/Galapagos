@@ -1,7 +1,7 @@
 # input: number in [0, 140) range
 # result: CSS color string
 window.netlogoColorToCSS = (number) ->
-  cachedNetlogoColors[number*10]
+  cachedNetlogoColors[Math.floor(number*10)]
 
 # copied from api/Color.scala. note these aren't the same numbers as
 # `map extract-rgb base-colors` gives you; see comments in Scala source

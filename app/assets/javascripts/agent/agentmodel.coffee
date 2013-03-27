@@ -23,13 +23,20 @@ class window.AgentModel
             color: 'hsl('+(360*Math.random())+',100%,50%)'
           }
         mergeObjectInto(varUpdates, t)
+    if modelUpdate.world? and modelUpdate.world[0]?
+      # TODO: This is really not okay. The model and the updates should be the
+      # same format.
+      worldUpdate = modelUpdate.world[0]
+      mergeObjectInto(modelUpdate.world[0], @world)
+      # TODO: I don't like this either...
+      if worldUpdate.worldWidth? and worldUpdate.worldHeight?
+        @patches = {}
     for patchId, varUpdates of modelUpdate.patches
       anyUpdates = true
       p = @patches[patchId]
       p ?= @patches[patchId] = {}
       mergeObjectInto(varUpdates, p)
     mergeObjectInto(modelUpdate.observer, @observer)
-    mergeObjectInto(modelUpdate.world, @world)
     anyUpdates
 
   mergeObjectInto = (updatedObject, targetObject) ->

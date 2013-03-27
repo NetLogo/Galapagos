@@ -13,14 +13,14 @@ object Serializer {
 
   def serialize(update: Update) : String = {
 
-    import Mirrorables.{ Patch, Turtle }
+    import Mirrorables.{ Patch, Turtle, World, MirrorableWorld}
 
     val birthsMap  = update.births  groupBy (_.agent.kind) mapValues (births  => births  map serializeBirth)
     val changesMap = update.changes groupBy (_._1.kind)    mapValues (changes => changes map serializeAgentUpdate)
     val deathsMap  = update.deaths  groupBy (_.agent.kind) mapValues (deaths  => deaths  map serializeDeath)
 
     val updateMaps   = Seq(birthsMap, changesMap, deathsMap)
-    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch)
+    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch, "world" -> World)
 
     val keyToJsObjectMap = keyToKindMap mapValues {
       kind =>
@@ -35,6 +35,7 @@ object Serializer {
   def serializeBirth(birth: Birth) : (String, JsValue) = birth match {
     case Birth(AgentKey(kind, id), values) =>
       val varNames = getImplicitVariables(kind)
+      import Mirrorables.World
       id.toString -> serializeAgentVariables(values, varNames)
   }
 
@@ -52,24 +53,23 @@ object Serializer {
   def serializeDeath(death: Death) : (String, JsValue) = death.agent.id.toString -> JsNull
 
   def serializeAgentVariables(values: Seq[AnyRef], varNames: Seq[String]) : JsObject =
-    JsObject(varNames.zip(values.map{
-      case d: java.lang.Double  => JsNumber(d.doubleValue)
-      case b: java.lang.Boolean => JsBoolean(b.booleanValue)
-      case x                    => toJson(x.toString)
-    }))
+    JsObject(varNames.zip(values map serializeValue))
 
   def getImplicitVariables(kind: Kind) : Seq[String] = {
-    import Mirrorables.{ Link, Patch, Turtle }
+    import Mirrorables.{ Link, Patch, Turtle, World, MirrorableWorld }
+    import MirrorableWorld.WorldVar
     kind match {
       case Turtle => AgentVariables.getImplicitTurtleVariables(false)
       case Patch  => AgentVariables.getImplicitPatchVariables(false)
       case Link   => AgentVariables.getImplicitLinkVariables
+      case World => 0 until WorldVar.maxId map (WorldVar.apply(_).toString)
       case _      => play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString); Seq()
     }
   }
 
   def serializeValue(value: AnyRef) = value match {
     case d: java.lang.Double  => JsNumber(d.doubleValue)
+    case i: java.lang.Integer => JsNumber(i.intValue)
     case b: java.lang.Boolean => JsBoolean(b.booleanValue)
     case x                    => toJson(x.toString)
   }
