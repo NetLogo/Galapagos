@@ -23,6 +23,7 @@ globals =
   usersArr:      undefined
   socket:        undefined
   scrollTimer:   undefined
+  tortoiseUser:  "You"
   wontScroll:    true
   messageCount:  0
   messageList:   new DoubleList(20)

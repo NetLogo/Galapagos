@@ -130,13 +130,14 @@ class RemoteInstance extends Actor with WebInstance {
     super.generateMessage(kind, context, user, text) ++ JsObject(Seq(MembersKey -> JsArray(members.keySet.toList map (JsString))))
 
   protected def isValidUsername(username: String) : (Boolean, String) = {
-    val reservedNames = Seq("me", "myself") ++ contexts
+    val reservedNames = Seq("me", "myself", "you") ++ contexts
+    val name          = username.toLowerCase
     Seq(
-      (reservedNames.contains(username.filter(_ != ' ')), "Username attempts to deceive others!"),
-      (username.isEmpty,                                  "Username is empty"),
-      (username.length >= NameLengthLimit,                "Username is too long (must be %d characters or less)".format(NameLengthLimit)),
-      (members.contains(username),                        "Username already taken"),
-      (username.matches(""".*[^ \w].*"""),                "Username contains invalid characters (must contain only alphanumeric characters and spaces)")
+      (reservedNames.contains(name.filter(_ != ' ')), "Username attempts to deceive others!"),
+      (name.isEmpty,                                  "Username is empty"),
+      (name.length >= NameLengthLimit,                "Username is too long (must be %d characters or less)".format(NameLengthLimit)),
+      (members.contains(name),                        "Username already taken"),
+      (name.matches(""".*[^ \w].*"""),                "Username contains invalid characters (must contain only alphanumeric characters and spaces)")
     ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
   }
 
