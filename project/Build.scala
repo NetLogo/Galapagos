@@ -18,7 +18,8 @@ object ApplicationBuild extends Build {
   )
 
   val moreSettings = Seq[Setting[_]](
-    scalacOptions += "-language:_"
+    scalacOptions += "-language:_",
+    scalaVersion := "2.10.1"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
