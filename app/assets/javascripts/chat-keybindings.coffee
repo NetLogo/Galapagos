@@ -28,8 +28,7 @@ class exports.ChatKeybindings
       'tab',
       ((e) ->
         e.preventDefault()
-        globals.agentTypes.next()
-        UI.setAgentType()),
+        UI.nextAgentType()),
       'keydown'
     )
 

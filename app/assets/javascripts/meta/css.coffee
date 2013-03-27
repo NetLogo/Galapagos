@@ -10,6 +10,8 @@ CSS =
   ContrastColored:        "contrast_colored"
   JoinColored:            "join_colored"
   Message:                "message"
+  MonospaceFont:          "monospace_font"
+  NormalFont:             "normal_font"
   QuitColored:            "quit_colored"
   OtherUserColored:       "other_user_colored"
   Rounded:                "rounded"

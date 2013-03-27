@@ -76,7 +76,29 @@ class exports.ChatUI
     $globals.$agentType.text(globals.agentTypes.getCurrent())
 
   # Return Type: Unit
-  setAgentType: -> $globals.$agentType.text(globals.agentTypes.getCurrent())
+  nextAgentType: ->
+    globals.agentTypes.next()
+    @setAgentType()
+
+  # Return Type: Unit
+  setAgentType: ->
+
+    type = globals.agentTypes.getCurrent()
+    $globals.$agentType.text(type)
+
+    fontClass =
+      if type is "chatter"
+        CSS.NormalFont
+      else
+        CSS.MonospaceFont
+    @setInputFont(fontClass)
+
+  # Return Type: Unit
+  setInputFont: (fontClass) ->
+    inputBuffer = $globals.$inputBuffer
+    fontClasses = [CSS.NormalFont, CSS.MonospaceFont]
+    fontClasses.map((fc) -> inputBuffer.removeClass(fc))
+    inputBuffer.addClass(fontClass)
 
   # Return Type: Unit
   scroll: (key) ->

@@ -163,3 +163,11 @@
   height: 92%;
   min-height: 92%;
 }
+
+.normal_font {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.monospace_font {
+  font-family: "Courier New", Courier, monospace;
+}

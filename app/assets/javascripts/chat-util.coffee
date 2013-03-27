@@ -63,17 +63,37 @@ class exports.ChatUtil
 
   # Return Type: String
   enhanceMsgText: (text, kind) ->
+
     subFunc = (acc, x) =>
-      substitution = @colorifyText("@" + x, if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored)
+      colorClass   = if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored
+      substitution = @addClassToText("@" + x, colorClass)
       acc.replace(///@#{x}///g, substitution)
-    switch kind
-      when "chatter" then _.foldl(globals.usersArr, subFunc, text)
-      when "join"    then @colorifyText(text, CSS.JoinColored)
-      when "quit"    then @colorifyText(text, CSS.QuitColored)
-      else                text
+
+    coloredText =
+      switch kind
+        when "chatter" then _.foldl(globals.usersArr, subFunc, text)
+        when "join"    then @addClassToText(text, CSS.JoinColored)
+        when "quit"    then @addClassToText(text, CSS.QuitColored)
+        else                text
+
+    fontifiedText =
+      switch kind
+        when "chatter", "join", "quit" then @normalFontifyText(coloredText)
+        else                                @monospaceFontifyText(coloredText)
+
+    fontifiedText
 
   # Return Type: String
-  colorifyText: (text, cssClass) ->
+  normalFontifyText: (text) ->
+    @addClassToText(text, CSS.NormalFont)
+
+  # Return Type: String
+  monospaceFontifyText: (text) ->
+    @addClassToText(text, CSS.MonospaceFont)
+
+  # Return Type: String
+  # Could be smarter and check to see if the text were already wrapped in a `span`...
+  addClassToText: (text, cssClass) ->
     "<span class='#{cssClass}'>#{text}</span>"
 
   # Return Type: Unit
