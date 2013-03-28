@@ -76,6 +76,13 @@
   text-align: center;
 }
 
+.agent_type_cell {
+  background-clip: content-box;
+  color: white;
+  border: 3px solid #347999;
+  padding-top: 2px;
+}
+
 .main_input {
   vertical-align: middle;
   padding-left: 10px;
@@ -125,6 +132,11 @@
   min-height: 100%;
 }
 
+.full_width {
+  width: 100%;
+  min-width: 100%;
+}
+
 .hor_centered {
   margin-left: auto;
   margin-right: auto;
@@ -170,4 +182,8 @@
 
 .monospace_font {
   font-family: "Courier New", Courier, monospace;
+}
+
+.no_border {
+  border: 0
 }

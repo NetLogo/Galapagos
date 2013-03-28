@@ -1,3 +1,11 @@
 #errorPane, #chatPane {
   display: none;
 }
+
+#agentTypeCell:hover #agentType:hover {
+  background-color: #232323;
+}
+
+#agentTypeCell:active {
+  border-color: white;
+}

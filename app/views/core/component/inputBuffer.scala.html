@@ -1,8 +1,12 @@
 <div id="input_group" class="rounded background_backgrounded" style="overflow: hidden; padding: 10px">
-  <table id="inputs" style="table-layout: fixed; width: 100%">
+  <table id="inputs" style="table-layout: fixed; border-collapse: separate; width: 100%">
     <tr>
-      <td id="agentType" class="agent_type_text" width=12%></td>
-      <td width=88%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input normal_font"></td>
+      <td id="agentTypeCell" class="agent_type_cell rounded" width=12%>
+        <button type="button" id="agentType" class="agent_type_text rounded background_backgrounded full_height full_width no_border" style="color: white" onclick="(new exports.ChatUI).nextAgentType()">
+      </td>
+      <td width=2%></td>
+      <td style="vertical-align: middle" width=86%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input normal_font"></td>
     </tr>
   </table>
 </div>
+
