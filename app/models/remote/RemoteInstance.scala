@@ -7,9 +7,6 @@ import
   concurrent.duration._
 
 import
-  java.io.File
-
-import
   akka.{ actor, pattern },
     actor.{ Actor, Props },
     pattern.ask
@@ -20,9 +17,6 @@ import
     iteratee.Concurrent,
       Concurrent.Channel,
     json.{ JsArray, JsObject, JsString, JsValue }
-
-import
-  org.nlogo.headless.HeadlessWorkspace
 
 import
   models.core.{ NetLogoControllerMessages, WebInstance, WebInstanceManager, WebInstanceMessages }
@@ -139,12 +133,6 @@ class RemoteInstance extends Actor with WebInstance {
       (members.contains(name),                        "Username already taken"),
       (name.matches(""".*[^ \w].*"""),                "Username contains invalid characters (must contain only alphanumeric characters and spaces)")
     ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
-  }
-
-  protected def workspace(file: File) : WebWorkspace = {
-    val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    wspace.openString(io.Source.fromFile(file).mkString)
-    wspace
   }
 
 }
