@@ -1,16 +1,19 @@
 package models.remote
 
 import
-  org.nlogo.{ api, nvm, headless, agent, workspace },
+  org.nlogo.{ agent, api, nvm, headless, workspace },
+    agent.World,
+    api.{ AggregateManagerInterface, CompilerException, LogoException, RendererInterface },
     headless.HeadlessWorkspace,
+    nvm.{ CompilerInterface, DefaultCompilerServices },
     workspace.AbstractWorkspace.HubNetManagerFactory
 
 /**
   * Manages a NetLogo workspace for use in NetLogo web clients
   */
 
-class WebWorkspace(world: agent.World, compiler: nvm.CompilerInterface, renderer: api.RendererInterface,
-                   aggregateManager: api.AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
+class WebWorkspace(world: World, compiler: CompilerInterface, renderer: RendererInterface,
+                   aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
     extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory) {
 
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
@@ -32,9 +35,9 @@ class WebWorkspace(world: agent.World, compiler: nvm.CompilerInterface, renderer
       None
     }
     catch {
-      case ex: api.CompilerException =>
+      case ex: CompilerException =>
         Some("ERROR: " + ex.getLocalizedMessage)
-      case ex: api.LogoException =>
+      case ex: LogoException =>
         Some("RUNTIME ERROR: " + ex.getLocalizedMessage)
     }
   }
