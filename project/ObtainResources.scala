@@ -20,7 +20,7 @@ object ObtainResources {
     obtainResources <<=  obtainResources.dependsOn(obtainJSLibs, obtainStylesheets),
     compile in Compile <<= (compile in Compile).dependsOn(obtainResources),
     obtainJSLibs <<= (baseDirectory, streams) map { (base, s) =>
-      obtain(base, s.log.info(_), "javascripts", ".js", Seq("underscore-1.4.2", "jquery-1.8.3", "mousetrap-1.1.1"))
+      obtain(base, s.log.info(_), "javascripts", ".js", Seq("underscore-1.4.2", "underscore-string-2.3.0", "jquery-1.8.3", "mousetrap-1.1.1"))
     },
     obtainStylesheets <<= (baseDirectory, streams) map { (base, s) =>
       obtain(base, s.log.info(_), "stylesheets", ".css", Seq("bootstrap-1.4.0"))
