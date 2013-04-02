@@ -12,11 +12,12 @@ import
     pattern.ask
 
 import
-  play.api.libs.{ concurrent => pconcurrent, json, iteratee },
-    pconcurrent.Akka,
-    iteratee.Concurrent,
-      Concurrent.Channel,
-    json.{ JsArray, JsObject, JsString, JsValue }
+  play.api.{ libs, Play },
+    libs.{ concurrent => pconcurrent, json, iteratee },
+      pconcurrent.Akka,
+      iteratee.Concurrent,
+        Concurrent.Channel,
+      json.{ JsArray, JsObject, JsString, JsValue }
 
 import
   models.core.{ NetLogoControllerMessages, WebInstance, WebInstanceManager, WebInstanceMessages }
@@ -29,6 +30,8 @@ class RemoteInstance extends Actor with WebInstance {
   import NetLogoControllerMessages._
   import WebInstanceMessages._
   import RemoteInstanceMessages._
+
+  private val KillswitchKey = "application.remote.killswitch"
 
   protected val NameLengthLimit = 10
 
@@ -81,6 +84,11 @@ class RemoteInstance extends Actor with WebInstance {
 
     case Quit(username) =>
       quit(username)
+      Play.application.configuration.getBoolean(KillswitchKey) foreach {
+        case isKillswitching =>
+          if (isKillswitching && members.filterKeys(_ != BizzleBot.BotName).isEmpty)
+            nlController ! Stop
+      }
 
     case ViewUpdate(serializedUpdate: String) =>
       notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
