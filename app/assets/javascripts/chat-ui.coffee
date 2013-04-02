@@ -73,7 +73,7 @@ class exports.ChatUI
   # Return Type: Unit
   setAgentTypeIndex: (index) ->
     globals.agentTypes.setCurrentIndex(index)
-    $globals.$agentType.text(globals.agentTypes.getCurrent())
+    @setAgentType()
 
   # Return Type: Unit
   nextAgentType: ->
