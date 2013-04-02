@@ -1,5 +1,5 @@
 # Teletortoise
 
-An experimental version of NetLogo that runs on a server and displays in a web browser.
+Teletortoise is an experimental version of NetLogo that runs remotely on a server while displaying in a web browser.
 
-Want to know more? Want to try it? visit the [wiki](https://github.com/NetLogo/Teletortoise/wiki)
+Curious to know more?  Want to try it?  Visit the [wiki](https://github.com/NetLogo/Teletortoise/wiki) for more details.
