@@ -64,14 +64,22 @@ class exports.ChatUtil
   # Return Type: String
   enhanceMsgText: (text, kind) ->
 
+    # Sorting the user list enables the name highlighter to properly highlight the name with the longest match
+    sortedUsersAsc  = _(globals.usersArr).sortBy((username) -> username.length)
+    sortedUsersDesc = sortedUsersAsc.slice(0).reverse() # Slice/clone before reversing, so you don't mutate the original!
+
     subFunc = (acc, x) =>
       colorClass   = if x is globals.userName then CSS.SelfUserColored else CSS.OtherUserColored
       substitution = @addClassToText("@" + x, colorClass)
-      acc.replace(///@#{x}///g, substitution)
+      longestMatch = _(sortedUsersDesc).find((name) -> _(name).startsWith(x))
+      tail         = longestMatch.substring(x.length)
+      regexAppend  = if _(tail).isEmpty() then "" else "(?!#{tail})"
+      regex        = ///@#{x}#{regexAppend}///g
+      acc.replace(regex, substitution)
 
     coloredText =
       switch kind
-        when "chatter" then _.foldl(globals.usersArr, subFunc, text)
+        when "chatter" then _.foldr(sortedUsersAsc, subFunc, text)
         when "join"    then @addClassToText(text, CSS.JoinColored)
         when "quit"    then @addClassToText(text, CSS.QuitColored)
         else                text
