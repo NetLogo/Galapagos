@@ -79,7 +79,7 @@ class exports.ChatUtil
 
     coloredText =
       switch kind
-        when "chatter" then _.foldr(sortedUsersAsc, subFunc, text)
+        when "chatter" then _(sortedUsersAsc).foldr(subFunc, text)
         when "join"    then @addClassToText(text, CSS.JoinColored)
         when "quit"    then @addClassToText(text, CSS.QuitColored)
         else                text
@@ -145,5 +145,5 @@ class exports.ChatUtil
 
   # Give me streams, or give me crappy code!
   # Return Type: String
-  spaceGenerator: (num) -> _.foldl([0...num], ((str) -> str + "&nbsp;"), "")
+  spaceGenerator: (num) -> _([0...num]).foldl(((str) -> str + "&nbsp;"), "")
 
