@@ -1,12 +1,12 @@
 # This file contains chat utility functions that don't interact with UI globals,
 # SO THIS DAMN WELL BETTER NOT EVER DEPEND ON ANY UI ELEMENTS/UI GLOBALS --JAB 1/25/13
 
-ChatModule = new exports.ChatModule
+ChatModule = exports.ChatServices.Module
 Constants  = exports.ChatConstants
 CSS        = exports.CSS
 globals    = exports.ChatGlobals
 
-class exports.ChatUtil
+class ChatUtil
 
   # Return Type: Unit
   extractParamFromURL: (paramName) ->
@@ -147,3 +147,4 @@ class exports.ChatUtil
   # Return Type: String
   spaceGenerator: (num) -> _([0...num]).foldl(((str) -> str + "&nbsp;"), "")
 
+exports.ChatServices.Util = new ChatUtil

@@ -2,9 +2,9 @@ Constants = exports.ChatConstants
 CSS       = exports.CSS
 $globals  = exports.$ChatGlobals
 globals   = exports.ChatGlobals
-Util      = new exports.ChatUtil
+Util      = exports.ChatServices.Util
 
-class exports.ChatUI
+class ChatUI
 
   # Return Type: Unit
   send: (message) ->
@@ -128,3 +128,4 @@ class exports.ChatUI
     @setAgentType()
     $globals.$inputBuffer.val(info)
 
+exports.ChatServices.UI = new ChatUI

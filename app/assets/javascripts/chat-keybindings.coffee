@@ -2,10 +2,10 @@
 
 $globals = exports.$ChatGlobals
 globals  = exports.ChatGlobals
-UI       = new exports.ChatUI
-Util     = new exports.ChatUtil
+UI       = exports.ChatServices.UI
+Util     = exports.ChatServices.Util
 
-class exports.ChatKeybindings
+class ChatKeybindings
 
   # Return Type: Unit
   initKeybindings: ->
@@ -64,3 +64,4 @@ class exports.ChatKeybindings
 
     Mousetrap.bind('pageup', (-> $globals.$container.focus()))
 
+exports.ChatServices.Keybindings = new ChatKeybindings

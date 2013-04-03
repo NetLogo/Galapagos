@@ -1,7 +1,7 @@
-ChatModule  = new exports.ChatModule
-Keybindings = new exports.ChatKeybindings
-UI          = new exports.ChatUI
-Util        = new exports.ChatUtil
+ChatModule  = exports.ChatServices.Module
+Keybindings = exports.ChatServices.Keybindings
+UI          = exports.ChatServices.UI
+Util        = exports.ChatServices.Util
 
 $globals    = exports.$ChatGlobals
 globals     = exports.ChatGlobals

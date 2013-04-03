@@ -1,6 +1,6 @@
 world = -1
 
-class exports.ChatModule
+class ChatModule
 
   constructor: ->
     @agentList = ['observer', 'turtles', 'patches', 'links']
@@ -12,3 +12,5 @@ class exports.ChatModule
   runJS: (js) ->
     (new Function(js)).call(window, js)
     collectUpdates()
+
+exports.ChatServices.Module = new ChatModule

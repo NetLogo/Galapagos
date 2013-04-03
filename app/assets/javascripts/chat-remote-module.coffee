@@ -1,4 +1,4 @@
-class exports.ChatModule
+class ChatModule
 
   constructor: ->
     @agentList = ['chatter', 'observer', 'turtles', 'patches', 'links']
@@ -6,3 +6,5 @@ class exports.ChatModule
   runJS: ->
 
   evalJS: ->
+
+exports.ChatServices.Module = new ChatModule
