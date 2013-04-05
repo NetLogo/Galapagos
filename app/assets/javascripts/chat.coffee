@@ -58,7 +58,7 @@ document.body.onload = ->
         console.log(event)
   
   messageOriginValid = (origin) ->
-    # TODO Origin validation. Otherwise we're begging for XSS attacks
+    # TODO Origin validation, lest we be subject to XSS attacks
     true
 
   window.addEventListener('message', receiveMessage, false)
