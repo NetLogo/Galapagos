@@ -17,6 +17,7 @@ class ChatUI
     $globals.$inputBuffer.val("")
     @focusInput()
 
+  # Return Type: Unit
   run: (agentType, cmd) ->
     globals.socket.send(JSON.stringify({ agentType: agentType, cmd: cmd }))
 
