@@ -33,8 +33,6 @@ class ChatUI
     $globals.$onlineLog     = $("#onlineLog")
     $globals.$chatLog       = $("#chatLog")
     $globals.$container     = $("#container")
-    $globals.$copier        = $("#copier")
-    $globals.$textCopier    = $("#textCopier")
     $globals.$agentType     = $("#agentType")
     $globals.$outputState   = $("#outputState")
     $globals.$errorPane     = $("#errorPane")

@@ -48,7 +48,7 @@ class ChatKeybindings
     )
 
     Mousetrap.bind('space', (e) ->
-      if e.target.id is 'container' or e.target.id is 'copier'
+      if e.target.id is 'container'
         e.preventDefault()
         Util.textScroll($globals.$container)
         UI.focusInput()

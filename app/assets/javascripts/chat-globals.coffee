@@ -9,8 +9,6 @@ $globals =
   $onlineLog:     undefined
   $chatLog:       undefined
   $container:     undefined
-  $copier:        undefined
-  $textCopier:    undefined
   $agentType:     undefined
   $outputState:   undefined
   $errorPane:     undefined
