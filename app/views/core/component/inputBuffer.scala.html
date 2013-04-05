@@ -2,7 +2,7 @@
   <table id="inputs" style="table-layout: fixed; border-collapse: separate; width: 100%">
     <tr>
       <td id="agentTypeCell" class="agent_type_cell rounded" width=12%>
-        <button type="button" id="agentType" class="agent_type_text rounded background_backgrounded full_height full_width no_border" style="color: white" onclick="(new exports.ChatUI).nextAgentType()">
+        <button type="button" id="agentType" class="agent_type_text rounded background_backgrounded full_height full_width no_border" style="color: white" onclick="exports.ChatServices.UI.nextAgentType()">
       </td>
       <td width=2%></td>
       <td style="vertical-align: middle" width=86%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input normal_font"></td>
