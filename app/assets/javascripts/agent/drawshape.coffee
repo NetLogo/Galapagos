@@ -112,10 +112,10 @@ window.draw =
     ctx.moveTo(line.x1, line.y1)
     ctx.lineTo(line.x2, line.y2)
     ctx.stroke()
-    ctx.lineWidth = 1
+    ctx.lineWidth = .1
     return
 
-defaultShape = {
+window.defaultShape = {
   rotate: true
   elements: [
     {

@@ -73,7 +73,7 @@ class TurtleView extends View
     scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
-    shape = shapes[shapeName] or shapes.default
+    shape = @drawer.shapes[shapeName] or defaultShape
     @ctx.save()
     @ctx.translate(xcor, ycor)
     if shape.rotate
