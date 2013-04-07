@@ -111,6 +111,13 @@ object Serializer {
           "y"    -> JsNumber(c.getBounds().getY()),
           "diam" -> JsNumber(c.getBounds().getWidth())
         ))
+      case l: Line => JsObject(Seq(
+          "type" -> toJson("line"),
+          "x1"   -> JsNumber(l.getStart().getX()),
+          "y1"   -> JsNumber(l.getStart().getY()),
+          "x2"   -> JsNumber(l.getEnd().getX()),
+          "y2"   -> JsNumber(l.getEnd().getY())
+        ))
       case x =>  JsObject(Seq(
           "type" -> toJson(x.toString)
         ))

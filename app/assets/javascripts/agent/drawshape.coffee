@@ -101,18 +101,18 @@ window.draw =
       ctx.strokeRect(x,y,w,h)
     return
 
-  # TODO: bogus, draw as a rect for now, enough to get Climate Change "ray" shape going,
-  # couldn't get it working with actual lines, sigh - ST 12/17/12
   line: (ctx, turtleColor, line) ->
     x = line.x1
     y = line.y1
     w = line.x2 - line.x1
     h = line.y2 - line.y1
     setColoring(ctx, turtleColor, line)
-    if line.filled
-      ctx.fillRect(x,y,w,h)
-    else
-      ctx.strokeRect(x,y,w,h)
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(line.x1, line.y1)
+    ctx.lineTo(line.x2, line.y2)
+    ctx.stroke()
+    ctx.lineWidth = 1
     return
 
 defaultShape = {
