@@ -94,7 +94,7 @@ object Serializer {
   def serializeElement(elt: Element) = elt match {
     case p: Polygon => JsObject(Seq(
         "type"   -> toJson("polygon"),
-        "color"  -> toJson(p.getColor.getRGB),
+        "color"  -> serializeColor(p.getColor),
         "filled" -> JsBoolean(p.filled),
         "marked" -> JsBoolean(p.marked),
         "xcors"  -> toJson(p.getXcoords map (x => JsNumber(x.intValue))),
@@ -102,4 +102,7 @@ object Serializer {
       ))
     case x => toJson(elt.toString)
   }
+
+  def serializeColor(c: java.awt.Color) =
+    toJson("rgba(" + c.getRed + ", " + c.getGreen + ", " + c.getBlue + ", " + c.getAlpha / 255.0 + ")")
 }
