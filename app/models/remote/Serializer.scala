@@ -91,16 +91,35 @@ object Serializer {
     shape.getName -> shapeData
   }
 
-  def serializeElement(elt: Element) = elt match {
-    case p: Polygon => JsObject(Seq(
-        "type"   -> toJson("polygon"),
-        "color"  -> serializeColor(p.getColor),
-        "filled" -> JsBoolean(p.filled),
-        "marked" -> JsBoolean(p.marked),
-        "xcors"  -> toJson(p.getXcoords map (x => JsNumber(x.intValue))),
-        "ycors"  -> toJson(p.getYcoords map (x => JsNumber(x.intValue)))
-      ))
-    case x => toJson(elt.toString)
+  def serializeElement(elt: Element) = {
+    val shapeTypeData: JsObject = elt match {
+      case p: Polygon => JsObject(Seq(
+          "type"   -> toJson("polygon"),
+          "xcors"  -> toJson(p.getXcoords map (x => JsNumber(x.intValue))),
+          "ycors"  -> toJson(p.getYcoords map (x => JsNumber(x.intValue)))
+        ))
+      case r: Rectangle => JsObject(Seq(
+          "type" -> toJson("rectangle"),
+          "xmin" -> JsNumber(r.getX()),
+          "ymin" -> JsNumber(r.getY()),
+          "xmax" -> JsNumber(r.getX() + r.getWidth()),
+          "ymax" -> JsNumber(r.getY() + r.getHeight())
+        ))
+      case c: Circle => JsObject(Seq(
+          "type" -> toJson("circle"),
+          "x"    -> JsNumber(c.getBounds().getX()),
+          "y"    -> JsNumber(c.getBounds().getY()),
+          "diam" -> JsNumber(c.getBounds().getWidth())
+        ))
+      case x =>  JsObject(Seq(
+          "type" -> toJson(x.toString)
+        ))
+    }
+    shapeTypeData ++ JsObject(Seq(
+      "color"  -> serializeColor(elt.getColor),
+      "filled" -> JsBoolean(elt.filled),
+      "marked" -> JsBoolean(elt.marked)
+    ))
   }
 
   def serializeColor(c: java.awt.Color) =
