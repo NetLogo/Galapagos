@@ -1,4 +1,7 @@
 class window.ShapeDrawer
+  constructor: (shapes) ->
+    @shapes = shapes
+
   drawShape: (ctx, turtleColor, shapeName) ->
     ctx.translate(.5, -.5)
     ctx.scale(-1/300, 1/300)
@@ -6,13 +9,13 @@ class window.ShapeDrawer
     return
 
   drawRawShape: (ctx, turtleColor, shapeName) ->
-    shape = window.shapes[shapeName] or window.shapes.default
+    shape = @shapes[shapeName] or defaultShape
     for elt in shape.elements
       draw[elt.type](ctx, turtleColor, elt)
     return
 
 class window.CachingShapeDrawer extends ShapeDrawer
-  constructor: () ->
+  constructor: (shapes) ->
     # Maps (shape name, color) -> canvas
     # Canvas are 300x300, in line with netlogo shapes.
     # Shape/color combinations are pre-rendered to these canvases so they can be
@@ -26,6 +29,7 @@ class window.CachingShapeDrawer extends ShapeDrawer
     # Currently, the scaling makes shapes look ugly.
     # TODO: Make the shapes prettier. This may require prerendering to different
     # sizes or something.
+    super(shapes)
     @shapeCache = {}
 
   drawShape: (ctx, turtleColor, shapeName) ->
@@ -110,3 +114,17 @@ window.draw =
     else
       ctx.strokeRect(x,y,w,h)
     return
+
+defaultShape = {
+  rotate: true
+  elements: [
+    {
+      type: 'polygon'
+      color: 'grey'
+      filled: 'true'
+      marked: 'true'
+      xcors: [150, 40, 150, 260]
+      ycors: [5, 250, 205, 250]
+    }
+  ]
+}
