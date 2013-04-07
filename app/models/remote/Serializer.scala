@@ -5,9 +5,14 @@ import
     Json.toJson
 
 import
-  org.nlogo.{ api, mirror },
+  org.nlogo.{ api, mirror, shape },
     api.AgentVariables,
+    api.ShapeList,
+    api.Shape,
+    shape._,
     mirror._
+
+import scala.collection.JavaConversions._
 
 object Serializer {
 
@@ -67,11 +72,31 @@ object Serializer {
     }
   }
 
-  def serializeValue(value: AnyRef) = value match {
+  def serializeValue(value: AnyRef): JsValue = value match {
     case d: java.lang.Double  => JsNumber(d.doubleValue)
     case i: java.lang.Integer => JsNumber(i.intValue)
     case b: java.lang.Boolean => JsBoolean(b.booleanValue)
+    case s: ShapeList         => JsObject(s.getShapes map serializeShape)
     case x                    => toJson(x.toString)
   }
 
+  def serializeShape(shape: Shape) = {
+    val shapeData = shape match {
+      case vecShape: VectorShape => toJson(vecShape.getElements map serializeElement)
+      case linkShape: LinkShape  => toJson("")
+    }
+    shape.getName -> shapeData
+  }
+
+  def serializeElement(elt: Element) = elt match {
+    case p: Polygon => JsObject(Seq(
+        "type"   -> toJson("polygon"),
+        "color"  -> toJson(p.getColor.getRGB),
+        "filled" -> JsBoolean(p.filled),
+        "marked" -> JsBoolean(p.marked),
+        "xcors"  -> toJson(p.getXcoords map (x => JsNumber(x.intValue))),
+        "ycors"  -> toJson(p.getYcoords map (x => JsNumber(x.intValue)))
+      ))
+    case x => toJson(elt.toString)
+  }
 }
