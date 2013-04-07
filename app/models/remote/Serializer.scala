@@ -82,7 +82,10 @@ object Serializer {
 
   def serializeShape(shape: Shape) = {
     val shapeData = shape match {
-      case vecShape: VectorShape => toJson(vecShape.getElements map serializeElement)
+      case vecShape: VectorShape => JsObject(Seq(
+          "rotate"   -> JsBoolean(vecShape.isRotatable),
+          "elements" -> toJson(vecShape.getElements map serializeElement)
+        ))
       case linkShape: LinkShape  => toJson("")
     }
     shape.getName -> shapeData
