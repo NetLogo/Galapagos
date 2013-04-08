@@ -6,7 +6,7 @@ Util      = exports.ChatServices.Util
 
 class ChatUI
 
-  # Type: (String) -> Unit
+  # Return Type: (String) -> Unit
   throttle = _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
   # Return Type: Unit
