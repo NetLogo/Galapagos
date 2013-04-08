@@ -64,7 +64,7 @@ class LayeredView extends View
 class TurtleView extends View
   constructor: () ->
     super()
-    @drawer = new CachingShapeDrawer()
+    @drawer = new CachingShapeDrawer({})
 
   drawTurtle: (id, turtle) ->
     xcor = turtle.xcor or 0
@@ -73,7 +73,7 @@ class TurtleView extends View
     scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
-    shape = shapes[shapeName] or shapes.default
+    shape = @drawer.shapes[shapeName] or defaultShape
     @ctx.save()
     @ctx.translate(xcor, ycor)
     if shape.rotate
@@ -86,6 +86,9 @@ class TurtleView extends View
 
   repaint: (world, turtles) ->
     @transformToWorld(world)
+    if world.turtleshapelist != @drawer.shapes
+      @drawer = new CachingShapeDrawer(world.turtleshapelist)
+
     @ctx.lineWidth = .1
     @ctx.fillStyle = 'red'
     for id, turtle of turtles
