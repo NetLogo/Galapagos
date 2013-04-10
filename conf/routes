@@ -2,6 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# General
+GET     /editor                         controllers.Application.editor
+
 # Remote (Teletortoise)
 GET     /                               controllers.remote.Remote.index
 GET     /client                         controllers.remote.Remote.client(username: Option[String] ?= None)

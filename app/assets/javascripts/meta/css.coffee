@@ -8,6 +8,7 @@ CSS =
   Context:                "context"
   ContrastBackgrounded:   "contrast_backgrounded"
   ContrastColored:        "contrast_colored"
+  Glow:                   "glow"
   JoinColored:            "join_colored"
   Message:                "message"
   MonospaceFont:          "monospace_font"

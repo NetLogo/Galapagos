@@ -82,13 +82,18 @@
   border: 3px solid #347999;
 }
 
-.main_input {
-  vertical-align: middle;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: 94%;
+.cc_input {
+  box-shadow: none;
+  height: 18px;
+  white-space: nowrap;
+}
+
+.chatter_input {
+  border: none;
+  color: black;
   font-size: medium;
-  color: black
+  padding: 0px;
+  width: 100%;
 }
 
 .inner_box {
@@ -185,4 +190,30 @@
 
 .no_border {
   border: 0
+}
+
+.fake_input {
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.0980392) 0px 1px 3px 0px inset;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  padding: 4px 10px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  color: black;
+  transition-delay: 0s, 0s;
+  transition-duration: 0.2s, 0.2s;
+  transition-property: border, box-shadow;
+  transition-timing-function: linear, linear;
+}
+
+.no_glow:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.glow {
+  outline: none;
+  border-color: #9ecaed;
+  box-shadow: 0 0 8px #9ecaed;
 }
