@@ -18,14 +18,14 @@ object Serializer {
 
   def serialize(update: Update) : String = {
 
-    import Mirrorables.{ Patch, Turtle, World, MirrorableWorld}
+    import Mirrorables.{ Patch, Turtle, World, Link, MirrorableWorld}
 
     val birthsMap  = update.births  groupBy (_.agent.kind) mapValues (births  => births  map serializeBirth)
     val changesMap = update.changes groupBy (_._1.kind)    mapValues (changes => changes map serializeAgentUpdate)
     val deathsMap  = update.deaths  groupBy (_.agent.kind) mapValues (deaths  => deaths  map serializeDeath)
 
     val updateMaps   = Seq(birthsMap, changesMap, deathsMap)
-    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch, "world" -> World)
+    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch, "world" -> World, "links" -> Link)
 
     val keyToJsObjectMap = keyToKindMap mapValues {
       kind =>

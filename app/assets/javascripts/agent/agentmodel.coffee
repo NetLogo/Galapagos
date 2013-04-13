@@ -23,6 +23,18 @@ class window.AgentModel
             color: 'hsl('+(360*Math.random())+',100%,50%)'
           }
         mergeObjectInto(varUpdates, t)
+    for linkId, varUpdates of modelUpdate.links
+      anyUpdates = true
+      if varUpdates == null
+        delete @links[linkId]
+      else
+        l = @links[linkId]
+        if not l?
+          l = @links[linkId] = {
+            shape: 'default',
+            color: 5
+          }
+        mergeObjectInto(varUpdates, l)
     if modelUpdate.world? and modelUpdate.world[0]?
       # TODO: This is really not okay. The model and the updates should be the
       # same format.
