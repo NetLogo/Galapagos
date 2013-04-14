@@ -12,7 +12,7 @@ class window.AgentStreamController
     @repaint()
 
   repaint: ->
-    @turtleView.repaint(@model.world, @model.turtles)
+    @turtleView.repaint(@model.world, @model.turtles, @model.links)
     @patchView.repaint(@model.world, @model.patches)
     @layeredView.repaint()
 
@@ -41,6 +41,7 @@ class View
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
     @patchsize = if world.patchsize? then world.patchsize else 9
+    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
     @patchWidth = @maxpxcor - @minpxcor + 1
     @patchHeight = @maxpycor - @minpycor + 1
     @canvas.width =  @patchWidth * @patchsize
@@ -84,13 +85,24 @@ class TurtleView extends View
     @drawer.drawShape(@ctx, turtle.color, shapeName)
     @ctx.restore()
 
-  repaint: (world, turtles) ->
+  drawLink: (link, turtles) ->
+    end1 = turtles[link.end1]
+    end2 = turtles[link.end2]
+
+    @ctx.strokeStyle = netlogoColorToCSS(link.color)
+    @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
+    @ctx.beginPath()
+    @ctx.moveTo(end1.xcor, end1.ycor)
+    @ctx.lineTo(end2.xcor, end2.ycor)
+    @ctx.stroke()
+
+  repaint: (world, turtles, links) ->
     @transformToWorld(world)
     if world.turtleshapelist != @drawer.shapes
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
-
+    for id, link of links
+      @drawLink(link, turtles)
     @ctx.lineWidth = .1
-    @ctx.fillStyle = 'red'
     for id, turtle of turtles
       @drawTurtle(id, turtle)
     return
