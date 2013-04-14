@@ -19,7 +19,7 @@ class window.AgentModel
             heading: 360*Math.random(),
             xcor: 0,
             ycor: 0,
-            shape: window.shapes.default,
+            shape: 'default',
             color: 'hsl('+(360*Math.random())+',100%,50%)'
           }
         mergeObjectInto(varUpdates, t)

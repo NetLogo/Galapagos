@@ -102,7 +102,7 @@ class TurtleView extends View
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
     for id, link of links
       @drawLink(link, turtles)
-    @ctx.lineWidth = .1
+    @ctx.lineWidth = @onePixel
     for id, turtle of turtles
       @drawTurtle(id, turtle)
     return
