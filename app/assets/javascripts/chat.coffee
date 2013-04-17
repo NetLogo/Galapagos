@@ -15,7 +15,7 @@ document.body.onload = ->
   Util.initAgentList()
 
   globals.userName = Util.extractParamFromURL("username") or globals.tortoiseUser
-  $globals.$agentType.text(globals.agentTypes.getCurrent())
+  UI.setAgentType()
 
   WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
   globals.socket = new WS(socketURL)
