@@ -5,8 +5,12 @@
         <button type="button" id="agentType" class="agent_type_text rounded background_backgrounded full_height full_width no_border" style="color: white" onclick="exports.ChatServices.UI.nextAgentType()">
       </td>
       <td width=2%></td>
-      <td style="vertical-align: middle" width=86%><input id="inputBuffer" value="" autofocus="autofocus" class="mousetrap main_input normal_font"></td>
+      <td style="vertical-align: middle" width=86%>
+        <div id="inputsWrapper" class="fake_input">
+          <input id="chatterBuffer" autofocus="autofocus" class="mousetrap cc_input chatter_input normal_font no_glow">
+          <div id="codeBufferWrapper" class="mousetrap cc_input no_glow" style="display: none"></div>
+        </div>
+      </td>
     </tr>
   </table>
 </div>
-

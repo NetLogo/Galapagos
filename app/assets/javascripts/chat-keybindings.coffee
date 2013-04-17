@@ -7,6 +7,9 @@ Util     = exports.ChatServices.Util
 
 class ChatKeybindings
 
+  # This sets keybindings for most of the interface, and for `#chatterInput`
+  # However, the keybindings that are active while the Command Center has focus are handled by Ace/`globals.ccEditor`
+  # If you want to set a keybinding for the Command Center, don't set it here; seek out where Ace is initialized!
   # Return Type: Unit
   initKeybindings: ->
 
@@ -35,16 +38,18 @@ class ChatKeybindings
     Mousetrap.bind(keyArray, (-> UI.focusInput()), 'keydown')
 
     Mousetrap.bind('enter', (e) ->
-      input = $globals.$inputBuffer.val()
-      UI.throttledSend(input) if e.target.id is 'inputBuffer' and /\S/g.test(input)
+      UI.sendInput()
       Util.tempEnableScroll()
     )
 
-    Mousetrap.bind(['up', 'down'], (e) ->
-      if e.target.id is 'inputBuffer'
-        charCode = Util.extractCharCode(e)
-        e.preventDefault()
-        UI.scroll(charCode)
+    Mousetrap.bind('up', (e) ->
+      if e.target.id is 'chatterBuffer'
+        UI.scrollMessageListUp()
+    )
+
+    Mousetrap.bind('down', (e) ->
+      if e.target.id is 'chatterBuffer'
+        UI.scrollMessageListDown()
     )
 
     Mousetrap.bind('space', (e) ->

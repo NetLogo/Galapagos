@@ -9,12 +9,28 @@ class ChatUI
   # Return Type: (String) -> Unit
   throttle = _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
+  # Return Type: String
+  getInput: =>
+    @ifChatterElse(-> $globals.$chatterBuffer.val())(-> globals.ccEditor.getValue())
+
+  # Return Type: Unit
+  setInput: (newInput) =>
+    @ifChatterElse(-> $globals.$chatterBuffer.val(newInput))(-> ed = globals.ccEditor; ed.setValue(newInput); ed.clearSelection())
+
+  # Return Type: Unit
+  focusInput: ->
+    @ifChatterElse(-> $globals.$chatterBuffer.focus())(-> globals.ccEditor.focus())
+
+  # Return Type: Any
+  ifChatterElse: (f) -> (g) ->
+    if $globals.$agentType.text() is 'chatter' then f() else g()
+
   # Return Type: Unit
   send: (message) ->
     @run($globals.$agentType.text(), message)
     globals.messageList.append(message, globals.agentTypes.getCurrent())
     globals.messageList.clearCursor()
-    $globals.$inputBuffer.val("")
+    @setInput("")
     @focusInput()
 
   # Return Type: Unit
@@ -22,23 +38,25 @@ class ChatUI
     globals.socket.send(JSON.stringify({ agentType: agentType, cmd: cmd }))
 
   # Return Type: Unit
-  throttledSend: (message) -> throttle(message)
-
-  # Return Type: Unit
-  focusInput: -> $globals.$inputBuffer.focus()
+  sendInput: ->
+    input = @getInput()
+    if /\S/g.test(input) then throttle(input)
+    Util.tempEnableScroll()
 
   # Caching jQuery selector results for easy access throughout the code
   # Return Type: Unit
-  initSelectors: ->
-    $globals.$inputBuffer   = $("#inputBuffer")
-    $globals.$onlineLog     = $("#onlineLog")
-    $globals.$chatLog       = $("#chatLog")
-    $globals.$container     = $("#container")
-    $globals.$agentType     = $("#agentType")
-    $globals.$outputState   = $("#outputState")
-    $globals.$errorPane     = $("#errorPane")
-    $globals.$errorPaneSpan = $("#errorPane span")
-    $globals.$chatPane      = $("#chatPane")
+  initSelectors = ->
+    $globals.$codeBufferWrapper  = $("#codeBufferWrapper")
+    $globals.$chatterBuffer      = $("#chatterBuffer")
+    $globals.$inputsWrapper      = $("#inputsWrapper")
+    $globals.$onlineLog          = $("#onlineLog")
+    $globals.$chatLog            = $("#chatLog")
+    $globals.$container          = $("#container")
+    $globals.$agentType          = $("#agentType")
+    $globals.$outputState        = $("#outputState")
+    $globals.$errorPane          = $("#errorPane")
+    $globals.$errorPaneSpan      = $("#errorPane span")
+    $globals.$chatPane           = $("#chatPane")
 
   # Return Type: Unit
   updateUserList: (users) ->
@@ -70,7 +88,7 @@ class ChatUI
   clearChat: ->
     $globals.$chatLog.text('')
     globals.logList = []
-    $globals.$inputBuffer.focus()
+    @focusInput()
 
   # Return Type: Unit
   setAgentTypeIndex: (index) ->
@@ -84,50 +102,102 @@ class ChatUI
 
   # Return Type: Unit
   setAgentType: ->
-
-    type = globals.agentTypes.getCurrent()
+    input = @getInput()
+    type  = globals.agentTypes.getCurrent()
     $globals.$agentType.text(type)
-
-    fontClass =
-      if type is "chatter"
-        CSS.NormalFont
-      else
-        CSS.MonospaceFont
-    @setInputFont(fontClass)
+    @refreshWhichInputElement()
+    @setInput(input)
 
   # Return Type: Unit
-  setInputFont: (fontClass) ->
-    inputBuffer = $globals.$inputBuffer
-    fontClasses = [CSS.NormalFont, CSS.MonospaceFont]
-    fontClasses.map((fc) -> inputBuffer.removeClass(fc))
-    inputBuffer.addClass(fontClass)
+  refreshWhichInputElement: ->
+
+    BGColorPropName = 'background-color'
+
+    $chatter = $globals.$chatterBuffer
+    $code    = $globals.$codeBufferWrapper
+
+    @ifChatterElse(
+      =>
+        $code.hide()
+        $chatter.show()
+        color = $chatter.css(BGColorPropName)
+        $chatter.parent().css(BGColorPropName, color)
+        @focusInput()
+    )(
+      =>
+        $chatter.hide()
+        $code.css('display', 'block')
+        color = $code.children(".ace_scroller").children(".ace_content").children(".ace_marker-layer").children(".ace_active-line").css(BGColorPropName)
+        if color != "rgba(0, 0, 0, 0)" and color != "transparent"
+          $chatter.parent().css(BGColorPropName, color)
+        @focusInput()
+    )
 
   # Return Type: Unit
-  scroll: (key) ->
+  scrollMessageListUp: ->
+    ml = globals.messageList
+    if ml.cursor
+      ml.cursor = if ml.cursor.prev != null then ml.cursor.prev else ml.cursor
+    else
+      ml.addCurrent(@getInput(), globals.agentTypes.getCurrent())
+      ml.cursor = ml.head
+    scrollMessageList()
+
+  # Return Type: Unit
+  scrollMessageListDown: ->
+    ml = globals.messageList
+    if ml.cursor
+      ml.cursor = ml.cursor.next
+      scrollMessageList()
+
+  # Return Type: Unit
+  scrollMessageList = ->
 
     ml = globals.messageList
 
-    if key is 38  # Up arrow
-      if ml.cursor
-        ml.cursor = if ml.cursor.prev != null then ml.cursor.prev else ml.cursor
-      else
-        ml.addCurrent($globals.$inputBuffer.val(), globals.agentTypes.getCurrent())
-        ml.cursor = ml.head
-    else if key is 40  # Down arrow
-      ml.cursor = ml.cursor.next
-
     extractInfoAndType = (source) -> [source.data, source.type]
 
-    [info, type] =
+    [data, type] =
       if ml.cursor
         extractInfoAndType(ml.cursor)
       else
-        [info, type] = extractInfoAndType(ml.current)
+        [data, type] = extractInfoAndType(ml.current)
         ml.clearCursor()
-        [info, type]
+        [data, type]
 
     globals.agentTypes.setCurrent(type)
-    @setAgentType()
-    $globals.$inputBuffer.val(info)
+    exports.ChatServices.UI.setAgentType()
+    exports.ChatServices.UI.setInput(data)
+
+  setupUI: ->
+    globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
+    initSelectors()
+    @setupPhonyInput()
+
+  setupPhonyInput: ->
+
+    $wrapper = $globals.$inputsWrapper
+    $chatter = $globals.$chatterBuffer
+    $editor  = $globals.$codeBufferWrapper.children(".ace_text-input").first()
+
+    glowClass   = CSS.Glow
+
+    $wrapper.focus(=>
+      @ifChatterElse(=>
+        $chatter.focus()
+      )(=>
+        $editor.focus()
+      )
+    )
+
+    subInputs = [$chatter, $editor]
+    _(subInputs).forEach(($elem) ->
+      $elem.focus(=>
+        $wrapper.addClass(glowClass)
+      ).blur(=>
+        removeIfSafe = -> if not _(subInputs).find(($elem) -> $elem.is(":focus")) then $wrapper.removeClass(glowClass)
+        setTimeout(removeIfSafe, 100) # Removing a class seems to take significantly longer than adding one, so first wait and verify that it needs to go
+      )
+    )
 
 exports.ChatServices.UI = new ChatUI

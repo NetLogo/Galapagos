@@ -11,7 +11,7 @@ TextHolder  = exports.TextHolder
 # Onload
 document.body.onload = ->
 
-  UI.initSelectors()
+  UI.setupUI()
   Util.initAgentList()
 
   globals.userName = Util.extractParamFromURL("username") or globals.tortoiseUser
