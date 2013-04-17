@@ -169,11 +169,13 @@ class ChatUI
     exports.ChatServices.UI.setAgentType()
     exports.ChatServices.UI.setInput(data)
 
+  # Return Type: Unit
   setupUI: ->
     globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
     initSelectors()
     @setupPhonyInput()
 
+  # Return Type: Unit
   setupPhonyInput: ->
 
     $wrapper = $globals.$inputsWrapper
