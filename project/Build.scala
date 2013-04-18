@@ -23,7 +23,7 @@ object ApplicationBuild extends Build {
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    moreSettings ++ ObtainResources.settings: _*
+    moreSettings ++ ObtainResources.settings ++ SetupConfiguration.settings: _*
   )
 
 }
