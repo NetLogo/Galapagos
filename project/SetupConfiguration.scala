@@ -22,7 +22,7 @@ object SetupConfiguration {
 
   private def generateConfig() {
 
-    def using[T <: { def close() }, U](t: T)(f: T => U) : U = {
+    def using[T <: { def close() }, U](t: => T)(f: T => U) : U = {
       try     f(t)
       finally t.close()
     }
