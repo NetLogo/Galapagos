@@ -9,6 +9,7 @@ class window.AgentStreamController
     @layeredView.setLayers(@patchView, @turtleView)
     @container.appendChild(@layeredView.canvas)
     @model = new AgentModel()
+    @model.world.turtleshapelist = defaultShapes
     @repaint()
 
   repaint: ->
