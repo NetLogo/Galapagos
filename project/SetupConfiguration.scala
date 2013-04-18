@@ -45,6 +45,7 @@ object SetupConfiguration {
     )
 
     val pureDefaults = Map(
+      "application.langs"  -> "\"en\"",
       "logger.root"        -> "ERROR",
       "logger.play"        -> "INFO",
       "logger.application" -> "DEBUG"
