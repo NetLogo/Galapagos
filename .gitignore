@@ -20,3 +20,4 @@ public/stylesheets/managed/
 /.idea/misc.xml
 /.idea/runConfigurations
 /.idea/inspectionProfiles/
+/conf/application.conf
