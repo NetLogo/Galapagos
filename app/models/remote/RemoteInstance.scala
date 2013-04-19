@@ -91,7 +91,8 @@ class RemoteInstance extends Actor with WebInstance {
       }
 
     case ViewUpdate(serializedUpdate: String) =>
-      notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
+      if (!serializedUpdate.isEmpty)
+        notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
 
   }
 

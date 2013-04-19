@@ -23,18 +23,20 @@ object Serializer {
     val birthsMap  = update.births  groupBy (_.agent.kind) mapValues (births  => births  map serializeBirth)
     val changesMap = update.changes groupBy (_._1.kind)    mapValues (changes => changes map serializeAgentUpdate)
     val deathsMap  = update.deaths  groupBy (_.agent.kind) mapValues (deaths  => deaths  map serializeDeath)
+    if (birthsMap.isEmpty && changesMap.isEmpty && deathsMap.isEmpty) {
+      ""
+    } else {
+      val updateMaps   = Seq(birthsMap, changesMap, deathsMap)
+      val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch, "world" -> World, "links" -> Link)
 
-    val updateMaps   = Seq(birthsMap, changesMap, deathsMap)
-    val keyToKindMap = Map("turtles" -> Turtle, "patches" -> Patch, "world" -> World, "links" -> Link)
-
-    val keyToJsObjectMap = keyToKindMap mapValues {
-      kind =>
+      val keyToJsObjectMap = keyToKindMap mapValues {
+        kind =>
         val xss = updateMaps map (_.getOrElse(kind, Seq()))
         xss.foldLeft(JsObject(Seq())){ case (acc, xs) => acc ++ JsObject(xs) }
+      }
+
+      Json.stringify(JsObject(keyToJsObjectMap.toSeq))
     }
-
-    Json.stringify(JsObject(keyToJsObjectMap.toSeq))
-
   }
 
   def serializeBirth(birth: Birth) : (String, JsValue) = birth match {
