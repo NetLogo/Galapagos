@@ -11,6 +11,7 @@
   <td width="38%">
     <div class="view-container hor_centered inner_box rounded background_backgrounded ">
     </div>
+    <div class="editor-container" style="height: 200px;"></div>
   </td>
 
   @content
@@ -20,16 +21,23 @@
     function init() {
       var container = document.getElementsByClassName("view-container")[0];
       controller = new AgentStreamController(container);
+      var editorContainer = document.getElementsByClassName("editor-container")[0];
+      var editor = ace.edit(editorContainer);
+      editor.setTheme("ace/theme/netlogo-classic");
+      editor.getSession().setMode("ace/mode/netlogo");
+      editor.setFontSize("14px");
+      editor.setShowPrintMargin(false);
+      exports.NLEditor = editor;
+
+      var compileTimeout;
+      editor.session.on("change", function(e) {
+        clearTimeout(compileTimeout);
+        compileTimeout = setTimeout(function() {
+          exports.ChatServices.UI.run("compile", editor.getValue())
+        }, 500);
+      });
     }
-    if (!window.onload) {
-      window.onload = init;
-    } else {
-      var oldInit = window.onload;
-      window.onload = function () {
-        oldInit();
-        init();
-      }
-    }
+    window.addEventListener("load", init);
   </script>
 
 }
