@@ -50,6 +50,20 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
+
+      case Compile(source) =>
+        import org.nlogo.api.{ Program, Version }
+        // TODO: Clean this up. This is what I've cobbled together through trial
+        // and error and looking through NetLogo code.
+        //ws.world.program(Program.empty(Version.is3D))
+        val results = ws.compiler.compileProgram(
+          source, Program.empty(Version.is3D), ws.getExtensionManager)
+        ws.procedures = results.proceduresMap
+        ws.codeBits.clear()
+        ws.init()
+        //ws.world.program(results.program)
+        //ws.world.realloc()
+
     }
   }
 
@@ -67,7 +81,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   }
 
   private class Halter extends Actor {
-    def receive = { case Halt => ws.halt() } 
+    def receive = { case Halt => ws.halt() }
   }
 
   private class HighLevelController extends Actor {
@@ -110,6 +124,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   def receive = {
     case msg @ Execute(_, _)     =>     executor.forward(msg)
+    case msg @ Compile(_)        =>     executor.forward(msg)
     case msg @ Go                => hlController.forward(msg)
     case msg @ Halt              =>       halter.forward(msg)
     case msg @ NewModel(_)       =>    wsManager.forward(msg)

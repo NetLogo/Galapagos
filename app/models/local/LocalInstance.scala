@@ -65,6 +65,10 @@ class LocalInstance extends Actor with WebInstance {
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
+  override protected def compile(source: String) {
+    // stub
+  }
+
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
     import CompilerMessages.GetModelState

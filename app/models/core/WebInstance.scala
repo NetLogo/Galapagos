@@ -35,6 +35,9 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
       broadcast(generateMessage(CommandKey, agentType, username, cmd))
       execute(agentType, cmd)
 
+    case Command(username, "compile", cmd) =>
+      compile(cmd)
+
     case Command(username, agentType, cmd) =>
       Logger.warn(s"Unhandlable message from user '$username' in context '$agentType': $cmd")
 
@@ -59,6 +62,7 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
 
   protected def broadcast(msg: JsObject)
   protected def execute(agentType: String, cmd: String)
+  protected def compile(source: String)
 
   protected def generateMultiMessage(kind: String, context: String, user: String, text: String, formats: String*) =
     formats map (f => generateMessage(kind, context, user, f.format(text)))

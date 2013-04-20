@@ -16,7 +16,7 @@ import
       iteratee.Iteratee,
       json.JsValue
 
-import 
+import
   play.api.libs.concurrent.Akka
 import play.api.Play.current
 

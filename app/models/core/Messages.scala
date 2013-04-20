@@ -20,6 +20,7 @@ object WebInstanceMessages {
 
 object NetLogoControllerMessages {
   case class  Execute(agentType: String, cmd: String)
+  case class  Compile(source: String)
   case object Go
   case object Halt
   case class  NewModel(modelName: String)
