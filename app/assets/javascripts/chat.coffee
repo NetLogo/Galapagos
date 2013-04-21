@@ -9,7 +9,7 @@ globals     = exports.ChatGlobals
 TextHolder  = exports.TextHolder
 
 # Onload
-document.body.onload = ->
+window.addEventListener('load', ->
 
   UI.setupUI()
   Util.initAgentList()
@@ -56,7 +56,7 @@ document.body.onload = ->
       else
         console.log("Received invalid message:")
         console.log(event)
-  
+
   messageOriginValid = (origin) ->
     # TODO Origin validation, lest we be subject to XSS attacks
     true
@@ -64,4 +64,4 @@ document.body.onload = ->
   window.addEventListener('message', receiveMessage, false)
 
   Keybindings.initKeybindings()
-
+)
