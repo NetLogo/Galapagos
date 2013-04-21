@@ -52,17 +52,20 @@ class NetLogoController(channel: ActorRef) extends Actor {
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
 
       case Compile(source) =>
+        import collection.immutable.ListMap
         import org.nlogo.api.{ Program, Version }
         // TODO: Clean this up. This is what I've cobbled together through trial
         // and error and looking through NetLogo code.
         // This is based on CompilerManager.compileAll
         val results = ws.compiler.compileProgram(
-          source, ws.world.program, ws.getExtensionManager)
+          source, ws.world.program.copy(breeds = ListMap()), ws.getExtensionManager)
         ws.procedures = results.proceduresMap
         ws.init()
+        // FIXME: Global and turtle variables appear to be preserved during
+        // recomplie, but patch variables do not.
+        ws.world.rememberOldProgram()
         ws.world.program(results.program)
         ws.world.realloc()
-        ws.world.rememberOldProgram()
         //ws.codeBits.clear()
         //ws.world.realloc()
 
