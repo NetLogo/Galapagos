@@ -55,13 +55,15 @@ class NetLogoController(channel: ActorRef) extends Actor {
         import org.nlogo.api.{ Program, Version }
         // TODO: Clean this up. This is what I've cobbled together through trial
         // and error and looking through NetLogo code.
-        //ws.world.program(Program.empty(Version.is3D))
+        // This is based on CompilerManager.compileAll
         val results = ws.compiler.compileProgram(
-          source, Program.empty(Version.is3D), ws.getExtensionManager)
+          source, ws.world.program, ws.getExtensionManager)
         ws.procedures = results.proceduresMap
-        ws.codeBits.clear()
         ws.init()
-        //ws.world.program(results.program)
+        ws.world.program(results.program)
+        ws.world.realloc()
+        ws.world.rememberOldProgram()
+        //ws.codeBits.clear()
         //ws.world.realloc()
 
     }
