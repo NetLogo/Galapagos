@@ -10,8 +10,24 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/initializer.js")'></script>
 
   <td width="38%">
-    <div class="netlogo-model hor_centered inner_box rounded background_backgrounded">
-    </div>
+    <pre class="netlogo-model hor_centered inner_box rounded background_backgrounded ">
+    <!--
+to setup
+  ca
+  crt 50 [
+    setxy random-xcor random-ycor
+    set size 3
+    set shape "person"
+    create-link-with one-of other turtles
+  ]
+  reset-ticks
+end
+
+to go
+  layout-spring turtles links 0.2 5 1
+end
+-->
+    </pre>
   </td>
 
   @content

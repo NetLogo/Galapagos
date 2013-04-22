@@ -2,6 +2,9 @@ teletortoise = (element) ->
   container = document.createElement('div')
   container.classList.add('view-container')
 
+  code = element.textContent
+  element.textContent = ''
+
   element.appendChild(container)
   window.controller = new AgentStreamController(container)
 
@@ -16,7 +19,6 @@ teletortoise = (element) ->
   exports.NLEditor = editor
   exports.initChat()
 
-  console.log('bar')
   compileTimeout = -1
   editor.session.on('change', ->
     clearTimeout(compileTimeout)
@@ -24,6 +26,10 @@ teletortoise = (element) ->
       exports.ChatServices.UI.run('compile', editor.getValue())
     , 500)
   )
+  if code.trim()
+    console.log('inline')
+    editor.setValue(code)
+    editor.clearSelection()
 
 window.addEventListener('load', ->
   for elt in document.getElementsByClassName('netlogo-model')
