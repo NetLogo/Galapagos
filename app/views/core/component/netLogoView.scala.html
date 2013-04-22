@@ -7,37 +7,12 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/drawshape.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/defaultshapes.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/view.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/initializer.js")'></script>
 
   <td width="38%">
-    <div class="view-container hor_centered inner_box rounded background_backgrounded ">
+    <div class="netlogo-model hor_centered inner_box rounded background_backgrounded">
     </div>
-    <div class="editor-container" style="height: 200px;"></div>
   </td>
 
   @content
-
-  <script type="text/javascript">
-    var controller;
-    function init() {
-      var container = document.getElementsByClassName("view-container")[0];
-      controller = new AgentStreamController(container);
-      var editorContainer = document.getElementsByClassName("editor-container")[0];
-      var editor = ace.edit(editorContainer);
-      editor.setTheme("ace/theme/netlogo-classic");
-      editor.getSession().setMode("ace/mode/netlogo");
-      editor.setFontSize("14px");
-      editor.setShowPrintMargin(false);
-      exports.NLEditor = editor;
-
-      var compileTimeout;
-      editor.session.on("change", function(e) {
-        clearTimeout(compileTimeout);
-        compileTimeout = setTimeout(function() {
-          exports.ChatServices.UI.run("compile", editor.getValue())
-        }, 500);
-      });
-    }
-    window.addEventListener("load", init);
-  </script>
-
 }

@@ -8,9 +8,7 @@ globals     = exports.ChatGlobals
 
 TextHolder  = exports.TextHolder
 
-# Onload
-window.addEventListener('load', ->
-
+exports.initChat = ->
   UI.setupUI()
   Util.initAgentList()
 
@@ -64,4 +62,3 @@ window.addEventListener('load', ->
   window.addEventListener('message', receiveMessage, false)
 
   Keybindings.initKeybindings()
-)
