@@ -1,16 +1,17 @@
 package models.remote
 
 import
-  play.api.libs.json._,
+  java.awt.Color
+
+import
+  play.api.libs.json.{ JsBoolean, JsNull, JsNumber, JsObject, Json, JsString, JsValue },
     Json.toJson
 
 import
   org.nlogo.{ api, mirror, shape },
-    api.AgentVariables,
-    api.ShapeList,
-    api.Shape,
-    shape._,
-    mirror._
+    api.{ AgentVariables, Shape, ShapeList },
+    mirror.{ AgentKey, Birth, Change, Death, Kind, Mirrorables, Update },
+    shape.{ Circle, Element, Line, LinkShape, Polygon, Rectangle, VectorShape }
 
 import scala.collection.JavaConversions._
 
@@ -36,31 +37,39 @@ object Serializer {
       }
       Json.stringify(JsObject(keyToJsObjectMap.toSeq))
     }
+
   }
 
-  def serializeBirth(birth: Birth) : (String, JsValue) = birth match {
-    case Birth(AgentKey(kind, id), values) =>
-      val varNames = getImplicitVariables(kind)
-      id.toString -> serializeAgentVariables(values, varNames)
+  def serializeBirth(birth: Birth) : (String, JsValue) = {
+    val Birth(AgentKey(kind, id), values) = birth
+    val varNames = getVariableNamesForKind(kind)
+    id.toString -> serializeAgentVariables(varNames, values)
   }
 
-  def serializeAgentUpdate(update: (AgentKey, Seq[Change])) : (String, JsValue) = update match {
-    case (AgentKey(kind, id), changes) =>
-      val varNames       = getImplicitVariables(kind)
-      val serializedVars = changes map {
-        case Change(variable, value) =>
-          val name = if (varNames.length > variable) varNames(variable) else variable.toString
-          name -> serializeValue(value)
-      }
-      id.toString -> JsObject(serializedVars)
+  def serializeAgentUpdate(update: (AgentKey, Seq[Change])) : (String, JsValue) = {
+    val (AgentKey(kind, id), changes) = update
+    val varNames = getVariableNamesForKind(kind)
+    val serializedVars = changes map {
+      case Change(variable, value) =>
+        val name = {
+          if (varNames.length > variable)
+            varNames(variable)
+          else
+            variable.toString
+        }
+        name -> serializeValue(value)
+    }
+    id.toString -> JsObject(serializedVars)
   }
 
   def serializeDeath(death: Death) : (String, JsValue) = death.agent.id.toString -> JsNull
 
-  def serializeAgentVariables(values: Seq[AnyRef], varNames: Seq[String]) : JsObject =
-    JsObject(varNames.zip(values map serializeValue))
+  def serializeAgentVariables(keys: Seq[String], values: Seq[AnyRef]) : JsObject = {
+    val kvPairs = keys zip (values map serializeValue)
+    JsObject(kvPairs)
+  }
 
-  def getImplicitVariables(kind: Kind) : Seq[String] = {
+  def getVariableNamesForKind(kind: Kind) : Seq[String] = {
     import Mirrorables.{ Link, Patch, Turtle, World, MirrorableWorld }
     import MirrorableWorld.WorldVar
     kind match {
@@ -77,58 +86,61 @@ object Serializer {
     case i: java.lang.Integer => JsNumber(i.intValue)
     case b: java.lang.Boolean => JsBoolean(b.booleanValue)
     case s: ShapeList         => JsObject(s.getShapes map serializeShape)
-    case x                    => toJson(x.toString)
+    case x                    => JsString(x.toString)
   }
 
-  def serializeShape(shape: Shape) = {
+  def serializeShape(shape: Shape) : (String, JsValue) = {
     val shapeData = shape match {
       case vecShape: VectorShape => JsObject(Seq(
           "rotate"   -> JsBoolean(vecShape.isRotatable),
           "elements" -> toJson(vecShape.getElements map serializeElement)
         ))
-      case linkShape: LinkShape  => toJson("")
+      case linkShape: LinkShape => JsString("")
     }
     shape.getName -> shapeData
   }
 
-  def serializeElement(elt: Element) = {
-    val shapeTypeData: JsObject = elt match {
+  def serializeElement(elem: Element) : JsObject = {
+    val shapeTypeData = elem match {
       case p: Polygon => JsObject(Seq(
-          "type"   -> toJson("polygon"),
+          "type"   -> JsString("polygon"),
           "xcors"  -> toJson(p.getXcoords map (x => JsNumber(x.intValue))),
           "ycors"  -> toJson(p.getYcoords map (x => JsNumber(x.intValue)))
         ))
       case r: Rectangle => JsObject(Seq(
-          "type" -> toJson("rectangle"),
+          "type" -> JsString("rectangle"),
           "xmin" -> JsNumber(r.getX),
           "ymin" -> JsNumber(r.getY),
           "xmax" -> JsNumber(r.getX + r.getWidth),
           "ymax" -> JsNumber(r.getY + r.getHeight)
         ))
       case c: Circle => JsObject(Seq(
-          "type" -> toJson("circle"),
+          "type" -> JsString("circle"),
           "x"    -> JsNumber(c.getBounds.getX),
           "y"    -> JsNumber(c.getBounds.getY),
           "diam" -> JsNumber(c.getBounds.getWidth)
         ))
       case l: Line => JsObject(Seq(
-          "type" -> toJson("line"),
+          "type" -> JsString("line"),
           "x1"   -> JsNumber(l.getStart.getX),
           "y1"   -> JsNumber(l.getStart.getY),
           "x2"   -> JsNumber(l.getEnd.getX),
           "y2"   -> JsNumber(l.getEnd.getY)
         ))
       case x =>  JsObject(Seq(
-          "type" -> toJson(x.toString)
+          "type" -> JsString(x.toString)
         ))
     }
     shapeTypeData ++ JsObject(Seq(
-      "color"  -> serializeColor(elt.getColor),
-      "filled" -> JsBoolean(elt.filled),
-      "marked" -> JsBoolean(elt.marked)
+      "color"  -> serializeColor(elem.getColor),
+      "filled" -> JsBoolean(elem.filled),
+      "marked" -> JsBoolean(elem.marked)
     ))
   }
 
-  def serializeColor(c: java.awt.Color) =
-    toJson("rgba(" + c.getRed + ", " + c.getGreen + ", " + c.getBlue + ", " + c.getAlpha / 255.0 + ")")
+  def serializeColor(c: Color) = {
+    val (r, g, b, a) = (c.getRed, c.getGreen, c.getBlue, c.getAlpha / 255.0)
+    toJson(s"rgba($r, $g, $b. $a)")
+  }
+
 }
