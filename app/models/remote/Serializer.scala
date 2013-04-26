@@ -18,7 +18,7 @@ object Serializer {
 
   def serialize(update: Update) : String = {
 
-    import Mirrorables.{ Patch, Turtle, World, Link, MirrorableWorld}
+    import Mirrorables.{ Patch, Turtle, World, Link }
 
     val birthsMap  = update.births  groupBy (_.agent.kind) mapValues (births  => births  map serializeBirth)
     val changesMap = update.changes groupBy (_._1.kind)    mapValues (changes => changes map serializeAgentUpdate)
@@ -41,7 +41,6 @@ object Serializer {
   def serializeBirth(birth: Birth) : (String, JsValue) = birth match {
     case Birth(AgentKey(kind, id), values) =>
       val varNames = getImplicitVariables(kind)
-      import Mirrorables.World
       id.toString -> serializeAgentVariables(values, varNames)
   }
 
@@ -68,7 +67,7 @@ object Serializer {
       case Turtle => AgentVariables.getImplicitTurtleVariables(false)
       case Patch  => AgentVariables.getImplicitPatchVariables(false)
       case Link   => AgentVariables.getImplicitLinkVariables
-      case World => 0 until WorldVar.maxId map (WorldVar.apply(_).toString)
+      case World  => 0 until WorldVar.maxId map (WorldVar.apply(_).toString)
       case _      => play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString); Seq()
     }
   }
@@ -101,23 +100,23 @@ object Serializer {
         ))
       case r: Rectangle => JsObject(Seq(
           "type" -> toJson("rectangle"),
-          "xmin" -> JsNumber(r.getX()),
-          "ymin" -> JsNumber(r.getY()),
-          "xmax" -> JsNumber(r.getX() + r.getWidth()),
-          "ymax" -> JsNumber(r.getY() + r.getHeight())
+          "xmin" -> JsNumber(r.getX),
+          "ymin" -> JsNumber(r.getY),
+          "xmax" -> JsNumber(r.getX + r.getWidth),
+          "ymax" -> JsNumber(r.getY + r.getHeight)
         ))
       case c: Circle => JsObject(Seq(
           "type" -> toJson("circle"),
-          "x"    -> JsNumber(c.getBounds().getX()),
-          "y"    -> JsNumber(c.getBounds().getY()),
-          "diam" -> JsNumber(c.getBounds().getWidth())
+          "x"    -> JsNumber(c.getBounds.getX),
+          "y"    -> JsNumber(c.getBounds.getY),
+          "diam" -> JsNumber(c.getBounds.getWidth)
         ))
       case l: Line => JsObject(Seq(
           "type" -> toJson("line"),
-          "x1"   -> JsNumber(l.getStart().getX()),
-          "y1"   -> JsNumber(l.getStart().getY()),
-          "x2"   -> JsNumber(l.getEnd().getX()),
-          "y2"   -> JsNumber(l.getEnd().getY())
+          "x1"   -> JsNumber(l.getStart.getX),
+          "y1"   -> JsNumber(l.getStart.getY),
+          "x2"   -> JsNumber(l.getEnd.getX),
+          "y2"   -> JsNumber(l.getEnd.getY)
         ))
       case x =>  JsObject(Seq(
           "type" -> toJson(x.toString)
