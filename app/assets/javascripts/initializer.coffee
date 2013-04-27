@@ -15,6 +15,7 @@ teletortoise = (element) ->
   editor.setTheme("ace/theme/netlogo-classic")
   editor.getSession().setMode("ace/mode/netlogo")
   editor.setFontSize("14px")
+  editor.renderer.setShowGutter(false);
   editor.setShowPrintMargin(false)
   exports.NLEditor = editor
   exports.initChat()

@@ -57,6 +57,9 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // TODO: Clean this up. This is what I've cobbled together through trial
         // and error and looking through NetLogo code.
         // This is based on CompilerManager.compileAll
+
+        // Write failing tests that isolates problems.
+        // Using api.Program.empty() will do it cleanly, but I'll lose variables.
         val results = ws.compiler.compileProgram(
           source, ws.world.program.copy(breeds = ListMap()), ws.getExtensionManager)
         ws.procedures = results.proceduresMap
