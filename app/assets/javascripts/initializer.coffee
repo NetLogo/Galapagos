@@ -6,7 +6,7 @@ teletortoise = (element) ->
   element.textContent = ''
 
   element.appendChild(container)
-  window.controller = new AgentStreamController(container)
+  window.tortoise = initSession(element.dataset.url, container)
 
   editorElt = document.createElement("div")
   editorElt.style.height = "200px"
@@ -18,13 +18,14 @@ teletortoise = (element) ->
   editor.renderer.setShowGutter(false);
   editor.setShowPrintMargin(false)
   exports.NLEditor = editor
-  exports.initChat()
+
+  exports.initChat(tortoise)
 
   compileTimeout = -1
   editor.session.on('change', ->
     clearTimeout(compileTimeout)
     compileTimeout = setTimeout( ->
-      exports.ChatServices.UI.run('compile', editor.getValue())
+      tortoise.run('compile', editor.getValue())
     , 500)
   )
   if code.trim()

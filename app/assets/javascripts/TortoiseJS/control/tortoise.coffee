@@ -1,9 +1,13 @@
-class Tortoise
-  constructor = (@connection, @controller) ->
-    @connection.on 'update', (msg)       => @update(JSON.parse(msg.message))
-    @connection.on 'js', (msg)           => @runJS(msg.message)
-    @connection.on 'model_update', (msg) => @evalJS(msg.message)
+window.initSession = (socketURL, container) ->
+  controller = new AgentStreamController(container)
+  connection = connect(socketURL)
+  new TortoiseSession(connection, controller)
 
+class TortoiseSession
+  constructor: (@connection, @controller) ->
+    @connection.on 'update', (msg)       => @update(JSON.parse(msg.message))
+    @connection.on 'js', (msg)           => @runJSCommand(msg.message)
+    @connection.on 'model_update', (msg) => @evalJSModel(msg.message)
 
   update: (modelUpdate) ->
     if modelUpdate instanceof Array
@@ -12,11 +16,11 @@ class Tortoise
       @controller.update(modelUpdate)
     @controller.repaint()
 
-  evalJS: (js) ->
+  evalJSModel: (js) ->
     eval.call(window, js)
     @update(collectUpdates())
 
-  runJS: (js) ->
+  runJSCommand: (js) ->
     (new Function(js)).call(window, js)
     @update(collectUpdates())
 

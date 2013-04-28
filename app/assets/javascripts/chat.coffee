@@ -8,43 +8,30 @@ globals     = exports.ChatGlobals
 
 TextHolder  = exports.TextHolder
 
-exports.initChat = ->
+exports.initChat = (session) ->
   UI.setupUI()
   Util.initAgentList()
 
   globals.userName = Util.extractParamFromURL("username") or globals.tortoiseUser
   UI.setAgentType()
 
-  WS = if window['MozWebSocket'] then MozWebSocket else WebSocket
-  globals.socket = new WS(socketURL)
+  handleChatEvent = (msg) ->
+    handleChatMessage(msg.user, msg.context, msg.message, msg.members,
+      Util.getAmericanizedTime(), msg.kind)
 
-  globals.socket.onmessage = (event) ->
+  handleChatMessage = (user, context, message, members, time, kind) ->
+    globals.logList[globals.messageCount] = new TextHolder(message)
+    difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
+    $globals.$chatLog.append(Util.messageHTMLMaker(user, context, message, time, kind))
+    if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then Util.textScroll($globals.$container)
+    #TODO Only call for joins and leaves
+    UI.updateUserList(members)
 
-    [time, user, context, message, kind, members, dataError] = Util.parseData(event)
-    UI.decideShowErrorOrChat(dataError)
-
-    if message
-      switch kind
-        when 'update'
-          updateModel = JSON.parse(message)
-          controller.update(updateModel)
-          controller.repaint()
-        when 'js', 'model_update'
-          updateSet =
-            if kind == 'model_update'
-              ChatModule.evalJS(message)
-            else
-              ChatModule.runJS(message)
-          for update in updateSet
-            controller.update(update)
-          controller.repaint()
-        else
-          globals.logList[globals.messageCount] = new TextHolder(message)
-          difference = $globals.$container[0].scrollHeight - $globals.$container.scrollTop()
-          $globals.$chatLog.append(Util.messageHTMLMaker(user, context, message, time, kind))
-          if difference is $globals.$container.innerHeight() or not globals.wontScroll or user is globals.userName then Util.textScroll($globals.$container)
-          #TODO Only call for joins and leaves
-          UI.updateUserList(members)
+  session.connection.on 'all',  (msg) -> UI.decideShowErrorOrChat(msg.error)
+  session.connection.on 'join', handleChatEvent
+  session.connection.on 'quit', handleChatEvent
+  session.connection.on 'chatter', handleChatEvent
+  globals.session = session
 
   receiveMessage = (event) ->
     if messageOriginValid(event.origin)
