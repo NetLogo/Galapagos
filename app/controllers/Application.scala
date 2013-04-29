@@ -10,4 +10,9 @@ object Application extends Controller {
       Ok(views.html.editor())
   }
 
+  def minimal = Action {
+    implicit request =>
+      Ok(views.html.examples.minimal())
+  }
+
 }

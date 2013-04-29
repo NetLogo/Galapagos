@@ -4,6 +4,7 @@
 
 # General
 GET     /editor                         controllers.Application.editor
+GET     /minimal                        controllers.Application.minimal
 
 # Remote (Teletortoise)
 GET     /                               controllers.remote.Remote.index
