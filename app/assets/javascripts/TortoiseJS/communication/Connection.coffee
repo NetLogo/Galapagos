@@ -1,4 +1,4 @@
-window.connect = (sucketURL) ->
+window.connect = (socketURL) ->
   new Connection(new WebSocket(socketURL))
 
 class Connection
