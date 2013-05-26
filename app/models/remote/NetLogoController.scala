@@ -32,7 +32,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   private var currentState: Mirroring.State = Map()
 
-  private var ws = workspace(ModelManager("Wolf_Sheep_Predation").get)
+  private var ws = workspace(io.Source.fromFile(ModelManager("Wolf_Sheep_Predation").get).mkString)
 
   private val executor     = Akka.system.actorOf(Props(new Executor))
   private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
@@ -118,10 +118,10 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   private class WorkspaceManager extends Actor {
     def receive = {
-      case NewModel(modelName) =>
+      case OpenModel(nlogoContents) =>
         ws.clearAll()
         ws.dispose()
-        ws = workspace(ModelManager(modelName).get) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+        ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
         viewManager ! ResetViewState
     }
   }
@@ -131,13 +131,13 @@ class NetLogoController(channel: ActorRef) extends Actor {
   ////////////////
 
   def receive = {
-    case msg @ Execute(_, _)     =>     executor.forward(msg)
-    case msg @ Compile(_)        =>     executor.forward(msg)
+    case msg @ Execute(_, _)     => executor.forward(msg)
+    case msg @ Compile(_)        => executor.forward(msg)
     case msg @ Go                => hlController.forward(msg)
-    case msg @ Halt              =>       halter.forward(msg)
-    case msg @ NewModel(_)       =>    wsManager.forward(msg)
-    case msg @ RequestViewUpdate =>  viewManager.forward(msg)
-    case msg @ RequestViewState  =>  viewManager.forward(msg)
+    case msg @ Halt              => halter.forward(msg)
+    case msg @ OpenModel(_)      => wsManager.forward(msg)
+    case msg @ RequestViewUpdate => viewManager.forward(msg)
+    case msg @ RequestViewState  => viewManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
     case msg @ Setup             => hlController.forward(msg)
   }
@@ -149,9 +149,9 @@ class NetLogoController(channel: ActorRef) extends Actor {
       Mirroring.diffs(baseState, mirrorables)
     }
 
-  protected def workspace(file: File) : WebWorkspace = {
+  protected def workspace(nlogoContents: String) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    wspace.openString(io.Source.fromFile(file).mkString)
+    wspace.openString(nlogoContents)
     wspace
   }
 

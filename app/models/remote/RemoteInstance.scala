@@ -129,6 +129,7 @@ class RemoteInstance extends Actor with WebInstance {
   override def broadcast(msg: JsObject)                { notifyAll(msg) }
   override def execute(agentType: String, cmd: String) = nlController ! Execute(agentType, cmd)
   override def compile(source: String) = nlController ! Compile(source)
+  override def open(nlogoContents: String) = nlController ! OpenModel(nlogoContents)
 
   override def generateMessage(kind: String, context: String, user: String, text: String) =
     super.generateMessage(kind, context, user, text) ++ JsObject(Seq(MembersKey -> JsArray(members.keySet.toList map (JsString))))

@@ -109,7 +109,9 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
       case "open" =>
         val modelName = args(0)
-        nlController ! NewModel(modelName)
+        val modelFile = ModelManager(modelName).get
+        val nlogoContents = io.Source.fromFile(modelFile).mkString
+        nlController ! OpenModel(nlogoContents)
         s"""opening the "$modelName" model"""
 
       case "models" =>

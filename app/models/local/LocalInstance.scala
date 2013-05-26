@@ -69,6 +69,10 @@ class LocalInstance extends Actor with WebInstance {
     // stub
   }
 
+  override protected def open(nlogoContents: String) {
+    // stub
+  }
+
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
     import CompilerMessages.GetModelState
