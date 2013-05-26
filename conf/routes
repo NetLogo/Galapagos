@@ -2,9 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# General
-GET     /editor                         controllers.Application.editor
-GET     /minimal                        controllers.Application.minimal
+#   General
+GET /editor                         controllers.Application.editor
+GET /minimal                        controllers.Application.minimal
+GET /model/$modelPath<.*\.nlogo>    controllers.Application.model(modelPath)
 
 # Remote (Teletortoise)
 GET     /                               controllers.remote.Remote.index
