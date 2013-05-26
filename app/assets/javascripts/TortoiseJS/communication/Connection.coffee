@@ -4,10 +4,17 @@ window.connect = (socketURL) ->
 class Connection
   constructor: (@socket) ->
     @listeners = {'all': []}
+    @outbox = [] # Messages that someone tried to send before the socket opened
     @socket.onmessage = (event) => @dispatch(JSON.parse(event.data))
+    @socket.onopen = => @send(msg) for msg in @outbox
+
 
   send: (message) ->
-    @socket.send(JSON.stringify(message))
+    if @socket.readyState == @socket.OPEN
+      @socket.send(JSON.stringify(message))
+      console.log('success')
+    else
+      @outbox.push(message)
 
   dispatch: (msg) ->
     for listener in @listeners['all']

@@ -31,12 +31,14 @@ window.initTortoise = (socketURL, elements) ->
       editor.session.on 'change', ->
         clearTimeout(compileTimeout)
         compileTimeout = setTimeout(->
+          console.log "recompiling"
           session.run('compile', editor.getValue())
         , 500)
       editor
 
     init: (element) ->
       socketURL = element.dataset.url or tortoise.socketURL
+      srcURL = element.dataset.src
       code = element.textContent
       element.textContent = ''
 
@@ -47,7 +49,22 @@ window.initTortoise = (socketURL, elements) ->
       session = tortoise.initSession(container, socketURL)
       editor = tortoise.attachEditor(element, session)
 
-      if code.trim()
+      if srcURL?
+        console.log srcURL
+        req = new XMLHttpRequest()
+        req.onreadystatechange = ->
+          if req.readyState == req.DONE
+            nlogoContents = req.responseText
+            endOfCode = nlogoContents.indexOf '@#$#@#$#@'
+            if endOfCode >= 0
+              code = nlogoContents.substring(0, endOfCode)
+            editor.setValue(code)
+            editor.clearSelection()
+            session.run('open', nlogoContents)
+            console.log "loaded"
+        req.open('GET', '/assets/models/Autumn.nlogo', true)
+        req.send()
+      else if code.trim()
         editor.setValue(code)
         editor.clearSelection()
       session
@@ -79,5 +96,6 @@ class TortoiseSession
     (new Function(js)).call(window, js)
     @update(collectUpdates())
 
+  # TODO: Give this a callback parameter that gets called with the response
   run: (agentType, cmd) ->
     @connection.send({agentType: agentType, cmd: cmd})
