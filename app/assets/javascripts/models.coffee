@@ -14,7 +14,7 @@ exports.modelList = (callback) ->
           $.ajax(modelURL,
             complete: (req, status) ->
               if status == 'success'
-                tortoise.sessions[0].run('open', req.responseText)
+                tortoise.sessions[0].open(req.responseText)
           )
       )
       callback(modelSelect)

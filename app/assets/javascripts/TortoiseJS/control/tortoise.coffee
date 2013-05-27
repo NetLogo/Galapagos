@@ -23,9 +23,10 @@ window.initTortoise = (socketURL, elements) ->
       editor = ace.edit(editorElt)
       editor.setTheme('ace/theme/netlogo-classic')
       editor.getSession().setMode('ace/mode/netlogo')
-      editor.setFontSize('14px')
+      editor.setFontSize('11px')
       editor.renderer.setShowGutter(false);
       editor.setShowPrintMargin(false)
+      session.editor = editor
       container.appendChild(editorElt)
       compileTimeout = -1
       editor.session.on 'change', ->
@@ -55,13 +56,7 @@ window.initTortoise = (socketURL, elements) ->
         req.onreadystatechange = ->
           if req.readyState == req.DONE
             nlogoContents = req.responseText
-            endOfCode = nlogoContents.indexOf '@#$#@#$#@'
-            if endOfCode >= 0
-              code = nlogoContents.substring(0, endOfCode)
-            editor.setValue(code)
-            editor.clearSelection()
-            session.run('open', nlogoContents)
-            console.log "loaded"
+            session.open(nlogoContents)
         req.open('GET', '/assets/models/Autumn.nlogo', true)
         req.send()
       else if code.trim()
@@ -99,3 +94,13 @@ class TortoiseSession
   # TODO: Give this a callback parameter that gets called with the response
   run: (agentType, cmd) ->
     @connection.send({agentType: agentType, cmd: cmd})
+
+  open: (nlogoContents, editor) ->
+    @run('open', nlogoContents)
+    if @editor?
+      endOfCode = nlogoContents.indexOf '@#$#@#$#@'
+      if endOfCode >= 0
+        code = nlogoContents.substring(0, endOfCode)
+      @editor.setValue(code)
+      @editor.clearSelection()
+
