@@ -38,7 +38,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
   private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
-  private val wsManager    = Akka.system.actorOf(Props(new WorkspaceManager))
 
   ///////////
   // Tasks //
@@ -71,6 +70,12 @@ class NetLogoController(channel: ActorRef) extends Actor {
         ws.world.realloc()
         //ws.codeBits.clear()
         //ws.world.realloc()
+
+      case OpenModel(nlogoContents) =>
+        ws.clearAll()
+        ws.dispose()
+        ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+        viewManager ! ResetViewState
 
     }
   }
@@ -116,16 +121,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   }
 
-  private class WorkspaceManager extends Actor {
-    def receive = {
-      case OpenModel(nlogoContents) =>
-        ws.clearAll()
-        ws.dispose()
-        ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
-        viewManager ! ResetViewState
-    }
-  }
-
   ////////////////
   // Delegation //
   ////////////////
@@ -135,7 +130,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
     case msg @ Compile(_)        => executor.forward(msg)
     case msg @ Go                => hlController.forward(msg)
     case msg @ Halt              => halter.forward(msg)
-    case msg @ OpenModel(_)      => wsManager.forward(msg)
+    case msg @ OpenModel(_)      => executor.forward(msg)
     case msg @ RequestViewUpdate => viewManager.forward(msg)
     case msg @ RequestViewState  => viewManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)

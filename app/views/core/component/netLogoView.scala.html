@@ -9,6 +9,8 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+  <link rel="stylesheet" href='@routes.Assets.at("stylesheets/chosen.css")' />
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/chosen.jquery.js")'></script>
 
   <td width="38%">
     <div class="model-list">
@@ -24,7 +26,7 @@
     var tortoise = initTortoise(exports.ChatGlobals.socketURL);
     exports.initChat(tortoise.sessions[0]);
     var modelList = $('.model-list');
-    exports.modelList(function(e){e.appendTo(modelList);});
+    exports.modelList(modelList);
   </script>
 
 }

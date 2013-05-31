@@ -36,9 +36,11 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
       execute(agentType, cmd)
 
     case Command(username, "compile", cmd) =>
+      println("Compiling")
       compile(cmd)
 
     case Command(username, "open", cmd) =>
+      println("Opening")
       open(cmd)
 
     case Command(username, agentType, cmd) =>
