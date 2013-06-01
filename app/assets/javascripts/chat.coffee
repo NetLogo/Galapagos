@@ -16,7 +16,6 @@ exports.initChat = (session) ->
   UI.setAgentType()
 
   handleChatEvent = (msg) ->
-    UI.decideShowErrorOrChat(msg.error)
     # TODO: I feel like there should be a better way to do this
     if msg.message != ""
       handleChatMessage(msg.user, msg.context, msg.message, msg.members,
@@ -30,11 +29,13 @@ exports.initChat = (session) ->
     #TODO Only call for joins and leaves
     UI.updateUserList(members)
 
-  session.connection.on 'join', handleChatEvent
-  session.connection.on 'quit', handleChatEvent
-  session.connection.on 'chatter', handleChatEvent
-  session.connection.on 'command', handleChatEvent
+  session.connection.on 'all',      (msg) -> UI.decideShowErrorOrChat(msg.error)
+  session.connection.on 'join',     handleChatEvent
+  session.connection.on 'quit',     handleChatEvent
+  session.connection.on 'chatter',  handleChatEvent
+  session.connection.on 'command',  handleChatEvent
   session.connection.on 'response', handleChatEvent
+
   globals.session = session
 
   receiveMessage = (event) ->
