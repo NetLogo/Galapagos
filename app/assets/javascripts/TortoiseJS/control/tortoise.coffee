@@ -1,3 +1,4 @@
+# TODO: Get rid of the sessions stuff and make this readable.
 window.initTortoise = (socketURL, elements) ->
   ###
   socketURL - This socketURL will be used if an element doesn't define a
@@ -51,10 +52,11 @@ window.initTortoise = (socketURL, elements) ->
       editor = tortoise.attachEditor(element, session)
 
       if srcURL?
-        console.log srcURL
+        console.log "Requesting " + srcURL
         req = new XMLHttpRequest()
         req.onreadystatechange = ->
           if req.readyState == req.DONE
+            console.log "Got " + srcURL
             nlogoContents = req.responseText
             session.open(nlogoContents)
         req.open('GET', '/assets/models/Autumn.nlogo', true)

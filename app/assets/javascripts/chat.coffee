@@ -17,7 +17,7 @@ exports.initChat = (session) ->
 
   handleChatEvent = (msg) ->
     UI.decideShowErrorOrChat(msg.error)
-    # TODO: I feel like there should be a better way to do this?
+    # TODO: I feel like there should be a better way to do this
     if msg.message != ""
       handleChatMessage(msg.user, msg.context, msg.message, msg.members,
         Util.getAmericanizedTime(), msg.kind)

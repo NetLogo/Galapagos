@@ -65,13 +65,9 @@ class LocalInstance extends Actor with WebInstance {
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
-  override protected def compile(source: String) {
-    // stub
-  }
+  override protected def compile(source: String) = ???
 
-  override protected def open(nlogoContents: String) {
-    // stub
-  }
+  override protected def open(nlogoContents: String) = ???
 
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
