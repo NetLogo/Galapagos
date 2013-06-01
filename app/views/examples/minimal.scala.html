@@ -2,8 +2,8 @@
   <head>
   </head>
   <body>
-    <input type="button" onclick="model.run('observer', 'setup');" value="setup"></input>
-    <input type="button" onclick="model.run('observer', 'go');" value="go"></input>
+    <input type="button" onclick="session.run('observer', 'setup');" value="setup"></input>
+    <input type="button" onclick="session.run('observer', 'go');" value="go"></input>
     <pre class='netlogo-model'
          data-url='ws://localhost:9000/connect?username=Alice'
          style='width: 500px;'
@@ -35,8 +35,7 @@ end
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
     <script type="text/javascript">
-      var tortoise = initTortoise()
-      var model = tortoise.sessions[0];
+      var session = tortoise();
     </script>
   </body>
 </html>

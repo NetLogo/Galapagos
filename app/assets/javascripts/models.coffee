@@ -20,7 +20,7 @@ exports.modelList = (container) ->
             complete: (req, status) ->
               if status == 'success'
                 console.log req.responseText
-                tortoise.sessions[0].open(req.responseText)
+                session.open(req.responseText)
           )
       )
   )
