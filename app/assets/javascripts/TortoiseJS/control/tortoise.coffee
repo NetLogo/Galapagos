@@ -35,8 +35,6 @@ createSession = (elt, socketURL) ->
   session = new TortoiseSession(connection, controller, editor)
 
   session
-# TODO: Get rid of the sessions stuff and make this readable.
-
 
 attachEditor = (elt) ->
   editorElt = document.createElement('div')
