@@ -26,6 +26,7 @@ object NetLogoControllerMessages {
   case class  OpenModel(nlogoContents: String)
   case object RequestViewUpdate
   case object RequestViewState
+  case object ViewNeedsUpdate
   case object ResetViewState
   case object Setup
   case object Stop
