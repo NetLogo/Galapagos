@@ -50,6 +50,46 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
         viewManager ! ViewNeedsUpdate
+    }
+  }
+
+  // Calculating diffs takes a long time. This keeps track of if we actually
+  // have to do it.
+  private var needUpdate: Boolean = false
+
+  // We need synchronous versions on view-updating methods for model opening.
+  // modelruns gets really unhappy about things changing from under its feet,
+  // so the model opening process needs direct control.
+  // TODO: Find a better solution! This is gross!
+  private def sendViewUpdate() {
+    val (newState, update) = getStateUpdate(currentState)
+    currentState = newState
+    channel ! ViewUpdate(Serializer.serialize(update))
+    needUpdate = false
+  }
+
+  // Note that this CANNOT set current state to this new state. This update
+  // won't contain deaths.
+  private def sendViewState() {
+    channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+  }
+
+  private def resetViewState() {
+    currentState = Map()
+  }
+
+  private class ViewStateManager extends Actor {
+    def receive = {
+      case ViewNeedsUpdate =>
+        needUpdate = true
+      case RequestViewUpdate => // possibly long running
+        if (needUpdate) {
+          sendViewUpdate()
+        }
+      case RequestViewState => // possibly long running
+        sendViewState()
+      case ResetViewState =>
+        resetViewState()
 
       case Compile(source) =>
         import collection.immutable.ListMap
@@ -96,46 +136,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
     }
   }
 
-  // Calculating diffs takes a long time. This keeps track of if we actually
-  // have to do it.
-  private var needUpdate: Boolean = false
-
-  // We need synchronous versions on view-updating methods for model opening.
-  // modelruns gets really unhappy about things changing from under its feet,
-  // so the model opening process needs direct control.
-  // TODO: Find a better solution! This is gross!
-  private def sendViewUpdate() {
-    val (newState, update) = getStateUpdate(currentState)
-    currentState = newState
-    channel ! ViewUpdate(Serializer.serialize(update))
-    needUpdate = false
-  }
-
-  // Note that this CANNOT set current state to this new state. This update
-  // won't contain deaths.
-  private def sendViewState() {
-    channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-  }
-
-  private def resetViewState() {
-    currentState = Map()
-  }
-
-  private class ViewStateManager extends Actor {
-    def receive = {
-      case ViewNeedsUpdate =>
-        needUpdate = true
-      case RequestViewUpdate => // possibly long running
-        if (needUpdate) {
-          sendViewUpdate()
-        }
-      case RequestViewState => // possibly long running
-        sendViewState()
-      case ResetViewState =>
-        resetViewState()
-    }
-  }
-
   private class Halter extends Actor {
     def receive = { case Halt => ws.halt() }
   }
@@ -176,10 +176,10 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   def receive = {
     case msg @ Execute(_, _)     => executor.forward(msg)
-    case msg @ Compile(_)        => executor.forward(msg)
+    case msg @ Compile(_)        => viewManager.forward(msg)
     case msg @ Go                => hlController.forward(msg)
     case msg @ Halt              => halter.forward(msg)
-    case msg @ OpenModel(_)      => executor.forward(msg)
+    case msg @ OpenModel(_)      => viewManager.forward(msg)
     case msg @ RequestViewUpdate => viewManager.forward(msg)
     case msg @ RequestViewState  => viewManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
