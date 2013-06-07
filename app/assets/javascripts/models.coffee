@@ -19,7 +19,6 @@ exports.modelList = (container) ->
           $.ajax(modelURL,
             complete: (req, status) ->
               if status == 'success'
-                console.log req.responseText
                 session.open(req.responseText)
           )
       )

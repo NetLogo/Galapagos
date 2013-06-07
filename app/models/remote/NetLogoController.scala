@@ -4,7 +4,7 @@ import
   java.io.File
 
 import
-  akka.actor.{ Actor, ActorRef, Props }
+  akka.actor.{ Actor, ActorRef, Props, PoisonPill }
 
 import
   org.nlogo.{ headless, mirror },
@@ -34,7 +34,11 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   private var ws = workspace(io.Source.fromFile(ModelManager("Wolf_Sheep_Predation").get).mkString)
 
-  private val executor     = Akka.system.actorOf(Props(new Executor))
+  // def for executor so that multiple netlogo commands can run simultaneously.
+  // netlogo handles the scheduling.
+  // This also helps ensure that halt won't just open up NetLogo to take the next
+  // job the queue; it will actually stop all jobs as it's supposed to.
+  private def executor     = Akka.system.actorOf(Props(new Executor))
   private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
@@ -50,8 +54,11 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
         viewManager ! ViewNeedsUpdate
+        self ! PoisonPill
     }
   }
+
+
 
   // Calculating diffs takes a long time. This keeps track of if we actually
   // have to do it.
@@ -169,6 +176,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
         executor ! Execute("observer", "setup")
     }
   }
+
 
   ////////////////
   // Delegation //
