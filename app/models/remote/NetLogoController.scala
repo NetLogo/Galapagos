@@ -39,7 +39,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   // This also helps ensure that halt won't just open up NetLogo to take the next
   // job the queue; it will actually stop all jobs as it's supposed to.
   private def executor     = Akka.system.actorOf(Props(new Executor))
-  private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
+  private val stateManager  = Akka.system.actorOf(Props(new StateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
 
@@ -53,39 +53,50 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
-        viewManager ! ViewNeedsUpdate
+        stateManager ! ViewNeedsUpdate
         self ! PoisonPill
     }
   }
 
 
 
-  // Calculating diffs takes a long time. This keeps track of if we actually
-  // have to do it.
-  private var needUpdate: Boolean = false
 
-  // We need synchronous versions on view-updating methods for model opening.
-  // modelruns gets really unhappy about things changing from under its feet,
-  // so the model opening process needs direct control.
-  // TODO: Find a better solution! This is gross!
-  private def sendViewUpdate() {
-    val (newState, update) = getStateUpdate(currentState)
-    currentState = newState
-    channel ! ViewUpdate(Serializer.serialize(update))
-    needUpdate = false
-  }
+  /**
+   * Syncrhonizes everything that manipulates and reports the state of NetLogo.
+   * This includes view update calculation, model opening, and compiling. Execution
+   * is handled separately since it needs to be interruptable by model opening
+   * and is really nice to be run in parallel to view update calculation.
+   * Furthermore, execution problems are handled fairly gracefully (you just get
+   * a NetLogo error reported).
+   * Anything that needs execution to stop temporarily should call stop() and
+   * ws.halt().
+   **/
+  // TODO: Synchronize execution with opening models and maybe compiling.
+  private class StateManager extends Actor {
+    // Calculating diffs takes a long time. This keeps track of if we actually
+    // have to do it.
+    private var needUpdate: Boolean = false
 
-  // Note that this CANNOT set current state to this new state. This update
-  // won't contain deaths.
-  private def sendViewState() {
-    channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-  }
+    // We need synchronous versions on view-updating methods for model opening.
+    // modelruns gets really unhappy about things changing from under its feet,
+    // so the model opening process needs direct control.
+    private def sendViewUpdate() {
+      val (newState, update) = getStateUpdate(currentState)
+      currentState = newState
+      channel ! ViewUpdate(Serializer.serialize(update))
+      needUpdate = false
+    }
 
-  private def resetViewState() {
-    currentState = Map()
-  }
+    // Note that this CANNOT set current state to this new state. This update
+    // won't contain deaths.
+    private def sendViewState() {
+      channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
+    }
 
-  private class ViewStateManager extends Actor {
+    private def resetViewState() {
+      currentState = Map()
+    }
+
     def receive = {
       case ViewNeedsUpdate =>
         needUpdate = true
@@ -143,6 +154,10 @@ class NetLogoController(channel: ActorRef) extends Actor {
     }
   }
 
+  /**
+   * Needs to parallelized with everything. Should runnable at any time no matter
+   * what.
+   **/
   private class Halter extends Actor {
     def receive = { case Halt => ws.halt() }
   }
@@ -184,12 +199,12 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   def receive = {
     case msg @ Execute(_, _)     => executor.forward(msg)
-    case msg @ Compile(_)        => viewManager.forward(msg)
+    case msg @ Compile(_)        => stateManager.forward(msg)
     case msg @ Go                => hlController.forward(msg)
     case msg @ Halt              => halter.forward(msg)
-    case msg @ OpenModel(_)      => viewManager.forward(msg)
-    case msg @ RequestViewUpdate => viewManager.forward(msg)
-    case msg @ RequestViewState  => viewManager.forward(msg)
+    case msg @ OpenModel(_)      => stateManager.forward(msg)
+    case msg @ RequestViewUpdate => stateManager.forward(msg)
+    case msg @ RequestViewState  => stateManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
     case msg @ Setup             => hlController.forward(msg)
   }
