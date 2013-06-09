@@ -25,6 +25,10 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 //@ One day, I'll kill all of this insane, unscalable, impossible-to-reason-about actor proliferation
 //  and implement a priority mailbox, like things should have been done to begin with.  --Jason (2/26/13)
+// We want true parallelization between actors here; e.g. a halt must be runnable
+// anytime. While this structuring may have begun as a hacky priority inbox
+// replacement, it is now being used properly to declare synchronization and
+// parallelizability. --Bryan (6/9/13)
 class NetLogoController(channel: ActorRef) extends Actor {
 
   import NetLogoControllerMessages._
@@ -39,7 +43,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   // This also helps ensure that halt won't just open up NetLogo to take the next
   // job the queue; it will actually stop all jobs as it's supposed to.
   private def executor     = Akka.system.actorOf(Props(new Executor))
-  private val stateManager  = Akka.system.actorOf(Props(new StateManager))
+  private val stateManager = Akka.system.actorOf(Props(new StateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
   private val hlController = Akka.system.actorOf(Props(new HighLevelController))
 
@@ -57,9 +61,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
         self ! PoisonPill
     }
   }
-
-
-
 
   /**
    * Syncrhonizes everything that manipulates and reports the state of NetLogo.
@@ -112,11 +113,8 @@ class NetLogoController(channel: ActorRef) extends Actor {
       case Compile(source) =>
         import collection.immutable.ListMap
         import org.nlogo.api.{ Program, Version }
-        // TODO: Clean this up. This is what I've cobbled together through trial
-        // and error and looking through NetLogo code.
+        // TODO: Clean this up. Need tests to figure out exactly when this works.
         // This is based on CompilerManager.compileAll
-
-        // Write failing tests that isolates problems.
         // Using api.Program.empty() will do it cleanly, but I'll lose variables.
         val results = ws.compiler.compileProgram(
           source, ws.world.program.copy(breeds = ListMap()), ws.getExtensionManager)
@@ -127,8 +125,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
         ws.world.rememberOldProgram()
         ws.world.program(results.program)
         ws.world.realloc()
-        //ws.codeBits.clear()
-        //ws.world.realloc()
 
       case OpenModel(nlogoContents) =>
         println("opening model")
@@ -155,8 +151,8 @@ class NetLogoController(channel: ActorRef) extends Actor {
   }
 
   /**
-   * Needs to parallelized with everything. Should runnable at any time no matter
-   * what.
+   * Needs to be parallelized with everything. Should runnable at any time no
+   * matter what.
    **/
   private class Halter extends Actor {
     def receive = { case Halt => ws.halt() }
