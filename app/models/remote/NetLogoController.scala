@@ -115,7 +115,18 @@ class NetLogoController(channel: ActorRef) extends Actor {
         import org.nlogo.api.{ Program, Version }
         // TODO: Clean this up. Need tests to figure out exactly when this works.
         // This is based on CompilerManager.compileAll
-        // Using api.Program.empty() will do it cleanly, but I'll lose variables.
+        // Using api.Program.empty() for the program will do it cleanly, but it
+        // loses variables.
+
+        // If we don't blank out breeds on compile, it complains about breeds
+        // being redefined. However, if we just toss breeds and the currently
+        // opened model has plots that use breeds, when a user deletes the breeds
+        // line in the program, calling `reset-ticks` errors. As a workaround,
+        // we just sneak the old breeds back in when putting results.program
+        // into the world program.
+        // TODO: When we figure out a new widget system, the need for this should
+        // be removed.
+        val breeds = ws.world.program.breeds
         val results = ws.compiler.compileProgram(
           source, ws.world.program.copy(breeds = ListMap()), ws.getExtensionManager)
         ws.procedures = results.proceduresMap
@@ -123,7 +134,11 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // FIXME: Global and turtle variables appear to be preserved during
         // recomplie, but patch variables do not.
         ws.world.rememberOldProgram()
-        ws.world.program(results.program)
+        // world.program must be set to results.program. We sneak the old breeds
+        // back in so that widgets depending on the breeds don't freakout if their
+        // not there anymore.
+        ws.world.program(results.program.copy(
+          breeds = results.program.breeds ++ breeds))
         ws.world.realloc()
 
       case OpenModel(nlogoContents) =>
