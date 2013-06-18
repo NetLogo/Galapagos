@@ -17,8 +17,10 @@ object Application extends Controller {
       Ok(views.html.examples.minimal())
   }
 
-  def model(modelName: String) =
+  def model(modelName: String) = {
+    play.api.Logger.info("\""+modelName+"\" requested")
     controllers.Assets.at(path="/public/modelslib", java.net.URLDecoder.decode(modelName, "UTF-8"))
+  }
 
   def modelList = Action {
     implicit request => {
