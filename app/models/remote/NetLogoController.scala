@@ -54,10 +54,11 @@ class NetLogoController(channel: ActorRef) extends Actor {
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
+        play.api.Logger.info("Executing (" + agentType + ", " + cmd + ")")
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
-        stateManager ! ViewNeedsUpdate
+        play.api.Logger.info("Completed (" + agentType + ", " + cmd + ")")
         self ! PoisonPill
     }
   }
@@ -202,12 +203,14 @@ class NetLogoController(channel: ActorRef) extends Actor {
     }
     def receive = {
       case Go =>
+        channel ! CommandOutput("info", "going")
         if (!isGoing) {
           isGoing = true
           go()
         }
       case Stop =>
         stop()
+        channel ! CommandOutput("info", "stopped")
       case Setup =>
         executor ! Execute("observer", "setup")
     }
@@ -225,7 +228,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
     case msg @ Halt              => halter.forward(msg)
     case msg @ OpenModel(_)      => stateManager.forward(msg)
     case msg @ RequestViewUpdate => stateManager.forward(msg)
-    case msg @ RequestViewState  => stateManager.forward(msg)
+    case msg @ ViewNeedsUpdate   => stateManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
     case msg @ Setup             => hlController.forward(msg)
   }
@@ -239,7 +242,13 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   protected def workspace(nlogoContents: String) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
+
     wspace.openString(nlogoContents)
+    // These intentionally do the same thing. We may want to make them do different
+    // things in the future, if there's ever a reason that we need to force the
+    // view to update.
+    wspace addRequestDisplayUpdateListener { () => self ! ViewNeedsUpdate }
+    wspace addUpdateDisplayListener { () => self ! ViewNeedsUpdate }
     wspace
   }
 

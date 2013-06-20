@@ -16,10 +16,31 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
                    aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
     extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory) {
 
+  // TODO: Replace observer patterns with more idiomatic scala pattern
+  var updateDisplayListeners: List[ () => Unit ] = Nil
+  var requestDisplayUpdateListeners: List[ () => Unit ] = Nil
+
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
   def execute(agentType: String, cmd: String): String = {
     outputAreaBuffer.clear()
     generateOutput(runCommand(processCommand(agentType, cmd)))
+  }
+
+
+  def addRequestDisplayUpdateListener( listener: () => Unit ) {
+    requestDisplayUpdateListeners ::= listener
+  }
+
+  override def requestDisplayUpdate(context: org.nlogo.nvm.Context, force: Boolean) {
+    requestDisplayUpdateListeners foreach { _() }
+  }
+
+  def addUpdateDisplayListener( listener: () => Unit ) {
+    updateDisplayListeners ::= listener
+  }
+
+  override def updateDisplay(haveWorldLockAlready: Boolean) {
+    updateDisplayListeners foreach { _() }
   }
 
   private def processCommand(agentType: String, cmd: String): String =
