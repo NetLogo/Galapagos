@@ -28,7 +28,7 @@ object ShapeToJsonConverters {
   }
 
   class LinkShapeConverter(override protected val target: LinkShape) extends ShapeConverter[LinkShape] {
-    override protected val extraProps = JsString("")
+    override protected val extraProps = JsObject(Seq())
   }
 
 }
