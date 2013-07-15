@@ -4,6 +4,9 @@
   <div class="hor_centered" style="vertical-align: bottom; min-height: 80%; height:80%">
     @outputArea(outputExtras)
     @inputBuffer()
+    <input type="button" style="background: blue;  color: white;" value="Setup" onclick="exports.ChatServices.UI.send('/setup', 'chatter')">
+    <input type="button" style="background: green; color: white;" value="Go"    onclick="exports.ChatServices.UI.send('/go',    'chatter')">
+    <input type="button" style="background: red;   color: white;" value="Stop"  onclick="exports.ChatServices.UI.send('/stop',  'chatter')">
   </div>
 </div>
 
