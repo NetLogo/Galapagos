@@ -66,8 +66,8 @@ object Serializer {
     import Mirrorables.{ Link, Patch, Turtle, World, MirrorableWorld }
     import MirrorableWorld.WorldVar
     kind match {
-      case Turtle => AgentVariables.getImplicitTurtleVariables(false)
-      case Patch  => AgentVariables.getImplicitPatchVariables(false)
+      case Turtle => AgentVariables.getImplicitTurtleVariables
+      case Patch  => AgentVariables.getImplicitPatchVariables
       case Link   => AgentVariables.getImplicitLinkVariables
       case World  => 0 until WorldVar.maxId map (WorldVar.apply(_).toString)
       case _      => play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString); Seq()

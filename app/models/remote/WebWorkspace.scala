@@ -1,20 +1,17 @@
 package models.remote
 
 import
-  org.nlogo.{ agent, api, nvm, headless, workspace },
+  org.nlogo.{ agent, api, nvm, headless },
     agent.World,
-    api.{ AggregateManagerInterface, CompilerException, LogoException, RendererInterface },
+    api.{ CompilerException, LogoException, RendererInterface },
     headless.HeadlessWorkspace,
-    nvm.{ CompilerInterface, DefaultCompilerServices },
-    workspace.AbstractWorkspace.HubNetManagerFactory
+    nvm.CompilerInterface
 
 /**
   * Manages a NetLogo workspace for use in NetLogo web clients
   */
 
-class WebWorkspace(world: World, compiler: CompilerInterface, renderer: RendererInterface,
-                   aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
-    extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory) {
+class WebWorkspace(world: World, compiler: CompilerInterface, renderer: RendererInterface) extends HeadlessWorkspace(world, compiler, renderer) {
 
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
   def execute(agentType: String, cmd: String): String = {

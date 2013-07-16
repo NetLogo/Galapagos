@@ -6,7 +6,7 @@ import
 import
   org.nlogo.{ api, nvm, tortoise },
     api.{ CompilerException, Program },
-    nvm.CompilerInterface.{ NoProcedures, ProceduresMap },
+    nvm.ParserInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
 case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
