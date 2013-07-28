@@ -23,7 +23,7 @@ sealed trait ElemConverter[T <: Element] extends JsonConverter[T] {
 
   private def serializeColor(c: Color) : JsValue = {
     val (r, g, b, a) = (c.getRed, c.getGreen, c.getBlue, c.getAlpha / 255.0)
-    Json.toJson(s"rgba($r, $g, $b. $a)")
+    Json.toJson(s"rgba($r, $g, $b, $a)")
   }
 
 }
