@@ -76,18 +76,11 @@ class TortoiseSession
     (new Function(js)).call(window, js)
     @update collectUpdates()
 
-  # TODO: Give this a callback parameter that gets called with the response
   run: (agentType, cmd) ->
     @connection.send({agentType: agentType, cmd: cmd})
 
   openURL: (nlogoURL) ->
-    req = new XMLHttpRequest()
-    req.onreadystatechange = =>
-      if req.readyState == req.DONE
-        nlogoContents = req.responseText
-        @open(nlogoContents)
-    req.open('GET', nlogoURL)
-    req.send()
+    ajax(nlogoURL, (nlogoContents) => @open(nlogoContents))
 
   open: (nlogoContents) ->
     @run('open', nlogoContents)
@@ -101,4 +94,12 @@ class TortoiseSession
   recompile: () ->
     console.log('Sending recompile request')
     @run('compile', @editor.getValue())
+
+ajax = (url, callback) ->
+  req = new XMLHttpRequest()
+  req.onreadystatechange = ->
+    if req.readState == req.DONE
+      callback(req.responseText)
+  req.open('GET', url)
+  req.send()
 
