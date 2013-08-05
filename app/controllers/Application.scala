@@ -18,7 +18,7 @@ object Application extends Controller {
   }
 
   def model(modelName: String) = {
-    play.api.Logger.info("\""+modelName+"\" requested")
+    play.api.Logger.info("\"%s\" requested".format(modelName))
     controllers.Assets.at(path="/public/modelslib", java.net.URLDecoder.decode(modelName, "UTF-8"))
   }
 
