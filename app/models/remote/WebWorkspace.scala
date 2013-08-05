@@ -16,9 +16,8 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
                    aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
     extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory) {
 
-  // TODO: Replace observer patterns with more idiomatic scala pattern
-  var updateDisplayListeners: List[ () => Unit ] = Nil
-  var requestDisplayUpdateListeners: List[ () => Unit ] = Nil
+  private var updateDisplayListeners: List[ () => Unit ] = Nil
+  private var requestDisplayUpdateListeners: List[ () => Unit ] = Nil
 
   // Have to do some state juggling, due to how the `outputAreaBuffer`'s contents are managed...
   def execute(agentType: String, cmd: String): String = {
