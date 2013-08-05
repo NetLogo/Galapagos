@@ -44,8 +44,7 @@ exports.initChat = (session) ->
       if message.agentType? and message.cmd?
         UI.run(message.agentType, message.cmd)
       else
-        console.log("Received invalid message:")
-        console.log(event)
+        console.error("Received invalid message:\n#{event}")
 
   messageOriginValid = (origin) ->
     # TODO Origin validation, lest we be subject to XSS attacks

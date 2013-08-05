@@ -59,7 +59,6 @@ class TortoiseSession
     @editor.session.on 'change', =>
       clearTimeout(compileTimeout)
       compileTimeout = setTimeout(=>
-        console.log('recompiling')
         @recompile()
       , 500)
 
@@ -102,5 +101,6 @@ class TortoiseSession
       @editor.clearSelection()
 
   recompile: () ->
-    console.log 'recompiling'
+    console.log('Sending recompile request')
     @run 'compile', @editor.getValue()
+

@@ -12,7 +12,6 @@ class Connection
   send: (message) ->
     if @socket.readyState == @socket.OPEN
       @socket.send(JSON.stringify(message))
-      console.log('success')
     else
       @outbox.push(message)
 
