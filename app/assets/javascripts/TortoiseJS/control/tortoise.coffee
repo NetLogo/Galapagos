@@ -1,7 +1,7 @@
 window.tortoise = (elem, socketURL) ->
   elem = elem or '.netlogo-model'
   if typeof elem == 'string'
-    elem = document.querySelector elem
+    elem = document.querySelector(elem)
   if not socketURL?
     socketURL = elem.dataset.url
 
@@ -11,24 +11,24 @@ window.tortoise = (elem, socketURL) ->
   # since blanking out textContent clears out child elements too.
   elem.textContent = ''
 
-  session = createSession elem, socketURL
+  session = createSession(elem, socketURL)
 
   if srcURL?
-    session.openURL srcURL
+    session.openURL(srcURL)
   else if code.trim()
-    editor.setValue code
+    editor.setValue(code)
     editor.clearSelection()
     editor.getSelection().moveCursorFileStart()
 
   session
 
 createSession = (elem, socketURL) ->
-  container = document.createElement 'div'
-  container.classList.add 'view-container'
-  elem.appendChild container
-  elem.appendChild document.createElement 'div'
+  container = document.createElement('div')
+  container.classList.add('view-container')
+  elem.appendChild(container)
+  elem.appendChild(document.createElement 'div')
 
-  editor = attachEditor elem
+  editor = attachEditor(elem)
 
   controller = new AgentStreamController(container)
   connection = connect(socketURL)
@@ -39,28 +39,26 @@ createSession = (elem, socketURL) ->
 attachEditor = (elem) ->
   editorElem = document.createElement('div')
   editorElem.style.height = '200px'
-  elem.appendChild editorElem
-  editor = ace.edit editorElem
-  editor.setTheme 'ace/theme/netlogo-classic'
-  editor.getSession().setMode 'ace/mode/netlogo'
-  editor.setFontSize '11px'
-  editor.renderer.setShowGutter false
-  editor.setShowPrintMargin false
+  elem.appendChild(editorElem)
+  editor = ace.edit(editorElem)
+  editor.setTheme('ace/theme/netlogo-classic')
+  editor.getSession().setMode('ace/mode/netlogo')
+  editor.setFontSize('11px')
+  editor.renderer.setShowGutter(false)
+  editor.setShowPrintMargin(false)
   editor
 
 class TortoiseSession
   constructor: (@connection, @controller, @editor) ->
-    @connection.on 'update', (msg)       => @update(JSON.parse(msg.message))
-    @connection.on 'js', (msg)           => @runJSCommand(msg.message)
-    @connection.on 'model_update', (msg) => @evalJSModel(msg.message)
+    @connection.on('update',       (msg) => @update(JSON.parse(msg.message)))
+    @connection.on('js',           (msg) => @runJSCommand(msg.message))
+    @connection.on('model_update', (msg) => @evalJSModel(msg.message))
 
     # Start autocompile
     compileTimeout = -1
-    @editor.session.on 'change', =>
+    @editor.session.on('change', =>
       clearTimeout(compileTimeout)
-      compileTimeout = setTimeout(=>
-        @recompile()
-      , 500)
+      compileTimeout = setTimeout((=> @recompile()), 500))
 
 
   update: (modelUpdate) ->
@@ -80,27 +78,27 @@ class TortoiseSession
 
   # TODO: Give this a callback parameter that gets called with the response
   run: (agentType, cmd) ->
-    @connection.send {agentType: agentType, cmd: cmd}
+    @connection.send({agentType: agentType, cmd: cmd})
 
   openURL: (nlogoURL) ->
     req = new XMLHttpRequest()
     req.onreadystatechange = =>
       if req.readyState == req.DONE
         nlogoContents = req.responseText
-        @open nlogoContents
-    req.open 'GET', nlogoURL
+        @open(nlogoContents)
+    req.open('GET', nlogoURL)
     req.send()
 
   open: (nlogoContents) ->
-    @run 'open', nlogoContents
+    @run('open', nlogoContents)
     if @editor?
-      endOfCode = nlogoContents.indexOf '@#$#@#$#@'
+      endOfCode = nlogoContents.indexOf('@#$#@#$#@')
       if endOfCode >= 0
-        code = nlogoContents.substring 0, endOfCode
-      @editor.setValue code
+        code = nlogoContents.substring(0, endOfCode)
+      @editor.setValue(code)
       @editor.clearSelection()
 
   recompile: () ->
     console.log('Sending recompile request')
-    @run 'compile', @editor.getValue()
+    @run('compile', @editor.getValue())
 

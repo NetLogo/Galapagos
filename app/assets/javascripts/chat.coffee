@@ -29,12 +29,12 @@ exports.initChat = (session) ->
     #TODO Only call for joins and leaves
     UI.updateUserList(members)
 
-  session.connection.on 'all',      (msg) -> UI.decideShowErrorOrChat(msg.error)
-  session.connection.on 'join',     handleChatEvent
-  session.connection.on 'quit',     handleChatEvent
-  session.connection.on 'chatter',  handleChatEvent
-  session.connection.on 'command',  handleChatEvent
-  session.connection.on 'response', handleChatEvent
+  session.connection.on('all',      (msg) -> UI.decideShowErrorOrChat(msg.error))
+  session.connection.on('join',     handleChatEvent)
+  session.connection.on('quit',     handleChatEvent)
+  session.connection.on('chatter',  handleChatEvent)
+  session.connection.on('command',  handleChatEvent)
+  session.connection.on('response', handleChatEvent)
 
   globals.session = session
 
