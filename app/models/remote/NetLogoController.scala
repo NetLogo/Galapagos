@@ -73,7 +73,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
    * Anything that needs execution to stop temporarily should call stop() and
    * ws.halt().
    **/
-  // TODO: Synchronize execution with opening models and maybe compiling.
   private class StateManager extends Actor {
     // Calculating diffs takes a long time. This keeps track of if we actually
     // have to do it.
@@ -99,22 +98,10 @@ class NetLogoController(channel: ActorRef) extends Actor {
       currentState = Map()
     }
 
-    def receive = {
-      case ViewNeedsUpdate =>
-        needUpdate = true
-      case RequestViewUpdate => // possibly long running
-        if (needUpdate) {
-          sendViewUpdate()
-        }
-      case RequestViewState => // possibly long running
-        sendViewState()
-      case ResetViewState =>
-        resetViewState()
-
-      case Compile(source) =>
+    private def compile(source: String) {
         import collection.immutable.ListMap
         import org.nlogo.api.{ Program, Version }
-        // TODO: Clean this up. Need tests to figure out exactly when this works.
+        // TODO: We need a better way to compile code on the NetLogo side
         // This is based on CompilerManager.compileAll
         // Using api.Program.empty() for the program will do it cleanly, but it
         // loses variables.
@@ -125,7 +112,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
         // line in the program, calling `reset-ticks` errors. As a workaround,
         // we just sneak the old breeds back in when putting results.program
         // into the world program.
-        // TODO: When we figure out a new widget system, the need for this should
         // be removed.
         val breeds = ws.world.program.breeds
         val results = ws.compiler.compileProgram(
@@ -133,46 +119,59 @@ class NetLogoController(channel: ActorRef) extends Actor {
         ws.procedures = results.proceduresMap
         ws.init()
         // FIXME: Global and turtle variables appear to be preserved during
-        // recomplie, but patch variables do not.
+        // recompile, but patch variables do not. I think this needs to be
+        // fixed on the NetLogo side.
         ws.world.rememberOldProgram()
         // world.program must be set to results.program. We sneak the old breeds
-        // back in so that widgets depending on the breeds don't freakout if their
-        // not there anymore.
+        // back in so that widgets depending on the breeds don't freakout if
+        // they're not there anymore.
         ws.world.program(results.program.copy(
           breeds = results.program.breeds ++ breeds))
         ws.world.realloc()
+    }
 
-      case OpenModel(nlogoContents) =>
-        channel ! CommandOutput("info", "opening model...")
-        play.api.Logger.info("opening model")
-        stop()
-        play.api.Logger.info("halting")
-        ws.halt()
-        // Clear out the current state to reset people's views
-        play.api.Logger.info("clearing")
-        ws.execute("observer", "ca")
-        // Force people's views so they don't get turtles stuck on screen.
-        // After resetting the view, modelruns won't
-        // know anything about previous turtles, so if the next model uses
-        // fewer turtles, the turtles with high who numbers will be stuck on
-        // screen.
-        play.api.Logger.info("sending view update")
-        sendViewUpdate()
-        // Reset the view state. If we don't do this, modelruns gets really
-        // unhappy about different numbers of variables and such (as far as I
+    private def openModel(nlogoContents: String) {
+      channel ! CommandOutput("info", "opening model...")
+      play.api.Logger.info("opening model")
+      stop()
+      play.api.Logger.info("halting")
+      ws.halt()
+      // Clear out the current state to reset people's views
+      play.api.Logger.info("clearing")
+      ws.execute("observer", "ca")
+      // Force people's views so they don't get turtles stuck on screen.
+      // After resetting the view, modelruns won't
+      // know anything about previous turtles, so if the next model uses
+      // fewer turtles, the turtles with high who numbers will be stuck on
+      // screen.
+      play.api.Logger.info("sending view update")
+      sendViewUpdate()
+      // Reset the view state. If we don't do this, modelruns gets really
+      // unhappy about different numbers of variables and such (as far as I
         // can tell).
-        play.api.Logger.info("resetting view")
-        resetViewState()
-        play.api.Logger.info("clearing workspace")
-        ws.clearAll()
-        play.api.Logger.info("disposing workspace")
-        ws.dispose()
-        play.api.Logger.info("creating new workspace from new model")
-        ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
-        play.api.Logger.info("sending view update")
-        sendViewUpdate()
-        println("finished opening model")
-        channel ! CommandOutput("info", "model successfully opened")
+      play.api.Logger.info("resetting view")
+      resetViewState()
+      play.api.Logger.info("clearing workspace")
+      ws.clearAll()
+      play.api.Logger.info("disposing workspace")
+      ws.dispose()
+      play.api.Logger.info("creating new workspace from new model")
+      ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+      play.api.Logger.info("sending view update")
+      sendViewUpdate()
+      println("finished opening model")
+      channel ! CommandOutput("info", "model successfully opened")
+    }
+
+    def receive = {
+      case ViewNeedsUpdate          => needUpdate = true
+      // possibly long running
+      case RequestViewUpdate        => if (needUpdate) sendViewUpdate()
+      // possibly long running
+      case RequestViewState         => sendViewState()
+      case ResetViewState           => resetViewState()
+      case Compile(source)          => compile(source)
+      case OpenModel(nlogoContents) => openModel(nlogoContents)
     }
   }
 
