@@ -187,7 +187,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   // Model opening needs direct control over this.
   var isGoing = false
   def stop() {
-    println("stopping")
+    play.api.Logger.info("stopping")
     isGoing = false
   }
 
