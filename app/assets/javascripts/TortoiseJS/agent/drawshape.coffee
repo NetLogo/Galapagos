@@ -10,8 +10,8 @@ class window.ShapeDrawer
 
   drawRawShape: (ctx, turtleColor, shapeName) ->
     shape = @shapes[shapeName] or defaultShape
-    for elt in shape.elements
-      draw[elt.type](ctx, turtleColor, elt)
+    for elem in shape.elements
+      draw[elem.type](ctx, turtleColor, elem)
     return
 
 class window.CachingShapeDrawer extends ShapeDrawer

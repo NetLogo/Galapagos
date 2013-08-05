@@ -1,17 +1,17 @@
-window.tortoise = (elt, socketURL) ->
-  elt = elt or '.netlogo-model'
-  if typeof elt == 'string'
-    elt = document.querySelector elt
+window.tortoise = (elem, socketURL) ->
+  elem = elem or '.netlogo-model'
+  if typeof elem == 'string'
+    elem = document.querySelector elem
   if not socketURL?
-    socketURL = elt.dataset.url
+    socketURL = elem.dataset.url
 
-  srcURL = elt.dataset.src
-  code = elt.textContent
+  srcURL = elem.dataset.src
+  code = elem.textContent
   # Clearing textContent must happen before creating the session since
   # since blanking out textContent clears out child elements too.
-  elt.textContent = ''
+  elem.textContent = ''
 
-  session = createSession elt, socketURL
+  session = createSession elem, socketURL
 
   if srcURL?
     session.openURL srcURL
@@ -22,13 +22,13 @@ window.tortoise = (elt, socketURL) ->
 
   session
 
-createSession = (elt, socketURL) ->
+createSession = (elem, socketURL) ->
   container = document.createElement 'div'
   container.classList.add 'view-container'
-  elt.appendChild container
-  elt.appendChild document.createElement 'div'
+  elem.appendChild container
+  elem.appendChild document.createElement 'div'
 
-  editor = attachEditor elt
+  editor = attachEditor elem
 
   controller = new AgentStreamController(container)
   connection = connect(socketURL)
@@ -36,11 +36,11 @@ createSession = (elt, socketURL) ->
 
   session
 
-attachEditor = (elt) ->
-  editorElt = document.createElement('div')
-  editorElt.style.height = '200px'
-  elt.appendChild editorElt
-  editor = ace.edit editorElt
+attachEditor = (elem) ->
+  editorElem = document.createElement('div')
+  editorElem.style.height = '200px'
+  elem.appendChild editorElem
+  editor = ace.edit editorElem
   editor.setTheme 'ace/theme/netlogo-classic'
   editor.getSession().setMode 'ace/mode/netlogo'
   editor.setFontSize '11px'
