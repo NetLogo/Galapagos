@@ -16,7 +16,6 @@ exports.initChat = (session) ->
   UI.setAgentType()
 
   handleChatEvent = (msg) ->
-    # TODO: I feel like there should be a better way to do this
     if msg.message != ""
       handleChatMessage(msg.user, msg.context, msg.message, msg.members,
         Util.getAmericanizedTime(), msg.kind)
