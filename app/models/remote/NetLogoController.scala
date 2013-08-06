@@ -94,29 +94,16 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
     private def openModel(nlogoContents: String) {
       channel ! CommandOutput("info", "opening model...")
-      play.api.Logger.info("opening model")
+      play.api.Logger.info("Opening model")
       stop()
-      play.api.Logger.info("halting")
       ws.halt()
       // Clear out the current state to reset people's views
-      play.api.Logger.info("clearing")
       ws.execute("observer", "ca")
-      // Force people's views so they don't get turtles stuck on screen.
-      // After resetting the view, modelruns won't
-      // know anything about previous turtles, so if the next model uses
-      // fewer turtles, the turtles with high who numbers will be stuck on
-      // screen.
-      play.api.Logger.info("sending view update")
-      sendViewUpdate()
-      play.api.Logger.info("clearing workspace")
       ws.clearAll()
-      play.api.Logger.info("disposing workspace")
-      ws.dispose()
-      play.api.Logger.info("creating new workspace from new model")
-      ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
-      play.api.Logger.info("sending view update")
       sendViewUpdate()
-      println("finished opening model")
+      ws.dispose()
+      ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+      play.api.Logger.info("Finished opening model")
       channel ! CommandOutput("info", "model successfully opened")
     }
 
