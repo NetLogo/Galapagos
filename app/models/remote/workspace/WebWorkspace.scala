@@ -15,27 +15,5 @@ import
 class WebWorkspace(world: World, compiler: CompilerInterface, renderer: RendererInterface,
                    aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
     extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory)
-    with Executor {
-
-  private var updateDisplayListeners: List[ () => Unit ] = Nil
-  private var requestDisplayUpdateListeners: List[ () => Unit ] = Nil
-
-  def addRequestDisplayUpdateListener( listener: () => Unit ) {
-    requestDisplayUpdateListeners ::= listener
-  }
-
-  override def requestDisplayUpdate(context: org.nlogo.nvm.Context, force: Boolean) {
-    requestDisplayUpdateListeners foreach { _() }
-  }
-
-  def addUpdateDisplayListener( listener: () => Unit ) {
-    updateDisplayListeners ::= listener
-  }
-
-  override def updateDisplay(haveWorldLockAlready: Boolean) {
-    updateDisplayListeners foreach { _() }
-  }
-
-
-
-}
+    with Executor
+    with StateTracker {}

@@ -36,8 +36,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
   import NetLogoControllerMessages._
   import WebInstanceMessages._
 
-  private var currentState: Mirroring.State = Map()
-
   private var ws = workspace(io.Source.fromFile(ModelManager("Wolf_Sheep_Predation").get).mkString)
 
   // def for executor so that multiple netlogo commands can run simultaneously.
@@ -76,28 +74,22 @@ class NetLogoController(channel: ActorRef) extends Actor {
    * ws.halt().
    **/
   private class StateManager extends Actor {
-    // Calculating diffs takes a long time. This keeps track of if we actually
-    // have to do it.
-    private var needUpdate: Boolean = false
 
     // We need synchronous versions on view-updating methods for model opening.
     // modelruns gets really unhappy about things changing from under its feet,
     // so the model opening process needs direct control.
-    private def sendViewUpdate() {
-      val (newState, update) = getStateUpdate(currentState)
-      currentState = newState
+
+    private def sendUpdate(update: Update) {
       channel ! ViewUpdate(Serializer.serialize(update))
-      needUpdate = false
     }
 
-    // Note that this CANNOT set current state to this new state. This update
-    // won't contain deaths.
+    private def sendViewUpdate() {
+      sendUpdate(ws.updateState())
+    }
+
     private def sendViewState() {
-      channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-    }
-
-    private def resetViewState() {
-      currentState = Map()
+      play.api.Logger.info("Sending view state")
+      sendUpdate(ws.getStateUpdate(Map())._2)
     }
 
     private def compile(source: String) {
@@ -148,11 +140,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
       // screen.
       play.api.Logger.info("sending view update")
       sendViewUpdate()
-      // Reset the view state. If we don't do this, modelruns gets really
-      // unhappy about different numbers of variables and such (as far as I
-        // can tell).
-      play.api.Logger.info("resetting view")
-      resetViewState()
       play.api.Logger.info("clearing workspace")
       ws.clearAll()
       play.api.Logger.info("disposing workspace")
@@ -166,12 +153,9 @@ class NetLogoController(channel: ActorRef) extends Actor {
     }
 
     def receive = {
-      case ViewNeedsUpdate          => needUpdate = true
-      // possibly long running
-      case RequestViewUpdate        => if (needUpdate) sendViewUpdate()
+      case RequestViewUpdate        => if (ws.updatePending) sendViewUpdate()
       // possibly long running
       case RequestViewState         => sendViewState()
-      case ResetViewState           => resetViewState()
       case Compile(source)          => compile(source)
       case OpenModel(nlogoContents) => openModel(nlogoContents)
     }
@@ -229,27 +213,16 @@ class NetLogoController(channel: ActorRef) extends Actor {
     case msg @ Halt              => halter.forward(msg)
     case msg @ OpenModel(_)      => stateManager.forward(msg)
     case msg @ RequestViewUpdate => stateManager.forward(msg)
+    case msg @ RequestViewState  => stateManager.forward(msg)
     case msg @ ViewNeedsUpdate   => stateManager.forward(msg)
     case msg @ Stop              => hlController.forward(msg)
     case msg @ Setup             => hlController.forward(msg)
   }
 
-  private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
-    ws.world.synchronized {
-      val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
-      val mirrorables  = Mirrorables.allMirrorables(ws.world, widgetValues)
-      Mirroring.diffs(baseState, mirrorables)
-    }
-
   protected def workspace(nlogoContents: String) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
 
     wspace.openString(nlogoContents)
-    // These intentionally do the same thing. We may want to make them do different
-    // things in the future, if there's ever a reason that we need to force the
-    // view to update.
-    wspace addRequestDisplayUpdateListener { () => self ! ViewNeedsUpdate }
-    wspace addUpdateDisplayListener { () => self ! ViewNeedsUpdate }
     wspace
   }
 

@@ -57,6 +57,7 @@ class RemoteInstance extends Actor with WebInstance {
     case Join(username) =>
       isValidUsername(username) match {
         case (true, _) =>
+          play.api.Logger.info(s"$username joining")
           val enumer = Concurrent.unicast[JsValue] {
             channel =>
               members += username -> channel
