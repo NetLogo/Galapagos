@@ -20,6 +20,8 @@ import
 import
   models.core.{ NetLogoControllerMessages, WebInstanceMessages }
 
+import workspace.WebWorkspace
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
