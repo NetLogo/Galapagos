@@ -16,4 +16,5 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
                    aggregateManager: AggregateManagerInterface, hbmFactory: HubNetManagerFactory)
     extends HeadlessWorkspace(world, compiler, renderer, aggregateManager, hbmFactory)
     with Executor
-    with StateTracker {}
+    with StateTracker
+    with Compiler
