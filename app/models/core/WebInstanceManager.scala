@@ -29,7 +29,11 @@ trait WebInstanceManager {
     (room ? Join(username)).map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
-          event => room ! Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
+          event => {
+            val cmd = Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
+            play.api.Logger.info(cmd.toString.lines.next)
+            room ! cmd
+          }
         } mapDone {
           _     => room ! Quit(username)
         }

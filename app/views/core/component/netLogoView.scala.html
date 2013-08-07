@@ -2,34 +2,31 @@
 
 @mainTheme(topBarText) {
 
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/agentmodel.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/colors.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/drawshape.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/defaultshapes.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/agent/view.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+  <link rel="stylesheet" href='@routes.Assets.at("stylesheets/managed/chosen_v1.0.0/chosen.css")' />
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/chosen_v1.0.0/chosen.jquery.js")'></script>
 
   <td width="38%">
-    <div class="view-container hor_centered inner_box rounded background_backgrounded ">
+    <div class="model-list">
     </div>
+    <pre class="netlogo-model hor_centered inner_box rounded background_backgrounded">
+    </pre>
   </td>
 
   @content
 
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
   <script type="text/javascript">
-    var controller;
-    function init() {
-      var container = document.getElementsByClassName("view-container")[0];
-      controller = new AgentStreamController(container);
-    }
-    if (!window.onload) {
-      window.onload = init;
-    } else {
-      var oldInit = window.onload;
-      window.onload = function () {
-        oldInit();
-        init();
-      }
-    }
+    var session = tortoise('.netlogo-model', exports.ChatGlobals.socketURL);
+    exports.initChat(session);
+    var modelList = $('.model-list');
+    exports.modelList(modelList);
   </script>
 
 }

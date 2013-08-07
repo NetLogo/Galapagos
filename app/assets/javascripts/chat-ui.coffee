@@ -35,7 +35,7 @@ class ChatUI
 
   # Return Type: Unit
   run: (agentType, cmd) ->
-    globals.socket.send(JSON.stringify({ agentType: agentType, cmd: cmd }))
+    globals.session.run(agentType, cmd)
 
   # Return Type: Unit
   sendInput: ->

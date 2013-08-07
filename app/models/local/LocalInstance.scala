@@ -65,6 +65,13 @@ class LocalInstance extends Actor with WebInstance {
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
+  override protected def compile(source: String) =
+    play.api.Logger.error("Tortoise doesn't support general compiling yet.")
+    
+
+  override protected def open(nlogoContents: String) =
+    play.api.Logger.error("Tortoise doesn't support general opening yet.")
+
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
     import CompilerMessages.GetModelState
