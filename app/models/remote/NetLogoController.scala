@@ -45,7 +45,6 @@ class NetLogoController(channel: ActorRef) extends Actor {
   private def executor     = Akka.system.actorOf(Props(new Executor))
   private val stateManager = Akka.system.actorOf(Props(new StateManager))
   private val halter       = Akka.system.actorOf(Props(new Halter))
-  private val hlController = Akka.system.actorOf(Props(new HighLevelController))
 
   ///////////
   // Tasks //
@@ -124,38 +123,19 @@ class NetLogoController(channel: ActorRef) extends Actor {
     def receive = { case Halt => ws.halt() }
   }
 
+  def go() {
+    ws.go("go")
+    channel ! CommandOutput("info", "Going")
+  }
 
-  // Model opening needs direct control over this.
-  var isGoing = false
   def stop() {
-    play.api.Logger.info("stopping")
-    isGoing = false
+    ws.stop("go")
+    channel ! CommandOutput("info", "Stopping")
   }
 
-  private class HighLevelController extends Actor {
-    var speed   = 60d
-
-    def go() {
-      if (isGoing) {
-        executor ! Execute("observer", "go")
-        Akka.system.scheduler.scheduleOnce((1d / speed).seconds){ go() }
-      }
-    }
-    def receive = {
-      case Go =>
-        channel ! CommandOutput("info", "going")
-        if (!isGoing) {
-          isGoing = true
-          go()
-        }
-      case Stop =>
-        stop()
-        channel ! CommandOutput("info", "stopped")
-      case Setup =>
-        executor ! Execute("observer", "setup")
-    }
+  def setup() {
+    executor ! Execute("observer", "setup")
   }
-
 
   ////////////////
   // Delegation //
@@ -164,14 +144,14 @@ class NetLogoController(channel: ActorRef) extends Actor {
   def receive = {
     case msg @ Execute(_, _)     => executor.forward(msg)
     case msg @ Compile(_)        => stateManager.forward(msg)
-    case msg @ Go                => hlController.forward(msg)
     case msg @ Halt              => halter.forward(msg)
     case msg @ OpenModel(_)      => stateManager.forward(msg)
     case msg @ RequestViewUpdate => stateManager.forward(msg)
     case msg @ RequestViewState  => stateManager.forward(msg)
     case msg @ ViewNeedsUpdate   => stateManager.forward(msg)
-    case msg @ Stop              => hlController.forward(msg)
-    case msg @ Setup             => hlController.forward(msg)
+    case msg @ Go                => go()
+    case msg @ Stop              => stop()
+    case msg @ Setup             => setup()
   }
 
   protected def workspace(nlogoContents: String) : WebWorkspace = {

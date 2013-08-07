@@ -18,3 +18,4 @@ class WebWorkspace(world: World, compiler: CompilerInterface, renderer: Renderer
     with Executor
     with StateTracker
     with Compiler
+    with ForeverRunner
