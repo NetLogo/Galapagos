@@ -32,7 +32,7 @@ trait ForeverRunner extends HeadlessWorkspace {
         // checking the current reference of runningTasks
         var i = 0
         while (i < runningTasks.size) {
-          execute("observer", runningTasks.toSeq(i))
+          callback(execute("observer", runningTasks.toSeq(i)))
           i += 1
         }
         if (runningTasks.nonEmpty)
