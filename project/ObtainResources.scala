@@ -11,13 +11,14 @@ import
 
 object ObtainResources {
 
-  val obtainResources   = TaskKey[Unit]("obtain-resources",   "download the JS libs and stylesheets")
-  val obtainJSLibs      = TaskKey[Unit]("obtain-js-libs",     "download the JS libs (i.e. jQuery)")
-  val obtainStylesheets = TaskKey[Unit]("obtain-stylesheets", "download the stylesheets (i.e. Bootstrap)")
+  val obtainResources        = TaskKey[Unit]("obtain-resources",         "download the JS libs and stylesheets")
+  val obtainJSLibs           = TaskKey[Unit]("obtain-js-libs",           "download the JS libs (i.e. jQuery)")
+  val obtainStylesheets      = TaskKey[Unit]("obtain-stylesheets",       "download the stylesheets (i.e. Bootstrap)")
+  val obtainStylesheetImages = TaskKey[Unit]("obtain-stylesheet-images", "download the stylesheet images (i.e. for Chosen)")
 
   val settings = Seq[Setting[_]](
     obtainResources := { },
-    obtainResources <<= obtainResources.dependsOn(obtainJSLibs, obtainStylesheets),
+    obtainResources <<= obtainResources.dependsOn(obtainJSLibs, obtainStylesheets, obtainStylesheetImages),
     compile in Compile <<= (compile in Compile).dependsOn(obtainResources),
     obtainJSLibs <<= (baseDirectory, streams) map { (base, s) =>
       obtain(base, s.log.info(_), "javascripts", ".js", Seq(Rsrc("underscore-1.4.2"), Rsrc("underscore-string-2.3.0"),
@@ -26,6 +27,9 @@ object ObtainResources {
     },
     obtainStylesheets <<= (baseDirectory, streams) map { (base, s) =>
       obtain(base, s.log.info(_), "stylesheets", ".css", Seq(Rsrc("bootstrap-1.4.0"), Rsrc("chosen_v1.0.0/chosen")))
+    },
+    obtainStylesheetImages <<= (baseDirectory, streams) map { (base, s) =>
+      obtain(base, s.log.info(_), "stylesheets", ".png", Seq(Rsrc("chosen_v1.0.0/chosen-sprite")))
     }
   )
 
