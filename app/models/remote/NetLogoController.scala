@@ -4,7 +4,7 @@ import
   java.io.File
 
 import
-  akka.actor.{ Actor, ActorRef, Props }
+  akka.actor.{ Actor, ActorRef, Props, PoisonPill }
 
 import
   org.nlogo.{ headless, mirror },
@@ -20,88 +20,88 @@ import
 import
   models.core.{ NetLogoControllerMessages, WebInstanceMessages }
 
+import workspace.WebWorkspace
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-//@ One day, I'll kill all of this insane, unscalable, impossible-to-reason-about actor proliferation
-//  and implement a priority mailbox, like things should have been done to begin with.  --Jason (2/26/13)
+/**
+ * A parallelized interface for NetLogo.
+ */
 class NetLogoController(channel: ActorRef) extends Actor {
 
   import NetLogoControllerMessages._
   import WebInstanceMessages._
 
-  private var currentState: Mirroring.State = Map()
+  private var ws = workspace(io.Source.fromFile(ModelManager("Wolf_Sheep_Predation").get).mkString)
 
-  private var ws = workspace(ModelManager("Wolf_Sheep_Predation").get)
-
-  private val executor     = Akka.system.actorOf(Props(new Executor))
-  private val viewManager  = Akka.system.actorOf(Props(new ViewStateManager))
-  private val halter       = Akka.system.actorOf(Props(new Halter))
-  private val hlController = Akka.system.actorOf(Props(new HighLevelController))
-  private val wsManager    = Akka.system.actorOf(Props(new WorkspaceManager))
-
-  ///////////
-  // Tasks //
-  ///////////
+  // def for executor so that multiple netlogo commands can run simultaneously.
+  // netlogo handles the scheduling.
+  private def executor     = Akka.system.actorOf(Props(new Executor))
+  private val stateManager = Akka.system.actorOf(Props(new StateManager))
 
   private class Executor extends Actor {
     def receive = {
       case Execute(agentType, cmd) => // possibly long running
+        play.api.Logger.info("Executing (" + agentType + ", " + cmd + ")")
         // ws.execute returns normally even if NetLogo is interrupted with a
         // halt, so no zombie processes should be created.
         channel ! CommandOutput(agentType, ws.execute(agentType, cmd))
+        play.api.Logger.info("Completed (" + agentType + ", " + cmd + ")")
+        self ! PoisonPill
     }
   }
 
-  private class ViewStateManager extends Actor {
+  /**
+   * Synchronizes everything that manipulates and reports the state of NetLogo.
+   * This includes view update calculation, model opening, and compiling.
+   * Although execution changes the state of NetLogo, it can't, for instance,
+   * introduce new variables, so can be run in parallel with everything here.
+   **/
+  private class StateManager extends Actor {
+
+    private def sendUpdate(update: Update) {
+      channel ! ViewUpdate(Serializer.serialize(update))
+    }
+
+    private def sendPendingUpdate() {
+      if (ws.updatePending) sendUpdate(ws.updateState)
+    }
+
+    private def openModel(nlogoContents: String) {
+      channel ! CommandOutput("info", "opening model...")
+      play.api.Logger.info("Opening model")
+      ws.halt()
+      // Clear out the current state to reset people's views
+      ws.execute("observer", "ca")
+      ws.clearAll()
+      sendPendingUpdate
+      ws.dispose()
+      ws = workspace(nlogoContents) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
+      play.api.Logger.info("Finished opening model")
+      channel ! CommandOutput("info", "model successfully opened")
+    }
+
     def receive = {
-      case RequestViewUpdate => // possibly long running
-        val (newState, update) = getStateUpdate(currentState)
-        currentState = newState
-        channel ! ViewUpdate(Serializer.serialize(update))
-      case RequestViewState => // possibly long running
-        channel ! ViewUpdate(Serializer.serialize(getStateUpdate(Map())._2))
-      case ResetViewState =>
-        currentState = Map()
+      case RequestViewUpdate        => sendPendingUpdate
+      case RequestViewState         => sendUpdate(ws.getStateUpdate(Map())._2)
+      case Compile(source)          => ws.setActiveCode(source)
+      case OpenModel(nlogoContents) => openModel(nlogoContents)
     }
   }
 
-  private class Halter extends Actor {
-    def receive = { case Halt => ws.halt() } 
+  private def go() {
+    ws.go("go")
+    channel ! CommandOutput("info", "Going")
   }
 
-  private class HighLevelController extends Actor {
-
-    var speed   = 60d
-    var isGoing = false
-
-    def receive = {
-      case Go =>
-        if (!isGoing) {
-          isGoing = true
-          go()
-        }
-      case Stop =>
-        isGoing = false
-      case Setup =>
-        executor ! Execute("observer", "setup")
-    }
-
-    def go() {
-      executor ! Execute("observer", "go")
-      if (isGoing) Akka.system.scheduler.scheduleOnce((1d / speed).seconds){ go() }
-    }
-
+  private def stop() {
+    ws.stop("go")
+    channel ! CommandOutput("info", "Stopping")
   }
 
-  private class WorkspaceManager extends Actor {
-    def receive = {
-      case NewModel(modelName) =>
-        ws.clearAll()
-        ws.dispose()
-        ws = workspace(ModelManager(modelName).get) // Grrr....  At some point, we should fix `HeadlessWorkspace` to be able to open a new model --Jason
-        viewManager ! ResetViewState
-    }
+  private def setup() {
+    executor ! Execute("observer", "setup")
   }
 
   ////////////////
@@ -109,28 +109,24 @@ class NetLogoController(channel: ActorRef) extends Actor {
   ////////////////
 
   def receive = {
-    case msg @ Execute(_, _)     =>     executor.forward(msg)
-    case msg @ Go                => hlController.forward(msg)
-    case msg @ Halt              =>       halter.forward(msg)
-    case msg @ NewModel(_)       =>    wsManager.forward(msg)
-    case msg @ RequestViewUpdate =>  viewManager.forward(msg)
-    case msg @ RequestViewState  =>  viewManager.forward(msg)
-    case msg @ Stop              => hlController.forward(msg)
-    case msg @ Setup             => hlController.forward(msg)
+    case msg @ Execute(_, _)     => executor.forward(msg)
+    case msg @ Compile(_)        => stateManager.forward(msg)
+    case msg @ OpenModel(_)      => stateManager.forward(msg)
+    case msg @ RequestViewUpdate => stateManager.forward(msg)
+    case msg @ RequestViewState  => stateManager.forward(msg)
+    case msg @ ViewNeedsUpdate   => stateManager.forward(msg)
+    case msg @ Go                => go()
+    case msg @ Stop              => stop()
+    case msg @ Setup             => setup()
+    case msg @ Halt              => ws.halt()
   }
 
-  private def getStateUpdate(baseState: Mirroring.State) : (Mirroring.State, Update)  =
-    ws.world.synchronized {
-      val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
-      val mirrorables  = Mirrorables.allMirrorables(ws.world, widgetValues)
-      Mirroring.diffs(baseState, mirrorables)
-    }
-
-  protected def workspace(file: File) : WebWorkspace = {
+  protected def workspace(nlogoContents: String) : WebWorkspace = {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    wspace.openString(io.Source.fromFile(file).mkString)
+
+    wspace.openString(nlogoContents)
+    wspace.setOutputCallback((output: String) => channel ! CommandOutput("observer", output))
     wspace
   }
-
 }
 

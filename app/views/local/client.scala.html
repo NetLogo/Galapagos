@@ -2,10 +2,6 @@
 
 @views.html.core.component.netLogoView(component.topBarText()) {
 
-  <script type="text/javascript" charset="utf-8">
-    var socketURL = "@controllers.local.routes.Local.handleSocketConnection().webSocketURL()";
-  </script>
-
   <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
   <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
   @views.html.core.component.clientImports("chat-local-module")
@@ -14,6 +10,10 @@
   <td height="100%">
     @views.html.core.component.chatPane(Html(""))
   </td>
+
+  <script type="text/javascript" charset="utf-8">
+    exports.ChatGlobals.socketURL = '@controllers.local.routes.Local.handleSocketConnection().webSocketURL()';
+  </script>
 
   @views.html.core.component.lateInitScripts()
 
