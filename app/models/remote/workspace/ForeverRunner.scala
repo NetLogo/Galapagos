@@ -19,6 +19,7 @@ trait ForeverRunner extends HeadlessWorkspace {
 
   private val looper = Akka.system.actorOf(Props(new Actor {
     var speed = 60d
+    var callback: (String) => Unit = { (output) => }
 
     def receive = {
       case Go(command)   =>
@@ -36,21 +37,25 @@ trait ForeverRunner extends HeadlessWorkspace {
         }
         if (runningTasks.nonEmpty)
           Akka.system.scheduler.scheduleOnce((1d / speed).seconds) { self ! Loop }
+      case SetOutputCallback(callback) =>
+        this.callback = callback 
+
     }
 
   }))
 
-  def go(command: String) {
-    looper ! Go(command)
-  }
+  def go(command: String) { looper ! Go(command) }
 
-  def stop(command: String) {
-    looper ! Stop(command)
+  def stop(command: String) { looper ! Stop(command) }
+
+  def setOutputCallback(callback: (String) => Unit) { 
+    looper ! SetOutputCallback(callback)
   }
 
   private case class Go(command: String)
   private case class Stop(command: String)
   private case object Loop
+  private case class SetOutputCallback(callback: (String) => Unit)
 
   override def halt() {
     runningTasks = ListSet()

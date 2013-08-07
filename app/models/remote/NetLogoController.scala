@@ -125,6 +125,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
 
     wspace.openString(nlogoContents)
+    wspace.setOutputCallback((output: String) => channel ! CommandOutput("observer", output))
     wspace
   }
 }
