@@ -57,7 +57,7 @@ trait ForeverRunner extends HeadlessWorkspace {
   private case object Loop
   private case class SetOutputCallback(callback: (String) => Unit)
 
-  override def halt() {
+  abstract override def halt() {
     runningTasks = ListSet()
     super.halt()
   }
