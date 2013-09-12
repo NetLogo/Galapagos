@@ -123,8 +123,8 @@ class PatchView extends View
     return
 
   colorPatch: (patch) ->
-    row = patch.pxcor-@minpxcor
-    col = @maxpycor - patch.pycor
+    row = @maxpycor - patch.pycor
+    col = patch.pxcor-@minpxcor
     patchIndex = row*@patchWidth + col
     color = patch.pcolor
     if typeof(color) == 'number'
