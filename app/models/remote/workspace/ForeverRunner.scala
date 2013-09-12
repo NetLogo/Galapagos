@@ -59,5 +59,6 @@ trait ForeverRunner extends HeadlessWorkspace {
 
   override def halt() {
     runningTasks = ListSet()
+    super.halt()
   }
 }
