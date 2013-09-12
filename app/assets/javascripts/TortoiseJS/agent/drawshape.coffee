@@ -46,8 +46,7 @@ class window.CachingShapeDrawer extends ShapeDrawer
     return
 
 setColoring = (ctx, turtleColor, element) ->
-  if typeof(turtleColor)=='number'
-    turtleColor = netlogoColorToCSS(turtleColor)
+  turtleColor = netlogoColorToCSS(turtleColor)
   if element.filled
     if element.marked
       ctx.fillStyle = turtleColor
