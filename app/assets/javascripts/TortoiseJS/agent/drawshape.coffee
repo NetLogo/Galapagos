@@ -107,7 +107,9 @@ window.draw =
     w = line.x2 - line.x1
     h = line.y2 - line.y1
     setColoring(ctx, turtleColor, line)
-    ctx.lineWidth = 2
+    # Note that this is 1/20 the size of the image. Smaller this, and the
+    # lines are hard to see in most cases.
+    ctx.lineWidth = 15 
     ctx.beginPath()
     ctx.moveTo(line.x1, line.y1)
     ctx.lineTo(line.x2, line.y2)
