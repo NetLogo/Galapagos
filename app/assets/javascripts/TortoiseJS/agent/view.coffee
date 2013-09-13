@@ -22,6 +22,10 @@ class window.AgentStreamController
 
 class View
   constructor: () ->
+    # Have size = 1 actually be patch-size pixels results in worse quality
+    # for turtles. `quality` scales the number of pixels used. It should be as
+    # small as possible as overly large canvases can crash computers
+    @quality = 1
     @canvas = document.createElement('canvas')
     @canvas.width = 500
     @canvas.height = 500
@@ -45,8 +49,8 @@ class View
     @onePixel = 1/@patchsize  # The size of one pixel in patch coords
     @patchWidth = @maxpxcor - @minpxcor + 1
     @patchHeight = @maxpycor - @minpycor + 1
-    @canvas.width =  @patchWidth * @patchsize
-    @canvas.height = @patchHeight * @patchsize
+    @canvas.width =  @patchWidth * @patchsize * @quality
+    @canvas.height = @patchHeight * @patchsize * @quality
     # Argument rows are the matrix columns. See spec.
     @ctx.setTransform(@canvas.width/@patchWidth, 0,
                       0, -@canvas.height/@patchHeight,
@@ -59,14 +63,22 @@ class LayeredView extends View
   repaint: () ->
     @canvas.width = Math.max((l.canvas.width for l in @layers)...)
     @canvas.height = Math.max((l.canvas.height for l in @layers)...)
+    # Note that scaling a high quality canvas to this canvas doesn't acutally
+    # seem to degrade quality that much
     for layer in @layers
-      @ctx.drawImage(layer.canvas, 0, 0)
+      @ctx.drawImage(layer.canvas, 0, 0, @canvas.width, @canvas.height)
     return
 
 class TurtleView extends View
   constructor: () ->
     super()
     @drawer = new CachingShapeDrawer({})
+    # Using quality = 1 here results in very pixelated turtles when using the
+    # CachingShapeDrawer, something weird about the turtle image scaling.
+    # Higher quality here seems preserved even when the LayeredView is
+    # quality = 1.
+    # quality = 3 was arrived at empirically. I noticed no improvement after 3.
+    @quality = 3
 
   drawTurtle: (id, turtle) ->
     xcor = turtle.xcor or 0
