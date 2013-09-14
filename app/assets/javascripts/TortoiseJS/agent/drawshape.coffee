@@ -25,10 +25,6 @@ class window.CachingShapeDrawer extends ShapeDrawer
     # Alternatively, each turtle could have it's own personal image pre-rendered.
     # This should be overall better, though, since it will perform well even if
     # turtles are constantly changing shape or color.
-    #
-    # Currently, the scaling makes shapes look ugly.
-    # TODO: Make the shapes prettier. This may require prerendering to different
-    # sizes or something.
     super(shapes)
     @shapeCache = {}
 
