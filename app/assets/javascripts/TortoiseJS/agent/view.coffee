@@ -127,8 +127,7 @@ class PatchView extends View
     col = patch.pxcor-@minpxcor
     patchIndex = row*@patchWidth + col
     color = patch.pcolor
-    if typeof(color) == 'number'
-      color = netlogoColorToCSS(color)
+    color = netlogoColorToCSS(color)
     if color != @patchColors[patchIndex]
       @patchColors[patchIndex] = @ctx.fillStyle = color
       @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)

@@ -5,7 +5,7 @@ import
 
 import
   org.nlogo.{ api, mirror, shape },
-    api.{ AgentVariables, ShapeList },
+    api.{ AgentVariables, ShapeList, LogoList },
     mirror.{ AgentKey, Birth, Change, Death, Kind, Mirrorables, Update }
 
 object Serializer {
@@ -82,6 +82,7 @@ object Serializer {
       case i: java.lang.Integer => JsNumber(i.intValue)
       case b: java.lang.Boolean => JsBoolean(b.booleanValue)
       case s: ShapeList         => JsObject(s.getShapes.asScala map (shape => shape.getName -> shape.toJsonObj))
+      case l: LogoList          => Json.toJson(l.toVector map (serializeValue _))
       case x                    => JsString(x.toString)
     }
   }
