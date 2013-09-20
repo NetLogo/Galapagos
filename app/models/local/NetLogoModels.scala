@@ -5,8 +5,7 @@ import org.nlogo.api.WorldDimensions
 
 object NetLogoModels {
 
-  def compileTermites =
-    Compiler.compileProcedures(
+  def termites = (
       """
         |turtles-own [next steps]
         |
@@ -75,8 +74,7 @@ object NetLogoModels {
         |end
         |""".stripMargin, WorldDimensions(-25, 25, -25, 25))
 
-  def compileClimate =
-    Compiler.compileProcedures(
+  def climate = (
       """
          |globals [
          |  sky-top      ;; y coordinate of top row of sky
@@ -357,8 +355,7 @@ object NetLogoModels {
          |end
       """.stripMargin, WorldDimensions(-20, 20, -20, 20))
 
-  def compileLife =
-    Compiler.compileProcedures(
+  def life = (
       """|patches-own [living? live-neighbors]
         |
         |to setup

@@ -5,12 +5,12 @@ import
 
 import
   org.nlogo.{ api, nvm, tortoise },
-    api.{ CompilerException, Program },
+    api.{ CompilerException, Program, WorldDimensions },
     nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
 case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
-
+  
   def apply(command: String) = {
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))
     strOpt map ((_, this)) getOrElse (("", this))
@@ -29,9 +29,9 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
   }
 
   //@ Improve later with more-dynamic selection of configs
-  def generateModelState : (String, NetLogoCompiler) = {
+  def generateModelState(source: String, dimensions: WorldDimensions) : (String, NetLogoCompiler) = {
     val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) = NetLogoModels.compileClimate
+      val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, dimensions)
       (js, NetLogoCompiler(newProgram, newProcedures))
     }
     strCompilerOpt getOrElse (("", this))
