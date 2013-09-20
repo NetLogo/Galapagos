@@ -6,7 +6,7 @@ import
 import
   org.nlogo.{ api, nvm, tortoise },
     api.{ CompilerException, Program },
-    nvm.CompilerInterface.{ NoProcedures, ProceduresMap },
+    nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
 case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
@@ -31,7 +31,7 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
   //@ Improve later with more-dynamic selection of configs
   def generateModelState : (String, NetLogoCompiler) = {
     val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) = NetLogoModels.compileTermites
+      val (js, newProgram, newProcedures) = NetLogoModels.compileClimate
       (js, NetLogoCompiler(newProgram, newProcedures))
     }
     strCompilerOpt getOrElse (("", this))
