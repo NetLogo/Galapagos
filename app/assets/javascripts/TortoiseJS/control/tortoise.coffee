@@ -62,6 +62,7 @@ class TortoiseSession
 
 
   update: (modelUpdate) ->
+    console.log(modelUpdate)
     if modelUpdate instanceof Array
       @controller.update(update) for update in modelUpdate
     else
@@ -69,6 +70,7 @@ class TortoiseSession
     @controller.repaint()
 
   evalJSModel: (js) ->
+    console.log(js)
     eval.call(window, js)
     @update collectUpdates()
 

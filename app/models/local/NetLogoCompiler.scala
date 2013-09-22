@@ -12,7 +12,9 @@ import
 case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
   
   def apply(command: String) = {
+    Logger.info(s"Compiling: ${command}")
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))
+    Logger.info(s"Compiled to: ${strOpt}")
     strOpt map ((_, this)) getOrElse (("", this))
   }
 
@@ -30,10 +32,13 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
 
   //@ Improve later with more-dynamic selection of configs
   def generateModelState(source: String, dimensions: WorldDimensions) : (String, NetLogoCompiler) = {
+    Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, dimensions)
+      Logger.info("No errors!")
       (js, NetLogoCompiler(newProgram, newProcedures))
     }
+    Logger.info("Compilation complete")
     strCompilerOpt getOrElse (("", this))
   }
 
@@ -45,6 +50,9 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
         None
       case ex: MatchError =>
         Logger.warn(s"Could not match given primitive: ${ex.getMessage}")
+        None
+      case ex: IllegalArgumentException =>
+        Logger.warn(s"Feature not yet supported: ${ex.getMessage}")
         None
     }
   }
