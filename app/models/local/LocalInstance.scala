@@ -63,23 +63,23 @@ class LocalInstance extends Actor with WebInstance {
 
   override protected def execute(agentType: String, cmd: String) {
     import CompilerMessages.Execute
-    val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second) match { case str: String => str }
+    val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second).asInstanceOf[String]
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
   override protected def compile(source: String) {
-    val js = Await.result(compilerManager ? Compile(source), 1.second) match { case str: String => str }
+    val js = Await.result(compilerManager ? Compile(source), 1.second).asInstanceOf[String]
     broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
   }
 
   override protected def open(nlogoContents: String) {
-    val js = Await.result(compilerManager ? Open(nlogoContents), 1.second) match { case str: String => str }
+    val js = Await.result(compilerManager ? Open(nlogoContents), 1.second).asInstanceOf[String]
     broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
   }
 
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
-    val js = Await.result(compilerManager ? GetModelState, 1.second) match { case str: String => str }
+    val js = Await.result(compilerManager ? GetModelState, 1.second).asInstanceOf[String]
     val message = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, js)
     message
   }
