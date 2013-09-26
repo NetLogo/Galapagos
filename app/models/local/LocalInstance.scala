@@ -24,6 +24,8 @@ import
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
+import CompilerMessages.{ GetModelState, Compile, Open }
+
 class LocalInstance extends Actor with WebInstance {
 
   import WebInstanceMessages._
@@ -61,22 +63,25 @@ class LocalInstance extends Actor with WebInstance {
 
   override protected def execute(agentType: String, cmd: String) {
     import CompilerMessages.Execute
-    val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second) match { case str: String => str }
+    val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second).asInstanceOf[String]
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
-  override protected def compile(source: String) =
-    play.api.Logger.error("Tortoise doesn't support general compiling yet.")
-    
+  override protected def compile(source: String) {
+    val js = Await.result(compilerManager ? Compile(source), 1.second).asInstanceOf[String]
+    broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
+  }
 
-  override protected def open(nlogoContents: String) =
-    play.api.Logger.error("Tortoise doesn't support general opening yet.")
+  override protected def open(nlogoContents: String) {
+    val js = Await.result(compilerManager ? Open(nlogoContents), 1.second).asInstanceOf[String]
+    broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
+  }
 
   private def validateConnection = (true, "")
   private def generateModelStateMessage = {
-    import CompilerMessages.GetModelState
-    val js = Await.result(compilerManager ? GetModelState, 1.second) match { case str: String => str }
-    generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, js)
+    val js = Await.result(compilerManager ? GetModelState, 1.second).asInstanceOf[String]
+    val message = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, js)
+    message
   }
 
 }
