@@ -1,0 +1,49 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <input type="button" onclick="session.run('observer', 'setup');" value="setup"></input>
+    <input type="button" onclick="toggleGo();" value="go"></input>
+    <input type="button" onclick="session.run('observer', 'add-CO2');" value="Add CO2"></input>
+    <input type="button" onclick="session.run('observer', 'add-cloud');" value="Add Clouds"></input>
+    <pre class='netlogo-model'
+         data-url='ws://localhost:9000/local-connect'
+         style='width: 500px;'
+         >
+    </pre>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
+    <script type="text/javascript">
+      var session = tortoise(),
+          runner = -1;
+
+      function goForever() {
+        session.run('observer', 'go');
+        runner = setTimeout(goForever);
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        if (runner < 0) {
+          goForever();
+        } else {
+          stop();
+        }
+      }
+    </script>
+  </body>
+</html>
+
