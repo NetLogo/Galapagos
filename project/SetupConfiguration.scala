@@ -33,8 +33,9 @@ object SetupConfiguration {
     val configMap = gatherConfigMap()
     configFile.createNewFile()
 
-    using(new PrintWriter(configFile)) {
-      writer => configMap foreach { case (k, v) => writer.println(k + '=' + v) }
+    val writer = new PrintWriter(configFile) // I'm not actually sure why this is suddenly necessary --JAB (9/25/13)
+    using(writer) {
+      w => configMap foreach { case (k, v) => w.println(s"$k=$v") }
     }
 
   }
