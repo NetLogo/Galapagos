@@ -34,8 +34,8 @@ trait WebInstanceManager {
             play.api.Logger.info(cmd.toString.lines.next)
             room ! cmd
           }
-        } mapDone {
-          _     => room ! Quit(username)
+        } map {
+          _ => room ! Quit(username)
         }
         (iteratee, enumerator)
       case CannotConnect(error) =>

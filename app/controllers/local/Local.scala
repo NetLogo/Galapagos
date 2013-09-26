@@ -35,7 +35,7 @@ object Local extends Controller {
   private def OkJS(js: String) =
     SimpleResult(
       header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/javascript")),
-      body = Enumerator(js)
+      body   = Enumerator(js.getBytes(play.Play.application.configuration.getString("application.defaultEncoding")))
     )
 
 }
