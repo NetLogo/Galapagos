@@ -3,9 +3,10 @@
   </head>
   <body>
     <input type="button" onclick="session.run('observer', 'setup');" value="setup"></input>
-    <input type="button" onclick="toggleGo();" value="go"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
     <input type="button" onclick="session.run('observer', 'add-CO2');" value="Add CO2"></input>
     <input type="button" onclick="session.run('observer', 'add-cloud');" value="Add Clouds"></input>
+    <label>speed<input id="speed-slider" type="range" min=1 max=150></input></label>
     <pre class='netlogo-model'
          data-url='ws://localhost:9000/local-connect'
          style='width: 500px;'
@@ -25,10 +26,12 @@
     <script type="text/javascript">
       var session = tortoise(),
           runner = -1;
+    
 
       function goForever() {
+        var speed = document.getElementById('speed-slider').value;
         session.run('observer', 'go');
-        runner = setTimeout(goForever);
+        runner = setTimeout(goForever, 1000/speed);
       }
 
       function stop() {
@@ -37,10 +40,13 @@
       }
 
       function toggleGo() {
+        var goButton = document.getElementById('go-button');
         if (runner < 0) {
           goForever();
+          goButton.value = "stop";
         } else {
           stop();
+          goButton.value = "go";
         }
       }
     </script>
