@@ -15,9 +15,22 @@ object SetupConfiguration {
   val genConfig   = TaskKey[Unit]("gen-config",   "Generate a new configuration file from user responses")
 
   val settings = Seq[Setting[_]](
-    checkConfig := { if (!configFile.exists) generateConfig() },
+    checkConfig := { if (configFile.isStale()) generateConfig() },
     genConfig   := { generateConfig() },
     compile in Compile <<= (compile in Compile).dependsOn(checkConfig)
+  )
+
+  private val paramsAndDefaults = Seq(
+    ("application.secret",            "the application's private encryption key",                                      None),
+    ("application.remote.killswitch", "if \"true\", stops Teletortoise rooms from running models when they are empty", Option("true"))
+  )
+
+  private val pureDefaults = Map(
+    "application.defaultEncoding" -> "UTF-8",
+    "application.langs"           -> "\"en\"",
+    "logger.root"                 -> "ERROR",
+    "logger.play"                 -> "INFO",
+    "logger.application"          -> "DEBUG"
   )
 
   private def generateConfig() {
@@ -42,18 +55,6 @@ object SetupConfiguration {
 
   private def gatherConfigMap() : Map[String, String] = {
 
-    val paramsAndDefaults = Seq(
-      ("application.secret",            "the application's private encryption key",                                      None),
-      ("application.remote.killswitch", "if \"true\", stops Teletortoise rooms from running models when they are empty", Option("true"))
-    )
-
-    val pureDefaults = Map(
-      "application.defaultEncoding" -> "UTF-8",
-      "application.langs"           -> "\"en\"",
-      "logger.root"                 -> "ERROR",
-      "logger.play"                 -> "INFO",
-      "logger.application"          -> "DEBUG"
-    )
 
     promptForConfiguration {
       () => paramsAndDefaults.foldLeft(pureDefaults) {
@@ -100,6 +101,19 @@ object SetupConfiguration {
       queryUntilValid(key, desc, default)
     }
 
+  }
+
+  implicit class EnhancedFile(file: File) {
+    def isStale(): Boolean =
+      !file.exists() || {
+
+        val src   = io.Source.fromFile(file)
+        val lines = src.getLines().toList
+        src.close()
+
+        lines.count(_.matches("""^[a-zA-Z.]+=.*""")) != (paramsAndDefaults ++ pureDefaults).size
+
+      }
   }
 
 }
