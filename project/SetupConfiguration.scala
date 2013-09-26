@@ -25,16 +25,16 @@ object SetupConfiguration {
     import scala.language.reflectiveCalls
 
     def using[T <: { def close() }, U](t: => T)(f: T => U) : U = {
-      try     f(t)
-      finally t.close()
+      val that = t
+      try     f(that)
+      finally that.close()
     }
 
     configFile.delete()
     val configMap = gatherConfigMap()
     configFile.createNewFile()
 
-    val writer = new PrintWriter(configFile) // I'm not actually sure why this is suddenly necessary --JAB (9/25/13)
-    using(writer) {
+    using(new PrintWriter(configFile)) {
       w => configMap foreach { case (k, v) => w.println(s"$k=$v") }
     }
 
