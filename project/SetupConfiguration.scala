@@ -22,6 +22,8 @@ object SetupConfiguration {
 
   private def generateConfig() {
 
+    import scala.language.reflectiveCalls
+
     def using[T <: { def close() }, U](t: => T)(f: T => U) : U = {
       try     f(t)
       finally t.close()

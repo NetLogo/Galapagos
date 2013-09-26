@@ -39,7 +39,7 @@ cachedNetlogoColors = for colorTimesTen in [0..1400]
   else
     r += Math.floor((0xFF - r)*step)
     g += Math.floor((0xFF - g)*step)
-    b += Math.floor((0XFF - b)*step)
+    b += Math.floor((0xFF - b)*step)
   "rgb(#{r}, #{g}, #{b})"
 
 colorArrayToCSS = (array) ->
