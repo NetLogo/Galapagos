@@ -10,7 +10,7 @@ import
     tortoise.Compiler
 
 case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
-  
+
   def apply(command: String) = {
     Logger.info(s"Compiling: ${command}")
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))

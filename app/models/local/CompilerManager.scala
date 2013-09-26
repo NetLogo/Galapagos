@@ -7,11 +7,11 @@ import
 
 import org.nlogo.api.{ WorldDimensions, ModelReader, ModelSection }
 
-protected[local] class CompilerManager extends Actor {
+private[local] class CompilerManager extends Actor {
 
   import CompilerMessages._
 
-  private var compiler = NetLogoCompiler()
+  private var compiler             = NetLogoCompiler()
   private var (source, dimensions) = NetLogoModels.climate
 
   override def receive = {
@@ -21,24 +21,22 @@ protected[local] class CompilerManager extends Actor {
     case Compile(source)         => sender ! setActiveCode(source)
   }
 
-  def openModel(nlogoContents: String) = {
+  def openModel(nlogoContents: String): Unit = {
     val modelMap = ModelReader.parseModel(nlogoContents)
-    val source = modelMap(ModelSection.Code).mkString("\n")
+    val source   = modelMap(ModelSection.Code).mkString("\n")
     setActiveCode(source)
   }
 
-  def setActiveCode(source: String) = {
-    this.source = source
+  def setActiveCode(source: String): String = {
+    this.source  = source
     val response = updateCompiler(compiler.generateModelState(source, dimensions))
     response
   }
 
-  private def updateCompiler(jsAndCompiler: (String, NetLogoCompiler)) = {
-    jsAndCompiler match {
-      case (js, newCompiler) =>
-        compiler = newCompiler
-        js
-    }
+  private def updateCompiler(jsAndCompiler: (String, NetLogoCompiler)): String = {
+    val (js, newCompiler) = jsAndCompiler
+    compiler = newCompiler
+    js
   }
 
 }
