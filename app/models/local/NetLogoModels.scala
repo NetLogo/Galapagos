@@ -128,7 +128,8 @@ object NetLogoModels {
         |    if pycor = earth-top ;; earth surface
         |      [ update-albedo ]
         |  ]
-        |end |
+        |end
+        |
         |;;
         |;; Runtime Procedures
         |;;
@@ -257,7 +258,9 @@ object NetLogoModels {
         |          set shape "ray"
         |          set heading 20
         |          set color magenta ]
-        |        [ set heading 100 + random 160 ] ;; return them to earth |    ] |  ]
+        |        [ set heading 100 + random 160 ] ;; return them to earth
+        |    ]
+        |  ]
         |end
         |
         |to run-IR
