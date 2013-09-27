@@ -34,7 +34,8 @@
 
       function goForever() {
         var speed = document.getElementById('speed-slider').value;
-        session.run('observer', 'go');
+        GO();
+        session.update(collectUpdates());
         runner = setTimeout(goForever, 1000/speed);
       }
 
