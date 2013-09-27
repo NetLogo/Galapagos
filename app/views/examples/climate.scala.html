@@ -1,3 +1,4 @@
+@()(implicit request: RequestHeader)
 <html>
   <head>
   </head>
@@ -11,8 +12,8 @@
     <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
     <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
     <pre class='netlogo-model'
-         data-url='ws://localhost:9000/local-connect'
          style='width: 500px;'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
          >
     </pre>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>

@@ -1,3 +1,4 @@
+@()(implicit request: RequestHeader)
 <html>
   <head>
   </head>
@@ -5,7 +6,7 @@
     <input type="button" onclick="session.run('observer', 'setup');" value="setup"></input>
     <input type="button" onclick="session.run('observer', 'go');" value="go"></input>
     <pre class='netlogo-model'
-         data-url='ws://localhost:9000/connect?username=Alice'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
          style='width: 500px;'
          data-src='/assets/models/Autumn.nlogo'
          >
@@ -34,6 +35,8 @@ end
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
       var session = tortoise();
     </script>
