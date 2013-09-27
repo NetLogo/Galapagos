@@ -13,8 +13,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.picocontainer" % "picocontainer" % "2.13.6",
-    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-1be91c5" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-1be91c5.jar"
+    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-255e328" from
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-255e328.jar"
   )
 
   val moreSettings = Seq[Setting[_]](
