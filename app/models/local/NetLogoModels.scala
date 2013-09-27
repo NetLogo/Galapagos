@@ -118,10 +118,10 @@ object NetLogoModels {
         |  set earth-top 0
         |  ask patches [  ;; set colors for the different sections of the world
         |    if pycor > sky-top [  ;; space
-        |      set pcolor my-scale-color white pycor 22 15
+        |      set pcolor scale-color white pycor 22 15
         |    ]
         |    if pycor <= sky-top and pycor > earth-top [ ;; sky
-        |      set pcolor my-scale-color blue pycor -20 20
+        |      set pcolor scale-color blue pycor -20 20
         |    ]
         |    if pycor < earth-top
         |      [ set pcolor red + 3 ] ;; earth
@@ -147,7 +147,7 @@ object NetLogoModels {
         |end
         |
         |to update-albedo ;; patch procedure
-        |  set pcolor my-scale-color green albedo 0 1
+        |  set pcolor scale-color green albedo 0 1
         |end
         |
         |to add-cloud            ;; erase clouds and then create new ones, plus one
@@ -335,12 +335,6 @@ object NetLogoModels {
         |
         |to-report IRs
         |  report turtles with [kind = "IR"]
-        |end
-        |
-        |;;; compensate for lack of scale-color in Tortoise
-        |
-        |to-report my-scale-color [base-color value min-value max-value]
-        |  report 0
         |end
         |
         |;;; compensate for lack of can-move? in Tortoise
