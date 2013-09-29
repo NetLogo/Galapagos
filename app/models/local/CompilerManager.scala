@@ -21,7 +21,7 @@ private[local] class CompilerManager extends Actor {
     case Compile(source)         => sender ! setActiveCode(source)
   }
 
-  def openModel(nlogoContents: String): Unit = {
+  def openModel(nlogoContents: String): String = {
     val modelMap = ModelReader.parseModel(nlogoContents)
     val source   = modelMap(ModelSection.Code).mkString("\n")
     setActiveCode(source)
