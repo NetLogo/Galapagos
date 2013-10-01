@@ -12,7 +12,10 @@ private[local] class CompilerManager extends Actor {
   import CompilerMessages._
 
   private var compiler             = NetLogoCompiler()
-  private var (source, dimensions) = ("", WorldDimensions(-20, 20, -20, 20))
+  private var (source, dimensions) = ("", WorldDimensions(-16, 16, -16, 16))
+
+  // Indices of the dimensions in interface section of nlogo files
+  val dimIndices = 17 to 20
 
   override def receive = {
     case Execute(agentType, cmd) => sender ! updateCompiler(compiler(agentType, cmd))
@@ -22,8 +25,12 @@ private[local] class CompilerManager extends Actor {
   }
 
   def openModel(nlogoContents: String): String = {
-    val modelMap = ModelReader.parseModel(nlogoContents)
-    val source   = modelMap(ModelSection.Code).mkString("\n")
+    val modelMap  = ModelReader.parseModel(nlogoContents)
+    val interface = modelMap(ModelSection.Interface)
+    val dims      = dimIndices map { x => interface(x).toInt} 
+    val source    = modelMap(ModelSection.Code).mkString("\n")
+
+    dimensions    = WorldDimensions(dims(0), dims(1), dims(2), dims(3))
     setActiveCode(source)
   }
 
