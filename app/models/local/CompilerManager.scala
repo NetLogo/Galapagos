@@ -12,7 +12,7 @@ private[local] class CompilerManager extends Actor {
   import CompilerMessages._
 
   private var compiler             = NetLogoCompiler()
-  private var (source, dimensions) = NetLogoModels.climate
+  private var (source, dimensions) = ("", WorldDimensions(-20, 20, -20, 20))
 
   override def receive = {
     case Execute(agentType, cmd) => sender ! updateCompiler(compiler(agentType, cmd))

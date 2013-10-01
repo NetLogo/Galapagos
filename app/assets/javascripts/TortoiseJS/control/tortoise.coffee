@@ -98,7 +98,7 @@ class TortoiseSession
 ajax = (url, callback) ->
   req = new XMLHttpRequest()
   req.onreadystatechange = ->
-    if req.readState == req.DONE
+    if req.readyState == req.DONE
       callback(req.responseText)
   req.open('GET', url)
   req.send()
