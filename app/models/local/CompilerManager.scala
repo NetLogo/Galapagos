@@ -60,7 +60,6 @@ private[local] class CompilerManager extends Actor {
     val interface = modelMap(ModelSection.Interface)
     val source    = modelMap(ModelSection.Code).mkString("\n")
 
-    // HLists could be applied nicely here --JAB (10/1/13)
     val Seq(minX, maxX, minY, maxY) = WorldDimensionIndices map { x => interface(x).toInt }
     val dimensions = WorldDimensions(minX, maxX, minY, maxY)
 
