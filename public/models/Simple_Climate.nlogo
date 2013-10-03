@@ -113,6 +113,8 @@ end
 to run-sunshine
   ask rays [
     if not my-can-move? 0.3 [ die ]  ;; kill them off at the edge
+  ]
+  ask rays [
     fd 0.3                        ;; otherwise keep moving
   ]
   create-sunshine  ;; start new sun rays from top
@@ -182,6 +184,8 @@ end
 to run-IR
   ask IRs [
     if not my-can-move? 0.3 [ die ]
+  ]
+  ask IRs [
     fd 0.3
     if ycor <= earth-top [   ;; convert to heat if we hit the earth's surface again
       set kind "heat"
@@ -288,10 +292,10 @@ GRAPHICS-WINDOW
 1
 0
 1
--20
-20
--20
-20
+-24
+24
+-8
+22
 1
 1
 1

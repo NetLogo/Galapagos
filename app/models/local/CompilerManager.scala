@@ -11,40 +11,63 @@ private[local] class CompilerManager extends Actor {
 
   import CompilerMessages._
 
-  private var compiler             = NetLogoCompiler()
-  private var (source, dimensions) = ("", WorldDimensions(-16, 16, -16, 16))
+  private val WorldDimensionIndices = 17 to 20
 
-  // Indices of the dimensions in interface section of nlogo files
-  val dimIndices = 17 to 20
+  private var modelState = {
+    val source         = ""
+    val dimensions     = WorldDimensions(-16, 16, -16, 16)
+    val (js, compiler) = NetLogoCompiler().generateModelState(source, dimensions)
+    ModelState(compiler, dimensions, source, js)
+  }
 
   override def receive = {
-    case Execute(agentType, cmd) => sender ! updateCompiler(compiler(agentType, cmd))
-    case GetModelState           => sender ! updateCompiler(compiler.generateModelState(source, dimensions))
-    case Open(nlogoContents)     => sender ! openModel(nlogoContents)
-    case Compile(source)         => sender ! setActiveCode(source)
+
+    case Execute(agentType, cmd) =>
+      sender ! updateStateAndGetJS {
+        modelState =>
+          val (js, compiler) = modelState.compiler(agentType, cmd)
+          modelState.copy(compiler = compiler, cachedJS = js)
+      }
+
+    case GetModelState =>
+      sender ! updateStateAndGetJS(identity)
+
+    case Open(nlogoContents) =>
+      sender ! updateStateAndGetJS {
+        modelState =>
+          val (source, dimensions) = extractSourceAndDimensions(nlogoContents)
+          val (js, compiler)       = modelState.compiler.generateModelState(source, dimensions)
+          modelState.copy(compiler = compiler, dimensions = dimensions, source = source, cachedJS = js)
+      }
+
+    case Compile(source) =>
+      sender ! updateStateAndGetJS {
+        modelState =>
+          val (js, compiler) = modelState.compiler.generateModelState(source, modelState.dimensions)
+          modelState.copy(compiler = compiler, source = source, cachedJS = js)
+      }
+
   }
 
-  def openModel(nlogoContents: String): String = {
+  private def updateStateAndGetJS[T](genState: (ModelState) => ModelState): String = {
+    modelState = genState(modelState)
+    modelState.cachedJS
+  }
+
+  private def extractSourceAndDimensions(nlogoContents: String): (String, WorldDimensions) = {
+
     val modelMap  = ModelReader.parseModel(nlogoContents)
     val interface = modelMap(ModelSection.Interface)
-    val dims      = dimIndices map { x => interface(x).toInt} 
     val source    = modelMap(ModelSection.Code).mkString("\n")
 
-    dimensions    = WorldDimensions(dims(0), dims(1), dims(2), dims(3))
-    setActiveCode(source)
+    val Seq(minX, maxX, minY, maxY) = WorldDimensionIndices map { x => interface(x).toInt }
+    val dimensions = WorldDimensions(minX, maxX, minY, maxY)
+
+    (source, dimensions)
+
   }
 
-  def setActiveCode(source: String): String = {
-    this.source  = source
-    val response = updateCompiler(compiler.generateModelState(source, dimensions))
-    response
-  }
-
-  private def updateCompiler(jsAndCompiler: (String, NetLogoCompiler)): String = {
-    val (js, newCompiler) = jsAndCompiler
-    compiler = newCompiler
-    js
-  }
+  private case class ModelState(compiler: NetLogoCompiler, dimensions: WorldDimensions, source: String, cachedJS: String)
 
 }
 
