@@ -35,14 +35,14 @@ private[local] class CompilerManager extends Actor {
       sender ! updateStateAndGetJS {
         modelState =>
           val (source, dimensions) = extractSourceAndDimensions(nlogoContents)
-          val (js, compiler)       = modelState.compiler.generateModelState(source, dimensions)
+          val (js, compiler)       = modelState.compiler.compileModelToJS(source, dimensions)
           modelState.copy(compiler = compiler, dimensions = dimensions, cachedJS = js)
       }
 
     case Compile(source) =>
       sender ! updateStateAndGetJS {
         modelState =>
-          val (js, compiler) = modelState.compiler.generateModelState(source, modelState.dimensions)
+          val (js, compiler) = modelState.compiler.compileModelToJS(source, modelState.dimensions)
           modelState.copy(compiler = compiler, cachedJS = js)
       }
 

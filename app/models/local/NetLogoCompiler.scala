@@ -31,7 +31,7 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
   }
 
   //@ Improve later with more-dynamic selection of configs
-  def generateModelState(source: String, dimensions: WorldDimensions) : (String, NetLogoCompiler) = {
+  def compileModelToJS(source: String, dimensions: WorldDimensions) : (String, NetLogoCompiler) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, dimensions)
