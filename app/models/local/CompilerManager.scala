@@ -13,10 +13,7 @@ private[local] class CompilerManager extends Actor {
 
   private val WorldDimensionIndices = 17 to 20
 
-  private var compiler = {
-    val (compiler, _) = NetLogoCompiler()("")
-    compiler
-  }
+  private var compiler = NetLogoCompiler()
 
   override def receive = {
 
