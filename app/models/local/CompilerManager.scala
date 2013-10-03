@@ -14,10 +14,9 @@ private[local] class CompilerManager extends Actor {
   private val WorldDimensionIndices = 17 to 20
 
   private var modelState = {
-    val source         = ""
     val dimensions     = WorldDimensions(-16, 16, -16, 16)
-    val (js, compiler) = NetLogoCompiler().generateModelState(source, dimensions)
-    ModelState(compiler, dimensions, source, js)
+    val (js, compiler) = NetLogoCompiler().compileModelToJS("", dimensions)
+    ModelState(compiler, dimensions, js)
   }
 
   override def receive = {
@@ -37,14 +36,14 @@ private[local] class CompilerManager extends Actor {
         modelState =>
           val (source, dimensions) = extractSourceAndDimensions(nlogoContents)
           val (js, compiler)       = modelState.compiler.generateModelState(source, dimensions)
-          modelState.copy(compiler = compiler, dimensions = dimensions, source = source, cachedJS = js)
+          modelState.copy(compiler = compiler, dimensions = dimensions, cachedJS = js)
       }
 
     case Compile(source) =>
       sender ! updateStateAndGetJS {
         modelState =>
           val (js, compiler) = modelState.compiler.generateModelState(source, modelState.dimensions)
-          modelState.copy(compiler = compiler, source = source, cachedJS = js)
+          modelState.copy(compiler = compiler, cachedJS = js)
       }
 
   }
@@ -67,7 +66,7 @@ private[local] class CompilerManager extends Actor {
 
   }
 
-  private case class ModelState(compiler: NetLogoCompiler, dimensions: WorldDimensions, source: String, cachedJS: String)
+  private case class ModelState(compiler: NetLogoCompiler, dimensions: WorldDimensions, cachedJS: String)
 
 }
 
