@@ -24,7 +24,7 @@ import
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-import CompilerMessages.{ GetModelState, Compile, Open }
+import CompilerMessages.{ Compile, Open }
 
 class LocalInstance extends Actor with WebInstance {
 
@@ -42,9 +42,7 @@ class LocalInstance extends Actor with WebInstance {
       validateConnection match {
         case (true, _) =>
           val enumer = Concurrent.unicast[JsValue] {
-            channel =>
-              channelOpt = Option(channel)
-              broadcast(generateModelStateMessage)
+            channel => channelOpt = Option(channel)
           }
           sender ! Connected(enumer)
         case (false, reason) =>
@@ -78,11 +76,6 @@ class LocalInstance extends Actor with WebInstance {
   }
 
   private def validateConnection = (true, "")
-  private def generateModelStateMessage = {
-    val js = Await.result(compilerManager ? GetModelState, 1.second).asInstanceOf[String]
-    val message = generateMessage(ModelUpdateKey, RoomContext, NetLogoUsername, js)
-    message
-  }
 
 }
 

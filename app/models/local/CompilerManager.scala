@@ -28,9 +28,6 @@ private[local] class CompilerManager extends Actor {
           modelState.copy(compiler = compiler, cachedJS = js)
       }
 
-    case GetModelState =>
-      sender ! updateStateAndGetJS(identity)
-
     case Open(nlogoContents) =>
       sender ! updateStateAndGetJS {
         modelState =>
@@ -72,7 +69,6 @@ private[local] class CompilerManager extends Actor {
 
 protected[local] object CompilerMessages {
   case class  Execute(agentType: String, cmd: String)
-  case object GetModelState
   case class  Open(nlogoContents: String)
   case class  Compile(source: String)
 }
