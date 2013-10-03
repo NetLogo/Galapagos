@@ -53,6 +53,7 @@ class TortoiseSession
     @connection.on('update',       (msg) => @update(JSON.parse(msg.message)))
     @connection.on('js',           (msg) => @runJSCommand(msg.message))
     @connection.on('model_update', (msg) => @evalJSModel(msg.message))
+    @tickListeners = []
 
     # Start autocompile
     compileTimeout = -1
@@ -67,6 +68,13 @@ class TortoiseSession
     else
       @controller.update(modelUpdate)
     @controller.repaint()
+
+  onTick: (cb) ->
+    @tickListeners.push(cb)
+
+  tick: () ->
+    for t in @tickListeners
+      t()
 
   evalJSModel: (js) ->
     eval.call(window, js)

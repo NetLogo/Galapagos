@@ -1,0 +1,104 @@
+@()(implicit request: RequestHeader)
+<html>
+  <head>
+  </head>
+  <body>
+    <div id='chart-div' style='width:900px; height: 500px; display:block-inline; float:right;'></div>
+    <label>speed<input id="speed-slider" type="range" min=1 max=150></input></label>
+    <br/>
+    <input type="button" onclick="setup();" value="setup"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+    <input type="button" onclick="session.run('observer', 'add-CO2');" value="add CO2"></input>
+    <input type="button" onclick="session.run('observer', 'remove-CO2');" value="remove CO2"></input>
+    <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
+    <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
+    <br/>
+    <div class='netlogo-model'
+         style='width: 500px; display:inline-block;'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
+         data-src='/assets/models/Simple_Climate.nlogo'
+         >
+    </div>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      var session = tortoise(),
+          runner = -1,
+          TEMPERATURE = 2;
+          data = null,
+          tick = 0,
+          chart = null;
+
+      google.load('visualization', '1', {packages:['corechart']});
+      google.setOnLoadCallback(drawPlot);
+
+      function drawPlot() {
+        chart = new google.visualization.LineChart(document.getElementById('chart-div'));
+        resetData();
+        setInterval(plot.bind(this, data), 200);
+      }
+
+      function resetData() {
+        data = new google.visualization.DataTable();
+        data.addColumn('number', 'Tick');
+        data.addColumn('number', 'Temperature');
+        data.setColumnProperty(0, 'type', 'number');
+        data.setColumnProperty(1, 'type', 'number');
+        chart.draw(data);
+      }
+
+      session.onTick(function(){ plotPoint(Globals.getGlobal(TEMPERATURE)); });
+
+      function plotPoint(y) {
+        data.addRow([tick,y]);
+      }
+
+      function plot(data) {
+        chart.draw(data);
+      }
+      
+      function setup() {
+        session.run('observer', 'setup');
+        data.removeRows(0,data.getNumberOfRows());
+        tick = 0;
+      }
+
+      function goForever() {
+        var speed = document.getElementById('speed-slider').value;
+        GO();
+        tick++;
+        session.tick();
+        session.update(collectUpdates());
+        runner = setTimeout(goForever, 1000/speed);
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        var goButton = document.getElementById('go-button');
+        if (runner < 0) {
+          goForever();
+          goButton.value = "stop";
+        } else {
+          stop();
+          goButton.value = "go";
+        }
+      }
+    </script>
+  </body>
+</html>
+

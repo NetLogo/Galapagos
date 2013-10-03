@@ -21,6 +21,10 @@ object Application extends Controller {
     implicit request =>
       Ok(views.html.examples.climate())
   }
+  def plot = Action {
+    implicit request =>
+      Ok(views.html.examples.climateplot())
+  }
 
   def model(modelName: String) = {
     play.api.Logger.info("\"%s\" requested".format(modelName))
