@@ -16,18 +16,18 @@ private[local] class CompilerManager extends Actor {
   private var compiler = NetLogoCompiler()
 
   override def receive = {
-    case Open(nlogoContents)     => sender ! updateCompilerAndGetJS(_        => generateCompilerFromNLogo(nlogoContents))
-    case Compile(source)         => sender ! updateCompilerAndGetJS(compiler => compiler(source))
-    case Execute(agentType, cmd) => sender ! updateCompilerAndGetJS(compiler => compiler.runCommand(agentType, cmd))
+    case Open(nlogoContents)     => sender ! updateAndGetJS(_        => makeCompiler(nlogoContents))
+    case Compile(source)         => sender ! updateAndGetJS(compiler => compiler(source))
+    case Execute(agentType, cmd) => sender ! updateAndGetJS(compiler => compiler.runCommand(agentType, cmd))
   }
 
-  private def updateCompilerAndGetJS[T](genCompiler: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
+  private def updateAndGetJS[T](genCompiler: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
     val (newCompiler, js) = genCompiler(compiler)
     compiler = newCompiler
     js
   }
 
-  private def generateCompilerFromNLogo(nlogoContents: String): (NetLogoCompiler, String) = {
+  private def makeCompiler(nlogoContents: String): (NetLogoCompiler, String) = {
 
     val modelMap  = ModelReader.parseModel(nlogoContents)
     val interface = modelMap(ModelSection.Interface)
@@ -43,8 +43,8 @@ private[local] class CompilerManager extends Actor {
 }
 
 protected[local] object CompilerMessages {
-  case class  Execute(agentType: String, cmd: String)
-  case class  Open(nlogoContents: String)
-  case class  Compile(source: String)
+  case class Execute(agentType: String, cmd: String)
+  case class Open(nlogoContents: String)
+  case class Compile(source: String)
 }
 
