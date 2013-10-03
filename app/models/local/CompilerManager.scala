@@ -16,29 +16,18 @@ private[local] class CompilerManager extends Actor {
   private var compiler = NetLogoCompiler()
 
   override def receive = {
-
-    case Execute(agentType, cmd) =>
-      sender ! updateStateAndGetJS(_.runCommand(agentType, cmd))
-
-    case Open(nlogoContents) =>
-      sender ! updateStateAndGetJS {
-        compiler =>
-          val (source, dimensions) = extractSourceAndDimensions(nlogoContents)
-          NetLogoCompiler(dimensions)(source)
-      }
-
-    case Compile(source) =>
-      sender ! updateStateAndGetJS(_(source))
-
+    case Open(nlogoContents)     => sender ! updateCompilerAndGetJS(_        => generateCompilerFromNLogo(nlogoContents))
+    case Compile(source)         => sender ! updateCompilerAndGetJS(compiler => compiler(source))
+    case Execute(agentType, cmd) => sender ! updateCompilerAndGetJS(compiler => compiler.runCommand(agentType, cmd))
   }
 
-  private def updateStateAndGetJS[T](genState: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
-    val (newCompiler, js) = genState(compiler)
+  private def updateCompilerAndGetJS[T](genCompiler: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
+    val (newCompiler, js) = genCompiler(compiler)
     compiler = newCompiler
     js
   }
 
-  private def extractSourceAndDimensions(nlogoContents: String): (String, WorldDimensions) = {
+  private def generateCompilerFromNLogo(nlogoContents: String): (NetLogoCompiler, String) = {
 
     val modelMap  = ModelReader.parseModel(nlogoContents)
     val interface = modelMap(ModelSection.Interface)
@@ -47,7 +36,7 @@ private[local] class CompilerManager extends Actor {
     val Seq(minX, maxX, minY, maxY) = WorldDimensionIndices map { x => interface(x).toInt }
     val dimensions = WorldDimensions(minX, maxX, minY, maxY)
 
-    (source, dimensions)
+    NetLogoCompiler(dimensions)(source)
 
   }
 
