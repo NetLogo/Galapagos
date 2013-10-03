@@ -111,7 +111,7 @@ class TurtleView extends View
 
   repaint: (world, turtles, links) ->
     @transformToWorld(world)
-    if world.turtleshapelist != @drawer.shapes
+    if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
     for id, link of links
       @drawLink(link, turtles)
