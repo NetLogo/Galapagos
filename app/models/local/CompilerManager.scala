@@ -13,41 +13,32 @@ private[local] class CompilerManager extends Actor {
 
   private val WorldDimensionIndices = 17 to 20
 
-  private var modelState = {
-    val dimensions     = WorldDimensions(-16, 16, -16, 16)
-    val (js, compiler) = NetLogoCompiler().compileModelToJS("", dimensions)
-    ModelState(compiler, dimensions, js)
+  private var compiler = {
+    val (compiler, _) = NetLogoCompiler()("")
+    compiler
   }
 
   override def receive = {
 
     case Execute(agentType, cmd) =>
-      sender ! updateStateAndGetJS {
-        modelState =>
-          val (js, compiler) = modelState.compiler(agentType, cmd)
-          modelState.copy(compiler = compiler, cachedJS = js)
-      }
+      sender ! updateStateAndGetJS(_.runCommand(agentType, cmd))
 
     case Open(nlogoContents) =>
       sender ! updateStateAndGetJS {
-        modelState =>
+        compiler =>
           val (source, dimensions) = extractSourceAndDimensions(nlogoContents)
-          val (js, compiler)       = modelState.compiler.compileModelToJS(source, dimensions)
-          modelState.copy(compiler = compiler, dimensions = dimensions, cachedJS = js)
+          NetLogoCompiler(dimensions)(source)
       }
 
     case Compile(source) =>
-      sender ! updateStateAndGetJS {
-        modelState =>
-          val (js, compiler) = modelState.compiler.compileModelToJS(source, modelState.dimensions)
-          modelState.copy(compiler = compiler, cachedJS = js)
-      }
+      sender ! updateStateAndGetJS(_(source))
 
   }
 
-  private def updateStateAndGetJS[T](genState: (ModelState) => ModelState): String = {
-    modelState = genState(modelState)
-    modelState.cachedJS
+  private def updateStateAndGetJS[T](genState: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
+    val (newCompiler, js) = genState(compiler)
+    compiler = newCompiler
+    js
   }
 
   private def extractSourceAndDimensions(nlogoContents: String): (String, WorldDimensions) = {
@@ -62,8 +53,6 @@ private[local] class CompilerManager extends Actor {
     (source, dimensions)
 
   }
-
-  private case class ModelState(compiler: NetLogoCompiler, dimensions: WorldDimensions, cachedJS: String)
 
 }
 
