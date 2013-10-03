@@ -11,40 +11,40 @@ private[local] class CompilerManager extends Actor {
 
   import CompilerMessages._
 
-  private var compiler             = NetLogoCompiler()
-  private var (source, dimensions) = NetLogoModels.climate
+  private val WorldDimensionIndices = 17 to 20
+
+  private var compiler = NetLogoCompiler()
 
   override def receive = {
-    case Execute(agentType, cmd) => sender ! updateCompiler(compiler(agentType, cmd))
-    case GetModelState           => sender ! updateCompiler(compiler.generateModelState(source, dimensions))
-    case Open(nlogoContents)     => sender ! openModel(nlogoContents)
-    case Compile(source)         => sender ! setActiveCode(source)
+    case Open(nlogoContents)     => sender ! updateAndGetJS(_        => makeCompiler(nlogoContents))
+    case Compile(source)         => sender ! updateAndGetJS(compiler => compiler(source))
+    case Execute(agentType, cmd) => sender ! updateAndGetJS(compiler => compiler.runCommand(agentType, cmd))
   }
 
-  def openModel(nlogoContents: String): Unit = {
-    val modelMap = ModelReader.parseModel(nlogoContents)
-    val source   = modelMap(ModelSection.Code).mkString("\n")
-    setActiveCode(source)
-  }
-
-  def setActiveCode(source: String): String = {
-    this.source  = source
-    val response = updateCompiler(compiler.generateModelState(source, dimensions))
-    response
-  }
-
-  private def updateCompiler(jsAndCompiler: (String, NetLogoCompiler)): String = {
-    val (js, newCompiler) = jsAndCompiler
+  private def updateAndGetJS[T](genCompiler: (NetLogoCompiler) => (NetLogoCompiler, String)): String = {
+    val (newCompiler, js) = genCompiler(compiler)
     compiler = newCompiler
     js
+  }
+
+  private def makeCompiler(nlogoContents: String): (NetLogoCompiler, String) = {
+
+    val modelMap  = ModelReader.parseModel(nlogoContents)
+    val interface = modelMap(ModelSection.Interface)
+    val source    = modelMap(ModelSection.Code).mkString("\n")
+
+    val Seq(minX, maxX, minY, maxY) = WorldDimensionIndices map { x => interface(x).toInt }
+    val dimensions = WorldDimensions(minX, maxX, minY, maxY)
+
+    NetLogoCompiler(dimensions)(source)
+
   }
 
 }
 
 protected[local] object CompilerMessages {
-  case class  Execute(agentType: String, cmd: String)
-  case object GetModelState
-  case class  Open(nlogoContents: String)
-  case class  Compile(source: String)
+  case class Execute(agentType: String, cmd: String)
+  case class Open(nlogoContents: String)
+  case class Compile(source: String)
 }
 

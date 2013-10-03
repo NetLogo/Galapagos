@@ -29,6 +29,7 @@ class window.CachingShapeDrawer extends ShapeDrawer
     @shapeCache = {}
 
   drawShape: (ctx, turtleColor, shapeName) ->
+    shapeName = shapeName.toLowerCase()
     shapeCanvas = @shapeCache[[shapeName, turtleColor]]
     if not shapeCanvas?
       shapeCanvas = document.createElement('canvas')

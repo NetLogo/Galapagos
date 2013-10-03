@@ -9,16 +9,18 @@ import
     nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
-case class NetLogoCompiler(program: Program = Program.empty(), procedures: ProceduresMap = NoProcedures) {
+case class NetLogoCompiler(dimensions: WorldDimensions = WorldDimensions(-16, 16, -16, 16),
+                           program:    Program         = Program.empty(),
+                           procedures: ProceduresMap   = NoProcedures) {
 
-  def apply(command: String) = {
+  def runCommand(command: String): (NetLogoCompiler, String) = {
     Logger.info(s"Compiling: ${command}")
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))
     Logger.info(s"Compiled to: ${strOpt}")
-    strOpt map ((_, this)) getOrElse (("", this))
+    strOpt map ((this, _)) getOrElse ((this, ""))
   }
 
-  def apply(agentType: String, command: String) : (String, NetLogoCompiler) = {
+  def runCommand(agentType: String, command: String) : (NetLogoCompiler, String) = {
     val cmd = {
       if (agentType != "observer")
         s"""|ask $agentType [
@@ -27,19 +29,19 @@ case class NetLogoCompiler(program: Program = Program.empty(), procedures: Proce
       else
         command
     }
-    apply(cmd)
+    runCommand(cmd)
   }
 
   //@ Improve later with more-dynamic selection of configs
-  def generateModelState(source: String, dimensions: WorldDimensions) : (String, NetLogoCompiler) = {
+  def apply(source: String) : (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, dimensions)
       Logger.info("No errors!")
-      (js, NetLogoCompiler(newProgram, newProcedures))
+      (NetLogoCompiler(dimensions, newProgram, newProcedures), js)
     }
     Logger.info("Compilation complete")
-    strCompilerOpt getOrElse (("", this))
+    strCompilerOpt getOrElse ((this, ""))
   }
 
   private def carefullyCompile[T](f: => T) : Option[T] = {

@@ -5,6 +5,7 @@
 #   General
 GET /editor                         controllers.Application.editor
 GET /minimal                        controllers.Application.minimal
+GET /climate						controllers.Application.climate
 GET /model/list.json                controllers.Application.modelList
 GET /model/$modelPath<.*\.nlogo>    controllers.Application.model(modelPath)
 

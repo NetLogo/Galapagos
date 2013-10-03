@@ -17,6 +17,11 @@ object Application extends Controller {
       Ok(views.html.examples.minimal())
   }
 
+  def climate = Action {
+    implicit request =>
+      Ok(views.html.examples.climate())
+  }
+
   def model(modelName: String) = {
     play.api.Logger.info("\"%s\" requested".format(modelName))
     controllers.Assets.at(path="/public/modelslib", modelName)

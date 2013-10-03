@@ -3,28 +3,19 @@
   <head>
   </head>
   <body>
+    <label>speed<input id="speed-slider" type="range" min=1 max=150></input></label>
+    <br/>
     <input type="button" onclick="session.run('observer', 'setup');" value="setup"></input>
-    <input type="button" onclick="session.run('observer', 'go');" value="go"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+    <input type="button" onclick="session.run('observer', 'add-CO2');" value="add CO2"></input>
+    <input type="button" onclick="session.run('observer', 'remove-CO2');" value="remove CO2"></input>
+    <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
+    <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
     <pre class='netlogo-model'
-         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
          style='width: 500px;'
-         data-src='/assets/models/Autumn.nlogo'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
+         data-src='/assets/models/Simple_Climate.nlogo'
          >
-to setup
-  ca
-  crt 50 [
-    setxy random-xcor random-ycor
-    set size 3
-    set shape "person"
-    create-link-with one-of other turtles
-  ]
-  reset-ticks
-end
-
-to go
-  layout-spring turtles links 0.2 5 1
-  tick
-end
     </pre>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
@@ -38,7 +29,32 @@ end
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
-      var session = tortoise();
+      var session = tortoise(),
+          runner = -1;
+    
+
+      function goForever() {
+        var speed = document.getElementById('speed-slider').value;
+        GO();
+        session.update(collectUpdates());
+        runner = setTimeout(goForever, 1000/speed);
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        var goButton = document.getElementById('go-button');
+        if (runner < 0) {
+          goForever();
+          goButton.value = "stop";
+        } else {
+          stop();
+          goButton.value = "go";
+        }
+      }
     </script>
   </body>
 </html>
