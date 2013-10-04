@@ -3,26 +3,26 @@
 # ~~~~
 
 #   General
-GET /editor                         controllers.Application.editor
-GET /minimal                        controllers.Application.minimal
-GET /climate						controllers.Application.climate
-GET /plot 							controllers.Application.plot
-GET /record 						controllers.Application.record
-GET /model/list.json                controllers.Application.modelList
-GET /model/$modelPath<.*\.nlogo>    controllers.Application.model(modelPath)
+GET 	   /editor                         controllers.Application.editor
+GET 	   /minimal                        controllers.Application.minimal
+GET 	   /climate						controllers.Application.climate
+GET 	   /plot 							controllers.Application.plot
+GET 	   /record 						controllers.Application.record
+GET 	   /model/list.json                controllers.Application.modelList
+GET 	   /model/$modelPath<.*\.nlogo>    controllers.Application.model(modelPath)
 
 # Remote (Teletortoise)
-GET     /                               controllers.remote.Remote.index
-GET     /client                         controllers.remote.Remote.client(username: Option[String] ?= None)
-GET     /embedded                       controllers.remote.Remote.embedded
-GET     /connect                        controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
+GET        /                                   controllers.remote.Remote.index
+GET        /client                             controllers.remote.Remote.client(username: Option[String] ?= None)
+GET        /embedded                           controllers.remote.Remote.embedded
+GET        /connect                            controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
 
 # Local (Tortoise)
-GET     /local                          controllers.local.Local.index
-GET     /local-connect                  controllers.local.Local.handleSocketConnection()
+GET        /local                              controllers.local.Local.index
+GET        /local-connect                      controllers.local.Local.handleSocketConnection()
 
-GET     /netlogo-compat                 controllers.local.Local.compat
-GET     /netlogo-engine                 controllers.local.Local.engine
+GET        /netlogo-compat                     controllers.local.Local.compat
+GET        /netlogo-engine                     controllers.local.Local.engine
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                   controllers.Assets.at(path="/public", file)
+GET        /assets/*file                       controllers.Assets.at(path="/public", file)

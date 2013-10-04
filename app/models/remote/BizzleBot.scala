@@ -17,13 +17,11 @@ import
       json.JsValue
 
 import
-  play.api.libs.concurrent.Akka
-import play.api.Play.current
-
-import
-  models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-    NetLogoControllerMessages._,
-    WebInstanceMessages.{ Connected, Join }
+  models.{ core, Util },
+    core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
+      NetLogoControllerMessages._,
+      WebInstanceMessages.{ Connected, Join },
+    Util.usingSource
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.Play.current
@@ -110,7 +108,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
       case "open" =>
         val modelName = args(0)
         val modelFile = ModelManager(modelName).get
-        val nlogoContents = io.Source.fromFile(modelFile).mkString
+        val nlogoContents = usingSource(_.fromFile(modelFile))(_.mkString)
         nlController ! OpenModel(nlogoContents)
         s"""opening the "$modelName" model"""
 
