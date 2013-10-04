@@ -1,0 +1,98 @@
+@()(implicit request: RequestHeader)
+<html>
+  <head>
+  </head>
+  <body>
+    <label>speed<input id="speed-slider" type="range" min=1 max=150></input></label>
+    <br/>
+    <input type="button" onclick="setup();" value="setup"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+    <input type="button" onclick="session.run('observer', 'add-CO2');" value="add CO2"></input>
+    <input type="button" onclick="session.run('observer', 'remove-CO2');" value="remove CO2"></input>
+    <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
+    <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
+    <br/>
+    <input id="record-slider" type="range" min=0 max=0 style="width: 500px"></input>
+    <pre class='netlogo-model'
+         style='width: 500px;'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
+         data-src='/assets/models/Simple_Climate.nlogo'
+         >
+    </pre>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
+    <script type="text/javascript" src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+    <script type="text/javascript">
+      var session = tortoise(),
+          runner = -1,
+          updates = [],
+          recordSlider = document.getElementById('record-slider');
+    
+
+      recordSlider.addEventListener('change', function() {
+        if (runner >= 0) {
+          toggleGo();
+        }
+        displayFrame(recordSlider.value);
+        session.controller.repaint();
+      });
+
+      function storeFrame() {
+        updates.push($.extend(true, {}, session.controller.model.turtles));
+        recordSlider.max = updates.length - 1;
+        recordSlider.value = updates.length;
+      }
+
+      function displayCurrentFrame() {
+        if (updates.length > 0) {
+          displayFrame(updates.length - 1);
+        }
+      }
+
+      function displayFrame(i) {
+        session.controller.model.turtles = $.extend(true, {},updates[i]);
+      }
+
+      function goForever() {
+        var speed = document.getElementById('speed-slider').value;
+        GO();
+        storeFrame();
+
+        session.update(collectUpdates());
+        runner = setTimeout(goForever, 1000/speed);
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        var goButton = document.getElementById('go-button');
+        if (runner < 0) {
+          displayCurrentFrame();
+          goForever();
+          goButton.value = "stop";
+        } else {
+          stop();
+          goButton.value = "go";
+        }
+      }
+
+      function setup() {
+        displayCurrentFrame();
+        session.run('observer', 'setup');
+      }
+    </script>
+  </body>
+</html>
+
