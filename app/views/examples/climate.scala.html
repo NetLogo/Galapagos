@@ -3,7 +3,7 @@
   <head>
   </head>
   <body>
-    <label>speed<input id="speed-slider" type="range" min=0 max=7 step=.01 style="width: 400px"></input></label>
+    <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
     <input type="button" onclick="setup();" value="setup"></input>
@@ -40,8 +40,6 @@
       }
 
       function goForever() {
-        var speed = document.getElementById('speed-slider').value;
-        GO();
         var speed = Math.exp(document.getElementById('speed-slider').value),
             delta = Math.min(new Date().getTime() - lastUpdate, 30),
             numUpdates = speed * delta / 1000 + 1; 
