@@ -18,7 +18,9 @@ import
   play.api.libs.concurrent.Akka
 
 import
-  models.core.{ NetLogoControllerMessages, WebInstanceMessages }
+  models.{ core, Util },
+    core.{ NetLogoControllerMessages, WebInstanceMessages },
+    Util.usingSource
 
 import workspace.WebWorkspace
 
@@ -33,7 +35,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   import NetLogoControllerMessages._
   import WebInstanceMessages._
 
-  private var ws = workspace(io.Source.fromFile(ModelManager("Wolf_Sheep_Predation").get).mkString)
+  private var ws = workspace(usingSource(_.fromFile(ModelManager("Wolf_Sheep_Predation").get))(_.mkString))
 
   // def for executor so that multiple netlogo commands can run simultaneously.
   // netlogo handles the scheduling.

@@ -8,12 +8,14 @@ import
     mvc.{ Action, Controller, ResponseHeader, SimpleResult, WebSocket }
 
 import
-  models.local.LocalInstance
+  models.{ local, Util },
+    local.LocalInstance,
+    Util.usingSource
 
 object Local extends Controller {
 
-  private lazy val compatStr = io.Source.fromURL(getClass.getResource("/js/compat.js")).mkString
-  private lazy val engineStr = io.Source.fromURL(getClass.getResource("/js/engine.js")).mkString
+  private lazy val compatStr = usingSource(_.fromURL(getClass.getResource("/js/compat.js")))(_.mkString)
+  private lazy val engineStr = usingSource(_.fromURL(getClass.getResource("/js/engine.js")))(_.mkString)
 
   def index = Action {
     implicit request =>
