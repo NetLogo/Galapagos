@@ -3,7 +3,7 @@
   <head>
   </head>
   <body>
-    <label>speed<input id="speed-slider" type="range" min=1 max=150></input></label>
+    <label>speed<input id="speed-slider" type="range" min=0 max=7 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
     <input type="button" onclick="setup();" value="setup"></input>
@@ -32,7 +32,8 @@
     <script type="text/javascript">
       var session = tortoise(),
           runner = -1,
-          tickCounter = document.getElementById('tick-counter');
+          tickCounter = document.getElementById('tick-counter'),
+          lastUpdate = 0;
     
       function updateTickCounter() {
         tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
@@ -41,8 +42,15 @@
       function goForever() {
         var speed = document.getElementById('speed-slider').value;
         GO();
+        var speed = Math.exp(document.getElementById('speed-slider').value),
+            delta = Math.min(new Date().getTime() - lastUpdate, 30),
+            numUpdates = speed * delta / 1000 + 1; 
+        for (var i=0; i < numUpdates; i++) {
+          GO();
+        }
         updateTickCounter();
         session.update(collectUpdates());
+        lastUpdate = new Date().getTime();
         runner = setTimeout(goForever, 1000/speed);
       }
       
