@@ -58,9 +58,7 @@
         chart.draw(data);
       }
 
-      session.onTick(function(){ plotPoint(Globals.getGlobal(TEMPERATURE)); });
-
-      function plotPoint(y) {
+      function plotPoint(tick, y) {
         data.addRow([tick,y]);
       }
 
@@ -78,7 +76,7 @@
         var speed = document.getElementById('speed-slider').value;
         GO();
         tick++;
-        session.tick();
+        plotPoint(tick, Globals.getGlobal(TEMPERATURE)); 
         session.update(collectUpdates());
         runner = setTimeout(goForever, 1000/speed);
       }
