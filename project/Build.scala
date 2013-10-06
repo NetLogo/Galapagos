@@ -14,7 +14,8 @@ object ApplicationBuild extends Build {
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.picocontainer" % "picocontainer" % "2.13.6",
     "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-e24a33e" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-e24a33e.jar"
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-e24a33e.jar",
+    "org.scalaz" %% "scalaz-core" % "7.0.3"
   )
 
   val moreSettings = Seq[Setting[_]](
