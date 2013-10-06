@@ -7,7 +7,7 @@ import
   scala.util.Try
 
 import
-  scalaz.Scalaz. { ToApplyOpsUnapply, ToValidationV }
+  scalaz.Scalaz.{ ToApplyOpsUnapply, ToValidationV }
 
 import
   play.api.{ libs, mvc },
@@ -109,8 +109,8 @@ object Local extends Controller {
       }
 
       (fromSrcAndDims orElse urlMaybe) fold (
-        (nel  => ExpectationFailed(nel.list.mkString("\n"))),
-        (js => Ok(views.html.standaloneTortoise(js)))
+        (nel => ExpectationFailed(nel.list.mkString("\n"))),
+        (js  => Ok(views.html.standaloneTortoise(js)))
       )
 
   }
