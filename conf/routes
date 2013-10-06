@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-#   General
+# General
 GET        /editor                             controllers.Application.editor
 GET        /minimal                            controllers.Application.minimal
 GET        /climate                            controllers.Application.climate
