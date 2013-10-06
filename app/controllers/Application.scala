@@ -39,4 +39,10 @@ object Application extends Controller {
         filter(_.getName.endsWith(".nlogo"))
       Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).dropRight(".nlogo".length)))))
   }
+
+  def createStandaloneTortoise = Action {
+    implicit request =>
+      Ok(views.html.createStandalone())
+  }
+
 }

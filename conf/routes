@@ -8,6 +8,7 @@ GET        /minimal                            controllers.Application.minimal
 GET        /climate                            controllers.Application.climate
 GET        /model/list.json                    controllers.Application.modelList
 GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
+GET        /create-standalone                  controllers.Application.createStandaloneTortoise
 
 # Remote (Teletortoise)
 GET        /                                   controllers.remote.Remote.index
