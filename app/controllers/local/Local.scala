@@ -75,15 +75,6 @@ object Local extends Controller {
           _.successNel[String]
         ) getOrElse {
           MissingArgsMessage.failNel[String]
-        } flatMap {
-          nlogo =>
-            Try(new URL(nlogo)) map {
-              url => usingSource(_.fromURL(url))(_.mkString.successNel[String])
-            } recover {
-              case ex: MalformedURLException => nlogo.successNel[String]
-            } getOrElse {
-              "An unknown error has occurred in processing your 'nlogo' value".failNel[String]
-            }
         }
 
       val DimensionsRegex = {
