@@ -5,7 +5,7 @@ import
 
 import
   org.nlogo.{ api, nvm, tortoise },
-    api.{ CompilerException, Program, WorldDimensions },
+    api.{ CompilerException, ModelReader, ModelSection, Program, WorldDimensions },
     nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
@@ -57,6 +57,29 @@ case class NetLogoCompiler(dimensions: WorldDimensions = WorldDimensions(-16, 16
         Logger.warn(s"Feature not yet supported: ${ex.getMessage}")
         None
     }
+  }
+
+}
+
+object NetLogoCompiler {
+
+  def generateJSForSave(source: String, dimensions: (Int, Int, Int, Int)): String = {
+    val (minX, maxX, minY, maxY) = dimensions
+    val (javascript, _, _)       = Compiler.compileProcedures(source, WorldDimensions(minX, maxX, minY, maxY))
+    javascript
+  }
+
+  def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {
+
+    val modelMap  = ModelReader.parseModel(contents)
+    val interface = modelMap(ModelSection.Interface)
+    val source    = modelMap(ModelSection.Code).mkString("\n")
+
+    val Seq(minX, maxX, minY, maxY) = 17 to 20 map { x => interface(x).toInt }
+    val dimensions = WorldDimensions(minX, maxX, minY, maxY)
+
+    NetLogoCompiler(dimensions)(source)
+
   }
 
 }

@@ -36,7 +36,7 @@ object Application extends Controller {
   }
 
   def modelList = Action {
-    implicit request => {
+    implicit request =>
       def recursiveListFiles(f: java.io.File): Array[java.io.File] = {
         val myFiles = f.listFiles
         myFiles ++ myFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
@@ -46,6 +46,11 @@ object Application extends Controller {
         flatMap(dir => recursiveListFiles(new java.io.File(parentPath, dir))).
         filter(_.getName.endsWith(".nlogo"))
       Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).dropRight(".nlogo".length)))))
-    }
   }
+
+  def createStandaloneTortoise = Action {
+    implicit request =>
+      Ok(views.html.createStandalone())
+  }
+
 }

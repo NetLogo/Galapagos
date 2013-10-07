@@ -1,0 +1,77 @@
+@(js: String)
+
+<html>
+  <head></head>
+  <body>
+
+    <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
+    ticks: <span id="tick-counter"></span>
+    <br/>
+    <input type="button" onclick="setup();" value="setup"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+
+    <div class='view-container' style="width: 600px;"></div>
+
+    <script type="text/javascript">
+      @Html(js)
+    </script>
+
+    <script type="text/javascript">
+
+      var session     = new SessionLite(document.getElementsByClassName('view-container')[0])
+      var runner      = -1;
+      var tickCounter = document.getElementById('tick-counter');
+      var lastUpdate  = 0;
+
+      // If the HTML was saved in the non-default state, correct it.
+      tickCounter.textContent                     = '0';
+      document.getElementById('go-button' ).value = 'go'
+
+      function updateTickCounter() {
+        tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+      }
+
+      function goForever() {
+
+        var speed      = Math.exp(document.getElementById('speed-slider').value);
+        var delta      = Math.min(new Date().getTime() - lastUpdate, 30);
+        var numUpdates = speed * delta / 1000 + 1;
+
+        for (var i=0; i < numUpdates; i++) {
+          GO();
+        }
+
+        updateTickCounter();
+        session.update(collectUpdates());
+
+        lastUpdate = new Date().getTime();
+        runner     = setTimeout(goForever, 1000 / speed);
+
+      }
+
+      function setup() {
+        SETUP();
+        session.update(collectUpdates());
+        updateTickCounter();
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        var goButton = document.getElementById('go-button');
+        if (runner < 0) {
+          goForever();
+          goButton.value = "stop";
+        } else {
+          stop();
+          goButton.value = "go";
+        }
+      }
+
+    </script>
+
+  </body>
+</html>
