@@ -4,14 +4,17 @@ import
   play.api.Logger
 
 import
-  org.nlogo.{ api, nvm, tortoise },
+  org.nlogo.{ api, headless, nvm, tortoise },
     api.{ CompilerException, ModelReader, ModelSection, Program, WorldDimensions },
+    headless.WidgetParser,
     nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
 
-case class NetLogoCompiler(dimensions: WorldDimensions = WorldDimensions(-16, 16, -16, 16),
-                           program:    Program         = Program.empty(),
-                           procedures: ProceduresMap   = NoProcedures) {
+case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
+                           iGlobalCmds: String          = "",
+                           dimensions:  WorldDimensions = WorldDimensions(-16, 16, -16, 16),
+                           program:     Program         = Program.empty(),
+                           procedures:  ProceduresMap   = NoProcedures) {
 
   def runCommand(command: String): (NetLogoCompiler, String) = {
     Logger.info(s"Compiling: ${command}")
@@ -36,9 +39,9 @@ case class NetLogoCompiler(dimensions: WorldDimensions = WorldDimensions(-16, 16
   def apply(source: String) : (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, dimensions)
+      val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, iGlobals, iGlobalCmds, dimensions)
       Logger.info("No errors!")
-      (NetLogoCompiler(dimensions, newProgram, newProcedures), js)
+      (this.copy(program = newProgram, procedures = newProcedures), js)
     }
     Logger.info("Compilation complete")
     strCompilerOpt getOrElse ((this, ""))
@@ -65,7 +68,7 @@ object NetLogoCompiler {
 
   def generateJS(source: String, dimensions: (Int, Int, Int, Int)): String = {
     val (minX, maxX, minY, maxY) = dimensions
-    val (javascript, _, _)       = Compiler.compileProcedures(source, WorldDimensions(minX, maxX, minY, maxY))
+    val (_, javascript)          = NetLogoCompiler(dimensions = WorldDimensions(minX, maxX, minY, maxY))(source)
     javascript
   }
 
@@ -75,10 +78,12 @@ object NetLogoCompiler {
     val interface = modelMap(ModelSection.Interface)
     val source    = modelMap(ModelSection.Code).mkString("\n")
 
+    val (iGlobals, _, _, _, iGlobalCmds) = new WidgetParser(org.nlogo.headless.HeadlessWorkspace.newInstance).parseWidgets(interface)
+
     val Seq(minX, maxX, minY, maxY) = 17 to 20 map { x => interface(x).toInt }
     val dimensions = WorldDimensions(minX, maxX, minY, maxY)
 
-    NetLogoCompiler(dimensions)(source)
+    NetLogoCompiler(iGlobals, iGlobalCmds.toString, dimensions)(source)
 
   }
 
