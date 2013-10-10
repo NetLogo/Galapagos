@@ -17,13 +17,38 @@ import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.ModelSaver
+  models.{ local => mlocal, ModelSaver, Util },
+    mlocal.NetLogoCompiler,
+    Util.usingSource
 
 object CompilerService extends Controller {
 
   private type DimsType = (Int, Int, Int, Int)
 
   private val MissingArgsMessage = "Your request must include either ('nlogo' and 'dimensions') or 'nlogo_url' as arguments."
+
+  def compile = Action {
+    implicit request =>
+
+      val jsURLs = generateTortoiseLiteJsUrls()
+      val argMap = request.extractArgMap
+
+      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+        url =>
+          val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
+          NetLogoCompiler.fromNLogoFile(nlogoContents)._2
+      }
+
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
+        NetLogoCompiler.generateJS
+      }
+
+      (fromSrcAndDims orElse fromURL) fold (
+        (nel => ExpectationFailed(nel.list.mkString("\n"))),
+        (js  => Ok(js))
+      )
+
+  }
 
   def saveToHtml = Action {
     implicit request =>
@@ -97,7 +122,7 @@ object CompilerService extends Controller {
     val DimensionsRegex = {
       val s = "\\s*"
       val n = "-?\\d+"
-      s"""$s[($n),$s($n),$s($n),$s($n)]$s""".r
+      s"""$s\\[($n),$s($n),$s($n),$s($n)\\]$s""".r
     }
 
     val dimensionsMaybe =

@@ -21,6 +21,7 @@ GET        /local                              controllers.local.Local.index
 GET        /local-connect                      controllers.local.Local.handleSocketConnection()
 
 # Compiler Service
+POST       /compile                            controllers.CompilerService.compile
 POST       /save-to-html                       controllers.CompilerService.saveToHtml
 
 GET        /netlogo-compat                     controllers.local.Local.compat
