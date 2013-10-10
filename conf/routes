@@ -6,6 +6,7 @@
 GET        /editor                             controllers.Application.editor
 GET        /minimal                            controllers.Application.minimal
 GET        /climate                            controllers.Application.climate
+GET        /wolfsheep                          controllers.Application.wolfsheep
 GET        /model/list.json                    controllers.Application.modelList
 GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 GET        /create-standalone                  controllers.Application.createStandaloneTortoise

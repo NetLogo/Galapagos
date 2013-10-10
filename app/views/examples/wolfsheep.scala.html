@@ -1,0 +1,89 @@
+@()(implicit request: RequestHeader)
+<html>
+  <head>
+  </head>
+  <body>
+    <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
+    ticks: <span id="tick-counter"></span>
+    <br/>
+    <input type="button" onclick="setup();" value="setup"></input>
+    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+    <input id="grass-button" type="button" onclick="toggleGrass();" value="grass? is DISABLED"></input>
+    <pre class='netlogo-model'
+         style='width: 500px;'
+         data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
+         data-src='/assets/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo'
+         >
+    </pre>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+    <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
+    <script type="text/javascript">
+      var session = tortoise(),
+          runner = -1,
+          tickCounter = document.getElementById('tick-counter'),
+          lastUpdate = 0,
+          grassOn = false;
+
+      function updateTickCounter() {
+        tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+      }
+
+      function goForever() {
+        var speed = Math.exp(document.getElementById('speed-slider').value),
+            delta = Math.min(new Date().getTime() - lastUpdate, 30),
+            numUpdates = speed * delta / 1000 + 1;
+        for (var i=0; i < numUpdates; i++) {
+          GO();
+        }
+        updateTickCounter();
+        session.update(collectUpdates());
+        lastUpdate = new Date().getTime();
+        runner = setTimeout(goForever, 1000/speed);
+      }
+
+      function setup() {
+        SETUP();
+        session.update(collectUpdates());
+        updateTickCounter();
+      }
+
+      function stop() {
+        clearTimeout(runner);
+        runner = -1;
+      }
+
+      function toggleGo() {
+        var goButton = document.getElementById('go-button');
+        if (runner < 0) {
+          goForever();
+          goButton.value = "stop";
+        } else {
+          stop();
+          goButton.value = "go";
+        }
+      }
+
+      function toggleGrass() {
+        var grassButton = document.getElementById('grass-button');
+        if (grassOn) {
+          session.run('observer', 'set grass? false');
+          grassButton.value = "grass? is DISABLED"
+        }
+        else {
+          session.run('observer', 'set grass? true');
+          grassButton.value = "grass? is ENABLED"
+        }
+        grassOn = !grassOn;
+      }
+    </script>
+  </body>
+</html>
