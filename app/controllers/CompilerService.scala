@@ -21,16 +21,23 @@ import
 
 object CompilerService extends Controller {
 
+  private type DimsType = (Int, Int, Int, Int)
+
+  private val MissingArgsMessage = "Your request must include either ('nlogo' and 'dimensions') or 'nlogo_url' as arguments."
+
   def saveToHtml = Action {
     implicit request =>
-
-      val MissingArgsMessage = "Your request must include either ('nlogo' and 'dimensions') or 'nlogo_url' as arguments."
 
       val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL        = maybeBuildFromURL       (argMap, jsURLs, MissingArgsMessage)
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage)
+      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+        url => ModelSaver(url, jsURLs)
+      }
+
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
+        (source, dims) => ModelSaver(source, dims, jsURLs)
+      }
 
       (fromSrcAndDims orElse fromURL) fold (
         (nel => ExpectationFailed(nel.list.mkString("\n"))),
@@ -54,35 +61,37 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/control/session-lite.js"
       ) map (
         controllers.routes.Assets.at(_)
-        )
+      )
 
     (normalURLs ++ assetURLs) map (route => new URL(route.absoluteURL()))
 
   }
 
-  private def maybeBuildFromURL(argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String): ValidationNel[String, String] =
+  private def maybeBuildFromURL[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+                                  (f: (URL) => T): ValidationNel[String, T] =
     argMap get "nlogo_url" map (
-      _.successNel[String]
-      ) getOrElse {
-      errorStr.failNel[String]
+      _.successNel
+    ) getOrElse {
+      errorStr.failNel
     } flatMap {
       nlogoURL =>
-        Try(new URL(nlogoURL)) map {
-          url => ModelSaver(url, jsURLs).successNel[String]
-        } recover {
-          case ex: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel[String]
+        Try(new URL(nlogoURL)) map f map (
+          _.successNel
+        ) recover {
+          case ex: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
         } getOrElse {
-          "An unknown error has occurred in processing your 'nlogo_url' value".failNel[String]
+          "An unknown error has occurred in processing your 'nlogo_url' value".failNel
         }
     }
 
-  private def maybeBuildFromSrcAndDims(argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String): ValidationNel[String, String] = {
+  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+                                         (f: (String, DimsType) => T): ValidationNel[String, T] = {
 
     val sourceMaybe =
       argMap get "nlogo" map (
-        _.successNel[String]
-        ) getOrElse {
-        errorStr.failNel[String]
+        _.successNel
+      ) getOrElse {
+        errorStr.failNel
       }
 
     val DimensionsRegex = {
@@ -93,18 +102,18 @@ object CompilerService extends Controller {
 
     val dimensionsMaybe =
       argMap get "dimensions" map (
-        _.successNel[String]
-        ) getOrElse {
-        errorStr.failNel[String]
+        _.successNel
+      ) getOrElse {
+        errorStr.failNel
       } flatMap {
         case DimensionsRegex(minX, maxX, minY, maxY) =>
-          (minX.toInt, maxX.toInt, minY.toInt, maxY.toInt).successNel[String]
+          (minX.toInt, maxX.toInt, minY.toInt, maxY.toInt).successNel
         case _ =>
-          "Expected dimensions in the following format: [minX, maxX, minY, maxY]".failNel[(Int, Int, Int, Int)]
+          "Expected dimensions in the following format: [minX, maxX, minY, maxY]".failNel
       }
 
     (sourceMaybe |@| dimensionsMaybe) {
-      (source, dimensions) => ModelSaver(source, dimensions, jsURLs)
+      (source, dimensions) => f(source, dimensions)
     }
 
   }
