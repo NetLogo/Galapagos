@@ -63,7 +63,7 @@ case class NetLogoCompiler(dimensions: WorldDimensions = WorldDimensions(-16, 16
 
 object NetLogoCompiler {
 
-  def generateJSForSave(source: String, dimensions: (Int, Int, Int, Int)): String = {
+  def generateJS(source: String, dimensions: (Int, Int, Int, Int)): String = {
     val (minX, maxX, minY, maxY) = dimensions
     val (javascript, _, _)       = Compiler.compileProcedures(source, WorldDimensions(minX, maxX, minY, maxY))
     javascript
