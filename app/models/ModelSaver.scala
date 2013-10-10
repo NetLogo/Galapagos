@@ -1,10 +1,11 @@
-package models.local
+package models
 
 import
   java.net.URL
 
 import
-  models.Util.usingSource
+  local.NetLogoCompiler,
+  Util.usingSource
 
 object ModelSaver {
 
