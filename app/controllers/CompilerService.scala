@@ -42,6 +42,10 @@ object CompilerService extends Controller {
         NetLogoCompiler.generateJS
       }
 
+      val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMessage) {
+        NetLogoCompiler.fromNLogoFile
+      }
+
       (fromSrcAndDims orElse fromURL) fold (
         nel => ExpectationFailed(nel.list.mkString("\n")),
         js  => Ok(js)
@@ -112,7 +116,7 @@ object CompilerService extends Controller {
                                          (f: (String, DimsType) => T): ValidationNel[String, T] = {
 
     val sourceMaybe =
-      argMap get "nlogo" map (
+      argMap get "netlogo_code" map (
         _.successNel
       ) getOrElse {
         errorStr.failNel
@@ -141,5 +145,14 @@ object CompilerService extends Controller {
     }
 
   }
+
+  private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
+                                    (f: (String) => T): ValidationNel[String, T] = {
+    val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failNel
+    nlogoMaybe map {
+      nlogo => f(nlogo)
+    }
+  }
+    
 
 }
