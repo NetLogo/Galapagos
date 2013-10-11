@@ -30,16 +30,15 @@ object CompilerService extends Controller {
   def compile = Action {
     implicit request =>
 
-      val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMessage) {
         url =>
           val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
           NetLogoCompiler.fromNLogoFile(nlogoContents)._2
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMessage) {
         NetLogoCompiler.generateJS
       }
 
@@ -56,11 +55,11 @@ object CompilerService extends Controller {
       val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMessage) {
         url => ModelSaver(url, jsURLs)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMessage) {
         (source, dims) => ModelSaver(source, dims, jsURLs)
       }
 
@@ -92,7 +91,7 @@ object CompilerService extends Controller {
 
   }
 
-  private def maybeBuildFromURL[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+  private def maybeBuildFromURL[T](argMap: Map[String, String], errorStr: String)
                                   (f: (URL) => T): ValidationNel[String, T] =
     argMap get "nlogo_url" map (
       _.successNel
@@ -109,7 +108,7 @@ object CompilerService extends Controller {
         }
     }
 
-  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], errorStr: String)
                                          (f: (String, DimsType) => T): ValidationNel[String, T] = {
 
     val sourceMaybe =
