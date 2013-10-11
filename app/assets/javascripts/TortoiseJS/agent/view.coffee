@@ -3,11 +3,22 @@ if not window.AgentModel?
 
 class window.AgentStreamController
   constructor: (@container) ->
+    @layers = document.createElement('div');
+    @layers.style.width = '100%'
+    @layers.style.position = 'relative'
+    @layers.classList.add('view-layers')
+    @container.appendChild(@layers)
     @turtleView = new TurtleView()
     @patchView = new PatchView()
-    @layeredView = new LayeredView()
-    @layeredView.setLayers(@patchView, @turtleView)
-    @container.appendChild(@layeredView.canvas)
+    # patchView must keep normal positioning so that it trying to maintain its
+    # aspect ratio forces the container to stay tall enough, thus maintaining
+    # flow with the rest of the page. Hence, we don't set its position
+    # 'absolute'
+    @turtleView.canvas.style.position = 'absolute'
+    @turtleView.canvas.style.top = '0px'
+    @turtleView.canvas.style.left = '0px'
+    @layers.appendChild(@patchView.canvas)
+    @layers.appendChild(@turtleView.canvas)
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
     @repaint()
@@ -15,7 +26,6 @@ class window.AgentStreamController
   repaint: ->
     @turtleView.repaint(@model.world, @model.turtles, @model.links)
     @patchView.repaint(@model.world, @model.patches)
-    @layeredView.repaint()
 
   update: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -57,18 +67,6 @@ class View
                       0, -@canvas.height/@patchHeight,
                       -(@minpxcor-.5)*@canvas.width/@patchWidth,
                       (@maxpycor+.5)*@canvas.height/@patchHeight)
-
-class LayeredView extends View
-  setLayers: (layers...) ->
-    @layers = layers
-  repaint: () ->
-    @canvas.width = Math.max((l.canvas.width for l in @layers)...)
-    @canvas.height = Math.max((l.canvas.height for l in @layers)...)
-    # Note that scaling a high quality canvas to this canvas doesn't acutally
-    # seem to degrade quality that much
-    for layer in @layers
-      @ctx.drawImage(layer.canvas, 0, 0, @canvas.width, @canvas.height)
-    return
 
 class TurtleView extends View
   constructor: () ->
