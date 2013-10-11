@@ -26,7 +26,6 @@ to setup
   setup-world
   set temperature 12
   reset-ticks
-  plot temperature
 end
 
 to setup-world
@@ -60,7 +59,6 @@ to go
   run-IR    ;; step IR
   run-CO2   ;; moves CO2 molecules
   tick
-  plot temperature
 end
 
 to update-albedo ;; patch procedure
@@ -92,7 +90,7 @@ to add-cloud            ;; erase clouds and then create new ones, plus one
     setxy x + random 9 - 4
           ;; the clouds should generally be clustered around the
           ;; center with occasional larger variations
-          y + random-normal 2.5 1
+          y + 2.5 + random-float 2 - random-float 2
     set color white
     ;; varying size is also purely for visualization
     ;; since we're only doing patch-based collisions
@@ -277,7 +275,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 18
@@ -325,7 +323,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2674135 true "" ""
+"default" 1.0 0 -2674135 true "" "plot temperature"
 
 BUTTON
 7
@@ -342,7 +340,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 104
@@ -359,7 +357,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 210
@@ -387,7 +385,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 104
@@ -404,7 +402,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 210
@@ -432,7 +430,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -821,7 +819,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.4
+NetLogo 5.0.5
 @#$#@#$#@
 setup add-cloud add-cloud add-cloud repeat 800 [ go ]
 @#$#@#$#@
