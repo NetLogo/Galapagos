@@ -43,7 +43,7 @@ cachedNetlogoColors = for colorTimesTen in [0..1400]
   "rgb(#{r}, #{g}, #{b})"
 
 colorArrayToCSS = (array) ->
-  [r,g,b] = array
+  [r,g,b] = array.map(Math.round)
   a = if array.length > 3 then array[3] else 255
   if a < 255
     "rgba(#{r}, #{g}, #{b}, #{a/255})"

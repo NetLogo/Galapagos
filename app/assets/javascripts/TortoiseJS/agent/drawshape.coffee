@@ -30,17 +30,21 @@ class window.CachingShapeDrawer extends ShapeDrawer
 
   drawShape: (ctx, turtleColor, shapeName) ->
     shapeName = shapeName.toLowerCase()
-    shapeCanvas = @shapeCache[[shapeName, turtleColor]]
+    shapeKey = @shapeKey(shapeName, turtleColor)
+    shapeCanvas = @shapeCache[shapeKey]
     if not shapeCanvas?
       shapeCanvas = document.createElement('canvas')
       shapeCanvas.width = shapeCanvas.height = 300
       shapeCtx = shapeCanvas.getContext('2d')
       @drawRawShape(shapeCtx, turtleColor, shapeName)
-      @shapeCache[[shapeName, turtleColor]] = shapeCanvas
+      @shapeCache[shapeKey] = shapeCanvas
     ctx.translate(.5, -.5)
     ctx.scale(-1/300, 1/300)
     ctx.drawImage(shapeCanvas, 0, 0)
     return
+  
+  shapeKey: (shapeName, turtleColor) ->
+    [shapeName, netlogoColorToCSS(turtleColor)]
 
 setColoring = (ctx, turtleColor, element) ->
   turtleColor = netlogoColorToCSS(turtleColor)
