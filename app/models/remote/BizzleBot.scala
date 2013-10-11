@@ -105,16 +105,6 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         nlController ! Setup
         "setting up"
 
-      case "open" =>
-        val modelName = args(0)
-        val modelFile = ModelManager(modelName).get
-        val nlogoContents = usingSource(_.fromFile(modelFile))(_.mkString)
-        nlController ! OpenModel(nlogoContents)
-        s"""opening the "$modelName" model"""
-
-      case "models" =>
-        "the available models are:<br><br>" + ModelManager.modelNames.mkString("<ul><li>", "</li>\n<li>", "</li></ul>")
-
       case _ =>
         "you just sent me an unrecognized request.  I don't know how you did it, but shame on you!"
 

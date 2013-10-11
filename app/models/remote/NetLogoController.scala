@@ -35,7 +35,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   import NetLogoControllerMessages._
   import WebInstanceMessages._
 
-  private var ws = workspace(usingSource(_.fromFile(ModelManager("Wolf_Sheep_Predation").get))(_.mkString))
+  private var ws = workspace(usingSource(_.fromFile("./public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString))
 
   // def for executor so that multiple netlogo commands can run simultaneously.
   // netlogo handles the scheduling.
