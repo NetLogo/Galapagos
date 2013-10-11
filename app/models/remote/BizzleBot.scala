@@ -11,20 +11,16 @@ import
 
 import
   play.api.{ libs, Logger },
-    libs.{ concurrent, json, iteratee },
-      concurrent.Akka,
+    libs.{ json, iteratee },
       iteratee.Iteratee,
       json.JsValue
 
 import
-  models.{ core, Util },
-    core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-      NetLogoControllerMessages._,
-      WebInstanceMessages.{ Connected, Join },
-    Util.usingSource
+  models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
+    NetLogoControllerMessages._,
+    WebInstanceMessages.{ Connected, Join }
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.Play.current
 
 /*
 Description:
@@ -39,8 +35,8 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
 
   private val Commands = List("commands", "help", "info", "whoami", "halt", "go", "stop", "setup", "open", "models")
 
-  def start() {
-    room ? (Join(BotName)) map {
+  def start(): Unit =
+    room ? Join(BotName) map {
       case Connected(robotChannel) =>
         robotChannel |>> Iteratee.foreach[JsValue] {
           event =>
@@ -49,16 +45,15 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
               foreach { case (username, message) => handleChat(username, message) }
         }
     }
-  }
 
   def canFieldMessage(message: String) = message.split(' ').head.toList match {
     case '/' :: cmd if (Commands.contains(cmd.mkString)) => true
     case _                                               => false
   }
 
-  def offerAssistance(username: String, message: String) : Option[String] = {
+  def offerAssistance(username: String, message: String): Option[String] = {
 
-    def preprocess(message: String) : Option[String] = {
+    def preprocess(message: String): Option[String] = {
       val trimmed = message.trim
       if (trimmed.startsWith("/")) Some(trimmed.tail.trim) else None
     }
@@ -68,7 +63,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
     preprocess(cmd) map {
 
       case "commands" =>
-        "here are the supported commands: " + Commands.mkString("[", ", ", "]")
+        s"here are the supported commands: ${Commands.mkString("[", ", ", "]")}"
 
       case "help" =>
         """perhaps this can be of help to you:
@@ -87,7 +82,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
         """.stripMargin.replaceAll("""\n|\r""", "") // Remove the newlines; they're just in there to make the string presentable in the code here
 
       case "whoami" =>
-        "you're @%s, obviously!".format(username)
+        s"you're @$username, obviously!"
 
       case "halt" =>
         nlController ! Halt
@@ -113,7 +108,7 @@ private[remote] class BizzleBot(room: ActorRef, nlController: ActorRef) extends 
   }
 
   // We can do stuff with this later, if we ever want to have the bot play with more-general chat
-  protected def handleChat(username: String, message: String) {}
+  protected def handleChat(username: String, message: String): Unit = {}
 
 }
 

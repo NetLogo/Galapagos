@@ -44,8 +44,8 @@ object CompilerService extends Controller {
       }
 
       (fromSrcAndDims orElse fromURL) fold (
-        (nel => ExpectationFailed(nel.list.mkString("\n"))),
-        (js  => Ok(js))
+        nel => ExpectationFailed(nel.list.mkString("\n")),
+        js  => Ok(js)
       )
 
   }
@@ -65,8 +65,8 @@ object CompilerService extends Controller {
       }
 
       (fromSrcAndDims orElse fromURL) fold (
-        (nel => ExpectationFailed(nel.list.mkString("\n"))),
-        (js  => Ok(views.html.standaloneTortoise(js)))
+        nel => ExpectationFailed(nel.list.mkString("\n")),
+        js  => Ok(views.html.standaloneTortoise(js))
       )
 
   }

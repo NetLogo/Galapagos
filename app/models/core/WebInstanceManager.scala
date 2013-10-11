@@ -20,18 +20,19 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait WebInstanceManager {
 
+  import WebInstanceMessages._
+
   implicit val timeout = Timeout(1.second)
 
   protected type RoomType = Future[(Iteratee[JsValue, _], Enumerator[JsValue])]
 
-  protected def connectTo(room: ActorRef, username: String) : RoomType = {
-    import WebInstanceMessages._
-    (room ? Join(username)).map {
+  protected def connectTo(room: ActorRef, username: String): RoomType =
+    room ? Join(username) map {
       case Connected(enumerator) =>
         val iteratee = Iteratee.foreach[JsValue] {
           event => {
             val cmd = Command(username, (event \ "agentType").as[String], (event \ "cmd").as[String])
-            play.api.Logger.info(cmd.toString.lines.next)
+            Logger.info(cmd.toString.lines.next())
             room ! cmd
           }
         } map {
@@ -43,10 +44,9 @@ trait WebInstanceManager {
         val enumerator = Enumerator[JsValue](JsObject(Seq("error" -> JsString(error)))).andThen(Enumerator.enumInput(Input.EOF))
         (iteratee, enumerator)
       case x =>
-        Logger.warn("Unknown event: " + x.toString)
-        throw new IllegalArgumentException("An unknown event has occurred on user join: " + x.toString)
+        Logger.warn(s"Unknown event: $x")
+        throw new IllegalArgumentException(s"An unknown event has occurred on user join: $x")
     }
-  }
 
 }
 

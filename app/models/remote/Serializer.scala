@@ -1,16 +1,20 @@
 package models.remote
 
 import
-  play.api.libs.json.{ JsBoolean, JsNull, JsNumber, JsObject, Json, JsString, JsValue }
+  java.lang.{ Boolean => JBoolean, Double => JDouble, Integer => JInteger }
 
 import
-  org.nlogo.{ api, mirror, shape },
+  play.api.{ libs, Logger },
+    libs.json.{ JsBoolean, JsNull, JsNumber, JsObject, Json, JsString, JsValue }
+
+import
+  org.nlogo.{ api, mirror },
     api.{ AgentVariables, ShapeList, LogoList },
     mirror.{ AgentKey, Birth, Change, Death, Kind, Mirrorables, Update }
 
 object Serializer {
 
-  def serialize(update: Update) : String = {
+  def serialize(update: Update): String = {
 
     import Mirrorables.{ Patch, Turtle, World, Link }
 
@@ -33,36 +37,35 @@ object Serializer {
 
   }
 
-  private def serializeBirth(birth: Birth) : (String, JsValue) = {
+  private def serializeBirth(birth: Birth): (String, JsValue) = {
     val Birth(AgentKey(kind, id), values) = birth
     val varNames = getVariableNamesForKind(kind)
     id.toString -> serializeAgentVariables(varNames, values)
   }
 
-  private def serializeAgentUpdate(update: (AgentKey, Seq[Change])) : (String, JsValue) = {
+  private def serializeAgentUpdate(update: (AgentKey, Seq[Change])): (String, JsValue) = {
     val (AgentKey(kind, id), changes) = update
     val varNames = getVariableNamesForKind(kind)
     val serializedVars = changes map {
       case Change(variable, value) =>
-        val name = {
+        val name =
           if (varNames.length > variable)
             varNames(variable)
           else
             variable.toString
-        }
         name -> serializeValue(value)
     }
     id.toString -> JsObject(serializedVars)
   }
 
-  private def serializeDeath(death: Death) : (String, JsValue) = death.agent.id.toString -> JsNull
+  private def serializeDeath(death: Death): (String, JsValue) = death.agent.id.toString -> JsNull
 
-  private def serializeAgentVariables(keys: Seq[String], values: Seq[AnyRef]) : JsObject = {
+  private def serializeAgentVariables(keys: Seq[String], values: Seq[AnyRef]): JsObject = {
     val kvPairs = keys zip (values map serializeValue)
     JsObject(kvPairs)
   }
 
-  private def getVariableNamesForKind(kind: Kind) : Seq[String] = {
+  private def getVariableNamesForKind(kind: Kind): Seq[String] = {
     import Mirrorables.{ Link, Patch, Turtle, World, MirrorableWorld }
     import MirrorableWorld.WorldVar
     kind match {
@@ -70,7 +73,7 @@ object Serializer {
       case Patch  => AgentVariables.getImplicitPatchVariables
       case Link   => AgentVariables.getImplicitLinkVariables
       case World  => 0 until WorldVar.maxId map (WorldVar.apply(_).toString)
-      case _      => play.api.Logger.warn("Don't know how to get implicit vars for " + kind.toString); Seq()
+      case _      => Logger.warn(s"Don't know how to get implicit vars for ${kind.toString}"); Seq()
     }
   }
 
@@ -78,12 +81,12 @@ object Serializer {
     import scala.collection.JavaConverters._
     import models.json.ShapeToJsonConverters._
     value match {
-      case d: java.lang.Double  => JsNumber(d.doubleValue)
-      case i: java.lang.Integer => JsNumber(i.intValue)
-      case b: java.lang.Boolean => JsBoolean(b.booleanValue)
-      case s: ShapeList         => JsObject(s.getShapes.asScala map (shape => shape.getName -> shape.toJsonObj))
-      case l: LogoList          => Json.toJson(l.toVector map (serializeValue _))
-      case x                    => JsString(x.toString)
+      case d: JDouble   => JsNumber(d.doubleValue)
+      case i: JInteger  => JsNumber(i.intValue)
+      case b: JBoolean  => JsBoolean(b.booleanValue)
+      case s: ShapeList => JsObject(s.getShapes.asScala map (shape => shape.getName -> shape.toJsonObj))
+      case l: LogoList  => Json.toJson(l.toVector map serializeValue)
+      case x            => JsString(x.toString)
     }
   }
 

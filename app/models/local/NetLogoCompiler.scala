@@ -17,26 +17,25 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
                            procedures:  ProceduresMap   = NoProcedures) {
 
   def runCommand(command: String): (NetLogoCompiler, String) = {
-    Logger.info(s"Compiling: ${command}")
+    Logger.info(s"Compiling: $command")
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))
-    Logger.info(s"Compiled to: ${strOpt}")
+    Logger.info(s"Compiled to: $strOpt")
     strOpt map ((this, _)) getOrElse ((this, ""))
   }
 
-  def runCommand(agentType: String, command: String) : (NetLogoCompiler, String) = {
-    val cmd = {
+  def runCommand(agentType: String, command: String): (NetLogoCompiler, String) = {
+    val cmd =
       if (agentType != "observer")
         s"""|ask $agentType [
             |  $command
             |]""".stripMargin
       else
         command
-    }
     runCommand(cmd)
   }
 
   //@ Improve later with more-dynamic selection of configs
-  def apply(source: String) : (NetLogoCompiler, String) = {
+  def apply(source: String): (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, iGlobals, iGlobalCmds, dimensions)
@@ -47,7 +46,7 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
     strCompilerOpt getOrElse ((this, ""))
   }
 
-  private def carefullyCompile[T](f: => T) : Option[T] = {
+  private def carefullyCompile[T](f: => T): Option[T] =
     try Option(f)
     catch {
       case ex: CompilerException =>
@@ -60,7 +59,6 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
         Logger.warn(s"Feature not yet supported: ${ex.getMessage}")
         None
     }
-  }
 
 }
 

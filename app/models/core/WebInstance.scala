@@ -29,26 +29,20 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
 
   protected lazy val room = this.self
 
-  protected def receiveBase : this.Receive = {
-
+  protected def receiveBase: this.Receive = {
     case Command(username, agentType, cmd) if (contexts.contains(agentType)) =>
       broadcast(generateMessage(CommandKey, agentType, username, cmd))
       execute(agentType, cmd)
-
     case Command(username, "compile", cmd) =>
       println("Compiling")
       compile(cmd)
-
     case Command(username, "open", cmd) =>
       println("Opening")
       open(cmd)
-
     case Command(username, agentType, cmd) =>
       Logger.warn(s"Unhandlable message from user '$username' in context '$agentType': $cmd")
-
     case CommandOutput(agentType, output) =>
       broadcast(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
-
   }
 
   protected def receiveExtras: this.Receive

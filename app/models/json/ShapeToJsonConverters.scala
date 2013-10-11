@@ -6,13 +6,13 @@ import
     shape.{ LinkShape, VectorShape }
 
 import
-  play.api.libs.json.{ JsBoolean, JsObject, Json, JsString }
+  play.api.libs.json.{ JsBoolean, JsObject, Json }
 
 sealed trait ShapeConverter[T <: Shape] extends JsonConverter[T]
 
 object ShapeToJsonConverters {
 
-  implicit def shape2Json(shape: Shape) : JsonWritable =
+  implicit def shape2Json(shape: Shape): JsonWritable =
     shape match {
       case vs: VectorShape => new VectorShapeConverter(vs)
       case ls: LinkShape   => new LinkShapeConverter(ls)

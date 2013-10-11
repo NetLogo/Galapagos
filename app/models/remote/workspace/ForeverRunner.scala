@@ -1,14 +1,21 @@
 package models.remote.workspace
 
-import org.nlogo.headless.HeadlessWorkspace
+import
+  org.nlogo.headless.HeadlessWorkspace
 
-import collection.immutable.ListSet
+import
+  scala.{ collection, concurrent },
+    collection.immutable.ListSet,
+    concurrent.duration._
 
-import akka.actor.{ Actor, ActorRef, Props }
-import play.api.libs.concurrent.Akka
+import
+  akka.actor.{ Actor, Props }
+
+import
+  play.api.libs.concurrent.Akka
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import concurrent.duration._
 
 trait ForeverRunner extends HeadlessWorkspace {
   this: Executor =>
@@ -44,20 +51,21 @@ trait ForeverRunner extends HeadlessWorkspace {
 
   }))
 
-  def go(command: String) { looper ! Go(command) }
+  def go(command: String): Unit =
+    looper ! Go(command)
 
-  def stop(command: String) { looper ! Stop(command) }
+  def stop(command: String): Unit =
+    looper ! Stop(command)
 
-  def setOutputCallback(callback: (String) => Unit) { 
+  def setOutputCallback(callback: (String) => Unit): Unit =
     looper ! SetOutputCallback(callback)
-  }
 
   private case class Go(command: String)
   private case class Stop(command: String)
   private case object Loop
   private case class SetOutputCallback(callback: (String) => Unit)
 
-  abstract override def halt() {
+  abstract override def halt(): Unit = {
     runningTasks = ListSet()
     super.halt()
   }

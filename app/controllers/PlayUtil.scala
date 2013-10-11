@@ -30,9 +30,9 @@ object PlayUtil {
             Logger.info("Failed to parse text into JSON", ex)
             None
         }
-      } orElse {
+      } orElse (
         (extractBundle _ andThen (_.stringSeqParams) andThen paramMap2JSON)(request)
-      }
+      )
     }
 
     // If Play actually made a good-faith effort at parameter extraction, I wouldn't have to go through this rubbish... --JAB 10/3/13
@@ -42,12 +42,11 @@ object PlayUtil {
           val fileKVs = formData.files map {
             formFile =>
               val file = formFile.ref.file
-              val arr  = {
+              val arr  =
                 if (file.length > 20E6.toLong)
                   "UPLOADED FILE TOO LARGE".getBytes
                 else
                   usingSource(_.fromFile(file)(Codec.ISO8859)) { _.map(_.toByte).toArray }
-              }
               (formFile.key, arr)
           }
           ParamBundle(formData.asFormUrlEncoded, fileKVs.toMap)
@@ -61,12 +60,11 @@ object PlayUtil {
 
     private def stringSeq2JSONOpt(seq: Seq[String]): Option[JsValue] = {
 
-      def generousParse(str: String): JsValue = {
+      def generousParse(str: String): JsValue =
         try Json.parse(str)
         catch {
           case ex: Exception => JsString(str) // Ehh... --JAB 10/3/13
         }
-      }
 
       seq match {
         case Seq()  => None

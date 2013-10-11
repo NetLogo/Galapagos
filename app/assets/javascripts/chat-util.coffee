@@ -132,7 +132,6 @@ class ChatUtil
   parseData: (event) ->
     data    = if (typeof(event.data) == 'string') then JSON.parse(event.data) else event.data
 
-    d       = new Date()
     time    = @getAmericanizedTime()
     user    = data.user
     context = data.context

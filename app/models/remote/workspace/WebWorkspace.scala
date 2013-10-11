@@ -1,11 +1,11 @@
 package models.remote.workspace
 
 import
-  org.nlogo.{ agent, api, nvm, headless, workspace },
+  org.nlogo.{ agent, api, nvm, headless },
     agent.World,
-    api.{ CompilerException, LogoException, RendererInterface },
+    api.RendererInterface,
     headless.HeadlessWorkspace,
-    nvm.{ CompilerInterface }
+    nvm.CompilerInterface
 
 /**
   * Manages a NetLogo workspace for use in NetLogo web clients

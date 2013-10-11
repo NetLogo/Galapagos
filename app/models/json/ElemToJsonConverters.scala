@@ -11,9 +11,9 @@ import
 
 sealed trait ElemConverter[T <: Element] extends JsonConverter[T] {
 
-  protected def typ : String = target.toString
+  protected def typ: String = target.toString
 
-  final override protected def baseProps : JsObject =
+  final override protected def baseProps: JsObject =
     JsObject(Seq(
       "type"   -> JsString(typ),
       "color"  -> serializeColor(target.getColor),
@@ -21,7 +21,7 @@ sealed trait ElemConverter[T <: Element] extends JsonConverter[T] {
       "marked" -> JsBoolean(target.marked)
     ))
 
-  private def serializeColor(c: Color) : JsValue = {
+  private def serializeColor(c: Color): JsValue = {
     val (r, g, b, a) = (c.getRed, c.getGreen, c.getBlue, c.getAlpha / 255.0)
     Json.toJson(s"rgba($r, $g, $b, $a)")
   }
@@ -30,7 +30,7 @@ sealed trait ElemConverter[T <: Element] extends JsonConverter[T] {
 
 object ElemToJsonConverters {
 
-  implicit def elem2Json(target: Element) : JsonWritable =
+  implicit def elem2Json(target: Element): JsonWritable =
     target match {
       case p: Polygon   => new PolygonConverter(p)
       case r: Rectangle => new RectangleConverter(r)

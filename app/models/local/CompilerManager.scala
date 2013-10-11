@@ -1,9 +1,7 @@
 package models.local
 
 import
-  akka.{ actor, pattern },
-    actor.Actor,
-    pattern.ask
+  akka.actor.Actor
 
 private[local] class CompilerManager extends Actor {
 

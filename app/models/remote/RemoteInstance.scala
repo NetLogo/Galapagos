@@ -1,18 +1,16 @@
 package models.remote
 
 import
-  collection.{ immutable, mutable },
+  scala.collection.{ immutable, mutable },
     immutable.{ Seq => ISeq },
     mutable.{ Map => MutableMap },
   concurrent.duration._
 
 import
-  akka.{ actor, pattern },
-    actor.{ Actor, Props },
-    pattern.ask
+  akka.actor.{ Actor, Props }
 
 import
-  play.api.{ libs, Play },
+  play.api.{ libs, Logger, Play },
     libs.{ concurrent => pconcurrent, json, iteratee },
       pconcurrent.Akka,
       iteratee.Concurrent,
@@ -57,7 +55,7 @@ class RemoteInstance extends Actor with WebInstance {
     case Join(username) =>
       isValidUsername(username) match {
         case (true, _) =>
-          play.api.Logger.info(s"$username joining")
+          Logger.info(s"$username joining")
           val enumer = Concurrent.unicast[JsValue] {
             channel =>
               members += username -> channel
@@ -97,51 +95,46 @@ class RemoteInstance extends Actor with WebInstance {
 
   }
 
-  private def quit(username: String) {
+  private def quit(username: String): Unit = {
     members -= username
     notifyAll(generateMessage(QuitKey, RoomContext, username, "has left the room"))
   }
 
-  private def notify(messageSets: (Iterable[String], JsObject)*) {
+  private def notify(messageSets: (Iterable[String], JsObject)*): Unit =
     messageSets foreach {
       case (memberNames, msg) => members filter { case (name, _) => memberNames.toSeq.contains(name) } pushForeach msg
     }
-  }
 
-  private def notify(memberName: String, msg: JsObject) {
+  private def notify(memberName: String, msg: JsObject): Unit =
     (members find (_._1 == memberName)).toIterable pushForeach msg
-  }
 
-  private def notifyBut(memberName: String, msg: JsObject) {
+  private def notifyBut(memberName: String, msg: JsObject): Unit =
     members filterNot (_._1 == memberName) pushForeach msg
-  }
 
-  private def notifyAll(msg: JsObject) {
+  private def notifyAll(msg: JsObject): Unit =
     members pushForeach msg
-  }
 
   // THIS IS WHY `Option` SHOULD SHARE A REASONABLE SUBTYPE WITH `Traversable`!
   implicit class Pushable[T <: { def foreach[U](f: MemberTuple => U) }](foreachable: T) {
-    def pushForeach(msg: JsObject) {
+    def pushForeach(msg: JsObject): Unit =
       foreachable foreach { case (username, channel) => channel.push(msg) }
-    }
   }
 
-  override def broadcast(msg: JsObject)                { notifyAll(msg) }
-  override def execute(agentType: String, cmd: String) = nlController ! Execute(agentType, cmd)
-  override def compile(source: String)                 = nlController ! Compile(source)
-  override def open(nlogoContents: String)             = nlController ! OpenModel(nlogoContents)
+  override def broadcast(msg: JsObject):                Unit = notifyAll(msg)
+  override def execute(agentType: String, cmd: String): Unit = nlController ! Execute(agentType, cmd)
+  override def compile(source: String):                 Unit = nlController ! Compile(source)
+  override def open(nlogoContents: String):             Unit = nlController ! OpenModel(nlogoContents)
 
-  override def generateMessage(kind: String, context: String, user: String, text: String) =
-    super.generateMessage(kind, context, user, text) ++ JsObject(Seq(MembersKey -> JsArray(members.keySet.toList map (JsString))))
+  override def generateMessage(kind: String, context: String, user: String, text: String): JsObject =
+    super.generateMessage(kind, context, user, text) ++ JsObject(Seq(MembersKey -> JsArray(members.keySet.toList map JsString)))
 
-  protected def isValidUsername(username: String) : (Boolean, String) = {
+  protected def isValidUsername(username: String): (Boolean, String) = {
     val reservedNames = Seq("me", "myself", "you") ++ contexts
     val name          = username.toLowerCase
     Seq(
       (reservedNames.contains(name.filter(_ != ' ')), "Username attempts to deceive others!"),
       (name.isEmpty,                                  "Username is empty"),
-      (name.length >= NameLengthLimit,                "Username is too long (must be %d characters or less)".format(NameLengthLimit)),
+      (name.length >= NameLengthLimit,               s"Username is too long (must be $NameLengthLimit characters or less)"),
       (members.contains(name),                        "Username already taken"),
       (name.matches(""".*[^ \w].*"""),                "Username contains invalid characters (must contain only alphanumeric characters and spaces)")
     ) collectFirst { case (cond, msg) if (cond) => (false, msg) } getOrElse (true, "Username approved")
@@ -154,7 +147,7 @@ object RemoteInstance extends WebInstanceManager {
   //@ This strikes me as a poor implementation... (it will change when the multi-headless system is implemented)
   val roomMap = MutableMap(0 -> Akka.system.actorOf(Props[RemoteInstance]))
 
-  def join(username: String, roomNum: Int) : RoomType = {
+  def join(username: String, roomNum: Int): RoomType = {
     val room = roomMap(roomNum)
     connectTo(room, username)
   }

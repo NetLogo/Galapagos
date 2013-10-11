@@ -1,15 +1,14 @@
 package models.remote.workspace
 
-import 
-  org.nlogo.{ headless, api },
-    headless.HeadlessWorkspace,
-    api.{ Program, Version }
+import
+  scala.collection.immutable.ListMap
 
-import collection.immutable.ListMap
+import
+  org.nlogo.headless.HeadlessWorkspace
 
 trait Compiler extends HeadlessWorkspace {
 
-  def setActiveCode(nlogoCode: String) {
+  def setActiveCode(nlogoCode: String): Unit = {
     // This is based on CompilerManager.compileAll
     // Using api.Program.empty() for the program will do it cleanly, but it
     // loses variables.

@@ -21,10 +21,11 @@ import
 import
   models.core.{ WebInstance, WebInstanceManager, WebInstanceMessages }
 
+import
+  CompilerMessages.{ Compile, Open }
+
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
-import CompilerMessages.{ Compile, Open }
 
 class LocalInstance extends Actor with WebInstance {
 
@@ -37,7 +38,6 @@ class LocalInstance extends Actor with WebInstance {
   protected var channelOpt: Option[Channel[JsValue]] = None // I wish there were an obvious and better way... --JAB (1/25/13)
 
   override protected def receiveExtras = {
-
     case Join(_) =>
       validateConnection match {
         case (true, _) =>
@@ -48,29 +48,26 @@ class LocalInstance extends Actor with WebInstance {
         case (false, reason) =>
           sender ! CannotConnect(reason)
       }
-
     case Quit(_) =>
       broadcast(generateMessage(QuitKey, NetLogoUsername, RoomContext, "Tortoise is now quitting..."))
       self ! PoisonPill
-
   }
 
-  override protected def broadcast(msg: JsObject) {
+  override protected def broadcast(msg: JsObject): Unit =
     channelOpt foreach (_.push(msg))
-  }
 
-  override protected def execute(agentType: String, cmd: String) {
+  override protected def execute(agentType: String, cmd: String): Unit = {
     import CompilerMessages.Execute
     val js = Await.result(compilerManager ? Execute(agentType, cmd), 1.second).asInstanceOf[String]
     broadcast(generateMessage(JSKey, NetLogoUsername, RoomContext, js))
   }
 
-  override protected def compile(source: String) {
+  override protected def compile(source: String): Unit = {
     val js = Await.result(compilerManager ? Compile(source), 1.second).asInstanceOf[String]
     broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
   }
 
-  override protected def open(nlogoContents: String) {
+  override protected def open(nlogoContents: String): Unit = {
     val js = Await.result(compilerManager ? Open(nlogoContents), 1.second).asInstanceOf[String]
     broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, js))
   }
@@ -80,7 +77,7 @@ class LocalInstance extends Actor with WebInstance {
 }
 
 object LocalInstance extends WebInstanceManager {
-  def join() : RoomType = {
+  def join(): RoomType = {
     val room = Akka.system.actorOf(Props[LocalInstance])
     connectTo(room, "You")
   }
