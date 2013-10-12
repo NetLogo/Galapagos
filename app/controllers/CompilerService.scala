@@ -13,6 +13,9 @@ import
 import
   play.api.mvc.{ Action, Controller, RequestHeader }
 
+import 
+  play.api.libs.json.Json
+
 import
   controllers.PlayUtil.EnhancedRequest
 
@@ -25,32 +28,48 @@ object CompilerService extends Controller {
 
   private type DimsType = (Int, Int, Int, Int)
 
-  private val MissingArgsMessage = "Your request must include either ('nlogo' and 'dimensions') or 'nlogo_url' as arguments."
+  private val MissingArgsMsg = "Your request must include either ('netlogo_code' and 'dimensions') or 'nlogo_url' or 'nlogo' as arguments."
+  private def BadCmdListMsg(cmdType: String) = s"$cmdType to be compiled should be formated as a JSON array of strings."
 
   def compile = Action {
     implicit request =>
 
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url =>
           val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
-          NetLogoCompiler.fromNLogoFile(nlogoContents)._2
+          NetLogoCompiler.fromNLogoFile(nlogoContents)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMessage) {
-        NetLogoCompiler.generateJS
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
+        (source, dims) => NetLogoCompiler.fromCodeAndDims(source, dims)
       }
 
-      val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMessage) {
+      val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMsg) {
         NetLogoCompiler.fromNLogoFile
       }
 
-      (fromSrcAndDims orElse fromURL) fold (
-        nel => ExpectationFailed(nel.list.mkString("\n")),
-        js  => Ok(js)
-      )
+      val maybeCommands = maybeGetCommands(argMap, BadCmdListMsg("Commands"))
+      val maybeCompilerAndJs = fromSrcAndDims orElse fromURL orElse fromNlogo
+      val maybeCompiledCommands = (maybeCompilerAndJs |@| maybeCommands) {
+        (compilerAndJs, commands) => commands map { cmd => compilerAndJs._1.runCommand(cmd)._2 }
+      }
 
+      val maybeResult = (maybeCompilerAndJs |@| maybeCompiledCommands) {
+        (compilerAndJs, commands) => createResponse(compilerAndJs._2, commands)
+      }
+
+      maybeResult fold (
+        (nel    => ExpectationFailed(nel.list.mkString("\n"))),
+        (result => Ok(result))
+      )
+      /*
+      (fromSrcAndDims orElse fromURL) fold (
+        (nel => ExpectationFailed(nel.list.mkString("\n"))),
+        (js  => Ok(js._2))
+      )
+      */
   }
 
   def saveToHtml = Action {
@@ -59,11 +78,11 @@ object CompilerService extends Controller {
       val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url => ModelSaver(url, jsURLs)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMessage) {
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
         (source, dims) => ModelSaver(source, dims, jsURLs)
       }
 
@@ -153,6 +172,18 @@ object CompilerService extends Controller {
       nlogo => f(nlogo)
     }
   }
-    
 
+  private def maybeGetCommands(argMap: Map[String, String], errorStr: String): ValidationNel[String, Seq[String]] =
+    Json.parse(argMap get "commands" getOrElse "[]").asOpt[Seq[String]] map (
+      _.successNel
+    ) getOrElse {
+      errorStr.failNel
+    }
+
+  private def createResponse(compiledCode: String, compiledCommands: Seq[String]): String =
+    Json.stringify(Json.obj(
+      "code" -> compiledCode,
+      "commands" -> Json.toJson(compiledCommands)
+    ))
 }
+

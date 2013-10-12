@@ -64,10 +64,9 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
 
 object NetLogoCompiler {
 
-  def generateJS(source: String, dimensions: (Int, Int, Int, Int)): String = {
+  def fromCodeAndDims(source: String, dimensions: (Int, Int, Int, Int)): (NetLogoCompiler, String) = {
     val (minX, maxX, minY, maxY) = dimensions
-    val (_, javascript)          = NetLogoCompiler(dimensions = WorldDimensions(minX, maxX, minY, maxY))(source)
-    javascript
+    NetLogoCompiler(dimensions = WorldDimensions(minX, maxX, minY, maxY))(source)
   }
 
   def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {

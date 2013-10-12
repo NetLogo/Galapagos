@@ -10,7 +10,7 @@ import
 object ModelSaver {
 
   def apply(source: String, dimensions: (Int, Int, Int, Int), urls: Seq[URL]): String = {
-    val netLogoJS = NetLogoCompiler.generateJS(source, dimensions)
+    val netLogoJS = NetLogoCompiler.fromCodeAndDims(source, dimensions)._2
     buildJavaScript(netLogoJS, urls)
   }
 
