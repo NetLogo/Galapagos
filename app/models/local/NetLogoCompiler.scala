@@ -23,6 +23,13 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
     strOpt map ((this, _)) getOrElse ((this, ""))
   }
 
+  def runReporter(reporter: String): (NetLogoCompiler, String) = {
+    Logger.info(s"Compiling: $reporter")
+    val strOpt = carefullyCompile(Compiler.compileReporter(reporter, procedures, program))
+    Logger.info(s"Compiled to: $strOpt")
+    strOpt map ((this, _)) getOrElse ((this, ""))
+  }
+
   def runCommand(agentType: String, command: String): (NetLogoCompiler, String) = {
     val cmd =
       if (agentType != "observer")

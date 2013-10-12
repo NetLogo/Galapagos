@@ -29,7 +29,7 @@ object CompilerService extends Controller {
   private type DimsType = (Int, Int, Int, Int)
 
   private val MissingArgsMsg = "Your request must include either ('netlogo_code' and 'dimensions') or 'nlogo_url' or 'nlogo' as arguments."
-  private def BadCmdListMsg(cmdType: String) = s"$cmdType to be compiled should be formated as a JSON array of strings."
+  private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formated as a JSON array of strings."
 
   def compile = Action {
     implicit request =>
@@ -50,26 +50,24 @@ object CompilerService extends Controller {
         NetLogoCompiler.fromNLogoFile
       }
 
-      val maybeCommands = maybeGetCommands(argMap, BadCmdListMsg("Commands"))
+      val maybeCommands = maybeGetStmts(argMap, "commands", BadStmtsMsg("Commands"))
+      val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
       val maybeCompilerAndJs = fromSrcAndDims orElse fromURL orElse fromNlogo
       val maybeCompiledCommands = (maybeCompilerAndJs |@| maybeCommands) {
         (compilerAndJs, commands) => commands map { cmd => compilerAndJs._1.runCommand(cmd)._2 }
       }
+      val maybeCompiledReporters = (maybeCompilerAndJs |@| maybeReporters) {
+        (compilerAndJs, reporters) => reporters map { cmd => compilerAndJs._1.runReporter(cmd)._2 }
+      }
 
-      val maybeResult = (maybeCompilerAndJs |@| maybeCompiledCommands) {
-        (compilerAndJs, commands) => createResponse(compilerAndJs._2, commands)
+      val maybeResult = (maybeCompilerAndJs |@| maybeCompiledCommands |@| maybeCompiledReporters) {
+        (compilerAndJs, commands, reporters) => createResponse(compilerAndJs._2, commands, reporters)
       }
 
       maybeResult fold (
         (nel    => ExpectationFailed(nel.list.mkString("\n"))),
         (result => Ok(result))
       )
-      /*
-      (fromSrcAndDims orElse fromURL) fold (
-        (nel => ExpectationFailed(nel.list.mkString("\n"))),
-        (js  => Ok(js._2))
-      )
-      */
   }
 
   def saveToHtml = Action {
@@ -173,17 +171,19 @@ object CompilerService extends Controller {
     }
   }
 
-  private def maybeGetCommands(argMap: Map[String, String], errorStr: String): ValidationNel[String, Seq[String]] =
-    Json.parse(argMap get "commands" getOrElse "[]").asOpt[Seq[String]] map (
+  private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] =
+    // TODO: Wrap exception in validation stuff.
+    Json.parse(argMap get field getOrElse "[]").asOpt[Seq[String]] map (
       _.successNel
     ) getOrElse {
       errorStr.failNel
     }
 
-  private def createResponse(compiledCode: String, compiledCommands: Seq[String]): String =
+  private def createResponse(compiledCode: String, compiledCommands: Seq[String], compiledReporters: Seq[String]): String =
     Json.stringify(Json.obj(
       "code" -> compiledCode,
-      "commands" -> Json.toJson(compiledCommands)
+      "commands" -> Json.toJson(compiledCommands),
+      "reporters" -> Json.toJson(compiledReporters)
     ))
 }
 
