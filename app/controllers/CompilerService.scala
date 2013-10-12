@@ -52,19 +52,15 @@ object CompilerService extends Controller {
 
       val maybeCommands = maybeGetStmts(argMap, "commands", BadStmtsMsg("Commands"))
       val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
-      val maybeCompilerAndJs = fromSrcAndDims orElse fromURL orElse fromNlogo
-      val maybeCompiledCommands = (maybeCompilerAndJs |@| maybeCommands) {
-        (compilerAndJs, commands) => commands map { cmd => compilerAndJs._1.runCommand(cmd)._2 }
-      }
-      val maybeCompiledReporters = (maybeCompilerAndJs |@| maybeReporters) {
-        (compilerAndJs, reporters) => reporters map { cmd => compilerAndJs._1.runReporter(cmd)._2 }
-      }
-
-      val maybeResult = (maybeCompilerAndJs |@| maybeCompiledCommands |@| maybeCompiledReporters) {
-        (compilerAndJs, commands, reporters) => createResponse(compilerAndJs._2, commands, reporters)
-      }
-
-      maybeResult fold (
+      (fromSrcAndDims orElse fromURL orElse fromNlogo) flatMap {
+        case (compiler, js) => {
+          val maybeCompiledCommands = maybeCommands map {_ map { stmt => compiler.runCommand(stmt)._2 } }
+          val maybeCompiledReporters = maybeReporters map {_ map { stmt => compiler.runReporter(stmt)._2 } }
+          (maybeCompiledCommands |@| maybeCompiledReporters) {
+            (commands, reporters) => createResponse(js, commands, reporters)
+          }
+        }
+      } fold (
         (nel    => ExpectationFailed(nel.list.mkString("\n"))),
         (result => Ok(result))
       )
@@ -173,7 +169,7 @@ object CompilerService extends Controller {
 
   private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] =
     // TODO: Wrap exception in validation stuff.
-    Json.parse(argMap get field getOrElse "[]").asOpt[Seq[String]] map (
+    Json.parse(argMap.getOrElse(field, "[]")).asOpt[Seq[String]] map (
       _.successNel
     ) getOrElse {
       errorStr.failNel
