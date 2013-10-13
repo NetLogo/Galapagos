@@ -21,15 +21,13 @@ object ObtainResources {
     obtainResources <<= obtainResources.dependsOn(obtainJSLibs, obtainStylesheets, obtainStylesheetImages),
     compile in Compile <<= (compile in Compile).dependsOn(obtainResources),
     obtainJSLibs <<= (baseDirectory, streams) map { (base, s) =>
-      obtain(base, s.log.info(_), "javascripts", ".js", Seq(Rsrc("underscore-1.4.2"), Rsrc("underscore-string-2.3.0"),
-                                                            Rsrc("ace-6df9748a", "./ace"), Rsrc("jquery-1.8.3"),
-                                                            Rsrc("mousetrap-1.1.1"), Rsrc("chosen_v1.0.0/chosen.jquery")))
+      obtain(base, s.log.info(_), "javascripts", ".js", Seq())
     },
     obtainStylesheets <<= (baseDirectory, streams) map { (base, s) =>
-      obtain(base, s.log.info(_), "stylesheets", ".css", Seq(Rsrc("bootstrap-1.4.0"), Rsrc("chosen_v1.0.0/chosen")))
+      obtain(base, s.log.info(_), "stylesheets", ".css", Seq(Rsrc("bootstrap-1.4.0")))
     },
     obtainStylesheetImages <<= (baseDirectory, streams) map { (base, s) =>
-      obtain(base, s.log.info(_), "stylesheets", ".png", Seq(Rsrc("chosen_v1.0.0/chosen-sprite")))
+      obtain(base, s.log.info(_), "stylesheets", ".png", Seq())
     }
   )
 
