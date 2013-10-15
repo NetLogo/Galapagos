@@ -167,13 +167,15 @@ object CompilerService extends Controller {
     }
   }
 
-  private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] =
-    // TODO: Wrap exception in validation stuff.
-    Json.parse(argMap.getOrElse(field, "[]")).asOpt[Seq[String]] map (
-      _.successNel
-    ) getOrElse {
-      errorStr.failNel
-    }
+  private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] = {
+    val parsedMaybe = Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
+      case ex: com.fasterxml.jackson.core.JsonProcessingException =>
+        errorStr.failNel
+    }.get
+
+    parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failNel)
+  }
+    
 
   private def createResponse(compiledCode: String, compiledCommands: Seq[String], compiledReporters: Seq[String]): String =
     Json.stringify(Json.obj(
