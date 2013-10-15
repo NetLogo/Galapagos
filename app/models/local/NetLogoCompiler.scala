@@ -1,14 +1,14 @@
 package models.local
 
 import
-  play.api.Logger
-
-import
   org.nlogo.{ api, headless, nvm, tortoise },
     api.{ CompilerException, ModelReader, ModelSection, Program, WorldDimensions },
     headless.WidgetParser,
     nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
+
+import
+  play.api.Logger
 
 case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
                            iGlobalCmds: String          = "",
@@ -20,14 +20,16 @@ case class NetLogoCompiler(iGlobals:    Seq[String]     = Seq(),
     Logger.info(s"Compiling: $command")
     val strOpt = carefullyCompile(Compiler.compileCommands(command, procedures, program))
     Logger.info(s"Compiled to: $strOpt")
-    strOpt map ((this, _)) getOrElse ((this, ""))
+    val js = strOpt getOrElse ""
+    (this, js)
   }
 
   def runReporter(reporter: String): (NetLogoCompiler, String) = {
     Logger.info(s"Compiling: $reporter")
     val strOpt = carefullyCompile(Compiler.compileReporter(reporter, procedures, program))
     Logger.info(s"Compiled to: $strOpt")
-    strOpt map ((this, _)) getOrElse ((this, ""))
+    val js = strOpt getOrElse ""
+    (this, js)
   }
 
   def runCommand(agentType: String, command: String): (NetLogoCompiler, String) = {

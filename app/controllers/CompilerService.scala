@@ -11,9 +11,12 @@ import
     Scalaz.{ ToApplyOpsUnapply, ToValidationV }
 
 import
+  com.fasterxml.jackson.core.JsonProcessingException
+
+import
   play.api.mvc.{ Action, Controller, RequestHeader }
 
-import 
+import
   play.api.libs.json.Json
 
 import
@@ -50,20 +53,23 @@ object CompilerService extends Controller {
         NetLogoCompiler.fromNLogoFile
       }
 
-      val maybeCommands = maybeGetStmts(argMap, "commands", BadStmtsMsg("Commands"))
+      val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
       val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
-      (fromSrcAndDims orElse fromURL orElse fromNlogo) flatMap {
-        case (compiler, js) => {
-          val maybeCompiledCommands = maybeCommands map {_ map { stmt => compiler.runCommand(stmt)._2 } }
+
+      val maybeResult = (fromSrcAndDims orElse fromURL orElse fromNlogo) flatMap {
+        case (compiler, js) =>
+          val maybeCompiledCommands  = maybeCommands  map {_ map { stmt => compiler.runCommand (stmt)._2 } }
           val maybeCompiledReporters = maybeReporters map {_ map { stmt => compiler.runReporter(stmt)._2 } }
           (maybeCompiledCommands |@| maybeCompiledReporters) {
             (commands, reporters) => createResponse(js, commands, reporters)
           }
-        }
-      } fold (
-        (nel    => ExpectationFailed(nel.list.mkString("\n"))),
-        (result => Ok(result))
+      }
+
+      maybeResult fold (
+        nel    => ExpectationFailed(nel.list.mkString("\n")),
+        result => Ok(result)
       )
+
   }
 
   def saveToHtml = Action {
@@ -119,7 +125,7 @@ object CompilerService extends Controller {
         Try(new URL(nlogoURL)) map f map (
           _.successNel
         ) recover {
-          case ex: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
+          case _: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
         } getOrElse {
           "An unknown error has occurred in processing your 'nlogo_url' value".failNel
         }
@@ -162,25 +168,20 @@ object CompilerService extends Controller {
   private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
                                     (f: (String) => T): ValidationNel[String, T] = {
     val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failNel
-    nlogoMaybe map {
-      nlogo => f(nlogo)
-    }
+    nlogoMaybe map f
   }
 
   private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] = {
     val parsedMaybe = Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
-      case ex: com.fasterxml.jackson.core.JsonProcessingException =>
-        errorStr.failNel
+      case _: JsonProcessingException => errorStr.failNel
     }.get
-
     parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failNel)
   }
-    
 
   private def createResponse(compiledCode: String, compiledCommands: Seq[String], compiledReporters: Seq[String]): String =
     Json.stringify(Json.obj(
-      "code" -> compiledCode,
-      "commands" -> Json.toJson(compiledCommands),
+      "code"      -> compiledCode,
+      "commands"  -> Json.toJson(compiledCommands),
       "reporters" -> Json.toJson(compiledReporters)
     ))
 }
