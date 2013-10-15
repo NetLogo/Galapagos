@@ -11,7 +11,13 @@ import
     Scalaz.{ ToApplyOpsUnapply, ToValidationV }
 
 import
+  com.fasterxml.jackson.core.JsonProcessingException
+
+import
   play.api.mvc.{ Action, Controller, RequestHeader }
+
+import
+  play.api.libs.json.Json
 
 import
   controllers.PlayUtil.EnhancedRequest
@@ -25,27 +31,43 @@ object CompilerService extends Controller {
 
   private type DimsType = (Int, Int, Int, Int)
 
-  private val MissingArgsMessage = "Your request must include either ('nlogo' and 'dimensions') or 'nlogo_url' as arguments."
+  private val MissingArgsMsg = "Your request must include either ('netlogo_code' and 'dimensions') or 'nlogo_url' or 'nlogo' as arguments."
+  private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formated as a JSON array of strings."
 
   def compile = Action {
     implicit request =>
 
-      val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url =>
           val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
-          NetLogoCompiler.fromNLogoFile(nlogoContents)._2
+          NetLogoCompiler.fromNLogoFile(nlogoContents)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
-        NetLogoCompiler.generateJS
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
+        (source, dims) => NetLogoCompiler.fromCodeAndDims(source, dims)
       }
 
-      (fromSrcAndDims orElse fromURL) fold (
-        nel => ExpectationFailed(nel.list.mkString("\n")),
-        js  => Ok(js)
+      val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMsg) {
+        NetLogoCompiler.fromNLogoFile
+      }
+
+      val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
+      val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
+
+      val maybeResult = (fromSrcAndDims orElse fromURL orElse fromNlogo) flatMap {
+        case (compiler, js) =>
+          val maybeCompiledCommands  = maybeCommands  map {_ map { stmt => compiler.runCommand (stmt)._2 } }
+          val maybeCompiledReporters = maybeReporters map {_ map { stmt => compiler.runReporter(stmt)._2 } }
+          (maybeCompiledCommands |@| maybeCompiledReporters) {
+            (commands, reporters) => createResponse(js, commands, reporters)
+          }
+      }
+
+      maybeResult fold (
+        nel    => ExpectationFailed(nel.list.mkString("\n")),
+        result => Ok(result)
       )
 
   }
@@ -56,11 +78,11 @@ object CompilerService extends Controller {
       val jsURLs = generateTortoiseLiteJsUrls()
       val argMap = request.extractArgMap
 
-      val fromURL = maybeBuildFromURL(argMap, jsURLs, MissingArgsMessage) {
+      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url => ModelSaver(url, jsURLs)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, jsURLs, MissingArgsMessage) {
+      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
         (source, dims) => ModelSaver(source, dims, jsURLs)
       }
 
@@ -92,7 +114,7 @@ object CompilerService extends Controller {
 
   }
 
-  private def maybeBuildFromURL[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+  private def maybeBuildFromURL[T](argMap: Map[String, String], errorStr: String)
                                   (f: (URL) => T): ValidationNel[String, T] =
     argMap get "nlogo_url" map (
       _.successNel
@@ -103,17 +125,17 @@ object CompilerService extends Controller {
         Try(new URL(nlogoURL)) map f map (
           _.successNel
         ) recover {
-          case ex: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
+          case _: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
         } getOrElse {
           "An unknown error has occurred in processing your 'nlogo_url' value".failNel
         }
     }
 
-  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], jsURLs: Seq[URL], errorStr: String)
+  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], errorStr: String)
                                          (f: (String, DimsType) => T): ValidationNel[String, T] = {
 
     val sourceMaybe =
-      argMap get "nlogo" map (
+      argMap get "netlogo_code" map (
         _.successNel
       ) getOrElse {
         errorStr.failNel
@@ -143,4 +165,24 @@ object CompilerService extends Controller {
 
   }
 
+  private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
+                                    (f: (String) => T): ValidationNel[String, T] = {
+    val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failNel
+    nlogoMaybe map f
+  }
+
+  private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] = {
+    val parsedMaybe = Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
+      case _: JsonProcessingException => errorStr.failNel
+    }.get
+    parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failNel)
+  }
+
+  private def createResponse(compiledCode: String, compiledCommands: Seq[String], compiledReporters: Seq[String]): String =
+    Json.stringify(Json.obj(
+      "code"      -> compiledCode,
+      "commands"  -> Json.toJson(compiledCommands),
+      "reporters" -> Json.toJson(compiledReporters)
+    ))
 }
+

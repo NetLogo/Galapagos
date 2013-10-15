@@ -23,7 +23,9 @@ GET        /local-connect                      controllers.local.Local.handleSoc
 
 # Compiler Service
 POST       /compile                            controllers.CompilerService.compile
+GET        /compile                            controllers.CompilerService.compile
 POST       /save-to-html                       controllers.CompilerService.saveToHtml
+GET        /save-to-html                       controllers.CompilerService.saveToHtml
 
 GET        /netlogo-compat.js                  controllers.local.Local.compat
 GET        /netlogo-engine.js                  controllers.local.Local.engine
