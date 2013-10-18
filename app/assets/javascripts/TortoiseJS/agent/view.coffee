@@ -37,7 +37,7 @@ class View
     # small as possible as overly large canvases can crash computers
     @quality = 1
     @canvas = document.createElement('canvas')
-    @canvas.id = 'netlogo-canvas'
+    @canvas.class = 'netlogo-canvas'
     @canvas.width = 500
     @canvas.height = 500
     @canvas.style.width = "100%"
