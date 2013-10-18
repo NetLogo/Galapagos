@@ -12,7 +12,6 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     "asm" % "asm-all" % "3.3.1", // Necessary evil
-    "org.picocontainer" % "picocontainer" % "2.13.6",
     "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-1e3f423" from
       "http://ccl.northwestern.edu/devel/NetLogoHeadless-1e3f423.jar",
     "org.scalaz" %% "scalaz-core" % "7.0.3",
