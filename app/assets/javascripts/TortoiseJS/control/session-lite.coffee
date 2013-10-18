@@ -3,10 +3,8 @@ class window.SessionLite
   @controller = undefined
 
   constructor: (container) ->
-    # Remove the canvas if it already exists (i.e. Standalone Tortoise)
-    existingCanvas = container.querySelector("#netlogo-canvas")
-    if existingCanvas?
-      container.removeChild(existingCanvas)
+    # Remove everything from within the container (particularly for Standalone Tortoise)
+    container.innerHTML = ""
     @controller = new AgentStreamController(container)
 
   update: (modelUpdate) ->
