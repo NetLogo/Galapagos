@@ -29,7 +29,8 @@ object ApplicationBuild extends Build {
 
   val moreSettings = Seq[Setting[_]](
     scalacOptions += "-language:_",
-    scalaVersion := "2.10.2"
+    scalaVersion := "2.10.2",
+    requireJs += "TortoiseJS/control/tortoise.js"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

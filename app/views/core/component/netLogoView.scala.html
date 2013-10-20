@@ -7,8 +7,7 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+  @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/control/tortoise").url)
   <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("chosen/chosen.css"))' />
   <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("chosen/chosen.jquery.js"))'></script>
 

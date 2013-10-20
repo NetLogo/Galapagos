@@ -3,7 +3,7 @@
 <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("underscore.js"))'></script>
 <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("underscore.string.js"))'></script>
 <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("mousetrap.js"))'></script>
-<script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("07.31.2013/src/ace.js"))'></script>
+@helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("07.31.2013/src/ace").url)
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/exports-init.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/textholder.js")'></script>
 <script type="text/javascript" src='@routes.Assets.at("javascripts/util/linkedhashset.js")'></script>

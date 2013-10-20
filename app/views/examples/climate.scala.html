@@ -25,12 +25,11 @@
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/control/tortoise").url)
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
-      var session = tortoise(),
+      var session,
           runner = -1,
           tickCounter = document.getElementById('tick-counter'),
           lastUpdate = 0;
@@ -73,6 +72,11 @@
           goButton.value = "go";
         }
       }
+
+      require(['tortoise'], function (tortoise) {
+        console.log(tortoise);
+        session = tortoise();
+      });
     </script>
   </body>
 </html>
