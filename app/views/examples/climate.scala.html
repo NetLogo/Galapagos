@@ -18,14 +18,18 @@
          data-src='/assets/modelslib/Sample%20Models/Earth%20Science/Climate%20Change.nlogo'
          >
     </pre>
-    <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("07.31.2013/src/ace.js"))'></script>
+    <!--
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/managed/ace/ace-6df9748a.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
+    -->
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
+    <!--
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
-    @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/control/tortoise").url)
+    -->
+    @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/tortoise").url)
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">

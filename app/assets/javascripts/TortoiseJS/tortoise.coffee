@@ -1,4 +1,6 @@
-define(['../communication/connection', '../../../../webjars/ace/07.31.2013/src/ace'], (conn, acee) ->
+define(['agent/view', 
+        'communication/connection',
+        '../../../webjars/ace/07.31.2013/src/ace'], (view, conn, acee) ->
   console.log(conn)
   tortoise = (elem, socketURL) ->
     elem = elem or '.netlogo-model'
@@ -32,7 +34,7 @@ define(['../communication/connection', '../../../../webjars/ace/07.31.2013/src/a
 
     editor = attachEditor(elem)
 
-    controller = new AgentStreamController(container)
+    controller = new view.AgentStreamController(container)
     connection = conn.connect(socketURL)
     session = new TortoiseSession(connection, controller, editor)
 
