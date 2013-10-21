@@ -4,9 +4,10 @@ import
   akka.actor.{ Actor, ActorRef, Props, PoisonPill }
 
 import
-  org.nlogo.{ headless, mirror },
+  org.nlogo.{ headless, mirror, tortoise },
     headless.HeadlessWorkspace,
-    mirror.Update
+    mirror.Update,
+    tortoise.json.JSONSerializer
 
 import
   play.api.{ libs, Logger },
@@ -58,7 +59,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   private class StateManager extends Actor {
 
     private def sendUpdate(update: Update): Unit =
-      channel ! ViewUpdate(Serializer.serialize(update))
+      channel ! ViewUpdate(JSONSerializer.serialize(update))
 
     private def sendPendingUpdate(): Unit =
       if (ws.updatePending)
