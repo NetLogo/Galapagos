@@ -1,11 +1,23 @@
 # input: number in [0, 140) range
 # result: CSS color string
 window.netlogoColorToCSS = (netlogoColor) ->
+  [r,g,b] = array = netlogoColorToRGB(netlogoColor)
+  a = if array.length > 3 then array[3] else 255
+  if a < 255
+    "rgba(#{r}, #{g}, #{b}, #{a/255})"
+  else
+    "rgb(#{r}, #{g}, #{b})"
+
+window.netlogoColorToRGB = (netlogoColor) ->
   switch typeof(netlogoColor)
     when "number" then cachedNetlogoColors[Math.floor(netlogoColor*10)]
-    when "object" then colorArrayToCSS(netlogoColor)
-    when "string" then netlogoColor
+    when "object" then netlogoColor.map(Math.round)
+    when "string" then netlogoBaseColors[netlogoColorNamesIndices[netlogoColor]]
     else console.error("Unrecognized color: #{netlogoColor}")
+
+netlogoColorNamesIndices = {}
+for color,i in ['gray', 'red', 'orange', 'brown', 'yellow', 'green', 'lime', 'turqoise', 'cyan', 'sky', 'blue', 'violet', 'magenta', 'pink', 'black', 'white']
+  netlogoColorNamesIndices[color] = i
 
 # copied from api/Color.scala. note these aren't the same numbers as
 # `map extract-rgb base-colors` gives you; see comments in Scala source
@@ -40,7 +52,7 @@ cachedNetlogoColors = for colorTimesTen in [0..1400]
     r += Math.floor((0xFF - r)*step)
     g += Math.floor((0xFF - g)*step)
     b += Math.floor((0xFF - b)*step)
-  "rgb(#{r}, #{g}, #{b})"
+  [r, g, b]
 
 colorArrayToCSS = (array) ->
   [r,g,b] = array.map(Math.round)
