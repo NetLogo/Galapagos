@@ -76,7 +76,10 @@ object CompilerService extends Controller {
     implicit request =>
 
       val jsURLs = generateTortoiseLiteJsUrls()
-      val argMap = request.extractArgMap
+
+      val ParamBundle(argSeqMap, fileBytesMap) = request.extractBundle
+      val argMap  = argSeqMap    mapValues (_.head)
+      val fileMap = fileBytesMap mapValues (str => new String(str, "ISO-8859-1"))
 
       val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url => ModelSaver(url, jsURLs)
@@ -86,7 +89,11 @@ object CompilerService extends Controller {
         (source, dims) => ModelSaver(source, dims, jsURLs)
       }
 
-      (fromSrcAndDims orElse fromURL) fold (
+      val fromNlogo = maybeBuildFromNlogo(fileMap, MissingArgsMsg) {
+        contents => ModelSaver(contents, jsURLs)
+      }
+
+      (fromSrcAndDims orElse fromURL orElse fromNlogo) fold (
         nel => ExpectationFailed(nel.list.mkString("\n")),
         js  => Ok(views.html.standaloneTortoise(js))
       )

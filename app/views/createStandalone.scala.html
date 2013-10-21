@@ -1,9 +1,20 @@
 <html>
   <head></head>
   <body>
+
     <form name="nlogo-url-form" action="/save-to-html" method="POST">
       <input placeholder="Model URL" type="text" name="nlogo_url">
       <input type="submit" value="Submit">
     </form>
+
+    <strong>-OR-</strong>
+    <br>
+    <br>
+
+    <form name="nlogo-file-form" enctype="multipart/form-data" action="/save-to-html" method="POST">
+      <input placeholder="Upload a file" type="file" name="nlogo" size="50">
+      <input type="submit" value="Submit">
+    </form>
+
   </body>
 </html>

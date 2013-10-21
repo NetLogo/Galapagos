@@ -14,10 +14,14 @@ object ModelSaver {
     buildJavaScript(netLogoJS, urls)
   }
 
+  def apply(nlogo: String, jsURLs: Seq[URL]): String = {
+    val netLogoJS = NetLogoCompiler.fromNLogoFile(nlogo)._2
+    buildJavaScript(netLogoJS, jsURLs)
+  }
+
   def apply(url: URL, jsURLs: Seq[URL]): String = {
     val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
-    val netLogoJS     = NetLogoCompiler.fromNLogoFile(nlogoContents)._2
-    buildJavaScript(netLogoJS, jsURLs)
+    apply(nlogoContents, jsURLs)
   }
 
   private def buildJavaScript(netLogoJS: String, jsURLs: Seq[URL]): String =
