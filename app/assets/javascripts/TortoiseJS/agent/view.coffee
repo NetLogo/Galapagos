@@ -119,32 +119,50 @@ class TurtleView extends View
       @drawTurtle(id, turtle)
     return
 
+# Works by creating a scratchCanvas that has a pixel per patch. Those pixels
+# are colored accordingly. Then, the scratchCanvas is drawn onto the main
+# canvas scaled. This is very, very fast. It also prevents weird lines between
+# patches.
+# An alternative (and superior) method would be to make the main canvas have
+# a pixel per patch and directly manipulate it. Then, use CSS to scale to the
+# proper size. Unfortunately, CSS scaling introduces antialiasing, making the
+# patches look blurred. An option to disable this antialiasing is coming in
+# CSS4: image-rendering. Firefox currently supports it. Chrome did (with a
+# nonstandard value), but no longer does.
+# You can read about it here:
+# https://developer.mozilla.org/en-US/docs/Web/CSS/image-rendering
 class PatchView extends View
   constructor: () ->
     super()
     @patchColors = []
+    @scratchCanvas = document.createElement('canvas')
+    @scratchCtx = @scratchCanvas.getContext('2d')
+    @quality = 2 # Avoids antialiasing somewhat when image is stretched.
 
   transformToWorld: (world) ->
     super(world)
-    @patchColors = []
-    for x in [@minpxcor..@maxpxcor]
-      for y in [@maxpycor..@minpycor]
-        @colorPatch({'pxcor': x, 'pycor': y, 'pcolor': 'black'})
-      col = 0
-    return
+    # reset transform. We need to custom scaling.
+    @ctx.setTransform(1, 0, 0, 1, 0, 0);
+    @scratchCanvas.width = @patchWidth
+    @scratchCanvas.height = @patchHeight
+    # Prevents antialiasing when scratchCanvas is stretched and drawn on canvas
+    @ctx.imageSmoothingEnabled=false;
+    @ctx.fillStyle = 'black'
+    @ctx.fillRect(0, 0, @canvas.width, @canvas.height)
 
-  colorPatch: (patch) ->
-    row = @maxpycor - patch.pycor
-    col = patch.pxcor-@minpxcor
-    patchIndex = row*@patchWidth + col
-    color = patch.pcolor
-    color = netlogoColorToCSS(color)
-    if color != @patchColors[patchIndex]
-      @patchColors[patchIndex] = @ctx.fillStyle = color
-      @ctx.fillRect(patch.pxcor-.5, patch.pycor-.5, 1, 1)
+  colorPatches: (patches) ->
+    imageData = @ctx.createImageData(@patchWidth,@patchHeight)
+    for _, patch of patches
+      [r,g,b] = netlogoColorToRGB(patch.pcolor)
+      i = ((@maxpxcor-patch.pycor)*@patchWidth + (patch.pxcor-@minpxcor)) * 4
+      imageData.data[i+0] = r
+      imageData.data[i+1] = g
+      imageData.data[i+2] = b
+      imageData.data[i+3] = 255
+    @scratchCtx.putImageData(imageData, 0, 0)
+    @ctx.drawImage(@scratchCanvas, 0, 0, @canvas.width, @canvas.height)
 
   repaint: (world, patches) ->
     if not @matchesWorld(world)
       @transformToWorld(world)
-    for _, p of patches
-      @colorPatch(p)
+    @colorPatches(patches)
