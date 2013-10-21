@@ -15,10 +15,10 @@ object PlayUtil {
 
   implicit class EnhancedRequest(request: Request[AnyContent]) {
 
-    def extractArgMap: Map[String, String] = extractBundle(request).stringParams
+    def extractArgMap: Map[String, String] = extractBundle.stringParams
 
     // Try _really_ hard to parse the body into JSON (pretty much the only thing I don't try is XML conversion)
-    def extractJSONOpt(request: Request[AnyContent]): Option[JsValue] = {
+    def extractJSONOpt: Option[JsValue] = {
       val body = request.body
       body.asJson orElse {
         try
@@ -31,12 +31,12 @@ object PlayUtil {
             None
         }
       } orElse (
-        (extractBundle _ andThen (_.stringSeqParams) andThen paramMap2JSON)(request)
+        paramMap2JSON(extractBundle.stringSeqParams)
       )
     }
 
     // If Play actually made a good-faith effort at parameter extraction, I wouldn't have to go through this rubbish... --JAB 10/3/13
-    private def extractBundle(request: Request[AnyContent]): ParamBundle =
+    def extractBundle: ParamBundle =
       request.body.asMultipartFormData map {
         formData =>
           val fileKVs = formData.files map {
