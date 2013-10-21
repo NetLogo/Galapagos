@@ -154,7 +154,7 @@ class PatchView extends View
     imageData = @ctx.createImageData(@patchWidth,@patchHeight)
     for _, patch of patches
       [r,g,b] = netlogoColorToRGB(patch.pcolor)
-      i = ((@maxpxcor-patch.pycor)*@patchWidth + (patch.pxcor-@minpxcor)) * 4
+      i = ((@maxpycor-patch.pycor)*@patchWidth + (patch.pxcor-@minpxcor)) * 4
       imageData.data[i+0] = r
       imageData.data[i+1] = g
       imageData.data[i+2] = b
