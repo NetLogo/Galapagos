@@ -1,5 +1,6 @@
 ;; workarounds:
 ;; - #? (face): use heading arithmetic instead
+;; - get consistent ordering using `random-seed` instead of `sort` and `foreach`
 
 to setup
   clear-all
@@ -12,25 +13,21 @@ to setup
   reset-ticks
 end
 
-;; We can't use "ask turtles", because then the vants would
-;; execute in a different random order each time.  So instead
-;; we use SORT to get the turtles in order by who number.
-
 to go-forward
-  foreach sort turtles [
-    ask ? [
-      fd 1
-      turn
-    ] ]
+  random-seed 0
+  ask turtles [
+    fd 1
+    turn
+  ]
   tick
 end
 
 to go-reverse
-  foreach reverse sort turtles [
-    ask ? [
-      turn
-      bk 1
-    ] ]
+  random-seed 0
+  ask turtles [
+    turn
+    bk 1
+  ]
   tick
 end
 
@@ -45,11 +42,11 @@ end
 GRAPHICS-WINDOW
 220
 10
-712
-523
-120
-120
-2.0
+608
+419
+10
+10
+18.0
 1
 10
 1
@@ -59,10 +56,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--120
-120
--120
-120
+-10
+10
+-10
+10
 1
 1
 1
@@ -112,7 +109,7 @@ num-vants
 num-vants
 1
 16
-1
+3
 1
 1
 NIL
