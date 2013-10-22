@@ -96,7 +96,7 @@ object NetLogoCompiler {
 
     val patchSize = interface(7).toDouble
     val Seq(wrapX, wrapY, _, minX, maxX, minY, maxY) = 14 to 20 map { x => interface(x).toInt }
-    val dimensions = WorldDimensions(minX, maxX, minY, maxY, patchSize, wrapX==0, wrapY==0)
+    val dimensions = WorldDimensions(minX, maxX, minY, maxY, patchSize, wrapY!=0, wrapX!=0)
 
     NetLogoCompiler(iGlobals, iGlobalCmds.toString, dimensions, turtleShapes, linkShapes)(source)
 
