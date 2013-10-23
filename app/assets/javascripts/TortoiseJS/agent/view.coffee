@@ -147,6 +147,12 @@ class PatchView extends View
     @scratchCanvas.height = @patchHeight
     # Prevents antialiasing when scratchCanvas is stretched and drawn on canvas
     @ctx.imageSmoothingEnabled=false;
+    # Althought imageSmoothingEnabled is in spec, I've seen it break from
+    # version to version in browsers. These browser-specific flags seem to
+    # work more reliably.
+    @ctx.webkitImageSmoothingEnabled = false;
+    @ctx.mozImageSmoothingEnabled = false;
+    @ctx.oImageSmoothingEnabled = false;
     @ctx.fillStyle = 'black'
     @ctx.fillRect(0, 0, @canvas.width, @canvas.height)
 
