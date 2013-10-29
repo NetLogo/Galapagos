@@ -1,5 +1,4 @@
-define(['agent/agentmodel', 'agent/drawshape', 'agent/colors'], (agentmodel, drawshape, colors) ->
-  console.log(agentmodel, drawshape, colors)
+define(['agent/agentmodel', 'agent/drawshape', 'agent/colors', 'agent/defaultshapes'], (agentmodel, drawshape, colors, defaultShapes) ->
   class AgentStreamController
     constructor: (@container) ->
       @layers = document.createElement('div');
