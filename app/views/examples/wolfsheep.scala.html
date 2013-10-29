@@ -15,19 +15,11 @@
          data-src='/assets/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo'
          >
     </pre>
-    <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("07.31.2013/src/ace.js"))'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
-    <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
+    @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/tortoise").url)
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
-      var session = tortoise(),
+      var session,
           runner = -1,
           tickCounter = document.getElementById('tick-counter'),
           lastUpdate = 0,
@@ -84,6 +76,10 @@
         }
         grassOn = !grassOn;
       }
+
+      require(['tortoise'], function (tortoise) {
+        session = tortoise();
+      });
     </script>
   </body>
 </html>

@@ -1,7 +1,6 @@
 define(['agent/view', 
         'communication/connection',
         '../../../webjars/ace/07.31.2013/src/ace'], (view, conn, acee) ->
-  console.log(conn)
   tortoise = (elem, socketURL) ->
     elem = elem or '.netlogo-model'
     if typeof elem == 'string'
