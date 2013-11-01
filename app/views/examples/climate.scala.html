@@ -18,7 +18,8 @@
          data-src='/assets/modelslib/Sample%20Models/Earth%20Science/Climate%20Change.nlogo'
          >
     </pre>
-    @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/tortoise").url)
+    <!--<script data-main='@routes.Assets.at("javascripts/TortoiseJS/tortoise.js")' type='text/javascript' src='@routes.WebJarAssets.requirejs()'></script>-->
+    @helper.requireJs(core ="/require.js", module = routes.Assets.at("javascripts/TortoiseJS/tortoise").url)
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
@@ -67,7 +68,6 @@
       }
 
       require(['tortoise'], function (tortoise) {
-        console.log(tortoise);
         session = tortoise();
       });
     </script>

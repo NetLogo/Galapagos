@@ -1,6 +1,8 @@
-define(['agent/view', 
-        'communication/connection',
-        '../../../webjars/ace/07.31.2013/src/ace'], (view, conn, acee) ->
+define(['TortoiseJS/agent/view',
+        'TortoiseJS/communication/connection',
+        'webjars!jquery.js'
+        '../../../webjars/ace/07.31.2013/src/ace']
+        , (view, conn, jquery, acee) ->
   tortoise = (elem, socketURL) ->
     elem = elem or '.netlogo-model'
     if typeof elem == 'string'

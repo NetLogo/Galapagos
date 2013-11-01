@@ -1,4 +1,4 @@
-define(() ->
+define(() -> 
   connect = (socketURL) ->
     new Connection(new WebSocket(socketURL))
 

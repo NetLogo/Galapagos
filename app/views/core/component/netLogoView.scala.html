@@ -1,13 +1,7 @@
 @(topBarText: Html)(content: Html)
 
 @mainTheme(topBarText) {
-
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
-  @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/control/tortoise").url)
+  @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/TortoiseJS/tortoise").url)
   <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("chosen/chosen.css"))' />
   <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("chosen/chosen.jquery.js"))'></script>
 
@@ -22,8 +16,12 @@
 
   <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
   <script type="text/javascript">
-    var session = tortoise('.netlogo-model', exports.ChatGlobals.socketURL);
-    exports.initChat(session);
+    var session;
+    require(['tortoise'], function (tortoise) {
+      console.log(tortoise);
+      session = tortoise('.netlogo-model', exports.ChatGlobals.socketURL);
+      exports.initChat(session);
+    });
     var modelList = $('.model-list');
     exports.modelList(modelList);
   </script>
