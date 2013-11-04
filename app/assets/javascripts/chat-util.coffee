@@ -27,7 +27,7 @@ class ChatUtil
     "#{newHours}:#{newMinutes}#{suffix}"
 
   # Return Type: Unit
-  initAgentList: -> ChatModule.agentList.map((type) -> globals.agentTypes.append(type))
+  #initAgentList: -> ChatModule.agentList.map((type) -> globals.agentTypes.append(type))
 
   # Return Type: String
   messageHTMLMaker: (user, context, text, time, kind) ->

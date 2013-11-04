@@ -4,6 +4,8 @@ $globals  = exports.$ChatGlobals
 globals   = exports.ChatGlobals
 Util      = exports.ChatServices.Util
 
+commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
+
 class ChatUI
 
   # Return Type: (String) -> Unit
@@ -23,13 +25,11 @@ class ChatUI
 
   # Return Type: Any
   ifChatterElse: (f) -> (g) ->
-    if $globals.$agentType.text() is 'chatter' then f() else g()
+    if commandCenter.mode() is 'chatter' then f() else g()
 
   # Return Type: Unit
   send: (message) ->
-    @run($globals.$agentType.text(), message)
-    globals.messageList.append(message, globals.agentTypes.getCurrent())
-    globals.messageList.clearCursor()
+    @run(message.mode, message.text)
     @setInput("")
     @focusInput()
 
@@ -39,7 +39,9 @@ class ChatUI
 
   # Return Type: Unit
   sendInput: ->
-    input = @getInput()
+    #input = @getInput()
+    commandCenter.edit(@getInput())
+    input = commandCenter.send()
     if /\S/g.test(input) then throttle(input)
     Util.tempEnableScroll()
 
@@ -92,19 +94,18 @@ class ChatUI
 
   # Return Type: Unit
   setAgentTypeIndex: (index) ->
-    globals.agentTypes.setCurrentIndex(index)
+    commandCenter.setModeIndex(index)
     @setAgentType()
 
   # Return Type: Unit
   nextAgentType: ->
-    globals.agentTypes.next()
+    commandCenter.nextMode()
     @setAgentType()
 
   # Return Type: Unit
   setAgentType: ->
     input = @getInput()
-    type  = globals.agentTypes.getCurrent()
-    $globals.$agentType.text(type)
+    $globals.$agentType.text(commandCenter.mode())
     @refreshWhichInputElement()
     @setInput(input)
 
@@ -135,39 +136,18 @@ class ChatUI
 
   # Return Type: Unit
   scrollMessageListUp: ->
-    ml = globals.messageList
-    if ml.cursor
-      ml.cursor = if ml.cursor.prev != null then ml.cursor.prev else ml.cursor
-    else
-      ml.addCurrent(@getInput(), globals.agentTypes.getCurrent())
-      ml.cursor = ml.head
-    scrollMessageList()
+    commandCenter.prevInput()
+    @scrollMessageList()
 
   # Return Type: Unit
   scrollMessageListDown: ->
-    ml = globals.messageList
-    if ml.cursor
-      ml.cursor = ml.cursor.next
-      scrollMessageList()
+    commandCenter.nextInput()
+    @scrollMessageList()
 
   # Return Type: Unit
-  scrollMessageList = ->
-
-    ml = globals.messageList
-
-    extractInfoAndType = (source) -> [source.data, source.type]
-
-    [data, type] =
-      if ml.cursor
-        extractInfoAndType(ml.cursor)
-      else
-        [data, type] = extractInfoAndType(ml.current)
-        ml.clearCursor()
-        [data, type]
-
-    globals.agentTypes.setCurrent(type)
+  scrollMessageList: ->
     exports.ChatServices.UI.setAgentType()
-    exports.ChatServices.UI.setInput(data)
+    exports.ChatServices.UI.setInput(commandCenter.currentMessage.text)
 
   # Return Type: Unit
   setupUI: ->

@@ -28,7 +28,7 @@ globals =
   wontScroll:    true
   messageCount:  0
   messageList:   new DoubleList(20)
-  agentTypes:    new LinkedHashSet()
+  agentTypes:    ['observer', 'turtles', 'patches', 'links']
   logList:       []
 
 exports.$ChatGlobals = $globals

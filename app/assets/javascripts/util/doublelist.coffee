@@ -11,14 +11,16 @@ class DoubleList
       @next = null
       @prev = null
 
-  # returns: undefined
-  clearCursor: ->
+  cursorToHead: -> 
     @cursor = @head
-    return
+    @cursor.data
+
+  cursorToTail: -> 
+    @cursor = @tail
+    @cursor.data
 
   # returns: undefined
   append: (data) ->
-
     newNode = new Node(data)
 
     if @head

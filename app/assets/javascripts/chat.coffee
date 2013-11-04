@@ -10,7 +10,7 @@ TextHolder  = exports.TextHolder
 
 exports.initChat = (session) ->
   UI.setupUI()
-  Util.initAgentList()
+  #Util.initAgentList()
 
   globals.userName = Util.extractParamFromURL("username") or globals.tortoiseUser
   UI.setAgentType()
