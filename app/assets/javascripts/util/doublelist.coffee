@@ -5,28 +5,21 @@ class DoubleList
     @head = null
     @tail = null
     @cursor = null
-    @current = null
 
   class Node
-    constructor: (@data, @type) ->
+    constructor: (@data) ->
       @next = null
       @prev = null
 
   # returns: undefined
   clearCursor: ->
-    @cursor = null
-    @current = null
+    @cursor = @head
     return
 
   # returns: undefined
-  addCurrent: (cmd, agentType) ->
-    @current = new Node(cmd, agentType)
-    return
+  append: (data) ->
 
-  # returns: undefined
-  append: (text, type) ->
-
-    newNode = new Node(text, type)
+    newNode = new Node(data)
 
     if @head
       newNode.prev = @head
@@ -42,5 +35,19 @@ class DoubleList
       @tail.prev = null
 
     return
+
+  moveCursorBack: ->
+    if not @cursor?
+      @cursor = @head
+    if @cursor.prev?
+      @cursor = @cursor.prev
+    @cursor.data
+
+  moveCursorForward: ->
+    if not @cursor?
+      @cursor = @head
+    if @cursor.next?
+      @cursor = @cursor.next
+    @cursor.data
 
 exports.DoubleList = DoubleList
