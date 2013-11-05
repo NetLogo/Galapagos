@@ -4,28 +4,33 @@ $globals  = exports.$ChatGlobals
 globals   = exports.ChatGlobals
 Util      = exports.ChatServices.Util
 
-commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
 
 class ChatUI
+
+  constructor: ->
+    @commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
 
   # Return Type: (String) -> Unit
   throttle = _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
   # Return Type: String
   getInput: =>
-    @ifChatterElse(-> $globals.$chatterBuffer.val())(-> globals.ccEditor.getValue())
+    if @isChatter() then $globals.$chatterBuffer.val() else globals.ccEditor.getValue()
 
   # Return Type: Unit
   setInput: (newInput) =>
-    @ifChatterElse(-> $globals.$chatterBuffer.val(newInput))(-> ed = globals.ccEditor; ed.setValue(newInput); ed.clearSelection())
+    if @isChatter() 
+      $globals.$chatterBuffer.val(newInput)
+    else
+      ed = globals.ccEditor
+      ed.setValue(newInput)
+      ed.clearSelection()
 
   # Return Type: Unit
   focusInput: ->
-    @ifChatterElse(-> $globals.$chatterBuffer.focus())(-> globals.ccEditor.focus())
+    if @isChatter() then $globals.$chatterBuffer.focus() else globals.ccEditor.focus()
 
-  # Return Type: Any
-  ifChatterElse: (f) -> (g) ->
-    if commandCenter.mode() is 'chatter' then f() else g()
+  isChatter: -> @commandCenter.mode() is 'chatter'
 
   # Return Type: Unit
   send: (message) ->
@@ -40,8 +45,8 @@ class ChatUI
   # Return Type: Unit
   sendInput: ->
     #input = @getInput()
-    commandCenter.edit(@getInput())
-    input = commandCenter.send()
+    @commandCenter.edit(@getInput())
+    input = @commandCenter.send()
     if /\S/g.test(input) then throttle(input)
     Util.tempEnableScroll()
 
@@ -94,18 +99,18 @@ class ChatUI
 
   # Return Type: Unit
   setAgentTypeIndex: (index) ->
-    commandCenter.setModeIndex(index)
+    @commandCenter.setModeIndex(index)
     @setAgentType()
 
   # Return Type: Unit
   nextAgentType: ->
-    commandCenter.nextMode()
+    @commandCenter.nextMode()
     @setAgentType()
 
   # Return Type: Unit
   setAgentType: ->
     input = @getInput()
-    $globals.$agentType.text(commandCenter.mode())
+    $globals.$agentType.text(@commandCenter.mode())
     @refreshWhichInputElement()
     @setInput(input)
 
@@ -117,38 +122,35 @@ class ChatUI
     $chatter = $globals.$chatterBuffer
     $code    = $globals.$codeBufferWrapper
 
-    @ifChatterElse(
-      =>
-        $code.hide()
-        $chatter.show()
-        color = $chatter.css(BGColorPropName)
+    if @isChatter()
+      $code.hide()
+      $chatter.show()
+      color = $chatter.css(BGColorPropName)
+      $chatter.parent().css(BGColorPropName, color)
+      @focusInput()
+    else
+      $chatter.hide()
+      $code.css('display', 'block')
+      color = $code.children(".ace_scroller").children(".ace_content").children(".ace_marker-layer").children(".ace_active-line").css(BGColorPropName)
+      if color != "rgba(0, 0, 0, 0)" and color != "transparent"
         $chatter.parent().css(BGColorPropName, color)
-        @focusInput()
-    )(
-      =>
-        $chatter.hide()
-        $code.css('display', 'block')
-        color = $code.children(".ace_scroller").children(".ace_content").children(".ace_marker-layer").children(".ace_active-line").css(BGColorPropName)
-        if color != "rgba(0, 0, 0, 0)" and color != "transparent"
-          $chatter.parent().css(BGColorPropName, color)
-        @focusInput()
-    )
+      @focusInput()
 
   # Return Type: Unit
   scrollMessageListUp: ->
-    commandCenter.edit(@getInput())
-    commandCenter.prevInput()
+    @commandCenter.edit(@getInput())
+    @commandCenter.prevInput()
     @scrollMessageList()
 
   # Return Type: Unit
   scrollMessageListDown: ->
-    commandCenter.nextInput()
+    @commandCenter.nextInput()
     @scrollMessageList()
 
   # Return Type: Unit
   scrollMessageList: ->
     exports.ChatServices.UI.setAgentType()
-    exports.ChatServices.UI.setInput(commandCenter.currentMessage.text)
+    exports.ChatServices.UI.setInput(@commandCenter.currentMessage.text)
 
   # Return Type: Unit
   setupUI: ->
@@ -166,11 +168,7 @@ class ChatUI
     glowClass   = CSS.Glow
 
     $wrapper.focus(=>
-      @ifChatterElse(=>
-        $chatter.focus()
-      )(=>
-        $editor.focus()
-      )
+      if @isChatter() then $chatter.focus() else $editor.focus()
     )
 
     subInputs = [$chatter, $editor]
@@ -183,4 +181,4 @@ class ChatUI
       )
     )
 
-exports.ChatServices.UI = new ChatUI
+exports.ChatServices.UI = new ChatUI()

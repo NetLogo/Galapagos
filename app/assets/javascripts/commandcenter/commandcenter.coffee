@@ -1,5 +1,3 @@
-DoubleList = exports.DoubleList
-
 class CommandCenterModel
   constructor: (@user, @modes) ->
     @inputHistory = []
@@ -7,14 +5,14 @@ class CommandCenterModel
     @_startNewMessage()
 
   _startNewMessage: ->
-    @newMessage = @currentMessage = new Message(@user, @modes[0], '')
+    @newMessage = @currentMessage = new Message(@user, @mode(), '')
     @_inputIndex = @inputHistory.length
 
   edit: (text) ->
     @currentMessage.text = text
 
   mode: -> 
-    @currentMessage.mode
+    if @currentMessage? then @currentMessage.mode else @modes[0]
 
   modeIndex: ->
     @modes.indexOf(@mode())

@@ -27,7 +27,6 @@ globals =
   tortoiseUser:  "You"
   wontScroll:    true
   messageCount:  0
-  messageList:   new DoubleList(20)
   agentTypes:    ['observer', 'turtles', 'patches', 'links']
   logList:       []
 
