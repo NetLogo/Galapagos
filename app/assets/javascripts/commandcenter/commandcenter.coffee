@@ -2,14 +2,13 @@ DoubleList = exports.DoubleList
 
 class CommandCenterModel
   constructor: (@user, @modes) ->
-    @inputHistory = new DoubleList(20)
+    @inputHistory = []
     @messageList = []
     @_startNewMessage()
 
   _startNewMessage: ->
-    @currentMessage = new Message(@user, @modes[0], '')
-    @inputHistory.append(@currentMessage)
-    @inputHistory.cursorToHead()
+    @newMessage = @currentMessage = new Message(@user, @modes[0], '')
+    @_inputIndex = @inputHistory.length
 
   edit: (text) ->
     @currentMessage.text = text
@@ -31,15 +30,24 @@ class CommandCenterModel
     
   send: ->
     message = @currentMessage
-    @inputHistory.head.data = @currentMessage
+    if (@inputHistory.length == 0 or
+        not @currentMessage.equal(@inputHistory[@inputHistory.length - 1]))
+      @inputHistory.push(@currentMessage)
     @_startNewMessage()
     message
 
   prevInput: ->
-    @currentMessage = @inputHistory.moveCursorBack().clone()
+    if @_inputIndex > 0
+      @currentMessage = @inputHistory[--@_inputIndex].clone()
+    @currentMessage
 
   nextInput: ->
-    @currentMessage = @inputHistory.moveCursorForward().clone()
+    if @_inputIndex < @inputHistory.length - 1
+      @currentMessage = @inputHistory[++@_inputIndex].clone()
+    else if @_inputIndex == @inputHistory.length - 1
+      @_inputIndex = @inputHistory.length
+      @currentMessage = @newMessage
+    @currentMessage
 
   addMessage: (message) ->
     @messageList.append(message)
@@ -50,6 +58,12 @@ class Message
 
   clone: ->
     return new Message(@user, @mode, @text)
+
+  equal: (other) ->
+    if not other instanceof Message
+      false
+    else
+      @user == other.user && @mode == other.mode && @text == other.text
 
 exports.Message = Message
 exports.CommandCenterModel = CommandCenterModel

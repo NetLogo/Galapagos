@@ -136,6 +136,7 @@ class ChatUI
 
   # Return Type: Unit
   scrollMessageListUp: ->
+    commandCenter.edit(@getInput())
     commandCenter.prevInput()
     @scrollMessageList()
 
