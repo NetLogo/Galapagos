@@ -7,9 +7,6 @@ Util      = exports.ChatServices.Util
 
 class ChatUI
 
-  constructor: ->
-    @commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
-
   # Return Type: (String) -> Unit
   throttle = _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
@@ -154,6 +151,7 @@ class ChatUI
 
   # Return Type: Unit
   setupUI: ->
+    @commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
     globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
     initSelectors()
     @setupPhonyInput()

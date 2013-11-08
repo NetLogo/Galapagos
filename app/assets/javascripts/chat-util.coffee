@@ -27,7 +27,7 @@ class ChatUtil
     "#{newHours}:#{newMinutes}#{suffix}"
 
   # Return Type: Unit
-  #initAgentList: -> ChatModule.agentList.map((type) -> globals.agentTypes.append(type))
+  initAgentList: -> ChatModule.agentList.map((type) -> globals.agentTypes.push(type))
 
   # Return Type: String
   messageHTMLMaker: (user, context, text, time, kind) ->
@@ -37,7 +37,7 @@ class ChatUtil
     userColor =
       if user is globals.userName
         CSS.SelfUserColored
-      else if globals.agentTypes.contains(user)
+      else if globals.agentTypes.indexOf(user) > -1
         CSS.ChannelContextColored
       else
         CSS.OtherUserColored

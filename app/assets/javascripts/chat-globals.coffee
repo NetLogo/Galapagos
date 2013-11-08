@@ -27,7 +27,7 @@ globals =
   tortoiseUser:  "You"
   wontScroll:    true
   messageCount:  0
-  agentTypes:    ['observer', 'turtles', 'patches', 'links']
+  agentTypes:    []
   logList:       []
 
 exports.$ChatGlobals = $globals
