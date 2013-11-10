@@ -1,14 +1,15 @@
-Constants = exports.ChatConstants
-CSS       = exports.CSS
-$globals  = exports.$ChatGlobals
-globals   = exports.ChatGlobals
-Util      = exports.ChatServices.Util
+Constants     = exports.ChatConstants
+CSS           = exports.CSS
+$globals      = exports.$ChatGlobals
+globals       = exports.ChatGlobals
+Util          = exports.ChatServices.Util
+CommandCenter = exports.CommandCenter
 
 
 class ChatUI
 
   # Return Type: (String) -> Unit
-  throttle = _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
+  throttledSend= _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
   # Return Type: String
   getInput: =>
@@ -16,6 +17,7 @@ class ChatUI
 
   # Return Type: Unit
   setInput: (newInput) =>
+    @commandCenter.edit(newInput)
     if @isChatter() 
       $globals.$chatterBuffer.val(newInput)
     else
@@ -27,7 +29,7 @@ class ChatUI
   focusInput: ->
     if @isChatter() then $globals.$chatterBuffer.focus() else globals.ccEditor.focus()
 
-  isChatter: -> @commandCenter.mode() is 'chatter'
+  isChatter: -> @commandCenter.model.mode() is 'chatter'
 
   # Return Type: Unit
   send: (message) ->
@@ -43,8 +45,8 @@ class ChatUI
   sendInput: ->
     #input = @getInput()
     @commandCenter.edit(@getInput())
-    input = @commandCenter.send()
-    if /\S/g.test(input) then throttle(input)
+    msg = @commandCenter.send()
+    if /\S/g.test(msg.text) then throttledSend(msg)
     Util.tempEnableScroll()
 
   # Caching jQuery selector results for easy access throughout the code
@@ -107,7 +109,7 @@ class ChatUI
   # Return Type: Unit
   setAgentType: ->
     input = @getInput()
-    $globals.$agentType.text(@commandCenter.mode())
+    $globals.$agentType.text(@commandCenter.model.mode())
     @refreshWhichInputElement()
     @setInput(input)
 
@@ -147,11 +149,15 @@ class ChatUI
   # Return Type: Unit
   scrollMessageList: ->
     exports.ChatServices.UI.setAgentType()
-    exports.ChatServices.UI.setInput(@commandCenter.currentMessage.text)
+    exports.ChatServices.UI.setInput(@commandCenter.model.currentMessage.text)
 
   # Return Type: Unit
   setupUI: ->
-    @commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
+    @commandCenter = new CommandCenter(
+      username: globals.userName,
+      modes:    globals.agentTypes
+    )
+    #@commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
     globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
     initSelectors()
     @setupPhonyInput()
