@@ -10,52 +10,68 @@ class CommandCenter
 
     @model = new CommandCenterModel(@options.username, @options.modes)
     @ui = new CommandCenterUI()
+    @_handleModeChange()
 
   getInput: -> @ui.getInput()
 
   sendInput: -> 
-    @model.edit(@getInput())
-    @model.send()
+    @_updateModelInput()
+    msg = @model.send()
+    @edit('')
+    @ui.focusInput()
+    msg
 
-  edit: (text) -> @model.edit(text)
+  edit: (text) -> 
+    @ui.setInput(text)
+    @model.edit(text)
+
+  _updateModelInput: ->
+    @model.edit(@getInput())
 
   _handleModeChange: ->
     if @options.textModes.indexOf(@model.mode()) > -1
       @ui.useTextInput()
     else
       @ui.useCodeInput()
-    @ui.setInput(@model.getInput())
-    @ui.setPromp(@model.mode())
+    @ui.setInput(@model.currentMessage.text)
+    @ui.setPrompt(@model.mode())
     @model.mode()
 
   nextInput: -> 
-    @model.edit(@getInput())
+    @_updateModelInput()
     @model.nextInput()
     @_handleModeChange()
 
   prevInput: -> 
-    @model.edit(@getInput())
+    @_updateModelInput()
     @model.prevInput()
     @_handleModeChange()
 
   nextMode: ->
+    @_updateModelInput()
     @model.nextMode()
     @_handleModeChange()
     
   prevMode: -> 
+    @_updateModelInput()
     @model.prevMode()
     @_handleModeChange()
 
   setModeIndex: (index) ->
+    @_updateModelInput()
     @model.setModeIndex(index)
     @_handleModeChange()
     
 class CommandCenterUI
   constructor: () ->
+    # TODO: should create element
     @$prompt = $('#agentType')
     @activeInput = 'text'  # should be 'text' or 'code'
-    @codeInput = globals.ccEditor
+    # TODO: should create element
+    @codeInput = exports.ChatGlobals.ccEditor
+    # TODO: should create element
     @$codeInputWrapper = $('#codeBufferWrapper')
+    # TODO: should create element
     @$textInput = $('#chatterBuffer')
 
   setPrompt: (promptText) -> @$prompt.text(promptText)
@@ -68,32 +84,35 @@ class CommandCenterUI
   getInput: ->
     if @activeInput == 'text' then @$textInput.val() else @codeInput.getValue()
 
-  _focusTextInput: -> $textInput.focus()
+  focusInput: ->
+    if @activeInput == 'text'
+      @_focusTextInput()
+    else
+      @_focusCodeInput()
 
-  _focusCodeInput: -> codeInput.focus()
+  _focusTextInput: -> @$textInput.focus()
+
+  _focusCodeInput: -> @codeInput.focus()
 
   useTextInput: ->
     @activeInput = 'text'
-    $codeInputWrapper.hide()
-    $textInput.show()
-    color = $textInput.css('background-color')
-    $textInput.parent().css('background-color', color)
+    @$codeInputWrapper.hide()
+    @$textInput.show()
+    color = @$textInput.css('background-color')
+    @$textInput.parent().css('background-color', color)
     @_focusTextInput()
   
   useCodeInput: ->
     @activeInput = 'code'
-    $textInput.hide()
-    $codeInputWrapper.css('display', 'block')
-    color = $codeInputWrapper.children('.ace_scroller')
-                             .children('.ace_marker-layer')
-                             .children('.ace_active-line')
-                             .css('background-color')
+    @$textInput.hide()
+    @$codeInputWrapper.css('display', 'block')
+    color = @$codeInputWrapper.children('.ace_scroller')
+                              .children('.ace_marker-layer')
+                              .children('.ace_active-line')
+                              .css('background-color')
     if color != 'rgba(0, 0, 0, 0)' and color != 'transparent'
-      $textInput.parent().css('background-color', color)
+      @$textInput.parent().css('background-color', color)
     @_focusCodeInput()
-
-
-
 
     
 class CommandCenterModel
@@ -162,7 +181,6 @@ class Message
       @user == other.user && @mode == other.mode && @text == other.text
 
 exports.Message = Message
-#exports.CommandCenterModel = CommandCenterModel
 exports.CommandCenter = CommandCenter
     
 

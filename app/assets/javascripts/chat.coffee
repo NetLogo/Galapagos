@@ -13,7 +13,6 @@ exports.initChat = (session) ->
   UI.setupUI()
 
   globals.userName = Util.extractParamFromURL("username") or globals.tortoiseUser
-  UI.setAgentType()
 
   handleChatEvent = (msg) ->
     if msg.message != ""

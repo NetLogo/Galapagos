@@ -11,31 +11,11 @@ class ChatUI
   # Return Type: (String) -> Unit
   throttledSend= _.throttle(((message) -> exports.ChatServices.UI.send(message)), Constants.THROTTLE_DELAY)
 
-  # Return Type: String
-  getInput: =>
-    if @isChatter() then $globals.$chatterBuffer.val() else globals.ccEditor.getValue()
+  # Return Type: Unit
+  focusInput: -> @commandCenter.ui.focusInput()
 
   # Return Type: Unit
-  setInput: (newInput) =>
-    @commandCenter.edit(newInput)
-    if @isChatter() 
-      $globals.$chatterBuffer.val(newInput)
-    else
-      ed = globals.ccEditor
-      ed.setValue(newInput)
-      ed.clearSelection()
-
-  # Return Type: Unit
-  focusInput: ->
-    if @isChatter() then $globals.$chatterBuffer.focus() else globals.ccEditor.focus()
-
-  isChatter: -> @commandCenter.model.mode() is 'chatter'
-
-  # Return Type: Unit
-  send: (message) ->
-    @run(message.mode, message.text)
-    @setInput("")
-    @focusInput()
+  send: (message) -> @run(message.mode, message.text)
 
   # Return Type: Unit
   run: (agentType, cmd) ->
@@ -43,9 +23,7 @@ class ChatUI
 
   # Return Type: Unit
   sendInput: ->
-    #input = @getInput()
-    @commandCenter.edit(@getInput())
-    msg = @commandCenter.send()
+    msg = @commandCenter.sendInput()
     if /\S/g.test(msg.text) then throttledSend(msg)
     Util.tempEnableScroll()
 
@@ -97,67 +75,24 @@ class ChatUI
     @focusInput()
 
   # Return Type: Unit
-  setAgentTypeIndex: (index) ->
-    @commandCenter.setModeIndex(index)
-    @setAgentType()
+  setAgentTypeIndex: (index) -> @commandCenter.setModeIndex(index)
 
   # Return Type: Unit
-  nextAgentType: ->
-    @commandCenter.nextMode()
-    @setAgentType()
+  nextAgentType: -> @commandCenter.nextMode()
 
   # Return Type: Unit
-  setAgentType: ->
-    input = @getInput()
-    $globals.$agentType.text(@commandCenter.model.mode())
-    @refreshWhichInputElement()
-    @setInput(input)
+  scrollMessageListUp: -> @commandCenter.prevInput()
 
   # Return Type: Unit
-  refreshWhichInputElement: ->
-
-    BGColorPropName = 'background-color'
-
-    $chatter = $globals.$chatterBuffer
-    $code    = $globals.$codeBufferWrapper
-
-    if @isChatter()
-      $code.hide()
-      $chatter.show()
-      color = $chatter.css(BGColorPropName)
-      $chatter.parent().css(BGColorPropName, color)
-      @focusInput()
-    else
-      $chatter.hide()
-      $code.css('display', 'block')
-      color = $code.children(".ace_scroller").children(".ace_content").children(".ace_marker-layer").children(".ace_active-line").css(BGColorPropName)
-      if color != "rgba(0, 0, 0, 0)" and color != "transparent"
-        $chatter.parent().css(BGColorPropName, color)
-      @focusInput()
-
-  # Return Type: Unit
-  scrollMessageListUp: ->
-    @commandCenter.edit(@getInput())
-    @commandCenter.prevInput()
-    @scrollMessageList()
-
-  # Return Type: Unit
-  scrollMessageListDown: ->
-    @commandCenter.nextInput()
-    @scrollMessageList()
-
-  # Return Type: Unit
-  scrollMessageList: ->
-    exports.ChatServices.UI.setAgentType()
-    exports.ChatServices.UI.setInput(@commandCenter.model.currentMessage.text)
+  scrollMessageListDown: -> @commandCenter.nextInput()
 
   # Return Type: Unit
   setupUI: ->
     @commandCenter = new CommandCenter(
-      username: globals.userName,
-      modes:    globals.agentTypes
+      username:  globals.userName,
+      modes:     globals.agentTypes,
+      textModes: ['chatter']
     )
-    #@commandCenter = new exports.CommandCenterModel(globals.userName, globals.agentTypes)
     globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
     initSelectors()
     @setupPhonyInput()
