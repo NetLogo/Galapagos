@@ -1,12 +1,14 @@
 package models.local
 
 import
-  org.nlogo.{ api, headless, nvm, shape, tortoise },
+  org.nlogo.{ api, nvm, shape, tortoise, util, workspace },
     api.{ AgentKind, CompilerException, ModelReader, ModelSection, Program, ShapeList, WorldDimensions },
-    headless.WidgetParser,
-    nvm.FrontEndInterface.{ NoProcedures, ProceduresMap },
+    workspace.WidgetParser,
+    nvm.{ DefaultParserServices, FrontEndInterface },
+      FrontEndInterface.{ NoProcedures, ProceduresMap },
     shape.{ LinkShape, VectorShape },
-    tortoise.Compiler
+    tortoise.Compiler,
+    util.Femto
 
 import
   play.api.Logger
@@ -92,7 +94,10 @@ object NetLogoCompiler {
     val turtleShapes = new ShapeList(AgentKind.Turtle, VectorShape.parseShapes(modelMap(ModelSection.TurtleShapes).toArray, version))
     val linkShapes   = new ShapeList(AgentKind.Link,   LinkShape.  parseShapes(modelMap(ModelSection.LinkShapes).  toArray, version))
 
-    val (iGlobals, _, _, _, iGlobalCmds) = new WidgetParser(org.nlogo.headless.HeadlessWorkspace.newInstance).parseWidgets(interface)
+    val (iGlobals, _, _, _, iGlobalCmds) = {
+      val frontEnd = Femto.scalaSingleton[FrontEndInterface]("org.nlogo.compile.front.FrontEnd")
+      new WidgetParser(new DefaultParserServices(frontEnd)).parseWidgets(interface)
+    }
 
     val patchSize = interface(7).toDouble
     val Seq(wrapX, wrapY, _, minX, maxX, minY, maxY) = 14 to 20 map { x => interface(x).toInt }
