@@ -10,13 +10,21 @@ object ApplicationBuild extends Build {
   val appName         = "Teletortoise"
   val appVersion      = "1.0-SNAPSHOT"
 
-  val appDependencies = Seq(
-    "asm" % "asm-all" % "3.3.1", // Necessary evil
-    "org.json4s" %% "json4s-native" % "3.1.0",
+  // NetLogo ought to declare its own dependencies, but sadly it
+  // doesn't, so we need to explicitly list asm ourselves
+  val nlDependencies = Seq(
     "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-cb1683c9" from
       "http://ccl.northwestern.edu/devel/NetLogoHeadless-cb1683c9.jar",
+    "asm" % "asm-all" % "3.3.1"
+  )
+
+  val scalaDependencies = Seq(
+    "org.json4s" %% "json4s-native" % "3.1.0",
     "org.scalaz" %% "scalaz-core" % "7.0.3",
-    "org.webjars" %% "webjars-play" % "2.2.0",
+    "org.webjars" %% "webjars-play" % "2.2.0"
+  )
+
+  val jsDependencies = Seq(
     "org.webjars" % "chosen" % "0.9.12",
     "org.webjars" % "underscorejs" % "1.5.1",
     "org.webjars" % "underscore.string" % "2.3.0",
@@ -26,12 +34,15 @@ object ApplicationBuild extends Build {
     "org.webjars" % "bootstrap" % "2.3.2"
   )
 
+  val allDependencies =
+    nlDependencies ++ scalaDependencies ++ jsDependencies
+
   val moreSettings = Seq[Setting[_]](
     scalacOptions += "-language:_",
     scalaVersion := "2.10.2"
   )
 
-  val main = play.Project(appName, appVersion, appDependencies).settings(
+  val main = play.Project(appName, appVersion, allDependencies).settings(
     moreSettings ++ ObtainResources.settings ++ SetupConfiguration.settings: _*
   )
 
