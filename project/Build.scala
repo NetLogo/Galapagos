@@ -13,8 +13,8 @@ object ApplicationBuild extends Build {
   val appDependencies = Seq(
     "asm" % "asm-all" % "3.3.1", // Necessary evil
     "org.json4s" %% "json4s-native" % "3.1.0",
-    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-f7adc38" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-f7adc38.jar",
+    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-cb1683c9" from
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-cb1683c9.jar",
     "org.scalaz" %% "scalaz-core" % "7.0.3",
     "org.webjars" %% "webjars-play" % "2.2.0",
     "org.webjars" % "chosen" % "0.9.12",
