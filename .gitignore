@@ -13,3 +13,5 @@ public/stylesheets/managed/
 *.swp
 target
 tmp
+/.ensime
+/.ensime_lucene/

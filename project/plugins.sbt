@@ -9,3 +9,6 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.1")
 
 // get warnings when compiling build definition
 scalacOptions += "-feature"
+
+// ENSIME, for Emacs heads
+addSbtPlugin("org.ensime" % "ensime-sbt-cmd" % "0.1.2")
