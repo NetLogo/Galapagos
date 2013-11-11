@@ -32,7 +32,7 @@ object CompilerService extends Controller {
   private type DimsType = (Int, Int, Int, Int)
 
   private val MissingArgsMsg = "Your request must include either ('netlogo_code' and 'dimensions') or 'nlogo_url' or 'nlogo' as arguments."
-  private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formated as a JSON array of strings."
+  private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formatted as a JSON array of strings."
 
   def compile = Action {
     implicit request =>
