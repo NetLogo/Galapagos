@@ -1,4 +1,4 @@
-@(js: String)
+@(js: String, originalCode: Option[String])
 
 <html>
   <head></head>
@@ -11,6 +11,12 @@
     <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
 
     <div class='view-container' style="width: 600px;"></div>
+
+@for(code <- originalCode) {
+<pre>
+@Html(code)
+</pre>
+}
 
     <script type="text/javascript">
       @Html(js)
