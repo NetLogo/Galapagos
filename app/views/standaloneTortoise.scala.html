@@ -12,9 +12,13 @@
 
     <div class='view-container' style="width: 600px;"></div>
 
-    <pre style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
+    <div id='netlogo-code-wrapper' style="margin-top: 10px;">
+      <input id='toggle-code-button' type="button" onclick="toggleCodeVisibility();" value="Show NetLogo Code"></input>
+      <pre id='netlogo-code' style="margin: 0; visibility: hidden; border: 2px solid gray; padding: 15px;
+                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
 @Html(nlogoCode)
-    </pre>
+      </pre>
+    </div>
 
     <script type="text/javascript">
       @Html(js)
@@ -28,8 +32,7 @@
       var lastUpdate  = 0;
 
       // If the HTML was saved in the non-default state, correct it.
-      tickCounter.textContent                     = '0';
-      document.getElementById('go-button' ).value = 'go'
+      window.addEventListener('load', initPage);
 
       function updateTickCounter() {
         tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
@@ -73,6 +76,44 @@
           stop();
           goButton.value = "go";
         }
+      }
+
+      function initPage() {
+        tickCounter.textContent = '0';
+        document.getElementById('go-button').value = 'go'
+        initCodeVisibility();
+      }
+
+
+      // NetLogo code visibility stuff below
+
+      const VISIBILITY_CSS = 'visibility';
+      const HIDDEN_CSS     = 'hidden';
+      const SHOW_STR       = 'Show NetLogo Code'
+      const HIDE_STR       = 'Hide NetLogo Code'
+
+      var codeSpan         = document.getElementById('netlogo-code');
+      var toggleCodeButton = document.getElementById('toggle-code-button');
+
+      function initCodeVisibility() {
+        codeSpan.style[VISIBILITY_CSS] = HIDDEN_CSS;
+        toggleCodeButton.value         = SHOW_STR;
+      }
+
+      function toggleCodeVisibility() {
+
+        var style     = window.getComputedStyle(codeSpan);
+        var isVisible = style.getPropertyValue(VISIBILITY_CSS) !== HIDDEN_CSS;
+
+        if (isVisible) {
+          codeSpan.style[VISIBILITY_CSS] = HIDDEN_CSS;
+          toggleCodeButton.value         = SHOW_STR;
+        }
+        else {
+          codeSpan.style[VISIBILITY_CSS] = 'visible';
+          toggleCodeButton.value         = HIDE_STR;
+        }
+
       }
 
     </script>
