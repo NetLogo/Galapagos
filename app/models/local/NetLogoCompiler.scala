@@ -1,7 +1,7 @@
 package models.local
 
 import
-  org.nlogo.{ api, compile, nvm, shape, tortoise, util, workspace },
+  org.nlogo.{ api, compile, nvm, shape, tortoise, workspace },
     compile.front.FrontEnd,
     api.{ AgentKind, CompilerException, ModelReader, ModelSection, Program, ShapeList, WorldDimensions },
     workspace.WidgetParser,
@@ -12,8 +12,6 @@ import
 
 import
   play.api.Logger
-
-import scala.collection.JavaConversions._
 
 case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
                            iGlobalCmds:  String          = "",
@@ -50,11 +48,11 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
     runCommand(cmd)
   }
 
-  //@ Improve later with more-dynamic selection of configs
   def apply(source: String): (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) = Compiler.compileProcedures(source, iGlobals, iGlobalCmds, dimensions, turtleShapes, linkShapes)
+      val (js, newProgram, newProcedures) =
+        Compiler.compileProcedures(source, iGlobals, iGlobalCmds, dimensions, turtleShapes, linkShapes)
       Logger.info("No errors!")
       (this.copy(program = newProgram, procedures = newProcedures), js)
     }
@@ -62,6 +60,8 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
     strCompilerOpt getOrElse ((this, ""))
   }
 
+  // One might be tempted to rewrite this to return a `Try`, but, incidentally, it doesn't really do
+  // much for us in this case. --JAB (11/11/13)
   private def carefullyCompile[T](f: => T): Option[T] =
     try Option(f)
     catch {
@@ -73,6 +73,9 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
         None
       case ex: IllegalArgumentException =>
         Logger.warn(s"Feature not yet supported: ${ex.getMessage}")
+        None
+      case ex: Exception =>
+        Logger.warn(s"An unknown exception has occurred: ${ex.getMessage}")
         None
     }
 
@@ -87,21 +90,30 @@ object NetLogoCompiler {
 
   def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {
 
-    val modelMap     = ModelReader.parseModel(contents)
-    val interface    = modelMap(ModelSection.Interface)
-    val source       = modelMap(ModelSection.Code).mkString("\n")
-    val version      = modelMap(ModelSection.Version).head
-    val turtleShapes = new ShapeList(AgentKind.Turtle, VectorShape.parseShapes(modelMap(ModelSection.TurtleShapes).toArray, version))
-    val linkShapes   = new ShapeList(AgentKind.Link,   LinkShape.  parseShapes(modelMap(ModelSection.LinkShapes).  toArray, version))
+    import collection.JavaConverters.iterableAsScalaIterableConverter
 
-    val (iGlobals, _, _, _, iGlobalCmds) =
-      new WidgetParser(new DefaultParserServices(FrontEnd)).parseWidgets(interface)
+    val modelMap  = ModelReader.parseModel(contents)
+    val interface = modelMap(ModelSection.Interface)
+    val source    = modelMap(ModelSection.Code).mkString("\n")
+    val version   = modelMap(ModelSection.Version).head
+
+    val turtleShapes = {
+      val shapeSeq = VectorShape.parseShapes(modelMap(ModelSection.TurtleShapes).toArray, version).asScala.toSeq
+      new ShapeList(AgentKind.Turtle, shapeSeq)
+    }
+
+    val linkShapes = {
+      val shapeSeq = LinkShape.parseShapes(modelMap(ModelSection.LinkShapes).  toArray, version).asScala.toSeq
+      new ShapeList(AgentKind.Link, shapeSeq)
+    }
+
+    val (iGlobals, _, _, _, iGlobalCmds) = new WidgetParser(new DefaultParserServices(FrontEnd)).parseWidgets(interface)
 
     val patchSize = interface(7).toDouble
     val Seq(wrapX, wrapY, _, minX, maxX, minY, maxY) = 14 to 20 map { x => interface(x).toInt }
-    val dimensions = WorldDimensions(minX, maxX, minY, maxY, patchSize, wrapY!=0, wrapX!=0)
+    val dimensions = WorldDimensions(minX, maxX, minY, maxY, patchSize, wrapY != 0, wrapX != 0)
 
-    NetLogoCompiler(iGlobals, iGlobalCmds.toString, dimensions, turtleShapes, linkShapes)(source)
+    NetLogoCompiler(iGlobals, iGlobalCmds, dimensions, turtleShapes, linkShapes)(source)
 
   }
 

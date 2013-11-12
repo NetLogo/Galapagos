@@ -14,10 +14,9 @@ import
   com.fasterxml.jackson.core.JsonProcessingException
 
 import
-  play.api.mvc.{ Action, Controller, RequestHeader }
-
-import
-  play.api.libs.json.Json
+  play.api.{ libs, mvc },
+    libs.json.Json,
+    mvc.{ Action, Controller, RequestHeader }
 
 import
   controllers.PlayUtil.EnhancedRequest
