@@ -13,8 +13,8 @@ object ApplicationBuild extends Build {
   // NetLogo ought to declare its own dependencies, but sadly it
   // doesn't, so we need to explicitly list asm ourselves
   val nlDependencies = Seq(
-    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-cb1683c9" from
-      "http://ccl.northwestern.edu/devel/NetLogoHeadless-cb1683c9.jar",
+    "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-cf45a582" from
+      "http://ccl.northwestern.edu/devel/NetLogoHeadless-cf45a582.jar",
     "asm" % "asm-all" % "3.3.1"
   )
 

@@ -93,8 +93,8 @@ object CompilerService extends Controller {
       }
 
       (fromSrcAndDims orElse fromURL orElse fromNlogo) fold (
-        nel => ExpectationFailed(nel.list.mkString("\n")),
-        js  => Ok(views.html.standaloneTortoise(js))
+        nel    => ExpectationFailed(nel.list.mkString("\n")),
+        bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
       )
 
   }
