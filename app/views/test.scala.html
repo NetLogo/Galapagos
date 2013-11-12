@@ -9,11 +9,7 @@
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src='@routes.WebJarAssets.at(WebJarAssets.locate("qunit.js"))'></script>
-    <script>
-      test( "a basic test example", function() {
-      var value = "hello";
-        equal( value, "hello", "We expect value to be hello" );
-      });
-    </script>
+    <script src='@routes.Assets.at("javascripts/commandcenter/commandcenter.js")'></script>
+    <script src='@routes.Assets.at("tests/commandcenter/commandcenter-test.js")'></script>
 </body>
 </html>

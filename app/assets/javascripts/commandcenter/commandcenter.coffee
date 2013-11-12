@@ -1,3 +1,5 @@
+window.exports = window.exports or {}
+
 class CommandCenter
   constructor: (options) ->
     @options =
@@ -141,7 +143,7 @@ class CommandCenterModel
     @setModeIndex(@modeIndex() - 1)
 
   setModeIndex: (i) ->
-    @currentMessage.mode = @modes[i % @modes.length]
+    @currentMessage.mode = @modes[((i % @modes.length) + @modes.length) % @modes.length]
     
   send: ->
     message = @currentMessage
@@ -182,7 +184,5 @@ class Message
 
 exports.Message = Message
 exports.CommandCenter = CommandCenter
-    
+exports.CommandCenterModel = CommandCenterModel
 
-
-    
