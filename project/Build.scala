@@ -31,7 +31,8 @@ object ApplicationBuild extends Build {
     "org.webjars" % "jquery" % "1.10.2-1",
     "org.webjars" % "ace" % "07.31.2013",
     "org.webjars" % "mousetrap" % "1.3",
-    "org.webjars" % "bootstrap" % "2.3.2"
+    "org.webjars" % "bootstrap" % "2.3.2",
+    "org.webjars" % "qunit" % "1.11.0"
   )
 
   val allDependencies =

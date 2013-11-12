@@ -54,4 +54,8 @@ object Application extends Controller {
       Ok(views.html.createStandalone())
   }
 
+  def test = Action {
+    implicit request => Ok(views.html.test())
+  }
+
 }
