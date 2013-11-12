@@ -26,9 +26,6 @@ import
     mlocal.NetLogoCompiler,
     Util.usingSource
 
-import
-  org.nlogo.compile.front.Colorizer
-
 object CompilerService extends Controller {
 
   private type DimsType = (Int, Int, Int, Int)
@@ -96,13 +93,8 @@ object CompilerService extends Controller {
       }
 
       (fromSrcAndDims orElse fromURL orElse fromNlogo) fold (
-        nel =>
-          ExpectationFailed(nel.list.mkString("\n")),
-        { case (js, code) =>
-          val colorized =
-            code.lines.map(Colorizer.toHtml)
-              .mkString("", "\n", "\n")
-          Ok(views.html.standaloneTortoise(js, Some(colorized))) }
+        nel    => ExpectationFailed(nel.list.mkString("\n")),
+        bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
       )
 
   }

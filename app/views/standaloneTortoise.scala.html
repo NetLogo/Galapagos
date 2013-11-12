@@ -1,4 +1,4 @@
-@(js: String, originalCode: Option[String])
+@(js: String, nlogoCode: String)
 
 <html>
   <head></head>
@@ -12,11 +12,9 @@
 
     <div class='view-container' style="width: 600px;"></div>
 
-@for(code <- originalCode) {
-<pre style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
-@Html(code)
-</pre>
-}
+    <pre style="font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
+@Html(nlogoCode)
+    </pre>
 
     <script type="text/javascript">
       @Html(js)
