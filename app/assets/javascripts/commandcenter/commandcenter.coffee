@@ -12,7 +12,11 @@ class CommandCenter
 
     @model = new CommandCenterModel(@options.username, @options.modes)
     @ui = new CommandCenterUI()
+    @_hookUpInputs()
     @_handleModeChange()
+
+  _hookUpInputs: ->
+    @ui.prompt.addEventListener('click', => @nextMode())
 
   getInput: -> @ui.getInput()
 
@@ -66,55 +70,67 @@ class CommandCenter
     
 class CommandCenterUI
   constructor: () ->
-    # TODO: should create element
-    @$prompt = $('#agentType')
-    @activeInput = 'text'  # should be 'text' or 'code'
-    # TODO: should create element
-    @codeInput = exports.ChatGlobals.ccEditor
-    # TODO: should create element
-    @$codeInputWrapper = $('#codeBufferWrapper')
-    # TODO: should create element
-    @$textInput = $('#chatterBuffer')
+    @prompt = document.createElement('button')
+    @prompt.classList.add('agent_type_text', 'rounded', 'background_background', 'full_height', 'full_width', 'no_border')
+    @prompt.style.color = 'white'
+    @activeInput = 'text'
+    @textInput = document.createElement('input')
+    @textInput.classList.add('mousetrap', 'cc_input', 'chatter_input', 'normal_font', 'no_glow')
+    document.querySelector('#inputsWrapper').appendChild(@textInput)
+    document.querySelector('#agentTypeCell').appendChild(@prompt)
+    ## TODO: should create element
+    #@$prompt = $('#agentType')
+    #@activeInput = 'text'  # should be 'text' or 'code'
+    ## TODO: should create element
+    #@codeInput = exports.ChatGlobals.ccEditor
+    ## TODO: should create element
+    #@$codeInputWrapper = $('#codeBufferWrapper')
+    ## TODO: should create element
+    #@$textInput = $('#chatterBuffer')
 
-  setPrompt: (promptText) -> @$prompt.text(promptText)
+  setPrompt: (promptText) -> #@$prompt.text(promptText)
+    @prompt.textContent = promptText
 
   setInput: (newInput) ->
-    @$textInput.val(newInput)
-    @codeInput.setValue(newInput)
-    @codeInput.clearSelection()
+    #@$textInput.val(newInput)
+    @textInput.value = newInput
+    #@codeInput.setValue(newInput)
+    #@codeInput.clearSelection()
 
   getInput: ->
-    if @activeInput == 'text' then @$textInput.val() else @codeInput.getValue()
+    if @activeInput == 'text' then @textInput.value else @codeInput.getValue()
 
   focusInput: ->
     if @activeInput == 'text'
       @_focusTextInput()
     else
-      @_focusCodeInput()
+      #@_focusCodeInput()
+      @_focusTextInput()
 
-  _focusTextInput: -> @$textInput.focus()
+  _focusTextInput: -> @textInput.focus()
 
   _focusCodeInput: -> @codeInput.focus()
 
   useTextInput: ->
     @activeInput = 'text'
-    @$codeInputWrapper.hide()
-    @$textInput.show()
-    color = @$textInput.css('background-color')
-    @$textInput.parent().css('background-color', color)
+    #@$codeInputWrapper.hide()
+    #@$textInput.show()
+    #color = @$textInput.css('background-color')
+    #@$textInput.parent().css('background-color', color)
     @_focusTextInput()
   
   useCodeInput: ->
-    @activeInput = 'code'
-    @$textInput.hide()
-    @$codeInputWrapper.css('display', 'block')
-    color = @$codeInputWrapper.children('.ace_scroller')
-                              .children('.ace_marker-layer')
-                              .children('.ace_active-line')
-                              .css('background-color')
-    if color != 'rgba(0, 0, 0, 0)' and color != 'transparent'
-      @$textInput.parent().css('background-color', color)
-    @_focusCodeInput()
+    @useTextInput()
+    #@activeInput = 'code'
+    #@$textInput.hide()
+    #@$codeInputWrapper.css('display', 'block')
+    #color = @$codeInputWrapper.children('.ace_scroller')
+    #                          .children('.ace_marker-layer')
+    #                          .children('.ace_active-line')
+    #                          .css('background-color')
+    #if color != 'rgba(0, 0, 0, 0)' and color != 'transparent'
+    #  @$textInput.parent().css('background-color', color)
+    #@_focusCodeInput()
 
     
 class CommandCenterModel

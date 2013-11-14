@@ -93,9 +93,11 @@ class ChatUI
       modes:     globals.agentTypes,
       textModes: ['chatter']
     )
-    globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
+    document.querySelector('#inputsWrapper').appendChild(@commandCenter.ui.textInput)
+    document.querySelector('#agentTypeCell').appendChild(@commandCenter.ui.prompt)
+    #globals.ccEditor.renderer.$renderChanges() # Force early initialization of Ace, so it's ready when we make it visible
     initSelectors()
-    @setupPhonyInput()
+    #@setupPhonyInput()
 
   # Return Type: Unit
   setupPhonyInput: ->
