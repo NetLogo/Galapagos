@@ -7,7 +7,7 @@ import
 
 object ApplicationBuild extends Build {
 
-  val appName         = "Teletortoise"
+  val appName         = "Galapagos"
   val appVersion      = "1.0-SNAPSHOT"
 
   // NetLogo ought to declare its own dependencies, but sadly it

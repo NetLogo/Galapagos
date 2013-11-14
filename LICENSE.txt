@@ -1,4 +1,4 @@
-Teletortoise web app
+Galapagos web app
 Copyright (C) 2012 Uri Wilensky
 
 This program is free software; you can redistribute it and/or
