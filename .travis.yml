@@ -1,0 +1,17 @@
+language: scala
+scala: 2.10.2
+env:
+  - PLAY_VERSION=2.2.1
+before_script:
+  - wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
+  - unzip -q play-${PLAY_VERSION}.zip
+script:
+  - play-${PLAY_VERSION}/play test
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#netlogo"
+    skip_join: true
+    template:
+      - "\x0313Galapagos\x03/\x0306%{branch}\x03 \x0314%{commit}\x03 %{build_url} %{message}"
