@@ -2,8 +2,8 @@
 
 This is where our tortoises live!
 
-Teletortoise is a version of NetLogo that runs remotely on a server while displaying in a web browser.
+Tortoise is NetLogo running in your browser, in JavaScript.
 
-Tortoise is a version of NetLogo that runs entirely within the browser (without having as many features as Teletortoise).
+Teletortoise is NetLogo running on a server, displayed in your browser.
 
-The tortoises are the NetLogo versions of the future!  Curious to know more?  Want to try?  Visit the [wiki](https://github.com/NetLogo/Galapagos/wiki) for more details.
+The tortoises are the NetLogo versions of the future!  Curious, aren't you?  You want to try them!  Visit the [wiki](https://github.com/NetLogo/Galapagos/wiki) for more details.
