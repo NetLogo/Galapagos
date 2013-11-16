@@ -20,7 +20,7 @@ class CommandCenter
 
   getInput: -> @ui.getInput()
 
-  sendInput: -> 
+  sendInput: ->
     @_updateModelInput()
     msg = @model.send()
     @edit('')
@@ -47,11 +47,13 @@ class CommandCenter
     @_updateModelInput()
     @model.nextInput()
     @_handleModeChange()
+    @model.currentMessage
 
   prevInput: -> 
     @_updateModelInput()
     @model.prevInput()
     @_handleModeChange()
+    @model.currentMessage
 
   nextMode: ->
     @_updateModelInput()
@@ -76,8 +78,6 @@ class CommandCenterUI
     @activeInput = 'text'
     @textInput = document.createElement('input')
     @textInput.classList.add('mousetrap', 'cc_input', 'chatter_input', 'normal_font', 'no_glow')
-    document.querySelector('#inputsWrapper').appendChild(@textInput)
-    document.querySelector('#agentTypeCell').appendChild(@prompt)
     ## TODO: should create element
     #@$prompt = $('#agentType')
     #@activeInput = 'text'  # should be 'text' or 'code'
