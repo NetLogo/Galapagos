@@ -43,12 +43,12 @@ class ChatKeybindings
     )
 
     Mousetrap.bind('up', (e) ->
-      if e.target.id is 'chatterBuffer'
+      if e.target.classList.contains('chatter_input')
         UI.scrollMessageListUp()
     )
 
     Mousetrap.bind('down', (e) ->
-      if e.target.id is 'chatterBuffer'
+      if e.target.classList.contains('chatter_input')
         UI.scrollMessageListDown()
     )
 

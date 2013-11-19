@@ -94,6 +94,7 @@ class CommandCenterUI
   setInput: (newInput) ->
     #@$textInput.val(newInput)
     @textInput.value = newInput
+    setTimeout(=> @textInput.setSelectionRange(@textInput.value.length, @textInput.value.length))
     #@codeInput.setValue(newInput)
     #@codeInput.clearSelection()
 
