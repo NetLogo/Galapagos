@@ -46,7 +46,7 @@ object Application extends Controller {
       val nlogoFiles = Seq("test/tortoise", "test/benchmarks", "Sample Models", "Code Examples", "Curricular Models").
         flatMap(dir => recursiveListFiles(new File(parentPath, dir))).
         filter(_.getName.endsWith(".nlogo"))
-      Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).dropRight(".nlogo".length)))))
+      Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).stripSuffix(".nlogo")))))
   }
 
   def createStandaloneTortoise = Action {
