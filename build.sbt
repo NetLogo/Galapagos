@@ -32,6 +32,4 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "2.3.2"
 )
 
-ObtainResources.settings
-
 SetupConfiguration.settings
