@@ -31,6 +31,10 @@ class NetLogoController(channel: ActorRef) extends Actor {
   import NetLogoControllerMessages._
   import WebInstanceMessages._
 
+  // avoids annoying dock icon on Mac OS X, and is otherwise just generally
+  // a good idea (it prevents accidental dependence on being run inside a GUI)
+  org.nlogo.workspace.AbstractWorkspace.setHeadlessProperty()
+
   private var ws = workspace(usingSource(_.fromFile("./public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString))
 
   // def for executor so that multiple netlogo commands can run simultaneously.
