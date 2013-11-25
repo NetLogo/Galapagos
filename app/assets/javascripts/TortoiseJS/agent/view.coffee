@@ -69,6 +69,18 @@ class View
                       (@maxpycor+.5)*@canvas.height/@patchHeight)
     @ctx.font =  '10pt "Lucida Grande", sans-serif'
 
+  drawLabel: (label, color, x, y) ->
+    label = if label? then label.toString() else ''
+    if label.length > 0
+      @ctx.save()
+      @ctx.translate(x, y)
+      @ctx.scale(1/@patchsize, -1/@patchsize)
+      @ctx.textAlign = 'end'
+      @ctx.fillStyle = netlogoColorToCSS(color)
+      @ctx.fillText(label, 0, 0)
+      @ctx.restore()
+
+
 class TurtleView extends View
   constructor: () ->
     super()
@@ -97,16 +109,7 @@ class TurtleView extends View
     @ctx.scale(scale, scale)
     @drawer.drawShape(@ctx, turtle.color, shapeName)
     @ctx.restore()
-    label = if turtle.label? then turtle.label.toString() else ''
-    if label.length > 0
-      @ctx.save()
-      @ctx.translate(xcor + turtle.size / 2, ycor - turtle.size / 2)
-      @ctx.scale(1/@patchsize, -1/@patchsize)
-      @ctx.textAlign = 'end'
-      @ctx.fillStyle = netlogoColorToCSS(turtle['label-color'])
-      @ctx.fillText(label, 0, 0)
-      @ctx.restore()
-
+    @drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
 
   drawLink: (link, turtles) ->
     end1 = turtles[link.end1]
@@ -152,8 +155,6 @@ class PatchView extends View
 
   transformToWorld: (world) ->
     super(world)
-    # reset transform. We need to custom scaling.
-    @ctx.setTransform(1, 0, 0, 1, 0, 0);
     @scratchCanvas.width = @patchWidth
     @scratchCanvas.height = @patchHeight
     # Prevents antialiasing when scratchCanvas is stretched and drawn on canvas
@@ -165,7 +166,7 @@ class PatchView extends View
     @ctx.mozImageSmoothingEnabled = false;
     @ctx.oImageSmoothingEnabled = false;
     @ctx.fillStyle = 'black'
-    @ctx.fillRect(0, 0, @canvas.width, @canvas.height)
+    @ctx.fillRect(@minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
 
   colorPatches: (patches) ->
     imageData = @ctx.createImageData(@patchWidth,@patchHeight)
@@ -177,7 +178,11 @@ class PatchView extends View
       imageData.data[i+2] = b
       imageData.data[i+3] = 255
     @scratchCtx.putImageData(imageData, 0, 0)
-    @ctx.drawImage(@scratchCanvas, 0, 0, @canvas.width, @canvas.height)
+    @ctx.scale(1,-1)
+    @ctx.drawImage(@scratchCanvas, @minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
+    @ctx.scale(1,-1)
+    for _, patch of patches
+      @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
   repaint: (world, patches) ->
     if not @matchesWorld(world)
