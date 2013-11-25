@@ -67,6 +67,7 @@ class View
                       0, -@canvas.height/@patchHeight,
                       -(@minpxcor-.5)*@canvas.width/@patchWidth,
                       (@maxpycor+.5)*@canvas.height/@patchHeight)
+    @ctx.font =  '10pt "Lucida Grande", sans-serif'
 
 class TurtleView extends View
   constructor: () ->
@@ -96,6 +97,16 @@ class TurtleView extends View
     @ctx.scale(scale, scale)
     @drawer.drawShape(@ctx, turtle.color, shapeName)
     @ctx.restore()
+    label = if turtle.label? then turtle.label.toString() else ''
+    if label.length > 0
+      @ctx.save()
+      @ctx.translate(xcor + turtle.size / 2, ycor - turtle.size / 2)
+      @ctx.scale(1/@patchsize, -1/@patchsize)
+      @ctx.textAlign = 'end'
+      @ctx.fillStyle = netlogoColorToCSS(turtle['label-color'])
+      @ctx.fillText(label, 0, 0)
+      @ctx.restore()
+
 
   drawLink: (link, turtles) ->
     end1 = turtles[link.end1]
