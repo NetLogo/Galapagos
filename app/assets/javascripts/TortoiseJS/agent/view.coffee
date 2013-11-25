@@ -170,7 +170,7 @@ class PatchView extends View
 
   colorPatches: (patches) ->
     imageData = @ctx.createImageData(@patchWidth,@patchHeight)
-    for _, patch of patches
+    for ignore, patch of patches
       [r,g,b] = netlogoColorToRGB(patch.pcolor)
       i = ((@maxpycor-patch.pycor)*@patchWidth + (patch.pxcor-@minpxcor)) * 4
       imageData.data[i+0] = r
@@ -181,7 +181,7 @@ class PatchView extends View
     @ctx.scale(1,-1)
     @ctx.drawImage(@scratchCanvas, @minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
     @ctx.scale(1,-1)
-    for _, patch of patches
+    for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
   repaint: (world, patches) ->
