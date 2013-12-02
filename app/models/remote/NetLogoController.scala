@@ -33,6 +33,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
 
   // avoids annoying dock icon on Mac OS X, and is otherwise just generally
   // a good idea (it prevents accidental dependence on being run inside a GUI)
+  // --SAT (11/24/13)
   org.nlogo.workspace.AbstractWorkspace.setHeadlessProperty()
 
   private var ws = workspace(usingSource(_.fromFile("./public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString))
