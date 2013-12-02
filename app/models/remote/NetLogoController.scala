@@ -4,10 +4,11 @@ import
   akka.actor.{ Actor, ActorRef, Props, PoisonPill }
 
 import
-  org.nlogo.{ headless, mirror, tortoise },
+  org.nlogo.{ headless, mirror, tortoise, workspace => ws },
     headless.HeadlessWorkspace,
     mirror.Update,
-    tortoise.json.JSONSerializer
+    tortoise.json.JSONSerializer,
+    ws.AbstractWorkspace
 
 import
   play.api.{ libs, Logger },
@@ -34,7 +35,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   // avoids annoying dock icon on Mac OS X, and is otherwise just generally
   // a good idea (it prevents accidental dependence on being run inside a GUI)
   // --SAT (11/24/13)
-  org.nlogo.workspace.AbstractWorkspace.setHeadlessProperty()
+  AbstractWorkspace.setHeadlessProperty()
 
   private var ws = workspace(usingSource(_.fromFile("./public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString))
 
