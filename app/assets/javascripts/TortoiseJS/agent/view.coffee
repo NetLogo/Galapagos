@@ -27,9 +27,29 @@ class window.AgentStreamController
     @layers.appendChild(@spotlightView.canvas)
     @layers.appendChild(@patchView.canvas)
     @layers.appendChild(@turtleView.canvas)
+
+    @mouseDown   = false
+    @mouseInside = false
+    @mouseXcor   = 0
+    @mouseYcor   = 0
+    @initMouseTracking()
+
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
     @repaint()
+
+  initMouseTracking: ->
+    @turtleView.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
+    document          .addEventListener('mouseup',   (e) => @mouseDown = false)
+
+    @turtleView.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
+    @turtleView.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
+
+    @turtleView.canvas.addEventListener('mousemove', (e) =>
+      # Can't use @turtleView.canvas.offsets since it's absolutely positioned --BCH (12/18/13)
+      @mouseXcor = @turtleView.xPixToPcor(e.pageX - @layers.offsetLeft);
+      @mouseYcor = @turtleView.yPixToPcor(e.pageY - @layers.offsetTop);
+    )
 
   repaint: ->
     @spotlightView.repaint(@model)
@@ -77,6 +97,9 @@ class View
                       -(@minpxcor-.5)*@canvas.width/@patchWidth,
                       (@maxpycor+.5)*@canvas.height/@patchHeight)
     @ctx.font =  '10pt "Lucida Grande", sans-serif'
+
+  xPixToPcor: (x) -> @minpxcor - .5 + @patchWidth * x / @canvas.offsetWidth
+  yPixToPcor: (y) -> @maxpycor + .5 - @patchHeight * y / @canvas.offsetHeight
 
   drawLabel: (label, color, x, y) ->
     label = if label? then label.toString() else ''
@@ -277,3 +300,4 @@ class PatchView extends View
     if not @matchesWorld(world)
       @transformToWorld(world)
     @colorPatches(patches)
+
