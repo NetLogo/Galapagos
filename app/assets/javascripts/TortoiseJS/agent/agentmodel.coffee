@@ -48,7 +48,8 @@ class window.AgentModel
       p = @patches[patchId]
       p ?= @patches[patchId] = {}
       mergeObjectInto(varUpdates, p)
-    mergeObjectInto(modelUpdate.observer, @observer)
+    if modelUpdate.observer? and modelUpdate.observer[0]?
+      mergeObjectInto(modelUpdate.observer[0], @observer)
     anyUpdates
 
   mergeObjectInto = (updatedObject, targetObject) ->

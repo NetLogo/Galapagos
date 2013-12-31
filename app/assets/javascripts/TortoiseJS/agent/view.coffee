@@ -8,15 +8,23 @@ class window.AgentStreamController
     @layers.style.position = 'relative'
     @layers.classList.add('view-layers')
     @container.appendChild(@layers)
+    @spotlightView = new SpotlightView()
     @turtleView = new TurtleView()
     @patchView = new PatchView()
     # patchView must keep normal positioning so that it trying to maintain its
     # aspect ratio forces the container to stay tall enough, thus maintaining
     # flow with the rest of the page. Hence, we don't set its position
     # 'absolute'
+    @spotlightView.canvas.style.position = 'absolute'
+    @spotlightView.canvas.style.top = '0px'
+    @spotlightView.canvas.style.left = '0px'
+    @spotlightView.canvas.style['z-index'] = 2
     @turtleView.canvas.style.position = 'absolute'
     @turtleView.canvas.style.top = '0px'
     @turtleView.canvas.style.left = '0px'
+    @turtleView.canvas.style['z-index'] = 1
+    @patchView.canvas.style['z-index'] = 0
+    @layers.appendChild(@spotlightView.canvas)
     @layers.appendChild(@patchView.canvas)
     @layers.appendChild(@turtleView.canvas)
     @model = new AgentModel()
@@ -24,7 +32,8 @@ class window.AgentStreamController
     @repaint()
 
   repaint: ->
-    @turtleView.repaint(@model.world, @model.turtles, @model.links)
+    @spotlightView.repaint(@model.world, @model.turtles, @model.observer)
+    @turtleView.repaint(@model.world, @model.turtles, @model.links, @model.observer)
     @patchView.repaint(@model.world, @model.patches)
 
   update: (modelUpdate) ->
@@ -80,6 +89,59 @@ class View
       @ctx.fillText(label, 0, 0)
       @ctx.restore()
 
+  # Returns the turtle being watched, or null.
+  watch: (turtles, observer) ->
+    if observer.perspective > 0 and observer.targetagent? and observer.targetagent[1] >= 0
+      turtles[observer.targetagent[1]]
+    else
+      null
+
+  # Returns the turtle being followed, or null.
+  follow: (turtles, observer) ->
+    if observer.perspective == 2 and observer.targetagent? and observer.targetagent[1] >= 0
+      turtles[observer.targetagent[1]]
+    else
+      null
+
+class SpotlightView extends View
+  # Names and values taken from org.nlogo.render.SpotlightDrawer
+  dimmed: "rgba(0, 0, 50, #{ 100 / 255 })"
+  spotlightInnerBorder: "rgba(200, 255, 255, #{ 100 / 255 })"
+  spotlightOuterBorder: "rgba(200, 255, 255, #{ 50 / 255 })"
+  clear: 'white'  # for clearing with 'destination-out' compositing
+
+  outer: -> 10 / @patchsize
+  middle: -> 8 / @patchsize
+  inner: -> 4 / @patchsize
+
+  drawCircle: (turtle, extraSize, color) ->
+    @ctx.fillStyle = color
+    @ctx.beginPath()
+    @ctx.arc(turtle.xcor, turtle.ycor, extraSize + turtle.size, 0, 2 * Math.PI)
+    @ctx.fill()
+
+  repaint: (world, turtles, observer) ->
+    @transformToWorld(world)
+    watched = @watch(turtles, observer)
+    if watched?
+      xcor = watched.xcor
+      ycor = watched.ycor
+      size = watched.size
+      @ctx.lineWidth = @onePixel
+      @ctx.globalCompositeOperation = 'source-over'
+      @ctx.fillStyle = @dimmed
+      @ctx.fillRect(@minpxcor - 0.5, @minpycor - 0.5, @patchWidth, @patchHeight)
+
+      @ctx.globalCompositeOperation = 'destination-out'
+      @drawCircle(watched, @middle(), @clear)
+
+      @ctx.globalCompositeOperation = 'source-over'
+      @drawCircle(watched, @outer(), @dimmed)
+      @drawCircle(watched, @middle(), @spotlightOuterBorder)
+      @drawCircle(watched, @inner(), @spotlightInnerBorder)
+
+      @ctx.globalCompositeOperation = 'destination-out'
+      @drawCircle(watched, 0, @clear)
 
 class TurtleView extends View
   constructor: () ->
@@ -122,7 +184,7 @@ class TurtleView extends View
     @ctx.lineTo(end2.xcor, end2.ycor)
     @ctx.stroke()
 
-  repaint: (world, turtles, links) ->
+  repaint: (world, turtles, links, observer) ->
     @transformToWorld(world)
     if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
