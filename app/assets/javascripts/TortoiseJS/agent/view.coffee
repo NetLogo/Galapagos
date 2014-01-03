@@ -114,11 +114,32 @@ class SpotlightView extends View
   middle: -> 8 / @patchsize
   inner: -> 4 / @patchsize
 
-  drawCircle: (turtle, extraSize, color) ->
+  drawCircle: (x, y, diam, color) ->
     @ctx.fillStyle = color
     @ctx.beginPath()
-    @ctx.arc(turtle.xcor, turtle.ycor, extraSize + turtle.size, 0, 2 * Math.PI)
+    @ctx.arc(x, y, diam / 2, 0, 2 * Math.PI)
     @ctx.fill()
+
+  drawSpotlight: (x, y, size) ->
+    @ctx.lineWidth = @onePixel
+    @ctx.globalCompositeOperation = 'source-over'
+    @ctx.fillStyle = @dimmed
+    @ctx.fillRect(@minpxcor - 0.5, @minpycor - 0.5, @patchWidth, @patchHeight)
+
+    @ctx.globalCompositeOperation = 'destination-out'
+    @drawCircle(x, y, size + @outer(), @clear)
+
+    @ctx.globalCompositeOperation = 'source-over'
+    @drawCircle(x, y, size + @outer(), @dimmed)
+    @drawCircle(x, y, size + @middle(), @spotlightOuterBorder)
+    @drawCircle(x, y, size + @inner(), @spotlightInnerBorder)
+
+    @ctx.globalCompositeOperation = 'destination-out'
+    @drawCircle(x, y, size, @clear)
+
+  adjustSize: (size) ->
+    minSize = Math.max(@patchWidth, @patchHeight) / 20
+    if size < minSize then minSize - size else 0
 
   repaint: (world, turtles, observer) ->
     @transformToWorld(world)
@@ -126,22 +147,8 @@ class SpotlightView extends View
     if watched?
       xcor = watched.xcor
       ycor = watched.ycor
-      size = watched.size
-      @ctx.lineWidth = @onePixel
-      @ctx.globalCompositeOperation = 'source-over'
-      @ctx.fillStyle = @dimmed
-      @ctx.fillRect(@minpxcor - 0.5, @minpycor - 0.5, @patchWidth, @patchHeight)
-
-      @ctx.globalCompositeOperation = 'destination-out'
-      @drawCircle(watched, @middle(), @clear)
-
-      @ctx.globalCompositeOperation = 'source-over'
-      @drawCircle(watched, @outer(), @dimmed)
-      @drawCircle(watched, @middle(), @spotlightOuterBorder)
-      @drawCircle(watched, @inner(), @spotlightInnerBorder)
-
-      @ctx.globalCompositeOperation = 'destination-out'
-      @drawCircle(watched, 0, @clear)
+      size = watched.size * 2
+      @drawSpotlight(xcor, ycor, size + @adjustSize(size))
 
 class TurtleView extends View
   constructor: () ->
