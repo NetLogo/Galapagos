@@ -152,7 +152,7 @@ class SpotlightView extends View
     else if agent.pxcor?
       [agent.pxcor, agent.pycor, 2]
     else
-      null
+      [agent.midpointx, agent.midpointy, agent.size]
 
   repaint: (model) ->
     @transformToWorld(model.world)
