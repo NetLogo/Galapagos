@@ -32,9 +32,9 @@ class window.AgentStreamController
     @repaint()
 
   repaint: ->
-    @spotlightView.repaint(@model.world, @model.turtles, @model.observer)
-    @turtleView.repaint(@model.world, @model.turtles, @model.links, @model.observer)
-    @patchView.repaint(@model.world, @model.patches)
+    @spotlightView.repaint(@model)
+    @turtleView.repaint(@model)
+    @patchView.repaint(@model)
 
   update: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -89,19 +89,26 @@ class View
       @ctx.fillText(label, 0, 0)
       @ctx.restore()
 
-  # Returns the turtle being watched, or null.
-  watch: (turtles, observer) ->
-    if observer.perspective > 0 and observer.targetagent? and observer.targetagent[1] >= 0
-      turtles[observer.targetagent[1]]
+  # IDs used in watch and follow
+  turtleType: 1
+  patchType: 2
+  linkType: 3
+
+  # Returns the agent being watched, or null.
+  watch: (model) ->
+    {observer, turtles, links, patches} = model
+    if observer.perspective > 0 and observer.targetagent and observer.targetagent[1] >= 0
+      [type, id] = observer.targetagent
+      switch type
+        when @turtleType then model.turtles[id]
+        when @patchType then model.patches[id]
+        when @linkType then model.links[id]
     else
       null
 
-  # Returns the turtle being followed, or null.
-  follow: (turtles, observer) ->
-    if observer.perspective == 2 and observer.targetagent? and observer.targetagent[1] >= 0
-      turtles[observer.targetagent[1]]
-    else
-      null
+  # Returns the agent being followed, or null.
+  follow: (model) ->
+    if model.observer.perspective == 2 then watch(model) else null
 
 class SpotlightView extends View
   # Names and values taken from org.nlogo.render.SpotlightDrawer
@@ -141,9 +148,9 @@ class SpotlightView extends View
     minSize = Math.max(@patchWidth, @patchHeight) / 20
     if size < minSize then minSize - size else 0
 
-  repaint: (world, turtles, observer) ->
-    @transformToWorld(world)
-    watched = @watch(turtles, observer)
+  repaint: (model) ->
+    @transformToWorld(model.world)
+    watched = @watch(model)
     if watched?
       xcor = watched.xcor
       ycor = watched.ycor
@@ -191,7 +198,10 @@ class TurtleView extends View
     @ctx.lineTo(end2.xcor, end2.ycor)
     @ctx.stroke()
 
-  repaint: (world, turtles, links, observer) ->
+  repaint: (model) ->
+    world = model.world
+    turtles = model.turtles
+    links = model.links
     @transformToWorld(world)
     if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
@@ -257,7 +267,9 @@ class PatchView extends View
     for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
-  repaint: (world, patches) ->
+  repaint: (model) ->
+    world = model.world
+    patches = model.patches
     if not @matchesWorld(world)
       @transformToWorld(world)
     @colorPatches(patches)
