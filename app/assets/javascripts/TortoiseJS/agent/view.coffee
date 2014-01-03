@@ -144,18 +144,22 @@ class SpotlightView extends View
     @ctx.globalCompositeOperation = 'destination-out'
     @drawCircle(x, y, size, @clear)
 
-  adjustSize: (size) ->
-    minSize = Math.max(@patchWidth, @patchHeight) / 20
-    if size < minSize then minSize - size else 0
+  adjustSize: (size) -> Math.max(size, @patchWidth / 16, @patchHeight / 16)
+
+  dimensions: (agent) ->
+    if agent.xcor?
+      [agent.xcor, agent.ycor, 2 * agent.size]
+    else if agent.pxcor?
+      [agent.pxcor, agent.pycor, 2]
+    else
+      null
 
   repaint: (model) ->
     @transformToWorld(model.world)
     watched = @watch(model)
     if watched?
-      xcor = watched.xcor
-      ycor = watched.ycor
-      size = watched.size * 2
-      @drawSpotlight(xcor, ycor, size + @adjustSize(size))
+      [xcor, ycor, size] = @dimensions(watched)
+      @drawSpotlight(xcor, ycor,  @adjustSize(size))
 
 class TurtleView extends View
   constructor: () ->
