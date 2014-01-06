@@ -34,10 +34,10 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
       broadcast(generateMessage(CommandKey, agentType, username, cmd))
       execute(agentType, cmd)
     case Command(username, "compile", cmd) =>
-      println("Compiling")
+      Logger.info("Compiling")
       compile(cmd)
     case Command(username, "open", cmd) =>
-      println("Opening")
+      Logger.info("Opening")
       open(cmd)
     case Command(username, agentType, cmd) =>
       Logger.warn(s"Unhandlable message from user '$username' in context '$agentType': $cmd")
