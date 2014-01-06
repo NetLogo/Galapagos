@@ -178,9 +178,13 @@ class PatchView extends View
       imageData.data[i+2] = b
       imageData.data[i+3] = 255
     @scratchCtx.putImageData(imageData, 0, 0)
+    # translate so scale flips the image at the right point
+    trans = @minpycor + @maxpycor
+    @ctx.translate(0, trans)
     @ctx.scale(1,-1)
     @ctx.drawImage(@scratchCanvas, @minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
     @ctx.scale(1,-1)
+    @ctx.translate(0, -trans)
     for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
