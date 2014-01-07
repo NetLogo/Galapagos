@@ -47,12 +47,17 @@
             title: 'Global Temperature',
             xlabel: 'Year',
             ylabel: 'Temperature',
-            xmax: 10000,
+            xmax: 5000,
             xmin: 0,
             ymax: 30,
-            ymin: 10
+            ymin: 10,
+
+            xFormatter: '.',
+            yFormatter: '.4s'
           });
       graph.resize(500, 500);
+
+
     
       function updateTickCounter() {
         tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
