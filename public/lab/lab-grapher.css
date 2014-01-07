@@ -1,0 +1,75 @@
+.graph {
+    position: relative;
+    background: rgba(255, 255, 255, 0);
+}
+.graph:focus {
+    outline: #76d2b8 solid 0.2em;
+}
+.graph div.background {
+    position: absolute;
+    background: #efefef;
+}
+.graph div.button-layer {
+    position: absolute;
+    text-align: right;
+}
+.graph div.button-layer a {
+    opacity: 0.3;
+    color: black;
+    font-size: 120%;
+}
+.graph div.button-layer a:hover {
+    opacity: 1;
+}
+.graph canvas.overlay {
+    position: absolute;
+    background: rgba(0, 255, 0, 0.05);
+}
+svg.graph:focus {
+    outline: #76d2b8 solid 0.2em;
+}
+svg.graph text.title {
+    font-size: 0.9em;
+}
+svg.graph text.ylabel {
+    font-size: 0.8em;
+}
+svg.graph text.xlabel {
+    font-size: 0.8em;
+}
+svg.graph text.axis {
+    font-size: 0.8em;
+}
+svg.graph text.axis:focus {
+    outline: #76d2b8 solid 0.2em;
+}
+svg.graph rect.draggable-axis {
+    fill: rgba(255, 255, 255, 0);
+}
+svg.graph rect.draggable-axis:hover {
+    fill: rgba(196, 196, 196, 0.2);
+}
+svg.graph .ruler.hidden {
+    visibility: hidden;
+}
+svg.graph circle {
+    fill: none;
+    fill-opacity: 0.2;
+    stroke: steelblue;
+    cursor: move;
+}
+svg.graph circle.selected {
+    fill: #ff7f0e;
+    stroke: #ff7f0e;
+}
+svg.graph circle:hover {
+    fill: #ff7f0e;
+    stroke: #707f0e;
+}
+svg.graph circle.selected:hover {
+    fill: #ff7f0e;
+    stroke: #ff7f0e;
+}
+svg.graph .brush .extent {
+    opacity: 0.2;
+}

@@ -6,20 +6,22 @@
     <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
-    <input type="button" onclick="doSetup();" value="setup"></input>
-    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
-    <input type="button" onclick="session.run('observer', 'add-CO2');" value="add CO2"></input>
-    <input type="button" onclick="session.run('observer', 'remove-CO2');" value="remove CO2"></input>
-    <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
-    <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
-    <input type="button" onclick="session.run('observer', 'watch one-of rays');" value="watch a ray"></input>
-
+    <div>
+      <input type="button" onclick="doSetup();" value="setup"></input>
+      <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
+      <input type="button" onclick="session.run('observer', 'add-CO2');" value="add CO2"></input>
+      <input type="button" onclick="session.run('observer', 'remove-CO2');" value="remove CO2"></input>
+      <input type="button" onclick="session.run('observer', 'add-cloud');" value="add clouds"></input>
+      <input type="button" onclick="session.run('observer', 'remove-cloud');" value="remove clouds"></input>
+      <input type="button" onclick="session.run('observer', 'watch one-of rays');" value="watch a ray"></input>
+    </div>
     <pre class='netlogo-model'
-         style='width: 500px;'
+         style='width: 500px; display:inline-block'
          data-url='@controllers.local.routes.Local.handleSocketConnection().webSocketURL()'
          data-src='/assets/modelslib/Sample%20Models/Earth%20Science/Climate%20Change.nlogo'
          >
     </pre>
+    <div id='temp-plot' class='graph' style='display:inline-block'></div>
     <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("07.31.2013/src/ace.js"))'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/ace/global-ace-init.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
@@ -31,11 +33,37 @@
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
+    <script src='http://d3js.org/d3.v3.min.js'></script>
+    <script src='http://codeorigin.jquery.com/jquery-1.10.2.min.js'></script>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href='@routes.Assets.at("lab/lab-grapher.css")' rel="stylesheet" type="text/css">
+    <script type="text/javascript" src='@routes.Assets.at("lab/lab-grapher.js")'></script>
     <script type="text/javascript">
       var session = tortoise(),
           runner = -1,
           tickCounter = document.getElementById('tick-counter'),
-          lastUpdate = 0;
+          lastUpdate = 0,
+          graph = LabGrapher('#temp-plot');
+      graph.reset('#temp-plot', {
+            title: 'Global Temperature',
+            xlabel: 'Year',
+            ylabel: 'Temperature',
+            xmax: 10000,
+            xmin: 0,
+            ymax: 40,
+            ymin: 10,
+
+            responsiveLayout: false,
+            fontScaleRelativeToParent: false,
+            dataType: 'points',
+            dataPoints: [],
+
+            markAllDataPoints: false,
+            strokeWidth: 1,
+            dataChange: false,
+            addData: false
+          });
+      graph.resize(500, 500);
     
       function updateTickCounter() {
         tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
@@ -44,9 +72,10 @@
       function goForever() {
         var speed = Math.exp(document.getElementById('speed-slider').value),
             delta = Math.min(new Date().getTime() - lastUpdate, 30),
-            numUpdates = speed * delta / 1000 + 1; 
+            numUpdates = speed * delta / 1000 + 1;
         for (var i=0; i < numUpdates; i++) {
           go();
+          graph.addPoint([world.ticks(), Globals.getGlobal(4)]);
         }
         updateTickCounter();
         session.update(collectUpdates());
@@ -75,6 +104,7 @@
           goButton.value = "go";
         }
       }
+
     </script>
   </body>
 </html>
