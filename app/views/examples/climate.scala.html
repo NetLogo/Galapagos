@@ -75,7 +75,7 @@
             numUpdates = speed * delta / 1000 + 1;
         for (var i=0; i < numUpdates; i++) {
           go();
-          graph.addPoint([world.ticks(), Globals.getGlobal(4)]);
+          plotTemp();
         }
         updateTickCounter();
         session.update(collectUpdates());
@@ -83,8 +83,14 @@
         runner = setTimeout(goForever, 1000/speed);
       }
       
+      function plotTemp() {
+        graph.addPoint([world.ticks(), Globals.getGlobal(4)]);
+      }
+
       function doSetup() {
+        graph.resetPoints();
         setup();
+        plotTemp();
         session.update(collectUpdates());
         updateTickCounter();
       }
