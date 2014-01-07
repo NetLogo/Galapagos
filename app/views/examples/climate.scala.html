@@ -43,25 +43,14 @@
           runner = -1,
           tickCounter = document.getElementById('tick-counter'),
           lastUpdate = 0,
-          graph = LabGrapher('#temp-plot');
-      graph.reset('#temp-plot', {
+          graph = LabGrapher('#temp-plot', {
             title: 'Global Temperature',
             xlabel: 'Year',
             ylabel: 'Temperature',
             xmax: 10000,
             xmin: 0,
-            ymax: 40,
-            ymin: 10,
-
-            responsiveLayout: false,
-            fontScaleRelativeToParent: false,
-            dataType: 'points',
-            dataPoints: [],
-
-            markAllDataPoints: false,
-            strokeWidth: 1,
-            dataChange: false,
-            addData: false
+            ymax: 30,
+            ymin: 10
           });
       graph.resize(500, 500);
     
