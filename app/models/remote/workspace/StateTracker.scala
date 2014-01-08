@@ -35,8 +35,7 @@ trait StateTracker extends HeadlessWorkspace {
 
   def getStateUpdate(baseState: Mirroring.State): (Mirroring.State, Update)  =
     world.synchronized {
-      val widgetValues = Seq() // Eventually, this might have something in it.  Nicolas currently only plans to ever use for monitor values, though --JAB (1/22/13)
-      val mirrorables  = Mirrorables.allMirrorables(world, widgetValues)
+      val mirrorables  = Mirrorables.allMirrorables(world)
       Mirroring.diffs(baseState, mirrorables)
     }
 

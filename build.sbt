@@ -8,12 +8,8 @@ scalaVersion := "2.10.2"
 
 scalacOptions += "-language:_"
 
-// NetLogo ought to declare its own dependencies, but sadly it
-// doesn't, so we need to explicitly list asm ourselves
 libraryDependencies ++= Seq(
-  "org.nlogo" % "NetLogoHeadless" % "5.1.0-SNAPSHOT-cf45a582" from
-    "http://ccl.northwestern.edu/devel/NetLogoHeadless-cf45a582.jar",
-  "asm" % "asm-all" % "3.3.1"
+  "org.nlogo" % "tortoise" % "0.1-6f06d25"
 )
 
 libraryDependencies ++= Seq(
@@ -32,4 +28,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "2.3.2"
 )
 
+resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
+
+resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
+
 SetupConfiguration.settings
+
+bintray.Plugin.bintrayResolverSettings

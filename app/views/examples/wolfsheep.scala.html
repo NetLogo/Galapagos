@@ -6,7 +6,7 @@
     <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
-    <input type="button" onclick="setup();" value="setup"></input>
+    <input type="button" onclick="doSetup();" value="setup"></input>
     <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
     <input id="grass-button" type="button" onclick="toggleGrass();" value="grass? is DISABLED"></input>
     <pre class='netlogo-model'
@@ -42,7 +42,7 @@
             delta = Math.min(new Date().getTime() - lastUpdate, 30),
             numUpdates = speed * delta / 1000 + 1;
         for (var i=0; i < numUpdates; i++) {
-          GO();
+          go();
         }
         updateTickCounter();
         session.update(collectUpdates());
@@ -50,8 +50,8 @@
         runner = setTimeout(goForever, 1000/speed);
       }
 
-      function setup() {
-        SETUP();
+      function doSetup() {
+        setup();
         session.update(collectUpdates());
         updateTickCounter();
       }
