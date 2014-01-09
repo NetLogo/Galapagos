@@ -8,15 +8,23 @@ class window.AgentStreamController
     @layers.style.position = 'relative'
     @layers.classList.add('view-layers')
     @container.appendChild(@layers)
+    @spotlightView = new SpotlightView()
     @turtleView = new TurtleView()
     @patchView = new PatchView()
     # patchView must keep normal positioning so that it trying to maintain its
     # aspect ratio forces the container to stay tall enough, thus maintaining
     # flow with the rest of the page. Hence, we don't set its position
     # 'absolute'
+    @spotlightView.canvas.style.position = 'absolute'
+    @spotlightView.canvas.style.top = '0px'
+    @spotlightView.canvas.style.left = '0px'
+    @spotlightView.canvas.style['z-index'] = 2
     @turtleView.canvas.style.position = 'absolute'
     @turtleView.canvas.style.top = '0px'
     @turtleView.canvas.style.left = '0px'
+    @turtleView.canvas.style['z-index'] = 1
+    @patchView.canvas.style['z-index'] = 0
+    @layers.appendChild(@spotlightView.canvas)
     @layers.appendChild(@patchView.canvas)
     @layers.appendChild(@turtleView.canvas)
     @model = new AgentModel()
@@ -24,8 +32,9 @@ class window.AgentStreamController
     @repaint()
 
   repaint: ->
-    @turtleView.repaint(@model.world, @model.turtles, @model.links)
-    @patchView.repaint(@model.world, @model.patches)
+    @spotlightView.repaint(@model)
+    @turtleView.repaint(@model)
+    @patchView.repaint(@model)
 
   update: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -80,6 +89,77 @@ class View
       @ctx.fillText(label, 0, 0)
       @ctx.restore()
 
+  # IDs used in watch and follow
+  turtleType: 1
+  patchType: 2
+  linkType: 3
+
+  # Returns the agent being watched, or null.
+  watch: (model) ->
+    {observer, turtles, links, patches} = model
+    if observer.perspective > 0 and observer.targetagent and observer.targetagent[1] >= 0
+      [type, id] = observer.targetagent
+      switch type
+        when @turtleType then model.turtles[id]
+        when @patchType then model.patches[id]
+        when @linkType then model.links[id]
+    else
+      null
+
+  # Returns the agent being followed, or null.
+  follow: (model) ->
+    if model.observer.perspective == 2 then watch(model) else null
+
+class SpotlightView extends View
+  # Names and values taken from org.nlogo.render.SpotlightDrawer
+  dimmed: "rgba(0, 0, 50, #{ 100 / 255 })"
+  spotlightInnerBorder: "rgba(200, 255, 255, #{ 100 / 255 })"
+  spotlightOuterBorder: "rgba(200, 255, 255, #{ 50 / 255 })"
+  clear: 'white'  # for clearing with 'destination-out' compositing
+
+  outer: -> 10 / @patchsize
+  middle: -> 8 / @patchsize
+  inner: -> 4 / @patchsize
+
+  drawCircle: (x, y, diam, color) ->
+    @ctx.fillStyle = color
+    @ctx.beginPath()
+    @ctx.arc(x, y, diam / 2, 0, 2 * Math.PI)
+    @ctx.fill()
+
+  drawSpotlight: (x, y, size) ->
+    @ctx.lineWidth = @onePixel
+    @ctx.globalCompositeOperation = 'source-over'
+    @ctx.fillStyle = @dimmed
+    @ctx.fillRect(@minpxcor - 0.5, @minpycor - 0.5, @patchWidth, @patchHeight)
+
+    @ctx.globalCompositeOperation = 'destination-out'
+    @drawCircle(x, y, size + @outer(), @clear)
+
+    @ctx.globalCompositeOperation = 'source-over'
+    @drawCircle(x, y, size + @outer(), @dimmed)
+    @drawCircle(x, y, size + @middle(), @spotlightOuterBorder)
+    @drawCircle(x, y, size + @inner(), @spotlightInnerBorder)
+
+    @ctx.globalCompositeOperation = 'destination-out'
+    @drawCircle(x, y, size, @clear)
+
+  adjustSize: (size) -> Math.max(size, @patchWidth / 16, @patchHeight / 16)
+
+  dimensions: (agent) ->
+    if agent.xcor?
+      [agent.xcor, agent.ycor, 2 * agent.size]
+    else if agent.pxcor?
+      [agent.pxcor, agent.pycor, 2]
+    else
+      [agent.midpointx, agent.midpointy, agent.size]
+
+  repaint: (model) ->
+    @transformToWorld(model.world)
+    watched = @watch(model)
+    if watched?
+      [xcor, ycor, size] = @dimensions(watched)
+      @drawSpotlight(xcor, ycor,  @adjustSize(size))
 
 class TurtleView extends View
   constructor: () ->
@@ -122,7 +202,10 @@ class TurtleView extends View
     @ctx.lineTo(end2.xcor, end2.ycor)
     @ctx.stroke()
 
-  repaint: (world, turtles, links) ->
+  repaint: (model) ->
+    world = model.world
+    turtles = model.turtles
+    links = model.links
     @transformToWorld(world)
     if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
@@ -188,7 +271,9 @@ class PatchView extends View
     for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
-  repaint: (world, patches) ->
+  repaint: (model) ->
+    world = model.world
+    patches = model.patches
     if not @matchesWorld(world)
       @transformToWorld(world)
     @colorPatches(patches)
