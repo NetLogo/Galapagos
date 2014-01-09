@@ -32,6 +32,8 @@ resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
+resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
+
 SetupConfiguration.settings
 
 bintray.Plugin.bintrayResolverSettings
