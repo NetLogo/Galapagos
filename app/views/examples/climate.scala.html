@@ -52,6 +52,9 @@
             ymax: 30,
             ymin: 10,
 
+            dataType: 'samples',
+            dataSamples: [[],[]],
+
             xFormatter: '.',
             yFormatter: '.4s'
           });
@@ -78,7 +81,7 @@
       }
       
       function plotTemp() {
-        graph.addPoint([world.ticks(), Globals.getGlobal(4)]);
+        graph.addSamples([Globals.getGlobal(4), Globals.getGlobal(4) + 10])
       }
 
       function doSetup() {
