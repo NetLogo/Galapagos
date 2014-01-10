@@ -6,13 +6,13 @@ class window.AgentModel
     @observer = {}
     @world = {}
 
-# The loops here have been optimized for V8 by replace for ... of ... loops
-# with regular loops over Object.keys. It would be better if they were
-# for ... of ... loops, but V8 wasn't able to optimize that. Note that this is
-# not a good optimization strategy in general. It only works in specific
-# situations.
-# The bodies of the loops are in inlineable loops. This also helps V8 reason
-# about the loops.
+  # The loops here have been optimized for V8 by replace for ... of ... loops
+  # with regular loops over Object.keys. It would be better if they were
+  # for ... of ... loops, but V8 wasn't able to optimize that. Note that this is
+  # not a good optimization strategy in general. It only works in specific
+  # situations.
+  # The bodies of the loops are in inlineable loops. This also helps V8 reason
+  # about the loops. --BCH (1/9/14)
   update: (modelUpdate) ->
     turtleUpdates = modelUpdate.turtles
     if turtleUpdates
@@ -74,7 +74,7 @@ class window.AgentModel
   mergeObjectInto = (updatedObject, targetObject) ->
     # Chrome complains it can't inline this function. Changing this to a
     # regular for loop over Object.keys fixes this, but actually makes
-    # performance worse.
+    # performance worse. --BCH (1/9/14)
     for variable, value of updatedObject
       targetObject[variable.toLowerCase()] = value
     return
