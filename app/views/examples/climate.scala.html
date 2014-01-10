@@ -48,12 +48,13 @@
             xlabel: 'Year',
             ylabel: 'Temperature',
             xmax: 5000,
-            xmin: 0,
+            xmin: 2000,
             ymax: 30,
             ymin: 10,
 
             dataType: 'samples',
             dataSamples: [[],[]],
+            dataSampleStart: 2000,
 
             xFormatter: '.',
             yFormatter: '.4s'
@@ -82,6 +83,7 @@
       
       function plotTemp() {
         graph.addSamples([Globals.getGlobal(4), Globals.getGlobal(4) + 10])
+        //graph.addSample(Globals.getGlobal(4))
       }
 
       function doSetup() {

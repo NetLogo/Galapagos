@@ -2252,7 +2252,7 @@ module.exports = function Graph(idOrElement, options, message, tabindex) {
       for (i = 0; i < datasamples.length; i++) {
         if (!pointArray[i]) { pointArray.push([]); }
         points = pointArray[i];
-        start = points.length * sampleInterval;
+        start = points.length * sampleInterval + dataSampleStart;
         points.push.apply(points, indexedData(datasamples[i], sampleInterval, start));
         pointArray[i] = points;
       }
@@ -2260,7 +2260,7 @@ module.exports = function Graph(idOrElement, options, message, tabindex) {
     } else {
       for (i = 0; i < datasamples.length; i++) {
         if (!pointArray[i]) { pointArray.push([]); }
-        start = pointArray[i].length * sampleInterval;
+        start = pointArray[i].length * sampleInterval + dataSampleStart;
         pointArray[i].push([start, datasamples[i]]);
       }
     }
