@@ -44,13 +44,30 @@ case class NetLogoCompiler(model:      Model,
     runCommand(cmd)
   }
 
+  def compileWidget(widget: core.Widget) (implicit program: api.Program, procedures: ProceduresMap): String = {
+    import Widget._
+    widget match {
+      case b: core.Button => b.toJS
+      case s: core.Slider => s.toJS
+      case s: core.Switch => s.toJS
+      case m: core.Monitor => m.toJS
+      case o: core.Output => o.toJS
+      case v: core.View => v.toJS
+      case p: core.Plot => p.toJS
+      case tb: core.TextBox => tb.toJS
+      case _ => "alert('Other')"
+    }
+  }
+
   def compiled: (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) =
         Compiler.compileProcedures(model)
       Logger.info("No errors!")
-      (this.copy(program = newProgram, procedures = newProcedures), js)
+
+      (this.copy(program = newProgram, procedures = newProcedures),
+        js + model.widgets.map(compileWidget(_) (newProgram, newProcedures)).mkString("\n"))
     }
     Logger.info("Compilation complete")
     strCompilerOpt getOrElse ((this, ""))
@@ -79,7 +96,6 @@ case class NetLogoCompiler(model:      Model,
         Logger.warn(s"An unknown exception has occurred: ${ex.getMessage}")
         None
     }
-
 }
 
 object NetLogoCompiler {
