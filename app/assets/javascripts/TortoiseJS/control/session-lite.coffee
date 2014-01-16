@@ -2,9 +2,7 @@ class window.SessionLite
 
   @controller = undefined
 
-  constructor: (container) ->
-    # Remove everything from within the container (particularly for Standalone Tortoise)
-    container.innerHTML = ""
+  constructor: (@container) ->
     @controller = new AgentStreamController(container)
 
   update: (modelUpdate) ->
