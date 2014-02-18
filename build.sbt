@@ -15,7 +15,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-native" % "3.1.0",
   "org.scalaz" %% "scalaz-core" % "7.0.3",
-  "org.webjars" %% "webjars-play" % "2.2.0"
+  "org.webjars" %% "webjars-play" % "2.2.1"
 )
 
 libraryDependencies ++= Seq(
