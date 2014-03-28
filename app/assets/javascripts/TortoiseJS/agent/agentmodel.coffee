@@ -55,7 +55,7 @@ class window.AgentModel
       mergeObjectInto(varUpdates, t)
 
   updateLink: (linkId, varUpdates) ->
-    if varUpdates == null
+    if varUpdates == null or varUpdates['WHO'] == -1
       delete @links[linkId]
     else
       l = @links[linkId]
