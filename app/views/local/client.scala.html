@@ -13,9 +13,6 @@
 
   <script type="text/javascript" charset="utf-8">
     exports.ChatGlobals.socketURL = '@controllers.local.routes.Local.handleSocketConnection().webSocketURL()';
-    window.addEventListener('load', function() {
-      session.openURL('/assets/modelslib/Sample%20Models/Earth%20Science/Climate%20Change.nlogo');
-    });
   </script>
 
   @views.html.core.component.lateInitScripts()

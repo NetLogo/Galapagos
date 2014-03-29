@@ -59,6 +59,7 @@ class TortoiseSession
     @editor.session.on('change', =>
       clearTimeout(compileTimeout)
       compileTimeout = setTimeout((=> @recompile()), 500))
+    @run('compile', '') # initialize as blank model.
 
 
   update: (modelUpdate) ->
