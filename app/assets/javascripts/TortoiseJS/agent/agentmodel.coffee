@@ -29,12 +29,23 @@ class window.AgentModel
       worldUpdate = modelUpdate.world[0]
       mergeObjectInto(modelUpdate.world[0], @world)
       # TODO: I don't like this either...
-      if worldUpdate.worldWidth? and worldUpdate.worldHeight?
-        @patches = {}
+      if (worldUpdate.minPxcor? and
+          worldUpdate.maxPxcor? and
+          worldUpdate.minPycor? and
+          worldUpdate.maxPycor?)
+        # Preserve what patches we can. This is particularly to guard against
+        # receiving new patch data from a resize-world before receiving the
+        # updates to the world object. --BCH (3/28/2014)
+        for index, patch of @patches
+          if (patch.pxcor < worldUpdate.minPxcor or
+              patch.pxcor > worldUpdate.maxPxcor or
+              patch.pycor < worldUpdate.minPycor or
+              patch.pycor > worldUpdate.maxPycor)
+            delete @patches[index]
     patchUpdates = modelUpdate.patches
     if patchUpdates
       for patchId in Object.keys(patchUpdates)
-        @updatePatches(patchId, patchUpdates[patchId])
+        @updatePatch(patchId, patchUpdates[patchId])
     if modelUpdate.observer? and modelUpdate.observer[0]?
       mergeObjectInto(modelUpdate.observer[0], @observer)
     return
@@ -66,7 +77,7 @@ class window.AgentModel
         }
       mergeObjectInto(varUpdates, l)
 
-  updatePatches: (patchId, varUpdates) ->
+  updatePatch: (patchId, varUpdates) ->
     p = @patches[patchId]
     p ?= @patches[patchId] = {}
     mergeObjectInto(varUpdates, p)

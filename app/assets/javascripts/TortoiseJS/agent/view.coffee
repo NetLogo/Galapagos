@@ -254,7 +254,6 @@ class TurtleView extends View
 class PatchView extends View
   constructor: () ->
     super()
-    @patchColors = []
     @scratchCanvas = document.createElement('canvas')
     @scratchCtx = @scratchCanvas.getContext('2d')
     @quality = 2 # Avoids antialiasing somewhat when image is stretched.
