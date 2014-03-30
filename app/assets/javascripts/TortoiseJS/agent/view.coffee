@@ -195,9 +195,25 @@ class TurtleView extends View
     # quality = 3 was arrived at empirically. I noticed no improvement after 3.
     @quality = 3
 
-  drawTurtle: (id, turtle) ->
+  drawTurtle: (turtle, canWrapX, canWrapY) ->
     xcor = turtle.xcor or 0
     ycor = turtle.ycor or 0
+    size = turtle.size or 1
+    @drawTurtleAt(turtle, xcor, ycor)
+    if canWrapX
+      if xcor - size < @minpxcor
+        @drawTurtleAt(turtle, xcor + @patchWidth, ycor)
+      # Note that these CANNOT be `else if`s. Large turtles can wrap on both
+      # sides. -- BCH (3/30/2014)
+      if xcor + size > @maxpxcor
+        @drawTurtleAt(turtle, xcor - @patchWidth, ycor)
+    if canWrapY
+      if ycor - size < @minpycor
+        @drawTurtleAt(turtle, xcor, ycor + @patchHeight)
+      if ycor + size > @maxpycor
+        @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
+
+  drawTurtleAt: (turtle, xcor, ycor) ->
     heading = turtle.heading or 0
     scale = turtle.size or 1
     angle = (180-heading)/360 * 2*Math.PI
@@ -293,7 +309,7 @@ class TurtleView extends View
       @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
     @ctx.lineWidth = @onePixel
     for id, turtle of turtles
-      @drawTurtle(id, turtle)
+      @drawTurtle(turtle, world.wrappingallowedinx, world.wrappingallowediny)
     return
 
 # Works by creating a scratchCanvas that has a pixel per patch. Those pixels
