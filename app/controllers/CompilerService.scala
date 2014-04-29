@@ -93,7 +93,13 @@ object CompilerService extends Controller {
 
   private def generateTortoiseLiteJsUrls()(implicit request: RequestHeader): Seq[URL] = {
 
-    val normalURLs = Seq(local.routes.Local.compat, local.routes.Local.engine)
+    val normalURLs =
+      Seq(
+        local.routes.Local.compat,
+        routes.WebJarAssets.at(WebJarAssets.locate("mori.js")),
+        routes.WebJarAssets.at(WebJarAssets.locate("lodash.js")),
+        local.routes.Local.engine
+      )
 
     val assetURLs =
       Seq(

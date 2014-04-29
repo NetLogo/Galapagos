@@ -8,14 +8,17 @@ import
   Util.usingSource
 
 import
-  org.nlogo.api.{ ModelReader, ModelSection }
+  org.nlogo.{ api, compile, nvm },
+    api.model.ModelReader,
+    compile.front.FrontEnd,
+    nvm.DefaultParserServices
 
 object ModelSaver {
 
   def apply(nlogo: String, jsURLs: Seq[URL]): CompilationBundle = {
     val netLogoJS = NetLogoCompiler.fromNLogoFile(nlogo)._2
-    val colorized = ModelReader.parseModel(nlogo)(ModelSection.Code).mkString("\n")
-    CompilationBundle(buildJavaScript(netLogoJS, jsURLs), colorized)
+    val code      = ModelReader.parseModel(nlogo, Option(new DefaultParserServices(FrontEnd))).code
+    CompilationBundle(buildJavaScript(netLogoJS, jsURLs), code)
   }
 
   def apply(url: URL, jsURLs: Seq[URL]): CompilationBundle = {

@@ -1,25 +1,21 @@
 package models.local
 
 import
-  org.nlogo.{ api, compile, nvm, shape, tortoise, workspace },
+  org.nlogo.{ api, compile, core, nvm, tortoise },
+    api.{ CompilerException, model, Program },
+      model.ModelReader,
     compile.front.FrontEnd,
-    api.{ AgentKind, CompilerException, ModelReader, ModelSection, Program, ShapeList, WorldDimensions },
-    workspace.WidgetParser,
+    core.Model,
     nvm.{ DefaultParserServices, FrontEndInterface },
       FrontEndInterface.{ NoProcedures, ProceduresMap },
-    shape.{ LinkShape, VectorShape },
     tortoise.Compiler
 
 import
   play.api.Logger
 
-case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
-                           iGlobalCmds:  String          = "",
-                           dimensions:   WorldDimensions = WorldDimensions(-16, 16, -16, 16),
-                           turtleShapes: ShapeList       = new ShapeList(AgentKind.Turtle, Seq(VectorShape.getDefaultShape)),
-                           linkShapes:   ShapeList       = new ShapeList(AgentKind.Link,   Seq(LinkShape.getDefaultLinkShape)),
-                           program:      Program         = Program.empty(),
-                           procedures:   ProceduresMap   = NoProcedures) {
+case class NetLogoCompiler(model:      Model,
+                           program:    Program       = Program.empty(),
+                           procedures: ProceduresMap = NoProcedures) {
 
   def runCommand(command: String): (NetLogoCompiler, String) = {
     Logger.info(s"Compiling: $command")
@@ -48,16 +44,21 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
     runCommand(cmd)
   }
 
-  def apply(source: String): (NetLogoCompiler, String) = {
+  def compiled: (NetLogoCompiler, String) = {
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) =
-        Compiler.compileProcedures(source, iGlobals, iGlobalCmds, dimensions, turtleShapes, linkShapes)
+        Compiler.compileProcedures(model)
       Logger.info("No errors!")
       (this.copy(program = newProgram, procedures = newProcedures), js)
     }
     Logger.info("Compilation complete")
     strCompilerOpt getOrElse ((this, ""))
+  }
+
+  def recompile(source: String): (NetLogoCompiler, String) = {
+    val newCompiler = this.copy(model = model.copy(code = source))
+    newCompiler.compiled
   }
 
   // One might be tempted to rewrite this to return a `Try`, but, incidentally, it doesn't really do
@@ -84,32 +85,10 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
 object NetLogoCompiler {
 
   def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {
-
-    import collection.JavaConverters.iterableAsScalaIterableConverter
-
-    val modelMap  = ModelReader.parseModel(contents)
-    val interface = modelMap(ModelSection.Interface)
-    val source    = modelMap(ModelSection.Code).mkString("\n")
-    val version   = modelMap(ModelSection.Version).head
-
-    val turtleShapes = {
-      val shapeSeq = VectorShape.parseShapes(modelMap(ModelSection.TurtleShapes).toArray, version).asScala.toSeq
-      new ShapeList(AgentKind.Turtle, shapeSeq)
-    }
-
-    val linkShapes = {
-      val shapeSeq = LinkShape.parseShapes(modelMap(ModelSection.LinkShapes).  toArray, version).asScala.toSeq
-      new ShapeList(AgentKind.Link, shapeSeq)
-    }
-
-    val (iGlobals, _, _, _, iGlobalCmds) = new WidgetParser(new DefaultParserServices(FrontEnd)).parseWidgets(interface)
-
-    val patchSize = interface(7).toDouble
-    val Seq(wrapX, wrapY, _, minX, maxX, minY, maxY) = 14 to 20 map { x => interface(x).toInt }
-    val dimensions = WorldDimensions(minX, maxX, minY, maxY, patchSize, wrapY != 0, wrapX != 0)
-
-    NetLogoCompiler(iGlobals, iGlobalCmds, dimensions, turtleShapes, linkShapes)(source)
-
+    val model = ModelReader.parseModel(contents, Option(new DefaultParserServices(FrontEnd)))
+    NetLogoCompiler(model).compiled
   }
+
+  def blank: NetLogoCompiler = NetLogoCompiler(Model())
 
 }

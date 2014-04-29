@@ -3,6 +3,8 @@
 @views.html.core.component.netLogoView(component.topBarText()) {
 
   <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
+  <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("mori.js"))'></script>
+  <script type="text/javascript" src='@routes.WebJarAssets.at(WebJarAssets.locate("lodash.js"))'></script>
   <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
   @views.html.core.component.clientImports("chat-local-module")
 
