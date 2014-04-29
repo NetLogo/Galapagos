@@ -83,11 +83,6 @@ case class NetLogoCompiler(iGlobals:     Seq[String]     = Seq(),
 
 object NetLogoCompiler {
 
-  def fromCodeAndDims(source: String, dimensions: (Int, Int, Int, Int)): (NetLogoCompiler, String) = {
-    val (minX, maxX, minY, maxY) = dimensions
-    NetLogoCompiler(dimensions = WorldDimensions(minX, maxX, minY, maxY))(source)
-  }
-
   def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {
 
     import collection.JavaConverters.iterableAsScalaIterableConverter

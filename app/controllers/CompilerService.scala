@@ -30,7 +30,7 @@ object CompilerService extends Controller {
 
   private type DimsType = (Int, Int, Int, Int)
 
-  private val MissingArgsMsg = "Your request must include either ('netlogo_code' and 'dimensions') or 'nlogo_url' or 'nlogo' as arguments."
+  private val MissingArgsMsg = "Your request must include either 'nlogo_url' or 'nlogo' as arguments."
   private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formatted as a JSON array of strings."
 
   def compile = Action {
@@ -44,10 +44,6 @@ object CompilerService extends Controller {
           NetLogoCompiler.fromNLogoFile(nlogoContents)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
-        (source, dims) => NetLogoCompiler.fromCodeAndDims(source, dims)
-      }
-
       val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMsg) {
         NetLogoCompiler.fromNLogoFile
       }
@@ -55,7 +51,7 @@ object CompilerService extends Controller {
       val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
       val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
 
-      val maybeResult = (fromSrcAndDims orElse fromURL orElse fromNlogo) flatMap {
+      val maybeResult = (fromURL orElse fromNlogo) flatMap {
         case (compiler, js) =>
           val maybeCompiledCommands  = maybeCommands  map {_ map { stmt => compiler.runCommand (stmt)._2 } }
           val maybeCompiledReporters = maybeReporters map {_ map { stmt => compiler.runReporter(stmt)._2 } }
@@ -84,15 +80,11 @@ object CompilerService extends Controller {
         url => ModelSaver(url, jsURLs)
       }
 
-      val fromSrcAndDims = maybeBuildFromSrcAndDims(argMap, MissingArgsMsg) {
-        (source, dims) => ModelSaver(source, dims, jsURLs)
-      }
-
       val fromNlogo = maybeBuildFromNlogo(fileMap, MissingArgsMsg) {
         contents => ModelSaver(contents, jsURLs)
       }
 
-      (fromSrcAndDims orElse fromURL orElse fromNlogo) fold (
+      (fromURL orElse fromNlogo) fold (
         nel    => ExpectationFailed(nel.list.mkString("\n")),
         bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
       )
@@ -136,40 +128,6 @@ object CompilerService extends Controller {
           "An unknown error has occurred in processing your 'nlogo_url' value".failNel
         }
     }
-
-  private def maybeBuildFromSrcAndDims[T](argMap: Map[String, String], errorStr: String)
-                                         (f: (String, DimsType) => T): ValidationNel[String, T] = {
-
-    val sourceMaybe =
-      argMap get "netlogo_code" map (
-        _.successNel
-      ) getOrElse {
-        errorStr.failNel
-      }
-
-    val DimensionsRegex = {
-      val s = "\\s*"
-      val n = "-?\\d+"
-      s"""$s\\[($n),$s($n),$s($n),$s($n)\\]$s""".r
-    }
-
-    val dimensionsMaybe =
-      argMap get "dimensions" map (
-        _.successNel
-      ) getOrElse {
-        errorStr.failNel
-      } flatMap {
-        case DimensionsRegex(minX, maxX, minY, maxY) =>
-          (minX.toInt, maxX.toInt, minY.toInt, maxY.toInt).successNel
-        case _ =>
-          "Expected dimensions in the following format: [minX, maxX, minY, maxY]".failNel
-      }
-
-    (sourceMaybe |@| dimensionsMaybe) {
-      (source, dimensions) => f(source, dimensions)
-    }
-
-  }
 
   private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
                                     (f: (String) => T): ValidationNel[String, T] = {

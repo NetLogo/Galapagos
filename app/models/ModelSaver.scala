@@ -12,11 +12,6 @@ import
 
 object ModelSaver {
 
-  def apply(source: String, dimensions: (Int, Int, Int, Int), urls: Seq[URL]): CompilationBundle = {
-    val netLogoJS = NetLogoCompiler.fromCodeAndDims(source, dimensions)._2
-    CompilationBundle(buildJavaScript(netLogoJS, urls), source)
-  }
-
   def apply(nlogo: String, jsURLs: Seq[URL]): CompilationBundle = {
     val netLogoJS = NetLogoCompiler.fromNLogoFile(nlogo)._2
     val colorized = ModelReader.parseModel(nlogo)(ModelSection.Code).mkString("\n")
