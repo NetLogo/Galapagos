@@ -28,8 +28,6 @@ import
 
 object CompilerService extends Controller {
 
-  private type DimsType = (Int, Int, Int, Int)
-
   private val MissingArgsMsg = "Your request must include either 'nlogo_url' or 'nlogo' as arguments."
   private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formatted as a JSON array of strings."
 
