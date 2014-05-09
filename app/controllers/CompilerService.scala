@@ -3,6 +3,8 @@ package controllers
 import
   java.net.{ MalformedURLException, URL }
 
+import org.nlogo.tortoise.Compiler
+
 import
   scala.util.Try
 
@@ -25,6 +27,9 @@ import
   models.{ local => mlocal, ModelSaver, Util },
     mlocal.NetLogoCompiler,
     Util.usingSource
+
+import
+  play.api.Logger
 
 object CompilerService extends Controller {
 
@@ -63,6 +68,12 @@ object CompilerService extends Controller {
         result => Ok(result)
       )
 
+  }
+
+  def daveCompile = Action {
+    implicit request =>
+      Logger.info(request.body.asText.get)
+      Ok(Compiler.compileCommands(request.body.asText.get))
   }
 
   def saveToHtml = Action {
