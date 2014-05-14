@@ -45,7 +45,7 @@ case class NetLogoCompiler(model:      Model,
   }
 
   def compileWidget(widget: core.Widget) (implicit program: api.Program, procedures: ProceduresMap): String = {
-    import Widget._
+    import WidgetJS._
     widget match {
       case b: core.Button => b.toJS
       case s: core.Slider => s.toJS
