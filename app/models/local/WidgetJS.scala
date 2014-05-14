@@ -6,7 +6,7 @@ import
 import
   org.nlogo.{ api, core, nvm },
     api.Program,
-    core.{ Button, Monitor, Output, Plot, Slider, Switch, TextBox, View, Widget },
+    core.{ Button, Monitor, Output, Plot, Slider, Switch, TextBox, View },
     nvm.FrontEndInterface.ProceduresMap
 
 import
@@ -41,14 +41,12 @@ trait CompilesReporters extends DoesCompilation {
 }
 
 trait WidgetJS {
-  def toJS(implicit program: Program, procedures: ProceduresMap): String = "alert('Other')"
+  def toJS(implicit program: Program, procedures: ProceduresMap): String
 }
 
 object WidgetJS {
 
   private val Placeholder = "\"PLACEHOLDER\""
-
-  implicit class EnhancedWidget(val w: Widget) extends WidgetJS
 
   implicit class EnhancedButton(val b: Button) extends WidgetJS with CompilesCommands {
     override def toJS(implicit program: Program, procedures: ProceduresMap) = {

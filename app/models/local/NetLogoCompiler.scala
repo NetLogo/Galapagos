@@ -5,7 +5,7 @@ import
     api.{ CompilerException, model, Program },
       model.ModelReader,
     compile.front.FrontEnd,
-    core.Model,
+    core.{ Model, Widget },
     nvm.{ DefaultParserServices, FrontEndInterface },
       FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
@@ -44,33 +44,35 @@ case class NetLogoCompiler(model:      Model,
     runCommand(cmd)
   }
 
-  def compileWidget(widget: core.Widget) (implicit program: api.Program, procedures: ProceduresMap): String = {
-    import WidgetJS._
+  def compileWidget(widget: Widget)(implicit program: Program, procedures: ProceduresMap): String = {
+    import WidgetJS._, core._
     widget match {
-      case b: core.Button => b.toJS
-      case s: core.Slider => s.toJS
-      case s: core.Switch => s.toJS
-      case m: core.Monitor => m.toJS
-      case o: core.Output => o.toJS
-      case v: core.View => v.toJS
-      case p: core.Plot => p.toJS
-      case tb: core.TextBox => tb.toJS
-      case _ => "alert('Other')"
+      case b: Button  => b.toJS
+      case s: Slider  => s.toJS
+      case s: Switch  => s.toJS
+      case m: Monitor => m.toJS
+      case o: Output  => o.toJS
+      case v: View    => v.toJS
+      case p: Plot    => p.toJS
+      case t: TextBox => t.toJS
+      case _          => "alert('Other')"
     }
   }
 
   def compiled: (NetLogoCompiler, String) = {
+
     Logger.info("Beginning compilation")
     val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) =
-        Compiler.compileProcedures(model)
+      val (js, newProgram, newProcedures) = Compiler.compileProcedures(model)
       Logger.info("No errors!")
+      val widgetJS = model.widgets.map(compileWidget(_)(newProgram, newProcedures)).mkString("\n")
+      (this.copy(program = newProgram, procedures = newProcedures), js + widgetJS)
 
-      (this.copy(program = newProgram, procedures = newProcedures),
-        js + model.widgets.map(compileWidget(_) (newProgram, newProcedures)).mkString("\n"))
     }
     Logger.info("Compilation complete")
+
     strCompilerOpt getOrElse ((this, ""))
+
   }
 
   def recompile(source: String): (NetLogoCompiler, String) = {
