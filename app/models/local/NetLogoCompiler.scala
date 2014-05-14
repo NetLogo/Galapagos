@@ -55,20 +55,21 @@ case class NetLogoCompiler(model:      Model,
       case v: View    => v.toJS
       case p: Plot    => p.toJS
       case t: TextBox => t.toJS
-      case _          => "alert('Other')"
+      case w          => Logger.warn(s"Unconvertible widget type: ${w.getClass.getSimpleName}"); "alert('Other')"
     }
   }
 
   def compiled: (NetLogoCompiler, String) = {
 
     Logger.info("Beginning compilation")
+
     val strCompilerOpt = carefullyCompile {
       val (js, newProgram, newProcedures) = Compiler.compileProcedures(model)
       Logger.info("No errors!")
       val widgetJS = model.widgets.map(compileWidget(_)(newProgram, newProcedures)).mkString("\n")
       (this.copy(program = newProgram, procedures = newProcedures), js + widgetJS)
-
     }
+
     Logger.info("Compilation complete")
 
     strCompilerOpt getOrElse ((this, ""))
