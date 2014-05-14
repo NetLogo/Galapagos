@@ -61,7 +61,7 @@ object WidgetJS {
       def intOrFunc(str: String): String =
         Try(str.toDouble).map(_ => str).getOrElse(s"function() { return ${compileReporter(str)} }")
 
-      val min :: max :: step = List(s.min, s.max, s.step) map intOrFunc
+      val Seq(min, max, step) = Seq(s.min, s.max, s.step) map intOrFunc
 
       val varName    = "newVal"
       val setterCode = compileCommands(s"""set ${s.varName} $Placeholder """).replace(Placeholder, varName)
