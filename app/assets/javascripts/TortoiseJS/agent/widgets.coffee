@@ -87,7 +87,7 @@ window.Widgets =
       update = () ->
         if valueLabel != undefined
           valueLabel.innerHTML = input.value
-        setter(input.value)
+        setter(parseInt(input.value))
       input.value = def
       input.oninput = update
       input.onchange = update
