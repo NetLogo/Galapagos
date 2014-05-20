@@ -1,7 +1,7 @@
 jdk: oraclejdk7
 language: scala
 env:
-  - PLAY_VERSION=2.2.2
+  - PLAY_VERSION=2.2.3
 before_script:
   - wget http://downloads.typesafe.com/play/${PLAY_VERSION}/play-${PLAY_VERSION}.zip
   - unzip -q play-${PLAY_VERSION}.zip
