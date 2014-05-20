@@ -130,7 +130,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   protected def workspace(nlogoContents: String): WebWorkspace = {
 
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    val model  = ModelReader.parseModel(nlogoContents, Option(new DefaultParserServices(FrontEnd)))
+    val model  = ModelReader.parseModel(nlogoContents, new DefaultParserServices(FrontEnd))
 
     wspace.openModel(model)
     wspace.setOutputCallback((output: String) => channel ! CommandOutput("observer", output))

@@ -17,7 +17,7 @@ object ModelSaver {
 
   def apply(nlogo: String, jsURLs: Seq[URL]): CompilationBundle = {
     val netLogoJS = NetLogoCompiler.fromNLogoFile(nlogo)._2
-    val code      = ModelReader.parseModel(nlogo, Option(new DefaultParserServices(FrontEnd))).code
+    val code      = ModelReader.parseModel(nlogo, new DefaultParserServices(FrontEnd)).code
     CompilationBundle(buildJavaScript(netLogoJS, jsURLs), code)
   }
 

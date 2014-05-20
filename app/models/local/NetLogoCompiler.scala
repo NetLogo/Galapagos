@@ -85,7 +85,7 @@ case class NetLogoCompiler(model:      Model,
 object NetLogoCompiler {
 
   def fromNLogoFile(contents: String): (NetLogoCompiler, String) = {
-    val model = ModelReader.parseModel(contents, Option(new DefaultParserServices(FrontEnd)))
+    val model = ModelReader.parseModel(contents, new DefaultParserServices(FrontEnd))
     NetLogoCompiler(model).compiled
   }
 
