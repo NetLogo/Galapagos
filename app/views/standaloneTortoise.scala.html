@@ -97,7 +97,7 @@
 
         var speed      = Math.exp(document.getElementById('speed-slider').value);
         var delta      = Math.min(new Date().getTime() - lastUpdate, 30);
-        var numUpdates = speed * delta / 1000 + 1;
+        var numUpdates = Math.floor(speed * delta / 1000 + 1);
 
         for (var i=0; i < numUpdates; i++) {
           Widgets.runUpdateFuncs()
