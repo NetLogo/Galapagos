@@ -14,13 +14,12 @@ window.Widgets =
     e.style.top = top
     e.style.left = left
   addButton: (display, left, top, right, bottom, code, forever) ->
+    escapedDisplay = display.replace("'", "\\'")
     @widgets.push(((session) =>
-      buttons = session.container.querySelectorAll("button")
-      for b in buttons
-        if b.getAttribute("netlogodisplay") == display
-          button = b
-      if button == undefined
+      button = session.container.querySelector("button[netlogo-display='#{escapedDisplay}']")
+      if not button?
         button = document.createElement('button')
+        button.setAttribute('netlogo-display', display) # setAttribute handles escaping
         button.style.position = "absolute"
         button.style.fontSize = "8pt"
         @setDimensions(button, left, top, right, bottom)
@@ -39,13 +38,11 @@ window.Widgets =
         button.onclick = code
     ))
   addSlider: (display, left, top, right, bottom, setter, min, max, def, step) ->
+    escapedDisplay = display.replace("'", "\\'")
     @widgets.push(((session) =>
-      inputs = session.container.querySelectorAll("input")
-      for i in inputs
-        if i.getAttribute("netlogodisplay") == display
-          input = i
-
-      if input == undefined
+      input = session.container.querySelector(
+        "input[type=range][netlogo-display='#{escapedDisplay}']")
+      if not input?
         slider = document.createElement('div')
         slider.style.position = "absolute"
         slider.style.fontSize = "8pt"
@@ -56,6 +53,7 @@ window.Widgets =
         valueLabel.style.cssFloat = "right"
 
         input = document.createElement('input')
+        input.setAttribute('netlogo-display', display) # setAttribute handles escaping
         input.type = "range"
         if typeof(max) != 'number'
           input.max = max()
@@ -94,19 +92,19 @@ window.Widgets =
     ))
 
   addSwitch: (display, left, top, right, bottom, setter) ->
+    escapedDisplay = display.replace("'", "\\'")
     @widgets.push(((session) =>
-      inputs = session.container.querySelectorAll('input[type="checkbox"]')
-      for i in inputs
-        if i.getAttribute("netlogodisplay") == display
-          input = i
+      input = session.container.querySelector(
+        "input[type='checkbox'][netlogo-display='#{escapedDisplay}']")
 
-      if input == undefined
+      if not input?
         swtch = document.createElement('div')
         swtch.style.position = "absolute"
         swtch.style.fontSize = "8pt"
         @setDimensions(swtch, left, top, right, bottom)
 
         input = document.createElement('input')
+        input.setAttribute('netlogo-display', display) # setAttribute handles escaping
         input.type = "checkbox"
         input.style.cssFloat = "left"
 
@@ -122,12 +120,10 @@ window.Widgets =
     ))
 
   addMonitor: (display, left, top, right, bottom, code) ->
+    escapedDisplay = display.replace("'", "\\'")
     @widgets.push(((session) =>
-      monitors = session.container.querySelectorAll("div")
-      for m in monitors
-        if m.getAttribute("netlogodisplay") == display
-          value = m
-      if value == undefined
+      value = session.container.querySelector("div[netlogo-display='#{escapedDisplay}']")
+      if not value?
         monitor = document.createElement('div')
         monitor.style.position = "absolute"
         monitor.style.fontSize = "8pt"
@@ -140,6 +136,7 @@ window.Widgets =
         heading.style.position = "relative"
 
         value = document.createElement('div')
+        value.setAttribute('netlogo-display', display) # setAttribute handles escaping
         value.style.backgroundColor = "white"
         value.style.position = "relative"
         value.style.margin = 4
@@ -153,13 +150,12 @@ window.Widgets =
       @widgetUpdateFuncs.push((() -> value.innerHTML = code()))
     ))
   addTextBox: (display, left, top, right, bottom) ->
+    escapedDisplay = display.replace("'", "\\'")
     @widgets.push(((session) =>
-      divs = session.container.querySelectorAll("div")
-      for div in divs
-        if div.getAttribute("netlogodisplay") == display
-          textBox = div
-      if textBox == undefined
+      textBox = session.container.querySelector("div[netlogo-display='#{escapedDisplay}']")
+      if not textBox?
         textBox = document.createElement('div')
+        textBox.setAttribute('netlogo-display', display) # setAttribute handles escaping
         textBox.style.position = "absolute"
         textBox.style.fontSize = "8pt"
         textBox.style.border = "2px solid black"
