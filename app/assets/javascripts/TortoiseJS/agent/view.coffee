@@ -196,22 +196,23 @@ class TurtleView extends View
     @quality = 3
 
   drawTurtle: (turtle, canWrapX, canWrapY) ->
-    xcor = turtle.xcor or 0
-    ycor = turtle.ycor or 0
-    size = turtle.size or 1
-    @drawTurtleAt(turtle, xcor, ycor)
-    if canWrapX
-      if xcor - size < @minpxcor
-        @drawTurtleAt(turtle, xcor + @patchWidth, ycor)
-      # Note that these CANNOT be `else if`s. Large turtles can wrap on both
-      # sides. -- BCH (3/30/2014)
-      if xcor + size > @maxpxcor
-        @drawTurtleAt(turtle, xcor - @patchWidth, ycor)
-    if canWrapY
-      if ycor - size < @minpycor
-        @drawTurtleAt(turtle, xcor, ycor + @patchHeight)
-      if ycor + size > @maxpycor
-        @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
+    if not turtle['hidden?']
+      xcor = turtle.xcor or 0
+      ycor = turtle.ycor or 0
+      size = turtle.size or 1
+      @drawTurtleAt(turtle, xcor, ycor)
+      if canWrapX
+        if xcor - size < @minpxcor
+          @drawTurtleAt(turtle, xcor + @patchWidth, ycor)
+        # Note that these CANNOT be `else if`s. Large turtles can wrap on both
+        # sides. -- BCH (3/30/2014)
+        if xcor + size > @maxpxcor
+          @drawTurtleAt(turtle, xcor - @patchWidth, ycor)
+      if canWrapY
+        if ycor - size < @minpycor
+          @drawTurtleAt(turtle, xcor, ycor + @patchHeight)
+        if ycor + size > @maxpycor
+          @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
 
   drawTurtleAt: (turtle, xcor, ycor) ->
     heading = turtle.heading or 0
@@ -235,66 +236,67 @@ class TurtleView extends View
     @ctx.lineTo(x2,y2)
 
   drawLink: (link, turtles, canWrapX, canWrapY) ->
-    end1 = turtles[link.end1]
-    end2 = turtles[link.end2]
+    if not link['hidden?']
+      end1 = turtles[link.end1]
+      end2 = turtles[link.end2]
 
-    x1 = end1.xcor
-    y1 = end1.ycor
-    x2 = end2.xcor
-    y2 = end2.ycor
+      x1 = end1.xcor
+      y1 = end1.ycor
+      x2 = end2.xcor
+      y2 = end2.ycor
 
-    wrapX = canWrapX and (x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2)
-    wrapY = canWrapY and (y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2))
+      wrapX = canWrapX and (x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2)
+      wrapY = canWrapY and (y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2))
 
-    @ctx.strokeStyle = netlogoColorToCSS(link.color)
-    @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
-    @ctx.beginPath()
+      @ctx.strokeStyle = netlogoColorToCSS(link.color)
+      @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
+      @ctx.beginPath()
 
-    if wrapX and wrapY
-      # Unnecessary lines are drawn here since we're not checking to see which
-      # are actually on screen. However, browsers are better at these checks
-      # than we are and will ignore offscreen stuff. Thus, we shouldn't bother
-      # checking unless we see a consistent performance improvement. Note that
-      # at least 3 lines will be needed in the majority of cases and 4 lines 
-      # are necessary in certain cases. -- BCH (3/30/2014)
-      if x1 < x2
-        if y1 < y2
-          @drawLine(x1, y1, x2 - @patchWidth, y2 - @patchHeight)
-          @drawLine(x1 + @patchWidth, y1, x2, y2 - @patchHeight)
-          @drawLine(x1 + @patchWidth, y1 + @patchHeight, x2, y2)
-          @drawLine(x1, y1 + @patchHeight, x2 - @patchWidth, y2)
+      if wrapX and wrapY
+        # Unnecessary lines are drawn here since we're not checking to see which
+        # are actually on screen. However, browsers are better at these checks
+        # than we are and will ignore offscreen stuff. Thus, we shouldn't bother
+        # checking unless we see a consistent performance improvement. Note that
+        # at least 3 lines will be needed in the majority of cases and 4 lines 
+        # are necessary in certain cases. -- BCH (3/30/2014)
+        if x1 < x2
+          if y1 < y2
+            @drawLine(x1, y1, x2 - @patchWidth, y2 - @patchHeight)
+            @drawLine(x1 + @patchWidth, y1, x2, y2 - @patchHeight)
+            @drawLine(x1 + @patchWidth, y1 + @patchHeight, x2, y2)
+            @drawLine(x1, y1 + @patchHeight, x2 - @patchWidth, y2)
+          else
+            @drawLine(x1, y1, x2 - @patchWidth, y2 + @patchHeight)
+            @drawLine(x1 + @patchWidth, y1, x2, y2 + @patchHeight)
+            @drawLine(x1 + @patchWidth, y1 - @patchHeight, x2, y2)
+            @drawLine(x1, y1 - @patchHeight, x2 - @patchWidth, y2)
         else
-          @drawLine(x1, y1, x2 - @patchWidth, y2 + @patchHeight)
-          @drawLine(x1 + @patchWidth, y1, x2, y2 + @patchHeight)
-          @drawLine(x1 + @patchWidth, y1 - @patchHeight, x2, y2)
-          @drawLine(x1, y1 - @patchHeight, x2 - @patchWidth, y2)
-      else
-        if y1 < y2
-          @drawLine(x1, y1, x2 + @patchWidth, y2 - @patchHeight)
-          @drawLine(x1 - @patchWidth, y1, x2, y2 - @patchHeight)
-          @drawLine(x1 - @patchWidth, y1 + @patchHeight, x2, y2)
-          @drawLine(x1, y1 + @patchHeight, x2 + @patchWidth, y2)
+          if y1 < y2
+            @drawLine(x1, y1, x2 + @patchWidth, y2 - @patchHeight)
+            @drawLine(x1 - @patchWidth, y1, x2, y2 - @patchHeight)
+            @drawLine(x1 - @patchWidth, y1 + @patchHeight, x2, y2)
+            @drawLine(x1, y1 + @patchHeight, x2 + @patchWidth, y2)
+          else
+            @drawLine(x1, y1, x2 + @patchWidth, y2 + @patchHeight)
+            @drawLine(x1 - @patchWidth, y1, x2, y2 + @patchHeight)
+            @drawLine(x1 - @patchWidth, y1 - @patchHeight, x2, y2)
+            @drawLine(x1, y1 - @patchHeight, x2 + @patchWidth, y2)
+      else if wrapX
+        if x1 < x2
+          @drawLine(x1, y1, x2 - @patchWidth, y2)
+          @drawLine(x1 + @patchWidth, y1, x2, y2)
         else
-          @drawLine(x1, y1, x2 + @patchWidth, y2 + @patchHeight)
-          @drawLine(x1 - @patchWidth, y1, x2, y2 + @patchHeight)
-          @drawLine(x1 - @patchWidth, y1 - @patchHeight, x2, y2)
-          @drawLine(x1, y1 - @patchHeight, x2 + @patchWidth, y2)
-    else if wrapX
-      if x1 < x2
-        @drawLine(x1, y1, x2 - @patchWidth, y2)
-        @drawLine(x1 + @patchWidth, y1, x2, y2)
+          @drawLine(x1, y1, x2 + @patchWidth, y2)
+          @drawLine(x1 - @patchWidth, y1, x2, y2)
+      else if wrapY
+        if y1 < y2
+          @drawLine(x1, y1, x2, y2 - @patchHeight)
+          @drawLine(x1, y1 + @patchHeight, x2, y2)
+        else
+          @drawLine(x1, y1 - @patchHeight, x2, y2)
+          @drawLine(x1, y1, x2, y2 + @patchHeight)
       else
-        @drawLine(x1, y1, x2 + @patchWidth, y2)
-        @drawLine(x1 - @patchWidth, y1, x2, y2)
-    else if wrapY
-      if y1 < y2
-        @drawLine(x1, y1, x2, y2 - @patchHeight)
-        @drawLine(x1, y1 + @patchHeight, x2, y2)
-      else
-        @drawLine(x1, y1 - @patchHeight, x2, y2)
-        @drawLine(x1, y1, x2, y2 + @patchHeight)
-    else
-      @drawLine(x1, y1, x2, y2)
+        @drawLine(x1, y1, x2, y2)
 
     @ctx.stroke()
 
