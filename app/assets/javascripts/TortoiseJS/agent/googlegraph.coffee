@@ -37,11 +37,11 @@ window.GoogleGraph = {
     google.setOnLoadCallback(@drawPlot.bind(this))
 
   plot: (y) ->
-    if @xpoint % 20 == 0
-      @data.addRow([@xpoint,y])
+    @data.addRow([@xpoint,y])
     @xpoint++
 
   reset: () ->
     if @data
       @data.removeRows(0, @data.getNumberOfRows())
+    @xpoint = 0
 }

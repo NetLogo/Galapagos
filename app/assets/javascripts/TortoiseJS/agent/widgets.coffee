@@ -15,7 +15,7 @@ window.Widgets =
     e.style.left = left
   addButton: (display, left, top, right, bottom, code, forever) ->
     escapedDisplay = display.replace("'", "\\'")
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       button = session.container.querySelector("button[netlogo-display='#{escapedDisplay}']")
       if not button?
         button = document.createElement('button')
@@ -29,17 +29,17 @@ window.Widgets =
         if forever then " (Off)" else ""
       if forever
         running = false
-        button.onclick = () ->
+        button.addEventListener("click",(() ->
           running = !running
           button.innerHTML = display +
-            if running then " (On)" else " (Off)"
+            if running then " (On)" else " (Off)"))
         @widgetUpdateFuncs.push((() -> if running then code()))
       else
-        button.onclick = code
-    ))
+        button.addEventListener("click", code)
+    )
   addSlider: (display, left, top, right, bottom, setter, min, max, def, step) ->
     escapedDisplay = display.replace("'", "\\'")
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       input = session.container.querySelector(
         "input[type=range][netlogo-display='#{escapedDisplay}']")
       if not input?
@@ -48,33 +48,33 @@ window.Widgets =
         slider.style.fontSize = "8pt"
         @setDimensions(slider, left, top, right, bottom)
 
-        valueLabel = document.createElement('div')
+        valueLabel = document.createElement('label')
         valueLabel.innerHTML = def
         valueLabel.style.cssFloat = "right"
 
         input = document.createElement('input')
         input.setAttribute('netlogo-display', display) # setAttribute handles escaping
         input.type = "range"
-        if typeof(max) != 'number'
+        if typeof(max) == 'function'
           input.max = max()
           @sliderUpdateFuncs.push((() -> input.max = max()))
         else
           input.max = max
 
-        if typeof(min) != 'number'
+        if typeof(min) == 'function'
           input.min = min()
           @sliderUpdateFuncs.push((() -> input.min = min()))
         else
           input.min = min
 
-        if typeof(step) != 'number'
+        if typeof(step) == 'function'
           input.step = step()
           @sliderUpdateFuncs.push((() -> input.step = step()))
         else
         input.step = step
         input.style.width = "100%"
 
-        label = document.createElement('div')
+        label = document.createElement('label')
         label.innerHTML = display
 
         slider.appendChild(input)
@@ -83,17 +83,18 @@ window.Widgets =
         session.container.appendChild(slider)
 
       update = () ->
+        if valueLabel == undefined
+          valueLabel = (if input.id.length > 0 then session.container.queryElement("label[for='#{input.id}']")) or (if input.parentElement.tagName == 'LABEL' then input.parentElement)
         if valueLabel != undefined
           valueLabel.innerHTML = input.value
         setter(parseInt(input.value))
       input.value = def
-      input.oninput = update
-      input.onchange = update
-    ))
+      input.addEventListener("input", update)
+    )
 
   addSwitch: (display, left, top, right, bottom, setter) ->
     escapedDisplay = display.replace("'", "\\'")
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       input = session.container.querySelector(
         "input[type='checkbox'][netlogo-display='#{escapedDisplay}']")
 
@@ -108,7 +109,7 @@ window.Widgets =
         input.type = "checkbox"
         input.style.cssFloat = "left"
 
-        label = document.createElement('div')
+        label = document.createElement('label')
         label.innerHTML = display
 
         swtch.appendChild(input)
@@ -117,11 +118,11 @@ window.Widgets =
 
       input.onchange = () ->
         setter(input.checked)
-    ))
+    )
 
   addMonitor: (display, left, top, right, bottom, code) ->
     escapedDisplay = display.replace("'", "\\'")
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       value = session.container.querySelector("div[netlogo-display='#{escapedDisplay}']")
       if not value?
         monitor = document.createElement('div')
@@ -130,7 +131,7 @@ window.Widgets =
         monitor.style.backgroundColor = "#CCCCCC"
         @setDimensions(monitor, left, top, right, bottom)
 
-        heading = document.createElement('div')
+        heading = document.createElement('label')
         heading.style.margin = 4
         heading.innerHTML = display
         heading.style.position = "relative"
@@ -148,10 +149,10 @@ window.Widgets =
 
       value.innerHTML = "0"
       @widgetUpdateFuncs.push((() -> value.innerHTML = code()))
-    ))
+    )
   addTextBox: (display, left, top, right, bottom) ->
     escapedDisplay = display.replace("'", "\\'")
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       textBox = session.container.querySelector("div[netlogo-display='#{escapedDisplay}']")
       if not textBox?
         textBox = document.createElement('div')
@@ -163,16 +164,16 @@ window.Widgets =
         @setDimensions(textBox, left + 2, top + 2, right - 2, bottom - 2)
         textBox.innerHTML = display
         session.container.appendChild(textBox)
-    ))
+    )
     #alert("Output")
   addOutput: (display, left, top, right, bottom) ->
     #alert("Output")
   addView: (left, top, right, bottom) ->
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       @setDimensions(session.controller.layers, left, top, right, bottom)
-    ))
+    )
   addPlot: (display, left, top, right, bottom, ymin, ymax, xmin, xmax) ->
-    @widgets.push(((session) =>
+    @widgets.push((session) =>
       if(session.plot)
         plot = document.createElement('div')
         plot.style.position = "absolute"
@@ -180,4 +181,4 @@ window.Widgets =
         @setDimensions(plot, left, top, right, bottom)
         session.container.appendChild(plot)
         session.plot.boot(display, ymin, ymax, xmin, xmax, plot)
-    ))
+    )

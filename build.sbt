@@ -9,7 +9,7 @@ scalaVersion := "2.10.4"
 scalacOptions += "-language:_"
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-941c836"
+  "org.nlogo" % "tortoise" % "0.1-33cb378"
 )
 
 libraryDependencies ++= Seq(

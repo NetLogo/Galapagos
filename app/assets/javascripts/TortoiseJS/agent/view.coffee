@@ -5,12 +5,12 @@ class window.AgentStreamController
   constructor: (@container) ->
     @layers = document.createElement('div');
     @layers.style.width = '100%'
-    @layers.style.position = 'absolute'
+    @layers.style.position = 'relative'
     @layers.classList.add('view-layers')
     @container.appendChild(@layers)
     @spotlightView = new SpotlightView()
     @turtleView = new TurtleView()
-    @patchView = new PatchView(@layers)
+    @patchView = new PatchView()
     # patchView must keep normal positioning so that it trying to maintain its
     # aspect ratio forces the container to stay tall enough, thus maintaining
     # flow with the rest of the page. Hence, we don't set its position
