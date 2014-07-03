@@ -29,13 +29,13 @@ sealed trait DoesCompilation {
 }
 
 trait CompilesCommands extends DoesCompilation {
-  override protected val defaultJS = "function() {}"
+  override protected val defaultJS = ""
   protected def compileCommands(logo: String)(implicit oldProcedures: ProceduresMap, program: Program): String =
     compile(_.compileCommands(logo, oldProcedures, program))
 }
 
 trait CompilesReporters extends DoesCompilation {
-  override protected val defaultJS = "function() { return \"ERROR\" }"
+  override protected val defaultJS = "\"ERROR\""
   protected def compileReporter(logo: String)(implicit oldProcedures: ProceduresMap, program: Program): String =
     compile(_.compileReporter(logo, oldProcedures, program))
 }
