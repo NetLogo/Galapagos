@@ -3,30 +3,40 @@ if not window.AgentModel?
 
 class window.AgentStreamController
   constructor: (@container) ->
-    @layers = document.createElement('div');
-    @layers.style.width = '100%'
-    @layers.style.position = 'relative'
-    @layers.classList.add('view-layers')
-    @container.appendChild(@layers)
-    @spotlightView = new SpotlightView()
-    @turtleView = new TurtleView()
-    @patchView = new PatchView()
-    # patchView must keep normal positioning so that it trying to maintain its
-    # aspect ratio forces the container to stay tall enough, thus maintaining
-    # flow with the rest of the page. Hence, we don't set its position
-    # 'absolute'
-    @spotlightView.canvas.style.position = 'absolute'
-    @spotlightView.canvas.style.top = '0px'
-    @spotlightView.canvas.style.left = '0px'
-    @spotlightView.canvas.style['z-index'] = 2
-    @turtleView.canvas.style.position = 'absolute'
-    @turtleView.canvas.style.top = '0px'
-    @turtleView.canvas.style.left = '0px'
-    @turtleView.canvas.style['z-index'] = 1
-    @patchView.canvas.style['z-index'] = 0
-    @layers.appendChild(@spotlightView.canvas)
-    @layers.appendChild(@patchView.canvas)
-    @layers.appendChild(@turtleView.canvas)
+    @layers = @container.querySelector('.view-layers')
+
+    if @layers?
+      @spotlightView = new SpotlightView(@layers.querySelector('.spotlight-view'))
+      @turtleView = new TurtleView(@layers.querySelector('.turtle-view'))
+      @patchView = new PatchView(@layers.querySelector('.patch-view'))
+    else
+      @spotlightView = new SpotlightView()
+      @turtleView = new TurtleView()
+      @patchView = new PatchView()
+      @layers = document.createElement('div')
+      @layers.style.width = '100%'
+      @layers.style.position = 'relative'
+      @layers.classList.add('view-layers')
+      @container.appendChild(@layers)
+      # patchView must keep normal positioning so that it trying to maintain its
+      # aspect ratio forces the container to stay tall enough, thus maintaining
+      # flow with the rest of the page. Hence, we don't set its position
+      # 'absolute'
+      @spotlightView.canvas.style.position = 'absolute'
+      @spotlightView.canvas.style.top = '0px'
+      @spotlightView.canvas.style.left = '0px'
+      @spotlightView.canvas.style['z-index'] = 2
+      @spotlightView.canvas.classList.add('spotlight-view')
+      @turtleView.canvas.style.position = 'absolute'
+      @turtleView.canvas.style.top = '0px'
+      @turtleView.canvas.style.left = '0px'
+      @turtleView.canvas.style['z-index'] = 1
+      @turtleView.canvas.classList.add('turtle-view')
+      @patchView.canvas.style['z-index'] = 0
+      @patchView.canvas.classList.add('patch-view')
+      @layers.appendChild(@spotlightView.canvas)
+      @layers.appendChild(@patchView.canvas)
+      @layers.appendChild(@turtleView.canvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -60,16 +70,17 @@ class window.AgentStreamController
     @model.update(modelUpdate)
 
 class View
-  constructor: () ->
+  constructor: (@canvas) ->
     # Have size = 1 actually be patch-size pixels results in worse quality
     # for turtles. `quality` scales the number of pixels used. It should be as
     # small as possible as overly large canvases can crash computers
     @quality = 1
-    @canvas = document.createElement('canvas')
-    @canvas.class = 'netlogo-canvas'
-    @canvas.width = 500
-    @canvas.height = 500
-    @canvas.style.width = "100%"
+    if not @canvas?
+      @canvas = document.createElement('canvas')
+      @canvas.class = 'netlogo-canvas'
+      @canvas.width = 500
+      @canvas.height = 500
+      @canvas.style.width = "100%"
     @ctx = @canvas.getContext('2d')
 
   matchesWorld: (world) ->
@@ -185,8 +196,8 @@ class SpotlightView extends View
       @drawSpotlight(xcor, ycor,  @adjustSize(size))
 
 class TurtleView extends View
-  constructor: () ->
-    super()
+  constructor: (canvas) ->
+    super(canvas)
     @drawer = new CachingShapeDrawer({})
     # Using quality = 1 here results in very pixelated turtles when using the
     # CachingShapeDrawer, something weird about the turtle image scaling.
@@ -327,8 +338,8 @@ class TurtleView extends View
 # You can read about it here:
 # https://developer.mozilla.org/en-US/docs/Web/CSS/image-rendering
 class PatchView extends View
-  constructor: () ->
-    super()
+  constructor: (canvas) ->
+    super(canvas)
     @scratchCanvas = document.createElement('canvas')
     @scratchCtx = @scratchCanvas.getContext('2d')
     @quality = 2 # Avoids antialiasing somewhat when image is stretched.
