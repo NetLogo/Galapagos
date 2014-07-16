@@ -40,56 +40,72 @@ window.Widgets =
   addSlider: (display, left, top, right, bottom, setter, min, max, def, step) ->
     escapedDisplay = display.replace("'", "\\'")
     @widgets.push((session) =>
-      input = session.container.querySelector(
-        "input[type=range][netlogo-display='#{escapedDisplay}']")
-      if not input?
+      inputs = session.container.querySelectorAll(
+        "input[type=range][netlogo-display='#{escapedDisplay}'], "+
+        "input[type=number][netlogo-display='#{escapedDisplay}']")
+      if inputs.length == 0
         slider = document.createElement('div')
         slider.style.position = "absolute"
         slider.style.fontSize = "8pt"
         @setDimensions(slider, left, top, right, bottom)
 
-        valueLabel = document.createElement('label')
-        valueLabel.innerHTML = def
-        valueLabel.style.cssFloat = "right"
+        width = Math.max(min.toString().length, max.toString().length) + 2
+        
+        numberInput = document.createElement('input')
+        numberInput.type = "number"
+        numberInput.setAttribute('netlogo-display', display)
+        numberInput.style.cssFloat = "right"
+        numberInput.style.fontSize = "8pt"
+        numberInput.style.width = width + "em"
+        numberInput.style.padding = "0px"
+        # Getting all the components to stay within the bounds of the slider
+        # for both Chrome and Firefox at the same time was awful. This is the
+        # best I could come up with.
+        # BCH 7/16/2014
+        numberInput.style.marginTop = "-3px"
+        numberInput.style.borderWidth = "1px"
+        numberInput.style.textAlign = "right"
 
-        input = document.createElement('input')
-        input.setAttribute('netlogo-display', display) # setAttribute handles escaping
-        input.type = "range"
-        if typeof(max) == 'function'
-          input.max = max()
-          @sliderUpdateFuncs.push((() -> input.max = max()))
-        else
-          input.max = max
-
-        if typeof(min) == 'function'
-          input.min = min()
-          @sliderUpdateFuncs.push((() -> input.min = min()))
-        else
-          input.min = min
-
-        if typeof(step) == 'function'
-          input.step = step()
-          @sliderUpdateFuncs.push((() -> input.step = step()))
-        else
-        input.step = step
-        input.style.width = "100%"
+        rangeInput = document.createElement('input')
+        rangeInput.setAttribute('netlogo-display', display) # setAttribute handles escaping
+        rangeInput.type = "range"
+        rangeInput.style.width = "97%"
+        rangeInput.style.padding = "0px"
 
         label = document.createElement('label')
         label.innerHTML = display
 
-        slider.appendChild(input)
-        slider.appendChild(valueLabel)
+        slider.appendChild(rangeInput)
+        label.appendChild(numberInput)
         slider.appendChild(label)
         session.container.appendChild(slider)
 
-      update = () ->
-        if valueLabel == undefined
-          valueLabel = (if input.id.length > 0 then session.container.queryElement("label[for='#{input.id}']")) or (if input.parentElement.tagName == 'LABEL' then input.parentElement)
-        if valueLabel != undefined
-          valueLabel.innerHTML = input.value
-        setter(parseInt(input.value))
-      input.value = def
-      input.addEventListener("input", update)
+        inputs = [rangeInput, numberInput]
+
+      update = (e) ->
+        value = parseInt(e.target.value)
+        if not isNaN(value)
+          for input in inputs
+            input.value = value
+          setter(value)
+
+      for input in inputs 
+        if typeof(max) == 'function'
+          @sliderUpdateFuncs.push((() -> input.max = max()))
+        input.max = max
+
+        if typeof(min) == 'function'
+          @sliderUpdateFuncs.push((() -> input.min = min()))
+        input.min = min
+
+        if typeof(step) == 'function'
+          @sliderUpdateFuncs.push((() -> input.step = step()))
+        input.step = step
+
+        input.value = def
+
+        input.addEventListener("input", update)
+
     )
 
   addSwitch: (display, left, top, right, bottom, setter) ->
