@@ -5,7 +5,7 @@ import
     api.{ CompilerException, model, Program },
       model.ModelReader,
     compile.front.FrontEnd,
-    core.Model,
+    core.{ Model, Widget },
     nvm.{ DefaultParserServices, FrontEndInterface },
       FrontEndInterface.{ NoProcedures, ProceduresMap },
     tortoise.Compiler
@@ -44,16 +44,36 @@ case class NetLogoCompiler(model:      Model,
     runCommand(cmd)
   }
 
-  def compiled: (NetLogoCompiler, String) = {
-    Logger.info("Beginning compilation")
-    val strCompilerOpt = carefullyCompile {
-      val (js, newProgram, newProcedures) =
-        Compiler.compileProcedures(model)
-      Logger.info("No errors!")
-      (this.copy(program = newProgram, procedures = newProcedures), js)
+  def compileWidget(widget: Widget)(implicit program: Program, procedures: ProceduresMap): String = {
+    import WidgetJS._, core._
+    widget match {
+      case b: Button  => b.toJS
+      case s: Slider  => s.toJS
+      case s: Switch  => s.toJS
+      case m: Monitor => m.toJS
+      case o: Output  => o.toJS
+      case v: View    => v.toJS
+      case p: Plot    => p.toJS
+      case t: TextBox => t.toJS
+      case w          => Logger.warn(s"Unconvertible widget type: ${w.getClass.getSimpleName}"); "alert('Other')"
     }
+  }
+
+  def compiled: (NetLogoCompiler, String) = {
+
+    Logger.info("Beginning compilation")
+
+    val strCompilerOpt = carefullyCompile {
+      val (js, newProgram, newProcedures) = Compiler.compileProcedures(model)
+      Logger.info("No errors!")
+      val widgetJS = model.widgets.map(compileWidget(_)(newProgram, newProcedures)).mkString("\n")
+      (this.copy(program = newProgram, procedures = newProcedures), js + widgetJS)
+    }
+
     Logger.info("Compilation complete")
+
     strCompilerOpt getOrElse ((this, ""))
+
   }
 
   def recompile(source: String): (NetLogoCompiler, String) = {
@@ -79,7 +99,6 @@ case class NetLogoCompiler(model:      Model,
         Logger.warn(s"An unknown exception has occurred: ${ex.getMessage}")
         None
     }
-
 }
 
 object NetLogoCompiler {

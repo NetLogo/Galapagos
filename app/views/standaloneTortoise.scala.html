@@ -1,16 +1,22 @@
 @(js: String, nlogoCode: String)
 
 <html>
-  <head></head>
+  <head>
+    <script>useGoogleGraph = false</script>
+    <!--
+    Uncomment if you'd like to use google graphs!
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script>useGoogleGraph = true</script>
+    -->
+  </head>
   <body>
 
-    <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
+    <label>speed<input id="speed-slider" type="range" min=0 max=1 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
-    <input type="button" onclick="doSetup();" value="setup"></input>
-    <input id="go-button" type="button" onclick="toggleGo();" value="go"></input>
 
-    <div class='view-container' style="width: 600px;"></div>
+    <div class='view-container' style="position:relative"></div>
 
     <div id="powered-by-wrapper" style="margin: 10px 0px -33px 440px;">
       <a href="http://ccl.northwestern.edu/netlogo/">
@@ -19,83 +25,42 @@
       </a>
     </div>
 
-    <div id='netlogo-code-wrapper' style="margin-top: 10px;">
+    <div id='netlogo-code-wrapper' style="margin-top: 610px;">
       <input id='toggle-code-button' type="button" onclick="toggleCodeVisibility();" value="Show NetLogo Code"></input>
-      <pre id='netlogo-code' style="margin: 0; visibility: hidden; border: 2px solid gray; padding: 15px;
+      <pre id='netlogo-code' style="margin: 0; display: none; border: 2px solid gray; padding: 15px;
                                     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
 @Html(nlogoCode)
       </pre>
     </div>
 
     <script type="text/javascript">
-      @Html(js)
-    </script>
 
-    <script type="text/javascript">
+      @Html(js)
 
       var session     = new SessionLite(document.getElementsByClassName('view-container')[0])
       var runner      = -1;
       var tickCounter = document.getElementById('tick-counter');
       var lastUpdate  = 0;
+      var speedSlider = document.getElementById('speed-slider');
 
-      // If the HTML was saved in the non-default state, correct it.
       window.addEventListener('load', initPage);
-
-      function updateTickCounter() {
-        tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+      if(useGoogleGraph) {
+        session.graph = GoogleGraph
+        Grapher.graph = GoogleGraph
       }
 
-      function goForever() {
-
-        var speed      = Math.exp(document.getElementById('speed-slider').value);
-        var delta      = Math.min(new Date().getTime() - lastUpdate, 30);
-        var numUpdates = speed * delta / 1000 + 1;
-
-        for (var i=0; i < numUpdates; i++) {
-          go();
-        }
-
-        updateTickCounter();
-        session.update(collectUpdates());
-
-        lastUpdate = new Date().getTime();
-        runner     = setTimeout(goForever, 1000 / speed);
-
-      }
-
-      function doSetup() {
-        setup();
-        session.update(collectUpdates());
-        updateTickCounter();
-      }
-
-      function stop() {
-        clearTimeout(runner);
-        runner = -1;
-      }
-
-      function toggleGo() {
-        var goButton = document.getElementById('go-button');
-        if (runner < 0) {
-          goForever();
-          goButton.value = "stop";
-        } else {
-          stop();
-          goButton.value = "go";
-        }
-      }
+      Widgets.addTo(session)
 
       function initPage() {
+        speedSlider.value = 0.5;
         tickCounter.textContent = '0';
-        document.getElementById('go-button').value = 'go'
         initCodeVisibility();
       }
 
-
       // NetLogo code visibility stuff below
 
-      const VISIBILITY_CSS = 'visibility';
-      const HIDDEN_CSS     = 'hidden';
+      const VISIBILITY_CSS = 'display';
+      const HIDDEN_CSS     = 'none';
       const SHOW_STR       = 'Show NetLogo Code';
       const HIDE_STR       = 'Hide NetLogo Code';
 
@@ -117,13 +82,38 @@
           toggleCodeButton.value         = SHOW_STR;
         }
         else {
-          codeSpan.style[VISIBILITY_CSS] = 'visible';
+          codeSpan.style[VISIBILITY_CSS] = 'block';
           toggleCodeButton.value         = HIDE_STR;
         }
 
       }
+      session.update(collectUpdates());
 
+      function updateTickCounter() {
+        try {
+          tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+        } catch(err) {
+        }
+      }
+
+      function goForever() {
+
+        var speed      = Math.exp(speedSlider.value * 8);
+        var delta      = Math.min(new Date().getTime() - lastUpdate, 30);
+        var numUpdates = Math.floor(speed * delta / 1000 + 1);
+
+        for (var i=0; i < numUpdates; i++) {
+          Widgets.runUpdateFuncs()
+        }
+
+        updateTickCounter();
+        session.update(collectUpdates());
+
+        lastUpdate = new Date().getTime();
+        runner     = setTimeout(goForever, 1000 / speed);
+
+      }
+      goForever()
     </script>
-
   </body>
 </html>

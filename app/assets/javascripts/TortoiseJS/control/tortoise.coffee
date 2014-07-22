@@ -23,10 +23,11 @@ window.tortoise = (elem, socketURL) ->
   session
 
 createSession = (elem, socketURL) ->
-  container = document.createElement('div')
-  container.classList.add('view-container')
-  elem.appendChild(container)
-  elem.appendChild(document.createElement 'div')
+  if not elem.querySelector('div.view-container')?
+    container = document.createElement('div')
+    container.classList.add('view-container')
+    elem.appendChild(container)
+    elem.appendChild(document.createElement 'div')
 
   editor = attachEditor(elem)
 
