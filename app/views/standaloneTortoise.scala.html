@@ -12,7 +12,7 @@
   </head>
   <body>
 
-    <label>speed<input id="speed-slider" type="range" min=0 max=8 step=.01 style="width: 400px"></input></label>
+    <label>speed<input id="speed-slider" type="range" min=0 max=1 step=.01 style="width: 400px"></input></label>
     ticks: <span id="tick-counter"></span>
     <br/>
 
@@ -41,6 +41,8 @@
       var runner      = -1;
       var tickCounter = document.getElementById('tick-counter');
       var lastUpdate  = 0;
+      var speedSlider = document.getElementById('speed-slider');
+
       window.addEventListener('load', initPage);
       if(useGoogleGraph) {
         session.graph = GoogleGraph
@@ -50,6 +52,7 @@
       Widgets.addTo(session)
 
       function initPage() {
+        speedSlider.value = 0.5;
         tickCounter.textContent = '0';
         initCodeVisibility();
       }
@@ -95,7 +98,7 @@
 
       function goForever() {
 
-        var speed      = Math.exp(document.getElementById('speed-slider').value);
+        var speed      = Math.exp(speedSlider.value * 8);
         var delta      = Math.min(new Date().getTime() - lastUpdate, 30);
         var numUpdates = Math.floor(speed * delta / 1000 + 1);
 
