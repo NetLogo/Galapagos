@@ -164,7 +164,16 @@ window.Widgets =
         session.container.appendChild(monitor)
 
       value.innerHTML = "0"
-      @widgetUpdateFuncs.push((() -> value.innerHTML = code()))
+      @widgetUpdateFuncs.push(() ->
+        try
+          result = code()
+        catch e
+          if e instanceof NetLogoException
+            result  = "N/A"
+          else
+            throw e
+        value.innerHTML = result
+      )
     )
   addTextBox: (display, left, top, right, bottom) ->
     escapedDisplay = display.replace("'", "\\'")
