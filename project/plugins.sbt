@@ -5,10 +5,9 @@ logLevel := Level.Warn
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.2.3")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.2")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
 // get warnings when compiling build definition
 scalacOptions += "-feature"
-
-// ENSIME, for Emacs heads
-addSbtPlugin("org.ensime" % "ensime-sbt-cmd" % "0.1.2")

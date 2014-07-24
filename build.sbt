@@ -1,5 +1,3 @@
-playScalaSettings
-
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -8,14 +6,15 @@ scalaVersion := "2.10.4"
 
 scalacOptions += "-language:_"
 
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
+
 libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % "0.1-33cb378"
 )
 
 libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-native" % "3.1.0",
-  "org.scalaz" %% "scalaz-core" % "7.0.3",
-  "org.webjars" %% "webjars-play" % "2.2.1"
+  "org.scalaz" %% "scalaz-core" % "7.0.3"
 )
 
 libraryDependencies ++= Seq(

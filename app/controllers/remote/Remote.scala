@@ -31,7 +31,7 @@ object Remote extends Controller {
       Ok(views.html.remote.embedded())
   }
 
-  def handleSocketConnection(username: String, room: Int = 0) = WebSocket.async[JsValue] {
+  def handleSocketConnection(username: String, room: Int = 0) = WebSocket.tryAccept[JsValue] {
     implicit request => RemoteInstance.join(username, room)
   }
 

@@ -94,8 +94,8 @@ object CompilerService extends Controller {
     val normalURLs =
       Seq(
         local.routes.Local.compat,
-        routes.WebJarAssets.at(WebJarAssets.locate("mori.js")),
-        routes.WebJarAssets.at(WebJarAssets.locate("lodash.js")),
+        routes.Assets.at("lib/mori/mori.js"),
+        routes.Assets.at("lib/lodash/lodash.js"),
         local.routes.Local.engine
       )
 

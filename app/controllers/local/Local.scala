@@ -5,7 +5,7 @@ import
     libs.{ iteratee, json },
       iteratee.Enumerator,
       json.JsValue,
-    mvc.{ Action, Controller, ResponseHeader, SimpleResult, WebSocket }
+    mvc.{ Action, Controller, ResponseHeader, Result, WebSocket }
 
 import
   models.{ local, Util },
@@ -22,7 +22,7 @@ object Local extends Controller {
       Ok(views.html.local.client())
   }
 
-  def handleSocketConnection() = WebSocket.async[JsValue] {
+  def handleSocketConnection() = WebSocket.tryAccept[JsValue] {
     implicit request => LocalInstance.join()
   }
 
@@ -35,7 +35,7 @@ object Local extends Controller {
   }
 
   private def OkJS(js: String) =
-    SimpleResult(
+    Result(
       header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/javascript")),
       body   = Enumerator(js.getBytes(play.Play.application.configuration.getString("application.defaultEncoding")))
     )

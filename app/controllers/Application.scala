@@ -33,7 +33,7 @@ object Application extends Controller {
 
   def model(modelName: String) = {
     Logger.info("\"%s\" requested".format(modelName))
-    Assets.at(path="/public/modelslib", modelName)
+    Assets.at(path="/public/modelslib", modelName, true)
   }
 
   def modelList = Action {

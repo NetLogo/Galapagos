@@ -107,7 +107,7 @@ object SetupConfiguration {
     def isStale(): Boolean =
       !file.exists() || {
 
-        val src   = io.Source.fromFile(file)
+        val src   = scala.io.Source.fromFile(file)
         val lines = src.getLines().toList
         src.close()
 
