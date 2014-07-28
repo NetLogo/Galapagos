@@ -9,7 +9,7 @@ scalacOptions += "-language:_"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-33cb378"
+  "org.nlogo" % "tortoise" % "0.1-0c95d8b"
 )
 
 libraryDependencies ++= Seq(
