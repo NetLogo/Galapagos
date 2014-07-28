@@ -55,6 +55,7 @@ case class NetLogoCompiler(model:      Model,
       case v: View    => v.toJS
       case p: Plot    => p.toJS
       case t: TextBox => t.toJS
+      case c: Chooser => c.toJS
       case w          => Logger.warn(s"Unconvertible widget type: ${w.getClass.getSimpleName}"); "alert('Other')"
     }
   }
