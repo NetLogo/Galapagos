@@ -51,12 +51,11 @@ case class NetLogoCompiler(model:      Model,
       case s: Slider  => s.toJS
       case s: Switch  => s.toJS
       case m: Monitor => m.toJS
-      case o: Output  => o.toJS
       case v: View    => v.toJS
       case p: Plot    => p.toJS
       case t: TextBox => t.toJS
       case c: Chooser => c.toJS
-      case w          => Logger.warn(s"Unconvertible widget type: ${w.getClass.getSimpleName}"); "alert('Other')"
+      case w          => Logger.warn(s"Unconvertible widget type: ${w.getClass.getSimpleName}"); s"alert('${w.getClass.getSimpleName} widgets are not yet supported')"
     }
   }
 
