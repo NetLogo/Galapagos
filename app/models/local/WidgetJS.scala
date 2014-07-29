@@ -6,7 +6,7 @@ import
 import
   org.nlogo.{ api, core, nvm },
     api.Program,
-    core.{ Button, Monitor, Output, Plot, Slider, Switch, TextBox, View },
+    core.{ Button, Monitor, Output, Plot, Slider, Switch, TextBox, View, Chooser },
     nvm.FrontEndInterface.ProceduresMap
 
 import
@@ -104,6 +104,19 @@ object WidgetJS {
     override def toJS(implicit program: Program, procedures: ProceduresMap) =
       s"""Widgets.addTextBox("${tb.display}", ${tb.left}, ${tb.top}, ${tb.right}, ${tb.bottom})"""
   }
+
+  implicit class EnhancedChooser(val c: Chooser) extends WidgetJS with CompilesCommands {
+    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
+      val varName = "newVal"
+      val setterCode = compileCommands(s"""set ${c.varName} $Placeholder""").replace(Placeholder, varName)
+      val choices = "[\"" + c.choices.map(_.toString).mkString("\", \"") + "\"]"
+      val setter = s"function($varName) { $setterCode }"
+      s"""|Widgets.addChooser("${c.display}", ${c.left}, ${c.top}, ${c.right}, ${c.bottom},
+          |                    "${c.default}", ${choices},
+          |                    $setter);""".stripMargin
+    }
+  }
+
 
   implicit class EnhancedPlot(val g: Plot) extends WidgetJS {
     override def toJS(implicit program: Program, procedures: ProceduresMap) =

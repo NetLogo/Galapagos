@@ -136,6 +136,37 @@ window.Widgets =
         setter(input.checked)
     )
 
+  addChooser: (display, left, top, right, bottom, defaultValue, choices, setter) ->
+    escapedDisplay = display.replace("'", "\\'")
+    @widgets.push((session) =>
+      chooser = session.container.querySelector("div[netlogo-display='#{escapedDisplay}']")
+
+      if not input?
+        chooser = document.createElement('div')
+        chooser.style.position = 'absolute'
+        chooser.style.fontSize = '8pt'
+        @setDimensions(chooser, left, top, right, bottom)
+
+        label = document.createElement('label')
+        label.innerHTML = display
+        
+        select = document.createElement('select')
+        for choice in choices
+          choiceElem = document.createElement('option')
+          choiceElem.value = choice
+          choiceElem.innerHTML = choice
+          select.appendChild(choiceElem)
+        select.value = defaultValue
+
+        chooser.appendChild(label)
+        chooser.appendChild(document.createElement('br'))
+        chooser.appendChild(select)
+        session.container.appendChild(chooser)
+
+      select = chooser.querySelector('select')
+      select.addEventListener('change', () -> setter(select.value))
+    )
+
   addMonitor: (display, left, top, right, bottom, code) ->
     escapedDisplay = display.replace("'", "\\'")
     @widgets.push((session) =>
