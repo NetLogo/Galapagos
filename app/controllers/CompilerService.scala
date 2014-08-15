@@ -14,6 +14,9 @@ import
   com.fasterxml.jackson.core.JsonProcessingException
 
 import
+  org.nlogo.tortoise.CompiledModel
+
+import
   play.api.{ libs, mvc },
     libs.json.Json,
     mvc.{ Action, Controller, RequestHeader }
@@ -22,8 +25,7 @@ import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ local => mlocal, ModelSaver, Util },
-    mlocal.NetLogoCompiler,
+  models.{ ModelSaver, Util },
     Util.usingSource
 
 object CompilerService extends Controller {
@@ -39,28 +41,35 @@ object CompilerService extends Controller {
       val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
         url =>
           val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
-          NetLogoCompiler.fromNLogoFile(nlogoContents)
+          CompiledModel.fromNlogoContents(nlogoContents)
       }
 
       val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMsg) {
-        NetLogoCompiler.fromNLogoFile
+        CompiledModel.fromNlogoContents(_)
       }
 
       val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
       val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
 
-      val maybeResult = (fromURL orElse fromNlogo) flatMap {
-        case (compiler, js) =>
-          val maybeCompiledCommands  = maybeCommands  map {_ map { stmt => compiler.runCommand (stmt)._2 } }
-          val maybeCompiledReporters = maybeReporters map {_ map { stmt => compiler.runReporter(stmt)._2 } }
-          (maybeCompiledCommands |@| maybeCompiledReporters) {
-            (commands, reporters) => createResponse(js, commands, reporters)
-          }
-      }
-
-      maybeResult fold (
-        nel    => ExpectationFailed(nel.list.mkString("\n")),
-        result => Ok(result)
+      ((fromURL orElse fromNlogo) |@| maybeCommands |@| maybeReporters) {
+        case (model, commands, reporters) => (model, commands, reporters)
+      } fold (
+        nel => ExpectationFailed(nel.list.mkString("\n")),
+        {
+          case (compileResult, commands, reporters) =>
+            import Scalaz._
+            compileResult flatMap {
+              case model @ CompiledModel(js, _, _, _, _) =>
+                val commandVs  = commands.toList. map(model.compileCommand (_)).sequence
+                val reporterVs = reporters.toList.map(model.compileReporter(_)).sequence
+                (commandVs |@| reporterVs) {
+                  (cs, rs) => createResponse(js, cs, rs)
+                }
+            } fold (
+              nel => InternalServerError(nel.list.mkString("\n")),
+              result => Ok(result)
+            )
+        }
       )
 
   }
@@ -83,8 +92,11 @@ object CompilerService extends Controller {
       }
 
       (fromURL orElse fromNlogo) fold (
-        nel    => ExpectationFailed(nel.list.mkString("\n")),
-        bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
+        nel     => ExpectationFailed(nel.list.mkString("\n")),
+        bundleV => bundleV fold (
+          nel    => InternalServerError(nel.list.mkString("\n")),
+          bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
+        )
       )
 
   }
