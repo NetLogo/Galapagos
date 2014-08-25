@@ -87,11 +87,11 @@
         }
 
       }
-      session.update(collectUpdates());
+      session.update(Updater.collectUpdates());
 
       function updateTickCounter() {
         try {
-          tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+          tickCounter.textContent = typeof world.ticker.tickCount() === 'number' ? world.ticker.tickCount() : '';
         } catch(err) {
         }
       }
@@ -107,7 +107,7 @@
         }
 
         updateTickCounter();
-        session.update(collectUpdates());
+        session.update(Updater.collectUpdates());
 
         lastUpdate = new Date().getTime();
         runner     = setTimeout(goForever, 1000 / speed);

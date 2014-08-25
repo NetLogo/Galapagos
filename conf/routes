@@ -27,7 +27,6 @@ GET        /compile                            controllers.CompilerService.compi
 POST       /save-to-html                       controllers.CompilerService.saveToHtml
 GET        /save-to-html                       controllers.CompilerService.saveToHtml
 
-GET        /netlogo-compat.js                  controllers.local.Local.compat
 GET        /netlogo-engine.js                  controllers.local.Local.engine
 
 # Map static resources from the /public folder to the /assets URL path

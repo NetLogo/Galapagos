@@ -26,7 +26,6 @@
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/communication/connection.js")'></script>
     <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/control/tortoise.js")'></script>
-    <script type="text/javascript" src='@controllers.local.routes.Local.compat'></script>
     <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
     <script type="text/javascript">
       var session = tortoise(),
@@ -36,7 +35,7 @@
           grassOn = false;
 
       function updateTickCounter() {
-        tickCounter.textContent = typeof world.ticks() === 'number' ? world.ticks() : '';
+        tickCounter.textContent = typeof world.ticker.tickCount() === 'number' ? world.ticker.tickCount() : '';
       }
 
       function goForever() {
@@ -47,14 +46,14 @@
           go();
         }
         updateTickCounter();
-        session.update(collectUpdates());
+        session.update(Updater.collectUpdates());
         lastUpdate = new Date().getTime();
         runner = setTimeout(goForever, 1000/speed);
       }
 
       function doSetup() {
         setup();
-        session.update(collectUpdates());
+        session.update(Updater.collectUpdates());
         updateTickCounter();
       }
 

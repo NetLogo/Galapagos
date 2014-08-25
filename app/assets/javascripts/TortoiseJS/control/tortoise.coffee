@@ -1,4 +1,5 @@
 window.tortoise = (elem, socketURL) ->
+
   elem = elem or '.netlogo-model'
   if typeof elem == 'string'
     elem = document.querySelector(elem)
@@ -72,11 +73,11 @@ class TortoiseSession
 
   evalJSModel: (js) ->
     eval.call(window, js)
-    @update collectUpdates()
+    @update(Updater.collectUpdates())
 
   runJSCommand: (js) ->
     (new Function(js)).call(window, js)
-    @update collectUpdates()
+    @update(Updater.collectUpdates())
 
   run: (agentType, cmd) ->
     @connection.send({agentType: agentType, cmd: cmd})

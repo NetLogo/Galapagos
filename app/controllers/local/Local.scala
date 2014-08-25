@@ -14,8 +14,7 @@ import
 
 object Local extends Controller {
 
-  private lazy val compatStr = usingSource(_.fromURL(getClass.getResource("/js/compat.js")))(_.mkString)
-  private lazy val engineStr = usingSource(_.fromURL(getClass.getResource("/js/engine.js")))(_.mkString)
+  private lazy val engineStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise-engine.js")))(_.mkString)
 
   def index = Action {
     implicit request =>
@@ -24,10 +23,6 @@ object Local extends Controller {
 
   def handleSocketConnection() = WebSocket.tryAccept[JsValue] {
     implicit request => LocalInstance.join()
-  }
-
-  def compat = Action {
-    implicit request => OkJS(compatStr)
   }
 
   def engine = Action {

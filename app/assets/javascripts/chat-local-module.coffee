@@ -7,10 +7,10 @@ class ChatModule
 
   evalJS: (js) ->
     eval.call(window, js)
-    collectUpdates()
+    Updater.collectUpdates()
 
   runJS: (js) ->
     (new Function(js)).call(window, js)
-    collectUpdates()
+    Updater.collectUpdates()
 
 exports.ChatServices.Module = new ChatModule
