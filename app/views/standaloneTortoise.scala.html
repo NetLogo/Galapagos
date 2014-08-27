@@ -37,7 +37,7 @@
 
       @Html(js)
 
-      var session     = new SessionLite(document.getElementsByClassName('view-container')[0])
+      var session     = new SessionLite(document.getElementsByClassName('view-container')[0]);
       var runner      = -1;
       var tickCounter = document.getElementById('tick-counter');
       var lastUpdate  = 0;
@@ -45,11 +45,11 @@
 
       window.addEventListener('load', initPage);
       if(useGoogleGraph) {
-        session.graph = GoogleGraph
-        Grapher.graph = GoogleGraph
+        session.graph = GoogleGraph;
+        Grapher.graph = GoogleGraph;
       }
 
-      Widgets.addTo(session)
+      Widgets.addTo(session);
 
       function initPage() {
         speedSlider.value = 0.5;
