@@ -89,14 +89,6 @@
         button.value                   = SHOW_STR + label;
       }
 
-      function initCodeVisibility() {
-        initVisibility(codeSpan, toggleCodeButton, CODE_LABEL);
-      }
-
-      function initInfoVisibility() {
-        initVisibility(infoSpan, toggleInfoButton, INFO_LABEL);
-      }
-
       function toggleVisibility(span, button, label) {
 
         var style     = window.getComputedStyle(span);
@@ -113,13 +105,10 @@
 
       }
 
-      function toggleCodeVisibility() {
-        toggleVisibility(codeSpan, toggleCodeButton, CODE_LABEL);
-      }
-
-      function toggleInfoVisibility() {
-        toggleVisibility(infoSpan, toggleInfoButton, INFO_LABEL);
-      }
+      var initCodeVisibility   = initVisibility.  bind(this, codeSpan, toggleCodeButton, CODE_LABEL);
+      var toggleCodeVisibility = toggleVisibility.bind(this, codeSpan, toggleCodeButton, CODE_LABEL);
+      var initInfoVisibility   = initVisibility.  bind(this, infoSpan, toggleInfoButton, INFO_LABEL);
+      var toggleInfoVisibility = toggleVisibility.bind(this, infoSpan, toggleInfoButton, INFO_LABEL);
 
       session.update(Updater.collectUpdates());
 
