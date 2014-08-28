@@ -72,12 +72,7 @@ class TortoiseSession
     @controller.repaint()
 
   evalJSModel: (code, info) ->
-    html =
-      if info.trim() isnt ""
-        markdown.toHTML(info)
-      else
-        "<span style='font-size: 20px;'>No info available.</span>"
-    document.getElementById("infoContent").children[0].innerHTML = html
+    @setInfo(info)
     eval.call(window, code)
     @update(Updater.collectUpdates())
 
@@ -93,12 +88,26 @@ class TortoiseSession
 
   open: (nlogoContents) ->
     @run('open', nlogoContents)
+    delim = '@#$#@#$#@'
     if @editor?
-      endOfCode = nlogoContents.indexOf('@#$#@#$#@')
+      endOfCode = nlogoContents.indexOf(delim)
       if endOfCode >= 0
         code = nlogoContents.substring(0, endOfCode)
       @editor.setValue(code)
       @editor.clearSelection()
+
+      tail     = nlogoContents.substring(endOfCode + delim.length + 1)
+      tailTail = tail.substring(tail.indexOf(delim) + delim.length + 1)
+      info     = tailTail.substring(0, tailTail.indexOf(delim))
+      @setInfo(info)
+
+  setInfo: (info) ->
+    html =
+      if info.trim() isnt ""
+        markdown.toHTML(info)
+      else
+        "<span style='font-size: 20px;'>No info available.</span>"
+    document.getElementById("infoContent").children[0].innerHTML = html
 
   recompile: () ->
     console.log('Sending recompile request')
