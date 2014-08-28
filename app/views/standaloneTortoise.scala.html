@@ -1,4 +1,4 @@
-@(js: String, nlogoCode: String)
+@(js: String, nlogoCode: String, info: String)
 
 <html>
   <head>
@@ -25,17 +25,29 @@
       </a>
     </div>
 
-    <div id='netlogo-code-wrapper' style="margin-top: 610px;">
-      <input id='toggle-code-button' type="button" onclick="toggleCodeVisibility();" value="Show NetLogo Code"></input>
-      <pre id='netlogo-code' style="margin: 0; display: none; border: 2px solid gray; padding: 15px;
-                                    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
+    <div style="display: flex; flex-direction: row;">
+      <div id='netlogo-code-wrapper' style="margin-top: 20px; flex: 1 1; margin-right: 10px;">
+        <input id='toggle-code-button' type="button" onclick="toggleCodeVisibility();" value="Show NetLogo Code">
+        <pre id='netlogo-code' style="margin: 0; display: none; border: 2px solid gray; padding: 15px;
+                                      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">
 @Html(nlogoCode)
-      </pre>
+        </pre>
+      </div>
+
+      <div id='netlogo-info-wrapper' style="margin-top: 20px; flex: 1 1;">
+        <input id='toggle-info-button' type="button" onclick="toggleInfoVisibility();" value="Show Model Info">
+        <div id='netlogo-info' style="margin: 0; display: none; border: 2px solid gray; padding: 15px;">
+          @info
+        </div>
+      </div>
     </div>
 
     <script type="text/javascript">
 
       @Html(js)
+
+      <!-- Grabbing `nodeValue` allows us to basically unescape the HTML --JAB (8/27/14) -->
+      document.getElementById('netlogo-info').innerHTML = markdown.toHTML(document.getElementById('netlogo-info').childNodes[0].nodeValue.trim());
 
       var session     = new SessionLite(document.getElementsByClassName('view-container')[0]);
       var runner      = -1;
@@ -55,38 +67,60 @@
         speedSlider.value = 0.5;
         tickCounter.textContent = '0';
         initCodeVisibility();
+        initInfoVisibility();
       }
 
       // NetLogo code visibility stuff below
 
       const VISIBILITY_CSS = 'display';
       const HIDDEN_CSS     = 'none';
-      const SHOW_STR       = 'Show NetLogo Code';
-      const HIDE_STR       = 'Hide NetLogo Code';
+      const SHOW_STR       = 'Show ';
+      const HIDE_STR       = 'Hide ';
+      const CODE_LABEL     = 'NetLogo Code';
+      const INFO_LABEL     = 'Model Info';
 
       var codeSpan         = document.getElementById('netlogo-code');
+      var infoSpan         = document.getElementById('netlogo-info');
       var toggleCodeButton = document.getElementById('toggle-code-button');
+      var toggleInfoButton = document.getElementById('toggle-info-button');
 
-      function initCodeVisibility() {
-        codeSpan.style[VISIBILITY_CSS] = HIDDEN_CSS;
-        toggleCodeButton.value         = SHOW_STR;
+      function initVisibility(textElem, button, label) {
+        textElem.style[VISIBILITY_CSS] = HIDDEN_CSS;
+        button.value                   = SHOW_STR + label;
       }
 
-      function toggleCodeVisibility() {
+      function initCodeVisibility() {
+        initVisibility(codeSpan, toggleCodeButton, CODE_LABEL);
+      }
 
-        var style     = window.getComputedStyle(codeSpan);
+      function initInfoVisibility() {
+        initVisibility(infoSpan, toggleInfoButton, INFO_LABEL);
+      }
+
+      function toggleVisibility(span, button, label) {
+
+        var style     = window.getComputedStyle(span);
         var isVisible = style.getPropertyValue(VISIBILITY_CSS) !== HIDDEN_CSS;
 
         if (isVisible) {
-          codeSpan.style[VISIBILITY_CSS] = HIDDEN_CSS;
-          toggleCodeButton.value         = SHOW_STR;
+          span.style[VISIBILITY_CSS] = HIDDEN_CSS;
+          button.value               = SHOW_STR + label;
         }
         else {
-          codeSpan.style[VISIBILITY_CSS] = 'block';
-          toggleCodeButton.value         = HIDE_STR;
+          span.style[VISIBILITY_CSS] = 'block';
+          button.value               = HIDE_STR + label;
         }
 
       }
+
+      function toggleCodeVisibility() {
+        toggleVisibility(codeSpan, toggleCodeButton, CODE_LABEL);
+      }
+
+      function toggleInfoVisibility() {
+        toggleVisibility(infoSpan, toggleInfoButton, INFO_LABEL);
+      }
+
       session.update(Updater.collectUpdates());
 
       function updateTickCounter() {

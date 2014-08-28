@@ -19,7 +19,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "1.10.2-1",
   "org.webjars" % "ace" % "07.31.2013",
   "org.webjars" % "mousetrap" % "1.3",
-  "org.webjars" % "bootstrap" % "2.3.2"
+  "org.webjars" % "bootstrap" % "2.3.2",
+  "org.webjars" % "markdown-js" % "0.5.0-1"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
