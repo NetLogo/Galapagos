@@ -46,8 +46,11 @@
 
       @Html(js)
 
-      <!-- Grabbing `nodeValue` allows us to basically unescape the HTML --JAB (8/27/14) -->
-      document.getElementById('netlogo-info').innerHTML = markdown.toHTML(document.getElementById('netlogo-info').childNodes[0].nodeValue.trim());
+      <!-- If it has child nodes, it has already been parsed from Markdown. --JAB (8/28/14) -->
+      <!-- Grabbing `nodeValue` allows us to basically unescape the HTML --JAB (8/28/14) -->
+      var infoElem = document.getElementById('netlogo-info');
+      if (!infoElem.childNodes[0].hasChildNodes())
+        infoElem.innerHTML = markdown.toHTML(infoElem.childNodes[0].nodeValue.trim());
 
       var session     = new SessionLite(document.getElementsByClassName('view-container')[0]);
       var runner      = -1;
