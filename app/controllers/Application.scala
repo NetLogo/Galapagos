@@ -16,21 +16,6 @@ object Application extends Controller {
       Ok(views.html.editor())
   }
 
-  def minimal = Action {
-    implicit request =>
-      Ok(views.html.examples.minimal())
-  }
-
-  def climate = Action {
-    implicit request =>
-      Ok(views.html.examples.climate())
-  }
-
-  def wolfsheep = Action {
-    implicit request =>
-      Ok(views.html.examples.wolfsheep())
-  }
-
   def model(modelName: String) = {
     Logger.info("\"%s\" requested".format(modelName))
     Assets.at(path="/public/modelslib", modelName, true)
