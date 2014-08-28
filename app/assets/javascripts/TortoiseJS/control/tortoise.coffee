@@ -54,7 +54,7 @@ class TortoiseSession
   constructor: (@connection, @controller, @editor) ->
     @connection.on('update',       (msg) => @update(JSON.parse(msg.message)))
     @connection.on('js',           (msg) => @runJSCommand(msg.message))
-    @connection.on('model_update', (msg) => @evalJSModel(msg.message))
+    @connection.on('model_update', (msg) => @evalJSModel(msg.message.code, msg.message.info))
 
     # Start autocompile
     compileTimeout = -1
@@ -71,8 +71,14 @@ class TortoiseSession
       @controller.update(modelUpdate)
     @controller.repaint()
 
-  evalJSModel: (js) ->
-    eval.call(window, js)
+  evalJSModel: (code, info) ->
+    html =
+      if info.trim() isnt ""
+        markdown.toHTML(info)
+      else
+        "<span style='font-size: 20px;'>No info available.</span>"
+    document.getElementById("infoContent").children[0].innerHTML = html
+    eval.call(window, code)
     @update(Updater.collectUpdates())
 
   runJSCommand: (js) ->

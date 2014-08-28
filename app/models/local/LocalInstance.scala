@@ -20,7 +20,7 @@ import
       concurrent.Akka,
       iteratee.Concurrent,
         Concurrent.Channel,
-      json.{ JsObject, JsValue}
+      json.{ JsObject, Json, JsValue }
 
 import
   models.core.{ WebInstance, WebInstanceManager, WebInstanceMessages }
@@ -83,7 +83,8 @@ class LocalInstance extends Actor with WebInstance {
       logErrors,
       model => {
         compiledModel = model
-        broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, model.compiledCode))
+        val jsObj     = Json.obj("code" -> model.compiledCode, "info" -> model.model.info)
+        broadcast(generateMessage(ModelUpdateKey, NetLogoUsername, RoomContext, jsObj))
       }
     )
 
