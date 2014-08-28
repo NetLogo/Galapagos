@@ -112,6 +112,38 @@
   overflow: auto;
 }
 
+.tab_label {
+  font-size: 20px;
+  padding: 15px 15px 25px 15px;
+  margin-right: 3px;
+  margin-bottom: -35px;
+  font-weight: bold;
+}
+
+.inactive_tab:hover {
+  color: #FFFF00;
+}
+
+.active_tab {
+  color: #FFFFFF;
+}
+
+.inner_tab_content {
+  background: white;
+  height: 100%
+}
+
+.hidden_tab_content {
+  display: none;
+}
+
+.tab_inner_content {
+  height: 450px;
+  min-height: 450px;
+  background: white;
+  padding: 10px 20px;
+}
+
 /* Firefox only! */
 @-moz-document url-prefix() {
   .scrollable {

@@ -30,7 +30,7 @@ createSession = (elem, socketURL) ->
     elem.appendChild(container)
     elem.appendChild(document.createElement 'div')
 
-  editor = attachEditor(elem)
+  editor = attachEditor(document.getElementById("codeContent").children[0])
 
   controller = new AgentStreamController(container)
   connection = connect(socketURL)
@@ -40,7 +40,7 @@ createSession = (elem, socketURL) ->
 
 attachEditor = (elem) ->
   editorElem = document.createElement('div')
-  editorElem.style.height = '200px'
+  editorElem.style.height = "450px"
   elem.appendChild(editorElem)
   editor = ace.edit(editorElem)
   editor.setTheme('ace/theme/netlogo-classic')
