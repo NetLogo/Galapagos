@@ -8,7 +8,7 @@ import
 
 import
   play.api.{ libs, Logger },
-    libs.json.{ JsObject, JsString }
+    libs.json.{ JsObject, JsString, JsValue }
 
 trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
 
@@ -49,13 +49,16 @@ trait WebInstance extends ChatPacketProtocol with EventManagerProtocol {
 
   final override def receive = receiveExtras orElse receiveBase
 
-  protected def generateMessage(kind: String, context: String, user: String, text: String) =
+  protected def generateMessage(kind: String, context: String, user: String, payload: String): JsObject =
+    generateMessage(kind, context, user, JsString(payload))
+
+  protected def generateMessage(kind: String, context: String, user: String, payloadJSON: JsValue): JsObject =
     JsObject(
       Seq(
         KindKey    -> JsString(kind),
         ContextKey -> JsString(context),
         UserKey    -> JsString(user),
-        MessageKey -> JsString(text)
+        MessageKey -> payloadJSON
       )
     )
 

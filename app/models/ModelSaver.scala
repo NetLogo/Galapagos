@@ -35,7 +35,7 @@ object ModelSaver {
       case CompiledModel(js, model, prog, procs, compiler) =>
         val widgetJS = model.widgets.map(compileWidget(_)(prog, procs)).mkString("\n")
         val fullJS   = js + widgetJS
-        CompilationBundle(buildJavaScript(fullJS, jsURLs), code)
+        CompilationBundle(buildJavaScript(fullJS, jsURLs), code, model.info)
     }
   }
 

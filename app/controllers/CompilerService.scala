@@ -59,11 +59,11 @@ object CompilerService extends Controller {
           case (compileResult, commands, reporters) =>
             import Scalaz._
             compileResult flatMap {
-              case model @ CompiledModel(js, _, _, _, _) =>
+              case model @ CompiledModel(js, m, _, _, _) =>
                 val commandVs  = commands.toList. map(model.compileCommand (_)).sequence
                 val reporterVs = reporters.toList.map(model.compileReporter(_)).sequence
                 (commandVs |@| reporterVs) {
-                  (cs, rs) => createResponse(js, cs, rs)
+                  (cs, rs) => createResponse(js, cs, rs, m.info)
                 }
             } fold (
               nel => InternalServerError(nel.list.mkString("\n")),
@@ -95,7 +95,7 @@ object CompilerService extends Controller {
         nel     => ExpectationFailed(nel.list.mkString("\n")),
         bundleV => bundleV fold (
           nel    => InternalServerError(nel.list.mkString("\n")),
-          bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode))
+          bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode, bundle.info))
         )
       )
 
@@ -105,6 +105,7 @@ object CompilerService extends Controller {
 
     val normalURLs =
       Seq(
+        routes.Assets.at("lib/markdown-js/markdown.js"),
         local.routes.Local.engine
       )
 
@@ -157,11 +158,13 @@ object CompilerService extends Controller {
     parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failNel)
   }
 
-  private def createResponse(compiledCode: String, compiledCommands: Seq[String], compiledReporters: Seq[String]): String =
+  private def createResponse(compiledCode: String, compiledCommands: Seq[String],
+                             compiledReporters: Seq[String], info: String): String =
     Json.stringify(Json.obj(
       "code"      -> compiledCode,
       "commands"  -> Json.toJson(compiledCommands),
-      "reporters" -> Json.toJson(compiledReporters)
+      "reporters" -> Json.toJson(compiledReporters),
+      "info"      -> info
     ))
 }
 

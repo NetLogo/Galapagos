@@ -1,8 +1,13 @@
-window.tortoise = (elem, socketURL) ->
+reifyElement = (elem) ->
+  if typeof(elem) is "string"
+    document.querySelector(elem)
+  else
+    elem
 
-  elem = elem or '.netlogo-model'
-  if typeof elem == 'string'
-    elem = document.querySelector(elem)
+window.tortoise = (containers, socketURL) ->
+
+  elem = reifyElement(containers.view_container or '.netlogo-model')
+
   if not socketURL?
     socketURL = elem.dataset.url
 
@@ -12,7 +17,13 @@ window.tortoise = (elem, socketURL) ->
   # since blanking out textContent clears out child elements too.
   elem.textContent = ''
 
-  session = createSession(elem, socketURL)
+  refinedContainers = {
+    code_container: containers.code_container or '.netlogo-code',
+    info_container: containers.info_container or '.netlogo-model-info',
+    view_container: elem
+  }
+
+  session = createSession(refinedContainers, socketURL)
 
   if srcURL?
     session.openURL(srcURL)
@@ -23,24 +34,27 @@ window.tortoise = (elem, socketURL) ->
 
   session
 
-createSession = (elem, socketURL) ->
+createSession = (containers, socketURL) ->
+  elem = containers.view_container
   if not elem.querySelector('div.view-container')?
     container = document.createElement('div')
     container.classList.add('view-container')
     elem.appendChild(container)
     elem.appendChild(document.createElement 'div')
 
-  editor = attachEditor(elem)
+  codeElem = reifyElement(containers.code_container)
+
+  editor = attachEditor(codeElem)
 
   controller = new AgentStreamController(container)
   connection = connect(socketURL)
-  session = new TortoiseSession(connection, controller, editor)
+  session = new TortoiseSession(connection, controller, editor, reifyElement(containers.info_container))
 
   session
 
 attachEditor = (elem) ->
   editorElem = document.createElement('div')
-  editorElem.style.height = '200px'
+  editorElem.style.height = "450px"
   elem.appendChild(editorElem)
   editor = ace.edit(editorElem)
   editor.setTheme('ace/theme/netlogo-classic')
@@ -51,10 +65,10 @@ attachEditor = (elem) ->
   editor
 
 class TortoiseSession
-  constructor: (@connection, @controller, @editor) ->
+  constructor: (@connection, @controller, @editor, @_infoContainer) ->
     @connection.on('update',       (msg) => @update(JSON.parse(msg.message)))
     @connection.on('js',           (msg) => @runJSCommand(msg.message))
-    @connection.on('model_update', (msg) => @evalJSModel(msg.message))
+    @connection.on('model_update', (msg) => @evalJSModel(msg.message.code, msg.message.info))
 
     # Start autocompile
     compileTimeout = -1
@@ -71,8 +85,9 @@ class TortoiseSession
       @controller.update(modelUpdate)
     @controller.repaint()
 
-  evalJSModel: (js) ->
-    eval.call(window, js)
+  evalJSModel: (code, info) ->
+    @setInfo(info)
+    eval.call(window, code)
     @update(Updater.collectUpdates())
 
   runJSCommand: (js) ->
@@ -87,12 +102,26 @@ class TortoiseSession
 
   open: (nlogoContents) ->
     @run('open', nlogoContents)
+    delim = '@#$#@#$#@'
     if @editor?
-      endOfCode = nlogoContents.indexOf('@#$#@#$#@')
+      endOfCode = nlogoContents.indexOf(delim)
       if endOfCode >= 0
         code = nlogoContents.substring(0, endOfCode)
       @editor.setValue(code)
       @editor.clearSelection()
+
+      tail     = nlogoContents.substring(endOfCode + delim.length + 1)
+      tailTail = tail.substring(tail.indexOf(delim) + delim.length + 1)
+      info     = tailTail.substring(0, tailTail.indexOf(delim))
+      @setInfo(info)
+
+  setInfo: (info) ->
+    html =
+      if info.trim() isnt ""
+        markdown.toHTML(info)
+      else
+        "<span style='font-size: 20px;'>No info available.</span>"
+    @_infoContainer.innerHTML = html
 
   recompile: () ->
     console.log('Sending recompile request')
