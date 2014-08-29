@@ -23,7 +23,12 @@
 
   <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
   <script type="text/javascript">
-    var session = tortoise('.netlogo-model', exports.ChatGlobals.socketURL);
+    var containers = {
+      code_container: '.netlogo-code',
+      info_container: '.netlogo-model-info',
+      view_container: '.netlogo-model'
+    };
+    var session = tortoise(containers, exports.ChatGlobals.socketURL);
     exports.initChat(session);
     var modelList = $('.model-list');
     exports.modelList(modelList);
