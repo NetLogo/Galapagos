@@ -4,6 +4,9 @@ import
   java.net.URL
 
 import
+  scala.io.Codec
+
+import
   scalaz.ValidationNel
 
 import
@@ -26,6 +29,8 @@ import
   Util.usingSource
 
 object ModelSaver {
+
+  implicit val codec = Codec.ISO8859
 
   type CompilationBundleV = ValidationNel[CompilerException, CompilationBundle]
 
