@@ -51,7 +51,7 @@ object CompilerService extends Controller {
       val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
       val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
 
-      ((fromURL orElse fromNlogo) |@| maybeCommands |@| maybeReporters) {
+      ((fromNlogo orElse fromURL) |@| maybeCommands |@| maybeReporters) {
         case (model, commands, reporters) => (model, commands, reporters)
       } fold (
         nel => ExpectationFailed(nel.list.mkString("\n")),
@@ -91,7 +91,7 @@ object CompilerService extends Controller {
         contents => ModelSaver(contents, jsURLs)
       }
 
-      (fromURL orElse fromNlogo) fold (
+      (fromNlogo orElse fromURL) fold (
         nel     => ExpectationFailed(nel.list.mkString("\n")),
         bundleV => bundleV fold (
           nel    => InternalServerError(nel.list.mkString("\n")),
