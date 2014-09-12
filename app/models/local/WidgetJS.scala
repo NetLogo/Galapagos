@@ -42,6 +42,7 @@ trait CompilesReporters extends DoesCompilation {
 
 trait WidgetJS {
   def toJS(implicit program: Program, procedures: ProceduresMap): String
+  protected def sanitizeSource(s: String) = s.replace("\\n", "\n").replace("\\\\", "\\").replace("\\\"", "\"")
 }
 
 object WidgetJS {
@@ -50,7 +51,7 @@ object WidgetJS {
 
   implicit class EnhancedButton(val b: Button) extends WidgetJS with CompilesCommands {
     override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val src = s"function() { ${compileCommands(b.source)} }"
+      val src = s"function() { ${compileCommands(sanitizeSource(b.source))} }"
       s"""Widgets.addButton("${b.display}", ${b.left}, ${b.top}, ${b.right}, ${b.bottom}, $src, ${b.forever})"""
     }
   }
@@ -83,7 +84,7 @@ object WidgetJS {
 
   implicit class EnhancedMonitor(val m: Monitor) extends WidgetJS with CompilesReporters {
     override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val reporterCode = compileReporter(s"precision ( ${m.source} ) ${m.precision}")
+      val reporterCode = compileReporter(s"precision ( ${sanitizeSource(m.source)} ) ${m.precision}")
       val monitorCode  = s"function() { return $reporterCode }"
       val displayValue = if (m.display == "NIL") m.source else m.display
       s"""Widgets.addMonitor("$displayValue", ${m.left}, ${m.top}, ${m.right}, ${m.bottom}, $monitorCode)"""
