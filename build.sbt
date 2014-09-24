@@ -2,14 +2,14 @@ name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.2"
 
 scalacOptions += "-language:_"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-bae68bb"
+  "org.nlogo" % "tortoise" % "0.1-8fdeb96"
 )
 
 libraryDependencies ++= Seq(
