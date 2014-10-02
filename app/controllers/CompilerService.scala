@@ -7,8 +7,9 @@ import
   scala.util.Try
 
 import
-  scalaz.{ Scalaz, ValidationNel },
-    Scalaz.{ ToApplyOpsUnapply, ToValidationV }
+  scalaz.{ Scalaz, Validation, ValidationNel },
+    Scalaz.{ ToApplyOpsUnapply, ToValidationOps },
+    Validation.FlatMap.ValidationFlatMapRequested
 
 import
   com.fasterxml.jackson.core.JsonProcessingException
@@ -133,29 +134,29 @@ object CompilerService extends Controller {
     argMap get "nlogo_url" map (
       _.successNel
     ) getOrElse {
-      errorStr.failNel
+      errorStr.failureNel
     } flatMap {
       nlogoURL =>
         Try(new URL(nlogoURL)) map f map (
           _.successNel
         ) recover {
-          case _: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failNel
+          case _: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failureNel
         } getOrElse {
-          "An unknown error has occurred in processing your 'nlogo_url' value".failNel
+          "An unknown error has occurred in processing your 'nlogo_url' value".failureNel
         }
     }
 
   private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
                                     (f: (String) => T): ValidationNel[String, T] = {
-    val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failNel
+    val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failureNel
     nlogoMaybe map f
   }
 
   private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] = {
     val parsedMaybe = Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
-      case _: JsonProcessingException => errorStr.failNel
+      case _: JsonProcessingException => errorStr.failureNel
     }.get
-    parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failNel)
+    parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failureNel)
   }
 
   private def createResponse(compiledCode: String, compiledCommands: Seq[String],

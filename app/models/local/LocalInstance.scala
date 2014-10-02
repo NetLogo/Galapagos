@@ -5,7 +5,7 @@ import
 
 import
   scalaz.{ NonEmptyList, Scalaz, Validation, ValidationNel },
-    Scalaz.ToValidationV
+    Scalaz.ToValidationOps
 
 import
   org.nlogo.{ api, core, tortoise },
@@ -93,7 +93,7 @@ class LocalInstance extends Actor with WebInstance {
     case "patches"  => Patch.   success
     case "links"    => Link.    success
     case "observer" => Observer.success
-    case x          => s"Unknown agent type: $x".fail
+    case x          => s"Unknown agent type: $x".failure
   }
 
 }
