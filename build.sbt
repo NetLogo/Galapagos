@@ -13,13 +13,13 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.webjars" % "chosen" % "0.9.12",
-  "org.webjars" % "underscorejs" % "1.5.1",
-  "org.webjars" % "underscore.string" % "2.3.0",
-  "org.webjars" % "jquery" % "1.10.2-1",
-  "org.webjars" % "ace" % "07.31.2013",
-  "org.webjars" % "mousetrap" % "1.3",
-  "org.webjars" % "bootstrap" % "2.3.2",
+  "org.webjars" % "chosen" % "1.1.0-1",
+  "org.webjars" % "underscorejs" % "1.7.0",
+  "org.webjars" % "underscore.string" % "2.3.3",
+  "org.webjars" % "jquery" % "2.1.1",
+  "org.webjars" % "ace" % "01.08.2014",
+  "org.webjars" % "mousetrap" % "1.4.6",
+  "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "markdown-js" % "0.5.0-1"
 )
 
