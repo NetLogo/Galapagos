@@ -39,7 +39,8 @@ object ModelSaver {
     CompiledModel.fromNlogoContents(nlogo) map {
       case CompiledModel(js, model, prog, procs, compiler) =>
         val widgetJS = model.widgets.map(compileWidget(_)(prog, procs)).mkString("\n")
-        val fullJS   = js + widgetJS
+        val fullJS   = s"""$widgetJS;
+                          |$js""".stripMargin
         CompilationBundle(buildJavaScript(fullJS, jsURLs), code, model.info)
     }
   }
