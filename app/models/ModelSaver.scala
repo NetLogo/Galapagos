@@ -40,6 +40,7 @@ object ModelSaver {
       case CompiledModel(js, model, prog, procs, compiler) =>
         val widgetJS = model.widgets.map(compileWidget(_)(prog, procs)).mkString("\n")
         val fullJS   = s"""$widgetJS;
+                          |var session = new SessionLite(document.getElementsByClassName('view-container')[0]);
                           |$js""".stripMargin
         CompilationBundle(buildJavaScript(fullJS, jsURLs), code, model.info)
     }

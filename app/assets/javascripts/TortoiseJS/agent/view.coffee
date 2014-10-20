@@ -34,9 +34,12 @@ class window.AgentStreamController
       @turtleView.canvas.classList.add('turtle-view')
       @patchView.canvas.style['z-index'] = 0
       @patchView.canvas.classList.add('patch-view')
-      @layers.appendChild(@spotlightView.canvas)
+# Note that Chrome gives elements with the highest z-index mouse events and 
+# firefox gives elements with the later position in the DOM tree, so those
+# must correspond. - BCH 10/21/2014
       @layers.appendChild(@patchView.canvas)
       @layers.appendChild(@turtleView.canvas)
+      @layers.appendChild(@spotlightView.canvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -49,17 +52,21 @@ class window.AgentStreamController
     @repaint()
 
   initMouseTracking: ->
-    @turtleView.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
-    document          .addEventListener('mouseup',   (e) => @mouseDown = false)
+    # Using spotlightView because it's on top. BCH 10/21/2014
+    @spotlightView.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
+    document             .addEventListener('mouseup',   (e) => @mouseDown = false)
 
-    @turtleView.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
-    @turtleView.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
+    @spotlightView.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
+    @spotlightView.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
 
-    @turtleView.canvas.addEventListener('mousemove', (e) =>
-      # Can't use @turtleView.canvas.offsets since it's absolutely positioned --BCH (12/18/13)
-      @mouseXcor = @turtleView.xPixToPcor(e.pageX - @layers.offsetLeft);
-      @mouseYcor = @turtleView.yPixToPcor(e.pageY - @layers.offsetTop);
+    @spotlightView.canvas.addEventListener('mousemove', (e) =>
+      rect = @spotlightView.canvas.getBoundingClientRect()
+      @mouseXcor = @spotlightView.xPixToPcor(e.clientX - rect.left)
+      @mouseYcor = @spotlightView.yPixToPcor(e.clientY - rect.top)
     )
+
+    window.modelConfig       ?= {}
+    window.modelConfig.mouse ?= { peekIsDown: (=> @mouseDown), peekIsInside: (=> @mouseInside), peekX: (=> @mouseXcor), peekY: (=> @mouseYcor) }
 
   repaint: ->
     @spotlightView.repaint(@model)

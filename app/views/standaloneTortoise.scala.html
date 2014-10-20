@@ -49,7 +49,6 @@
       if (!infoElem.childNodes[0].hasChildNodes())
         infoElem.innerHTML = markdown.toHTML(infoElem.childNodes[0].nodeValue.trim());
 
-      var session     = new SessionLite(document.getElementsByClassName('view-container')[0]);
       var runner      = -1;
       var tickCounter = document.getElementById('tick-counter');
       var lastUpdate  = 0;
