@@ -113,7 +113,7 @@ object WidgetJS {
       val choices = "[\"" + c.choices.map(_.toString).mkString("\", \"") + "\"]"
       val setter = s"function($varName) { $setterCode }"
       s"""|Widgets.addChooser("${c.display}", ${c.left}, ${c.top}, ${c.right}, ${c.bottom},
-          |                    "${c.default}", ${choices},
+          |                    "${c.default}", $choices,
           |                    $setter);""".stripMargin
     }
   }
