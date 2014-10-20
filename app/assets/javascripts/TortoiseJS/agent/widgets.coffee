@@ -228,13 +228,25 @@ window.Widgets =
     @widgets.push((session) =>
       @setDimensions(session.controller.layers, left, top, right, bottom)
     )
-  addPlot: (display, left, top, right, bottom, ymin, ymax, xmin, xmax) ->
-    @widgets.push((session) =>
-      if(session.plot)
-        plot = document.createElement('div')
-        plot.style.position = "absolute"
-        plot.style.border = "1px solid black"
-        @setDimensions(plot, left, top, right, bottom)
-        session.container.appendChild(plot)
-        session.plot.boot(display, ymin, ymax, xmin, xmax, plot)
-    )
+  addPlot: (display, id, left, top, right, bottom, ymin, ymax, xmin, xmax) ->
+
+    # Yeah, it's janky, but the init. order of everything is complex, and this needs to be done early.
+    # Explanation:
+    #   We need to store the `Ops` object into the config before the config is passed to the engine.
+    #   Soon as the engine gets ahold of the config, some calls will be made into the `Ops`, so we
+    #   the _must_ have the `div` by time the engine gets the config (AKA "lazy init. is not a
+    #   solution here").  Widgets are not initialized until after the compiled model code is, since
+    #   the widgets rely on compiled model code, which relies on the engine.  Therefore, this `div`
+    #   and `Ops` stuff _must be_ done before widget initialization time. --JAB (10/19/14)
+    plot = document.createElement('div')
+    plot.id             = id
+    plot.style.position = "absolute"
+    plot.style.border   = "1px solid black"
+    @setDimensions(plot, left, top, right, bottom)
+    document.body.appendChild(plot)
+
+    window.modelConfig         ?= {}
+    window.modelConfig.plotOps ?= {}
+    window.modelConfig.plotOps[display] = new HighchartsOps(id)
+
+    @widgets.push((session) => session.container.appendChild(plot))

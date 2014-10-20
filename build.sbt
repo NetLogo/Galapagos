@@ -9,11 +9,12 @@ scalacOptions += "-language:_"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-bccb90e"
+  "org.nlogo" % "tortoise" % "0.1-6e127ad"
 )
 
 libraryDependencies ++= Seq(
   "org.webjars" % "chosen" % "1.1.0-1",
+  "org.webjars" % "highcharts" % "4.0.4",
   "org.webjars" % "underscorejs" % "1.7.0",
   "org.webjars" % "underscore.string" % "2.3.3",
   "org.webjars" % "jquery" % "2.1.1",

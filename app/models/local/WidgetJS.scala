@@ -1,6 +1,9 @@
 package models.local
 
 import
+  java.util.UUID
+
+import
   scala.util.Try
 
 import
@@ -119,9 +122,13 @@ object WidgetJS {
   }
 
 
-  implicit class EnhancedPlot(val g: Plot) extends WidgetJS {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) =
-      s"""Widgets.addPlot("${g.display}", ${g.left}, ${g.top}, ${g.right}, ${g.bottom}, ${g.ymin}, ${g.ymax}, ${g.xmin}, ${g.xmax} )"""
+  implicit class EnhancedPlot(val p: Plot) extends WidgetJS {
+    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
+      import p._
+      val slugifiedName = display.toLowerCase.replaceAll("[^\\w -]+", "").replaceAll(" +", "-")
+      val uniqueName    = s"$slugifiedName-${UUID.randomUUID.toString}" // Guarding against plots with duplicate names --JAB (10/19/14)
+      s"""Widgets.addPlot('$display', '$uniqueName', $left, $top, $right, $bottom, $ymin, $ymax, $xmin, $xmax);""".stripMargin
+    }
   }
    
 }

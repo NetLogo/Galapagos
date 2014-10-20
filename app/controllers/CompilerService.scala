@@ -107,6 +107,9 @@ object CompilerService extends Controller {
     val normalURLs =
       Seq(
         routes.Assets.at("lib/markdown-js/markdown.js"),
+        routes.Assets.at("lib/highcharts/adapters/standalone-framework.js"),
+        routes.Assets.at("lib/highcharts/highcharts.js"),
+        routes.Assets.at("lib/highcharts/modules/exporting.js"),
         local.routes.Local.engine
       )
 
@@ -119,7 +122,8 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/agent/view.js",
         "javascripts/TortoiseJS/agent/widgets.js",
         "javascripts/TortoiseJS/communication/connection.js",
-        "javascripts/TortoiseJS/control/session-lite.js"
+        "javascripts/TortoiseJS/control/session-lite.js",
+        "javascripts/plot/highchartsops.js"
       ) map (
         controllers.routes.Assets.at(_)
       )
