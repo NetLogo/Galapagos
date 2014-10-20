@@ -43,6 +43,7 @@ to move-turtles
 end
 
 to hyperb  ;;turtle procedure
+;;  ask patches with [pycor = f1y] [ set pcolor black ]
   let old-dist dist
   ;;distance between two foci at const
   set dist abs ((distancexy f0x f0y) - (distancexy f1x f1y))
@@ -92,6 +93,7 @@ to move-focus-directrix [ x y ]
   ask patch f0x f0y [ set pcolor white ]
   ifelse directrix?
     [ ask patches with [pycor = f1y] [ set pcolor white ] ]
+    ;; ask patches with [pycor = f1y] [ set pcolor black ]
     [ ask patch f1x f1y [ set pcolor white ] ]
 end
 @#$#@#$#@
@@ -178,7 +180,7 @@ SWITCH
 153
 directrix?
 directrix?
-1
+0
 1
 -1000
 
@@ -191,7 +193,7 @@ num-turtles
 num-turtles
 0
 2000
-800
+1353
 1
 1
 NIL
@@ -540,7 +542,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1-RC1
 @#$#@#$#@
 setup
 set f0x 12

@@ -192,6 +192,8 @@ Turing Machine 2D -- similar to Vants, but much more general.  This model can be
 ## CREDITS AND REFERENCES
 
 The rules for Vants were originally invented by the artificial life researcher Chris Langton.
+
+A 1991 video of Langton describing and demoing Vants (via screen capture with voiceover) is online at http://www.youtube.com/watch?v=w6XQQhCgq5c (length: 6 minutes)
 @#$#@#$#@
 default
 true
@@ -476,7 +478,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 setup
 repeat 60000 [ go-forward ]
@@ -486,9 +488,9 @@ repeat 60000 [ go-forward ]
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

@@ -17,7 +17,7 @@ globals
 
 to setup
   clear-all
-  set-default-shape turtles "circle"
+  set-default-shape turtles "person"
   make-turtles
   ;; at this stage, all the components will be of size 1,
   ;; since there are no edges yet
@@ -27,7 +27,7 @@ to setup
 end
 
 to make-turtles
-  crt num-nodes
+  crt num-nodes [ set size 3 ]
   layout-circle turtles max-pxcor - 1
 end
 
@@ -36,7 +36,7 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-  ;; if the below condition is true then we have a fully connected network and we need to stop
+  ;; stop if the below condition is true, as then we have a fully connected network (every two nodes are connected)
   if ( (2 * count links ) >= ( (count turtles) * (count turtles - 1) ) ) [
     display
     user-message "Network is fully connected. No more edges can be added."
@@ -46,7 +46,8 @@ to go
   find-all-components
   color-giant-component
   ask links [ set color [color] of end1 ]  ;; recolor all edges
-  layout
+  ;; layout the turtles with a spring layout, but stop laying out when all nodes are in the giant component
+  if not all? turtles [ color = red ] [ layout ]
   tick
 end
 
@@ -111,7 +112,6 @@ to add-edge
     ;; else, go ahead and make it
     [ create-link-with node2 ]
   ]
-
 end
 
 ;;;;;;;;;;;;;;
@@ -285,7 +285,7 @@ NIL
 @#$#@#$#@
 ## WHAT IS IT?
 
-In a network, a "component" is a group of nodes that are all connected to each other, directly or indirectly.  So if a network has a "giant component", that means almost every node is reachable from almost every other.  This model shows how quickly a giant component arises if you grow a random network.
+In a network, a "component" is a group of nodes (people) that are all connected to each other, directly or indirectly.  So if a network has a "giant component", that means almost every node is reachable from almost every other.  This model shows how quickly a giant component arises if you grow a random network.
 
 ## HOW IT WORKS
 
@@ -333,11 +333,15 @@ The position of the nodes is determined by the "spring" method, which is further
 
 Nodes are turtle agents and edges are link agents. The `layout-spring` primitive places the nodes, as if the edges are springs and the nodes are repelling each other.
 
+Though it is not used in this model, there exists a network extension for NetLogo that you can download at: https://github.com/NetLogo/NW-Extension.
+
 ## RELATED MODELS
 
 See other models in the Networks section of the Models Library, such as Preferential Attachment.
 
 See also Network Example, in the Code Examples section.
+
+There is also a version of this model using the (NW extension)[https://github.com/NetLogo/NW-Extension] in the `demo` folder of the extension.
 
 ## CREDITS AND REFERENCES
 
@@ -635,7 +639,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

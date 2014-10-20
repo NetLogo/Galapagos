@@ -336,7 +336,7 @@ end
 ;;      (call it theta).
 ;;   2. Convert the representation of the velocity of each gas-molecules from
 ;;      speed/heading to a theta-based vector whose first component is the
-;;      gas-molecules's speed along theta, and whose second component is the speed
+;;      gas-molecules' speed along theta, and whose second component is the speed
 ;;      perpendicular to theta.
 ;;   3. Modify the velocity vectors to reflect the effects of the collision.
 ;;      This involves:
@@ -418,13 +418,13 @@ to-report energy-from-speed
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-469
+470
 10
-925
-487
+890
+451
 20
 20
-10.9
+10.0
 1
 10
 1
@@ -1058,7 +1058,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1066,9 +1066,9 @@ NetLogo 5.0.5
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

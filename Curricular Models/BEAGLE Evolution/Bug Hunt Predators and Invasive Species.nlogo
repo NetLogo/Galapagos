@@ -297,7 +297,7 @@ end
 
 
 to reproduce-invaders  ;; bugs procedure
-  let number-offspring (random (max-invaders-offspring + 1)) ;; set number of potential offpsring from 1 to (max-invaders-offspring)
+  let number-offspring (random (max-invaders-offspring + 1)) ;; set number of potential offspring from 1 to (max-invaders-offspring)
   if (energy > ((number-offspring + 1) *  min-reproduce-energy-invaders)  and current-age > invader-reproduce-age)
   [
     if random 2 = 1           ;;only half of the fertile invaders reproduce (gender)
@@ -894,7 +894,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -902,9 +902,9 @@ NetLogo 5.0.5
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

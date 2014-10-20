@@ -1,149 +1,105 @@
-globals [grass]  ;; keep track of how much grass there is
-;; Sheep and wolves are both breeds of turtle.
-breed [sheep a-sheep]  ;; sheep is its own plural, so we use "a-sheep" as the singular.
-breed [wolves wolf]
-turtles-own [energy]       ;; both wolves and sheep have energy
-patches-own [countdown]
+breed [data-points data-point]
+breed [centroids centroid]
+
+globals [
+  any-centroids-moved?
+]
 
 to setup
   clear-all
-  ask patches [ set pcolor green ]
-  ;; check GRASS? switch.
-  ;; if it is true, then grass grows and the sheep eat it
-  ;; if it false, then the sheep don't need to eat
-  if grass? [
-    ask patches [
-      set pcolor one-of [green brown]
-      if-else pcolor = green
-        [ set countdown grass-regrowth-time ]
-        [ set countdown random grass-regrowth-time ] ;; initialize grass grow clocks randomly for brown patches
+  set-default-shape data-points "circle"
+  set-default-shape centroids "x"
+  generate-clusters
+  reset-centroids
+end
+
+to generate-clusters
+  let cluster-std-dev 20 - num-clusters
+  let cluster-size num-data-points / num-clusters
+  repeat num-clusters [
+    let center-x random-xcor / 1.5
+    let center-y random-ycor / 1.5
+    create-data-points cluster-size [
+      setxy center-x center-y
+      set heading random 360
+      fd abs random-normal 0 (cluster-std-dev / 2) ;; Divide by two because abs doubles the width
     ]
   ]
-  set-default-shape sheep "sheep"
-  create-sheep initial-number-sheep  ;; create the sheep, then initialize their variables
-  [
-    set color white
-    set size 1.5  ;; easier to see
-    set label-color blue - 2
-    set energy random (2 * sheep-gain-from-food)
-    setxy random-xcor random-ycor
+end
+
+to reset-centroids
+  set any-centroids-moved? true
+  ask data-points [ set color grey ]
+  
+  let colors base-colors
+  ask centroids [die]
+  create-centroids num-centroids [
+    move-to one-of data-points
+    set size 5
+    set color last colors + 1
+    set colors butlast colors
   ]
-  set-default-shape wolves "wolf"
-  create-wolves initial-number-wolves  ;; create the wolves, then initialize their variables
-  [
-    set color black
-    set size 2  ;; easier to see
-    set energy random (2 * wolf-gain-from-food)
-    setxy random-xcor random-ycor
-  ]
-  display-labels
-  set grass count patches with [pcolor = green]
+  clear-all-plots
   reset-ticks
 end
 
 to go
-  if not any? turtles [ stop ]
-  ask sheep [
-    move
-    if grass? [
-      set energy energy - 1  ;; deduct energy for sheep only if grass? switch is on
-      eat-grass
-    ]
-    death
-    reproduce-sheep
-  ]
-  ask wolves [
-    move
-    set energy energy - 1  ;; wolves lose energy as they move
-    catch-sheep
-    death
-    reproduce-wolves
-  ]
-  if grass? [ ask patches [ grow-grass ] ]
-  set grass count patches with [pcolor = green]
+  if not any-centroids-moved? [stop]
+  set any-centroids-moved? false
+  assign-clusters
+  update-clusters
   tick
-  display-labels
 end
 
-to move  ;; turtle procedure
-  rt random 50
-  lt random 50
-  fd 1
+to assign-clusters
+  ask data-points [set color [color] of closest-centroid - 2]  
 end
 
-to eat-grass  ;; sheep procedure
-  ;; sheep eat grass, turn the patch brown
-  if pcolor = green [
-    set pcolor brown
-    set energy energy + sheep-gain-from-food  ;; sheep gain energy by eating
+to update-clusters
+  let movement-threshold 0.1
+  ask centroids [
+    let my-points data-points with [ shade-of? color [ color ] of myself ]
+    if any? my-points [ 
+      let new-xcor mean [ xcor ] of my-points
+      let new-ycor mean [ ycor ] of my-points
+      if distancexy new-xcor new-ycor > movement-threshold [
+        set any-centroids-moved? true
+      ]
+      setxy new-xcor new-ycor
+    ]
   ]
+  update-plots
 end
 
-to reproduce-sheep  ;; sheep procedure
-  if random-float 100 < sheep-reproduce [  ;; throw "dice" to see if you will reproduce
-    set energy (energy / 2)                ;; divide energy between parent and offspring
-    hatch 1 [ rt random-float 360 fd 1 ]   ;; hatch an offspring and move it forward 1 step
-  ]
+to-report closest-centroid
+  report min-one-of centroids [ distance myself ]
 end
 
-to reproduce-wolves  ;; wolf procedure
-  if random-float 100 < wolf-reproduce [  ;; throw "dice" to see if you will reproduce
-    set energy (energy / 2)               ;; divide energy between parent and offspring
-    hatch 1 [ rt random-float 360 fd 1 ]  ;; hatch an offspring and move it forward 1 step
-  ]
-end
-
-to catch-sheep  ;; wolf procedure
-  let prey one-of sheep-here                    ;; grab a random sheep
-  if prey != nobody                             ;; did we get one?  if so,
-    [ ask prey [ die ]                          ;; kill it
-      set energy energy + wolf-gain-from-food ] ;; get energy from eating
-end
-
-to death  ;; turtle procedure
-  ;; when energy dips below zero, die
-  if energy < 0 [ die ]
-end
-
-to grow-grass  ;; patch procedure
-  ;; countdown on brown patches: if reach 0, grow some grass
-  if pcolor = brown [
-    ifelse countdown <= 0
-      [ set pcolor green
-        set countdown grass-regrowth-time ]
-      [ set countdown countdown - 1 ]
-  ]
-end
-
-to display-labels
-  ask turtles [ set label "" ]
-  if show-energy? [
-    ask wolves [ set label round energy ]
-    if grass? [ ask sheep [ set label round energy ] ]
-  ]
+to-report square-deviation
+  report sum [ (distance myself) ^ 2 ] of data-points with [ closest-centroid = myself ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-350
+285
 10
-819
-500
-25
-25
-9.0
+800
+546
+50
+50
+5.0
 1
-14
+10
 1
 1
 1
 0
+0
+0
 1
-1
-1
--25
-25
--25
-25
+-50
+50
+-50
+50
 1
 1
 1
@@ -151,128 +107,110 @@ ticks
 30.0
 
 SLIDER
-3
-150
-177
-183
-initial-number-sheep
-initial-number-sheep
-0
-250
-100
+5
+80
+280
+113
+num-centroids
+num-centroids
+1
+14
+7
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-3
-187
-177
+5
+45
+280
+78
+num-data-points
+num-data-points
+num-centroids + 1
+1000
+138
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+5
+115
+280
+148
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+5
+150
+140
+183
+Assign Points
+assign-clusters
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+145
+150
+280
+183
+Update Centroids
+update-clusters
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+5
+185
+280
+218
+Find Clusters (go)
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+5
 220
-sheep-gain-from-food
-sheep-gain-from-food
-0.0
-50.0
-4
-1.0
-1
-NIL
-HORIZONTAL
-
-SLIDER
-3
-222
-177
-255
-sheep-reproduce
-sheep-reproduce
-1.0
-20.0
-4
-1.0
-1
-%
-HORIZONTAL
-
-SLIDER
-181
-150
-346
-183
-initial-number-wolves
-initial-number-wolves
-0
-250
-50
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-181
-186
-346
-219
-wolf-gain-from-food
-wolf-gain-from-food
-0.0
-100.0
-20
-1.0
-1
-NIL
-HORIZONTAL
-
-SLIDER
-181
-222
-346
-255
-wolf-reproduce
-wolf-reproduce
-0.0
-20.0
-5
-1.0
-1
-%
-HORIZONTAL
-
-SWITCH
-5
-87
-99
-120
-grass?
-grass?
-1
-1
--1000
-
-SLIDER
-106
-88
-318
-121
-grass-regrowth-time
-grass-regrowth-time
-0
-100
-30
-1
-1
-NIL
-HORIZONTAL
-
-BUTTON
-8
-28
-77
-61
-setup
-setup
+280
+253
+Reset centroids
+reset-centroids
 NIL
 1
 T
@@ -282,196 +220,125 @@ NIL
 NIL
 NIL
 1
-
-BUTTON
-90
-28
-157
-61
-go
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
 
 PLOT
-12
-312
-328
-509
-populations
-time
-pop.
-0.0
-100.0
-0.0
-100.0
-true
-true
-"" ""
-PENS
-"sheep" 1.0 0 -13345367 true "" "plot count sheep"
-"wolves" 1.0 0 -2674135 true "" "plot count wolves"
-"grass / 4" 1.0 0 -10899396 true "" "if grass? [ plot grass / 4 ]"
-
-MONITOR
-50
-265
-121
-310
-sheep
-count sheep
-3
-1
-11
-
-MONITOR
-125
-265
-207
-310
-wolves
-count wolves
-3
-1
-11
-
-MONITOR
-211
-265
-287
-310
+5
+255
+280
+495
+Square Deviation of Clusters
 NIL
-grass / 4
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"ask centroids [\ncreate-temporary-plot-pen (word color)\nset-plot-pen-color color\n]" "ask centroids[\nset-current-plot-pen (word color)\nplot square-deviation * num-clusters\n]"
+PENS
+
+MONITOR
+5
+500
+280
+545
+Total Square Deviation
+mean [ square-deviation ] of centroids
 0
 1
 11
 
-TEXTBOX
-8
-130
-148
-149
-Sheep settings
+SLIDER
+5
 11
-0.0
-0
-
-TEXTBOX
-186
-130
-299
-148
-Wolf settings
-11
-0.0
-0
-
-TEXTBOX
-9
-68
-161
-86
-Grass settings
-11
-0.0
-0
-
-SWITCH
-167
-28
-303
-61
-show-energy?
-show-energy?
+280
+44
+num-clusters
+num-clusters
+1
+14
+7
 1
 1
--1000
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model explores the stability of predator-prey ecosystems. Such a system is called unstable if it tends to result in extinction for one or more species involved.  In contrast, a system is stable if it tends to maintain itself over time, despite fluctuations in population sizes.
+Often, when we have data about a large set of objects, we want to identify groups of similar objects within that set. For example, if we have many news articles, we may want to identify groups of articles that all have the same topic. In statistics, this task is called “cluster analysis”, or “clustering”. 
+
+This model shows the k-means clustering algorithm. a simple, but often effective approach to clustering. In this model, the k-means clustering algorithm is used to identify clusters of points on a plane. In the general case, you can represent your data objects as vectors of numbers, where each number represents a feature of the object. 
+
+The model is initialized by creating a specific number of clusters (NUM-CLUSTERS). In a real-world application, this number of clusters would be unknown. The algorithm is designed to find the clusters, and the user selects a guess, NUM-CENTROIDS, which tells the algorithm, how many clusters to search for. You can search for different numbers of clusters till you find one that best characterizes your data. 
+
+The result of the algorithm is a set of NUM-CENTROIDS points,  (each point is called a centroid), each of which is located at the average position of a corresponding cluster. The “k” in k-mean clustering refers to the guess at how many centroids to search for.
+
+The purpose of the model is to allow you to see how the number of data points, clusters, and centroids interact, and how the algorithm can often find many different sets of clusters for the same dataset.
+
 
 ## HOW IT WORKS
 
-There are two main variations to this model.
+The algorithm works by finding the average position of the elements in NUM-CENTROIDS different clusters. It starts by simply guessing an average position for each of the NUM-CENTROIDS clusters, and then improves these guesses as it goes on. 
 
-In the first variation, wolves and sheep wander randomly around the landscape, while the wolves look for sheep to prey on. Each step costs the wolves energy, and they must eat sheep in order to replenish their energy - when they run out of energy they die. To allow the population to continue, each wolf or sheep has a fixed probability of reproducing at each time step. This variation produces interesting population dynamics, but is ultimately unstable.
+When the model is set up, two things happen: First, NUM-DATA-POINTS data points are generated and shown in the view.  Second, NUM-CENTROIDS centroids are generated and moved to a randomly selected data point. This randomly selected point is the initial guess for each centroid.
 
-The second variation includes grass (green) in addition to wolves and sheep. The behavior of the wolves is identical to the first variation, however this time the sheep must eat grass in order to maintain their energy - when they run out of energy they die. Once grass is eaten it will only regrow after a fixed amount of time. This variation is more complex than the first, but it is generally stable.
+Each tick, the model performs two steps:
+1. ASSIGN POINTS: all data points assign themselves to their closest centroid, taking on its color. 
+2. UPDATE CENTROIDS: all centroids move to the average position of the points assigned to it.
 
-The construction of this model is described in two papers by Wilensky & Reisman referenced below.
+By iterating these steps a few times, the model is usually able to identify clusters in the dataset.
 
 ## HOW TO USE IT
 
-1. Set the GRASS? switch to TRUE to include grass in the model, or to FALSE to only include wolves (red) and sheep (white).
-2. Adjust the slider parameters (see below), or use the default settings.
-3. Press the SETUP button.
-4. Press the GO button to begin the simulation.
-5. Look at the monitors to see the current population sizes
-6. Look at the POPULATIONS plot to watch the populations fluctuate over time
+First choose how many clusters you want to create and with how many data points, using respectively the NUM-CLUSTERS slider and the NUM-DATA-POINTS slider. Using the NUM-CENTROIDS slider, you can decide how many centroids you will create, which is how many clusters to search for. With real data, you won’t necessarily know how many naturally occurring clusters there are. By making NUM-CLUSTERS and NUM-CENTROIDS different, you can see what the algorithm does when it’s looking for too many or not enough clusters. Finally, click SETUP to generate your dataset and your centroids.
 
-Parameters:
-INITIAL-NUMBER-SHEEP: The initial size of sheep population
-INITIAL-NUMBER-WOLVES: The initial size of wolf population
-SHEEP-GAIN-FROM-FOOD: The amount of energy sheep get for every grass patch eaten
-WOLF-GAIN-FROM-FOOD: The amount of energy wolves get for every sheep eaten
-SHEEP-REPRODUCE: The probability of a sheep reproducing at each time step
-WOLF-REPRODUCE: The probability of a wolf reproducing at each time step
-GRASS?: Whether or not to include grass in the model
-GRASS-REGROWTH-TIME: How long it takes for grass to regrow once it is eaten
-SHOW-ENERGY?: Whether or not to show the energy of each animal as a number
+At this point you can choose to call each of the two steps manually using the ASSIGN POINTS, and UPDATE CENTROIDS buttons. This lets you see exactly how each of the steps work.
 
-Notes:
-- one unit of energy is deducted for every step a wolf takes
-- when grass is included, one unit of energy is deducted for every step a sheep takes
+Alternatively you can press the FIND CLUSTERS (GO) button.
+
+The model stops when the points assigned to the centroids don’t change. When this happens, we say that the centroids have “converged”.
+
+RESET CENTROIDS sets the position of the centroids to random points in your data set, so that you can see if the clustering algorithm finds different sets of clusters depending on its initial guesses.
 
 ## THINGS TO NOTICE
 
-When grass is not included, watch as the sheep and wolf populations fluctuate. Notice that increases and decreases in the sizes of each population are related. In what way are they related? What eventually happens?
-
-Once grass is added, notice the green line added to the population plot representing fluctuations in the amount of grass. How do the sizes of the three populations appear to relate now? What is the explanation for this?
-
-Why do you suppose that some variations of the model might be stable while others are not?
+You will often get very different results, depending on the initial guesses for the centroids’ location. Try and explore each data set several times, both by resetting the centroids, and by changing the number of centroids you place in the dataset.
 
 ## THINGS TO TRY
 
-Try adjusting the parameters under various settings. How sensitive is the stability of the model to the particular parameters?
+K-means clustering won't necessarily find the best solution. In fact, there are many solutions that it can converge to. Each of these solutions will be locally optimal. In other words, you can't find a better solution by moving the centroids by a small amount. However, better solutions may still exist.
 
-Can you find any parameters that generate a stable ecosystem that includes only wolves and sheep?
-
-Try setting GRASS? to TRUE, but setting INITIAL-NUMBER-WOLVES to 0. This gives a stable ecosystem with only sheep and grass. Why might this be stable while the variation with only sheep and wolves is not?
-
-Notice that under stable settings, the populations tend to fluctuate at a predictable pace. Can you find any parameters that will speed this up or slow it down?
-
-Try changing the reproduction rules -- for example, what would happen if reproduction depended on energy rather than being determined by a fixed probability?
+For each dataset, you will probably be able to converge on many different solutions. You can try this by clicking the RESET CENTROIDS button after your model has already converged on one set, and running it again. This becomes particularly obvious if NUM-CLUSTERS and NUM-CENTROIDS are not equal.
 
 ## EXTENDING THE MODEL
 
-There are a number ways to alter the model so that it will be stable with only wolves and sheep (no grass). Some will require new elements to be coded in or existing behaviors to be changed. Can you develop such a version?
+The dataset currently is distributed in clusters across a 2-d space. It could be interesting to add the ability to either import datasets and find clusters in them, or somehow allow the user to create their own datasets. 
+
+Currently, only the data points that are identified as belonging to a cluster change their color as the algorithm runs. Another interesting way to illustrate clusters might be to change the color of patches that are closest to the centroids. This would create a Voronoi diagram of the clusters (see under 'Related models' if you are curious about Voronoi diagrams).
+
+A clustering algorithm requires a measure to assess bow well it has clustered. This model uses the square deviation of the Euclidean distance. This measure has some good properties, but it assigns better scores to higher numbers of centroids. Can you think of other measures that improve the clustering?
 
 ## NETLOGO FEATURES
 
-Note the use of breeds to model two different kinds of "turtles": wolves and sheep. Note the use of patches to model grass.
-
-Note use of the ONE-OF agentset reporter to select a random sheep to be eaten by a wolf.
+_CREATE-TEMPORARY-PLOT-PEN_: The model plots the number of data points for each of the centroids. However, because this number might change during runtime (i.e. if you let the model run, change the number of clusters, and then run the model again), the model uses temporary pens that are created and die with the centroids. 
 
 ## RELATED MODELS
 
-Look at Rabbits Grass Weeds for another model of interacting populations with different rules.
+* Voronoi
+* Emergent Voronoi
+* MaterialSim Grain Growth
+* Fur
+* Honeycomb
+* Scatter
+* Hotelling's Law
+
+## REFERENCES
+
+For more information on k-means clustering, see http://en.wikipedia.org/wiki/K-means_clustering. (There are also many other sites on this topic on the web.)
 
 ## CREDITS AND REFERENCES
-
-Wilensky, U. & Reisman, K. (1999). Connected Science: Learning Biology through Constructing and Testing Computational Theories -- an Embodied Modeling Approach. International Journal of Complex Systems, M. 234, pp. 1 - 12. (This model is a slightly extended version of the model described in the paper.)
-
-Wilensky, U. & Reisman, K. (2006). Thinking like a Wolf, a Sheep or a Firefly: Learning Biology through Constructing and Testing Computational Theories -- an Embodied Modeling Approach. Cognition & Instruction, 24(2), pp. 171-209. http://ccl.northwestern.edu/papers/wolfsheep.pdf
 @#$#@#$#@
 default
 true
@@ -781,11 +648,24 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 5.1.0
 @#$#@#$#@
-setup
-set grass? true
-repeat 75 [ go ]
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="experiment" repetitions="100" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="20"/>
+    <metric>ticks</metric>
+    <enumeratedValueSet variable="no-of-data-points">
+      <value value="100"/>
+      <value value="1000"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="k-clusters">
+      <value value="4"/>
+      <value value="9"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
@@ -800,5 +680,5 @@ Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 
 @#$#@#$#@
-0
+1
 @#$#@#$#@
