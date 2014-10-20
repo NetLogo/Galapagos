@@ -332,6 +332,8 @@ However, whereas the neighbor relationship in patches is symmetric, this model u
 
 In this model, there are two link-breeds: one for active links (which are shown in the view) and another for inactive links (which are invisible).  This makes "rewiring" of links easier, because rather than killing a link and creating a new link, we can just change the breed of a link and hide or show it.
 
+Though it is not used in this model, there exists a network extension for NetLogo that you can download at: https://github.com/NetLogo/NW-Extension.
+
 ## RELATED MODELS
 
 Virus on a Network
@@ -621,7 +623,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

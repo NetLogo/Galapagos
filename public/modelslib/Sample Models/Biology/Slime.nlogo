@@ -176,9 +176,19 @@ NIL
 @#$#@#$#@
 ## WHAT IS IT?
 
-This project is inspired by the aggregation behavior of slime-mold cells. It shows how creatures can aggregate into clusters without the control of a "leader."
+This model is inspired by the aggregation behavior of slime-mold cells.
 
-In this example, each turtle drops a chemical pheromone (shown in green). The turtles also "sniff" ahead, trying to follow the gradient of other turtles' chemicals. Meanwhile, the patches diffuse and evaporate the pheromone. Following these simple, decentralized rules, the turtles aggregate into clusters.
+The slime mold spends much of its life as thousands of distinct single-celled units, each moving separately. Under the right conditions, those many cells will coalesce into a single, larger organism. When the environment is less hospitable, the slime mold acts as a single organism; when the weather turns cooler and the mold enjoys a large food supply, "it" becomes a "they." The slime mold oscillates between being a single creature and a swarm.
+
+This model shows how creatures can aggregate into clusters without the control of a "leader" or "pacemaker" cell. This finding was first described by Evelyn Fox Keller and Lee Siegel in a paper in 1970.
+
+Before Keller began her investigations, the conventional belief had been that slime mold swarms formed at the command of "pacemaker" cells that ordered the other cells to begin aggregating. In 1962, Shafer showed how the pacemakers could use cyclic AMP as a signal of sorts to rally the troops; the slime mold generals would release the compounds at the appropriate moments, triggering waves of cyclic AMP that washed through the entire community, as each isolated cell relayed the signal to its neighbors. Slime mold aggregation, in effect, was a giant game of Telephone — but only a few elite cells placed the original call.
+
+For the twenty years that followed the publication of Shafer's original essay, mycologists assumed that the missing pacemaker cells were a sign of insufficient data, or poorly designed experiments. But Keller and Segel took another, more radical approach. They shows that Shafer had it wrong --  that the community of slime mold cells were organizing themselves without any need for pacemalers. This was one of the first examples of emergence and self-organization in biology. 
+
+Initially, biologists did not accept this explanation. Indeed, the pacemaker hypothesis would continue as the reigning model for another decade. Now, slime mold aggregation is  recognized as a classic case study in bottom-up self-organizing behavior.
+
+In this model, each turtle drops a chemical pheromone (shown in green). The turtles also "sniff" ahead, trying to follow the gradient of other turtles' chemicals. Meanwhile, the patches diffuse and evaporate the pheromone. Following these simple, decentralized rules, the turtles aggregate into clusters.
 
 ## HOW TO USE IT
 
@@ -234,6 +244,17 @@ Note the use of the `patch-ahead`, `patch-left-and-ahead`, and `patch-right-and-
 Ants uses a similar idea of creatures that both drop chemical and follow the gradient of the chemical.
 
 ## CREDITS AND REFERENCES
+
+Keller, E & Segal, L. (1970). Initiation of slime mold aggregation viewed as an instability. Journal of Theoretical Biology,
+Volume 26, Issue 3, March 1970, Pages 399–415.
+
+Wilensky, U., & Resnick, M. (1999). Thinking in levels: A dynamic systems approach to making sense of the world. Journal of Science Education and Technology, 8(1), 3-19.
+
+Johnson, S. (2001). Emergence: The Connected Lives of Ants, Brains, Cities, and Software. New York: Scribner.
+
+Resnick, M. (1996). Beyond the centralized mindset. Journal of the Learning Sciences, 5(1), 1-22.
+
+See also http://www.creepinggarden.com for video of slime mold.
 @#$#@#$#@
 default
 true
@@ -518,7 +539,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

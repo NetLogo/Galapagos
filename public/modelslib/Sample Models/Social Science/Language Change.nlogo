@@ -234,13 +234,13 @@ to do-highlight
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-373
+375
 10
-696
-354
+749
+405
 45
 45
-3.44
+4.0
 1
 10
 1
@@ -365,9 +365,9 @@ NIL
 
 OUTPUT
 375
-367
-698
-429
+415
+750
+485
 14
 
 SLIDER
@@ -577,7 +577,7 @@ Preferential Attachment
 
 ## CREDITS AND REFERENCES
 
-This model was also described in Troutman, Celina; Clark, Brady; and Goldrick, Matthew (2008) "Social networks and intraspeaker variation during periods of language change," University of Pennsylvania Working Papers in Linguistics: Vol. 14: Iss. 1, Article 25.
+This model was also described in Troutman, Celina; Clark, Brady; and Goldrick, Matthew (2008) "Social networks and intraspeaker variation during periods of language change," University of Pennsylvania Working Papers in Linguistics: Vol. 14: Issue 1, Article 25.
 http://repository.upenn.edu/pwpl/vol14/iss1/25
 @#$#@#$#@
 default
@@ -874,7 +874,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

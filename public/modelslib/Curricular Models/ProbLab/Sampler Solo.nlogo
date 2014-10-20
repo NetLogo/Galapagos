@@ -933,7 +933,7 @@ Polygon -6459832 true true 46 128 33 120 21 118 11 123 3 138 5 160 13 178 9 192 
 Polygon -6459832 true true 67 122 96 126 63 144
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -942,9 +942,9 @@ need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

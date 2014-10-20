@@ -532,6 +532,10 @@ Can you modify the model so that agents are more likely to collaborate with coll
 
 Collaboration networks can alternatively be thought of as a network consisting of individuals linked to projects.  For example, one can represent a scientific journal with two types of nodes, scientists and publications.  Ties between scientists and publications represent authorship.  Thus, links between a publication multiple scientists specify co-authorship.  More generally, a collaborative project may be represented one type of node, and participants another type.  Can you modify the model to assemble teams using bipartite networks?
 
+## NETLOGO FEATURES
+
+Though it is not used in this model, there exists a network extension for NetLogo that you can download at: https://github.com/NetLogo/NW-Extension.
+
 ## RELATED MODELS
 
 Preferential Attachment - gives a generative explanation of how general principles of attachment can give rise to a network structure common to many technological and biological systems.
@@ -827,7 +831,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.5
+NetLogo 5.1.0
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]
@@ -838,9 +842,9 @@ repeat 35 [ layout ]
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0
