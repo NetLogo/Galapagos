@@ -118,7 +118,6 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/agent/defaultshapes.js",
         "javascripts/TortoiseJS/agent/view.js",
         "javascripts/TortoiseJS/agent/widgets.js",
-        "javascripts/TortoiseJS/agent/googlegraph.js",
         "javascripts/TortoiseJS/communication/connection.js",
         "javascripts/TortoiseJS/control/session-lite.js"
       ) map (

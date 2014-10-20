@@ -2,13 +2,6 @@
 
 <html>
   <head>
-    <script>useGoogleGraph = false</script>
-    <!--
-    Uncomment if you'd like to use google graphs!
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script>useGoogleGraph = true</script>
-    -->
   </head>
   <body>
 
@@ -63,10 +56,6 @@
       var speedSlider = document.getElementById('speed-slider');
 
       window.addEventListener('load', initPage);
-      if(useGoogleGraph) {
-        session.graph = GoogleGraph;
-        Grapher.graph = GoogleGraph;
-      }
 
       Widgets.addTo(session);
 
