@@ -28,7 +28,7 @@ object Application extends Controller {
         myFiles ++ myFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
       }
       val parentPath = "public/modelslib/"
-      val nlogoFiles = Seq("test/tortoise", "test/benchmarks", "Sample Models", "Code Examples", "Curricular Models").
+      val nlogoFiles = Seq("test/benchmarks", "Sample Models", "Code Examples", "Curricular Models").
         flatMap(dir => recursiveListFiles(new File(parentPath, dir))).
         filter(_.getName.endsWith(".nlogo"))
       Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).stripSuffix(".nlogo")))))

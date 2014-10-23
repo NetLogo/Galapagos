@@ -249,3 +249,14 @@
   border-color: #9ecaed;
   box-shadow: 0 0 8px #9ecaed;
 }
+
+.invisible {
+  opacity:0;
+  width: 0;
+  z-index: -1;
+}
+
+.text_input_margin {
+  margin-top: 10px;
+  margin-right: 15px;
+}
