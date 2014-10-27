@@ -1,5 +1,5 @@
-exports.modelList = (container) ->
-  $.ajax('/model/list.json',
+exports.bindModelChooser = (container, callback) ->
+  $.ajax('/model/list.json', {
     complete: (req, status) ->
       window.modelSelect = $('<select>').attr('name', 'models')
                                         .css('width', '100%')
@@ -13,11 +13,18 @@ exports.modelList = (container) ->
       modelSelect.chosen({search_contains: true})
       modelSelect.on("change", (e) ->
         if modelSelect.get(0).selectedIndex > 0
-          modelURL = "/model/#{modelSelect.get(0).value}.nlogo"
-          $.ajax(modelURL,
-            complete: (req, status) ->
-              if status == 'success'
-                session.open(req.responseText)
-          )
+          modelURL = "#{modelSelect.get(0).value}.nlogo"
+          callback(modelURL)
       )
+    }
   )
+
+exports.modelList = (container) ->
+  uploadModel = (modelURL) ->
+    $.ajax(modelURL, {
+        complete: (req, status) ->
+          if status is 'success'
+            session.open("/model/#{req.responseText}")
+      }
+    )
+  exports.bindModelChooser(container, uploadModel)
