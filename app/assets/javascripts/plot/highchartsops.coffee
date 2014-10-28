@@ -21,9 +21,12 @@ class window.HighchartsOps extends PlotOps
           renderTo:  elemID,
           zoomType:  "xy"
         },
+        legend:  { enabled: plot.isLegendEnabled, margin: 5 },
         series:  [],
         title:   { text: plot.name },
-        tooltip: { pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>' }
+        tooltip: { pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>' },
+        xAxis:   { title: { text: plot.xLabel } },
+        yAxis:   { title: { text: plot.yLabel } }
       })
       return
 
