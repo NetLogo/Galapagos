@@ -24,6 +24,9 @@ class window.HighchartsOps extends PlotOps
         title: {
           text: plot.name
         },
+        tooltip: {
+          pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>'
+        },
         series: []
       })
       return
