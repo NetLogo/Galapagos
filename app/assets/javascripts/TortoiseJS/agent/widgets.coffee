@@ -238,15 +238,19 @@ window.Widgets =
     #   solution here").  Widgets are not initialized until after the compiled model code is, since
     #   the widgets rely on compiled model code, which relies on the engine.  Therefore, this `div`
     #   and `Ops` stuff _must be_ done before widget initialization time. --JAB (10/19/14)
-    plot = document.createElement('div')
-    plot.id             = id
-    plot.style.position = "absolute"
-    plot.style.border   = "1px solid black"
-    @setDimensions(plot, left, top, right, bottom)
-    document.body.appendChild(plot)
+
+    alreadyExists = document.getElementById(id)?
+
+    if not alreadyExists
+      plot = document.createElement('div')
+      plot.id             = id
+      plot.style.position = "absolute"
+      plot.style.border   = "1px solid black"
+      @setDimensions(plot, left, top, right, bottom)
+      document.body.appendChild(plot)
 
     window.modelConfig         ?= {}
     window.modelConfig.plotOps ?= {}
     window.modelConfig.plotOps[display] = new HighchartsOps(id)
 
-    @widgets.push((session) => session.container.appendChild(plot))
+    @widgets.push((session) => if not alreadyExists then session.container.appendChild(plot))
