@@ -21,10 +21,10 @@ exports.bindModelChooser = (container, callback) ->
 
 exports.modelList = (container) ->
   uploadModel = (modelURL) ->
-    $.ajax(modelURL, {
+    $.ajax("assets/modelslib/#{modelURL}", {
         complete: (req, status) ->
           if status is 'success'
-            session.open("/model/#{req.responseText}")
+            session.open(req.responseText)
       }
     )
   exports.bindModelChooser(container, uploadModel)
