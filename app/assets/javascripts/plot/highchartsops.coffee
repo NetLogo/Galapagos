@@ -21,13 +21,9 @@ class window.HighchartsOps extends PlotOps
           renderTo:  elemID,
           zoomType:  "xy"
         },
-        title: {
-          text: plot.name
-        },
-        tooltip: {
-          pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>'
-        },
-        series: []
+        series:  [],
+        title:   { text: plot.name },
+        tooltip: { pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>' }
       })
       return
 
