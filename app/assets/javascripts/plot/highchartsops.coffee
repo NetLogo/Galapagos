@@ -68,7 +68,7 @@ class window.HighchartsOps extends PlotOps
     switch mode
       when Bar   then 'bar'
       when Line  then 'line'
-      when Point then 'point'
+      when Point then 'scatter'
       else 'line'
 
   # (PenBundle.Pen) => Highcharts.Series
