@@ -31,14 +31,15 @@ class window.HighchartsOps extends PlotOps
       return
 
     registerPen = (pen) ->
-      num = @_chart.series.length
+      num  = @_chart.series.length
+      mode = @modeToString(pen.getDisplayMode())
       @_chart.addSeries({
         color:      @colorToRGBString(pen.getColor()),
         data:       [],
         dataLabels: { enabled: false },
-        marker:     { enabled: false },
+        marker:     { enabled: mode is 'scatter' },
         name:       pen.name,
-        type:       @modeToString(pen.getDisplayMode())
+        type:       mode
       })
       @_penNameToSeriesNum[pen.name] = num
       return
