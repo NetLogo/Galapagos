@@ -215,7 +215,6 @@ window.Widgets =
         textBox.setAttribute('netlogo-display', display) # setAttribute handles escaping
         textBox.style.position = "absolute"
         textBox.style.fontSize = "8pt"
-        textBox.style.border = "2px solid black"
         textBox.style.textAlign = "center"
         @setDimensions(textBox, left + 2, top + 2, right - 2, bottom - 2)
         textBox.innerHTML = display
