@@ -21,6 +21,7 @@ class window.HighchartsOps extends PlotOps
           renderTo:  elemID,
           zoomType:  "xy"
         },
+        credits: { enabled: false },
         legend:  { enabled: plot.isLegendEnabled, margin: 5 },
         series:  [],
         title:   { text: plot.name },
