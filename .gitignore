@@ -10,7 +10,7 @@ project/project
 project/target
 public/javascripts/managed/
 public/stylesheets/managed/
-*.swp
+*.sw[po]
 target
 tmp
 /.ensime
