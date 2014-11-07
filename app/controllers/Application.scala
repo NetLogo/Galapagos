@@ -1,13 +1,15 @@
 package controllers
 
 import
-  java.io.File
-
-import
   play.api.{ Logger, mvc },
     mvc.{ Action, Controller }
 
-import play.api.libs.json.Json
+import
+  play.api.libs.json.Json
+
+import
+  models.ModelsLibrary,
+    ModelsLibrary.prettyFilepath
 
 object Application extends Controller {
 
@@ -23,15 +25,7 @@ object Application extends Controller {
 
   def modelList = Action {
     implicit request =>
-      def recursiveListFiles(f: File): Array[File] = {
-        val myFiles = f.listFiles
-        myFiles ++ myFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
-      }
-      val parentPath = "public/modelslib/"
-      val nlogoFiles = Seq("test/benchmarks", "Sample Models", "Code Examples", "Curricular Models").
-        flatMap(dir => recursiveListFiles(new File(parentPath, dir))).
-        filter(_.getName.endsWith(".nlogo"))
-      Ok(Json.stringify(Json.toJson(nlogoFiles.map(_.getPath.drop(parentPath.length).stripSuffix(".nlogo")))))
+      Ok(Json.stringify(Json.toJson(ModelsLibrary.allModels.map(prettyFilepath))))
   }
 
   def createStandaloneTortoise = Action {
