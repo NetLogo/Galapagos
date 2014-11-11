@@ -73,8 +73,13 @@ class window.AgentStreamController
     @turtleView.repaint(@model)
     @patchView.repaint(@model)
 
-  update: (modelUpdate) ->
+  applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
+
+  update: (modelUpdate) ->
+    updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
+    @applyUpdate(u) for u in updates
+    @repaint()
 
 class View
   constructor: (@canvas) ->

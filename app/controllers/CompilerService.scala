@@ -7,112 +7,123 @@ import
   scala.util.Try
 
 import
-  scalaz.{ Scalaz, Validation, ValidationNel },
-    Scalaz.{ ToApplyOpsUnapply, ToValidationOps },
+  scalaz.{ NonEmptyList, Scalaz, Validation, ValidationNel },
+    Scalaz.ToValidationOps,
     Validation.FlatMap.ValidationFlatMapRequested
 
 import
   com.fasterxml.jackson.core.JsonProcessingException
 
 import
-  org.nlogo.tortoise.CompiledModel
+  org.nlogo.{ api, core, tortoise },
+    api.CompilerException,
+    core.Widget,
+    tortoise.CompiledModel,
+      CompiledModel.CompileResult
 
 import
-  play.api.{Play, cache, libs, mvc},
+  play.api.{ cache, libs, mvc, Play },
     cache.Cache,
-    libs.json.{ Json, JsObject },
+    libs.json.{ Json, JsObject, Writes },
+      Json.toJsFieldJsValueWrapper,
     Play.current,
-    mvc.{ Action, Controller, RequestHeader }
+    mvc.{ Action, Controller, RequestHeader, Result }
 
 import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ ModelsLibrary, ModelSaver, remote => mremote, Util },
+  models.{ json, local => mlocal, ModelsLibrary, ModelSaver, remote => mremote, Util },
+    json.CompileWrites._,
+    mlocal.CompiledWidget,
     ModelsLibrary.prettyFilepath,
-    mremote.{ CompilationSuccess, CompilationFailure, StatusCacher },
+    mremote.{ CompilationFailure, CompilationSuccess, StatusCacher },
       StatusCacher.AllBuiltInModelsCacheKey,
     Util.usingSource
 
 object CompilerService extends Controller {
 
-  private val MissingArgsMsg = "Your request must include either 'nlogo_url' or 'nlogo' as arguments."
-  private def BadStmtsMsg(stmtType: String) = s"$stmtType to be compiled should be formatted as a JSON array of strings."
+  /////////////
+  // Actions //
+  /////////////
 
-  def compile = Action {
-    implicit request =>
+  def compileURL   = genCompileAction(fetchURL(_) map (CompiledModel.fromNlogoContents(_)), urlMissingMsg)
+  def compileCode  = genCompileAction(CompiledModel.fromCode(_).successNel,                 codeMissingMsg)
+  def compileNlogo = genCompileAction(CompiledModel.fromNlogoContents(_).successNel,        nlogoMissingMsg)
 
-      val argMap = request.extractArgMap
+  def saveURL      = genSaveAction   (fetchURL(_) map (CompiledModel.fromNlogoContents(_)), urlMissingMsg)
+  def saveCode     = genSaveAction   (CompiledModel.fromCode(_).successNel,                 codeMissingMsg)
+  def saveNlogo    = genSaveAction   (CompiledModel.fromNlogoContents(_).successNel,        nlogoMissingMsg)
 
-      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
-        url =>
-          val nlogoContents = usingSource(_.fromURL(url))(_.mkString)
-          CompiledModel.fromNlogoContents(nlogoContents)
-      }
+  protected[controllers] def genCompileAction(compileModel: (String) => ModelResultV, missingModelMsg: String) =
+    Action { implicit request =>
+      val argMap = toStringMap(request.extractBundle)
 
-      val fromNlogo = maybeBuildFromNlogo(argMap, MissingArgsMsg) {
-        CompiledModel.fromNlogoContents(_)
-      }
+      val responseV = for {
+        modelStr    <- extractModelString(argMap, missingModelMsg)
+        modelResult <- compileModel(modelStr)
+        commands    <- getIDedStmtsV(argMap, commandsKey)
+        reporters   <- getIDedStmtsV(argMap, reportersKey)
+      } yield compile(modelResult, commands, reporters)
 
-      val maybeCommands  = maybeGetStmts(argMap, "commands",  BadStmtsMsg("Commands"))
-      val maybeReporters = maybeGetStmts(argMap, "reporters", BadStmtsMsg("Reporters"))
+      responseV fold (nelResult(BadRequest), res => Ok(Json.toJson(res)))
+    }
 
-      ((fromNlogo orElse fromURL) |@| maybeCommands |@| maybeReporters) {
-        case (model, commands, reporters) => (model, commands, reporters)
-      } fold (
-        nel => ExpectationFailed(nel.list.mkString("\n")),
-        {
-          case (compileResult, commands, reporters) =>
-            import Scalaz._
-            compileResult flatMap {
-              case model @ CompiledModel(js, m, _, _, _) =>
-                val commandVs  = commands.toList. map(model.compileCommand (_)).sequence
-                val reporterVs = reporters.toList.map(model.compileReporter(_)).sequence
-                (commandVs |@| reporterVs) {
-                  (cs, rs) => createResponse(js, cs, rs, m.info)
-                }
-            } fold (
-              nel => InternalServerError(nel.list.mkString("\n")),
-              result => Ok(result)
-            )
-        }
-      )
-
+  protected[controllers] def compile(modelResult: CompileResult[CompiledModel],
+                                     commands:    IDedValues[String],
+                                     reporters:   IDedValues[String]): CompileResponse = {
+    val failedMsg   = "Model failed to compile"
+    val modelFailed = new CompilerException(failedMsg, 0, 0, "").failureNel[String]
+    CompileResponse(modelResult map       (_.compiledCode),
+                    modelResult map       (_.model.info) getOrElse failedMsg,
+                    modelResult map       (_.model.code) getOrElse failedMsg,
+                    modelResult map       (m => m.model.widgets map CompiledWidget.compile(m)) getOrElse Seq(),
+                    commands    mapValues (s => modelResult map (_.compileCommand (s)) getOrElse modelFailed),
+                    reporters   mapValues (s => modelResult map (_.compileReporter(s)) getOrElse modelFailed))
   }
 
-  def saveToHtml = Action {
-    implicit request =>
+  protected[controllers] def getIDedStmtsV(argMap: Map[String, String], field: String): ValidationNel[String, IDedValues[String]] = {
+    val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
+    Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
+      case _: JsonProcessingException => malformedStmtsError
+    }.get.flatMap { json =>
+      val asSeq      = json.asOpt[Seq[String]]         map IDedValuesSeq.apply
+      lazy val asMap = json.asOpt[Map[String, String]] map IDedValuesMap.apply
+      asSeq orElse asMap map (_.successNel) getOrElse malformedStmtsError
+    }
+  }
 
-      val jsURLs = generateTortoiseLiteJsUrls()
+  protected[controllers] def genSaveAction(compileModel: String => ModelResultV, missingModelMsg: String) =
+    Action {
+      implicit request =>
 
-      val ParamBundle(argSeqMap, fileBytesMap) = request.extractBundle
-      val argMap  = argSeqMap    mapValues (_.head)
-      val fileMap = fileBytesMap mapValues (str => new String(str, "ISO-8859-1"))
+      val slurpURL = (url: String) => usingSource(_.fromURL(routes.Assets.at(url).absoluteURL()))(_.mkString)
 
-      val fromURL = maybeBuildFromURL(argMap, MissingArgsMsg) {
-        url => ModelSaver(url, jsURLs)
-      }
+      val stylesheets = Set("stylesheets/widgets.css", "stylesheets/classic.css")
+      val css         = stylesheets map slurpURL mkString "\n"
 
-      val fromNlogo = maybeBuildFromNlogo(fileMap, MissingArgsMsg) {
-        contents => ModelSaver(contents, jsURLs)
-      }
+      val argMap  = toStringMap(request.extractBundle)
+      val bundleV =
+        for {
+          modelStr    <- extractModelString(argMap, missingModelMsg) leftMap nelResult(BadRequest)
+          modelResult <- compileModel(modelStr)                      leftMap nelResult(BadRequest)
+          model       <- modelResult                                 leftMap nelResult(InternalServerError)
+        } yield ModelSaver(model, generateTortoiseLiteJsUrls())
 
-      (fromNlogo orElse fromURL) fold (
-        nel     => ExpectationFailed(nel.list.mkString("\n")),
-        bundleV => bundleV fold (
-          nel    => InternalServerError(nel.list.mkString("\n")),
-          bundle => Ok(views.html.standaloneTortoise(bundle.js, bundle.colorizedNlogoCode, bundle.info))
+      bundleV.fold(
+        identity,
+        bundle => Ok(views.html.local.standaloneTortoise(
+          bundle.modelJs, bundle.libsJs, css, bundle.widgets, bundle.colorizedNlogoCode, bundle.info)
         )
       )
-
-  }
+    }
 
   def modelStatuses = Action {
     implicit request =>
-      val resultJson: JsObject = Cache
-        .getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
-        .map(genStatusJson)
-        .foldLeft(Json.obj())(_ ++ _)
+      val resultJson =
+        Cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
+             .map(genStatusJson)
+             .foldLeft(Json.obj())(_ ++ _)
       Ok(Json.stringify(resultJson))
   }
 
@@ -137,6 +148,7 @@ object CompilerService extends Controller {
         routes.Assets.at("lib/highcharts/adapters/standalone-framework.js"),
         routes.Assets.at("lib/highcharts/highcharts.js"),
         routes.Assets.at("lib/highcharts/modules/exporting.js"),
+        routes.Assets.at("lib/ractive/ractive.js"),
         local.routes.Local.engine
       )
 
@@ -159,43 +171,94 @@ object CompilerService extends Controller {
 
   }
 
-  private def maybeBuildFromURL[T](argMap: Map[String, String], errorStr: String)
-                                  (f: (URL) => T): ValidationNel[String, T] =
-    argMap get "nlogo_url" map (
-      _.successNel
-    ) getOrElse {
-      errorStr.failureNel
-    } flatMap {
-      nlogoURL =>
-        Try(new URL(nlogoURL)) map f map (
-          _.successNel
-        ) recover {
-          case _: MalformedURLException => "Invalid 'nlogo_url' supplied (must be valid URL)".failureNel
-        } getOrElse {
-          "An unknown error has occurred in processing your 'nlogo_url' value".failureNel
-        }
+  private def toStringMap(bundle: ParamBundle): Map[String, String] = {
+    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
+    bundle.stringParams ++ fileMap
+  }
+
+  private def nelResult[E](status: Status)(nel: NonEmptyList[E]): Result =
+    status(nel.stream.mkString("\n\n"))
+
+  private def extractModelString(argMap: Map[String, String], missingMsg: String): ValidationNel[String, String] =
+    (argMap get modelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
+
+  private def fetchURL(url: String): ValidationNel[String, String] = {
+    Try(new URL(url)) map {
+      wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel
+    } recover {
+      case _: MalformedURLException => s"'$url' is an invalid URL.".failureNel
+    } getOrElse {
+      s"An unknown error occurred while processing the URL '$url'. Make sure the url is publicly accessible.".failureNel
+    }
+  }
+
+  // Outer validation indicates the validity of the model representation, whereas CompileResult indicates whether the
+  // model compiled successfully. BCH 8/28/2014
+  protected[controllers] type ModelResultV  = ValidationNel[String, CompileResult[CompiledModel]]
+
+  protected[controllers] type CompiledStmts = IDedValues[CompileResult[String]]
+
+  protected[controllers] case class CompileResponse(model:     CompileResult[String],
+                                                    info:      String,
+                                                    code:      String,
+                                                    widgets:   Seq[CompiledWidget[Widget]],
+                                                    commands:  CompiledStmts,
+                                                    reporters: CompiledStmts)
+
+  // We allow users to pass in commands and reporters as either arrays or maps.
+  // Either way, we preserve keys/ordering with the responses. We can't just do
+  // the responses as maps with integer keys as you'd lose commands.length on
+  // the javascript side.
+  // BCH 11/11/2014
+  protected[controllers] sealed trait IDedValues[T] {
+    def mapValues[U](f: (T) => U): IDedValues[U]
+  }
+  protected[controllers] case class IDedValuesMap[T](map: Map[String, T]) extends IDedValues[T] {
+    override def mapValues[U](f: (T) => U): IDedValues[U] = map.mapValues(f)
+  }
+  protected[controllers] case class IDedValuesSeq[T](seq: Seq[T]) extends IDedValues[T] {
+    override def mapValues[U](f: (T) => U): IDedValues[U] = seq.map(f)
+  }
+  protected[controllers] implicit final def mapToIDedValues[T](map: Map[String, T]): IDedValuesMap[T] = IDedValuesMap(map)
+  protected[controllers] implicit final def seqToIDedValues[T](seq: Seq[T]):         IDedValuesSeq[T] = IDedValuesSeq(seq)
+
+  ///////////////////////////
+  // JSON Writes implicits //
+  ///////////////////////////
+  protected[controllers] implicit val compileResponseWrites: Writes[CompileResponse] =
+    Writes(
+      (response: CompileResponse) => Json.obj(
+        modelKey     -> response.model,
+        infoKey      -> response.info,
+        codeKey      -> response.code,
+        widgetsKey   -> response.widgets,
+        commandsKey  -> response.commands,
+        reportersKey -> response.reporters
+      )
+    )
+
+  protected[controllers] implicit val compiledStmtsWrites: Writes[CompiledStmts] =
+    Writes {
+      (_: CompiledStmts) match {
+        case IDedValuesMap(map) => Json.toJson(map)
+        case IDedValuesSeq(seq) => Json.toJson(seq)
+      }
     }
 
-  private def maybeBuildFromNlogo[T](argMap: Map[String, String], errorStr: String)
-                                    (f: (String) => T): ValidationNel[String, T] = {
-    val nlogoMaybe = argMap get "nlogo" map (_.successNel) getOrElse errorStr.failureNel
-    nlogoMaybe map f
-  }
+  protected[controllers] val modelKey     = "model"
+  protected[controllers] val infoKey      = "info"
+  protected[controllers] val codeKey      = "code"
+  protected[controllers] val commandsKey  = "commands"
+  protected[controllers] val reportersKey = "reporters"
+  protected[controllers] val widgetsKey   = "widgets"
 
-  private def maybeGetStmts(argMap: Map[String, String], field: String, errorStr: String): ValidationNel[String, Seq[String]] = {
-    val parsedMaybe = Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
-      case _: JsonProcessingException => errorStr.failureNel
-    }.get
-    parsedMaybe flatMap (_.asOpt[Seq[String]] map (_.successNel) getOrElse errorStr.failureNel)
-  }
 
-  private def createResponse(compiledCode: String, compiledCommands: Seq[String],
-                             compiledReporters: Seq[String], info: String): String =
-    Json.stringify(Json.obj(
-      "code"      -> compiledCode,
-      "commands"  -> Json.toJson(compiledCommands),
-      "reporters" -> Json.toJson(compiledReporters),
-      "info"      -> info
-    ))
+  private val urlMissingMsg   =
+    s"You must provide a `$modelKey` parameter that contains the URL of an nlogo file."
+  private val codeMissingMsg  =
+    s"You must provide a `$modelKey` parameter that contains the code from a NetLogo model."
+  private val nlogoMissingMsg =
+    s"You must provide a `$modelKey` parameter that contains the contents of an nlogo file."
+
+
 }
-

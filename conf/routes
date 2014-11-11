@@ -6,7 +6,6 @@
 GET        /editor                             controllers.Application.editor
 GET        /model/list.json                    controllers.Application.modelList
 GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
-GET        /create-standalone                  controllers.Application.createStandaloneTortoise
 
 # Remote (Teletortoise)
 GET        /                                   controllers.remote.Remote.index
@@ -17,12 +16,22 @@ GET        /connect                            controllers.remote.Remote.handleS
 # Local (Tortoise)
 GET        /local                              controllers.local.Local.index
 GET        /local-connect                      controllers.local.Local.handleSocketConnection()
+GET        /create-standalone                  controllers.local.Local.createStandaloneTortoise
+GET        /tortoise                           controllers.local.Local.tortoise
 
 # Compiler Service
-POST       /compile                            controllers.CompilerService.compile
-GET        /compile                            controllers.CompilerService.compile
-POST       /save-to-html                       controllers.CompilerService.saveToHtml
-GET        /save-to-html                       controllers.CompilerService.saveToHtml
+POST       /compile-url                        controllers.CompilerService.compileURL
+GET        /compile-url                        controllers.CompilerService.compileURL
+POST       /compile-code                       controllers.CompilerService.compileCode
+GET        /compile-code                       controllers.CompilerService.compileCode
+POST       /compile-nlogo                      controllers.CompilerService.compileNlogo
+GET        /compile-nlogo                      controllers.CompilerService.compileNlogo
+POST       /save-url                           controllers.CompilerService.saveURL
+GET        /save-url                           controllers.CompilerService.saveURL
+POST       /save-code                          controllers.CompilerService.saveCode
+GET        /save-code                          controllers.CompilerService.saveCode
+POST       /save-nlogo                         controllers.CompilerService.saveNlogo
+GET        /save-nlogo                         controllers.CompilerService.saveNlogo
 
 GET        /model/statuses.json                controllers.CompilerService.modelStatuses
 

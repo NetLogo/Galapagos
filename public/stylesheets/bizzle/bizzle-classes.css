@@ -280,3 +280,17 @@ li.compiling {
 li.unknown {
   background-image: url('/assets/images/caution.png') !important;
 }
+
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.glow-on-hover:hover {
+  -webkit-box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+  box-shadow:         0 0 6px 3px rgba(15, 15, 15, .40);
+}

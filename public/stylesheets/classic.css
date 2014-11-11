@@ -1,0 +1,18 @@
+.netlogo-command {
+    background-color: #BCBCE5;
+}
+.netlogo-command:active {
+    background-color: #000;
+    color: #BCBCE5;
+}
+.netlogo-command.netlogo-active {
+    background-color: #000;
+    color: #BCBCE5;
+}
+.netlogo-input {
+    background-color: #82BCB7;
+}
+.netlogo-output {
+    background-color: #E0E0B5;
+}
+

@@ -21,6 +21,16 @@ object Local extends Controller {
       Ok(views.html.local.client())
   }
 
+  def createStandaloneTortoise = Action {
+    implicit request =>
+      Ok(views.html.local.createStandalone())
+  }
+
+  def tortoise = Action {
+    implicit request =>
+      Ok(views.html.local.tortoise())
+  }
+
   def handleSocketConnection() = WebSocket.tryAccept[JsValue] {
     implicit request => LocalInstance.join()
   }

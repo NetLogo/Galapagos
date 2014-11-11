@@ -27,9 +27,4 @@ object Application extends Controller {
       Ok(Json.stringify(Json.toJson(allModels.map(prettyFilepath))))
   }
 
-  def createStandaloneTortoise = Action {
-    implicit request =>
-      Ok(views.html.createStandalone())
-  }
-
 }

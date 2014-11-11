@@ -9,10 +9,10 @@ scalacOptions += "-language:_"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-c1efa7e",
+  "org.nlogo" % "tortoise" % "0.1-a452198",
   "com.typesafe.play" %% "play-cache" % "2.3.4",
   "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+  "org.scalatestplus" %% "play" % "1.1.0" % "test"
 )
 
 libraryDependencies ++= Seq(
@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "ace" % "01.08.2014",
   "org.webjars" % "mousetrap" % "1.4.6",
-  "org.webjars" % "markdown-js" % "0.5.0-1"
+  "org.webjars" % "markdown-js" % "0.5.0-1",
+  "org.webjars" % "ractive" % "0.6.0"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
