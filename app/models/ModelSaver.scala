@@ -7,9 +7,9 @@ import
   scala.io.Codec
 
 import
-  scalaz.ValidationNel,
-    scalaz.Scalaz.{ ToValidationOps, ToApplyOpsUnapply },
-    scalaz.Validation.FlatMap.ValidationFlatMapRequested
+  scalaz.{ Scalaz, Validation, ValidationNel },
+    Scalaz.{ ToApplyOpsUnapply, ToValidationOps },
+    Validation.FlatMap.ValidationFlatMapRequested
 
 import
   org.nlogo.{ api, compile, core => nlcore, nvm, tortoise },
@@ -56,11 +56,9 @@ object ModelSaver {
     apply(nlogoContents, jsURLs)
   }
 
-  def validateWidgets(model: CompiledModel): ValidationNel[Exception, CompiledModel] = {
-    model.model.widgets.find(unsupportedWidgets) match {
-      case Some(badWidget) => new Exception(s"Unconvertible widget type ${badWidget.getClass.getSimpleName}").failureNel
-      case None            => model.successNel
-    }
+  def validateWidgets(model: CompiledModel): ValidationNel[Exception, Unit] = {
+    import scalaz.Scalaz._
+    model.model.widgets.map(w => compileWidget(w)(model.program, model.procedures)).filter(_.isFailure).sequenceU.map(_ => ())
   }
 
   private def buildJavaScript(netLogoJS: String, jsURLs: Seq[URL]): String =
@@ -88,12 +86,4 @@ object ModelSaver {
     }
   }
 
-  private def unsupportedWidgets(w: Widget): Boolean = {
-    import nlcore._
-    w match {
-      case i: InputBox[_] => true
-      case o: Output      => true
-      case _ => false
-    }
-  }
 }

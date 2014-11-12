@@ -1,25 +1,24 @@
 package models.remote
 
 import
+  java.io.File
+
+import
   akka.actor.Actor
 
 import
-  models.remote.ModelLibraryCompiler.Messages.{AllBuiltInModels, ModelCompilationSuccess, ModelCompilationFailure}
-
-import
-  play.api,
-    api.cache.Cache,
-    api.Application
+  play.api.{ Application, cache },
+    cache.Cache
 
 class StatusCacher(implicit app: Application) extends Actor {
+  import StatusCacher.{ AllBuiltInModels, AllBuiltInModelsCacheKey }
   override def receive: Receive = {
-    case AllBuiltInModels(files) =>
-      Cache.set(StatusCacher.AllBuiltInModelsCacheKey, files.map(_.getPath))
-    case s@ModelCompilationSuccess(file) => Cache.set(file.getPath, s)
-    case f@ModelCompilationFailure(file, error) => Cache.set(file.getPath, f)
+    case AllBuiltInModels(files)        => Cache.set(AllBuiltInModelsCacheKey, files.map(_.getPath))
+    case status: ModelCompilationStatus => Cache.set(status.file.getPath, status)
   }
 }
 
 object StatusCacher {
   val AllBuiltInModelsCacheKey = "allModelCompilationStatuses"
+  private[remote] case class AllBuiltInModels(models: Seq[File])
 }

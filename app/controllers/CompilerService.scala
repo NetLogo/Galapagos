@@ -28,11 +28,11 @@ import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ ModelSaver, Util, ModelsLibrary },
-    Util.usingSource,
+  models.{ ModelsLibrary, ModelSaver, remote => mremote, Util },
     ModelsLibrary.prettyFilepath,
-    models.remote.ModelLibraryCompiler.Messages.{ModelCompilationSuccess, ModelCompilationFailure},
-    models.remote.StatusCacher._
+    mremote.{ CompilationSuccess, CompilationFailure, StatusCacher },
+      StatusCacher.AllBuiltInModelsCacheKey,
+    Util.usingSource
 
 object CompilerService extends Controller {
 
@@ -111,17 +111,16 @@ object CompilerService extends Controller {
     implicit request =>
       val resultJson: JsObject = Cache
         .getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
-        .map(modelCompilationStatus)
+        .map(genStatusJson)
         .foldLeft(Json.obj())(_ ++ _)
-
       Ok(Json.stringify(resultJson))
   }
 
-  private def modelCompilationStatus(filePath: String): JsObject = {
+  private def genStatusJson(filePath: String): JsObject = {
     Cache.get(filePath) match {
-      case Some(ModelCompilationSuccess(file)) =>
+      case Some(CompilationSuccess(file)) =>
         Json.obj(prettyFilepath(file) -> Json.obj("status" -> "compiling"))
-      case Some(ModelCompilationFailure(file, errors)) =>
+      case Some(CompilationFailure(file, errors)) =>
         Json.obj(prettyFilepath(file) -> Json.obj(
           "status" -> "not_compiling",
           "errors" -> errors.foldLeft("")(_ + _.toString)))

@@ -1,25 +1,25 @@
 import akka.actor.Props
 
-import play.api,
-  api.{ libs, GlobalSettings, Application },
-  libs.concurrent.Akka
+import
+  play.api.{ libs, GlobalSettings, Application },
+    libs.concurrent.Akka
 
 import
-  scala.concurrent,
-    concurrent.duration._,
-    concurrent.ExecutionContext.Implicits.global
+  scala.concurrent.{ duration, ExecutionContext },
+    duration.DurationInt,
+    ExecutionContext.Implicits.global
 
 import
-  models.ModelsLibrary,
-  models.remote.{ StatusCacher, ModelLibraryCompiler},
-    ModelLibraryCompiler.{modelCollectionCompiler, recompileAll}
+  models.{ ModelsLibrary, remote },
+    remote.{ ModelCollectionCompiler, StatusCacher },
+      ModelCollectionCompiler.CheckBuiltInModels
 
 object Global extends GlobalSettings {
   override def onStart(app: Application): Unit = {
-    implicit val actorSystem = Akka.system(app)
-    val statusCacher = actorSystem.actorOf(Props(classOf[StatusCacher], app))
-    val backgroundCompiler = modelCollectionCompiler(ModelsLibrary, statusCacher)
-    actorSystem.scheduler.schedule(0.seconds, 30.minutes, backgroundCompiler, recompileAll)
+    val actorSystem        = Akka.system(app)
+    val statusCacher       = actorSystem.actorOf(Props(classOf[StatusCacher], app))
+    val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], ModelsLibrary, statusCacher))
+    actorSystem.scheduler.schedule(0.seconds, 30.minutes)(backgroundCompiler ! CheckBuiltInModels)
     super.onStart(app)
   }
 }

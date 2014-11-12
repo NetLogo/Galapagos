@@ -8,8 +8,7 @@ import
   play.api.libs.json.Json
 
 import
-  models.ModelsLibrary,
-    ModelsLibrary.prettyFilepath
+  models.ModelsLibrary.{ allModels, prettyFilepath }
 
 object Application extends Controller {
 
@@ -25,7 +24,7 @@ object Application extends Controller {
 
   def modelList = Action {
     implicit request =>
-      Ok(Json.stringify(Json.toJson(ModelsLibrary.allModels.map(prettyFilepath))))
+      Ok(Json.stringify(Json.toJson(allModels.map(prettyFilepath))))
   }
 
   def createStandaloneTortoise = Action {
