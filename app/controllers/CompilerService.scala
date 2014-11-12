@@ -18,15 +18,20 @@ import
   org.nlogo.tortoise.CompiledModel
 
 import
-  play.api.{ libs, mvc },
-    libs.json.Json,
+  play.api.{Play, cache, libs, mvc},
+    cache.Cache,
+    libs.json.{ Json, JsObject },
+    Play.current,
     mvc.{ Action, Controller, RequestHeader }
 
 import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ ModelSaver, Util },
+  models.{ ModelsLibrary, ModelSaver, remote => mremote, Util },
+    ModelsLibrary.prettyFilepath,
+    mremote.{ CompilationSuccess, CompilationFailure, StatusCacher },
+      StatusCacher.AllBuiltInModelsCacheKey,
     Util.usingSource
 
 object CompilerService extends Controller {
@@ -100,6 +105,28 @@ object CompilerService extends Controller {
         )
       )
 
+  }
+
+  def modelStatuses = Action {
+    implicit request =>
+      val resultJson: JsObject = Cache
+        .getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
+        .map(genStatusJson)
+        .foldLeft(Json.obj())(_ ++ _)
+      Ok(Json.stringify(resultJson))
+  }
+
+  private def genStatusJson(filePath: String): JsObject = {
+    Cache.get(filePath) match {
+      case Some(CompilationSuccess(file)) =>
+        Json.obj(prettyFilepath(file) -> Json.obj("status" -> "compiling"))
+      case Some(CompilationFailure(file, errors)) =>
+        Json.obj(prettyFilepath(file) -> Json.obj(
+          "status" -> "not_compiling",
+          "errors" -> errors.foldLeft("")(_ + _.toString)))
+      case _ =>
+        Json.obj(prettyFilepath(filePath) -> Json.obj("status" -> "unknown"))
+    }
   }
 
   private def generateTortoiseLiteJsUrls()(implicit request: RequestHeader): Seq[URL] = {
