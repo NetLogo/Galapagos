@@ -12,11 +12,6 @@ import
 
 object Application extends Controller {
 
-  def editor = Action {
-    implicit request =>
-      Ok(views.html.editor())
-  }
-
   def model(modelName: String) = {
     Logger.info("\"%s\" requested".format(modelName))
     Assets.at(path="/public/modelslib", modelName, true)
