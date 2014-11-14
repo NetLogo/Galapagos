@@ -28,7 +28,7 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
     override def allModels: Seq[File] = Seq(SmallWorld, TeamAssembly, BirdBreeder).map(_.file)
   }
 
-  lazy val observer = ActorDSL.inbox // Will intermittently cause `ClassCastException`, thanks to this bug: https://github.com/akka/akka/issues/15409 --JAB (11/11/14)
+  lazy val observer = genInbox
   val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], modelsCollection, observer.getRef()))
 
   it should "send an AllModels message with a list of all files" in {
@@ -56,7 +56,9 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
 
 trait AkkaTestHelper extends Assertions {
 
-  implicit val system = ActorSystem("TestActorSystem")
+  self: TestKitBase =>
+
+  override implicit val system = ActorSystem("TestActorSystem")
 
   class TestSource(val path: String) {
     def file:     File   = new File(path)
@@ -91,5 +93,15 @@ trait AkkaTestHelper extends Assertions {
     skipMessages(i, 0)
     messages.foreach(message => assertResult(message)(i.receive(StandardDuration)))
   }
+
+  // I do this because the tests will otherwise intermittently cause `ClassCastException`s, thanks to this bug:
+  // https://github.com/akka/akka/issues/15409 .  It seems to just be a timing issue, so let's be the little train
+  // that could and just keep on a-tryin'! --JAB (11/11/14)
+  @annotation.tailrec
+  final protected def genInbox: Inbox =
+    try ActorDSL.inbox
+    catch {
+      case ex: ClassCastException => genInbox
+    }
 
 }
