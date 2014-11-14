@@ -1,4 +1,5 @@
 package models
+package local
 
 import
   java.net.URL
@@ -18,8 +19,7 @@ import
   play.api.libs.json.Json
 
 import
-  local.CompiledWidget,
-  Util.usingSource
+  models.core.Util.usingSource
 
 object ModelSaver {
 

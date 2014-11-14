@@ -8,9 +8,9 @@ import
     mvc.{ Action, Controller, ResponseHeader, Result, WebSocket }
 
 import
-  models.{ local, Util },
+  models.{ local, core },
     local.LocalInstance,
-    Util.usingSource
+    core.Util.usingSource
 
 object Local extends Controller {
 

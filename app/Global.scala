@@ -10,9 +10,9 @@ import
     ExecutionContext.Implicits.global
 
 import
-  models.{ ModelsLibrary, remote },
-    remote.{ ModelCollectionCompiler, StatusCacher },
-      ModelCollectionCompiler.CheckBuiltInModels
+  models.core.ModelsLibrary,
+  models.local.{ ModelCollectionCompiler, StatusCacher },
+    ModelCollectionCompiler.CheckBuiltInModels
 
 object Global extends GlobalSettings {
   override def onStart(app: Application): Unit = {

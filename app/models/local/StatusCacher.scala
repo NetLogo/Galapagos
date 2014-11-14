@@ -1,4 +1,4 @@
-package models.remote
+package models.local
 
 import
   java.io.File
@@ -20,5 +20,5 @@ class StatusCacher(implicit app: Application) extends Actor {
 
 object StatusCacher {
   val AllBuiltInModelsCacheKey = "allModelCompilationStatuses"
-  private[remote] case class AllBuiltInModels(models: Seq[File])
+  private[local] case class AllBuiltInModels(models: Seq[File])
 }

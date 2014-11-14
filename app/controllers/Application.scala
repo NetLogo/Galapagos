@@ -8,7 +8,7 @@ import
   play.api.libs.json.Json
 
 import
-  models.ModelsLibrary.{ allModels, prettyFilepath }
+  models.core.ModelsLibrary.{ allModels, prettyFilepath }
 
 object Application extends Controller {
 

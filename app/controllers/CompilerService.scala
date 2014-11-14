@@ -33,13 +33,13 @@ import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ json, local => mlocal, ModelsLibrary, ModelSaver, remote => mremote, Util },
+  models.{ json, local => mlocal, core => mcore },
     json.CompileWrites._,
-    mlocal.CompiledWidget,
-    ModelsLibrary.prettyFilepath,
-    mremote.{ CompilationFailure, CompilationSuccess, StatusCacher },
-      StatusCacher.AllBuiltInModelsCacheKey,
-    Util.usingSource
+    mcore.{ ModelsLibrary, Util },
+      ModelsLibrary.prettyFilepath,
+      Util.usingSource,
+    mlocal.{ CompilationFailure, CompilationSuccess, CompiledWidget, ModelSaver, StatusCacher },
+      StatusCacher.AllBuiltInModelsCacheKey
 
 object CompilerService extends Controller {
 
