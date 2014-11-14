@@ -28,14 +28,16 @@ exports.bindModelChooser = (container, selectionChanged) ->
       allModelNames = JSON.parse(req.responseText)
       window.modelSelect = createModelSelection(container, allModelNames)
 
-      $.ajax('/model/statuses.json', {
-        complete: (req, status) ->
-          allModelStatuses = JSON.parse(req.responseText)
-          for modelName in allModelNames
-            modelStatus = allModelStatuses[modelName]?.status ? 'unknown'
-            setModelCompilationStatus(modelName, modelStatus)
-          window.modelSelect.trigger('chosen:updated')
-      })
+      if container[0].classList.contains('tortoise-model-list')
+        $.ajax('/model/statuses.json', {
+          complete: (req, status) ->
+            allModelStatuses = JSON.parse(req.responseText)
+            for modelName in allModelNames
+              modelStatus = allModelStatuses[modelName]?.status ? 'unknown'
+              setModelCompilationStatus(modelName, modelStatus)
+            window.modelSelect.trigger('chosen:updated')
+        })
+
     }
   )
 

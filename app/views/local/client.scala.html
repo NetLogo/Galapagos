@@ -1,6 +1,6 @@
 @()(implicit request: RequestHeader)
 
-@views.html.core.component.netLogoView(component.topBarText()) {
+@views.html.core.component.netLogoView(component.topBarText(), true) {
 
   <script type="text/javascript" src='@controllers.local.routes.Local.engine'></script>
   @views.html.core.component.clientImports("chat-local-module")
