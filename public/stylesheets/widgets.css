@@ -1,0 +1,253 @@
+/* Just to be perfectly clear, all the -webkit- stuff for flexbox is all for
+   Safari. Once they get their act together, it should be removed.
+   BCH 11/14/2014 */
+
+.netlogo-model {
+    border: 2px solid black;
+    border-radius: 20px;
+    display: flex;
+    display: -webkit-flex;
+    padding: 20px;
+    flex-flow: column;
+    -webkit-flex-flow: column;
+}
+
+.netlogo-header {
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row;
+    -webkit-flex-flow: row;
+}
+
+.netlogo-widget {
+    font-size: 12px;
+    font-family: sans-serif;
+    box-sizing: border-box;
+    background-color: #CCC;
+    border-radius: 4px;
+}
+
+.netlogo-command,.netlogo-input {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.netlogo-command:hover,.netlogo-input:hover {
+    cursor:     pointer;
+    box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+}
+
+.netlogo-tabs {
+    margin-top: 20px;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row;
+    -webkit-flex-flow: row;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+.netlogo-tab {
+  border: 3px outset;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.netlogo-tab input[type=checkbox] {
+    display: none;
+}
+
+.netlogo-tab:active {
+    border: 3px inset;
+}
+.netlogo-tab.netlogo-active {
+    border: 3px inset;
+}
+
+.netlogo-model-text {
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: row;
+    -webkit-flex-flow: row;
+    background-color: white;
+}
+
+.netlogo-code {
+    flex: 1;
+    -webkit-flex: 1;
+    margin: 10px;
+    font-family: monospace;
+    overflow-x: scroll;
+    border: inset;
+}
+.netlogo-info {
+    flex: 1;
+    -webkit-flex: 1;
+    margin: 10px;
+}
+
+.netlogo-speed-slider {
+    background-color: transparent;
+    border: none;
+    margin-right: 10px;
+    flex: auto;
+    -webkit-flex: auto;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.netlogo-speed-slider input {
+    border: none;
+    flex: auto;
+    -webkit-flex: auto;
+}
+
+.netlogo-model input[type=range] {
+    cursor: pointer;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    cursor: grab;
+}
+
+.netlogo-model input[type=range]:active {
+    cursor: pointer;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    cursor: grabbing;
+}
+
+.netlogo-tick-counter {
+    font-size: 18px;
+    margin: 3px;
+    border: none;
+}
+.netlogo-button {
+    border: inherit;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    -webkit-justify-content: center;
+    align-items: center;
+    -webkit-align-items: center;
+    padding: 0px;
+}
+
+.netlogo-button > span {
+    /* For some reason, Safari doesn't like -webkit-justify-content in buttons,
+       we have to resort to putting a span in the button that can then be
+       centered.
+       BCH 11/14/2014 */
+    margin: auto;
+}
+
+.netlogo-button:active {
+    background-color: gray;
+    color: white;
+}
+
+.netlogo-forever-button.netlogo-active {
+    background-color: gray;
+    color: white;
+}
+
+.netlogo-text-box {
+    background-color: transparent;
+    border: none;
+}
+
+.netlogo-switcher {
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.netlogo-slider {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.netlogo-slider:hover {
+    cursor: default;
+}
+
+.netlogo-slider > input[type=range] {
+    padding: 0px;
+    width: 100%;
+    margin: 0px;
+    height: 22px;
+    margin-bottom: -4px;
+    margin-top: -3px;
+    background-color: transparent;
+}
+
+.netlogo-slider > .netlogo-label {
+    float: left;
+}
+
+.netlogo-slider > .netlogo-value {
+    margin: 0px;
+    border: 1px;
+    padding: 0px;
+    text-align: right;
+    display: block;
+    overflow: hidden;
+}
+
+.netlogo-slider > .netlogo-value > input[type=number] {
+    margin: 0px;
+    border: 1px;
+    padding: 0px;
+    text-align: right;
+    width: 45px;
+}
+
+.netlogo-monitor {
+    padding: 2px 4px;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: column;
+    -webkit-flex-flow: column;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+.netlogo-monitor > .netlogo-value {
+    background-color: white;
+    padding: 2px 2px;
+}
+
+.netlogo-input-box {
+    padding: 2px 4px;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: column;
+    -webkit-flex-flow: column;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+.netlogo-chooser {
+    padding: 2px 4px;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: column;
+    -webkit-flex-flow: column;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+.netlogo-plot {
+    box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
+    border: 1px solid black;
+}
+
+.netlogo-forever-button > input {
+    display: none;
+}

@@ -1,0 +1,27 @@
+@(libsJs: String, js: String, css: String, widgets: String, nlogoCode: String, info: String)
+
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="model-container"></div>
+    <style>
+      @Html(css)
+    </style>
+    <script type="text/string" id="nlogo-code">
+@Html(nlogoCode);
+    </script>
+    <script type="text/string" id="nlogo-info">
+@Html(info);
+    </script>
+    <script type="text/javascript">
+      @Html(js)
+      var widgets = @Html(widgets);
+      var code    = document.querySelector("#nlogo-code").textContent;
+      var info    = document.querySelector("#nlogo-info").textContent;
+      var session = Tortoise.fromCompiledModel('#model-container', widgets, code, info);
+      @Html(libsJs)
+      session.startLoop()
+    </script>
+  </body>
+</html>

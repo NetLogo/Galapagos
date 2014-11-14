@@ -46,7 +46,7 @@ object PlayUtil {
                 if (file.length > 20E6.toLong)
                   "UPLOADED FILE TOO LARGE".getBytes
                 else
-                  usingSource(_.fromFile(file)(Codec.ISO8859)) { _.map(_.toByte).toArray }
+                  usingSource(_.fromFile(file)(Codec.ISO8859))(_.map(_.toByte).toArray)
               (formFile.key, arr)
           }
           ParamBundle(formData.asFormUrlEncoded, fileKVs.toMap)

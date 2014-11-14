@@ -3,7 +3,7 @@
       exports = {};
       submitModelURL = function(modelURL) {
           var submissionURL = location.protocol + "//" + location.host + "/assets/modelslib/" + encodeURI(modelURL);
-          $("input:text[name=nlogo_url]").val(submissionURL);
+          $("#url-input").val(submissionURL);
           $("td[name=nlogo-url-form]").submit();
       };
 
@@ -27,10 +27,10 @@
   <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
 
   <h3>Upload a Model</h3>
-  <form name="nlogo-file-form" enctype="multipart/form-data" action="/save-to-html" method="POST">
+  <form name="nlogo-file-form" enctype="multipart/form-data" action="/save-nlogo" method="POST">
       <input id="choose-file" type="text" class="rounded text_input_margin" placeholder="Select a file..."/>
       <input type="submit" value="Submit" class="btn">
-      <input id="file-input" type="file"  name="nlogo" size="0" class="invisible" />
+      <input id="file-input" type="file"  name="model" size="0" class="invisible" />
   </form>
 
   <br>
@@ -38,9 +38,9 @@
 
   <h3>Find a Built-In Model</h3>
 
-  <form name="nlogo-url-form" action="/save-to-html" method="POST">
+  <form name="nlogo-url-form" action="/save-url" method="POST">
       <div class="model-list"></div>
-      <input placeholder="Model URL" type="text" name="nlogo_url" class="rounded text_input_margin">
+      <input id="url-input" placeholder="Model URL" type="text" name="model" class="rounded text_input_margin">
       <input type="submit" value="Submit" class="btn">
   </form>
 }

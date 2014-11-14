@@ -36,7 +36,7 @@ class ModelCollectionCompiler(modelsCollection: NetLogoModelCollection, cacher: 
 object ModelCollectionCompiler {
   case object CheckBuiltInModels
   protected[models] def compileModel(file: File, contents: String): ModelCompilationStatus =
-    CompiledModel.fromNlogoContents(contents).flatMap(ModelSaver.validateWidgets).fold(
+    CompiledModel.fromNlogoContents(contents).map(ModelSaver(_)).fold(
       nel => CompilationFailure(file, nel.list),
       _   => CompilationSuccess(file)
     )

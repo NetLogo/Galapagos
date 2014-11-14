@@ -1,134 +1,168 @@
 package models.local
 
 import
-  java.util.UUID
+  java.lang.{ Double => JDouble, Boolean => JBoolean }
 
 import
-  scala.util.Try
+  org.nlogo.{ api, core, tortoise },
+    api.LogoList,
+      core.{ Widget, Button, Monitor, Output, Plot, Pen, Slider, Switch, TextBox, View, Chooser,
+             Direction, Horizontal, Vertical, UpdateMode, InputBoxType, InputBox, AgentKind },
+    tortoise.CompiledModel,
+    CompiledModel.CompileResult
 
 import
-  org.nlogo.{ api, core, nvm },
-    api.Program,
-    core.{ Button, Monitor, Output, Plot, Slider, Switch, TextBox, View, Chooser },
-    nvm.FrontEndInterface.ProceduresMap
+  play.api.libs.json.{ Json, Writes, JsObject, JsValue, JsArray, JsNull, JsString, JsNumber },
+    Json.toJsFieldJsValueWrapper
 
 import
-  play.api.Logger
+  models.json.CompileWrites._
 
-sealed trait DoesCompilation {
+object CompiledWidget {
+  implicit val widgetWrites = Writes[CompiledWidget[Widget]](_.toJson)
 
-  import org.nlogo.tortoise.Compiler
-
-  protected def defaultJS: String
-
-  protected def compile(compilerFunc: (Compiler.type) => String): String =
-    try compilerFunc(Compiler)
-    catch {
-      case ex: Exception =>
-        Logger.warn(ex.getMessage)
-        defaultJS
+  def compile[W <: Widget, T](model: CompiledModel)(widget: W): CompiledWidget[Widget] = {
+    def compileCmd(code: String, agentType: String = "OBSERVER") =
+      model.compileCommand(sanitizeSource(code), toKind(agentType))
+    def compileRep(code: String) = model.compileReporter(sanitizeSource(code))
+    def compilePen(pen: Pen)     = CompiledPen(pen, compileCmd(pen.setupCode), compileCmd(pen.updateCode))
+    widget match {
+      case v: View        => CompiledView(v)
+      case b: Button      => CompiledButton(b, compileCmd(b.source, b.buttonType))
+      case p: Plot        => CompiledPlot(p, compileCmd(p.setupCode), compileCmd(p.updateCode), p.pens map compilePen)
+      case p: Pen         => compilePen(p)
+      case t: TextBox     => CompiledTextBox(t)
+      case s: Slider      => CompiledSlider(s, compileRep(s.min), compileRep(s.max), compileRep(s.step))
+      case s: Switch      => CompiledSwitch(s)
+      case m: Monitor     => CompiledMonitor(m, compileRep(s"precision ( ${m.source} ) ${m.precision}"))
+      case c: Chooser     => CompiledChooser(c)
+      case i: InputBox[T] => CompiledInputBox[T](i)
+      case o: Output      => CompiledOutput(o)
     }
+  }
 
+  private def sanitizeSource(s: String) = s.replace("\\n", "\n").replace("\\\\", "\\").replace("\\\"", "\"")
+
+  private def toKind(agentType: String): AgentKind =
+    agentType.toUpperCase match {
+      case "OBSERVER" => AgentKind.Observer
+      case "TURTLE"   => AgentKind.Turtle
+      case "PATCH"    => AgentKind.Patch
+      case "LINK"     => AgentKind.Link
+    }
 }
 
-trait CompilesCommands extends DoesCompilation {
-  override protected val defaultJS = ""
-  protected def compileCommands(logo: String)(implicit oldProcedures: ProceduresMap, program: Program): String =
-    compile(_.compileCommands(logo, oldProcedures, program))
+sealed trait CompiledWidget[+W <: Widget] {
+  def widget: W
+  protected val widgetTypeEntry: (String, JsValue) = {
+    val className = widget.getClass.getSimpleName
+    "type" -> JsString(className.substring(0,1).toLowerCase ++ className.substring(1))
+  }
+
+  protected implicit val nilWrites = Writes[String] {
+    case "NIL" => JsNull
+    case s     => JsString(s)
+  }
+
+  def toJson = widgetJson + widgetTypeEntry ++ extraJson
+  protected def widgetJson: JsObject
+  protected def extraJson = Json.obj()
 }
 
-trait CompilesReporters extends DoesCompilation {
-  override protected val defaultJS = "\"ERROR\""
-  protected def compileReporter(logo: String)(implicit oldProcedures: ProceduresMap, program: Program): String =
-    compile(_.compileReporter(logo, oldProcedures, program))
+case class CompiledView(widget: View) extends CompiledWidget[View] {
+  private implicit val updateModeWrites = Writes[UpdateMode](m => Json.toJson(m.toString))
+  protected def widgetJson = Json.writes[View].writes(widget)
 }
 
-trait WidgetJS {
-  def toJS(implicit program: Program, procedures: ProceduresMap): String
-  protected def sanitizeSource(s: String) = s.replace("\\n", "\n").replace("\\\\", "\\").replace("\\\"", "\"")
+case class CompiledButton(widget: Button, compiledSource: CompileResult[String]) extends CompiledWidget[Button] {
+  protected def widgetJson = Json.writes[Button].writes(widget)
+  override protected def extraJson = Json.obj("compiledSource" -> compiledSource)
 }
 
-object WidgetJS {
+case class CompiledPlot(widget: Plot,
+                        compiledSetupCode: CompileResult[String],
+                        compiledUpdateCode: CompileResult[String],
+                        compiledPens: List[CompiledPen]) extends CompiledWidget[Plot] {
+  private implicit val pensWrites = Writes[List[Pen]](_ => JsArray(compiledPens map { _.toJson }))
+  protected def widgetJson = Json.writes[Plot].writes(widget)
+  override protected def extraJson = Json.obj(
+    "compiledSetupCode"  -> compiledSetupCode,
+    "compiledUpdateCode" -> compiledUpdateCode
+  )
+}
 
-  private val Placeholder = "\"PLACEHOLDER\""
+case class CompiledPen(widget: Pen,
+                        compiledSetupCode: CompileResult[String],
+                        compiledUpdateCode: CompileResult[String]) extends CompiledWidget[Pen] {
+  protected def widgetJson = Json.writes[Pen].writes(widget)
 
-  implicit class EnhancedButton(val b: Button) extends WidgetJS with CompilesCommands {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val src = s"function() { ${compileCommands(sanitizeSource(b.source))} }"
-      s"""Widgets.addButton("${b.display}", ${b.left}, ${b.top}, ${b.right}, ${b.bottom}, $src, ${b.forever})"""
-    }
+  override protected def extraJson = Json.obj(
+    "compiledSetupCode"  -> compiledSetupCode,
+    "compiledUpdateCode" -> compiledUpdateCode
+  )
+}
+
+case class CompiledTextBox(widget: TextBox) extends CompiledWidget[TextBox] {
+  protected def widgetJson = Json.writes[TextBox].writes(widget)
+}
+
+case class CompiledChooser(widget: Chooser) extends CompiledWidget[Chooser] {
+  private implicit def choicesWrites: Writes[List[AnyRef]] = Writes[List[AnyRef]](xs => JsArray(xs map {
+    case d: JDouble  => Json.toJson(d.doubleValue)
+    case s: String   => Json.toJson(s)
+    case l: LogoList => Json.toJson(l.scalaIterator.toList)
+    case b: JBoolean => Json.toJson(b.booleanValue)
+  }))
+  protected def widgetJson = Json.writes[Chooser].writes(widget)
+}
+
+case class CompiledSlider(widget:       Slider,
+                          compiledMin:  CompileResult[String],
+                          compiledMax:  CompileResult[String],
+                          compiledStep: CompileResult[String]) extends CompiledWidget[Slider] {
+  private implicit val directionWrites = Writes[Direction] {
+    case Horizontal => Json.toJson("horizontal")
+    case Vertical   => Json.toJson("vertical")
   }
 
-  implicit class EnhancedSlider(val s: Slider) extends WidgetJS with CompilesCommands with CompilesReporters {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
+  protected def widgetJson = Json.writes[Slider].writes(widget)
+  override protected def extraJson = Json.obj(
+    "compiledMin"  -> compiledMin,
+    "compiledMax"  -> compiledMax,
+    "compiledStep" -> compiledStep
+  )
+}
 
-      def intOrFunc(str: String): String =
-        Try(str.toDouble).map(_ => str).getOrElse(s"function() { return ${compileReporter(str)} }")
+case class CompiledSwitch(widget: Switch) extends CompiledWidget[Switch] {
+  protected def widgetJson = Json.writes[Switch].writes(widget)
+}
 
-      val Seq(min, max, step) = Seq(s.min, s.max, s.step) map intOrFunc
+case class CompiledMonitor(widget: Monitor, compiledSource: CompileResult[String]) extends CompiledWidget[Monitor] {
+  override protected def extraJson = Json.obj(
+    "compiledSource" -> compiledSource
+  )
+  protected def widgetJson = Json.writes[Monitor].writes(widget)
+}
 
-      val varName    = "newVal"
-      val setterCode = compileCommands(s"""set ${s.varName} $Placeholder """).replace(Placeholder, varName)
-      val setter     = s"function($varName) { $setterCode }"
+case class CompiledInputBox[T](widget: InputBox[T]) extends CompiledWidget[InputBox[T]] {
+  private implicit val inputBoxTypeWrites = Writes[InputBoxType[T]](t => Json.toJson(t.name))
+  // The writes macro can't handle generics it seems, so have to do it by hand. BCH 9/20/2014
+  protected def widgetJson = Json.obj(
+    "left"      -> widget.left,
+    "top"       -> widget.top,
+    "right"     -> widget.right,
+    "bottom"    -> widget.bottom,
+    "varName"   -> widget.varName,
+    "value"     -> (widget.value match {
+        case d: Double => JsNumber(d)
+        case s: String => JsString(s)
+        case c: Int    => JsNumber(c) // color
+      }),
+    "multiline" -> widget.multiline,
+    "boxtype"   -> widget.boxtype
+  )
+}
 
-      s"""Widgets.addSlider("${s.display}", ${s.left}, ${s.top}, ${s.right}, ${s.bottom}, $setter, $min, $max, ${s.default}, $step)"""
-
-    }
-  }
-
-  implicit class EnhancedSwitch(val s: Switch) extends WidgetJS with CompilesCommands {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val varName    = "newVal"
-      val setterCode = compileCommands(s"""set ${s.varName} $Placeholder """).replace(Placeholder, varName)
-      val setter     = s"function($varName) { $setterCode }"
-      s"""Widgets.addSwitch("${s.display}", ${s.left}, ${s.top}, ${s.right}, ${s.bottom}, $setter)"""
-    }
-  }
-
-  implicit class EnhancedMonitor(val m: Monitor) extends WidgetJS with CompilesReporters {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val reporterCode = compileReporter(s"precision ( ${sanitizeSource(m.source)} ) ${m.precision}")
-      val monitorCode  = s"function() { return $reporterCode }"
-      val displayValue = if (m.display == "NIL") m.source else m.display
-      s"""Widgets.addMonitor("$displayValue", ${m.left}, ${m.top}, ${m.right}, ${m.bottom}, $monitorCode)"""
-    }
-  }
-
-  implicit class EnhancedOutput(val m: Output) extends WidgetJS {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) =
-      "Widgets.addOutput()"
-  }
-
-  implicit class EnhancedView(val v: View) extends WidgetJS {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) =
-      s"Widgets.addView(${v.left}, ${v.top}, ${v.right}, ${v.bottom})"
-  }
-
-  implicit class EnhancedTextBox(val tb: TextBox) extends WidgetJS {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) =
-      s"""Widgets.addTextBox("${tb.display}", ${tb.left}, ${tb.top}, ${tb.right}, ${tb.bottom})"""
-  }
-
-  implicit class EnhancedChooser(val c: Chooser) extends WidgetJS with CompilesCommands {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      val varName = "newVal"
-      val setterCode = compileCommands(s"""set ${c.varName} $Placeholder""").replace(Placeholder, varName)
-      val choices = "[\"" + c.choices.map(_.toString).mkString("\", \"") + "\"]"
-      val setter = s"function($varName) { $setterCode }"
-      s"""|Widgets.addChooser("${c.display}", ${c.left}, ${c.top}, ${c.right}, ${c.bottom},
-          |                    "${c.default}", $choices,
-          |                    $setter);""".stripMargin
-    }
-  }
-
-
-  implicit class EnhancedPlot(val p: Plot) extends WidgetJS {
-    override def toJS(implicit program: Program, procedures: ProceduresMap) = {
-      import p._
-      val slugifiedName = display.toLowerCase.replaceAll("[^\\w -]+", "").replaceAll(" +", "-")
-      val uniqueName    = s"$slugifiedName-${UUID.randomUUID.toString}" // Guarding against plots with duplicate names --JAB (10/19/14)
-      s"""Widgets.addPlot('$display', '$uniqueName', $left, $top, $right, $bottom, $ymin, $ymax, $xmin, $xmax);""".stripMargin
-    }
-  }
-   
+case class CompiledOutput(widget: Output) extends CompiledWidget[Output] {
+  protected def widgetJson = Json.writes[Output].writes(widget)
 }
