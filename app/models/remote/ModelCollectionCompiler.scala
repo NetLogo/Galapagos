@@ -4,19 +4,14 @@ import
   java.io.File
 
 import
-  scala.io.Source
-
-import
-  scalaz.Validation.FlatMap.ValidationFlatMapRequested
-
-import
   akka.actor.{ Actor, ActorRef }
 
 import
   org.nlogo.tortoise.CompiledModel
 
 import
-  models.{ ModelSaver, NetLogoModelCollection }
+  models.{ ModelSaver, NetLogoModelCollection, Util },
+    Util.usingSource
 
 class ModelCollectionCompiler(modelsCollection: NetLogoModelCollection, cacher: ActorRef) extends Actor {
   import ModelCollectionCompiler.{ CheckBuiltInModels, compileModel }
@@ -26,7 +21,7 @@ class ModelCollectionCompiler(modelsCollection: NetLogoModelCollection, cacher: 
       val allModels = modelsCollection.allModels.toSeq
       cacher ! AllBuiltInModels(allModels)
       allModels.map { // `map` before parallelizing, so we don't thrash the hard disk by reading files in parallel --JAB (11/11/14)
-        file => (file, Source.fromFile(file).mkString)
+        file => (file, usingSource(_.fromFile(file))(_.mkString))
       }.par.foreach {
         case (file, contents) => cacher ! compileModel(file, contents)
       }
