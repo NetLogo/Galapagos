@@ -1,7 +1,5 @@
 @(connected: Option[String])
 
-<a class="brand" href="@controllers.remote.routes.Remote.index()">NetLogo Web Client</a>
-
 @connected.map { username =>
   <p class="pull-right">
     <span class="top_text">

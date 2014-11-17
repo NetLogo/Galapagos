@@ -12,6 +12,11 @@ import
 
 object Application extends Controller {
 
+  def index = Action {
+    implicit request =>
+      Ok(views.html.application.index())
+  }
+
   def model(modelName: String) = {
     Logger.info("\"%s\" requested".format(modelName))
     Assets.at(path="/public/modelslib", modelName, true)

@@ -1,0 +1,31 @@
+@views.html.core.component.mainTheme(Html("<h2>NetLogo on the Web</h2>")) {
+
+    <div class="row index-row">
+        <div class="span6">
+            <a class="index-link" href="@controllers.local.routes.Local.index()">Tortoise</a>
+        </div>
+        <div class="span6 index-description">
+            Run a NetLogo model in your browser
+        </div>
+    </div>
+
+    <div class="row index-row">
+        <div class="span6">
+            <a class="index-link" href="@controllers.remote.routes.Remote.index()">Teletortoise</a>
+        </div>
+        <div class="span6 index-description">
+            Model collaboration and exploration
+        </div>
+    </div>
+
+    <div class="row index-row">
+        <div class="span6">
+            <a class="index-link" href="@controllers.local.routes.Local.createStandaloneTortoise()">Create Standalone Model</a>
+        </div>
+        <div class="span6 index-description">
+            Save a model for later use
+        </div>
+    </div>
+
+}
+
