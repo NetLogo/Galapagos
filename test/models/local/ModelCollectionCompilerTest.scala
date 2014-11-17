@@ -1,4 +1,4 @@
-package models.remote
+package models.local
 
 import
   java.io.File
@@ -17,7 +17,7 @@ import
   org.scalatest.{ Assertions, FlatSpec, OneInstancePerTest }
 
 import
-  models.NetLogoModelCollection
+  models.core.NetLogoModelCollection
 
 class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
 

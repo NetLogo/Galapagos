@@ -9,7 +9,7 @@ import
     mvc.{ AnyContent, Request }
 
 import
-  models.Util.{ noneIfEmpty, usingSource }
+  models.core.Util.{ noneIfEmpty, usingSource }
 
 object PlayUtil {
 

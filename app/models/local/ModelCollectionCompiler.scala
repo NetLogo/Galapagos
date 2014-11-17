@@ -1,4 +1,4 @@
-package models.remote
+package models.local
 
 import
   java.io.File
@@ -9,9 +9,9 @@ import
 import
   org.nlogo.tortoise.CompiledModel
 
-import
-  models.{ ModelSaver, NetLogoModelCollection, Util },
-    Util.usingSource
+import models.core.{ ModelsLibrary, NetLogoModelCollection, Util },
+  ModelsLibrary.allModels,
+  Util.usingSource
 
 class ModelCollectionCompiler(modelsCollection: NetLogoModelCollection, cacher: ActorRef) extends Actor {
   import ModelCollectionCompiler.{ CheckBuiltInModels, compileModel }
