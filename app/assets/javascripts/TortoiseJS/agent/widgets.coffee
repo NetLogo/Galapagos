@@ -228,7 +228,7 @@ partials =
     """
   textBox:
     """
-    <div class="netlogo-widget netlogo-text-box" style="{{>dimensions}}">{{ display }}</div>
+    <pre class="netlogo-widget netlogo-text-box" style="{{>dimensions}}">{{ display }}</pre>
     """
   switcher:
     """
