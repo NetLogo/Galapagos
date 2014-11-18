@@ -108,6 +108,9 @@ fillOutWidgets = (widgets, updateUICallback) ->
   # engine functions. BCH 11/5/2014
   plotCount = 0
   for widget in widgets
+    if widget.varName?
+      # Convert from NetLogo variables to Tortoise variables.
+      widget.varName = widget.varName.toLowerCase()
     switch widget['type']
       when "switch"
         widget.currentValue = widget.on
@@ -266,7 +269,7 @@ partials =
   chooser:
     """
     <label class="netlogo-widget netlogo-chooser netlogo-input" style="{{>dimensions}}">
-      <span class="netlogo-label">{{varName}}</span>
+      <span class="netlogo-label">{{display}}</span>
       <select class="netlogo-chooser-select" value="{{currentValue}}">
       {{#choices}}
         <option class="netlogo-chooser-option" value="{{.}}">{{>literal}}</option>
@@ -284,7 +287,7 @@ partials =
   inputBox:
     """
     <label class="netlogo-widget netlogo-input-box netlogo-input" style="{{>dimensions}}">
-      <div class="netlogo-label">{{varName}}</div>
+      <div class="netlogo-label">{{display}}</div>
       {{# boxtype === 'Number'}}<input type="number" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String'}}<input type="number" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String (reporter)'}}<input type="text" value="{{currentValue}}" />{{/}}
