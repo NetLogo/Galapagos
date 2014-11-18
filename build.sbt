@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "ace" % "01.08.2014",
   "org.webjars" % "mousetrap" % "1.4.6",
   "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars" % "ractive" % "0.6.0"
+  "org.webjars" % "ractive" % "0.6.1"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
