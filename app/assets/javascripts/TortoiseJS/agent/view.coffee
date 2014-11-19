@@ -373,13 +373,16 @@ class PatchView extends View
 
   colorPatches: (patches) ->
     imageData = @ctx.createImageData(@patchWidth,@patchHeight)
-    for ignore, patch of patches
-      [r,g,b] = netlogoColorToRGB(patch.pcolor)
-      i = ((@maxpycor-patch.pycor)*@patchWidth + (patch.pxcor-@minpxcor)) * 4
-      imageData.data[i+0] = r
-      imageData.data[i+1] = g
-      imageData.data[i+2] = b
-      imageData.data[i+3] = 255
+    numPatches = ((@maxpycor-@minpycor)*@patchWidth + (@maxpxcor-@minpxcor)) * 4
+    for i in [0...numPatches]
+      patch = patches[i]
+      if patch?
+        j = 4 * i
+        [r,g,b] = netlogoColorToRGB(patch.pcolor)
+        imageData.data[j+0] = r
+        imageData.data[j+1] = g
+        imageData.data[j+2] = b
+        imageData.data[j+3] = 255
     @scratchCtx.putImageData(imageData, 0, 0)
     # translate so scale flips the image at the right point
     trans = @minpycor + @maxpycor
@@ -391,10 +394,17 @@ class PatchView extends View
     for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
+  clearPatches: ->
+    @ctx.fillStyle = "black"
+    @ctx.fillRect(@minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
+
   repaint: (model) ->
     world = model.world
     patches = model.patches
     if not @matchesWorld(world)
       @transformToWorld(world)
-    @colorPatches(patches)
+    if world.patchesallblack
+      @clearPatches()
+    else
+      @colorPatches(patches)
 
