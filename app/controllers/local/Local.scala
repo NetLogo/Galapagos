@@ -15,6 +15,7 @@ import
 object Local extends Controller {
 
   private lazy val engineStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise-engine.js")))(_.mkString)
+  private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise/agentmodel.js")))(_.mkString)
 
   def index = Action {
     implicit request =>
@@ -37,6 +38,10 @@ object Local extends Controller {
 
   def engine = Action {
     implicit request => OkJS(engineStr)
+  }
+
+  def agentModel = Action {
+    implicit request => OkJS(agentModelStr)
   }
 
   private def OkJS(js: String) =

@@ -2,7 +2,13 @@
 
 @mainTheme(topBarText) {
 
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/agentmodel.js")'></script>
+  <script type="text/javascript">
+    var module = {}
+  </script>
+  <script src="@controllers.local.routes.Local.agentModel"></script>
+  <script type="text/javascript">
+    var AgentModel = module.exports;
+  </script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/colors.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")'></script>
   <script type="text/javascript" src='@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")'></script>

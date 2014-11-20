@@ -35,6 +35,7 @@ GET        /save-nlogo                         controllers.CompilerService.saveN
 GET        /model/statuses.json                controllers.CompilerService.modelStatuses
 
 GET        /netlogo-engine.js                  controllers.local.Local.engine
+GET        /netlogo-agentmodel.js              controllers.local.Local.agentModel
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                       controllers.Assets.at(path="/public", file)

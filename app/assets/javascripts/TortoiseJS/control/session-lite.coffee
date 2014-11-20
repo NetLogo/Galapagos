@@ -72,6 +72,8 @@ window.Tortoise = {
     new SessionLite(widgetController)
 }
 
+window.AgentModel = tortoise_require('agentmodel')
+
 makeCompileCallback = (container, callback) ->
   (res) ->
     if res.model.success

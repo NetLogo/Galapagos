@@ -154,7 +154,6 @@ object CompilerService extends Controller {
 
     val assetURLs =
       Seq(
-        "javascripts/TortoiseJS/agent/agentmodel.js",
         "javascripts/TortoiseJS/agent/colors.js",
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",
