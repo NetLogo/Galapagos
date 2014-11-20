@@ -1,6 +1,3 @@
-if not window.AgentModel?
-  console.error('view.js requires agentmodel.js!')
-
 class window.AgentStreamController
   constructor: (@container) ->
     @layers = @container.querySelector('.view-layers')

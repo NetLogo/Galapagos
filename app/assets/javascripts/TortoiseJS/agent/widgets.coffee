@@ -282,13 +282,13 @@ partials =
     """
     <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}}">
       <div class="netlogo-label">{{rawDisplay || source}}</div>
-      <div class="netlogo-value">{{currentValue}}</div>
+      <output class="netlogo-value">{{currentValue}}</output>
     </div>
    """
   inputBox:
     """
     <label class="netlogo-widget netlogo-input-box netlogo-input" style="{{>dimensions}}">
-      <div class="netlogo-label">{{display}}</div>
+      <div class="netlogo-label">{{varName}}</div>
       {{# boxtype === 'Number'}}<input type="number" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String'}}<input type="number" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String (reporter)'}}<input type="text" value="{{currentValue}}" />{{/}}
