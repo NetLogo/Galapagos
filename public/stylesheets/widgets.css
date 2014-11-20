@@ -160,6 +160,7 @@
     background-color: transparent;
     border: none;
     margin: 0;
+    white-space: pre-wrap;
 }
 
 .netlogo-switcher {
