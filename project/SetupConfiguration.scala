@@ -5,6 +5,9 @@ import
 import
   java.io.{ File, PrintWriter }
 
+import
+  scala.util.Random
+
 // Initializing configuration file
 
 object SetupConfiguration {
@@ -44,7 +47,7 @@ object SetupConfiguration {
     }
 
     configFile.delete()
-    val configMap = gatherConfigMap()
+    val configMap = sys.env.get("STACK").map(k => defaultConfigMap).getOrElse(gatherConfigMap())
     configFile.createNewFile()
 
     using(new PrintWriter(configFile)) {
@@ -53,7 +56,13 @@ object SetupConfiguration {
 
   }
 
-  private def gatherConfigMap() : Map[String, String] = {
+  private def defaultConfigMap: Map[String, String] = {
+    paramsAndDefaults.foldLeft(pureDefaults) {
+      case (acc, (name, _, default: Option[String])) => acc + (name -> default.getOrElse(Random.nextString(32)))
+    }
+  }
+
+  private def gatherConfigMap(): Map[String, String] = {
 
 
     promptForConfiguration {
