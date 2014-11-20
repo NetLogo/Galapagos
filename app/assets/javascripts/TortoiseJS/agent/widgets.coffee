@@ -246,6 +246,7 @@ partials =
       <span class="netlogo-value">
         <input type="number"
                min={{minValue}} max={{maxValue}} value={{currentValue}} step={{step}} />
+        {{#units}}{{units}}{{/}}
       </span>
     </label>
     """
