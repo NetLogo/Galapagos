@@ -1,0 +1,67 @@
+@views.html.core.component.mainTheme {
+
+    <div class="alert-message block-message info" style="margin: 0 10%;">
+      <div style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: flex-start;">
+
+        <div style="flex: 3; line-height: 18px; text-align: justify; font-size: 16px; padding-right: 3%;">
+          As a part of <a href="http://ccl.northwestern.edu/netlogo/">NetLogo</a>'s steady migration into the browser, we're
+          using this site (Galapagos) to showcase our various browser-based NetLogo projects.
+          <br><br>
+          The project that we're currently pouring the most effort into is what we're referring to as "Tortoise".  Tortoise is
+          meant to be a proper replacement for NetLogo applets—which went out of vogue a couple of years ago, thanks to various
+          security problems—and it is intended to be the NetLogo of the future.  In Tortoise, as in NetLogo applets, the
+          simulation engine runs directly in the client's browser.  This is desirable because it gives us easy-to-distribute
+          NetLogo models that are shareable and embeddable and all-around wonderful in the browser.  The downside, however, is
+          that NetLogo—a project with over 15 years of development history—needs to be entirely reimplemented in the JavaScript
+          programming language.
+          <br><br>
+          Here in Galapagos, you can find several different varieties of Tortoise, each with its own quirks.
+          <a href="@controllers.local.routes.Local.index()">The primary Tortoise page</a> offers Tortoise models in the browser
+          with a Command Center and the ability to modify the model's code.  However, the page lacks support for widgets and good
+          error-reporting.
+          <br><br>
+          There is also a tool for generating saveable or "standalone" Tortoise web pages, which you can find
+          <a href="@controllers.local.routes.Local.createStandaloneTortoise()">here</a>.  This tool yields a webpage that can be
+          saved through any browser's webpage-saving functionality (usually accessed through something like "File" => "Save
+          page as ...").  The saved HTML file has no interactions with our server whatsoever, so it can be opened in a browser
+          and used even without an active internet connection.  To share the model with others, simply distribute the HTML file
+          via your favorite file distribution method (e.g. e-mail, web server, flash drive).  On top of being highly shareable,
+          these standalone pages also have interactable widgets, with the caveat that the code cannot be modified and that there
+          is no Command Center.
+          <br><br>
+          (When converting your '.nlogo' files to become Tortoise models, please note that Tortoise is very much a work in
+          progress and is currently missing many features and language primitives that you would otherwise find in the desktop
+          version of NetLogo.  We ask you to bear with us as we work to bring your favorite features to the browser.)
+          <br><br>
+          Also available here on Galapagos is the project we're calling "Teletortoise".
+          <a href="@controllers.remote.routes.Remote.index()">Teletortoise</a> receives substantially less attention from us,
+          but it is a project that runs a version of classic NetLogo remotely on the Galapagos server, using the browser only as
+          a means of displaying the model's state.  Teletortoise allows numerous users to simultaneously interact with it in a
+          HubNet-like way, and, since it reuses classic desktop NetLogo, it's already fast and fully-featured.
+          <br><br>
+          The primary problem with Teletortoise, though, is that it doesn't really scale well for us.  Currently, the server can
+          only run one Teletortoise session at a time, but, even if it could run more, it would be quite expensive for us to be
+          essentially be supplying machines for each Teletortoise session to live on.  While we're pretty certain that Tortoise
+          is the NetLogo of the future, Teletortoise's fate is yet to be determined.
+          <br><br>
+          All that aside, head on over to <a href="@controllers.local.routes.Local.createStandaloneTortoise()">the model converter</a>
+          and try converting your NetLogo models to use Tortoise!  If you run into problems, feel free to open a ticket with us on
+          GitHub <a href="https://github.com/NetLogo/Galapagos/issues/new">here</a>.
+        </div>
+
+        <div class="rounded" style="flex: 1; font-size: 20px;">
+          <div class="spacious-entry background_backgrounded" style="font-weight: bold; color: white; border: 3px solid #343434;
+              border-bottom: 0; border-top-right-radius: 10px; border-top-left-radius: 10px;">Quick Links</div>
+          <ul style="list-style-type: none; margin: -3px 0 0 0; padding-top: 8px; padding-bottom: 8px; color: #343434;
+              border: 3px solid  #343434; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
+            <li class="spacious-entry"><a href="@controllers.local.routes.Local.index()">Tortoise</a></li>
+            <li class="spacious-entry"><a href="@controllers.local.routes.Local.createStandaloneTortoise()">Savable Tortoise Page Generator</a></li>
+            <li class="spacious-entry"><a href="@controllers.remote.routes.Remote.index()">Teletortoise</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+}
+

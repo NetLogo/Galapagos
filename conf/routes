@@ -3,11 +3,12 @@
 # ~~~~
 
 # General
+GET        /                                   controllers.Application.index
 GET        /model/list.json                    controllers.Application.modelList
 GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 
 # Remote (Teletortoise)
-GET        /                                   controllers.remote.Remote.index
+GET        /remote                             controllers.remote.Remote.index
 GET        /client                             controllers.remote.Remote.client(username: Option[String] ?= None)
 GET        /embedded                           controllers.remote.Remote.embedded
 GET        /connect                            controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)

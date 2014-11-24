@@ -1,6 +1,6 @@
 @(username: String)(implicit request: RequestHeader)
 
-@views.html.core.component.netLogoView(component.topBarText(Option(username)), false) {
+@views.html.core.component.netLogoView(false) {
 
   @views.html.core.component.clientImports("chat-remote-module")
 

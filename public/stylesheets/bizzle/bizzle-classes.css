@@ -294,3 +294,7 @@ li.unknown {
   -webkit-box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
   box-shadow:         0 0 6px 3px rgba(15, 15, 15, .40);
 }
+
+.spacious-entry {
+  padding: 8px 8px;
+}
