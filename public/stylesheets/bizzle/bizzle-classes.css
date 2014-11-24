@@ -295,34 +295,6 @@ li.unknown {
   box-shadow:         0 0 6px 3px rgba(15, 15, 15, .40);
 }
 
-.index-description {
-  font-size: 17px;
-  color: #25576e;
-}
-
-.index-link {
-  font-weight: bold;
-  font-size: 25px;
-  color: #25576e;
-}
-
-.index-link:hover {
-  color: #25576e;
-}
-
-.index-row {
-  background-color: #FCFCFC;
-  border: 1px solid #A0A0A0;
-  border-radius: 10px;
-  margin: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-.masthead {
-  float: left;
-}
-
-.top-right-text {
-  float: right;
+.spacious-entry {
+  padding: 8px 8px;
 }
