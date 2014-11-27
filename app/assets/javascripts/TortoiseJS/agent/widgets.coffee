@@ -70,6 +70,8 @@ class window.WidgetController
             widget.currentValue = widget.reporter()
           catch err
             widget.currentValue = 'N/A'
+        if widget.precision? and typeof widget.currentValue == 'number' and isFinite(widget.currentValue)
+          widget.currentValue = Prims.precision(widget.currentValue, widget.precision)
       if widget['type'] == 'slider'
         # Soooooo apparently range inputs don't visually update when you set
         # their max, but they DO update when you set their min (and will take

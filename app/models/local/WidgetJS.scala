@@ -34,7 +34,7 @@ object CompiledWidget {
       case t: TextBox     => CompiledTextBox(t)
       case s: Slider      => CompiledSlider(s, compileRep(s.min), compileRep(s.max), compileRep(s.step))
       case s: Switch      => CompiledSwitch(s)
-      case m: Monitor     => CompiledMonitor(m, compileRep(s"precision ( ${m.source} ) ${m.precision}"))
+      case m: Monitor     => CompiledMonitor(m, compileRep(s"${m.source}"))
       case c: Chooser     => CompiledChooser(c)
       case i: InputBox[T] => CompiledInputBox[T](i)
       case o: Output      => CompiledOutput(o)
