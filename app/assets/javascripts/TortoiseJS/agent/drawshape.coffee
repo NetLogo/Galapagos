@@ -1,14 +1,18 @@
+IMAGE_SIZE = 300 # Images are 300x300, in line with netlogo shapes.
+LINE_WIDTH = .1 * IMAGE_SIZE
+
 class window.ShapeDrawer
   constructor: (shapes) ->
     @shapes = shapes
 
   drawShape: (ctx, turtleColor, shapeName) ->
     ctx.translate(.5, -.5)
-    ctx.scale(-1/300, 1/300)
+    ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
     @drawRawShape(ctx, turtleColor, shapeName)
     return
 
   drawRawShape: (ctx, turtleColor, shapeName) ->
+    ctx.lineWidth = LINE_WIDTH
     shape = @shapes[shapeName] or defaultShape
     for elem in shape.elements
       draw[elem.type](ctx, turtleColor, elem)
@@ -17,7 +21,6 @@ class window.ShapeDrawer
 class window.CachingShapeDrawer extends ShapeDrawer
   constructor: (shapes) ->
     # Maps (shape name, color) -> canvas
-    # Canvas are 300x300, in line with netlogo shapes.
     # Shape/color combinations are pre-rendered to these canvases so they can be
     # quickly rendered to display.
     #
@@ -34,12 +37,12 @@ class window.CachingShapeDrawer extends ShapeDrawer
     shapeCanvas = @shapeCache[shapeKey]
     if not shapeCanvas?
       shapeCanvas = document.createElement('canvas')
-      shapeCanvas.width = shapeCanvas.height = 300
+      shapeCanvas.width = shapeCanvas.height = IMAGE_SIZE
       shapeCtx = shapeCanvas.getContext('2d')
       @drawRawShape(shapeCtx, turtleColor, shapeName)
       @shapeCache[shapeKey] = shapeCanvas
     ctx.translate(.5, -.5)
-    ctx.scale(-1/300, 1/300)
+    ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
     ctx.drawImage(shapeCanvas, 0, 0)
     return
   
@@ -109,12 +112,10 @@ window.draw =
     setColoring(ctx, turtleColor, line)
     # Note that this is 1/20 the size of the image. Smaller this, and the
     # lines are hard to see in most cases.
-    ctx.lineWidth = 15 
     ctx.beginPath()
     ctx.moveTo(line.x1, line.y1)
     ctx.lineTo(line.x2, line.y2)
     ctx.stroke()
-    ctx.lineWidth = .1
     return
 
 window.defaultShape = {
