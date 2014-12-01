@@ -1,42 +1,35 @@
 class window.AgentStreamController
   constructor: (@container) ->
-    @layers = @container.querySelector('.view-layers')
-
-    if @layers?
-      @spotlightView = new SpotlightView(@layers.querySelector('.spotlight-view'))
-      @turtleView = new TurtleView(@layers.querySelector('.turtle-view'))
-      @patchView = new PatchView(@layers.querySelector('.patch-view'))
-    else
-      @spotlightView = new SpotlightView()
-      @turtleView = new TurtleView()
-      @patchView = new PatchView()
-      @layers = document.createElement('div')
-      @layers.style.width = '100%'
-      @layers.style.position = 'relative'
-      @layers.classList.add('view-layers')
-      @container.appendChild(@layers)
-      # patchView must keep normal positioning so that it trying to maintain its
-      # aspect ratio forces the container to stay tall enough, thus maintaining
-      # flow with the rest of the page. Hence, we don't set its position
-      # 'absolute'
-      @spotlightView.canvas.style.position = 'absolute'
-      @spotlightView.canvas.style.top = '0px'
-      @spotlightView.canvas.style.left = '0px'
-      @spotlightView.canvas.style['z-index'] = 2
-      @spotlightView.canvas.classList.add('spotlight-view')
-      @turtleView.canvas.style.position = 'absolute'
-      @turtleView.canvas.style.top = '0px'
-      @turtleView.canvas.style.left = '0px'
-      @turtleView.canvas.style['z-index'] = 1
-      @turtleView.canvas.classList.add('turtle-view')
-      @patchView.canvas.style['z-index'] = 0
-      @patchView.canvas.classList.add('patch-view')
+    @spotlightView = new SpotlightView()
+    @turtleView = new TurtleView()
+    @patchView = new PatchView()
+    @layers = document.createElement('div')
+    @layers.style.width = '100%'
+    @layers.style.position = 'relative'
+    @layers.classList.add('view-layers')
+    @container.appendChild(@layers)
+    # patchView must keep normal positioning so that it trying to maintain its
+    # aspect ratio forces the container to stay tall enough, thus maintaining
+    # flow with the rest of the page. Hence, we don't set its position
+    # 'absolute'
+    @spotlightView.canvas.style.position = 'absolute'
+    @spotlightView.canvas.style.top = '0px'
+    @spotlightView.canvas.style.left = '0px'
+    @spotlightView.canvas.style['z-index'] = 2
+    @spotlightView.canvas.classList.add('spotlight-view')
+    @turtleView.canvas.style.position = 'absolute'
+    @turtleView.canvas.style.top = '0px'
+    @turtleView.canvas.style.left = '0px'
+    @turtleView.canvas.style['z-index'] = 1
+    @turtleView.canvas.classList.add('turtle-view')
+    @patchView.canvas.style['z-index'] = 0
+    @patchView.canvas.classList.add('patch-view')
 # Note that Chrome gives elements with the highest z-index mouse events and 
 # firefox gives elements with the later position in the DOM tree, so those
 # must correspond. - BCH 10/21/2014
-      @layers.appendChild(@patchView.canvas)
-      @layers.appendChild(@turtleView.canvas)
-      @layers.appendChild(@spotlightView.canvas)
+    @layers.appendChild(@patchView.canvas)
+    @layers.appendChild(@turtleView.canvas)
+    @layers.appendChild(@spotlightView.canvas)
 
     @mouseDown   = false
     @mouseInside = false
