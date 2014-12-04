@@ -17,7 +17,7 @@ import
 import
   org.nlogo.{ api, core, tortoise },
     api.CompilerException,
-    core.Widget,
+    core.{Model, Widget},
     tortoise.CompiledModel,
       CompiledModel.CompileResult
 
@@ -34,7 +34,9 @@ import
 
 import
   models.{ json, local => mlocal, core => mcore },
-    json.CompileWrites._,
+    json.{CompileWrites, WidgetReads},
+      CompileWrites._,
+      WidgetReads._,
     mcore.{ ModelsLibrary, Util },
       ModelsLibrary.prettyFilepath,
       Util.usingSource,
@@ -47,27 +49,43 @@ object CompilerService extends Controller {
   // Actions //
   /////////////
 
-  def compileURL   = genCompileAction(fetchURL(_) map (CompiledModel.fromNlogoContents(_)), urlMissingMsg)
-  def compileCode  = genCompileAction(CompiledModel.fromCode(_).successNel,                 codeMissingMsg)
-  def compileNlogo = genCompileAction(CompiledModel.fromNlogoContents(_).successNel,        nlogoMissingMsg)
+  def compileURL   = genCompileAction(modelFromURL,   urlMissingMsg)
+  def compileCode  = genCompileAction(modelFromCode,  codeMissingMsg)
+  def compileNlogo = genCompileAction(modelFromNlogo, nlogoMissingMsg)
 
-  def saveURL      = genSaveAction   (fetchURL(_) map (CompiledModel.fromNlogoContents(_)), urlMissingMsg)
-  def saveCode     = genSaveAction   (CompiledModel.fromCode(_).successNel,                 codeMissingMsg)
-  def saveNlogo    = genSaveAction   (CompiledModel.fromNlogoContents(_).successNel,        nlogoMissingMsg)
+  def saveURL      = genSaveAction   (modelFromURL,   urlMissingMsg)
+  def saveCode     = genSaveAction   (modelFromCode,  codeMissingMsg)
+  def saveNlogo    = genSaveAction   (modelFromNlogo, nlogoMissingMsg)
 
-  protected[controllers] def genCompileAction(compileModel: (String) => ModelResultV, missingModelMsg: String) =
+  protected[controllers] type ModelMaker = (String, List[Widget]) => ModelResultV
+  protected[controllers] val modelFromURL:   ModelMaker = (url,   _)       =>
+    fetchURL(url) map (CompiledModel.fromNlogoContents(_))
+  protected[controllers] val modelFromCode:  ModelMaker = (code,  widgets) =>
+    CompiledModel.fromModel(Model(code, widgets)).successNel
+  protected[controllers] val modelFromNlogo: ModelMaker = (nlogo, _)       =>
+    CompiledModel.fromNlogoContents(nlogo).successNel
+
+
+  protected[controllers] def genCompileAction(compileModel: ModelMaker, missingModelMsg: String) =
     Action { implicit request =>
       val argMap = toStringMap(request.extractBundle)
 
       val responseV = for {
-        modelStr    <- extractModelString(argMap, missingModelMsg)
-        modelResult <- compileModel(modelStr)
-        commands    <- getIDedStmtsV(argMap, commandsKey)
-        reporters   <- getIDedStmtsV(argMap, reportersKey)
+        widgets      <- parseWidgets(argMap.getOrElse("widgets", "[]"))
+        modelStr     <- extractModelString(argMap, missingModelMsg)
+        modelResult  <- compileModel(modelStr, widgets)
+        commands     <- getIDedStmtsV(argMap, commandsKey)
+        reporters    <- getIDedStmtsV(argMap, reportersKey)
       } yield compile(modelResult, commands, reporters)
 
       responseV fold (nelResult(BadRequest), res => Ok(Json.toJson(res)))
     }
+
+  protected[controllers] def parseWidgets(json: String): ValidationNel[String, List[Widget]] =
+    Json.parse(json).validate[List[Widget]].fold(
+      errors  => errors.mkString("\n").failureNel,
+      widgets => widgets.successNel
+    )
 
   protected[controllers] def compile(modelResult: CompileResult[CompiledModel],
                                      commands:    IDedValues[String],
@@ -93,7 +111,7 @@ object CompilerService extends Controller {
     }
   }
 
-  protected[controllers] def genSaveAction(compileModel: String => ModelResultV, missingModelMsg: String) =
+  protected[controllers] def genSaveAction(compileModel: ModelMaker, missingModelMsg: String) =
     Action {
       implicit request =>
 
@@ -106,7 +124,7 @@ object CompilerService extends Controller {
       val bundleV =
         for {
           modelStr    <- extractModelString(argMap, missingModelMsg) leftMap nelResult(BadRequest)
-          modelResult <- compileModel(modelStr)                      leftMap nelResult(BadRequest)
+          modelResult <- compileModel(modelStr, List())              leftMap nelResult(BadRequest)
           model       <- modelResult                                 leftMap nelResult(InternalServerError)
         } yield ModelSaver(model, generateTortoiseLiteJsUrls())
 
@@ -258,6 +276,4 @@ object CompilerService extends Controller {
     s"You must provide a `$modelKey` parameter that contains the code from a NetLogo model."
   private val nlogoMissingMsg =
     s"You must provide a `$modelKey` parameter that contains the contents of an nlogo file."
-
-
 }

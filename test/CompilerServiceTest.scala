@@ -16,7 +16,10 @@ import
   org.scalatestplus.play.PlaySpec
 
 import
-  play.api.libs.json.Json
+  play.api.{libs, test, http},
+    libs.json.{Json, JsSuccess},
+    test.{FakeRequest, Helpers},
+    http.Status
 
 import
   CompilerService._
@@ -117,12 +120,17 @@ class CompilerServiceTest extends PlaySpec {
     }
 
     "compile and serialize widgets without error" in {
-      val widgetsModel = Source.fromFile("public/modelslib/test/tortoise/Widgets.nlogo").mkString
-      val result = CompilerService.compile(CompiledModel.fromNlogoContents(widgetsModel), Seq(), Seq())
-      result.widgets foreach { _.toJson }
-      result.model.isSuccess mustBe true
+      val modelResponse = CompilerService.compile(widgetModel, Seq(), Seq())
+      val widgetString = Json.toJson(modelResponse.widgets).toString
+      widgetModel.fold(
+        errs  => fail(errs.stream.mkString("\n")),
+        model => parseWidgets(widgetString).fold(
+          errs    => fail(errs.stream.mkString("\n")),
+          // The mkString("\n")s make failures easier to read.
+          widgets => widgets.mkString("\n") mustBe model.model.widgets.mkString("\n")
+        )
+      )
     }
-
   }
 
   private val wolfSheep = Source.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo").mkString
@@ -132,5 +140,9 @@ class CompilerServiceTest extends PlaySpec {
           |${failures.stream.mkString("\n")}""".stripMargin
     CompiledModel.fromNlogoContents(wolfSheep) valueOr { e => fail(modelShouldHaveCompiled(e)) }
   }
+
+  private val widgetModel = CompiledModel.fromNlogoContents(
+    Source.fromFile("public/modelslib/test/tortoise/Widgets.nlogo").mkString
+  )
 
 }
