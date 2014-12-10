@@ -6,8 +6,7 @@ import
 import
   org.nlogo.{ api, core, tortoise },
     api.LogoList,
-      core.{ Widget, Button, Monitor, Output, Plot, Pen, Slider, Switch, TextBox, View, Chooser,
-             Direction, Horizontal, Vertical, UpdateMode, InputBoxType, InputBox, AgentKind },
+      core._,
     tortoise.CompiledModel,
     CompiledModel.CompileResult
 
@@ -107,11 +106,11 @@ case class CompiledTextBox(widget: TextBox) extends CompiledWidget[TextBox] {
 }
 
 case class CompiledChooser(widget: Chooser) extends CompiledWidget[Chooser] {
-  private implicit def choicesWrites: Writes[List[AnyRef]] = Writes[List[AnyRef]](xs => JsArray(xs map {
-    case d: JDouble  => Json.toJson(d.doubleValue)
-    case s: String   => Json.toJson(s)
-    case l: LogoList => Json.toJson(l.scalaIterator.toList)
-    case b: JBoolean => Json.toJson(b.booleanValue)
+  private implicit def choicesWrites: Writes[List[Chooseable]] = Writes[List[Chooseable]](xs => JsArray(xs map {
+    case ChooseableDouble(d)  => Json.toJson(d.doubleValue)
+    case ChooseableString(s)  => Json.toJson(s)
+    case ChooseableList(l)    => Json.toJson(l.toList.asInstanceOf[List[Chooseable]])
+    case ChooseableBoolean(b) => Json.toJson(b.booleanValue)
   }))
   protected def widgetJson = Json.writes[Chooser].writes(widget)
 }
@@ -145,7 +144,7 @@ case class CompiledMonitor(widget: Monitor, compiledSource: CompileResult[String
 }
 
 case class CompiledInputBox[T](widget: InputBox[T]) extends CompiledWidget[InputBox[T]] {
-  private implicit val inputBoxTypeWrites = Writes[InputBoxType[T]](t => Json.toJson(t.name))
+  private implicit val inputBoxTypeWrites = Writes[InputBoxType](t => Json.toJson(t.name))
   // The writes macro can't handle generics it seems, so have to do it by hand. BCH 9/20/2014
   protected def widgetJson = Json.obj(
     "left"      -> widget.left,
