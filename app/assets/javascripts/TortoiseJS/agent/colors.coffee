@@ -8,6 +8,13 @@ window.netlogoColorToCSS = (netlogoColor) ->
   else
     "rgb(#{r}, #{g}, #{b})"
 
+# Since a turtle's color's transparency applies to its whole shape,  and not
+# just the parts that use its default color, often we want to use the opaque
+# version of its color so we can use global transparency on it. BCH 12/10/2014
+window.netlogoColorToOpaqueCSS = (netlogoColor) ->
+  [r,g,b] = array = netlogoColorToRGB(netlogoColor)
+  "rgb(#{r}, #{g}, #{b})"
+
 window.netlogoColorToRGB = (netlogoColor) ->
   switch typeof(netlogoColor)
     when "number" then cachedNetlogoColors[Math.floor(netlogoColor*10)]

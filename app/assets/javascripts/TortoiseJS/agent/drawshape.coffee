@@ -5,9 +5,14 @@ class window.ShapeDrawer
   constructor: (shapes) ->
     @shapes = shapes
 
+  setTransparency: (ctx, turtleColor) ->
+    ctx.globalAlpha = if turtleColor.length > 3 then turtleColor[3] / 255 else 1
+
+
   drawShape: (ctx, turtleColor, shapeName) ->
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
+    @setTransparency(ctx, turtleColor)
     @drawRawShape(ctx, turtleColor, shapeName)
     return
 
@@ -43,14 +48,18 @@ class window.CachingShapeDrawer extends ShapeDrawer
       @shapeCache[shapeKey] = shapeCanvas
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
+    @setTransparency(ctx, turtleColor)
     ctx.drawImage(shapeCanvas, 0, 0)
     return
-  
+
   shapeKey: (shapeName, turtleColor) ->
-    [shapeName, netlogoColorToCSS(turtleColor)]
+    [shapeName, netlogoColorToOpaqueCSS(turtleColor)]
 
 setColoring = (ctx, turtleColor, element) ->
-  turtleColor = netlogoColorToCSS(turtleColor)
+# Since a turtle's color's transparency applies to its whole shape,  and not
+# just the parts that use its default color, we want to use the opaque
+# version of its color so we can use global transparency on it. BCH 12/10/2014
+  turtleColor = netlogoColorToOpaqueCSS(turtleColor)
   if element.filled
     if element.marked
       ctx.fillStyle = turtleColor
