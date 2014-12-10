@@ -1,14 +1,12 @@
 package models.local
 
 import
-  java.lang.{ Double => JDouble, Boolean => JBoolean }
-
-import
-  org.nlogo.{ api, core, tortoise },
-    api.LogoList,
-      core._,
+  org.nlogo.{ core, tortoise },
+    core.{ AgentKind, Button, Chooseable, ChooseableBoolean, ChooseableDouble, ChooseableList, ChooseableString,
+           Chooser, Direction, Horizontal, InputBox, InputBoxType, Monitor, Output, Pen, Plot, Slider, Switch, TextBox,
+           UpdateMode, Vertical, View, Widget },
     tortoise.CompiledModel,
-    CompiledModel.CompileResult
+      CompiledModel.CompileResult
 
 import
   play.api.libs.json.{ Json, Writes, JsObject, JsValue, JsArray, JsNull, JsString, JsNumber },
