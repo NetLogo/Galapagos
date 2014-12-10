@@ -225,7 +225,11 @@ partials =
   view:
     """
     <div class="netlogo-widget netlogo-view-container" style="{{>dimensions}}">
-      <span class="netlogo-widget netlogo-tick-counter">ticks: <span>{{ticks}}</span></span>
+      <div class="netlogo-widget netlogo-tick-counter">
+        {{# showTickCounter}}
+          {{tickCounterLabel}}: <span>{{ticks}}</span>
+        {{/}}
+      </div>
     </div>
     """
   textBox:
