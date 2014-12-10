@@ -24,7 +24,7 @@ class window.AgentStreamController
     @turtleView.canvas.classList.add('turtle-view')
     @patchView.canvas.style['z-index'] = 0
     @patchView.canvas.classList.add('patch-view')
-# Note that Chrome gives elements with the highest z-index mouse events and 
+# Note that Chrome gives elements with the highest z-index mouse events and
 # firefox gives elements with the later position in the DOM tree, so those
 # must correspond. - BCH 10/21/2014
     @layers.appendChild(@patchView.canvas)
@@ -210,9 +210,9 @@ class TurtleView extends View
 
   drawTurtle: (turtle, canWrapX, canWrapY) ->
     if not turtle['hidden?']
-      xcor = turtle.xcor or 0
-      ycor = turtle.ycor or 0
-      size = turtle.size or 1
+      xcor = turtle.xcor
+      ycor = turtle.ycor
+      size = turtle.size
       @drawTurtleAt(turtle, xcor, ycor)
       if canWrapX
         if xcor - size < @minpxcor
@@ -228,8 +228,8 @@ class TurtleView extends View
           @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
 
   drawTurtleAt: (turtle, xcor, ycor) ->
-    heading = turtle.heading or 0
-    scale = turtle.size or 1
+    heading = turtle.heading
+    scale = turtle.size
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
     shape = @drawer.shapes[shapeName] or defaultShape
@@ -270,7 +270,7 @@ class TurtleView extends View
         # are actually on screen. However, browsers are better at these checks
         # than we are and will ignore offscreen stuff. Thus, we shouldn't bother
         # checking unless we see a consistent performance improvement. Note that
-        # at least 3 lines will be needed in the majority of cases and 4 lines 
+        # at least 3 lines will be needed in the majority of cases and 4 lines
         # are necessary in certain cases. -- BCH (3/30/2014)
         if x1 < x2
           if y1 < y2
