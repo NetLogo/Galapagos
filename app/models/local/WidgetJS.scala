@@ -107,7 +107,8 @@ case class CompiledChooser(widget: Chooser) extends CompiledWidget[Chooser] {
   private implicit def choicesWrites: Writes[List[Chooseable]] = Writes[List[Chooseable]](xs => JsArray(xs map {
     case ChooseableDouble(d)  => Json.toJson(d.doubleValue)
     case ChooseableString(s)  => Json.toJson(s)
-    case ChooseableList(l)    => Json.toJson(l.toList.asInstanceOf[List[Chooseable]])
+    // choosers can contain lists that have values that are all Chooseable
+    case ChooseableList(l)    => Json.toJson(l.toList.map(Chooseable.apply _).asInstanceOf[List[Chooseable]])
     case ChooseableBoolean(b) => Json.toJson(b.booleanValue)
   }))
   protected def widgetJson = Json.writes[Chooser].writes(widget)

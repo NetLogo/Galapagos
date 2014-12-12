@@ -137,7 +137,6 @@ fillOutWidgets = (widgets, updateUICallback) ->
         else
           widget.run = () -> alert("Button failed to compile with:\n" +
                                   (res.message for res in widget.compiledSource.result).join('\n'))
-        widget.display = widget.rawDisplay or widget.source
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
@@ -262,7 +261,7 @@ partials =
            type="button"
            style="{{>dimensions}}"
            on-click="activateButton">
-      <span>{{display}}</span>
+      <span>{{display || source}}</span>
     </button>
     """
   foreverButton:
@@ -270,7 +269,7 @@ partials =
     <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command"
            style="{{>dimensions}}">
       <input type="checkbox" checked={{ running }} />
-      <span class="netlogo-label">{{ rawDisplay || source }}</span>
+      <span class="netlogo-label">{{display || source}}</span>
     </label>
     """
   chooser:
@@ -287,7 +286,7 @@ partials =
   monitor:
     """
     <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}}">
-      <div class="netlogo-label">{{rawDisplay || source}}</div>
+      <div class="netlogo-label">{{display || source}}</div>
       <output class="netlogo-value">{{currentValue}}</output>
     </div>
    """
