@@ -1,5 +1,5 @@
 # (Element or string, [widget], string, string) -> WidgetController
-window.bindWidgets = (container, widgets, code, info) ->
+window.bindWidgets = (container, widgets, code, info, readOnly) ->
   if typeof container == 'string'
     container = document.querySelector(container)
 
@@ -23,18 +23,22 @@ window.bindWidgets = (container, widgets, code, info) ->
     height:   Math.max.apply(Math, (w.bottom for w in widgets)),
     code,
     info,
+    readOnly,
     markdown: markdown.toHTML
   }
 
   ractive = new Ractive({
-    el:       container,
-    template: template,
-    partials: partials,
-    magic:    true,
-    data:     model
+    el:         container,
+    template:   template,
+    partials:   partials,
+    components: {
+      editor: EditorWidget
+    },
+    magic:      true,
+    data:       model
   })
 
-  viewController = new AgentStreamController(document.querySelector('.netlogo-view-container'))
+  viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'))
 
   plotOps = createPlotOps(container, widgets)
 
@@ -101,6 +105,8 @@ class window.WidgetController
 
   # () -> Unit
   teardown: -> @ractive.teardown()
+
+  code: -> @ractive.data.code
 
 # ([widget], () -> Unit) -> WidgetController
 # Destructive - Adds everything for maintaining state to the widget models,
@@ -209,9 +215,7 @@ template =
     </div>
     <div class="netlogo-model-text">
       {{#showCode}}
-        {{! Triple bars around code lets it use html formatting if it's there. }}
-        {{! The <pre> tags keep formmatting nice even if it's not html already. }}
-        <pre class="netlogo-code">{{{code}}}</pre>
+        <editor code='{{code}}' readOnly='{{readOnly}}' />
       {{/}}
       {{#showInfo}}
         <div class="netlogo-info">{{{markdown(info)}}}</div>

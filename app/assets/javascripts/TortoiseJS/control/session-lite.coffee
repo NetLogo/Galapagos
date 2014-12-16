@@ -13,6 +13,7 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
+    @widgetController.ractive.on('editor.recompile', (event) => @recompile())
 
   startLoop: ->
     @widgetController.updateWidgets()
@@ -58,14 +59,24 @@ class window.SessionLite
     @widgetController.teardown()
     cancelAnimationFrame(@_eventLoopTimeout)
 
+  recompile: ->
+# This is a temporary workaround for the fact that models can't be reloaded without clearing the world
+    world.clearAll();
+    @widgetController.redraw()
+    compile('code', @widgetController.code(), [], [], @widgetController.widgets, (res) ->
+      if res.model.success
+        globalEval(res.model.result)
+      else
+        alert(res.model.result.map((err) -> err.message).join('\n')))
+
 window.Tortoise = {
   fromNlogo:         (nlogo, container, callback) ->
-    compile("nlogo", nlogo, [], [], makeCompileCallback(container, callback))
+    compile("nlogo", nlogo, [], [], [], makeCompileCallback(container, callback))
   fromURL:           (url,   container, callback) ->
-    compile("url",   url,   [], [], makeCompileCallback(container, callback))
+    compile("url",   url,   [], [], [], makeCompileCallback(container, callback))
 
-  fromCompiledModel: (container, widgets, code, info, compiledSource = "") ->
-    widgetController = bindWidgets(container, widgets, code, info)
+  fromCompiledModel: (container, widgets, code, info, compiledSource = "", readOnly = false) ->
+    widgetController = bindWidgets(container, widgets, code, info, readOnly)
     window.modelConfig ?= {}
     modelConfig.plotOps = widgetController.plotOps
     globalEval(compiledSource)
@@ -81,10 +92,11 @@ makeCompileCallback = (container, callback) ->
     else
       container.innerHTML = res.model.result.map((err) -> err.message).join('<br/>')
 
-window.compile = (source, model, commands, reporters,
+window.compile = (source, model, commands, reporters, widgets,
                   onFulfilled, onRejected = (s) -> throw s) ->
   compileParams = {
     model: model,
+    widgets: JSON.stringify(widgets),
     commands: JSON.stringify(commands),
     reporters: JSON.stringify(reporters)
   }

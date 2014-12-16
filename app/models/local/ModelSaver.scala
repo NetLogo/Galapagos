@@ -12,7 +12,6 @@ import
 
 import
   org.nlogo.{ compile, tortoise },
-    compile.front.Colorizer,
     tortoise.CompiledModel
 
 import
@@ -37,6 +36,4 @@ object ModelSaver {
 
 }
 
-case class CompilationBundle(modelJs: String, libsJs: String, widgets: String, rawNlogoCode: String, info: String) {
-  lazy val colorizedNlogoCode = rawNlogoCode.lines.map(Colorizer.toHtml).mkString("", "\n", "\n")
-}
+case class CompilationBundle(modelJs: String, libsJs: String, widgets: String, nlogoCode: String, info: String)

@@ -117,7 +117,10 @@ object CompilerService extends Controller {
 
       val slurpURL = (url: String) => usingSource(_.fromURL(routes.Assets.at(url).absoluteURL()))(_.mkString)
 
-      val stylesheets = Set("stylesheets/widgets.css", "stylesheets/classic.css")
+      val stylesheets = Set("stylesheets/widgets.css",
+                            "stylesheets/classic.css",
+                            "stylesheets/netlogo-syntax.css",
+                            "lib/codemirror/lib/codemirror.css")
       val css         = stylesheets map slurpURL mkString "\n"
 
       val argMap  = toStringMap(request.extractBundle)
@@ -131,7 +134,7 @@ object CompilerService extends Controller {
       bundleV.fold(
         identity,
         bundle => Ok(views.html.local.standaloneTortoise(
-          bundle.modelJs, bundle.libsJs, css, bundle.widgets, bundle.colorizedNlogoCode, bundle.info)
+          bundle.modelJs, bundle.libsJs, css, bundle.widgets, bundle.nlogoCode, bundle.info)
         )
       )
     }
@@ -167,6 +170,8 @@ object CompilerService extends Controller {
         routes.Assets.at("lib/highcharts/highcharts.js"),
         routes.Assets.at("lib/highcharts/modules/exporting.js"),
         routes.Assets.at("lib/ractive/ractive.js"),
+        routes.Assets.at("lib/codemirror/lib/codemirror.js"),
+        routes.Assets.at("lib/codemirror/addon/mode/simple.js"),
         local.routes.Local.engine
       )
 
@@ -176,6 +181,7 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",
         "javascripts/TortoiseJS/agent/view.js",
+        "javascripts/TortoiseJS/agent/editor.js",
         "javascripts/TortoiseJS/agent/widgets.js",
         "javascripts/TortoiseJS/communication/connection.js",
         "javascripts/TortoiseJS/control/session-lite.js",
