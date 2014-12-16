@@ -16,13 +16,13 @@ import
   org.scalatestplus.play.PlaySpec
 
 import
-  play.api.{libs, test, http},
-    libs.json.{Json, JsSuccess},
-    test.{FakeRequest, Helpers},
-    http.Status
+  play.api.libs.json.Json
 
 import
   CompilerService._
+
+import
+  models.core.Util.usingSource
 
 class CompilerServiceTest extends PlaySpec {
 
@@ -133,7 +133,7 @@ class CompilerServiceTest extends PlaySpec {
     }
   }
 
-  private val wolfSheep = Source.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo").mkString
+  private val wolfSheep = usingSource(_.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString)
   private val wsModel = {
     val modelShouldHaveCompiled = (failures: NonEmptyList[CompilerException]) =>
       s"""|Model should have compiled but failed with the following messages:
@@ -142,7 +142,7 @@ class CompilerServiceTest extends PlaySpec {
   }
 
   private val widgetModel = CompiledModel.fromNlogoContents(
-    Source.fromFile("public/modelslib/test/tortoise/Widgets.nlogo").mkString
+    usingSource(_.fromFile("public/modelslib/test/tortoise/Widgets.nlogo"))(_.mkString)
   )
 
 }

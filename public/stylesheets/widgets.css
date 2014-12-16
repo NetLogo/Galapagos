@@ -76,14 +76,27 @@
     background-color: white;
 }
 
+.netlogo-code-container {
+    flex: 1;
+    -webkit-flex: 1;
+    display: flex;
+    display: -webkit-flex;
+    flex-flow: column;
+    -webkit-flex-flow: column;
+    background-color: white;
+    margin: 10px;
+}
 .netlogo-code {
     flex: 1;
     -webkit-flex: 1;
-    margin: 10px;
     font-family: monospace;
     overflow-x: scroll;
     border: inset;
 }
+.netlogo-code .CodeMirror {
+    height: 500px;
+}
+
 .netlogo-info {
     flex: 1;
     -webkit-flex: 1;

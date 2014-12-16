@@ -1,0 +1,20 @@
+.cm-s-netlogo-default .cm-operator {
+    color: #000000;
+}
+.cm-s-netlogo-default .cm-reporter {
+    color: #660096;
+}
+.cm-s-netlogo-default .cm-command {
+    color: #0000AA;
+}
+.cm-s-netlogo-default .cm-keyword {
+    color: #007F69;
+}
+.cm-s-netlogo-default .cm-comment {
+    color: #5A5A5A;
+}
+.cm-s-netlogo-default .cm-string,
+.cm-s-netlogo-default .cm-number,
+.cm-s-netlogo-default .cm-constant {
+    color: #963700;
+}

@@ -15,30 +15,30 @@ object WidgetReads {
     case JsString(s)     => JsSuccess(s)
     case JsNumber(x)     => JsSuccess(x.toDouble: java.lang.Double)
     case JsBoolean(b)    => JsSuccess(b: java.lang.Boolean)
-    case JsArray(jsVals) => {
-      val seqRes = jsVals.foldLeft(JsSuccess(Seq()): JsResult[Seq[AnyRef]]) {
-        (seqRes, jsVal) => for {
-          seq <- seqRes
-          x   <- literalReads.reads(jsVal)
-        } yield (seq :+ x);
-      }
-      seqRes.map(seq => LogoList.fromIterator(seq.iterator))
-    }
+    case JsArray(jsVals) => sequenceResult(jsVals map literalReads.reads) map { seq => LogoList.fromIterator(seq.iterator) }
     case JsNull          => JsSuccess("NIL")
-    case json            => JsError("Invalid literal value: " + json)
+    case json            => JsError(s"Invalid literal value: $json")
   }
+
+  private def sequenceResult[T](jsResults: Seq[JsResult[T]]): JsResult[Seq[T]] =
+    jsResults.foldLeft(JsSuccess(Seq()): JsResult[Seq[T]]) {
+      (acc, jsRes) => for {
+        seq <- acc
+        x   <- jsRes
+      } yield (seq :+ x)
+    }
 
   implicit val stringReads = Reads[String] {
     case JsNull      => JsSuccess("NIL")
     case JsString(s) => JsSuccess(s)
-    case json        => JsError("Invalid string value: " + json)
+    case json        => JsError(s"Invalid string value: $json")
   }
 
   implicit val updateModeReads = Reads[UpdateMode] {
     _.as[String].toUpperCase match {
       case "CONTINUOUS" => JsSuccess(UpdateMode.Continuous)
       case "TICKBASED"  => JsSuccess(UpdateMode.TickBased)
-      case json         => JsError("View update mode can only be 'Continuous' or 'TickBased' but was " + json)
+      case json         => JsError(s"View update mode can only be 'Continuous' or 'TickBased' but was $json")
     }
   }
 
@@ -49,7 +49,7 @@ object WidgetReads {
     _.as[String].toUpperCase match {
       case "HORIZONTAL" => JsSuccess(Horizontal)
       case "VERTICAL"   => JsSuccess(Vertical)
-      case json         => JsError("Slider direction can only be 'Horizontal' or 'Vertical' but was " + json)
+      case json         => JsError(s"Slider direction can only be 'Horizontal' or 'Vertical' but was $json")
     }
   }
   implicit val sliderReads = Json.reads[Slider]
@@ -64,7 +64,7 @@ object WidgetReads {
   implicit val inputBoxTypeReads = Reads[InputBoxType] {
     json => List(Num, Str, StrReporter, StrCommand, Col).find {
       _.name == json.as[String]
-    }.map(x => JsSuccess(x)).getOrElse(JsError("Invalid input box type: " + json))
+    }.map(x => JsSuccess(x)).getOrElse(JsError(s"Invalid input box type: $json"))
   }
   implicit val inputBoxReads = Reads[InputBox[AnyRef]] {
     json => for {
