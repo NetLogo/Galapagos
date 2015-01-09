@@ -2,9 +2,11 @@
   <head>
     <title>Tortoise</title>
     <link rel="stylesheet" href='@routes.Assets.at("lib/chosen/chosen.css")' />
+    <link rel="stylesheet" href='@routes.Assets.at("lib/codemirror/lib/codemirror.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/bizzle/bizzle-classes.css")'>
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/widgets.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classic.css")' />
+    <link rel="stylesheet" href='@routes.Assets.at("stylesheets/netlogo-syntax.css")' />
   </head>
   <body>
     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 20px; max-width: 900px; align-items: center;">
@@ -27,6 +29,8 @@
   <script src="@routes.Assets.at("lib/highcharts/highcharts.js")"></script>
   <script src="@routes.Assets.at("lib/highcharts/modules/exporting.js")"></script>
   <script src="@routes.Assets.at("lib/ractive/ractive.js")"></script>
+  <script src="@routes.Assets.at("lib/codemirror/lib/codemirror.js")"></script>
+  <script src="@routes.Assets.at("lib/codemirror/addon/mode/simple.js")"></script>
   <script>
     var exports = {};
   </script>
@@ -36,6 +40,7 @@
   <script src="@routes.Assets.at("javascripts/TortoiseJS/agent/drawshape.js")"></script>
   <script src="@routes.Assets.at("javascripts/TortoiseJS/agent/defaultshapes.js")"></script>
   <script src="@routes.Assets.at("javascripts/TortoiseJS/agent/view.js")"></script>
+  <script src="@routes.Assets.at("javascripts/TortoiseJS/agent/editor.js")"></script>
   <script src="@routes.Assets.at("javascripts/TortoiseJS/agent/widgets.js")"></script>
   <script src="@routes.Assets.at("javascripts/TortoiseJS/control/session-lite.js")"></script>
   <script src="@routes.Assets.at("javascripts/plot/highchartsops.js")"></script>
