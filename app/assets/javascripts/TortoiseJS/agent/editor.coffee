@@ -577,6 +577,6 @@ CodeMirror.defineSimpleMode('netlogo', {
     variable,
   ],
   meta: {
-    electricChars: "d])D\n"
+    electricChars: "dD])\n" # The 'd's here are so that it reindents on `end`.
   }
 })
