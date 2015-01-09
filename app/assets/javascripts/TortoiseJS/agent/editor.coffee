@@ -1,6 +1,5 @@
 window.EditorWidget = Ractive.extend({
   onrender: ->
-    console.log(@get('readOnly'))
     window.editor = CodeMirror(@find('.netlogo-code'), {
       value: @get('code'),
       tabSize: 2,
