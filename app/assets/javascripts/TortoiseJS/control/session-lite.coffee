@@ -14,6 +14,7 @@ class window.SessionLite
     @_lastRedraw = 0
     @_lastUpdate = 0
     @widgetController.ractive.on('editor.recompile', (event) => @recompile())
+    @widgetController.ractive.on('console.run', (code) => @run(code))
 
   startLoop: ->
     @widgetController.updateWidgets()
@@ -70,6 +71,18 @@ class window.SessionLite
       else
         alert(res.model.result.map((err) -> err.message).join('\n')))
 
+  run: (code) ->
+    compile('code', @widgetController.code(), [code], [], @widgetController.widgets,
+      (res) ->
+        success = res.commands[0].success
+        result  = res.commands[0].result
+        if (success)
+          new Function(result)()
+        else
+          alert(result.map((err) -> err.message).join('\n'))
+      ,
+      (err) -> alert(err))
+
 window.Tortoise = {
   fromNlogo:         (nlogo, container, callback) ->
     compile("nlogo", nlogo, [], [], [], makeCompileCallback(container, callback))
@@ -81,6 +94,7 @@ window.Tortoise = {
     window.modelConfig ?= {}
     modelConfig.plotOps = widgetController.plotOps
     modelConfig.mouse = widgetController.mouse
+    modelConfig.print = { write: widgetController.write }
     globalEval(compiledSource)
     new SessionLite(widgetController)
 }

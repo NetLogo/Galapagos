@@ -104,6 +104,36 @@
     margin: 10px;
 }
 
+.netlogo-command-center {
+  flex: 1;
+  -webkit-flex: 1;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  padding: 5px;
+}
+
+.netlogo-command-center-output {
+  flex-grow: 1;
+  -webkit-flex-grow: 1;
+  background-color: white;
+  height: 150px;
+  max-height: 150px;
+  margin: 0px;
+  overflow: auto;
+}
+
+.netlogo-command-center-input {
+  display: flex;
+  display: -webkit-flex;
+}
+
+.netlogo-command-center-input input {
+  flex-grow: 1;
+  -webkit-flex-grow: 1;
+}
+
 .netlogo-speed-slider {
     background-color: transparent;
     border: none;

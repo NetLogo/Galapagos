@@ -24,6 +24,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     code,
     info,
     readOnly,
+    consoleOutput: '',
     markdown: markdown.toHTML
   }
 
@@ -32,7 +33,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     template:   template,
     partials:   partials,
     components: {
-      editor: EditorWidget
+      editor: EditorWidget,
+      console: ConsoleWidget
     },
     magic:      true,
     data:       model
@@ -48,6 +50,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     peekX: -> viewController.mouseXcor
     peekY: -> viewController.mouseYcor
   }
+  write = (str) -> model.consoleOutput += str
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgets[widgetNum]
@@ -58,11 +61,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     event.context.run()
   )
 
-  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse)
+  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write)
 
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse) ->
+  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write) ->
 
   # () -> Unit
   runForevers: ->
@@ -211,6 +214,12 @@ template =
     </div>
 
     <div class="netlogo-tabs">
+      {{# !readOnly }}
+      <label class="netlogo-console-tab netlogo-tab netlogo-command {{#showConsole}}netlogo-active{{/}}">
+        <input type="checkbox" checked="{{showConsole}}" />
+        Command Center
+      </label>
+      {{/}}
       <label class="netlogo-code-tab netlogo-tab netlogo-command {{#showCode}}netlogo-active{{/}}">
         <input type="checkbox" checked="{{ showCode }}" />
         NetLogo Code
@@ -221,6 +230,11 @@ template =
       </label>
     </div>
     <div class="netlogo-model-text">
+      {{# !readOnly }}
+      {{#showConsole}}
+        <console output="{{consoleOutput}}"/>
+      {{/}}
+      {{/}}
       {{#showCode}}
         <editor code='{{code}}' readOnly='{{readOnly}}' />
       {{/}}
