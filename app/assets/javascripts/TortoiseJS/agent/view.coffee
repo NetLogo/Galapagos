@@ -381,6 +381,8 @@ class PatchView extends View
     @ctx.drawImage(@scratchCanvas, @minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
     @ctx.scale(1,-1)
     @ctx.translate(0, -trans)
+
+  labelPatches: (patches) ->
     for ignore, patch of patches
       @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
@@ -397,4 +399,6 @@ class PatchView extends View
       @clearPatches()
     else
       @colorPatches(patches)
+    if world.patcheswithlabels
+      @labelPatches(patches)
 
