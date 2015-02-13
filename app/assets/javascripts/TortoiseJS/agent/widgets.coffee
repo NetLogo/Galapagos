@@ -167,7 +167,7 @@ createPlotOps = (container, widgets) ->
 isValidValue = (widget, value) ->
   switch widget.type
     when 'slider'   then not isNaN(value)
-    when 'inputBox' then if widget.boxtype == 'Number' then not isNaN(value)
+    when 'inputBox' then not (widget.boxtype == 'Number' and isNaN(value))
     else  true
 
 template =
@@ -299,7 +299,7 @@ partials =
     <label class="netlogo-widget netlogo-input-box netlogo-input" style="{{>dimensions}}">
       <div class="netlogo-label">{{varName}}</div>
       {{# boxtype === 'Number'}}<input type="number" value="{{currentValue}}" />{{/}}
-      {{# boxtype === 'String'}}<input type="number" value="{{currentValue}}" />{{/}}
+      {{# boxtype === 'String'}}<input type="text" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String (reporter)'}}<input type="text" value="{{currentValue}}" />{{/}}
       {{# boxtype === 'String (commands)'}}<input type="text" value="{{currentValue}}" />{{/}}
       <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
