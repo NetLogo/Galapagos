@@ -38,7 +38,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     data:       model
   })
 
-  viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'))
+  viewModel = widgets.filter((w) -> w.type == 'view')[0]
+  viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
   plotOps = createPlotOps(container, widgets)
 
@@ -237,7 +238,7 @@ partials =
     """
   textBox:
     """
-    <pre class="netlogo-widget netlogo-text-box" style="{{>dimensions}}">{{ display }}</pre>
+    <pre class="netlogo-widget netlogo-text-box" style="{{>dimensions}} font-size: {{fontSize}}px;">{{ display }}</pre>
     """
   switcher:
     """
@@ -289,7 +290,7 @@ partials =
     """
   monitor:
     """
-    <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}}">
+    <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}} font-size: {{fontSize}}px;">
       <div class="netlogo-label">{{display || source}}</div>
       <output class="netlogo-value">{{currentValue}}</output>
     </div>
