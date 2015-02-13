@@ -25,6 +25,7 @@
     box-sizing: border-box;
     background-color: #CCC;
     border-radius: 4px;
+    overflow: hidden;
 }
 
 .netlogo-command,.netlogo-input {
@@ -238,6 +239,10 @@
 .netlogo-monitor > .netlogo-value {
     background-color: white;
     padding: 2px 2px;
+}
+
+.netlogo-value {
+    overflow: hidden;
 }
 
 .netlogo-input-box {
