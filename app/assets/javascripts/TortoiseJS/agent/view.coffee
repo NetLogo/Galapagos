@@ -257,8 +257,8 @@ class TurtleView extends View
       x2 = end2.xcor
       y2 = end2.ycor
 
-      wrapX = canWrapX and (x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2)
-      wrapY = canWrapY and (y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2))
+      wrapX = canWrapX and ((x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2))
+      wrapY = canWrapY and ((y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2)))
 
       @ctx.strokeStyle = netlogoColorToCSS(link.color)
       @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
