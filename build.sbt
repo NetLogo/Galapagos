@@ -2,14 +2,14 @@ name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 scalacOptions += "-language:_"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "tortoise" % "0.1-a113d24",
+  "org.nlogo" % "tortoise" % "0.1-74eba83",
   "com.typesafe.play" %% "play-cache" % "2.3.4",
   "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test",
   "org.scalatestplus" %% "play" % "1.1.0" % "test"
@@ -28,12 +28,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "codemirror" % "4.12"
 )
 
-resolvers += bintray.Opts.resolver.repo("netlogo", "Tortoise")
+resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
 resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 
 SetupConfiguration.settings
-
-bintray.Plugin.bintrayResolverSettings

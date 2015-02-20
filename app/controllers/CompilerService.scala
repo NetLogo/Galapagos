@@ -15,9 +15,8 @@ import
   com.fasterxml.jackson.core.JsonProcessingException
 
 import
-  org.nlogo.{ api, core, tortoise },
-    api.CompilerException,
-    core.{Model, Widget},
+  org.nlogo.{ core, tortoise },
+    core.{ CompilerException, Model, Widget },
     tortoise.CompiledModel,
       CompiledModel.CompileResult
 

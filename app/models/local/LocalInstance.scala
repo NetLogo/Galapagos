@@ -8,9 +8,8 @@ import
     Scalaz.ToValidationOps
 
 import
-  org.nlogo.{ api, core, tortoise },
-    api.CompilerException,
-    core.AgentKind,
+  org.nlogo.{ core, tortoise },
+    core.{ AgentKind, CompilerException },
       AgentKind._,
     tortoise.CompiledModel
 

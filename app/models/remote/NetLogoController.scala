@@ -4,12 +4,12 @@ import
   akka.actor.{ Actor, ActorRef, Props, PoisonPill }
 
 import
-  org.nlogo.{ api, compile, headless, mirror, nvm, tortoise, workspace => ws },
-    api.model.ModelReader,
-    compile.front.FrontEnd,
+  org.nlogo.{ api, headless, mirror, parse, tortoise, workspace => ws },
+    api.{ DefaultParserServices, model },
+      model.ModelReader,
     headless.HeadlessWorkspace,
     mirror.Update,
-    nvm.DefaultParserServices,
+    parse.CompilerUtilities,
     tortoise.json.JSONSerializer,
     ws.AbstractWorkspace
 
@@ -129,7 +129,7 @@ class NetLogoController(channel: ActorRef) extends Actor {
   protected def workspace(nlogoContents: String): WebWorkspace = {
 
     val wspace = HeadlessWorkspace.newInstance(classOf[WebWorkspace]).asInstanceOf[WebWorkspace]
-    val model  = ModelReader.parseModel(nlogoContents, new DefaultParserServices(FrontEnd))
+    val model  = ModelReader.parseModel(nlogoContents, new DefaultParserServices(CompilerUtilities))
 
     wspace.openModel(model)
     wspace.setOutputCallback((output: String) => channel ! CommandOutput("observer", output))

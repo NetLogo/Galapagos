@@ -1,10 +1,11 @@
 package models.remote.workspace
 
 import
-  org.nlogo.{ agent, headless, api },
+  org.nlogo.{ agent, api, core, headless },
     agent.OutputObject,
-    headless.HeadlessWorkspace,
-    api.{ CompilerException, LogoException }
+    api.LogoException,
+    core.CompilerException,
+    headless.HeadlessWorkspace
 
 trait Executor extends HeadlessWorkspace {
 
