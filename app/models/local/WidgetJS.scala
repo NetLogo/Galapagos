@@ -33,7 +33,7 @@ object CompiledWidget {
       case s: Switch      => CompiledSwitch(s)
       case m: Monitor     => CompiledMonitor(m, compileRep(s"${m.source}"))
       case c: Chooser     => CompiledChooser(c)
-      case i: InputBox[T] => CompiledInputBox[T](i)
+      case i: InputBox[_] => CompiledInputBox(i)
       case o: Output      => CompiledOutput(o)
     }
   }

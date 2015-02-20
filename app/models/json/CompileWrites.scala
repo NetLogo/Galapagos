@@ -1,8 +1,8 @@
 package models.json
 
 import
-  org.nlogo.{ api, tortoise },
-    api.CompilerException,
+  org.nlogo.{ core, tortoise },
+    core.CompilerException,
     tortoise.CompiledModel.CompileResult
 
 import

@@ -1,14 +1,10 @@
 package models.json
-import
-  org.nlogo.{ api, core, tortoise },
-    api.LogoList,
-    core.{ Widget, Button, Monitor, Output, Plot, Pen, Slider, Switch, TextBox, View, Chooser,
-           Direction, Horizontal, Vertical, UpdateMode, InputBox, AgentKind, Chooseable,
-           InputBoxType, Num, Str, StrReporter, StrCommand, Col }
 
 import
-  play.api.libs.json.{Json, Reads, JsSuccess, JsError, JsPath, JsString, JsNumber, JsBoolean, JsNull,
-                      JsArray, JsResult, JsValue}
+  org.nlogo.core.{ Button, Chooseable, Chooser, Col, Direction, Horizontal, InputBox, InputBoxType, LogoList, Monitor, Num, Output, Pen, Plot, Slider, Str, StrCommand, StrReporter, Switch, TextBox, UpdateMode, Vertical, View, Widget }
+
+import
+  play.api.libs.json.{ JsArray, JsBoolean, JsError, JsNull, JsNumber, Json, JsResult, JsSuccess, JsString, Reads }
 
 object WidgetReads {
   val literalReads: Reads[AnyRef] = Reads[AnyRef] {

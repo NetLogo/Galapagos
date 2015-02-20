@@ -8,8 +8,8 @@ import
     Scalaz.ToValidationOps
 
 import
-  org.nlogo.{ api, tortoise },
-    api.CompilerException,
+  org.nlogo.{ core, tortoise },
+    core.CompilerException,
     tortoise.CompiledModel
 
 import
