@@ -257,6 +257,28 @@ class TurtleView extends View
       x2 = end2.xcor
       y2 = end2.ycor
 
+      if link.thickness > @onePixel
+        shortestX = Math.min(x1 - x2, x2 - x1)
+        shortestY = Math.min(y1 - y2, y2 - y1)
+
+        theta = Math.atan2(shortestY, shortestX)
+        xd    = Math.abs(link.thickness * Math.cos(theta)) / 2
+        yd    = Math.abs(link.thickness * Math.sin(theta)) / 2
+
+        if 0 < link.heading < 180
+          x1 -= xd
+          x2 += xd
+        else
+          x1 += xd
+          x2 -= xd
+
+        if 90 < link.heading < 270
+          y1 += yd
+          y2 -= yd
+        else
+          y1 -= yd
+          y2 += yd
+
       wrapX = canWrapX and ((x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2))
       wrapY = canWrapY and ((y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2)))
 
