@@ -248,45 +248,36 @@ class TurtleView extends View
     @ctx.lineTo(x2,y2)
 
   drawLink: (link, turtles, canWrapX, canWrapY) ->
+    shouldWrapInDim = (canWrap, dimensionSize, cor1, cor2) ->
+      distance = Math.abs(cor1 - cor2)
+      canWrap and distance > dimensionSize / 2
+
+    adjustLinkEnds = (end1Cor, end2Cor, trigShift, minForExtending, maxForExtending) ->
+      diff = Math.abs(link.thickness * trigShift) / 2
+      if minForExtending < link.heading < maxForExtending
+        [end1Cor + diff, end2Cor - diff]
+      else
+        [end1Cor - diff, end2Cor + diff]
+
     if not link['hidden?']
-      end1 = turtles[link.end1]
-      end2 = turtles[link.end2]
+      { xcor: e1x, ycor: e1y } = turtles[link.end1]
+      { xcor: e2x, ycor: e2y } = turtles[link.end2]
 
-      x1 = end1.xcor
-      y1 = end1.ycor
-      x2 = end2.xcor
-      y2 = end2.ycor
+      wrapX = shouldWrapInDim(canWrapX, @patchWidth,  e1x, e2x)
+      wrapY = shouldWrapInDim(canWrapY, @patchHeight, e1y, e2y)
 
-      distX = Math.abs(x1 - x2)
-      distY = Math.abs(y1 - y2)
+      if link.thickness is @onePixel
+        x1 = e1x
+        x2 = e2x
+        y1 = e1y
+        y2 = e2y
+      else
+        shortestX = Math.min(e1x - e2x, e2x - e1x)
+        shortestY = Math.min(e1y - e2y, e2y - e1y)
+        theta     = Math.atan2(shortestY, shortestX)
 
-      worldWidth  = @maxpxcor - @minpxcor + 1
-      worldHeight = @maxpycor - @minpycor + 1
-
-      wrapX = canWrapX and (distX > worldWidth  / 2)
-      wrapY = canWrapY and (distY > worldHeight / 2)
-
-      if link.thickness > @onePixel
-        shortestX = Math.min(x1 - x2, x2 - x1)
-        shortestY = Math.min(y1 - y2, y2 - y1)
-
-        theta = Math.atan2(shortestY, shortestX)
-        xd    = Math.abs(link.thickness * Math.cos(theta)) / 2
-        yd    = Math.abs(link.thickness * Math.sin(theta)) / 2
-
-        if 0 < link.heading < 180
-          x1 -= xd
-          x2 += xd
-        else
-          x1 += xd
-          x2 -= xd
-
-        if 90 < link.heading < 270
-          y1 += yd
-          y2 -= yd
-        else
-          y1 -= yd
-          y2 += yd
+        [x1, x2] = adjustLinkEnds(e1x, e2x, Math.cos(theta), 180, 360)
+        [y1, y2] = adjustLinkEnds(e1y, e2y, Math.sin(theta), 90,  270)
 
       @ctx.strokeStyle = netlogoColorToCSS(link.color)
       @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
