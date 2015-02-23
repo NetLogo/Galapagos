@@ -257,6 +257,15 @@ class TurtleView extends View
       x2 = end2.xcor
       y2 = end2.ycor
 
+      distX = Math.abs(x1 - x2)
+      distY = Math.abs(y1 - y2)
+
+      worldWidth  = @maxpxcor - @minpxcor + 1
+      worldHeight = @maxpycor - @minpycor + 1
+
+      wrapX = canWrapX and (distX > worldWidth  / 2)
+      wrapY = canWrapY and (distY > worldHeight / 2)
+
       if link.thickness > @onePixel
         shortestX = Math.min(x1 - x2, x2 - x1)
         shortestY = Math.min(y1 - y2, y2 - y1)
@@ -278,9 +287,6 @@ class TurtleView extends View
         else
           y1 -= yd
           y2 += yd
-
-      wrapX = canWrapX and ((x1 - (x2 - @patchWidth) < Math.abs(x1 - x2)) or (x2 - (x1 - @patchWidth)) < Math.abs(x1 - x2))
-      wrapY = canWrapY and ((y1 - (y2 - @patchHeight) < Math.abs(y1 - y2)) or (y2 - (y1 - @patchHeight) < Math.abs(y1 - y2)))
 
       @ctx.strokeStyle = netlogoColorToCSS(link.color)
       @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
