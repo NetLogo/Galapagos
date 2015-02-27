@@ -80,6 +80,7 @@ window.Tortoise = {
     widgetController = bindWidgets(container, widgets, code, info, readOnly)
     window.modelConfig ?= {}
     modelConfig.plotOps = widgetController.plotOps
+    modelConfig.mouse = widgetController.mouse
     globalEval(compiledSource)
     new SessionLite(widgetController)
 }

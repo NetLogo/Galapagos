@@ -42,6 +42,12 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
   plotOps = createPlotOps(container, widgets)
+  mouse = {
+    peekIsDown: -> viewController.mouseDown
+    peekIsInside: -> viewController.mouseInside
+    peekX: -> viewController.mouseXcor
+    peekY: -> viewController.mouseYcor
+  }
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgets[widgetNum]
@@ -52,11 +58,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     event.context.run()
   )
 
-  controller = new WidgetController(ractive, model, widgets, viewController, plotOps)
+  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse)
 
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgets, @viewController, @plotOps) ->
+  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse) ->
 
   # () -> Unit
   runForevers: ->
