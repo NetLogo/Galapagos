@@ -55,9 +55,6 @@ class window.AgentStreamController
       @mouseYcor = @spotlightView.yPixToPcor(e.clientY - rect.top)
     )
 
-    window.modelConfig       ?= {}
-    window.modelConfig.mouse ?= { peekIsDown: (=> @mouseDown), peekIsInside: (=> @mouseInside), peekX: (=> @mouseXcor), peekY: (=> @mouseYcor) }
-
   repaint: ->
     @spotlightView.repaint(@model)
     @turtleView.repaint(@model)
