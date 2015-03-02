@@ -114,7 +114,7 @@
   padding: 5px;
 }
 
-.netlogo-command-center-output {
+.netlogo-output-area {
   flex-grow: 1;
   -webkit-flex-grow: 1;
   background-color: white;

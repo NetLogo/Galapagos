@@ -6,9 +6,11 @@ window.ConsoleWidget = Ractive.extend({
     history: [], # Array of {agentType, input} objects
     historyIndex: 0,
     workingEntry: {}, # Stores {agentType, input} when user up arrows
-    output: '',
-    scroll: 0
+    output: ''
   }
+
+  isolated: true
+
   computed: {
     agentType: {
       get: -> @get('agentTypes')[@get('agentTypeIndex')]
@@ -19,7 +21,11 @@ window.ConsoleWidget = Ractive.extend({
     }
   }
 
-  onrender: ->
+  components: {
+    outputArea: OutputArea
+  }
+
+  oninit: ->
     changeAgentType = =>
       @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
 
@@ -67,16 +73,11 @@ window.ConsoleWidget = Ractive.extend({
         @set('input', '')
         @set('workingEntry', {})
     )
-    @observe('output', ->
-      @update('output')
-      outputElem = @find('.netlogo-command-center-output')
-      outputElem.scrollTop = outputElem.scrollHeight
-    )
 
   template:
     """
     <div class='netlogo-command-center netlogo-widget'>
-      <pre class='netlogo-command-center-output' scrollTop={{scroll}}>{{output}}</pre>
+      <outputArea output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>
         <label>
