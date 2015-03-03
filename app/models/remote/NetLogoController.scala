@@ -18,8 +18,7 @@ import
     libs.concurrent.Akka
 
 import
-  models.core.{ NetLogoControllerMessages, Util, WebInstanceMessages },
-    Util.usingSource
+  models.core.Util.usingSource
 
 import
   workspace.WebWorkspace

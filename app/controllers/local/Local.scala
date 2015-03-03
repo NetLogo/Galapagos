@@ -2,25 +2,16 @@ package controllers.local
 
 import
   play.api.{ libs, mvc },
-    libs.{ iteratee, json },
-      iteratee.Enumerator,
-      json.JsValue,
-    mvc.{ Action, Controller, ResponseHeader, Result, WebSocket }
+    libs.iteratee.Enumerator,
+    mvc.{ Action, Controller, ResponseHeader, Result }
 
 import
-  models.{ local, core },
-    local.LocalInstance,
-    core.Util.usingSource
+  models.core.Util.usingSource
 
 object Local extends Controller {
 
   private lazy val engineStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise-engine.js")))(_.mkString)
   private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise/agentmodel.js")))(_.mkString)
-
-  def index = Action {
-    implicit request =>
-      Ok(views.html.local.client())
-  }
 
   def createStandaloneTortoise = Action {
     implicit request =>
@@ -30,10 +21,6 @@ object Local extends Controller {
   def tortoise = Action {
     implicit request =>
       Ok(views.html.local.tortoise())
-  }
-
-  def handleSocketConnection() = WebSocket.tryAccept[JsValue] {
-    implicit request => LocalInstance.join()
   }
 
   def engine = Action {

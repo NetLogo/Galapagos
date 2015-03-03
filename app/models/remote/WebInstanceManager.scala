@@ -1,4 +1,4 @@
-package models.core
+package models.remote
 
 import
   concurrent.{ duration, Future },
@@ -21,7 +21,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait WebInstanceManager {
 
-  import WebInstanceMessages._
+  import models.remote.WebInstanceMessages._
 
   implicit val timeout = Timeout(1.second)
 

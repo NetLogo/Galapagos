@@ -12,18 +12,18 @@ import
 import
   play.api.{ libs, Logger, Play },
     libs.{ concurrent => pconcurrent, json, iteratee },
-      pconcurrent.Akka,
+      pconcurrent.{ Akka, Execution },
+        Execution.Implicits.defaultContext,
       iteratee.Concurrent,
         Concurrent.Channel,
-      json.{ JsArray, JsObject, JsString, JsValue }
+      json.{ JsArray, JsObject, JsString, JsValue },
+      Play.current
 
-import
-  models.core.{ NetLogoControllerMessages, WebInstance, WebInstanceManager, WebInstanceMessages }
-
-import play.api.Play.current
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
-class RemoteInstance extends Actor with WebInstance {
+class RemoteInstance
+  extends Actor
+  with WebContextProtocol
+  with EventManagerProtocol
+  with ChatPacketProtocol {
 
   import NetLogoControllerMessages._
   import WebInstanceMessages._
@@ -34,7 +34,11 @@ class RemoteInstance extends Actor with WebInstance {
   protected val NameLengthLimit = 10
 
   protected val ChatterContext = "chatter"
-  override protected val extraContexts = ISeq(RoomContext, ChatterContext)
+
+  final protected def contexts = ISeq(
+    ObserverContext, TurtlesContext, LinksContext, PatchesContext, RoomContext, ChatterContext)
+
+  protected lazy val room = this.self
 
   private val nlController = Akka.system.actorOf(Props(new NetLogoController(self)))
   private val BizzleBot    = new BizzleBot(room, nlController)
@@ -50,7 +54,7 @@ class RemoteInstance extends Actor with WebInstance {
 
   private val members = MutableMap.empty[MemberKey, MemberValue]
 
-  override def receiveExtras = {
+  final override def receive =  {
 
     case Join(username) =>
       isValidUsername(username) match {
@@ -93,6 +97,23 @@ class RemoteInstance extends Actor with WebInstance {
       if (!serializedUpdate.isEmpty)
         notifyAll(generateMessage(ViewUpdateKey, RoomContext, NetLogoUsername, serializedUpdate))
 
+    case Command(username, agentType, cmd) if (contexts.contains(agentType)) =>
+      broadcast(generateMessage(CommandKey, agentType, username, cmd))
+      execute(agentType, cmd)
+
+    case Command(username, "compile", cmd) =>
+      Logger.info("Compiling")
+      compile(cmd)
+
+    case Command(username, "open", cmd) =>
+      Logger.info("Opening")
+      open(cmd)
+
+    case Command(username, agentType, cmd) =>
+      Logger.warn(s"Unhandlable message from user '$username' in context '$agentType': $cmd")
+
+    case CommandOutput(agentType, output) =>
+      broadcast(generateMessage(ResponseKey, NetLogoUsername, agentType, output))
   }
 
   private def quit(username: String): Unit = {
@@ -120,13 +141,24 @@ class RemoteInstance extends Actor with WebInstance {
       foreachable foreach { case (username, channel) => channel.push(msg) }
   }
 
-  override def broadcast(msg: JsObject):                Unit = notifyAll(msg)
-  override def execute(agentType: String, cmd: String): Unit = nlController ! Execute(agentType, cmd)
-  override def compile(source: String):                 Unit = nlController ! Compile(source)
-  override def open(nlogoContents: String):             Unit = nlController ! OpenModel(nlogoContents)
+  protected def generateMessage(kind: String, context: String, user: String, payloadJSON: JsValue): JsObject =
+    JsObject(
+      Seq(
+        KindKey    -> JsString(kind),
+        ContextKey -> JsString(context),
+        UserKey    -> JsString(user),
+        MessageKey -> payloadJSON,
+        MembersKey -> JsArray(members.keySet.toList map JsString)
+      )
+    )
 
-  override def generateMessage(kind: String, context: String, user: String, text: String): JsObject =
-    super.generateMessage(kind, context, user, text) ++ JsObject(Seq(MembersKey -> JsArray(members.keySet.toList map JsString)))
+  protected def generateMessage(kind: String, context: String, user: String, payload: String): JsObject =
+    generateMessage(kind, context, user, JsString(payload))
+
+  protected def broadcast(msg: JsObject):                Unit = notifyAll(msg)
+  protected def execute(agentType: String, cmd: String): Unit = nlController ! Execute(agentType, cmd)
+  protected def compile(source: String):                 Unit = nlController ! Compile(source)
+  protected def open(nlogoContents: String):             Unit = nlController ! OpenModel(nlogoContents)
 
   protected def isValidUsername(username: String): (Boolean, String) = {
     val reservedNames = Seq("me", "myself", "you") ++ contexts

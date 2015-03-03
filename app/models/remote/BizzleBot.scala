@@ -16,9 +16,8 @@ import
       json.JsValue
 
 import
-  models.core.{ ChatPacketProtocol, NetLogoControllerMessages, WebInstanceMessages },
-    NetLogoControllerMessages._,
-    WebInstanceMessages.{ Connected, Join }
+  NetLogoControllerMessages._,
+  WebInstanceMessages.{ Connected, Join }
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 

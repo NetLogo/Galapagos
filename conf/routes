@@ -14,8 +14,6 @@ GET        /embedded                           controllers.remote.Remote.embedde
 GET        /connect                            controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
 
 # Local (Tortoise)
-GET        /local                              controllers.local.Local.index
-GET        /local-connect                      controllers.local.Local.handleSocketConnection()
 GET        /create-standalone                  controllers.local.Local.createStandaloneTortoise
 GET        /tortoise                           controllers.local.Local.tortoise
 

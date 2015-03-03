@@ -16,9 +16,8 @@
           programming language.
           <br><br>
           Here in Galapagos, you can find several different varieties of Tortoise, each with its own quirks.
-          <a href="@controllers.local.routes.Local.index()">The primary Tortoise page</a> offers Tortoise models in the browser
-          with a Command Center and the ability to modify the model's code.  However, the page currently lacks support for widgets and good
-          error-reporting.
+          <a href="@controllers.local.routes.Local.tortoise()">The primary Tortoise page</a> offers Tortoise models in the browser
+          with a Command Center and the ability to modify the model's code.
           <br><br>
           There is also a tool for generating saveable or "standalone" Tortoise web pages, which you can find
           <a href="@controllers.local.routes.Local.createStandaloneTortoise()">here</a>.  This tool yields a webpage that can be
@@ -54,7 +53,7 @@
               border-bottom: 0; border-top-right-radius: 10px; border-top-left-radius: 10px;">Quick Links</div>
           <ul style="list-style-type: none; margin: -3px 0 0 0; padding-top: 8px; padding-bottom: 8px; color: #343434;
               border: 3px solid  #343434; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
-            <li class="spacious-entry"><a href="@controllers.local.routes.Local.index()">Tortoise</a></li>
+            <li class="spacious-entry"><a href="@controllers.local.routes.Local.tortoise()">Tortoise</a></li>
             <li class="spacious-entry"><a href="@controllers.local.routes.Local.createStandaloneTortoise()">Savable Tortoise Page Generator</a></li>
             <li class="spacious-entry"><a href="@controllers.remote.routes.Remote.index()">Teletortoise</a></li>
           </ul>
