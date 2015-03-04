@@ -10,8 +10,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % "0.1-ffc9633",
-  "com.typesafe.play" %% "play-cache" % "2.3.4",
-  "com.typesafe.akka" %% "akka-testkit" % "2.3.4" % "test",
+  "com.typesafe.play" %% "play-cache" % "2.3.8",
+  "com.typesafe.akka" %% "akka-testkit" % "2.3.8" % "test",
   "org.scalatestplus" %% "play" % "1.1.0" % "test"
 )
 
