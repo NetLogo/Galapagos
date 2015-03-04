@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % "0.1-ffc9633",
   "com.typesafe.play" %% "play-cache" % "2.3.8",
   "com.typesafe.akka" %% "akka-testkit" % "2.3.8" % "test",
-  "org.scalatestplus" %% "play" % "1.1.0" % "test"
+  "org.scalatestplus" %% "play" % "1.2.0" % "test"
 )
 
 libraryDependencies ++= Seq(
