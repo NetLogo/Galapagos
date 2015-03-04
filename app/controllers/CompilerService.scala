@@ -4,7 +4,7 @@ import
   java.net.{ MalformedURLException, URL }
 
 import
-  scala.util.Try
+  scala.util.{ Try, matching }, matching.Regex
 
 import
   scalaz.{ NonEmptyList, Scalaz, Validation, ValidationNel },
@@ -21,12 +21,15 @@ import
       CompiledModel.CompileResult
 
 import
-  play.api.{ cache, libs, mvc, Play },
-    cache.Cache,
-    libs.json.{ Json, JsObject, Writes },
-      Json.toJsFieldJsValueWrapper,
-    Play.current,
-    mvc.{ Action, Controller, RequestHeader, Result }
+  play.{utils, api},
+    utils.UriEncoding,
+    api.{ cache, libs, mvc, Play },
+      cache.Cache,
+      libs.json.{ Json, JsObject, Writes },
+        Json.toJsFieldJsValueWrapper,
+      Play.current,
+      mvc.{ Action, Controller, RequestHeader, Result }
+
 
 import
   controllers.PlayUtil.EnhancedRequest
@@ -56,14 +59,13 @@ object CompilerService extends Controller {
   def saveCode     = genSaveAction   (modelFromCode,  codeMissingMsg)
   def saveNlogo    = genSaveAction   (modelFromNlogo, nlogoMissingMsg)
 
-  protected[controllers] type ModelMaker = (String, List[Widget]) => ModelResultV
-  protected[controllers] val modelFromURL:   ModelMaker = (url,   _)       =>
-    fetchURL(url) map (CompiledModel.fromNlogoContents(_))
-  protected[controllers] val modelFromCode:  ModelMaker = (code,  widgets) =>
+  protected[controllers] type ModelMaker = (String, List[Widget], String) => ModelResultV
+  protected[controllers] val modelFromURL: ModelMaker   = (url,   _, hostUri) =>
+    fetchURL(url, hostUri) map (CompiledModel.fromNlogoContents(_))
+  protected[controllers] val modelFromCode:  ModelMaker = (code,  widgets, _) =>
     CompiledModel.fromModel(Model(code, widgets)).successNel
-  protected[controllers] val modelFromNlogo: ModelMaker = (nlogo, _)       =>
+  protected[controllers] val modelFromNlogo: ModelMaker = (nlogo, _, _)       =>
     CompiledModel.fromNlogoContents(nlogo).successNel
-
 
   protected[controllers] def genCompileAction(compileModel: ModelMaker, missingModelMsg: String) =
     Action { implicit request =>
@@ -72,7 +74,7 @@ object CompilerService extends Controller {
       val responseV = for {
         widgets      <- parseWidgets(argMap.getOrElse("widgets", "[]"))
         modelStr     <- extractModelString(argMap, missingModelMsg)
-        modelResult  <- compileModel(modelStr, widgets)
+        modelResult  <- compileModel(modelStr, widgets, request.host)
         commands     <- getIDedStmtsV(argMap, commandsKey)
         reporters    <- getIDedStmtsV(argMap, reportersKey)
       } yield compile(modelResult, commands, reporters)
@@ -122,9 +124,9 @@ object CompilerService extends Controller {
       val argMap  = toStringMap(request.extractBundle)
       val bundleV =
         for {
-          modelStr    <- extractModelString(argMap, missingModelMsg) leftMap nelResult(BadRequest)
-          modelResult <- compileModel(modelStr, List())              leftMap nelResult(BadRequest)
-          model       <- modelResult                                 leftMap nelResult(InternalServerError)
+          modelStr    <- extractModelString(argMap, missingModelMsg)  leftMap nelResult(BadRequest)
+          modelResult <- compileModel(modelStr, List(), request.host) leftMap nelResult(BadRequest)
+          model       <- modelResult                                  leftMap nelResult(InternalServerError)
         } yield ModelSaver(model, generateTortoiseLiteJsUrls())
 
       bundleV.fold(
@@ -203,8 +205,13 @@ object CompilerService extends Controller {
   private def extractModelString(argMap: Map[String, String], missingMsg: String): ValidationNel[String, String] =
     (argMap get modelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
 
-  private def fetchURL(url: String): ValidationNel[String, String] = {
-    Try(new URL(url)) map {
+  private def fetchURL(url: String, hostUri: String): ValidationNel[String, String] = {
+    val locallyHostedRegex = new Regex(s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$", "file")
+    Try {
+      locallyHostedRegex.findFirstMatchIn(url).flatMap(m =>
+        Assets.resourceNameAt("/public", m.group("file")).flatMap(Play.resource)
+      ).getOrElse(new URL(url))
+    } map {
       wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel
     } recover {
       case _: MalformedURLException => s"'$url' is an invalid URL.".failureNel
