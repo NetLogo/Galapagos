@@ -6,15 +6,16 @@ import
 
 import
   play.api.libs.json.Json
+import models.ModelsLibrary
 
 import
-  models.core.ModelsLibrary.{ allModels, prettyFilepath }
+  ModelsLibrary.{ allModels, prettyFilepath }
 
 object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.application.index())
+      Ok(views.html.index())
   }
 
   def model(modelName: String) = {

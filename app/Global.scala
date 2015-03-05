@@ -10,8 +10,7 @@ import
     ExecutionContext.Implicits.global
 
 import
-  models.core.ModelsLibrary,
-  models.local.{ ModelCollectionCompiler, StatusCacher },
+  models.{ ModelCollectionCompiler, ModelsLibrary, StatusCacher },
     ModelCollectionCompiler.CheckBuiltInModels
 
 object Global extends GlobalSettings {

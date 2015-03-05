@@ -1,0 +1,46 @@
+@views.html.mainTheme {
+  <script type="text/javascript">
+      exports = {};
+      submitModelURL = function(modelURL) {
+          var submissionURL = location.protocol + "//" + location.host + "/assets/modelslib/" + encodeURI(modelURL);
+          $("#url-input").val(submissionURL);
+          $("td[name=nlogo-url-form]").submit();
+      };
+
+      bindTextFileChooserToFileInput = function(textFileChooser, fileInput) {
+        textFileChooser.on("click", function(e) { fileInput.click() });
+        fileInput.on("change", function(e) {
+            var fileName = e.currentTarget.files[0].name;
+            textFileChooser.val(fileName);
+        });
+      };
+
+      $(document).ready(function() {
+          var modelList = $('.model-list');
+          exports.bindModelChooser(modelList, submitModelURL);
+          bindTextFileChooserToFileInput($("#choose-file"), $("#file-input"));
+      })
+  </script>
+
+  <link rel="stylesheet" href='@routes.Assets.at("lib/chosen/chosen.css")' />
+  <script type="text/javascript" src='@routes.Assets.at("lib/chosen/chosen.jquery.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
+
+  <h3>Upload a Model</h3>
+  <form name="nlogo-file-form" enctype="multipart/form-data" action="/save-nlogo" method="POST">
+      <input id="choose-file" type="text" class="rounded text_input_margin" placeholder="Select a file..."/>
+      <input type="submit" value="Submit" class="btn">
+      <input id="file-input" type="file"  name="model" size="0" class="invisible" />
+  </form>
+
+  <br>
+  <h4>-OR-</h4>
+
+  <h3>Find a Built-In Model</h3>
+
+  <form name="nlogo-url-form" action="/save-url" method="POST">
+      <div class="model-list tortoise-model-list"></div>
+      <input id="url-input" placeholder="Model URL" type="text" name="model" class="rounded text_input_margin">
+      <input type="submit" value="Submit" class="btn">
+  </form>
+}

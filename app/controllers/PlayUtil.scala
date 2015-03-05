@@ -1,5 +1,7 @@
 package controllers
 
+import models.Util
+
 import
   scala.io.Codec
 
@@ -9,7 +11,7 @@ import
     mvc.{ AnyContent, Request }
 
 import
-  models.core.Util.{ noneIfEmpty, usingSource }
+  Util.{ noneIfEmpty, usingSource }
 
 object PlayUtil {
 

@@ -1,0 +1,87 @@
+.top_text {
+  font-size: medium;
+}
+
+.rounded {
+  border-radius: 10px;
+}
+
+.not_full_height {
+  height: 95%;
+  min-height: 95%;
+}
+
+.full_height {
+  height: 100%;
+  min-height: 100%;
+}
+
+.topbar .btn {
+  border: 0;
+}
+
+.topbar p {
+  color: #888;
+}
+
+.core_content_box {
+  width: 83%;
+}
+
+.content {
+  padding: 20px 20px 45px 20px;
+  margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  min-height: 100%;
+  height: 100%;
+}
+
+.contained {
+  height: 92%;
+  min-height: 92%;
+}
+
+.normal_font {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.monospace_font {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.invisible {
+  opacity:0;
+  width: 0;
+  z-index: -1;
+}
+
+.text_input_margin {
+  margin-top: 10px;
+  margin-right: 15px;
+}
+
+.chosen-container .chosen-results li.not_compiling, .chosen-container .chosen-results li.compiling, .chosen-container .chosen-results li.unknown {
+  background-repeat:   no-repeat;
+  background-size:     25px 25px;
+  background-position: 3px 2px;
+  padding-left:   35px;
+  padding-bottom: 7px;
+  padding-top:    7px;
+}
+
+li.not_compiling {
+  background-image: url('/assets/images/x.png') !important;
+}
+
+li.compiling {
+  background-image: url('/assets/images/check.png') !important;
+}
+
+li.unknown {
+  background-image: url('/assets/images/caution.png') !important;
+}
+
+.spacious-entry {
+  padding: 8px 8px;
+}

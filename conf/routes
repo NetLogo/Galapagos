@@ -7,15 +7,9 @@ GET        /                                   controllers.Application.index
 GET        /model/list.json                    controllers.Application.modelList
 GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 
-# Remote (Teletortoise)
-GET        /remote                             controllers.remote.Remote.index
-GET        /client                             controllers.remote.Remote.client(username: Option[String] ?= None)
-GET        /embedded                           controllers.remote.Remote.embedded
-GET        /connect                            controllers.remote.Remote.handleSocketConnection(username, room: Int ?= 0)
-
 # Local (Tortoise)
-GET        /create-standalone                  controllers.local.Local.createStandaloneTortoise
-GET        /tortoise                           controllers.local.Local.tortoise
+GET        /create-standalone                  controllers.Local.createStandaloneTortoise
+GET        /tortoise                           controllers.Local.tortoise
 
 # Compiler Service
 POST       /compile-url                        controllers.CompilerService.compileURL
@@ -33,8 +27,8 @@ GET        /save-nlogo                         controllers.CompilerService.saveN
 
 GET        /model/statuses.json                controllers.CompilerService.modelStatuses
 
-GET        /netlogo-engine.js                  controllers.local.Local.engine
-GET        /netlogo-agentmodel.js              controllers.local.Local.agentModel
+GET        /netlogo-engine.js                  controllers.Local.engine
+GET        /netlogo-agentmodel.js              controllers.Local.agentModel
 
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file                       controllers.Assets.at(path="/public", file)

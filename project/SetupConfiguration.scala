@@ -21,8 +21,7 @@ object SetupConfiguration {
   )
 
   private val paramsAndDefaults = Seq(
-    ("application.secret",            "the application's private encryption key",                                      None),
-    ("application.remote.killswitch", "if \"true\", stops Teletortoise rooms from running models when they are empty", Option("true"))
+    ("application.secret", "the application's private encryption key", None)
   )
 
   private val pureDefaults = Map(

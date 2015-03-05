@@ -1,0 +1,32 @@
+@(libsJs: String, js: String, css: String, widgets: String, nlogoCode: String, info: String)
+
+@clean(text: String) = @{
+  Html(text.map {
+    case '\n' => "\\n"
+    case '"'  => "\\\""
+    case x    => x
+  }.mkString)
+}
+
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="model-container"></div>
+    <style>
+      @Html(css)
+    </style>
+    <script type="text/javascript">
+      @Html(js)
+      var session =
+        (function () {
+          var widgets = @Html(widgets);
+          var code    = "@clean(nlogoCode)";
+          var info    = "@clean(info)";
+          return Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
+        })();
+      @Html(libsJs)
+      session.startLoop()
+    </script>
+  </body>
+</html>

@@ -1,9 +1,6 @@
 package controllers
 
 import
-  scala.io.Source
-
-import
   scalaz.{ Scalaz, NonEmptyList },
     Scalaz.ToValidationOps
 
@@ -22,7 +19,7 @@ import
   CompilerService._
 
 import
-  models.core.Util.usingSource
+  models.Util.usingSource
 
 class CompilerServiceTest extends PlaySpec {
 

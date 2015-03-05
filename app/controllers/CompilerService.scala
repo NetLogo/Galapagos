@@ -4,7 +4,8 @@ import
   java.net.{ MalformedURLException, URL }
 
 import
-  scala.util.{ Try, matching }, matching.Regex
+  scala.util.{ Try, matching },
+    matching.Regex
 
 import
   scalaz.{ NonEmptyList, Scalaz, Validation, ValidationNel },
@@ -21,29 +22,25 @@ import
       CompiledModel.CompileResult
 
 import
-  play.{utils, api},
-    utils.UriEncoding,
-    api.{ cache, libs, mvc, Play },
-      cache.Cache,
-      libs.json.{ Json, JsObject, Writes },
-        Json.toJsFieldJsValueWrapper,
-      Play.current,
-      mvc.{ Action, Controller, RequestHeader, Result }
+  play.api.{ cache, libs, mvc, Play },
+    cache.Cache,
+    libs.json.{ Json, JsObject, Writes },
+      Json.toJsFieldJsValueWrapper,
+    Play.current,
+    mvc.{ Action, Controller, RequestHeader, Result }
 
 
 import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ json, local => mlocal, core => mcore },
-    json.{CompileWrites, WidgetReads},
+  models.{ CompilationFailure, CompilationSuccess, CompiledWidget, json, ModelSaver, ModelsLibrary, StatusCacher, Util },
+    json.{ CompileWrites, WidgetReads },
       CompileWrites._,
       WidgetReads._,
-    mcore.{ ModelsLibrary, Util },
-      ModelsLibrary.prettyFilepath,
-      Util.usingSource,
-    mlocal.{ CompilationFailure, CompilationSuccess, CompiledWidget, ModelSaver, StatusCacher },
-      StatusCacher.AllBuiltInModelsCacheKey
+    ModelsLibrary.prettyFilepath,
+    Util.usingSource,
+    StatusCacher.AllBuiltInModelsCacheKey
 
 object CompilerService extends Controller {
 
@@ -119,7 +116,7 @@ object CompilerService extends Controller {
                             "stylesheets/classic.css",
                             "stylesheets/netlogo-syntax.css",
                             "lib/codemirror/lib/codemirror.css")
-      val css         = stylesheets map slurpURL mkString "\n"
+      val css = stylesheets map slurpURL mkString "\n"
 
       val argMap  = toStringMap(request.extractBundle)
       val bundleV =
@@ -131,7 +128,7 @@ object CompilerService extends Controller {
 
       bundleV.fold(
         identity,
-        bundle => Ok(views.html.local.standaloneTortoise(
+        bundle => Ok(views.html.standaloneTortoise(
           bundle.modelJs, bundle.libsJs, css, bundle.widgets, bundle.nlogoCode, bundle.info)
         )
       )
@@ -170,7 +167,7 @@ object CompilerService extends Controller {
         routes.Assets.at("lib/ractive/ractive.js"),
         routes.Assets.at("lib/codemirror/lib/codemirror.js"),
         routes.Assets.at("lib/codemirror/addon/mode/simple.js"),
-        local.routes.Local.engine
+        routes.Local.engine
       )
 
     val assetURLs =
@@ -187,7 +184,7 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/control/session-lite.js",
         "javascripts/plot/highchartsops.js"
       ) map (
-        controllers.routes.Assets.at(_)
+        routes.Assets.at(_)
       )
 
     (normalURLs ++ assetURLs) map (route => new URL(route.absoluteURL()))
