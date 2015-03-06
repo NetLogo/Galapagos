@@ -18,10 +18,11 @@ class window.SessionLite
 
   startLoop: ->
     @widgetController.updateWidgets()
+    if (startup) then Call(startup)
     requestAnimationFrame(@eventLoop)
 
   updateDelay: ->
-    speed       = @widgetController.speed()
+    speed = @widgetController.speed()
     if speed > 0
       speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
       DEFAULT_UPDATE_DELAY * (1 - speedFactor)
