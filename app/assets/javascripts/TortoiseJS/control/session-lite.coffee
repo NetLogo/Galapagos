@@ -95,6 +95,7 @@ window.Tortoise = {
     modelConfig.plotOps = widgetController.plotOps
     modelConfig.mouse = widgetController.mouse
     modelConfig.print = { write: widgetController.write }
+    modelConfig.output = widgetController.output
     globalEval(compiledSource)
     new SessionLite(widgetController)
 }

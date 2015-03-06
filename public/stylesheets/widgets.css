@@ -111,15 +111,22 @@
   display: -webkit-flex;
   flex-direction: column;
   -webkit-flex-direction: column;
+  height: 175px;
+  padding: 5px;
+}
+
+.netlogo-output-widget {
+  display: flex;
+  display: -webkit-flex;
   padding: 5px;
 }
 
 .netlogo-output-area {
   flex-grow: 1;
   -webkit-flex-grow: 1;
+  flex-direction: column;
+  -webkit-flex-direction: column;
   background-color: white;
-  height: 150px;
-  max-height: 150px;
   margin: 0px;
   overflow: auto;
 }
@@ -127,6 +134,8 @@
 .netlogo-command-center-input {
   display: flex;
   display: -webkit-flex;
+  flex-shrink: 0;
+  -webkit-flex-shrink: 0;
 }
 
 .netlogo-command-center-input input {

@@ -25,6 +25,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     info,
     readOnly,
     consoleOutput: '',
+    outputWidgetOutput: '',
     markdown: markdown.toHTML
   }
 
@@ -34,7 +35,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     partials:   partials,
     components: {
       editor: EditorWidget,
-      console: ConsoleWidget
+      console: ConsoleWidget,
+      outputArea: OutputArea
     },
     magic:      true,
     data:       model
@@ -42,6 +44,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
 
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
+
+  outputWidget = widgets.filter((w) -> w.type == 'output')[0]
 
   plotOps = createPlotOps(container, widgets)
   mouse = {
@@ -52,6 +56,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
   }
   write = (str) -> model.consoleOutput += str
 
+  output = {
+      write: (str) -> model.outputWidgetOutput += str
+      clear: -> model.outputWidgetOutput = ""
+  }
+
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgets[widgetNum]
     if world? and newVal != oldVal and isValidValue(widget, newVal)
@@ -61,11 +70,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     event.context.run()
   )
 
-  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write)
+  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output)
 
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write) ->
+  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output) ->
 
   # () -> Unit
   runForevers: ->
@@ -210,6 +219,7 @@ template =
         {{# type === 'monitor'            }} {{>monitor      }} {{/}}
         {{# type === 'inputBox'           }} {{>inputBox     }} {{/}}
         {{# type === 'plot'               }} {{>plot         }} {{/}}
+        {{# type === 'output'             }} {{>output       }} {{/}}
       {{/}}
     </div>
 
@@ -331,6 +341,12 @@ partials =
     """
     <div class="netlogo-widget netlogo-plot netlogo-plot-{{plotNumber}} netlogo-output"
          style="{{>dimensions}}"></div>
+    """
+  output:
+    """
+    <div class="netlogo-widget netlogo-output netlogo-output-widget" style="{{>dimensions}}">
+      <outputArea output="{{outputWidgetOutput}}"/>
+    </div>
     """
 
   literal:
