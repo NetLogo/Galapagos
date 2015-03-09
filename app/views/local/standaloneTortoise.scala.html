@@ -1,5 +1,13 @@
 @(libsJs: String, js: String, css: String, widgets: String, nlogoCode: String, info: String)
 
+@clean(text: String) = @{
+  Html(text.map {
+    case '\n' => "\\n"
+    case '"'  => "\\\""
+    case x    => x
+  }.mkString)
+}
+
 <html>
   <head>
   </head>
@@ -8,14 +16,14 @@
     <style>
       @Html(css)
     </style>
-    <script type="text/string" id="nlogo-code">@Html(nlogoCode)</script>
-    <script type="text/string" id="nlogo-info">@Html(info)</script>
     <script type="text/javascript">
       @Html(js)
-      var widgets = @Html(widgets);
-      var code    = document.querySelector("#nlogo-code").textContent;
-      var info    = document.querySelector("#nlogo-info").textContent;
-      var session = Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
+      (function () {
+          var widgets = @Html(widgets);
+          var code    = "@clean(nlogoCode)"
+          var info    = "@clean(info)"
+          var session = Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
+      })()
       @Html(libsJs)
       session.startLoop()
     </script>
