@@ -18,12 +18,13 @@
     </style>
     <script type="text/javascript">
       @Html(js)
-      (function () {
+      var session =
+        (function () {
           var widgets = @Html(widgets);
           var code    = "@clean(nlogoCode)"
           var info    = "@clean(info)"
-          var session = Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
-      })()
+          return Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
+        })()
       @Html(libsJs)
       session.startLoop()
     </script>
