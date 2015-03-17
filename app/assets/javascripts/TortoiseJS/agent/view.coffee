@@ -1,10 +1,8 @@
 class window.AgentStreamController
   constructor: (@container, fontSize) ->
-    @spotlightView = new SpotlightView(fontSize)
-    @turtleView = new TurtleView(fontSize)
-    @patchView = new PatchView(fontSize)
-    @layers = new LayerView(fontSize, [@patchView, @turtleView, @spotlightView])
-    @container.appendChild(@layers.canvas)
+    @view = new View(fontSize)
+    @turtleDrawer = new TurtleDrawer(@view)
+    @container.appendChild(@view.canvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -18,23 +16,21 @@ class window.AgentStreamController
 
   initMouseTracking: ->
     # Using spotlightView because it's on top. BCH 10/21/2014
-    @layers.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
+    @view.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
     document      .addEventListener('mouseup',   (e) => @mouseDown = false)
 
-    @layers.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
-    @layers.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
+    @view.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
+    @view.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
 
-    @layers.canvas.addEventListener('mousemove', (e) =>
-      rect = @layers.canvas.getBoundingClientRect()
-      @mouseXcor = @layers.xPixToPcor(e.clientX - rect.left)
-      @mouseYcor = @layers.yPixToPcor(e.clientY - rect.top)
+    @view.canvas.addEventListener('mousemove', (e) =>
+      rect = @view.canvas.getBoundingClientRect()
+      @mouseXcor = @view.xPixToPcor(e.clientX - rect.left)
+      @mouseYcor = @view.yPixToPcor(e.clientY - rect.top)
     )
 
   repaint: ->
-    @spotlightView.repaint(@model)
-    @turtleView.repaint(@model)
-    @patchView.repaint(@model)
-    @layers.repaint(@model)
+    @view.transformToWorld(@model.world)
+    @turtleDrawer.repaint(@model)
 
   applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -49,7 +45,7 @@ class View
     # Have size = 1 actually be patch-size pixels results in worse quality
     # for turtles. `quality` scales the number of pixels used. It should be as
     # small as possible as overly large canvases can crash computers
-    @quality = 1
+    @quality = 3
     @canvas = document.createElement('canvas')
     @canvas.class = 'netlogo-canvas'
     @canvas.width = 500
@@ -182,16 +178,9 @@ class SpotlightView extends View
       [xcor, ycor, size] = @dimensions(watched)
       @drawSpotlight(xcor, ycor,  @adjustSize(size))
 
-class TurtleView extends View
-  constructor: (fontSize) ->
-    super(fontSize)
+class TurtleDrawer
+  constructor: (@view) ->
     @drawer = new CachingShapeDrawer({})
-    # Using quality = 1 here results in very pixelated turtles when using the
-    # CachingShapeDrawer, something weird about the turtle image scaling.
-    # Higher quality here seems preserved even when the LayeredView is
-    # quality = 1.
-    # quality = 3 was arrived at empirically. I noticed no improvement after 3.
-    @quality = 3
 
   drawTurtle: (turtle, canWrapX, canWrapY) ->
     if not turtle['hidden?']
@@ -213,27 +202,30 @@ class TurtleView extends View
           @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
 
   drawTurtleAt: (turtle, xcor, ycor) ->
+    ctx = @view.ctx
     heading = turtle.heading
     scale = turtle.size
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
     shape = @drawer.shapes[shapeName] or defaultShape
-    @ctx.save()
-    @ctx.translate(xcor, ycor)
+    ctx.save()
+    ctx.translate(xcor, ycor)
     if shape.rotate
-      @ctx.rotate(angle)
+      ctx.rotate(angle)
     else
-      @ctx.rotate(Math.PI)
-    @ctx.scale(scale, scale)
-    @drawer.drawShape(@ctx, turtle.color, shapeName)
-    @ctx.restore()
-    @drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
+      ctx.rotate(Math.PI)
+    ctx.scale(scale, scale)
+    @drawer.drawShape(ctx, turtle.color, shapeName)
+    ctx.restore()
+    @view.drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
 
   drawLine: (x1,y1,x2,y2) ->
-    @ctx.moveTo(x1,y1)
-    @ctx.lineTo(x2,y2)
+    @view.ctx.moveTo(x1,y1)
+    @view.ctx.lineTo(x2,y2)
 
   drawLink: (link, turtles, canWrapX, canWrapY) ->
+    ctx = @view.ctx
+
     shouldWrapInDim = (canWrap, dimensionSize, cor1, cor2) ->
       distance = Math.abs(cor1 - cor2)
       canWrap and distance > dimensionSize / 2
@@ -249,10 +241,10 @@ class TurtleView extends View
       { xcor: e1x, ycor: e1y } = turtles[link.end1]
       { xcor: e2x, ycor: e2y } = turtles[link.end2]
 
-      wrapX = shouldWrapInDim(canWrapX, @patchWidth,  e1x, e2x)
-      wrapY = shouldWrapInDim(canWrapY, @patchHeight, e1y, e2y)
+      wrapX = shouldWrapInDim(canWrapX, @view.patchWidth,  e1x, e2x)
+      wrapY = shouldWrapInDim(canWrapY, @view.patchHeight, e1y, e2y)
 
-      if link.thickness is @onePixel
+      if link.thickness is @view.onePixel
         x1 = e1x
         x2 = e2x
         y1 = e1y
@@ -265,10 +257,12 @@ class TurtleView extends View
         [x1, x2] = adjustLinkEnds(e1x, e2x, Math.cos(theta), 180, 360)
         [y1, y2] = adjustLinkEnds(e1y, e2y, Math.sin(theta), 90,  270)
 
-      @ctx.strokeStyle = netlogoColorToCSS(link.color)
-      @ctx.lineWidth = if link.thickness > @onePixel then link.thickness else @onePixel
-      @ctx.beginPath()
+      ctx.strokeStyle = netlogoColorToCSS(link.color)
+      ctx.lineWidth = if link.thickness > @view.onePixel then link.thickness else @view.onePixel
+      ctx.beginPath()
 
+      patchWidth = @view.patchWidth
+      patchHeight = @view.patchHeight
       if wrapX and wrapY
         # Unnecessary lines are drawn here since we're not checking to see which
         # are actually on screen. However, browsers are better at these checks
@@ -278,55 +272,54 @@ class TurtleView extends View
         # are necessary in certain cases. -- BCH (3/30/2014)
         if x1 < x2
           if y1 < y2
-            @drawLine(x1, y1, x2 - @patchWidth, y2 - @patchHeight)
-            @drawLine(x1 + @patchWidth, y1, x2, y2 - @patchHeight)
-            @drawLine(x1 + @patchWidth, y1 + @patchHeight, x2, y2)
-            @drawLine(x1, y1 + @patchHeight, x2 - @patchWidth, y2)
+            @drawLine(x1, y1, x2 - patchWidth, y2 - patchHeight)
+            @drawLine(x1 + patchWidth, y1, x2, y2 - patchHeight)
+            @drawLine(x1 + patchWidth, y1 + patchHeight, x2, y2)
+            @drawLine(x1, y1 + patchHeight, x2 - patchWidth, y2)
           else
-            @drawLine(x1, y1, x2 - @patchWidth, y2 + @patchHeight)
-            @drawLine(x1 + @patchWidth, y1, x2, y2 + @patchHeight)
-            @drawLine(x1 + @patchWidth, y1 - @patchHeight, x2, y2)
-            @drawLine(x1, y1 - @patchHeight, x2 - @patchWidth, y2)
+            @drawLine(x1, y1, x2 - patchWidth, y2 + patchHeight)
+            @drawLine(x1 + patchWidth, y1, x2, y2 + patchHeight)
+            @drawLine(x1 + patchWidth, y1 - patchHeight, x2, y2)
+            @drawLine(x1, y1 - patchHeight, x2 - patchWidth, y2)
         else
           if y1 < y2
-            @drawLine(x1, y1, x2 + @patchWidth, y2 - @patchHeight)
-            @drawLine(x1 - @patchWidth, y1, x2, y2 - @patchHeight)
-            @drawLine(x1 - @patchWidth, y1 + @patchHeight, x2, y2)
-            @drawLine(x1, y1 + @patchHeight, x2 + @patchWidth, y2)
+            @drawLine(x1, y1, x2 + patchWidth, y2 - patchHeight)
+            @drawLine(x1 - patchWidth, y1, x2, y2 - patchHeight)
+            @drawLine(x1 - patchWidth, y1 + patchHeight, x2, y2)
+            @drawLine(x1, y1 + patchHeight, x2 + patchWidth, y2)
           else
-            @drawLine(x1, y1, x2 + @patchWidth, y2 + @patchHeight)
-            @drawLine(x1 - @patchWidth, y1, x2, y2 + @patchHeight)
-            @drawLine(x1 - @patchWidth, y1 - @patchHeight, x2, y2)
-            @drawLine(x1, y1 - @patchHeight, x2 + @patchWidth, y2)
+            @drawLine(x1, y1, x2 + patchWidth, y2 + patchHeight)
+            @drawLine(x1 - patchWidth, y1, x2, y2 + patchHeight)
+            @drawLine(x1 - patchWidth, y1 - patchHeight, x2, y2)
+            @drawLine(x1, y1 - patchHeight, x2 + patchWidth, y2)
       else if wrapX
         if x1 < x2
-          @drawLine(x1, y1, x2 - @patchWidth, y2)
-          @drawLine(x1 + @patchWidth, y1, x2, y2)
+          @drawLine(x1, y1, x2 - patchWidth, y2)
+          @drawLine(x1 + patchWidth, y1, x2, y2)
         else
-          @drawLine(x1, y1, x2 + @patchWidth, y2)
-          @drawLine(x1 - @patchWidth, y1, x2, y2)
+          @drawLine(x1, y1, x2 + patchWidth, y2)
+          @drawLine(x1 - patchWidth, y1, x2, y2)
       else if wrapY
         if y1 < y2
-          @drawLine(x1, y1, x2, y2 - @patchHeight)
-          @drawLine(x1, y1 + @patchHeight, x2, y2)
+          @drawLine(x1, y1, x2, y2 - patchHeight)
+          @drawLine(x1, y1 + patchHeight, x2, y2)
         else
-          @drawLine(x1, y1 - @patchHeight, x2, y2)
-          @drawLine(x1, y1, x2, y2 + @patchHeight)
+          @drawLine(x1, y1 - patchHeight, x2, y2)
+          @drawLine(x1, y1, x2, y2 + patchHeight)
       else
         @drawLine(x1, y1, x2, y2)
 
-    @ctx.stroke()
+    ctx.stroke()
 
   repaint: (model) ->
     world = model.world
     turtles = model.turtles
     links = model.links
-    @transformToWorld(world)
     if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
       @drawer = new CachingShapeDrawer(world.turtleshapelist)
     for id, link of links
       @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
-    @ctx.lineWidth = @onePixel
+    @view.ctx.lineWidth = @onePixel
     for id, turtle of turtles
       @drawTurtle(turtle, world.wrappingallowedinx, world.wrappingallowediny)
     return
