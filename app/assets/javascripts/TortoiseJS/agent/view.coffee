@@ -3,33 +3,8 @@ class window.AgentStreamController
     @spotlightView = new SpotlightView(fontSize)
     @turtleView = new TurtleView(fontSize)
     @patchView = new PatchView(fontSize)
-    @layers = document.createElement('div')
-    @layers.style.width = '100%'
-    @layers.style.position = 'relative'
-    @layers.classList.add('view-layers')
-    @container.appendChild(@layers)
-    # patchView must keep normal positioning so that it trying to maintain its
-    # aspect ratio forces the container to stay tall enough, thus maintaining
-    # flow with the rest of the page. Hence, we don't set its position
-    # 'absolute'
-    @spotlightView.canvas.style.position = 'absolute'
-    @spotlightView.canvas.style.top = '0px'
-    @spotlightView.canvas.style.left = '0px'
-    @spotlightView.canvas.style['z-index'] = 2
-    @spotlightView.canvas.classList.add('spotlight-view')
-    @turtleView.canvas.style.position = 'absolute'
-    @turtleView.canvas.style.top = '0px'
-    @turtleView.canvas.style.left = '0px'
-    @turtleView.canvas.style['z-index'] = 1
-    @turtleView.canvas.classList.add('turtle-view')
-    @patchView.canvas.style['z-index'] = 0
-    @patchView.canvas.classList.add('patch-view')
-# Note that Chrome gives elements with the highest z-index mouse events and
-# firefox gives elements with the later position in the DOM tree, so those
-# must correspond. - BCH 10/21/2014
-    @layers.appendChild(@patchView.canvas)
-    @layers.appendChild(@turtleView.canvas)
-    @layers.appendChild(@spotlightView.canvas)
+    @layers = new LayerView(fontSize, [@patchView, @turtleView, @spotlightView])
+    @container.appendChild(@layers.canvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -43,22 +18,23 @@ class window.AgentStreamController
 
   initMouseTracking: ->
     # Using spotlightView because it's on top. BCH 10/21/2014
-    @spotlightView.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
-    document             .addEventListener('mouseup',   (e) => @mouseDown = false)
+    @layers.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
+    document      .addEventListener('mouseup',   (e) => @mouseDown = false)
 
-    @spotlightView.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
-    @spotlightView.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
+    @layers.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
+    @layers.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
 
-    @spotlightView.canvas.addEventListener('mousemove', (e) =>
-      rect = @spotlightView.canvas.getBoundingClientRect()
-      @mouseXcor = @spotlightView.xPixToPcor(e.clientX - rect.left)
-      @mouseYcor = @spotlightView.yPixToPcor(e.clientY - rect.top)
+    @layers.canvas.addEventListener('mousemove', (e) =>
+      rect = @layers.canvas.getBoundingClientRect()
+      @mouseXcor = @layers.xPixToPcor(e.clientX - rect.left)
+      @mouseYcor = @layers.yPixToPcor(e.clientY - rect.top)
     )
 
   repaint: ->
     @spotlightView.repaint(@model)
     @turtleView.repaint(@model)
     @patchView.repaint(@model)
+    @layers.repaint(@model)
 
   applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -141,6 +117,19 @@ class View
   # Returns the agent being followed, or null.
   follow: (model) ->
     if model.observer.perspective == 2 then watch(model) else null
+
+
+class LayerView extends View
+  constructor: (@fontSize, @layers) ->
+    super(@fontSize)
+    @quality = Math.max.apply(null, (l.quality for l in @layers))
+
+  repaint: (model) ->
+    @transformToWorld(model.world)
+    @ctx.setTransform(1, 0, 0, 1, 0, 0) # Disable transform since we're drawing pixel data
+    for view in @layers
+      @ctx.drawImage(view.canvas, 0, 0, @canvas.width, @canvas.height)
+
 
 class SpotlightView extends View
   # Names and values taken from org.nlogo.render.SpotlightDrawer
@@ -366,13 +355,14 @@ class PatchView extends View
     @scratchCanvas.width = @patchWidth
     @scratchCanvas.height = @patchHeight
     # Prevents antialiasing when scratchCanvas is stretched and drawn on canvas
-    @ctx.imageSmoothingEnabled=false;
+    @ctx.imageSmoothingEnabled=false
     # Althought imageSmoothingEnabled is in spec, I've seen it break from
     # version to version in browsers. These browser-specific flags seem to
     # work more reliably.
-    @ctx.webkitImageSmoothingEnabled = false;
-    @ctx.mozImageSmoothingEnabled = false;
-    @ctx.oImageSmoothingEnabled = false;
+    @ctx.webkitImageSmoothingEnabled = false
+    @ctx.mozImageSmoothingEnabled = false
+    @ctx.oImageSmoothingEnabled = false
+    @ctx.msImageSmoothingEnabled = false
     @ctx.fillStyle = 'black'
     @ctx.fillRect(@minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
 
