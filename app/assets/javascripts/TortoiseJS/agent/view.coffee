@@ -2,6 +2,8 @@ class window.AgentStreamController
   constructor: (@container, fontSize) ->
     @view = new View(fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
+    @patchDrawer = new PatchDrawer(@view)
+    @spotlightDrawer = new SpotlightDrawer(@view)
     @container.appendChild(@view.canvas)
 
     @mouseDown   = false
@@ -30,7 +32,9 @@ class window.AgentStreamController
 
   repaint: ->
     @view.transformToWorld(@model.world)
+    @patchDrawer.repaint(@model)
     @turtleDrawer.repaint(@model)
+    @spotlightDrawer.repaint(@model)
 
   applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -42,10 +46,6 @@ class window.AgentStreamController
 
 class View
   constructor: (@fontSize) ->
-    # Have size = 1 actually be patch-size pixels results in worse quality
-    # for turtles. `quality` scales the number of pixels used. It should be as
-    # small as possible as overly large canvases can crash computers
-    @quality = 3
     @canvas = document.createElement('canvas')
     @canvas.class = 'netlogo-canvas'
     @canvas.width = 500
@@ -53,15 +53,8 @@ class View
     @canvas.style.width = "100%"
     @ctx = @canvas.getContext('2d')
 
-  matchesWorld: (world) ->
-    (@maxpxcor? and @minpxcor? and @maxpycor? and @minpycor? and @patchsize?) and
-      (not world.maxpxcor? or world.maxpxcor == @maxpxcor) and
-      (not world.minpxcor? or world.minpxcor == @minpxcor) and
-      (not world.maxpycor? or world.maxpycor == @maxpycor) and
-      (not world.minpycor? or world.minpycor == @minpycor) and
-      (not world.patchsize? or world.patchsize == @patchsize)
-
   transformToWorld: (world) ->
+    quality = if window.devicePixelRatio? then window.devicePixelRatio else 1
     @maxpxcor = if world.maxpxcor? then world.maxpxcor else 25
     @minpxcor = if world.minpxcor? then world.minpxcor else -25
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
@@ -70,14 +63,19 @@ class View
     @onePixel = 1/@patchsize  # The size of one pixel in patch coords
     @patchWidth = @maxpxcor - @minpxcor + 1
     @patchHeight = @maxpycor - @minpycor + 1
-    @canvas.width =  @patchWidth * @patchsize * @quality
-    @canvas.height = @patchHeight * @patchsize * @quality
+    @canvas.width =  @patchWidth * @patchsize * quality
+    @canvas.height = @patchHeight * @patchsize * quality
     # Argument rows are the matrix columns. See spec.
     @ctx.setTransform(@canvas.width/@patchWidth, 0,
                       0, -@canvas.height/@patchHeight,
                       -(@minpxcor-.5)*@canvas.width/@patchWidth,
                       (@maxpycor+.5)*@canvas.height/@patchHeight)
     @ctx.font = @fontSize + 'px "Lucida Grande", sans-serif'
+    @ctx.imageSmoothingEnabled = false
+    @ctx.webkitImageSmoothingEnabled = false
+    @ctx.mozImageSmoothingEnabled = false
+    @ctx.oImageSmoothingEnabled = false
+    @ctx.msImageSmoothingEnabled = false
 
   xPixToPcor: (x) -> @minpxcor - .5 + @patchWidth * x / @canvas.offsetWidth
   yPixToPcor: (y) -> @maxpycor + .5 - @patchHeight * y / @canvas.offsetHeight
@@ -115,53 +113,44 @@ class View
     if model.observer.perspective == 2 then watch(model) else null
 
 
-class LayerView extends View
-  constructor: (@fontSize, @layers) ->
-    super(@fontSize)
-    @quality = Math.max.apply(null, (l.quality for l in @layers))
+class SpotlightDrawer
+  constructor: (@view) ->
 
-  repaint: (model) ->
-    @transformToWorld(model.world)
-    @ctx.setTransform(1, 0, 0, 1, 0, 0) # Disable transform since we're drawing pixel data
-    for view in @layers
-      @ctx.drawImage(view.canvas, 0, 0, @canvas.width, @canvas.height)
-
-
-class SpotlightView extends View
   # Names and values taken from org.nlogo.render.SpotlightDrawer
   dimmed: "rgba(0, 0, 50, #{ 100 / 255 })"
   spotlightInnerBorder: "rgba(200, 255, 255, #{ 100 / 255 })"
   spotlightOuterBorder: "rgba(200, 255, 255, #{ 50 / 255 })"
   clear: 'white'  # for clearing with 'destination-out' compositing
 
-  outer: -> 10 / @patchsize
-  middle: -> 8 / @patchsize
-  inner: -> 4 / @patchsize
+  outer: -> 10 / @view.patchsize
+  middle: -> 8 / @view.patchsize
+  inner: -> 4 / @view.patchsize
 
-  drawCircle: (x, y, diam, color) ->
-    @ctx.fillStyle = color
-    @ctx.beginPath()
-    @ctx.arc(x, y, diam / 2, 0, 2 * Math.PI)
-    @ctx.fill()
+  drawCircle: (x, y, innerDiam, outerDiam, color) ->
+    ctx = @view.ctx
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.arc(x, y, outerDiam / 2, 0, 2 * Math.PI)
+    ctx.arc(x, y, innerDiam / 2, 0, 2 * Math.PI, true)
+    ctx.fill()
 
   drawSpotlight: (x, y, size) ->
-    @ctx.lineWidth = @onePixel
-    @ctx.globalCompositeOperation = 'source-over'
-    @ctx.fillStyle = @dimmed
-    @ctx.fillRect(@minpxcor - 0.5, @minpycor - 0.5, @patchWidth, @patchHeight)
+    ctx = @view.ctx
+    ctx.lineWidth = @view.onePixel
 
-    @ctx.globalCompositeOperation = 'destination-out'
-    @drawCircle(x, y, size + @outer(), @clear)
+    ctx.beginPath()
+    # Draw arc anti-clockwise so that it's subtracted from the fill. See the
+    # fill() documentation and specifically the "nonzero" rule. BCH 3/17/2015
+    ctx.arc(x, y, (size + @outer()) / 2, 0, 2 * Math.PI, true)
+    ctx.rect(@view.minpxcor - 0.5, @view.minpycor - 0.5, @view.patchWidth, @view.patchHeight)
+    ctx.fillStyle = @dimmed
+    ctx.fill()
 
-    @ctx.globalCompositeOperation = 'source-over'
-    @drawCircle(x, y, size + @outer(), @dimmed)
-    @drawCircle(x, y, size + @middle(), @spotlightOuterBorder)
-    @drawCircle(x, y, size + @inner(), @spotlightInnerBorder)
+    @drawCircle(x, y, size, size + @outer(), @dimmed)
+    @drawCircle(x, y, size, size + @middle(), @spotlightOuterBorder)
+    @drawCircle(x, y, size, size + @inner(), @spotlightInnerBorder)
 
-    @ctx.globalCompositeOperation = 'destination-out'
-    @drawCircle(x, y, size, @clear)
-
-  adjustSize: (size) -> Math.max(size, @patchWidth / 16, @patchHeight / 16)
+  adjustSize: (size) -> Math.max(size, @view.patchWidth / 16, @view.patchHeight / 16)
 
   dimensions: (agent) ->
     if agent.xcor?
@@ -172,8 +161,7 @@ class SpotlightView extends View
       [agent.midpointx, agent.midpointy, agent.size]
 
   repaint: (model) ->
-    @transformToWorld(model.world)
-    watched = @watch(model)
+    watched = @view.watch(model)
     if watched?
       [xcor, ycor, size] = @dimensions(watched)
       @drawSpotlight(xcor, ycor,  @adjustSize(size))
@@ -328,40 +316,22 @@ class TurtleDrawer
 # are colored accordingly. Then, the scratchCanvas is drawn onto the main
 # canvas scaled. This is very, very fast. It also prevents weird lines between
 # patches.
-# An alternative (and superior) method would be to make the main canvas have
-# a pixel per patch and directly manipulate it. Then, use CSS to scale to the
-# proper size. Unfortunately, CSS scaling introduces antialiasing, making the
-# patches look blurred. An option to disable this antialiasing is coming in
-# CSS4: image-rendering. Firefox currently supports it. Chrome did (with a
-# nonstandard value), but no longer does.
-# You can read about it here:
-# https://developer.mozilla.org/en-US/docs/Web/CSS/image-rendering
-class PatchView extends View
-  constructor: (fontSize) ->
-    super(fontSize)
+class PatchDrawer
+  constructor: (@view) ->
     @scratchCanvas = document.createElement('canvas')
     @scratchCtx = @scratchCanvas.getContext('2d')
-    @quality = 2 # Avoids antialiasing somewhat when image is stretched.
-
-  transformToWorld: (world) ->
-    super(world)
-    @scratchCanvas.width = @patchWidth
-    @scratchCanvas.height = @patchHeight
-    # Prevents antialiasing when scratchCanvas is stretched and drawn on canvas
-    @ctx.imageSmoothingEnabled=false
-    # Althought imageSmoothingEnabled is in spec, I've seen it break from
-    # version to version in browsers. These browser-specific flags seem to
-    # work more reliably.
-    @ctx.webkitImageSmoothingEnabled = false
-    @ctx.mozImageSmoothingEnabled = false
-    @ctx.oImageSmoothingEnabled = false
-    @ctx.msImageSmoothingEnabled = false
-    @ctx.fillStyle = 'black'
-    @ctx.fillRect(@minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
 
   colorPatches: (patches) ->
-    imageData = @ctx.createImageData(@patchWidth,@patchHeight)
-    numPatches = ((@maxpycor-@minpycor)*@patchWidth + (@maxpxcor-@minpxcor)) * 4
+    width = @view.patchWidth
+    height = @view.patchHeight
+    minX = @view.minpxcor
+    maxX = @view.maxpxcor
+    minY = @view.minpycor
+    maxY = @view.maxpycor
+    @scratchCanvas.width = width
+    @scratchCanvas.height = height
+    imageData = @scratchCtx.createImageData(width,height)
+    numPatches = ((maxY - minY)*width + (maxX - minX)) * 4
     for i in [0...numPatches]
       patch = patches[i]
       if patch?
@@ -373,26 +343,25 @@ class PatchView extends View
         imageData.data[j+3] = 255
     @scratchCtx.putImageData(imageData, 0, 0)
     # translate so scale flips the image at the right point
-    trans = @minpycor + @maxpycor
-    @ctx.translate(0, trans)
-    @ctx.scale(1,-1)
-    @ctx.drawImage(@scratchCanvas, @minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
-    @ctx.scale(1,-1)
-    @ctx.translate(0, -trans)
+    trans = minY + maxY
+    ctx = @view.ctx
+    ctx.translate(0, trans)
+    ctx.scale(1,-1)
+    ctx.drawImage(@scratchCanvas, minX - .5, minY - .5, width, height)
+    ctx.scale(1,-1)
+    ctx.translate(0, -trans)
 
   labelPatches: (patches) ->
     for ignore, patch of patches
-      @drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
+      @view.drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
 
   clearPatches: ->
-    @ctx.fillStyle = "black"
-    @ctx.fillRect(@minpxcor - .5, @minpycor - .5, @patchWidth, @patchHeight)
+    @view.ctx.fillStyle = "black"
+    @view.ctx.fillRect(@view.minpxcor - .5, @view.minpycor - .5, @view.patchWidth, @view.patchHeight)
 
   repaint: (model) ->
     world = model.world
     patches = model.patches
-    if not @matchesWorld(world)
-      @transformToWorld(world)
     if world.patchesallblack
       @clearPatches()
     else
