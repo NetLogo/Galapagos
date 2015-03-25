@@ -1,4 +1,3 @@
-# opt-in to Travis new container-based infrastructure
 sudo: false
 
 # cache stuff, hopefully shortening build times
@@ -16,3 +15,10 @@ script:
   - "sbt scalastyle"
   - "sbt coffeelint"
   - "sbt test"
+after_success:
+  - sbt scrapePlay
+  - sbt scrapeUpload
+env:
+  global:
+  - secure: YOyMd40Hk0Cm6JkgP8ABQw3NfN6T/TG8Kl3GOINBEdfgVlAvXDxelwbAmssYYr2Er78Qi6fn22VmcOmjW04fPJCIXknPJLFTSFP+SSmYhHKbyehvLfuNu2dNk3vh3YNfHFFdhYXpQW16P0byVJfrLuXhYItlzcGvNhtLlDJivvQ=
+  - secure: HDQvD4RqBSrDZIMIJgZ5atjFyZiwSDBFwWq1G9JAMfWE4NFdQkSFL9tdCLTRlrwZWnEyajByVLQznsR3JzZly01DoizTfrSXsXYATli99U2+9UOb+vUR3y6rk6KYWe3RsIr+i46yeEk7b0Yozrpssb4iUgk8drThHFSvmHr3emo=

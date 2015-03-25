@@ -1,5 +1,7 @@
 import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
 
+import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
+
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -17,7 +19,7 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
 val tortoiseVersion = "0.1-0aff5c0"
 
@@ -61,3 +63,34 @@ includeFilter in autoprefixer := Def.setting {
 }.value
 
 routesGenerator := InjectedRoutesGenerator
+
+scrapeRoutes ++= Seq("/create-standalone", "/tortoise", "/model/list.json", "/model/statuses.json", "/netlogo-engine.js", "/netlogo-agentmodel.js", "/netlogoweb.js")
+
+scrapeDelay := 20
+
+scrapePublishCredential <<= Def.settingDyn {
+  if (System.getenv("TRAVIS") == "true")
+    Def.setting { fromEnvironmentVariables }
+  else
+    // Requires setting up a credentials profile, ask Robert for more details
+    Def.setting { fromCredentialsProfile("NetLogoWebAdmin") }
+}
+
+
+scrapePublishBucketID <<= Def.settingDyn {
+  val branchDeploy = Map("wip-static-site" -> "sample-cdn")
+
+  if (System.getenv("TRAVIS") == "true")
+    Def.setting { branchDeploy.get(System.getenv("TRAVIS_BRANCH")) }
+  else
+    Def.setting { branchDeploy.get("wip-static-site") }
+}
+
+scrapePublishDistributionID <<= Def.settingDyn {
+  val branchPublish = Map("wip-static-site" -> "E3864GFW54OVD0")
+
+  if (System.getenv("TRAVIS") == "true")
+    Def.setting { branchPublish.get(System.getenv("TRAVIS_BRANCH")) }
+  else
+    Def.setting { branchPublish.get("wip-static-site") }
+}
