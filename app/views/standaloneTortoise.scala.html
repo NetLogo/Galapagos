@@ -4,6 +4,7 @@
   Html(text.map {
     case '\n' => "\\n"
     case '"'  => "\\\""
+    case '\\' => "\\\\"
     case x    => x
   }.mkString)
 }
