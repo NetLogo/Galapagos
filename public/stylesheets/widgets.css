@@ -9,6 +9,7 @@
 .netlogo-header {
     display: flex;
     flex-flow: row;
+    align-items: baseline;
 }
 
 .netlogo-widget {
@@ -117,7 +118,11 @@
     margin-right: 10px;
     flex: auto;
     display: flex;
-    align-items: center;
+    align-items: baseline;
+}
+
+.netlogo-widget input[type=range]::-ms-tooltip {
+  display: none;
 }
 
 .netlogo-speed-slider input {
