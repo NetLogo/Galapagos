@@ -33,3 +33,5 @@ resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
 resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
 resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
+
+pipelineStages in Assets := Seq(autoprefixer)

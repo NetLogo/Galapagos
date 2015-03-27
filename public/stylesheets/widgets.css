@@ -1,22 +1,14 @@
-/* Just to be perfectly clear, all the -webkit- stuff for flexbox is all for
-   Safari. Once they get their act together, it should be removed.
-   BCH 11/14/2014 */
-
 .netlogo-model {
     border: 2px solid black;
     border-radius: 20px;
     display: flex;
-    display: -webkit-flex;
     padding: 20px;
     flex-flow: column;
-    -webkit-flex-flow: column;
 }
 
 .netlogo-header {
     display: flex;
-    display: -webkit-flex;
     flex-flow: row;
-    -webkit-flex-flow: row;
 }
 
 .netlogo-widget {
@@ -29,11 +21,6 @@
 }
 
 .netlogo-command,.netlogo-input {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
@@ -45,11 +32,8 @@
 .netlogo-tabs {
     margin-top: 20px;
     display: flex;
-    display: -webkit-flex;
     flex-flow: row;
-    -webkit-flex-flow: row;
     justify-content: space-around;
-    -webkit-justify-content: space-around;
 }
 
 .netlogo-tab {
@@ -71,25 +55,19 @@
 
 .netlogo-model-text {
     display: flex;
-    display: -webkit-flex;
     flex-flow: row;
-    -webkit-flex-flow: row;
     background-color: white;
 }
 
 .netlogo-code-container {
     flex: 1;
-    -webkit-flex: 1;
     display: flex;
-    display: -webkit-flex;
     flex-flow: column;
-    -webkit-flex-flow: column;
     background-color: white;
     margin: 10px;
 }
 .netlogo-code {
     flex: 1;
-    -webkit-flex: 1;
     font-family: monospace;
     overflow-x: scroll;
     border: inset;
@@ -100,32 +78,25 @@
 
 .netlogo-info {
     flex: 1;
-    -webkit-flex: 1;
     margin: 10px;
 }
 
 .netlogo-command-center {
   flex: 1;
-  -webkit-flex: 1;
   display: flex;
-  display: -webkit-flex;
   flex-direction: column;
-  -webkit-flex-direction: column;
   height: 175px;
   padding: 5px;
 }
 
 .netlogo-output-widget {
   display: flex;
-  display: -webkit-flex;
   padding: 5px;
 }
 
 .netlogo-output-area {
   flex-grow: 1;
-  -webkit-flex-grow: 1;
   flex-direction: column;
-  -webkit-flex-direction: column;
   background-color: white;
   margin: 0px;
   overflow: auto;
@@ -133,14 +104,11 @@
 
 .netlogo-command-center-input {
   display: flex;
-  display: -webkit-flex;
   flex-shrink: 0;
-  -webkit-flex-shrink: 0;
 }
 
 .netlogo-command-center-input input {
   flex-grow: 1;
-  -webkit-flex-grow: 1;
 }
 
 .netlogo-speed-slider {
@@ -148,30 +116,22 @@
     border: none;
     margin-right: 10px;
     flex: auto;
-    -webkit-flex: auto;
     display: flex;
-    display: -webkit-flex;
     align-items: center;
-    -webkit-align-items: center;
 }
 
 .netlogo-speed-slider input {
     border: none;
     flex: auto;
-    -webkit-flex: auto;
 }
 
 .netlogo-model input[type=range] {
     cursor: pointer;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
     cursor: grab;
 }
 
 .netlogo-model input[type=range]:active {
     cursor: pointer;
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
     cursor: grabbing;
 }
 
@@ -185,16 +145,13 @@
 .netlogo-button {
     border: inherit;
     display: flex;
-    display: -webkit-flex;
-    justify-content: center;
-    -webkit-justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    -webkit-align-items: center;
     padding: 0px;
 }
 
 .netlogo-button > span {
-    /* For some reason, Safari doesn't like -webkit-justify-content in buttons,
+    /* For some reason, Safari doesn't like justify-content in buttons,
        we have to resort to putting a span in the button that can then be
        centered.
        BCH 11/14/2014 */
@@ -220,9 +177,7 @@
 
 .netlogo-switcher {
     display: flex;
-    display: -webkit-flex;
     align-items: center;
-    -webkit-align-items: center;
 }
 
 .netlogo-slider {
@@ -268,11 +223,8 @@
 .netlogo-monitor {
     padding: 2px 4px;
     display: flex;
-    display: -webkit-flex;
     flex-flow: column;
-    -webkit-flex-flow: column;
     justify-content: space-around;
-    -webkit-justify-content: space-around;
 }
 
 .netlogo-monitor > .netlogo-value {
@@ -287,21 +239,15 @@
 .netlogo-input-box {
     padding: 2px 4px;
     display: flex;
-    display: -webkit-flex;
     flex-flow: column;
-    -webkit-flex-flow: column;
     justify-content: space-around;
-    -webkit-justify-content: space-around;
 }
 
 .netlogo-chooser {
     padding: 2px 4px;
     display: flex;
-    display: -webkit-flex;
     flex-flow: column;
-    -webkit-flex-flow: column;
     justify-content: space-around;
-    -webkit-justify-content: space-around;
 }
 
 .netlogo-plot {

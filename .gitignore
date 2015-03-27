@@ -9,6 +9,7 @@
 /.ensime_lucene/
 /.idea
 /logs/
+/node_modules/
 managed/
 project/project/
 target/

@@ -11,3 +11,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
 // get warnings when compiling build definition
 scalacOptions += "-feature"
+
+lazy val root = project.in(file(".")).dependsOn(sbtAutoprefixer)
+lazy val sbtAutoprefixer = uri("git://github.com/matthewrennie/sbt-autoprefixer")
