@@ -26,6 +26,7 @@ POST       /save-code                          controllers.CompilerService.saveC
 GET        /save-code                          controllers.CompilerService.saveCode
 POST       /save-nlogo                         controllers.CompilerService.saveNlogo
 GET        /save-nlogo                         controllers.CompilerService.saveNlogo
+GET        /netlogoweb.js                      controllers.CompilerService.netLogoWeb
 
 GET        /model/statuses.json                controllers.CompilerService.modelStatuses
 

@@ -36,11 +36,9 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
           val (firstResult, firstResultBody) = await(makeRequest("POST", "/compile-nlogo", "model" -> modelText))
           firstResult.header.status mustEqual 200
 
-          val fields = sanitizedJsonModel(firstResultBody, "turtleShapes", "linkShapes")
+          val fields = sanitizedJsonModel(firstResultBody, "turtleShapes", "linkShapes") - "model"
 
-          val renamedFields = fields + ("model" -> fields("code"))
-
-          val (secondResult, secondResultBody) = await(makeRequest("POST", "/compile-code", renamedFields.toSeq: _*))
+          val (secondResult, secondResultBody) = await(makeRequest("POST", "/compile-code", fields.toSeq: _*))
           secondResult.header.status mustEqual 200
           secondResultBody mustEqual firstResultBody
         }

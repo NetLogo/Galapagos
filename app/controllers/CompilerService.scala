@@ -36,6 +36,7 @@ private[controllers] object CompilerService {
   type ArgMap       = Map[String, String]
   type ModelResultV = ValidationNel[String, CompileResult[CompiledModel]]
 
+  val CodeKey      = "code"
   val CommandsKey  = "commands"
   val ModelKey     = "model"
   val ReportersKey = "reporters"
@@ -86,7 +87,7 @@ private[controllers] object CompilationRequestHandler {
       widgets      <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
       turtleShapes <- extractShapes[VectorShape]("turtleShapes", readVectorShapes, Model.defaultShapes    )(argMap)
       linkShapes   <- extractShapes[LinkShape](  "linkShapes",   readLinkShapes,   Model.defaultLinkShapes)(argMap)
-      code         <- extractModelString(argMap, codeMissingMsg)
+      code         <- (argMap get CodeKey).fold(codeMissingMsg.failureNel[String])(_.successNel[String])
       model        <- Validation.fromTryCatchThrowable[Model, RuntimeException](
         Model(code, widgets, info = info, turtleShapes = turtleShapes, linkShapes = linkShapes))
         .leftMap(e => NonEmptyList(e.getMessage))
@@ -116,7 +117,7 @@ private[controllers] object CompilationRequestHandler {
     (argMap get ModelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
 
   private val urlMissingMsg   = s"You must provide a `$ModelKey` parameter that contains the URL of an nlogo file."
-  private val codeMissingMsg  = s"You must provide a `$ModelKey` parameter that contains the code from a NetLogo model."
+  private val codeMissingMsg  = s"You must provide a `$CodeKey` parameter that contains the code from a NetLogo model."
   private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
 
   private def extractShapes[T](key: String, parseShapes: TortoiseJson => ValidationNel[String, Seq[T]], default: List[T])
@@ -142,7 +143,11 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
       tortoise.CompiledModel
 
   import
-    play.api.mvc.{ Action, AnyContent, Result }
+    play.api.{ libs, mvc },
+      libs.{ concurrent, iteratee },
+        iteratee.Enumerator,
+        concurrent.Execution.Implicits.defaultContext,
+      mvc.{ Action, AnyContent, ResponseHeader, Result }
 
   import
     CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl, ModelObject, ModelResult, ModelText }
@@ -156,6 +161,14 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
   def saveURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   saveResult)
   def saveCode:  Action[AnyContent] = genCompileAction(generateFromCode,  saveResult)
   def saveNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
+
+  def netLogoWeb: Action[AnyContent] = Action {
+    Play.resourceAsStream("tortoise.js").map(tortoiseJs =>
+      Result(
+        header = ResponseHeader(OK, Map(CONTENT_TYPE -> "text/javascript")),
+        body   = Enumerator.fromStream(tortoiseJs)
+      )).getOrElse(NotFound)
+  }
 
   private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
     Action { implicit request =>
@@ -283,6 +296,7 @@ private[controllers] trait RequestResultGenerator {
 
     val webjarURLs =
       Seq(
+        "lib/filesaver.js/FileSaver.js",
         "lib/markdown-js/markdown.js",
         "lib/highcharts/adapters/standalone-framework.js",
         "lib/highcharts/highcharts.js",
