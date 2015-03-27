@@ -68,7 +68,7 @@
     margin: 10px;
 }
 .netlogo-code {
-    flex: 1;
+    flex: 1 1 auto;
     font-family: monospace;
     overflow-x: scroll;
     border: inset;
