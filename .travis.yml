@@ -2,7 +2,5 @@ jdk: oraclejdk8
 language: scala
 scala:
   - 2.11.6
-before_script:
-  - cp conf/travis.conf conf/application.conf
 script:
   - "sbt test"

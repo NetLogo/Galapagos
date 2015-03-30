@@ -8,7 +8,6 @@
 /.ensime
 /.ensime_lucene/
 /.idea
-/conf/application.conf
 /logs/
 managed/
 project/project/
