@@ -85,3 +85,35 @@ li.unknown {
 .spacious-entry {
   padding: 8px 8px;
 }
+
+
+
+/*
+
+ Flexbox stuff
+
+ Much of this could be inlined in styles, but we do this to allow the autoprefixer access to it --JAB 3/30/15
+
+ */
+
+.dynamic-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.dynamic-column-holder {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.flex3 {
+  flex: 3;
+}
