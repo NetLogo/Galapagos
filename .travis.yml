@@ -1,7 +1,7 @@
 jdk: oraclejdk8
 language: scala
 scala:
-  - 2.10.4
+  - 2.11.6
 before_script:
   - cp conf/travis.conf conf/application.conf
 script:
