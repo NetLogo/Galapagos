@@ -36,7 +36,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
     components: {
       editor: EditorWidget,
       console: ConsoleWidget,
-      outputArea: OutputArea
+      outputArea: OutputArea,
+      infotab: InfoTabWidget
     },
     magic:      true,
     data:       model
@@ -249,7 +250,7 @@ template =
         <editor code='{{code}}' readOnly='{{readOnly}}' />
       {{/}}
       {{#showInfo}}
-        <div class="netlogo-info">{{{markdown(info)}}}</div>
+        <infotab rawText='{{info}}' editing='false' />
       {{/}}
     </div>
   </div>
