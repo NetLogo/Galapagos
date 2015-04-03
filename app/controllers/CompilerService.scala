@@ -175,6 +175,7 @@ object CompilerService extends Controller {
         "javascripts/TortoiseJS/agent/colors.js",
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",
+        "javascripts/TortoiseJS/agent/linkdrawer.js",
         "javascripts/TortoiseJS/agent/view.js",
         "javascripts/TortoiseJS/agent/editor.js",
         "javascripts/TortoiseJS/agent/info.js",
