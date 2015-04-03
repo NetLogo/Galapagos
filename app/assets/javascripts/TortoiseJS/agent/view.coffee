@@ -60,7 +60,7 @@ class View
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
     @patchsize = if world.patchsize? then world.patchsize else 9
-    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
+    @onePixel = 1 / @patchsize  # The size of one pixel in patch coords
     @patchWidth = @maxpxcor - @minpxcor + 1
     @patchHeight = @maxpycor - @minpycor + 1
     @canvas.width =  @patchWidth * @patchsize * quality
@@ -168,7 +168,8 @@ class SpotlightDrawer
 
 class TurtleDrawer
   constructor: (@view) ->
-    @drawer = new CachingShapeDrawer({})
+    @turtleShapeDrawer = new CachingShapeDrawer({})
+    @linkDrawer = new LinkDrawer(@view, {})
 
   drawTurtle: (turtle, canWrapX, canWrapY) ->
     if not turtle['hidden?']
@@ -195,7 +196,7 @@ class TurtleDrawer
     scale = turtle.size
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
-    shape = @drawer.shapes[shapeName] or defaultShape
+    shape = @turtleShapeDrawer.shapes[shapeName] or defaultShape
     ctx.save()
     ctx.translate(xcor, ycor)
     if shape.rotate
@@ -203,108 +204,21 @@ class TurtleDrawer
     else
       ctx.rotate(Math.PI)
     ctx.scale(scale, scale)
-    @drawer.drawShape(ctx, turtle.color, shapeName)
+    @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName)
     ctx.restore()
     @view.drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
 
-  drawLine: (x1,y1,x2,y2) ->
-    @view.ctx.moveTo(x1,y1)
-    @view.ctx.lineTo(x2,y2)
-
-  drawLink: (link, turtles, canWrapX, canWrapY) ->
-    ctx = @view.ctx
-
-    shouldWrapInDim = (canWrap, dimensionSize, cor1, cor2) ->
-      distance = Math.abs(cor1 - cor2)
-      canWrap and distance > dimensionSize / 2
-
-    adjustLinkEnds = (end1Cor, end2Cor, trigShift, minForExtending, maxForExtending) ->
-      diff = Math.abs(link.thickness * trigShift) / 2
-      if minForExtending < link.heading < maxForExtending
-        [end1Cor + diff, end2Cor - diff]
-      else
-        [end1Cor - diff, end2Cor + diff]
-
-    if not link['hidden?']
-      { xcor: e1x, ycor: e1y } = turtles[link.end1]
-      { xcor: e2x, ycor: e2y } = turtles[link.end2]
-
-      wrapX = shouldWrapInDim(canWrapX, @view.patchWidth,  e1x, e2x)
-      wrapY = shouldWrapInDim(canWrapY, @view.patchHeight, e1y, e2y)
-
-      if link.thickness is @view.onePixel
-        x1 = e1x
-        x2 = e2x
-        y1 = e1y
-        y2 = e2y
-      else
-        shortestX = Math.min(e1x - e2x, e2x - e1x)
-        shortestY = Math.min(e1y - e2y, e2y - e1y)
-        theta     = Math.atan2(shortestY, shortestX)
-
-        [x1, x2] = adjustLinkEnds(e1x, e2x, Math.cos(theta), 180, 360)
-        [y1, y2] = adjustLinkEnds(e1y, e2y, Math.sin(theta), 90,  270)
-
-      ctx.strokeStyle = netlogoColorToCSS(link.color)
-      ctx.lineWidth = if link.thickness > @view.onePixel then link.thickness else @view.onePixel
-      ctx.beginPath()
-
-      patchWidth = @view.patchWidth
-      patchHeight = @view.patchHeight
-      if wrapX and wrapY
-        # Unnecessary lines are drawn here since we're not checking to see which
-        # are actually on screen. However, browsers are better at these checks
-        # than we are and will ignore offscreen stuff. Thus, we shouldn't bother
-        # checking unless we see a consistent performance improvement. Note that
-        # at least 3 lines will be needed in the majority of cases and 4 lines
-        # are necessary in certain cases. -- BCH (3/30/2014)
-        if x1 < x2
-          if y1 < y2
-            @drawLine(x1, y1, x2 - patchWidth, y2 - patchHeight)
-            @drawLine(x1 + patchWidth, y1, x2, y2 - patchHeight)
-            @drawLine(x1 + patchWidth, y1 + patchHeight, x2, y2)
-            @drawLine(x1, y1 + patchHeight, x2 - patchWidth, y2)
-          else
-            @drawLine(x1, y1, x2 - patchWidth, y2 + patchHeight)
-            @drawLine(x1 + patchWidth, y1, x2, y2 + patchHeight)
-            @drawLine(x1 + patchWidth, y1 - patchHeight, x2, y2)
-            @drawLine(x1, y1 - patchHeight, x2 - patchWidth, y2)
-        else
-          if y1 < y2
-            @drawLine(x1, y1, x2 + patchWidth, y2 - patchHeight)
-            @drawLine(x1 - patchWidth, y1, x2, y2 - patchHeight)
-            @drawLine(x1 - patchWidth, y1 + patchHeight, x2, y2)
-            @drawLine(x1, y1 + patchHeight, x2 + patchWidth, y2)
-          else
-            @drawLine(x1, y1, x2 + patchWidth, y2 + patchHeight)
-            @drawLine(x1 - patchWidth, y1, x2, y2 + patchHeight)
-            @drawLine(x1 - patchWidth, y1 - patchHeight, x2, y2)
-            @drawLine(x1, y1 - patchHeight, x2 + patchWidth, y2)
-      else if wrapX
-        if x1 < x2
-          @drawLine(x1, y1, x2 - patchWidth, y2)
-          @drawLine(x1 + patchWidth, y1, x2, y2)
-        else
-          @drawLine(x1, y1, x2 + patchWidth, y2)
-          @drawLine(x1 - patchWidth, y1, x2, y2)
-      else if wrapY
-        if y1 < y2
-          @drawLine(x1, y1, x2, y2 - patchHeight)
-          @drawLine(x1, y1 + patchHeight, x2, y2)
-        else
-          @drawLine(x1, y1 - patchHeight, x2, y2)
-          @drawLine(x1, y1, x2, y2 + patchHeight)
-      else
-        @drawLine(x1, y1, x2, y2)
-
-    ctx.stroke()
+  drawLink: (link, turtles, wrapX, wrapY) ->
+    @linkDrawer.draw(link, turtles, wrapX, wrapY)
 
   repaint: (model) ->
     world = model.world
     turtles = model.turtles
     links = model.links
-    if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
-      @drawer = new CachingShapeDrawer(world.turtleshapelist)
+    if world.turtleshapelist isnt @turtleShapeDrawer.shapes and world.turtleshapelist?
+      @turtleShapeDrawer = new CachingShapeDrawer(world.turtleshapelist)
+    if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
+      @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
     for id, link of links
       @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
     @view.ctx.lineWidth = @onePixel
@@ -368,4 +282,3 @@ class PatchDrawer
       @colorPatches(patches)
     if world.patcheswithlabels
       @labelPatches(patches)
-
