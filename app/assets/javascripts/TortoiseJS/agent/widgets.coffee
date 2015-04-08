@@ -95,7 +95,7 @@ class window.WidgetController
           catch err
             widget.currentValue = 'N/A'
         if widget.precision? and typeof widget.currentValue == 'number' and isFinite(widget.currentValue)
-          widget.currentValue = Prims.precision(widget.currentValue, widget.precision)
+          widget.currentValue = NLMath.precision(widget.currentValue, widget.precision)
       if widget['type'] == 'slider'
         # Soooooo apparently range inputs don't visually update when you set
         # their max, but they DO update when you set their min (and will take
@@ -126,7 +126,7 @@ class window.WidgetController
   # () -> Unit
   teardown: -> @ractive.teardown()
 
-  code: -> @ractive.data.code
+  code: -> @ractive.get('code')
 
 # ([widget], () -> Unit) -> WidgetController
 # Destructive - Adds everything for maintaining state to the widget models,
