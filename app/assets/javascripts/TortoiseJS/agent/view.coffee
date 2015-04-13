@@ -4,30 +4,32 @@ class window.AgentStreamController
     @turtleDrawer = new TurtleDrawer(@view)
     @patchDrawer = new PatchDrawer(@view)
     @spotlightDrawer = new SpotlightDrawer(@view)
-    @container.appendChild(@view.canvas)
+    @container.appendChild(@view.visibleCanvas)
 
     @mouseDown   = false
     @mouseInside = false
-    @mouseXcor   = 0
-    @mouseYcor   = 0
+    @mouseX      = 0
+    @mouseY      = 0
     @initMouseTracking()
 
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
     @repaint()
 
+  mouseXcor: => @view.xPixToPcor(@mouseX)
+  mouseYcor: => @view.yPixToPcor(@mouseY)
+
   initMouseTracking: ->
-    # Using spotlightView because it's on top. BCH 10/21/2014
-    @view.canvas.addEventListener('mousedown', (e) => @mouseDown = true)
-    document      .addEventListener('mouseup',   (e) => @mouseDown = false)
+    @view.visibleCanvas.addEventListener('mousedown', (e) => @mouseDown = true)
+    document           .addEventListener('mouseup',   (e) => @mouseDown = false)
 
-    @view.canvas.addEventListener('mouseenter', (e) => @mouseInside = true)
-    @view.canvas.addEventListener('mouseleave', (e) => @mouseInside = false)
+    @view.visibleCanvas.addEventListener('mouseenter', (e) => @mouseInside = true)
+    @view.visibleCanvas.addEventListener('mouseleave', (e) => @mouseInside = false)
 
-    @view.canvas.addEventListener('mousemove', (e) =>
-      rect = @view.canvas.getBoundingClientRect()
-      @mouseXcor = @view.xPixToPcor(e.clientX - rect.left)
-      @mouseYcor = @view.yPixToPcor(e.clientY - rect.top)
+    @view.visibleCanvas.addEventListener('mousemove', (e) =>
+      rect = @view.visibleCanvas.getBoundingClientRect()
+      @mouseX = e.clientX - rect.left
+      @mouseY = e.clientY - rect.top
     )
 
   repaint: ->
@@ -35,6 +37,7 @@ class window.AgentStreamController
     @patchDrawer.repaint(@model)
     @turtleDrawer.repaint(@model)
     @spotlightDrawer.repaint(@model)
+    @view.repaint(@model)
 
   applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
@@ -44,48 +47,85 @@ class window.AgentStreamController
     @applyUpdate(u) for u in updates
     @repaint()
 
+
+# Perspective constants:
+OBSERVE = 0
+RIDE    = 1
+FOLLOW  = 2
+WATCH   = 3
+
 class View
   constructor: (@fontSize) ->
     @canvas = document.createElement('canvas')
-    @canvas.class = 'netlogo-canvas'
-    @canvas.width = 500
-    @canvas.height = 500
-    @canvas.style.width = "100%"
     @ctx = @canvas.getContext('2d')
+    @visibleCanvas = document.createElement('canvas')
+    @visibleCanvas.class = 'netlogo-canvas'
+    @visibleCanvas.width = 500
+    @visibleCanvas.height = 500
+    @visibleCanvas.style.width = "100%"
+    @visibleCtx = @visibleCanvas.getContext('2d')
 
   transformToWorld: (world) ->
-    quality = if window.devicePixelRatio? then window.devicePixelRatio else 1
+    @transformCanvasToWorld(world, @canvas, @ctx)
+
+  transformCanvasToWorld: (world, canvas, ctx) ->
+    @quality = if window.devicePixelRatio? then window.devicePixelRatio else 1
     @maxpxcor = if world.maxpxcor? then world.maxpxcor else 25
     @minpxcor = if world.minpxcor? then world.minpxcor else -25
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
     @patchsize = if world.patchsize? then world.patchsize else 9
-    @onePixel = 1 / @patchsize  # The size of one pixel in patch coords
-    @patchWidth = @maxpxcor - @minpxcor + 1
-    @patchHeight = @maxpycor - @minpycor + 1
-    @canvas.width =  @patchWidth * @patchsize * quality
-    @canvas.height = @patchHeight * @patchsize * quality
-    # Argument rows are the matrix columns. See spec.
-    @ctx.setTransform(@canvas.width/@patchWidth, 0,
-                      0, -@canvas.height/@patchHeight,
-                      -(@minpxcor-.5)*@canvas.width/@patchWidth,
-                      (@maxpycor+.5)*@canvas.height/@patchHeight)
-    @ctx.font = @fontSize + 'px "Lucida Grande", sans-serif'
-    @ctx.imageSmoothingEnabled = false
-    @ctx.webkitImageSmoothingEnabled = false
-    @ctx.mozImageSmoothingEnabled = false
-    @ctx.oImageSmoothingEnabled = false
-    @ctx.msImageSmoothingEnabled = false
+    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
+    @worldWidth = @maxpxcor - @minpxcor + 1
+    @worldHeight = @maxpycor - @minpycor + 1
+    @worldCenterX = (@maxpxcor + @minpxcor) / 2
+    @worldCenterY = (@maxpycor + @minpycor) / 2
+    @centerX = @worldWidth / 2
+    @centerY = @worldHeight / 2
+    canvas.width =  @worldWidth * @patchsize * @quality
+    canvas.height = @worldHeight * @patchsize * @quality
+    ctx.font = @fontSize + 'px "Lucida Grande", sans-serif'
+    ctx.imageSmoothingEnabled = false
+    ctx.webkitImageSmoothingEnabled = false
+    ctx.mozImageSmoothingEnabled = false
+    ctx.oImageSmoothingEnabled = false
+    ctx.msImageSmoothingEnabled = false
 
-  xPixToPcor: (x) -> @minpxcor - .5 + @patchWidth * x / @canvas.offsetWidth
-  yPixToPcor: (y) -> @maxpycor + .5 - @patchHeight * y / @canvas.offsetHeight
+  usePatchCoordinates: (drawFn) ->
+    @ctx.save()
+    w = @canvas.width
+    h = @canvas.height
+    # Argument rows are the standard transformation matrix columns. See spec.
+    # http://www.w3.org/TR/2dcontext/#dom-context-2d-transform
+    # BCH 5/16/2015
+    @ctx.setTransform(w / @worldWidth,                   0,
+                      0,                                 -h/@worldHeight,
+                      -(@minpxcor-.5) * w / @worldWidth, (@maxpycor+.5) * h / @worldHeight)
+    drawFn()
+    @ctx.restore()
+
+
+  offsetX: -> @worldCenterX - @centerX
+  offsetY: -> @worldCenterY - @centerY
+
+  # These convert between model coordinates and position in the canvas DOM element
+  # This will differ from untransformed canvas position if @quality != 1. BCH 5/6/2015
+  xPixToPcor: (x) ->
+    (@worldWidth * x / @visibleCanvas.clientWidth + @worldWidth - @offsetX()) % @worldWidth + @minpxcor - .5
+  yPixToPcor: (y) ->
+    (- @worldHeight * y / @visibleCanvas.clientHeight + 2 * @worldHeight - @offsetY()) % @worldHeight + @minpycor - .5
+
+  # Unlike the above functions, this accounts for @quality. This intentionally does not account
+  # for situations like follow (as it's used to make that calculation). BCH 5/6/2015
+  xPcorToCanvas: (x) -> (x - @minpxcor + .5) / @worldWidth * @visibleCanvas.width
+  yPcorToCanvas: (y) -> (@maxpycor + .5 - y) / @worldHeight * @visibleCanvas.height
 
   drawLabel: (x, y, label, color) ->
     label = if label? then label.toString() else ''
     if label.length > 0
       @ctx.save()
       @ctx.translate(x, y)
-      @ctx.scale(1/@patchsize, -1/@patchsize)
+      @ctx.scale(@onePixel, -@onePixel)
       @ctx.textAlign = 'end'
       @ctx.fillStyle = netlogoColorToCSS(color)
       @ctx.fillText(label, 0, 0)
@@ -99,7 +139,7 @@ class View
   # Returns the agent being watched, or null.
   watch: (model) ->
     {observer, turtles, links, patches} = model
-    if observer.perspective > 0 and observer.targetagent and observer.targetagent[1] >= 0
+    if model.observer.perspective != OBSERVE and observer.targetagent and observer.targetagent[1] >= 0
       [type, id] = observer.targetagent
       switch type
         when @turtleType then model.turtles[id]
@@ -110,10 +150,50 @@ class View
 
   # Returns the agent being followed, or null.
   follow: (model) ->
-    if model.observer.perspective == 2 then watch(model) else null
+    persp = model.observer.perspective
+    if persp == FOLLOW or persp == RIDE then @watch(model) else null
 
+  repaint: (model) ->
+    target = @follow(model)
+    @visibleCanvas.width = @canvas.width
+    @visibleCanvas.height = @canvas.height
+    if target?
+      width = @visibleCanvas.width
+      height = @visibleCanvas.height
+      @centerX = target.xcor
+      @centerY = target.ycor
+      x = -@xPcorToCanvas(@centerX) + width / 2
+      y = -@yPcorToCanvas(@centerY) + height / 2
+      xs = if model.world.wrappingallowedinx then [x - width, x, x + width] else [x]
+      ys = if model.world.wrappingallowediny then [y - height, y, y + height] else [y]
+      for dx in xs
+        for dy in ys
+          @visibleCtx.drawImage(@canvas, dx, dy)
+    else
+      @centerX = @worldCenterX
+      @centerY = @worldCenterY
+      @visibleCtx.drawImage(@canvas, 0, 0)
 
-class SpotlightDrawer
+class Drawer
+  constructor: (@view) ->
+
+  # drawFn: (xcor, ycor) ->
+  drawWrapped: (model, xcor, ycor, size, drawFn) ->
+    xs = if model.world.wrappingallowedinx
+      [xcor - @view.worldWidth, xcor, xcor + @view.worldWidth]
+    else
+      [xcor]
+    ys = if model.world.wrappingallowediny
+      [ycor - @view.worldHeight, ycor, ycor + @view.worldHeight]
+    else
+      [ycor]
+    for x in xs
+      if (x + size / 2) > @view.minpxcor - 0.5 and (x - size / 2) < @view.maxpxcor + 0.5
+        for y in ys
+          if (y + size / 2) > @view.minpycor - 0.5 and (y - size / 2) < @view.maxpycor + 0.5
+            drawFn(x,y)
+
+class SpotlightDrawer extends Drawer
   constructor: (@view) ->
 
   # Names and values taken from org.nlogo.render.SpotlightDrawer
@@ -134,23 +214,29 @@ class SpotlightDrawer
     ctx.arc(x, y, innerDiam / 2, 0, 2 * Math.PI, true)
     ctx.fill()
 
-  drawSpotlight: (x, y, size) ->
+  drawSpotlight: (model, xcor, ycor, size, dimOther) ->
     ctx = @view.ctx
     ctx.lineWidth = @view.onePixel
 
     ctx.beginPath()
     # Draw arc anti-clockwise so that it's subtracted from the fill. See the
     # fill() documentation and specifically the "nonzero" rule. BCH 3/17/2015
-    ctx.arc(x, y, (size + @outer()) / 2, 0, 2 * Math.PI, true)
-    ctx.rect(@view.minpxcor - 0.5, @view.minpycor - 0.5, @view.patchWidth, @view.patchHeight)
-    ctx.fillStyle = @dimmed
-    ctx.fill()
+    if dimOther
+      @drawWrapped(model, xcor, ycor, size + @outer(), (x, y) =>
+        ctx.moveTo(x, y) # Don't want the context to draw a path between the circles. BCH 5/6/2015
+        ctx.arc(x, y, (size + @outer()) / 2, 0, 2 * Math.PI, true)
+      )
+      ctx.rect(@view.minpxcor - 0.5, @view.minpycor - 0.5, @view.worldWidth, @view.worldHeight)
+      ctx.fillStyle = @dimmed
+      ctx.fill()
 
-    @drawCircle(x, y, size, size + @outer(), @dimmed)
-    @drawCircle(x, y, size, size + @middle(), @spotlightOuterBorder)
-    @drawCircle(x, y, size, size + @inner(), @spotlightInnerBorder)
+    @drawWrapped(model, xcor, ycor, size + @outer(), (x, y) =>
+      @drawCircle(x, y, size, size + @outer(), @dimmed)
+      @drawCircle(x, y, size, size + @middle(), @spotlightOuterBorder)
+      @drawCircle(x, y, size, size + @inner(), @spotlightInnerBorder)
+    )
 
-  adjustSize: (size) -> Math.max(size, @view.patchWidth / 16, @view.patchHeight / 16)
+  adjustSize: (size) -> Math.max(size, @view.worldWidth / 16, @view.worldHeight / 16)
 
   dimensions: (agent) ->
     if agent.xcor?
@@ -161,34 +247,24 @@ class SpotlightDrawer
       [agent.midpointx, agent.midpointy, agent.size]
 
   repaint: (model) ->
-    watched = @view.watch(model)
-    if watched?
-      [xcor, ycor, size] = @dimensions(watched)
-      @drawSpotlight(xcor, ycor,  @adjustSize(size))
+    @view.usePatchCoordinates( =>
+      watched = @view.watch(model)
+      if watched?
+        [xcor, ycor, size] = @dimensions(watched)
+        @drawSpotlight(model, xcor, ycor,  @adjustSize(size), model.observer.perspective == WATCH)
+    )
 
-class TurtleDrawer
+class TurtleDrawer extends Drawer
   constructor: (@view) ->
     @turtleShapeDrawer = new CachingShapeDrawer({})
     @linkDrawer = new LinkDrawer(@view, {})
 
-  drawTurtle: (turtle, canWrapX, canWrapY) ->
+  drawTurtle: (model, turtle) ->
     if not turtle['hidden?']
       xcor = turtle.xcor
       ycor = turtle.ycor
       size = turtle.size
-      @drawTurtleAt(turtle, xcor, ycor)
-      if canWrapX
-        if xcor - size < @minpxcor
-          @drawTurtleAt(turtle, xcor + @patchWidth, ycor)
-        # Note that these CANNOT be `else if`s. Large turtles can wrap on both
-        # sides. -- BCH (3/30/2014)
-        if xcor + size > @maxpxcor
-          @drawTurtleAt(turtle, xcor - @patchWidth, ycor)
-      if canWrapY
-        if ycor - size < @minpycor
-          @drawTurtleAt(turtle, xcor, ycor + @patchHeight)
-        if ycor + size > @maxpycor
-          @drawTurtleAt(turtle, xcor, ycor - @patchHeight)
+      @drawWrapped(model, xcor, ycor, size, ((x, y) => @drawTurtleAt(turtle, x, y)))
 
   drawTurtleAt: (turtle, xcor, ycor) ->
     ctx = @view.ctx
@@ -219,12 +295,13 @@ class TurtleDrawer
       @turtleShapeDrawer = new CachingShapeDrawer(world.turtleshapelist)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
-    for id, link of links
-      @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
-    @view.ctx.lineWidth = @onePixel
-    for id, turtle of turtles
-      @drawTurtle(turtle, world.wrappingallowedinx, world.wrappingallowediny)
-    return
+    @view.usePatchCoordinates( =>
+      for id, link of links
+        @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
+      @view.ctx.lineWidth = @onePixel
+      for id, turtle of turtles
+        @drawTurtle(model, turtle)
+    )
 
 # Works by creating a scratchCanvas that has a pixel per patch. Those pixels
 # are colored accordingly. Then, the scratchCanvas is drawn onto the main
@@ -236,8 +313,8 @@ class PatchDrawer
     @scratchCtx = @scratchCanvas.getContext('2d')
 
   colorPatches: (patches) ->
-    width = @view.patchWidth
-    height = @view.patchHeight
+    width = @view.worldWidth
+    height = @view.worldHeight
     minX = @view.minpxcor
     maxX = @view.maxpxcor
     minY = @view.minpycor
@@ -258,20 +335,17 @@ class PatchDrawer
     @scratchCtx.putImageData(imageData, 0, 0)
     # translate so scale flips the image at the right point
     trans = minY + maxY
-    ctx = @view.ctx
-    ctx.translate(0, trans)
-    ctx.scale(1,-1)
-    ctx.drawImage(@scratchCanvas, minX - .5, minY - .5, width, height)
-    ctx.scale(1,-1)
-    ctx.translate(0, -trans)
+    @view.ctx.drawImage(@scratchCanvas, 0, 0, @view.canvas.width, @view.canvas.height)
 
   labelPatches: (patches) ->
-    for ignore, patch of patches
-      @view.drawLabel(patch.pxcor + .5, patch.pycor - .5, patch.plabel, patch['plabel-color'])
+    @view.usePatchCoordinates( =>
+      for ignore, patch of patches
+        @view.drawLabel(patch.pxcor + .5, patch.pycor - .5, patch.plabel, patch['plabel-color'])
+    )
 
   clearPatches: ->
     @view.ctx.fillStyle = "black"
-    @view.ctx.fillRect(@view.minpxcor - .5, @view.minpycor - .5, @view.patchWidth, @view.patchHeight)
+    @view.ctx.fillRect(0, 0, @view.canvas.width, @view.canvas.height)
 
   repaint: (model) ->
     world = model.world

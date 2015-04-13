@@ -52,8 +52,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly) ->
   mouse = {
     peekIsDown: -> viewController.mouseDown
     peekIsInside: -> viewController.mouseInside
-    peekX: -> viewController.mouseXcor
-    peekY: -> viewController.mouseYcor
+    peekX: viewController.mouseXcor
+    peekY: viewController.mouseYcor
   }
   write = (str) -> model.consoleOutput += str
 

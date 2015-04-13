@@ -128,8 +128,8 @@ class window.LinkDrawer
 
       adjustedThickness = if thickness > @view.onePixel then thickness else @view.onePixel
 
-      wrapX = @shouldWrapInDim(canWrapX, @view.patchWidth,  x1, x2)
-      wrapY = @shouldWrapInDim(canWrapY, @view.patchHeight, y1, y2)
+      wrapX = @shouldWrapInDim(canWrapX, @view.worldWidth,  x1, x2)
+      wrapY = @shouldWrapInDim(canWrapY, @view.worldHeight, y1, y2)
 
       @getWrappedLines(x1, y1, x2, y2, wrapX, wrapY).forEach(@_drawLinkLine(link, adjustedThickness))
 
@@ -167,61 +167,61 @@ class window.LinkDrawer
     )
 
   getWrappedLines: (x1, y1, x2, y2, wrapX, wrapY) ->
-    patchWidth = @view.patchWidth
-    patchHeight = @view.patchHeight
+    worldWidth = @view.worldWidth
+    worldHeight = @view.worldHeight
 
     if wrapX and wrapY
       if x1 < x2
         if y1 < y2
           [
-            new Line(x1, y1, x2 - patchWidth, y2 - patchHeight),
-            new Line(x1 + patchWidth, y1, x2, y2 - patchHeight),
-            new Line(x1 + patchWidth, y1 + patchHeight, x2, y2),
-            new Line(x1, y1 + patchHeight, x2 - patchWidth, y2)
+            new Line(x1, y1, x2 - worldWidth, y2 - worldHeight),
+            new Line(x1 + worldWidth, y1, x2, y2 - worldHeight),
+            new Line(x1 + worldWidth, y1 + worldHeight, x2, y2),
+            new Line(x1, y1 + worldHeight, x2 - worldWidth, y2)
           ]
         else
           [
-            new Line(x1, y1, x2 - patchWidth, y2 + patchHeight),
-            new Line(x1 + patchWidth, y1, x2, y2 + patchHeight),
-            new Line(x1 + patchWidth, y1 - patchHeight, x2, y2),
-            new Line(x1, y1 - patchHeight, x2 - patchWidth, y2)
+            new Line(x1, y1, x2 - worldWidth, y2 + worldHeight),
+            new Line(x1 + worldWidth, y1, x2, y2 + worldHeight),
+            new Line(x1 + worldWidth, y1 - worldHeight, x2, y2),
+            new Line(x1, y1 - worldHeight, x2 - worldWidth, y2)
           ]
       else
         if y1 < y2
           [
-            new Line(x1, y1, x2 + patchWidth, y2 - patchHeight),
-            new Line(x1 - patchWidth, y1, x2, y2 - patchHeight),
-            new Line(x1 - patchWidth, y1 + patchHeight, x2, y2),
-            new Line(x1, y1 + patchHeight, x2 + patchWidth, y2)
+            new Line(x1, y1, x2 + worldWidth, y2 - worldHeight),
+            new Line(x1 - worldWidth, y1, x2, y2 - worldHeight),
+            new Line(x1 - worldWidth, y1 + worldHeight, x2, y2),
+            new Line(x1, y1 + worldHeight, x2 + worldWidth, y2)
           ]
         else
           [
-            new Line(x1, y1, x2 + patchWidth, y2 + patchHeight),
-            new Line(x1 - patchWidth, y1, x2, y2 + patchHeight),
-            new Line(x1 - patchWidth, y1 - patchHeight, x2, y2),
-            new Line(x1, y1 - patchHeight, x2 + patchWidth, y2)
+            new Line(x1, y1, x2 + worldWidth, y2 + worldHeight),
+            new Line(x1 - worldWidth, y1, x2, y2 + worldHeight),
+            new Line(x1 - worldWidth, y1 - worldHeight, x2, y2),
+            new Line(x1, y1 - worldHeight, x2 + worldWidth, y2)
           ]
     else if wrapX
       if x1 < x2
         [
-          new Line(x1, y1, x2 - patchWidth, y2),
-          new Line(x1 + patchWidth, y1, x2, y2)
+          new Line(x1, y1, x2 - worldWidth, y2),
+          new Line(x1 + worldWidth, y1, x2, y2)
         ]
       else
         [
-          new Line(x1, y1, x2 + patchWidth, y2),
-          new Line(x1 - patchWidth, y1, x2, y2)
+          new Line(x1, y1, x2 + worldWidth, y2),
+          new Line(x1 - worldWidth, y1, x2, y2)
         ]
     else if wrapY
       if y1 < y2
         [
-          new Line(x1, y1, x2, y2 - patchHeight),
-          new Line(x1, y1 + patchHeight, x2, y2)
+          new Line(x1, y1, x2, y2 - worldHeight),
+          new Line(x1, y1 + worldHeight, x2, y2)
         ]
       else
         [
-          new Line(x1, y1 - patchHeight, x2, y2),
-          new Line(x1, y1, x2, y2 + patchHeight)
+          new Line(x1, y1 - worldHeight, x2, y2),
+          new Line(x1, y1, x2, y2 + worldHeight)
         ]
     else
       [ new Line(x1, y1, x2, y2) ]
