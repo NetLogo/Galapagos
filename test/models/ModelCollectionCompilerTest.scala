@@ -38,7 +38,7 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
     assertInboxReceivedUnordered(
       observer, 1,
       CompilationSuccess(TeamAssembly.file) == _,
-      failureForTestSource(BirdBreeder.file),
+      CompilationSuccess(BirdBreeder.file) == _,
       failureForTestSource(SmallWorld.file)
     )
   }
@@ -83,7 +83,7 @@ trait AkkaTestHelper extends Assertions {
   def assertInboxReceivedUnordered(i: Inbox, skip: Int, messageMatchers: (Any => Boolean)*): Unit = {
     skipMessages(i, skip)
     val receivedMessages = receiveMessagesCount(i, messageMatchers.length)
-    messageMatchers.forall(matchingMessage => receivedMessages.exists(matchingMessage))
+    messageMatchers.foreach(matchingMessage => assert(receivedMessages.exists(matchingMessage)))
   }
 
   def assertInboxReceivedInOrder(i: Inbox, messages: Any*): Unit = {

@@ -4,7 +4,16 @@ version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.6"
 
-scalacOptions += "-language:_"
+scalacOptions ++= Seq(
+  "-encoding", "UTF-8",
+  "-deprecation",
+  "-unchecked",
+  "-feature",
+  "-language:_",
+  "-Xlint",
+  "-Ywarn-value-discard",
+  "-Xfatal-warnings"
+)
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
