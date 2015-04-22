@@ -9,8 +9,14 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.8")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
-// get warnings when compiling build definition
-scalacOptions += "-feature"
+scalacOptions ++= Seq(
+  "-encoding", "UTF-8",
+  "-deprecation",
+  "-unchecked",
+  "-feature",
+  "-Xlint",
+  "-Xfatal-warnings"
+)
 
 lazy val root = project.in(file(".")).dependsOn(sbtAutoprefixer)
 lazy val sbtAutoprefixer = uri("git://github.com/matthewrennie/sbt-autoprefixer")
