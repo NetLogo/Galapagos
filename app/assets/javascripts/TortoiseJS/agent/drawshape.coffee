@@ -8,16 +8,15 @@ class window.ShapeDrawer
   setTransparency: (ctx, turtleColor) ->
     ctx.globalAlpha = if turtleColor.length > 3 then turtleColor[3] / 255 else 1
 
-
-  drawShape: (ctx, turtleColor, shapeName) ->
+  drawShape: (ctx, turtleColor, shapeName, thickness = 1) ->
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
     @setTransparency(ctx, turtleColor)
-    @drawRawShape(ctx, turtleColor, shapeName)
+    @drawRawShape(ctx, turtleColor, shapeName, thickness)
     return
 
-  drawRawShape: (ctx, turtleColor, shapeName) ->
-    ctx.lineWidth = LINE_WIDTH
+  drawRawShape: (ctx, turtleColor, shapeName, thickness = 1) ->
+    ctx.lineWidth = LINE_WIDTH * thickness
     shape = @shapes[shapeName] or defaultShape
     for elem in shape.elements
       draw[elem.type](ctx, turtleColor, elem)

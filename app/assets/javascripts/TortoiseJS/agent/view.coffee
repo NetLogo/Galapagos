@@ -60,7 +60,7 @@ class View
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
     @patchsize = if world.patchsize? then world.patchsize else 9
-    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
+    @onePixel = 1 / @patchsize  # The size of one pixel in patch coords
     @patchWidth = @maxpxcor - @minpxcor + 1
     @patchHeight = @maxpycor - @minpycor + 1
     @canvas.width =  @patchWidth * @patchsize * quality
@@ -168,7 +168,8 @@ class SpotlightDrawer
 
 class TurtleDrawer
   constructor: (@view) ->
-    @drawer = new CachingShapeDrawer({})
+    @turtleShapeDrawer = new CachingShapeDrawer({})
+    @linkDrawer = new LinkDrawer(@view, {})
 
   drawTurtle: (turtle, canWrapX, canWrapY) ->
     if not turtle['hidden?']
@@ -195,7 +196,7 @@ class TurtleDrawer
     scale = turtle.size
     angle = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
-    shape = @drawer.shapes[shapeName] or defaultShape
+    shape = @turtleShapeDrawer.shapes[shapeName] or defaultShape
     ctx.save()
     ctx.translate(xcor, ycor)
     if shape.rotate
@@ -203,108 +204,21 @@ class TurtleDrawer
     else
       ctx.rotate(Math.PI)
     ctx.scale(scale, scale)
-    @drawer.drawShape(ctx, turtle.color, shapeName)
+    @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName)
     ctx.restore()
     @view.drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
 
-  drawLine: (x1,y1,x2,y2) ->
-    @view.ctx.moveTo(x1,y1)
-    @view.ctx.lineTo(x2,y2)
-
-  drawLink: (link, turtles, canWrapX, canWrapY) ->
-    ctx = @view.ctx
-
-    shouldWrapInDim = (canWrap, dimensionSize, cor1, cor2) ->
-      distance = Math.abs(cor1 - cor2)
-      canWrap and distance > dimensionSize / 2
-
-    adjustLinkEnds = (end1Cor, end2Cor, trigShift, minForExtending, maxForExtending) ->
-      diff = Math.abs(link.thickness * trigShift) / 2
-      if minForExtending < link.heading < maxForExtending
-        [end1Cor + diff, end2Cor - diff]
-      else
-        [end1Cor - diff, end2Cor + diff]
-
-    if not link['hidden?']
-      { xcor: e1x, ycor: e1y } = turtles[link.end1]
-      { xcor: e2x, ycor: e2y } = turtles[link.end2]
-
-      wrapX = shouldWrapInDim(canWrapX, @view.patchWidth,  e1x, e2x)
-      wrapY = shouldWrapInDim(canWrapY, @view.patchHeight, e1y, e2y)
-
-      if link.thickness is @view.onePixel
-        x1 = e1x
-        x2 = e2x
-        y1 = e1y
-        y2 = e2y
-      else
-        shortestX = Math.min(e1x - e2x, e2x - e1x)
-        shortestY = Math.min(e1y - e2y, e2y - e1y)
-        theta     = Math.atan2(shortestY, shortestX)
-
-        [x1, x2] = adjustLinkEnds(e1x, e2x, Math.cos(theta), 180, 360)
-        [y1, y2] = adjustLinkEnds(e1y, e2y, Math.sin(theta), 90,  270)
-
-      ctx.strokeStyle = netlogoColorToCSS(link.color)
-      ctx.lineWidth = if link.thickness > @view.onePixel then link.thickness else @view.onePixel
-      ctx.beginPath()
-
-      patchWidth = @view.patchWidth
-      patchHeight = @view.patchHeight
-      if wrapX and wrapY
-        # Unnecessary lines are drawn here since we're not checking to see which
-        # are actually on screen. However, browsers are better at these checks
-        # than we are and will ignore offscreen stuff. Thus, we shouldn't bother
-        # checking unless we see a consistent performance improvement. Note that
-        # at least 3 lines will be needed in the majority of cases and 4 lines
-        # are necessary in certain cases. -- BCH (3/30/2014)
-        if x1 < x2
-          if y1 < y2
-            @drawLine(x1, y1, x2 - patchWidth, y2 - patchHeight)
-            @drawLine(x1 + patchWidth, y1, x2, y2 - patchHeight)
-            @drawLine(x1 + patchWidth, y1 + patchHeight, x2, y2)
-            @drawLine(x1, y1 + patchHeight, x2 - patchWidth, y2)
-          else
-            @drawLine(x1, y1, x2 - patchWidth, y2 + patchHeight)
-            @drawLine(x1 + patchWidth, y1, x2, y2 + patchHeight)
-            @drawLine(x1 + patchWidth, y1 - patchHeight, x2, y2)
-            @drawLine(x1, y1 - patchHeight, x2 - patchWidth, y2)
-        else
-          if y1 < y2
-            @drawLine(x1, y1, x2 + patchWidth, y2 - patchHeight)
-            @drawLine(x1 - patchWidth, y1, x2, y2 - patchHeight)
-            @drawLine(x1 - patchWidth, y1 + patchHeight, x2, y2)
-            @drawLine(x1, y1 + patchHeight, x2 + patchWidth, y2)
-          else
-            @drawLine(x1, y1, x2 + patchWidth, y2 + patchHeight)
-            @drawLine(x1 - patchWidth, y1, x2, y2 + patchHeight)
-            @drawLine(x1 - patchWidth, y1 - patchHeight, x2, y2)
-            @drawLine(x1, y1 - patchHeight, x2 + patchWidth, y2)
-      else if wrapX
-        if x1 < x2
-          @drawLine(x1, y1, x2 - patchWidth, y2)
-          @drawLine(x1 + patchWidth, y1, x2, y2)
-        else
-          @drawLine(x1, y1, x2 + patchWidth, y2)
-          @drawLine(x1 - patchWidth, y1, x2, y2)
-      else if wrapY
-        if y1 < y2
-          @drawLine(x1, y1, x2, y2 - patchHeight)
-          @drawLine(x1, y1 + patchHeight, x2, y2)
-        else
-          @drawLine(x1, y1 - patchHeight, x2, y2)
-          @drawLine(x1, y1, x2, y2 + patchHeight)
-      else
-        @drawLine(x1, y1, x2, y2)
-
-    ctx.stroke()
+  drawLink: (link, turtles, wrapX, wrapY) ->
+    @linkDrawer.draw(link, turtles, wrapX, wrapY)
 
   repaint: (model) ->
     world = model.world
     turtles = model.turtles
     links = model.links
-    if world.turtleshapelist != @drawer.shapes and typeof world.turtleshapelist == "object"
-      @drawer = new CachingShapeDrawer(world.turtleshapelist)
+    if world.turtleshapelist isnt @turtleShapeDrawer.shapes and typeof world.turtleshapelist is "object"
+      @turtleShapeDrawer = new CachingShapeDrawer(world.turtleshapelist)
+    if world.linkshapelist isnt @linkDrawer.shapes and typeof world.linkshapelist is "object"
+      @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
     for id, link of links
       @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
     @view.ctx.lineWidth = @onePixel
@@ -369,3 +283,232 @@ class PatchDrawer
     if world.patcheswithlabels
       @labelPatches(patches)
 
+
+class Line
+  constructor: (@x1, @y1, @x2, @y2) ->
+
+  midpoint: ->
+    midpointX = (@x1 + @x2) / 2
+    midpointY = (@y1 + @y2) / 2
+    [midpointX, midpointY]
+
+class LinkDrawer
+  constructor: (@view, @shapes) ->
+    directionIndicators = {}
+    for name, shape of @shapes
+      directionIndicators[name] = shape['direction-indicator']
+    @linkShapeDrawer = new ShapeDrawer(directionIndicators)
+
+  drawCurvedLine: (x1, y1, x2, y2, cx, cy) =>
+    @view.ctx.moveTo(x1, y1)
+    @view.ctx.quadraticCurveTo(cx, cy, x2, y2)
+
+  drawLine: (x1, y1, x2, y2) =>
+    @view.ctx.moveTo(x1, y1)
+    @view.ctx.lineTo(x2, y2)
+
+  shouldWrapInDim: (canWrap, dimensionSize, cor1, cor2) ->
+    distance = Math.abs(cor1 - cor2)
+    canWrap and distance > dimensionSize / 2
+
+  adjustLinkEnds: (link, end1Cor, end2Cor, trigShift, minForExtending, maxForExtending) ->
+    diff = Math.abs(link.thickness * trigShift) / 2
+    if minForExtending < link.heading < maxForExtending
+      [end1Cor + diff, end2Cor - diff]
+    else
+      [end1Cor - diff, end2Cor + diff]
+
+  calculateLineAngle: (x1, y1, x2, y2) ->
+    shortestX = Math.min(x1 - x2, x2 - x1)
+    shortestY = Math.min(y1 - y2, y2 - y1)
+    Math.atan2(shortestY, shortestX)
+
+  calculateComps: (x1, y1, x2, y2, size) ->
+    xcomp = (y2 - y1) / size
+    ycomp = (x1 - x2) / size
+    [xcomp, ycomp]
+
+  calculateSublineOffset: (centerOffset, thickness, xcomp, ycomp) ->
+    thicknessFactor = thickness / @view.onePixel
+    xOff = centerOffset * thicknessFactor * xcomp
+    yOff = centerOffset * thicknessFactor * ycomp
+    [xOff, yOff]
+
+  getOffsetSubline: (x1, y1, x2, y2, xOff, yOff) ->
+    lx1 = x1 + xOff
+    lx2 = x2 + xOff
+    ly1 = y1 + yOff
+    ly2 = y2 + yOff
+    new Line(lx1, ly1, lx2, ly2)
+
+  calculateControlPoint: (midpointX, midpointY, curviness, xcomp, ycomp) ->
+    controlX  = midpointX + curviness * xcomp
+    controlY  = midpointY + curviness * ycomp
+    [controlX, controlY]
+
+  drawSubline: ({x1, y1, x2, y2}, dashPattern, controlX, controlY) ->
+    @view.ctx.setLineDash(dashPattern.map((x) => x * @view.onePixel))
+    @view.ctx.beginPath()
+
+    if controlX? and controlY?
+      @drawCurvedLine(x1, y1, x2, y2, controlX, controlY)
+    else
+      @drawLine(x1, y1, x2, y2)
+
+    @view.ctx.stroke()
+    @view.ctx.setLineDash([1, 0])
+
+  drawShape: (x1, y1, x2, y2, heading, color, thickness, linkShape, shapeName) ->
+    @view.ctx.save()
+
+    theta = @calculateLineAngle(x2, y2, x1, y1)
+
+    shiftCoefficientX = if x1 - x2 > 0 then -1 else 1
+    shiftCoefficientY = if y1 - y2 > 0 then -1 else 1
+
+    shift = @view.onePixel * 20
+    sx    = x1 + shift * Math.abs(Math.cos(theta)) * shiftCoefficientX
+    sy    = y1 + shift * Math.abs(Math.sin(theta)) * shiftCoefficientY
+
+    shapeTheta = Math.atan2(sy - y1, sx - x1) - Math.PI / 2
+
+    @view.ctx.translate(sx, sy)
+
+    if linkShape['direction-indicator'].rotate
+      @view.ctx.rotate(shapeTheta)
+    else
+      @view.ctx.rotate(Math.PI)
+
+    # Magic numbers c/o Esther -- JTT, JAB 4/13/15
+    scalingFactor = 4
+
+    onePixelThickness = 1 / scalingFactor / scalingFactor
+
+    # one pixel should == one patch (before scale) -- JTT 4/15/15
+    thickness = onePixelThickness * thickness / @view.onePixel
+
+    @view.ctx.scale(scalingFactor, scalingFactor)
+
+    @linkShapeDrawer.drawShape(@view.ctx, color, shapeName, thickness)
+
+    @view.ctx.restore()
+
+  draw: (link, turtles, canWrapX, canWrapY) ->
+    if not link['hidden?']
+      { end1, end2, color, thickness } = link
+      { xcor: e1x, ycor: e1y } = turtles[end1]
+      { xcor: e2x, ycor: e2y } = turtles[end2]
+
+      theta = @calculateLineAngle(e1x, e1y, e2x, e2y)
+
+      if thickness <= @view.onePixel
+        x1 = e1x
+        x2 = e2x
+        y1 = e1y
+        y2 = e2y
+        adjustedThickness = @view.onePixel
+      else
+        [x1, x2] = @adjustLinkEnds(link, e1x, e2x, Math.cos(theta), 180, 360)
+        [y1, y2] = @adjustLinkEnds(link, e1y, e2y, Math.sin(theta), 90,  270)
+        adjustedThickness = thickness
+
+      @view.ctx.strokeStyle = netlogoColorToCSS(color)
+      @view.ctx.lineWidth   = adjustedThickness
+
+      wrapX = @shouldWrapInDim(canWrapX, @view.patchWidth,  e1x, e2x)
+      wrapY = @shouldWrapInDim(canWrapY, @view.patchHeight, e1y, e2y)
+
+      @getWrappedLines(x1, y1, x2, y2, wrapX, wrapY).forEach(@_drawLinkLine(link, adjustedThickness))
+
+  _drawLinkLine: ({ color, size, heading, 'directed?': isDirected, shape: shapeName }, thickness) => ({ x1, y1, x2, y2 }) =>
+
+    linkShape = @shapes[shapeName]
+    { curviness, lines } = linkShape
+
+    lines.forEach(
+      (line) =>
+
+        { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': visible } = line
+
+        if visible
+
+          [xcomp, ycomp] = @calculateComps(x1, y1, x2, y2, size)
+          [xOff, yOff]   = @calculateSublineOffset(centerOffset, thickness, xcomp, ycomp)
+          offsetSubline  = @getOffsetSubline(x1, y1, x2, y2, xOff, yOff)
+          isCurved       = curviness > 0
+          isMiddleLine   = line is lines[1]
+
+          if isCurved
+
+            [midpointX, midpointY] = offsetSubline.midpoint()
+            [controlX,  controlY]  = @calculateControlPoint(midpointX, midpointY, curviness, xcomp, ycomp)
+
+          @drawSubline(offsetSubline, dashPattern, controlX, controlY)
+
+          if isMiddleLine and isDirected
+            if isCurved
+              @drawShape(x1, y1, controlX, controlY, heading, color, thickness, linkShape, shapeName)
+            else
+              @drawShape(x1, y1, x2, y2, heading, color, thickness, linkShape, shapeName)
+
+    )
+
+  getWrappedLines: (x1, y1, x2, y2, wrapX, wrapY) ->
+    patchWidth = @view.patchWidth
+    patchHeight = @view.patchHeight
+
+    if wrapX and wrapY
+      if x1 < x2
+        if y1 < y2
+          [
+            new Line(x1, y1, x2 - patchWidth, y2 - patchHeight),
+            new Line(x1 + patchWidth, y1, x2, y2 - patchHeight),
+            new Line(x1 + patchWidth, y1 + patchHeight, x2, y2),
+            new Line(x1, y1 + patchHeight, x2 - patchWidth, y2)
+          ]
+        else
+          [
+            new Line(x1, y1, x2 - patchWidth, y2 + patchHeight),
+            new Line(x1 + patchWidth, y1, x2, y2 + patchHeight),
+            new Line(x1 + patchWidth, y1 - patchHeight, x2, y2),
+            new Line(x1, y1 - patchHeight, x2 - patchWidth, y2)
+          ]
+      else
+        if y1 < y2
+          [
+            new Line(x1, y1, x2 + patchWidth, y2 - patchHeight),
+            new Line(x1 - patchWidth, y1, x2, y2 - patchHeight),
+            new Line(x1 - patchWidth, y1 + patchHeight, x2, y2),
+            new Line(x1, y1 + patchHeight, x2 + patchWidth, y2)
+          ]
+        else
+          [
+            new Line(x1, y1, x2 + patchWidth, y2 + patchHeight),
+            new Line(x1 - patchWidth, y1, x2, y2 + patchHeight),
+            new Line(x1 - patchWidth, y1 - patchHeight, x2, y2),
+            new Line(x1, y1 - patchHeight, x2 + patchWidth, y2)
+          ]
+    else if wrapX
+      if x1 < x2
+        [
+          new Line(x1, y1, x2 - patchWidth, y2),
+          new Line(x1 + patchWidth, y1, x2, y2)
+        ]
+      else
+        [
+          new Line(x1, y1, x2 + patchWidth, y2),
+          new Line(x1 - patchWidth, y1, x2, y2)
+        ]
+    else if wrapY
+      if y1 < y2
+        [
+          new Line(x1, y1, x2, y2 - patchHeight),
+          new Line(x1, y1 + patchHeight, x2, y2)
+        ]
+      else
+        [
+          new Line(x1, y1 - patchHeight, x2, y2),
+          new Line(x1, y1, x2, y2 + patchHeight)
+        ]
+    else
+      [ new Line(x1, y1, x2, y2) ]
