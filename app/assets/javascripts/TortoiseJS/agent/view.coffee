@@ -80,7 +80,7 @@ class View
   xPixToPcor: (x) -> @minpxcor - .5 + @patchWidth * x / @canvas.offsetWidth
   yPixToPcor: (y) -> @maxpycor + .5 - @patchHeight * y / @canvas.offsetHeight
 
-  drawLabel: (label, color, x, y) ->
+  drawLabel: (x, y, label, color) ->
     label = if label? then label.toString() else ''
     if label.length > 0
       @ctx.save()
@@ -206,7 +206,7 @@ class TurtleDrawer
     ctx.scale(scale, scale)
     @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName)
     ctx.restore()
-    @view.drawLabel(turtle.label, turtle['label-color'], xcor + turtle.size / 2, ycor - turtle.size / 2)
+    @view.drawLabel(xcor + turtle.size / 2, ycor - turtle.size / 2, turtle.label, turtle['label-color'])
 
   drawLink: (link, turtles, wrapX, wrapY) ->
     @linkDrawer.draw(link, turtles, wrapX, wrapY)
@@ -267,7 +267,7 @@ class PatchDrawer
 
   labelPatches: (patches) ->
     for ignore, patch of patches
-      @view.drawLabel(patch.plabel, patch['plabel-color'], patch.pxcor + .5, patch.pycor - .5)
+      @view.drawLabel(patch.pxcor + .5, patch.pycor - .5, patch.plabel, patch['plabel-color'])
 
   clearPatches: ->
     @view.ctx.fillStyle = "black"
