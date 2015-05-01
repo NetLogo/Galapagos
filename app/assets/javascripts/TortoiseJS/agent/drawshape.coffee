@@ -5,22 +5,21 @@ class window.ShapeDrawer
   constructor: (shapes) ->
     @shapes = shapes
 
-  setTransparency: (ctx, turtleColor) ->
-    ctx.globalAlpha = if turtleColor.length > 3 then turtleColor[3] / 255 else 1
+  setTransparency: (ctx, color) ->
+    ctx.globalAlpha = if color.length > 3 then color[3] / 255 else 1
 
-
-  drawShape: (ctx, turtleColor, shapeName) ->
+  drawShape: (ctx, color, shapeName) ->
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
-    @setTransparency(ctx, turtleColor)
-    @drawRawShape(ctx, turtleColor, shapeName)
+    @setTransparency(ctx, color)
+    @drawRawShape(ctx, color, shapeName)
     return
 
-  drawRawShape: (ctx, turtleColor, shapeName) ->
+  drawRawShape: (ctx, color, shapeName) ->
     ctx.lineWidth = LINE_WIDTH
     shape = @shapes[shapeName] or defaultShape
     for elem in shape.elements
-      draw[elem.type](ctx, turtleColor, elem)
+      draw[elem.type](ctx, color, elem)
     return
 
 class window.CachingShapeDrawer extends ShapeDrawer
@@ -36,44 +35,44 @@ class window.CachingShapeDrawer extends ShapeDrawer
     super(shapes)
     @shapeCache = {}
 
-  drawShape: (ctx, turtleColor, shapeName) ->
+  drawShape: (ctx, color, shapeName) ->
     shapeName = shapeName.toLowerCase()
-    shapeKey = @shapeKey(shapeName, turtleColor)
+    shapeKey = @shapeKey(shapeName, color)
     shapeCanvas = @shapeCache[shapeKey]
     if not shapeCanvas?
       shapeCanvas = document.createElement('canvas')
       shapeCanvas.width = shapeCanvas.height = IMAGE_SIZE
       shapeCtx = shapeCanvas.getContext('2d')
-      @drawRawShape(shapeCtx, turtleColor, shapeName)
+      @drawRawShape(shapeCtx, color, shapeName)
       @shapeCache[shapeKey] = shapeCanvas
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
-    @setTransparency(ctx, turtleColor)
+    @setTransparency(ctx, color)
     ctx.drawImage(shapeCanvas, 0, 0)
     return
 
-  shapeKey: (shapeName, turtleColor) ->
-    [shapeName, netlogoColorToOpaqueCSS(turtleColor)]
+  shapeKey: (shapeName, color) ->
+    [shapeName, netlogoColorToOpaqueCSS(color)]
 
-setColoring = (ctx, turtleColor, element) ->
+setColoring = (ctx, color, element) ->
 # Since a turtle's color's transparency applies to its whole shape,  and not
 # just the parts that use its default color, we want to use the opaque
 # version of its color so we can use global transparency on it. BCH 12/10/2014
-  turtleColor = netlogoColorToOpaqueCSS(turtleColor)
+  color = netlogoColorToOpaqueCSS(color)
   if element.filled
     if element.marked
-      ctx.fillStyle = turtleColor
+      ctx.fillStyle = color
     else
       ctx.fillStyle = element.color
   else
     if element.marked
-      ctx.strokeStyle = turtleColor
+      ctx.strokeStyle = color
     else
       ctx.strokeStyle = element.color
   return
 
-drawPath = (ctx, turtleColor, element) ->
-  setColoring(ctx, turtleColor, element)
+drawPath = (ctx, color, element) ->
+  setColoring(ctx, color, element)
   if element.filled
     ctx.fill()
   else
@@ -81,15 +80,15 @@ drawPath = (ctx, turtleColor, element) ->
   return
 
 window.draw =
-  circle: (ctx, turtleColor, circle) ->
+  circle: (ctx, color, circle) ->
     r = circle.diam/2
     ctx.beginPath()
     ctx.arc(circle.x+r, circle.y+r, r, 0, 2*Math.PI, false)
     ctx.closePath()
-    drawPath(ctx, turtleColor, circle)
+    drawPath(ctx, color, circle)
     return
 
-  polygon: (ctx, turtleColor, polygon) ->
+  polygon: (ctx, color, polygon) ->
     xcors = polygon.xcors
     ycors = polygon.ycors
     ctx.beginPath()
@@ -98,27 +97,27 @@ window.draw =
       y = ycors[i+1]
       ctx.lineTo(x, y)
     ctx.closePath()
-    drawPath(ctx, turtleColor, polygon)
+    drawPath(ctx, color, polygon)
     return
 
-  rectangle: (ctx, turtleColor, rectangle) ->
+  rectangle: (ctx, color, rectangle) ->
     x = rectangle.xmin
     y = rectangle.ymin
     w = rectangle.xmax - x
     h = rectangle.ymax - y
-    setColoring(ctx, turtleColor, rectangle)
+    setColoring(ctx, color, rectangle)
     if rectangle.filled
       ctx.fillRect(x,y,w,h)
     else
       ctx.strokeRect(x,y,w,h)
     return
 
-  line: (ctx, turtleColor, line) ->
+  line: (ctx, color, line) ->
     x = line.x1
     y = line.y1
     w = line.x2 - line.x1
     h = line.y2 - line.y1
-    setColoring(ctx, turtleColor, line)
+    setColoring(ctx, color, line)
     # Note that this is 1/20 the size of the image. Smaller this, and the
     # lines are hard to see in most cases.
     ctx.beginPath()
