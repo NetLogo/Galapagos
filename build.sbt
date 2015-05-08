@@ -27,14 +27,11 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.webjars" % "chosen" % "1.3.0",
   "org.webjars" % "highcharts" % "4.1.4",
-  "org.webjars" % "underscorejs" % "1.8.2",
-  "org.webjars" % "underscore.string" % "2.3.3",
-  "org.webjars" % "jquery" % "2.1.3",
-  "org.webjars" % "ace" % "01.08.2014",
+  "org.webjars" % "jquery" % "2.1.4",
   "org.webjars" % "mousetrap" % "1.4.6",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.1",
-  "org.webjars" % "codemirror" % "5.1"
+  "org.webjars" % "codemirror" % "5.2"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
