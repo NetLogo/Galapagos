@@ -92,23 +92,18 @@ class window.LinkDrawer
     # one pixel should == one patch (before scale) -- JTT 4/15/15
     thicknessFactor = thickness / @view.onePixel
 
-    # 8 is just a nice number. Seems to look right. -- JTT 5/8/15
-    # According to NetLogo, scalingFactor "has no hidden meaning."
-    # This seems to work, so... close enough. -- clarification. JTT 5/11/15
-    friendlyMagicScalingNumber = 8
+    baseThickness  = 3 / 2
 
-    # If there's a more elegant way to do this, I'm open to suggestion. -- JTT 5/8/15
-    if thicknessFactor < friendlyMagicScalingNumber
-      thickness = 1 / (1 + friendlyMagicScalingNumber - thicknessFactor)
-      thickness = if thickness < 2 / friendlyMagicScalingNumber then 2 / friendlyMagicScalingNumber else thickness
-      scale     = friendlyMagicScalingNumber
+    if thickness <= 1
+      scale         = 1 / @view.onePixel / 2
+      realThickness = thickness * baseThickness
     else
-      thickness = 1
-      scale = thicknessFactor
+      scale         = thicknessFactor / 2
+      realThickness = baseThickness
 
-    @view.ctx.scale(scale / 2, scale / 2)
+    @view.ctx.scale(scale, scale)
 
-    @linkShapeDrawer.drawShape(@view.ctx, color, shapeName, thickness)
+    @linkShapeDrawer.drawShape(@view.ctx, color, shapeName, realThickness)
 
     @view.ctx.restore()
 
