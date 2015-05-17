@@ -108,15 +108,7 @@ class window.LinkDrawer
     @view.ctx.restore()
 
   drawLabel: (x, y, labelText, color) ->
-    @view.ctx.save()
-
-    @view.ctx.translate(x - 3*@view.onePixel, y + 3*@view.onePixel)
-    @view.ctx.scale(@view.onePixel, -@view.onePixel)
-    @view.ctx.textAlign = 'end'
-    @view.ctx.fillStyle = netlogoColorToCSS(color)
-    @view.ctx.fillText(labelText, 0, 0)
-
-    @view.ctx.restore()
+    @view.drawLabel(x - 3 * @view.onePixel, y + 3 * @view.onePixel, labelText, color)
 
   draw: (link, turtles, canWrapX, canWrapY) ->
     if not link['hidden?']

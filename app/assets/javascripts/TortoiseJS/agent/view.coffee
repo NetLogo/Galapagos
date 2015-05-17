@@ -75,6 +75,8 @@ class View
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
     @patchsize = if world.patchsize? then world.patchsize else 9
+    @wrapX = world.wrappingallowedinx
+    @wrapY = world.wrappingallowediny
     @onePixel = 1/@patchsize  # The size of one pixel in patch coords
     @worldWidth = @maxpxcor - @minpxcor + 1
     @worldHeight = @maxpycor - @minpycor + 1
@@ -120,16 +122,29 @@ class View
   xPcorToCanvas: (x) -> (x - @minpxcor + .5) / @worldWidth * @visibleCanvas.width
   yPcorToCanvas: (y) -> (@maxpycor + .5 - y) / @worldHeight * @visibleCanvas.height
 
-  drawLabel: (x, y, label, color) ->
+  # Wraps text
+  drawLabel: (xcor, ycor, label, color) ->
     label = if label? then label.toString() else ''
     if label.length > 0
-      @ctx.save()
-      @ctx.translate(x, y)
-      @ctx.scale(@onePixel, -@onePixel)
-      @ctx.textAlign = 'end'
-      @ctx.fillStyle = netlogoColorToCSS(color)
-      @ctx.fillText(label, 0, 0)
-      @ctx.restore()
+      @drawWrapped(xcor, ycor, label.length * @fontSize / @onePixel, (x,y) =>
+        @ctx.save()
+        @ctx.translate(x, y)
+        @ctx.scale(@onePixel, -@onePixel)
+        @ctx.textAlign = 'end'
+        @ctx.fillStyle = netlogoColorToCSS(color)
+        @ctx.fillText(label, 0, 0)
+        @ctx.restore()
+      )
+
+  # drawFn: (xcor, ycor) ->
+  drawWrapped: (xcor, ycor, size, drawFn) ->
+    xs = if @wrapX then [xcor - @worldWidth,  xcor, xcor + @worldWidth ] else [xcor]
+    ys = if @wrapY then [ycor - @worldHeight, ycor, ycor + @worldHeight] else [ycor]
+    for x in xs
+      if (x + size / 2) > @minpxcor - 0.5 and (x - size / 2) < @maxpxcor + 0.5
+        for y in ys
+          if (y + size / 2) > @minpycor - 0.5 and (y - size / 2) < @maxpycor + 0.5
+            drawFn(x,y)
 
   # IDs used in watch and follow
   turtleType: 1
@@ -164,8 +179,8 @@ class View
       @centerY = target.ycor
       x = -@xPcorToCanvas(@centerX) + width / 2
       y = -@yPcorToCanvas(@centerY) + height / 2
-      xs = if model.world.wrappingallowedinx then [x - width, x, x + width] else [x]
-      ys = if model.world.wrappingallowediny then [y - height, y, y + height] else [y]
+      xs = if @wrapX then [x - width,  x, x + width ] else [x]
+      ys = if @wrapY then [y - height, y, y + height] else [y]
       for dx in xs
         for dy in ys
           @visibleCtx.drawImage(@canvas, dx, dy)
@@ -176,22 +191,6 @@ class View
 
 class Drawer
   constructor: (@view) ->
-
-  # drawFn: (xcor, ycor) ->
-  drawWrapped: (model, xcor, ycor, size, drawFn) ->
-    xs = if model.world.wrappingallowedinx
-      [xcor - @view.worldWidth, xcor, xcor + @view.worldWidth]
-    else
-      [xcor]
-    ys = if model.world.wrappingallowediny
-      [ycor - @view.worldHeight, ycor, ycor + @view.worldHeight]
-    else
-      [ycor]
-    for x in xs
-      if (x + size / 2) > @view.minpxcor - 0.5 and (x - size / 2) < @view.maxpxcor + 0.5
-        for y in ys
-          if (y + size / 2) > @view.minpycor - 0.5 and (y - size / 2) < @view.maxpycor + 0.5
-            drawFn(x,y)
 
 class SpotlightDrawer extends Drawer
   constructor: (@view) ->
@@ -214,7 +213,7 @@ class SpotlightDrawer extends Drawer
     ctx.arc(x, y, innerDiam / 2, 0, 2 * Math.PI, true)
     ctx.fill()
 
-  drawSpotlight: (model, xcor, ycor, size, dimOther) ->
+  drawSpotlight: (xcor, ycor, size, dimOther) ->
     ctx = @view.ctx
     ctx.lineWidth = @view.onePixel
 
@@ -222,7 +221,7 @@ class SpotlightDrawer extends Drawer
     # Draw arc anti-clockwise so that it's subtracted from the fill. See the
     # fill() documentation and specifically the "nonzero" rule. BCH 3/17/2015
     if dimOther
-      @drawWrapped(model, xcor, ycor, size + @outer(), (x, y) =>
+      @view.drawWrapped(xcor, ycor, size + @outer(), (x, y) =>
         ctx.moveTo(x, y) # Don't want the context to draw a path between the circles. BCH 5/6/2015
         ctx.arc(x, y, (size + @outer()) / 2, 0, 2 * Math.PI, true)
       )
@@ -230,7 +229,7 @@ class SpotlightDrawer extends Drawer
       ctx.fillStyle = @dimmed
       ctx.fill()
 
-    @drawWrapped(model, xcor, ycor, size + @outer(), (x, y) =>
+    @view.drawWrapped(xcor, ycor, size + @outer(), (x, y) =>
       @drawCircle(x, y, size, size + @outer(), @dimmed)
       @drawCircle(x, y, size, size + @middle(), @spotlightOuterBorder)
       @drawCircle(x, y, size, size + @inner(), @spotlightInnerBorder)
@@ -251,7 +250,7 @@ class SpotlightDrawer extends Drawer
       watched = @view.watch(model)
       if watched?
         [xcor, ycor, size] = @dimensions(watched)
-        @drawSpotlight(model, xcor, ycor,  @adjustSize(size), model.observer.perspective == WATCH)
+        @drawSpotlight(xcor, ycor,  @adjustSize(size), model.observer.perspective == WATCH)
     )
 
 class TurtleDrawer extends Drawer
@@ -259,12 +258,13 @@ class TurtleDrawer extends Drawer
     @turtleShapeDrawer = new CachingShapeDrawer({})
     @linkDrawer = new LinkDrawer(@view, {})
 
-  drawTurtle: (model, turtle) ->
+  drawTurtle: (turtle) ->
     if not turtle['hidden?']
       xcor = turtle.xcor
       ycor = turtle.ycor
       size = turtle.size
-      @drawWrapped(model, xcor, ycor, size, ((x, y) => @drawTurtleAt(turtle, x, y)))
+      @view.drawWrapped(xcor, ycor, size, ((x, y) => @drawTurtleAt(turtle, x, y)))
+      @view.drawLabel(xcor + turtle.size / 2, ycor - turtle.size / 2, turtle.label, turtle['label-color'])
 
   drawTurtleAt: (turtle, xcor, ycor) ->
     ctx = @view.ctx
@@ -282,7 +282,6 @@ class TurtleDrawer extends Drawer
     ctx.scale(scale, scale)
     @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName)
     ctx.restore()
-    @view.drawLabel(xcor + turtle.size / 2, ycor - turtle.size / 2, turtle.label, turtle['label-color'])
 
   drawLink: (link, turtles, wrapX, wrapY) ->
     @linkDrawer.draw(link, turtles, wrapX, wrapY)
@@ -300,7 +299,7 @@ class TurtleDrawer extends Drawer
         @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
       @view.ctx.lineWidth = @onePixel
       for id, turtle of turtles
-        @drawTurtle(model, turtle)
+        @drawTurtle(turtle)
     )
 
 # Works by creating a scratchCanvas that has a pixel per patch. Those pixels
