@@ -113,7 +113,7 @@ class window.WidgetController
           widget.minValue  = minValue - 0.000001
           widget.minValue  = minValue
     try
-      @model.ticks = world.ticker.tickCount()
+      @model.ticks = Math.floor(world.ticker.tickCount())
     catch err
       # ignore
 
