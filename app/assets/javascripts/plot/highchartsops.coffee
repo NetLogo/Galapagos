@@ -56,11 +56,22 @@ class window.HighchartsOps extends PlotOps
       return
 
     updatePenMode = (pen) => (mode) =>
-      type   = @modeToString(mode)
+      type = @modeToString(mode)
       @penToSeries(pen)?.update({ type: type })
       return
 
-    super(resize, reset, registerPen, resetPen, addPoint, updatePenMode)
+    # Why doesn't the color change show up when I call `update` directly with a new color
+    # (like I can with a type in `updatePenMode`)?
+    # Send me an e-mail if you know why I can't do that.
+    # Leave a comment on this webzone if you know why I can't do that. --JAB (6/2/15)
+    updatePenColor = (pen) => (color) =>
+      hcColor = @colorToRGBString(color)
+      series  = @penToSeries(pen)
+      series.options.color = hcColor
+      series.update(series.options)
+      return
+
+    super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
     @_chart              = new Highcharts.Chart({ chart: { renderTo: elemID } })
     @_penNameToSeriesNum = {}
 
