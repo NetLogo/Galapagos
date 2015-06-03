@@ -3,8 +3,10 @@ import
     Scalaz.ToValidationOps
 
 import
-  org.nlogo.{ core, tortoise },
-    core.CompilerException,
+  org.nlogo.{ core, parse, tortoise },
+    core.{ CompilerException, model, Model },
+      model.ModelReader,
+    parse.CompilerUtilities,
     tortoise.CompiledModel
 
 import
@@ -32,7 +34,7 @@ class CompilerServiceTest extends PlaySpec {
 
   "CompilerService" must {
     "compile nlogo contents" in {
-      val result = CompileResponse.fromModel(CompiledModel.fromNlogoContents(wolfSheep), Seq(), Seq())
+      val result = CompileResponse.fromModel(wsModelV, Seq(), Seq())
       result.model mustBe wsModel.compiledCode.successNel[CompilerException]
     }
 
@@ -40,7 +42,7 @@ class CompilerServiceTest extends PlaySpec {
       val commands  = Seq("crt 1", "ca")
       val reporters = Seq("count turtles", "5 + 10", "4 + 2")
 
-      val result            = CompileResponse.fromModel(CompiledModel.fromNlogoContents(wolfSheep), commands, reporters)
+      val result            = CompileResponse.fromModel(wsModelV, commands, reporters)
       val compiledCommands  = commands  map { s => wsModel.compileCommand(s) }
       val compiledReporters = reporters map { s => wsModel.compileReporter(s) }
 
@@ -52,7 +54,7 @@ class CompilerServiceTest extends PlaySpec {
       val commands  = Map("one" -> "crt 1", "two" -> "ca")
       val reporters = Map("one" -> "count turtles", "two" -> "5 + 10", "three" -> "4 + 2")
 
-      val result            = CompileResponse.fromModel(CompiledModel.fromNlogoContents(wolfSheep), commands, reporters)
+      val result            = CompileResponse.fromModel(wsModelV, commands, reporters)
       val compiledCommands  = commands.mapValues  { s => wsModel.compileCommand(s) }
       val compiledReporters = reporters.mapValues { s => wsModel.compileReporter(s) }
 
@@ -74,7 +76,7 @@ class CompilerServiceTest extends PlaySpec {
         "idontexit 4 5" -> false,
         "grass"         -> true
       )
-      val result    = CompileResponse.fromModel(CompiledModel.fromNlogoContents(wolfSheep),
+      val result    = CompileResponse.fromModel(wsModelV,
                                                 commands.keys.toSeq,
                                                 reporters.keys.toSeq)
 
@@ -138,15 +140,21 @@ class CompilerServiceTest extends PlaySpec {
   }
 
   private val wolfSheep = usingSource(_.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString)
+
+  private val wsModelV = CompiledModel.fromModel(openModel(wolfSheep))
+
   private val wsModel = {
     val modelShouldHaveCompiled = (failures: NonEmptyList[CompilerException]) =>
       s"""|Model should have compiled but failed with the following messages:
-          |${failures.stream.mkString("\n")}""".stripMargin
-    CompiledModel.fromNlogoContents(wolfSheep) valueOr { e => fail(modelShouldHaveCompiled(e)) }
+         |${failures.stream.mkString("\n")}""".stripMargin
+    wsModelV valueOr { e => fail(modelShouldHaveCompiled(e)) }
   }
 
-  private val widgetModel = CompiledModel.fromNlogoContents(
+  private def openModel(model: String): Model =
+    ModelReader.parseModel(model, CompilerUtilities)
+
+  private val widgetModel = CompiledModel.fromModel(openModel(
     usingSource(_.fromFile("public/modelslib/test/tortoise/Widgets.nlogo"))(_.mkString)
-  )
+  ))
 
 }

@@ -20,14 +20,14 @@ import
 
 import
   org.nlogo.{ core, tortoise },
-    core.{ Model, Widget },
+    core.{ CompilerException, Model, Widget },
     tortoise.CompiledModel,
       CompiledModel.CompileResult
 
 import
   play.api.{ cache, libs, mvc, Play },
     cache.{ CacheApi, NamedCache },
-    libs.json.{ Json, JsObject },
+    libs.json.{ JsArray, Json, JsObject },
       Json.toJsFieldJsValueWrapper,
     Play.current,
     mvc.{ Action, Controller, RequestHeader, Result }
@@ -61,11 +61,31 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
 
   protected[controllers] type ModelMaker = (String, List[Widget], String) => ModelResultV
   protected[controllers] val modelFromURL: ModelMaker   = (url,   _, hostUri) =>
-    fetchURL(url, hostUri) map (CompiledModel.fromNlogoContents(_))
+    fetchURL(url, hostUri) flatMap nlogoStringToModelResultV
   protected[controllers] val modelFromCode:  ModelMaker = (code,  widgets, _) =>
     CompiledModel.fromModel(Model(code, widgets)).successNel
   protected[controllers] val modelFromNlogo: ModelMaker = (nlogo, _, _)       =>
-    CompiledModel.fromNlogoContents(nlogo).successNel
+    nlogoStringToModelResultV(nlogo)
+
+  private def nlogoStringToModelResultV(nlogo: String): ModelResultV =
+    stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(nlogo))
+
+  private def stringifyNonCompilerExceptions(v: ValidationNel[Exception, CompiledModel]): ModelResultV = {
+    def liftCompilerExceptions(nel: NonEmptyList[Exception]): ModelResultV = {
+      val (ces, es) =
+        nel.list.foldLeft((List.empty[CompilerException], List.empty[Exception])) {
+          case ((ces, es), ce: CompilerException) => (ces :+ ce, es)
+          case ((ces, es), e:  Exception)         => (ces,       es :+ e)
+        }
+      val messages = es.map(_.getMessage)
+      messages.headOption.map {
+        h => NonEmptyList(h, messages.tail: _*).failure
+      } getOrElse {
+        NonEmptyList(ces.head, ces.tail: _*).failure.successNel[String]
+      }
+    }
+    v.fold(liftCompilerExceptions, _.successNel[CompilerException].successNel[String])
+  }
 
   protected[controllers] def genCompileAction(compileModel: ModelMaker, missingModelMsg: String) =
     Action { implicit request =>
@@ -79,7 +99,7 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
         reporters    <- getIDedStmtsV(argMap, ReportersKey)
       } yield CompileResponse.fromModel(modelResult, commands, reporters)
 
-      responseV fold (nelResult(BadRequest), res => Ok(Json.toJson(res)))
+      responseV fold (jsonNelResult(BadRequest), res => Ok(Json.toJson(res)))
     }
 
   protected[controllers] def getIDedStmtsV(argMap: Map[String, String], field: String): ValidationNel[String, IDedValues[String]] = {
@@ -187,6 +207,14 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
 
   private def nelResult[E](status: Status)(nel: NonEmptyList[E]): Result =
     status(nel.stream.mkString("\n\n"))
+
+  private def jsonNelResult(status: Status)(nel: NonEmptyList[String]): Result = {
+    val errors = JsArray(nel.map(s => Json.obj("message" -> s)).list.toList.toSeq)
+    val result = Json.obj("success" -> false, "result" -> errors)
+    status(Json.obj(
+      "model"    -> result,
+      "commands" -> Json.arr(result)))
+  }
 
   private def extractModelString(argMap: Map[String, String], missingMsg: String): ValidationNel[String, String] =
     (argMap get ModelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
