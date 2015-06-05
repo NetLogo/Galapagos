@@ -73,6 +73,9 @@ window.ConsoleWidget = Ractive.extend({
         @set('input', '')
         @set('workingEntry', {})
     )
+    @on('clear-history', (event) ->
+      @set('output', '')
+    )
 
   template:
     """
@@ -91,6 +94,7 @@ window.ConsoleWidget = Ractive.extend({
                on-keypress='check-run'
                on-keydown='change-mode'
                value='{{input}}' />
+        <button on-click='clear-history'>Clear</button>
       </div>
     </div>
     """
