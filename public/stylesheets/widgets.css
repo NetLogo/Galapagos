@@ -164,6 +164,10 @@
     padding: 0px;
 }
 
+.netlogo-button.clear-button {
+    padding: 5px;
+}
+
 .netlogo-button > span {
     /* For some reason, Safari doesn't like justify-content in buttons,
        we have to resort to putting a span in the button that can then be
