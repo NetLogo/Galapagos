@@ -92,6 +92,8 @@ class window.WidgetController
         else if widget.reporter?
           try
             widget.currentValue = widget.reporter()
+            if typeof widget.currentValue is "number" and isNaN(widget.currentValue) or widget.currentValue in [undefined, null, Infinity, -Infinity]
+              widget.currentValue = 'N/A'
           catch err
             widget.currentValue = 'N/A'
         if widget.precision? and typeof widget.currentValue == 'number' and isFinite(widget.currentValue)
