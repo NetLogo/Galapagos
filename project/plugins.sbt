@@ -19,4 +19,4 @@ scalacOptions ++= Seq(
 )
 
 lazy val root = project.in(file(".")).dependsOn(sbtAutoprefixer)
-lazy val sbtAutoprefixer = uri("git://github.com/matthewrennie/sbt-autoprefixer")
+lazy val sbtAutoprefixer = uri("git://github.com/matthewrennie/sbt-autoprefixer.git#ebd23db3316aa9ebaad66f251843445eda8f9994")
