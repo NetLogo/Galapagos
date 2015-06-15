@@ -1,4 +1,4 @@
-package models
+package models.compile
 
 import
   org.nlogo.{ core, tortoise },
@@ -13,7 +13,7 @@ import
     Json.toJsFieldJsValueWrapper
 
 import
-  models.json.CompileWrites._
+  models.json.Writers.compileResultWrites
 
 object CompiledWidget {
   implicit val widgetWrites = Writes[CompiledWidget[Widget]](_.toJson)

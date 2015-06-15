@@ -16,7 +16,8 @@ import
   org.nlogo.tortoise.CompiledModel
 
 import
-  models.Util.usingSource
+  compile.CompiledWidget,
+  Util.usingSource
 
 object ModelSaver {
 

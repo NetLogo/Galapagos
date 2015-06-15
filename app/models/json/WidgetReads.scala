@@ -1,12 +1,21 @@
 package models.json
 
 import
+  scalaz.ValidationNel
+
+import
   org.nlogo.core.{ Button, Chooseable, Chooser, Col, Direction, Horizontal, InputBox, InputBoxType, LogoList, Monitor, Num, Output, Pen, Plot, Slider, Str, StrCommand, StrReporter, Switch, TextBox, UpdateMode, Vertical, View, Widget }
 
 import
   play.api.libs.json.{ JsArray, JsBoolean, JsError, JsNull, JsNumber, Json, JsResult, JsSuccess, JsString, Reads }
 
 object WidgetReads {
+
+  def parseWidgets(json: String): ValidationNel[String, List[Widget]] = {
+    import scalaz.Scalaz.ToValidationOps
+    Json.parse(json).validate[List[Widget]].fold(_.mkString("\n").failureNel, _.successNel)
+  }
+
   val literalReads: Reads[AnyRef] = Reads[AnyRef] {
     case JsString(s)     => JsSuccess(s)
     case JsNumber(x)     => JsSuccess(x.toDouble: java.lang.Double)

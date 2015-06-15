@@ -17,14 +17,14 @@ import
 
 import
   org.nlogo.{ core, tortoise },
-    core.{ CompilerException, Model, Widget },
+    core.{ Model, Widget },
     tortoise.CompiledModel,
       CompiledModel.CompileResult
 
 import
   play.api.{ cache, libs, mvc, Play },
     cache.Cache,
-    libs.json.{ Json, JsObject, Writes },
+    libs.json.{ Json, JsObject },
       Json.toJsFieldJsValueWrapper,
     Play.current,
     mvc.{ Action, Controller, RequestHeader, Result }
@@ -34,10 +34,10 @@ import
   controllers.PlayUtil.EnhancedRequest
 
 import
-  models.{ CompilationFailure, CompilationSuccess, CompiledWidget, json, ModelSaver, ModelsLibrary, StatusCacher, Util },
-    json.{ CompileWrites, WidgetReads },
-      CompileWrites._,
-      WidgetReads._,
+  models.{ CompilationFailure, CompilationSuccess, compile, json, ModelCompilationStatus, ModelSaver, ModelsLibrary, StatusCacher, Util },
+    compile.{ CompileResponse, IDedValues, IDedValuesMap, IDedValuesSeq },
+    json.{ WidgetReads, Writers },
+      Writers.compileResponseWrites,
     ModelsLibrary.prettyFilepath,
     Util.usingSource,
     StatusCacher.AllBuiltInModelsCacheKey
@@ -69,31 +69,15 @@ object CompilerService extends Controller {
       val argMap = toStringMap(request.extractBundle)
 
       val responseV = for {
-        widgets      <- parseWidgets(argMap.getOrElse("widgets", "[]"))
+        widgets      <- WidgetReads.parseWidgets(argMap.getOrElse("widgets", "[]"))
         modelStr     <- extractModelString(argMap, missingModelMsg)
         modelResult  <- compileModel(modelStr, widgets, request.host)
-        commands     <- getIDedStmtsV(argMap, commandsKey)
-        reporters    <- getIDedStmtsV(argMap, reportersKey)
-      } yield compile(modelResult, commands, reporters)
+        commands     <- getIDedStmtsV(argMap, CommandsKey)
+        reporters    <- getIDedStmtsV(argMap, ReportersKey)
+      } yield CompileResponse.fromModel(modelResult, commands, reporters)
 
       responseV fold (nelResult(BadRequest), res => Ok(Json.toJson(res)))
     }
-
-  protected[controllers] def parseWidgets(json: String): ValidationNel[String, List[Widget]] =
-    Json.parse(json).validate[List[Widget]].fold(_.mkString("\n").failureNel, _.successNel)
-
-  protected[controllers] def compile(modelResult: CompileResult[CompiledModel],
-                                     commands:    IDedValues[String],
-                                     reporters:   IDedValues[String]): CompileResponse = {
-    val failedMsg   = "Model failed to compile"
-    val modelFailed = new CompilerException(failedMsg, 0, 0, "").failureNel[String]
-    CompileResponse(modelResult map       (_.compiledCode),
-                    modelResult map       (_.model.info) getOrElse failedMsg,
-                    modelResult map       (_.model.code) getOrElse failedMsg,
-                    modelResult map       (m => m.model.widgets map CompiledWidget.compile(m)) getOrElse Seq(),
-                    commands    mapValues (s => modelResult map (_.compileCommand (s)) getOrElse modelFailed),
-                    reporters   mapValues (s => modelResult map (_.compileReporter(s)) getOrElse modelFailed))
-  }
 
   protected[controllers] def getIDedStmtsV(argMap: Map[String, String], field: String): ValidationNel[String, IDedValues[String]] = {
     val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
@@ -202,7 +186,7 @@ object CompilerService extends Controller {
     status(nel.stream.mkString("\n\n"))
 
   private def extractModelString(argMap: Map[String, String], missingMsg: String): ValidationNel[String, String] =
-    (argMap get modelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
+    (argMap get ModelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
 
   private def fetchURL(url: String, hostUri: String): ValidationNel[String, String] = {
     val locallyHostedRegex = new Regex(s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$", "file")
@@ -221,69 +205,14 @@ object CompilerService extends Controller {
 
   // Outer validation indicates the validity of the model representation, whereas CompileResult indicates whether the
   // model compiled successfully. BCH 8/28/2014
-  protected[controllers] type ModelResultV  = ValidationNel[String, CompileResult[CompiledModel]]
+  protected[controllers] type ModelResultV = ValidationNel[String, CompileResult[CompiledModel]]
 
-  protected[controllers] type CompiledStmts = IDedValues[CompileResult[String]]
+  private val CommandsKey  = "commands"
+  private val ModelKey     = "model"
+  private val ReportersKey = "reporters"
 
-  protected[controllers] case class CompileResponse(model:     CompileResult[String],
-                                                    info:      String,
-                                                    code:      String,
-                                                    widgets:   Seq[CompiledWidget[Widget]],
-                                                    commands:  CompiledStmts,
-                                                    reporters: CompiledStmts)
+  private val urlMissingMsg   = s"You must provide a `$ModelKey` parameter that contains the URL of an nlogo file."
+  private val codeMissingMsg  = s"You must provide a `$ModelKey` parameter that contains the code from a NetLogo model."
+  private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
 
-  // We allow users to pass in commands and reporters as either arrays or maps.
-  // Either way, we preserve keys/ordering with the responses. We can't just do
-  // the responses as maps with integer keys as you'd lose commands.length on
-  // the javascript side.
-  // BCH 11/11/2014
-  protected[controllers] sealed trait IDedValues[T] {
-    def mapValues[U](f: (T) => U): IDedValues[U]
-  }
-  protected[controllers] case class IDedValuesMap[T](map: Map[String, T]) extends IDedValues[T] {
-    override def mapValues[U](f: (T) => U): IDedValues[U] = map.mapValues(f)
-  }
-  protected[controllers] case class IDedValuesSeq[T](seq: Seq[T]) extends IDedValues[T] {
-    override def mapValues[U](f: (T) => U): IDedValues[U] = seq.map(f)
-  }
-  protected[controllers] implicit final def mapToIDedValues[T](map: Map[String, T]): IDedValuesMap[T] = IDedValuesMap(map)
-  protected[controllers] implicit final def seqToIDedValues[T](seq: Seq[T]):         IDedValuesSeq[T] = IDedValuesSeq(seq)
-
-  ///////////////////////////
-  // JSON Writes implicits //
-  ///////////////////////////
-  protected[controllers] implicit val compileResponseWrites: Writes[CompileResponse] =
-    Writes(
-      (response: CompileResponse) => Json.obj(
-        modelKey     -> response.model,
-        infoKey      -> response.info,
-        codeKey      -> response.code,
-        widgetsKey   -> response.widgets,
-        commandsKey  -> response.commands,
-        reportersKey -> response.reporters
-      )
-    )
-
-  protected[controllers] implicit val compiledStmtsWrites: Writes[CompiledStmts] =
-    Writes {
-      (_: CompiledStmts) match {
-        case IDedValuesMap(map) => Json.toJson(map)
-        case IDedValuesSeq(seq) => Json.toJson(seq)
-      }
-    }
-
-  protected[controllers] val modelKey     = "model"
-  protected[controllers] val infoKey      = "info"
-  protected[controllers] val codeKey      = "code"
-  protected[controllers] val commandsKey  = "commands"
-  protected[controllers] val reportersKey = "reporters"
-  protected[controllers] val widgetsKey   = "widgets"
-
-
-  private val urlMissingMsg   =
-    s"You must provide a `$modelKey` parameter that contains the URL of an nlogo file."
-  private val codeMissingMsg  =
-    s"You must provide a `$modelKey` parameter that contains the code from a NetLogo model."
-  private val nlogoMissingMsg =
-    s"You must provide a `$modelKey` parameter that contains the contents of an nlogo file."
 }
