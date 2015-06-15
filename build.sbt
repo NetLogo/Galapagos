@@ -1,3 +1,5 @@
+import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
+
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -40,4 +42,14 @@ resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
 resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 
-pipelineStages in Assets := Seq(autoprefixer)
+pipelineStages in Assets += autoprefixer
+
+includeFilter in autoprefixer := Def.setting {
+  val webJarDir     = (webJarsDirectory in Assets).value.getPath
+  val testWebJarDir = (webJarsDirectory in TestAssets).value.getPath
+  new FileFilter {
+    override def accept(file: java.io.File) = {
+      file.getName.endsWith(".css") && ! (file.getPath.contains(webJarDir) || file.getPath.contains(testWebJarDir))
+    }
+  }
+}.value
