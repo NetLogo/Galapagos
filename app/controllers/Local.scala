@@ -8,7 +8,7 @@ import
 import
   models.Util.usingSource
 
-object Local extends Controller {
+class Local extends Controller {
 
   private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource("/js/tortoise-engine.js")))    (_.mkString)
   private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise/agentmodel.js")))(_.mkString)

@@ -4,6 +4,9 @@ import
   java.net.{ MalformedURLException, URL }
 
 import
+  javax.inject.Inject
+
+import
   scala.util.{ Try, matching },
     matching.Regex
 
@@ -23,7 +26,7 @@ import
 
 import
   play.api.{ cache, libs, mvc, Play },
-    cache.Cache,
+    cache.{ CacheApi, NamedCache },
     libs.json.{ Json, JsObject },
       Json.toJsFieldJsValueWrapper,
     Play.current,
@@ -42,7 +45,7 @@ import
     Util.usingSource,
     StatusCacher.AllBuiltInModelsCacheKey
 
-object CompilerService extends Controller {
+class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: CacheApi) extends Controller {
 
   /////////////
   // Actions //
@@ -121,22 +124,22 @@ object CompilerService extends Controller {
   def modelStatuses = Action {
     implicit request =>
       val resultJson =
-        Cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
+        cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
              .map(genStatusJson)
              .foldLeft(Json.obj())(_ ++ _)
       Ok(Json.stringify(resultJson))
   }
 
   private def genStatusJson(filePath: String): JsObject = {
-    Cache.get(filePath) match {
-      case Some(CompilationSuccess(file)) =>
+    cache.get[ModelCompilationStatus](filePath).map {
+      case CompilationSuccess(file) =>
         Json.obj(prettyFilepath(file) -> Json.obj("status" -> "compiling"))
-      case Some(CompilationFailure(file, errors)) =>
+      case CompilationFailure(file, errors) =>
         Json.obj(prettyFilepath(file) -> Json.obj(
           "status" -> "not_compiling",
           "errors" -> errors.foldLeft("")(_ + _.toString)))
-      case _ =>
-        Json.obj(prettyFilepath(filePath) -> Json.obj("status" -> "unknown"))
+    }.getOrElse {
+      Json.obj(prettyFilepath(filePath) -> Json.obj("status" -> "unknown"))
     }
   }
 

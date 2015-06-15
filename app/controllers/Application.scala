@@ -11,7 +11,7 @@ import models.ModelsLibrary
 import
   ModelsLibrary.{ allModels, prettyFilepath }
 
-object Application extends Controller {
+class Application extends Controller {
 
   def index = Action {
     implicit request =>

@@ -4,17 +4,19 @@ import
   java.io.File
 
 import
+  javax.inject.Inject
+
+import
   akka.actor.Actor
 
 import
-  play.api.{ Application, cache },
-    cache.Cache
+  play.api.cache.CacheApi
 
-class StatusCacher(implicit app: Application) extends Actor {
+class StatusCacher(cache: CacheApi) extends Actor {
   import models.StatusCacher.{ AllBuiltInModels, AllBuiltInModelsCacheKey }
   override def receive: Receive = {
-    case AllBuiltInModels(files)        => Cache.set(AllBuiltInModelsCacheKey, files.map(_.getPath))
-    case status: ModelCompilationStatus => Cache.set(status.file.getPath, status)
+    case AllBuiltInModels(files)        => cache.set(AllBuiltInModelsCacheKey, files.map(_.getPath))
+    case status: ModelCompilationStatus => cache.set(status.file.getPath, status)
   }
 }
 

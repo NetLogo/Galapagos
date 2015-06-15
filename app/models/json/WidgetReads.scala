@@ -73,8 +73,8 @@ object WidgetReads {
   }
   implicit val inputBoxReads = Reads[InputBox[AnyRef]] {
     json => for {
-      boxtype <- inputBoxTypeReads.reads(json \ "boxtype")
-      jsValue = (json \ "value")
+      boxtype <- inputBoxTypeReads.reads((json \ "boxtype").get)
+      jsValue = (json \ "value").get
       value   <- if (boxtype == Col) {
         // Although doubles are valid colors, color input boxes specifically return integers
         JsSuccess(jsValue.as[Int]: java.lang.Integer)
