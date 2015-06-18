@@ -3,7 +3,8 @@ package models.json
 import
   org.nlogo.{ core, tortoise },
     core.CompilerException,
-    tortoise.CompiledModel.CompileResult
+    tortoise.{ CompiledModel, CompiledWidget, WidgetCompiler },
+      CompiledModel.CompileResult
 
 import
   play.api.libs.json.{ Json, JsString, Writes }
@@ -47,6 +48,11 @@ object Writers {
       "start"   -> ex.start,
       "end"     -> ex.end
     )
+  }
+
+  implicit val compiledWidgetWrites: Writes[Seq[CompiledWidget]] = Writes {
+    (widgets: Seq[CompiledWidget]) =>
+      JsString(WidgetCompiler.formatWidgets(widgets))
   }
 
 }

@@ -38,8 +38,8 @@ import
 
 import
   models.{ CompilationFailure, CompilationSuccess, compile, json, ModelCompilationStatus, ModelSaver, ModelsLibrary, StatusCacher, Util },
-    compile.{ CompileResponse, IDedValues, IDedValuesMap, IDedValuesSeq },
-    json.{ WidgetReads, Writers },
+    compile.{ CompileResponse, CompileWidgets, IDedValues, IDedValuesMap, IDedValuesSeq },
+    json.{ JsonConverter, Writers },
       Writers.compileResponseWrites,
     ModelsLibrary.prettyFilepath,
     Util.usingSource,
@@ -92,7 +92,7 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
       val argMap = toStringMap(request.extractBundle)
 
       val responseV = for {
-        widgets      <- WidgetReads.parseWidgets(argMap.getOrElse("widgets", "[]"))
+        widgets      <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
         modelStr     <- extractModelString(argMap, missingModelMsg)
         modelResult  <- compileModel(modelStr, widgets, request.host)
         commands     <- getIDedStmtsV(argMap, CommandsKey)

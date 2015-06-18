@@ -4,19 +4,24 @@ import
   java.net.URL
 
 import
+  json.Writers.compiledWidgetWrites
+
+import
+  play.api.libs.json.Json
+
+import
+  org.nlogo.tortoise.{ CompiledModel, json => tortoisejson },
+    tortoisejson.{ JsonLibrary, WidgetToJson },
+      JsonLibrary.{ toNative, nativeToString },
+      WidgetToJson.widget2Json
+
+import
   scala.io.Codec
 
 import
   scalaz.ValidationNel
 
 import
-  play.api.libs.json.Json
-
-import
-  org.nlogo.tortoise.CompiledModel
-
-import
-  compile.CompiledWidget,
   Util.usingSource
 
 object ModelSaver {
@@ -24,10 +29,11 @@ object ModelSaver {
   type CompilationBundleV = ValidationNel[Exception, CompilationBundle]
 
   def apply(compiledModel: CompiledModel, jsURLs: Seq[URL] = Seq()): CompilationBundle = {
-    val CompiledModel(js, model, _, _, _) = compiledModel
-    val widgets = model.widgets map CompiledWidget.compile(compiledModel)
+    val CompiledModel(js, compilation, _) = compiledModel
+    val model = compilation.model
+    val widgets = Json.toJson(compiledModel.widgets).toString
     val depsJS  = jsURLs map slurpURL mkString("", ";\n", ";\n")
-    CompilationBundle(js, depsJS, Json.toJson(widgets).toString, model.code, model.info)
+    CompilationBundle(js, depsJS, widgets, model.code, model.info)
   }
 
   private def slurpURL(url: URL): String =

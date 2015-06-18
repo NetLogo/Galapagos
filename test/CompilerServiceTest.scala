@@ -17,9 +17,8 @@ import
 
 import
   models.{ compile, json, Util },
-    compile.{ CompileResponse, IDedValuesMap, IDedValuesSeq },
-    json.{ WidgetReads, Writers },
-      Writers.compileResponseWrites,
+    compile.{ CompileResponse, CompileWidgets, IDedValuesMap, IDedValuesSeq },
+    json.Writers.{ compiledWidgetWrites, compileResponseWrites },
     Util.usingSource
 
 class CompilerServiceTest extends PlaySpec {
@@ -122,19 +121,6 @@ class CompilerServiceTest extends PlaySpec {
       ((notGoodJson \ ModelKey \ "result")(0) \ "message").as[String] mustBe notGood.model.fold(
         _.head.getMessage,
         success => fail("Bad test: CompileResult was supposed to contain a CompilerException")
-      )
-    }
-
-    "compile and serialize widgets without error" in {
-      val modelResponse = CompileResponse.fromModel(widgetModel, Seq(), Seq())
-      val widgetString = Json.toJson(modelResponse.widgets).toString
-      widgetModel.fold(
-        errs  => fail(errs.stream.mkString("\n")),
-        model => WidgetReads.parseWidgets(widgetString).fold(
-          errs    => fail(errs.stream.mkString("\n")),
-          // The mkString("\n")s make failures easier to read.
-          widgets => widgets.mkString("\n") mustBe model.model.widgets.mkString("\n")
-        )
       )
     }
   }
