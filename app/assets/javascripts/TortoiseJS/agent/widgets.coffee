@@ -194,7 +194,7 @@ isValidValue = (widget, value) ->
 
 template =
   """
-  <div class="netlogo-model" style="width: {{width}};">
+  <div class="netlogo-model" style="width: {{width}}px;">
     <div class="netlogo-header">
       <label class="netlogo-widget netlogo-speed-slider">
         <span class="netlogo-label">speed</span>
@@ -209,7 +209,7 @@ template =
       </div>
     </div>
 
-    <div style="position: relative; width: {{width}}; height: {{height}}"
+    <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container">
       {{#widgets}}
         {{# type === 'view'               }} {{>view         }} {{/}}
