@@ -11,6 +11,7 @@ InfoTabEditor = Ractive.extend({
 
     infoTabEditor.on('change', =>
       @set('rawText', infoTabEditor.getValue())
+      @set('info',    infoTabEditor.getValue())
     )
 
   template:

@@ -18,6 +18,8 @@ POST       /compile-code                       controllers.CompilerService.compi
 GET        /compile-code                       controllers.CompilerService.compileCode
 POST       /compile-nlogo                      controllers.CompilerService.compileNlogo
 GET        /compile-nlogo                      controllers.CompilerService.compileNlogo
+POST       /export-code                        controllers.CompilerService.exportCode
+GET        /export-code                        controllers.CompilerService.exportCode
 POST       /save-url                           controllers.CompilerService.saveURL
 GET        /save-url                           controllers.CompilerService.saveURL
 POST       /save-code                          controllers.CompilerService.saveCode

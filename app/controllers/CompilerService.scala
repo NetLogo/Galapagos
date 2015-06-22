@@ -1,74 +1,150 @@
 package controllers
 
 import
-  java.net.{ MalformedURLException, URL }
-
-import
   javax.inject.Inject
 
 import
-  scala.util.{ Try, matching },
-    matching.Regex
-
-import
-  scalaz.{ NonEmptyList, Scalaz, Validation, ValidationNel },
+  scalaz.{ Scalaz, Validation, ValidationNel },
     Scalaz.ToValidationOps,
     Validation.FlatMap.ValidationFlatMapRequested
 
 import
-  com.fasterxml.jackson.core.JsonProcessingException
+  play.api.{ cache, mvc, Play },
+    cache.{ CacheApi, NamedCache },
+    mvc.Controller,
+    Play.current
 
-import
-  org.nlogo.{ core, tortoise },
-    core.{ CompilerException, Model, Widget },
-    tortoise.CompiledModel,
+import CompilerService._
+
+
+
+class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: CacheApi)
+  extends Controller with CacheProvider with CompilationRequestHandler with ModelStatusHandler
+
+
+
+private[controllers] object CompilerService {
+
+  import
+    org.nlogo.tortoise.CompiledModel,
       CompiledModel.CompileResult
 
-import
-  play.api.{ cache, libs, mvc, Play },
-    cache.{ CacheApi, NamedCache },
-    libs.json.{ JsArray, Json, JsObject },
-      Json.toJsFieldJsValueWrapper,
-    Play.current,
-    mvc.{ Action, Controller, RequestHeader, Result }
+  // Outer validation indicates the validity of the model representation, whereas CompileResult indicates whether the
+  // model compiled successfully. BCH 8/28/2014
+  type ArgMap       = Map[String, String]
+  type ModelResultV = ValidationNel[String, CompileResult[CompiledModel]]
 
+  val CommandsKey  = "commands"
+  val ModelKey     = "model"
+  val ReportersKey = "reporters"
 
-import
-  controllers.PlayUtil.EnhancedRequest
+}
 
-import
-  models.{ CompilationFailure, CompilationSuccess, compile, json, ModelCompilationStatus, ModelSaver, ModelsLibrary, StatusCacher, Util },
-    compile.{ CompileResponse, CompileWidgets, IDedValues, IDedValuesMap, IDedValuesSeq },
-    json.{ JsonConverter, Writers },
-      Writers.compileResponseWrites,
-    ModelsLibrary.prettyFilepath,
-    Util.usingSource,
-    StatusCacher.AllBuiltInModelsCacheKey
+private[controllers] object CompilationRequestHandler {
 
-class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: CacheApi) extends Controller {
+  import
+    java.net.{ MalformedURLException, URL }
 
-  /////////////
-  // Actions //
-  /////////////
+  import
+    scala.util.Try
 
-  def compileURL   = genCompileAction(modelFromURL,   urlMissingMsg)
-  def compileCode  = genCompileAction(modelFromCode,  codeMissingMsg)
-  def compileNlogo = genCompileAction(modelFromNlogo, nlogoMissingMsg)
+  import
+    scalaz.NonEmptyList
 
-  def saveURL      = genSaveAction   (modelFromURL,   urlMissingMsg)
-  def saveCode     = genSaveAction   (modelFromCode,  codeMissingMsg)
-  def saveNlogo    = genSaveAction   (modelFromNlogo, nlogoMissingMsg)
+  import
+    org.nlogo.core.Model
 
-  protected[controllers] type ModelMaker = (String, List[Widget], String) => ModelResultV
-  protected[controllers] val modelFromURL: ModelMaker   = (url,   _, hostUri) =>
-    fetchURL(url, hostUri) flatMap nlogoStringToModelResultV
-  protected[controllers] val modelFromCode:  ModelMaker = (code,  widgets, _) =>
-    CompiledModel.fromModel(Model(code, widgets)).successNel
-  protected[controllers] val modelFromNlogo: ModelMaker = (nlogo, _, _)       =>
-    nlogoStringToModelResultV(nlogo)
+  import
+    models.{ compile, Util },
+      compile.CompileWidgets,
+      Util.usingSource
 
-  private def nlogoStringToModelResultV(nlogo: String): ModelResultV =
-    stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(nlogo))
+  sealed trait ModelArgument
+  case class ModelObject(model: Model) extends ModelArgument
+  case class ModelText(text: String)   extends ModelArgument
+
+  type ModelResult = ValidationNel[String, ModelArgument]
+
+  def generateFromUrl(argMap: ArgMap, hostUri: String): ModelResult =
+    extractModelString(argMap, urlMissingMsg).flatMap(url => fetchURL(url, hostUri) map ModelText.apply)
+
+  def generateFromCode(argMap: ArgMap, hostUri: String): ModelResult = {
+    val info = argMap.getOrElse("info", "")
+    for {
+      widgets <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
+      code    <- extractModelString(argMap, codeMissingMsg)
+      model   <- Validation.fromTryCatchThrowable[Model, RuntimeException](Model(code, widgets, info = info)).leftMap(e => NonEmptyList(e.getMessage))
+    } yield ModelObject(model)
+  }
+
+  def generateFromNlogo(argMap: ArgMap, hostUri: String): ModelResult =
+    extractModelString(argMap, nlogoMissingMsg) map ModelText.apply
+
+  private def fetchURL(url: String, hostUri: String): ValidationNel[String, String] = {
+    val LocalHostRegex = s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$".r
+    Try {
+      (url match {
+        case LocalHostRegex(file) => Assets.resourceNameAt("/public", file).flatMap(Play.resource)
+        case _                    => None
+      }).getOrElse(new URL(url))
+    } map {
+      wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel
+    } recover {
+      case _: MalformedURLException => s"'$url' is an invalid URL.".failureNel
+    } getOrElse {
+      s"An unknown error occurred while processing the URL '$url'. Make sure the url is publicly accessible.".failureNel
+    }
+  }
+
+  private def extractModelString(argMap: ArgMap, missingMsg: String): ValidationNel[String, String] =
+    (argMap get ModelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
+
+  private val urlMissingMsg   = s"You must provide a `$ModelKey` parameter that contains the URL of an nlogo file."
+  private val codeMissingMsg  = s"You must provide a `$ModelKey` parameter that contains the code from a NetLogo model."
+  private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
+
+}
+
+private[controllers] trait CompilationRequestHandler extends RequestResultGenerator {
+
+  self: Controller =>
+
+  import
+    controllers.PlayUtil.EnhancedRequest
+
+  import
+    scalaz.NonEmptyList
+
+  import
+    org.nlogo.{ core, tortoise },
+      core.CompilerException,
+      tortoise.CompiledModel
+
+  import
+    play.api.mvc.{ Action, Result }
+
+  import
+    CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl, ModelObject, ModelResult, ModelText }
+
+  def compileURL   = genCompileAction(generateFromUrl,   jsonResult)
+  def compileCode  = genCompileAction(generateFromCode,  jsonResult)
+  def compileNlogo = genCompileAction(generateFromNlogo, jsonResult)
+
+  def exportCode = genCompileAction(generateFromCode, exportResult)
+
+  def saveURL   = genCompileAction(generateFromUrl,   saveResult)
+  def saveCode  = genCompileAction(generateFromCode,  saveResult)
+  def saveNlogo = genCompileAction(generateFromNlogo, saveResult)
+
+  private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
+    Action { implicit request =>
+      val argMap = toStringMap(request.extractBundle)
+      val model = generateModel(argMap, request.host).flatMap {
+        case ModelObject(m)  => CompiledModel.fromModel(m).successNel
+        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text))
+      }
+      generateResult(argMap, model)
+    }
 
   private def stringifyNonCompilerExceptions(v: ValidationNel[Exception, CompiledModel]): ModelResultV = {
     def liftCompilerExceptions(nel: NonEmptyList[Exception]): ModelResultV = {
@@ -80,102 +156,120 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
       val messages = es.map(_.getMessage)
       messages.headOption.map {
         h => NonEmptyList(h, messages.tail: _*).failure
-      } getOrElse {
+      }.getOrElse {
         NonEmptyList(ces.head, ces.tail: _*).failure.successNel[String]
       }
     }
     v.fold(liftCompilerExceptions, _.successNel[CompilerException].successNel[String])
   }
 
-  protected[controllers] def genCompileAction(compileModel: ModelMaker, missingModelMsg: String) =
-    Action { implicit request =>
-      val argMap = toStringMap(request.extractBundle)
-
-      val responseV = for {
-        widgets      <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
-        modelStr     <- extractModelString(argMap, missingModelMsg)
-        modelResult  <- compileModel(modelStr, widgets, request.host)
-        commands     <- getIDedStmtsV(argMap, CommandsKey)
-        reporters    <- getIDedStmtsV(argMap, ReportersKey)
-      } yield CompileResponse.fromModel(modelResult, commands, reporters)
-
-      responseV fold (jsonNelResult(BadRequest), res => Ok(Json.toJson(res)))
-    }
-
-  protected[controllers] def getIDedStmtsV(argMap: Map[String, String], field: String): ValidationNel[String, IDedValues[String]] = {
-    val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
-    Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
-      case _: JsonProcessingException => malformedStmtsError
-    }.get.flatMap { json =>
-      val asSeq      = json.asOpt[Seq[String]]         map IDedValuesSeq.apply
-      lazy val asMap = json.asOpt[Map[String, String]] map IDedValuesMap.apply
-      asSeq orElse asMap map (_.successNel) getOrElse malformedStmtsError
-    }
+  private def toStringMap(bundle: ParamBundle): ArgMap = {
+    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
+    bundle.stringParams ++ fileMap
   }
 
-  protected[controllers] def genSaveAction(compileModel: ModelMaker, missingModelMsg: String) =
-    Action {
-      implicit request =>
+}
 
-      val slurpURL = (url: String) => usingSource(_.fromURL(routes.Assets.at(url).absoluteURL()))(_.mkString)
+private[controllers] trait RequestResultGenerator {
 
-      val stylesheets = Set("stylesheets/widgets.css",
-                            "stylesheets/classic.css",
-                            "stylesheets/netlogo-syntax.css",
-                            "lib/codemirror/lib/codemirror.css")
-      val css = stylesheets map slurpURL mkString "\n"
+  self: Controller =>
 
-      val argMap  = toStringMap(request.extractBundle)
-      val bundleV =
+  import
+    java.net.URL
+
+  import
+    scala.util.Try
+
+  import
+    scalaz.NonEmptyList
+
+  import
+    com.fasterxml.jackson.core.JsonProcessingException
+
+  import
+    play.api.{ libs, mvc },
+      libs.json.{ JsArray, Json },
+      mvc.Result
+
+  import
+    controllers.Local.{ enginePath => engineJsPath }
+
+  import
+    models.{ compile, json, ModelSaver, Util },
+      compile.{ CompileResponse, IDedValues, IDedValuesMap, IDedValuesSeq },
+      json.Writers.compileResponseWrites,
+      Util.usingSource
+
+  protected def jsonResult(argMap: ArgMap, modelV: ModelResultV): Result =
+    modelV.flatMap {
+      model =>
         for {
-          modelStr    <- extractModelString(argMap, missingModelMsg)  leftMap nelResult(BadRequest)
-          modelResult <- compileModel(modelStr, List(), request.host) leftMap nelResult(BadRequest)
-          model       <- modelResult                                  leftMap nelResult(InternalServerError)
-        } yield ModelSaver(model, generateTortoiseLiteJsUrls())
+          commands  <- getIDedStmtsV(argMap, CommandsKey)
+          reporters <- getIDedStmtsV(argMap, ReportersKey)
+        } yield CompileResponse.fromModel(model, commands, reporters)
+    }.fold(jsonNelResult(BadRequest), res => Ok(Json.toJson(res)))
 
-      bundleV.fold(
-        identity,
-        bundle => Ok(views.html.standaloneTortoise(
-          bundle.modelJs, bundle.libsJs, css, bundle.widgets, bundle.nlogoCode, bundle.info)
-        )
+  protected def exportResult(argMap: ArgMap, modelV: ModelResultV): Result = {
+    val filename =
+      argMap.get("filename")
+        .map(name => if (name.endsWith(".nlogo")) name else s"$name.nlogo")
+        .getOrElse("export.nlogo")
+
+    modelV flatMap CompileResponse.exportNlogo fold(
+      nelResult(BadRequest),
+      res => Ok(res).withHeaders(
+        CONTENT_TYPE        -> TEXT,
+        CONTENT_DISPOSITION -> s"""attachment; filename="$filename""""))
+  }
+
+  protected def saveResult(argMap: ArgMap, modelV: ModelResultV): Result = {
+
+    val jsUrls = tortoiseLiteJsUrls.map(u => Play.resource(u.toString).getOrElse(u))
+
+    val bundleV =
+      modelV
+        .flatMap(_.leftMap(_.map(_.toString())))
+        .map(model => ModelSaver(model, jsUrls))
+
+    bundleV.fold(
+      nelResult(InternalServerError),
+      bundle => Ok(views.html.standaloneTortoise(bundle.modelJs, bundle.libsJs, genCSS, bundle.widgets, bundle.nlogoCode, bundle.info))
+    )
+
+  }
+
+  private def genCSS: String = {
+
+    val slurpURL =
+      (url: String) =>
+        Play.resource(url)
+          .map(assetUrl => usingSource(_.fromURL(assetUrl))(_.mkString))
+          .getOrElse(throw new Exception(s"Missing stylesheet $url"))
+
+    val stylesheets =
+      Set(
+        "/public/stylesheets/widgets.css",
+        "/public/stylesheets/classic.css",
+        "/public/stylesheets/netlogo-syntax.css",
+        "/public/lib/codemirror/lib/codemirror.css"
       )
-    }
 
-  def modelStatuses = Action {
-    implicit request =>
-      val resultJson =
-        cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
-             .map(genStatusJson)
-             .foldLeft(Json.obj())(_ ++ _)
-      Ok(Json.stringify(resultJson))
+    stylesheets map slurpURL mkString "\n"
+
   }
 
-  private def genStatusJson(filePath: String): JsObject = {
-    cache.get[ModelCompilationStatus](filePath).map {
-      case CompilationSuccess(file) =>
-        Json.obj(prettyFilepath(file) -> Json.obj("status" -> "compiling"))
-      case CompilationFailure(file, errors) =>
-        Json.obj(prettyFilepath(file) -> Json.obj(
-          "status" -> "not_compiling",
-          "errors" -> errors.foldLeft("")(_ + _.toString)))
-    }.getOrElse {
-      Json.obj(prettyFilepath(filePath) -> Json.obj("status" -> "unknown"))
-    }
-  }
+  private def tortoiseLiteJsUrls: Seq[URL] = {
 
-  private def generateTortoiseLiteJsUrls()(implicit request: RequestHeader): Seq[URL] = {
-
-    val normalURLs =
+    val webjarURLs =
       Seq(
-        routes.Assets.at("lib/markdown-js/markdown.js"),
-        routes.Assets.at("lib/highcharts/adapters/standalone-framework.js"),
-        routes.Assets.at("lib/highcharts/highcharts.js"),
-        routes.Assets.at("lib/highcharts/modules/exporting.js"),
-        routes.Assets.at("lib/ractive/ractive.js"),
-        routes.Assets.at("lib/codemirror/lib/codemirror.js"),
-        routes.Assets.at("lib/codemirror/addon/mode/simple.js"),
-        routes.Local.engine
-      )
+        "lib/markdown-js/markdown.js",
+        "lib/highcharts/adapters/standalone-framework.js",
+        "lib/highcharts/highcharts.js",
+        "lib/highcharts/modules/exporting.js",
+        "lib/ractive/ractive.js",
+        "lib/codemirror/lib/codemirror.js",
+        "lib/codemirror/addon/mode/simple.js"
+      ).map(path => s"/public/$path")
 
     val assetURLs =
       Seq(
@@ -192,58 +286,79 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
         "javascripts/TortoiseJS/communication/connection.js",
         "javascripts/TortoiseJS/control/session-lite.js",
         "javascripts/plot/highchartsops.js"
-      ) map (
-        routes.Assets.at(_)
-      )
+      ).map(path => s"/public/$path")
 
-    (normalURLs ++ assetURLs) map (route => new URL(route.absoluteURL()))
+    val urls = (webjarURLs :+ engineJsPath) ++ assetURLs
+
+    urls map (
+      url => Play.resource(url).getOrElse(throw new Exception(s"js file $url not available!"))
+    )
 
   }
 
-  private def toStringMap(bundle: ParamBundle): Map[String, String] = {
-    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
-    bundle.stringParams ++ fileMap
+  private def getIDedStmtsV(argMap: ArgMap, field: String): ValidationNel[String, IDedValues[String]] = {
+    val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
+    Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
+      case _: JsonProcessingException => malformedStmtsError
+    }.get.flatMap {
+      json =>
+        val asSeq = json.asOpt[Seq[String]]         map IDedValuesSeq.apply
+        val asMap = json.asOpt[Map[String, String]] map IDedValuesMap.apply
+        asSeq orElse asMap map (_.successNel) getOrElse malformedStmtsError
+    }
   }
 
   private def nelResult[E](status: Status)(nel: NonEmptyList[E]): Result =
     status(nel.stream.mkString("\n\n"))
 
   private def jsonNelResult(status: Status)(nel: NonEmptyList[String]): Result = {
-    val errors = JsArray(nel.map(s => Json.obj("message" -> s)).list.toList.toSeq)
+    val errors = JsArray(nel.map(s => Json.obj("message" -> s)).list.toSeq)
     val result = Json.obj("success" -> false, "result" -> errors)
     status(Json.obj(
       "model"    -> result,
       "commands" -> Json.arr(result)))
   }
 
-  private def extractModelString(argMap: Map[String, String], missingMsg: String): ValidationNel[String, String] =
-    (argMap get ModelKey).fold(missingMsg.failureNel[String])(_.successNel[String])
+}
 
-  private def fetchURL(url: String, hostUri: String): ValidationNel[String, String] = {
-    val locallyHostedRegex = new Regex(s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$", "file")
-    Try {
-      locallyHostedRegex.findFirstMatchIn(url).flatMap(m =>
-        Assets.resourceNameAt("/public", m.group("file")).flatMap(Play.resource)
-      ).getOrElse(new URL(url))
-    } map {
-      wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel
-    } recover {
-      case _: MalformedURLException => s"'$url' is an invalid URL.".failureNel
-    } getOrElse {
-      s"An unknown error occurred while processing the URL '$url'. Make sure the url is publicly accessible.".failureNel
+private[controllers] trait ModelStatusHandler {
+
+  self: Controller with CacheProvider =>
+
+  import
+    play.api.{ libs, mvc },
+      libs.json.{ Json, JsObject },
+      mvc.Action
+
+  import
+    models.{ CompilationFailure, CompilationSuccess, ModelCompilationStatus, ModelsLibrary, StatusCacher },
+      ModelsLibrary.prettyFilepath,
+      StatusCacher.AllBuiltInModelsCacheKey
+
+  def modelStatuses = Action {
+    implicit request =>
+      val resultJson =
+        cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
+          .map(genStatusJson)
+          .foldLeft(Json.obj())(_ ++ _)
+      Ok(Json.stringify(resultJson))
+  }
+
+  private def genStatusJson(filePath: String): JsObject = {
+    cache.get[ModelCompilationStatus](filePath).map {
+      case CompilationSuccess(file) =>
+        Json.obj(prettyFilepath(file) -> Json.obj("status" -> "compiling"))
+      case CompilationFailure(file, errors) =>
+        Json.obj(prettyFilepath(file) -> Json.obj(
+          "status" -> "not_compiling",
+          "errors" -> errors.foldLeft("")(_ + _.toString)))
+    }.getOrElse {
+      Json.obj(prettyFilepath(filePath) -> Json.obj("status" -> "unknown"))
     }
   }
 
-  // Outer validation indicates the validity of the model representation, whereas CompileResult indicates whether the
-  // model compiled successfully. BCH 8/28/2014
-  protected[controllers] type ModelResultV = ValidationNel[String, CompileResult[CompiledModel]]
+}
 
-  private val CommandsKey  = "commands"
-  private val ModelKey     = "model"
-  private val ReportersKey = "reporters"
-
-  private val urlMissingMsg   = s"You must provide a `$ModelKey` parameter that contains the URL of an nlogo file."
-  private val codeMissingMsg  = s"You must provide a `$ModelKey` parameter that contains the code from a NetLogo model."
-  private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
-
+private[controllers] trait CacheProvider {
+  protected def cache: CacheApi
 }

@@ -1,8 +1,10 @@
 package models.compile
 
 import
-  org.nlogo.{ core, tortoise },
-    core.{ CompilerException, Widget },
+  org.nlogo.{ core, parse, tortoise },
+    core.{ CompilerException, model },
+      model.ModelReader,
+    parse.CompilerUtilities,
     tortoise.{ CompiledModel, CompiledWidget },
       CompiledModel.CompileResult
 
@@ -32,6 +34,9 @@ object CompileResponse {
       modelResult map       (m => m.widgets)                                     getOrElse Seq(),
       commands    mapValues (s => modelResult     map (_.compileCommand (s))     getOrElse FailureExceptionNel),
       reporters   mapValues (s => modelResult     map (_.compileReporter(s))     getOrElse FailureExceptionNel))
+
+  def exportNlogo(modelResult: CompileResult[CompiledModel]): CompileResult[String] =
+    modelResult.map(cm => ModelReader.formatModel(cm.model, CompilerUtilities))
 
   private val FailureMessage      = "Model failed to compile"
   private val FailureExceptionNel = new CompilerException(FailureMessage, 0, 0, "").failureNel[String]

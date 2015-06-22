@@ -89,7 +89,8 @@
       if (session) {
         session.teardown();
       }
-      Tortoise.fromNlogo(nlogoContents, modelContainer, function (res) {
+      filePath = $("#model-file-input")[0].value;
+      Tortoise.fromNlogo(nlogoContents, modelContainer, filePath, function (res) {
         session = res;
         session.startLoop();
       });

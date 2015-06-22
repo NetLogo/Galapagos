@@ -13,8 +13,9 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
-    @widgetController.ractive.on('editor.recompile', (event) => @recompile())
-    @widgetController.ractive.on('console.run', (code) => @run(code))
+    @widgetController.ractive.on('editor.recompile',   (event) => @recompile())
+    @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
+    @widgetController.ractive.on('console.run',        (code)  => @run(code))
 
   startLoop: ->
     @widgetController.updateWidgets()
@@ -72,6 +73,32 @@ class window.SessionLite
       else
         alert(res.model.result.map((err) -> err.message).join('\n')))
 
+
+  exportnlogo: ->
+    filename = window.prompt('Filename:', @widgetController.ractive.get('filename'))
+    if filename?
+      form = @makeForm('post', '/export-code', {
+        filename: filename,
+        info:     @widgetController.ractive.get('info'),
+        model:    @widgetController.ractive.get('code'),
+        widgets:  JSON.stringify(@widgetController.widgets)
+      })
+      document.body.appendChild(form)
+      form.submit()
+
+  makeForm:(method, path, data) ->
+    form = document.createElement('form')
+    form.setAttribute('method', method)
+    form.setAttribute('action', path)
+    for name, value of data
+      field = document.createElement('input')
+      field.setAttribute('type', 'hidden')
+      field.setAttribute('name', name)
+      field.setAttribute('value', value)
+      form.appendChild(field)
+    form
+
+
   run: (code) ->
     compile('code', @widgetController.code(), [code], [], @widgetController.widgets,
       (res) ->
@@ -85,14 +112,19 @@ class window.SessionLite
       (err) -> alert(err))
 
 window.Tortoise = {
-  fromNlogo:         (nlogo, container, callback) ->
-    compile("nlogo", nlogo, [], [], [], makeCompileCallback(container, callback))
-  fromURL:           (url,   container, callback) ->
-    compile("url",   url,   [], [], [], makeCompileCallback(container, callback))
+  normalizedFileName: (path) ->
+    # We separate on both / and \ because we get URLs and Windows-esque filepaths
+    pathComponents = path.split(/\/|\\/)
+    decodeURI(pathComponents[pathComponents.length - 1])
 
-  fromCompiledModel: (container, widgetString, code, info, compiledSource = "", readOnly = false) ->
+  fromNlogo:         (nlogo, container, path, callback) ->
+    compile("nlogo", nlogo, [], [], [], makeCompileCallback(container, callback, @normalizedFileName(path)))
+  fromURL:           (url,   container, callback) ->
+    compile("url",   url,   [], [], [], makeCompileCallback(container, callback, @normalizedFileName(url)))
+
+  fromCompiledModel: (container, widgetString, code, info, compiledSource = "", readOnly = false, filename = "export.nlogo") ->
     widgets = globalEval(widgetString)
-    widgetController = bindWidgets(container, widgets, code, info, readOnly)
+    widgetController = bindWidgets(container, widgets, code, info, readOnly, filename)
     window.modelConfig ?= {}
     modelConfig.plotOps = widgetController.plotOps
     modelConfig.mouse = widgetController.mouse
@@ -104,10 +136,11 @@ window.Tortoise = {
 
 window.AgentModel = tortoise_require('agentmodel')
 
-makeCompileCallback = (container, callback) ->
+makeCompileCallback = (container, callback, filename) ->
   (res) ->
     if res.model.success
-      callback(Tortoise.fromCompiledModel(container, res.widgets, res.code, res.info, res.model.result))
+      callback(Tortoise.fromCompiledModel(container, res.widgets, res.code,
+        res.info, res.model.result, false, filename))
     else
       container.innerHTML = res.model.result.map((err) -> err.message).join('<br/>')
 

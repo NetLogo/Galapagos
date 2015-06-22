@@ -9,7 +9,7 @@
 .netlogo-header {
     display: flex;
     flex-flow: row;
-    align-items: baseline;
+    align-items: center;
 }
 
 .netlogo-widget {
@@ -67,6 +67,14 @@
     background-color: white;
     margin: 10px;
 }
+
+.netlogo-export-button {
+    flex: 1;
+    text-align: center;
+    background-color: rgb(240, 240, 240);
+    border-color: rgb(238, 238, 238);
+}
+
 .netlogo-code {
     flex: 1 1 auto;
     font-family: monospace;
@@ -278,4 +286,9 @@
 
 .netlogo-forever-button > input {
     display: none;
+}
+
+.netlogo-subheader {
+    display: flex;
+    flex-flow: column;
 }

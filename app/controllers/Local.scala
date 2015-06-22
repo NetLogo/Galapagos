@@ -9,9 +9,10 @@ import
   models.Util.usingSource
 
 class Local extends Controller {
+  import Local._
 
-  private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource("/js/tortoise-engine.js")))    (_.mkString)
-  private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource("/js/tortoise/agentmodel.js")))(_.mkString)
+  private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource(enginePath)))    (_.mkString)
+  private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource(agentModelPath)))(_.mkString)
 
   def createStandaloneTortoise = Action {
     implicit request =>
@@ -37,4 +38,9 @@ class Local extends Controller {
       body   = Enumerator(js.getBytes(play.Play.application.configuration.getString("application.defaultEncoding")))
     )
 
+}
+
+object Local {
+  val enginePath     = "/js/tortoise-engine.js"
+  val agentModelPath = "/js/tortoise/agentmodel.js"
 }

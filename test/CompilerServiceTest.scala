@@ -123,6 +123,12 @@ class CompilerServiceTest extends PlaySpec {
         success => fail("Bad test: CompileResult was supposed to contain a CompilerException")
       )
     }
+
+    "convert models to nlogo" in {
+      val nlogo = CompileResponse.exportNlogo(wsModel.successNel)
+        .getOrElse(throw new Exception("Exporting should have succeeded, but failed"))
+      openModel(nlogo) mustBe wsModel.model
+    }
   }
 
   private val wolfSheep = usingSource(_.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString)
@@ -132,7 +138,7 @@ class CompilerServiceTest extends PlaySpec {
   private val wsModel = {
     val modelShouldHaveCompiled = (failures: NonEmptyList[CompilerException]) =>
       s"""|Model should have compiled but failed with the following messages:
-         |${failures.stream.mkString("\n")}""".stripMargin
+          |${failures.stream.mkString("\n")}""".stripMargin
     wsModelV valueOr { e => fail(modelShouldHaveCompiled(e)) }
   }
 
