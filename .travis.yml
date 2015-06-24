@@ -4,6 +4,6 @@ sudo: false
 jdk: oraclejdk8
 language: scala
 scala:
-  - 2.11.6
+  - 2.11.7
 script:
   - "sbt test"
