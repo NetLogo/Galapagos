@@ -18,7 +18,7 @@ class window.SessionLite
 
   startLoop: ->
     @widgetController.updateWidgets()
-    if startup? then Call(startup)
+    if procedures.startup? then Call(procedures.startup)
     requestAnimationFrame(@eventLoop)
 
   updateDelay: ->
