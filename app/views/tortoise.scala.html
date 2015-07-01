@@ -2,7 +2,7 @@
   <head>
     <title>NetLogo Web</title>
     <link rel="stylesheet" href='@routes.Assets.at("lib/chosen/chosen.css")' />
-    <link rel="stylesheet" href='@routes.Assets.at("lib/codemirror/lib/codemirror.css")' />
+    <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("codemirror.css"))' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classes.css")'>
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/widgets.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classic.css")' />
@@ -29,8 +29,8 @@
   <script src="@routes.Assets.at("lib/highcharts/highcharts.js")"></script>
   <script src="@routes.Assets.at("lib/highcharts/modules/exporting.js")"></script>
   <script src="@routes.Assets.at("lib/ractive/ractive.js")"></script>
-  <script src="@routes.Assets.at("lib/codemirror/lib/codemirror.js")"></script>
-  <script src="@routes.Assets.at("lib/codemirror/addon/mode/simple.js")"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("codemirror.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("addon/mode/simple.js"))"></script>
   <script>
     var exports = {};
   </script>

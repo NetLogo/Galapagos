@@ -22,6 +22,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % "0.1-e630a86",
   cache,
+  "org.webjars" %% "webjars-play" % "2.4.0-1",
   "com.typesafe.akka" %% "akka-testkit" % "2.3.11" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test"
 )
