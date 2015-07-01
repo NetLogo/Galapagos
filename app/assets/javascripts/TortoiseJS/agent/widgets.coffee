@@ -289,7 +289,7 @@ partials =
         <span class="netlogo-label">{{display}}</span>
         <span class="netlogo-slider-value">
           <input type="number"
-                 style="width: {{currentValue.toString().length + 2}}ch"
+                 style="width: {{currentValue.toString().length + 2.5}}ch"
                  min={{minValue}} max={{maxValue}} value={{currentValue}} step={{step}} />
           {{#units}}{{units}}{{/}}
         </span>
