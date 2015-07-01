@@ -285,12 +285,15 @@ partials =
     <label class="netlogo-widget netlogo-slider netlogo-input" style="{{>dimensions}}">
       <input type="range"
              max="{{maxValue}}" min="{{minValue}}" step="{{step}}" value="{{currentValue}}" />
-      <span class="netlogo-label">{{display}}</span>
-      <span class="netlogo-value">
-        <input type="number"
-               min={{minValue}} max={{maxValue}} value={{currentValue}} step={{step}} />
-        {{#units}}{{units}}{{/}}
-      </span>
+      <div class="netlogo-slider-label">
+        <span class="netlogo-label">{{display}}</span>
+        <span class="netlogo-slider-value">
+          <input type="number"
+                 style="width: {{currentValue.toString().length + 2}}ch"
+                 min={{minValue}} max={{maxValue}} value={{currentValue}} step={{step}} />
+          {{#units}}{{units}}{{/}}
+        </span>
+      </div>
     </label>
     """
   button:

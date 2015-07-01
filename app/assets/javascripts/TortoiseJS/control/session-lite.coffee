@@ -64,7 +64,7 @@ class window.SessionLite
   recompile: ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
-    world.clearAll();
+    world.clearAll()
     @widgetController.redraw()
     compile('code', @widgetController.code(), [], [], @widgetController.widgets, (res) ->
       if res.model.success

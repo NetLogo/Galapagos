@@ -207,7 +207,7 @@
     cursor: default;
 }
 
-.netlogo-slider > input[type=range] {
+.netlogo-slider input[type=range] {
     padding: 0px;
     width: 100%;
     margin: 0px;
@@ -217,26 +217,29 @@
     background-color: transparent;
 }
 
-.netlogo-slider > .netlogo-label {
-    float: left;
+.netlogo-slider-label {
+    display: flex;
+    justify-content: space-between;
 }
 
-.netlogo-slider > .netlogo-value {
-    margin: 0px;
-    border: 1px;
-    padding: 0px;
-    text-align: right;
-    display: block;
+.netlogo-slider-label .netlogo-label {
+    text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1 1 auto;
 }
 
-.netlogo-slider > .netlogo-value > input[type=number] {
+.netlogo-slider-label .netlogo-slider-value {
+    flex: 0 0 auto;
+}
+
+.netlogo-slider-label input[type=number] {
     margin: 0px;
     border: 1px;
     padding: 0px;
-    text-align: right;
-    width: 45px;
 }
+
 
 .netlogo-monitor {
     padding: 2px 4px;
