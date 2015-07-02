@@ -117,13 +117,29 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
     Action {
       implicit request =>
 
-      val slurpURL = (url: String) => usingSource(_.fromURL(routes.Assets.at(url).absoluteURL()))(_.mkString)
+      import play.api.mvc.Call
 
-      val stylesheets = Set("stylesheets/widgets.css",
-                            "stylesheets/classic.css",
-                            "stylesheets/netlogo-syntax.css",
-                            "lib/codemirror/lib/codemirror.css")
-      val css = stylesheets map slurpURL mkString "\n"
+      val slurpURL = (url: Call) => usingSource(_.fromURL(url.absoluteURL()))(_.mkString)
+
+      val normalURLs =
+        Set(
+          "stylesheets/widgets.css",
+          "stylesheets/classic.css",
+          "stylesheets/netlogo-syntax.css"
+        ) map (
+          routes.Assets.at(_)
+        )
+
+      val webjarURLs =
+        Set(
+          "codemirror.css"
+        ) map (
+          s => routes.WebJarAssets.at(WebJarAssets.locate(s))
+        )
+
+      val urlSets = Seq(normalURLs, webjarURLs)
+
+      val css = urlSets.reduce(_ ++ _) map slurpURL mkString "\n"
 
       val argMap  = toStringMap(request.extractBundle)
       val bundleV =
@@ -172,9 +188,16 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
         routes.Assets.at("lib/highcharts/highcharts.js"),
         routes.Assets.at("lib/highcharts/modules/exporting.js"),
         routes.Assets.at("lib/ractive/ractive.js"),
-        routes.Assets.at("lib/codemirror/lib/codemirror.js"),
-        routes.Assets.at("lib/codemirror/addon/mode/simple.js"),
         routes.Local.engine
+      )
+
+    // CodeMirror files are getting put into 'lib/' anymore for some reason... --JAB (7/2/15)
+    val webjarURLs =
+      Seq(
+        "codemirror.js",
+        "addon/mode/simple.js"
+      ) map (
+        s => routes.WebJarAssets.at(WebJarAssets.locate(s))
       )
 
     val assetURLs =
@@ -196,7 +219,9 @@ class CompilerService @Inject() (@NamedCache("compilation-statuses") cache: Cach
         routes.Assets.at(_)
       )
 
-    (normalURLs ++ assetURLs) map (route => new URL(route.absoluteURL()))
+    val urlSeqs = Seq(normalURLs, webjarURLs, assetURLs)
+
+    urlSeqs.reduce(_ ++ _) map (route => new URL(route.absoluteURL()))
 
   }
 
