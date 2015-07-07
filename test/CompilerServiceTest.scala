@@ -17,11 +17,13 @@ import
 
 import
   models.{ compile, json, Util },
-    compile.{ CompileResponse, CompileWidgets, IDedValuesMap, IDedValuesSeq },
-    json.Writers.{ compiledWidgetWrites, compileResponseWrites },
+    compile.{ CompileResponse, IDedValuesMap, IDedValuesSeq },
+    json.Writers.compileResponseWrites,
     Util.usingSource
 
 class CompilerServiceTest extends PlaySpec {
+
+  import CompilerServiceHelpers._
 
   private implicit def map2IdedValues[T](map: Map[String, T]): IDedValuesMap[T] = IDedValuesMap(map)
   private implicit def seq2IdedValues[T](seq: Seq[T]):         IDedValuesSeq[T] = IDedValuesSeq(seq)
@@ -131,22 +133,28 @@ class CompilerServiceTest extends PlaySpec {
     }
   }
 
-  private val wolfSheep = usingSource(_.fromFile("public/modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo"))(_.mkString)
-
-  private val wsModelV = CompiledModel.fromModel(openModel(wolfSheep))
-
-  private val wsModel = {
+  val wsModel = {
     val modelShouldHaveCompiled = (failures: NonEmptyList[CompilerException]) =>
       s"""|Model should have compiled but failed with the following messages:
           |${failures.stream.mkString("\n")}""".stripMargin
     wsModelV valueOr { e => fail(modelShouldHaveCompiled(e)) }
   }
+}
 
-  private def openModel(model: String): Model =
+object CompilerServiceHelpers {
+  private def modelText(modelName: String): String =
+    usingSource(_.fromFile(s"public/modelslib/$modelName"))(_.mkString)
+
+  val breedProcedures = modelText("Code Examples/Breed Procedures Example.nlogo")
+
+  val linkBreeds = modelText("Code Examples/Link Breeds Example.nlogo")
+
+  val wolfSheep = modelText("Sample Models/Biology/Wolf Sheep Predation.nlogo")
+
+  val wsModelV = CompiledModel.fromModel(openModel(wolfSheep))
+
+  def openModel(model: String): Model =
     ModelReader.parseModel(model, CompilerUtilities)
 
-  private val widgetModel = CompiledModel.fromModel(openModel(
-    usingSource(_.fromFile("public/modelslib/test/tortoise/Widgets.nlogo"))(_.mkString)
-  ))
-
+  val widgetModel = CompiledModel.fromModel(openModel(modelText("test/tortoise/Widgets.nlogo")))
 }

@@ -150,7 +150,9 @@ window.compile = (source, model, commands, reporters, widgets,
     model: model,
     widgets: JSON.stringify(widgets),
     commands: JSON.stringify(commands),
-    reporters: JSON.stringify(reporters)
+    reporters: JSON.stringify(reporters),
+    turtleShapes: JSON.stringify(turtleShapes ? []),
+    linkShapes: JSON.stringify(linkShapes ? [])
   }
   compileCallback = (res) ->
     onFulfilled(JSON.parse(res))

@@ -46,17 +46,27 @@ private[controllers] object CompilationRequestHandler {
     java.net.{ MalformedURLException, URL }
 
   import
+    play.api.libs.json.Json
+
+  import
     scala.util.Try
 
   import
     scalaz.NonEmptyList
 
   import
-    org.nlogo.core.Model
+    org.nlogo.{ core, tortoise },
+      core.{ Model, Shape },
+        Shape.{ LinkShape, VectorShape },
+      tortoise.{ json => tortoisejson },
+        tortoisejson.{ ShapeToJsonConverters, TortoiseJson },
+          ShapeToJsonConverters.{ readLinkShapes, readVectorShapes }
 
   import
-    models.{ compile, Util },
+    models.{ compile, json, Util },
       compile.CompileWidgets,
+      json.JsonConverter,
+        JsonConverter.{ toTortoise => toTortoiseJson },
       Util.usingSource
 
   sealed trait ModelArgument
@@ -71,9 +81,13 @@ private[controllers] object CompilationRequestHandler {
   def generateFromCode(argMap: ArgMap, hostUri: String): ModelResult = {
     val info = argMap.getOrElse("info", "")
     for {
-      widgets <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
-      code    <- extractModelString(argMap, codeMissingMsg)
-      model   <- Validation.fromTryCatchThrowable[Model, RuntimeException](Model(code, widgets, info = info)).leftMap(e => NonEmptyList(e.getMessage))
+      widgets      <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
+      turtleShapes <- extractShapes[VectorShape]("turtleShapes", readVectorShapes, Model.defaultShapes    )(argMap)
+      linkShapes   <- extractShapes[LinkShape](  "linkShapes",   readLinkShapes,   Model.defaultLinkShapes)(argMap)
+      code         <- extractModelString(argMap, codeMissingMsg)
+      model        <- Validation.fromTryCatchThrowable[Model, RuntimeException](
+        Model(code, widgets, info = info, turtleShapes = turtleShapes, linkShapes = linkShapes))
+        .leftMap(e => NonEmptyList(e.getMessage))
     } yield ModelObject(model)
   }
 
@@ -103,6 +117,11 @@ private[controllers] object CompilationRequestHandler {
   private val codeMissingMsg  = s"You must provide a `$ModelKey` parameter that contains the code from a NetLogo model."
   private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
 
+  private def extractShapes[T](key: String, parseShapes: TortoiseJson => ValidationNel[String, Seq[T]], default: List[T])
+                              (argMap: Map[String, String]): ValidationNel[String, List[T]] = {
+    val parsedJson = argMap.get(key) map Json.parse map toTortoiseJson map parseShapes map(_.map(_.toList))
+    parsedJson getOrElse default.successNel
+  }
 }
 
 private[controllers] trait CompilationRequestHandler extends RequestResultGenerator {
