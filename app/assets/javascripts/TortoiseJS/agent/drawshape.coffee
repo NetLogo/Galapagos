@@ -12,7 +12,13 @@ class window.ShapeDrawer
     ctx.translate(.5, -.5)
     ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
     @setTransparency(ctx, color)
+
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(0,0,IMAGE_SIZE,IMAGE_SIZE)
+    ctx.clip()
     @drawRawShape(ctx, color, shapeName, thickness)
+    ctx.restore()
     return
 
   drawRawShape: (ctx, color, shapeName, thickness = 1) ->

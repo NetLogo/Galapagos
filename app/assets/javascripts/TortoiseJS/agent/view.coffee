@@ -69,7 +69,8 @@ class View
     @transformCanvasToWorld(world, @canvas, @ctx)
 
   transformCanvasToWorld: (world, canvas, ctx) ->
-    @quality = if window.devicePixelRatio? then window.devicePixelRatio else 1
+    # 2 seems to look significantly better even on devices with devicePixelratio < 1. BCH 7/12/2015
+    @quality = Math.max(window.devicePixelRatio ? 2, 2)
     @maxpxcor = if world.maxpxcor? then world.maxpxcor else 25
     @minpxcor = if world.minpxcor? then world.minpxcor else -25
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
@@ -145,6 +146,7 @@ class View
         for y in ys
           if (y + size / 2) > @minpycor - 0.5 and (y - size / 2) < @maxpycor + 0.5
             drawFn(x,y)
+    return
 
   # IDs used in watch and follow
   turtleType: 1
@@ -255,7 +257,7 @@ class SpotlightDrawer extends Drawer
 
 class TurtleDrawer extends Drawer
   constructor: (@view) ->
-    @turtleShapeDrawer = new CachingShapeDrawer({})
+    @turtleShapeDrawer = new ShapeDrawer({})
     @linkDrawer = new LinkDrawer(@view, {})
 
   drawTurtle: (turtle) ->
@@ -280,7 +282,7 @@ class TurtleDrawer extends Drawer
     else
       ctx.rotate(Math.PI)
     ctx.scale(scale, scale)
-    @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName)
+    @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName, 1 / scale)
     ctx.restore()
 
   drawLink: (link, turtles, wrapX, wrapY) ->
@@ -291,7 +293,7 @@ class TurtleDrawer extends Drawer
     turtles = model.turtles
     links = model.links
     if world.turtleshapelist isnt @turtleShapeDrawer.shapes and world.turtleshapelist?
-      @turtleShapeDrawer = new CachingShapeDrawer(world.turtleshapelist)
+      @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
     @view.usePatchCoordinates( =>
