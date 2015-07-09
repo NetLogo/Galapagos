@@ -16,6 +16,7 @@ class window.SessionLite
     @widgetController.ractive.on('editor.recompile',   (event) => @recompile())
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
+    @drawEveryFrame = false
 
   startLoop: ->
     @widgetController.updateWidgets()
@@ -42,7 +43,7 @@ class window.SessionLite
   eventLoop: (timestamp) =>
     @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
     updatesDeadline = Math.min(@_lastRedraw + @redrawDelay(), now() + MAX_UPDATE_TIME)
-    maxNumUpdates   = (now() - @_lastUpdate) / @updateDelay()
+    maxNumUpdates   = if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
 
     for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
       @_lastUpdate = now()
@@ -52,7 +53,7 @@ class window.SessionLite
 
     # First conditional checks if we're on time with updates. If so, we may as
     # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
-    if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay()
+    if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
       @_lastRedraw = now()
       # TODO: Once Updater.anyUpdates() exist, switch to only redrawing when there are updates
       @widgetController.redraw()
