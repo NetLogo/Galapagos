@@ -1,6 +1,4 @@
 .netlogo-model {
-    border: 2px solid black;
-    border-radius: 20px;
     display: flex;
     padding: 20px;
     flex-flow: column;

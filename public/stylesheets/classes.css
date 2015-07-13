@@ -37,6 +37,12 @@
   height: 100%;
 }
 
+.model-container {
+    border: 2px solid black;
+    border-radius: 20px;
+    display: inline-block;
+}
+
 .contained {
   height: 92%;
   min-height: 92%;
