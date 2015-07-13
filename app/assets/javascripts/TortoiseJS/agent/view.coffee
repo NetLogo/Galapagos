@@ -257,7 +257,7 @@ class SpotlightDrawer extends Drawer
 
 class TurtleDrawer extends Drawer
   constructor: (@view) ->
-    @turtleShapeDrawer = new ShapeDrawer({})
+    @turtleShapeDrawer = new ShapeDrawer({}, @view.onePixel)
     @linkDrawer = new LinkDrawer(@view, {})
 
   drawTurtle: (turtle) ->
@@ -292,8 +292,8 @@ class TurtleDrawer extends Drawer
     world = model.world
     turtles = model.turtles
     links = model.links
-    if world.turtleshapelist isnt @turtleShapeDrawer.shapes and world.turtleshapelist?
-      @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist)
+    if (world.turtleshapelist? and world.turtleshapelist isnt @turtleShapeDrawer.shapes) or @turtleShapeDrawer.onePixel isnt @view.onePixel
+      @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist ? @turtleShapeDrawer.shapes, @view.onePixel)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
     @view.usePatchCoordinates( =>

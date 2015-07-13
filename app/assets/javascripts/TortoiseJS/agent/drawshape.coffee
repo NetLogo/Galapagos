@@ -1,9 +1,7 @@
 IMAGE_SIZE = 300 # Images are 300x300, in line with netlogo shapes.
-LINE_WIDTH = .1 * IMAGE_SIZE
 
 class window.ShapeDrawer
-  constructor: (shapes) ->
-    @shapes = shapes
+  constructor: (@shapes, @onePixel) ->
 
   setTransparency: (ctx, color) ->
     ctx.globalAlpha = if color.length > 3 then color[3] / 255 else 1
@@ -21,15 +19,18 @@ class window.ShapeDrawer
     ctx.restore()
     return
 
+  # Does not clip. Clipping should be handled by the `drawShape` method that
+  # calls this. How clipping is performed depends on whether images are being
+  # cached or not. BCH 7/13/2015
   drawRawShape: (ctx, color, shapeName, thickness = 1) ->
-    ctx.lineWidth = LINE_WIDTH * thickness
+    ctx.lineWidth = IMAGE_SIZE * @onePixel * thickness
     shape = @shapes[shapeName] or defaultShape
     for elem in shape.elements
       draw[elem.type](ctx, color, elem)
     return
 
 class window.CachingShapeDrawer extends ShapeDrawer
-  constructor: (shapes) ->
+  constructor: (shapes, onePixel) ->
     # Maps (shape name, color) -> canvas
     # Shape/color combinations are pre-rendered to these canvases so they can be
     # quickly rendered to display.
@@ -38,10 +39,10 @@ class window.CachingShapeDrawer extends ShapeDrawer
     # Alternatively, each turtle could have it's own personal image pre-rendered.
     # This should be overall better, though, since it will perform well even if
     # turtles are constantly changing shape or color.
-    super(shapes)
+    super(shapes, onePixel)
     @shapeCache = {}
 
-  drawShape: (ctx, color, shapeName) ->
+  drawShape: (ctx, color, shapeName, thickness = 1) ->
     shapeName = shapeName.toLowerCase()
     shapeKey = @shapeKey(shapeName, color)
     shapeCanvas = @shapeCache[shapeKey]
