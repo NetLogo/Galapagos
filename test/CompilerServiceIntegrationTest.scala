@@ -19,7 +19,10 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   override implicit lazy val app: FakeApplication =
-    FakeApplication(additionalConfiguration = Map("akka.log-dead-letters" -> 0))
+    FakeApplication(additionalConfiguration = Map(
+      "play.akka.shutdown-timeout" -> "2s",
+      "akka.log-dead-letters"      -> 0
+    ))
 
   "CompilerService controller" must {
     Map(

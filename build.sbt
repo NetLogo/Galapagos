@@ -44,6 +44,8 @@ resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + 
 
 pipelineStages in Assets += autoprefixer
 
+fork in Test := false
+
 includeFilter in autoprefixer := Def.setting {
   val webJarDir     = (webJarsDirectory in Assets).value.getPath
   val testWebJarDir = (webJarsDirectory in TestAssets).value.getPath
