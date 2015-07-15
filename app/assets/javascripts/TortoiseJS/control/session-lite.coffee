@@ -123,7 +123,13 @@ window.Tortoise = {
   fromURL:           (url,   container, callback) ->
     compile("url",   url,   [], [], [], makeCompileCallback(container, callback, @normalizedFileName(url)))
 
-  fromCompiledModel: (container, widgetString, code, info, compiledSource = "", readOnly = false, filename = "export.nlogo") ->
+  fromCompiledModel: (container,
+                      widgetString,
+                      code,
+                      info,
+                      compiledSource = "",
+                      readOnly = false,
+                      filename = "export.nlogo") ->
     widgets = globalEval(widgetString)
     widgetController = bindWidgets(container, widgets, code, info, readOnly, filename)
     window.modelConfig ?= {}

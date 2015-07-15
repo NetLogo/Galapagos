@@ -125,7 +125,8 @@ class window.LinkDrawer
 
       @getWrappedLines(x1, y1, x2, y2, wrapX, wrapY).forEach(@_drawLinkLine(link, adjustedThickness))
 
-  _drawLinkLine: ({ color, size, heading, 'directed?': isDirected, shape: shapeName, label, 'label-color': labelColor }, thickness) => ({ x1, y1, x2, y2 }) =>
+  _drawLinkLine: ({ color, size, heading, 'directed?': isDirected, shape: shapeName, label, 'label-color': labelColor },
+                  thickness) => ({ x1, y1, x2, y2 }) =>
 
     linkShape = @shapes[shapeName]
     { curviness, lines } = linkShape

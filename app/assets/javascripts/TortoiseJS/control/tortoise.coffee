@@ -40,7 +40,7 @@ createSession = (containers, socketURL) ->
     container = document.createElement('div')
     container.classList.add('view-container')
     elem.appendChild(container)
-    elem.appendChild(document.createElement 'div')
+    elem.appendChild(document.createElement('div'))
 
   codeElem = reifyElement(containers.code_container)
 

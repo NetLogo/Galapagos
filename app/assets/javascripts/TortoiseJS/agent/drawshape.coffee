@@ -86,7 +86,7 @@ drawPath = (ctx, color, element) ->
     ctx.stroke()
   return
 
-window.draw =
+window.draw = {
   circle: (ctx, color, circle) ->
     r = circle.diam/2
     ctx.beginPath()
@@ -132,6 +132,7 @@ window.draw =
     ctx.lineTo(line.x2, line.y2)
     ctx.stroke()
     return
+}
 
 window.defaultShape = {
   rotate: true

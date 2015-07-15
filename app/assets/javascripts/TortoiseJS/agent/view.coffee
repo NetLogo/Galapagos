@@ -292,7 +292,9 @@ class TurtleDrawer extends Drawer
     world = model.world
     turtles = model.turtles
     links = model.links
-    if (world.turtleshapelist? and world.turtleshapelist isnt @turtleShapeDrawer.shapes) or @turtleShapeDrawer.onePixel isnt @view.onePixel
+    turtleShapeListChanged = world.turtleshapelist? and world.turtleshapelist isnt @turtleShapeDrawer.shapes
+    pixelRatioChanged = @turtleShapeDrawer.onePixel isnt @view.onePixel
+    if turtleShapeListChanged or pixelRatioChanged
       @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist ? @turtleShapeDrawer.shapes, @view.onePixel)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)

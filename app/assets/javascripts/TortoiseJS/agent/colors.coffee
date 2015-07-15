@@ -23,7 +23,22 @@ window.netlogoColorToRGB = (netlogoColor) ->
     else console.error("Unrecognized color: #{netlogoColor}")
 
 netlogoColorNamesIndices = {}
-for color,i in ['gray', 'red', 'orange', 'brown', 'yellow', 'green', 'lime', 'turqoise', 'cyan', 'sky', 'blue', 'violet', 'magenta', 'pink', 'black', 'white']
+for color,i in ['gray',
+                'red',
+                'orange',
+                'brown',
+                'yellow',
+                'green',
+                'lime',
+                'turqoise',
+                'cyan',
+                'sky',
+                'blue',
+                'violet',
+                'magenta',
+                'pink',
+                'black',
+                'white']
   netlogoColorNamesIndices[color] = i
 
 # copied from api/Color.scala. note these aren't the same numbers as

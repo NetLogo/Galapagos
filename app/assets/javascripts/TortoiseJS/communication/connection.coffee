@@ -6,7 +6,7 @@ class Connection
     @listeners = {'all': []}
     @outbox = [] # Messages that someone tried to send before the socket opened
     @socket.onmessage = (event) => @dispatch(JSON.parse(event.data))
-    @socket.onopen = => @send(msg) for msg in @outbox
+    @socket.onopen = => (@send(msg) for msg in @outbox)
 
 
   send: (message) ->

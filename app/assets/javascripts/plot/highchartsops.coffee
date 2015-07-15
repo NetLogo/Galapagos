@@ -3,8 +3,8 @@ PlotOps    = tortoise_require('engine/plot/plotops')
 
 class window.HighchartsOps extends PlotOps
 
-  _chart:               undefined # Highcharts.Chart
-  _penNameToSeriesNum = undefined # Object[String, Number]
+  _chart:              undefined # Highcharts.Chart
+  _penNameToSeriesNum: undefined # Object[String, Number]
 
   constructor: (elemID) ->
 
@@ -50,8 +50,9 @@ class window.HighchartsOps extends PlotOps
       return
 
     addPoint = (pen) => (x, y) =>
+      # Wrong, and disabled for performance reasons --JAB (10/19/14)
       # color = @colorToRGBString(pen.getColor())
-      # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y }) # Wrong, and disabled for performance reasons --JAB (10/19/14)
+      # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
       @penToSeries(pen).addPoint([x, y])
       return
 

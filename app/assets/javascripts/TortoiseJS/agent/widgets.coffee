@@ -94,7 +94,8 @@ class window.WidgetController
         else if widget.reporter?
           try
             widget.currentValue = widget.reporter()
-            if typeof widget.currentValue is "number" and isNaN(widget.currentValue) or widget.currentValue in [undefined, null, Infinity, -Infinity]
+            isInvalidNumber = (n) -> isNaN(n) or n in [undefined, null, Infinity, -Infinity]
+            if typeof widget.currentValue is "number" and isInvalidNumber(widget.currentValue)
               widget.currentValue = 'N/A'
           catch err
             widget.currentValue = 'N/A'
@@ -194,6 +195,7 @@ isValidValue = (widget, value) ->
     when 'inputBox' then not (widget.boxtype == 'Number' and isNaN(value))
     else  true
 
+# coffeelint: disable=max_line_length
 template =
   """
   <div class="netlogo-model" style="width: {{width}}px;">
@@ -205,7 +207,7 @@ template =
 
       <div class="netlogo-subheader">
         {{# !readOnly }}
-        <button class="netlogo-export-button"  style="margin-bottom: 10px;" id="export-button" on-click="exportnlogo">Export to NetLogo...</button>
+        <button class="netlogo-export-button" style="margin-bottom: 10px;" id="export-button" on-click="exportnlogo">Export to NetLogo...</button>
         {{/}}
         <div class="netlogo-powered-by">
           <a href="http://ccl.northwestern.edu/netlogo/">
@@ -265,7 +267,7 @@ template =
   </div>
   """
 
-partials =
+partials = {
   view:
     """
     <div class="netlogo-widget netlogo-view-container" style="{{>dimensions}}">
@@ -378,3 +380,5 @@ partials =
     left: {{ left }}px; top: {{ top }}px;
     width: {{ right - left }}px; height: {{ bottom - top }}px;
     """
+}
+# coffeelint: enable=max_line_length
