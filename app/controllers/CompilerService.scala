@@ -1,3 +1,5 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
+
 package controllers
 
 import
@@ -140,20 +142,20 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
       tortoise.CompiledModel
 
   import
-    play.api.mvc.{ Action, Result }
+    play.api.mvc.{ Action, AnyContent, Result }
 
   import
     CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl, ModelObject, ModelResult, ModelText }
 
-  def compileURL   = genCompileAction(generateFromUrl,   jsonResult)
-  def compileCode  = genCompileAction(generateFromCode,  jsonResult)
-  def compileNlogo = genCompileAction(generateFromNlogo, jsonResult)
+  def compileURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
+  def compileCode:  Action[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
+  def compileNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, jsonResult)
 
-  def exportCode = genCompileAction(generateFromCode, exportResult)
+  def exportCode: Action[AnyContent] = genCompileAction(generateFromCode, exportResult)
 
-  def saveURL   = genCompileAction(generateFromUrl,   saveResult)
-  def saveCode  = genCompileAction(generateFromCode,  saveResult)
-  def saveNlogo = genCompileAction(generateFromNlogo, saveResult)
+  def saveURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   saveResult)
+  def saveCode:  Action[AnyContent] = genCompileAction(generateFromCode,  saveResult)
+  def saveNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
 
   private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
     Action { implicit request =>
@@ -347,14 +349,14 @@ private[controllers] trait ModelStatusHandler {
   import
     play.api.{ libs, mvc },
       libs.json.{ Json, JsObject },
-      mvc.Action
+      mvc.{ Action, AnyContent }
 
   import
     models.{ CompilationFailure, CompilationSuccess, ModelCompilationStatus, ModelsLibrary, StatusCacher },
       ModelsLibrary.prettyFilepath,
       StatusCacher.AllBuiltInModelsCacheKey
 
-  def modelStatuses = Action {
+  def modelStatuses: Action[AnyContent] = Action {
     implicit request =>
       val resultJson =
         cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())

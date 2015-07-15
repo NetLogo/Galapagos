@@ -1,3 +1,5 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
+
 import
   javax.inject.{ Inject, Singleton }
 

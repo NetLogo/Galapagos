@@ -1,3 +1,5 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
+
 package models
 
 import java.io.File

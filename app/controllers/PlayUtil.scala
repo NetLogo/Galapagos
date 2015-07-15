@@ -1,3 +1,5 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
+
 package controllers
 
 import models.Util
@@ -53,7 +55,7 @@ object PlayUtil {
           }
           ParamBundle(formData.asFormUrlEncoded, fileKVs.toMap)
       } orElse {
-        request.body.asFormUrlEncoded flatMap (noneIfEmpty(_)) map (ParamBundle(_))
+        request.body.asFormUrlEncoded flatMap (noneIfEmpty(_)) map (i => ParamBundle(Map(i.toSeq: _*)))
       } orElse {
         Option(request.queryString) map (ParamBundle(_))
       } getOrElse {

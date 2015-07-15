@@ -1,16 +1,26 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
+
 package models
 
 import
-  scala.io.{ BufferedSource, Source }
+  java.io.Closeable
+
+import
+  scala.{ collection, io },
+    collection.GenIterable,
+    io.{ BufferedSource, Source }
 
 object Util {
 
-  def using[A <: { def close() }, B](closeable: A)(f: A => B): B =
+  def using[A <: Closeable, B](closeable: A)(f: A => B): B =
+    try f(closeable) finally closeable.close()
+
+  def usingSource[A <: BufferedSource, B](closeable: A)(f: A => B): B =
     try f(closeable) finally closeable.close()
 
   def usingSource[T](sourceBuildFunc: (Source.type) => BufferedSource)(sourceProcessFunc: (BufferedSource) => T): T =
-    using(sourceBuildFunc(Source))(sourceProcessFunc)
+    usingSource(sourceBuildFunc(Source))(sourceProcessFunc)
 
-  def noneIfEmpty[T <: { def isEmpty: Boolean }](x: T): Option[T] = if (!x.isEmpty) Option(x) else None
+  def noneIfEmpty[S, T[S] <: GenIterable[S]](x: T[S]): Option[T[S]] = if (!x.isEmpty) Option(x) else None
 
 }
