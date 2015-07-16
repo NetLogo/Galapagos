@@ -6,4 +6,4 @@ NetLogo Web (formerly known as "Tortoise") is a JavaScript-based version of NetL
 
 Related is Teletortoise, which allows you to use your browser to interact with an instance of classic NetLogo that is running on a server.  You can check out Teletortoise [here](https://github.com/NetLogo/Teletortoise).
 
-For more information about the Tortoise project in general, see [here](https://github.com/NetLogo/NetLogo/wiki/Tortoise).
+For more information about the Tortoise project in general, see [here](https://github.com/NetLogo/NetLogo/wiki/NetLogo-Web).
