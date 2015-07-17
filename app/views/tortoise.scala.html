@@ -53,8 +53,8 @@
   <script>
     var modelContainer = document.querySelector('#model-container');
     var session        = null; // initialized in callback;
-    var urlPrefix      = location.protocol + '//' + location.host + '/assets/modelslib/';
-    var url            = urlPrefix + 'Sample%20Models/Biology/Wolf%20Sheep%20Predation.nlogo';
+    var hostPrefix     = location.protocol + '//' + location.host;
+    var url            = hostPrefix + '/assets/modelslib/Sample%20Models/Biology/Wolf%20Sheep%20Predation.nlogo';
     if (window.location.hash) {
       url = window.location.hash.substring(1);
     }
@@ -68,7 +68,7 @@
     });
 
     function pickModel(url) {
-      var encoded = encodeURI(urlPrefix + url);
+      var encoded = encodeURI(hostPrefix + '/assets/' + url);
       openURL(encoded);
     }
 

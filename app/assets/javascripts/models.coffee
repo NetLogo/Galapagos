@@ -1,12 +1,18 @@
 exports.bindModelChooser = (container, selectionChanged) ->
+
+  PUBLIC_PATH_SEGMENT_LENGTH = "public/".length
+
+  adjustModelName = (modelName) ->
+    modelName.substring(PUBLIC_PATH_SEGMENT_LENGTH, modelName.length)
+
   setModelCompilationStatus = (modelName, status) ->
-    $("option[value=\"#{modelName}\"]").addClass(status)
+    $("option[value=\"#{adjustModelName(modelName)}\"]").addClass(status)
 
   populateModelChoices = (select, modelNames) ->
     select.append($('<option>').text('Select a model...'))
     for modelName in modelNames
-      option = $('<option>').attr('value', modelName)
-        .text(modelName)
+      option = $('<option>').attr('value', adjustModelName(modelName))
+        .text(adjustModelName(modelName))
       select.append(option)
 
   createModelSelection = (container, modelNames) ->
@@ -43,7 +49,7 @@ exports.bindModelChooser = (container, selectionChanged) ->
 
 exports.modelList = (container) ->
   uploadModel = (modelURL) ->
-    $.ajax("assets/modelslib/#{modelURL}", {
+    $.ajax('assets/' + modelURL, {
         complete: (req, status) ->
           if status is 'success'
             session.open(req.responseText)

@@ -14,7 +14,6 @@ import
   ModelsLibrary.{ allModels, prettyFilepath }
 
 class Application extends Controller {
-
   def index: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.index())
@@ -34,5 +33,4 @@ class Application extends Controller {
     implicit request =>
       Ok(Json.stringify(Json.toJson(allModels.map(prettyFilepath))))
   }
-
 }
