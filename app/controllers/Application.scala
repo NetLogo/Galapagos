@@ -20,6 +20,11 @@ class Application extends Controller {
       Ok(views.html.index())
   }
 
+  def info: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.info())
+  }
+
   def model(modelName: String): Action[AnyContent] = {
     Logger.info("\"%s\" requested".format(modelName))
     Assets.at(path="/public/modelslib", modelName, true)

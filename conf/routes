@@ -3,35 +3,36 @@
 # ~~~~
 
 # General
-GET        /                                   controllers.Application.index
-GET        /model/list.json                    controllers.Application.modelList
-GET        /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
+GET         /                                   controllers.Application.index
+GET         /info                               controllers.Application.info
+GET         /model/list.json                    controllers.Application.modelList
+GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 
 # Local (Tortoise)
-GET        /create-standalone                  controllers.Local.createStandaloneTortoise
-GET        /tortoise                           controllers.Local.tortoise
+GET         /create-standalone                  controllers.Local.createStandaloneTortoise
+GET         /tortoise                           controllers.Local.tortoise
 
 # Compiler Service
-POST       /compile-url                        controllers.CompilerService.compileURL
-GET        /compile-url                        controllers.CompilerService.compileURL
-POST       /compile-code                       controllers.CompilerService.compileCode
-GET        /compile-code                       controllers.CompilerService.compileCode
-POST       /compile-nlogo                      controllers.CompilerService.compileNlogo
-GET        /compile-nlogo                      controllers.CompilerService.compileNlogo
-POST       /export-code                        controllers.CompilerService.exportCode
-GET        /export-code                        controllers.CompilerService.exportCode
-POST       /save-url                           controllers.CompilerService.saveURL
-GET        /save-url                           controllers.CompilerService.saveURL
-POST       /save-code                          controllers.CompilerService.saveCode
-GET        /save-code                          controllers.CompilerService.saveCode
-POST       /save-nlogo                         controllers.CompilerService.saveNlogo
-GET        /save-nlogo                         controllers.CompilerService.saveNlogo
-GET        /netlogoweb.js                      controllers.CompilerService.netLogoWeb
+POST        /compile-url                        controllers.CompilerService.compileURL
+GET         /compile-url                        controllers.CompilerService.compileURL
+POST        /compile-code                       controllers.CompilerService.compileCode
+GET         /compile-code                       controllers.CompilerService.compileCode
+POST        /compile-nlogo                      controllers.CompilerService.compileNlogo
+GET         /compile-nlogo                      controllers.CompilerService.compileNlogo
+POST        /export-code                        controllers.CompilerService.exportCode
+GET         /export-code                        controllers.CompilerService.exportCode
+POST        /save-url                           controllers.CompilerService.saveURL
+GET         /save-url                           controllers.CompilerService.saveURL
+POST        /save-code                          controllers.CompilerService.saveCode
+GET         /save-code                          controllers.CompilerService.saveCode
+POST        /save-nlogo                         controllers.CompilerService.saveNlogo
+GET         /save-nlogo                         controllers.CompilerService.saveNlogo
+GET         /netlogoweb.js                      controllers.CompilerService.netLogoWeb
 
-GET        /model/statuses.json                controllers.CompilerService.modelStatuses
+GET         /model/statuses.json                controllers.CompilerService.modelStatuses
 
-GET        /netlogo-engine.js                  controllers.Local.engine
-GET        /netlogo-agentmodel.js              controllers.Local.agentModel
+GET         /netlogo-engine.js                  controllers.Local.engine
+GET         /netlogo-agentmodel.js              controllers.Local.agentModel
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file                       controllers.Assets.at(path="/public", file)
+GET         /assets/*file                       controllers.Assets.at(path="/public", file)
