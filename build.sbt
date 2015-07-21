@@ -73,24 +73,24 @@ scrapePublishCredential <<= Def.settingDyn {
     Def.setting { fromEnvironmentVariables }
   else
     // Requires setting up a credentials profile, ask Robert for more details
-    Def.setting { fromCredentialsProfile("NetLogoWebAdmin") }
+    Def.setting { fromCredentialsProfile("nlw-admin") }
 }
 
 
 scrapePublishBucketID <<= Def.settingDyn {
-  val branchDeploy = Map("wip-static-site" -> "sample-cdn")
+  val branchDeploy = Map("master" -> "netlogo-web-prod-content")
 
   if (System.getenv("TRAVIS") == "true")
     Def.setting { branchDeploy.get(System.getenv("TRAVIS_BRANCH")) }
   else
-    Def.setting { branchDeploy.get("wip-static-site") }
+    Def.setting { branchDeploy.get("master") }
 }
 
 scrapePublishDistributionID <<= Def.settingDyn {
-  val branchPublish = Map("wip-static-site" -> "E3864GFW54OVD0")
+  val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
 
   if (System.getenv("TRAVIS") == "true")
     Def.setting { branchPublish.get(System.getenv("TRAVIS_BRANCH")) }
   else
-    Def.setting { branchPublish.get("wip-static-site") }
+    Def.setting { branchPublish.get("master") }
 }

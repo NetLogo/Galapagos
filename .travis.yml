@@ -1,6 +1,5 @@
 sudo: false
 
-# cache stuff, hopefully shortening build times
 cache:
   directories:
   - $HOME/.ivy2
@@ -8,17 +7,22 @@ cache:
   - $HOME/.sbt/launchers
 
 jdk: oraclejdk8
+
 language: scala
+
 scala:
   - 2.11.7
+
 script:
   - "sbt scalastyle"
   - "sbt coffeelint"
   - "sbt test"
+
 after_success:
   - sbt scrapePlay
   - sbt scrapeUpload
+
 env:
   global:
-  - secure: YOyMd40Hk0Cm6JkgP8ABQw3NfN6T/TG8Kl3GOINBEdfgVlAvXDxelwbAmssYYr2Er78Qi6fn22VmcOmjW04fPJCIXknPJLFTSFP+SSmYhHKbyehvLfuNu2dNk3vh3YNfHFFdhYXpQW16P0byVJfrLuXhYItlzcGvNhtLlDJivvQ=
-  - secure: HDQvD4RqBSrDZIMIJgZ5atjFyZiwSDBFwWq1G9JAMfWE4NFdQkSFL9tdCLTRlrwZWnEyajByVLQznsR3JzZly01DoizTfrSXsXYATli99U2+9UOb+vUR3y6rk6KYWe3RsIr+i46yeEk7b0Yozrpssb4iUgk8drThHFSvmHr3emo=
+  - secure: SNxviA06HhGdc/+tJxBlYgrjCyWHOdScf8Nw/okMV7/O0zwYtoaq9VUWs2h+unUsVhDOUNTg7J3DwgWXCJMzAZu7tHKBTbg8+h0AdSDN4eYCv+v2JW5l5YVa9yDKcmsNPRIx0+dLzUEflfgfQv6psdai0pFSt/mGg0t0jYEk3ms=
+  - secure: lbuteqpmcEG+ZpGODuHp3qj4+ScWZxMpkjIizDf5cQIRsLY2pW26JAHaxHvanFDFOdzbxORaYIrIDy/XlT28Ct2SUeAr2Lc7JXFaTs9vwYoR+6xNuqn1zJDa9Utfk3WmKQ9WCMJKQFMPMWvEPpqAhEFKwkZO/SaeD15oHcnr1Fg=
