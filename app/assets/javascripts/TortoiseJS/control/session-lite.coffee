@@ -66,13 +66,16 @@ class window.SessionLite
   recompile: ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
+    Tortoise.startLoading()
     world.clearAll()
     @widgetController.redraw()
     codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) ->
       if res.model.success
         globalEval(res.model.result)
       else
-        alert(res.model.result.map((err) -> err.message).join('\n')))
+        alert(res.model.result.map((err) -> err.message).join('\n'))
+      Tortoise.finishLoading()
+    )
 
 
   exportnlogo: ->
@@ -106,10 +109,12 @@ class window.SessionLite
 
 
   run: (code) ->
+    Tortoise.startLoading()
     codeCompile(@widgetController.code(), [code], [], @widgetController.widgets,
       (res) ->
         success = res.commands[0].success
         result  = res.commands[0].result
+        Tortoise.finishLoading()
         if (success)
           new Function(result)()
         else
@@ -117,21 +122,28 @@ class window.SessionLite
 
 window.Tortoise = {
 
+  startLoading: ->
+    $("#loading-overlay").show()
+
+  finishLoading: ->
+    $("#loading-overlay").hide()
+
   # We separate on both / and \ because we get URLs and Windows-esque filepaths
   normalizedFileName: (path) ->
     pathComponents = path.split(/\/|\\/)
     decodeURI(pathComponents[pathComponents.length - 1])
 
   fromNlogo:         (nlogo, container, path, callback) ->
-    nlogoCompile(nlogo, [], [], [], browserCompileCallback(container, callback, @normalizedFileName(path)))
+    nlogoCompile(nlogo, [], [], [], @browserCompileCallback(container, callback, @normalizedFileName(path)))
 
   fromURL:           (url,   container, callback) ->
+    @startLoading()
     req = new XMLHttpRequest()
     req.open('GET', url)
     req.onreadystatechange = =>
       if req.readyState == req.DONE
         nlogoCompile(req.responseText, [], [], [],
-          browserCompileCallback(container, callback, @normalizedFileName(url)))
+          @browserCompileCallback(container, callback, @normalizedFileName(url)))
     req.send("")
 
   fromCompiledModel: (container,
@@ -150,17 +162,18 @@ window.Tortoise = {
     modelConfig.output = widgetController.output
     globalEval(compiledSource)
     new SessionLite(widgetController)
+
+  browserCompileCallback: (container, onSuccess, filename) ->
+    (res) =>
+      if res.model.success
+        onSuccess(@fromCompiledModel(container, res.widgets, res.code,
+          res.info, res.model.result, false, filename))
+      else
+        container.innerHTML = res.model.result.map((err) -> err.message).join('<br/>')
+      @finishLoading()
 }
 
 window.AgentModel = tortoise_require('agentmodel')
-
-browserCompileCallback = (container, callback, filename) ->
-  (res) ->
-    if res.model.success
-      callback(Tortoise.fromCompiledModel(container, res.widgets, res.code,
-        res.info, res.model.result, false, filename))
-    else
-      container.innerHTML = res.model.result.map((err) -> err.message).join('<br/>')
 
 window.nlogoCompile = (model, commands, reporters, widgets, onFulfilled) ->
   onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))

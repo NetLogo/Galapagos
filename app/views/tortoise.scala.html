@@ -7,8 +7,10 @@
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/widgets.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classic.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/netlogo-syntax.css")' />
+    <link rel="stylesheet" href='@routes.Assets.at("stylesheets/spinner.css")' />
   </head>
   <body>
+    @views.html.spinner()
     <div class="dynamic-row" style="margin-bottom: 20px; max-width: 900px;">
       <div style="width: 320px;">
         <h3>Find a Built-In Model</h3>
@@ -61,6 +63,9 @@
 
     document.querySelector('#model-file-input').addEventListener('change', function (event) {
       var reader = new FileReader();
+      reader.onloadstart = function (e) {
+        Tortoise.startLoading();
+      };
       reader.onload = function (e) {
         openNlogo(e.target.result);
       };
