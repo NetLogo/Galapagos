@@ -66,7 +66,7 @@ routesGenerator := InjectedRoutesGenerator
 
 scrapeRoutes ++= Seq("/create-standalone", "/info", "/tortoise", "/model/list.json", "/model/statuses.json", "/netlogo-engine.js", "/netlogo-agentmodel.js", "/netlogoweb.js")
 
-scrapeDelay := 20
+scrapeDelay := 60
 
 scrapePublishCredential <<= Def.settingDyn {
   if (System.getenv("TRAVIS") == "true")
