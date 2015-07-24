@@ -11,6 +11,8 @@ GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(mo
 # Local (Tortoise)
 GET         /create-standalone                  controllers.Local.createStandaloneTortoise
 GET         /tortoise                           controllers.Local.tortoise
+GET         /web                                controllers.Local.web
+GET         /standalone                         controllers.Local.standalone
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

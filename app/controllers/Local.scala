@@ -31,6 +31,16 @@ class Local @Inject() (application: PlayApplication) extends Controller {
       Ok(views.html.tortoise(mode))
   }
 
+  def standalone: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.simulation(TemplateUtil.inlineScript, TemplateUtil.inlineStyle))
+  }
+
+  def web: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.simulation(TemplateUtil.outsourceScript, TemplateUtil.outsourceStyle))
+  }
+
   def engine: Action[AnyContent] = Action {
     implicit request => OkJS(engineStr)
   }

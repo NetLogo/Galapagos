@@ -64,7 +64,17 @@ includeFilter in autoprefixer := Def.setting {
 
 routesGenerator := InjectedRoutesGenerator
 
-scrapeRoutes ++= Seq("/create-standalone", "/info", "/tortoise", "/model/list.json", "/model/statuses.json", "/netlogo-engine.js", "/netlogo-agentmodel.js", "/netlogoweb.js")
+scrapeRoutes ++= Seq(
+  "/info",
+  "/model/list.json",
+  "/model/statuses.json",
+  "/netlogo-engine.js",
+  "/netlogo-agentmodel.js",
+  "/netlogoweb.js",
+  "/standalone",
+  "/tortoise",
+  "/web"
+  )
 
 scrapeDelay := 60
 
@@ -101,3 +111,5 @@ scrapePublishDistributionID <<= Def.settingDyn {
   else
     Def.setting { branchPublish.get("master") }
 }
+
+scrapeAbsoluteURL := Some("netlogoweb.org")

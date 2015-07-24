@@ -1,0 +1,53 @@
+@(script: String => Html, style: String => Html)(implicit request: Request[_])
+
+@route(path: String) = @{
+  routes.Assets.at(path).absoluteURL
+}
+
+<html>
+  <head>
+    @style(route("lib/codemirror/lib/codemirror.css"))
+    @style(route("stylesheets/widgets.css"))
+    @style(route("stylesheets/classic.css"))
+    @style(route("stylesheets/netlogo-syntax.css"))
+  </head>
+  <body>
+    <div id="model-container"></div>
+  </body>
+  @script(route("lib/filesaver.js/FileSaver.js"))
+  @script(route("lib/markdown-js/markdown.js"))
+  @script(route("lib/highcharts/adapters/standalone-framework.js"))
+  @script(route("lib/highcharts/highcharts.js"))
+  @script(route("lib/highcharts/modules/exporting.js"))
+  @script(route("lib/ractive/ractive.js"))
+  @script(route("lib/codemirror/lib/codemirror.js"))
+  @script(route("lib/codemirror/addon/mode/simple.js"))
+
+  @script(routes.CompilerService.netLogoWeb.absoluteURL)
+  @script(routes.Local.engine.absoluteURL)
+
+  @script(route("javascripts/TortoiseJS/agent/colors.js"))
+  @script(route("javascripts/TortoiseJS/agent/drawshape.js"))
+  @script(route("javascripts/TortoiseJS/agent/defaultshapes.js"))
+  @script(route("javascripts/TortoiseJS/agent/linkdrawer.js"))
+  @script(route("javascripts/TortoiseJS/agent/view.js"))
+  @script(route("javascripts/TortoiseJS/agent/editor.js"))
+  @script(route("javascripts/TortoiseJS/agent/info.js"))
+  @script(route("javascripts/TortoiseJS/agent/output.js"))
+  @script(route("javascripts/TortoiseJS/agent/console.js"))
+  @script(route("javascripts/TortoiseJS/agent/widgets.js"))
+  @script(route("javascripts/TortoiseJS/control/session-lite.js"))
+  @script(route("javascripts/plot/highchartsops.js"))
+
+  <script>
+    var modelContainer = document.querySelector("#model-container");
+    if (window.location.hash) {
+      var url = window.location.hash.substring(1);
+      var session;
+      Tortoise.fromURL(url, modelContainer, function (res) {
+        session = res;
+        session.startLoop();
+      });
+    }
+  </script>
+</html>
