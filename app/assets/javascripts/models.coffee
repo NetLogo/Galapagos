@@ -1,18 +1,32 @@
-exports.bindModelChooser = (container, selectionChanged) ->
+exports.bindModelChooser = (container, selectionChanged, currentMode) ->
 
   PUBLIC_PATH_SEGMENT_LENGTH = "public/".length
 
-  adjustModelName = (modelName) ->
+  adjustModelPath = (modelName) ->
     modelName.substring(PUBLIC_PATH_SEGMENT_LENGTH, modelName.length)
 
+  modelDisplayName = (modelName) ->
+    stripPrefix = (prefix, str) ->
+      startsWith = (p, s) -> s.substring(0, p.length) is p
+      if str.startsWith(prefix)
+        str.substring(prefix.length)
+      else
+        str
+    stripPrefix("modelslib/", adjustModelPath(modelName))
+
   setModelCompilationStatus = (modelName, status) ->
-    $("option[value=\"#{adjustModelName(modelName)}\"]").addClass(status)
+    if status == "not_compiling" && currentMode != "dev"
+      $("option[value=\"#{adjustModelPath(modelName)}\"]").remove()
+    else
+      $("option[value=\"#{adjustModelPath(modelName)}\"]")
+        .addClass(currentMode)
+        .addClass(status)
 
   populateModelChoices = (select, modelNames) ->
     select.append($('<option>').text('Select a model...'))
     for modelName in modelNames
-      option = $('<option>').attr('value', adjustModelName(modelName))
-        .text(adjustModelName(modelName))
+      option = $('<option>').attr('value', adjustModelPath(modelName))
+        .text(modelDisplayName(modelName))
       select.append(option)
 
   createModelSelection = (container, modelNames) ->

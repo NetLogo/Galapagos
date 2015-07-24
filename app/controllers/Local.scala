@@ -3,27 +3,32 @@
 package controllers
 
 import
-  play.api.{ libs, mvc },
+  javax.inject.Inject
+
+import
+  play.api.{ Application => PlayApplication, libs, mvc, Play },
     libs.iteratee.Enumerator,
     mvc.{ Action, AnyContent, Controller, ResponseHeader, Result }
 
 import
   models.Util.usingSource
 
-class Local extends Controller {
+class Local @Inject() (application: PlayApplication) extends Controller {
   import Local._
 
   private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource(enginePath)))    (_.mkString)
   private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource(agentModelPath)))(_.mkString)
 
+  val mode = Play.mode(application).toString.toLowerCase
+
   def createStandaloneTortoise: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.createStandalone())
+      Ok(views.html.createStandalone(mode))
   }
 
   def tortoise: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.tortoise())
+      Ok(views.html.tortoise(mode))
   }
 
   def engine: Action[AnyContent] = Action {

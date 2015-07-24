@@ -1,3 +1,4 @@
+@(currentMode: String)
 @views.html.mainTheme {
   <script type="text/javascript">
       exports = {};
@@ -17,7 +18,7 @@
 
       $(document).ready(function() {
           var modelList = $('.model-list');
-          exports.bindModelChooser(modelList, submitModelURL);
+          exports.bindModelChooser(modelList, submitModelURL, '@currentMode');
           bindTextFileChooserToFileInput($("#choose-file"), $("#file-input"));
       })
   </script>

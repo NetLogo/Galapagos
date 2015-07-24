@@ -1,3 +1,5 @@
+@(currentMode: String)
+
 <html>
   <head>
     <title>NetLogo Web</title>
@@ -103,7 +105,7 @@
       });
     }
 
-    exports.bindModelChooser($('.model-list'), pickModel);
+    exports.bindModelChooser($('.model-list'), pickModel, '@currentMode');
 
     openURL(url);
   </script>
