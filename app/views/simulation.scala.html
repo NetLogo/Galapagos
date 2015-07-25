@@ -10,9 +10,11 @@
     @style(route("stylesheets/widgets.css"))
     @style(route("stylesheets/classic.css"))
     @style(route("stylesheets/netlogo-syntax.css"))
+    @style(route("stylesheets/spinner.css"))
   </head>
-  <body>
-    <div id="model-container"></div>
+  <body style="margin: 0px;">
+    @views.html.spinner()
+    <div id="model-container" style="display: inline-block;"></div>
   </body>
   @script(route("lib/filesaver.js/FileSaver.js"))
   @script(route("lib/markdown-js/markdown.js"))
@@ -41,13 +43,39 @@
 
   <script>
     var modelContainer = document.querySelector("#model-container");
-    if (window.location.hash) {
-      var url = window.location.hash.substring(1);
-      var session;
+    var index = window.location.href.indexOf("?");
+    var session;
+    if (index > -1) {
+      var url = window.location.href.substring(index+1);
+      console.log(url);
       Tortoise.fromURL(url, modelContainer, function (res) {
         session = res;
         session.startLoop();
       });
+    }
+
+    window.addEventListener("message", function (e) {
+      if (session) {
+        session.teardown();
+      }
+      Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, function (res) {
+        session = res;
+        session.startLoop();
+      });
+    });
+
+    if (parent !== window) {
+      var width = "", height = "";
+      window.setInterval(function() {
+        if (modelContainer.scrollWidth !== width || modelContainer.scrollHeight !== height) {
+          width = modelContainer.scrollWidth;
+          height = modelContainer.scrollHeight;
+          parent.postMessage({
+            width: modelContainer.scrollWidth,
+            height: modelContainer.scrollHeight
+          }, "*");
+        }
+      }, 200);
     }
   </script>
 </html>

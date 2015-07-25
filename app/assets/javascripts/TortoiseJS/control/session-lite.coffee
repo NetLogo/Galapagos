@@ -66,15 +66,16 @@ class window.SessionLite
   recompile: ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
-    Tortoise.startLoading()
-    world.clearAll()
-    @widgetController.redraw()
-    codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) ->
-      if res.model.success
-        globalEval(res.model.result)
-      else
-        alert(res.model.result.map((err) -> err.message).join('\n'))
-      Tortoise.finishLoading()
+    Tortoise.startLoading( =>
+      world.clearAll()
+      @widgetController.redraw()
+      codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) ->
+        if res.model.success
+          globalEval(res.model.result)
+        else
+          alert(res.model.result.map((err) -> err.message).join('\n'))
+        Tortoise.finishLoading()
+      )
     )
 
 
@@ -122,11 +123,15 @@ class window.SessionLite
 
 window.Tortoise = {
 
-  startLoading: ->
-    $("#loading-overlay").show()
+  # process: optional argument that allows the loading process to be async to
+  # give the animation time to come up.
+  startLoading: (process) ->
+    document.querySelector("#loading-overlay").style.display = ""
+    # This gives the loading animation time to come up. BCH 7/25/2015
+    if (process?) then setTimeout(process, 20)
 
   finishLoading: ->
-    $("#loading-overlay").hide()
+    document.querySelector("#loading-overlay").style.display = "none"
 
   # We separate on both / and \ because we get URLs and Windows-esque filepaths
   normalizedFileName: (path) ->
