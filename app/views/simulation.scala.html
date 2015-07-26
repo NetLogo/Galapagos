@@ -16,6 +16,7 @@
     @views.html.spinner()
     <div id="model-container" style="display: inline-block;"></div>
   </body>
+  @script(route("lib/jquery/jquery.js"))
   @script(route("lib/filesaver.js/FileSaver.js"))
   @script(route("lib/markdown-js/markdown.js"))
   @script(route("lib/highcharts/adapters/standalone-framework.js"))
@@ -41,11 +42,25 @@
   @script(route("javascripts/TortoiseJS/control/session-lite.js"))
   @script(route("javascripts/plot/highchartsops.js"))
 
+  @helper.javascriptRouter("jsRoutes")(
+    routes.javascript.Local.standalone
+  )
+
+  <!-- This can be used to insert nlogo code into this page -->
+  <script type="text/nlogo" id="nlogo-code" date-filename="model.nlogo"></script>
+
   <script>
     var modelContainer = document.querySelector("#model-container");
-    var index = window.location.href.indexOf("?");
+    var index          = window.location.href.indexOf("?");
+    var nlogoScript    = document.querySelector("#nlogo-code");
     var session;
-    if (index > -1) {
+
+    if (nlogoScript.textContent.length > 0) {
+      Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, function (res) {
+        session = res;
+        session.startLoop();
+      });
+    } else if (index > -1) {
       var url = window.location.href.substring(index+1);
       console.log(url);
       Tortoise.fromURL(url, modelContainer, function (res) {

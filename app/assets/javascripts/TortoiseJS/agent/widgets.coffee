@@ -238,7 +238,11 @@ template =
 
       <div class="netlogo-subheader">
         {{# !readOnly }}
-        <button class="netlogo-export-button" style="margin-bottom: 10px;" id="export-button" on-click="exportnlogo">Export to NetLogo...</button>
+        <div>
+          Export:
+          <button class="netlogo-export-button" style="margin-bottom: 10px;" on-click="exportnlogo">NetLogo</button>
+          <button class="netlogo-export-button" style="margin-bottom: 10px;" on-click="exportHtml">HTML</button>
+        </div>
         {{/}}
         <div class="netlogo-powered-by">
           <a href="http://ccl.northwestern.edu/netlogo/">

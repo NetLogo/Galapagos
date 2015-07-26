@@ -15,6 +15,7 @@ class window.SessionLite
     @_lastUpdate = 0
     @widgetController.ractive.on('editor.recompile',   (event) => @recompile())
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
+    @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
@@ -78,23 +79,47 @@ class window.SessionLite
       )
     )
 
+  getNlogo: ->
+    (new BrowserCompiler()).exportNlogo({
+      info:         @widgetController.ractive.get('info'),
+      code:         @widgetController.ractive.get('code'),
+      widgets:      @widgetController.widgets,
+      turtleShapes: turtleShapes,
+      linkShapes:   linkShapes
+    })
 
   exportnlogo: ->
     filename = window.prompt('Filename:', @widgetController.ractive.get('filename'))
     if filename?
-      exportRequest = {
-        info:         @widgetController.ractive.get('info'),
-        code:         @widgetController.ractive.get('code'),
-        widgets:      @widgetController.widgets,
-        turtleShapes: turtleShapes,
-        linkShapes:   linkShapes
-      }
-      exportedNLogo = (new BrowserCompiler()).exportNlogo(exportRequest)
+      exportedNLogo = @getNlogo()
       if (exportedNLogo.success)
         exportBlob = new Blob([exportedNLogo.result], {type: "text/plain:charset=utf-8"})
         saveAs(exportBlob, filename)
       else
         alert(exportedNLogo.result.map((err) -> err.message).join('\n'))
+
+  exportHtml: ->
+    suggestion = @widgetController.ractive.get('filename').replace(/\.nlogo$/, ".html")
+    filename = window.prompt('Filename:', suggestion)
+    if filename?
+      jsRoutes.controllers.Local.standalone().ajax({
+        success: (response) =>
+          nlogo = @getNlogo()
+          if nlogo.success
+            parser = new DOMParser()
+            dom = parser.parseFromString(response, "text/html")
+            nlogoScript = dom.querySelector("#nlogo-code")
+            nlogoScript.textContent = nlogo.result
+            nlogoScript.dataset.filename = filename.replace(/\.html$/, ".nlogo")
+            wrapper = document.createElement("div")
+            wrapper.appendChild(dom.documentElement)
+            exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
+            saveAs(exportBlob, filename)
+          else
+            alert(nlogo.result.map((err) -> err.message).join("\n"))
+        error: (response) ->
+          alert("Couldn't get standalone HTML: #{response}")
+      })
 
   makeForm:(method, path, data) ->
     form = document.createElement('form')
