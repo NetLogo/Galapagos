@@ -103,6 +103,9 @@ class window.WidgetController
 
   # () -> Unit
   updateWidgets: ->
+    for _, chartOps of @plotOps
+      chartOps.redraw()
+
     for widget, i in @widgets
       if widget.currentValue?
         if widget.varName?

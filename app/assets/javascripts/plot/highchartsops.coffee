@@ -53,7 +53,7 @@ class window.HighchartsOps extends PlotOps
       # Wrong, and disabled for performance reasons --JAB (10/19/14)
       # color = @colorToRGBString(pen.getColor())
       # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
-      @penToSeries(pen).addPoint([x, y])
+      @penToSeries(pen).addPoint([x, y], false)
       return
 
     updatePenMode = (pen) => (mode) =>
@@ -88,3 +88,6 @@ class window.HighchartsOps extends PlotOps
   # (PenBundle.Pen) => Highcharts.Series
   penToSeries: (pen) ->
     @_chart.series[@_penNameToSeriesNum[pen.name]]
+
+  redraw: ->
+    @_chart.redraw()
