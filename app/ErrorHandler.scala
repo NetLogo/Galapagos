@@ -1,11 +1,18 @@
-import javax.inject._
+import
+  javax.inject,
+    inject.{ Inject, Provider }
 
-import play.api.http.DefaultHttpErrorHandler
-import play.api._
-import play.api.mvc._
-import play.api.mvc.Results._
-import play.api.routing.Router
-import scala.concurrent._
+import
+  scala.concurrent,
+    concurrent.Future
+
+import
+  play.api,
+    api.{ http, mvc, routing, Configuration, Environment, OptionalSourceMapper },
+      http.DefaultHttpErrorHandler,
+      mvc.{ RequestHeader, Results },
+        Results.NotFound,
+      routing.Router
 
 class ErrorHandler @Inject() (
     env: Environment,
