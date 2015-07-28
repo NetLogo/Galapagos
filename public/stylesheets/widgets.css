@@ -105,6 +105,16 @@
   padding: 5px;
 }
 
+.netlogo-command-center-editor {
+  height: 1.25em;
+  flex-grow: 1;
+}
+
+.netlogo-command-center-editor .CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+
 .netlogo-output-widget {
   display: flex;
   padding: 5px;
@@ -121,10 +131,6 @@
 .netlogo-command-center-input {
   display: flex;
   flex-shrink: 0;
-}
-
-.netlogo-command-center-input input {
-  flex-grow: 1;
 }
 
 .netlogo-speed-slider {

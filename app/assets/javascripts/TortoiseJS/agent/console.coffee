@@ -25,7 +25,7 @@ window.ConsoleWidget = Ractive.extend({
     outputArea: OutputArea
   }
 
-  oninit: ->
+  onrender: ->
     changeAgentType = =>
       @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
 
@@ -44,22 +44,9 @@ window.ConsoleWidget = Ractive.extend({
         @set(entry)
       @set('historyIndex', newIndex)
 
-    @on('change-mode', (event) ->
-      switch event.original.which
-        when TAB_KEY
-          changeAgentType()
-          false
-        when UP_KEY
-          moveInHistory(-1)
-          false
-        when DOWN_KEY
-          moveInHistory(1)
-          false
-        else true
-    )
-    @on('check-run', (event) ->
-      if event.original.which == ENTER_KEY
-        input = @get('input')
+    run = =>
+      input = @get('input')
+      if input.trim().length > 0
         agentType = @get('agentType')
         @set('output', "#{@get('output')}#{agentType}> #{input}\n")
         history = @get('history')
@@ -72,9 +59,31 @@ window.ConsoleWidget = Ractive.extend({
         @fire('run', input)
         @set('input', '')
         @set('workingEntry', {})
-    )
+
     @on('clear-history', (event) ->
       @set('output', '')
+    )
+
+    commandCenterEditor = CodeMirror(@find('.netlogo-command-center-editor'), {
+      value: @get('input'),
+      mode:  'netlogo',
+      theme: 'netlogo-default',
+      extraKeys: {
+        Enter: run
+        Up:    => moveInHistory(-1)
+        Down:  => moveInHistory(1)
+        Tab:   => changeAgentType()
+      }
+    })
+
+    commandCenterEditor.on('change', =>
+      @set('input', commandCenterEditor.getValue())
+    )
+
+    @observe('input', (newValue) ->
+      if newValue != commandCenterEditor.getValue()
+        commandCenterEditor.setValue(newValue)
+        commandCenterEditor.execCommand('goLineEnd')
     )
 
   template:
@@ -90,10 +99,7 @@ window.ConsoleWidget = Ractive.extend({
           {{/}}
           </select>
         </label>
-        <input type='text'
-               on-keypress='check-run'
-               on-keydown='change-mode'
-               value='{{input}}' />
+        <div class="netlogo-command-center-editor"></div>
         <button on-click='clear-history'>Clear</button>
       </div>
     </div>

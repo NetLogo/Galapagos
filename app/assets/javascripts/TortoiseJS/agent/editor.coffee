@@ -1,10 +1,10 @@
 window.EditorWidget = Ractive.extend({
   onrender: ->
     window.editor = CodeMirror(@find('.netlogo-code'), {
-      value: @get('code'),
+      value:   @get('code'),
       tabSize: 2,
-      mode: 'netlogo',
-      theme: 'netlogo-default',
+      mode:    'netlogo',
+      theme:   'netlogo-default',
       readOnly: @get('readOnly')
     })
     editor.on('change', =>
@@ -17,10 +17,7 @@ window.EditorWidget = Ractive.extend({
       {{# !readOnly }}
         <button class="netlogo-widget" on-click="recompile">compile</button>
       {{/}}
-      {{! Triple bars around code lets it use html formatting if it's there. }}
-      {{! The <pre> tags keep formmatting nice even if it's not html already. }}
-      <div class="netlogo-code">
-      </div>
+      <div class="netlogo-code"></div>
     </div>
     """
 })
@@ -555,17 +552,10 @@ variable     = {token: 'variable', regex: new RegExp(wordCh + "+")}
 
 CodeMirror.defineSimpleMode('netlogo', {
   start: [
-    {token: 'keyword', regex: wordRegEx("to(?:-report)?"), indent: true, next: 'body'},
+    {token: 'keyword', regex: wordRegEx("to(?:-report)?"), indent: true},
     {token: 'keyword', regex: memberRegEx(keywords)},
     {token: 'keyword', regex: wordRegEx("#{wordCh}*-own")},
-    constantRule,
-    commentRule,
-    openBracket,
-    closeBracket,
-    variable,
-  ],
-  body: [
-    {token: 'keyword',  regex: wordRegEx("end"), dedent: true, next: 'start'},
+    {token: 'keyword',  regex: wordRegEx("end"), dedent: true},
     {token: 'command',  regex: memberRegEx(commands)},
     {token: 'reporter', regex: memberRegEx(reporters)},
     {token: 'string',   regex: /"(?:[^\\]|\\.)*?"/},
