@@ -229,15 +229,18 @@
     background-color: transparent;
 }
 
+.netlogo-label {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .netlogo-slider-label {
     display: flex;
     justify-content: space-between;
 }
 
 .netlogo-slider-label .netlogo-label {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
     min-width: 0;
     flex: 1 1 auto;
 }
