@@ -29,6 +29,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     consoleOutput: '',
     outputWidgetOutput: '',
     markdown: markdown.toHTML
+    convertColor: netlogoColorToCSS
   }
 
   ractive = new Ractive({
@@ -279,8 +280,14 @@ partials = {
     </div>
     """
   textBox:
+    # Note that ">{{ display }}</pre>" thing is necessary. Since <pre> formats
+    # text exactly as it appears, an extra space between the ">" and the
+    # "{{ display }}" would result in an actual newline in the widget.
+    # BCH 7/28/2015
     """
-    <pre class="netlogo-widget netlogo-text-box" style="{{>dimensions}} font-size: {{fontSize}}px;">{{ display }}</pre>
+    <pre class="netlogo-widget netlogo-text-box"
+         style="{{>dimensions}} font-size: {{fontSize}}px; color: {{ convertColor(color) }}; {{# transparent}}background: transparent;{{/}}"
+         >{{ display }}</pre>
     """
   switcher:
     """
