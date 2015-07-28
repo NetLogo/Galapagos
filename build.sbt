@@ -68,20 +68,27 @@ scrapeRoutes ++= Seq("/create-standalone", "/info", "/tortoise", "/model/list.js
 
 scrapeDelay := 60
 
+def isTravis: Boolean = System.getenv("TRAVIS") == "true"
+
+def travisBranch: String =
+  if (System.getenv("TRAVIS_PULL_REQUEST") != "false")
+    "PR-" + System.getenv("TRAVIS_PULL_REQUEST")
+  else
+    System.getenv("TRAVIS_BRANCH")
+
 scrapePublishCredential <<= Def.settingDyn {
-  if (System.getenv("TRAVIS") == "true")
+  if (isTravis)
     Def.setting { fromEnvironmentVariables }
   else
     // Requires setting up a credentials profile, ask Robert for more details
     Def.setting { fromCredentialsProfile("nlw-admin") }
 }
 
-
 scrapePublishBucketID <<= Def.settingDyn {
   val branchDeploy = Map("master" -> "netlogo-web-prod-content")
 
-  if (System.getenv("TRAVIS") == "true")
-    Def.setting { branchDeploy.get(System.getenv("TRAVIS_BRANCH")) }
+  if (isTravis)
+    Def.setting { branchDeploy.get(travisBranch) }
   else
     Def.setting { branchDeploy.get("master") }
 }
@@ -89,8 +96,8 @@ scrapePublishBucketID <<= Def.settingDyn {
 scrapePublishDistributionID <<= Def.settingDyn {
   val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
 
-  if (System.getenv("TRAVIS") == "true")
-    Def.setting { branchPublish.get(System.getenv("TRAVIS_BRANCH")) }
+  if (isTravis)
+    Def.setting { branchPublish.get(travisBranch) }
   else
     Def.setting { branchPublish.get("master") }
 }
