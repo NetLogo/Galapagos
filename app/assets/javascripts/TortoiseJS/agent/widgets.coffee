@@ -64,6 +64,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   output = {
       write: (str) -> model.outputWidgetOutput += str
       clear: -> model.outputWidgetOutput = ""
+      alert: (str) -> window.alert("error in " + str)
   }
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
@@ -147,6 +148,8 @@ class window.WidgetController
 
   code: -> @ractive.get('code')
 
+reporterOf = (str) -> new Function("return #{str}")
+
 # ([widget], () -> Unit) -> WidgetController
 # Destructive - Adds everything for maintaining state to the widget models,
 # such `currentValue`s and actual functions for buttons instead of just code.
@@ -163,9 +166,14 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.on
       when "slider"
         widget.currentValue = widget.default
-        widget.getMin       = new Function("return " + widget.compiledMin.result)
-        widget.getMax       = new Function("return " + widget.compiledMax.result)
-        widget.getStep      = new Function("return " + widget.compiledStep.result)
+        if widget.compilation.success = true
+          widget.getMin  = reporterOf(widget.compiledMin.result)
+          widget.getMax  = reporterOf(widget.compiledMax.result)
+          widget.getStep = reporterOf(widget.compiledStep.result)
+        else
+          widget.getMin  = () -> widget.default
+          widget.getMax  = () -> widget.default
+          widget.getStep = () -> 0
         widget.minValue     = widget.default
         widget.maxValue     = widget.default + 1
         widget.stepValue    = 1
@@ -173,20 +181,25 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.value
       when "button"
         if widget.forever then widget.running = false
-        if widget.compiledSource.success
-          task = new Function(widget.compiledSource.result)
+        if widget.compilation.success
+          task = new Function(widget.compiledSource)
           do (task) ->
             widget.run = if widget.forever then task else () ->
               task()
               updateUICallback()
         else
-          widget.run = () -> alert("Button failed to compile with:\n" +
-                                  (res.message for res in widget.compiledSource.result).join('\n'))
+          do (widget) ->
+            widget.run = () -> alert("Button failed to compile with:\n" +
+                                     widget.compilation.messages.join('\n'))
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
-        widget.reporter     = new Function("return " + widget.compiledSource.result)
-        widget.currentValue = ""
+        if widget.compilation.success
+          widget.reporter     = reporterOf(widget.compiledSource)
+          widget.currentValue = ""
+        else
+          widget.reporter     = () -> "N/A"
+          widget.currentValue = "N/A"
       when "plot"
         widget.plotNumber = plotCount++
 
