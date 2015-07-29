@@ -2,6 +2,9 @@
     display: flex;
     padding: 20px;
     flex-flow: column;
+    font-size: 12px;
+    font-family: "Lucida Grande", sans-serif;
+    outline: none;
 }
 
 .netlogo-header {
@@ -11,8 +14,6 @@
 }
 
 .netlogo-widget {
-    font-size: 12px;
-    font-family: "Lucida Grande", sans-serif;
     box-sizing: border-box;
     background-color: #CCC;
     border-radius: 4px;
@@ -219,6 +220,7 @@
     border: none;
     margin: 0;
     white-space: pre-wrap;
+    font-family: "Lucida Grande", sans-serif;
 }
 
 .netlogo-switcher {

@@ -5,18 +5,20 @@
     <title>NetLogo Web</title>
     <link rel="stylesheet" href='@routes.Assets.at("lib/chosen/chosen.css")' />
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classes.css")'>
+    <link rel="stylesheet" href='@routes.Assets.at("stylesheets/tortoise.css")'>
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/netlogo-syntax.css")' />
   </head>
   <body>
-    <div class="dynamic-row" style="margin-bottom: 20px; max-width: 900px;">
-      <div style="width: 320px;">
-        <h3>Find a Built-In Model</h3>
-        <div class="model-list tortoise-model-list" style="width: 300px"></div>
+    <div class="model-selection-bar">
+      <div>
+        <label>Find a Built-In Model:
+          <span class="model-list tortoise-model-list"></span>
+        </label>
       </div>
-      <h3 style="width: 30px;"> or </h3>
-      <div style="">
-        <h3>Upload a Model</h3>
-        <input id="model-file-input" type="file" name="model" />
+      <div>
+        <label>Upload a Model:
+          <input id="model-file-input" type="file" name="model" />
+        </label>
       </div>
     </div>
     <iframe id="model-container" class="model-container" src="about:blank"></iframe>
