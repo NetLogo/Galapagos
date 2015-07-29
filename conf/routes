@@ -7,6 +7,7 @@ GET         /                                   controllers.Application.index
 GET         /info                               controllers.Application.info
 GET         /model/list.json                    controllers.Application.modelList
 GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
+GET         /server-error                       controllers.Application.serverError
 
 # Local (Tortoise)
 GET         /create-standalone                  controllers.Local.createStandaloneTortoise

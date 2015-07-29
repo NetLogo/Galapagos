@@ -72,6 +72,7 @@ scrapeRoutes ++= Seq(
   "/netlogo-engine.js",
   "/netlogo-agentmodel.js",
   "/netlogoweb.js",
+  "/server-error",
   "/standalone",
   "/tortoise",
   "/web"

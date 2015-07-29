@@ -136,6 +136,12 @@ li.unknown.dev {
   border-top: 1px solid #5499B9;
 }
 
+.server-error {
+  margin-top: 20px;
+  font-size: 20px;
+  line-height: 25px;
+  text-align: center;
+}
 /*
 
  Flexbox stuff
