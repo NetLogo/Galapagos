@@ -1,4 +1,6 @@
-@(currentMode: String)(implicit request: Request[_])
+@import play.api.Mode
+
+@()(implicit mode: Mode.Mode, request: Request[_])
 
 <html>
   <head>
@@ -7,6 +9,8 @@
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/classes.css")'>
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/tortoise.css")'>
     <link rel="stylesheet" href='@routes.Assets.at("stylesheets/netlogo-syntax.css")' />
+    <link rel="stylesheet" href='@routes.Assets.at("stylesheets/spinner.css")' />
+    @views.html.analytics()
   </head>
   <body>
     <div class="model-selection-bar">
@@ -73,7 +77,7 @@
         }, "*");
       }
 
-      exports.bindModelChooser($('.model-list'), pickModel, '@currentMode');
+      exports.bindModelChooser($('.model-list'), pickModel, '@mode.toString.toLowerCase');
 
       openURL(url);
     </script>

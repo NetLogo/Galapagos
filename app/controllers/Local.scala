@@ -19,16 +19,16 @@ class Local @Inject() (application: PlayApplication) extends Controller {
   private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource(enginePath)))    (_.mkString)
   private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource(agentModelPath)))(_.mkString)
 
-  val mode = Play.mode(application).toString.toLowerCase
+  implicit val mode = Play.mode(application)
 
   def createStandaloneTortoise: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.createStandalone(mode))
+      Ok(views.html.mainTheme(views.html.createStandalone()))
   }
 
   def tortoise: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.tortoise(mode))
+      Ok(views.html.tortoise())
   }
 
   def standalone: Action[AnyContent] = Action {

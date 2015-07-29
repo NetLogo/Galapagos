@@ -3,25 +3,29 @@
 package controllers
 
 import
-  play.api.{ Logger, mvc },
+  javax.inject.Inject
+
+import
+  models.ModelsLibrary,
+    ModelsLibrary.{ allModels, prettyFilepath }
+
+import
+  play.api.{ Application => PlayApplication, libs, Logger, Play, mvc },
+    libs.json.Json,
     mvc.{AnyContent, Action, Controller}
 
-import
-  play.api.libs.json.Json
-import models.ModelsLibrary
+class Application @Inject() (application: PlayApplication)  extends Controller {
 
-import
-  ModelsLibrary.{ allModels, prettyFilepath }
+  private implicit val mode = Play.mode(application)
 
-class Application extends Controller {
   def index: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.index())
+      Ok(views.html.mainTheme(views.html.index()))
   }
 
   def info: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.info())
+      Ok(views.html.mainTheme(views.html.info()))
   }
 
   def serverError: Action[AnyContent] = Action {

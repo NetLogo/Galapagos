@@ -1,4 +1,6 @@
-@(content: Html)
+@import play.api.Mode
+
+@(content: Html)(implicit mode: Mode.Mode)
 
 <!DOCTYPE html>
 
@@ -10,6 +12,7 @@
     <link rel="stylesheet" media="screen" href='@routes.Assets.at("stylesheets/element-overrides.css")'>
     <link rel="shortcut icon" type="image/png" href='@routes.Assets.at("images/favicon.png")'>
     <script src='@routes.Assets.at("lib/jquery/jquery.js")' type="text/javascript"></script>
+    @views.html.analytics()
   </head>
   <body class="not_full_height">
 
