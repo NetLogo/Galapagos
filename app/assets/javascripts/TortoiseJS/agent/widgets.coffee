@@ -28,8 +28,9 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     filename: filename,
     consoleOutput: '',
     outputWidgetOutput: '',
-    markdown: markdown.toHTML
-    convertColor: netlogoColorToCSS
+    markdown: markdown.toHTML,
+    convertColor: netlogoColorToCSS,
+    hasFocus: false
   }
 
   ractive = new Ractive({
@@ -72,6 +73,18 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   )
   ractive.on('activateButton', (event) ->
     event.context.run()
+  )
+
+  ractive.on('checkFocus', (event) ->
+    @set('hasFocus', document.activeElement is event.node)
+  )
+
+  ractive.on('checkActionKeys', (event) ->
+    if @get('hasFocus')
+      e = event.original
+      char = String.fromCharCode(if e.which? then e.which else e.keyCode)
+      for w in widgets when w.type is 'button' and w.actionKey is char
+        w.run()
   )
 
   controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output)
@@ -199,7 +212,8 @@ isValidValue = (widget, value) ->
 # coffeelint: disable=max_line_length
 template =
   """
-  <div class="netlogo-model" style="width: {{width}}px;">
+  <div class="netlogo-model" style="width: {{width}}px;"
+       tabindex="1" on-keydown="checkActionKeys" on-focus="checkFocus" on-blur="checkFocus">
     <div class="netlogo-header">
       <label class="netlogo-widget netlogo-speed-slider">
         <span class="netlogo-label">speed</span>
@@ -318,7 +332,12 @@ partials = {
            type="button"
            style="{{>dimensions}}"
            on-click="activateButton">
-      <span>{{display || source}}</span>
+      <span class="netlogo-label">{{display || source}}</span>
+      {{# actionKey }}
+      <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
+        {{actionKey}}
+      </span>
+      {{/}}
     </button>
     """
   foreverButton:
@@ -327,6 +346,11 @@ partials = {
            style="{{>dimensions}}">
       <input type="checkbox" checked={{ running }} />
       <span class="netlogo-label">{{display || source}}</span>
+      {{# actionKey }}
+      <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
+        {{actionKey}}
+      </span>
+      {{/}}
     </label>
     """
   chooser:
