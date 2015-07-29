@@ -28,6 +28,11 @@
     box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
 }
 
+.netlogo-command.netlogo-disabled:hover {
+    cursor:     default;
+    box-shadow: none;
+}
+
 .netlogo-tabs {
     margin-top: 20px;
     display: flex;
@@ -176,6 +181,10 @@
     padding: 0px;
 }
 
+.netlogo-disabled {
+  color: grey;
+}
+
 .netlogo-button.clear-button {
     padding: 5px;
 }
@@ -200,12 +209,7 @@
   color: black;
 }
 
-.netlogo-button:active {
-    background-color: gray;
-    color: white;
-}
-
-.netlogo-forever-button.netlogo-active {
+.netlogo-button:active, .netlogo-forever-button.netlogo-active {
     background-color: gray;
     color: white;
 }

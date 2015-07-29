@@ -17,20 +17,21 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   model = {
     widgets,
-    speed:    0.0,
-    ticks:    "", # Remember, ticks initialize to nothing, not 0
-    width:    Math.max.apply(Math, (w.right  for w in widgets)),
-    height:   Math.max.apply(Math, (w.bottom for w in widgets)),
+    speed:              0.0,
+    ticks:              "", # Remember, ticks initialize to nothing, not 0
+    ticksStarted:       false,
+    width:              Math.max.apply(Math, (w.right  for w in widgets)),
+    height:             Math.max.apply(Math, (w.bottom for w in widgets)),
     code,
     info,
     readOnly,
-    exportForm: false,
-    filename: filename,
-    consoleOutput: '',
+    exportForm:         false,
+    filename:           filename,
+    consoleOutput:      '',
     outputWidgetOutput: '',
-    markdown: markdown.toHTML,
-    convertColor: netlogoColorToCSS,
-    hasFocus: false
+    markdown:           markdown.toHTML,
+    convertColor:       netlogoColorToCSS,
+    hasFocus:           false
   }
 
   ractive = new Ractive({
@@ -132,10 +133,12 @@ class window.WidgetController
           widget.stepValue = stepValue
           widget.minValue  = minValue - 0.000001
           widget.minValue  = minValue
-    try
+    if world.ticker.ticksAreStarted()
       @model.ticks = Math.floor(world.ticker.tickCount())
-    catch err
-      # ignore
+      @model.ticksStarted = true
+    else
+      @model.ticks = ''
+      @model.ticksStarted = false
 
   # () -> number
   speed: -> @model.speed
@@ -341,10 +344,11 @@ partials = {
     """
   button:
     """
-    <button class="netlogo-widget netlogo-button netlogo-command"
+    <button class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}}"
            type="button"
            style="{{>dimensions}}"
-           on-click="activateButton">
+           on-click="activateButton"
+           disabled={{ !ticksStarted && disableUntilTicksStart }}>
       <span class="netlogo-label">{{display || source}}</span>
       {{# actionKey }}
       <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
@@ -355,9 +359,9 @@ partials = {
     """
   foreverButton:
     """
-    <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command"
+    <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}}"
            style="{{>dimensions}}">
-      <input type="checkbox" checked={{ running }} />
+      <input type="checkbox" checked={{ running }} {{# !ticksStarted && disableUntilTicksStart }}disabled{{/}}/>
       <span class="netlogo-label">{{display || source}}</span>
       {{# actionKey }}
       <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">

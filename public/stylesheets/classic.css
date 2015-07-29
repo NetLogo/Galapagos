@@ -1,13 +1,13 @@
 .netlogo-command {
     background-color: #BCBCE5;
 }
-.netlogo-command:active {
+.netlogo-command.netlogo-active, .netlogo-command:active {
     background-color: #000;
     color: #BCBCE5;
 }
-.netlogo-command.netlogo-active {
-    background-color: #000;
-    color: #BCBCE5;
+.netlogo-button.netlogo-disabled:active, .netlogo-forever-button.netlogo-disabled.netlogo-active {
+    background-color: #BCBCE5;
+    color: grey;
 }
 .netlogo-input {
     background-color: #82BCB7;
