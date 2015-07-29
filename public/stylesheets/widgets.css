@@ -174,12 +174,24 @@
     padding: 5px;
 }
 
-.netlogo-button > span {
+.netlogo-button .netlogo-label {
     /* For some reason, Safari doesn't like justify-content in buttons,
        we have to resort to putting a span in the button that can then be
        centered.
        BCH 11/14/2014 */
     margin: auto;
+}
+
+.netlogo-action-key {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  margin: 0px 2px;
+  color: grey;
+}
+
+.netlogo-action-key.netlogo-focus {
+  color: black;
 }
 
 .netlogo-button:active {
