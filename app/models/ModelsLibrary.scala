@@ -17,7 +17,7 @@ object ModelsLibrary extends NetLogoModelCollection {
 
   private val ModelLibRelativePath   = "public/modelslib/"
 
-  private val ModelDirectories     = Seq("Sample Models", "Code Examples", "Curricular Models", "test/benchmarks")
+  private val ModelDirectories     = Seq("Sample Models", "Code Examples", "Curricular Models")
 
   def prettyFilepath(s: String): String =
     s.stripSuffix(".nlogo")
@@ -32,18 +32,21 @@ object ModelsLibrary extends NetLogoModelCollection {
       modelLibraryFiles
 
   private lazy val demoModelFiles =
-    recursivelyListFiles(new File(DemoModelsRelativePath)).filter(isNetLogoFile)
+    Seq(new File(DemoModelsRelativePath), new File(ModelLibRelativePath, "test/benchmarks"))
+      .flatMap(allNetLogoFilesIn)
 
   private lazy val modelLibraryFiles =
     ModelDirectories.
-      flatMap(dir => recursivelyListFiles(new File(ModelLibRelativePath, dir))).
-      filter(isNetLogoFile)
+      flatMap(dir => allNetLogoFilesIn(new File(ModelLibRelativePath, dir)))
 
   private def isNetLogoFile(f: File): Boolean =
     f.getName.endsWith(".nlogo")
 
-  private def recursivelyListFiles(f: File): Seq[File] = {
-    val myFiles = f.listFiles
-    myFiles ++ myFiles.filter(_.isDirectory).flatMap(recursivelyListFiles)
+  private def allNetLogoFilesIn(f: File): Seq[File] = {
+    def recursivelyListFiles(f: File): Seq[File] = {
+      val childFiles = f.listFiles
+      childFiles ++ childFiles.filter(_.isDirectory).flatMap(recursivelyListFiles)
+    }
+    recursivelyListFiles(f).filter(isNetLogoFile)
   }
 }
