@@ -24,6 +24,8 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
       "akka.log-dead-letters"      -> 0
     ))
 
+  val longTimeout = akka.util.Timeout(25, java.util.concurrent.TimeUnit.SECONDS)
+
   "CompilerService controller" must {
     Map(
       "wolf sheep"          -> wolfSheep,
@@ -31,16 +33,19 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
       "custom link shape"   -> linkBreeds
     ).foreach {
       case (name, modelText) =>
-
         s"preserve $name model information" in {
-          val (firstResult, firstResultBody) = await(makeRequest("POST", "/compile-nlogo", "model" -> modelText))
-          firstResult.header.status mustEqual 200
-
-          val fields = sanitizedJsonModel(firstResultBody, "turtleShapes", "linkShapes") - "model"
-
-          val (secondResult, secondResultBody) = await(makeRequest("POST", "/compile-code", fields.toSeq: _*))
-          secondResult.header.status mustEqual 200
-          secondResultBody mustEqual firstResultBody
+          await {
+            makeRequest("POST", "/compile-nlogo", "model" -> modelText).flatMap {
+              case (firstResult, firstResultBody) =>
+                val fields = sanitizedJsonModel(firstResultBody, "turtleShapes", "linkShapes") - "model"
+                firstResult.header.status  mustEqual 200
+                makeRequest("POST", "/compile-code", fields.toSeq: _*).map {
+                  case (secondResult, secondResultBody) =>
+                    secondResult.header.status mustEqual 200
+                    secondResultBody mustEqual firstResultBody
+                }
+            }
+          }(longTimeout)
         }
     }
   }
@@ -48,7 +53,7 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
   private def makeRequest(method: String, path: String, formBody: (String, String)*): Future[(Result, String)] = {
     val req = FakeRequest(method, path).withFormUrlEncodedBody(formBody: _*)
     val (_, handler) = app.requestHandler.handlerForRequest(req)
-    call(handler.asInstanceOf[EssentialAction], req).flatMap[(Result, String)] { res =>
+    call(handler.asInstanceOf[EssentialAction], req).flatMap { res =>
       res.body |>>> Iteratee.consume[Array[Byte]]().map(new String(_, "UTF-8")).map((res, _))
     }
   }
