@@ -102,6 +102,11 @@ li.unknown.dev {
   background-color: #E8FFFF;
 }
 
+.index-button > h2 {
+  margin-top: 3%;
+  margin-bottom: 0;
+}
+
 .icon-button {
   display: block;
   width: 100%;
@@ -125,12 +130,14 @@ li.unknown.dev {
 
 .platform-list {
   margin-left: 0;
+  padding-left: 0;
   list-style: none;
   margin-bottom: 0;
 }
 
 .platform-list > li {
   margin: auto;
+  padding-left: 0;
   padding-top: 10px;
   padding-bottom: 10px;
   border-top: 1px solid #5499B9;
