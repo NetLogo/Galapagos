@@ -102,24 +102,27 @@ class window.SessionLite
     suggestion = @widgetController.ractive.get('filename').replace(/\.nlogo$/, ".html")
     filename = window.prompt('Filename:', suggestion)
     if filename?
-      jsRoutes.controllers.Local.standalone().ajax({
-        success: (response) =>
-          nlogo = @getNlogo()
-          if nlogo.success
-            parser = new DOMParser()
-            dom = parser.parseFromString(response, "text/html")
-            nlogoScript = dom.querySelector("#nlogo-code")
-            nlogoScript.textContent = nlogo.result
-            nlogoScript.dataset.filename = filename.replace(/\.html$/, ".nlogo")
-            wrapper = document.createElement("div")
-            wrapper.appendChild(dom.documentElement)
-            exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
-            saveAs(exportBlob, filename)
+      window.req = new XMLHttpRequest()
+      req.open('GET', standaloneURL)
+      req.onreadystatechange = =>
+        if req.readyState == req.DONE
+          if req.status is 200
+            nlogo = @getNlogo()
+            if nlogo.success
+              parser = new DOMParser()
+              dom = parser.parseFromString(req.responseText, "text/html")
+              nlogoScript = dom.querySelector("#nlogo-code")
+              nlogoScript.textContent = nlogo.result
+              nlogoScript.dataset.filename = filename.replace(/\.html$/, ".nlogo")
+              wrapper = document.createElement("div")
+              wrapper.appendChild(dom.documentElement)
+              exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
+              saveAs(exportBlob, filename)
+            else
+              alert(nlogo.result.map((err) -> err.message).join("\n"))
           else
-            alert(nlogo.result.map((err) -> err.message).join("\n"))
-        error: (response) ->
-          alert("Couldn't get standalone HTML: #{response}")
-      })
+            alert("Couldn't get standalone page")
+      req.send("")
 
   makeForm:(method, path, data) ->
     form = document.createElement('form')

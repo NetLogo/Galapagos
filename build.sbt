@@ -24,6 +24,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlaySc
 val tortoiseVersion = "0.1-5bbc988"
 
 libraryDependencies ++= Seq(
+  filters,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   cache,

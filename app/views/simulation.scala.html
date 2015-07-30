@@ -15,7 +15,6 @@
   <body style="margin: 0px;">
     @views.html.spinner()
     <div id="model-container" style="display: inline-block;"></div>
-    @script(route("lib/jquery/jquery.js"))
     @script(route("lib/filesaver.js/FileSaver.js"))
     @script(route("lib/markdown-js/markdown.js"))
     @script(route("lib/highcharts/adapters/standalone-framework.js"))
@@ -52,6 +51,7 @@
       var modelContainer = document.querySelector("#model-container");
       var index          = window.location.href.indexOf("?");
       var nlogoScript    = document.querySelector("#nlogo-code");
+      var standaloneURL  = "@routes.Local.standalone.absoluteURL";
       var session;
 
       if (nlogoScript.textContent.length > 0) {
