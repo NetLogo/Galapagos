@@ -8,7 +8,7 @@ exports.bindModelChooser = (container, selectionChanged, currentMode) ->
   modelDisplayName = (modelName) ->
     stripPrefix = (prefix, str) ->
       startsWith = (p, s) -> s.substring(0, p.length) is p
-      if str.startsWith(prefix)
+      if startsWith(prefix, str)
         str.substring(prefix.length)
       else
         str
