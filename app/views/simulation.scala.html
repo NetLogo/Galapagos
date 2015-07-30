@@ -15,82 +15,82 @@
   <body style="margin: 0px;">
     @views.html.spinner()
     <div id="model-container" style="display: inline-block;"></div>
-  </body>
-  @script(route("lib/jquery/jquery.js"))
-  @script(route("lib/filesaver.js/FileSaver.js"))
-  @script(route("lib/markdown-js/markdown.js"))
-  @script(route("lib/highcharts/adapters/standalone-framework.js"))
-  @script(route("lib/highcharts/highcharts.js"))
-  @script(route("lib/highcharts/modules/exporting.js"))
-  @script(route("lib/ractive/ractive.js"))
-  @script(route("lib/codemirror/lib/codemirror.js"))
-  @script(route("lib/codemirror/addon/mode/simple.js"))
+    @script(route("lib/jquery/jquery.js"))
+    @script(route("lib/filesaver.js/FileSaver.js"))
+    @script(route("lib/markdown-js/markdown.js"))
+    @script(route("lib/highcharts/adapters/standalone-framework.js"))
+    @script(route("lib/highcharts/highcharts.js"))
+    @script(route("lib/highcharts/modules/exporting.js"))
+    @script(route("lib/ractive/ractive.js"))
+    @script(route("lib/codemirror/lib/codemirror.js"))
+    @script(route("lib/codemirror/addon/mode/simple.js"))
 
-  @script(routes.CompilerService.netLogoWeb.absoluteURL)
-  @script(routes.Local.engine.absoluteURL)
+    @script(routes.CompilerService.netLogoWeb.absoluteURL)
+    @script(routes.Local.engine.absoluteURL)
 
-  @script(route("javascripts/TortoiseJS/agent/colors.js"))
-  @script(route("javascripts/TortoiseJS/agent/drawshape.js"))
-  @script(route("javascripts/TortoiseJS/agent/defaultshapes.js"))
-  @script(route("javascripts/TortoiseJS/agent/linkdrawer.js"))
-  @script(route("javascripts/TortoiseJS/agent/view.js"))
-  @script(route("javascripts/TortoiseJS/agent/editor.js"))
-  @script(route("javascripts/TortoiseJS/agent/info.js"))
-  @script(route("javascripts/TortoiseJS/agent/output.js"))
-  @script(route("javascripts/TortoiseJS/agent/console.js"))
-  @script(route("javascripts/TortoiseJS/agent/widgets.js"))
-  @script(route("javascripts/TortoiseJS/control/session-lite.js"))
-  @script(route("javascripts/plot/highchartsops.js"))
+    @script(route("javascripts/TortoiseJS/agent/colors.js"))
+    @script(route("javascripts/TortoiseJS/agent/drawshape.js"))
+    @script(route("javascripts/TortoiseJS/agent/defaultshapes.js"))
+    @script(route("javascripts/TortoiseJS/agent/linkdrawer.js"))
+    @script(route("javascripts/TortoiseJS/agent/view.js"))
+    @script(route("javascripts/TortoiseJS/agent/editor.js"))
+    @script(route("javascripts/TortoiseJS/agent/info.js"))
+    @script(route("javascripts/TortoiseJS/agent/output.js"))
+    @script(route("javascripts/TortoiseJS/agent/console.js"))
+    @script(route("javascripts/TortoiseJS/agent/widgets.js"))
+    @script(route("javascripts/TortoiseJS/control/session-lite.js"))
+    @script(route("javascripts/plot/highchartsops.js"))
 
-  @helper.javascriptRouter("jsRoutes")(
-    routes.javascript.Local.standalone
-  )
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Local.standalone
+    )
 
-  <!-- This can be used to insert nlogo code into this page -->
-  <script type="text/nlogo" id="nlogo-code" date-filename="model.nlogo"></script>
+    <!-- This can be used to insert nlogo code into this page -->
+    <script type="text/nlogo" id="nlogo-code" date-filename="model.nlogo"></script>
 
-  <script>
-    var modelContainer = document.querySelector("#model-container");
-    var index          = window.location.href.indexOf("?");
-    var nlogoScript    = document.querySelector("#nlogo-code");
-    var session;
+    <script>
+      var modelContainer = document.querySelector("#model-container");
+      var index          = window.location.href.indexOf("?");
+      var nlogoScript    = document.querySelector("#nlogo-code");
+      var session;
 
-    if (nlogoScript.textContent.length > 0) {
-      Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, function (res) {
-        session = res;
-        session.startLoop();
-      });
-    } else if (index > -1) {
-      var url = window.location.href.substring(index+1);
-      console.log(url);
-      Tortoise.fromURL(url, modelContainer, function (res) {
-        session = res;
-        session.startLoop();
-      });
-    }
-
-    window.addEventListener("message", function (e) {
-      if (session) {
-        session.teardown();
+      if (nlogoScript.textContent.length > 0) {
+        Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, function (res) {
+          session = res;
+          session.startLoop();
+        });
+      } else if (index > -1) {
+        var url = window.location.href.substring(index+1);
+        console.log(url);
+        Tortoise.fromURL(url, modelContainer, function (res) {
+          session = res;
+          session.startLoop();
+        });
       }
-      Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, function (res) {
-        session = res;
-        session.startLoop();
-      });
-    });
 
-    if (parent !== window) {
-      var width = "", height = "";
-      window.setInterval(function() {
-        if (modelContainer.scrollWidth !== width || modelContainer.scrollHeight !== height) {
-          width = modelContainer.scrollWidth;
-          height = modelContainer.scrollHeight;
-          parent.postMessage({
-            width: modelContainer.scrollWidth,
-            height: modelContainer.scrollHeight
-          }, "*");
+      window.addEventListener("message", function (e) {
+        if (session) {
+          session.teardown();
         }
-      }, 200);
-    }
-  </script>
+        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, function (res) {
+          session = res;
+          session.startLoop();
+        });
+      });
+
+      if (parent !== window) {
+        var width = "", height = "";
+        window.setInterval(function() {
+          if (modelContainer.scrollWidth !== width || modelContainer.scrollHeight !== height) {
+            width = modelContainer.scrollWidth;
+            height = modelContainer.scrollHeight;
+            parent.postMessage({
+              width: modelContainer.scrollWidth,
+              height: modelContainer.scrollHeight
+            }, "*");
+          }
+        }, 200);
+      }
+    </script>
+  </body>
 </html>

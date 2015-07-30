@@ -22,60 +22,60 @@
       </div>
     </div>
     <iframe id="model-container" class="model-container" src="about:blank"></iframe>
-  </body>
-  <script src='@routes.Assets.at("lib/jquery/jquery.js")' type="text/javascript"></script>
-  <script src='@routes.Assets.at("lib/chosen/chosen.jquery.js")' type="text/javascript"></script>
-  <script src='@routes.Assets.at("lib/filesaver.js/FileSaver.js")' type="text/javascript"></script>
-  <script>
-    var exports = {};
-  </script>
-  <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
-  <script>
-    var modelContainer = document.querySelector('#model-container');
-    var hostPrefix     = location.protocol + '//' + location.host;
-    var url            = "@routes.Assets.at("modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo").absoluteURL"
-    if (window.location.hash) {
-      url = window.location.hash.substring(1);
-    }
-
-    document.querySelector('#model-file-input').addEventListener('change', function (event) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        openNlogo(e.target.result);
-      };
-      reader.readAsText(this.files[0]);
-    });
-
-
-    function pickModel(url) {
-      var encoded = encodeURI(hostPrefix + '/assets/' + url);
-      openURL(encoded);
-    }
-
-    function openURL(url) {
-      window.location.hash = url;
-      if (decodeURI(url) === url) {
-        url = encodeURI(url);
+    <script src='@routes.Assets.at("lib/jquery/jquery.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.at("lib/chosen/chosen.jquery.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.at("lib/filesaver.js/FileSaver.js")' type="text/javascript"></script>
+    <script>
+      var exports = {};
+    </script>
+    <script type="text/javascript" src='@routes.Assets.at("javascripts/models.js")'></script>
+    <script>
+      var modelContainer = document.querySelector('#model-container');
+      var hostPrefix     = location.protocol + '//' + location.host;
+      var url            = "@routes.Assets.at("modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo").absoluteURL"
+      if (window.location.hash) {
+        url = window.location.hash.substring(1);
       }
-      modelContainer.src = "/web?"+url;
-    }
 
-    window.addEventListener("message", function(e) {
-      modelContainer.width = e.data.width;
-      modelContainer.height = e.data.height;
-    });
+      document.querySelector('#model-file-input').addEventListener('change', function (event) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          openNlogo(e.target.result);
+        };
+        reader.readAsText(this.files[0]);
+      });
 
-    function openNlogo(nlogoContents) {
-      window.location.hash = "";
-      filePath = $("#model-file-input")[0].value;
-      modelContainer.contentWindow.postMessage({
-        nlogo: nlogoContents,
-        path: filePath
-      }, "*");
-    }
 
-    exports.bindModelChooser($('.model-list'), pickModel, '@currentMode');
+      function pickModel(url) {
+        var encoded = encodeURI(hostPrefix + '/assets/' + url);
+        openURL(encoded);
+      }
 
-    openURL(url);
-  </script>
+      function openURL(url) {
+        window.location.hash = url;
+        if (decodeURI(url) === url) {
+          url = encodeURI(url);
+        }
+        modelContainer.src = "/web?"+url;
+      }
+
+      window.addEventListener("message", function(e) {
+        modelContainer.width = e.data.width;
+        modelContainer.height = e.data.height;
+      });
+
+      function openNlogo(nlogoContents) {
+        window.location.hash = "";
+        filePath = $("#model-file-input")[0].value;
+        modelContainer.contentWindow.postMessage({
+          nlogo: nlogoContents,
+          path: filePath
+        }, "*");
+      }
+
+      exports.bindModelChooser($('.model-list'), pickModel, '@currentMode');
+
+      openURL(url);
+    </script>
+  </body>
 </html>
