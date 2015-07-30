@@ -275,16 +275,16 @@ template =
 
     <div class="netlogo-tabs">
       {{# !readOnly }}
-      <label class="netlogo-console-tab netlogo-tab netlogo-command {{#showConsole}}netlogo-active{{/}}">
+      <label class="netlogo-console-tab netlogo-tab {{#showConsole}}netlogo-active{{/}}">
         <input type="checkbox" checked="{{showConsole}}" />
         Command Center
       </label>
       {{/}}
-      <label class="netlogo-code-tab netlogo-tab netlogo-command {{#showCode}}netlogo-active{{/}}">
+      <label class="netlogo-code-tab netlogo-tab {{#showCode}}netlogo-active{{/}}">
         <input type="checkbox" checked="{{ showCode }}" />
         NetLogo Code
       </label>
-      <label class="netlogo-info-tab netlogo-tab netlogo-command {{#showInfo}}netlogo-active{{/}}">
+      <label class="netlogo-info-tab netlogo-tab {{#showInfo}}netlogo-active{{/}}">
         <input type="checkbox" checked="{{ showInfo }}" />
         Model Info
       </label>
@@ -409,7 +409,7 @@ partials = {
     """
   plot:
     """
-    <div class="netlogo-widget netlogo-plot netlogo-plot-{{plotNumber}} netlogo-output"
+    <div class="netlogo-widget netlogo-plot netlogo-plot-{{plotNumber}}"
          style="{{>dimensions}}"></div>
     """
   output:

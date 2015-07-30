@@ -1,0 +1,37 @@
+.netlogo-command {
+  background-color: #BACFF3;
+}
+.netlogo-command.netlogo-active, .netlogo-command:active {
+  background-color: #1F6A99;
+  color: #BACFF3;
+}
+.netlogo-button.netlogo-disabled:active, .netlogo-forever-button.netlogo-disabled.netlogo-active {
+  background-color: #BCBCE5;
+  color: #888888;
+}
+.netlogo-input {
+  background-color: #8FE585;
+}
+.netlogo-output {
+  background-color: #FFFF9A;
+  border: 1px solid #E7E741;
+}
+
+.netlogo-tab {
+  background-color: #BCBCE5;
+  border: 2px solid #5555ff;
+  font-size: 16px;
+}
+
+.netlogo-tab.netlogo-active {
+  background-color: #7C76fD;
+}
+
+.netlogo-tab:active {
+  background-color: #7C76fD;
+}
+
+.netlogo-view-container {
+  background-color: #F4F4F4;
+  border: 1px solid #CCCCCC;
+}

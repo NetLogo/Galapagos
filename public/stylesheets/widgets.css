@@ -47,19 +47,12 @@
 
 .netlogo-tab {
   border: 3px outset;
-  padding: 2px 4px;
+  padding: 5px;
   border-radius: 4px;
 }
 
 .netlogo-tab input[type=checkbox] {
     display: none;
-}
-
-.netlogo-tab:active {
-    border: 3px inset;
-}
-.netlogo-tab.netlogo-active {
-    border: 3px inset;
 }
 
 .netlogo-model-text {
@@ -172,6 +165,7 @@
 }
 
 .netlogo-tick-counter {
+    background-color: #F4F4F4;
     font-size: 13px;
     margin: 3px;
     border: none;

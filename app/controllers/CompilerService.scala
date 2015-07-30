@@ -288,7 +288,7 @@ private[controllers] trait RequestResultGenerator {
     val stylesheets =
       Set(
         "/public/stylesheets/widgets.css",
-        "/public/stylesheets/classic.css",
+        "/public/stylesheets/netlogoweb.css",
         "/public/stylesheets/netlogo-syntax.css",
         "/public/lib/codemirror/lib/codemirror.css"
       )
