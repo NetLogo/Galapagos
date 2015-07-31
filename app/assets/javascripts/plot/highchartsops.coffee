@@ -19,15 +19,28 @@ class window.HighchartsOps extends PlotOps
         chart: {
           animation: false,
           renderTo:  elemID,
-          zoomType:  "xy"
+          zoomType:  "xy",
+          spacing: [3, 3, 3, 3]
         },
         credits: { enabled: false },
-        legend:  { enabled: plot.isLegendEnabled, margin: 5 },
+        legend:  {
+          enabled: plot.isLegendEnabled,
+          margin: 2,
+          padding: 0,
+          layout: "vertical",
+          verticalAlign: "middle",
+          align: "right"
+        },
         series:  [],
-        title:   { text: plot.name },
+        title:   { text: plot.name, style: { fontSize: "12px" } },
         tooltip: { pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>' },
         xAxis:   { title: { text: plot.xLabel } },
-        yAxis:   { title: { text: plot.yLabel } }
+        yAxis:   { title: { text: plot.yLabel } },
+        plotOptions: {
+          series: {
+            turboThreshold: 1
+          },
+        }
       })
       return
 
