@@ -27,8 +27,6 @@ class window.HighchartsOps extends PlotOps
         credits: { enabled: false },
         legend:  {
           enabled: plot.isLegendEnabled,
-          itemMarginBottom: -5,
-          itemMarginTop: -3,
           margin: 5
         },
         series:  [],
