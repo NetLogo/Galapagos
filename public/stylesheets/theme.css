@@ -35,9 +35,8 @@ body.not_full_height {
   margin-right: 0;
 }
 
-.text-content {
-  background-color: #ddf4fb;
-  border-color: #c6edf9;
+.inner-content {
+  background-color: #CDE4EB;
   border-radius: 10px;
   padding: 15px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
