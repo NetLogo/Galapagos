@@ -1,85 +1,89 @@
+/*
+ * Styles for that sweet loading spinner with turtles
+ */
+
 #loading-overlay {
-    opacity:0.7;
-    filter: alpha(opacity=20);
-    background-color:#000;
-    width:100%;
-    height:100%;
-    z-index:10;
-    top:0;
-    left:0;
-    position:fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  opacity:0.7;
+  filter: alpha(opacity=20);
+  background-color:#000;
+  width:100%;
+  height:100%;
+  z-index:10;
+  top:0;
+  left:0;
+  position:fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .spinner-img {
-    height: auto;
-    width: 10px;
-    z-index: 11;
-    position: absolute;
+  height: auto;
+  width: 10px;
+  z-index: 11;
+  position: absolute;
 }
 
 #spinner {
-    height: 50px;
-    width:  50px;
-    transform-origin: 60% 60%;
-    animation-name: spin;
-    animation-duration: 1.75s;
-    animation-iteration-count: infinite;
-    animation-direction: normal;
-    animation-timing-function: linear;
-    animation-fill-mode: forwards;
-    animation-delay: 0s;
-    animation-play-state: running;
-    z-index: 11;
+  height: 50px;
+  width:  50px;
+  transform-origin: 60% 60%;
+  animation-name: spin;
+  animation-duration: 1.75s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-delay: 0s;
+  animation-play-state: running;
+  z-index: 11;
 }
 
 .turtle1 {
-    top: 29%;
-    left: 29%;
+  top: 29%;
+  left: 29%;
 }
 
 .turtle2 {
-    top: 20%;
-    left: 50%;
+  top: 20%;
+  left: 50%;
 }
 
 .turtle3 {
-    top: 29%;
-    left: 71%;
+  top: 29%;
+  left: 71%;
 }
 
 .turtle4 {
-    top:  50%;
-    left: 80%;
+  top:  50%;
+  left: 80%;
 }
 
 .turtle5 {
-    top:  71%;
-    left: 71%;
+  top:  71%;
+  left: 71%;
 }
 
 .turtle6 {
-    top:  80%;
-    left: 50%;
+  top:  80%;
+  left: 50%;
 }
 
 .turtle7 {
-    top:  71%;
-    left: 29%;
+  top:  71%;
+  left: 29%;
 }
 
 .turtle8 {
-    top: 50%;
-    left: 20%;
+  top: 50%;
+  left: 20%;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
 }

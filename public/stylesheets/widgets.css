@@ -1,3 +1,7 @@
+/*
+ * General-purpose widget styles, applied regardless of what the widget "theme" is
+ */
+
 .netlogo-model {
     display: flex;
     padding: 20px;

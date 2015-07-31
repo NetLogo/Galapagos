@@ -1,3 +1,11 @@
+/*
+ * This file is exclusively for the site's theme.
+ */
+
+body {
+  color: rgb(64, 64, 64);
+}
+
 .topbar {
   background-color: #222222;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
@@ -10,11 +18,6 @@
   top: 0;
   width: 100%;
   z-index: 100000;
-}
-
-.core_content_box {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 a.brand {
@@ -30,9 +33,29 @@ a.brand {
   text-decoration: none;
 }
 
+.not_full_height {
+  height: 95%;
+  min-height: 95%;
+}
+
 body.not_full_height {
   margin-left: 0;
   margin-right: 0;
+}
+
+.outer-content {
+  width: 83%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.content {
+  padding: 20px 20px 45px 20px;
+  margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15) inset;
+  min-height: 100%;
+  background-color: #347999;
 }
 
 .inner-content {
@@ -40,10 +63,6 @@ body.not_full_height {
   border-radius: 10px;
   padding: 15px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-body {
-  color: rgb(64, 64, 64);
 }
 
 .bold-link {

@@ -1,3 +1,15 @@
+/*
+ * This file contains CSS used by the model simulation page, it includes:
+ * - code related to the model selection bar
+ * - code related to the model simulation iframe
+ *
+ * It *does not* include code related to
+ * - widgets, which lives in widgets.css
+ * - widget theming,         classic.css
+ * - loading spinner,        spinner.css
+ * - code tab syntax,        netlogo-syntax.css
+ */
+
 .tortoise {
   display: flex;
   flex-direction: column;
@@ -44,3 +56,26 @@ iframe {
   -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }
 
+.chosen-container .chosen-results li {
+  padding-bottom: 7px;
+  padding-top:    7px;
+}
+
+.chosen-container .chosen-results li.not_compiling.dev, .chosen-container .chosen-results li.compiling.dev, .chosen-container .chosen-results li.unknown.dev {
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  background-position: 3px 2px;
+  padding-left:   35px;
+}
+
+li.not_compiling.dev {
+  background-image: url('/assets/images/x.png') !important;
+}
+
+li.compiling.dev {
+  background-image: url('/assets/images/check.png') !important;
+}
+
+li.unknown.dev {
+  background-image: url('/assets/images/caution.png') !important;
+}
