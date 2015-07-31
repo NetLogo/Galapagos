@@ -50,8 +50,8 @@ body.not_full_height {
 }
 
 .content {
-  padding: 20px 20px 45px 20px;
-  margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+  padding: 35px;
+  margin: 0 -35px; /* negative indent the amount of the padding to maintain the grid system */
   border-radius: 0 0 6px 6px;
   box-shadow: 0 1px 2px rgba(0,0,0,.15) inset;
   min-height: 100%;
