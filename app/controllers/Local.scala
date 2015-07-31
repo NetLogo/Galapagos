@@ -21,11 +21,6 @@ class Local @Inject() (application: PlayApplication) extends Controller {
 
   implicit val mode = Play.mode(application)
 
-  def createStandaloneTortoise: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.mainTheme(views.html.createStandalone()))
-  }
-
   def tortoise: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.tortoise())
