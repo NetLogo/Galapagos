@@ -128,14 +128,14 @@ li.unknown.dev {
   color: inherit;
 }
 
-.platform-list {
+.properties-list {
   margin-left: 0;
   padding-left: 0;
   list-style: none;
   margin-bottom: 0;
 }
 
-.platform-list > li {
+.properties-list > li {
   margin: auto;
   padding-left: 0;
   padding-top: 10px;
