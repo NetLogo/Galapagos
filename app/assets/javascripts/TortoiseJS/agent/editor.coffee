@@ -554,9 +554,9 @@ variable     = {token: 'variable', regex: new RegExp(wordCh + "+")}
 
 CodeMirror.defineSimpleMode('netlogo', {
   start: [
-    {token: 'keyword', regex: wordRegEx("to(?:-report)?"), indent: true},
-    {token: 'keyword', regex: memberRegEx(keywords)},
-    {token: 'keyword', regex: wordRegEx("#{wordCh}*-own")},
+    {token: 'keyword',  regex: wordRegEx("to(?:-report)?"), indent: true},
+    {token: 'keyword',  regex: memberRegEx(keywords)},
+    {token: 'keyword',  regex: wordRegEx("#{wordCh}*-own")},
     {token: 'keyword',  regex: wordRegEx("end"), dedent: true},
     {token: 'command',  regex: memberRegEx(commands)},
     {token: 'reporter', regex: memberRegEx(reporters)},
