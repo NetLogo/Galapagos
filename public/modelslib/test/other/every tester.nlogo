@@ -7,7 +7,7 @@
 globals [ trigger ]
 
 to setup
-  ca
+  clear-all
   cro 2
   if (not first-test-set)
   [
@@ -17,6 +17,7 @@ to setup
       set trigger 0
     ]
   ]
+  reset-ticks
 end
 
 to go
@@ -132,9 +133,10 @@ GRAPHICS-WINDOW
 -12
 12
 0
-1
+0
 1
 ticks
+30.0
 
 BUTTON
 8
@@ -151,6 +153,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 72
@@ -167,6 +170,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 SWITCH
 99
@@ -205,6 +209,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 SWITCH
 231
@@ -232,6 +237,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 195
@@ -248,6 +254,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 @#$#@#$#@
 add model documentation here
@@ -520,9 +527,23 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 4.0alpha3
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+@#$#@#$#@
+default
+0.0
+-0.2 0 0.0 1.0
+0.0 1 1.0 0.0
+0.2 0 0.0 1.0
+link direction
+true
+0
+Line -7500403 true 150 150 90 180
+Line -7500403 true 150 150 210 180
+
+@#$#@#$#@
+0
 @#$#@#$#@

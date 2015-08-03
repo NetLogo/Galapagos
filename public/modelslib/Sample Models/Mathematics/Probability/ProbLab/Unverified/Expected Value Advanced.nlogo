@@ -455,6 +455,10 @@ to-report monitor-%-in-pop [ which ]
                precision (100 * item (which - 1) ratios / sum ratios) 1
                "%")
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 248
@@ -1065,7 +1069,7 @@ Run the model under different setting of the switches. Does it take longer for t
 
 Change the height and width of the selection area.  Run the experiment, looking at the MEAN VALUE OVER TIME plot. Does this plot behave differently for different height and width settings?
 
-As noted above, the relative ratios of the $1-fish, $2-fish, etc. in the lake are determined by relative values of all of the sliders on the left.  In other words, if you set the ratio units to 1 : 1 : 1 : 1 : 1, it is going to mean the same to the computer as the setting of 2 : 2 : 2 : 2 : 2 or 5 : 5 : 5 : 5 : 5.  The sliders are designed to allow an exploration of a rich range of proportions of the different fish.  Try extending the maximum value of the ratio sliders, to obtain an even richer range of proportions of fish populations.  
+As noted above, the relative ratios of the $1-fish, $2-fish, etc. in the lake are determined by relative values of all of the sliders on the left.  In other words, if you set the ratio units to 1 : 1 : 1 : 1 : 1, it is going to mean the same to the computer as the setting of 2 : 2 : 2 : 2 : 2 or 5 : 5 : 5 : 5 : 5.  The sliders are designed to allow an exploration of a rich range of proportions of the different fish.  Try extending the maximum value of the ratio sliders, to obtain an even richer range of proportions of fish populations.
 In the Code tab, go to the 'setup-misc-globals' procedure and change the color value assigned to the 'c-color' local variable.  This will change the fish base color.
 
 ## EXTENDING THE MODEL
@@ -1087,6 +1091,32 @@ The SETUP-APART? functionality arranges the raw data (the fish themselves) in "h
 ## CREDITS AND REFERENCES
 
 This model is a part of the ProbLab curriculum. The ProbLab Curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling. For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2004).  NetLogo Expected Value Advanced model.  http://ccl.northwestern.edu/netlogo/models/ExpectedValueAdvanced.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -1382,7 +1412,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 ;; this model was tickling some weird Oracle renderer bug that was making
 ;; a few pixels in the preview a little different between Mac and Linux

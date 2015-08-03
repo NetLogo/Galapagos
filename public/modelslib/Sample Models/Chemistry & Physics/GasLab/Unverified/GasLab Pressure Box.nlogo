@@ -392,6 +392,10 @@ to random-position ;; particle procedure
         ((1 - box-edge) + random-float ((2 * box-edge) - 2))
   set heading random-float 360
 end
+
+
+; Copyright 2002 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 315
@@ -653,12 +657,12 @@ The particles are modeled as hard balls with no internal energy except that whic
 
 Coloring of the particles is with respect to one speed (10).  Particles with a speed less than 5 are blue, ones that are more than 15 are red, while all in those in-between are green.
 
-Particles behave according to the following rules:  
-1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  
-2. Two particles "collide" if they find themselves on the same patch (the world is composed of a grid of small squares called patches).  
-3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.  
-4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.  
-5. Each turtle is assigned its new velocity, energy, and heading.  
+Particles behave according to the following rules:
+1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.
+2. Two particles "collide" if they find themselves on the same patch (the world is composed of a grid of small squares called patches).
+3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.
+4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.
+5. Each turtle is assigned its new velocity, energy, and heading.
 6. If a turtle finds itself on or very close to a wall of the container, it "bounces" -- that is, reflects its direction and keeps its same speed.
 
 Pressure is defined as the force per unit area (or length in this two-dimensional model).  Pressure is calculated by adding up the momentum transferred to the walls of the box by the particles when they bounce off and divided by the length of the wall, which they hit.
@@ -669,7 +673,7 @@ Initially, the particles are not moving, and cannot hit the wall. Therefore the 
 
 ### Initial settings
 
-- BOX-SIZE: The size of the box as a percentage of the world-width  
+- BOX-SIZE: The size of the box as a percentage of the world-width
 - INITIAL-NUMBER-PARTICLES: the number of gas particles in the box when the simulation starts
 
 The SETUP button puts in the initial conditions you have set with the sliders.  Be sure to wait until the SETUP button stops before pushing GO.
@@ -678,22 +682,22 @@ The GO button runs the code again and again.  This is a "forever" button.
 
 ### Additional settings
 
-COLLIDE?: determines whether or not the particles collide among themselves  
-ADD PARTICLES: pressing this button adds particles to the container through a valve, before and while the model is running  
+COLLIDE?: determines whether or not the particles collide among themselves
+ADD PARTICLES: pressing this button adds particles to the container through a valve, before and while the model is running
 NUMBER-TO-ADD: number of particles that are added to the box with each press of the "ADD PARTICLES" button
 
 ### Monitors
 
-- NUMBER OF PARTICLES: the number of particles in the box  
-- PRESSURE: the pressure of the gas particles in the box  
-- WALL HITS PER PARTICLE:  
-- AVERAGE SPEED: average speed of the particles.  
+- NUMBER OF PARTICLES: the number of particles in the box
+- PRESSURE: the pressure of the gas particles in the box
+- WALL HITS PER PARTICLE:
+- AVERAGE SPEED: average speed of the particles.
 - AVERAGE ENERGY: average kinetic energy of the particles.
 
 ### Plots
 
-- PRESSURE: plots the pressure in the box  
-- PARTICLE COUNT: plots the number of particles in the box  
+- PRESSURE: plots the pressure in the box
+- PARTICLE COUNT: plots the number of particles in the box
 - WALL HITS PER PARTICLE: plots the number of times a particle hits a wall every big tick
 
 ## THINGS TO NOTICE
@@ -737,6 +741,32 @@ If you could change the shape of the box, so that the volume remains the same: D
 ## CREDITS AND REFERENCES
 
 This model was developed as part of the GasLab curriculum (http://ccl.northwestern.edu/curriculum/gaslab/) and has also been incorporated into the Connected Chemistry curriculum (http://ccl.northwestern.edu/curriculum/ConnectedChemistry/)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2002).  NetLogo GasLab Pressure Box model.  http://ccl.northwestern.edu/netlogo/models/GasLabPressureBox.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2002 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model and associated activities and materials were created as part of the project: MODELING ACROSS THE CURRICULUM.  The project gratefully acknowledges the support of the National Science Foundation, the National Institute of Health, and the Department of Education (IERI program) -- grant number REC #0115699. Additional support was provided through the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT -- NSF (REPP & ROLE programs) grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2002 MAC -->
 @#$#@#$#@
 default
 true
@@ -1033,7 +1063,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

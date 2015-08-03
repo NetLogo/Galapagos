@@ -72,6 +72,10 @@ to establish-color  ;; patch procedure
        set color-class 2]
     ]
 end
+
+
+; Copyright 2002 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 426
@@ -132,7 +136,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 2
@@ -217,7 +221,7 @@ In a non-iterated prisoner's dilemma, the two partners will never have to work t
            Cooperate |   (0.5, 0.5)           (0, 10)
       YOU            |
            Defect    |(10, 0)              (5, 5)
-    
+
             (x, y) = x: your score, y: your partner's score
             Note: lower the score (number of years in prison), the better.
 
@@ -232,15 +236,13 @@ In an Iterated Prisoner's Dilemma where you have more than two players and multi
            Cooperate |(1, 1)            (0, alpha)
       YOU            |
            Defect    |(alpha, 0)        (0, 0)
-    
+
             (x, y) = x: your score, y: your partner's score
             Note: higher the score (amount of the benefit), the better.
-
 
 ## HOW TO USE IT
 
 Decide what percentage of patches should cooperate at the initial stage of the simulation and change the INITIAL-COOPERATION slider to match what you would like.  Next, determine the DEFECTION-AWARD multiple (mentioned as alpha in the payoff matrix above) for defecting or not cooperating.  The Defection-Award multiple varies from range of 0 to 3.  Press SETUP and note that red patches (that will defect) and blue patches (cooperate) are scattered across the  .  Press GO to make the patches interact with their eight neighboring patches.  First, they count the number of neighboring patches that are cooperating.  If a patch is cooperating, then its score is number of neighboring patches that also cooperated.   If a patch is defecting, then its score is the product of the number of neighboring patches who are cooperating and the Defection-Award multiple.
-
 
 ## HOW IT WORKS
 
@@ -248,11 +250,10 @@ Each patch will either cooperate (blue) or defect (red) in the initial start of 
 
 In the subsequent round, the patch will set its old-cooperate? to be the strategy it used in the previous round.  For the upcoming round, the patch will adopt the strategy of one of its neighbors that scored the highest in the previous round.
 
-If a patch is blue, then the patch cooperated in the previous and current round.  
-If a patch is red, then the patch defected in the previous iteration as well as the current round.  
-If a patch is green, then the patch cooperated in the previous round but defected in the current round.  
+If a patch is blue, then the patch cooperated in the previous and current round.
+If a patch is red, then the patch defected in the previous iteration as well as the current round.
+If a patch is green, then the patch cooperated in the previous round but defected in the current round.
 If a patch is yellow, then the patch defected in the previous round but cooperated in the current round.
-
 
 ## THINGS TO NOTICE
 
@@ -266,21 +267,44 @@ Increase the Defection-Award multiple by moving the "Defection-Award" slider (ju
 
 At each start of the model, either set the initial-cooperation percentage to be very high or very low (move the slider for "initial-cooperation"), and proportionally value the Defection-Award multiple (move the slider for "Defection-Award" in the same direction) with regards to the initial-cooperation percentage.  Which color dominates the world, when the initial-cooperation is high and the Defection-Award is high?  Which color dominates the world when initial-cooperation is low and the Defection-Award multiple is also low?
 
-
 ## EXTENDING THE MODEL
 
 Alter the code so that the patches have a strategy to implement.  For example, instead of adopting to cooperated or defect based on the neighboring patch with the maximum score.  Instead, let each patch consider the history of cooperation or defection of it neighboring patches, and allow it to decide whether to cooperate or defect as a result.
 
 Implement these four strategies:
 
-1. Cooperate-all-the-time: regardless of neighboring patches' history, cooperate.  
-2. Tit-for-Tat:  only cooperate with neighboring patches, if they have never defected.  Otherwise, defect.  
-3. Tit-for-Tat-with-forgiveness: cooperate if on the previous round, the patch cooperated.  Otherwise, defect.  
+1. Cooperate-all-the-time: regardless of neighboring patches' history, cooperate.
+2. Tit-for-Tat:  only cooperate with neighboring patches, if they have never defected.  Otherwise, defect.
+3. Tit-for-Tat-with-forgiveness: cooperate if on the previous round, the patch cooperated.  Otherwise, defect.
 4. Defect-all-the-time: regardless of neighboring patches' history, defect.
 
 How are the cooperating and defecting patches distributed?  Which strategy results with the highest score on average?  On what conditions will this strategy be a poor strategy to use?
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2002).  NetLogo PD Basic Evolutionary model.  http://ccl.northwestern.edu/netlogo/models/PDBasicEvolutionary.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2002 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2002 -->
 @#$#@#$#@
 default
 true
@@ -565,7 +589,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

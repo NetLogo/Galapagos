@@ -64,6 +64,10 @@ to apply-forces
     setxy new-x new-y
   ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 245
@@ -184,16 +188,16 @@ At each iteration of the GO routine, tiny forces steer the particle through its 
 
 Below are the steps for moving each particle:
 
-1.- Initialization  
+1.- Initialization
 First, the force accumulators are cleared of the previously calculated forces.
 
-2.- Force Calculation  
+2.- Force Calculation
 Force calculation is trivial for this particular particle system since the sole force of the model, gravity, is represented by a constant negative number. However, force calculation in general can be harder when more complicated forces, such as springs, are involved.
 
-3.- Force Summation  
+3.- Force Summation
 After all of the individual forces are computed, the APPLY-FORCES routine sums all of them and calculates the resulting velocity of the particle.
 
-4.- Displacement  
+4.- Displacement
 Finally, a new position is calculated by multiplying the velocity by STEP-SIZE and adding the displacement to the current particle location. STEP-SIZE represents the small amount of time during which the forces are applied.
 
 Notice that in this model the particles die when they reach the world boundaries.
@@ -202,9 +206,9 @@ Notice that in this model the particles die when they reach the world boundaries
 
 To observe only one particle at a time:
 
-1.- Change the PARTICLES-NUMBER and STEP-SIZE.  
-2.- Press SETUP  
-3.- Press GO (Observe how the turtles move through the world.)  
+1.- Change the PARTICLES-NUMBER and STEP-SIZE.
+2.- Press SETUP
+3.- Press GO (Observe how the turtles move through the world.)
 5.- You can optionally change the GRAVITY-CONSTANT and observe how the behavior changes.
 
 Note that you can change the GRAVITY-CONSTANT and the STEP-SIZE while the particle is moving. For example, if the user wants the particles to fly higher he can decrease the gravity, but if he wishes the particles to stay lower he can increase the gravity pull.
@@ -221,28 +225,52 @@ Change the GRAVITY-CONSTANT slider while the particle is moving. Note how it sta
 
 ## RELATED MODELS
 
-Particle System Fountain  
-Particle System Waterfall  
+Particle System Fountain
+Particle System Waterfall
 Particle System Flame
 
 ## CREDITS AND REFERENCES
 
-Particle Systems  
+Particle Systems
 http://www.siggraph.org/education/materials/HyperGraph/animation/particle.htm
 
-Particle Systems by Allen Martin  
+Particle Systems by Allen Martin
 http://web.cs.wpi.edu/~matt/courses/cs563/talks/psys.html
 
-William T.  Reeves, "Particle Systems - A Technique for Modeling a Class of Fuzzy Objects", Computer Graphics 17:3 pp.  359-376, 1983 (SIGGRAPH 83).  
-http://portal.acm.org/citation.cfm?id=357320
+William T.  Reeves, "Particle Systems - A Technique for Modeling a Class of Fuzzy Objects", Computer Graphics 17:3 pp.  359-376, 1983 (SIGGRAPH 83).
+http://dl.acm.org/citation.cfm?id=357320
 
-Physically based modeling Online SIGGRAPH 2001 Course Notes  
+Physically based modeling Online SIGGRAPH 2001 Course Notes
 http://www.pixar.com/companyinfo/research/pbm2001/
 
-Particle Systems on Wikipedia  
-http://en.wikipedia.org/wiki/Particle_system
+Particle Systems on Wikipedia
+https://en.wikipedia.org/wiki/Particle_system
 
 Thanks to Daniel Kornhauser for his work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Kornhauser, D. and Wilensky, U. (2007).  NetLogo Particle System Basic model.  http://ccl.northwestern.edu/netlogo/models/ParticleSystemBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Kornhauser, D. -->
 @#$#@#$#@
 default
 true
@@ -686,7 +714,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

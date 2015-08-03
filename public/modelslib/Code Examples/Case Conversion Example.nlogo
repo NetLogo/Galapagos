@@ -44,6 +44,11 @@ to-report lower-case-char [c]
      [ report c ]
      [ report item pos "abcdefghijklmnopqrstuvwxyz" ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 296
@@ -66,8 +71,8 @@ GRAPHICS-WINDOW
 17
 -17
 17
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -93,6 +98,8 @@ NIL
 ## WHAT IS IT?
 
 NetLogo doesn't have primitives for converting upper to lower case, or vice versa.  This example includes procedures that accomplish these tasks.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -377,7 +384,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -29,7 +29,13 @@ to go-by-size
   foreach sort-by [[size] of ?1 > [size] of ?2] turtles
     [ ask ?
         [ fd 1 ] ]
+  tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 10
@@ -139,7 +145,7 @@ NIL
 TEXTBOX
 221
 12
-480
+509
 39
 Use the speed slider, above, to slow the model down so you can see what's happening.
 11
@@ -156,6 +162,8 @@ Agentsets in NetLogo are always in random order.  This code example demonstrates
 `sort` and `sort-by` are used to specify ordering.
 
 View updates are set to "continuous", so when you slow the model down far enough you can see the turtles moving one at a time.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -425,7 +433,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

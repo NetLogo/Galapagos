@@ -11,7 +11,13 @@ to giant-arrow
   create-turtles 1 [ set color red setxy -7.25 -5 ]
   ask turtle 0 [ create-link-with turtle 1 [ set color red set thickness 1.5 ] ]
   create-turtles 1 [ set color black setxy 8 12 set label "Click the info tab!" ]
+  display
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
@@ -34,8 +40,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -72,13 +78,12 @@ A heading begins with one or more hash marks (`#`). First level headings get one
     ### Third-level heading
     #### Fourth-level heading
 
-
 ## Paragraphs
 
 #### Example
 
     This is a paragraph. There are no spaces before the word 'This'.
-    
+
     This is another paragraph. The first line has two sentences.
     The entire paragraph has two lines and three sentences.
 
@@ -120,7 +125,6 @@ For bold, surround text with two asterisks:
 You can also combine them:
 _**hello**_ and **_goodbye_**
 
-
 ## Ordered lists
 
 #### Example
@@ -140,7 +144,6 @@ We are about to start an ordered list.
     1. Subitems are indented 2 more spaces (4 in all for a second level item).
   2. The next item in the list starts with the next number.
   3. And so on...
-
 
 ## Unordered lists
 
@@ -170,11 +173,11 @@ The simplest way to create a link is to just type it in:
 
 #### Example
 
-    http://ccl.northwestern.edu/netlogo
+    http://ccl.northwestern.edu/netlogo/
 
 #### Formatted
 
-http://ccl.northwestern.edu/netlogo
+http://ccl.northwestern.edu/netlogo/
 
 ### Links with text
 
@@ -184,15 +187,15 @@ If you want to use your own text for the link, here's how:
 
 #### Example
 
-    [NetLogo](http://ccl.northwestern.edu/netlogo)
+    [NetLogo](http://ccl.northwestern.edu/netlogo/)
 
 #### Formatted
 
-[NetLogo](http://ccl.northwestern.edu/netlogo)
+[NetLogo](http://ccl.northwestern.edu/netlogo/)
 
 ### Local links
 
-It is also possible to link to a page on your computer, instead of a page somewhere on the Internet. 
+It is also possible to link to a page on your computer, instead of a page somewhere on the Internet.
 
 Local links have this form:
 
@@ -313,7 +316,6 @@ Leave a blank line after this one, and then indent four spaces:
       tick
     end
 
-
 ## Superscripts and subscripts
 
 Superscripts and subscripts are useful for writing formulas, equations, footnotes and more. Subscripts appear half a character below the baseline, and are written using the HTML tag `<sub>`. Superscripts appear half a character above the baseline, and are written using the HTML tag `<sup>`.
@@ -350,9 +352,11 @@ We have tested the features shown above on a variety of systems.  If you use oth
 
 If you want all NetLogo users to be able to read your Info tab, use only the features shown above.
 
-More information about Markdown is at http://daringfireball.net/projects/markdown/. For rendering Markdown, NetLogo uses the [Pegdown](http://github.com/sirthias/pegdown) library.
+More information about Markdown is at http://daringfireball.net/projects/markdown/. For rendering Markdown, NetLogo uses the [Pegdown](https://github.com/sirthias/pegdown) library.
 
 [netlogo-link]: http://ccl.northwestern.edu/netlogo
+
+<!-- 2010 -->
 @#$#@#$#@
 default
 true
@@ -646,7 +650,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

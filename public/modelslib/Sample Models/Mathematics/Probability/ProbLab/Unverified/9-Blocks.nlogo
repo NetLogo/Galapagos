@@ -36,6 +36,10 @@ to go
   set-plot-y-range 0 max list 100 maxrange
   if one-by-one-choices? [ wait 0.5 ]
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 16
@@ -185,16 +189,16 @@ Over many runs, the histogram begins to look bell-shaped, just like the Combinat
 
 ## HOW TO USE IT
 
-Buttons:  
-'Setup; - initializes the variables and erases the plot.  
-'Go' - activates the procedures just once.  So you will get a single 9-block and a short column in the histogram.  
+Buttons:
+'Setup; - initializes the variables and erases the plot.
+'Go' - activates the procedures just once.  So you will get a single 9-block and a short column in the histogram.
 'Go'  - activates the procedures.  It is set to work "forever," that is, it will repeat until you press it again.
 
-Switches:  
+Switches:
 'one-by-one-choices?' - when On, each square will settle on its color at a different moment. Also, there will be a pause between 9-blocks, as though the lights were switched off for a moment. This is meant to remind us that even though we are looking at 9-blocks, actually each square chooses its color independently of other squares. Notice how the monitor '# target color' updates per each target color that is added.
 
-Monitors:  
-'# target color' - shows how many patches are green.  
+Monitors:
+'# target color' - shows how many patches are green.
 'how many trials' - shows how many times the model has chosen random 9-blocks in this experiment (so it's also showing how many items we have in the list that is being plotted every run).
 
 ## THINGS TO NOTICE
@@ -213,13 +217,39 @@ Look at the histogram as it grows.  What happens when it reaches the top?  More 
 
 ## EXTENDING THE MODEL
 
-In many ways, the Stochastic Patchwork model extends this model.  However, there are other ways of extending this model.  For instance, you may want to plot different aspects of the probabilistic experiment, to answer such questions as:  
-- how often do we get the same combinations twice one after the other?  
+In many ways, the Stochastic Patchwork model extends this model.  However, there are other ways of extending this model.  For instance, you may want to plot different aspects of the probabilistic experiment, to answer such questions as:
+- how often do we get the same combinations twice one after the other?
 - are there particular combinations you like?  You could add code to see how long it takes the model to find these combinations (as in the Random Combinations and Permutations model).
 
 ## CREDITS AND REFERENCES
 
 This model is a part of the ProbLab curriculum. The ProbLab Curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling. . For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2004).  NetLogo 9-Blocks model.  http://ccl.northwestern.edu/netlogo/models/9-Blocks.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -512,7 +542,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 set one-by-one-choices? false
 setup

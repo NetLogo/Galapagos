@@ -419,6 +419,10 @@ to draw-vert-line [ xval ]
   plotxy xval plot-y-max
   plot-pen-up
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 309
@@ -754,29 +758,29 @@ The particles are modeled as hard balls with no internal energy except that whic
 
 Coloring of the particles is with respect to one speed (10).  Particles with a speed less than 5 are blue, ones that are more than 15 are red, while all in those in-between are green.
 
-Particles behave according to the following rules:  
-1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  
-2. Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches).  
-3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.  
-4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.  
-5. Each turtle is assigned its new velocity, energy, and heading.  
+Particles behave according to the following rules:
+1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.
+2. Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches).
+3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.
+4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.
+5. Each turtle is assigned its new velocity, energy, and heading.
 6. If a turtle finds itself on or very close to a wall of the container, it "bounces" -- that is, reflects its direction and keeps its same speed.
 
 Pressure is calculated as the force per unit area (or length in this two-dimensional model).  Pressure is calculated by adding up the momentum transferred to the walls of the box by the particles when they bounce off and divided by the length of the wall, which they hit.
 
 ## HOW TO USE IT
 
-Initial settings:  
-- NUMBER-OF-PARTICLES: number of particles  
-- INIT-PARTICLE-SPEED: initial speed of the particles  
-- PARTICLE-MASS: initial mass of the molecules  
-- BOX-WIDTH: width of the container  
+Initial settings:
+- NUMBER-OF-PARTICLES: number of particles
+- INIT-PARTICLE-SPEED: initial speed of the particles
+- PARTICLE-MASS: initial mass of the molecules
+- BOX-WIDTH: width of the container
 - BOX-HEIGHT: height of the container
 
-Other settings:  
+Other settings:
 - COLLIDE?: Turns collisions between particles on and off.  It can be changed in the middle of the run.
 
-The SETUP button will set the initial conditions.  
+The SETUP button will set the initial conditions.
 The GO button will run the simulation.
 
 Pushing the MOVE-PISTON button allows you to reposition the piston by clicking on the view with the mouse, hence changing the volume. When this button is pressed, the model stops.  Once the reposition is done, push the GO button to continue.
@@ -785,18 +789,18 @@ The intention in this model is for the user to quickly pull the piston back thus
 
 The physically accurate version of piston compression is shown in the "Adiabatic Piston" model.
 
-Monitors:  
-- PISTON POSITION: position of the piston with respect to the x-axis  
-- VOLUME: volume (or area) of the piston  
-- PRESSURE  
-- AVERAGE SPEED: average speed of the particles  
+Monitors:
+- PISTON POSITION: position of the piston with respect to the x-axis
+- VOLUME: volume (or area) of the piston
+- PRESSURE
+- AVERAGE SPEED: average speed of the particles
 - AVERAGE ENERGY: average energy of the particles, calculated as m*(v^2)/2.
 
-Plots:  
-- PRESSURE: pressure in the piston over time.  
-- VOLUME: volume of the piston vs time.  
-- WALL HITS PER PARTICLE: the number of wall hits averaged for the particles during each time unit  
-- SPEED HISTOGRAM: particles' speed distribution  
+Plots:
+- PRESSURE: pressure in the piston over time.
+- VOLUME: volume of the piston vs time.
+- WALL HITS PER PARTICLE: the number of wall hits averaged for the particles during each time unit
+- SPEED HISTOGRAM: particles' speed distribution
 - ENERGY HISTOGRAM: distribution of energies of all the particles, calculated as m*(v^2)/2.
 
 ## THINGS TO NOTICE
@@ -836,6 +840,36 @@ Notice how collisions are detected by the turtles and how the code guarantees th
 ## CREDITS AND REFERENCES
 
 This model was developed as part of the GasLab curriculum (http://ccl.northwestern.edu/curriculum/gaslab/) and has also been incorporated into the Connected Chemistry curriculum (http://ccl.northwestern.edu/curriculum/ConnectedChemistry/)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo GasLab Isothermal Piston model.  http://ccl.northwestern.edu/netlogo/models/GasLabIsothermalPiston.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was developed at the MIT Media Lab using CM StarLogo.  See Wilensky, U. (1993). Thesis - Connected Mathematics: Building Concrete Relationships with Mathematical Knowledge. Adapted to StarLogoT, 1997, as part of the Connected Mathematics Project.  Adapted to NetLogo, 2002, as part of the Participatory Simulations Project.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1997 2002 Wilensky -->
 @#$#@#$#@
 default
 true
@@ -1132,7 +1166,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

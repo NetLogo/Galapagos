@@ -120,6 +120,10 @@ to go-right  ;; turtle procedure
   rt 90
   one-pace
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 373
@@ -302,9 +306,9 @@ Use the NUMBER-OF-TURTLES slider to select how many turtles will participate in 
 
 Use the NUMBER-OF-STEPS slider to decide how many steps a turtle will take on each turn.
 
-How steps are implemented:  
-- If NUMBER-OF-STEPS is set to 1 and a turtle is going left, it will go left one step and then go forward one step. (Imagine a turtle walking along the bottom and left edge of a 1 x 1 square.)  
-- If NUMBER-OF-STEPS is set to 4 and a turtle is going left, it will go left four steps and then go forward four steps. (Imagine a turtle walking along the bottom and left edge of a 4 x 4 square.)  
+How steps are implemented:
+- If NUMBER-OF-STEPS is set to 1 and a turtle is going left, it will go left one step and then go forward one step. (Imagine a turtle walking along the bottom and left edge of a 1 x 1 square.)
+- If NUMBER-OF-STEPS is set to 4 and a turtle is going left, it will go left four steps and then go forward four steps. (Imagine a turtle walking along the bottom and left edge of a 4 x 4 square.)
 - Each of the above movements would be considered a single "pace."
 
 Use the TURTLE-TRAILS? switch to have the turtles put their pens down to trace their paths and show the part of the lattice they are covering.  This switch must be set before the SETUP button is pressed.
@@ -325,8 +329,8 @@ The gray bar in the middle of the world is at xcor = 0.  This is where all the t
 
 Try to answer the questions below before running the simulations.
 
-Record your predictions.  Compare your predicted results with the actual results.  
-- What reasoning led you to correct predictions?  
+Record your predictions.  Compare your predicted results with the actual results.
+- What reasoning led you to correct predictions?
 - What assumptions that you made need to be revised?
 
 Try different numbers of turtles while keeping all other slider values the same.
@@ -363,7 +367,33 @@ Since turtles in this model only move in the positive direction and they start a
 
 Random Walk 360, Galton Box, Binomial Rabbits
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo Random Walk Left Right model.  http://ccl.northwestern.edu/netlogo/models/RandomWalkLeftRight.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1997 2002 -->
 @#$#@#$#@
 default
 true
@@ -648,7 +678,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

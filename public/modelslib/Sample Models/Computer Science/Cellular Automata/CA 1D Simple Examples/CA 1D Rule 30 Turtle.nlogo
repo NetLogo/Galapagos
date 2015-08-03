@@ -55,6 +55,10 @@ to setup-continue
     [ set pcolor black ]
   make-turtles  ;; sprout new turtles at the top of the world
 end
+
+
+; Copyright 2002 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 161
@@ -181,9 +185,9 @@ For example, if we have a Rule 30 CA, and the current cell is black and its left
 
 ## HOW TO USE IT
 
-Initialization & Running:  
-- SETUP initializes the model with a single cell on in the center.  
-- SETUP-CONTINUE copies the last row of the previous run to the top so that you can continue running the model in "wrapped" mode when you click GO.  
+Initialization & Running:
+- SETUP initializes the model with a single cell on in the center.
+- SETUP-CONTINUE copies the last row of the previous run to the top so that you can continue running the model in "wrapped" mode when you click GO.
 - GO begins running the model with the currently set rule. It continues until it reaches the last row of patches.
 
 ## THINGS TO NOTICE
@@ -224,12 +228,12 @@ The CA in this model uses turtles to process cells.  While this is functionally 
 
 ## RELATED MODELS
 
-Life - an example of a two-dimensional cellular automaton  
-CA 1D Rule 30 - the basic rule 30 model  
-CA 1D Rule 90 - the basic rule 90 model  
-CA 1D Rule 110 - the basic rule 110 model  
-CA 1D Rule 250 - the basic rule 250 model  
-CA 1D Elementary - a model that shows all 256 possible simple 1D cellular automata  
+Life - an example of a two-dimensional cellular automaton
+CA 1D Rule 30 - the basic rule 30 model
+CA 1D Rule 90 - the basic rule 90 model
+CA 1D Rule 110 - the basic rule 110 model
+CA 1D Rule 250 - the basic rule 250 model
+CA 1D Elementary - a model that shows all 256 possible simple 1D cellular automata
 CA 1D Totalistic - a model that shows all 2,187 possible 1D 3-color totalistic cellular automata.
 
 ## CREDITS AND REFERENCES
@@ -250,9 +254,35 @@ Wolfram, S. 1986. Theory and Applications of Cellular Automata: Including Select
 
 Bar-Yam, Y. 1997. Dynamics of Complex Systems. Perseus Press. reading, Ma.
 
-Wolfram, S. 2002. A New Kind of Science.  Wolfram Media Inc.  Champaign, IL.  
-See chapters 2 and 3 for more information on 1 Dimensional CA  
+Wolfram, S. 2002. A New Kind of Science.  Wolfram Media Inc.  Champaign, IL.
+See chapters 2 and 3 for more information on 1 Dimensional CA
 See index for more information specifically about Rule 30.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2002).  NetLogo CA 1D Rule 30 Turtle model.  http://ccl.northwestern.edu/netlogo/models/CA1DRule30Turtle.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2002 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2002 -->
 @#$#@#$#@
 default
 true
@@ -537,7 +567,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat world-height - 1 [ go ]

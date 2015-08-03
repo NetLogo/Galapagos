@@ -26,7 +26,13 @@ to setup
       set color red
     ]
   ]
+  reset-ticks
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 125
@@ -49,8 +55,8 @@ GRAPHICS-WINDOW
 6
 -6
 6
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -86,6 +92,8 @@ Note that many models that use links don't need link breeds.  If a model only ha
 Each link breed is either directed or undirected.  When you create the breed, you must specify one or the other.
 
 Two undirected links of the same breed cannot exist between the same two turtles.  Two directed links of the same breed cannot exist between the same two turtles in the same direction.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -403,7 +411,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

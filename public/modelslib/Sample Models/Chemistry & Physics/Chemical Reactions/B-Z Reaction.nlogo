@@ -31,6 +31,10 @@ to find-new-state  ;; patch procedure
       if new-state > max-state   ;; don't exceed the maximum state
         [ set new-state max-state ] ]
 end
+
+
+; Copyright 2003 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 205
@@ -164,8 +168,8 @@ This model is a cellular automaton (or CA) that produces spiral waves that resem
 
 The B-Z reaction is a redox reaction that periodically moves between an oxidized and a reduced state, and has been demonstrated for various chemicals.  This model does not attempt to replicate the actual mechanism of the chemical reaction, which is quite complex (including 18 reactions and 21 species, according to the Fields-Koros-Noyes model).  The abstract features shared by the real reaction and this model include:
 
-1. Two end states.  
-2. A positive feedback mechanism.  
+1. Two end states.
+2. A positive feedback mechanism.
 3. A negative feedback mechanism.
 
 The positive feedback mechanism acts to push the system further in the direction that it is already going, reinforcing and amplifying the initial change.  (In the chemical reaction, positive feedback comes from auto-catalysis.)  The negative feedback mechanism pushes the system back in the opposite direction once a threshold is reached, suppressing or counteracting the effected change.
@@ -228,11 +232,37 @@ Many models in the NetLogo models library can be thought as systems composed of 
 
 The B-Z reaction is named after Boris Belousov and Anatol Zhabotinsky, the Russian scientists who discovered it in the 1950's.
 
-A discussion of the chemistry behind the reaction, plus a movie and some pictures, are available at http://online.redwoods.cc.ca.us/instruct/darnold/DEProj/Sp98/Gabe/intro.htm .
+A discussion of the chemistry behind the reaction, plus a movie and some pictures, are available at http://msemac.redwoods.edu/~darnold/math55/deproj/Sp98/Gabe/index.htm.
 
 The cellular automaton was presented by A.K. Dewdney in his "Computer Recreations" column in the August 1988 of Scientific American.
 
 See http://www.hermetic.ch/pca/bz.htm for a pretty screen shot of the cellular automaton running on a very large grid (using custom software for Windows, not NetLogo).
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2003).  NetLogo B-Z Reaction model.  http://ccl.northwestern.edu/netlogo/models/B-ZReaction.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2003 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2003 -->
 @#$#@#$#@
 default
 true
@@ -517,7 +547,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 200 [ go ]

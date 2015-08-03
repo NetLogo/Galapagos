@@ -1,40 +1,18 @@
 extensions [gogo]
 
-globals [
-  serial-port   ;; different on different operating systems
-]
 
-to setup
-  ifelse length (gogo:ports) > 0
-    [ set serial-port user-one-of "Select a port:" gogo:ports ]
-    [ user-message "There is a problem with the connection. Check if the board is on, and if the cable is connected. Otherwise, try to quit NetLogo, power cycle the GoGo Board, and open NetLogo again. For more information on how to fix connection issues, refer to the NetLogo documentation or the info tab of this model"
-      stop ]
-  gogo:open serial-port
-  repeat 5
-  [ if not gogo:ping
-    [ user-message "There is a problem with the connection. Check if the board is on, and if the cable is connected. Otherwise, try to quit NetLogo, power cycle the GoGo Board, and open NetLogo again. For more information on how to fix connection issues, refer to the NetLogo documentation or the info tab of this model"] ]
-  gogo:talk-to-output-ports [ "a" "b" "c" "d"]
-  set-current-plot "Sensors"
-end
-
-to test-connection
-  carefully
-  [ ifelse not gogo:ping
-    [ user-message "There is a problem with the connection. Check if the board is on, and if the cable is connected. Otherwise, try to quit NetLogo, power cycle the GoGo Board, and open NetLogo again. For more information on how to fix connection issues, refer to the NetLogo documentation or the info tab of this model" ]
-    [ user-message "GoGo Board connected and working!" ] ]
-  [ user-message error-message 
-    stop ]
-  
-end
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-705
-465
-950
+485
 525
+795
+656
 1
 0
-29.0
+100.0
 1
 10
 1
@@ -54,30 +32,13 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
-BUTTON
-10
-30
-135
-75
-NIL
-setup
-NIL
-1
-T
-OBSERVER
-NIL
-S
-NIL
-NIL
-1
-
 MONITOR
 565
 25
 636
 70
 sensor 1
-gogo:sensor 1
+gogo:read-sensor 1
 0
 1
 11
@@ -88,7 +49,7 @@ MONITOR
 716
 70
 sensor 2
-gogo:sensor 2
+gogo:read-sensor 2
 0
 1
 11
@@ -99,7 +60,7 @@ MONITOR
 637
 122
 sensor 3
-gogo:sensor 3
+gogo:read-sensor 3
 0
 1
 11
@@ -110,7 +71,7 @@ MONITOR
 716
 123
 sensor 4
-gogo:sensor 4
+gogo:read-sensor 4
 0
 1
 11
@@ -121,7 +82,7 @@ MONITOR
 637
 177
 sensor 5
-gogo:sensor 5
+gogo:read-sensor 5
 0
 1
 11
@@ -132,7 +93,7 @@ MONITOR
 718
 176
 sensor 6
-gogo:sensor 6
+gogo:read-sensor 6
 0
 1
 11
@@ -143,7 +104,7 @@ MONITOR
 637
 232
 sensor 7
-gogo:sensor 7
+gogo:read-sensor 7
 0
 1
 11
@@ -154,41 +115,41 @@ MONITOR
 718
 233
 sensor 8
-gogo:sensor 8
+gogo:read-sensor 8
 0
 1
 11
 
 PLOT
-15
-535
-800
-725
+10
+490
+795
+690
 Sensors
 NIL
 NIL
 0.0
-10.0
+0.0
 0.0
 1023.0
-false
+true
 true
 "" ""
 PENS
-"sensor 1" 1.0 0 -2674135 true "" "if plot-sensor-1\n[\nlet data-point-to-plot gogo:sensor 1\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 2" 1.0 0 -16777216 true "" "if plot-sensor-2\n[let data-point-to-plot gogo:sensor 2\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 3" 1.0 0 -955883 true "" "if plot-sensor-3\n[let data-point-to-plot gogo:sensor 3\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 4" 1.0 0 -6459832 true "" "if plot-sensor-4\n[let data-point-to-plot gogo:sensor 4\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 5" 1.0 0 -10899396 true "" "if plot-sensor-5\n[let data-point-to-plot gogo:sensor 5\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 6" 1.0 0 -5825686 true "" "if plot-sensor-6\n[let data-point-to-plot gogo:sensor 6\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 7" 1.0 0 -8630108 true "" "if plot-sensor-7\n[let data-point-to-plot gogo:sensor 7\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
-"sensor 8" 1.0 0 -13791810 true "" "if plot-sensor-8\n[let data-point-to-plot gogo:sensor 8\nif data-point-to-plot <= 1023 and data-point-to-plot >= 0\n   [ plot data-point-to-plot ]\nif refresh-rate = \"medium\" [wait 0.01]\nif refresh-rate = \"slow\" [wait 0.1]\n]"
+"sensor 1" 1.0 0 -2674135 true "" "if plot-sensor-1 [\n  plot gogo:read-sensor 1\n]"
+"sensor 2" 1.0 0 -16777216 true "" "if plot-sensor-2 [\n  plot gogo:read-sensor 2\n]"
+"sensor 3" 1.0 0 -955883 true "" "if plot-sensor-3 [\n  plot gogo:read-sensor 3\n]"
+"sensor 4" 1.0 0 -6459832 true "" "if plot-sensor-4 [\n  plot gogo:read-sensor 4\n]"
+"sensor 5" 1.0 0 -10899396 true "" "if plot-sensor-5 [\n  plot gogo:read-sensor 5\n]"
+"sensor 6" 1.0 0 -5825686 true "" "if plot-sensor-6 [\n  plot gogo:read-sensor 6\n]"
+"sensor 7" 1.0 0 -8630108 true "" "if plot-sensor-7 [\n  plot gogo:read-sensor 7\n]"
+"sensor 8" 1.0 0 -13791810 true "" "if plot-sensor-8 [\n  plot gogo:read-sensor 8\n]"
 
 BUTTON
 10
-405
+365
 140
-438
+398
 NIL
 update-plots
 T
@@ -203,9 +164,9 @@ NIL
 
 BUTTON
 145
-405
+365
 275
-438
+398
 NIL
 clear-plot
 NIL
@@ -229,12 +190,12 @@ Sensors
 0
 
 BUTTON
-160
-30
-290
-75
-test connection
-test-connection
+85
+25
+155
+58
+LED on
+gogo:led 1
 NIL
 1
 T
@@ -248,10 +209,10 @@ NIL
 BUTTON
 10
 100
-112
+130
 133
 a-on
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:output-port-on
+gogo:talk-to-output-ports [\"a\"]\ngogo:output-port-on
 NIL
 1
 T
@@ -264,11 +225,11 @@ NIL
 
 BUTTON
 10
-138
-112
-171
+140
+130
+173
 a-off
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:output-port-off
+gogo:talk-to-output-ports [\"a\"]\ngogo:output-port-off
 NIL
 1
 T
@@ -281,11 +242,11 @@ NIL
 
 BUTTON
 10
-177
-112
-210
-a-thisway
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:output-port-thisway
+180
+130
+213
+a-clockwise
+gogo:talk-to-output-ports [\"a\"]\ngogo:output-port-clockwise
 NIL
 1
 T
@@ -298,11 +259,11 @@ NIL
 
 BUTTON
 10
-218
-112
-251
-a-thatway
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:output-port-thatway
+220
+130
+253
+a-counterclockwise
+gogo:talk-to-output-ports [\"a\"]\ngogo:output-port-counterclockwise
 NIL
 1
 T
@@ -315,28 +276,11 @@ NIL
 
 BUTTON
 10
-256
-112
-289
-a-reverse
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:output-port-reverse
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-10
-335
-112
-368
+300
+130
+333
 set-a-power
-gogo:talk-to-output-ports [ \"a\" ]\ngogo:set-output-port-power a-power
+gogo:talk-to-output-ports [\"a\"]\ngogo:set-output-port-power a-power
 NIL
 1
 T
@@ -348,27 +292,27 @@ NIL
 1
 
 SLIDER
-9
-295
-112
-328
+10
+260
+130
+293
 a-power
 a-power
 0
-7
-7
+100
+100
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-119
+140
 100
-221
+260
 133
 b-on
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:output-port-on
+gogo:talk-to-output-ports [\"b\"]\ngogo:output-port-on
 NIL
 1
 T
@@ -380,12 +324,12 @@ NIL
 1
 
 BUTTON
-119
-138
-221
-171
+140
+140
+260
+173
 b-off
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:output-port-off
+gogo:talk-to-output-ports [\"b\"]\ngogo:output-port-off
 NIL
 1
 T
@@ -397,12 +341,12 @@ NIL
 1
 
 BUTTON
-119
-177
-221
-210
-b-thisway
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:output-port-thisway
+140
+180
+260
+213
+b-clockwise
+gogo:talk-to-output-ports [\"b\"]\ngogo:output-port-clockwise
 NIL
 1
 T
@@ -414,12 +358,12 @@ NIL
 1
 
 BUTTON
-119
-218
-221
-251
-b-thatway
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:output-port-thatway
+140
+220
+260
+253
+b-counterclockwise
+gogo:talk-to-output-ports [\"b\"]\ngogo:output-port-counterclockwise
 NIL
 1
 T
@@ -431,29 +375,12 @@ NIL
 1
 
 BUTTON
-119
-256
-221
-289
-b-reverse
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:output-port-reverse
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-119
-335
-221
-368
+140
+300
+260
+333
 set-b-power
-gogo:talk-to-output-ports [ \"b\" ]\ngogo:set-output-port-power b-power
+gogo:talk-to-output-ports [\"b\"]\ngogo:set-output-port-power b-power
 NIL
 1
 T
@@ -465,27 +392,27 @@ NIL
 1
 
 SLIDER
-119
-295
-221
-328
+140
+260
+260
+293
 b-power
 b-power
 0
-7
-7
+100
+100
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-229
+270
 100
-331
+390
 133
 c-on
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:output-port-on
+gogo:talk-to-output-ports [\"c\"]\ngogo:output-port-on
 NIL
 1
 T
@@ -497,12 +424,12 @@ NIL
 1
 
 BUTTON
-229
-138
-331
-171
+270
+140
+390
+173
 c-off
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:output-port-off
+gogo:talk-to-output-ports [\"c\"]\ngogo:output-port-off
 NIL
 1
 T
@@ -514,12 +441,12 @@ NIL
 1
 
 BUTTON
-229
-177
-331
-210
-c-thisway
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:output-port-thisway
+270
+180
+390
+213
+c-clockwise
+gogo:talk-to-output-ports [\"c\"]\ngogo:output-port-clockwise
 NIL
 1
 T
@@ -531,12 +458,12 @@ NIL
 1
 
 BUTTON
-229
-218
-331
-251
-c-thatway
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:output-port-thatway
+270
+220
+390
+253
+c-counterclockwise
+gogo:talk-to-output-ports [\"c\"]\ngogo:output-port-counterclockwise
 NIL
 1
 T
@@ -548,29 +475,12 @@ NIL
 1
 
 BUTTON
-229
-256
-331
-289
-c-reverse
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:output-port-reverse
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-229
-335
-331
-368
+270
+300
+390
+333
 set-c-power
-gogo:talk-to-output-ports [ \"c\" ]\ngogo:set-output-port-power c-power
+gogo:talk-to-output-ports [\"c\"]\ngogo:set-output-port-power c-power
 NIL
 1
 T
@@ -582,27 +492,27 @@ NIL
 1
 
 SLIDER
-229
-295
-331
-328
+270
+260
+390
+293
 c-power
 c-power
 0
-7
-7
+100
+100
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-339
+400
 100
-441
+520
 133
 d-on
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:output-port-on
+gogo:talk-to-output-ports [\"d\"]\ngogo:output-port-on\n
 NIL
 1
 T
@@ -614,12 +524,12 @@ NIL
 1
 
 BUTTON
-339
-138
-441
-171
+400
+140
+520
+173
 d-off
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:output-port-off
+gogo:talk-to-output-ports [\"d\"]\ngogo:output-port-off
 NIL
 1
 T
@@ -631,12 +541,12 @@ NIL
 1
 
 BUTTON
-339
-177
-441
-210
-d-thisway
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:output-port-thisway
+400
+180
+520
+213
+d-clockwise
+gogo:talk-to-output-ports [\"d\"]\ngogo:output-port-clockwise
 NIL
 1
 T
@@ -648,12 +558,12 @@ NIL
 1
 
 BUTTON
-339
-218
-441
-251
-d-thatway
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:output-port-thatway
+400
+220
+520
+253
+d-counterclockwise
+gogo:talk-to-output-ports [\"d\"]\ngogo:output-port-counterclockwise
 NIL
 1
 T
@@ -665,29 +575,12 @@ NIL
 1
 
 BUTTON
-339
-256
-441
-289
-d-reverse
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:output-port-reverse
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-339
-335
-441
-368
+400
+300
+520
+333
 set-d-power
-gogo:talk-to-output-ports [ \"d\" ]\ngogo:set-output-port-power d-power
+gogo:talk-to-output-ports [\"d\"]\ngogo:set-output-port-power d-power
 NIL
 1
 T
@@ -699,15 +592,15 @@ NIL
 1
 
 SLIDER
-339
-295
-441
-328
+400
+260
+520
+293
 d-power
 d-power
 0
-7
-7
+100
+100
 1
 1
 NIL
@@ -723,21 +616,11 @@ Output Port Controls
 15.0
 0
 
-CHOOSER
-285
-390
-423
-435
-refresh-rate
-refresh-rate
-"fast" "medium" "slow"
-1
-
 SWITCH
 10
-445
+405
 140
-478
+438
 plot-sensor-1
 plot-sensor-1
 0
@@ -746,12 +629,23 @@ plot-sensor-1
 
 SWITCH
 10
-485
+445
 140
-518
+478
 plot-sensor-2
 plot-sensor-2
+0
 1
+-1000
+
+SWITCH
+145
+405
+275
+438
+plot-sensor-3
+plot-sensor-3
+0
 1
 -1000
 
@@ -760,28 +654,17 @@ SWITCH
 445
 275
 478
-plot-sensor-3
-plot-sensor-3
-1
-1
--1000
-
-SWITCH
-145
-485
-275
-518
 plot-sensor-4
 plot-sensor-4
-1
+0
 1
 -1000
 
 TEXTBOX
 10
-375
+340
 160
-393
+358
 Plotting
 14
 15.0
@@ -789,22 +672,33 @@ Plotting
 
 SWITCH
 285
-445
+405
 415
-478
+438
 plot-sensor-5
 plot-sensor-5
-1
+0
 1
 -1000
 
 SWITCH
 285
-485
+445
 415
-518
+478
 plot-sensor-6
 plot-sensor-6
+0
+1
+-1000
+
+SWITCH
+425
+405
+555
+438
+plot-sensor-7
+plot-sensor-7
 1
 1
 -1000
@@ -814,20 +708,9 @@ SWITCH
 445
 555
 478
-plot-sensor-7
-plot-sensor-7
-1
-1
--1000
-
-SWITCH
-425
-485
-555
-518
 plot-sensor-8
 plot-sensor-8
-1
+0
 1
 -1000
 
@@ -835,8 +718,8 @@ TEXTBOX
 565
 280
 780
-485
-Check if the USB cable is connected to the computer and to the GoGo Board, and if you have installed the USB-Serial drivers. Most connection problems are solved by:\n(1) Closing NetLogo.\n(2) Turning the GoGo Board off.\n(3) Waiting 5 seconds.\n(4) Turning the board back on.\n(5) Waiting 5 seconds.\n(6) Opening NetLogo again.\n\nRefer to the NetLogo documentation for more information.  
+481
+Check if the USB cable is connected to the computer and to the GoGo Board, and that the GoGo board is on. Most connection problems are solved by:\n(1) Closing NetLogo.\n(2) Turning the GoGo Board off.\n(3) Waiting 5 seconds.\n(4) Turning the board back on.\n(5) Waiting 5 seconds.\n(6) Opening NetLogo again.\n\nRefer to the NetLogo documentation for more information.
 11
 0.0
 1
@@ -851,17 +734,6 @@ If you cannot connect to the GoGo Board:
 15.0
 1
 
-MONITOR
-315
-30
-440
-75
-Connected to:
-serial-port
-17
-1
-11
-
 TEXTBOX
 10
 0
@@ -872,14 +744,38 @@ Initialize & test
 15.0
 1
 
-TEXTBOX
-130
+BUTTON
 10
-495
-28
-note: pressing \"setup\" twice on Mac OS X may cause a crash
-11
-0.0
+25
+72
+58
+Beep
+gogo:beep
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+170
+25
+242
+58
+LED off
+gogo:led 0
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
@@ -896,11 +792,9 @@ connected to your computer's USB or serial port. You can get information from se
 
 ## HOW TO USE IT
 
-Connect a GoGo Board to your computer's serial or USB port (depending on the version of the board you have). Then connect sensors, motors, LEDs, relays, and lights to the board.
+Connect a GoGo Board to your computer's USB port . Then connect sensors, motors, LEDs, relays, and lights to the board.
 
-Press SETUP to begin communicating with the GoGo board.  When prompted, enter the name of the serial port that is connected to your board (should be the first one you see on the drop-down list). The port should be automatically detected, but if you are not sure, go to the Control Panel -> System -> Device Manager (Windows) or to the System Preferences (Mac).
-
-Press TEST CONNECTION to check if NetLogo is communicating with your GoGo Board.
+The GoGo board will beep when it is plugged in, letting you know it is connected. Try clicking the BEEP, LED ON, and LED OFF buttons to confirm the board is receiving data from the model. These three buttons control on-board features of the GoGo board, so no additional sensors need be connected.
 
 The sensor monitors -- SENSOR 1 through SENSOR 8 -- show the value of each of the sensors on the GoGo Board.
 
@@ -910,15 +804,13 @@ A-ON turns the output port(s) on.
 
 A-OFF turns the output port(s) off.
 
-A-THISWAY/THATWAY control the direction of current to the output port(s).  If a motor is connected to the output port, this determines the direction of motion.
-
-A-REVERSE-DIRECTION reverses the direction of current to the output port(s). For motors, it will make it turn the other way. For LEDs, it will make the LED turn on or off (if the ports was turned on previously) because LEDs are polarized.
+A-CLOCKWISE/COUNTER-CLOCKWISE control the direction of current to the output port(s).  If a motor is connected to the output port, this determines the direction of motion.
 
 To change the amount of current going to the output port(s), set the A-POWER slider, then press the SET-A-POWER button.
 
 The same applies to the other output ports B, C, and D.
 
-To plot sensor values, first choose which ones you want to plot using the switches, and start the UPDATE-PLOTS forever button.  At any time, you can clear the plot with the CLEAR PLOT button.  Changing the REFRESH RATE chooser adds small delay between each data point, effectively decreasing the sampling rate.  The "FAST" mode adds no delay (resulting in 500 Hz on a fast computer), the "MEDIUM" mode adds 0.01 seconds of delay (resulting in approximately 80 Hz), and the "SLOW" mode adds 0.1 second between each measure (approximately 10 Hz). A high refresh rate ("FAST" mode) is better for data that change very quickly, but it is prone to have more noise and result in a huge data set. Slow refresh rates will result in a smoother line, but you might miss some data in between recorded data points. To export the data in your plot, right-click (on Macs, control-click) on the plot and choose "Export...".
+To plot sensor values, first choose which ones you want to plot using the switches, and start the UPDATE-PLOTS forever button.  At any time, you can clear the plot with the CLEAR PLOT button.  To export the data in your plot, right-click (on Macs, control-click) on the plot and choose "Export...".
 
 ## THINGS TO TRY
 
@@ -926,8 +818,6 @@ Try connecting different sensors to the GoGo Board: temperature sensors, light s
 
 Connect various motors, lights, and other circuits to the GoGo Board's output ports.
 
-Change the refresh rates by editing the code in the plot, and modifying the wait time (default value is 0.01 or 0.1, higher values would cause the sampling rate to decrease).
-  
 To find out where to buy sensors and motors, go to the [GoGo Board website](http://www.gogoboard.org).
 
 ## EXTENDING THE MODEL
@@ -935,7 +825,7 @@ To find out where to buy sensors and motors, go to the [GoGo Board website](http
 Add filters and normalization to the sensor data.
 Using a light sensor, make a turtle move forward when it's dark, and stop when there is light.
 Create animations that are controlled by sensors
-Create Bifocal Models (see [bifocal modeling](http://tltl.stanford.edu/projects/bifocal-modeling))
+Create Bifocal Models (see [bifocal modeling](https://tltl.stanford.edu/projects/bifocal-modeling))
 
 ## NETLOGO FEATURES
 
@@ -945,7 +835,9 @@ This model uses the NetLogo GoGo Extension. For more information, see the GoGo E
 
 To learn about GoGo Boards, see http://www.gogoboard.org.
 
-This model was created by Paulo Blikstein at Stanford's [Transformative Learning Technologies Lab](http://tltl.stanford.edu).
+This model was created by Paulo Blikstein at Stanford's [Transformative Learning Technologies Lab](https://tltl.stanford.edu/).
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -1230,7 +1122,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

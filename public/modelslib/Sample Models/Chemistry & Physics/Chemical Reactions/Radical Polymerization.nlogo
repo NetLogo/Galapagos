@@ -78,6 +78,10 @@ to do-histogram
   set-histogram-num-bars (histogram-max + 1)
   histogram [chain-length] of polymers
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 287
@@ -260,7 +264,7 @@ here the asterisk denotes a free electron.  These bi-radicals react with pi-bond
 
      *O-O* + C H --------> *O-O-CH-CH*
               2 4                 2  2
-     
+
      *O-O-CH-CH* + CH-CH --------> *O-O-CH-CH-CH-CH*
             2  2     2  2                 2  2  2  2
 
@@ -270,39 +274,39 @@ Notice that if two radicals react with each other, they will form an inert compo
 
 Let us assume that we run polymerization using AIBN as an initiator which we denote by I.  We thus have the following kinetically distinct particles in the system:
 
-(i) Initiator molecules;  
-(ii) Radicals;  
-(iii) Monomers;  
+(i) Initiator molecules;
+(ii) Radicals;
+(iii) Monomers;
 (iv) "Dead" chains;
 
 A radical can react with a monomer, in which case it absorbs the monomer and increases its chain-length by 1.  Alternatively, a radical can react with another radical forming a "dead" molecule which does not react with other particles.  Let us denote by R(n) radicals which have reacted n times with monomers.  Let M stand for monomers and C(k) for "dead" chains of length k.  Then schematically we can describe the reactions by the following system of equations:
 
             I --------> 2 R(1)              (initiation)
-    
+
             R(n) + M --------> R(n+1)       (growth)
-    
+
          R(n) + R(m) --------> C(n+m)       (termination)
 
-In this model, there are four breeds of turtles:  
-- initiators (yellow turtles);  
-- monomers (green turtles);  
-- radicals (red turtles);  
+In this model, there are four breeds of turtles:
+- initiators (yellow turtles);
+- monomers (green turtles);
+- radicals (red turtles);
 - polymers (blue turtles).
 
 Each turtle carries a variable, chain-length.  Initially there are 200 turtles of monomer breed with chain-length set to 1.  There is also a user-defined number (Io) of initiator breed with chain-length set to 0.
 
 The rules are quite simple:
 
-(i) All turtles move around randomly.  
-(ii) Yellow turtles (initiators) spontaneously break up into two red turtles (radicals) with probability Ki;  
-(iii) Green turtles (monomers) react with red turtles (radicals) with probability Km.  If there is at least one radical on the same patch as the given monomer, the monomer dies and the chain-length of the radical which "killed" it is incremented by 1;  
+(i) All turtles move around randomly.
+(ii) Yellow turtles (initiators) spontaneously break up into two red turtles (radicals) with probability Ki;
+(iii) Green turtles (monomers) react with red turtles (radicals) with probability Km.  If there is at least one radical on the same patch as the given monomer, the monomer dies and the chain-length of the radical which "killed" it is incremented by 1;
 (iv) Red turtles (radicals) react with each other pairwise.  If there is a pair of radicals on the same patch, they annihilate each other with probability Kr forming a polymer chain (a blue turtle);
 
 ## HOW TO USE IT
 
-With sliders one can control the initial number of initiators (Io) and reaction probabilities  
-- Ki (initiator): probability of an initiator (yellow) creating two radicals (red);  
-- Km (monomer): probability of reaction between monomers (green) and radicals (red), forming a radical with a longer chain length;  
+With sliders one can control the initial number of initiators (Io) and reaction probabilities
+- Ki (initiator): probability of an initiator (yellow) creating two radicals (red);
+- Km (monomer): probability of reaction between monomers (green) and radicals (red), forming a radical with a longer chain length;
 - Kr (radical): probability of two radicals (red)  reacting to form a polymer chain (blue).
 
 Select the initial number of initiators Io and press the "setup" button.  To start the simulation press the GO button.  You can set the probabilities Ki, Km and Kr before or after you do setup.  You can also modify this constants on the fly during the execution of the GO procedure.
@@ -331,7 +335,7 @@ Although oxygen is widely used in industry as initiator of radical polymerizatio
 
         C H-C(O)O-O(O)C-H C
      6 5             5 6
-     
+
                 CH     CH
             | 3    | 3
             CH -C--N=N-C- CH
@@ -354,7 +358,33 @@ This reaction is irreversible because of the escape of nitrogen.
 
 Simple Kinetics series, Polymer Dynamics
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Radical Polymerization model.  http://ccl.northwestern.edu/netlogo/models/RadicalPolymerization.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -639,7 +669,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

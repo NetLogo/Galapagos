@@ -80,6 +80,10 @@ to draw-circle [x y radius]
   ask patches with [distancexy x y < radius]
     [ set pcolor violet ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 240
@@ -237,13 +241,13 @@ Finally, Rule 3 reduces the 'weaving' effects produced by turtles moving toward 
 
 ## HOW TO USE IT
 
-NUMBER-OF-TURTLES: Allows the user to adjust the number of turtles that will appear along the shape surface when SETUP is pressed.  
-STEP-SIZE: Allows the user to adjust how far each turtle moves forward during each step.  
-SURFACE-SHAPE: Allows the user to select the surface shape to appear when SETUP is pressed.  
-COLORED-SURFACE?: Allows user to toggle whether the surface on which turtles will walk is colored red, or is invisible.  
-DRAW-SURFACE: Allows the user to add mouse-drawn components to an existing surface by pressing the button and then clicking and dragging anywhere in the view. The area surrounding patches identified by the mouse will be set to behave as a surface, and if the COLORED-SURFACE? switch is on, the area will also turn red.  
-TRACE: Asks one of the turtles to draw a trail as it moves.  
-SETUP: Sets up the environment by creating a surface and placing turtles along the surface.  
+NUMBER-OF-TURTLES: Allows the user to adjust the number of turtles that will appear along the shape surface when SETUP is pressed.
+STEP-SIZE: Allows the user to adjust how far each turtle moves forward during each step.
+SURFACE-SHAPE: Allows the user to select the surface shape to appear when SETUP is pressed.
+COLORED-SURFACE?: Allows user to toggle whether the surface on which turtles will walk is colored red, or is invisible.
+DRAW-SURFACE: Allows the user to add mouse-drawn components to an existing surface by pressing the button and then clicking and dragging anywhere in the view. The area surrounding patches identified by the mouse will be set to behave as a surface, and if the COLORED-SURFACE? switch is on, the area will also turn red.
+TRACE: Asks one of the turtles to draw a trail as it moves.
+SETUP: Sets up the environment by creating a surface and placing turtles along the surface.
 GO: Runs the model by asking turtles to walk along the surface.
 
 ## THINGS TO NOTICE
@@ -281,6 +285,30 @@ Wall Following Example is a simpler version of this example.  It is entirely gri
 ## CREDITS AND REFERENCES
 
 Thanks to Michelle Wilkerson for her work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilkerson, M. and Wilensky, U. (2007).  NetLogo Surface Walking 2D model.  http://ccl.northwestern.edu/netlogo/models/SurfaceWalking2D.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Wilkerson, M. -->
 @#$#@#$#@
 default
 true
@@ -565,7 +593,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

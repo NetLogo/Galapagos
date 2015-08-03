@@ -9,6 +9,7 @@ to setup-square
   ;; turtles. That's OK; the CREATE-LINKS-WITH command will skip
   ;; links that already exist.
   ask turtles [ create-links-with turtles-on neighbors4 ]
+  reset-ticks
 end
 
 to setup-hex
@@ -29,7 +30,13 @@ to setup-hex
       set ycor ycor - 0.5
     ]
   ]
+  reset-ticks
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 163
@@ -52,8 +59,8 @@ GRAPHICS-WINDOW
 25
 0
 25
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -109,6 +116,8 @@ The square lattice can be modified to include diagonal links by changing `neighb
 
 * Hex Cells Example: shows how to treat patches as a hexagonal lattice, without creating any links.
 * Lattice-Walking Turtles Example: shows how to make turtles walk along the lattice.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -393,7 +402,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup-square
 @#$#@#$#@

@@ -20,6 +20,8 @@ to go
     [ set color col
       fd random-float max-pxcor ]
 
+  display
+
   ;; user-message tells the user something
   user-message (word "OK, " name ", there are "
                      count turtles " turtles now.")
@@ -28,6 +30,11 @@ to go
   if not user-yes-or-no? "Would you like more turtles?"
     [ stop ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 238
@@ -50,8 +57,8 @@ GRAPHICS-WINDOW
 17
 -17
 17
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -107,6 +114,8 @@ NIL
 This demonstrates the usage of NetLogo's user interaction primitives, all of which begin with `user-`.  They let a model pop up a dialog box showing information to, or requesting information from, the model user.
 
 (Not demonstrated are `user-choose-directory`, `user-choose-file`, and `user-choose-new-file`.)
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -391,7 +400,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

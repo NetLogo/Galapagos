@@ -130,6 +130,10 @@ to clear-patch ;; patch procedure
   set harsh-fitness 0
   set benefit-out 0
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 330
@@ -326,7 +330,7 @@ count patches with [pcolor = green]
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model (and Cooperation and Divide the Cake) are part of the EACH unit ("Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution").  See http://ccl.northwestern.edu/cm/EACH/ for more information on the EACH unit. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. (See http://ccl.northwestern.edu/curriculum/simevolution/beagle.shtml .)
+This model (and Cooperation and Divide the Cake) are part of the EACH unit ("Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution").  See http://ccl.northwestern.edu/papers/EACH/ for more information on the EACH unit. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. (See http://ccl.northwestern.edu/curriculum/simevolution/beagle.shtml .)
 
 This is an evolutionary biology model.  It models population genetics with respect to the fitness of traits that are affected by social and environmental conditions.  The model has two types of patch agents: altruistic agents and selfish agents.
 
@@ -340,9 +344,9 @@ Under normal (non-interfering) environmental conditions, the selfish agents win,
 
 2. Each patch is an agent that has a fitness.  Each patch is also the location of a lottery for its space.  The patch and the four surrounding patches put in "seeds" to try to get the patch turned to their type of patch, altruist or selfish. Being successful in the lottery is getting patches to turn to your type.  We're assuming here that the type (altruistic or selfish) is the important genetic trait.
 
-3.  Each patch calculates its own fitness using equation:  
-if it is A (altruist): 1 - cost + (Number Altruists in Neighborhood / 5 * benefit from Altruists)  
-if it is S (selfish):  1 + (Number Altruists in Neighborhood / 5 * benefit from Altruists)  
+3.  Each patch calculates its own fitness using equation:
+if it is A (altruist): 1 - cost + (Number Altruists in Neighborhood / 5 * benefit from Altruists)
+if it is S (selfish):  1 + (Number Altruists in Neighborhood / 5 * benefit from Altruists)
 Thus, the fitness of the S patch will be higher than the fitness of the A's.  If the cost is 0.2 and benefit is 0.5, for an A surrounded by two S's and two A's, then the fitness of this spot is 1 - 0.2 + (3/5 * 0.5) = 1.1.
 
 4.  After each patch has calculated its fitness, it looks to its four neighbors.  Each of the five patches, including itself, puts a weighted seed into a genetic lottery for this center spot.  So, for example, if the neighborhood is ASASA, each of the three A's register their fitness value, and each of the two S's put in their fitness.  The A's are added, and the S's are added.  Let us assume that the A's add up to 3.2 (this includes the A in the center spot), and the S's add up to 2.6.  These two numbers are the altruist weight and selfish weight respectively, in the lottery for the center spot.  Now, the larger number, whichever it is, is called the Major seed; it is divided by the sum of all the fitnesses.
@@ -400,11 +404,39 @@ Cooperation
 
 ## CREDITS AND REFERENCES
 
-This model and the Cooperation model are part of the curriculum unit "Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution".  See http://ccl.northwestern.edu/cm/EACH/ for more information. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/curriculum/simevolution/beagle.shtml .
+This model and the Cooperation model are part of the curriculum unit "Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution".  See http://ccl.northwestern.edu/papers/EACH/ for more information. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/curriculum/simevolution/beagle.shtml .
 
 This model is based on a paper by Mitteldorf and Wilson, 2000, "Population Viscosity and the Evolution of Altruism", Journal of Theoretical Biology, v.204, pp.481-496.
 
 Thanks also to Damon Centola and Scott Styles.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Altruism model.  http://ccl.northwestern.edu/netlogo/models/Altruism.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -689,7 +721,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

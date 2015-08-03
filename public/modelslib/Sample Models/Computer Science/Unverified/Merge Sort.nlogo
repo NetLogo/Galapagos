@@ -62,6 +62,7 @@ to step-row
   set step-number (step-number + 1)
   combine-groups
   draw
+  display
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,6 +163,7 @@ to step-item
     set current-group (current-group + 1)
   ]
   [ set current-loc (current-loc + 1) ]
+  display
 end
 
 ;; Move the turtles to their appropriate locations
@@ -195,6 +197,10 @@ to draw
     set list-loc (list-loc + 1)
   ]
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 220
@@ -217,8 +223,8 @@ GRAPHICS-WINDOW
 50
 -25
 25
-0
-0
+1
+1
 0
 ticks
 30.0
@@ -336,7 +342,7 @@ We stated above that the algorithm will take at most a constant factor times n l
 
 Can you make the elements draw their paths across the view?
 
-There are many different sorting algorithms. You can find a few described at http://en.wikipedia.org/wiki/Sorting_algorithm.  Try implementing the different sorts in NetLogo and use BehaviorSpace to compare them.  Do different sorts perform better with different input sets (uniformly random, nearly sorted, reverse sorted, etc.)?
+There are many different sorting algorithms. You can find a few described at https://en.wikipedia.org/wiki/Sorting_algorithm.  Try implementing the different sorts in NetLogo and use BehaviorSpace to compare them.  Do different sorts perform better with different input sets (uniformly random, nearly sorted, reverse sorted, etc.)?
 
 ## NETLOGO FEATURES
 
@@ -344,7 +350,29 @@ This model uses lists extensively.
 
 Note that NetLogo includes SORT and SORT-BY primitives; normally, you would just use one of these, rather than implementing a sort algorithm yourself.  SORT arranges items in ascending order; SORT-BY lets you specify how items are to be ordered.
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2005).  NetLogo Merge Sort model.  http://ccl.northwestern.edu/netlogo/models/MergeSort.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -629,7 +657,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 2 [ step-row ]

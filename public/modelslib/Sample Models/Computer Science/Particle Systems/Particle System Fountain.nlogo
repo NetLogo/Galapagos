@@ -85,6 +85,10 @@ to apply-forces
     setxy new-x new-y
   ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 301
@@ -313,9 +317,9 @@ count turtles
 
 This particle system models a particle fountain emitting particles from the bottom of the world.
 
-In this model each particle has two main behaviors:  
-- If there is room ahead it continues its trajectory.  
-- If it's about to touch the edge of the world, it dies.  
+In this model each particle has two main behaviors:
+- If there is room ahead it continues its trajectory.
+- If it's about to touch the edge of the world, it dies.
 Forces such as gravity, wind, and viscosity act on the particles as well.
 
 ## HOW IT WORKS
@@ -366,8 +370,8 @@ A difficulty in this example is to detect when a particle has reached the edge o
 
 ## RELATED MODELS
 
-Particle System Basic  
-Particle System Waterfall  
+Particle System Basic
+Particle System Waterfall
 Particle System Flame
 
 ## CREDITS AND REFERENCES
@@ -375,6 +379,30 @@ Particle System Flame
 See Particle System Basic for a list of references on particle systems.
 
 Thanks to Daniel Kornhauser for his work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Kornhauser, D. and Wilensky, U. (2007).  NetLogo Particle System Fountain model.  http://ccl.northwestern.edu/netlogo/models/ParticleSystemFountain.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Kornhauser, D. -->
 @#$#@#$#@
 default
 true
@@ -818,7 +846,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup repeat 300 [ go ]
 @#$#@#$#@

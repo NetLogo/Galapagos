@@ -46,6 +46,11 @@ to-report wall? [angle]  ;; turtle procedure
   ;; the turtle looks left.
   report brown = [pcolor] of patch-right-and-ahead angle 1
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 201
@@ -157,6 +162,8 @@ The `walk` procedure will get stuck in an infinite loop if a turtle finds itself
 ## NETLOGO FEATURES
 
 Turtles use the `patch-right-and-ahead` primitive to look at patches around themselves, relative to the direction the turtle is facing.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -441,7 +448,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 random-seed 2
 setup

@@ -42,6 +42,11 @@ to go
   ]
   tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 217
@@ -145,6 +150,8 @@ The turtles may visually touch a blue patch because to NetLogo, the turtles are 
 * One Turtle Per Patch Example
 
 To see this in use in real models see Ants, Slime, Gas Chromatography, Simple Kinetics, GasLab and Connected Chemistry models, various games, and Wealth Distribution.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -429,7 +436,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

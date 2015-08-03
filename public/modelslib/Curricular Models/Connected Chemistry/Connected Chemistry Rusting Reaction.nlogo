@@ -1,7 +1,7 @@
 globals
 [
-  tick-length                                ;; clock variable
-  max-tick-length                            ;; the largest a tick length is allowed to be
+  tick-advance-amount                                ;; clock variable
+  max-tick-advance-amount                            ;; the largest a tick length is allowed to be
   avg-speed avg-energy                       ;; current averages
   show-rust-molecule-boundaries?
   total-iron-atoms
@@ -41,7 +41,7 @@ to setup
   set background-color black
   set water-color blue
   set show-rust-molecule-boundaries? false
-  set max-tick-length 0.02
+  set max-tick-advance-amount 0.02
   set-default-shape iron-atoms       "iron-atom"
   set-default-shape oxygen-molecules "oxygen-molecule"
   set-default-shape rust-molecules   "rust-molecule"
@@ -81,8 +81,8 @@ to go
    check-for-reaction
   ]
   update-variables
-  calculate-tick-length
-  tick-advance tick-length
+  calculate-tick-advance-amount
+  tick-advance tick-advance-amount
   update-plots
   display
 end
@@ -382,9 +382,9 @@ end
 
 
 to move  ;; oxygen-molecules procedure
-  if patch-ahead (speed * tick-length) != patch-here
+  if patch-ahead (speed * tick-advance-amount) != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-length)
+  jump (speed * tick-advance-amount)
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,17 +392,17 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;from GasLab
 
-to calculate-tick-length
-  ;; tick-length is calculated in such way that even the fastest
+to calculate-tick-advance-amount
+  ;; tick-advance-amount is calculated in such way that even the fastest
   ;; oxygen-molecules will jump at most 1 patch length in a clock tick. As
-  ;; oxygen-molecules jump (speed * tick-length) at every clock tick, making
+  ;; oxygen-molecules jump (speed * tick-advance-amount) at every clock tick, making
   ;; tick length the inverse of the speed of the fastest oxygen-molecules
   ;; (1/max speed) assures that. Having each oxygen-molecules advance at most
    ; one patch-length is necessary for it not to "jump over" a wall
    ; or another oxygen-molecules.
   ifelse any? oxygen-molecules with [speed > 0]
-    [ set tick-length min list (1 / (ceiling max [speed] of oxygen-molecules)) max-tick-length ]
-    [ set tick-length max-tick-length ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of oxygen-molecules)) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -441,7 +441,7 @@ end
 ;;      (call it theta).
 ;;   2. Convert the representation of the velocity of each oxygen-molecules from
 ;;      speed/heading to a theta-based vector whose first component is the
-;;      oxygen-molecules's speed along theta, and whose second component is the speed
+;;      oxygen-molecules' speed along theta, and whose second component is the speed
 ;;      perpendicular to theta.
 ;;   3. Modify the velocity vectors to reflect the effects of the collision.
 ;;      This involves:
@@ -570,6 +570,10 @@ to-report last-n [n the-list]
     [ report the-list ]
     [ report last-n n butfirst the-list ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 490
@@ -592,11 +596,11 @@ GRAPHICS-WINDOW
 10
 -10
 10
-0
-0
+1
+1
 1
 ticks
-30.0
+120.0
 
 BUTTON
 80
@@ -818,7 +822,6 @@ The catalytic role of water is simplified to be a geometric catalyst (a cluster 
 
 The contributing role of UV radiation is simplified to be a localized and temporary energy boost in the vibrational energy of the iron atoms, which in turn brings the reactants closer to the activation energy required for the reaction.
 
-
 ## HOW IT WORKS
 
 The gas particles are modeled as hard balls with no internal energy except that which is due to their motion.  Solid particles are modeled as hard balls with internal energy represented as rotational energy.  Collisions between particles are elastic.
@@ -846,9 +849,7 @@ MOUSE-INTERACTION: Gives the user options to "add water", "remove water", "remov
 The SETUP button will set the initial conditions.
 The GO/STOP button will run the simulation.
 
-
 ## THINGS TO NOTICE
-
 
 In this model, iron atoms adjacent to a patch with water and the necessary oxygen molecule reactants in it are pulled away from the iron metal block when rust forms.  This leads to the deposition of rust above the surface of the iron as well as pitting of the iron block.  This pitting effect occurs in reality.
 
@@ -856,11 +857,9 @@ As you drag away rust (using the mouse cursor), you expose more iron to the air,
 
 The model demonstrates other emergent phenomena of when oxygen and iron react to form rust.  Some of these phenomena include how surface area affects the rate of the reaction, how temperature of the reactants affects the rate of the reaction, and how a catalyst (such as water) can speed up the rate of a reaction.  Other phenomena, such as atomic conservation in chemical reactions and limiting agents in chemical reactions are also visible in the model.
 
-
 ## THINGS TO TRY
 
 Explore different surface geometries of iron.  How does the surface area affect the rate of the reaction?
-
 
 ## EXTENDING THE MODEL
 
@@ -872,7 +871,6 @@ Salt water vs. fresh water could be added to the model, such that the salt water
 
 UV light energy that is absorbed by the iron atom and converted to vibrational energy (particulate kinetic energy) could be reradiated as infra-red energy or conducted to particles in contact with each iron atom.  Currently such energy remains trapped in the iron atom unless a chemical reaction happens.
 
-
 ## NETLOGO FEATURES
 
 This model shows a good way of preventing particles that bounce off the world-walls from penetrating the walls. By having a dynamic tick duration calculated every tick, it attempts that even the fastest moving particle never moves more than one patch per tick. The patch-ahead primitive can therefore always be used to check whether to change the heading of a particle that is ready to reflect or 'bounce' off of a wall.
@@ -881,9 +879,37 @@ When a gas particle is detected as having accidentally entered into the space of
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2007).  NetLogo Connected Chemistry Rusting Reaction model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistryRustingReaction.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 ConChem Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -1228,7 +1254,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

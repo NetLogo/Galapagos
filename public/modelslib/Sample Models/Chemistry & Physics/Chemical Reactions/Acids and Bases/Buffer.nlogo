@@ -127,6 +127,10 @@ to add-acid
     [ set color green
       fd 1 ]
 end
+
+
+; Copyright 2001 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 279
@@ -395,28 +399,28 @@ Decide how many acid molecules should be present at the start of the simulation 
 
 Press SETUP.  The turtles will distribute randomly across the world.
 
-YELLOW turtles are acid molecules (HA)  
-ORANGE turtles are conjugate base molecules (A-)  
-GREEN turtles represent hydronium ions (H30+)  
-RED turtles are hydroxide molecules (OH-)  
+YELLOW turtles are acid molecules (HA)
+ORANGE turtles are conjugate base molecules (A-)
+GREEN turtles represent hydronium ions (H30+)
+RED turtles are hydroxide molecules (OH-)
 BLUE turtles represent water molecules (H20)
 
 In this model we are assuming that 2% of the original acid molecules are dissociated into 2 conjugate base molecules and 2 hydronium molecules.  This is true only before the molecules start interacting between themselves.
 
 Press GO. The molecules will move randomly across the world.
 
-When two turtles occupy the same patch, the following rules apply:  
-1.  When a weak acid and a water molecule collide, the acid molecule dissociates into its conjugate base and the water molecule transforms to a hydronium ion.  
-2.  When hydroxide and hydronium ions collide, they always form two water molecules.  
-3.  When a weak acid and hydroxide collide, they have a high probability of transforming into a conjugate base and a water molecule.  
+When two turtles occupy the same patch, the following rules apply:
+1.  When a weak acid and a water molecule collide, the acid molecule dissociates into its conjugate base and the water molecule transforms to a hydronium ion.
+2.  When hydroxide and hydronium ions collide, they always form two water molecules.
+3.  When a weak acid and hydroxide collide, they have a high probability of transforming into a conjugate base and a water molecule.
 4.  When hydronium and conjugate base collide, they have a high probability of transforming into a weak acid molecule and a water molecule.
 
-To observe the effect of adding base or acid to the solution, set the number of acid molecules you want to add with the ADDED-ACID slider and press ADD-ACID (H30+)  
+To observe the effect of adding base or acid to the solution, set the number of acid molecules you want to add with the ADDED-ACID slider and press ADD-ACID (H30+)
 Do the same for adding base with the ADDED-BASE slider and ADD-BASE button.
 
-A number of plots and monitors can be observed:  
-The pH of the solution is plotted over time on the PH plot, and at each time tick on the PH monitor.  pH is calculated using the ratio of the number of hydronium and hydroxide molecules to the total number of turtles.  This is different from the chemistry calculation that relates this number to solution volume.  
-You can see the number of hydroniums and hydroxides in the solution in their monitors  (# HYDRONIUMS, # HYDROXIDES).  
+A number of plots and monitors can be observed:
+The pH of the solution is plotted over time on the PH plot, and at each time tick on the PH monitor.  pH is calculated using the ratio of the number of hydronium and hydroxide molecules to the total number of turtles.  This is different from the chemistry calculation that relates this number to solution volume.
+You can see the number of hydroniums and hydroxides in the solution in their monitors  (# HYDRONIUMS, # HYDROXIDES).
 You may follow the number of molecules of each species over time in the MOLECULE COUNTS plot.
 
 You may choose to see the initial water molecules or not with the SEE-STARTING-WATER? switch.
@@ -458,6 +462,32 @@ Additional interactions could take place in a solution in addition to those stat
 ## CREDITS AND REFERENCES
 
 Thanks to Mike Stieff for his work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Stieff, M. and Wilensky, U. (2001).  NetLogo Buffer model.  http://ccl.northwestern.edu/netlogo/models/Buffer.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2001 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2001 Cite: Stieff, M. -->
 @#$#@#$#@
 default
 true
@@ -763,7 +793,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

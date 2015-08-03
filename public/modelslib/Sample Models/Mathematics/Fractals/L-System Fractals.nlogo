@@ -156,6 +156,10 @@ to koch
   [ spawn fd len lt 60 spawn fd len rt 120 spawn fd len lt 60 spawn fd len rt 120 ]
   die
 end
+
+
+; Copyright 2001 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 284
@@ -452,12 +456,12 @@ Perhaps the best way to start with this program is by looking at examples of som
 
 You can also press GO and leave it pressed instead of pressing GO ONCE repeatedly.  Watch the number of turtles though (in the COUNT TURTLES monitor).  If it becomes very large the model may become very slow.
 
-If you don't like the location of the fractal in the world you can change it by modifying the value of the following sliders:  
-- INIT-X sets the initial x coordinate of the first turtle.  It changes the horizontal starting location of  the original turtle.  
+If you don't like the location of the fractal in the world you can change it by modifying the value of the following sliders:
+- INIT-X sets the initial x coordinate of the first turtle.  It changes the horizontal starting location of  the original turtle.
 - INIT-Y sets the initial y coordinate of the first turtle.  It changes the vertical starting location of  the original turtle.
 
-If you don't like the color scheme of the fractal you can change it by modifying the value of the following sliders:  
-- INIT-COLOR controls the initial color of the first turtle.  
+If you don't like the color scheme of the fractal you can change it by modifying the value of the following sliders:
+- INIT-COLOR controls the initial color of the first turtle.
 - The value of COLOR-INC is added to the turtles color anytime a new turtle hatches.
 
 The example buttons and the SETUP button choose the rules for a fractal.  Each of the example buttons sets up the world to draw the fractal of the same name.  The SETUP button sets up the world for drawing the rules found in the applyRules procedure in the Code tab.
@@ -494,13 +498,38 @@ all of the other models in the Fractals section of the Models Library (under Mat
 
 You may find more information on L-System fractals in the following locations:
 
-This site offers a nice history and explanation of L-system fractals as well as quit a few classic examples of L-systems.  
-http://spanky.triumf.ca/www/fractint/LSYS/tutor.html
+This site offers a nice history and explanation of L-system fractals as well as quit a few classic examples of L-systems.
+http://www.nahee.com/spanky/www/fractint/lsys/tutor.html
 
-This site offers an introduction to fractals, including L-system fractals as well as others.  
-http://www.cs.wpi.edu/~matt/courses/cs563/talks/cbyrd/pres1.html
+This site offers an introduction to fractals, including L-system fractals as well as others: http://web.cs.wpi.edu/~matt/courses/cs563/talks/cbyrd/pres1.html.
 
 _The Fractal Geometry of Nature_ by Benoit Mandelbrot
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2001).  NetLogo L-System Fractals model.  http://ccl.northwestern.edu/netlogo/models/L-SystemFractals.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2001 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2001 -->
 @#$#@#$#@
 default
 true
@@ -785,7 +814,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 14 [ go ]

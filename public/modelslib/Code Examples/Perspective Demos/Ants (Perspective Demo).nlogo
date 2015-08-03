@@ -139,6 +139,10 @@ to-report chemical-scent-at-angle [angle]
   if p = nobody [ report 0 ]
   report [chemical] of p
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 257
@@ -395,7 +399,7 @@ This is a version of the Ants model, modified to show off NetLogo's perspective 
 
 Ants
 
-## CREDITS AND REFERENCES
+<!-- 1998 2001 MIT specialCE -->
 @#$#@#$#@
 default
 true
@@ -680,7 +684,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -29,6 +29,11 @@ to show-off [ t ]
   [ ask t [ rt 1 ]
     display ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 25
@@ -207,6 +212,8 @@ NIL
 ## WHAT IS IT?
 
 This code example shows the 3D shapes available in NetLogo.
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -491,7 +498,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

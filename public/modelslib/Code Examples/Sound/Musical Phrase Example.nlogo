@@ -34,6 +34,11 @@ to-report whole   report 240 / bpm end
 to-report half    report 120 / bpm end
 to-report quarter report  60 / bpm end
 to-report eighth  report  30 / bpm end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 265
@@ -56,8 +61,8 @@ GRAPHICS-WINDOW
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -107,6 +112,8 @@ The model uses `sound:play-note-later` with an increasing delay value to constru
 
 * Composer
 * Sound Workbench
+
+<!-- 2006 -->
 @#$#@#$#@
 default
 true
@@ -391,8 +398,9 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

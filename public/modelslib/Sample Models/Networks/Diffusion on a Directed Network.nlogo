@@ -118,6 +118,10 @@ to update-link-appearance ; link procedure
   ; scale color to be brighter when more value is flowing through it
   set color scale-color gray (current-flow / (2 * mean-flow + 0.00001)) -0.4 1
 end
+
+
+; Copyright 2008 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 215
@@ -294,7 +298,7 @@ The size of each node shows how much "value" that node has, where the area of th
 
 ## HOW TO USE IT
 
-Choose the size of network that you want to model using the GRID-SIZE slider.  
+Choose the size of network that you want to model using the GRID-SIZE slider.
 Choose the expected density of links in the network using the LINK-CHANCE slider.
 
 To create the network with these properties, press SETUP.
@@ -327,7 +331,7 @@ How would you change this model to more accurately represent water flowing (or b
 
 ## NETLOGO FEATURES
 
-This model works in a manner analogous to NetLogo's `diffuse` command, which causes patches to all share with their neighbors portions of the value of some variable.  
+This model works in a manner analogous to NetLogo's `diffuse` command, which causes patches to all share with their neighbors portions of the value of some variable.
 However, whereas the neighbor relationship in patches is symmetric, this model uses directed links, which can be used to create asymmetric relationships between agents.  If you used undirected links, the behavior of this model would more closely resemble the `diffuse` command, where the value of all the nodes would eventually become the same.
 
 In this model, there are two link-breeds: one for active links (which are shown in the view) and another for inactive links (which are invisible).  This makes "rewiring" of links easier, because rather than killing a link and creating a new link, we can just change the breed of a link and hide or show it.
@@ -338,7 +342,29 @@ Though it is not used in this model, there exists a network extension for NetLog
 
 Virus on a Network
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Stonedahl, F. and Wilensky, U. (2008).  NetLogo Diffusion on a Directed Network model.  http://ccl.northwestern.edu/netlogo/models/DiffusiononaDirectedNetwork.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2008 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2008 Cite: Stonedahl, F. -->
 @#$#@#$#@
 default
 true
@@ -623,7 +649,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -167,6 +167,10 @@ to bump-down [candidates]
     ]
   ]
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 177
@@ -297,17 +301,17 @@ When the model is run, the right chart never reaches the top before the left cha
 
 ## HOW TO USE IT
 
-Switches:  
+Switches:
 STOP-AT-TOP? -- if 'On', stops the model when the right side of the display bar chart (the dice totals) has reached the top.  If 'Off', then both stacks "bump" down one row when a column hits the top.  (The plots on either side of the view are always scaled to show all of the data, even if the view is only showing the top portion.)
 
-Buttons:  
+Buttons:
 SETUP -- prepares the model for running.
 
 GO -- runs the model.  In a single run of GO, a random pair of dice appears, is copied, and then the copies fall into their stacks.  Also, the plots are updated.
 
-Plots:  
-SINGLE DICE -- plots the number of occurrences of each die-number (1-6).  
-PAIR SUMS -- plots the number of occurrences of each die-total (2-12).  
+Plots:
+SINGLE DICE -- plots the number of occurrences of each die-number (1-6).
+PAIR SUMS -- plots the number of occurrences of each die-total (2-12).
 The plots show the same information as the view, except that the plots always show all of the data, while if the STOP-AT-TOP? switch is off, the view only shows the tops of the stacks.
 
 ## PEDAGOGICAL NOTE
@@ -357,6 +361,30 @@ The Galton Box model also features raw data that descend and stack up in columns
 This model is a part of the ProbLab curriculum.  The ProbLab curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling.  For more information about the ProbLab curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
 
 Thanks to Josh Unterman for building the original version of this model.  Thanks to Steve Gorodetskiy for his contribution to the design of this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2005).  NetLogo Dice Stalagmite model.  http://ccl.northwestern.edu/netlogo/models/DiceStalagmite.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -692,7 +720,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup repeat 150 [ go ]
 @#$#@#$#@

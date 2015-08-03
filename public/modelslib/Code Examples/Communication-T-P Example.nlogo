@@ -26,6 +26,11 @@ to go
   ]
   tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 172
@@ -92,6 +97,8 @@ NIL
 ## WHAT IS IT?
 
 This code example demonstrates Turtle-Patch communication. When a red turtle moves onto a patch, it turns the patch black.  When a yellow turtle moves onto a patch, it turns the patch magenta.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -376,7 +383,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 28 [ go ]

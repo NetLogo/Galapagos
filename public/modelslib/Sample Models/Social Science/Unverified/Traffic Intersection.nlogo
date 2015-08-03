@@ -136,6 +136,10 @@ to switch
     draw-stop-light
   ]
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 175
@@ -408,33 +412,33 @@ In this model the turtles are cars traveling through an intersection.  The user 
 
 ## HOW IT WORKS
 
-The rules for each car are:  
-- I can only go in the direction I started in, or stop.  
-- I stop for cars in front of me and red lights, and I slow down at a yellow light.  
-- If I am moving quickly and I see that I will have to stop soon, I slow down proportional to the distance of non-free space up to MAX-BRAKE.  
-- If I see that I have free space in front of me, I speed up proportional to the amount of free space up to MAX-ACCEL.  
+The rules for each car are:
+- I can only go in the direction I started in, or stop.
+- I stop for cars in front of me and red lights, and I slow down at a yellow light.
+- If I am moving quickly and I see that I will have to stop soon, I slow down proportional to the distance of non-free space up to MAX-BRAKE.
+- If I see that I have free space in front of me, I speed up proportional to the amount of free space up to MAX-ACCEL.
 - If I am on the same space as another car, we crash and die.
 
 ## HOW TO USE IT
 
-WAIT-TIME-OVERALL shows how many cars are waiting during the given clock tick.  
-WAIT-TIME-EASTBOUND shows how many eastbound cars are waiting during the given clock tick.  
+WAIT-TIME-OVERALL shows how many cars are waiting during the given clock tick.
+WAIT-TIME-EASTBOUND shows how many eastbound cars are waiting during the given clock tick.
 WAIT-TIME-NORTHBOUND shows how many northbound cars are waiting during the given clock tick.
 
 CLOCK shows how many ticks have elapsed.
 
-Use the FREQ-EAST slider to select how often new eastbound cars travel on the road.  
+Use the FREQ-EAST slider to select how often new eastbound cars travel on the road.
 Use the FREQ-NORTH slider to select how often new northbound cars travel on the road.
 
-Use the SPEED-LIMIT slider to select how fast the cars will travel.  
-Use the MAX-ACCEL slider to determine how fast the cars can accelerate.  
+Use the SPEED-LIMIT slider to select how fast the cars will travel.
+Use the MAX-ACCEL slider to determine how fast the cars can accelerate.
 Use the MAX-BRAKE slider to determine how fast the cars can decelerate.
 
-Use the GREEN-LENGTH slider to set how long the light will remain green.  
+Use the GREEN-LENGTH slider to set how long the light will remain green.
 Use the YELLOW-LENGTH slider to set how long the light will remain yellow.
 
-Press GO ONCE to make the cars move once.  
-Press GO to make the cars move continuously.  
+Press GO ONCE to make the cars move once.
+Press GO to make the cars move continuously.
 To stop the cars, press the GO button again.
 
 ## THINGS TO NOTICE
@@ -451,23 +455,23 @@ Try to answer the following questions before running the simulations.
 
 Record your predictions.
 
-Compare your predicted results with the actual results.  
-- What reasoning led you to correct predictions?  
+Compare your predicted results with the actual results.
+- What reasoning led you to correct predictions?
 - What assumptions that you made need to be revised?
 
-Try different numbers of eastbound cars while keeping all other slider values the same.  
-Try different numbers of northbound cars while keeping all other slider values the same.  
-Try different values of SPEED-LIMIT while keeping all other slider values the same.  
-Try different values of MAX-ACCEL while keeping all other slider values the same.  
+Try different numbers of eastbound cars while keeping all other slider values the same.
+Try different numbers of northbound cars while keeping all other slider values the same.
+Try different values of SPEED-LIMIT while keeping all other slider values the same.
+Try different values of MAX-ACCEL while keeping all other slider values the same.
 Try different values of GREEN-LENGTH and YELLOW-LENGTH while keeping all other slider values the same.
 
-For all of the above cases, consider the following:  
-- What happens to the waiting time of eastbound cars?  
-- What happens to the waiting time of northbound cars?  
-- What happens to the overall waiting time?  
-- What generalizations can you make about the impact of each variable on the waiting time of cars?  
-- What kind of relationship exists between the number of cars and the waiting time they experience?  
-- What kind of relationship exists between the speed of cars and the waiting time they experience?  
+For all of the above cases, consider the following:
+- What happens to the waiting time of eastbound cars?
+- What happens to the waiting time of northbound cars?
+- What happens to the overall waiting time?
+- What generalizations can you make about the impact of each variable on the waiting time of cars?
+- What kind of relationship exists between the number of cars and the waiting time they experience?
+- What kind of relationship exists between the speed of cars and the waiting time they experience?
 - What kind of relationship exists between the number of ticks of green light and the waiting time cars experience?
 
 Use your answers to the above questions to come up with a strategy for minimizing the waiting time of cars.
@@ -484,7 +488,33 @@ In the model, the yellow light is only for visual effect.  In real life, it tell
 
 Is there a better way to measure the efficiency of an intersection than the current number of stopped cars?
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Traffic Intersection model.  http://ccl.northwestern.edu/netlogo/models/TrafficIntersection.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1998 2002 -->
 @#$#@#$#@
 default
 true
@@ -769,7 +799,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

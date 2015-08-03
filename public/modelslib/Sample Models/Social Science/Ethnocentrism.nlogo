@@ -315,6 +315,10 @@ end
 to-report last100coop-percent
   report sum last100coop / max list 1 sum last100meet
 end
+
+
+; Copyright 2003 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 323
@@ -435,9 +439,9 @@ HORIZONTAL
 
 BUTTON
 20
-37
+29
 128
-70
+62
 setup empty
 setup-empty
 NIL
@@ -451,10 +455,10 @@ NIL
 1
 
 BUTTON
-221
-37
-294
-70
+222
+29
+295
+62
 NIL
 go
 T
@@ -490,9 +494,9 @@ PENS
 
 BUTTON
 130
-37
+29
 219
-70
+62
 setup full
 setup-full
 NIL
@@ -536,10 +540,10 @@ NIL
 HORIZONTAL
 
 TEXTBOX
-35
-82
-294
-144
+30
+77
+304
+142
 Circles cooperate with same color\nSquares defect with same color\nFilled-in shapes cooperate with different color\nEmpty shapes defect with different color\n
 11
 0.0
@@ -560,7 +564,7 @@ At each time step, the following events occur:
 
 2. Agents start with an INITIAL-PTR (Potential-To-Reproduce) chance of reproducing.  Each pair of adjacent agents interact in a one-move Prisoner's Dilemma in which each chooses whether or not to help the other.  They either gain, or lose some of their potential to reproduce.
 
-3. In random order, each agent is given a chance to reproduce.  Offspring have the same traits as their parents, with a MUTATION-RATE chance of each trait mutating.  Agents are only allowed to reproduce if their is an empty space next to them.  Each agent's birth-rate is reset to the INITIAL-PTR.
+3. In random order, each agent is given a chance to reproduce.  Offspring have the same traits as their parents, with a MUTATION-RATE chance of each trait mutating.  Agents are only allowed to reproduce if there is an empty space next to them.  Each agent's birth-rate is reset to the INITIAL-PTR.
 
 4. The agent has a DEATH-RATE chance of dying, making room for future offspring and immigrants.
 
@@ -617,12 +621,39 @@ To ensure fairness, the agents should run in random order.  Agentsets in NetLogo
 
  * Segregation
  * PD Basic
+ * Ethnocentrism - Alternative Visualization
 
 ## CREDITS AND REFERENCES
 
 This model is a NetLogo version of the ethnocentrism model presented by Robert Axelrod at Northwestern University at the NICO (Northwestern Institute on Complex Systems) conference on October 25th, 2003.
 
 See also Ross A. Hammond and Robert Axelrod, The Evolution of Ethnocentrism, http://www-personal.umich.edu/~axe/research/AxHamm_Ethno.pdf
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2003).  NetLogo Ethnocentrism model.  http://ccl.northwestern.edu/netlogo/models/Ethnocentrism.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2003 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2003 -->
 @#$#@#$#@
 default
 true
@@ -907,7 +938,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup-full repeat 150 [ go ]
 @#$#@#$#@

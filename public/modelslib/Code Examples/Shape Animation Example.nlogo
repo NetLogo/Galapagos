@@ -73,6 +73,11 @@ to make-flower
     ]
   ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 201
@@ -185,6 +190,8 @@ For the flowers, each progressive frame of their growth shows the development of
 ## NETLOGO FEATURES
 
 The model has a frame rate setting of 15 frames per second, for smooth animation that isn't too fast.  The speed can be further adjusted by the user using the speed slider.
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -722,7 +729,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 199 [ animate ]

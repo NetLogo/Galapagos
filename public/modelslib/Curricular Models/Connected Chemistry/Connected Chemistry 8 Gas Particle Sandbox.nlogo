@@ -1,7 +1,7 @@
 globals
 [
-  tick-delta                        ;; how much we advance the tick counter this time through
-  max-tick-delta                    ;; the largest tick-delta is allowed to be
+  tick-advance-amount                        ;; how much we advance the tick counter this time through
+  max-tick-advance-amount                    ;; the largest tick-advance-amount is allowed to be
   init-avg-speed init-avg-energy    ;; initial averages
   avg-speed avg-energy              ;; current average
   avg-energy-green
@@ -43,9 +43,10 @@ walls-own
 ]
 
 to setup
-  ca reset-ticks
+  ca
+  reset-ticks
   set particle-size 1.0
-  set max-tick-delta 0.02
+  set max-tick-advance-amount 0.02
 
   set particles-to-add 2
 
@@ -55,7 +56,7 @@ to setup
   set-default-shape arrowheads "default"
 
   set min-particle-energy 0
-  set max-particle-energy 10000  ;;(.5 ) * ( max-dist-in-tick-delta  / max-tick-delta ) ^ 2
+  set max-particle-energy 10000  ;;(.5 ) * ( max-dist-in-tick-advance-amount  / max-tick-advance-amount ) ^ 2
 
   create-erasers 1 [set hidden? true set pressure? true set size 3 set color white]
 
@@ -81,8 +82,8 @@ to go
   ask particles with [any? walls-here] [rewind-to-bounce]
   ask particles with [any? walls-here] [remove-from-walls]
 ]
-  tick-advance tick-delta
-  calculate-tick-delta
+  tick-advance tick-advance-amount
+  calculate-tick-advance-amount
 
   ask flashes [apply-flash-visualization]
   ask particles [apply-speed-visualization]
@@ -172,10 +173,10 @@ end
 to rewind-to-bounce  ;; particles procedure
   ;; attempts to deal with particle penetration by rewinding the particle path back to a point
   ;; where it is about to hit a wall
-  ;; the particle path is reversed 49% of the previous tick-delta it made,
+  ;; the particle path is reversed 49% of the previous tick-advance-amount it made,
   ;; then particle collision with the wall is detected again.
-  ;; and the particle bounces off the wall using the remaining 51% of the tick-delta.
-  ;; this use of slightly more of the tick-delta for forward motion off the wall, helps
+  ;; and the particle bounces off the wall using the remaining 51% of the tick-advance-amount.
+  ;; this use of slightly more of the tick-advance-amount for forward motion off the wall, helps
   ;; insure the particle doesn't get stuck inside the wall on the bounce.
 
   let bounce-patch nobody
@@ -186,7 +187,7 @@ to rewind-to-bounce  ;; particles procedure
   let new-py 0
   let visible-wall nobody
 
-  bk (speed) * tick-delta * .49
+  bk (speed) * tick-advance-amount * .49
   set this-patch  patch-here
 
   set bounce-patch  min-one-of walls in-cone ((sqrt (2)) / 2) 180 with [self != this-patch] [distance myself ]
@@ -215,14 +216,14 @@ to rewind-to-bounce  ;; particles procedure
         ]
       ]
     ]]
-    fd (speed) * tick-delta * .51
+    fd (speed) * tick-advance-amount * .51
 end
 
 
 to move  ;; particles procedure
-  if patch-ahead (speed * tick-delta) != patch-here
+  if patch-ahead (speed * tick-advance-amount) != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-delta)
+  jump (speed * tick-advance-amount)
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -230,17 +231,17 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;from GasLab
 
-to calculate-tick-delta
-  ;; tick-delta is calculated in such way that even the fastest
+to calculate-tick-advance-amount
+  ;; tick-advance-amount is calculated in such way that even the fastest
   ;; particles will jump at most 1 patch delta in a ticks tick. As
-  ;; particles jump (speed * tick-delta) at every ticks tick, making
+  ;; particles jump (speed * tick-advance-amount) at every ticks tick, making
   ;; tick delta the inverse of the speed of the fastest particles
   ;; (1/max speed) assures that. Having each particles advance at most
    ; one patch-delta is necessary for it not to "jump over" a wall
    ; or another particles.
   ifelse any? particles with [speed > 0]
-    [ set tick-delta min list (1 / (ceiling max [speed] of particles )) max-tick-delta ]
-    [ set tick-delta max-tick-delta ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of particles )) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -717,6 +718,10 @@ to-report limited-particle-energy
   if limited-energy < min-particle-energy [set limited-energy min-particle-energy]
   report limited-energy
 end
+
+
+; Copyright 2006 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 320
@@ -957,7 +962,6 @@ MOUSE-INTERACTION  sets the type interaction the user can do with the mouse in t
 Plots:
 - 1: TEMPERATURE OF GASES VS. TIME: plots the temperature of the different gases in the model, as indicated by their color (orange particles, green particles, and purple particles)
 
-
 ## THINGS TO NOTICE
 
 The mouse interaction can be used while the model is running as well as when it is stopped.
@@ -979,9 +983,37 @@ See other Connected Chemistry models.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2006).  NetLogo Connected Chemistry 8 Gas Particle Sandbox model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistry8GasParticleSandbox.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2006 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2006 ConChem -->
 @#$#@#$#@
 default
 true
@@ -1363,7 +1395,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

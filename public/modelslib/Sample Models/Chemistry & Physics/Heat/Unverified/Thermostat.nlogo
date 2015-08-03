@@ -92,6 +92,10 @@ to take-temperature
   set temperatures but-last fput count turtles with [ pcolor = green ] temperatures
   set temperature mean temperatures
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 309
@@ -259,12 +263,12 @@ It should be noted that use of turtles in this model to represent heat is not in
 
 ## HOW TO USE IT
 
-GO: Starts and stops the simulation.  
-SETUP: Resets the simulation, and sets the initial temperature according to init-temp.  
-TEMPERATURE: Monitors the temperature in the room, as detected by the green box near the top.  
-GOAL-TEMP: The thermostat aims to maintain the room at this temperature. It may be adjusted in the middle of a simulation.  
-HEATER-STRENGTH: The number of red turtles created by the heater in a tick (if the heater is 'on').  
-INSULATION: The efficiency of the room's insulation, or the rate at which heat escapes from the room. Higher numbers allow less heat to escape; lower number numbers allow more. This may be adjusted during a simulation.  
+GO: Starts and stops the simulation.
+SETUP: Resets the simulation, and sets the initial temperature according to init-temp.
+TEMPERATURE: Monitors the temperature in the room, as detected by the green box near the top.
+GOAL-TEMP: The thermostat aims to maintain the room at this temperature. It may be adjusted in the middle of a simulation.
+HEATER-STRENGTH: The number of red turtles created by the heater in a tick (if the heater is 'on').
+INSULATION: The efficiency of the room's insulation, or the rate at which heat escapes from the room. Higher numbers allow less heat to escape; lower number numbers allow more. This may be adjusted during a simulation.
 INITIAL-TEMP: The initial temperature of the room. This takes effect only when the SETUP button is pressed.
 
 There is also a plot, which tracks the temperature over time (in red) and the desired temperature (in green).
@@ -291,7 +295,33 @@ The heater in this model puts out heat at a fixed rate, regardless of how long i
 
 Begin a simulation with INITIAL-TEMP set to zero, and notice how long it takes to heat up the room. This means that if we wanted to warm the room up at a certain time it might make sense to turn the heater on beforehand. Introduce time into this model, and try adjusting the thermostat so that it heats the room according to some schedule.
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Thermostat model.  http://ccl.northwestern.edu/netlogo/models/Thermostat.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -576,7 +606,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

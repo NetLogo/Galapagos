@@ -1,7 +1,7 @@
 globals
 [
-  tick-delta                  ;; how much we advance the tick counter this time through
-  max-tick-delta              ;; the largest tick-delta is allowed to be
+  tick-advance-amount                  ;; how much we advance the tick counter this time through
+  max-tick-advance-amount              ;; the largest tick-advance-amount is allowed to be
   box-edge-y                  ;; distance of box edge from axes
   box-edge
   instant-pressure           ;; the pressure at this tick or instant in time
@@ -66,7 +66,7 @@ to setup
   set-default-shape flashes "square"
   set box-edge (max-pycor - 1)
   set particles-to-add 0
-  set max-tick-delta 0.1073
+  set max-tick-advance-amount 0.1073
   ;; box has constant size...
   set box-edge-y (max-pycor - 1)
   set box-edge (max-pxcor - 1)
@@ -112,8 +112,8 @@ to go
     ask particles
     [ check-for-collision]
   ]
-  tick-advance tick-delta
-  if floor ticks > floor (ticks - tick-delta)
+  tick-advance tick-advance-amount
+  if floor ticks > floor (ticks - tick-advance-amount)
   [
     ifelse any? particles
           [ set wall-hits-per-particle mean [wall-hits] of particles  ]
@@ -124,7 +124,7 @@ to go
     update-variables
     update-plots
   ]
-  calculate-tick-delta
+  calculate-tick-advance-amount
   calculate-wall-color
 
     ask flashes with [ticks - birthday > 0.4]
@@ -173,10 +173,10 @@ end
 
 
 
-to calculate-tick-delta
+to calculate-tick-advance-amount
   ifelse any? particles with [speed > 0]
-    [ set tick-delta min list (1 / (ceiling max [speed] of particles )) max-tick-delta ]
-    [ set tick-delta max-tick-delta ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of particles )) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -257,9 +257,9 @@ to bounce  ;; particle procedure
 end
 
 to move  ;; particle procedure
-  if patch-ahead (speed * tick-delta) != patch-here
+  if patch-ahead (speed * tick-advance-amount) != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-delta)
+  jump (speed * tick-advance-amount)
 end
 
 to check-for-collision  ;; particle procedure
@@ -564,7 +564,7 @@ to make-particles [number]
   ]
 
 
-  calculate-tick-delta
+  calculate-tick-advance-amount
 end
 
 
@@ -613,7 +613,7 @@ to add-particles
       set total-particle-number (count particles )
       set particles-to-add 0
 
-      calculate-tick-delta
+      calculate-tick-advance-amount
       ]
     ]
 end
@@ -711,6 +711,10 @@ to-report heated-wall?
      ;]
      report false
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 1
@@ -1154,7 +1158,6 @@ Plots:
 8. Then move your cursor to a spot inside the WORLD & VIEW, to the right of the current position of the orange wall.  Click on this spot and the wall will move and the particle motion will resume.
 8. Adjust the NUMBER-TO-ADD slider and press ADD PARTICLES.
 
-
 ## THINGS TO NOTICE
 
 The ideal gas law relationships can be established in this model, with careful data gathering and mathematical modeling.
@@ -1178,9 +1181,37 @@ See other Connected Chemistry models.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2005).  NetLogo Connected Chemistry 7 Ideal Gas Law model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistry7IdealGasLaw.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 ConChem -->
 @#$#@#$#@
 default
 true
@@ -1209,7 +1240,7 @@ false
 Rectangle -7500403 true true 0 0 297 299
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -47,6 +47,11 @@ to go-turtles-alternate
     ]
   ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 252
@@ -199,6 +204,8 @@ For details on `ask-concurrent`, read the Ask-Concurrent section of the Programm
 ## NETLOGO FEATURES
 
 The view update mode is set to "continuous" so you can see the agents move one at a time by moving the slider towards "slower".
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -483,7 +490,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -176,6 +176,10 @@ to phase-update
     [set attending? false
       set phase attendance-frequency]
 end
+
+
+; Copyright 2003 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 299
@@ -383,22 +387,22 @@ When the model starts running, patrons have different times until their next vis
 
 ## HOW TO USE IT
 
-Sliders:  
-POPULATION: the number of patrons that will be created in this experiment  
-EQUILIBRIUM: the number of patrons beyond which the bar becomes overcrowded  
-DEAD-ZONE: determines the range below the equilibrium at which the bar is perceived neither as crowded nor as not crowded  
+Sliders:
+POPULATION: the number of patrons that will be created in this experiment
+EQUILIBRIUM: the number of patrons beyond which the bar becomes overcrowded
+DEAD-ZONE: determines the range below the equilibrium at which the bar is perceived neither as crowded nor as not crowded
 FREQUENCY-UPDATE: value to update the ATTENDANCE-FREQUENCY by in response to a positive or negative experience at the bar
 
-Buttons:  
-SETUP - initiates variables towards a new run  
-GO ONCE - runs the model for one time tick, so we get the behavior over a single 'day'  
+Buttons:
+SETUP - initiates variables towards a new run
+GO ONCE - runs the model for one time tick, so we get the behavior over a single 'day'
 GO - runs the model repeatedly, until it is stopped by pressing again
 
-Switches:  
+Switches:
 PERFECT-INFORMATION?: if turned on, agents will have access to attendance information whether they are attending or not and will adjust their preferences accordingly
 
-Plots:  
-ATTENDANCE HISTORY: shows how many patrons are currently in the bar and the cumulative ratio of total patrons to total days  
+Plots:
+ATTENDANCE HISTORY: shows how many patrons are currently in the bar and the cumulative ratio of total patrons to total days
 ATTENDANCE TYPE: shows the current totals of two types of patrons -- casuals and regulars (including those in and out of the bar)
 
 After choosing the variables, click the SETUP button to setup the model. All patrons start on the left side of the world. This means that none of them are attending the bar at this moment. If they choose to attend, they will move to the right side of the world. Patrons are colored sky by default. This means that they are 'casual' patrons (less than every other day). If they attend more than every other day, they will turn red to show that they are now 'regular' patrons.
@@ -449,6 +453,32 @@ The Social Science models Party and Segregation each deal with situations in whi
 Original implementation: Eric Cheng, for the Center for Connected Learning and Computer-Based Modeling.
 
 This model is based on a paper by Ann Bell and William Sethares, "The El Farol Problem and the Internet: Congestion and Coordination Failure".
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2003).  NetLogo El Farol Network Congestion model.  http://ccl.northwestern.edu/netlogo/models/ElFarolNetworkCongestion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2003 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2003 -->
 @#$#@#$#@
 default
 true
@@ -787,7 +817,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

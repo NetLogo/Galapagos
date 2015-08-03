@@ -266,6 +266,10 @@ to setup-particle  ;; particle procedure
   set energy (0.5 * mass * speed ^ 2 )
   set last-collision nobody
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 399
@@ -538,50 +542,38 @@ The particles are modeled as hard balls with no internal energy except that whic
 
 Coloring of the particles is with respect to one speed (10).  Particles with a speed less than 5 are blue, ones that are more than 15 are red, while all in those in-between are green.
 
-Particles behave according to the following rules:  
-1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  The particles are aimed to hit each other at the origin.  
-2. Two particles "collide" if they find themselves on the same patch (the world is composed of a grid of small squares called patches).  
-3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.  
-4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.  
-5. Each turtle is assigned its new velocity, energy, and heading.  
+Particles behave according to the following rules:
+1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  The particles are aimed to hit each other at the origin.
+2. Two particles "collide" if they find themselves on the same patch (the world is composed of a grid of small squares called patches).
+3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.
+4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.
+5. Each turtle is assigned its new velocity, energy, and heading.
 6. If a turtle finds itself on or very close to a wall of the container, it "bounces" -- that is, reflects its direction and keeps its same speed.
 
 ## HOW TO USE IT
 
-Initial settings:  
-- COLLISION-ANGLE: Sets the angle that separates the pink and blue particles before the collision.  
-- REFLECTION-ANGLE: Sets the angle of the axis connecting the particles' centers when they collide with respect to the vertical axis. To calculate the outcome of the collision, the speeds of the two particles are projected onto this new axis and the new speeds and headings are computed. Other GasLab models use random values for "REFLECTION-ANGLE", but this model allows you to experiment with them one by one. This angle is called THETA in the code of the model.  
-- INIT-PINK-SPEED (or BLUE): Sets the initial speed of the pink (or blue) particle.  
+Initial settings:
+- COLLISION-ANGLE: Sets the angle that separates the pink and blue particles before the collision.
+- REFLECTION-ANGLE: Sets the angle of the axis connecting the particles' centers when they collide with respect to the vertical axis. To calculate the outcome of the collision, the speeds of the two particles are projected onto this new axis and the new speeds and headings are computed. Other GasLab models use random values for "REFLECTION-ANGLE", but this model allows you to experiment with them one by one. This angle is called THETA in the code of the model.
+- INIT-PINK-SPEED (or BLUE): Sets the initial speed of the pink (or blue) particle.
 - PINK-MASS (or BLUE): Sets the mass of the pink (or blue) particle.
 
-Other settings:  
+Other settings:
 - SHOW-CENTER-OF-MASS?: If ON, the center of mass of the system will be shown in gray.
 
-Buttons for running the model:  
-- SETUP  
-- RUN-MODE: Chooses between ONE COLLISION (just one run), ALL-COLLISION-ANGLES (loops through all the collision angles with 15-degrees steps) and ALL-REFLECTION-ANGLES(loops through all the reflection angles with 15-degrees steps).  
+Buttons for running the model:
+- SETUP
+- RUN-MODE: Chooses between ONE COLLISION (just one run), ALL-COLLISION-ANGLES (loops through all the collision angles with 15-degrees steps) and ALL-REFLECTION-ANGLES(loops through all the reflection angles with 15-degrees steps).
 - GO
 
-Monitors:  
-- ENERGY OF PINK (or -BLUE): Shows the current energy of the pink (or blue) particle.  
-- SPEED OF PINK (or -BLUE): Shows the current speed of the pink (or blue) particle.  
-- AVERAGE SPEED: Shows the average of the speeds of the two particles.  
+Monitors:
+- ENERGY OF PINK (or -BLUE): Shows the current energy of the pink (or blue) particle.
+- SPEED OF PINK (or -BLUE): Shows the current speed of the pink (or blue) particle.
+- AVERAGE SPEED: Shows the average of the speeds of the two particles.
 - TOTAL ENERGY: Shows the sum of the energies of the two particles.
 
-Plots:  
+Plots:
 - SPEEDS: speed of each of the particles over time.
-
-## THINGS TO TRY
-
-Set the reflection-angle to zero.  Draw a picture representing the two balls as they collide, with their two faces touching.  Make the line connecting their centers be the same as theta.  Draw vectors representing their motion.
-
-While running the following situations note the paths of the two particles.  Can you make sense of what they do?  Is it what you expected?
-
-Choose a COLLISION-ANGLE and a REFLECTION-ANGLE and choose ONE-COLLISION to see one particular collision.
-
-Choose a COLLISION-ANGLE and choose ALL-REFLECTION-ANGLES to cycle through all of the angles of reflection.
-
-Choose a REFLECTION-ANGLE and choose ALL-COLLISION-ANGLES to cycle through all of the angles of collision.
 
 ## THINGS TO NOTICE
 
@@ -594,6 +586,16 @@ With REFLECTION-ANGLE = 0 degrees, the two particles reverse direction. Why?
 What is the motion of the center of mass?  What would you expect it to be?
 
 ## THINGS TO TRY
+
+Set the reflection-angle to zero.  Draw a picture representing the two balls as they collide, with their two faces touching.  Make the line connecting their centers be the same as theta.  Draw vectors representing their motion.
+
+While running the following situations note the paths of the two particles.  Can you make sense of what they do?  Is it what you expected?
+
+Choose a COLLISION-ANGLE and a REFLECTION-ANGLE and choose ONE-COLLISION to see one particular collision.
+
+Choose a COLLISION-ANGLE and choose ALL-REFLECTION-ANGLES to cycle through all of the angles of reflection.
+
+Choose a REFLECTION-ANGLE and choose ALL-COLLISION-ANGLES to cycle through all of the angles of collision.
 
 Have the masses of the two particles be different.
 
@@ -616,6 +618,34 @@ Record the velocities of each particle after each collision. After you have seve
 ## CREDITS AND REFERENCES
 
 This model was developed as part of the GasLab curriculum (http://ccl.northwestern.edu/curriculum/gaslab/) and has also been incorporated into the Connected Chemistry curriculum (http://ccl.northwestern.edu/curriculum/ConnectedChemistry/)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo GasLab Single Collision model.  http://ccl.northwestern.edu/netlogo/models/GasLabSingleCollision.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1997 2002 -->
 @#$#@#$#@
 default
 true
@@ -907,7 +937,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

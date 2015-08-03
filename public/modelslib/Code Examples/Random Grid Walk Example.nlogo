@@ -25,6 +25,11 @@ to walk2
   ]
   tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 189
@@ -155,6 +160,8 @@ The monitors show that the turtle's xcor and ycor are always exact multiples of 
 ## RELATED MODELS
 
 Random Walk Example - shows a freer random walk which does not follow a grid
+
+<!-- 2006 -->
 @#$#@#$#@
 default
 true
@@ -439,7 +446,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 2500 [ walk1 ]

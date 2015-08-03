@@ -112,6 +112,10 @@ to set-color
     set color item index colors
   ]
 end
+
+
+; Copyright 2002 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 339
@@ -355,27 +359,27 @@ When a metal is stressed, such as when it is pulled from both ends, deformations
 
 ## HOW TO USE IT
 
-Buttons:  
-SETUP: Resets the simulation, and sets the metal to the correct size.  
-GO-ONCE: Runs the simulation for one time step.  
+Buttons:
+SETUP: Resets the simulation, and sets the metal to the correct size.
+GO-ONCE: Runs the simulation for one time step.
 GO: Runs the simulation continuously until either the GO button is pressed again, or all of the atoms are frozen.
 
-Sliders:  
-BOX-WIDTH: How many atoms wide the metal is.  
-FILL-PERCENTAGE: What percentage of the box contains atoms.  Smaller values allow for more movement.  
-ROOM-TEMP: Varies the temperature of the room.  
-INIT-METAL-TEMP: Varies the initial temperature of the metal.  
+Sliders:
+BOX-WIDTH: How many atoms wide the metal is.
+FILL-PERCENTAGE: What percentage of the box contains atoms.  Smaller values allow for more movement.
+ROOM-TEMP: Varies the temperature of the room.
+INIT-METAL-TEMP: Varies the initial temperature of the metal.
 MELTING-TEMP: Varies the temperature at which the metal solidifies.
 
-Monitors:  
+Monitors:
 AVE-METAL-TEMP: Monitors the average temperature of all the atoms.
 
-Switches:  
+Switches:
 HISTOGRAM?: Turns the histogram plotting on and off.  Turning off the histogram speeds up the model.
 
-Graphs:  
-AVERAGE METAL TEMPERATURE: Plots the average temperature of all the metal over time.  
-NUMBER SOLIDIFIED: Plots how many metal atoms are below the melting temperature over time.  
+Graphs:
+AVERAGE METAL TEMPERATURE: Plots the average temperature of all the metal over time.
+NUMBER SOLIDIFIED: Plots how many metal atoms are below the melting temperature over time.
 TEMPERATURES:  Histograms how many atoms are in each temperature range.  (Note that the colors of the histogram match the actual colors of the atoms.)
 
 ## THINGS TO TRY
@@ -402,12 +406,38 @@ With every time step, each atom's temperature changes to the average of everythi
 
 ## RELATED MODELS
 
-Crystallization Basic  
+Crystallization Basic
 Crystallization Directed
 
 ## CREDITS AND REFERENCES
 
 Original implementation: Carrie Hobbs, for the Center for Connected Learning and Computer-Based Modeling.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2002).  NetLogo Crystallization Moving model.  http://ccl.northwestern.edu/netlogo/models/CrystallizationMoving.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2002 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2002 -->
 @#$#@#$#@
 default
 true
@@ -698,7 +728,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -154,7 +154,6 @@ end
 to-report link-ycor
   report ([ycor] of end1 + [ycor] of end2) / 2
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 345
@@ -181,6 +180,7 @@ GRAPHICS-WINDOW
 1
 1
 ticks
+30.0
 
 BUTTON
 6
@@ -197,6 +197,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 93
@@ -213,6 +214,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 6
@@ -229,6 +231,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 SWITCH
 187
@@ -267,6 +270,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 115
@@ -283,6 +287,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 @#$#@#$#@
 @#$#@#$#@
@@ -297,7 +302,7 @@ false
 Circle -7500403 true true 0 0 300
 
 @#$#@#$#@
-NetLogo 4.2pre1
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -305,9 +310,9 @@ NetLogo 4.2pre1
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

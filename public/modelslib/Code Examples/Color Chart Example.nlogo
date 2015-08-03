@@ -6,7 +6,7 @@
 ;; of -2, and so on.
 
 to setup
-  ca
+  clear-all
   ;; make the background white
   ask patches [ set pcolor white ]
   ;; draw all the colors 0 to 139
@@ -50,7 +50,13 @@ to setup
     [ ifelse pcolor mod 10 >= 4
         [ set plabel-color black ]
         [ set plabel-color white ] ]
+  reset-ticks
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 134
@@ -73,8 +79,8 @@ GRAPHICS-WINDOW
 11
 -13
 1
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -104,6 +110,8 @@ This model was used to generate the color chart in the NetLogo User Manual.
 ## NETLOGO FEATURES
 
 Instead of the origin patch (0,0) being in the center of the world, it's near the upper left corner.  This makes the math simpler.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -388,7 +396,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

@@ -172,6 +172,10 @@ to fission ;; Turtle Procedure
       [ rt random 360 ]
   ]
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 273
@@ -391,15 +395,15 @@ This model simulates the process of a nuclear fission reaction inside such a pla
 
 ## HOW TO USE IT
 
-The REACTOR-SIZE slider controls the size of the reactor.  
+The REACTOR-SIZE slider controls the size of the reactor.
 
-The ROD-SPACING slider controls the distance between the control rods.  
+The ROD-SPACING slider controls the distance between the control rods.
 
-The SPEND-FUEL switch controls whether or not the fuel is used up when a neutron hits it.  
+The SPEND-FUEL switch controls whether or not the fuel is used up when a neutron hits it.
 
-The POWER-RATED slider controls the rated power, which is used for automatic control.  
+The POWER-RATED slider controls the rated power, which is used for automatic control.
 
-The ROD-DEPTH slider controls the rod depth when under manual control.  
+The ROD-DEPTH slider controls the rod depth when under manual control.
 
 The RELEASE NEUTRON button introduces a neutron into the reactor. It can be used at anytime before or during the reaction.
 
@@ -409,7 +413,7 @@ When MANUAL is on, use the ROD-DEPTH slider to control the rod depth. If they ar
 
 When AUTO-REACT is on, the reactor will adjust itself as needed to keep power production under control.
 
-The POWER monitor shows the current power output.  
+The POWER monitor shows the current power output.
 The POWER-CHANGE monitor shows the change in power over the last clock tick.
 
 Look at the POWER-PLOT plot to see the power curve.
@@ -429,15 +433,15 @@ The automatic controller is basically an ON and OFF controller. It is based on 1
                          Power > Power Rated   Power < Power Rated
                          -------------------   -------------------
       Power Change > 0:    Increase Length         Do Nothing
-    
+
       Power Change < 0:      Do nothing          Decrease Length
 
 The controller should be fine-tuned, and the length to increase and decrease varies.
 
-* In Manual Mode:  
+* In Manual Mode:
 Use the slider to adjust the control rod length according to the information given through the two monitors and the plot. You want the power curve to be as flat as possible. The height of the curve should be close to the horizontal line representing the power-rate.
 
-* In Automatic Mode:  
+* In Automatic Mode:
 Fine tune the controller by changing the mechanisms to get a flat power curve with the least fluctuation.
 
 ## EXTENDING THE MODEL
@@ -454,7 +458,33 @@ Together with the Reactor Top Down model you can get a decent representation of 
 
 More so than most other NetLogo models, the plot of 'Power' plays an active role in the simulation. When using the manual controller, it is quite helpful to watch the power curve, to tell when things are getting out of hand.
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Reactor X-Section model.  http://ccl.northwestern.edu/netlogo/models/ReactorX-Section.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -739,7 +769,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 release-neutron

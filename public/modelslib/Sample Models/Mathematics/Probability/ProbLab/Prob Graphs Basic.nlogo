@@ -93,6 +93,10 @@ to update-and-plot-successes
     set samples-counter samples-counter + 1
   ]
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 243
@@ -457,31 +461,31 @@ Note how the event does not necessarily alternate between '1' and '2' according 
 
 ### Buttons
 
-'setup' -- initializes all variables. Press this button to begin a new experiment.  
+'setup' -- initializes all variables. Press this button to begin a new experiment.
 'go' -- begins the simulation running. You can press it again to pause the model.
 
 ### Sliders
 
-'sample-space-size' - set the size of the sample space (in integers).  
-'sample-size' - set the number of trials per sample.  
+'sample-space-size' - set the size of the sample space (in integers).
+'sample-size' - set the number of trials per sample.
 'how-many-samples?'- set the number of samples you wish to run in the experiment.
 
 ### Monitors
 
-'event' -- the number that the randomized procedure has generated this trial.  
-'total-successes' -- total number of favored events over all trials.  
-'total-attempts' -- total number of trials.  
-'rate' -- total-successes / total-attempts.  
-'counter' -- shows how many trials have passed since last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).  
-'attempts-this-sample' -- counts how many trials there have been since the last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).  
-'successes-this-sample' -- counts how many successes there have been since the last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).  
-'samples counter' -- counts how many samples there have been since the beginning of this experiment  
+'event' -- the number that the randomized procedure has generated this trial.
+'total-successes' -- total number of favored events over all trials.
+'total-attempts' -- total number of trials.
+'rate' -- total-successes / total-attempts.
+'counter' -- shows how many trials have passed since last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).
+'attempts-this-sample' -- counts how many trials there have been since the last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).
+'successes-this-sample' -- counts how many successes there have been since the last success (or, if you've only just set up and run the model, then it will show how many trials have passed since the model began running).
+'samples counter' -- counts how many samples there have been since the beginning of this experiment
 'min', 'mean', 'max' -- the minimum, mean, and maximum values of the Successes-per-Sample distribution
 
 ### Plots
 
-m/n convergence to limiting value -- cumulative rate of successes (hits or favored events) per total trials.  
-Attempts-until-Success Distribution -- histogram of number of trials it takes until each success.  
+m/n convergence to limiting value -- cumulative rate of successes (hits or favored events) per total trials.
+Attempts-until-Success Distribution -- histogram of number of trials it takes until each success.
 Successes-per-Sample Distribution -- histogram of number of successes within each sample.
 
 ## THINGS TO NOTICE
@@ -490,7 +494,7 @@ What are the characteristic shapes of each graph?
 
 Look at the 'rate' monitor. What can you say about the fluctuation of numbers? What can you say about the value it settles on? What other settings in the model can you relate to this rate value?
 
-The "Attempts-until-Success Distribution" never has values for 0, whereas the other plots sometimes do. Why is that?  
+The "Attempts-until-Success Distribution" never has values for 0, whereas the other plots sometimes do. Why is that?
 Also, what can you say about the mean of this distribution? Does this make sense to you?
 
 ## THINGS TO TRY
@@ -514,6 +518,32 @@ This model is unusual in that it doesn't use the view at all.  Everything that h
 ## CREDITS AND REFERENCES
 
 This model is a part of the ProbLab curriculum. The ProbLab Curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling. . For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2004).  NetLogo Prob Graphs Basic model.  http://ccl.northwestern.edu/netlogo/models/ProbGraphsBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -798,7 +828,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

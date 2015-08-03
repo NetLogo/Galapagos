@@ -33,6 +33,11 @@ to go
   ]
   tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 178
@@ -137,6 +142,8 @@ The `people` breed has a variable called `target`, which holds the agent the per
 The `face` command points the person towards the target.  `fd` moves the person.  `distance` measures the distance to the target.
 
 When a person reaches their target, they pick a random new target.
+
+<!-- 2008 -->
 @#$#@#$#@
 default
 true
@@ -421,7 +428,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

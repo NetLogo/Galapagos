@@ -1,4 +1,4 @@
-patches-own [ on? on-time seedp ]
+patches-own [ on? on-time seed-p ]
 
 globals [ starting-color on-cells ]
 
@@ -10,14 +10,14 @@ to setup
   clear-all
   reset-ticks
   set starting-color blue + 4
-  ask patches [ set on? false set seedp false ]
-  ask patch 0 0 [ turn-on set seedp true set pcolor white ]
+  ask patches [ set on? false set seed-p false ]
+  ask patch 0 0 [ turn-on set seed-p true set pcolor white ]
   set on-cells patches with [ on? ]
   color-cells
 end
 
 to create-random-seed
-  ask patch random-pxcor random-pycor [ turn-on set seedp true set pcolor white ]
+  ask patch random-pxcor random-pycor [ turn-on set seed-p true set pcolor white ]
   set on-cells patches with [ on? ]
   color-cells
 end
@@ -64,7 +64,7 @@ to color-cells
     let latest min [ on-time ] of on-cells
     let earliest max [ on-time ] of on-cells
     ask on-cells
-      [ if ( not seedp )
+      [ if ( not seed-p )
          [ set pcolor ( scale-color starting-color on-time latest ( earliest + 5 ) ) ] ]
   ]
 end
@@ -99,6 +99,10 @@ to-report moore-von-n ;; patch procedure
       or ( pxcor = [ pxcor ] of myself )
       or ( pycor = [ pycor ] of myself ) ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 320
@@ -379,6 +383,30 @@ Thanks to Craig Brozefsky for his work on this model.
 The Urban Suite models were developed as part of the Procedural Modeling of Cities project, under the sponsorship of NSF ITR award 0326542, Electronic Arts & Maxis.
 
 Please see the project web site ( http://ccl.northwestern.edu/cities/ ) for more information.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2007).  NetLogo Urban Suite - Cells model.  http://ccl.northwestern.edu/netlogo/models/UrbanSuite-Cells.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -663,7 +691,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

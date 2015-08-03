@@ -14,15 +14,20 @@ to-report reporter-procedure
   output-print "reporter-procedure called"
   report true
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-465
-115
-710
-151
-17
+368
+177
+628
+218
+12
 0
-5.0
+10.0
 1
 10
 1
@@ -32,12 +37,12 @@ GRAPHICS-WINDOW
 1
 1
 1
--17
-17
+-12
+12
 0
 0
-0
-0
+1
+1
 0
 ticks
 30.0
@@ -167,6 +172,8 @@ TEXTBOX
 This code example demonstrates the functionality of the profiler extension, which records the number of times user-defined procedures are called, and how long they take to run.
 
 See the Interface tab for more information.  See also the Profiler section of the NetLogo User Manual.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -451,7 +458,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -158,6 +158,10 @@ to grow-grass  ;; patch procedure
       [ set countdown countdown - 1 ]
   ]
 end
+
+
+; Copyright 2006 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 430
@@ -474,7 +478,7 @@ mean [stride-length] of sheep
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model is a variation on the predator-prey ecosystems model wolf-sheep predation.  
+This model is a variation on the predator-prey ecosystems model wolf-sheep predation.
 In this model, predator and prey can inherit a stride length, which describes how far forward they move in each model time step.  When wolves and sheep reproduce, the children inherit the parent's stride length -- though it may be mutated.
 
 ## HOW IT WORKS
@@ -483,7 +487,7 @@ At initialization wolves have a stride of INITIAL-WOLF-STRIDE and sheep have a s
 
 ## HOW TO USE IT
 
-INITIAL-NUMBER-SHEEP: The initial size of sheep population  
+INITIAL-NUMBER-SHEEP: The initial size of sheep population
 INITIAL-NUMBER-WOLVES: The initial size of wolf population
 
 Half a unit of energy is deducted from each wolf and sheep at every time step. If STRIDE-LENGTH-PENALTY? is on, additional energy is deducted, scaled to the length of stride the animal takes (e.g., 0.5 stride deducts an additional 0.5 energy units each step).
@@ -516,7 +520,29 @@ This model uses two breeds of turtle to represent wolves and sheep.
 
 Wolf Sheep Predation, Bug Hunt Speeds
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2006).  NetLogo Wolf Sheep Stride Inheritance model.  http://ccl.northwestern.edu/netlogo/models/WolfSheepStrideInheritance.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2006 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2006 Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -828,7 +854,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 75 [ go ]

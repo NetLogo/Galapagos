@@ -444,6 +444,10 @@ to exchange-energy-with-piston  ;; particle procedure -- piston and particle exc
   set energy (0.5 * mass * (speed  ^ 2))
   set heading atan vx vy
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 294
@@ -796,11 +800,11 @@ This particular model simulates the behavior of gas particles in a box with a mo
 
 The basic principle of all GasLab models is the following algorithm (for more details, see the model "GasLab Gas in a Box":
 
-1) A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  
-2) Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches). In this model, two particles are aimed so that they will collide at the origin.  
-3) An angle of collision for the particles is chosen, as if they were two solid balls that hit, and this angle describes the direction of the line connecting their centers.  
-4) The particles exchange momentum and energy only along this line, conforming to the conservation of momentum and energy for elastic collisions.  
-5) Each particle is assigned its new speed, heading and energy.  
+1) A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.
+2) Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches). In this model, two particles are aimed so that they will collide at the origin.
+3) An angle of collision for the particles is chosen, as if they were two solid balls that hit, and this angle describes the direction of the line connecting their centers.
+4) The particles exchange momentum and energy only along this line, conforming to the conservation of momentum and energy for elastic collisions.
+5) Each particle is assigned its new speed, heading and energy.
 6) If a particle finds itself on or very close to a wall of the container or the piston, it "bounces" --- that is, reflects its direction and keeps its same speed.
 
 The piston has both potential energy (due to gravity) and kinetic energy (from its motion).
@@ -815,34 +819,34 @@ Pressure is calculated by adding up the momentum transferred to the walls of the
 
 ## HOW TO USE IT
 
-Initial settings:  
-- NUMBER-OF-PARTICLES: number of gas particles.  
-- INIT-PARTICLE-SPEED: initial speed of the particles.  
-- PARTICLE-MASS: mass of each particle.  
-- BOX-HEIGHT: height of the container (percentage of the world-height).  
-- BOX-WIDTH: width of the container  (percentage of the world-width).  
+Initial settings:
+- NUMBER-OF-PARTICLES: number of gas particles.
+- INIT-PARTICLE-SPEED: initial speed of the particles.
+- PARTICLE-MASS: mass of each particle.
+- BOX-HEIGHT: height of the container (percentage of the world-height).
+- BOX-WIDTH: width of the container  (percentage of the world-width).
 - PISTON-MASS: mass of the piston, in the same "units" as the particle's mass.
 
-The SETUP button will set the initial conditions.  
+The SETUP button will set the initial conditions.
 The GO button will run the simulation.
 
-Other settings:  
+Other settings:
 - COLLIDE?: Turns collisions between particles on and off.
 
-Monitors:  
-- AVERAGE SPEED: average speed of the particles.  
-- AVERAGE ENERGY: average kinetic energy per particle of the gas.  
-- TOTAL ENERGY: total energy of the particles.  
-- PISTON HEIGHT: piston's height above the bottom of the box.  
-- PISTON VELOCITY: speed of the piston (up is positive).  
-- PISTON POTENTIAL ENERGY: potential energy of the piston, due to gravity.  
-- PISTON KINETIC ENERGY: kinetic energy of the piston, due to its motion.  
-- PISTON TOTAL ENERGY: sum of potential and kinetic energy of the piston.  
+Monitors:
+- AVERAGE SPEED: average speed of the particles.
+- AVERAGE ENERGY: average kinetic energy per particle of the gas.
+- TOTAL ENERGY: total energy of the particles.
+- PISTON HEIGHT: piston's height above the bottom of the box.
+- PISTON VELOCITY: speed of the piston (up is positive).
+- PISTON POTENTIAL ENERGY: potential energy of the piston, due to gravity.
+- PISTON KINETIC ENERGY: kinetic energy of the piston, due to its motion.
+- PISTON TOTAL ENERGY: sum of potential and kinetic energy of the piston.
 - SYSTEM ENERGY: sum of particles' and the piston's total energy.
 
-Plots:  
-- PISTON HEIGHT VS. TIME: measured up from the bottom of the box.  
-- PRESSURE VS. TIME: average pressure of the particles.  
+Plots:
+- PISTON HEIGHT VS. TIME: measured up from the bottom of the box.
+- PRESSURE VS. TIME: average pressure of the particles.
 - ENERGY OF PARTICLES, PISTON, AND TOTAL ENERGY: in terms of energy per particle.  The piston's energy is both kinetic (motion) and potential (height).
 
 ## THINGS TO NOTICE
@@ -898,6 +902,36 @@ Wilensky, U. (1999). GasLab--an Extensible Modeling Toolkit for Exploring Micro-
 Wilensky, U. & Resnick, M. (1999). Thinking in Levels: A Dynamic Systems Perspective to Making Sense of the World. Journal of Science Education and Technology. Vol. 8 No. 1
 
 Wilensky, U., Hazzard, E. & Froemke, R. (1999). An Extensible Modeling Toolkit for Exploring Statistical Mechanics Proceedings of the Seventh European Logo Conference - EUROLOGO'99, Sofia, Bulgaria.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo GasLab Adiabatic Piston model.  http://ccl.northwestern.edu/netlogo/models/GasLabAdiabaticPiston.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was developed at the MIT Media Lab using CM StarLogo.  See Wilensky, U. (1993). Thesis - Connected Mathematics: Building Concrete Relationships with Mathematical Knowledge. Adapted to StarLogoT, 1997, as part of the Connected Mathematics Project.  Adapted to NetLogo, 2002, as part of the Participatory Simulations Project.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1997 2002 Wilensky -->
 @#$#@#$#@
 default
 true
@@ -1194,7 +1228,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

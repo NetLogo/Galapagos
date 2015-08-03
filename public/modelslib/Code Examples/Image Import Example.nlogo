@@ -1,6 +1,11 @@
 ;; There are no procedures in this model.
 ;; All of the code is in the buttons in
 ;; the interface tab.
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 364
@@ -241,6 +246,8 @@ Images imported by `import-pcolors` and `import-pcolors-rgb` are scaled to fit t
 Try loading the different images into the patches to get an idea of the type of color distortion to expect.
 
 Try importing an image with `import-pcolors` and then import the same image with `import-drawing` and `import-pcolors-rgb`.  How does handling of the image differ?
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -525,7 +532,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 import-pcolors-rgb "earth.gif"
 @#$#@#$#@

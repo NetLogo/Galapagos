@@ -1,49 +1,52 @@
-;; declare a global variable, halfedge, to be used when the box center is at (0,0)
-
-globals [halfedge]
-
 ;; setup procedure for case where point (0,0) is lower left corner of Box
-;;note slider that sets the size of the box.
+;; note slider that sets the size of the box.
 to setup-corner
-  ca                                              ;; clear everything
-  ask patches[
+  clear-all
+  ask patches [
     ;; if patches are between (0,0) to (0,edge)...
-    if ( pxcor = 0 and pycor >= 0 and pycor <= edge )
-      [set pcolor red]                                 ;; ... draws left edge in red
+    if pxcor = 0 and pycor >= 0 and pycor <= edge
+      [ set pcolor red ]                                 ;; ... draws left edge in red
     ;; if patches are between (edge,0) to (edge,edge)...
-    if ( pxcor = edge and pycor >= 0 and pycor <= edge )
-      [set pcolor red]                                 ;; ... draws right edge in red
+    if pxcor = edge and pycor >= 0 and pycor <= edge
+      [ set pcolor red ]                                 ;; ... draws right edge in red
     ;; if patches are between (0,0) to (edge,0)...
-    if ( pycor = 0 and pxcor >= 0 and pxcor <= edge )
-      [set pcolor red]                                 ;; ... draws bottom edge in red
+    if pycor = 0 and pxcor >= 0 and pxcor <= edge
+      [ set pcolor red ]                                 ;; ... draws bottom edge in red
     ;; if patches are between (0,edge) to (edge,edge)...
-    if ( pycor = edge and pxcor >= 0 and pxcor <= edge )
-      [set pcolor red]                                 ;; ... draws upper edge in red
-    ]
+    if pycor = edge and pxcor >= 0 and pxcor <= edge
+      [ set pcolor red ]                                 ;; ... draws upper edge in red
+  ]
+  reset-ticks
 end
 
 
 ;; setup procedure for case where point (0,0) is in the center of Box
 to setup-center
-  ca                                              ;; clear everything
+  clear-all
   ;; set halfedge as edge divided by two. in case edge is an odd number,
   ;; halfedge get the integer value of the division.
-  set halfedge int (edge / 2)
-  ask patches[
+  let halfedge int (edge / 2)
+  ask patches [
     ;; if patches are between (-halfedge,-halfedge) to (-halfedge,halfedge)...
-    if (pxcor = (- halfedge) and pycor >= (- halfedge) and pycor <= (0 + halfedge) )
-      [set pcolor blue]                                ;; ... draws left edge in blue
+    if pxcor = (- halfedge) and pycor >= (- halfedge) and pycor <= (0 + halfedge)
+      [ set pcolor blue ]                                ;; ... draws left edge in blue
     ;; if patches are between (halfedge,-halfedge) to (halfedge,halfedge)...
-    if ( pxcor = (0 + halfedge) and pycor >= (- halfedge) and pycor <= (0 + halfedge) )
-      [set pcolor blue]                                ;; ... draws right edge in blue
+    if pxcor = (0 + halfedge) and pycor >= (- halfedge) and pycor <= (0 + halfedge)
+      [ set pcolor blue ]                                ;; ... draws right edge in blue
     ;; if patches are between (-halfedge,-halfedge) to (halfedge,-halfedge)...
-    if ( pycor = (- halfedge) and pxcor >= (- halfedge) and pxcor <= (0 + halfedge) )
-      [set pcolor blue]                                ;; ... draws bottom edge in blue
+    if pycor = (- halfedge) and pxcor >= (- halfedge) and pxcor <= (0 + halfedge)
+      [ set pcolor blue ]                                ;; ... draws bottom edge in blue
     ;; if patches are between (-halfedge,halfedge) to (halfedge,halfedge)...
-    if ( pycor = (0 + halfedge) and pxcor >= (- halfedge) and pxcor <= (0 + halfedge) )
-      [set pcolor blue]                                ;; ... draws upper edge in blue
-    ]
+    if pycor = (0 + halfedge) and pxcor >= (- halfedge) and pxcor <= (0 + halfedge)
+      [ set pcolor blue ]                                ;; ... draws upper edge in blue
+  ]
+  reset-ticks
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 254
@@ -66,8 +69,8 @@ GRAPHICS-WINDOW
 12
 -12
 12
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -125,6 +128,8 @@ HORIZONTAL
 ## WHAT IS IT?
 
 This example sets up a box that can be placed anywhere in the world.  It is one patch thick.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -409,7 +414,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup-corner
 @#$#@#$#@

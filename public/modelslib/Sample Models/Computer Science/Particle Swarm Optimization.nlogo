@@ -148,6 +148,10 @@ to update-highlight
     [  reset-perspective ]
   ]
 end
+
+
+; Copyright 2008 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 265
@@ -371,7 +375,7 @@ This model is closely based on the algorithm described by Kennedy and Eberhart's
 
 ## HOW IT WORKS
 
-Each particle has a position (xcor, ycor) in the search space and a velocity (vx, vy) at which it is moving through that space.  Particles have a certain amount of inertia, which keeps them moving in the same direction they were moving previously.  
+Each particle has a position (xcor, ycor) in the search space and a velocity (vx, vy) at which it is moving through that space.  Particles have a certain amount of inertia, which keeps them moving in the same direction they were moving previously.
 They also have acceleration (change in velocity), which depends on two main things.
 
 1) Each particle is attracted toward the best location that it has personally found (personal best) previously in its history.
@@ -441,6 +445,30 @@ Simple Genetic Algorithm, Artificial Neural Net, Perceptron, Hill Climbing Examp
 ## CREDITS AND REFERENCES
 
 Based on the algorithm presented in the following paper: Kennedy, J. & Eberhart, R. (1995), 'Particle swarm optimization', Neural Networks, 1995. Proceedings., IEEE International Conference on 4.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Stonedahl, F. and Wilensky, U. (2008).  NetLogo Particle Swarm Optimization model.  http://ccl.northwestern.edu/netlogo/models/ParticleSwarmOptimization.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2008 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2008 Cite: Stonedahl, F. -->
 @#$#@#$#@
 default
 true
@@ -725,7 +753,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -58,6 +58,11 @@ to merge  ;; node procedure
   ask link-neighbors with [leader != [leader] of myself]
     [ merge ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 225
@@ -172,6 +177,8 @@ count links
 ## WHAT IS IT?
 
 This is a code example showing how to make clusters of turtles that move as a unit.  In this example, whenever two turtles touch, their clusters merge.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -456,7 +463,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

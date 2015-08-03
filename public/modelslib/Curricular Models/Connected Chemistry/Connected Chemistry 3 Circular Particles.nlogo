@@ -1,14 +1,14 @@
 globals
 [
-  tick-delta                ;; how much we advance the tick counter this time through
-  max-tick-delta            ;; the largest tick-delta is allowed to be
+  tick-advance-amount                ;; how much we advance the tick counter this time through
+  max-tick-advance-amount            ;; the largest tick-advance-amount is allowed to be
   box-edge                  ;; distance of box edge from axes
   colliding-particles
   sorted-colliding-particles
   colliding-particle-1
   colliding-particle-2
   colliding-pair
-  original-tick-delta
+  original-tick-advance-amount
   last-view-update
   manage-view-updates?
   view-update-rate          ;; specifies the minimum amount of simulation time that must
@@ -48,9 +48,9 @@ to setup
   make-particles
 
   ;; set variable tick delta based on fastest particle.   If the fastest particle has a speed of 1,
-  ;; then tick-delta is 1.  If the fastest particles has a speed of 10, then tick-delta is 1/10.
-  set tick-delta (1 / (ceiling max [speed] of particles))
-  set original-tick-delta tick-delta
+  ;; then tick-advance-amount is 1.  If the fastest particles has a speed of 10, then tick-advance-amount is 1/10.
+  set tick-advance-amount (1 / (ceiling max [speed] of particles))
+  set original-tick-advance-amount tick-advance-amount
   set colliding-particles []
   ask particles [check-for-wall-collision]
   ask particles [check-for-particle-collision ]
@@ -90,10 +90,10 @@ to go
   sort-collisions
   calculate-energies
 
-  ask particles [ jump speed * tick-delta ]
+  ask particles [ jump speed * tick-advance-amount ]
   if winners != []
       [collide-winners]
-  tick-advance tick-delta
+  tick-advance tick-advance-amount
   do-plots
 
     ask particles [
@@ -353,7 +353,7 @@ end
 to sort-collisions
   ;; Sort the list of projected collisions between all the particles into an ordered list.
   ;; Take the smallest time-step from the list (which represents the next collision that will
-  ;; happen in time).  Use this time step as the tick-delta for all the particles to move through
+  ;; happen in time).  Use this time step as the tick-advance-amount for all the particles to move through
 
   ifelse colliding-particles != []
    [
@@ -371,16 +371,16 @@ to sort-collisions
       ifelse dt - ticks <= 1
       ;;We have to subtract ticks back out because now we want the relative time until collision,
       ;;not the absolute time the collision will occur.
-      [set tick-delta dt - ticks]
+      [set tick-advance-amount dt - ticks]
       ;;Since there are no collisions in the next second, we will set winners to [] to keep from
       ;;mistakenly colliding any particles that shouldn't collide yet.
-      [set tick-delta 1 set winners []]
+      [set tick-advance-amount 1 set winners []]
     ]
 
    ]
    ;; When there are no collisions for the next time step,
-   ;; tick-delta goes back to the value of original-tick-delta
-   [set tick-delta original-tick-delta]
+   ;; tick-advance-amount goes back to the value of original-tick-advance-amount
+   [set tick-advance-amount original-tick-advance-amount]
 
 end
 
@@ -561,15 +561,19 @@ to do-plots
   plotxy ticks kinetic-energy-of-two
 
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 228
 10
-473
-272
+502
+305
 16
 16
-7.0
+8.0
 1
 20
 1
@@ -682,10 +686,10 @@ particle 0 heading
 11
 
 PLOT
-477
-11
-695
-135
+507
+10
+725
+134
 Kinetic Energy vs. Time
 time
 energy
@@ -701,10 +705,10 @@ PENS
 "particle 1" 1.0 0 -955883 true "" ""
 
 PLOT
-477
-135
-694
-259
+507
+134
+724
+258
 Particle 0 Speed vs. Time
 time
 speed
@@ -719,10 +723,10 @@ PENS
 "default" 1.0 0 -16777216 true "" ""
 
 PLOT
-476
-259
-695
-379
+506
+258
+725
+378
 Particle 0 Heading vs. Time
 time
 heading
@@ -787,8 +791,6 @@ Setting all the particles to have a very slow speed (e.g. 0.001) and one particl
 To see what the approximate mass of each particle is, type this in the command center:
 ask particles [set label precision mass 0]
 
-## THINGS TO TRY
-
 Use the speed slider (at the top of the View) to run the model in slow motion.
 
 Use the command center to set the speed of all the particles to a very low number (but not zero - e.g. 0.01) and set the speed of one particle to a very high number (e.g. 1000).  Watch how the kinetic energy of the fast particle is distributed in collisions to the other particles.
@@ -812,9 +814,37 @@ See other Connected Chemistry models.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2005).  NetLogo Connected Chemistry 3 Circular Particles model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistry3CircularParticles.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 ConChem -->
 @#$#@#$#@
 default
 true
@@ -1105,7 +1135,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -77,7 +77,7 @@ end
 ;; sodium and chloride ions -- so for every one particle of sodium chloride, we get 2 particles of ions (in the model, these still retain the "solute"
 ;; breed).  Magnesium chloride breaks up into one magnesium ion, and two chloride ions (so 1 magnesium chloride gets you 3 ion particles),
 ;; and aluminum chloride breaks up into one aluminum ion, and three chloride ions (so 1 aluminum chloride gets you 4 ion particles).
-;; 
+;;
 ;; In the code below, this is accomplished by creating solute particles based on the slider value, and then "hatching" new solute particles based on
 ;; the number of ions the compound forms.  So for sodium chloride, we create the number of particles indicated by the slider, and then each solute
 ;; spawns an extra solute particle to make a total of two ion particles for each solute particle added.
@@ -120,7 +120,7 @@ to create-solutes-and-ions [ions]
       move-to one-of left-side with [pcolor = black]        ;; move to an open space on the left side
       while [any? other turtles-here] [
         move-to one-of left-side with [pcolor = black] ]
-      hatch-solutes (ions - 1) [                            ;; since one particle was already created above, 
+      hatch-solutes (ions - 1) [                            ;; since one particle was already created above,
         set color white                                     ;; we hatch 1 less than the total number of ions the substance has
         setup-particles
         fd 0.2                                              ;; move forward a bit so we can see the particles better
@@ -262,7 +262,7 @@ to check-for-collision  ;; particle procedure
   ;; form a uniform wavefront.
   ;;
   ;; Why do we want a uniform wavefront?  Because it is actually more
-  ;; realistic.  
+  ;; realistic.
   ;;
   ;; Why is it realistic to assume a uniform wavefront?  Because in reality,
   ;; whether a collision takes place would depend on the actual headings
@@ -418,6 +418,10 @@ to check-for-stick ;; solvent procedure
     ]
   ]
 end
+
+
+; Copyright 2012 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 275
@@ -641,7 +645,6 @@ Osmotic pressure is generally defined as the amount of pressure required to brin
 
 Osmotic pressure is a colligative property of a solution, meaning the number of particles matter more than the identity of the particles. Because adding pressure to the solution on one side of the membrane changes the rate at which the solvent passes through the membrane (a rate that is restricted by the presence of solute particles), osmotic pressure can be thought of as a measurement of the tendency of a solute to restrict osmosis. As a colligative property, changes in osmotic pressure are proportional to the number of solute particles, not the identity of the particles.  The colligative nature of osmotic pressure can be explored in this model by experimenting with different types and number of solute particles.
 
-
 ## HOW IT WORKS
 
 In this model, blue patches represent a container divided by a semipermeable membrane (the red squares) -- a physical, porous barrier separating two solutions that allows some particles to pass but not others. Blue circles represent solvent molecules (water in this model) that can pass freely through the membrane. At setup, 1000 of these solvent molecules are created and randomly distributed throughout the container.  White circles represent particles of added solute. The amount of solute defined by the sliders is placed on the appropriate side of the membrane. If a solute is an ionic compound, it breaks apart into the appropriate number of ions.  If the solute is covalent, the compound does not break apart. Solute particles cannot pass through the membrane.
@@ -650,28 +653,27 @@ As the model runs, particles move through the container according to kinetic mol
 
 At each tick, the membrane moves according to the difference in the number of solvent molecules moving from left to right and those moving from right to left. As the model progresses, according to the phenomenon of osmosis, the solvent (water) shows a net movement towards the side of higher solute concentration.
 
-
 ## HOW TO USE IT
 
 ###Initial settings
 
-**SOLUTE:** Choose the solute to add to the solution.  The chemical formula of the solute will be printed in the output box to the right.  Each solute will act differently in solution depending on its bonding behavior.  
-**SOLUTE-LEFT:** This number will determine the number of solute particles added to the solution on the left side of the membrane.  Keep in mind, due to various bonding behaviors, the total number of dissolved particles may be different from this value.  
+**SOLUTE:** Choose the solute to add to the solution.  The chemical formula of the solute will be printed in the output box to the right.  Each solute will act differently in solution depending on its bonding behavior.
+**SOLUTE-LEFT:** This number will determine the number of solute particles added to the solution on the left side of the membrane.  Keep in mind, due to various bonding behaviors, the total number of dissolved particles may be different from this value.
 **SOLUTE-RIGHT:** This number will determine the number of solute particles added to the solution on the right side of the membrane.  Keep in mind, due to various bonding behaviors, the total number of dissolved particles may be different from this value.
 
 ###Buttons
 
-**SETUP:** Sets up the model  
+**SETUP:** Sets up the model
 **GO:** Runs the model
 
 ###Monitors
 
-**WATER # LEFT:** Shows the number of solvent particles on the left side of the membrane.  
+**WATER # LEFT:** Shows the number of solvent particles on the left side of the membrane.
 **WATER # RIGHT:** Shows the number of solvent particles on the right side of the membrane.
 **SOLUTE LEFT:** Shows the number of solute particles on the left side of the membrane.
-**SOLUTE RIGHT:** Shows the number of solute particles on the right side of the membrane.  
-**STUCK LEFT:** Shows the number of solvent particles currently stuck to solute particles on the left side of the membrane  
-**STUCK RIGHT:** Shows the number of solvent particles currently stuck to solute particles on the right side of the membrane  
+**SOLUTE RIGHT:** Shows the number of solute particles on the right side of the membrane.
+**STUCK LEFT:** Shows the number of solvent particles currently stuck to solute particles on the left side of the membrane
+**STUCK RIGHT:** Shows the number of solvent particles currently stuck to solute particles on the right side of the membrane
 **MEMBRANE:** Shows the x-cor of the membrane. Note: The membrane moves based on the difference between the amount of particles moving across the membrane in a given direction each step.
 **AVERAGE:** Shows mean of the membrane location over the entire model run.
 
@@ -679,20 +681,17 @@ At each tick, the membrane moves according to the difference in the number of so
 
 **WATER #:** Plots the number of solvent particles on the left and right side of the membrane over time (ticks).
 
-
 ## THINGS TO NOTICE
 
 As the model runs, more solvent particles should end up on the side of the membrane with more solute particles. Because more solvent particles are free to move on the side with fewer solute particles, they are more likely to cross the membrane.
 
-How does the membrane movement change when adding different solutes? Is there a pattern?  
+How does the membrane movement change when adding different solutes? Is there a pattern?
 What happens when adding Sodium Chloride?  How is this different from adding Sugar?
-
 
 ## THINGS TO TRY
 
-Try adding different solutes.  Can you get a change in the number of solute particles so that Sodium Chloride acts like Sugar?  
+Try adding different solutes.  Can you get a change in the number of solute particles so that Sodium Chloride acts like Sugar?
 Is there a mathematical relationship between membrane movement and the number of solute particles. Will this relationship depend on the type of solute added?  Why or why not?
-
 
 ## EXTENDING THE MODEL
 
@@ -700,25 +699,46 @@ Try making new solutes.
 
 There are at least two other common proposals for an agent-based explanations for the process of osmosis.
 
- 1. Solute particles "block" solvent particles from moving across the membrane. Solvent particles will then show a net movement from a side of fewer solute particles (because there are less solute particles blocking their path) to a side with more solvent particles.  
+ 1. Solute particles "block" solvent particles from moving across the membrane. Solvent particles will then show a net movement from a side of fewer solute particles (because there are less solute particles blocking their path) to a side with more solvent particles.
  2. Solute particles are generally larger than solvent particles (usually water). The size of the solute particles leads to frequent collisions of solvent-solute particles. On the side with more solute particles, the mean free path of solvent particles will be lower, leading to a net movement of particles from the low solute side.
 
 Can you model these alternate explanations?
 
-
 ## NETLOGO FEATURES
- 
-Fixed length links are simulated by first tying particles together, then applying motion rules to only the solute particles.
 
+Fixed length links are simulated by first tying particles together, then applying motion rules to only the solute particles.
 
 ## RELATED MODELS
 
 GasLab suite
 
-
 ## CREDITS AND REFERENCES
 
 We thank Luis Amaral for his scientific consultation.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Holbert, N. and Wilensky, U. (2012).  NetLogo Osmotic Pressure model.  http://ccl.northwestern.edu/netlogo/models/OsmoticPressure.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2012 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2012 Cite: Holbert, N. -->
 @#$#@#$#@
 default
 true
@@ -1012,33 +1032,10 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
-<experiments>
-  <experiment name="experiment" repetitions="7" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="3000"/>
-    <metric>split</metric>
-    <metric>mean membrane-list</metric>
-    <metric>count solutes with [pxcor &lt; split]</metric>
-    <enumeratedValueSet variable="Solute_Type">
-      <value value="&quot;Sugar&quot;"/>
-      <value value="&quot;Sodium Chloride&quot;"/>
-      <value value="&quot;Magnesium Chloride&quot;"/>
-      <value value="&quot;Aluminum Chloride&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="solute-left">
-      <value value="50"/>
-      <value value="100"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="solute-right">
-      <value value="25"/>
-    </enumeratedValueSet>
-  </experiment>
-</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default

@@ -169,6 +169,10 @@ to-report biggest-gap
 
   report max-column - min-column
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 178
@@ -339,14 +343,14 @@ At every tick, the computer selects a random number between 1 and "sample-space"
 
 Choose a sample-space (you can leave it at the default value of '100') and press Setup. Now press Go. The messenger (the dart) will obtain a random number and carry it to the correct column. The red-green slider changes which columns are red and which are green. If it's set at 50% and if the sample space is 100 then patches up to 50 will be red and the rest will be green. If it's set at 50% and the sample space is 30 then patches up to 15 will be red. There are cases where this might be confusing: for instance, if it's set at 50% and if the sample space is 5 then patches up to 2 will be red. The '3'-column will be green because it goes further than 50% of 5.  That is, all columns up to and including the 3-column are more than 50% of the columns in the sample-space of 5 -- they are actually 60% because each of the 5 columns makes up 20% (and 5 * 20% is 100%). (See the section EXTENDING THE MODEL, below.)
 
-These are the widgets in order of appearance from top to bottom:  
-SAMPLE-SPACE is a slider for setting how many columns you want to be filling up. Also, it sets the range of numbers that will be randomly selected. If you set the slider to 3 then you will have 3 columns and the values will always be either 1, 2, or 3.  
-SETUP - prepares the model for running with your sample-space parameter setting.  
-GO - runs the model with the current settings.  
-BIGGEST GAP - shows the biggest vertical difference between all columns. For instance, if the highest column is 10 squares high and the lowest is at 3 squares high then this monitor will show '7'.  
-%-RED - shows what percentage of the squares are red out of all the squares.  
-COLORS? - when this switch is on the patches get painted either red or green depending on the red-green slider value and their position.  
-RED-GREEN - sets the cut-off line for which patches are painted red and which green. When your sample-space is 100 then the position of the little handle on the slider (what you grab and move) is exactly at the cut-off line. For sample spaces other than 100 it will be under the cut-off line only when it is set at 50. This is because currently this slider works according to percentage of events and not column value.  
+These are the widgets in order of appearance from top to bottom:
+SAMPLE-SPACE is a slider for setting how many columns you want to be filling up. Also, it sets the range of numbers that will be randomly selected. If you set the slider to 3 then you will have 3 columns and the values will always be either 1, 2, or 3.
+SETUP - prepares the model for running with your sample-space parameter setting.
+GO - runs the model with the current settings.
+BIGGEST GAP - shows the biggest vertical difference between all columns. For instance, if the highest column is 10 squares high and the lowest is at 3 squares high then this monitor will show '7'.
+%-RED - shows what percentage of the squares are red out of all the squares.
+COLORS? - when this switch is on the patches get painted either red or green depending on the red-green slider value and their position.
+RED-GREEN - sets the cut-off line for which patches are painted red and which green. When your sample-space is 100 then the position of the little handle on the slider (what you grab and move) is exactly at the cut-off line. For sample spaces other than 100 it will be under the cut-off line only when it is set at 50. This is because currently this slider works according to percentage of events and not column value.
 %-FULL - the proportion of the yellow area that has been filled up by squares.
 
 ## THINGS TO NOTICE
@@ -394,6 +398,32 @@ All of the ProbLab models use randomness. Having worked with this model, you may
 ## CREDITS AND REFERENCES
 
 This model is a part of the ProbLab curriculum. The ProbLab Curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling. . For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2004).  NetLogo Random Basic model.  http://ccl.northwestern.edu/netlogo/models/RandomBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -693,7 +723,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

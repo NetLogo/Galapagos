@@ -9,34 +9,34 @@ globals [
 
 to setup
   clear-all
-  
+
   ;; Set globals -- these values produce good visual results
   set lipid-length 2.0
   set interaction-distance 4.0
   set too-close-distance 1.3
-  
+
   set-default-shape turtles "circle"
   create-waters (num-water + num-lipids) [
     setxy random-xcor random-ycor
     set color blue
   ]
-  
-  ; To create the lipids, NUM-LIPIDS oil molecules are created. Each oil molecule then picks 
-  ; one water molecule that hasn’t been linked to an oil yet. That water molecule is stored 
-  ; in a variable so that the oil molecule can perform a sequence of actions on it. The oil 
+
+  ; To create the lipids, NUM-LIPIDS oil molecules are created. Each oil molecule then picks
+  ; one water molecule that hasn’t been linked to an oil yet. That water molecule is stored
+  ; in a variable so that the oil molecule can perform a sequence of actions on it. The oil
   ; molecule first creates a link with its partner and then moves to position LIPID-LENGTH ;
   ; away from the water molecule.
   create-oils (num-lipids) [
     let partner one-of waters with [not any? my-links]
-    
+
     ; Put lipid-length away from its partner in a random direction
     move-to partner
     fd lipid-length
-    
+
     create-link-with partner
     set color orange
     ask partner [ set color violet ]
-  ] 
+  ]
   reset-ticks
 end
 
@@ -81,6 +81,10 @@ to interact-with-partner
   lt random 360
   fd random-force
 end
+
+
+; Copyright 2013 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 245
@@ -254,7 +258,7 @@ PENS
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model simulates the formation of membranes in water. It shows how simple attractive and repulsive forces between different kinds of molecules can result in higher level structure. For more information about natural membranes, see http://en.wikipedia.org/wiki/Lipid_bilayer.
+This model simulates the formation of membranes in water. It shows how simple attractive and repulsive forces between different kinds of molecules can result in higher level structure. For more information about natural membranes, see https://en.wikipedia.org/wiki/Lipid_bilayer.
 
 ## HOW IT WORKS
 
@@ -278,7 +282,6 @@ First choose how many water molecules and how many lipid pairs to create. Press 
 * WATER-OIL-FORCE: How much a molecule should move when it is interacting with a molecule of a different type
 * TOO-CLOSE-FORCE: How much a molecule should move when it's "too close" to another molecule
 * RANDOM-FORCE: Each molecule will move in a random direction this amount each tick. Increasing this "heats up" the system.
-
 
 ## THINGS TO NOTICE
 
@@ -314,7 +317,35 @@ This model is loosely based on dissipative particle dynamics (DPD) models. These
 
 ## CREDITS AND REFERENCES
 
-This model was inspired by a DPD model created by Mark Bedau and Andrew Buchanan, in their paper "Catalysis by Self-Assembled Structures in Emergent Reaction Networks".
+Two papers that describe this work are:
+
+* Gazzola, G., Buchanan, A., Packard, N. & Bedeau. M. (2007).  Catalysis by Self-Assembled Structures in Emergent Reaction Networks. In M. Capcarrere, A.A. Freitas, P.J. Bentley, Johnson, C.G. Johnson, & J. Timmmis (Eds). Advances in Artificial Life. Lecture Notes in Computer Science. Vol. 4648, pp. 876-885. Springer Verlag. http://link.springer.com/chapter/10.1007/978-3-540-74913-4_88#page-1 .
+
+* Bedau M. A., Buchanan A., Gazzola G., Hanczyc M., Maeke T., McCaskill J. S., Poli I. and Packard N. H. (2005). Evolutionary design of a DDPD model of ligation. In Proceedings of the 7th International Conference on Artificial Evolution EA'05. Lecture Notes in Computer Science 3871, 201-212, Springer Verlag.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Head, B. and Wilensky, U. (2013).  NetLogo Membrane Formation model.  http://ccl.northwestern.edu/netlogo/models/MembraneFormation.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2013 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2013 Cite: Head, B. -->
 @#$#@#$#@
 default
 true
@@ -608,7 +639,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 250 [ go ]

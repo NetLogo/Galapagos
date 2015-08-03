@@ -19,6 +19,7 @@ to setup
       hide-link
     ]
   ]
+  reset-ticks
 end
 
 to go
@@ -31,8 +32,6 @@ to go
   ]
   tick
 end
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 184
@@ -42,7 +41,7 @@ GRAPHICS-WINDOW
 45
 45
 5.0
-0
+1
 10
 1
 1
@@ -59,6 +58,7 @@ GRAPHICS-WINDOW
 1
 1
 ticks
+30.0
 
 BUTTON
 9
@@ -75,6 +75,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 BUTTON
 86
@@ -91,6 +92,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 MONITOR
 31
@@ -118,6 +120,7 @@ NIL
 NIL
 NIL
 NIL
+1
 
 MONITOR
 38
@@ -426,7 +429,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 4.0.2
+NetLogo 5.2.0
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]
@@ -446,4 +449,6 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 
+@#$#@#$#@
+0
 @#$#@#$#@

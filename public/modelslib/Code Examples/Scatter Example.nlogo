@@ -2,6 +2,7 @@
 to setup
   clear-all
   crt 300
+  reset-ticks
 end
 
 ;; scatter1 sets the x and y coordinates of each
@@ -11,6 +12,7 @@ to scatter1
   ask turtles [
     setxy random-xcor random-ycor
   ]
+  display
 end
 
 ;; scatter2 sends the turtles forward a random amount in random directions
@@ -21,6 +23,7 @@ to scatter2
     rt random 360
     jump random-float max-pxcor
   ]
+  display
 end
 
 to scatter3
@@ -28,7 +31,13 @@ to scatter3
   ask turtles [
     move-to one-of patches   ;; go to the center of a random patch
   ]
+  display
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 131
@@ -51,8 +60,8 @@ GRAPHICS-WINDOW
 12
 -12
 12
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -121,10 +130,11 @@ With all three scatter methods, sometimes turtles can land on the same patch.  I
 
       ask n-of 300 patches [ sprout 1 ]
 
-
 ## RELATED MODELS
 
 Scatter
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -409,7 +419,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 scatter2
 @#$#@#$#@

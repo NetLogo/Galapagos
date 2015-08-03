@@ -1,7 +1,7 @@
 globals
 [
-  tick-length                ;; clock variables
-  max-tick-length            ;; the largest a tick length is allowed to be
+  tick-advance-amount                ;; clock variables
+  max-tick-advance-amount            ;; the largest a tick length is allowed to be
   box-edge                   ;; distance of box edge from axes
   avg-speed                  ;; current average speed of gas molecules
   avg-energy                 ;; current average energy of gas molecules
@@ -40,7 +40,7 @@ gas-molecules-own
 
 to setup
   clear-all
-  set max-tick-length 0.01
+  set max-tick-advance-amount 0.01
   set margin-outside-box 4
   set box-edge (max-pxcor - margin-outside-box)
   set-default-shape flashes "square"
@@ -131,8 +131,8 @@ to go
   update-variables
   calculate-pressure
   if pressure > (pressure-limit-container) [set box-intact? false]
-  calculate-tick-length
-  tick-advance tick-length
+  calculate-tick-advance-amount
+  tick-advance tick-advance-amount
   update-flash-visualization
   update-plots
   display
@@ -208,7 +208,7 @@ to shatter-box
     set heading towards center-patch
     set heading (heading + 180)
     if pxcor = max-pxcor or pycor = max-pycor or pycor = min-pycor or pxcor = min-pxcor [die]
-    fd avg-speed * tick-length
+    fd avg-speed * tick-advance-amount
   ]
   ask patches with [pcolor = gray]
   [ sprout 1 [set breed broken-walls set color gray set shape "square"] set pcolor black]
@@ -217,9 +217,9 @@ end
 
 
 to move  ;; gas-molecules procedure
-  if patch-ahead (speed * tick-length) != patch-here
+  if patch-ahead (speed * tick-advance-amount) != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-length)
+  jump (speed * tick-advance-amount)
   ;; When particles reach the edge of the screen, it is because the box they were in has burst (failed) due
   ;; to exceeding pressure limitations.  These particles should be removed from the simulation when they escape
   ;; to the edge of the world.
@@ -239,17 +239,17 @@ to calculate-pressure
                                    ;; this value is reset to zero till the next wall hit
 end
 
-to calculate-tick-length
-  ;; tick-length is calculated in such way that even the fastest
+to calculate-tick-advance-amount
+  ;; tick-advance-amount is calculated in such way that even the fastest
   ;; gas-molecules will jump at most 1 patch length in a clock tick. As
-  ;; gas-molecules jump (speed * tick-length) at every clock tick, making
+  ;; gas-molecules jump (speed * tick-advance-amount) at every clock tick, making
   ;; tick length the inverse of the speed of the fastest gas-molecules
   ;; (1/max speed) assures that. Having each gas-molecules advance at most
   ;; one patch-length is necessary for it not to "jump over" a wall
   ;; or another gas-molecules.
   ifelse any? gas-molecules with [speed > 0]
-    [ set tick-length min list (1 / (ceiling max [speed] of gas-molecules)) max-tick-length ]
-    [ set tick-length max-tick-length ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of gas-molecules)) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -261,7 +261,7 @@ to speed-up-one-molecule
     set energy energy-from-speed
     pendown
   ]
-  calculate-tick-length
+  calculate-tick-advance-amount
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -416,6 +416,10 @@ end
 to-report energy-from-speed
   report 0.5 * mass * speed * speed
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 470
@@ -674,7 +678,6 @@ The chemical reaction that hydrogen and oxygen gas undergoes to produce water va
 
 H<sub>2</sub> and O<sub>2</sub> are called the reactants and (H<sub>2</sub>O) is the product of the reaction.  Note that two hydrogen molecules and one oxygen molecule are consumed in this reaction to make two water vapor molecules.
 
-
 ## HOW IT WORKS
 
 For a reaction to occur, oxygen (O<sub>2</sub>) and hydrogen (H<sub>2</sub>) must have enough energy to break the atomic bonds in oxygen and hydrogen and allow the atoms to rearrange to make (H<sub>2</sub>O).  This bond breaking energy threshold is called the ACTIVATION-ENERGY.
@@ -685,13 +688,11 @@ If BOND-ENERGY-RELEASED was set to a negative number it would model an endotherm
 
 For reactions that require lots of activation-energy, some reactions will not occur at low temperatures, or will occur more slowly at lower temperatures.
 
-The autoignition point for hydrogen gas under normal pressure and presence of oxygen gas is 536C (709K).  http://en.wikipedia.org/wiki/Autoignition_temperature
+The autoignition point for hydrogen gas under normal pressure and presence of oxygen gas is 536C (709K).  https://en.wikipedia.org/wiki/Autoignition_temperature
 
 The container wall is modeled as having a fixed pressure limit.  Once that pressure limit is reached the container breaks open (explodes).  The exploding container is shown simply as particles of the container flying apart and outward at a constant rate.
 
 The phenomena of a container walls failing when hydrogen and oxygen ignite can be seen in a balloon filled with hydrogen and oxygen gas that is lit with a match as well as many historical examples in space rockets.  Some alternate energy automobiles and other transportation vehicles also use this reaction to power the piston displacement in their internal combustion engines, since it produces no carbon dioxide in the products and therefore does not contribute that green house gas to the environment through its emissions
-
-
 
 ## HOW TO USE IT
 
@@ -715,13 +716,11 @@ Notice the shape of the curves for number of molecules.  Why do they exhibit the
 
 If the container breaks and molecules escape the system, pressure will no longer be graphed and the molecules will no longer be counted in the graphs of number of molecules once they reach the edge of the WORLD & VIEW.
 
-
 ## THINGS TO TRY
 
 Try Different BOND-ENERGY-RELEASED, ACTIVATION-ENERGY, and PRESSURE-LIMIT-CONTAINER levels to make the chemical reaction occur at different rates, or not at all.
 
 Compare rates of reactions and how long it takes the container to fail by reaching its pressure limit, for different initial gas temperatures.
-
 
 ## EXTENDING THE MODEL
 
@@ -739,9 +738,37 @@ Uses GasLab particle collision code.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2007).  NetLogo Connected Chemistry Gas Combustion model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistryGasCombustion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 ConChem Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -1058,7 +1085,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

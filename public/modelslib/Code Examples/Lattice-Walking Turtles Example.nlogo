@@ -41,6 +41,11 @@ to set-location [new-location]  ;; walker procedure
   face new-location  ;; not strictly necessary, but improves the visuals a bit
   move-to new-location
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 182
@@ -126,10 +131,11 @@ On the computers we tested, this also makes the model run faster since the hexag
 
       clear-drawing  ask nodes [ stamp ]
 
-
 ## RELATED MODELS
 
 Link-Walking Turtles Example
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -419,7 +425,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

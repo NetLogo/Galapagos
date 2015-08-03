@@ -36,6 +36,11 @@ to go
   ]
   tick
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 138
@@ -120,6 +125,8 @@ In the `go` procedure in the Code tab, change `uphill` to `uphill4`, `downhill`,
 ## NETLOGO FEATURES
 
 If you look at the entry for `uphill` in the NetLogo Dictionary, it shows some code that does the exact same thing as the primitive does. If you need to do something that is similar to the primitive, but different in so way, you could use that code as a starting point.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -404,7 +411,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

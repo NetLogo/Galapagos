@@ -14,6 +14,11 @@ end
 
 ;; the actual plotting code is in the plot in the Interface tab.
 ;; the plot has setup code and the pen in it has update code.
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 321
@@ -104,6 +109,8 @@ The actual histogram code is in the plot in the Interface tab. The code in the C
 ## RELATED MODELS
 
 Random Walk 360
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -388,7 +395,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

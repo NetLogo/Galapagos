@@ -10,6 +10,7 @@ to setup
   ask patch 0  1 [ sprout-dogs 1 ]
   ask patch 0  0 [ sprout-cats 1 ]
   ask patch 0 -1 [ sprout-cows 1 ]
+  reset-ticks
 end
 
 to go
@@ -20,6 +21,7 @@ to go
     ;; onto it, and then runs that procedure
     run word breed "-speak"
   ]
+  tick
 end
 
 ;; Here we have the separate procedure definitions
@@ -36,6 +38,11 @@ end
 to cows-speak  ;; cow procedure
   set label "mooooo!"
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 156
@@ -58,8 +65,8 @@ GRAPHICS-WINDOW
 1
 -1
 1
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -118,6 +125,8 @@ but such code is tedious to write and runs slower.
 ## NETLOGO FEATURES
 
 The `run` command is fast when you use it over and over again on the same strings, so using this technique won't hurt the performance of your model.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -447,7 +456,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

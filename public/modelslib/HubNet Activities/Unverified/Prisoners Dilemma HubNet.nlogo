@@ -513,6 +513,10 @@ to execute-change-turtle
     hubnet-send user-id "You are a:" (word (color-string color) " " base-shape)
   ]
 end
+
+
+; Copyright 2003 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 541
@@ -756,24 +760,33 @@ The Prisoner's Dilemma presents an interesting problem: if you and your accompli
 
 This model allows for many students within a classroom to challenge each other over a network.  Students will keep switching partners by moving their agents around on the screen and they can switch strategies. Students compete to see who has gained the maximum points over all interactions.
 
-Moreover, this model allows students to gain a grasp of computer programming. An input box on the screen allows students to edit and author strategies. Following are the strategies that students can choose from (see the STRATEGY-CHOICE choice button):
+Moreover, this model allows students to gain a grasp of computer programming. An input box on the screen allows students to edit and author strategies. Following are the strategies that students can choose from (see the STRATEGY-CHOICE chooser in the HubNet client):
 
-Strategies:  
-Random - randomly cooperate or defect  
-Cooperate - cooperate always  
-Defect - defect always  
-Go-by-Majority - Totals the number of times that the partner has defected. {against you or regardless of whom the partner had been playing against? Andrei, please choose and phrase}  If the majority of the time, up to that point, the partner has defected, defect.  Otherwise, cooperate.  
-Tit-for-Tat - If the opponent cooperates this round cooperate next round.  If the opponent defects this round, defect next round.  Initially cooperate. {again-- against me or anyone?}  
-Suspicious-Tit-for-Tat - The Tit-for-Tat strategy, except initially defects  
-Tit-for-Two-Tats - If the opponent cooperates this round cooperate next round.  If the opponent defects two rounds in a row, defect the next round.  Initially cooperate.  
-Pavlov - If the previous tactic (cooperate or defect) resulted in good {Andrei, what does this mean? Any positive point? The maximum possible?} points, stick with that tactic.  Otherwise, switch strategies.  Currently, "Success" happens when the partner cooperates, so this will keep switching if the opponent is always defecting.  Initially random.  
-Unforgiving - Cooperate always unless the opponent defects once.  Upon opponent defection retaliate by defecting always.
+Strategies:
+
+- **Random** -- Randomly cooperate or defect.
+
+- **Cooperate** -- Always cooperate.
+
+- **Defect** -- Always defect.
+
+- **Go-by-Majority** -- Totals the number of times that partners defected against me. If the majority of the time, up to that point, the partner has defected, defect.  Otherwise, cooperate.
+
+- **Tit-for-Tat** -- If my opponent from the previous round cooperated with me, cooperate this round. If my opponent from the previous round defected against me, defect this round. Initially cooperate.
+
+- **Suspicious-Tit-for-Tat** - Same as the Tit-for-Tat strategy, except I initially defect.
+
+- **Tit-for-Two-Tats** -- If my opponents from the two previous rounds defected against me, defect this round. Otherwise, cooperate. Initially cooperate.
+
+- **Pavlov** -- If my partner from last round cooperated with me, repeat my action from last round. If my partner from last round defected against me, choose the opposite action from the one I used last round. Initially random.
+
+- **Unforgiving** -- Always cooperate, until an opponent defects against me. Once an opponent defected against me, always defect, against everyone.
 
 Rules for the Iterated Prisoner's Dilemma
 
 1.  This game will consist of matches in which each student competes against one opponent at a time.  Students may search for partners on their own.  Once paired, students will play 10 rounds, and then separate and look for other partners.
 
-2.  Each round the student and his/her partner will earn or lose points by either cooperating (C) or defecting (D) based on the rules set in their individual client. Each students' strategy is either selected (the STRATEGY-CHOICE ) or edited on the HubNet client. {Andrei, can players change their strat while in a given interaction?}
+2.  Each round the student and his/her partner will earn or lose points by either cooperating (C) or defecting (D) based on the rules set in their individual client. Each students' strategy is either selected (the STRATEGY-CHOICE ) or edited on the HubNet client.
 
 3.  The point system is determined by the administrator, using the 4 sliders under "PAYOFF." That is, the administrator does not change the basic game but the value of the prizes and penalties.
 
@@ -781,9 +794,9 @@ Rules for the Iterated Prisoner's Dilemma
 
 Buttons:
 
-SETUP: Begin playing the iterated prisoner's dilemma.  
-RERUN: All players set their total back to zero, and are ready to replay  
-PLAY: When students pair up, they will play a user-defined number of turns before separating  
+SETUP: Begin playing the iterated prisoner's dilemma.
+RERUN: All players set their total back to zero, and are ready to replay
+PLAY: When students pair up, they will play a user-defined number of turns before separating
 CREATE ANDROID: Creates a computer player to compete with students
 
 Switches:
@@ -826,7 +839,31 @@ Note the use of the turtle variable `label` to display each turtle's average sco
 
 PD Basic, PD N-Person Iterated, PD Basic Evolutionary, PD 2-Person Iterated
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2003).  NetLogo HubNet Prisoners Dilemma HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetPrisonersDilemmaHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2003 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This activity and associated models and materials were created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2003 -->
 @#$#@#$#@
 default
 false
@@ -1470,7 +1507,7 @@ Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 
 @#$#@#$#@
-NetLogo 5.0beta5
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

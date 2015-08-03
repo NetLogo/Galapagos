@@ -12,6 +12,7 @@ to go
   set RGB-color approximate-rgb rgb-red rgb-green rgb-blue
   ask quadrant -1 -1 [ set pcolor (list rgb-red rgb-green rgb-blue) ]
   ask quadrant  1 -1 [ set pcolor RGB-color ]
+  display
 end
 
 to-report quadrant [x y]  ;; inputs are 1 or -1
@@ -22,6 +23,11 @@ to-report patch-quadrant  ;; patch procedure
   report list ifelse-value (pxcor < world-width / 2) [-1] [1]
               ifelse-value (pycor < world-width / 2) [-1] [1]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 175
@@ -44,8 +50,8 @@ GRAPHICS-WINDOW
 9
 0
 9
-0
-0
+1
+1
 0
 ticks
 30.0
@@ -75,8 +81,8 @@ SLIDER
 hue
 hue
 0
-255
-255
+360
+180
 1
 1
 NIL
@@ -90,8 +96,8 @@ SLIDER
 saturation
 saturation
 0
-255
-255
+100
+100
 1
 1
 NIL
@@ -105,8 +111,8 @@ SLIDER
 brightness
 brightness
 0
-255
-255
+100
+100
 1
 1
 NIL
@@ -121,7 +127,7 @@ rgb-red
 rgb-red
 0
 255
-0
+105
 1
 1
 NIL
@@ -136,7 +142,7 @@ rgb-green
 rgb-green
 0
 255
-235
+105
 1
 1
 NIL
@@ -151,7 +157,7 @@ rgb-blue
 rgb-blue
 0
 255
-0
+255
 1
 1
 NIL
@@ -244,7 +250,7 @@ pcolor
 @#$#@#$#@
 ## WHAT IS IT?
 
-This is a simple example of NetLogo colors versus RGB colors using `approximate-rgb` and `approximate-hsb`, and `extract-rgb`.
+This is a simple example of NetLogo colors versus RGB colors using `approximate-rgb` and `approximate-hsb`, and `hsb`.
 
 To use it, simply press GO.  The top three sliders specify a color in the HSB spectrum which is displayed in the top half of the world, while the bottom three sliders specify a color in the RGB spectrum which is displayed in the bottom half of the world.
 
@@ -253,6 +259,8 @@ The left side of the world is the approximate NetLogo color equivalent to the sp
 ## NETLOGO FEATURES
 
 The origin patch (0,0) is in the corner rather than the center, so the dimensions of the patch grid can be even, so the grid can be divided into four equal quadrants.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -537,7 +545,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 go
 @#$#@#$#@

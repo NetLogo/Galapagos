@@ -7,7 +7,7 @@ breed [nucleotides nucleotide]                               ;; the pieces that 
 breed [polymerases polymerase]                               ;; for gearing a hydrogen "old-stair" bond of free nucleosides to existing nucleotides
 breed [helicases helicase]                                   ;; for unzipping a DNA strand
 breed [topoisomerases topoisomerase]                         ;; for unwinding a DNA chromosome
-breed [topoisomerases-gears topoisomerase-gear]              ;; for visualizing  a spin in toposisomereses when unwinding a DNA chromosome
+breed [topoisomerases-gears topoisomerase-gear]              ;; for visualizing a spin in topoisomerases when unwinding a DNA chromosome
 breed [primases primase]                                     ;; for attaching to the first nucleotide on the top strand.  It marks the location where the topoisomerase must be to unwind
 
                                                              ;;;;;;;;;;;;; label turtles  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -16,7 +16,7 @@ breed [enzyme-tags enzyme-tag]                               ;; the turtle tied 
 
                                                              ;;;;;;;;;;;;; visualization turtles ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 breed [mouse-cursors mouse-cursor]                           ;; follows the cursor location
-breed [chromosome-builders initial-chromsomes-builder]       ;; initial temporary construction turtle
+breed [chromosome-builders initial-chromosomes-builder]       ;; initial temporary construction turtle
 
                                                              ;;;;;;;;;;;;; links ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 undirected-link-breed [old-stairs old-stair]                 ;; the link between nucleotide base pairs that made the old stairs of the "spiral staircase" in the DNA
@@ -215,7 +215,7 @@ to make-a-topoisomerase
     set size 1.5
     set heading -90 + random-float 10 - random-float 10
     hatch 1 [set breed topoisomerases-gears set shape "topoisomerase-gears" create-gearline-from myself [set tie-mode "fixed" set hidden? true tie]]
-    attach-enzyme-tag 150 .85 "topiomerase"
+    attach-enzyme-tag 150 .85 "topoisomerase"
     setxy (((max-pxcor - min-pxcor) / 2) - 3) (max-pycor - 1)
   ]
 end
@@ -614,15 +614,15 @@ to detect-mouse-selection-event
     ;;;;;;  cursor visualization ;;;;;;;;;;;;
     set hidden? true
     let all-moveable-molecules (turtle-set nucleosides polymerases helicases topoisomerases)
-    let dragable-molecules all-moveable-molecules with [not  being-dragged-by-cursor? and distance myself <= mouse-drag-radius]
+    let draggable-molecules all-moveable-molecules with [not being-dragged-by-cursor? and distance myself <= mouse-drag-radius]
 
-    ;; when mouse button has not been down and you are hovering over a dragable molecules - then the mouse cursor appears and is rotating
-    if not current-mouse-down? and mouse-inside? and (any? dragable-molecules) [ set color cursor-detect-color  set hidden? false rt 4 ]
+    ;; when mouse button has not been down and you are hovering over a draggable molecules - then the mouse cursor appears and is rotating
+    if not current-mouse-down? and mouse-inside? and (any? draggable-molecules) [ set color cursor-detect-color  set hidden? false rt 4 ]
     ;; when things are being dragged the mouse cursor is a different color and it is not rotating
     if is-this-cursor-dragging-anything? and mouse-inside? [ set color cursor-drag-color set hidden? false]
 
-    if not mouse-continuous-down? and current-mouse-down? and not is-this-cursor-dragging-anything? and any? dragable-molecules [
-      set target-turtle min-one-of dragable-molecules  [distance myself]
+    if not mouse-continuous-down? and current-mouse-down? and not is-this-cursor-dragging-anything? and any? draggable-molecules [
+      set target-turtle min-one-of draggable-molecules  [distance myself]
       ask target-turtle [setxy p-mouse-xcor p-mouse-ycor]
       create-cursor-drag-to target-turtle [ set hidden? false tie ]
     ] ;; create-link from cursor to one of the target turtles.  These links are called cursor-drags
@@ -799,6 +799,10 @@ to-report instructions
     ]
   ]
 end
+
+
+; Copyright 2012 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 330
@@ -1113,10 +1117,9 @@ Alternatively, you can let the model run on its own without interacting with any
 
 By attempting to speed up this process using the mouse cursor you may find that the replication process incurs errors in the duplication.  These errors, though relatively rare in the cell duplication in living organisms do occur, are the basis for some types of mutations.  These mutations will in turn lead to the emergence of new proteins in daughter cells when the DNA is translated.
 
-
 ## HOW IT WORKS
 
-This model is based on simplified representations shown for how DNA polymerase facilitates DNA replication summarized at http://en.wikipedia.org/wiki/DNA_polymerase.
+This model is based on simplified representations shown for how DNA polymerase facilitates DNA replication summarized at https://en.wikipedia.org/wiki/DNA_polymerase.
 
 In this model nucleotides are molecules that when joined together make up the structural units of DNA.  Visually this appears as a nitrogen base (represented as a colored polygon) and 1 phosphate group (represented as a yellow circle), and  white line that links these two representing the five-carbon sugar that forms the backbone of DNA.
 
@@ -1136,7 +1139,6 @@ When the substitution switch is turned "on", then the polymerase protein does no
 When this interference results in a incorrect pairing of bases (e.g. an A with an A, or an A with a G), this is a type of substitution mutation.
 
 When a base is not paired up, or a section of DNA is not replicated, this is known as a deletion mutation.
-
 
 ## HOW TO USE IT
 
@@ -1176,21 +1178,17 @@ DELETIONS (both for the top and bottom strands).  This is a count of every base 
 
 SUBSTITUTIONS (both for the top and bottom strands).  This is a count of every A that is paired but not with a T and every G that is paired but not with a C.
 
-
 ## THINGS TO NOTICE
 
 Mutations can be incurred both in the top and bottom strands of DNA.  Since the mutation that affects one strand of DNA is not the same that necessarily affects another strand, different replication mutations may affect different daughter cells in mitosis or meiosis.
-
 
 ## THINGS TO TRY
 
 Compete against another user who also is running their own version of the model at the same time with the SUBSTITUTIONS? setting set to "on".  This element of competition will encourage the emergence of unintentional mutations as each player is tries to increase their rate of duplications, but end up decreasing their fidelity of duplication in the process.
 
-
 ## EXTENDING THE MODEL
 
 Another important type of mutation that could be added to the model is an insertion mutation.  That could be added by allowing more than one base to be paired up at an original nucleotide location.
-
 
 ## NETLOGO FEATURES
 
@@ -1198,15 +1196,37 @@ The model makes use of transparency features in the color channel for the shape 
 
 Shape and color changes of the polymerase molecule simulate the confirmation shape shape changes that the molecule undergoes as it catalyzes various parts of the reaction.
 
-
 ## RELATED MODELS
 
 The DNA Protein Synthesis in BEAGLE is the follow-up model for this one.  It shows how different mutations then lead to different types of proteins produced in cells. It is still under development and will be included in a future release.
 
-
 ## CREDITS AND REFERENCES
 
 This model is a part of the BEAGLE curriculum (http://ccl.northwestern.edu/simevolution/beagle.shtml)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2012).  NetLogo DNA Replication Fork model.  http://ccl.northwestern.edu/netlogo/models/DNAReplicationFork.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2012 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2012 Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -1459,7 +1479,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

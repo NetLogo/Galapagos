@@ -39,6 +39,11 @@ to reproduce
     ]
   ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 279
@@ -138,6 +143,8 @@ This code example demonstrates the `hatch` command.
 Blue turtles never reproduce.  Pink turtles have a one-in-five chance of reproducing at each time tick.  Each turtle's life lasts 50 ticks.  Nine out of ten baby turtles are blue.
 
 The turtles created by `hatch` are exact duplicates of their parents, so it is necessary to reset each new turtle's age to 0 inside the `hatch` command.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -422,7 +429,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -5,7 +5,7 @@ turtles-own [
 ;; Setup Procedures
 to setup
   clear-all
-  set-default-shape turtles "circle"  
+  set-default-shape turtles "circle"
   create-turtles blue-molecules [
     setup-molecules blue
   ]
@@ -15,7 +15,7 @@ to setup
   reset-ticks
 end
 
-;;  Sets a timer to indicate whether or not the molecule is ready 
+;;  Sets a timer to indicate whether or not the molecule is ready
 ;;  to react to zero, the color of the molecule, and the position of
 ;;  the molecule to random x & y coordinates.
 to setup-molecules [c] ;; turtle procedure
@@ -23,7 +23,7 @@ to setup-molecules [c] ;; turtle procedure
   set color c
   setxy random-xcor random-ycor
 end
-  
+
 
 ;;  Runtime Procedures
 
@@ -35,11 +35,11 @@ to go
     ]
     wiggle
 
-    ;; If a blue molecule meets a yellow molecule, they 
+    ;; If a blue molecule meets a yellow molecule, they
     ;; respectively become green and brown molecules
     check-for-reaction blue yellow green brown
 
-    ;; If a green molecule meets a brown molecule, they 
+    ;; If a green molecule meets a brown molecule, they
     ;; respectively become blue and yellow molecules
     check-for-reaction green brown blue yellow
 
@@ -54,16 +54,16 @@ to wiggle ;; turtle procedure
   lt random-float 2
 end
 
-;; A reaction is defined by four colors: the colors of the two molecules that can potentially 
+;; A reaction is defined by four colors: the colors of the two molecules that can potentially
 ;; react together (reactant-1-color and reactant-2-color) and the colors of the two molecules
 ;; that will be produced if such a reaction occurs (product-1-color and product-2-color.)
 to check-for-reaction [ reactant-1-color reactant-2-color product-1-color product-2-color ] ;; turtle procedure
-  ;; start by checking if we are ready to react and 
+  ;; start by checking if we are ready to react and
   ;; if we are the right color for this reaction
   if ready-timer = 0 and color = reactant-1-color [
     ;; try to find a partner of the appropriate color with whom to react
-    
-    if any? turtles-here with [ color = reactant-2-color ] [ 
+
+    if any? turtles-here with [ color = reactant-2-color ] [
       ;; there is a reactant here, so do the reaction
       react product-1-color
       ask one-of turtles-here with [ color = reactant-2-color ] [ react product-2-color ]
@@ -79,6 +79,10 @@ to react [ new-color ] ;; turtle procedure
   rt random-float 360
   set ready-timer 2
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 328
@@ -257,13 +261,11 @@ A classic real-life example of such a reaction occurs when carbon monoxide react
 
 While how much of each "reactant" and "product" a system ends up with depends on a number of factors (including, for example, how much energy is released when substances react or the temperature of the system), this model focuses on the concentrations of the reactants.
 
-
 ## HOW IT WORKS
 
 In the model, blue and yellow molecules can react with one another as can green and brown molecules. At each tick, each molecule move randomly throughout the world encountering other molecules. If it meets a molecule with which it can react (for example a yellow molecule meeting a blue, or a brown meeting a green, a reaction occurs. Because blue and yellow molecules react to produce green and brown molecules, and green and brown molecules react to produce blue and yellow molecules, eventually a state of equilibrium is reached.
 
 To keep molecules from immediately reacting twice in a row, each molecule has a "ready-timer." After a reaction, this timer is set to 2, and over two ticks, the timer is decremented back to zero, allowing the molecule to react again.
-
 
 ## HOW TO USE IT
 
@@ -273,11 +275,9 @@ The GO button sets the simulation in motion. Molecules move randomly and react w
 
 Four monitors show how many of each kind of molecule are present in the system. The plot MOLECULE AMOUNTS shows the number of each kind of molecule present over time.
 
-
 ## THINGS TO NOTICE
 
 You may notice that the number of product molecules is limited by the smallest amount of initial reactant molecules. Notice that there is always the same number of product molecules since they are formed in a one-to-one correspondence with each other.
-
 
 ## THINGS TO TRY
 
@@ -293,7 +293,6 @@ What if the forward and reverse reaction rates were determined by a variable ins
 
 You could also extend the program by allowing the user to introduce new molecules into the simulation while it is running.  How would the addition of fifty blue molecules affect a system that was already at equilibrium?
 
-
 ## NETLOGO FEATURES
 
 The line `if any? turtles-here with [ color = reactant-2-color ]` uses a combination of the `any?` and `turtles-here` commands to check to see if there are any other turtles of a specific type occupying the same path. This is both a succinct and easily readable way to achieve this behavior.
@@ -303,7 +302,33 @@ The line `if any? turtles-here with [ color = reactant-2-color ]` uses a combina
 Enzyme Kinetics
 Simple Kinetics 1
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Chemical Equilibrium model.  http://ccl.northwestern.edu/netlogo/models/ChemicalEquilibrium.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -588,7 +613,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

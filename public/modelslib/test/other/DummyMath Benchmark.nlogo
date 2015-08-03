@@ -10,7 +10,8 @@ to benchmark
 end
 
 to setup
-  ca
+  clear-all
+  reset-ticks
 end
 
 ;; I ripped the math out of the collide procedure from the GasLab New Benchmark. ~Forrest (6/06/2006)
@@ -95,6 +96,11 @@ GRAPHICS-WINDOW
 40
 -40
 40
+0
+0
+1
+ticks
+30.0
 
 BUTTON
 19
@@ -107,8 +113,11 @@ NIL
 1
 T
 OBSERVER
-T
 NIL
+NIL
+NIL
+NIL
+1
 
 BUTTON
 99
@@ -123,6 +132,9 @@ T
 OBSERVER
 NIL
 NIL
+NIL
+NIL
+1
 
 BUTTON
 15
@@ -137,6 +149,9 @@ T
 OBSERVER
 NIL
 NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 @#$#@#$#@
@@ -408,8 +423,23 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 3.2pre2
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+@#$#@#$#@
+@#$#@#$#@
+default
+0.0
+-0.2 0 0.0 1.0
+0.0 1 1.0 0.0
+0.2 0 0.0 1.0
+link direction
+true
+0
+Line -7500403 true 150 150 90 180
+Line -7500403 true 150 150 210 180
+
+@#$#@#$#@
+0
 @#$#@#$#@

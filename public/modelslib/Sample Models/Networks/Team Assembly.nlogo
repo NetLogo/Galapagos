@@ -209,6 +209,10 @@ to explore ;; turtle procedure
   set component-size component-size + 1
   ask link-neighbors [ explore ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 347
@@ -482,24 +486,24 @@ Agents in a newly assembled team are colored blue if they are newcomers and yell
 Click the SETUP button to start with a single team.  Click GO ONCE to assemble an additional team.  Click GO to indefinitely assemble new teams.  You may wish to use the GO ONCE button for the first few steps to get a better sense of how the parameters affect the assembly of teams.
 
 ### Visualization Controls
-- LAYOUT?: controls whether or not the spring layout algorithm runs at each tick.  This procedure attempts to move the nodes around to make the structure of the network easier to see.  Switching off LAYOUT? will significantly increase the speed of the model.  
+- LAYOUT?: controls whether or not the spring layout algorithm runs at each tick.  This procedure attempts to move the nodes around to make the structure of the network easier to see.  Switching off LAYOUT? will significantly increase the speed of the model.
 - PLOT?: switches on and off the plots. Again, off speeds up the model.
 
 The REDO LAYOUT button lets you run the layout algorithm without assembling new teams.
 
 ### Parameters
-- TEAM-SIZE: the number of agents in a newly assembled team.  
-- MAX-DOWNTIME: the number of steps an agent will remain in the world without collaborating before it retires.  
-- P: the probability an incumbent is chosen to become a member of a new team  
+- TEAM-SIZE: the number of agents in a newly assembled team.
+- MAX-DOWNTIME: the number of steps an agent will remain in the world without collaborating before it retires.
+- P: the probability an incumbent is chosen to become a member of a new team
 - Q: the probability that the team being assembled will include a previous collaborator of an incumbent on the team, given that the team has at least one incumbent.
 
 ### Plots
-- LINK COUNTS: plots a stacked histogram of the number of links in the collaboration network over time.  The colors correspond to collaboration ties as follows:  
--- Blue: two newcomers  
--- Green: a newcomer and an incumbent  
--- Yellow: two incumbents that have not previously collaborated with one another  
--- Red: Repeat collaborators  
--  % OF AGENTS IN THE GIANT COMPONENT: plots the percentage of agents belonging to the largest connected component network over time.  
+- LINK COUNTS: plots a stacked histogram of the number of links in the collaboration network over time.  The colors correspond to collaboration ties as follows:
+-- Blue: two newcomers
+-- Green: a newcomer and an incumbent
+-- Yellow: two incumbents that have not previously collaborated with one another
+-- Red: Repeat collaborators
+-  % OF AGENTS IN THE GIANT COMPONENT: plots the percentage of agents belonging to the largest connected component network over time.
 - AVERAGE COMPONENT SIZE: plots the average size of isolated collaboration networks as a fraction of the total number of agents
 
 Using the plots, one can observe important features of the network, like the distribution of link types or the connectivity of the network vary over time.
@@ -544,9 +548,32 @@ Giant Component - shows how critical points exist in which a network can transit
 
 ## CREDITS AND REFERENCES
 
-This model is based on:  
-R Guimera, B Uzzi, J Spiro, L Amaral; Team Assembly Mechanisms Determine Collaboration Network Structure and Team Performance. Science 2005, V308, N5722, p697-702  
-http://amaral.northwestern.edu/Publications/Papers/Guimera-2005-Science-308-697.pdf
+This model is based on:
+R Guimera, B Uzzi, J Spiro, L Amaral; Team Assembly Mechanisms Determine Collaboration Network Structure and Team Performance. Science 2005, V308, N5722, p697-702 http://amaral-lab.org/media/publication_pdfs/Guimera-2005-Science-308-697.pdf
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Bakshy, E. and Wilensky, U. (2007).  NetLogo Team Assembly model.  http://ccl.northwestern.edu/netlogo/models/TeamAssembly.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Bakshy, E. -->
 @#$#@#$#@
 default
 true
@@ -831,7 +858,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]

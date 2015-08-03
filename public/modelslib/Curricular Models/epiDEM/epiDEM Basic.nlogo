@@ -164,6 +164,10 @@ end                                                                     ;; we ge
                                                                         ;; N - gamma*ln(S(0)) / beta = S(t) - gamma*ln(S(t)) / beta, where N is the initial 'susceptible' population
                                                                         ;; Since N >> 1
                                                                         ;; Using this, we have R_0 = beta*N / gamma = N*ln(S(0)/S(t)) / (K-S(t))
+
+
+; Copyright 2011 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 644
@@ -365,13 +369,12 @@ Because this model is so simplistic in nature, it facilitates mathematical analy
 
 This model incorporates all of the above assumptions, but each individual has a 5% chance of being initialized as infected. This model shows the disease spread as a phenomenon with an element of stochasticity. Small perturbations in the parameters included here can in fact lead to different final outcomes.
 
-Overall, this model helps users  
-1) engage in a new way of viewing/modeling epidemics that is more personable and relatable 
+Overall, this model helps users
+1) engage in a new way of viewing/modeling epidemics that is more personable and relatable
 2) understand how the reproduction number, R_0, represents the threshold for an epidemic
-3) think about different ways to calculate R_0, and the strengths and weaknesses in each approach  
-4) understand the relationship between derivatives and integrals, represented simply as rates and cumulative number of cases, and  
+3) think about different ways to calculate R_0, and the strengths and weaknesses in each approach
+4) understand the relationship between derivatives and integrals, represented simply as rates and cumulative number of cases, and
 5) provide opportunities to extend or change the model to include some properties of a disease that interest users the most.
-
 
 ## HOW IT WORKS
 
@@ -385,7 +388,6 @@ The graph INFECTION AND RECOVERY RATES shows the rate of change of the cumulativ
 
 At the end of the simulation, the R_0 reflects the estimate of the reproduction number, the final size relation that indicates whether there will be (or there was, in the model sense) an epidemic. This again closely follows the mathematical derivation that R_0 = beta*S(0)/ gamma = N*ln(S(0) / S(t)) / (N - S(t)), where N is the total population, S(0) is the initial number of susceptibles, and S(t) is the total number of susceptibles at time t. In this model, the R_0 estimate is the number of secondary infections that arise for an average infected individual over the course of the person's infected period.
 
-
 ## HOW TO USE IT
 
 The SETUP button creates individuals according to the parameter values chosen by the user. Each individual has a 5% chance of being initialized as infected. Once the model has been setup, push the GO button to run the model. GO starts the model and runs it continuously until GO is pushed again.
@@ -395,17 +397,16 @@ Note that in this model each time-step can be considered to be in hours, althoug
 What follows is a summary of the sliders in the model.
 
 INITIAL-PEOPLE (initialized to vary between 50 - 400): The total number of individuals in the simulation, determined by the user.
-INFECTION-CHANCE (10 - 100): Probability of disease transmission from one individual to another.  
-RECOVERY-CHANCE (10 - 100): Probability of an infected individual to recover.  
+INFECTION-CHANCE (10 - 100): Probability of disease transmission from one individual to another.
+RECOVERY-CHANCE (10 - 100): Probability of an infected individual to recover.
 AVERAGE-RECOVERY-TIME (50 - 300): The time it takes for an individual to recover on average. The actual individual's recovery time is pulled from a normal distribution centered around the AVERAGE-RECOVERY-TIME at its mean, with a standard deviation of a quarter of the AVERAGE-RECOVERY-TIME. Each time-step can be considered to be in hours, although any suitable time unit will do.
 
 A number of graphs are also plotted in this model.
 
-CUMULATIVE INFECTED AND RECOVERED: This plots the total percentage of infected and recovered individuals over the course of the disease spread.  
-POPULATIONS: This plots the total number of people with or without the flu over time. 
-INFECTION AND RECOVERY RATES: This plots the estimated rates at which the disease is spreading. BetaN is the rate at which the cumulative infected changes, and Gamma rate at which the cumulative recovered changes.  
+CUMULATIVE INFECTED AND RECOVERED: This plots the total percentage of infected and recovered individuals over the course of the disease spread.
+POPULATIONS: This plots the total number of people with or without the flu over time.
+INFECTION AND RECOVERY RATES: This plots the estimated rates at which the disease is spreading. BetaN is the rate at which the cumulative infected changes, and Gamma rate at which the cumulative recovered changes.
 R_0: This is an estimate of the reproduction number, only comparable to the Kermack McKendrick's definition if the initial number of infected were 1.
-
 
 ## THINGS TO NOTICE
 
@@ -413,17 +414,15 @@ As with many epidemiological models, the number of people becoming infected over
 
 Whenever there's a spread of the disease that reaches most of the population, we say that there was an epidemic. As mentioned before, the reproduction number indicates the number of secondary infections that arise as a result of introducing one infected person in a totally susceptible population, over the course of the infected person's contagious period (i.e. while the person is infected). If it is greater than 1, an epidemic occurs. If it is less than 1, then it is likely that the disease spread will stop short, and we call this an endemic.
 
-
 ## THINGS TO TRY
 
 Try running the model by varying one slider at a time. For example:
-How does increasing the number of initial people affect the disease spread?  
+How does increasing the number of initial people affect the disease spread?
 How does increasing the recovery chance the shape of the graphs? What about changes to average recovery time? Or the infection rate?
 
 What happens to the shape of the graphs as you increase the recovery chance and decrease the recovery time? Vice versa?
 
 Notice the graph Cumulative Infected and Recovered, and Infection and Recovery Rates. What are the relationships between the two? Why is the latter graph jagged?
-
 
 ## EXTENDING THE MODEL
 
@@ -437,13 +436,33 @@ Notice that each agent pulls from a truncated normal distribution, centered arou
 
 Notice that R_0 calculated in this model is a numerical estimate to the analytic R_0. In the special case of one infective introduced to a wholly susceptible population (i.e., the Kermack-McKendrick assumptions), the numerical estimations of R0 are very close to the analytic values.
 
-
 ## RELATED MODELS
 
-AIDS, Virus and Virus on a Network are related models. 
+AIDS, Virus and Virus on a Network are related models.
 
+## HOW TO CITE
 
-## CREDITS AND REFERENCES
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Yang, C. and Wilensky, U. (2011).  NetLogo epiDEM Basic model.  http://ccl.northwestern.edu/netlogo/models/epiDEMBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2011 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2011 Cite: Yang, C. -->
 @#$#@#$#@
 default
 true
@@ -746,7 +765,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

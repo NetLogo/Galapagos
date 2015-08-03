@@ -100,6 +100,10 @@ to apply-forces
     setxy new-x new-y
   ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 292
@@ -347,9 +351,9 @@ For basics on particle systems, start with Particle System Basic and Particle Sy
 
 ## HOW IT WORKS
 
-In this model each particle has three main behaviors:  
-- If there is room ahead, it continues its trajectory.  
-- If it's about to touch the floor, its velocity-y is reversed and scaled by a restitution coefficient.  
+In this model each particle has three main behaviors:
+- If there is room ahead, it continues its trajectory.
+- If it's about to touch the floor, its velocity-y is reversed and scaled by a restitution coefficient.
 - If it's about to touch the left side, right side or ceiling, it disappears.
 
 A particle with an initial velocity emerges from the top left of the world. It is subjected to the force of gravity, which slows it down and pulls it to the bottom of the world. In addition, forces of wind and viscosity are present. The maximum number of particles and the particle rate can be changed with the appropriate sliders. Finally, the step of the systems, which controls the precision of the system calculations can be increased or decreased, but it will change the speed of the systems since more calculations have to be done for a more precise simulation. Below, the use of each slider, button and switch is explained.
@@ -420,8 +424,8 @@ In order to avoid getting this error message, check if the patch in the followin
 
 ## RELATED MODELS
 
-Particle System Basic  
-Particle System Fountain  
+Particle System Basic
+Particle System Fountain
 Particle System Flame
 
 ## CREDITS AND REFERENCES
@@ -429,6 +433,30 @@ Particle System Flame
 See Particle System Basic for a list of references on particle systems.
 
 Thanks to Daniel Kornhauser for his work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Kornhauser, D. and Wilensky, U. (2007).  NetLogo Particle System Waterfall model.  http://ccl.northwestern.edu/netlogo/models/ParticleSystemWaterfall.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Kornhauser, D. -->
 @#$#@#$#@
 default
 true
@@ -872,7 +900,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup repeat 650 [ go ]
 @#$#@#$#@

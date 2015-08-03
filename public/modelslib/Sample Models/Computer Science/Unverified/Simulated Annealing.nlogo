@@ -81,6 +81,10 @@ to-report find-energy  ; patch-procedure
   ; maximum of 4, minimum of 0
   report unhappiness
 end
+
+
+; Copyright 2009 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 205
@@ -241,7 +245,7 @@ Press SETUP to initialize the model.  The image will be half black and half whit
 
 Press GO to run simulated annealing on the image.
 
-Adjust the COOLING-RATE slider to change how quickly the temperature drops.  
+Adjust the COOLING-RATE slider to change how quickly the temperature drops.
 The current temperature is shown in the TEMPERATURE monitor.
 
 The SWAP-RADIUS slider controls how far apart a pixel can be from another pixel to consider a swap with it.
@@ -276,9 +280,33 @@ Particle Swarm Optimization, Simple Genetic Algorithm, Crystallization Basic, Is
 
 ## CREDITS AND REFERENCES
 
-Original papers describing a simulated annealing  
-S. Kirkpatrick and C. D. Gelatt and M. P. Vecchi, Optimization by Simulated Annealing, Science, Vol 220, Number 4598, pages 671-680, 1983.  
+Original papers describing a simulated annealing
+S. Kirkpatrick and C. D. Gelatt and M. P. Vecchi, Optimization by Simulated Annealing, Science, Vol 220, Number 4598, pages 671-680, 1983.
 V. Cerny, A thermodynamical approach to the traveling salesman problem: an efficient simulation algorithm. Journal of Optimization Theory and Applications, 45:41-51, 1985
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Stonedahl, F. and Wilensky, U. (2009).  NetLogo Simulated Annealing model.  http://ccl.northwestern.edu/netlogo/models/SimulatedAnnealing.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2009 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2009 Cite: Stonedahl, F. -->
 @#$#@#$#@
 default
 true
@@ -563,7 +591,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

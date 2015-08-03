@@ -172,12 +172,16 @@ to update-alpha
     ]
   ]
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-290
-120
-555
-406
+307
+145
+572
+431
 25
 25
 5.0
@@ -201,10 +205,10 @@ ticks
 30.0
 
 SLIDER
-5
-90
-140
-123
+0
+171
+135
+204
 alpha
 alpha
 0.0010
@@ -216,25 +220,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-345
-80
-500
-113
+349
+103
+504
+136
 top-temp
 top-temp
 1.0
 100.0
-84
+81
 1.0
 1
 NIL
 HORIZONTAL
 
 SLIDER
-560
-185
-593
-340
+577
+210
+610
+365
 right-temp
 right-temp
 1.0
@@ -246,10 +250,10 @@ NIL
 VERTICAL
 
 SLIDER
-345
-410
-505
-443
+349
+433
+509
+466
 bottom-temp
 bottom-temp
 1.0
@@ -293,15 +297,15 @@ NIL
 1
 
 SLIDER
-250
-190
-283
-345
+267
+215
+300
+370
 left-temp
 left-temp
 1.0
 100.0
-1
+3
 1.0
 1
 NIL
@@ -342,10 +346,10 @@ NIL
 1
 
 BUTTON
-145
-90
-243
-123
+160
+173
+258
+206
 Update Alpha
 update-alpha
 NIL
@@ -359,14 +363,24 @@ NIL
 1
 
 CHOOSER
-5
-130
-140
-175
+3
+119
+138
+164
 material-type
 material-type
 "wood" "stone" "iron" "aluminum" "silver" "other"
 3
+
+TEXTBOX
+155
+90
+292
+163
+Choose a material and then press UPDATE ALPHA based on that material, or set ALPHA directly from the slider.
+11
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -394,28 +408,24 @@ Initialize the plate and edges to have temperatures that equal their respective 
 
 ## HOW TO USE IT
 
-There are five temperature sliders which enable users to set four fixed edge temperatures and one initial plate temperature:  
--- TOP-TEMP - Top edge temperature  
--- BOTTOM-TEMP - Bottom edge temperature  
--- IN-PLATE-TEMP - Initial plate temperature  
--- LEFT-TEMP - Left edge temperature  
+There are five temperature sliders which enable users to set four fixed edge temperatures and one initial plate temperature:
+-- TOP-TEMP - Top edge temperature
+-- BOTTOM-TEMP - Bottom edge temperature
+-- IN-PLATE-TEMP - Initial plate temperature
+-- LEFT-TEMP - Left edge temperature
 -- RIGHT-TEMP - Right edge temperature
 
-There are two sliders that govern the thermal diffusivity of the plate:  
--- MATERIAL-TYPE - The value of the chooser is that of the above chart.  You must press UPDATE ALPHA for this to change the value of ALPHA.  
+There are two sliders that govern the thermal diffusivity of the plate:
+-- MATERIAL-TYPE - The value of the chooser is that of the above chart.  You must press UPDATE ALPHA for this to change the value of ALPHA.
 -- ALPHA - The alpha constant of thermal diffusivity
 
-There are four buttons with the following functions:  
--- SETUP - Initializes the model  
--- GO - Runs the simulation indefinitely  
--- GO ONCE - Runs the simulation for 1 time step  
+There are four buttons with the following functions:
+-- SETUP - Initializes the model
+-- GO - Runs the simulation indefinitely
+-- GO ONCE - Runs the simulation for 1 time step
 -- UPDATE ALPHA - press this if you want to set ALPHA to a preset value based on a material selected by the MATERIAL-TYPE chooser
 
 The TIME monitor shows how many time steps the model has gone through.
-
-## THINGS TO TRY
-
-Set the paramters on the temperature sliders.  Pick a value for ALPHA (or pick MATERIAL-TYPE and press UPDATE ALPHA).  After you have changed all the sliders to values you like, press Setup followed by GO or GO ONCE.
 
 ## THINGS TO NOTICE
 
@@ -435,6 +445,8 @@ Keep track of the units:
 
 ## THINGS TO TRY
 
+Set the parameters on the temperature sliders.  Pick a value for ALPHA (or pick MATERIAL-TYPE and press UPDATE ALPHA).  After you have changed all the sliders to values you like, press Setup followed by GO or GO ONCE.
+
 Try different materials to observe the heat transfer speed.  How does this compare to physical experiments?
 
 Try the following sample settings:
@@ -451,7 +463,37 @@ Add a slider to alter this thickness.
 
 Try modeling derivative or combined boundary conditions.
 
-## CREDITS AND REFERENCES
+## RELATED MODELS
+
+Heat Diffusion - Alternative Gradient
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Heat Diffusion model.  http://ccl.northwestern.edu/netlogo/models/HeatDiffusion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -736,7 +778,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

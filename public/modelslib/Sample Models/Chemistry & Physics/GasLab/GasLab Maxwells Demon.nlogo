@@ -320,6 +320,10 @@ to random-position ;; particle procedure
   if round pxcor = 0
     [random-position]
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 325
@@ -584,39 +588,39 @@ The particles are modeled as hard balls with no internal energy except that whic
 
 Coloring of the particles is with respect to one speed (10).  Particles with a speed less than 5 are blue, ones that are more than 15 are red, while all in those in-between are green.
 
-Particles behave according to the following rules:  
-1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.  
-2. Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches).  
-3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.  
-4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.  
-5. Each turtle is assigned its new velocity, energy, and heading.  
+Particles behave according to the following rules:
+1. A particle moves in a straight line without changing its speed, unless it collides with another particle or bounces off the wall.
+2. Two particles "collide" if they find themselves on the same patch (NetLogo's View is composed of a grid of small squares called patches).
+3. A random axis is chosen, as if they are two balls that hit each other and this axis is the line connecting their centers.
+4. They exchange momentum and energy along that axis, according to the conservation of momentum and energy.  This calculation is done in the center of mass system.
+5. Each turtle is assigned its new velocity, energy, and heading.
 6. If a turtle finds itself on or very close to a wall of the container, it "bounces" -- that is, reflects its direction and keeps its same speed.
 
 The setup is the same as that for the "Two-Gas" model.  What is added is a "valve".  It transports fast particles from the left to the right chamber when they arrive at the turquoise strip, and slow particles from the right to the left chamber when they arrive at the violet strip.  When a particle passes through, it becomes larger for a short time and displays its speed.
 
 ## HOW TO USE IT
 
-Settings:  
-NUMBER-OF-PARTICLES: total number of particles in the two chambers  
-INIT-PARTICLE-SPEED: initial speed of all the particles  
+Settings:
+NUMBER-OF-PARTICLES: total number of particles in the two chambers
+INIT-PARTICLE-SPEED: initial speed of all the particles
 PARTICLE-MASS: particles' mass
 
-Other settings:  
-COLLIDE? If this is On, the particles collide.  If it is Off, they do not collide.  
-THRESHOLD: The threshold is how much faster or slower than the average speed a particle must be going to be transferred to the other chamber by the "valve".  
-DEMON?: If this is On, the valve is operating.  If it is Off, the valve does nothing.  
+Other settings:
+COLLIDE? If this is On, the particles collide.  If it is Off, they do not collide.
+THRESHOLD: The threshold is how much faster or slower than the average speed a particle must be going to be transferred to the other chamber by the "valve".
+DEMON?: If this is On, the valve is operating.  If it is Off, the valve does nothing.
 TIME-DISPLAY-PARTICLES: determines for how long the particles are visually enlarged and their speeds are labeled, before the go back to their original size.
 
 Initialize the model by pressing SETUP, and press GO to run it.
 
-Monitors:  
-AVERAGE SPEED:  average speed of all the particles.  
-AVERAGE SPEED LEFT: average particle speed in the left chamber.  
+Monitors:
+AVERAGE SPEED:  average speed of all the particles.
+AVERAGE SPEED LEFT: average particle speed in the left chamber.
 AVERAGE SPEED RIGHT: average particle speed in the right chamber.
 
-Plots:  
-PARTICLES COUNT: the number of particles in the left (turquoise) and right (violet) chambers.  
-AVERAGE ENERGIES: the average energy of the particles in the left and right chambers.  This is calculated as the average of 1/2 mv^2 for the particles.  
+Plots:
+PARTICLES COUNT: the number of particles in the left (turquoise) and right (violet) chambers.
+AVERAGE ENERGIES: the average energy of the particles in the left and right chambers.  This is calculated as the average of 1/2 mv^2 for the particles.
 AVERAGE SPEEDS:  the average speeds of the particles in both the left and the right chambers.
 
 ## THINGS TO NOTICE
@@ -648,6 +652,34 @@ Look at the other GasLab models.
 ## CREDITS AND REFERENCES
 
 This model was developed as part of the GasLab curriculum (http://ccl.northwestern.edu/curriculum/gaslab/) and has also been incorporated into the Connected Chemistry curriculum (http://ccl.northwestern.edu/curriculum/ConnectedChemistry/)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo GasLab Maxwells Demon model.  http://ccl.northwestern.edu/netlogo/models/GasLabMaxwellsDemon.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2002.
+
+<!-- 1997 2002 -->
 @#$#@#$#@
 default
 true
@@ -944,7 +976,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

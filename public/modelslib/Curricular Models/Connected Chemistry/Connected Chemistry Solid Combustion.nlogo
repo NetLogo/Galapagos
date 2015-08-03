@@ -1,7 +1,7 @@
 globals
 [
-  tick-length                                ;; clock variables
-  max-tick-length                            ;; the largest a tick length is allowed to be
+  tick-advance-amount                        ;; clock variables
+  max-tick-advance-amount                    ;; the largest a tick length is allowed to be
   box-edge                                   ;; distance of box edge from axes
   avg-energy                                 ;; keeps track of average kinetic energy of gas molecules
   fast medium slow                           ;; current counts
@@ -11,8 +11,8 @@ globals
   activation-energy                          ;; total kinetic energy of gas molecule involved in collision required for chemical reaction to occur
   total-oxygen-molecules                     ;; keeps track of total molecules
   total-nitrogen-molecules                   ;; keeps track of total molecules
-  total-carbondioxide-molecules              ;; keeps track of total molecules
-  total-carboncharcoal-atoms                 ;; keeps track of total molecules
+  total-carbon-dioxide-molecules             ;; keeps track of total molecules
+  total-carbon-charcoal-atoms                ;; keeps track of total molecules
 ]
 
 breed [ gas-molecules gas-molecule ]
@@ -30,7 +30,7 @@ to setup
   clear-all
   set particle-size 1.5
   set activation-energy 1000
-  set max-tick-length 0.01
+  set max-tick-advance-amount 0.01
   set max-energy 10000
   set box-edge (round (max-pxcor ))
   make-box
@@ -126,9 +126,9 @@ to go
   ask gas-molecules with [any? carbons-here] [remove-from-matrix]
   visualize-vibrational-energy
   ask gas-molecules with [shape = "oxygen"] [ check-for-reaction ]
-  calculate-tick-length
+  calculate-tick-advance-amount
   update-variables
-  tick-advance tick-length
+  tick-advance tick-advance-amount
   update-plots
   display
 end
@@ -138,8 +138,8 @@ to update-variables
   set avg-energy mean [energy ] of gas-molecules
   set total-oxygen-molecules count gas-molecules with [shape = "oxygen"]
   set total-nitrogen-molecules count gas-molecules with [shape = "nitrogen"]
-  set total-carbondioxide-molecules count gas-molecules with [shape = "co2"]
-  set total-carboncharcoal-atoms count carbons
+  set total-carbon-dioxide-molecules count gas-molecules with [shape = "co2"]
+  set total-carbon-charcoal-atoms count carbons
 end
 
 
@@ -200,9 +200,9 @@ end
 
 
 to move  ;; gas-molecules procedure
-  if patch-ahead (speed * tick-length) != patch-here
+  if patch-ahead (speed * tick-advance-amount) != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-length)
+  jump (speed * tick-advance-amount)
 end
 
 
@@ -227,7 +227,7 @@ to speed-up-one-molecule
     set speed speed-from-energy
     pendown
   ]
-  calculate-tick-length
+  calculate-tick-advance-amount
 end
 
 
@@ -237,17 +237,17 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;from GasLab
 
-to calculate-tick-length
-  ;; tick-length is calculated in such way that even the fastest
+to calculate-tick-advance-amount
+  ;; tick-advance-amount is calculated in such way that even the fastest
   ;; gas-molecules will jump at most 1 patch length in a clock tick. As
-  ;; gas-molecules jump (speed * tick-length) at every clock tick, making
+  ;; gas-molecules jump (speed * tick-advance-amount) at every clock tick, making
   ;; tick length the inverse of the speed of the fastest gas-molecules
   ;; (1/max speed) assures that. Having each gas-molecules advance at most
    ; one patch-length is necessary for it not to "jump over" a wall
    ; or another gas-molecules.
   ifelse any? gas-molecules with [speed > 0]
-    [ set tick-length min list (1 / (ceiling max [speed] of gas-molecules)) max-tick-length ]
-    [ set tick-length max-tick-length ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of gas-molecules)) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -378,6 +378,10 @@ to-report last-n [n the-list]
     [ report the-list ]
     [ report last-n n butfirst the-list ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 305
@@ -472,8 +476,8 @@ true
 "" ""
 PENS
 "Oxygen" 1.0 0 -13345367 true "" "plotxy ticks total-oxygen-molecules"
-"Carbon Dioxide" 1.0 0 -4539718 true "" "plotxy ticks total-carbondioxide-molecules"
-"Charcoal" 1.0 0 -955883 true "" "plotxy ticks total-carboncharcoal-atoms"
+"Carbon Dioxide" 1.0 0 -4539718 true "" "plotxy ticks total-carbon-dioxide-molecules"
+"Charcoal" 1.0 0 -955883 true "" "plotxy ticks total-carbon-charcoal-atoms"
 "Nitrogen" 1.0 0 -6565750 true "" "plotxy ticks total-nitrogen-molecules"
 
 SLIDER
@@ -579,7 +583,6 @@ C and O are called the reactants and CO2 is the product of the reaction.
 
 In this model, charcoal is modeled as a block o pure solid of 100% carbon.  The surrounding gas is modeled as oxygen and nitrogen.  Nitrogen is treated as an inert gas in this model that neither reacts with the oxygen nor the carbon.  In reality, at high temperatures, molecular nitrogen and oxygen can combine to form nitric oxide.  And at high temperatures and pressures two N2 molecules can react to become N4, which is called nitrogen diamond.  Neither of these reactions are represented in this model.
 
-
 ## HOW IT WORKS
 
 For a reaction to occur, oxygen (O2) and carbon (C) must have enough energy to break the atomic bond in oxygen and allow the atoms to rearrange to make CO2.  This bond breaking energy threshold is called the activation energy.
@@ -612,7 +615,6 @@ How many molecules of oxygen are needed to completely react with the 6 x 6 charc
 
 Why do different geometries of carbon atoms in the charcoal solid react more or less quickly, even if the number of carbon atoms is the same?
 
-
 ## THINGS TO TRY
 
 Try Different ENERGY-RELEASED levels INITIAL-GAS-TEMP values to make the chemical reaction occur at different rates (or not at all).
@@ -637,16 +639,43 @@ Add a pathway for incomplete combustion:  2C + 02  --> 2CO
 Add a pathway for generating nitrous oxide:  2C + 02  --> 2NO
     and the conditions it occurs under.
 
-
 ## NETLOGO FEATURES
 
 Uses GasLab particle collision code.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2007).  NetLogo Connected Chemistry Solid Combustion model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistrySolidCombustion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 ConChem Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -964,7 +993,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

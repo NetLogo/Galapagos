@@ -7,6 +7,7 @@ to setup
   ask turtle 0 [ fd 7 ]
   ask turtle 1 [ fd 14 ]
   ask turtle 2 [ fd 7 ]
+  reset-ticks
 end
 
 ;;  This procedure colors all the patches neighboring each turtle.
@@ -16,6 +17,7 @@ to paint-neighbors
   clear-patches
   ask turtles
     [ paint-agents neighbors ]
+  display
 end
 
 ;;  This procedure is similar to paint-neighbors, but uses the neighbors4 reporter.
@@ -26,6 +28,7 @@ to paint-neighbors4
   clear-patches
   ask turtles
     [ paint-agents neighbors4 ]
+  display
 end
 
 ;;  This procedure uses in-radius to paint a "circle" around each turtle.
@@ -39,6 +42,7 @@ to paint-in-radius
   clear-patches
   ask turtles
     [ paint-agents patches in-radius radius ]
+  display
 end
 
 ;;  This procedure uses the at-points reporter to paint an arbitrary neighborhood.
@@ -58,12 +62,18 @@ to paint-at-points
     if points = "line-up"
       [ paint-agents patches at-points [[0 1] [0 2] [0 3] [0 4]] ]
   ]
+  display
 end
 
 ;; This is a helper procedure, used to set the color of a set of patches.
 to paint-agents [agents]
   ask agents [ set pcolor [color] of myself - 2 ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 304
@@ -86,8 +96,8 @@ GRAPHICS-WINDOW
 14
 -14
 14
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -236,6 +246,8 @@ To see `neighbors` and `neighbors4` in the sample models see Shepherds, Altruism
 To see `in-radius` in the sample models see Fireflies, Flocking, and Simple Kinetics 3.
 
 To see `at-points` in the sample models see the Crystallization models, and Wave Machine.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -520,7 +532,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 paint-neighbors

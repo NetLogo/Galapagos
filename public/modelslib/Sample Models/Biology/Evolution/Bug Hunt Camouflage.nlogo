@@ -267,6 +267,10 @@ to set-phenotype-color  ;; turtle procedure
                   ((green-gene / 100) * 255)
                   ((blue-gene  / 100) * 255))
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 536
@@ -762,7 +766,7 @@ Because this model depends on interaction with the user, we measure the passage 
 In the code for flashing the bugs, we use `ask-concurrent`.  We could have avoided it as follows, but the downside is that an extra turtle variable would have been required.
 
       turtles-own [old-color]
-    
+
       ask bugs [ set old-color color ]
       repeat 3 [
         ask bugs [ set color black ]
@@ -775,15 +779,38 @@ In the code for flashing the bugs, we use `ask-concurrent`.  We could have avoid
       ask bugs [ set color old-color ]
       display
 
-
 ## RELATED MODELS
 
-Bug Hunt Speeds  
+Bug Hunt Speeds
 Peppered Moths
 
 ## CREDITS AND REFERENCES
 
-Inspired by this: BugHunt! Macintosh freeware: http://bcrc.bio.umass.edu/BugHunt/
+Inspired by this: BugHunt! Macintosh freeware: https://web.archive.org/web/20101213084130/http://bcrc.bio.umass.edu/BugHunt/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Novak, M. and Wilensky, U. (2005).  NetLogo Bug Hunt Camouflage model.  http://ccl.northwestern.edu/netlogo/models/BugHuntCamouflage.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 Cite: Novak, M. -->
 @#$#@#$#@
 default
 true
@@ -1119,7 +1146,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

@@ -1,0 +1,18 @@
+sudo: false
+cache:
+  apt: true
+  directories:
+  - $HOME/.ivy2
+  - $HOME/.sbt/boot
+  - $HOME/.sbt/launchers
+addons:
+  apt:
+    packages:
+    - aspell
+    - aspell-en
+language: scala
+scala:
+   - 2.11.6
+notifications:
+  email:
+    - nicolaspayette@gmail.com

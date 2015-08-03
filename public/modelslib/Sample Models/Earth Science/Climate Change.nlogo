@@ -215,6 +215,10 @@ to run-CO2
     fd dist ;; move forward a bit
   ]
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 317
@@ -472,7 +476,7 @@ What happens to the arrowhead when it hits the earth? Describe its later path. D
 
 1. Play with the model. Change the albedo and run the model. Add clouds and CO2 to the model and then watch a single sunlight arrowhead. What is the highest earth temperature you can produce?
 
-2. Run the model with a bright sun but no clouds and no CO2. What happens to the temperature? It should rise quickly and then settle down around 50 degrees. Why does it stop rising? Why does the temperature continue to bounce around? Remember, the temperature reflects the number of red dots in the earth. When the temperature is constant, there are about as many incoming yellow arrowheads as outgoing IR ones. Why?
+2. Run the model with a bright sun but no clouds and no CO2. What happens to the temperature? It should rise quickly and then settle down around 37 degrees. Why does it stop rising? Why does the temperature continue to bounce around? Remember, the temperature reflects the number of red dots in the earth. When the temperature is constant, there are about as many incoming yellow arrowheads as outgoing IR ones. Why?
 
 3. Explore the effect of albedo holding everything else constant. Does increasing the albedo increase or decrease the earth temperature? When you experiment, be sure to run the model long enough for the temperature to settle down.
 
@@ -495,6 +499,30 @@ Daisyworld
 ## CREDITS AND REFERENCES
 
 This model is based on an earlier version created in 2005 by Robert Tinker for the TELS project.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Tinker, R. and Wilensky, U. (2007).  NetLogo Climate Change model.  http://ccl.northwestern.edu/netlogo/models/ClimateChange.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Tinker, R. -->
 @#$#@#$#@
 default
 true
@@ -819,7 +847,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup add-cloud add-cloud add-cloud repeat 800 [ go ]
 @#$#@#$#@

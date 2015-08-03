@@ -58,6 +58,10 @@ to draw-circle
             [ set pcolor black ] ]
       display ]
 end
+
+
+; Copyright 2002 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 298
@@ -199,7 +203,7 @@ The CA can be summarized with the following core rules:
 
       W W  ->  W W                B W  ->  W W            B W  ->  W B
       W W      W W                W W      W B            W B      B W
-    
+
       B W  ->  W B                W B  ->  B B            B B  ->  B B
       B W      W B                B B      B W            B B      B B
 
@@ -207,14 +211,14 @@ It applies these rules to the even lattice of 2x2 squares followed by the odd la
 
 ## HOW TO USE IT
 
-The basic controls for the model are:  
-SETUP - Sets up patches with a given percentage of particles  
-DENSITY - Percentage of particles in gas  
-GO - Run the model  
+The basic controls for the model are:
+SETUP - Sets up patches with a given percentage of particles
+DENSITY - Percentage of particles in gas
+GO - Run the model
 REVERSE - Run the model in reverse
 
-These controls let you "paint" an initial setup in the view using the mouse:  
-DRAW-CIRCLE - Clicking any location in the view creates a solid circle of particles  
+These controls let you "paint" an initial setup in the view using the mouse:
+DRAW-CIRCLE - Clicking any location in the view creates a solid circle of particles
 RADIUS - Controls the radius of the circles
 
 ## THINGS TO NOTICE
@@ -254,6 +258,32 @@ U. Frisch, B. Hasslacher & Y. Pomeau, Lattice-gas automata for the Navier-Stokes
 T. Toffoli and N. Margolus. 1987. "Cellular Automata Machines: A New Environment for Modeling".
 
 Wolfram, S. 2002. A New Kind of Science. Wolfram Media Inc.  Champaign, IL.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2002).  NetLogo Lattice Gas Automaton model.  http://ccl.northwestern.edu/netlogo/models/LatticeGasAutomaton.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2002 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2002 -->
 @#$#@#$#@
 default
 true
@@ -538,7 +568,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 ask patch 0 0

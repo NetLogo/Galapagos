@@ -22,6 +22,11 @@ to go
 end
 
 ;; the actual plotting code is in the plot itself, in the Interface tab
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 315
@@ -107,6 +112,8 @@ PENS
 ## WHAT IS IT?
 
 This shows all of the code needed to set up a plot which will display two variables as the model runs.  In this case, the two variables are the x-coordinate and the y-coordinate of a turtle.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -391,7 +398,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

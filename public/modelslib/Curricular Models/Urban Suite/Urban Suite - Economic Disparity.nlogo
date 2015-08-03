@@ -2,10 +2,10 @@ breed [ rich a-rich ]
 breed [ poor a-poor ]
 breed [ jobs job ] ;; jobs are places of employment held by many people
 
-rich-own [utilityr]
-poor-own [utilityp]
+rich-own [utility-r]
+poor-own [utility-p]
 jobs-own [utility]
-patches-own [quality price sddist]
+patches-own [quality price sd-dist]
 globals [counter view-mode min-poor-util max-poor-util min-rich-util max-rich-util ]
 
 ;;
@@ -40,7 +40,7 @@ to setup-patches
   ]
   ask patches
   [
-    set sddist min [distance myself] of jobs
+    set sd-dist min [distance myself] of jobs
   ]
 end
 
@@ -166,11 +166,11 @@ to evaluate-poor
   let best-candidate max-one-of candidate-patches
     [ patch-utility-for-poor ]
   move-to best-candidate
-  set utilityp [ patch-utility-for-poor ] of best-candidate
+  set utility-p [ patch-utility-for-poor ] of best-candidate
 end
 
 to-report patch-utility-for-poor
-    report ( ( 1 / (sddist / 100 + 0.1) ) ^ ( 1 - poor-price-priority ) ) * ( ( 1 / price ) ^ ( 1 + poor-price-priority ) )
+    report ( ( 1 / (sd-dist / 100 + 0.1) ) ^ ( 1 - poor-price-priority ) ) * ( ( 1 / price ) ^ ( 1 + poor-price-priority ) )
 end
 
 to evaluate-rich
@@ -184,11 +184,11 @@ to evaluate-rich
   let best-candidate max-one-of candidate-patches
         [ patch-utility-for-rich ]
   move-to best-candidate
-  set utilityr [ patch-utility-for-rich ] of best-candidate
+  set utility-r [ patch-utility-for-rich ] of best-candidate
 end
 
 to-report patch-utility-for-rich
-  report ( ( 1 / (sddist + 0.1) ) ^ ( 1 - rich-quality-priority ) ) * ( quality ^ ( 1 + rich-quality-priority) )
+  report ( ( 1 / (sd-dist + 0.1) ) ^ ( 1 - rich-quality-priority ) ) * ( quality ^ ( 1 + rich-quality-priority) )
 end
 
 to kill-poor
@@ -214,7 +214,7 @@ to kill-service
   ask min-one-of jobs [who]
     [ die ]
   ask patches
-    [ set sddist min [distance myself + .01] of jobs ]
+    [ set sd-dist min [distance myself + .01] of jobs ]
 end
 
 to locate-service
@@ -233,7 +233,7 @@ to locate-service
       ]
     ]
     ask patches
-      [ set sddist min [distance myself + .01] of jobs ]
+      [ set sd-dist min [distance myself + .01] of jobs ]
   ]
 end
 
@@ -252,7 +252,7 @@ to evaluate-job
   ;;
   ;; On the other hand, companies would like to pay less rent, and so they may prefer to buy
   ;; land at low real-estate values
-  ;; (particularly true for industrial sectors, which have no need for consumers neraby)
+  ;; (particularly true for industrial sectors, which have no need for consumers nearby)
   let best-candidate max-one-of candidate-patches [ price ]
   move-to best-candidate
   set utility [ price ] of best-candidate
@@ -290,7 +290,7 @@ to update-patch-color
   ][
   ifelse view-mode = "dist"
   [
-    set pcolor scale-color blue sddist  ( 0.45 * ( max-pxcor * 1.414 ) ) ( 0.05 * ( max-pxcor * 1.414 ) )
+    set pcolor scale-color blue sd-dist  ( 0.45 * ( max-pxcor * 1.414 ) ) ( 0.05 * ( max-pxcor * 1.414 ) )
   ][
   ifelse view-mode = "poor-utility"
   [
@@ -309,29 +309,33 @@ end
 ;;
 
 to do-plots
-  let rtotal 0
-  let ptotal 0
+  let r-total 0
+  let p-total 0
   let step 0
-  let rtime 0
-  let ptime 0
+  let r-time 0
+  let p-time 0
 
   set-current-plot "Travel Distance"
-  set rtotal 0
-  set rtime 0
-  set ptotal 0
-  set ptime 0
+  set r-total 0
+  set r-time 0
+  set p-total 0
+  set p-time 0
   set-current-plot-pen "rich"
   plot median [ min [distance myself] of jobs ] of rich
 
   set-current-plot-pen "poor"
   plot median [ min [distance myself] of jobs ] of poor
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-323
-11
-778
-487
+350
+10
+805
+486
 44
 44
 5.0
@@ -355,10 +359,10 @@ ticks
 30.0
 
 BUTTON
-41
-24
-119
-57
+60
+15
+138
+48
 NIL
 setup
 NIL
@@ -372,10 +376,10 @@ NIL
 1
 
 BUTTON
-121
-24
-197
-57
+140
+15
+216
+48
 NIL
 go
 T
@@ -386,13 +390,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
-150
-160
-183
+140
+170
+173
 number-of-tests
 number-of-tests
 0
@@ -404,10 +408,10 @@ NIL
 HORIZONTAL
 
 PLOT
-25
-296
-305
-481
+10
+285
+335
+485
 Travel Distance
 time
 # cells
@@ -423,10 +427,10 @@ PENS
 "poor" 1.0 0 -14070903 true "" ""
 
 BUTTON
-199
-24
-277
-57
+218
+15
+296
+48
 go-once
 go
 NIL
@@ -437,13 +441,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-39
-74
-118
-107
+35
+60
+125
+93
 view price
 set view-mode \"price\"\nupdate-view
 NIL
@@ -454,13 +458,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-120
-74
-196
-107
+130
+60
+220
+93
 view quality
 set view-mode \"quality\"\nupdate-view
 NIL
@@ -471,13 +475,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
-185
-160
-218
+175
+170
+208
 residents-per-job
 residents-per-job
 0
@@ -489,10 +493,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-162
-220
-312
-253
+175
+210
+335
+243
 poor-per-step
 poor-per-step
 0
@@ -504,10 +508,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-162
-255
-312
-288
+175
+245
+335
+278
 rich-per-step
 rich-per-step
 0
@@ -519,10 +523,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-198
-74
-275
-107
+225
+60
+315
+93
 view dist
 set view-mode \"dist\"\nupdate-view
 NIL
@@ -533,13 +537,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
-162
-150
-312
-183
+175
+140
+335
+173
 poor-price-priority
 poor-price-priority
 -1
@@ -551,10 +555,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-162
-185
-312
-218
+175
+175
+335
+208
 rich-quality-priority
 rich-quality-priority
 -1
@@ -567,9 +571,9 @@ HORIZONTAL
 
 SLIDER
 10
-220
-160
-253
+210
+170
+243
 max-jobs
 max-jobs
 5
@@ -582,9 +586,9 @@ HORIZONTAL
 
 SLIDER
 10
-255
-160
-288
+245
+170
+278
 death-rate
 death-rate
 0
@@ -596,10 +600,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-783
-12
-858
-57
+810
+11
+885
+56
 # of jobs
 count jobs
 17
@@ -607,10 +611,10 @@ count jobs
 11
 
 MONITOR
-783
-62
-858
-107
+810
+61
+885
+106
 population
 count poor + count rich
 17
@@ -618,10 +622,10 @@ count poor + count rich
 11
 
 BUTTON
-39
-109
-154
-142
+54
+99
+169
+132
 view rich-utility
 set view-mode \"rich-utility\"\nupdate-view
 NIL
@@ -632,13 +636,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-156
-109
-275
-142
+175
+100
+294
+133
 view poor-utility
 set view-mode \"poor-utility\"\nupdate-view
 NIL
@@ -649,13 +653,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
-783
-112
-858
-157
+810
+111
+885
+156
 poor pop
 count poor
 17
@@ -663,10 +667,10 @@ count poor
 11
 
 MONITOR
-783
-162
-858
-207
+810
+161
+885
+206
 rich pop
 count rich
 17
@@ -768,7 +772,7 @@ It might also be interesting to compare it to the models "Wealth Distribution" a
 
 ## CREDITS AND REFERENCES
 
-This model was loosely based on a model originally written by William Rand and Derek Robinson as part of the Sluce Project at the University of Michigan (http://www.cscs.umich.edu/sluce).  For more about the original model (SOME) that was the basis for this model, please see:
+This model was loosely based on a model originally written by William Rand and Derek Robinson as part of the Sluce Project at the University of Michigan ([http://vserver1.cscs.lsa.umich.edu/sluce/](http://vserver1.cscs.lsa.umich.edu/sluce/)).  For more about the original model (SOME) that was the basis for this model, please see:
 
 Brown D.G., Robinson D.T., Nassauer J.I., An L., Page S.E., Low B., Rand W., Zellner M., and R. Riolo (In Press) "Exurbia from the Bottom-Up: Agent-Based Modeling and Empirical Requirements." Geoforum.
 
@@ -778,7 +782,31 @@ Further modifications and refinements were made by members of the Center for Con
 
 The Urban Suite models were developed as part of the Procedural Modeling of Cities project, under the sponsorship of NSF ITR award 0326542, Electronic Arts & Maxis.
 
-Please see the project web site ( http://ccl.northwestern.edu/cities/ ) for more information.
+Please see the project web site ([http://ccl.northwestern.edu/cities/](http://ccl.northwestern.edu/cities/)) for more information.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Felsen, M. and Wilensky, U. (2007).  NetLogo Urban Suite - Economic Disparity model.  http://ccl.northwestern.edu/netlogo/models/UrbanSuite-EconomicDisparity.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: Felsen, M. -->
 @#$#@#$#@
 default
 true
@@ -1020,7 +1048,7 @@ Polygon -6459832 true true 46 128 33 120 21 118 11 123 3 138 5 160 13 178 9 192 
 Polygon -6459832 true true 67 122 96 126 63 144
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1038,5 +1066,5 @@ Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 
 @#$#@#$#@
-0
+1
 @#$#@#$#@

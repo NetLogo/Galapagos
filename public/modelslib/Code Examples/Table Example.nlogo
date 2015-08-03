@@ -42,6 +42,11 @@ to test1
   if table:length t != 0 [ user-message "should have no entries" ]
 
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 265
@@ -64,8 +69,8 @@ GRAPHICS-WINDOW
 16
 0
 0
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -98,6 +103,8 @@ OUTPUT
 ## WHAT IS IT?
 
 This model demonstrates basic usage of the table extension.
+
+<!-- 2011 -->
 @#$#@#$#@
 default
 true
@@ -382,7 +389,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

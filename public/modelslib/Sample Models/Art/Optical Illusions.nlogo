@@ -19,6 +19,7 @@ to illusion-1
     [ sprout 1
         [ set color white
           set size 1.7 ] ]
+  display
 end
 
 to illusion-2
@@ -41,6 +42,7 @@ to illusion-2
     [ set color black
       set shape "circle"
       set size 5 ]
+  display
 end
 
 to illusion-3
@@ -64,6 +66,7 @@ to illusion-3
   ;; move every other row over 1 to the left
   ask turtles with [pycor mod 16 = 12 ]
     [ set xcor xcor - 1 ]
+  display
 end
 
 to illusion-4
@@ -97,6 +100,7 @@ to illusion-4
               set heading 60 * counter
               fd 8
               set counter counter + 1 ] ] ]
+  display
 end
 
 to illusion-5
@@ -120,6 +124,7 @@ to illusion-5
   crt 1
     [ set shape "circle"
       set color black ]
+  display
 end
 
 to illusion-6
@@ -140,6 +145,7 @@ to illusion-6
       ]
     ]
   ]
+  display
 end
 
 to illusion-7
@@ -157,7 +163,12 @@ to illusion-7
     [ set color black ]
     [ set color white ]
   ]
+  display
 end
+
+
+; Copyright 2005 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 190
@@ -180,8 +191,8 @@ GRAPHICS-WINDOW
 22
 -17
 17
-0
-0
+1
+1
 0
 ticks
 30.0
@@ -374,6 +385,30 @@ Other models that were created "for fun" include Frogger, Lunar Lander and other
 ## CREDITS AND REFERENCES
 
 Illusion #6 is based on the cover of the album "Merriweather Post Pavilion" by Animal Collective, which in turn is based on an illusion by Akiyoshi Kitaoka.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2005).  NetLogo Optical Illusions model.  http://ccl.northwestern.edu/netlogo/models/OpticalIllusions.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2005 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2005 -->
 @#$#@#$#@
 default
 true
@@ -696,7 +731,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 illusion-3
 @#$#@#$#@

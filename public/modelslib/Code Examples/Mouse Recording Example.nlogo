@@ -59,6 +59,11 @@ to follow-path
   set path but-first path               ;; removes the current coordinate pair from the beginning of the path
   set path lput (list x y) path         ;; adds the coordinate pair back onto the end of the list
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 224
@@ -135,6 +140,8 @@ Press \"go\", then use the mouse to draw in the view.
 ## WHAT IS IT?
 
 This is a demo presenting how to record and retrace movements of the mouse.  When the "go" button is pressed, the user can draw one or more lines with the mouse by clicking and dragging the mouse around the view.  Each set of drawn lines becomes a path along which a turtle travels, back and forth.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -419,7 +426,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

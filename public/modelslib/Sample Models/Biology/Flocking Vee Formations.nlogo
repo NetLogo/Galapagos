@@ -104,6 +104,10 @@ to turn-at-most [turn]  ;; turtle procedure
     rt turn
   ]
 end
+
+
+; Copyright 2009 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 200
@@ -358,20 +362,20 @@ Each bird starts out with a random position and heading in the world. If the bir
 
 ## HOW TO USE IT
 
-NUMBER-OF-BIRDS sets the number of birds in the world.  
+NUMBER-OF-BIRDS sets the number of birds in the world.
 Use SETUP to populate the world with birds, and GO to run the model.
 
-Vision Parameters:  
+Vision Parameters:
 VISION-DISTANCE and VISION-CONE defines the radius and angle span, respectively, of the area within which a bird can see another bird. A VISION-CONE of 120 means that the bird can see up to 60 degrees to its right and 60 degrees to its left. OBSTRUCTION-CONE defines the angle span for which a bird considers its vision to be obstructed by another bird.
 
-Motion Parameters:  
-BASE-SPEED defines the speed that birds will fly if they are not speeding up to catch another bird that they see, or slowing down to avoid colliding with a bird.  
-SPEED-CHANGE-FACTOR is the factor by which birds increase or decrease their speed, given as a fraction of their base speed.  A BASE-SPEED of 1 with a SPEED-CHANGE-FACTOR of 0.25 means that birds will travel at speeds of 0.75 (slow speed), 1.0 (normal speed), or 1.25 (fast speed).  
-UPDRAFT-DISTANCE defines how near to another bird one must be to take advantage of its upwash.  
-TOO-CLOSE defines how close one bird can be to another bird before slowing down to avoid collision.  
+Motion Parameters:
+BASE-SPEED defines the speed that birds will fly if they are not speeding up to catch another bird that they see, or slowing down to avoid colliding with a bird.
+SPEED-CHANGE-FACTOR is the factor by which birds increase or decrease their speed, given as a fraction of their base speed.  A BASE-SPEED of 1 with a SPEED-CHANGE-FACTOR of 0.25 means that birds will travel at speeds of 0.75 (slow speed), 1.0 (normal speed), or 1.25 (fast speed).
+UPDRAFT-DISTANCE defines how near to another bird one must be to take advantage of its upwash.
+TOO-CLOSE defines how close one bird can be to another bird before slowing down to avoid collision.
 MAX-TURN sets the maximum number of degrees that a bird can turn during a single tick.
 
-Visualization Parameters:  
+Visualization Parameters:
 If SHOW-UNHAPPY? is switched ON, birds that have not satisfied the conditions outlined in the HOW IT WORKS section are colored red, and all the birds that have are colored white. If SHOW-UNHAPPY? is OFF, birds are colored varying shades of yellow.
 
 ## THINGS TO NOTICE
@@ -408,8 +412,32 @@ Flocking
 
 ## CREDITS AND REFERENCES
 
-This model is loosely based on rules introduced in the paper:  
-Nathan, A. & Barbosa, V. C. (2008). V-like formations in flocks of artificial birds. Artificial Life, 14(2), pp. 179-188. (available at http://arxiv.org/pdf/cs/0611032)
+This model is loosely based on rules introduced in the paper:
+Nathan, A. & Barbosa, V. C. (2008). V-like formations in flocks of artificial birds. Artificial Life, 14(2), pp. 179-188. (available at http://arxiv.org/pdf/cs/0611032.pdf)
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilkerson-Jerde, M., Stonedahl, F. and Wilensky, U. (2009).  NetLogo Flocking Vee Formations model.  http://ccl.northwestern.edu/netlogo/models/FlockingVeeFormations.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2009 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2009 Cite: Wilkerson-Jerde, M., Stonedahl, F. -->
 @#$#@#$#@
 default
 true
@@ -694,7 +722,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 1000 [ go ]

@@ -1,10 +1,10 @@
 globals
 [
-  tick-length                 ;; how much we advance the tick counter this time through
-  max-tick-length             ;; the largest tick-length is allowed to be
+  tick-advance-amount                 ;; how much we advance the tick counter this time through
+  max-tick-advance-amount             ;; the largest tick-advance-amount is allowed to be
   box-x box-y                ;; patch coords of box's upper right corner
   total-particle-number
-  maxparticles  
+  maxparticles
 ]
 
 breed [ particles particle]
@@ -19,7 +19,7 @@ to setup
   ca reset-ticks
   set-default-shape particles "circle"
   set maxparticles 400
-  set tick-length 0
+  set tick-advance-amount 0
   ;; starting this at zero means that no particles will move until we've
   ;; calculated vsplit, which we won't even try to do until there are some
   ;; particles.
@@ -30,8 +30,8 @@ to go
   if bounce? [ ask particles [ bounce ] ] ;; all particles bounce
   ask particles [ move ]         ;; all particles move
   if collide? [ask particles  [check-for-particlecollision] ] ;; all particles collide
-  tick-advance tick-length
-  calculate-tick-length
+  tick-advance tick-advance-amount
+  calculate-tick-advance-amount
   display
 end
 
@@ -51,13 +51,13 @@ to bounce  ;; particle procedure
 end
 
 to move  ;; particle procedure
-  let next-patch patch-ahead (speed * tick-length)
+  let next-patch patch-ahead (speed * tick-advance-amount)
   ;; die if we're about to wrap...
-  if [pxcor] of next-patch = max-pxcor or [pxcor] of next-patch = min-pxcor 
+  if [pxcor] of next-patch = max-pxcor or [pxcor] of next-patch = min-pxcor
     or [pycor] of next-patch = max-pycor or [pycor] of next-patch = min-pycor [die]
   if next-patch != patch-here
     [ set last-collision nobody ]
-  jump (speed * tick-length)
+  jump (speed * tick-advance-amount)
 end
 
 to check-for-particlecollision ;; particle procedure
@@ -219,11 +219,11 @@ to place-particles
   display
 end
 
-to calculate-tick-length
+to calculate-tick-advance-amount
   ;; we need to check this, because if there are no
-  ;; particles left, trying to set the new tick-length will cause an error...
-  ifelse any? particles [set tick-length 1 / (ceiling max [speed] of particles)]
-    [set tick-length 0]
+  ;; particles left, trying to set the new tick-advance-amount will cause an error...
+  ifelse any? particles [set tick-advance-amount 1 / (ceiling max [speed] of particles)]
+    [set tick-advance-amount 0]
 end
 
 
@@ -231,7 +231,7 @@ end
 to paint-particles [n x y]
    ifelse ( count particles  <=  (maxparticles - n) )
    [
-     create-particles n 
+     create-particles n
      [
         set shape  "circle"
         setxy x y
@@ -247,18 +247,22 @@ to paint-particles [n x y]
   ]
   [user-message (word "The maximum number of particles allowed in this model is "  maxparticles  ".  You can not add "  n
   " more particles to the "  (count particles)  " you already have in the model")]
-  calculate-tick-length
+  calculate-tick-advance-amount
   set total-particle-number (count particles )
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 236
 10
-481
-253
+511
+306
 26
 26
-4.0
+5.0
 1
 10
 1
@@ -467,9 +471,39 @@ See other Connected Chemistry models.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2004).  NetLogo Connected Chemistry 1 Bike Tire model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistry1BikeTire.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 ConChem -->
 @#$#@#$#@
 default
 true
@@ -491,7 +525,7 @@ true
 0
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 set box-x 18

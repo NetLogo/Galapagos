@@ -91,6 +91,10 @@ to-report ydistance [other-patch]  ;; patch procedure
   report distancexy pxcor
                     [pycor] of other-patch
 end
+
+
+; Copyright 2003 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 309
@@ -339,15 +343,15 @@ The mechanism of "diffusion-driven instability" was first proposed by Alan Turin
 
 In building this model, we used information on this web site: http://classes.yale.edu/fractals/Panorama/Biology/Leopard/Leopard.html .
 
-New research published in Nature Genetics (Economou et al, 2012) appears to confirm the mechanisms the model proposes.
-http://www.nature.com/ng/journal/vaop/ncurrent/full/ng.1090.html
+Research published in Nature Genetics (Economou et al, 2012) appears to confirm the mechanisms the model proposes.
+http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3303118/
 
 A news article in IO9 by Alasdair Wilkins describing the research can be found here.
-http://io9.com/5886406/scientists-confirm-alan-turings-50+year+old-theory-for-why-tigers-have-stripes
+http://io9.com/5886406/scientists-confirm-alan-turings-50-year-old-theory-for-why-tigers-have-stripes
 
 Here is a quote from the Wilkins article:
 
->Turing's idea was that biological patterns --- such as a tiger's stripes or a 
+>Turing's idea was that biological patterns --- such as a tiger's stripes or a
 >leopard's spots - are formed by the interactions of a pair of morphogens, which
 >are the signaling molecules that govern tissue development. The particular pair
 >that Turing proposed was an activator and an inhibitor. Turing proposed that the
@@ -358,7 +362,7 @@ Here is a quote from the Wilkins article:
 >
 >This hypothesis has remained mostly just speculation until now, as researchers
 >at King's College London have now tested the idea in the mouths of mice. The
->roofs of mice's mouths contain regularly spaced ridges, and the researchers 
+>roofs of mice's mouths contain regularly spaced ridges, and the researchers
 >discovered the precise two morphogens that were working as activator and
 >inhibitor to create the pattern, just as Turing suggested. What's more, when the
 >researchers tampered with one morphogen or the other to increase or decrease
@@ -379,6 +383,32 @@ Here is a quote from the Wilkins article:
 Other new research published in the Journal of Experimental Biology (Egri et al, 2011) proposes an evolutionary explanation for the advantage conferred by stripes. http://jeb.biologists.org/content/215/5/736.abstract
 
 Thanks to Seth Tisue and Dor Abrahamson for their work on this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2003).  NetLogo Fur model.  http://ccl.northwestern.edu/netlogo/models/Fur.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2003 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2003 -->
 @#$#@#$#@
 default
 true
@@ -663,7 +693,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

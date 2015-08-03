@@ -1,7 +1,7 @@
 globals
 [
-  tick-length                         ;; the amount by wich we will advance ticks
-  max-tick-length                     ;; the largest a tick length is allowed to be
+  tick-advance-amount                         ;; the amount by which we will advance ticks
+  max-tick-advance-amount                     ;; the largest a tick length is allowed to be
   box-edge                            ;; distance of box edge from axes
   avg-speed-init avg-energy-init      ;; initial averages
   avg-speed avg-energy                ;; current averages
@@ -38,7 +38,7 @@ to setup
   set gravity-acceleration 9.8
   set-default-shape particles "circle"
   set-default-shape flashes "square"
-  set max-tick-length 0.1073
+  set max-tick-advance-amount 0.1073
   ;; box has constant size.
   set box-edge (max-pxcor)
   ;; make floor
@@ -58,7 +58,7 @@ to make-particles
     setup-particle
     random-position
   ]
-  calculate-tick-length
+  calculate-tick-advance-amount
 end
 
 to setup-particle  ;; particle procedure
@@ -87,10 +87,10 @@ to go
   [ if any? particles
     [ask min-one-of particles [who] [ pen-down ] ] ]
   [ ask particles [ pen-up ] ]
-  tick-advance tick-length
-  if floor ticks > floor (ticks - tick-length)
+  tick-advance tick-advance-amount
+  if floor ticks > floor (ticks - tick-advance-amount)
     [ update-variables ]
-  calculate-tick-length
+  calculate-tick-advance-amount
   ask flashes with [ticks - birthday > 0.4]
     [ die ]
   ask particles [ do-recolor ]
@@ -108,17 +108,17 @@ to update-variables
   set avg-energy  mean [energy] of particles
 end
 
-to calculate-tick-length
-  ;; tick-length is calculated in such way that even the fastest
+to calculate-tick-advance-amount
+  ;; tick-advance-amount is calculated in such way that even the fastest
   ;; particle will jump at most 1 patch length in a clock tick. As
-  ;; particles jump (speed * tick-length) at every clock tick, making
+  ;; particles jump (speed * tick-advance-amount) at every clock tick, making
   ;; tick length the inverse of the speed of the fastest particle
   ;; (1/max speed) assures that. Having each particle advance at most
   ;; one patch-length is necessary for it not to "jump over" a wall
   ;; or another particle.
   ifelse any? particles with [speed > 0]
-    [ set tick-length min list (1 / (ceiling max [speed] of particles)) max-tick-length ]
-    [ set tick-length max-tick-length ]
+    [ set tick-advance-amount min list (1 / (ceiling max [speed] of particles)) max-tick-advance-amount ]
+    [ set tick-advance-amount max-tick-advance-amount ]
 end
 
 
@@ -144,21 +144,21 @@ to bounce  ;; particle procedure
 end
 
 to move  ;; particle procedure
-  ;; In other GasLab models, we use "jump speed * tick-length" to move the
+  ;; In other GasLab models, we use "jump speed * tick-advance-amount" to move the
   ;; turtle the right distance along its current heading.  In this
   ;; model, though, the particles are affected by gravity as well, so we
   ;; need to offset the turtle vertically by an additional amount.  The
   ;; easiest way to do this is to use "setxy" instead of "jump".
-  ;; Trigonometry tells us that "jump speed * tick-length" is equivalent to:
-  ;;   setxy (xcor + sin heading * speed * tick-length)
-  ;;         (ycor + cos heading * speed * tick-length)
+  ;; Trigonometry tells us that "jump speed * tick-advance-amount" is equivalent to:
+  ;;   setxy (xcor + sin heading * speed * tick-advance-amount)
+  ;;         (ycor + cos heading * speed * tick-advance-amount)
   ;; so to take gravity into account we just need to alter ycor
   ;; by an additional amount given by the classical physics equation:
   ;;   y(t) = 0.5*a*t^2 + v*t + y(t-1)
-  ;; but taking tick-length into account, since tick-length is a multiplier of t.
-setxy (xcor + sin heading * speed * tick-length)
-           (ycor + cos heading * speed * tick-length - gravity-acceleration *
-           (0.5 * (tick-length ^ 2)))
+  ;; but taking tick-advance-amount into account, since tick-advance-amount is a multiplier of t.
+setxy (xcor + sin heading * speed * tick-advance-amount)
+           (ycor + cos heading * speed * tick-advance-amount - gravity-acceleration *
+           (0.5 * (tick-advance-amount ^ 2)))
   factor-gravity
 
   if (pycor >= max-pycor) [ die ]
@@ -166,7 +166,7 @@ end
 
 to factor-gravity  ;; turtle procedure
   let vx (sin heading * speed)
-  let vy (cos heading * speed) - (gravity-acceleration * tick-length)
+  let vy (cos heading * speed) - (gravity-acceleration * tick-advance-amount)
   set speed sqrt ((vy ^ 2) + (vx ^ 2))
   set heading atan vx vy
 end
@@ -350,6 +350,10 @@ end
 to recolornone
   set color green - 1
 end
+
+
+; Copyright 2006 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 337
@@ -372,11 +376,11 @@ GRAPHICS-WINDOW
 34
 -34
 34
-0
-0
+1
+1
 1
 ticks
-60.0
+120.0
 
 BUTTON
 7
@@ -561,7 +565,7 @@ acceleration from gravity
 @#$#@#$#@
 ## WHAT IS IT?
 
-In this model, a gaseous atmosphere is placed above the surface of a "planet". The  model explores the behavior of gas molecules that have an external force acting on them (gravity), and therefore are no longer considered an ideal gas.  This is the eighth in a sequence of models from the "Connected Chemistry" curriculum, exploring the behavior of gases.  The Connected Chemistry curriculum was initially developed as part of the Modeling Across the Curriculum (MAC) Project (http://ccl.northwestern.edu/curriculum/mac).
+In this model, a gaseous atmosphere is placed above the surface of a "planet". The model explores the behavior of gas molecules that have an external force acting on them (gravity), and therefore are no longer considered an ideal gas.  This is the eighth in a sequence of models from the "Connected Chemistry" curriculum, exploring the behavior of gases. The Connected Chemistry curriculum was initially developed as part of the Modeling Across the Curriculum (MAC) Project: http://ccl.northwestern.edu/curriculum/mac/.
 
 ## HOW IT WORKS
 
@@ -656,9 +660,37 @@ See other Connected Chemistry models.
 
 ## CREDITS AND REFERENCES
 
-This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry.
+This model is part of the Connected Chemistry curriculum.  See http://ccl.northwestern.edu/curriculum/chemistry/.
 
 We would like to thank Sharona Levy and Michael Novak for their substantial contributions to this model.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2006).  NetLogo Connected Chemistry Atmosphere model.  http://ccl.northwestern.edu/netlogo/models/ConnectedChemistryAtmosphere.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+To cite the Connected Chemistry curriculum as a whole, please use:
+
+* Wilensky, U., Levy, S. T., & Novak, M. (2004). Connected Chemistry curriculum. http://ccl.northwestern.edu/curriculum/chemistry/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2006 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2006 ConChem -->
 @#$#@#$#@
 default
 true
@@ -939,7 +971,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

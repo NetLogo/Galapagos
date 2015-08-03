@@ -10,6 +10,7 @@ to import-network
   import-attributes
   layout-circle (sort turtles) (max-pxcor - 1)
   import-links
+  reset-ticks
 end
 
 ;; This procedure reads in a files that contains node-specific attributes
@@ -61,6 +62,11 @@ end
 to-report get-node [id]
   report one-of turtles with [node-id = id]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 184
@@ -83,8 +89,8 @@ GRAPHICS-WINDOW
 17
 -17
 17
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -111,13 +117,19 @@ NIL
 
 The code example provides an illustration of how to import network data from external files.  This is useful when you have a specific network, perhaps created in another program or taken from real world data, that you would like to recreate in NetLogo.
 
-It imports data from two different files.  The first is the "attributes.txt" file, which contains information about the nodes -- in this case, the node-id, size, and color of each node. The second is the "links.txt" file, which contains information on how the nodes are connected and the strength of their connection.
+Note that the [Networks extension](http://ccl.northwestern.edu/netlogo/docs/nw.html) can automatically import networks from [GraphML](http://ccl.northwestern.edu/netlogo/docs/nw.html#load-graphml) and [many other formats](http://ccl.northwestern.edu/netlogo/docs/nw.html#load).
+
+The code example is useful when you have network data in a format not supported by the Networks extension.
+
+It imports data from two different files.  The first is the `"attributes.txt"` file, which contains information about the nodes -- in this case, the `node-id`, `size`, and `color` of each node. The second is the `"links.txt"` file, which contains information on how the nodes are connected and the strength of their connection.
 
 ## NETLOGO FEATURES
 
 The link primitives are used to represent and process connections between nodes.
 
 The file primitives are used to read data from external files.
+
+<!-- 2006 -->
 @#$#@#$#@
 default
 true
@@ -402,7 +414,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 import-network
 @#$#@#$#@

@@ -101,6 +101,11 @@ end
 to-report link-ycor
   report ([ycor] of end1 + [ycor] of end2) / 2
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 161
@@ -190,6 +195,8 @@ The math assumes that the links don't extend beyond the edges of the world.  If 
 To keep the math relatively simple, the code represents lines in slope-intercept form (y=mx+c); see http://mathworld.wolfram.com/Slope.html.
 
 Thanks to Gagandeep Singh for his work on this example.
+
+<!-- 2007 -->
 @#$#@#$#@
 default
 true
@@ -485,7 +492,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

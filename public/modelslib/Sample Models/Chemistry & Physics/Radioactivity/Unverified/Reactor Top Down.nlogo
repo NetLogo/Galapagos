@@ -105,6 +105,10 @@ to remove-rods ;; Button
     [ ask one-of rods [ die ] ]
   ]
 end
+
+
+; Copyright 1998 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 344
@@ -343,13 +347,13 @@ This model simulates the process of a nuclear fission reaction inside such a pla
 
 ## HOW TO USE IT
 
-The POWER-RATED slider sets the rated power (the amount of power production that you want to hold the reactor to), which is used for automatic control.  
+The POWER-RATED slider sets the rated power (the amount of power production that you want to hold the reactor to), which is used for automatic control.
 
-The PERCENT-FUEL slider control the percent of the reactor that is filled with fuel (red patches).  
+The PERCENT-FUEL slider control the percent of the reactor that is filled with fuel (red patches).
 
-The SPEND-FUEL switch controls whether or not the fuel is used up when a neutron hits it. (turns brown)  
+The SPEND-FUEL switch controls whether or not the fuel is used up when a neutron hits it. (turns brown)
 
-The ADD-RODS and REMOVE-RODS buttons work with the NUMBER slider to add or remove that number of rods (cyan turtles) from the reactor.  
+The ADD-RODS and REMOVE-RODS buttons work with the NUMBER slider to add or remove that number of rods (cyan turtles) from the reactor.
 
 The RELEASE NEUTRON button introduces a neutron (yellow turtle) into the reactor. It can be used at anytime before or during the reaction.
 
@@ -380,7 +384,7 @@ The automatic controller is basically an ON and OFF controller. It is based on 1
                          Power > Power Rated   Power < Power Rated
                          -------------------   -------------------
       Power Change > 0:       Add Rods            Do Nothing
-    
+
       Power Change < 0:      Do nothing           Remove Rods
 
 The controller should be fine-tuned.
@@ -399,8 +403,8 @@ Absorbing free neutrons to control the reaction process is only one of the contr
 
 Neither setting of SPEND-FUEL? is completely realistic, with it on the fuel is used up too fast and there's hardly a reaction, with it off there is too much reacting and too many rods are needed to control the reaction.
 
-Two additional ways to deal with fuel are listed below, can you think of more?  
-* have there be a certain ammount of fuel at each red patch, then it won't get used up right away, but won't go on forever either.  
+Two additional ways to deal with fuel are listed below, can you think of more?
+* have there be a certain ammount of fuel at each red patch, then it won't get used up right away, but won't go on forever either.
 * limit how often a patch can react, that way, with spend-fuel? off the neutrons won't react out of control in small areas.
 
 ## RELATED MODELS
@@ -411,7 +415,33 @@ Together with the Reactor X-Section model you can get a decent representation of
 
 More so than most other NetLogo models, the plot of 'Nuclear Reactor' plays an active role in the simulation. When using the manual controller, it is quite helpful to watch the power curve, to tell when things are getting out of hand.
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1998).  NetLogo Reactor Top Down model.  http://ccl.northwestern.edu/netlogo/models/ReactorTopDown.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1998 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -696,7 +726,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 60 [ auto-react ]

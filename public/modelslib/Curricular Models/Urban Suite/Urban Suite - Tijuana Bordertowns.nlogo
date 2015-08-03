@@ -14,9 +14,18 @@ builders-own [ too-close energy weight block-size origin]
 second-order-builders-own [ energy weight origin]
 third-order-builders-own [ energy weight origin ]
 
-globals [ values weights marginal-value marginal-weight crossed third-phase max-cost]
+globals [ values weights marginal-value marginal-weight crossed third-phase max-cost setup-done? ]
 
 to setup
+
+  if setup-done? = true [ ; note that setup-done? is 0 after clear-all
+    user-message (word
+      "Setup of the cityscape is already completed. "
+      "Press GO if you want to run the simulation "
+      "or CLEAR if you want to start over.")
+    stop
+  ]
+
   tick
 
   generate-cityscape
@@ -32,7 +41,9 @@ to setup
 
   if third-phase = "stop"
      [ ask patches [ set land-value precision (land-value) 2 ]
-       reset-ticks stop ]
+       reset-ticks
+       set setup-done? true
+       stop ]
 end
 
 to generate-cityscape
@@ -378,6 +389,15 @@ end
 
 
 to go
+  
+    if setup-done? != true [
+      user-message (word
+        "Setup of the cityscape is not completed. "
+        "Press CITYSCAPE and let it run until it stops "
+        "before trying to press GO again.")
+      stop
+    ]
+  
     tick
     if count third-order-builders != 0 [
       set values ( mean [ land-value ] of third-order-builders )
@@ -441,11 +461,11 @@ end
 
 to migrate-static
     ask one-of migrants
-        [ let mypatch patch-here
+        [ let my-patch patch-here
           let newcomer one-of patches in-radius-nowrap 1.5 with
             [ occupied = "no"
               and elevation > 8.5
-              and land-value <= [land-value] of mypatch ]
+              and land-value <= [land-value] of my-patch ]
           if newcomer != nobody
           [ hatch 1 [ setxy ( [pxcor] of newcomer ) ( [pycor] of newcomer ) ]
             set occupied [origin] of self
@@ -579,6 +599,10 @@ to get-costs
 
        set living-expenses ( land-value + electricity + water + food + transport-costs + other-utilities )
 end
+
+
+; Copyright 2007 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 276
@@ -1031,7 +1055,7 @@ CROSSING-TICKS determined how many ticks of the model before a percentage of res
 
 \#-SERVICE-CENTERS determines the number of service centers (shown as large circles in the view) that are created when the city is created.
 
-INIT-DENSITY determines the initial number of migrants at the stat of a model run.
+INIT-DENSITY determines the initial number of migrants at the start of a model run.
 
 REQUIRED-CAPITAL determines how much savings a migrant must have before moving from their current location to a new location.
 
@@ -1076,6 +1100,30 @@ Further modification and documentation was performed by members of the Center fo
 The Urban Suite models were developed as part of the Procedural Modeling of Cities project, under the sponsorship of NSF ITR award 0326542, Electronic Arts & Maxis.
 
 Please see the project web site ( http://ccl.northwestern.edu/cities/ ) for more information.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* De Leon, F.D., Felsen, M. and Wilensky, U. (2007).  NetLogo Urban Suite - Tijuana Bordertowns model.  http://ccl.northwestern.edu/netlogo/models/UrbanSuite-TijuanaBordertowns.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2007 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+<!-- 2007 Cite: De Leon, F.D., Felsen, M. -->
 @#$#@#$#@
 default
 true
@@ -1418,7 +1466,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 ask patches [ set pcolor white ]
 reset-ticks

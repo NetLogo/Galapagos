@@ -74,6 +74,11 @@ to update-spinner
   [ set heading ticks * 30
     set label ticks ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 321
@@ -213,6 +218,8 @@ If you want to see how the experiment was set up, select the experiment in the B
 Together, those commands make a complete movie.
 
 Since it isn't a real experiment, the setup does not vary any variables, and it does not use any reporters to measure the run.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -504,7 +511,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup repeat 175 [ go ]
 @#$#@#$#@

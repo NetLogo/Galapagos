@@ -43,6 +43,10 @@ to go
   ]
   tick
 end
+
+
+; Copyright 2001 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 265
@@ -204,12 +208,12 @@ Perhaps the best way to start with this program is by looking at an example of a
 
 You can also have the fractal drawn one step a time.  Once you click the SETUP button, instead of clicking the GO button, click on the GO ONCE button.  This draws the fractal by drawing one iteration of the fractal per click as opposed to continuously, like the GO button.
 
-If you don't like the location of the fractal you can change it by modifying the value of the following sliders:  
-The INIT-X slider sets the initial x coordinate of the first turtle.  It changes the horizontal starting location of the original turtle.  
+If you don't like the location of the fractal you can change it by modifying the value of the following sliders:
+The INIT-X slider sets the initial x coordinate of the first turtle.  It changes the horizontal starting location of the original turtle.
 The INIT-Y slider sets the initial y coordinate of the first turtle.  It changes the vertical starting location of the original turtle.
 
-If you don't like the color scheme of the fractal you can change it by modifying the value of the following sliders:  
-The INIT-COLOR slider sets the initial color of the first turtle.  
+If you don't like the color scheme of the fractal you can change it by modifying the value of the following sliders:
+The INIT-COLOR slider sets the initial color of the first turtle.
 The value of the COLOR-INC slider is added to the turtles color anytime a new turtle hatches.
 
 The NUM TURTLES monitor indicates how many turtles are currently alive.
@@ -246,9 +250,35 @@ L-System Fractals
 
 ## CREDITS AND REFERENCES
 
-This site offers an introduction to fractals, including L-system fractals as well as others: http://www.cs.wpi.edu/~matt/courses/cs563/talks/cbyrd/pres1.html
+This site offers an introduction to fractals, including L-system fractals as well as others: http://web.cs.wpi.edu/~matt/courses/cs563/talks/cbyrd/pres1.html.
 
 _The Fractal Geometry of Nature_ by Benoit Mandelbrot
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (2001).  NetLogo Tree Simple model.  http://ccl.northwestern.edu/netlogo/models/TreeSimple.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2001 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2001 -->
 @#$#@#$#@
 default
 true
@@ -533,7 +563,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 repeat 10 [ go ]

@@ -53,6 +53,10 @@ to go
   ]
   tick
 end
+
+
+; Copyright 1997 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 290
@@ -269,13 +273,13 @@ Use the RING-RADIUS slider to set the incremental distance between the distance 
 
 ### Plots
 
-"Average Distance"  
+"Average Distance"
 - measures the average distance over all turtles, from home (the origin at 0,0) to their current coordinates.
 
-"Average X-Distance"  
+"Average X-Distance"
 - measures the average distance over all turtles along the x-axis away from the origin (x = 0).
 
-"Std.Dev. of Distance"  
+"Std.Dev. of Distance"
 - measures the standard deviation of all turtles' true distance from home to their current position.  NetLogo's standard deviation primitive is used.
 
 Note that xcor and ycor values are stored in such a way that turtles are tracked even if they move outside the boundaries of the world.  These 'out of bounds' values are used to measure distances.  They are stored at turtle variable xc (for xcor) and yc (for ycor).
@@ -312,9 +316,9 @@ To think about smoothness of the plots, notice how much the lines move up and do
 
 To think about slope of the plots, consider whether the plot appears to be going 'uphill' or 'downhill' and consider whether the 'hill' is steep or flat.
 
-What do you notice about the smoothness and slope of the plots?  
-- Are they smooth?  Why or why not?  
-- Are they steep?  Why or why not?  
+What do you notice about the smoothness and slope of the plots?
+- Are they smooth?  Why or why not?
+- Are they steep?  Why or why not?
 - For a given plot, is its steepness the same at the far edges and at the center?  Why or why not?
 
 Does the plot have any symmetry?  Would you expect it to?  Why?
@@ -323,18 +327,18 @@ Does a single line plot ever change between positive and negative slopes?  Why o
 
 ## THINGS TO TRY
 
-Try to answer the following questions before running the simulations.  Record your predictions.  Compare your predicted results with the actual results.  
-- What reasoning led you to correct predictions?  
+Try to answer the following questions before running the simulations.  Record your predictions.  Compare your predicted results with the actual results.
+- What reasoning led you to correct predictions?
 - What assumptions that you made need to be revised?
 
-Try different numbers of turtles while keeping all other slider values the same.  
-- What happens to the plot's smoothness and slope when the number of turtles is increased?  
-- What happens to the plot's smoothness and slope when the number of turtles is decreased?  
+Try different numbers of turtles while keeping all other slider values the same.
+- What happens to the plot's smoothness and slope when the number of turtles is increased?
+- What happens to the plot's smoothness and slope when the number of turtles is decreased?
 - Does the simulation finish faster or slower than the first model?
 
-Try different numbers of steps while keeping all other slider values the same.  
-- What happens to the plot's smoothness and slope when the number of steps is increased?  
-- What happens to the plot's smoothness and slope when the number of turtles is decreased?  
+Try different numbers of steps while keeping all other slider values the same.
+- What happens to the plot's smoothness and slope when the number of steps is increased?
+- What happens to the plot's smoothness and slope when the number of turtles is decreased?
 - Does the simulation finish faster or slower than the first model?
 
 How do your answers to the above questions compare to the average values calculated for all turtles in a given simulation?
@@ -367,7 +371,33 @@ Since NetLogo does not allow the world to be unbounded, the special code below i
 
 Stamping of turtle shapes is used to draw a polar coordinate grid in the drawing layer.
 
-## CREDITS AND REFERENCES
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Wilensky, U. (1997).  NetLogo Random Walk 360 model.  http://ccl.northwestern.edu/netlogo/models/RandomWalk360.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 1997 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1997 2001 -->
 @#$#@#$#@
 default
 true
@@ -657,7 +687,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

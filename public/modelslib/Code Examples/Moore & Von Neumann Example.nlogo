@@ -20,6 +20,7 @@ to setup
       set color white
     ]
   ]
+  reset-ticks
 end
 
 ;; The next two procedures generate the lists of offsets that we pass to
@@ -49,6 +50,11 @@ to-report von-neumann-offsets [n include-center?]
     [ report result ]
     [ report remove [0 0] result ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 242
@@ -71,8 +77,8 @@ GRAPHICS-WINDOW
 17
 -17
 17
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -138,6 +144,8 @@ This model shows how to make Moore (square) and Von Neumann (diamond) neighborho
 ## THINGS TO NOTICE
 
 World wrapping can be on or off; the same code works fine either way.
+
+<!-- 2006 -->
 @#$#@#$#@
 default
 true
@@ -422,7 +430,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

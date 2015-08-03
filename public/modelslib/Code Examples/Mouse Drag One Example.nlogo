@@ -21,6 +21,11 @@ to go
     ]
   ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
 146
@@ -112,6 +117,8 @@ This is a code sample illustrating how to let the user drag turtles around with 
 ## NETLOGO FEATURES
 
 The code also demonstrates the use of the `watch`, `subject`, and `reset-perspective` primitives.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -396,7 +403,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 setup
 @#$#@#$#@

@@ -51,15 +51,20 @@ to prev-drum
     play
   ]
 end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-511
-31
-756
-67
+445
+30
+735
+69
 17
 0
-5.143
+8.0
 1
 10
 1
@@ -73,8 +78,8 @@ GRAPHICS-WINDOW
 17
 0
 0
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -519,6 +524,8 @@ The instrument section allows you to choose one of the 47 drums provided by the 
 Each time the model plays a sound, it writes the command used to generate the sound to the output area. You can copy and paste the command to use in your models.
 
 The memory bank lets you store the current sound for later retrieval, allowing you to hear how different sounds will sound together.
+
+<!-- 2004 -->
 @#$#@#$#@
 default
 true
@@ -803,7 +810,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

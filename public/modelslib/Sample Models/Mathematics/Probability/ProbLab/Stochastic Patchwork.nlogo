@@ -96,6 +96,10 @@ to plot-color-distribution
   let maxrange filter [ ? = item 0 maxbar ] %-target-color-list
   set-plot-y-range 0 length maxrange
 end
+
+
+; Copyright 2004 Uri Wilensky.
+; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 309
@@ -236,15 +240,15 @@ Note also the ambiguity of the statistic 'greenness.' If 21/25 squares in a bloc
 
 ## HOW TO USE IT
 
-Buttons:  
-'Setup' - prepares the size of population according to the block-side slider value.  
+Buttons:
+'Setup' - prepares the size of population according to the block-side slider value.
 'Go'  - activates the procedures. It is set to work "forever," that is, repeatedly until you press it again.
 
-Sliders:  
-'block-side' - the larger the value you set here, the larger the size of your square sample. If the block-side is X, then the block will be of dimensions X^2. For example, a block-side of 3 will give a sample of 9 square squares.  
+Sliders:
+'block-side' - the larger the value you set here, the larger the size of your square sample. If the block-side is X, then the block will be of dimensions X^2. For example, a block-side of 3 will give a sample of 9 square squares.
 '%-target-color' - Use this slider to control the average probability that each square will be green in each iteration through Go.
 
-Monitors:  
+Monitors:
 '# target color' - shows how many squares in the block are green. (Note that the plot window shows a histogram of the percent of green squares, and not of the number of green squares.)
 
 Set the sliders to the values of your choice, press Setup, and then press Go.
@@ -284,6 +288,32 @@ Look in the code at the procedure `create-block` and the reporter procedure `in-
 ## CREDITS AND REFERENCES
 
 This model is a part of the ProbLab curriculum. The ProbLab Curriculum is currently under development at Northwestern's Center for Connected Learning and Computer-Based Modeling. . For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/.
+
+## HOW TO CITE
+
+If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
+
+For the model itself:
+
+* Abrahamson, D. and Wilensky, U. (2004).  NetLogo Stochastic Patchwork model.  http://ccl.northwestern.edu/netlogo/models/StochasticPatchwork.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the NetLogo software as:
+
+* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+## COPYRIGHT AND LICENSE
+
+Copyright 2004 Uri Wilensky.
+
+![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
+
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+
+Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+
+This model was created as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+
+<!-- 2004 Cite: Abrahamson, D. -->
 @#$#@#$#@
 default
 true
@@ -576,7 +606,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 5.2.0
 @#$#@#$#@
 set block-side 7
 setup
