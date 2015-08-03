@@ -13,7 +13,8 @@ window.EditorWidget = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-code-container netlogo-widget">
+    <div class="netlogo-tab-content netlogo-code-container"
+         intro='grow:{disable:"code-tab-toggle"}' outro='shrink:{disable:"code-tab-toggle"}'>
       {{# !readOnly }}
         <button class="netlogo-widget" on-click="recompile">compile</button>
       {{/}}

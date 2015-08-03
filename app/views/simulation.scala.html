@@ -15,6 +15,7 @@
   <body style="margin: 0px;">
     @views.html.spinner()
     <div id="netlogo-model-container" style="display: inline-block;"></div>
+    @script(route("lib/jquery/jquery.js"))
     @script(route("lib/filesaver.js/FileSaver.js"))
     @script(route("lib/markdown-js/markdown.js"))
     @script(route("lib/highcharts/adapters/standalone-framework.js"))

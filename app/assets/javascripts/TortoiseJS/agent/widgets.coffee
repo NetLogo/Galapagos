@@ -34,6 +34,32 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     hasFocus:           false
   }
 
+  animateWithClass = (klass) ->
+    (t, params) ->
+      params = t.processParams(params)
+
+      eventNames = ['animationend', 'webkitAnimationEnd', 'oAnimationEnd', 'msAnimationEnd']
+
+      setDisablement = (state) ->
+        if params.disable? && window.document.getElementById(params.disable)?
+          window.document.getElementById(params.disable).disabled = state
+
+      setDisablement(true)
+
+      listener = (l) -> (e) ->
+        e.target.className = e.target.className.replace(new RegExp(klass), '')
+        for event in eventNames
+          e.target.removeEventListener(event, l)
+        t.complete()
+        setDisablement(false)
+
+      for event in eventNames
+        t.node.addEventListener(event, listener(listener))
+      t.node.className += " #{klass}"
+
+  Ractive.transitions.grow   = animateWithClass('growing')
+  Ractive.transitions.shrink = animateWithClass('shrinking')
+
   ractive = new Ractive({
     el:         container,
     template:   template,
@@ -273,31 +299,27 @@ template =
       {{/}}
     </div>
 
-    <div class="netlogo-tabs">
+    <div class="netlogo-tab-area">
       {{# !readOnly }}
-      <label class="netlogo-console-tab netlogo-tab {{#showConsole}}netlogo-active{{/}}">
-        <input type="checkbox" checked="{{showConsole}}" />
+      <label class="netlogo-tab {{#showConsole}}netlogo-active{{/}}">
+        <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
         Command Center
       </label>
-      {{/}}
-      <label class="netlogo-code-tab netlogo-tab {{#showCode}}netlogo-active{{/}}">
-        <input type="checkbox" checked="{{ showCode }}" />
-        NetLogo Code
-      </label>
-      <label class="netlogo-info-tab netlogo-tab {{#showInfo}}netlogo-active{{/}}">
-        <input type="checkbox" checked="{{ showInfo }}" />
-        Model Info
-      </label>
-    </div>
-    <div class="netlogo-model-text">
-      {{# !readOnly }}
       {{#showConsole}}
         <console output="{{consoleOutput}}"/>
       {{/}}
       {{/}}
+      <label class="netlogo-tab {{#showCode}}netlogo-active{{/}}">
+        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
+        NetLogo Code
+      </label>
       {{#showCode}}
         <editor code='{{code}}' readOnly='{{readOnly}}' />
       {{/}}
+      <label class="netlogo-tab {{#showInfo}}netlogo-active{{/}}">
+        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+        Model Info
+      </label>
       {{#showInfo}}
         <infotab rawText='{{info}}' editing='false' />
       {{/}}

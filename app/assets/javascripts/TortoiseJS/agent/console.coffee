@@ -88,7 +88,8 @@ window.ConsoleWidget = Ractive.extend({
 
   template:
     """
-    <div class='netlogo-command-center netlogo-widget'>
+    <div class='netlogo-tab-content netlogo-command-center'
+         intro='grow:{disable:"console-toggle"}' outro='shrink:{disable:"console-toggle"}'>
       <outputArea output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>
