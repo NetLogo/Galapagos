@@ -21,7 +21,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "0.1-339f69d"
+val tortoiseVersion = "0.1-be87f5c"
 
 libraryDependencies ++= Seq(
   filters,
@@ -66,12 +66,14 @@ includeFilter in autoprefixer := Def.setting {
 routesGenerator := InjectedRoutesGenerator
 
 scrapeRoutes ++= Seq(
+  "/favicon.ico",
   "/info",
   "/model/list.json",
   "/model/statuses.json",
   "/netlogo-engine.js",
   "/netlogo-agentmodel.js",
-  "/netlogoweb.js",
+  "/tortoise-compiler.js",
+  "/tortoise-compiler.js.map",
   "/server-error",
   "/standalone",
   "/tortoise",
