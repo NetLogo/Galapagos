@@ -76,7 +76,7 @@ scrapeRoutes ++= Seq(
   "/tortoise-compiler.js.map",
   "/server-error",
   "/standalone",
-  "/tortoise",
+  "/launch",
   "/web"
   )
 

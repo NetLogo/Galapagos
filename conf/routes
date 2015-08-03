@@ -10,7 +10,7 @@ GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(mo
 GET         /server-error                       controllers.Application.serverError
 
 # Local (Tortoise)
-GET         /tortoise                           controllers.Local.tortoise
+GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 

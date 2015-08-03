@@ -21,7 +21,7 @@ class Local @Inject() (application: PlayApplication) extends Controller {
 
   implicit val mode = Play.mode(application)
 
-  def tortoise: Action[AnyContent] = Action {
+  def launch: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.tortoise())
   }
