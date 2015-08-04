@@ -13,7 +13,7 @@
   <head>
   </head>
   <body>
-    <div id="model-container"></div>
+    <div id="netlogo-model-container"></div>
     <style>
       @Html(css)
     </style>
@@ -24,7 +24,7 @@
           var widgets = @Html(widgets);
           var code    = "@clean(nlogoCode)";
           var info    = "@clean(info)";
-          return Tortoise.fromCompiledModel('#model-container', widgets, code, info, '', true);
+          return Tortoise.fromCompiledModel('#netlogo-model-container', widgets, code, info, '', true);
         })();
       @Html(libsJs)
       session.startLoop()

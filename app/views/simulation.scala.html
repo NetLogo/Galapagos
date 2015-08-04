@@ -14,7 +14,7 @@
   </head>
   <body style="margin: 0px;">
     @views.html.spinner()
-    <div id="model-container" style="display: inline-block;"></div>
+    <div id="netlogo-model-container" style="display: inline-block;"></div>
     @script(route("lib/filesaver.js/FileSaver.js"))
     @script(route("lib/markdown-js/markdown.js"))
     @script(route("lib/highcharts/adapters/standalone-framework.js"))
@@ -48,7 +48,7 @@
     <script type="text/nlogo" id="nlogo-code" date-filename="model.nlogo"></script>
 
     <script>
-      var modelContainer = document.querySelector("#model-container");
+      var modelContainer = document.querySelector("#netlogo-model-container");
       var index          = window.location.href.indexOf("?");
       var nlogoScript    = document.querySelector("#nlogo-code");
       var standaloneURL  = "@routes.Local.standalone.absoluteURL";
