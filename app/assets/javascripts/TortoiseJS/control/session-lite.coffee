@@ -202,7 +202,8 @@ window.Tortoise = {
         onSuccess(@fromCompiledModel(container, res.widgets, res.code,
           res.info, res.model.result, false, filename))
       else
-        container.innerHTML = res.model.result.map((err) -> err.message).join('<br/>')
+        errors = res.model.result.map((err) -> err.message).join('<br/>')
+        container.innerHTML = "<div style='padding: 5px 10px;'>#{errors}</div>"
       @finishLoading()
 }
 
