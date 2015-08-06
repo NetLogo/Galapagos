@@ -2,6 +2,7 @@ class window.AgentStreamController
   constructor: (@container, fontSize) ->
     @view = new View(fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
+    @drawingLayer = new DrawingLayer(@view, @turtleDrawer)
     @patchDrawer = new PatchDrawer(@view)
     @spotlightDrawer = new SpotlightDrawer(@view)
     @container.appendChild(@view.visibleCanvas)
@@ -35,6 +36,7 @@ class window.AgentStreamController
   repaint: ->
     @view.transformToWorld(@model.world)
     @patchDrawer.repaint(@model)
+    @drawingLayer.repaint(@model)
     @turtleDrawer.repaint(@model)
     @spotlightDrawer.repaint(@model)
     @view.repaint(@model)
@@ -94,19 +96,24 @@ class View
     ctx.oImageSmoothingEnabled = false
     ctx.msImageSmoothingEnabled = false
 
-  usePatchCoordinates: (drawFn) ->
-    @ctx.save()
+  usePatchCoordinates: (ctx = @ctx) => (drawFn) =>
+    ctx.save()
     w = @canvas.width
     h = @canvas.height
     # Argument rows are the standard transformation matrix columns. See spec.
     # http://www.w3.org/TR/2dcontext/#dom-context-2d-transform
     # BCH 5/16/2015
-    @ctx.setTransform(w / @worldWidth,                   0,
-                      0,                                 -h/@worldHeight,
-                      -(@minpxcor-.5) * w / @worldWidth, (@maxpycor+.5) * h / @worldHeight)
+    ctx.setTransform(w / @worldWidth,                   0,
+                     0,                                 -h/@worldHeight,
+                     -(@minpxcor-.5) * w / @worldWidth, (@maxpycor+.5) * h / @worldHeight)
     drawFn()
-    @ctx.restore()
+    ctx.restore()
 
+  withCompositing: (gco, ctx = @ctx) -> (drawFn) ->
+    oldGCO = ctx.globalCompositeOperation
+    ctx.globalCompositeOperation = gco
+    drawFn()
+    ctx.globalCompositeOperation = oldGCO
 
   offsetX: -> @worldCenterX - @centerX
   offsetY: -> @worldCenterY - @centerY
@@ -124,17 +131,18 @@ class View
   yPcorToCanvas: (y) -> (@maxpycor + .5 - y) / @worldHeight * @visibleCanvas.height
 
   # Wraps text
-  drawLabel: (xcor, ycor, label, color) ->
+  drawLabel: (xcor, ycor, label, color, ctx) ->
+    if not ctx? then ctx = @ctx
     label = if label? then label.toString() else ''
     if label.length > 0
       @drawWrapped(xcor, ycor, label.length * @fontSize / @onePixel, (x,y) =>
-        @ctx.save()
-        @ctx.translate(x, y)
-        @ctx.scale(@onePixel, -@onePixel)
-        @ctx.textAlign = 'end'
-        @ctx.fillStyle = netlogoColorToCSS(color)
-        @ctx.fillText(label, 0, 0)
-        @ctx.restore()
+        ctx.save()
+        ctx.translate(x, y)
+        ctx.scale(@onePixel, -@onePixel)
+        ctx.textAlign = 'end'
+        ctx.fillStyle = netlogoColorToCSS(color)
+        ctx.fillText(label, 0, 0)
+        ctx.restore()
       )
 
   # drawFn: (xcor, ycor) ->
@@ -194,6 +202,122 @@ class View
 class Drawer
   constructor: (@view) ->
 
+###
+Possible drawing events:
+
+{ type: "clear-drawing" }
+
+{ type: "line", fromX, fromY, toX, toY, rgb, size, penMode }
+
+{ type: "stamp-image", agentType: "turtle", stamp: {x, y, size, heading, color, shapeName, stampMode} }
+
+{ type: "stamp-image", agentType: "link", stamp: {
+    x1, y1, x2, y2, midpointX, midpointY, heading, color, shapeName, thickness, 'directed?', size, 'hidden?', stampMode
+  }
+}
+
+###
+
+class DrawingLayer extends Drawer
+  constructor: (@view, @turtleDrawer) ->
+    @canvas    = document.createElement('canvas')
+    @canvas.id = 'dlayer'
+    @ctx       = @canvas.getContext('2d')
+
+  resizeCanvas: ->
+    @canvas.width  = @view.canvas.width
+    @canvas.height = @view.canvas.height
+
+  clearDrawing: ->
+    @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
+
+  _rgbToCss: ([r, g, b]) ->
+    "rgb(#{r}, #{g}, #{b})"
+
+  makeMockTurtleObject: ({ x: xcor, y: ycor, shapeName: shape, size, heading, color }) ->
+    { xcor, ycor, shape, size, heading, color }
+
+  makeMockLinkObject: ({ x1, y1, x2, y2, shapeName, color, heading, size, 'directed?': isDirected
+                       , 'hidden?': isHidden, midpointX, midpointY, thickness }) ->
+    end1 = { xcor: x1, ycor: y1 }
+    end2 = { xcor: x2, ycor: y2 }
+
+    mockLink = { shape: shapeName, color, heading, size, 'directed?': isDirected
+                 , 'hidden?': isHidden, midpointX, midpointY, thickness }
+
+    [mockLink, end1, end2]
+
+  stampTurtle: (turtleStamp) ->
+    mockTurtleObject = @makeMockTurtleObject(turtleStamp)
+    @view.usePatchCoordinates(@ctx)( =>
+      @view.withCompositing(@compositingOperation(turtleStamp.stampMode), @ctx)( =>
+        @turtleDrawer.drawTurtle(mockTurtleObject, @ctx, true)
+      )
+    )
+
+  stampLink: (linkStamp) ->
+    mockLinkObject = @makeMockLinkObject(linkStamp)
+    @view.usePatchCoordinates(@ctx)( =>
+      @view.withCompositing(@compositingOperation(linkStamp.stampMode), @ctx)( =>
+        @turtleDrawer.linkDrawer.draw(mockLinkObject..., @wrapX, @wrapY, @ctx, true)
+      )
+    )
+
+  compositingOperation: (mode) ->
+    if mode is 'erase' then 'destination-out' else 'source-over'
+
+  drawStamp: ({ agentType, stamp }) ->
+    if agentType is 'turtle'
+      @stampTurtle(stamp)
+    else if agentType is 'link'
+      @stampLink(stamp)
+
+  drawLine: ({ rgb: color, size, penMode, fromX: x1, fromY: y1, toX: x2, toY: y2 }) =>
+    if penMode isnt 'up'
+      penColor = color
+
+      @view.usePatchCoordinates(@ctx)( =>
+        @ctx.save()
+
+        @ctx.strokeStyle = @_rgbToCss(penColor)
+        @ctx.lineWidth   = @view.onePixel
+
+        @ctx.beginPath()
+
+        @ctx.moveTo(x1, y1)
+        @ctx.lineTo(x2, y2)
+
+        @view.withCompositing(@compositingOperation(penMode), @ctx)( =>
+          @ctx.stroke()
+        )
+
+        @ctx.restore()
+      )
+
+  draw: ->
+    @events.forEach((event) =>
+      switch event.type
+        when 'clear-drawing' then @clearDrawing()
+        when 'line'          then @drawLine(event)
+        when 'stamp-image'   then @drawStamp(event)
+    )
+
+  repaint: (model) ->
+    # Potato --JTT 5/29/15
+    # I think Jordan makes a good point here. --JAB (8/6/15)
+    world = model.world
+    @wrapX = world.wrappingallowedinx
+    @wrapY = world.wrappingallowediny
+
+    @events = model.drawingEvents
+    model.drawingEvents = []
+
+    if @canvas.width isnt @view.canvas.width or @canvas.height isnt @view.canvas.height
+      @resizeCanvas()
+
+    @draw()
+    @view.ctx.drawImage(@canvas, 0, 0)
+
 class SpotlightDrawer extends Drawer
   constructor: (@view) ->
 
@@ -203,9 +327,9 @@ class SpotlightDrawer extends Drawer
   spotlightOuterBorder: "rgba(200, 255, 255, #{ 50 / 255 })"
   clear: 'white'  # for clearing with 'destination-out' compositing
 
-  outer: -> 10 / @view.patchsize
-  middle: -> 8 / @view.patchsize
-  inner: -> 4 / @view.patchsize
+  outer:  -> 10 / @view.patchsize
+  middle: -> 8  / @view.patchsize
+  inner:  -> 4  / @view.patchsize
 
   drawCircle: (x, y, innerDiam, outerDiam, color) ->
     ctx = @view.ctx
@@ -248,7 +372,7 @@ class SpotlightDrawer extends Drawer
       [agent.midpointx, agent.midpointy, agent.size]
 
   repaint: (model) ->
-    @view.usePatchCoordinates( =>
+    @view.usePatchCoordinates()( =>
       watched = @view.watch(model)
       if watched?
         [xcor, ycor, size] = @dimensions(watched)
@@ -260,16 +384,21 @@ class TurtleDrawer extends Drawer
     @turtleShapeDrawer = new ShapeDrawer({}, @view.onePixel)
     @linkDrawer = new LinkDrawer(@view, {})
 
-  drawTurtle: (turtle) ->
+  drawTurtle: (turtle, ctx = @view.ctx, isStamp = false) ->
     if not turtle['hidden?']
       xcor = turtle.xcor
       ycor = turtle.ycor
       size = turtle.size
-      @view.drawWrapped(xcor, ycor, size, ((x, y) => @drawTurtleAt(turtle, x, y)))
-      @view.drawLabel(xcor + turtle.size / 2, ycor - turtle.size / 2, turtle.label, turtle['label-color'])
+      @view.drawWrapped(xcor, ycor, size,
+        ((x, y) => @drawTurtleAt(turtle, x, y, ctx)))
+      if not isStamp
+        @view.drawLabel(xcor + turtle.size / 2,
+                        ycor - turtle.size / 2,
+                        turtle.label,
+                        turtle['label-color'],
+                        ctx)
 
-  drawTurtleAt: (turtle, xcor, ycor) ->
-    ctx = @view.ctx
+  drawTurtleAt: (turtle, xcor, ycor, ctx) ->
     heading = turtle.heading
     scale = turtle.size
     angle = (180-heading)/360 * 2*Math.PI
@@ -285,8 +414,8 @@ class TurtleDrawer extends Drawer
     @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName, 1 / scale)
     ctx.restore()
 
-  drawLink: (link, turtles, wrapX, wrapY) ->
-    @linkDrawer.draw(link, turtles, wrapX, wrapY)
+  drawLink: (link, end1, end2, wrapX, wrapY) ->
+    @linkDrawer.draw(link, end1, end2, wrapX, wrapY)
 
   repaint: (model) ->
     world = model.world
@@ -298,9 +427,11 @@ class TurtleDrawer extends Drawer
       @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist ? @turtleShapeDrawer.shapes, @view.onePixel)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
-    @view.usePatchCoordinates( =>
+    @view.usePatchCoordinates()( =>
       for id, link of links
-        @drawLink(link, turtles, world.wrappingallowedinx, world.wrappingallowediny)
+        end1 = turtles[link.end1]
+        end2 = turtles[link.end2]
+        @drawLink(link, end1, end2, world.wrappingallowedinx, world.wrappingallowediny)
       @view.ctx.lineWidth = @onePixel
       for id, turtle of turtles
         @drawTurtle(turtle)
@@ -341,7 +472,7 @@ class PatchDrawer
     @view.ctx.drawImage(@scratchCanvas, 0, 0, @view.canvas.width, @view.canvas.height)
 
   labelPatches: (patches) ->
-    @view.usePatchCoordinates( =>
+    @view.usePatchCoordinates()( =>
       for ignore, patch of patches
         @view.drawLabel(patch.pxcor + .5, patch.pycor - .5, patch.plabel, patch['plabel-color'])
     )

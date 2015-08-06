@@ -1,4 +1,4 @@
-class Line
+class window.Line
   constructor: (@x1, @y1, @x2, @y2) ->
 
   midpoint: ->
@@ -13,9 +13,9 @@ class window.LinkDrawer
       directionIndicators[name] = shape['direction-indicator']
     @linkShapeDrawer = new ShapeDrawer(directionIndicators)
 
-  traceCurvedLine: (x1, y1, x2, y2, cx, cy) =>
-    @view.ctx.moveTo(x1, y1)
-    @view.ctx.quadraticCurveTo(cx, cy, x2, y2)
+  traceCurvedLine: (x1, y1, x2, y2, cx, cy, ctx) =>
+    ctx.moveTo(x1, y1)
+    ctx.quadraticCurveTo(cx, cy, x2, y2)
 
   shouldWrapInDim: (canWrap, dimensionSize, cor1, cor2) ->
     distance = Math.abs(cor1 - cor2)
@@ -51,25 +51,25 @@ class window.LinkDrawer
     controlY  = midpointY - curviness * ycomp
     [controlX, controlY]
 
-  drawSubline: ({x1, y1, x2, y2}, dashPattern, thickness, color, isCurved, controlX, controlY) ->
-    @view.ctx.save()
-    @view.ctx.beginPath()
+  drawSubline: ({x1, y1, x2, y2}, dashPattern, thickness, color, isCurved, controlX, controlY, ctx) ->
+    ctx.save()
+    ctx.beginPath()
 
-    @view.ctx.setLineDash(dashPattern.map((x) => x * @view.onePixel))
-    @view.ctx.strokeStyle = netlogoColorToCSS(color)
-    @view.ctx.lineWidth   = thickness
+    ctx.setLineDash(dashPattern.map((x) => x * @view.onePixel))
+    ctx.strokeStyle = netlogoColorToCSS(color)
+    ctx.lineWidth   = thickness
 
-    @view.ctx.lineCap = if isCurved then 'round' else 'square'
+    ctx.lineCap = if isCurved then 'round' else 'square'
 
-    @traceCurvedLine(x1, y1, x2, y2, controlX, controlY, thickness, color, dashPattern)
+    @traceCurvedLine(x1, y1, x2, y2, controlX, controlY, ctx)
 
-    @view.ctx.stroke()
+    ctx.stroke()
 
-    @view.ctx.setLineDash([1, 0])
-    @view.ctx.restore()
+    ctx.setLineDash([1, 0])
+    ctx.restore()
 
-  drawShape: (x, y, cx, cy, heading, color, thickness, linkShape, shapeName) ->
-    @view.ctx.save()
+  drawShape: (x, y, cx, cy, heading, color, thickness, linkShape, shapeName, ctx) ->
+    ctx.save()
 
     theta = @calculateShortestLineAngle(x, y, cx, cy)
 
@@ -82,12 +82,12 @@ class window.LinkDrawer
 
     shapeTheta = Math.atan2(sy - y, sx - x) - Math.PI / 2
 
-    @view.ctx.translate(sx, sy)
+    ctx.translate(sx, sy)
 
     if linkShape['direction-indicator'].rotate
-      @view.ctx.rotate(shapeTheta)
+      ctx.rotate(shapeTheta)
     else
-      @view.ctx.rotate(Math.PI)
+      ctx.rotate(Math.PI)
 
     # one pixel should == one patch (before scale) -- JTT 4/15/15
     thicknessFactor = thickness / @view.onePixel
@@ -101,20 +101,20 @@ class window.LinkDrawer
       scale         = thicknessFactor / 2
       realThickness = baseThickness
 
-    @view.ctx.scale(scale, scale)
+    ctx.scale(scale, scale)
 
-    @linkShapeDrawer.drawShape(@view.ctx, color, shapeName, realThickness)
+    @linkShapeDrawer.drawShape(ctx, color, shapeName, realThickness)
 
-    @view.ctx.restore()
+    ctx.restore()
 
   drawLabel: (x, y, labelText, color) ->
     @view.drawLabel(x - 3 * @view.onePixel, y + 3 * @view.onePixel, labelText, color)
 
-  draw: (link, turtles, canWrapX, canWrapY) ->
+  draw: (link, end1, end2, canWrapX, canWrapY, ctx = @view.ctx, isStamp = false) ->
     if not link['hidden?']
-      { end1, end2, color, thickness } = link
-      { xcor: x1, ycor: y1 } = turtles[end1]
-      { xcor: x2, ycor: y2 } = turtles[end2]
+      { color, thickness } = link
+      { xcor: x1, ycor: y1 } = end1
+      { xcor: x2, ycor: y2 } = end2
 
       theta = @calculateShortestLineAngle(x1, y1, x2, y2)
 
@@ -123,10 +123,10 @@ class window.LinkDrawer
       wrapX = @shouldWrapInDim(canWrapX, @view.worldWidth,  x1, x2)
       wrapY = @shouldWrapInDim(canWrapY, @view.worldHeight, y1, y2)
 
-      @getWrappedLines(x1, y1, x2, y2, wrapX, wrapY).forEach(@_drawLinkLine(link, adjustedThickness))
+      @getWrappedLines(x1, y1, x2, y2, wrapX, wrapY).forEach(@_drawLinkLine(link, adjustedThickness, ctx, isStamp))
 
   _drawLinkLine: ({ color, size, heading, 'directed?': isDirected, shape: shapeName, label, 'label-color': labelColor },
-                  thickness) => ({ x1, y1, x2, y2 }) =>
+                  thickness, ctx, isStamp) => ({ x1, y1, x2, y2 }) =>
 
     linkShape = @shapes[shapeName]
     { curviness, lines } = linkShape
@@ -149,21 +149,21 @@ class window.LinkDrawer
 
           [controlX,  controlY]  = @calculateControlPoint(midpointX, midpointY, curviness, xcomp, ycomp)
 
-          @drawSubline(offsetSubline, dashPattern, thickness, color, isCurved, controlX, controlY)
+          @drawSubline(offsetSubline, dashPattern, thickness, color, isCurved, controlX, controlY, ctx)
 
           if isMiddleLine
             if isDirected
-              @drawShape(x2, y2, controlX, controlY, heading, color, thickness, linkShape, shapeName)
-            if hasLabel
+              @drawShape(x2, y2, controlX, controlY, heading, color, thickness, linkShape, shapeName, ctx)
+            if hasLabel and not isStamp
               @drawLabel(controlX, controlY, label, labelColor)
 
     )
 
-  getWrappedLines: (x1, y1, x2, y2, wrapX, wrapY) ->
+  getWrappedLines: (x1, y1, x2, y2, lineWrapsX, lineWrapsY) ->
     worldWidth = @view.worldWidth
     worldHeight = @view.worldHeight
 
-    if wrapX and wrapY
+    if lineWrapsX and lineWrapsY
       if x1 < x2
         if y1 < y2
           [
@@ -194,7 +194,7 @@ class window.LinkDrawer
             new Line(x1 - worldWidth, y1 - worldHeight, x2, y2),
             new Line(x1, y1 - worldHeight, x2 + worldWidth, y2)
           ]
-    else if wrapX
+    else if lineWrapsX
       if x1 < x2
         [
           new Line(x1, y1, x2 - worldWidth, y2),
@@ -205,7 +205,7 @@ class window.LinkDrawer
           new Line(x1, y1, x2 + worldWidth, y2),
           new Line(x1 - worldWidth, y1, x2, y2)
         ]
-    else if wrapY
+    else if lineWrapsY
       if y1 < y2
         [
           new Line(x1, y1, x2, y2 - worldHeight),
