@@ -1,4 +1,4 @@
-exports.bindModelChooser = (container, selectionChanged, currentMode) ->
+exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
 
   PUBLIC_PATH_SEGMENT_LENGTH = "public/".length
 
@@ -23,7 +23,7 @@ exports.bindModelChooser = (container, selectionChanged, currentMode) ->
         .addClass(status)
 
   populateModelChoices = (select, modelNames) ->
-    select.append($('<option>').text('Select a model...'))
+    select.append($('<option>').text('Select a model'))
     for modelName in modelNames
       option = $('<option>').attr('value', adjustModelPath(modelName))
         .text(modelDisplayName(modelName))
@@ -57,16 +57,35 @@ exports.bindModelChooser = (container, selectionChanged, currentMode) ->
               setModelCompilationStatus(modelName, modelStatus)
             window.modelSelect.trigger('chosen:updated')
         })
-
+      onComplete()
     }
   )
 
-exports.modelList = (container) ->
-  uploadModel = (modelURL) ->
-    $.ajax('assets/' + modelURL, {
-        complete: (req, status) ->
-          if status is 'success'
-            session.open(req.responseText)
-      }
-    )
-  exports.bindModelChooser(container, uploadModel)
+exports.selectModel = (model) ->
+  modelSelect.val(model)
+  modelSelect.trigger("chosen:updated")
+
+exports.handPickedModels = [
+  "Sample Models/Art/Follower",
+  "Sample Models/Biology/Wolf Sheep Predation",
+  "Sample Models/Biology/Ants",
+  "Sample Models/Biology/Flocking",
+  "Sample Models/Biology/Virus",
+  "Sample Models/Biology/Daisyworld",
+  "Sample Models/Biology/Evolution/Cooperation",
+  "Sample Models/Computer Science/Cellular Automata/CA 1D Elementary",
+  "Sample Models/Computer Science/Cellular Automata/Life Turtle-Based",
+  "Sample Models/Earth Science/Fire",
+  "Sample Models/Earth Science/Climate Change",
+  "Sample Models/Mathematics/Mousetraps",
+  "Sample Models/Mathematics/3D Solids",
+  "Sample Models/Networks/Preferential Attachment",
+  "Sample Models/Social Science/Voting",
+  "Sample Models/Social Science/Segregation",
+  "Sample Models/Social Science/Traffic Basic",
+  "Sample Models/Chemistry & Physics/Diffusion Limited Aggregation/DLA",
+  "Sample Models/Chemistry & Physics/Ising",
+  "Sample Models/Chemistry & Physics/GasLab/GasLab Adiabatic Piston",
+  "Sample Models/Chemistry & Physics/Heat/Boiling",
+  "Sample Models/Chemistry & Physics/Waves/Wave Machine"
+].map((p) -> "modelslib/#{p}")

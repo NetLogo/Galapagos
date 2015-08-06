@@ -68,6 +68,15 @@ iframe {
   padding-left:   35px;
 }
 
+.chosen-container-single .chosen-single span {
+  direction: rtl;
+  /* Due to a bug in Chrome, we can't clip left and use ellipses:
+     https://code.google.com/p/chromium/issues/detail?id=171659
+     BCH 8/6/2015 */
+  text-overflow: clip;
+  text-align: left;
+}
+
 li.not_compiling.dev {
   background-image: url('/assets/images/x.png') !important;
 }

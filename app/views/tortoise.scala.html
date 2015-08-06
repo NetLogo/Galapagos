@@ -38,10 +38,6 @@
   <script>
     var modelContainer = document.querySelector('#model-container');
     var hostPrefix     = location.protocol + '//' + location.host;
-    var url            = "@routes.Assets.at("modelslib/Sample Models/Biology/Wolf Sheep Predation.nlogo").absoluteURL"
-    if (window.location.hash) {
-      url = window.location.hash.substring(1);
-    }
 
     document.querySelector('#model-file-input').addEventListener('change', function (event) {
       var reader = new FileReader();
@@ -55,6 +51,12 @@
     function pickModel(url) {
       var encoded = encodeURI(hostPrefix + '/assets/' + url);
       openURL(encoded);
+    }
+
+    function pickRandom() {
+      var model = exports.handPickedModels[Math.floor(Math.random() * exports.handPickedModels.length)]
+      exports.selectModel(model)
+      pickModel(model + ".nlogo")
     }
 
     function openURL(url) {
@@ -79,9 +81,15 @@
       }, "*");
     }
 
-    exports.bindModelChooser($('.model-list'), pickModel, '@mode.toString.toLowerCase');
+    function initModel() {
+      if (window.location.hash) {
+        openURL(window.location.hash.substring(1));
+      } else {
+        pickRandom();
+      }
+  }
 
-    openURL(url);
+    exports.bindModelChooser($('.model-list'), initModel, pickModel, '@mode.toString.toLowerCase');
   </script>
 }
 
