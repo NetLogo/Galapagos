@@ -209,12 +209,12 @@
 }
 
 .netlogo-speed-slider {
-    background-color: transparent;
-    border: none;
-    margin-right: 10px;
-    flex: auto;
-    display: flex;
-    align-items: baseline;
+  background-color: transparent;
+  border: none;
+  display: inline-block;
+  margin-right: auto 10px;
+  vertical-align: middle;
+  width: 75%;
 }
 
 .netlogo-widget input[type=range]::-ms-tooltip {
@@ -222,8 +222,11 @@
 }
 
 .netlogo-speed-slider input {
-    border: none;
-    flex: auto;
+  border: none;
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+  width: 87%;
 }
 
 .netlogo-model input[type=range] {
