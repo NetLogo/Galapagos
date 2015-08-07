@@ -172,10 +172,10 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.on
       when "slider"
         widget.currentValue = widget.default
-        if widget.compilation.success = true
-          widget.getMin  = reporterOf(widget.compiledMin.result)
-          widget.getMax  = reporterOf(widget.compiledMax.result)
-          widget.getStep = reporterOf(widget.compiledStep.result)
+        if widget.compilation.success
+          widget.getMin  = reporterOf(widget.compiledMin)
+          widget.getMax  = reporterOf(widget.compiledMax)
+          widget.getStep = reporterOf(widget.compiledStep)
         else
           widget.getMin  = () -> widget.default
           widget.getMax  = () -> widget.default
