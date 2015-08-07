@@ -1,3 +1,4 @@
+// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
 
 import
   javax.inject.{ Inject, Provider }
@@ -22,6 +23,6 @@ class ErrorHandler @Inject() (
 
   override protected def onNotFound(request: RequestHeader, message: String): Future[Result] =
     Future.successful(
-      Status(404)(views.html.mainTheme(views.html.notFound()))
+      Status(Results.NotFound.header.status)(views.html.mainTheme(views.html.notFound()))
     )
 }
