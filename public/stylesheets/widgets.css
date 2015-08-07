@@ -39,12 +39,11 @@
 }
 
 .netlogo-tab-area {
-  margin-top: 50px;
+  margin-top: 25px;
 }
 
 .netlogo-tab {
   display: block;
-  font-size: 18px;
   background-color: #BCBCE5;
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+");
   background-position: 97% 50%;
@@ -53,8 +52,9 @@
   border-width: 2px;
   border-bottom-width: 0;
   border-style: solid;
-  padding: 2px 4px 4px 4px;
-  transition: background-color 1s;
+  padding: 7px;
+  text-align: center;
+  cursor: pointer;
 }
 
 .netlogo-tab.netlogo-active {
@@ -74,27 +74,38 @@
   background-color: #D3D3EE;
 }
 
+.netlogo-tab.netlogo-active:hover  {
+  background-color: #9E99FD;
+}
+
 .netlogo-tab input[type=checkbox] {
   display: none;
 }
 
+.netlogo-tab-text {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .netlogo-tab-content {
   margin-top: 0;
-  border-left:  2px solid #5555ff;
-  border-right: 2px solid #5555ff;
+  border: 0 solid #242479;
+  border-left-width: 2px;
+  border-right-width: 2px;
 }
 
 .growing {
   animation-name: grow;
-  animation-duration: 1s;
+  animation-duration: 0.4s;
   animation-timing-function: ease-out;
 }
 
 .shrinking {
   animation-name: grow;
   animation-direction: reverse;
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in;
 }
 
 @keyframes grow {
@@ -117,20 +128,31 @@
     margin-top: 0;
 }
 
-.netlogo-export-button {
-    text-align: center;
-    background-color: rgb(240, 240, 240);
-    border-color: rgb(238, 238, 238);
+.netlogo-ugly-button {
+  text-align: center;
+  background-color: rgb(240, 240, 240);
+  border-color: rgb(238, 238, 238);
 }
 
 .netlogo-code {
-    font-family: monospace;
-    overflow-x: scroll;
-    border: inset;
+  border-top: 1px solid black;
+  font-family: monospace;
+}
+
+.netlogo-recompilation-button {
+  width: 30%;
+  margin: 12px auto;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .netlogo-code .CodeMirror {
     height: 500px;
+}
+
+.netlogo-info-editor {
+  border: 1px solid black;
 }
 
 .netlogo-info-editor .CodeMirror {
@@ -147,6 +169,7 @@
   flex: 1;
   margin-top: 0;
   padding-top: 10px;
+  padding: 15px;
 }
 
 .netlogo-command-center {
@@ -154,7 +177,7 @@
   display: flex;
   flex-direction: column;
   height: 175px;
-  padding: 5px;
+  padding: 6px 8px;
 }
 
 .netlogo-command-center-editor {
