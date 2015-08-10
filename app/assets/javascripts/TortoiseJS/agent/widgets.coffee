@@ -206,16 +206,24 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.value
       when "button"
         if widget.forever then widget.running = false
-        if widget.compilation.success
-          task = new Function(widget.compiledSource)
-          do (task) ->
-            widget.run = if widget.forever then task else () ->
-              task()
-              updateUICallback()
-        else
-          do (widget) ->
+        do (widget) ->
+          if widget.compilation.success
+            task = new Function(widget.compiledSource)
+            do (task) ->
+              if widget.forever
+                wrappedTask = () ->
+                  if task() instanceof Exception.StopInterrupt
+                    widget.running = false
+                    updateUICallback()
+              else
+                wrappedTask = () ->
+                  task()
+                  updateUICallback()
+              do (wrappedTask) ->
+                widget.run = wrappedTask
+          else
             widget.run = () -> alert("Button failed to compile with:\n" +
-                                     widget.compilation.messages.join('\n'))
+                                      widget.compilation.messages.join('\n'))
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
