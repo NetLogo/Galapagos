@@ -16,7 +16,7 @@ exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode
 
   setModelCompilationStatus = (modelName, status) ->
     if status == "not_compiling" && currentMode != "dev"
-      $("option[value=\"#{adjustModelPath(modelName)}\"]").remove()
+      $("option[value=\"#{adjustModelPath(modelName)}\"]").attr("disabled", true)
     else
       $("option[value=\"#{adjustModelPath(modelName)}\"]")
         .addClass(currentMode)
