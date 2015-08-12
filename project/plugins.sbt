@@ -29,4 +29,4 @@ resolvers += Resolver.url(
     url("http://dl.bintray.com/content/netlogo/play-scraper"))(
         Resolver.ivyStylePatterns)
 
-addSbtPlugin("org.nlogo" % "play-scraper" % "0.6.0")
+addSbtPlugin("org.nlogo" % "play-scraper" % "0.6.1")
