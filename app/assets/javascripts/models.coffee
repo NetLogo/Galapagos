@@ -89,7 +89,7 @@ exports.handPickedModels = [
   "Sample Models/Networks/Virus on a Network",
   "Sample Models/Chemistry & Physics/Diffusion Limited Aggregation/DLA",
   "Sample Models/Chemistry & Physics/Ising",
-  "Sample Models/Chemistry & Physics/GasLab/GasLab Adiabatic Piston",
+  "Sample Models/Chemistry & Physics/GasLab/GasLab Gas in a Box",
   "Sample Models/Chemistry & Physics/Heat/Boiling",
   "Sample Models/Chemistry & Physics/Waves/Wave Machine"
 ].map((p) -> "modelslib/#{p}")
