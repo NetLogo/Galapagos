@@ -1,0 +1,24 @@
+NetLogo Web Team
+
+Jason Bertsche: Lead Developer
+gh: TheBizzle
+
+Robert Grider:  Developer
+gh: mrerrormessage
+
+Bryan Head:     Developer
+gh: qiemem
+
+Uri Wilensky:   CCL Director
+gh: UriCCL
+
+
+Special Thanks
+
+The NSF
+Corey Brady
+Frank Duncan
+Nicolas Payette
+Seth Tisue
+Jordan Timmerman
+

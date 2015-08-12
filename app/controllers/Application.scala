@@ -42,4 +42,10 @@ class Application @Inject() (application: PlayApplication)  extends Controller {
     implicit request =>
       Ok(Json.stringify(Json.toJson(allModels.map(prettyFilepath))))
   }
+
+  def robots: Action[AnyContent] =
+    Assets.at(path="/public/text", "robots.txt", true)
+
+  def humans: Action[AnyContent] =
+    Assets.at(path="/public/text", "humans.txt", true)
 }

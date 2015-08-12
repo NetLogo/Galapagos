@@ -8,6 +8,8 @@ GET         /info                               controllers.Application.info
 GET         /model/list.json                    controllers.Application.modelList
 GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 GET         /server-error                       controllers.Application.serverError
+GET         /robots.txt                         controllers.Application.robots
+GET         /humans.txt                         controllers.Application.humans
 
 # Local (Tortoise)
 GET         /launch                             controllers.Local.launch

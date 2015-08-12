@@ -67,6 +67,7 @@ routesGenerator := InjectedRoutesGenerator
 
 scrapeRoutes ++= Seq(
   "/favicon.ico",
+  "/humans.txt",
   "/info",
   "/model/list.json",
   "/model/statuses.json",
@@ -76,6 +77,7 @@ scrapeRoutes ++= Seq(
   "/tortoise-compiler.js.map",
   "/server-error",
   "/not-found",
+  "/robots.txt",
   "/standalone",
   "/launch",
   "/web"
