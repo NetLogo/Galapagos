@@ -2,21 +2,32 @@
 
   <h2>What is NetLogo Web?</h2>
 
-  <p>NetLogo Web is a version of the NetLogo modeling environment that runs entirely in the browser.  One of the primary goals of the project is to provide a suitable replacement for the woe-stricken NetLogo applet functionality, and, in doing so, once again make NetLogo models easy for NetLogo users to distribute to others.</p>
+  <p>NetLogo Web is a version of the NetLogo modeling environment that
+     runs entirely in the browser. One of the immediate goals of the project
+     is to provide a suitable replacement for the NetLogo applet
+     functionality, and, in doing so, once again make NetLogo models easy for
+     users to put their models on the web for others to try. NetLogo Web
+     runs on more platforms than Desktop NetLogo, including tablets, phones
+     and Chromebooks. In the longer run, NetLogo Web will have most of the
+     features of Desktop NetLogo.</p>
 
   <h2>How do I know which edition of NetLogo is right for me?</h2>
 
-  <p>The NetLogo and NetLogo Web are definitely very related, but, admittedly, the desktop edition of NetLogo is the one that's more polished and fully-featured.  For the time being, we recommend using NetLogo Web <strong>only if</strong> one or more of the following describes your desired use of NetLogo:</p>
+  <p>The desktop edition of NetLogo is more polished and fully-featured
+     than NetLogo Web. So, for now, we recommend using NetLogo Web <strong>only if</strong> one or more of the following describes your desired use of NetLogo:</p>
 
   <ul>
-    <li>I want to use NetLogo on a platform that it does not otherwise run on (e.g. iPad, iPhone, Android, Chromebook)</li>
+    <li>I want to use NetLogo on a platform that it does not otherwise run on (e.g., iPad, iPhone, Android, Chromebook)</li>
     <li>I want to embed a NetLogo model in a web page</li>
     <li>I want to distribute a NetLogo model without requiring my audience to have an existing NetLogo installation</li>
   </ul>
 
-  <p>That is to say that NetLogo Web's primary advantage right now is how easy it makes sharing models.</p>
-
-  <p>Admittedly, the quality gap between NetLogo Web and NetLogo is pretty large right now, but we intend to greatly narrow that gap over the course of the coming years.  Even if NetLogo Web doesn't sound helpful to you today, be sure to stay tuned as we work to improve NetLogo Web and expand its feature set.</p>
+  <p>The quality gap between NetLogo Web and NetLogo is fairly large right
+     now, but we intend to greatly narrow that gap over the course of the
+     coming years, prioritizing features that are important to large portions
+     of the user community. Even if NetLogo Web doesn't meet all of your
+     needs today, be sure to stay tuned as we work to improve NetLogo Web and
+     expand its feature set.</p>
 
   <h2>What features are currently available in NetLogo Web?</h2>
 
@@ -37,61 +48,166 @@
     <li>High performance</li>
     <li>An interface editor</li>
     <li>Extensions</li>
-    <li>3D</li>
+    <li>Reading from and writing to external files</li>
+    <li>3D models and the "3D View" of 2D models</li>
     <li>HubNet</li>
     <li>BehaviorSpace</li>
-    <li>Other peripheral NetLogo features (e.g. System Dynamics Modeler)</li>
-    <li>Some less-common widget configurations (e.g. vertical sliders)</li>
+    <li>Other less-central NetLogo features (e.g., System Dynamics Modeler)</li>
+    <li>Some less-common widget configurations (e.g., vertical sliders)</li>
   </ul>
 
-  <p>That said, there are very few things in NetLogo Web that are intentionally not supported.  If support for your favorite primitive or feature is not currently available, it is likely forthcoming.  We appreciate your patience as we work to make NetLogo Web the best product we can.</p>
+  <p>That said, there are very few things in NetLogo that have been left
+     out of the long-term development plan for NetLogo Web. If support for
+     your favorite primitive or feature is not currently available, it is
+     likely forthcoming. We appreciate your patience as we work to reproduce
+     functionality that has been developed and honed over more than fifteen
+     years of NetLogo development, in our goal to make NetLogo Web the best
+     product we can.</p>
 
   <h2>How do I know if my model will work in NetLogo Web?</h2>
 
-  <p>Here are a few rules for telling whether or not your model will work in NetLogo Web at the moment:</p>
+  <p>NetLogo Web opens with a randomly selected model. To load another
+     model, you may select a model from the drop-down menu
+     of models from the NetLogo models library (Search the Models Library) or
+     use the button next to "Upload a Model" to open a Desktop NetLogo model of your own.</p>
+
+  <p>Most NetLogo library models work in NetLogo Web. In the NetLogo Web
+     models library drop-down menu, models that work in NetLogo Web are
+     selectable, whereas the models that don't yet work in NetLogo Web are
+     grayed out.  Some selectable models may not work exactly as their
+     NetLogo counterparts. Some grayed out models can easily be modified in
+     Desktop NetLogo so that they run in NetLogo Web. </p>
+
+  <p>To evaluate whether a model of your own will run in NetLogo Web
+     today, you can use the "Upload a Model" button to open it in NetLogo
+     Web.  If the conversion process encounters an error, you will get
+     feedback about what aspects of your model are not yet supported.</p>
+
+  <p>That said, here are some general rules for telling ahead of time
+     whether or not a model will work in the current version of NetLogo Web:</p>
 
   <ul>
-    <li>If your model only does the kind of standard stuff that you see in most of the sample models in the NetLogo Models Library, it is very likely that your model will work</li>
-    <li>If your model uses file primitives or movie primitives or extensions, it <strong>will not</strong> work</li>
-    <li>If your model uses <code>wait</code> or <code>display</code>, it <strong>probably won't</strong> work</li>
+     <li>If your model only uses NetLogo features that are commonly used in
+        the NetLogo Models Library, it is very likely that your model will work</li>
+     <li>If your model uses extensions, file primitives, or movie primitives , it <strong>will not</strong> work</li>
+     <li>If your model uses the <code>wait</code> or <code>display</code> primitives, it generally <strong>will not</strong> work</li>
   </ul>
 
-  <p>If you're still not sure if your model will work or not, we encourage you to simply open your model in NetLogo Web and see for yourself.  If your code uses a NetLogo primitive that isn't yet implemented, you should be given an error message that tells you so.  If something else in your model isn't working correctly, NetLogo Web should make that apparent to you very quickly.</p>
+  <p>If you're still not sure if your model will work or not, we encourage
+     you to simply open your model in NetLogo Web and see for yourself.</p>
+
+  <p>NetLogo Web is in continuous development. As NetLogo features are
+     ported over to NetLogo Web, many models that previously could not be
+     opened in NetLogo Web will automatically become runnable.</p>
 
   <h2>How can I create new models with NetLogo Web?</h2>
 
   <p>Long story short: You can't (yet).</p>
 
-  <p>NetLogo Web allows you to edit model code and "Info" content, but widget editing is not currently an option, which severely limits the authoring power available within NetLogo Web.  Admittedly, this is one of the foremost things that we intend to improve in the near future.  For now, though, all serious model-authoring tasks can only be handled in the standard, desktop edition of NetLogo.</p>
+  <p>NetLogo Web allows you to edit model code and "Info" content, but it
+     is not currently possible to create or edit interface widgets (e.g.,
+     buttons, sliders, monitors, etc.), which severely limits the authoring
+     power available within NetLogo Web. This is one of the foremost things
+     that we intend to improve in the near future. For now, though, all
+     serious model-authoring tasks can only be handled in the standard,
+     desktop edition of NetLogo. The "Upload a Model" button in NetLogo
+     Web can be used to open models created in the desktop edition of
+     NetLogo.</p>
 
-  <h2>I'm using NetLogo Web and everything's broken!  What should I do?</h2>
+  <h2>I'm using NetLogo Web and everything's broken! What should I do?</h2>
 
-  <p>We recommend first trying to solve the problem by refreshing the page.  If that doesn't solve your problem, we encourage you to report your problem to us <a href="https://github.com/NetLogo/Galapagos/issues/new">on GitHub</a> or <a href="mailto:nlw-bugs&#64;ccl.northwestern.edu">by e-mail</a>.</p>
+  <p>We recommend first trying to solve the problem by refreshing the
+     page. If that doesn't fix it, we encourage you to report your problem to
+     us at <a href="mailto:bugs@@ccl.northwestern.edu">bugs@@ccl.northwestern.edu</a>.</p>
 
-  <h2>I don't like the way that a particular something was done in NetLogo Web.  I want to change it!</h2>
+  <h2>How can I save models from NetLogo Web?</h2>
 
-  <p>One of the great things about running directly in the browser is how easy it is to modify content.  If you want to tinker with things in NetLogo Web, go for it!  You're entirely free to save a standalone NetLogo Web page and create your own stylesheets or mess with the page's JavaScript—at your own risk, of course.  If you think the changes you've made would be useful for others, you might even consider contributing them to NetLogo Web proper.</p>
+  <p>First, a model must be opened in NetLogo Web.  This can be done by
+     choosing a model from the Models Library dropdown, or by clicking the
+     file-selection button next to "Upload a Model" to navigate to a
+     model located on your computer and open it in NetLogo Web. Note that
+     opening a model in this way does not save your model remotely anywhere.
+     In fact, when doing this, the model never leaves your computer at all.</p>
+
+  <p>If you would like to save the model that is currently open in NetLogo
+     Web (including any changes that you might have made to it), NetLogo Web
+     offers two different ways of doing so.</p>
+
+  <p>If you would like to keep your model as a NetLogo Web model and share
+     it with others to view in the browser, you can click the "Export:
+     HTML" button in NetLogo Web to generate a single HTML file of your
+     model.  Like any other HTML file, files generated in this way can then
+     be hosted on a web server (including on <a href="https://support.google.com/drive/answer/2881970?hl=en">Google Drive</a> or <a href="http://www.maclife.com/article/howtos/how_host_your_website_dropbox">Dropbox</a>) and viewed in any modern browser.</p>
+
+  <p>If you are interested in saving the model for use in the desktop
+     version of NetLogo, the "Export: NetLogo" button can be used to do
+     so.  This will generate a traditional ".nlogo" file that has a name
+     of your choosing, which will be placed in your computer's
+     "downloads" directory and can then be opened once again in either
+     NetLogo or NetLogo Web.</p>
+
+  <p>With a model downloaded from NetLogo Web, you can make whatever
+     changes to it that you would like in the desktop version of NetLogo,
+     save those changes, and then open the new version of the model in
+     NetLogo Web (using "Upload a Model" in NetLogo Web, like before).</p>
+
+  <p>Using the desktop version of NetLogo to edit models can be especially
+     helpful for working around NetLogo Web's currently-limited
+     functionality for editing models (e.g., the lack of widget authoring),
+     and this, for now, is the recommended way of improving your models for
+     use in NetLogo Web.  We do recognize that this workflow is somewhat
+     inconvenient, and we have plans to improve it soon.</p>
+
+  <h2>I don't like the way that a particular something was done in NetLogo Web. I want to change it!</h2>
+
+  <p>One of the great things about running directly in the browser is how
+     easy it is to modify content. If you want to tinker with things in
+     NetLogo Web, go for it! You're entirely free to save a standalone
+     NetLogo Web page and create your own stylesheets or mess with the page's
+     JavaScript—at your own risk, of course. We do ask that you leave the
+     "powered by NetLogo" text in its place. If you think the changes
+     you've made would be useful for others, you might even consider
+     contributing them to NetLogo Web proper (see the next topic, below).</p>
 
   <h2>How can I contribute changes to the NetLogo Web project?</h2>
 
-  <p>The relevant repositories for the project of <a href="https://github.com/NetLogo/Galapagos">Galapagos</a> (for the web interface), <a href="https://github.com/NetLogo/Tortoise">Tortoise</a> (for the simulation engine and compiler back-end), and <a href="https://github.com/NetLogo/NetLogo-Headless">NetLogo-Headless</a> (for the compiler front-end).</p>
+  <p>Like NetLogo, NetLogo Web is open-source and hosted on GitHub. The relevant repositories for the project of <a href="https://github.com/NetLogo/Galapagos">Galapagos</a> (for the web interface), <a href="https://github.com/NetLogo/Tortoise">Tortoise</a> (for the simulation engine and compiler back-end), and <a href="https://github.com/NetLogo/NetLogo-Headless">NetLogo-Headless</a> (for the compiler front-end).</p>
 
-  <p><a href="https://help.github.com/articles/using-pull-requests/">Pull requests</a> to these repositories are welcome.  If you would like to talk to any of the NetLogo team about some proposed changes of yours, feel free to drop by the relevant repository's chat room <a href="https://gitter.im/NetLogo">on Gitter</a>, where we'll be glad to discuss things with you.</p>
+  <p><a href="https://help.github.com/articles/using-pull-requests/">Pull requests</a>
+     to these repositories are welcome. If you would like to talk to any of
+     the NetLogo team about some proposed changes of yours, feel free to drop
+     by the relevant repository's chat room <a href="https://gitter.im/NetLogo">on Gitter</a>, where we'll be glad to discuss things with you.</p>
 
   <h2>NetLogo Web is freely available and doesn't bombard me with ads—how is this project funded?</h2>
 
-  <p>One important source of NetLogo Web's funding is generous community donations.  If you're interested in making a donation to the NetLogo project, please visit our donation page <a href="http://ccl.northwestern.edu/netlogo/giving.shtml">here</a>.</p>
+  <p>One important source of NetLogo Web's funding is generous community
+     donations. If you're interested in making a donation to the NetLogo
+     project, please visit our donation page <a href="http://ccl.northwestern.edu/netlogo/giving.shtml">here</a>.</p>
 
-  <p>Above all else, though, we gratefully acknowledge that the National Science Foundation's has been the primary funder of NetLogo Web (grant number IIS-1147621).</p>
+  <p>Above all else, though, we gratefully acknowledge that the National
+     Science Foundation's has been the primary funder of NetLogo Web (grant
+     number IIS-1147621).</p>
 
-  <p>NetLogo Web was also made by possible by building on top of the previous two decades of NetLogo funding.  Much of the support over the years came from the National Science Foundation -- grant numbers REC-9814682 and REC-0126227, with further support from REC-0003285, REC-0115699, DRL-0196044, CCF-ITR-0326542, DRL-REC/ROLE-0440113, SBE-0624318, EEC-0648316, IIS-0713619, DRL-RED-9552950, DRL-REC-9632612, DRL-DRK12-1020101, IIS-1441552, CNS-1441016, CNS-1441041, IIS-1438813, and REC-1343873.  Yet more support for NetLogo over the years was provided by the Spencer Foundation, Texas Instruments, the Brady Fund, and the Northwestern Institute on Complex Systems.</p>
+  <p>NetLogo Web was also made by possible by building on top of the
+     previous two decades of NetLogo funding. Much of the support over the
+     years came from the National Science Foundation -- grant numbers
+     REC-9814682 and REC-0126227, with further support from REC-0003285,
+     REC-0115699, DRL-0196044, CCF-ITR-0326542, DRL-REC/ROLE-0440113,
+     SBE-0624318, EEC-0648316, IIS-0713619, DRL-RED-9552950, DRL-REC-9632612,
+     DRL-DRK12-1020101, IIS-1441552, CNS-1441016, CNS-1441041, IIS-1438813,
+     and REC-1343873. Yet more support for NetLogo over the years was
+     provided by the Spencer Foundation, Texas Instruments, the Brady Fund,
+     and the Northwestern Institute on Complex Systems.</p>
 
-  <p>Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.</p>
+  <p>Any opinions, findings, and conclusions or recommendations expressed
+     in this material are those of the author(s) and do not necessarily
+     reflect the views of the National Science Foundation.</p>
 
-  <h2>I have comments or questions that weren't answered here.  How can I get in touch with you?</h2>
+  <h2>I have comments or questions that weren't answered here. How can I get in touch with you?</h2>
 
-  <p>If your inquiry isn't specific to NetLogo Web, we encourage you to use <a href="http://ccl.northwestern.edu/netlogo/docs/contact.html">this page</a> to determine where best to send it.</p>
-
-  <p>For NetLogo Web-specific matters, though, feel free to e-mail us <a href="mailto:nlw-feedback&#64;ccl.northwestern.edu">here</a> or chat with us <a href="https://gitter.im/NetLogo">on Gitter</a>.</p>
+  <p>For NetLogo or NetLogo Web feedback, please send email to <a href="mailto:feedback@@ccl.northwestern.edu">feedback@@ccl.northwestern.edu</a> and for bug reports, please send email to <a href="mailto:bugs@@ccl.northwestern.edu">bugs@@ccl.northwestern.edu</a>.
+     We greatly value your comments, feature requests, observations, and bug
+     reports.  Please make sure to specify in your email that you are using
+     NetLogo Web. You can also consult <a href="http://ccl.northwestern.edu/netlogo/docs/contact.html">this page</a> to determine where best to get in touch.</p>
 
 </div>
