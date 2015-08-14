@@ -40,6 +40,7 @@ class window.HighchartsOps extends PlotOps
           },
         }
       })
+      @_penNameToSeriesNum = {}
       return
 
     registerPen = (pen) ->
