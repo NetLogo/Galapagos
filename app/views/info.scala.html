@@ -152,6 +152,29 @@
      use in NetLogo Web.  We do recognize that this workflow is somewhat
      inconvenient, and we have plans to improve it soon.</p>
 
+  <h2>I got an error, but most things in the model seem to be working just fine.  What was the error message about?</h2>
+
+  <p>If you enter code into the Command Center and that code is invalid in NetLogo Web,
+     you will receive an error message, and your code may not get fully executed.</p>
+
+  <p>If you get an error when the model is first loaded up, but can't tell what's going wrong,
+     it's probably because one of the widgets (e.g. a Plot, Monitor, Input) contains code
+     that is currently invalid in NetLogo Web.  The widget will not work correctly, but the
+     parts of the model that did not generate errors will continue to be operable.</p>
+
+  <p>If you get an error only when you click a button, it usually suggests that the particular
+     button contains code that is currently invalid in NetLogo Web.  That button will be unusable,
+     but the parts of the model that did not generate errors will continue to be operable.</p>
+
+  <h2>My browser is telling me that the page is unresponsive.  What's going on?</h2>
+
+  <p>Your computer is working very hard to execute some NetLogo Web code.
+    This is especially likely to occur when trying to do something that involves
+    a very large number of agents.  Unless you've done something to enter an infinite
+    loop, we recommend just giving NetLogo Web some time to finish its task.  If you
+    <strong>have</strong> entered an infinite loop, the recommended solution is to
+    terminate the browser tab.</p>
+
   <h2>I'm using NetLogo Web and everything's broken! What should I do?</h2>
 
   <p>We recommend first trying to solve the problem by refreshing the
