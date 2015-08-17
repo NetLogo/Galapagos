@@ -7,30 +7,43 @@ body {
 }
 
 .topbar {
+  align-items: center;
   background-color: #222222;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  height: 30px;
+  display: flex;
+  flex-direction: row;
+  height: 40px;
   overflow-x: visible;
   overflow-y: visible;
-  padding-bottom: 10px;
   position: fixed;
-  right: 0;
   top: 0;
   width: 100%;
   z-index: 100000;
 }
 
-a.brand {
-  color: #ffffff;
-  display: block;
-  float: left;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 20px;
-  font-weight: 200;
-  letter-spacing: normal;
+.topbar-root-link {
+  font-size: x-large;
   margin-left: 95px;
-  padding: 8px 20px 12px;
+}
+
+.topbar-quick-link {
+  font-size: medium;
+}
+
+.topbar-spacer {
+  background-color: white;
+  height: 55%;
+  margin: auto 25px;
+  width: 1px;
+}
+
+.topbar-link {
   text-decoration: none;
+}
+
+.topbar-text {
+  color: #ffffff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .not_full_height {
