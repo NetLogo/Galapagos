@@ -151,6 +151,28 @@ class window.SessionLite
 
 window.Tortoise = {
 
+  loadError: (url) ->
+    """
+      <div style='padding: 5px 10px;'>
+        Unable to load NetLogo model from #{url}, please ensure:
+        <ul>
+          <li>That you can download the resource <a target="_blank" href="#{url}">at this link</a></li>
+          <li>That the server containing the resource has
+            <a target="_blank" href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">
+              Cross-Origin Resource Sharing
+            </a>
+            configured appropriately</li>
+        </ul>
+        If you have followed the above steps and are still seeing this error,
+        please send an email to our <a href="mailto:bugs@ccl.northwestern.edu">"bugs" mailing list</a>
+        with the following information:
+        <ul>
+          <li>The full URL of this page (copy and paste from address bar)</li>
+          <li>Your operating system and browser version</li>
+        </ul>
+      </div>
+    """
+
   # process: optional argument that allows the loading process to be async to
   # give the animation time to come up.
   startLoading: (process) ->
@@ -175,8 +197,12 @@ window.Tortoise = {
     req.open('GET', url)
     req.onreadystatechange = =>
       if req.readyState == req.DONE
-        nlogoCompile(req.responseText, [], [], [],
-          @browserCompileCallback(container, callback, @normalizedFileName(url)))
+        if (req.status == 0 || req.status >= 400)
+          container.innerHTML = @loadError(url)
+          @finishLoading()
+        else
+          nlogoCompile(req.responseText, [], [], [],
+            @browserCompileCallback(container, callback, @normalizedFileName(url)))
     req.send("")
 
   fromCompiledModel: (container,
