@@ -24,7 +24,7 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
       "akka.log-dead-letters"      -> 0
     ))
 
-  val longTimeout = akka.util.Timeout(25, java.util.concurrent.TimeUnit.SECONDS)
+  val longTimeout = akka.util.Timeout(60, java.util.concurrent.TimeUnit.SECONDS)
 
   "CompilerService controller" must {
     Map(
