@@ -1,6 +1,20 @@
+@import views.ViewUtils
+
+@linkableHeader(rawHeaderID: String, header: String) = {
+  @defining(ViewUtils.idSafe(rawHeaderID)) { headerId =>
+    <a id="@headerId" class="anchor-header"></a>
+    <div class="link-header">
+      <a href="#@headerId" style="text-decoration: none; color: black; margin-right: 5px;">
+        <img class="link-img" src="@routes.Assets.at("images/link.svg")" />
+      </a>
+      <h2>@header</h2>
+    </div>
+  }
+}
+
 <div class="inner-content" style="margin: 0 10%; text-align: justify">
 
-  <h2>What is NetLogo Web?</h2>
+  @linkableHeader("overview", "What is NetLogo Web?")
 
   <p>NetLogo Web is a version of the NetLogo modeling environment that
      runs entirely in the browser. One of the immediate goals of the project
@@ -11,7 +25,7 @@
      and Chromebooks. In the longer run, NetLogo Web will have most of the
      features of Desktop NetLogo.</p>
 
-  <h2>How do I know which edition of NetLogo is right for me?</h2>
+  @linkableHeader("picking-a-netlogo", "How do I know which edition of NetLogo is right for me?")
 
   <p>The desktop edition of NetLogo is more polished and fully-featured
      than NetLogo Web. So, for now, we recommend using NetLogo Web <strong>only if</strong> one or more of the following describes your desired use of NetLogo:</p>
@@ -29,7 +43,7 @@
      needs today, be sure to stay tuned as we work to improve NetLogo Web and
      expand its feature set.</p>
 
-  <h2>What features are currently available in NetLogo Web?</h2>
+  @linkableHeader("features", "What features are currently available in NetLogo Web?")
 
   <ul>
     <li>Most of the NetLogo programming language</li>
@@ -41,7 +55,7 @@
     <li>The ability to export models as standalone HTML pages</li>
   </ul>
 
-  <h2>What features of NetLogo does NetLogo Web lack at the moment?</h2>
+  @linkableHeader("deficiencies", "What features of NetLogo does NetLogo Web lack at the moment?")
 
   <ul>
     <li>Many of the less-common NetLogo language primitives</li>
@@ -64,7 +78,7 @@
      years of NetLogo development, in our goal to make NetLogo Web the best
      product we can.</p>
 
-  <h2>How do I know if my model will work in NetLogo Web?</h2>
+  @linkableHeader("converting-models", "How do I know if my model will work in NetLogo Web?")
 
   <p>NetLogo Web opens with a randomly selected model. To load another
      model, you may select a model from the drop-down menu
@@ -102,7 +116,7 @@
      ported over to NetLogo Web, many models that previously could not be
      opened in NetLogo Web will automatically become runnable.</p>
 
-  <h2>How can I create new models with NetLogo Web?</h2>
+  @linkableHeader("creating-models", "How can I create new models with NetLogo Web?")
 
   <p>Long story short: You can't (yet).</p>
 
@@ -116,7 +130,7 @@
      Web can be used to open models created in the desktop edition of
      NetLogo.</p>
 
-  <h2>How can I save models from NetLogo Web?</h2>
+  @linkableHeader("saving", "How can I save models from NetLogo Web?")
 
   <p>First, a model must be opened in NetLogo Web.  This can be done by
      choosing a model from the Models Library dropdown, or by clicking the
@@ -154,7 +168,7 @@
      use in NetLogo Web.  We do recognize that this workflow is somewhat
      inconvenient, and we have plans to improve it soon.</p>
 
-  <h2>I got an error, but most things in the model seem to be working just fine.  What was the error message about?</h2>
+  @linkableHeader("error-messages", "I got an error, but most things in the model seem to be working just fine.  What was the error message about?")
 
   <p>If you enter code into the Command Center and that code is invalid in NetLogo Web,
      you will receive an error message, and your code may not get fully executed.</p>
@@ -168,7 +182,7 @@
      button contains code that is currently invalid in NetLogo Web.  That button will be unusable,
      but the parts of the model that did not generate errors will continue to be operable.</p>
 
-  <h2>My browser is telling me that the page is unresponsive.  What's going on?</h2>
+  @linkableHeader("unresponsive-browser", "My browser is telling me that the page is unresponsive.  What's going on?")
 
   <p>Your computer is working very hard to execute some NetLogo Web code.
     This is especially likely to occur when trying to do something that involves
@@ -177,7 +191,7 @@
     <strong>have</strong> entered an infinite loop, the recommended solution is to
     terminate the browser tab.</p>
 
-  <h2>Why am I not seeing one of the new features that you said you added?</h2>
+  @linkableHeader("wheres-the-beef", "Why am I not seeing one of the new features that you said you added?")
 
   <p>Your browser is probably caching (holding onto) an old version of NetLogo Web
      from a previous visit to our site.  Your browser will likely throw out its
@@ -187,7 +201,7 @@
      clearing the cache, your browser will obtain the latest version of NetLogo
      Web from us the next time you visit the page.</p>
 
-  <h2>Why does everything seem so much slower in NetLogo Web?</h2>
+  @linkableHeader("performance", "Why does everything seem so much slower in NetLogo Web?")
 
   <p>There are a couple of reasons for this.  One of the big ones is that the
      the desktop edition of NetLogo has about fifteen years of development work
@@ -204,13 +218,13 @@
      substantially faster than others.  We find that Google Chrome tends to offer
      the best performance with NetLogo Web.</p>
 
-  <h2>I'm using NetLogo Web and everything's broken! What should I do?</h2>
+  @linkableHeader("reporting-problems", "I'm using NetLogo Web and everything's broken! What should I do?")
 
   <p>We recommend first trying to solve the problem by refreshing the
       page. If that doesn't fix it, we encourage you to report your problem to
       us at <a href="mailto:bugs@@ccl.northwestern.edu">bugs@@ccl.northwestern.edu</a>.</p>
 
-  <h2>I don't like the way that a particular something was done in NetLogo Web. I want to change it!</h2>
+  @linkableHeader("modifying-underlying-code", "I don't like the way that a particular something was done in NetLogo Web. I want to change it!")
 
   <p>One of the great things about running directly in the browser is how
      easy it is to modify content. If you want to tinker with things in
@@ -221,7 +235,7 @@
      you've made would be useful for others, you might even consider
      contributing them to NetLogo Web proper (see the next topic, below).</p>
 
-  <h2>How can I contribute changes to the NetLogo Web project?</h2>
+  @linkableHeader("contributing-changes", "How can I contribute changes to the NetLogo Web project?")
 
   <p>Like NetLogo, NetLogo Web is open-source and hosted on GitHub. The relevant repositories for the project are <a href="https://github.com/NetLogo/Galapagos">Galapagos</a> (for the web interface), <a href="https://github.com/NetLogo/Tortoise">Tortoise</a> (for the simulation engine and compiler back-end), and <a href="https://github.com/NetLogo/NetLogo-Headless">NetLogo-Headless</a> (for the compiler front-end).</p>
 
@@ -230,7 +244,7 @@
      the NetLogo team about some proposed changes of yours, feel free to drop
      by the relevant repository's chat room <a href="https://gitter.im/NetLogo">on Gitter</a>, where we'll be glad to discuss things with you.</p>
 
-  <h2>NetLogo Web is freely available and doesn't bombard me with ads—how is this project funded?</h2>
+  @linkableHeader("funding", "NetLogo Web is freely available and doesn't bombard me with ads—how is this project funded?")
 
   <p>One important source of NetLogo Web's funding is generous community
      donations. If you're interested in making a donation to the NetLogo
@@ -255,7 +269,7 @@
      in this material are those of the author(s) and do not necessarily
      reflect the views of the National Science Foundation.</p>
 
-  <h2>I have comments or questions that weren't answered here. How can I get in touch with you?</h2>
+  @linkableHeader("contact-us", "I have comments or questions that weren't answered here. How can I get in touch with you?")
 
   <p>For NetLogo or NetLogo Web feedback, please send email to <a href="mailto:feedback@@ccl.northwestern.edu">feedback@@ccl.northwestern.edu</a> and for bug reports, please send email to <a href="mailto:bugs@@ccl.northwestern.edu">bugs@@ccl.northwestern.edu</a>.
      We greatly value your comments, feature requests, observations, and bug

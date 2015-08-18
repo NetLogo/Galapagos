@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 32 18" width="50">
+  <defs>
+    <clipPath id="clipA">
+      <rect x="0" y="0" width="23" height="5"></rect>
+      <rect x="0" y="9" width="23" height="5"></rect>
+      <rect x="0" y="0" width="10" height="15"></rect>
+    </clipPath>
+    <clipPath id="clipB">
+      <rect x="11" y="6" width="23" height="4"></rect>
+      <rect x="11" y="13.5" width="23" height="5"></rect>
+      <rect x="18" y="5" width="15" height="15"></rect>
+    </clipPath>
+  </defs>
+  <rect stroke="black" stroke-width="1.5" x="1"  y="2" width="20" height="10" rx="5" ry="5" fill-opacity="0" clip-path="url(#clipA)"></rect>
+  <rect stroke="black" stroke-width="1.5" x="11" y="7" width="20" height="10" rx="5" ry="5" fill-opacity="0" clip-path="url(#clipB)"></rect>
+</svg>
+

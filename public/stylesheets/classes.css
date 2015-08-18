@@ -100,6 +100,42 @@
   line-height: 25px;
   text-align: center;
 }
+
+div.link-header {
+  margin-left: -27px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.anchor-header {
+  visibility: hidden;
+  display: block;
+  margin-top: -20px;
+  padding-bottom: 20px;
+}
+
+.anchor-header:target {
+  margin-top: -40px;
+  padding-bottom: 40px;
+}
+
+div.link-header:hover > a > img.link-img {
+  visibility: visible;
+}
+
+div.link-header > h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+img.link-img {
+  top: 50%;
+  max-width: 20px;
+  visibility: hidden;
+}
+
 /*
 
  Flexbox stuff
