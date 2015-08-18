@@ -67,10 +67,12 @@ end
 
 ;; adjust speed to be closer to most efficient speed
 to adjust-speed-for-efficiency
-  if speed != efficient-speed [
+  if speed != efficient-speed [ ;; if car is at efficient speed, do nothing
+    ;; if accelerating will still put you below the efficient speed, then accelerate
     if (speed + acceleration < efficient-speed) [
       set speed speed + acceleration
     ]
+    ;; if decelerating will still put you below the efficient speed, then decelerate
     if (speed - deceleration > efficient-speed) [
       set speed speed - deceleration
     ]
@@ -243,15 +245,15 @@ This model is in the IABM Textbook folder of the NetLogo Models Library. The mod
 
 ## WHAT IS IT?
 
-This model models the movement of cars on a highway. Each car follows a simple set of rules: it slows down (decelerates) if it sees a car close ahead, and speeds up (accelerates) if it doesn't see a car ahead.
+This model models the movement of cars on a highway. Each car follows a simple set of rules: it slows down (decelerates) if it sees a car close ahead, and speeds up (accelerates) if it doesn't see a car ahead. Cars start at a random speed between 0.1 and 1. This model extends the Traffic Basic model, from the social science section of the NetLogo models library, to include a utility function for the cars.
 
-Cars start at a random speed between 0.1 and 1 .
-
-This model extends the Traffic Basic model, from the social science section of the NetLogo models library, to include a utility function for the cars. The model sets the optimal speed for the cars (best fuel efficiency) to be 0.45. If the acceleration rule speeds the car past the optimal speed, the car decelerates instead of accelerating.
+The model sets the optimal speed for the cars (best fuel efficiency) to be 0.45. If the acceleration rule speeds the car past the optimal speed, the car decelerates instead of accelerating.
 
 ## HOW TO USE IT
 
-Click on the SETUP button to set up the cars. Set the NUMBER slider to change the number of cars on the road.
+Click on the SETUP button to set up the cars.
+
+Set the NUMBER slider to change the number of cars on the road.
 
 Click on GO to start the cars moving.  Note that they wrap around the world as they move, so the road is like a continuous loop.
 
@@ -314,6 +316,8 @@ Make a model of two-lane traffic.
 The plot shows both global values and the value for a single turtle, which helps one watch overall patterns and individual behavior at the same time.
 
 The `watch` command is used to make it easier to focus on the red car.
+
+The `speed-limit` and `speed-min` variables are set to constant values. Since they are the same for every car, these variables could have been defined as globals rather than turtle variables. We have specified them as turtle variables since modifications or extensions to this model might well have every car with its own speed-limit values.
 
 ## RELATED MODELS
 

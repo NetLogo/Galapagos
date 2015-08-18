@@ -6,12 +6,12 @@ globals [
 ]
 
 turtles-own [
-  happy?       ;; for each turtle, indicates whether at least %-similar-wanted percent of
-               ;; that turtles' neighbors are the same color as the turtle
-  similar-nearby   ;; how many neighboring patches have a turtle with my color?
-  other-nearby ;; how many have a turtle of another color?
-  total-nearby  ;; sum of previous two variables
-  my-%-similar-wanted  ;; the threshold for this particular turtle
+  happy?              ;; for each turtle, indicates whether at least %-similar-wanted percent of
+                      ;; that turtle's neighbors are the same color as the turtle
+  similar-nearby      ;; how many neighboring patches have a turtle with my color?
+  other-nearby        ;; how many have a turtle of another color?
+  total-nearby        ;; sum of previous two variables
+  my-%-similar-wanted ;; the threshold for this particular turtle
 ]
 
 
@@ -279,11 +279,9 @@ This model is in the IABM Textbook folder of the NetLogo Models Library. The mod
 
 ## WHAT IS IT?
 
-This project models the behavior of two types of turtles in a mythical pond. The red turtles and green turtles get along with one another. But each turtle wants to make sure that it lives near some of "its own." That is, each red turtle wants to live near at least some red turtles, and each green turtle wants to live near at least some green turtles. The simulation shows how these individual preferences ripple through the pond, leading to large-scale patterns.
+This project models the behavior of two types of turtles in a mythical pond. The red turtles and green turtles get along with one another. But each turtle wants to make sure that it lives near some of "its own." That is, each red turtle wants to live near at least some red turtles, and each green turtle wants to live near at least some green turtles. The simulation shows how these individual preferences ripple through the pond, leading to large-scale patterns. This model is an extension of the Segregation Simple Extension 2 model. It adds a constraint that agents also want to have a minimum number of different agents around them.
 
 This project was inspired by Thomas Schelling's writings about social systems (particularly with regards to housing segregation in cities).
-
-This model is an extension of the Segregation Simple Extension 2 model. It adds a constraint that agents also want to have a minimum number of different agents around them.
 
 ## HOW TO USE IT
 

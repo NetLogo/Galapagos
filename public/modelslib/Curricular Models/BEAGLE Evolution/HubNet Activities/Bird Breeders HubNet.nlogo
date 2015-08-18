@@ -313,7 +313,7 @@ to go
 ;;  ]
   calculate-all-alleles
   check-for-meeting-goals
-  
+
   tick
 end
 
@@ -961,9 +961,9 @@ to-report is-my-egg? [my-player-number]
 end
 
 
-to-report which-player-bird-or-egg-is-this? [bird]
+to-report which-player-bird-or-egg-is-this? [this-bird]
   let this-is-owned-by 0
-  ask bird [set this-is-owned-by owned-by]
+  ask this-bird [set this-is-owned-by owned-by]
   report this-is-owned-by
 end
 

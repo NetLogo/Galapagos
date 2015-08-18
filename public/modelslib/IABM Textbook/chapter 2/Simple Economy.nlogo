@@ -118,7 +118,7 @@ MONITOR
 744
 470
 wealth of bottom 50%
-sum [wealth] of min-n-of 250 turtles [wealth]
+sum sublist (sort [ wealth ] of turtles) 0 250
 1
 1
 11
@@ -129,7 +129,7 @@ MONITOR
 728
 410
 wealth of top 10%
-sum [wealth] of max-n-of 50 turtles [wealth]
+sum sublist (sort [ wealth ] of turtles) 450 500
 1
 1
 11
@@ -160,8 +160,8 @@ true
 true
 "" ""
 PENS
-"top-10%" 1.0 0 -2674135 true "" "plot sum [wealth] of max-n-of 50 turtles [wealth]"
-"bottom-50%" 1.0 0 -13345367 true "" "plot sum [wealth] of min-n-of 250 turtles [wealth]"
+"top-10%" 1.0 0 -2674135 true "" "plot sum sublist (sort [ wealth ] of turtles) 450 500"
+"bottom-50%" 1.0 0 -13345367 true "" "plot sum sublist (sort [ wealth ] of turtles) 0 250"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT

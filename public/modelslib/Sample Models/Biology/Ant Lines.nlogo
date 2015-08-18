@@ -4,7 +4,6 @@ breed [ followers follower ]
 globals [
   nest-x nest-y    ;; location of center of nest
   food-x food-y    ;; location of center of food
-  leader-heading   ;; heading of the leader ant
 ]
 
 to setup
@@ -37,23 +36,20 @@ to setup
     ]
   ]
   create-leaders 1
-    [ set color red                                ;; leader ant is red
-      set size 2
-      wiggle 50 ]                                  ;; ...and starts out with a random heading
+    [ set color red ]                              ;; leader ant is red and start with a random heading
   create-followers (num-ants - 1)
-    [ set size 2
-      set color yellow ]                           ;; middle ants are yellow
+    [ set color yellow                             ;; middle ants are yellow
+      set heading 90 ]                             ;; and start with a fixed heading
   ask turtles
     [ setxy nest-x nest-y                          ;; start the ants out at the nest
-      set heading 90 ]
-  ask turtle (num-ants - 1)
+      set size 2 ]
+  ask turtle (max [who] of turtles)
     [ set color blue                               ;; last ant is blue
       set pen-size 2
       pd ]                                         ;; ...and leaves a trail
   ask leaders
     [ set pen-size 2
       pd ]                                         ;; the leader also leaves a trail
-  set leader-heading [heading] of one-of leaders
   reset-ticks
 end
 
@@ -71,7 +67,6 @@ to go
      [ face turtle (who - 1)                        ;; follower ants follow the ant ahead of them
        if time-to-start? and (xcor < food-x)        ;; followers wait a bit before leaving nest
          [ fd 0.5 ] ]
-  set leader-heading [heading] of one-of leaders
   tick
 end
 
@@ -182,7 +177,7 @@ MONITOR
 177
 277
 leader-heading
-leader-heading
+[ heading ] of one-of leaders
 0
 1
 11

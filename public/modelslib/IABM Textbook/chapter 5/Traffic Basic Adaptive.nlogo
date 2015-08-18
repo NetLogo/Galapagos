@@ -351,13 +351,13 @@ This model is in the IABM Textbook folder of the NetLogo Models Library. The mod
 
 ## WHAT IS IT?
 
-This model models the movement of cars on a highway. Each car follows a simple set of rules: it slows down (decelerates) if it sees a car close ahead, and speeds up (accelerates) if it doesn't see a car ahead.
-
-The model extends the Traffic Basic model, from the social science section of the NetLogo models library, by having cars adapt their acceleration to try and maintain a smooth flow of traffic.
+This model models the movement of cars on a highway. Each car follows a simple set of rules: it slows down (decelerates) if it sees a car close ahead, and speeds up (accelerates) if it doesn't see a car ahead. The model extends the Traffic Basic model, from the social science section of the NetLogo models library, by having cars adapt their acceleration to try and maintain a smooth flow of traffic.
 
 ## HOW TO USE IT
 
-Click on the SETUP button to set up the cars. Set the NUMBER slider to change the number of cars on the road.
+Click on the SETUP button to set up the cars.
+
+Set the NUMBER slider to change the number of cars on the road.
 
 Click on GO to start the cars moving.  Note that they wrap around the world as they move, so the road is like a continuous loop.
 
@@ -416,6 +416,8 @@ Make a model of two-lane traffic.
 The plot shows both global values and the value for a single car, which helps one watch overall patterns and individual behavior at the same time.
 
 The `watch` command is used to make it easier to focus on the red car.
+
+The `speed-limit` and `speed-min` variables are set to constant values. Since they are the same for every car, these variables could have been defined as globals rather than turtle variables. We have specified them as turtle variables since modifications or extensions to this model might well have every car with its own speed-limit values.
 
 ## RELATED MODELS
 

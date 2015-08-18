@@ -377,7 +377,7 @@ This model is an alternate visualization of the Virus model from the Biology sec
 
 ## WHAT IS IT?
 
-This model simulates the transmission and perpetuation of a virus in a human population.
+This model simulates the transmission and perpetuation of a virus in a human population. This version includes alternative visualizations of the model.
 
 Ecological biologists have suggested a number of factors which may influence the survival of a directly transmitted virus within a population. (Yorke, et al. "Seasonality and the requirements for perpetuation and eradication of viruses in populations." Journal of Epidemiology, volume 109, pages 103-123)
 
@@ -459,14 +459,12 @@ Add a slider controlling how long immunity lasts. You could also make immunity i
 
 ## VISUALIZATION
 
-The circle visualization of the model comes from guidelines presented in
+The alternative visualization of the model comes from guidelines presented in
 Kornhauser, D., Wilensky, U., & Rand, W. (2009). http://ccl.northwestern.edu/papers/2009/Kornhauser,Wilensky&Rand_DesignGuidelinesABMViz.pdf.
 
 * The SHOW-AGE? visualization enables the user to track individual agents' lifespans.
 
 * The WATCH-A-PERSON visualization enables the user to focus on one subject and to see the "micro-level" interactions, to view which agent infects the subject. You can observe the green trail of a healthy individual, which becomes red when the person gets infected. Additionally, you can see the individual who transmitted the virus linked to the subject by a line.
-
-* The circle visualization of the agents is designed to make it easier to see agents interacting. At the lowest level, perceptual impediments arise when we exceed the limitations of our low-level visual system. Visual features that are difficult to distinguish can disable our pre-attentive processing capabilities. Pre-attentive processing can be hindered by other cognitive phenomena such as interference between visual features (Healey 2006). The circle visualization of the agents is supposed to make it easier to see when agents interact because overlap is easier to see between circles than between the “people” shapes. In the circle visualization, the circles merge to create new compound shapes. Thus, it is easier to perceive new compound shapes in the circle visualization. Does the circle visualization make it easier for you to see what is happening?
 
 ## RELATED MODELS
 
