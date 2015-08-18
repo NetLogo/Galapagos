@@ -15,6 +15,14 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     controller.updateWidgets()
   fillOutWidgets(widgets, updateUICallback)
 
+  sanitizedMarkdown = (md) ->
+    # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
+    # RG 8/18/15
+    html_sanitize(
+      markdown.toHTML(md),
+      (url) -> if /^https?:\/\//.test(url) then url else undefined, # URL Sanitizer
+      (id) -> id)                                                   # ID Sanitizer
+
   model = {
     widgets,
     speed:              0.0,
@@ -29,7 +37,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     filename:           filename,
     consoleOutput:      '',
     outputWidgetOutput: '',
-    markdown:           markdown.toHTML,
+    markdown:           sanitizedMarkdown,
     convertColor:       netlogoColorToCSS,
     hasFocus:           false
   }
