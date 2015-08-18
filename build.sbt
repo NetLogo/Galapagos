@@ -66,7 +66,7 @@ includeFilter in autoprefixer := Def.setting {
 routesGenerator := InjectedRoutesGenerator
 
 scrapeRoutes ++= Seq(
-  "/favicon.ico",
+  "/favicon.png",
   "/humans.txt",
   "/info",
   "/model/list.json",
