@@ -66,6 +66,8 @@ exports.selectModel = (model) ->
   modelSelect.trigger("chosen:updated")
 
 exports.handPickedModels = [
+  "IABM Textbook/chapter 2/Simple Economy",
+  "IABM Textbook/chapter 8/Sandpile Simple",
   "Sample Models/Art/Follower",
   "Sample Models/Biology/Wolf Sheep Predation",
   "Sample Models/Biology/Ants",
