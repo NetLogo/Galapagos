@@ -23,6 +23,9 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       (url) -> if /^https?:\/\//.test(url) then url else undefined, # URL Sanitizer
       (id) -> id)                                                   # ID Sanitizer
 
+  dropNLogoExtension = (s) ->
+    s.slice(0, -6)
+
   model = {
     widgets,
     speed:              0.0,
@@ -34,7 +37,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     info,
     readOnly,
     exportForm:         false,
-    filename:           filename,
+    modelTitle:         dropNLogoExtension(filename),
     consoleOutput:      '',
     outputWidgetOutput: '',
     markdown:           sanitizedMarkdown,
@@ -66,6 +69,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     template:   template,
     partials:   partials,
     components: {
+      editableTitle: EditableTitleWidget,
       editor: EditorWidget,
       console: ConsoleWidget,
       outputArea: OutputArea,
@@ -269,19 +273,7 @@ template =
   <div class="netlogo-model" style="width: {{width}}px;"
        tabindex="1" on-keydown="checkActionKeys" on-focus="checkFocus" on-blur="checkFocus">
     <div class="netlogo-header">
-      <label class="netlogo-widget netlogo-speed-slider">
-        <span class="netlogo-label">speed</span>
-        <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
-      </label>
-
       <div class="netlogo-subheader">
-        {{# !readOnly }}
-        <div>
-          Export:
-          <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportnlogo">NetLogo</button>
-          <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportHtml">HTML</button>
-        </div>
-        {{/}}
         <div class="netlogo-powered-by">
           <a href="http://ccl.northwestern.edu/netlogo/">
             <img style="vertical-align: middle;" alt="NetLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAANcSURBVHjarJRdaFxFFMd/M/dj7252uxubKms+bGprVyIVbNMWWqkQqtLUSpQWfSiV+oVFTcE3DeiDgvoiUSiCYLH2oVoLtQ+iaaIWWtE2FKGkkSrkq5svN+sm7ma/7p3x4W42lEbjQw8MM8yc87/nzPnNFVprbqWJXyMyXuMqx1Ni6N3ny3cX8tOHNLoBUMvESoFI2Xbs4zeO1lzREpSrMSNS1zkBDv6uo1/noz1H7mpvS4SjprAl2AZYEqzKbEowBAgBAkjPKX2599JjT7R0bj412D0JYNplPSBD1G2SmR/e6u1ikEHG2vYiGxoJmxAyIGSCI8GpCItKimtvl2JtfGujDNkX6epuAhCjNeAZxM1ocPy2Qh4toGQ5DLU+ysiuA2S3P0KgJkjAgEAlQylAA64CG/jlUk6//ng4cNWmLK0yOPNMnG99Rs9LQINVKrD+wmke7upg55PrWP3eYcwrlykpKCkoelDy/HVegQhoABNAepbACwjOt72gZkJhypX70YDWEEklue+rbnYc2MiGp1upPfYReiJJUUG58gFXu4udch1wHcjFIgy0HyIjb2yvBpT2F6t+6+f+D15lW8c9JDo7iPSdgVIRLUqL2AyHDQAOf9hfbqxvMF98eT3RuTS1avHyl+Stcphe2chP9+4k/t3RbXVl3W+Ws17FY56/w3VcbO/koS/eZLoAqrQMxADZMTYOfwpwoWjL4+bCYcgssMqGOzPD6CIkZ/3SxTJ0ayFIN6/BnBrZb2XdE1JUgkJWkfrUNRJnPyc16zsbgPyXIUJBpvc+y89nk/S8/4nek3NPGeBWMwzGvhUPnP6RubRLwfODlqqx3LSCyee2MnlwMwA2RwgO5qouVcHmksUdJweYyi8hZkrUjgT5t/ejNq0jBsSqNWsKyT9uFtxw7Bs585d3g46KOeT2bWHmtd14KyP+5mzqpsYU3OyioACMhGiqPTMocsrHId9cy9BLDzKxq8X3ctMwlV6yKSHL4fr4dd0DeQBTBUgUkvpE1kVPbqkX117ZzuSaFf4zyfz5n9A4lk0yNU7vyb7jTy1kmFGipejKvh6h9n0W995ZPTu227hqmCz33xXgFV1v9NzI96NfjndWt7XWCB/7BSICFWL+j3lAofpCtfYFb6X9MwCJZ07mUsXRGwAAAABJRU5ErkJggg=="/>
@@ -289,7 +281,20 @@ template =
           </a>
         </div>
       </div>
+      <editableTitle modelTitle="{{ modelTitle }}"/>
+      {{# !readOnly }}
+      <div>
+        Export:
+        <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportnlogo">NetLogo</button>
+        <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportHtml">HTML</button>
+      </div>
+      {{/}}
     </div>
+
+    <label class="netlogo-widget netlogo-speed-slider">
+      <span class="netlogo-label">speed</span>
+      <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
+    </label>
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container">

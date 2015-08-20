@@ -19,6 +19,9 @@ class window.SessionLite
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
+  modelTitle: ->
+    @widgetController.ractive.get('modelTitle')
+
   startLoop: ->
     @widgetController.updateWidgets()
     if procedures.startup? then procedures.startup()
@@ -89,19 +92,23 @@ class window.SessionLite
     })
 
   exportnlogo: ->
-    filename = window.prompt('Filename:', @widgetController.ractive.get('filename'))
-    if filename?
+    exportName = @promptFilename(".nlogo")
+    if exportName?
       exportedNLogo = @getNlogo()
       if (exportedNLogo.success)
         exportBlob = new Blob([exportedNLogo.result], {type: "text/plain:charset=utf-8"})
-        saveAs(exportBlob, filename)
+        saveAs(exportBlob, exportName)
       else
         alert(exportedNLogo.result.map((err) -> err.message).join('\n'))
 
+  promptFilename: (extension) ->
+    suggestion = @modelTitle() + extension
+    window.prompt('Filename:', suggestion)
+
+
   exportHtml: ->
-    suggestion = @widgetController.ractive.get('filename').replace(/\.nlogo$/, ".html")
-    filename = window.prompt('Filename:', suggestion)
-    if filename?
+    exportName = @promptFilename(".html")
+    if exportName?
       window.req = new XMLHttpRequest()
       req.open('GET', standaloneURL)
       req.onreadystatechange = =>
@@ -113,11 +120,11 @@ class window.SessionLite
               dom = parser.parseFromString(req.responseText, "text/html")
               nlogoScript = dom.querySelector("#nlogo-code")
               nlogoScript.textContent = nlogo.result
-              nlogoScript.dataset.filename = filename.replace(/\.html$/, ".nlogo")
+              nlogoScript.dataset.filename = exportName.replace(/\.html$/, ".nlogo")
               wrapper = document.createElement("div")
               wrapper.appendChild(dom.documentElement)
               exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
-              saveAs(exportBlob, filename)
+              saveAs(exportBlob, exportName)
             else
               alert(nlogo.result.map((err) -> err.message).join("\n"))
           else
@@ -211,7 +218,7 @@ window.Tortoise = {
                       info,
                       compiledSource = "",
                       readOnly = false,
-                      filename = "export.nlogo") ->
+                      filename = "export") ->
     widgets = globalEval(widgetString)
     widgetController = bindWidgets(container, widgets, code, info, readOnly, filename)
     window.modelConfig ?= {}

@@ -68,8 +68,9 @@
     }
 
     window.addEventListener("message", function(e) {
-      modelContainer.width = e.data.width;
+      modelContainer.width  = e.data.width;
       modelContainer.height = e.data.height;
+      document.title        = e.data.title;
     });
 
     function openNlogo(nlogoContents) {

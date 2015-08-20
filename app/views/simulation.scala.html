@@ -38,6 +38,7 @@
     @script(route("javascripts/TortoiseJS/agent/info.js"))
     @script(route("javascripts/TortoiseJS/agent/output.js"))
     @script(route("javascripts/TortoiseJS/agent/console.js"))
+    @script(route("javascripts/TortoiseJS/agent/title.js"))
     @script(route("javascripts/TortoiseJS/agent/widgets.js"))
     @script(route("javascripts/TortoiseJS/control/session-lite.js"))
     @script(route("javascripts/plot/highchartsops.js"))
@@ -47,48 +48,55 @@
     )
 
     <!-- This can be used to insert nlogo code into this page -->
-    <script type="text/nlogo" id="nlogo-code" date-filename="model.nlogo"></script>
+    <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
     <script>
       var modelContainer = document.querySelector("#netlogo-model-container");
       var index          = window.location.href.indexOf("?");
       var nlogoScript    = document.querySelector("#nlogo-code");
       var standaloneURL  = "@routes.Local.standalone.absoluteURL";
+      var pageTitle      = function(modelTitle) {
+        if (modelTitle != null && modelTitle != "") {
+          return "NetLogo Web: " + modelTitle;
+        } else {
+          return "NetLogo Web";
+        }
+      };
       var session;
+      var openSession = function(s) {
+        session = s;
+        document.title = pageTitle(session.modelTitle());
+        session.startLoop();
+      };
 
       if (nlogoScript.textContent.length > 0) {
-        Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, function (res) {
-          session = res;
-          session.startLoop();
-        });
+        Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, openSession);
       } else if (index > -1) {
         var url = window.location.href.substring(index+1);
         console.log(url);
-        Tortoise.fromURL(url, modelContainer, function (res) {
-          session = res;
-          session.startLoop();
-        });
+        Tortoise.fromURL(url, modelContainer, openSession);
       }
 
       window.addEventListener("message", function (e) {
         if (session) {
           session.teardown();
         }
-        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, function (res) {
-          session = res;
-          session.startLoop();
-        });
+        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession);
       });
 
       if (parent !== window) {
         var width = "", height = "";
         window.setInterval(function() {
-          if (modelContainer.scrollWidth !== width || modelContainer.scrollHeight !== height) {
+          if (modelContainer.scrollWidth  !== width ||
+              modelContainer.scrollHeight !== height ||
+              document.title              != pageTitle(session.modelTitle())) {
+            document.title = pageTitle(session.modelTitle());
             width = modelContainer.scrollWidth;
             height = modelContainer.scrollHeight;
             parent.postMessage({
-              width: modelContainer.scrollWidth,
-              height: modelContainer.scrollHeight
+              width:  modelContainer.scrollWidth,
+              height: modelContainer.scrollHeight,
+              title:  document.title
             }, "*");
           }
         }, 200);

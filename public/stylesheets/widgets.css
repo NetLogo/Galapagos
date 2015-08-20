@@ -15,6 +15,7 @@
     display: flex;
     flex-flow: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .netlogo-widget {
@@ -121,6 +122,22 @@
     background-color: white;
 }
 
+.netlogo-model-masthead > form, .netlogo-model-masthead > h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.netlogo-title-input {
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: normal;
+  text-align: center;
+}
+
 .netlogo-code-container {
     display: flex;
     flex-flow: column;
@@ -212,9 +229,14 @@
   background-color: transparent;
   border: none;
   display: inline-block;
-  margin-right: auto 10px;
+  margin-top: 10px;
   vertical-align: middle;
+  align-self: center;
   width: 75%;
+}
+
+.netlogo-widget-container {
+  margin-top: 10px;
 }
 
 .netlogo-widget input[type=range]::-ms-tooltip {
@@ -389,4 +411,5 @@
 .netlogo-subheader {
     display: flex;
     flex-flow: column;
+    align-items: center;
 }
