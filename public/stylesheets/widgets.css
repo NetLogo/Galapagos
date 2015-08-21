@@ -122,9 +122,29 @@
     background-color: white;
 }
 
-.netlogo-model-masthead > form, .netlogo-model-masthead > h2 {
-  margin-top: 0;
-  margin-bottom: 0;
+.netlogo-model-masthead {
+  flex-grow: 1;
+  margin: 0 10px 0 0;
+  width: 350px;
+}
+
+.netlogo-model-masthead > form {
+  margin: 0 auto;
+}
+
+.netlogo-model-title {
+  margin: 0 0 0 28px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.netlogo-title-edit-button {
+  height: 20px;
+  margin: auto 8px;
+  outline: none;
+  width: 20px;
 }
 
 .hidden {
@@ -135,7 +155,9 @@
   font-size: 1.5em;
   font-weight: bold;
   letter-spacing: normal;
+  margin: 0 5%;
   text-align: center;
+  width: 350px;
 }
 
 .netlogo-code-container {
@@ -228,15 +250,10 @@
 .netlogo-speed-slider {
   background-color: transparent;
   border: none;
-  display: inline-block;
-  margin-top: 10px;
-  vertical-align: middle;
-  align-self: center;
+  display: flex;
+  flex-direction: column;
+  margin: 15px auto 0 auto;
   width: 75%;
-}
-
-.netlogo-widget-container {
-  margin-top: 10px;
 }
 
 .netlogo-widget input[type=range]::-ms-tooltip {
@@ -245,10 +262,7 @@
 
 .netlogo-speed-slider input {
   border: none;
-  display: inline-block;
-  margin-left: 10px;
-  vertical-align: middle;
-  width: 87%;
+  width: 100%;
 }
 
 .netlogo-model input[type=range] {
@@ -346,6 +360,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  margin: 5px auto 0 auto;
 }
 
 .netlogo-slider-label {
@@ -409,7 +424,16 @@
 }
 
 .netlogo-subheader {
-    display: flex;
-    flex-flow: column;
-    align-items: center;
+  align-items: center;
+  display: flex;
+  flex-flow: column;
+  flex-grow: 0;
+  white-space: nowrap;
+}
+
+.netlogo-export-wrapper {
+  align-items: center;
+  display: flex;
+  flex-grow: 0;
+  white-space: nowrap;
 }

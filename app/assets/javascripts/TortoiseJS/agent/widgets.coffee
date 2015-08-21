@@ -283,17 +283,17 @@ template =
       </div>
       <editableTitle modelTitle="{{ modelTitle }}"/>
       {{# !readOnly }}
-      <div>
-        Export:
-        <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportnlogo">NetLogo</button>
-        <button class="netlogo-ugly-button" style="margin-bottom: 10px;" on-click="exportHtml">HTML</button>
+      <div class="netlogo-export-wrapper">
+        <span style="margin-right: 4px;">Export:</span>
+        <button class="netlogo-ugly-button" on-click="exportnlogo">NetLogo</button>
+        <button class="netlogo-ugly-button" on-click="exportHtml">HTML</button>
       </div>
       {{/}}
     </div>
 
     <label class="netlogo-widget netlogo-speed-slider">
-      <span class="netlogo-label">speed</span>
       <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
+      <span class="netlogo-label">speed</span>
     </label>
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
