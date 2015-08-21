@@ -89,7 +89,7 @@
         window.setInterval(function() {
           if (modelContainer.scrollWidth  !== width ||
               modelContainer.scrollHeight !== height ||
-              document.title              != pageTitle(session.modelTitle())) {
+              (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
             document.title = pageTitle(session.modelTitle());
             width = modelContainer.scrollWidth;
             height = modelContainer.scrollHeight;
