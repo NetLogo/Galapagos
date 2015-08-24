@@ -50,6 +50,8 @@ resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
 resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 
+GalapagosAssets.settings
+
 pipelineStages in Assets += autoprefixer
 
 fork in Test := false

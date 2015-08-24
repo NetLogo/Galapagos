@@ -30,3 +30,5 @@ resolvers += Resolver.url(
         Resolver.ivyStylePatterns)
 
 addSbtPlugin("org.nlogo" % "play-scraper" % "0.6.2")
+
+libraryDependencies += "org.im4java" % "im4java" % "1.4.0" // only used for asset generation
