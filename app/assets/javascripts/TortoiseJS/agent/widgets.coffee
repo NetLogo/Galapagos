@@ -178,7 +178,8 @@ class window.WidgetController
   speed: -> @model.speed
 
   # () -> Unit
-  redraw: () -> if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
+  redraw: () ->
+    if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
 
   # () -> Unit
   teardown: -> @ractive.teardown()

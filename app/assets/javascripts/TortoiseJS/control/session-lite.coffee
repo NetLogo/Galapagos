@@ -23,8 +23,9 @@ class window.SessionLite
     @widgetController.ractive.get('modelTitle')
 
   startLoop: ->
-    @widgetController.updateWidgets()
     if procedures.startup? then procedures.startup()
+    @widgetController.redraw()
+    @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
 
   updateDelay: ->
@@ -55,13 +56,13 @@ class window.SessionLite
       if now() >= updatesDeadline
         break
 
-    # First conditional checks if we're on time with updates. If so, we may as
-    # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
-    if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
-      @_lastRedraw = now()
-      # TODO: Once Updater.anyUpdates() exist, switch to only redrawing when there are updates
-      @widgetController.redraw()
-    @widgetController.updateWidgets()
+    if Updater.hasUpdates()
+      # First conditional checks if we're on time with updates. If so, we may as
+      # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
+      if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
+        @_lastRedraw = now()
+        @widgetController.redraw()
+      @widgetController.updateWidgets()
 
   teardown: ->
     @widgetController.teardown()
