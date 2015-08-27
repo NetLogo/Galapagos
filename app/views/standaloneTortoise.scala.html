@@ -21,10 +21,15 @@
       @Html(js)
       var session =
         (function () {
-          var widgets = @Html(widgets);
-          var code    = "@clean(nlogoCode)";
-          var info    = "@clean(info)";
-          return Tortoise.fromCompiledModel('#netlogo-model-container', widgets, code, info, '', true);
+          var modelResult = {
+            widgets: @Html(widgets),
+            code:    "@clean(nlogoCode)",
+            info:    "@clean(info)",
+            model:   {
+                result: ''
+            }
+          };
+          return Tortoise.openSession('#netlogo-model-container', modelResult, '', true);
         })();
       @Html(libsJs)
       session.startLoop()

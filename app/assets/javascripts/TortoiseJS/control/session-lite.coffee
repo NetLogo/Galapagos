@@ -9,7 +9,7 @@ MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
 class window.SessionLite
-  constructor: (@widgetController) ->
+  constructor: (@widgetController, @alerter) ->
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
@@ -78,7 +78,7 @@ class window.SessionLite
         if res.model.success
           globalEval(res.model.result)
         else
-          alert(res.model.result.map((err) -> err.message).join('\n'))
+          @alertCompileError(res.model.result)
         Tortoise.finishLoading()
       )
     )
@@ -100,12 +100,11 @@ class window.SessionLite
         exportBlob = new Blob([exportedNLogo.result], {type: "text/plain:charset=utf-8"})
         saveAs(exportBlob, exportName)
       else
-        alert(exportedNLogo.result.map((err) -> err.message).join('\n'))
+        @alertCompileError(exportedNLogo.result)
 
-  promptFilename: (extension) ->
+  promptFilename: (extension) =>
     suggestion = @modelTitle() + extension
     window.prompt('Filename:', suggestion)
-
 
   exportHtml: ->
     exportName = @promptFilename(".html")
@@ -127,7 +126,7 @@ class window.SessionLite
               exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
               saveAs(exportBlob, exportName)
             else
-              alert(nlogo.result.map((err) -> err.message).join("\n"))
+              @alertCompileError(nlogo.result)
           else
             alert("Couldn't get standalone page")
       req.send("")
@@ -155,96 +154,17 @@ class window.SessionLite
         if (success)
           new Function(result)()
         else
-          alert(result.map((err) -> err.message).join('\n')))
+          @alertCompileError(result))
 
-window.Tortoise = {
+  alertCompileError: (result) ->
+    alert(result.map((err) -> err.message).join('\n')))
 
-  loadError: (url) ->
-    """
-      <div style='padding: 5px 10px;'>
-        Unable to load NetLogo model from #{url}, please ensure:
-        <ul>
-          <li>That you can download the resource <a target="_blank" href="#{url}">at this link</a></li>
-          <li>That the server containing the resource has
-            <a target="_blank" href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">
-              Cross-Origin Resource Sharing
-            </a>
-            configured appropriately</li>
-        </ul>
-        If you have followed the above steps and are still seeing this error,
-        please send an email to our <a href="mailto:bugs@ccl.northwestern.edu">"bugs" mailing list</a>
-        with the following information:
-        <ul>
-          <li>The full URL of this page (copy and paste from address bar)</li>
-          <li>Your operating system and browser version</li>
-        </ul>
-      </div>
-    """
-
-  # process: optional argument that allows the loading process to be async to
-  # give the animation time to come up.
-  startLoading: (process) ->
-    document.querySelector("#loading-overlay").style.display = ""
-    # This gives the loading animation time to come up. BCH 7/25/2015
-    if (process?) then setTimeout(process, 20)
-
-  finishLoading: ->
-    document.querySelector("#loading-overlay").style.display = "none"
-
-  # We separate on both / and \ because we get URLs and Windows-esque filepaths
-  normalizedFileName: (path) ->
-    pathComponents = path.split(/\/|\\/)
-    decodeURI(pathComponents[pathComponents.length - 1])
-
-  fromNlogo:         (nlogo, container, path, callback) ->
-    nlogoCompile(nlogo, [], [], [], @browserCompileCallback(container, callback, @normalizedFileName(path)))
-
-  fromURL:           (url,   container, callback) ->
-    @startLoading()
-    req = new XMLHttpRequest()
-    req.open('GET', url)
-    req.onreadystatechange = =>
-      if req.readyState == req.DONE
-        if (req.status == 0 || req.status >= 400)
-          container.innerHTML = @loadError(url)
-          @finishLoading()
-        else
-          nlogoCompile(req.responseText, [], [], [],
-            @browserCompileCallback(container, callback, @normalizedFileName(url)))
-    req.send("")
-
-  fromCompiledModel: (container,
-                      widgetString,
-                      code,
-                      info,
-                      compiledSource = "",
-                      readOnly = false,
-                      filename = "export") ->
-    widgets = globalEval(widgetString)
-    widgetController = bindWidgets(container, widgets, code, info, readOnly, filename)
-    window.modelConfig ?= {}
-    modelConfig.plotOps = widgetController.plotOps
-    modelConfig.mouse = widgetController.mouse
-    modelConfig.print = { write: widgetController.write }
-    modelConfig.output = widgetController.output
-    globalEval(compiledSource)
-    new SessionLite(widgetController)
-
-  browserCompileCallback: (container, onSuccess, filename) ->
-    (res) =>
-      if res.model.success
-        onSuccess(@fromCompiledModel(container, res.widgets, res.code,
-          res.info, res.model.result, false, filename))
-      else
-        errors = res.model.result.map((err) -> err.message).join('<br/>')
-        container.innerHTML = "<div style='padding: 5px 10px;'>#{errors}</div>"
-      @finishLoading()
-}
+# See http://perfectionkills.com/global-eval-what-are-the-options/ for what
+# this is doing. This is a holdover till we get the model attaching to an
+# object instead of global namespace. - BCH 11/3/2014
+globalEval = eval
 
 window.AgentModel = tortoise_require('agentmodel')
-
-window.nlogoCompile = (model, commands, reporters, widgets, onFulfilled) ->
-  onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))
 
 window.codeCompile = (code, commands, reporters, widgets, onFulfilled) ->
   compileParams = {
@@ -290,11 +210,6 @@ window.ajax = (url, params, callback) ->
       callback(req.responseText)
   req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
   req.send(paramPairs.join('&'))
-
-# See http://perfectionkills.com/global-eval-what-are-the-options/ for what
-# this is doing. This is a holdover till we get the model attaching to an
-# object instead of global namespace. - BCH 11/3/2014
-globalEval = eval
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari

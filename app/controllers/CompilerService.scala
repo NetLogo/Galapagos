@@ -325,6 +325,7 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/agent/console.js",
         "javascripts/TortoiseJS/agent/widgets.js",
         "javascripts/TortoiseJS/communication/connection.js",
+        "javascripts/TortoiseJS/control/tortoise.js",
         "javascripts/TortoiseJS/control/session-lite.js",
         "javascripts/plot/highchartsops.js"
       ).map(path => s"/public/$path")
