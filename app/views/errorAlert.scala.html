@@ -1,0 +1,21 @@
+<div class="dark-overlay" id="alert-overlay" style="display : none ;">
+    <div id="alert-dialog">
+        <h3 id="alert-title">Error</h3>
+        @* Text in the #alert-message div will be replaced by the alert js *@
+        <div id="alert-message" class="alert-text">
+            NetLogo Web has encountered a problem.
+        </div>
+        <div class="alert-text standalone-text">
+            It looks like you're using NetLogo Web in standalone mode.
+            <br />
+            If the above error is being caused by a missing primitive, we recommend a quick visit to
+                <a href="http://netlogoweb.org" target="_blank">NetLogoWeb.org</a>.
+                to see if the primitive has been implemented in the most up-to-date version.
+        </div>
+        <div id="alert-dismiss-container">
+            <button id="alert-dismiss" class="alert-button alert-separator-top" onclick="nlwAlerter.hide()">
+                Dismiss
+            </button>
+        </div>
+    </div>
+</div>
