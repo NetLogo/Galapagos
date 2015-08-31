@@ -11,9 +11,11 @@
     @style(route("stylesheets/netlogoweb.css"))
     @style(route("stylesheets/netlogo-syntax.css"))
     @style(route("stylesheets/spinner.css"))
+    @style(route("stylesheets/alert.css"))
   </head>
   <body style="margin: 0px;">
     @views.html.spinner()
+    @views.html.errorAlert()
     <div id="netlogo-model-container" style="display: inline-block;"></div>
     @script(route("lib/jquery/jquery.js"))
     @script(route("lib/filesaver.js/FileSaver.js"))
@@ -43,6 +45,7 @@
     @script(route("javascripts/TortoiseJS/control/tortoise.js"))
     @script(route("javascripts/TortoiseJS/control/session-lite.js"))
     @script(route("javascripts/plot/highchartsops.js"))
+    @script(route("javascripts/alert.js"))
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
@@ -52,11 +55,13 @@
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
     <script>
-      var modelContainer = document.querySelector("#netlogo-model-container");
-      var index          = window.location.href.indexOf("?");
-      var nlogoScript    = document.querySelector("#nlogo-code");
-      var standaloneURL  = "@routes.Local.standalone.absoluteURL";
-      var pageTitle      = function(modelTitle) {
+      var loadingOverlay  = $("#loading-overlay").get(0);
+      var activeContainer = loadingOverlay;
+      var modelContainer  = document.querySelector("#netlogo-model-container");
+      var index           = window.location.href.indexOf("?");
+      var nlogoScript     = document.querySelector("#nlogo-code");
+      var standaloneURL   = "@routes.Local.standalone.absoluteURL";
+      var pageTitle       = function(modelTitle) {
         if (modelTitle != null && modelTitle != "") {
           return "NetLogo Web: " + modelTitle;
         } else {
@@ -67,36 +72,63 @@
       var openSession = function(s) {
         session = s;
         document.title = pageTitle(session.modelTitle());
+        activeContainer = modelContainer;
         session.startLoop();
       };
 
+      var isStandaloneHTML = false;
+
       if (nlogoScript.textContent.length > 0) {
-        Tortoise.fromNlogo(nlogoScript.textContent, modelContainer, nlogoScript.dataset.filename, openSession);
+        isStandaloneHTML = true;
+      }
+
+      var nlwAlerter     = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
+
+      var displayError = function(error) {
+        // in the case where we're still loading the model, we have to
+        // post an error that cannot be dismissed, as well as ensuring that
+        // the frame we're in matches the size of the error on display.
+        if (activeContainer == loadingOverlay) {
+          nlwAlerter.displayError(error, false);
+          activeContainer = nlwAlerter.alertContainer;
+        } else {
+          nlwAlerter.displayError(error);
+        }
+      };
+
+      if (nlogoScript.textContent.length > 0) {
+        Tortoise.fromNlogo(nlogoScript.textContent,
+                           modelContainer,
+                           nlogoScript.dataset.filename,
+                           openSession,
+                           displayError);
       } else if (index > -1) {
         var url = window.location.href.substring(index+1);
         console.log(url);
-        Tortoise.fromURL(url, modelContainer, openSession);
+        Tortoise.fromURL(url, modelContainer, openSession, displayError);
       }
 
       window.addEventListener("message", function (e) {
         if (session) {
           session.teardown();
         }
-        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession);
+        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
       });
 
       if (parent !== window) {
         var width = "", height = "";
         window.setInterval(function() {
-          if (modelContainer.scrollWidth  !== width ||
-              modelContainer.scrollHeight !== height ||
+          if (activeContainer.scrollWidth  !== width ||
+              activeContainer.scrollHeight !== height ||
               (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
-            document.title = pageTitle(session.modelTitle());
-            width = modelContainer.scrollWidth;
-            height = modelContainer.scrollHeight;
+            if (session !== undefined) {
+              document.title = pageTitle(session.modelTitle());
+            }
+            width = activeContainer.scrollWidth;
+            height = activeContainer.scrollHeight;
             parent.postMessage({
-              width:  modelContainer.scrollWidth,
-              height: modelContainer.scrollHeight,
+              width:  activeContainer.scrollWidth,
+              height: activeContainer.scrollHeight,
               title:  document.title
             }, "*");
           }

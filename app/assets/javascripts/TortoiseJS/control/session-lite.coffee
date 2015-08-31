@@ -9,7 +9,7 @@ MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
 class window.SessionLite
-  constructor: (@widgetController, @alerter) ->
+  constructor: (@widgetController, @displayError) ->
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
@@ -74,7 +74,7 @@ class window.SessionLite
     Tortoise.startLoading( =>
       world.clearAll()
       @widgetController.redraw()
-      codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) ->
+      codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) =>
         if res.model.success
           globalEval(res.model.result)
         else
@@ -147,7 +147,7 @@ class window.SessionLite
   run: (code) ->
     Tortoise.startLoading()
     codeCompile(@widgetController.code(), [code], [], @widgetController.widgets,
-      (res) ->
+      (res) =>
         success = res.commands[0].success
         result  = res.commands[0].result
         Tortoise.finishLoading()
@@ -157,7 +157,8 @@ class window.SessionLite
           @alertCompileError(result))
 
   alertCompileError: (result) ->
-    alert(result.map((err) -> err.message).join('\n')))
+    alertText = result.map((err) -> err.message).join('\n')
+    @displayError(alertText)
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what
 # this is doing. This is a holdover till we get the model attaching to an
