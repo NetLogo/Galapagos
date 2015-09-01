@@ -168,6 +168,20 @@
      use in NetLogo Web.  We do recognize that this workflow is somewhat
      inconvenient, and we have plans to improve it soon.</p>
 
+  @linkableHeader("generate-simple-pages", "Is there an automatic way to generate a model page everytime I create a new version of my model?")
+
+  <p>You can link to http://netlogoweb.org/web?<strong>modelURL</strong>
+     (where <strong>modelURL</strong> is the URL of your model).  Everytime
+     someone goes to that link (or an iframe is loaded that uses that link
+     as the source URL), the most recent version of your model will be
+     fetched from <strong>modelURL</strong> and turned into a simple model
+     page.</p>
+
+  <p>While this generally should not be a problem, this method requires
+     having an active connection to our website (netlogoweb.org) in order
+     to work, unlike normal standalone NetLogo Web pages, which can be
+     hosted entirely on your own server.</p>
+
   @linkableHeader("error-messages", "I got an error, but most things in the model seem to be working just fine.  What was the error message about?")
 
   <p>If you enter code into the Command Center and that code is invalid in NetLogo Web,
