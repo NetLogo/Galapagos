@@ -62,7 +62,11 @@ class window.SessionLite
       if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
         @_lastRedraw = now()
         @widgetController.redraw()
-      @widgetController.updateWidgets()
+
+    # Widgets must always be updated, because global variables and plots can be
+    # altered without triggering an "update".  That is to say that `Updater`
+    # only concerns itself with View updates. --JAB (9/2/15)
+    @widgetController.updateWidgets()
 
   teardown: ->
     @widgetController.teardown()
