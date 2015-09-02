@@ -41,6 +41,12 @@ iframe {
   display: inline-block;
 }
 
+.model-box {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .model-container {
   border: 2px solid black;
   background-color: white;
