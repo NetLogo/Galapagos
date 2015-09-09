@@ -21,6 +21,18 @@ loadError = (url) ->
     </ul>
   """
 
+toNetLogoWebMarkdown = (md) ->
+  md.replace(
+    new RegExp('<!---*\\s*((?:[^-]|-+[^->])*)\\s*-*-->', 'g')
+    (match, commentText) ->
+      "[nlw-comment]: <> (#{commentText.trim()})")
+
+toNetLogoMarkdown = (md) ->
+  md.replace(
+    new RegExp('\\[nlw-comment\\]: <> \\(([^\\)]*)\\)', 'g'),
+    (match, commentText) ->
+      "<!-- #{commentText} -->")
+
 apply = (callback, generator) -> (input) ->
   callback(generator(input))
 
@@ -48,7 +60,8 @@ handleCompilation = (onSuccess, onError) ->
 # newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
 newSession = (container, modelResult, readOnly = false, filename = "export", onError=undefined) ->
   widgets = globalEval(modelResult.widgets)
-  widgetController = bindWidgets(container, widgets, modelResult.code, modelResult.info, readOnly, filename)
+  widgetController = bindWidgets(container, widgets, modelResult.code,
+    toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
   window.modelConfig ?= {}
   modelConfig.plotOps = widgetController.plotOps
   modelConfig.mouse = widgetController.mouse
@@ -125,12 +138,19 @@ fromURL =       (url,   container, callback, onError = defaultDisplayError(conta
       reportAjaxError(load))
   )
 
-window.Tortoise = {
+Tortoise = {
   startLoading,
   finishLoading,
   fromNlogo,
-  fromURL
+  fromURL,
+  toNetLogoMarkdown,
+  toNetLogoWebMarkdown
 }
+
+if window?
+  window.Tortoise  = Tortoise
+else
+  exports.Tortoise = Tortoise
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what
 # this is doing. This is a holdover till we get the model attaching to an

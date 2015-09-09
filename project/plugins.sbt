@@ -11,6 +11,8 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0")
 
+addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
+
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-deprecation",

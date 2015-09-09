@@ -89,7 +89,7 @@ class window.SessionLite
 
   getNlogo: ->
     (new BrowserCompiler()).exportNlogo({
-      info:         @widgetController.ractive.get('info'),
+      info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
       code:         @widgetController.ractive.get('code'),
       widgets:      @widgetController.widgets,
       turtleShapes: turtleShapes,
