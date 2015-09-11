@@ -447,3 +447,11 @@
   flex-grow: 0;
   white-space: nowrap;
 }
+
+.netlogo-widget-error {
+  color: red;
+}
+
+.netlogo-widget-error:hover {
+  cursor: pointer;
+}

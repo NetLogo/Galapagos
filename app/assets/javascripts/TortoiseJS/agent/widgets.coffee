@@ -72,10 +72,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     partials:   partials,
     components: {
       editableTitle: EditableTitleWidget,
-      editor: EditorWidget,
-      console: ConsoleWidget,
-      outputArea: OutputArea,
-      infotab: InfoTabWidget
+      editor:        EditorWidget,
+      console:       ConsoleWidget,
+      outputArea:    OutputArea,
+      infotab:       InfoTabWidget
     },
     magic:      true,
     data:       model
@@ -126,8 +126,18 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         w.run()
   )
 
+  ractive.on('showErrors', (event) ->
+    showErrors(event.context.compilation.messages)
+  )
+
   controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output, dialog)
 
+showErrors = (errors) ->
+  if errors.length > 0
+    if nlwAlerter?
+      nlwAlerter.displayError(errors.join('<br/>'))
+    else
+      alert(errors.join('\n'))
 
 class window.WidgetController
   constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
@@ -245,8 +255,8 @@ fillOutWidgets = (widgets, updateUICallback) ->
               do (wrappedTask) ->
                 widget.run = wrappedTask
           else
-            widget.run = () -> alert("Button failed to compile with:\n" +
-                                      widget.compilation.messages.join('\n'))
+            widget.run = () -> showErrors(["Button failed to compile with:\n" +
+                                           widget.compilation.messages.join('\n')])
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
@@ -382,11 +392,12 @@ partials = {
     """
   slider:
     """
-    <label class="netlogo-widget netlogo-slider netlogo-input" style="{{>dimensions}}">
+    <label class="netlogo-widget netlogo-slider netlogo-input {{>errorClass}}"
+           style="{{>dimensions}}" >
       <input type="range"
              max="{{maxValue}}" min="{{minValue}}" step="{{step}}" value="{{currentValue}}" />
       <div class="netlogo-slider-label">
-        <span class="netlogo-label">{{display}}</span>
+        <span class="netlogo-label" on-click=\"showErrors\">{{display}}</span>
         <span class="netlogo-slider-value">
           <input type="number"
                  style="width: {{currentValue.toString().length + 3.0}}ch"
@@ -398,11 +409,11 @@ partials = {
     """
   button:
     """
-    <button class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}}"
-           type="button"
-           style="{{>dimensions}}"
-           on-click="activateButton"
-           disabled={{ !ticksStarted && disableUntilTicksStart }}>
+    <button class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}} {{>errorClass}}"
+            type="button"
+            style="{{>dimensions}}"
+            on-click="activateButton"
+            disabled={{ !ticksStarted && disableUntilTicksStart }}>
       <span class="netlogo-label">{{display || source}}</span>
       {{# actionKey }}
       <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
@@ -413,7 +424,7 @@ partials = {
     """
   foreverButton:
     """
-    <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}}"
+    <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}} {{>errorClass}}"
            style="{{>dimensions}}">
       <input type="checkbox" checked={{ running }} {{# !ticksStarted && disableUntilTicksStart }}disabled{{/}}/>
       <span class="netlogo-label">{{display || source}}</span>
@@ -438,7 +449,7 @@ partials = {
   monitor:
     """
     <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}} font-size: {{fontSize}}px;">
-      <div class="netlogo-label">{{display || source}}</div>
+      <label class="netlogo-label {{>errorClass}}" on-click=\"showErrors\">{{display || source}}</label>
       <output class="netlogo-value">{{currentValue}}</output>
     </div>
    """
@@ -465,6 +476,8 @@ partials = {
       <outputArea output="{{outputWidgetOutput}}"/>
     </div>
     """
+
+  errorClass: "{{# !compilation.success}}netlogo-widget-error{{/}}"
 
   literal:
     """
