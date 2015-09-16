@@ -112,6 +112,8 @@
         if (session) {
           session.teardown();
         }
+        nlwAlerter.hide();
+        activeContainer = loadingOverlay;
         Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
       });
 
