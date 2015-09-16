@@ -120,17 +120,17 @@
       if (parent !== window) {
         var width = "", height = "";
         window.setInterval(function() {
-          if (activeContainer.scrollWidth  !== width ||
-              activeContainer.scrollHeight !== height ||
+          if (activeContainer.offsetWidth  !== width ||
+              activeContainer.offsetHeight !== height ||
               (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
             if (session !== undefined) {
               document.title = pageTitle(session.modelTitle());
             }
-            width = activeContainer.scrollWidth;
-            height = activeContainer.scrollHeight;
+            width = activeContainer.offsetWidth;
+            height = activeContainer.offsetHeight;
             parent.postMessage({
-              width:  activeContainer.scrollWidth,
-              height: activeContainer.scrollHeight,
+              width:  activeContainer.offsetWidth,
+              height: activeContainer.offsetHeight,
               title:  document.title
             }, "*");
           }
