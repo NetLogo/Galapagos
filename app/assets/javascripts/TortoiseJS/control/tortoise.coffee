@@ -58,7 +58,7 @@ handleCompilation = (onSuccess, onError) ->
         onError(res))
 
 # newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
-newSession = (container, modelResult, readOnly = false, filename = "export", onError=undefined) ->
+newSession = (container, modelResult, readOnly = false, filename = "export", onError = undefined) ->
   widgets = globalEval(modelResult.widgets)
   widgetController = bindWidgets(container, widgets, modelResult.code,
     toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
@@ -119,7 +119,7 @@ startLoading = (process) ->
 finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
 
-fromNlogo =     (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
+fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
     load = loadData(container, path, loader, onError)
     handleCompilation(
@@ -128,7 +128,7 @@ fromNlogo =     (nlogo, container, path, callback, onError = defaultDisplayError
     )(nlogo)
   )
 
-fromURL =       (url,   container, callback, onError = defaultDisplayError(container)) ->
+fromURL = (url, container, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
     load = loadData(container, url, loader, onError)
     handleAjaxLoad(url,

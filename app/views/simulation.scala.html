@@ -82,13 +82,13 @@
         isStandaloneHTML = true;
       }
 
-      var nlwAlerter     = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
+      var nlwAlerter = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
 
       var displayError = function(error) {
         // in the case where we're still loading the model, we have to
         // post an error that cannot be dismissed, as well as ensuring that
         // the frame we're in matches the size of the error on display.
-        if (activeContainer == loadingOverlay) {
+        if (activeContainer === loadingOverlay) {
           nlwAlerter.displayError(error, false);
           activeContainer = nlwAlerter.alertContainer;
         } else {
