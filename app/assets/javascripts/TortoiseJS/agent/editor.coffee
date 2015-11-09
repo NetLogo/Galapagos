@@ -375,6 +375,7 @@ reporters = [
   'neighbors4',
   'netlogo-applet\\?',
   'netlogo-version',
+  'netlogo-web\\?',
   'new-seed',
   'no-links',
   'no-patches',
