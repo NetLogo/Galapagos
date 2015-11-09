@@ -20,17 +20,17 @@ class Application @Inject() (application: PlayApplication)  extends Controller {
 
   def index: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.mainTheme(views.html.index()))
+      Ok(views.html.mainTheme(views.html.index(), "NetLogo Web"))
   }
 
   def info: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.mainTheme(views.html.info()))
+      Ok(views.html.mainTheme(views.html.info(), "NetLogo Web FAQ"))
   }
 
   def serverError: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.mainTheme(views.html.serverError()))
+      Ok(views.html.mainTheme(views.html.serverError(), "NetLogo Web - Error"))
   }
 
   def model(modelName: String): Action[AnyContent] = {

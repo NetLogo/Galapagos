@@ -23,6 +23,6 @@ class ErrorHandler @Inject() (
 
   override protected def onNotFound(request: RequestHeader, message: String): Future[Result] =
     Future.successful(
-      Status(Results.NotFound.header.status)(views.html.mainTheme(views.html.notFound()))
+      Status(Results.NotFound.header.status)(views.html.mainTheme(views.html.notFound(), "NetLogo Web - Page Not Found"))
     )
 }
