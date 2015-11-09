@@ -257,7 +257,7 @@ to setup-goats [ farmer# ]  ;; turtle procedure
   set shape "goat"
   set food-stored 0
   set owner# farmer#
-  st
+  show-turtle
 end
 
 ;; updates patches' color and increase grass supply with growth rate
@@ -439,7 +439,7 @@ end
 to setup-farm  ;; farmer procedure
   setxy ((random-float (world-width - 2)) + min-pxcor + 1)
         ((random-float (world-height - 2)) + min-pycor + 1)
-  ht
+  hide-turtle
 end
 
 ;; pick a color for the turtle
@@ -760,7 +760,7 @@ MONITOR
 79
 166
 Day
-Day
+day
 3
 1
 11
@@ -1264,8 +1264,9 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

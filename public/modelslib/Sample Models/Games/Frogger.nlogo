@@ -46,7 +46,7 @@ to startup            ;; Setup is the 'New Game' button, this will setup the gam
 end
 
 to setup              ;; Initializes the game
-  ca
+  clear-all
   set action 0
   set dead? false
   set lives start-lives
@@ -80,7 +80,8 @@ end
 ;; more like real grass.
 
 to draw-map
-  cp ct
+  clear-patches
+  clear-turtles
   ask patches
     [ set pcolor scale-color green ((random 500) + 5000) 0 9000 ]
   setup-pads
@@ -116,10 +117,10 @@ to setup-pads
 end
 
 to create-truck [ x y direction quickness ]   ;; Creates and initializes a truck
-  let truckColor (random 13 + 1) * 10 + 3
+  let truck-color (random 13 + 1) * 10 + 3
   ask patches with [(pxcor = x or pxcor = (x + 1)) and pycor = y]
     [ sprout-trucks 1
-        [ set color truckColor
+        [ set color truck-color
           set heading direction
           set speed quickness
           set time speed
@@ -666,8 +667,8 @@ MONITOR
 131
 281
 176
-NIL
 Level
+level
 0
 1
 11
@@ -1268,7 +1269,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 ;; (because it uses the sound extension)

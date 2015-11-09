@@ -37,7 +37,7 @@ particles-own
 
 
 to setup
-  ca reset-ticks
+  clear-all
   set-default-shape particles "circle"
     set-default-shape flashes "square"
   set maxparticles 400

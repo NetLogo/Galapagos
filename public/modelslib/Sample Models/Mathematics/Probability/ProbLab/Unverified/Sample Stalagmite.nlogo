@@ -138,7 +138,7 @@ end
 to sprout-a-sample-dude
   sprout 1
   [
-    ht
+    hide-turtle
     set breed sample-dudes
     setxy pxcor pycor
 
@@ -147,7 +147,7 @@ to sprout-a-sample-dude
     ifelse random 100 < probability-to-be-target-color
     [ set color target-color ]
     [ set color other-color ]
-    st
+    show-turtle
   ]
 end
 
@@ -366,8 +366,8 @@ BUTTON
 189
 234
 222
-NIL
 Go
+go
 T
 1
 T
@@ -376,15 +376,15 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 4
 189
 78
 222
-NIL
 Setup
+setup
 NIL
 1
 T
@@ -527,7 +527,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -930,7 +930,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
 setup
 repeat 150 [ go ]

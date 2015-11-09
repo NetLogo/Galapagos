@@ -4,7 +4,7 @@ globals [drop-width k]
 to setup
   clear-all
   set-default-shape turtles "circle"
-  crt (max-pxcor * max-pycor) [
+  create-turtles (max-pxcor * max-pycor) [
     set ypos (floor (who / max-pxcor))    ;Line up the turtles according to their ID
     set xpos (who - (max-pxcor * ypos))
     set xpos (xpos - (.5 * max-pxcor))    ;Center the resulting box
@@ -44,18 +44,18 @@ end
 to update-position-and-color  ;Turtle procedure
   set zpos ((zpos + delta-z) * (.01 * friction))    ;Steal energy by pulling the turtle closer
   set color scale-color blue zpos -40 40            ;to ground level
-  ifelse three-D?
+  ifelse three-d?
    [
      let y (zpos + (ypos * sin angle))
      let x (xpos + (ypos * cos angle))
      ifelse patch-at (x - xcor) (y - ycor) != nobody
-      [ setxy x y st ]
-      [ ht ]]
+      [ setxy x y show-turtle ]
+      [ hide-turtle ]]
    [
      ifelse patch-at (xpos - xcor) (ypos - ycor) != nobody
       [ setxy xpos ypos
-      st ]
-      [ ht ]]
+      show-turtle ]
+      [ hide-turtle ]]
 end
 
 
@@ -92,10 +92,10 @@ ticks
 SWITCH
 6
 198
-111
+123
 231
-three-D?
-three-D?
+three-d?
+three-d?
 1
 1
 -1000
@@ -222,7 +222,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -588,9 +588,9 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
-set three-D? true
+set three-d? true
 setup
 go
 ask turtles [ release-drop 3 3 ]

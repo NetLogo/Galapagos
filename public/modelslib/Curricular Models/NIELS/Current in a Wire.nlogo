@@ -17,7 +17,7 @@ to setup
   [ set pcolor gray]
 
   ;; create electrons
-  crt number-of-electrons
+  create-turtles number-of-electrons
   [
     set breed electrons
     setxy random-xcor random-ycor
@@ -79,7 +79,7 @@ end
 
 to go
 
-  ;; update the size of battery-terminals with values of Voltage
+  ;; update the size of battery-terminals with values of voltage
   update-battery-size
 
   ;; Rules for electrons
@@ -147,11 +147,11 @@ to update-battery-size
   ;; now update the size of Battery-negative
   ask cathodes
   [
-    set size 1.5 + 0.5 * Voltage
+    set size 1.5 + 0.5 * voltage
   ]
   ask anodes
   [
-    set size 1.5 + 0.5 * Voltage
+    set size 1.5 + 0.5 * voltage
   ]
 end
 
@@ -246,7 +246,7 @@ BUTTON
 156
 239
 Watch An Electron
-ask electrons [ set color orange - 2 pu ]\nclear-drawing \nask one-of electrons with [xcor > max-pxcor - 6]\n[if pcolor != black [ set color yellow pd \n  watch-me\n]]
+ask electrons [ set color orange - 2 pen-up ]\nclear-drawing \nask one-of electrons with [xcor > max-pxcor - 6]\n[if pcolor != black [ set color yellow pen-down \n  watch-me\n]]
 NIL
 1
 T
@@ -263,7 +263,7 @@ BUTTON
 152
 272
 Stop Watching
-ask electrons [ pu set color orange - 2]\nreset-perspective\n
+ask electrons [ pen-up set color orange - 2]\nreset-perspective\n
 NIL
 1
 T
@@ -791,7 +791,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

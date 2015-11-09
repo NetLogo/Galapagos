@@ -721,7 +721,7 @@ end
 to grow-city
   ask third-order-builders [
     fd .75
-    pd
+    pen-down
     set pen-size 1
     set weight weight - .05
     set weight precision weight 3
@@ -764,6 +764,7 @@ to get-costs
   let transport-costs (transport * ((distance one-of service-centers / 30) + distance my-workplace / 25))
   set living-expenses (land-value + electricity + water + food + transport-costs + other-utilities)
 end
+
 
 ; Copyright 2007 Uri Wilensky.
 ; See Info tab for full copyright and license.
@@ -865,7 +866,7 @@ BUTTON
 70
 43
 1  clear
-clear-all\nwithout-interruption\n[ no-display\nca\nask patches [ set pcolor white ]\ndisplay ]\nreset-ticks
+clear-all\nwithout-interruption\n[ no-display\nclear-all\nask patches [ set pcolor white ]\ndisplay ]\nreset-ticks
 NIL
 1
 T
@@ -1630,7 +1631,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1
 @#$#@#$#@
 ask patches [ set pcolor white ]
 reset-ticks

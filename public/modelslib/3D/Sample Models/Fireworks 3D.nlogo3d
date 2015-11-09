@@ -50,7 +50,7 @@ end
 to launch-rockets
   if not any? turtles
   [
-    cd
+    clear-drawing
     create-rockets random (fireworks + 1)
     [ setxyz random-xcor
       random-ycor
@@ -60,7 +60,7 @@ to launch-rockets
       set x-vel ((random-float (2 * initial-x-vel)) - (initial-x-vel))
       set y-vel ((random-float (2 * initial-y-vel)) - (initial-y-vel))
       set z-vel ((random-float initial-z-vel) + initial-z-vel * 2 )
-      set col ((random 14) + 1) * 10 - 5    ;; reports a random 'primary' color   i.e. 5, 15, 25, etc.
+      set col one-of base-colors    ;; choose a random 'primary' color   i.e. 5, 15, 25, etc.
       set color (col + 2)
       set terminal-z-vel (random-float 2.0)     ;; at what speed does the rocket explode?
     ]
@@ -73,7 +73,7 @@ to fall-down
   if trails?
   [
     ask frags
-      [ set pen-size 2 pd ]
+      [ set pen-size 2 pen-down ]
   ]
 end
 
@@ -111,8 +111,8 @@ to explode                 ;; turtle procedure
       set y-vel (y-vel * .5 + (random-float 2.0) - 1)
       set z-vel (random-float 2.0)
       ifelse trails?
-        [ pd ]
-        [ pu ]
+        [ pen-down ]
+        [ pen-up ]
      ]
 end
 
@@ -712,7 +712,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 5.2.1
 @#$#@#$#@
 set trails? true
 set fireworks 30

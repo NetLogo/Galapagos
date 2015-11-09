@@ -118,7 +118,7 @@ end
 ;; Only called by SETUP-PROMPT, which is called by the setup button, and STARTUP.
 to setup
   hubnet-reset
-  ca
+  clear-all
   clear-output
   setup-vars
   load-questions-prompt
@@ -169,7 +169,7 @@ to setup-vars
   set auto-save-web ""
 
   set names-showing? see-names?
-  set graphics-display Turtle-display
+  set graphics-display turtle-display
   set plot-mode "Histogram"
   set plot-mode-is? plot-mode
   set sort-up ""
@@ -210,7 +210,8 @@ end
 ;;  Clients are dead in the water - they must exit and relogin.
 to clear-clients
   clear-plot
-  cp ct
+  clear-patches
+  clear-turtles
   clear-output
 end
 
@@ -378,8 +379,8 @@ to show-data-listener
 end
 
 to turtle-movement-listener
-  if not (graphics-display = Turtle-display)
-  [ set graphics-display Turtle-display
+  if not (graphics-display = turtle-display)
+  [ set graphics-display turtle-display
     if graphics-display = "Word-Sort"
     [ if sort-up = "" [set sort-up user-input "Sort up / down word -"]
       if sort-right = "" [set sort-right user-input "Sort right / left word -"]
@@ -1642,8 +1643,8 @@ CHOOSER
 179
 721
 224
-Turtle-Display
-Turtle-Display
+turtle-display
+turtle-display
 "Sit" "Wander" "Line-Up" "Word-Sort"
 0
 
@@ -1802,7 +1803,7 @@ BUTTON
 720
 368
 ^ CHANGE ^
-set sort-up user-input \"Sort up / down word -\"\nset Turtle-Display \"Word-Sort\"
+set sort-up user-input \"Sort up / down word -\"\nset turtle-display \"Word-Sort\"
 NIL
 1
 T
@@ -1819,7 +1820,7 @@ BUTTON
 720
 454
 ^ CHANGE ^
-set sort-right user-input \"Sort right / left word -\"\nset Turtle-Display \"Word-Sort\"
+set sort-right user-input \"Sort right / left word -\"\nset turtle-display \"Word-Sort\"
 NIL
 1
 T
@@ -2477,6 +2478,7 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 5.2.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

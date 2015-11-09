@@ -33,7 +33,7 @@ to startup
 end
 
 to setup
-  ca
+  clear-all
   ;; during setup, both the-short-list and the-long-list are initialized,
   ;; but during the run, the-short-list keeps initializing at each success, whereas the-long-list does not
   set the-long-list []
@@ -96,7 +96,7 @@ to paint
     [set pxcor-of-right-most-colored-patch ( max [ pxcor ] of patches with [ pcolor != black ] )]
 
   ;; temp-color will be any of 14 colors from the NetLogo color space
-  let temp-color ( 10 * random 14 ) + 5
+  let temp-color one-of base-colors
 
   ;; we color only the patches that reflect the latest addend
   ask patches with
@@ -120,7 +120,8 @@ to finish-up
     set addend "-"
     set successes-so-far successes-so-far + 1
     if wait-at-full? [ wait .5 ]
-    cp ct
+    clear-patches
+    clear-turtles
   ]
 end
 
@@ -160,8 +161,8 @@ BUTTON
 10
 96
 43
-NIL
 Setup
+setup
 NIL
 1
 T
@@ -177,8 +178,8 @@ BUTTON
 10
 191
 43
-NIL
 Go
+go
 T
 1
 T
@@ -264,8 +265,8 @@ MONITOR
 192
 69
 237
-NIL
 Addend
+addend
 3
 1
 11
@@ -766,7 +767,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -11,7 +11,7 @@ turtles-own [
 ]
 
 to setup
-  ca
+  clear-all
   ask patches
     [ set pcolor green ]
   setup-turtles
@@ -20,7 +20,7 @@ end
 
 to setup-turtles
   let total (modest-proportion + fair-proportion + greedy-proportion)
-  crt initial-number
+  create-turtles initial-number
     [ setxy random-xcor random-ycor
       ;; This will assign proportions of the turtles to agent types
       ;; according to the ratio of greedy, fair, and modest turtles
@@ -330,7 +330,7 @@ MONITOR
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model (and Cooperation and Altruism) are part of the EACH curriculum: "Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution".  See http://ccl.northwestern.edu/papers/EACH/ for more information.
+This model (and Cooperation and Altruism) are part of the EACH unit ("Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution"). See http://ccl.northwestern.edu/rp/each/index.shtml for more information on the EACH unit. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/rp/beagle/index.shtml.
 
 This is an evolutionary game-playing model.  Three types of agents must divide a common resource.  In the original model it's cake, but let's think of it as edible grass instead, which is green.  The agents come in three types: modest, fair, and greedy.  The agents move around competing for grass.  Agents need grass in order to produce offspring, so over time, the agent types that get more grass will tend to increase in number.
 
@@ -381,6 +381,8 @@ Should the agents be informed of each other's anticipated demands prior to makin
 Altruism, Cooperation, PD Basic
 
 ## CREDITS AND REFERENCES
+
+This model, the Cooperation model and the Altruism model are part of the curriculum unit "Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution".  See http://ccl.northwestern.edu/rp/each/index.shtml for more information. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/rp/beagle/index.shtml.
 
 This model is based on William Harms's "Divide the Cake" model, described in Brian Skyrms's book "The Evolution of the Social Contract".
 
@@ -697,7 +699,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-M3
 @#$#@#$#@
 setup
 repeat 20 [ go ]

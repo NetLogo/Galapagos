@@ -14,7 +14,8 @@ globals [
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to setup
-  ca reset-ticks
+  clear-all
+  reset-ticks
   set-plot-x-range 0 5
   setup-view
   set number-of-items-in-column-text "-"
@@ -103,8 +104,12 @@ to go
     ] [
       set label precision (1 - p) 2
     ]
-    if length (word label) = 3 [ set label word label "0" ] ;; force to 2 decimal places
-    if length (word label) = 1 [ set label word label ".00" ] ;; force to 2 decimal places
+    if length (word label) = 3 [
+      set label word label "0"   ;; force to 2 decimal places
+    ]
+    if length (word label) = 1 [
+      set label word label ".00" ;; force to 2 decimal places
+    ]
   ]
 
   tick
@@ -318,8 +323,8 @@ BUTTON
 10
 130
 43
-NIL
 Setup
+setup
 NIL
 1
 T
@@ -335,8 +340,8 @@ BUTTON
 10
 240
 43
-NIL
 Go
+go
 T
 1
 T
@@ -824,7 +829,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

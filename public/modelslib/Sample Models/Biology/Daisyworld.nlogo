@@ -65,14 +65,17 @@ to go
    set global-temperature (mean [temperature] of patches)
    update-display
    tick
-   if (scenario = "ramp-up-ramp-down")
-   [
-     if (ticks > 200 and ticks <= 400) [set solar-luminosity solar-luminosity + 0.005]
-     if (ticks > 600 and ticks <= 850) [set solar-luminosity solar-luminosity - 0.0025]
+   if scenario = "ramp-up-ramp-down" [
+     if ticks > 200 and ticks <= 400 [
+       set solar-luminosity precision (solar-luminosity + 0.005) 4
+     ]
+     if ticks > 600 and ticks <= 850 [
+       set solar-luminosity precision (solar-luminosity - 0.0025) 4
+     ]
    ]
-   if (scenario = "low solar luminosity")  [set solar-luminosity 0.6 ]
-   if (scenario = "our solar luminosity")  [set solar-luminosity 1.0 ]
-   if (scenario = "high solar luminosity") [set solar-luminosity 1.4 ]
+   if scenario = "low solar luminosity"  [ set solar-luminosity 0.6 ]
+   if scenario = "our solar luminosity"  [ set solar-luminosity 1.0 ]
+   if scenario = "high solar luminosity" [ set solar-luminosity 1.4 ]
 end
 
 to set-as-black ;; turtle procedure
@@ -144,7 +147,7 @@ to calc-temperature  ;; patch procedure
   ;; and an absorbed-luminosity of .5 yields a local-heating of approximately 30 C
   ;; and a absorbed-luminosity of 0.01 yields a local-heating of approximately -273 C
   ifelse absorbed-luminosity > 0
-      [set local-heating 72 * LN(absorbed-luminosity) + 80]
+      [set local-heating 72 * ln absorbed-luminosity + 80]
       [set local-heating 80]
   set temperature ((temperature + local-heating) / 2)
      ;; set the temperature at this patch to be the average of the current temperature and the local-heating effect

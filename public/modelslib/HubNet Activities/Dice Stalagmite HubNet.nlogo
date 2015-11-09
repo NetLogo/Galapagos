@@ -273,7 +273,7 @@ to create-client
   ;; the user-id variable to the hubnet-source
   create-clients 1
   [
-    ht
+    hide-turtle
     set user-id hubnet-message-source
     set user-color item (count clients mod length base-colors) base-colors
     set die1 "--"
@@ -902,6 +902,7 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 5.2.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

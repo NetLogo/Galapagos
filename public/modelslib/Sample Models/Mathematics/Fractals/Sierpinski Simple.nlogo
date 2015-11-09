@@ -3,7 +3,7 @@ turtles-own [ modulus ]
 ; create a turtle and set its initial location and modulus
 to setup
   clear-all
-  crt 1
+  create-turtles 1
   [
     set heading 0
     setxy 0 -3
@@ -72,7 +72,7 @@ BUTTON
 65
 83
 Setup
-SETUP
+setup
 NIL
 1
 T
@@ -519,7 +519,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
 setup repeat 7 [ go ]
 @#$#@#$#@

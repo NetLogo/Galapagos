@@ -42,7 +42,8 @@ to setup
     [ switch-to-code ]
     [ code-to-switch ]
   set last-code code
-  cp ct
+  clear-patches
+  clear-turtles
   reset-ticks
   set current-row max-pycor  ;; set current row to top position
   set gone? false
@@ -54,7 +55,8 @@ to setup-continue
 
   let value-list []
   set value-list map [[value] of ?] sort patches with [pycor = current-row]  ;; copy cell states from the current row to a list
-  cp ct
+  clear-patches
+  clear-turtles
   set current-row max-pycor  ;; reset current row to top
   ask patches with [ pycor = current-row ]
   [
@@ -363,8 +365,8 @@ SLIDER
 276
 207
 309
-Code
-Code
+code
+code
 0.0
 2186.0
 1635
@@ -393,8 +395,8 @@ SLIDER
 136
 218
 169
-Density
-Density
+density
+density
 0.0
 100.0
 10
@@ -851,7 +853,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 5.2.1-RC1
 @#$#@#$#@
 setup-random
 repeat world-height - 1 [ go ]

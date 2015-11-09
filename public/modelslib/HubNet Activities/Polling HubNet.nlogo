@@ -36,7 +36,7 @@ end
 ;; used by turtles in this activity.  The placement of the shape names in the last
 ;; corresponds to the numbers sent by calculators.  Also initializes the data lists.
 to setup
-  ca
+  clear-all
   clear-output
   setup-vars
   setup-quick-start
@@ -51,7 +51,8 @@ end
 
 to clear-clients
   clear-plot
-  cp ct
+  clear-patches
+  clear-turtles
   clear-output
 end
 
@@ -180,7 +181,7 @@ to listen-clients
 end
 
 to execute-create
-  crt 1
+  create-turtles 1
   [
     let pos one-of patches with [not any? turtles-here]
     ifelse pos != nobody
@@ -1027,6 +1028,7 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 5.2.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -208,7 +208,6 @@ end
 
 to setup-cages
    let these-cages nobody
-   show count players with [assigned?]
    ;; make cages and birds for player 1
    set these-cages patches with [pxcor = -4 and pycor <= 3 and pycor >= -2]
    ask these-cages [set pcolor player-1-cage-color  set patch-owned-by 1 sprout 1 [set breed cages set shape "cage"]]
@@ -1545,7 +1544,7 @@ Plant Hybridization and Fish Tank Genetic Drift from the BEAGLE curricular folde
 
 ## CREDITS AND REFERENCES
 
-This model is a part of the BEAGLE curriculum (http://ccl.northwestern.edu/simevolution/beagle.shtml)
+This model is a part of the BEAGLE curriculum (http://ccl.northwestern.edu/rp/beagle/index.shtml)
 
 ## HOW TO CITE
 
@@ -2246,6 +2245,7 @@ Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
 NetLogo 5.2.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
