@@ -152,7 +152,7 @@ class window.LinkDrawer
           @drawSubline(offsetSubline, dashPattern, thickness, color, isCurved, controlX, controlY, ctx)
 
           if isMiddleLine
-            if isDirected
+            if isDirected and size > (.25 * @view.onePixel)
               @drawShape(x2, y2, controlX, controlY, heading, color, thickness, linkShape, shapeName, ctx)
             if hasLabel and not isStamp
               @drawLabel(controlX, controlY, label, labelColor)
