@@ -70,9 +70,21 @@
     }
 
     window.addEventListener("message", function(e) {
-      modelContainer.width  = e.data.width;
-      modelContainer.height = e.data.height;
-      document.title        = e.data.title;
+
+      var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+
+      var height = e.data.height;
+      var width  = e.data.width;
+      var title  = e.data.title;
+
+      // Quack, quack!
+      // Who doesn't love duck typing? --JAB (11/9/15)
+      if ([height, width, title].every(isValid)) {
+        modelContainer.width  = width;
+        modelContainer.height = height;
+        document.title        = title;
+      }
+
     });
 
     function openNlogo(nlogoContents) {
