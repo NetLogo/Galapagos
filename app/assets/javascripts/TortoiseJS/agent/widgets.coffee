@@ -94,9 +94,13 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   write = (str) -> model.consoleOutput += str
 
   output = {
-      write: (str) -> model.outputWidgetOutput += str
-      clear: -> model.outputWidgetOutput = ""
-      alert: (str) -> window.alert("error in " + str)
+    write: (str) -> model.outputWidgetOutput += str
+    clear: -> model.outputWidgetOutput = ""
+  }
+
+  dialog = {
+    confirm: (str) -> window.confirm(str)
+    notify:  (str) -> nlwAlerter.display("NetLogo Notification", true, str)
   }
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
@@ -120,11 +124,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         w.run()
   )
 
-  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output)
+  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output, dialog)
 
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output) ->
+  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
 
   # () -> Unit
   runForevers: ->
@@ -225,7 +229,11 @@ fillOutWidgets = (widgets, updateUICallback) ->
             do (task) ->
               if widget.forever
                 wrappedTask = () ->
-                  if task() instanceof Exception.StopInterrupt
+                  mustStop =
+                    try task() instanceof Exception.StopInterrupt
+                    catch ex
+                      ex instanceof Exception.HaltInterrupt
+                  if mustStop
                     widget.running = false
                     updateUICallback()
               else
