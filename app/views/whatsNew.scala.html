@@ -1,0 +1,122 @@
+<div class="inner-content">
+
+  <h2>Monday, November 9th, 2015</h2>
+
+  <h3>Newly-Implemented Language Primitives</h3>
+
+  <p>First and foremost, this update brings with it the implementation of many
+     NetLogo primitives, substantially increasing the percentage of the
+     language supported by NetLogo Web.</p>
+
+  <p>The newly-supported primitives are as follows:</p>
+
+  <ul>
+    <li>approximate-rgb</li>
+    <li>approximate-hsb</li>
+    <li>breed-at</li>
+    <li>clear-drawing</li>
+    <li>date-and-time</li>
+    <li>extract-hsb</li>
+    <li>home</li>
+    <li>hsb</li>
+    <li>in-cone</li>
+    <li>is-boolean?</li>
+    <li>max-n-of</li>
+    <li>min-n-of</li>
+    <li>modes</li>
+    <li>netlogo-web?</li>
+    <li>patch-at-heading-and-distance</li>
+    <li>patch-size</li>
+    <li>pen-erase</li>
+    <li>random-exponential</li>
+    <li>random-normal</li>
+    <li>random-poisson</li>
+    <li>random-pxcor</li>
+    <li>random-pycor</li>
+    <li>rgb</li>
+    <li>set-patch-size</li>
+    <li>shapes</li>
+    <li>shuffle</li>
+    <li>stamp-erase</li>
+    <li>user-message</li>
+    <li>with-local-randomness</li>
+    <li>with-min</li>
+    <li>with-max</li>
+    <li>wrap-color</li>
+  </ul>
+
+  <h3>Updated Models Library</h3>
+
+  <p>This change adds the Traffic Basic Adaptive Individuals model and updates
+     dozens of other models were updated with small tweaks and code style
+     improvements.</p>
+
+  <p>The above changes, combined with all of the new primitives added, has
+     allowed the following models to now be openable in NetLogo Web:</p>
+
+  <ul>
+    <li>Autumn</li>
+    <li>Bacteria Food Hunt</li>
+    <li>Bacteria Hunt Speeds</li>
+    <li>BeeSmart Hive Finding</li>
+    <li>Bug Hunt Coevolution</li>
+    <li>Bug Hunt Speeds</li>
+    <li>Connected Chemistry Gas Combustion</li>
+    <li>Connected Chemistry Rusting Reaction</li>
+    <li>Connected Chemistry Solid Combustion</li>
+    <li>Current in a Wire</li>
+    <li>Dice Stalagmite</li>
+    <li>Disease Solo</li>
+    <li>DNA Replication Fork</li>
+    <li>Echo</li>
+    <li>El Farol Network Congestion</li>
+    <li>epiDEM Basic</li>
+    <li>epiDEM Travel and Control</li>
+    <li>Equidistant Probability</li>
+    <li>Fireworks</li>
+    <li>Flocking - Alternative Visualizations</li>
+    <li>Flocking Vee Formations</li>
+    <li>GasLab Single Collision</li>
+    <li>Geometron Top-Down</li>
+    <li>HSB and RGB Example</li>
+    <li>K-Means Clustering</li>
+    <li>Lightning</li>
+    <li>Lunar Lander</li>
+    <li>Many Regions Example</li>
+    <li>Muscle Development</li>
+    <li>Osmotic Pressure</li>
+    <li>Particle Swarm Optimization</li>
+    <li>Particle System Flame</li>
+    <li>Particle System Fountain</li>
+    <li>Particle System Waterfall</li>
+    <li>Plant Speciation</li>
+    <li>Prob Graphs Basic</li>
+    <li>Random Basic Advanced</li>
+    <li>Reactor Top Down</li>
+    <li>Red Queen</li>
+    <li>Sampler Solo</li>
+    <li>Shuffle Board</li>
+    <li>Simple Economy.nlogo</li>
+    <li>Stochastic Patchwork</li>
+    <li>Sunflower Biomorphs</li>
+    <li>Traffic Basic Adaptive Individuals</li>
+    <li>Turtles Circling</li>
+    <li>Urban Suite - Path Dependence</li>
+    <li>Urban Suite - Recycling</li>
+    <li>Vision Cone Example</li>
+    <li>Voronoi</li>
+  </ul>
+
+  <p>Note: While most of these work fine, the fact that a model is openable does
+     not imply that we think the model is running well.  Some of these models
+     are still a bit slow or buggy, and we plan to fix that in future updates.</p>
+
+  <h3>New Random Number Generator</h3>
+
+  <p>Previously, NetLogo Web used the standard JavaScript random number
+     generator.  With this update, NetLogo Web now gets its random numbers from
+     a direct port of the random number generator used in desktop NetLogo.
+     Thanks to this, any seed passed to <code>random-seed</code> leads to
+     exactly the same model run in NetLogo Web as it does in desktop NetLogo.</p>
+
+</div>

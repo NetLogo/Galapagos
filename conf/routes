@@ -5,6 +5,7 @@
 # General
 GET         /                                   controllers.Application.index
 GET         /info                               controllers.Application.info
+GET         /whats-new                          controllers.Application.whatsNew
 GET         /model/list.json                    controllers.Application.modelList
 GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)
 GET         /server-error                       controllers.Application.serverError

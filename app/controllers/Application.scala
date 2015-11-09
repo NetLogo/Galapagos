@@ -28,6 +28,11 @@ class Application @Inject() (application: PlayApplication)  extends Controller {
       Ok(views.html.mainTheme(views.html.info(), "NetLogo Web FAQ"))
   }
 
+  def whatsNew: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.mainTheme(views.html.whatsNew(), "What's New in NetLogo Web"))
+  }
+
   def serverError: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.mainTheme(views.html.serverError(), "NetLogo Web - Error"))

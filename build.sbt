@@ -70,6 +70,7 @@ routesGenerator := InjectedRoutesGenerator
 scrapeRoutes ++= Seq(
   "/humans.txt",
   "/info",
+  "/whats-new",
   "/model/list.json",
   "/model/statuses.json",
   "/netlogo-engine.js",
