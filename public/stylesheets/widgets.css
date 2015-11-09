@@ -96,6 +96,10 @@
   border-right-width: 2px;
 }
 
+.unselectable {
+  user-select: none;
+}
+
 .growing {
   animation-name: grow;
   animation-duration: 0.4s;

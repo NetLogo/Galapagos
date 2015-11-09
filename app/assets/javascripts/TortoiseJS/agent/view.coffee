@@ -61,7 +61,7 @@ class View
     @canvas = document.createElement('canvas')
     @ctx = @canvas.getContext('2d')
     @visibleCanvas = document.createElement('canvas')
-    @visibleCanvas.class = 'netlogo-canvas'
+    @visibleCanvas.classList.add('netlogo-canvas', 'unselectable')
     @visibleCanvas.width = 500
     @visibleCanvas.height = 500
     @visibleCanvas.style.width = "100%"
