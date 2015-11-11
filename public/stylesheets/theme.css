@@ -13,6 +13,7 @@ body {
   display: flex;
   flex-direction: row;
   height: 40px;
+  justify-content: space-between;
   overflow-x: visible;
   overflow-y: visible;
   position: fixed;
@@ -26,15 +27,23 @@ body {
   margin-left: 95px;
 }
 
-.topbar-quick-link {
-  font-size: medium;
+.topbar-link-box {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  margin-right: 20px;
 }
 
-.topbar-spacer {
-  background-color: white;
-  height: 55%;
-  margin: auto 25px;
-  width: 1px;
+.topbar-quick-link {
+  font-size: medium;
+  height: 100%;
+  line-height: 40px;
+  padding: 0 20px;
+}
+
+.topbar-quick-link:hover {
+  text-decoration: underline;
 }
 
 .topbar-link {
@@ -44,6 +53,10 @@ body {
 .topbar-text {
   color: #ffffff;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.topbar-text:active {
+  color: #ffff9a;
 }
 
 .not_full_height {
