@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(content: Html, title: String = "NetLogo Web", extraHead: Html = Html(""), extraBody: Html = Html(""))(implicit mode: Mode.Mode)
+@(content: Html, title: String = "NetLogo Web", selectedTopLink: Option[String] = None, extraHead: Html = Html(""), extraBody: Html = Html(""))(implicit mode: Mode.Mode)
 
 <!DOCTYPE html>
 
@@ -20,10 +20,23 @@
     <div class="topbar">
       <a class="topbar-root-link topbar-text topbar-link" href="/">NetLogo Web</a>
       <div class="topbar-link-box">
-        <a class="topbar-quick-link topbar-text topbar-link brand" href="/launch">Launch</a>
-        <a class="topbar-quick-link topbar-text topbar-link brand" href="/whats-new">What's New</a>
-        <a class="topbar-quick-link topbar-text topbar-link brand" href="/info">FAQ</a>
-        <a class="topbar-quick-link topbar-text topbar-link brand" href="http://ccl.northwestern.edu/netlogo">About NetLogo</a>
+        @{
+
+          case class TopLink(id: String, url: String, text: String)
+
+          val LaunchLink  = TopLink("launch",  "/launch",                             "Launch")
+          val UpdatesLink = TopLink("updates", "/whats-new",                          "What's New")
+          val InfoLink    = TopLink("info",    "/info",                               "FAQ")
+          val NetLogoLink = TopLink("netlogo", "http://ccl.northwestern.edu/netlogo", "About NetLogo")
+
+          Html(Seq(LaunchLink, UpdatesLink, InfoLink, NetLogoLink).map {
+            case TopLink(id, url, text) =>
+              val baseClasses  = "topbar-quick-link topbar-text topbar-link brand"
+              val extraClasses = if (selectedTopLink.contains(id)) " selected" else ""
+              s"""<a id="$id-link" class="$baseClasses$extraClasses" href="$url">$text</a>"""
+          }.mkString("\n"))
+
+        }
       </div>
     </div>
 

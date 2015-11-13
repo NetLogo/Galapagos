@@ -25,6 +25,7 @@ body {
 .topbar-root-link {
   font-size: x-large;
   margin-left: 95px;
+  white-space: nowrap;
 }
 
 .topbar-link-box {
@@ -32,14 +33,18 @@ body {
   display: flex;
   flex-direction: row;
   height: 40px;
-  margin-right: 20px;
+  margin-right: 40px;
+  justify-content: flex-end;
+  width: 60%;
 }
 
 .topbar-quick-link {
   font-size: medium;
   height: 100%;
   line-height: 40px;
-  padding: 0 20px;
+  margin-left: 4%;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .topbar-quick-link:hover {
@@ -48,6 +53,12 @@ body {
 
 .topbar-link {
   text-decoration: none;
+}
+
+.topbar-link.selected {
+  border-bottom: 2px solid #cde4eb;
+  font-weight: bold;
+  line-height: 42px;
 }
 
 .topbar-text {
