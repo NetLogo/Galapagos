@@ -198,6 +198,29 @@
      button contains code that is currently invalid in NetLogo Web.  That button will be unusable,
      but the parts of the model that did not generate errors will continue to be operable.</p>
 
+  @linkableHeader("model-format-error", "NetLogo Web is saying that it \"Couldn't find corresponding reader\" or \"Models must have 12 sections\".  How can I fix these errors?")
+
+  <p>If the error message is "Models must have 12 sections, this had 1", the problem is
+     likely that the uploaded file is not actually a NetLogo model.  Please verify that
+     you can open this file in the desktop version of NetLogo before proceeding.</p>
+
+  <p>If you got the "Couldn't find corresponding reader" error or the "Models must have 12
+     sections" error with a number at the end other than 1, this usually indicates an
+     attempt to load a model that was saved in an old version of NetLogo.  Please note
+     that NetLogo Web only guarantees compatibility with the latest version of NetLogo.</p>
+
+  <p>The easiest way to fix this problem is to open the model in the latest version of
+     NetLogo, allow NetLogo to automatically convert the old model, save the
+     auto-converted model, and attempt to open the newly-converted version of the model in
+     NetLogo Web.</p>
+
+  <p>If NetLogo Web complains that it cannot load this newly-converted model due to
+     unimplemented primitives (especially those whose names start with underscores), you
+     may need to slightly rewrite some of the code.  See the
+     <a href="https://ccl.northwestern.edu/netlogo/docs/transition.html">NetLogo
+     transition guide</a> for more details on how to do that for the particular version of
+     NetLogo that your model came from.</p>
+
   @linkableHeader("unresponsive-browser", "My browser is telling me that the page is unresponsive.  What's going on?")
 
   <p>Your computer is working very hard to execute some NetLogo Web code.
