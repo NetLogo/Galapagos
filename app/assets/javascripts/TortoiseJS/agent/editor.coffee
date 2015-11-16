@@ -5,7 +5,11 @@ window.EditorWidget = Ractive.extend({
       tabSize: 2,
       mode:    'netlogo',
       theme:   'netlogo-default',
-      readOnly: @get('readOnly')
+      readOnly: @get('readOnly'),
+      extraKeys: {
+        "Ctrl-F": "findPersistent",
+        "Cmd-F":  "findPersistent"
+      }
     })
     editor.on('change', =>
       newCode = editor.getValue()

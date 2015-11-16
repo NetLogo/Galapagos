@@ -290,7 +290,8 @@ private[controllers] trait RequestResultGenerator {
         "/public/stylesheets/widgets.css",
         "/public/stylesheets/netlogoweb.css",
         "/public/stylesheets/netlogo-syntax.css",
-        "/public/lib/codemirror/lib/codemirror.css"
+        "/public/lib/codemirror/lib/codemirror.css",
+        "/public/lib/codemirror/addon/dialog/dialog.css"
       )
 
     stylesheets map slurpURL mkString "\n"
@@ -309,7 +310,10 @@ private[controllers] trait RequestResultGenerator {
         "lib/highcharts/modules/exporting.js",
         "lib/ractive/ractive.js",
         "lib/codemirror/lib/codemirror.js",
-        "lib/codemirror/addon/mode/simple.js"
+        "lib/codemirror/addon/dialog/dialog.js",
+        "lib/codemirror/addon/mode/simple.js",
+        "lib/codemirror/addon/search/searchcursor.js",
+        "lib/codemirror/addon/search/search.js"
       ).map(path => s"/public/$path")
 
     val assetURLs =

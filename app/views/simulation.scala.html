@@ -7,6 +7,7 @@
 <html>
   <head>
     @style(route("lib/codemirror/lib/codemirror.css"))
+    @style(route("lib/codemirror/addon/dialog/dialog.css"))
     @style(route("stylesheets/widgets.css"))
     @style(route("stylesheets/netlogoweb.css"))
     @style(route("stylesheets/netlogo-syntax.css"))
@@ -26,7 +27,10 @@
     @script(route("lib/highcharts/modules/exporting.js"))
     @script(route("lib/ractive/ractive.js"))
     @script(route("lib/codemirror/lib/codemirror.js"))
+    @script(route("lib/codemirror/addon/dialog/dialog.js"))
     @script(route("lib/codemirror/addon/mode/simple.js"))
+    @script(route("lib/codemirror/addon/search/searchcursor.js"))
+    @script(route("lib/codemirror/addon/search/search.js"))
 
     @script(routes.CompilerService.tortoiseCompilerJs.absoluteURL)
     @script(routes.Local.engine.absoluteURL)
