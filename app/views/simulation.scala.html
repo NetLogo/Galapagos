@@ -62,7 +62,6 @@
       var loadingOverlay  = $("#loading-overlay").get(0);
       var activeContainer = loadingOverlay;
       var modelContainer  = document.querySelector("#netlogo-model-container");
-      var index           = window.location.href.indexOf("?");
       var nlogoScript     = document.querySelector("#nlogo-code");
       var standaloneURL   = "@routes.Local.standalone.absoluteURL";
       var pageTitle       = function(modelTitle) {
@@ -106,8 +105,8 @@
                            nlogoScript.dataset.filename,
                            openSession,
                            displayError);
-      } else if (index > -1) {
-        var url = window.location.href.substring(index+1);
+      } else if (window.location.search.length > 0) {
+        var url = window.location.search.slice(1);
         console.log(url);
         Tortoise.fromURL(url, modelContainer, openSession, displayError);
       }
