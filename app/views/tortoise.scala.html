@@ -66,6 +66,7 @@
       if (decodeURI(url) === url) {
         url = encodeURI(url);
       }
+      exports.selectModelByURL(window.location.hash.slice(1));
       modelContainer.src = "/web?"+url;
     }
 

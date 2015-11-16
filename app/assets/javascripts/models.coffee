@@ -65,6 +65,29 @@ exports.selectModel = (model) ->
   modelSelect.val(model)
   modelSelect.trigger("chosen:updated")
 
+# (String) => Unit
+exports.selectModelByURL = (modelURL) ->
+
+  extractFirstMatch =
+    (regex) -> (str) -> (new RegExp(regex)).exec(str)[1]
+
+  urlIsInternal =
+    (url) ->
+      extractDomain = extractFirstMatch(".*?//?([^/]+)|()")
+      extractDomain(window.location.href) is extractDomain(url)
+
+  if urlIsInternal(modelURL)
+
+    modelPath    = extractFirstMatch(".*/modelslib/(.+)\.nlogo")(modelURL).replace(/%20/g, " ")
+    choiceElems  = document.getElementsByName('models')[0].children
+    choicesArray = [].slice.call(choiceElems)
+    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerHTML is modelPath then x else acc), null)
+
+    if choiceElem?
+      exports.selectModel("modelslib/#{modelPath}")
+
+  return
+
 exports.handPickedModels = [
   "Curricular Models/BEAGLE Evolution/DNA Replication Fork",
   "Curricular Models/Connected Chemistry/Connected Chemistry Gas Combustion",
