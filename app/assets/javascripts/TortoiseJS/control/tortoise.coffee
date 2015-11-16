@@ -102,7 +102,15 @@ defaultDisplayError = (container) ->
   (errors) -> container.innerHTML = "<div style='padding: 5px 10px;'>#{errors}</div>"
 
 reportCompilerError = (load) -> (res) ->
-  errors = res.model.result.map((err) -> err.message).join('<br/>')
+  errors = res.model.result.map(
+    (err) ->
+      contains = (s, x) -> s.indexOf(x) > -1
+      message = err.message
+      if contains(message, "Couldn't find corresponding reader") or contains(message, "Models must have 12 sections")
+        "#{message} (see <a href='/info#model-format-error'>here</a> for more information)"
+      else
+        message
+  ).join('<br/>')
   load.onError(errors)
   load.loader.finish()
 
