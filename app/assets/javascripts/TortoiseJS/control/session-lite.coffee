@@ -78,9 +78,12 @@ class window.SessionLite
     Tortoise.startLoading( =>
       world.clearAll()
       @widgetController.redraw()
-      codeCompile(@widgetController.code(), [], [], @widgetController.widgets, (res) =>
+      code = @widgetController.code()
+      codeCompile(code, [], [], @widgetController.widgets, (res) =>
         if res.model.success
           globalEval(res.model.result)
+          @widgetController.ractive.set('isStale',          false)
+          @widgetController.ractive.set('lastCompiledCode', code)
         else
           @alertCompileError(res.model.result)
         Tortoise.finishLoading()

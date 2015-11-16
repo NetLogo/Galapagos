@@ -36,6 +36,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     code,
     info,
     readOnly,
+    lastCompiledCode:   code,
+    isStale:            false,
     exportForm:         false,
     modelTitle:         dropNLogoExtension(filename),
     consoleOutput:      '',

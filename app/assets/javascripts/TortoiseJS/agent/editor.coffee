@@ -8,7 +8,9 @@ window.EditorWidget = Ractive.extend({
       readOnly: @get('readOnly')
     })
     editor.on('change', =>
-      @set('code', editor.getValue())
+      newCode = editor.getValue()
+      @set('isStale', @get('lastCompiledCode') isnt newCode)
+      @set('code',    newCode)
     )
 
   template:
@@ -17,7 +19,7 @@ window.EditorWidget = Ractive.extend({
          intro='grow:{disable:"code-tab-toggle"}' outro='shrink:{disable:"code-tab-toggle"}'>
       {{# !readOnly }}
         <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button"
-                on-click="recompile">Recompile Code</button>
+                on-click="recompile" {{# !isStale }}disabled{{/}} >Recompile Code</button>
       {{/}}
       <div class="netlogo-code"></div>
     </div>
