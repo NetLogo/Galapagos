@@ -107,7 +107,7 @@ class CompilerServiceTest extends PlaySpec {
                                        "some info",
                                        "some code",
                                        List(),
-                                       Map("id" -> "commands test".successNel),
+                                       Map("id" -> "commands test".successNel[CompilerException]),
                                        Seq())
       val allGoodMapJson = Json.toJson(allGoodMap)
       (allGoodMapJson \ CommandsKey \ "id" \ "success").as[Boolean] mustBe true

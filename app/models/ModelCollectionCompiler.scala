@@ -36,7 +36,7 @@ object ModelCollectionCompiler {
   case object CheckBuiltInModels
   protected[models] def compileModel(file: File, contents: String): ModelCompilationStatus =
     CompiledModel.fromNlogoContents(contents).map(ModelSaver(_)).fold(
-      nel => CompilationFailure(file, nel.list),
+      nel => CompilationFailure(file, nel.list.toList),
       _   => CompilationSuccess(file)
     )
 }

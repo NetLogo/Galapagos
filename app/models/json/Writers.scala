@@ -40,7 +40,7 @@ object Writers {
   implicit val compileResultWrites: Writes[CompileResult[String]] = Writes {
     (result: CompileResult[String]) => Json.obj(
       "success" -> result.isSuccess,
-      "result"  -> result.fold(_.list, JsString.apply)
+      "result"  -> result.fold(_.list.toList, JsString.apply)
     )
   }
 

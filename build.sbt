@@ -21,7 +21,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-b51a94a"
+val tortoiseVersion = "1.0-a3bb16e"
 
 libraryDependencies ++= Seq(
   filters,
@@ -40,7 +40,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.1.4",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.1",
-  "org.webjars" % "codemirror" % "5.7"
+  "org.webjars" % "codemirror" % "5.8"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")

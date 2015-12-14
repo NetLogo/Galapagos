@@ -3,6 +3,9 @@
 package controllers
 
 import
+  java.io.{ Serializable => JSerializable }
+
+import
   javax.inject.Inject
 
 import
@@ -105,7 +108,7 @@ private[controllers] object CompilationRequestHandler {
         case _                    => None
       }).getOrElse(new URL(url))
     } map {
-      wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel
+      wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel[String]
     } recover {
       case _: MalformedURLException => s"'$url' is an invalid URL.".failureNel
     } getOrElse {
@@ -179,7 +182,7 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
     Action { implicit request =>
       val argMap = toStringMap(request.extractBundle)
       val model = generateModel(argMap, request.host).flatMap {
-        case ModelObject(m)  => CompiledModel.fromModel(m).successNel
+        case ModelObject(m)  => CompiledModel.fromModel(m).successNel[String]
         case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text))
       }
       generateResult(argMap, model)
@@ -249,16 +252,20 @@ private[controllers] trait RequestResultGenerator {
     }.fold(jsonNelResult(BadRequest), res => Ok(Json.toJson(res)))
 
   protected def exportResult(argMap: ArgMap, modelV: ModelResultV): Result = {
+
     val filename =
       argMap.get("filename")
         .map(name => if (name.endsWith(".nlogo")) name else s"$name.nlogo")
         .getOrElse("export.nlogo")
 
-    modelV flatMap CompileResponse.exportNlogo fold(
+    val compiledModelV = modelV flatMap CompileResponse.exportNlogo leftMap (_.map(ex => ex: JSerializable))
+
+    compiledModelV.fold(
       nelResult(BadRequest),
       res => Ok(res).withHeaders(
         CONTENT_TYPE        -> TEXT,
         CONTENT_DISPOSITION -> s"""attachment; filename="$filename""""))
+
   }
 
   protected def saveResult(argMap: ArgMap, modelV: ModelResultV): Result = {
@@ -344,13 +351,13 @@ private[controllers] trait RequestResultGenerator {
 
   private def getIDedStmtsV(argMap: ArgMap, field: String): ValidationNel[String, IDedValues[String]] = {
     val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
-    Try(Json.parse(argMap.getOrElse(field, "[]")).successNel).recover {
+    Try(Json.parse(argMap.getOrElse(field, "[]")).successNel[String]).recover {
       case _: JsonProcessingException => malformedStmtsError
     }.get.flatMap {
       json =>
         val asSeq = json.asOpt[Seq[String]]         map IDedValuesSeq.apply
         val asMap = json.asOpt[Map[String, String]] map IDedValuesMap.apply
-        asSeq orElse asMap map (_.successNel) getOrElse malformedStmtsError
+        asSeq orElse asMap map (_.successNel[String]) getOrElse malformedStmtsError
     }
   }
 
@@ -358,7 +365,7 @@ private[controllers] trait RequestResultGenerator {
     status(nel.stream.mkString("\n\n"))
 
   private def jsonNelResult(status: Status)(nel: NonEmptyList[String]): Result = {
-    val errors = JsArray(nel.map(s => Json.obj("message" -> s)).list.toSeq)
+    val errors = JsArray(nel.map(s => Json.obj("message" -> s)).list.toList.toSeq)
     val result = Json.obj("success" -> false, "result" -> errors)
     status(Json.obj(
       "model"    -> result,
