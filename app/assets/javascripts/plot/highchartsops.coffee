@@ -85,7 +85,7 @@ class window.HighchartsOps extends PlotOps
       return
 
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
-    @_chart              = new Highcharts.Chart({ chart: { renderTo: elemID } })
+    @_chart              = Highcharts.chart(elemID, {})
     @_penNameToSeriesNum = {}
 
   # (PenBundle.DisplayMode) => String
