@@ -21,14 +21,14 @@
 }
 
 #alert-dialog {
+  align-items: center;
   background-color: whitesmoke;
-  opacity: 1;
-  z-index: 15;
-  border-radius: 10px;
   border: 2px black solid;
+  border-radius: 10px;
   display:flex;
   flex-direction: column;
-  align-items: center;
+  opacity: 1;
+  z-index: 15;
 }
 
 #alert-title {
