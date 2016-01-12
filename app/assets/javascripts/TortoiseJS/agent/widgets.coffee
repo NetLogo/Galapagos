@@ -139,6 +139,24 @@ showErrors = (errors) ->
     else
       alert(errors.join('\n'))
 
+# (() => Unit) => () => Unit
+window.handlingErrors = (f) -> ->
+  try f()
+  catch ex
+    if not (ex instanceof Exception.HaltInterrupt or ex instanceof Exception.StopInterrupt)
+      message =
+        if not (ex instanceof TypeError)
+          ex.message
+        else
+          # coffeelint: disable=max_line_length
+          """A type error has occurred in the simulation engine.  It was most likely caused by calling a primitive on a <b>variable</b> of an <b>incompatible type</b> (e.g. performing <code style='color: blue;'>ask n []</code> when <code style='color: blue;'>n</code> is a number).<br><br>
+             The error occurred in the simulation engine itself, so we admit that this particular error message might not be very helpful in determining what went wrong.  Please note that NetLogo Web's error-reporting for type errors is currently incomplete, and better error messages are forthcoming.<br><br>
+             The error is as follows:<br><br>
+             <b>#{ex.message}</b>"""
+          # coffeelint: enable=max_line_length
+      showErrors([message])
+  return
+
 class window.WidgetController
   constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
 
@@ -237,7 +255,7 @@ fillOutWidgets = (widgets, updateUICallback) ->
         if widget.forever then widget.running = false
         do (widget) ->
           if widget.compilation.success
-            task = new Function(widget.compiledSource)
+            task = window.handlingErrors(new Function(widget.compiledSource))
             do (task) ->
               wrappedTask =
                 if widget.forever
