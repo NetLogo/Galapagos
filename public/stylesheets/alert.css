@@ -27,6 +27,8 @@
   border-radius: 10px;
   display:flex;
   flex-direction: column;
+  margin: 0 50px;
+  min-width: 350px;
   opacity: 1;
   z-index: 15;
 }
