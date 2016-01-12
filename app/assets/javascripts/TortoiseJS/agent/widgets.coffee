@@ -102,7 +102,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   dialog = {
     confirm: (str) -> window.confirm(str)
-    notify:  (str) -> nlwAlerter.display("NetLogo Notification", true, str)
+    notify:  (str) -> window.nlwAlerter.display("NetLogo Notification", true, str)
   }
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
@@ -134,8 +134,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
 showErrors = (errors) ->
   if errors.length > 0
-    if nlwAlerter?
-      nlwAlerter.displayError(errors.join('<br/>'))
+    if window.nlwAlerter?
+      window.nlwAlerter.displayError(errors.join('<br/>'))
     else
       alert(errors.join('\n'))
 

@@ -86,17 +86,17 @@
         isStandaloneHTML = true;
       }
 
-      var nlwAlerter = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
+      window.nlwAlerter = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
 
       var displayError = function(error) {
         // in the case where we're still loading the model, we have to
         // post an error that cannot be dismissed, as well as ensuring that
         // the frame we're in matches the size of the error on display.
         if (activeContainer === loadingOverlay) {
-          nlwAlerter.displayError(error, false);
-          activeContainer = nlwAlerter.alertContainer;
+          window.nlwAlerter.displayError(error, false);
+          activeContainer = window.nlwAlerter.alertContainer;
         } else {
-          nlwAlerter.displayError(error);
+          window.nlwAlerter.displayError(error);
         }
       };
 
@@ -116,7 +116,7 @@
         if (session) {
           session.teardown();
         }
-        nlwAlerter.hide();
+        window.nlwAlerter.hide();
         activeContainer = loadingOverlay;
         Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
       });
