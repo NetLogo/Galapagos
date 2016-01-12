@@ -239,19 +239,20 @@ fillOutWidgets = (widgets, updateUICallback) ->
           if widget.compilation.success
             task = new Function(widget.compiledSource)
             do (task) ->
-              if widget.forever
-                wrappedTask = () ->
-                  mustStop =
-                    try task() instanceof Exception.StopInterrupt
-                    catch ex
-                      ex instanceof Exception.HaltInterrupt
-                  if mustStop
-                    widget.running = false
+              wrappedTask =
+                if widget.forever
+                  () ->
+                    mustStop =
+                      try task() instanceof Exception.StopInterrupt
+                      catch ex
+                        ex instanceof Exception.HaltInterrupt
+                    if mustStop
+                      widget.running = false
+                      updateUICallback()
+                else
+                  () ->
+                    task()
                     updateUICallback()
-              else
-                wrappedTask = () ->
-                  task()
-                  updateUICallback()
               do (wrappedTask) ->
                 widget.run = wrappedTask
           else
