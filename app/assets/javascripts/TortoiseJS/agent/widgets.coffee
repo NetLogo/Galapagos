@@ -155,7 +155,9 @@ window.handlingErrors = (f) -> ->
              <b>#{ex.message}</b>"""
           # coffeelint: enable=max_line_length
       showErrors([message])
-    undefined
+      throw new Exception.HaltInterrupt
+    else
+      throw ex
 
 class window.WidgetController
   constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->

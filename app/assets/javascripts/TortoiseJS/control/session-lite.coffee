@@ -159,7 +159,10 @@ class window.SessionLite
         result  = res.commands[0].result
         Tortoise.finishLoading()
         if (success)
-          window.handlingErrors(new Function(result))()
+          try window.handlingErrors(new Function(result))()
+          catch ex
+            if not (ex instanceof Exception.HaltInterrupt)
+              throw ex
         else
           @alertCompileError(result))
 
