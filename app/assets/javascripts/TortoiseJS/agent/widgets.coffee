@@ -139,7 +139,7 @@ showErrors = (errors) ->
     else
       alert(errors.join('\n'))
 
-# (() => Unit) => () => Unit
+# [T] @ (() => T) => () => T
 window.handlingErrors = (f) -> ->
   try f()
   catch ex
@@ -155,7 +155,7 @@ window.handlingErrors = (f) -> ->
              <b>#{ex.message}</b>"""
           # coffeelint: enable=max_line_length
       showErrors([message])
-  return
+    undefined
 
 class window.WidgetController
   constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
