@@ -143,7 +143,7 @@ showErrors = (errors) ->
 window.handlingErrors = (f) -> ->
   try f()
   catch ex
-    if not (ex instanceof Exception.HaltInterrupt or ex instanceof Exception.StopInterrupt)
+    if not (ex instanceof Exception.HaltInterrupt)
       message =
         if not (ex instanceof TypeError)
           ex.message
