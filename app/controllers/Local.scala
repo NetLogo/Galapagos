@@ -28,12 +28,12 @@ class Local @Inject() (application: PlayApplication) extends Controller {
 
   def standalone: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(TemplateUtil.inlineScript, TemplateUtil.inlineStyle))
+      Ok(views.html.simulation(InlineTagBuilder))
   }
 
   def web: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(TemplateUtil.outsourceScript, TemplateUtil.outsourceStyle))
+      Ok(views.html.simulation(OutsourceTagBuilder))
   }
 
   def engine: Action[AnyContent] = Action {
