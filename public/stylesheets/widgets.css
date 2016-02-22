@@ -360,14 +360,14 @@
   background-color: transparent;
   height: 22px;
   margin: 0px;
-  margin-bottom: -4px;
-  margin-top: -3px;
+  margin-bottom: -5px;
+  margin-top: 2px;
   padding: 0px;
   width: 100%;
 }
 
 .netlogo-label {
-  margin: 5px auto 0 auto;
+  margin: 0 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

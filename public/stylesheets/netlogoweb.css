@@ -17,6 +17,14 @@
   border: 1px solid #E7E741;
 }
 
+.netlogo-slider-label .netlogo-label {
+  background-color: #8FE585;
+}
+
+.netlogo-slider-label .netlogo-slider-value {
+  background-color: #8FE585;
+}
+
 .netlogo-tab {
   background-color: #BCBCE5;
   border-color: #242479;
