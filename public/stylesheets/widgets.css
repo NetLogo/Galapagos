@@ -357,34 +357,34 @@
 }
 
 .netlogo-slider input[type=range] {
-    padding: 0px;
-    width: 100%;
-    margin: 0px;
-    height: 22px;
-    margin-bottom: -4px;
-    margin-top: -3px;
-    background-color: transparent;
+  background-color: transparent;
+  height: 22px;
+  margin: 0px;
+  margin-bottom: -4px;
+  margin-top: -3px;
+  padding: 0px;
+  width: 100%;
 }
 
 .netlogo-label {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   margin: 5px auto 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .netlogo-slider-label {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .netlogo-slider-label .netlogo-label {
-    min-width: 0;
-    flex: 1 1 auto;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .netlogo-slider-label .netlogo-slider-value {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 
 .netlogo-slider-label input[type=number] {
@@ -392,7 +392,6 @@
     border: 1px;
     padding: 0px;
 }
-
 
 .netlogo-monitor {
     padding: 2px 4px;
