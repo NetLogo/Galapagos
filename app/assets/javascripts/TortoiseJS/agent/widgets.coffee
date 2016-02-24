@@ -87,12 +87,18 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   outputWidget = widgets.filter((w) -> w.type == 'output')[0]
 
   plotOps = createPlotOps(container, widgets)
+
+  clearMouse = ->
+    viewController.mouseDown = false
+    return
+
   mouse = {
     peekIsDown: -> viewController.mouseDown
     peekIsInside: -> viewController.mouseInside
     peekX: viewController.mouseXcor
     peekY: viewController.mouseYcor
   }
+
   write = (str) -> model.consoleOutput += str
 
   output = {
@@ -101,8 +107,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   }
 
   dialog = {
-    confirm: (str) -> window.confirm(str)
-    notify:  (str) -> window.nlwAlerter.display("NetLogo Notification", true, str)
+    confirm: (str) -> clearMouse(); window.confirm(str)
+    notify:  (str) -> clearMouse(); window.nlwAlerter.display("NetLogo Notification", true, str)
   }
 
   ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
