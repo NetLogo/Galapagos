@@ -318,11 +318,10 @@
 }
 
 .netlogo-action-key {
+  color:    grey;
   position: absolute;
-  top: 0px;
-  right: 0px;
-  margin: 0px 2px;
-  color: grey;
+  right:    6px;
+  top:      5px;
 }
 
 .netlogo-action-key.netlogo-focus {
