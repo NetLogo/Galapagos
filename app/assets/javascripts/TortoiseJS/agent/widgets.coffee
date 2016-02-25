@@ -440,6 +440,7 @@ partials = {
             style="{{>dimensions}}"
             on-click="activateButton"
             disabled={{ !ticksStarted && disableUntilTicksStart }}>
+      {{>buttonContext}}
       <span class="netlogo-label">{{display || source}}</span>
       {{# actionKey }}
       <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
@@ -452,6 +453,7 @@ partials = {
     """
     <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}} {{>errorClass}}"
            style="{{>dimensions}}">
+      {{>buttonContext}}
       <input type="checkbox" checked={{ running }} {{# !ticksStarted && disableUntilTicksStart }}disabled{{/}}/>
       <span class="netlogo-label">{{display || source}}</span>
       {{# actionKey }}
@@ -521,6 +523,18 @@ partials = {
     position: absolute;
     left: {{ left }}px; top: {{ top }}px;
     width: {{ right - left }}px; height: {{ bottom - top }}px;
+    """
+  buttonContext:
+    """
+    <div class="netlogo-button-agent-context">
+    [[#if buttonType === "TURTLE" ]]
+      T
+    [[elseif buttonType === "PATCH" ]]
+      P
+    [[elseif buttonType === "LINK" ]]
+      L
+    [[/if]]
+    </div>
     """
 }
 # coffeelint: enable=max_line_length
