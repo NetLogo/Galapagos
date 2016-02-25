@@ -459,6 +459,7 @@ partials = {
         {{actionKey}}
       </span>
       {{/}}
+      <div class="netlogo-forever-icon"></div>
     </label>
     """
   chooser:
