@@ -6,6 +6,10 @@ body {
   color: rgb(64, 64, 64);
 }
 
+code {
+  color: #8000CC;
+}
+
 .topbar {
   align-items: center;
   background-color: #222222;

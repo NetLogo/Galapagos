@@ -198,6 +198,35 @@
      button contains code that is currently invalid in NetLogo Web.  That button will be unusable,
      but the parts of the model that did not generate errors will continue to be operable.</p>
 
+  @linkableHeader("type-errors", "What is a \"type error in the simulation engine\", and how do I fix it?")
+
+  <p>A <strong>type error</strong> in general indicates that a function received one or more arguments
+     that it didn't know how to operate on.  One example of a type error in NetLogo code would be
+     <code>(turtle 0) + (turtle 1)</code>, since the <code>+</code> function doesn't know how to add
+     turtles together.</p>
+
+  <p>When we talk about a type error occurring in the simulation engine, we mean that this kind of
+     error happened in the JavaScript code that is running in the browser.  The fact that these errors
+     occurred in JavaScript, though, does not necessarily indicate that the simulation engine is the culprit.
+     In fact, the vast majority of these sorts of errors are caused by ill-formed NetLogo code for
+     which the engine does not yet know how to report nice errors.  In desktop NetLogo, you always
+     get informative type errors, but, unfortunately, NetLogo Web's error-reporting functionality
+     is not yet complete enough to always give smart errors.</p>
+
+  <p>The area where NetLogo Web's error-reporting is poorest at the moment is in
+     cases like <code>ask n []</code> (where <code>n</code> is a number, or really anything but an agent or
+     agentset).  If <code>ask</code> were passed a literal value instead of a variable like <code>n</code>,
+     the compiler would usually just refuse to compile code that doesn't typecheck, and it would tell
+     you exactly what went wrong.  Unfortunately, in NetLogo, static typechecking goes out the window
+     when variables are introduced, forcing the engine to fall back on runtime typechecking.  Even more
+     unfortunately, NetLogo Web's runtime typechecking is very poor at the moment.</p>
+
+  <p>As for how to fix these errors, that is difficult for now.  There is not a lot that the average user
+     can reasonably be expected to do until we implement proper error-reporting for type errors.  Advanced
+     users might find some hints in the JavaScript error that gets printed out.  We recommend reproducing
+     the error in desktop NetLogo to get a proper error message, or, if that's not possible, then trying to
+     bisect your model's code until you find the source of the error.</p>
+
   @linkableHeader("model-format-error", "NetLogo Web is saying that it \"Couldn't find corresponding reader\" or \"Models must have 12 sections\".  How can I fix these errors?")
 
   <p>If the error message is "Models must have 12 sections, this had 1", the problem is

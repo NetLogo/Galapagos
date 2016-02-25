@@ -154,12 +154,11 @@ window.handlingErrors = (f) -> ->
         if not (ex instanceof TypeError)
           ex.message
         else
-          # coffeelint: disable=max_line_length
-          """A type error has occurred in the simulation engine.  It was most likely caused by calling a primitive on a <b>variable</b> of an <b>incompatible type</b> (e.g. performing <code style='color: blue;'>ask n []</code> when <code style='color: blue;'>n</code> is a number).<br><br>
-             The error occurred in the simulation engine itself, so we admit that this particular error message might not be very helpful in determining what went wrong.  Please note that NetLogo Web's error-reporting for type errors is currently incomplete, and better error messages are forthcoming.<br><br>
-             The error is as follows:<br><br>
-             <b>#{ex.message}</b>"""
-          # coffeelint: enable=max_line_length
+          """A type error has occurred in the simulation engine.
+             More information about these sorts of errors can be found <a href="/info#type-errors">here</a>.<br><br>
+             Advanced users might find the generated error helpful, which is as follows:<br><br>
+             <b>#{ex.message}</b><br><br>
+             """
       showErrors([message])
       throw new Exception.HaltInterrupt
     else
