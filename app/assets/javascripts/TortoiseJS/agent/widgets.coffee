@@ -527,13 +527,13 @@ partials = {
   buttonContext:
     """
     <div class="netlogo-button-agent-context">
-    [[#if buttonType === "TURTLE" ]]
+    {{#if buttonType === "TURTLE" }}
       T
-    [[elseif buttonType === "PATCH" ]]
+    {{elseif buttonType === "PATCH" }}
       P
-    [[elseif buttonType === "LINK" ]]
+    {{elseif buttonType === "LINK" }}
       L
-    [[/if]]
+    {{/if}}
     </div>
     """
 }
