@@ -11,6 +11,7 @@ window.RactiveSlider = Ractive.extend({
   template:
     """
     <label id="{{id}}"
+           on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
            class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
            style="{{dims}}">
       <input type="range"
@@ -27,6 +28,11 @@ window.RactiveSlider = Ractive.extend({
         </span>
       </div>
     </label>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
+    </div>
     """
 
 })

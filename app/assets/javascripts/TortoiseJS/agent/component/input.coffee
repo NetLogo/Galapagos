@@ -10,6 +10,7 @@ window.RactiveInput = Ractive.extend({
   template:
     """
     <label id="{{id}}"
+           on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
            class="netlogo-widget netlogo-input-box netlogo-input"
            style="{{dims}}">
       <div class="netlogo-label">{{widget.varName}}</div>
@@ -20,6 +21,11 @@ window.RactiveInput = Ractive.extend({
       <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
       {{# widget.boxtype === 'Color'}}<input type="color" value="{{widget.currentValue}}" />{{/}}
     </label>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
+    </div>
     """
 
 })

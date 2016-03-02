@@ -11,6 +11,7 @@ window.RactiveView = Ractive.extend({
   template:
     """
     <div id="{{id}}"
+         on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-view-container"
          style="{{dims}}">
       <div class="netlogo-widget netlogo-tick-counter">
@@ -18,6 +19,11 @@ window.RactiveView = Ractive.extend({
           {{widget.tickCounterLabel}}: <span>{{ticks}}</span>
         {{/}}
       </div>
+    </div>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
     </div>
     """
 

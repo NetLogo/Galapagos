@@ -10,6 +10,7 @@ window.RactiveChooser = Ractive.extend({
   template:
     """
     <label id="{{id}}"
+           on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
            class="netlogo-widget netlogo-chooser netlogo-input"
            style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
@@ -19,6 +20,11 @@ window.RactiveChooser = Ractive.extend({
       {{/}}
       </select>
     </label>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
+    </div>
     """
 
   partials: {

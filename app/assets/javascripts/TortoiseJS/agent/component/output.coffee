@@ -19,8 +19,14 @@ window.RactiveOutputArea = Ractive.extend({
   template:
     """
     <div id="{{id}}"
+         on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
       <pre class='netlogo-output-area'>{{output}}</pre>
+    </div>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
     </div>
     """
 

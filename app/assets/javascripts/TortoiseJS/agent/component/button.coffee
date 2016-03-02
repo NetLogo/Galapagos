@@ -20,6 +20,11 @@ window.RactiveButton = Ractive.extend({
     {{ else }}
       {{>standardButton}}
     {{/}}
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
+    </div>
     """
 
   partials: {
@@ -27,6 +32,7 @@ window.RactiveButton = Ractive.extend({
     standardButton:
       """
       <button id="{{id}}"
+              on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
               class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
@@ -45,6 +51,7 @@ window.RactiveButton = Ractive.extend({
     foreverButton:
       """
       <label id="{{id}}"
+             on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
              class="netlogo-widget netlogo-button netlogo-forever-button {{#widget.running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
              style="{{dims}}">
         {{>buttonContext}}

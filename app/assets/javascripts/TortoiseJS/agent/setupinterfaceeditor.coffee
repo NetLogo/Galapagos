@@ -1,5 +1,17 @@
+elemById = (id) ->
+  document.getElementById(id)
+
 elemsByClass = (className) ->
   document.getElementsByClassName(className)
+
+hideElem = (elem) ->
+  elem.style.display = "none"
+
+showElem = (elem) ->
+  elem.style.display = ""
+
+arrayContains = (xs) -> (x) ->
+  xs.indexOf(x) isnt -1
 
 nodeListToArray = (nodeList) ->
   Array.prototype.slice.call(nodeList)
@@ -13,8 +25,42 @@ pipeline = (functions...) ->
       out = f(out)
     out
 
+window.attachWidgetMenus =
+    ->
+      menuItemDivs = pipeline(elemsByClass, nodeListToArray)('netlogo-widget-editor-menu-items')
+      menuItemDivs.forEach((elem) -> hideElem(elem); elemById("netlogo-widget-context-menu").appendChild(elem))
+      return
+
 window.setupInterfaceEditor =
   (ractive) ->
+
+    document.addEventListener("click", -> pipeline(elemById, hideElem)("netlogo-widget-context-menu"))
+
+    document.addEventListener("contextmenu"
+    , (e) ->
+
+        latestElem = e.target
+        elems      = []
+        while latestElem?
+          elems.push(latestElem)
+          latestElem = latestElem.parentElement
+
+        listOfLists =
+          for elem in elems
+            for c in elem.classList
+              c
+
+        classes  = listOfLists.reduce((acc, x) -> acc.concat(x))
+        hasClass = arrayContains(classes)
+
+        if (not hasClass("netlogo-widget")) and (not hasClass("netlogo-widget-container"))
+          pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+
+    )
+
+    closeContextMenu = -> pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+
+    window.onkeyup = (e) -> if e.keyCode is 27 then closeContextMenu()
 
     ractive.on('toggleInterfaceLock'
     , ->
@@ -36,3 +82,29 @@ window.setupInterfaceEditor =
         return
 
     )
+
+    handleContextMenu =
+      (e, menuItemsID) ->
+
+          if @get("isEditing")
+
+            trueEvent = e.original
+            trueEvent.preventDefault()
+
+            contextMenu               = elemById("netlogo-widget-context-menu")
+            contextMenu.style.top     = "#{trueEvent.pageY}px"
+            contextMenu.style.left    = "#{trueEvent.pageX}px"
+            contextMenu.style.display = "block"
+
+            for child in contextMenu.children
+              hideElem(child)
+
+            pipeline(elemById, showElem)(menuItemsID)
+
+            false
+
+          else
+            true
+
+    ractive.on(  'showContextMenu', handleContextMenu)
+    ractive.on('*.showContextMenu', handleContextMenu)

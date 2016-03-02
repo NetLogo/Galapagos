@@ -16,9 +16,15 @@ window.RactiveLabel = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <pre id="{{id}}"
+         on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-text-box"
          style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
          >{{ widget.display }}</pre>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
+    </div>
     """
     # coffeelint: enable=max_line_length
 

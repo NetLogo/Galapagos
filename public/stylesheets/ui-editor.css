@@ -31,3 +31,38 @@
   cursor: default;
   box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
 }
+
+.context-menu-item {
+  border-bottom: solid 1px #dfdfdf;
+  color:         #0066aa;
+  cursor:        pointer;
+  font-size:     18px;
+  padding:       5px;
+}
+
+.context-menu-item:hover {
+  background-color: #0066aa;
+  color:            white;
+}
+
+.context-menu-item:last-child {
+  border-bottom: none;
+}
+
+.context-menu-list {
+  list-style: none;
+  margin:     0;
+  padding:    0;
+}
+
+.widget-context-menu {
+  background-color: white;
+  border:           solid 1px #dfdfdf;
+  box-shadow:       1px 1px 2px #cfcfcf;
+  display:          none;
+  margin:           0;
+  padding:          8px 10px;
+  position:         absolute;
+  width:            200px;
+  z-index:          10;
+}

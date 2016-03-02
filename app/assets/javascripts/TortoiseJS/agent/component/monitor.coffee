@@ -11,10 +11,16 @@ window.RactiveMonitor = Ractive.extend({
   template:
     """
     <div id="{{id}}"
+         on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-monitor netlogo-output"
          style="{{dims}} font-size: {{widget.fontSize}}px;">
       <label class="netlogo-label {{errorClass}}" on-click=\"showErrors\">{{widget.display || widget.source}}</label>
       <output class="netlogo-value">{{widget.currentValue}}</output>
+    </div>
+    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+      <ul class="context-menu-list">
+        <li class="context-menu-item">Nothing to see here</li>
+      </ul>
     </div>
     """
 

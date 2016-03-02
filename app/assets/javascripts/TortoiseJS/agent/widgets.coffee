@@ -90,7 +90,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
     },
     magic:      true,
-    data:       model
+    data:       model,
+    oncomplete: attachWidgetMenus
   })
 
   mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
@@ -347,6 +348,12 @@ template =
       {{/}}
     </div>
 
+    <div id="netlogo-widget-context-menu" class="widget-context-menu">
+      <div id='widget-creation-disabled-message' style="display: none;">
+        Widget creation is not yet available.  Check back soon.
+      </div>
+    </div>
+
     <div class="netlogo-interface-unlocker" on-click="toggleInterfaceLock"></div>
 
     <label class="netlogo-widget netlogo-speed-slider">
@@ -355,7 +362,8 @@ template =
     </label>
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
-         class="netlogo-widget-container">
+         class="netlogo-widget-container"
+         on-contextmenu="showContextMenu:{{'widget-creation-disabled-message'}}">
       {{#widgets}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
