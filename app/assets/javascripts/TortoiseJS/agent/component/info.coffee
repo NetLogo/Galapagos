@@ -1,4 +1,4 @@
-InfoTabEditor = Ractive.extend({
+window.RactiveInfoTabEditor = Ractive.extend({
   onrender: ->
     window.infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
       value: @get('rawText'),
@@ -20,9 +20,9 @@ InfoTabEditor = Ractive.extend({
     """
 })
 
-window.InfoTabWidget = Ractive.extend({
+window.RactiveInfoTabWidget = Ractive.extend({
   components: {
-    infoeditor: InfoTabEditor
+    infoeditor: RactiveInfoTabEditor
   },
   template:
     """

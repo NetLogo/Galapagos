@@ -1,4 +1,4 @@
-window.ConsoleWidget = Ractive.extend({
+window.RactiveConsoleWidget = Ractive.extend({
   data: {
     input: '',
     agentTypes: ['observer', 'turtles', 'patches', 'links'],
@@ -22,7 +22,7 @@ window.ConsoleWidget = Ractive.extend({
   }
 
   components: {
-    outputArea: OutputArea
+    outputArea: RactiveOutputArea
   }
 
   onrender: ->

@@ -1,5 +1,4 @@
-
-window.EditableTitleWidget = Ractive.extend({
+window.RactiveModelTitle = Ractive.extend({
   data: {
     currentTitle: '',
     isEditable: false

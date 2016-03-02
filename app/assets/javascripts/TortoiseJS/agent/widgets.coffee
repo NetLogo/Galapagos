@@ -43,7 +43,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     consoleOutput:      '',
     outputWidgetOutput: '',
     markdown:           sanitizedMarkdown,
-    convertColor:       netlogoColorToCSS,
     hasFocus:           false
   }
 
@@ -71,11 +70,23 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     template:   template,
     partials:   partials,
     components: {
-      editableTitle: EditableTitleWidget,
-      editor:        EditorWidget,
-      console:       ConsoleWidget,
-      outputArea:    OutputArea,
-      infotab:       InfoTabWidget
+
+      console:       RactiveConsoleWidget,
+      editableTitle: RactiveModelTitle,
+      editor:        RactiveEditorWidget,
+      infotab:       RactiveInfoTabWidget,
+
+      labelWidget:   RactiveLabel,
+      switchWidget:  RactiveSwitch,
+      buttonWidget:  RactiveButton,
+      sliderWidget:  RactiveSlider,
+      chooserWidget: RactiveChooser,
+      monitorWidget: RactiveMonitor,
+      inputWidget:   RactiveInput,
+      outputWidget:  RactiveOutputArea,
+      plotWidget:    RactivePlot,
+      viewWidget:    RactiveView
+
     },
     magic:      true,
     data:       model
@@ -116,9 +127,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     if world? and newVal != oldVal and isValidValue(widget, newVal)
       world.observer.setGlobal(widget.varName, newVal)
   )
-  ractive.on('activateButton', (event) ->
-    event.context.run()
-  )
 
   ractive.on('checkFocus', (event) ->
     @set('hasFocus', document.activeElement is event.node)
@@ -132,9 +140,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         w.run()
   )
 
-  ractive.on('showErrors', (event) ->
-    showErrors(event.context.compilation.messages)
-  )
 
   controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output, dialog)
 
@@ -346,17 +351,16 @@ template =
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container">
       {{#widgets}}
-        {{# type === 'view'               }} {{>view         }} {{/}}
-        {{# type === 'textBox'            }} {{>textBox      }} {{/}}
-        {{# type === 'switch'             }} {{>switcher     }} {{/}}
-        {{# type === 'button'  && !forever}} {{>button       }} {{/}}
-        {{# type === 'button'  &&  forever}} {{>foreverButton}} {{/}}
-        {{# type === 'slider'             }} {{>slider       }} {{/}}
-        {{# type === 'chooser'            }} {{>chooser      }} {{/}}
-        {{# type === 'monitor'            }} {{>monitor      }} {{/}}
-        {{# type === 'inputBox'           }} {{>inputBox     }} {{/}}
-        {{# type === 'plot'               }} {{>plot         }} {{/}}
-        {{# type === 'output'             }} {{>output       }} {{/}}
+        {{# type === 'view'     }} <viewWidget    dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
+        {{# type === 'textBox'  }} <labelWidget   dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'switch'   }} <switchWidget  dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'button'   }} <buttonWidget  dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
+        {{# type === 'slider'   }} <sliderWidget  dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'chooser'  }} <chooserWidget dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'monitor'  }} <monitorWidget dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'inputBox' }} <inputWidget   dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'plot'     }} <plotWidget    dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'output'   }} <outputWidget  dims="{{>dimensions}}" widget={{this}} output="{{outputWidgetOutput}}" /> {{/}}
       {{/}}
     </div>
 
@@ -389,152 +393,18 @@ template =
   """
 
 partials = {
-  view:
+
+  errorClass:
     """
-    <div class="netlogo-widget netlogo-view-container" style="{{>dimensions}}">
-      <div class="netlogo-widget netlogo-tick-counter">
-        {{# showTickCounter}}
-          {{tickCounterLabel}}: <span>{{ticks}}</span>
-        {{/}}
-      </div>
-    </div>
-    """
-  textBox:
-    # Note that ">{{ display }}</pre>" thing is necessary. Since <pre> formats
-    # text exactly as it appears, an extra space between the ">" and the
-    # "{{ display }}" would result in an actual newline in the widget.
-    # BCH 7/28/2015
-    """
-    <pre class="netlogo-widget netlogo-text-box"
-         style="{{>dimensions}} font-size: {{fontSize}}px; color: {{ convertColor(color) }}; {{# transparent}}background: transparent;{{/}}"
-         >{{ display }}</pre>
-    """
-  switcher:
-    """
-    <label class="netlogo-widget netlogo-switcher netlogo-input" style="{{>dimensions}}">
-      <input type="checkbox" checked={{ currentValue }} />
-      <span class="netlogo-label">{{ display }}</span>
-    </label>
-    """
-  slider:
-    """
-    <label class="netlogo-widget netlogo-slider netlogo-input {{>errorClass}}"
-           style="{{>dimensions}}" >
-      <input type="range"
-             max="{{maxValue}}" min="{{minValue}}" step="{{step}}" value="{{currentValue}}" />
-      <div class="netlogo-slider-label">
-        <span class="netlogo-label" on-click=\"showErrors\">{{display}}</span>
-        <span class="netlogo-slider-value">
-          <input type="number"
-                 style="width: {{currentValue.toString().length + 3.0}}ch"
-                 min={{minValue}} max={{maxValue}} value={{currentValue}} step={{step}} />
-          {{#units}}{{units}}{{/}}
-        </span>
-      </div>
-    </label>
-    """
-  button:
-    """
-    <button class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}} {{>errorClass}}"
-            type="button"
-            style="{{>dimensions}}"
-            on-click="activateButton"
-            disabled={{ !ticksStarted && disableUntilTicksStart }}>
-      {{>buttonContext}}
-      <span class="netlogo-label">{{display || source}}</span>
-      {{# actionKey }}
-      <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
-        {{actionKey}}
-      </span>
-      {{/}}
-    </button>
-    """
-  foreverButton:
-    """
-    <label class="netlogo-widget netlogo-button netlogo-forever-button {{#running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && disableUntilTicksStart }}netlogo-disabled{{/}} {{>errorClass}}"
-           style="{{>dimensions}}">
-      {{>buttonContext}}
-      <input type="checkbox" checked={{ running }} {{# !ticksStarted && disableUntilTicksStart }}disabled{{/}}/>
-      <span class="netlogo-label">{{display || source}}</span>
-      {{# actionKey }}
-      <span class="netlogo-action-key {{# hasFocus }}netlogo-focus{{/}}">
-        {{actionKey}}
-      </span>
-      {{/}}
-      <div class="netlogo-forever-icon"></div>
-    </label>
-    """
-  chooser:
-    """
-    <label class="netlogo-widget netlogo-chooser netlogo-input" style="{{>dimensions}}">
-      <span class="netlogo-label">{{display}}</span>
-      <select class="netlogo-chooser-select" value="{{currentValue}}">
-      {{#choices}}
-        <option class="netlogo-chooser-option" value="{{.}}">{{>literal}}</option>
-      {{/}}
-      </select>
-    </label>
-    """
-  monitor:
-    """
-    <div class="netlogo-widget netlogo-monitor netlogo-output" style="{{>dimensions}} font-size: {{fontSize}}px;">
-      <label class="netlogo-label {{>errorClass}}" on-click=\"showErrors\">{{display || source}}</label>
-      <output class="netlogo-value">{{currentValue}}</output>
-    </div>
-   """
-  inputBox:
-    """
-    <label class="netlogo-widget netlogo-input-box netlogo-input" style="{{>dimensions}}">
-      <div class="netlogo-label">{{varName}}</div>
-      {{# boxtype === 'Number'}}<input type="number" value="{{currentValue}}" />{{/}}
-      {{# boxtype === 'String'}}<input type="text" value="{{currentValue}}" />{{/}}
-      {{# boxtype === 'String (reporter)'}}<input type="text" value="{{currentValue}}" />{{/}}
-      {{# boxtype === 'String (commands)'}}<input type="text" value="{{currentValue}}" />{{/}}
-      <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
-      {{# boxtype === 'Color'}}<input type="color" value="{{currentValue}}" />{{/}}
-    </label>
-    """
-  plot:
-    """
-    <div class="netlogo-widget netlogo-plot netlogo-plot-{{plotNumber}}"
-         style="{{>dimensions}}"></div>
-    """
-  output:
-    """
-    <div class="netlogo-widget netlogo-output netlogo-output-widget" style="{{>dimensions}}">
-      <outputArea output="{{outputWidgetOutput}}"/>
-    </div>
+    {{# !compilation.success}}netlogo-widget-error{{/}}
     """
 
-  errorClass: "{{# !compilation.success}}netlogo-widget-error{{/}}"
-
-  literal:
-    """
-    {{# typeof . === "string"}}{{.}}{{/}}
-    {{# typeof . === "number"}}{{.}}{{/}}
-    {{# typeof . === "object"}}
-      [{{#.}}
-        {{>literal}}
-      {{/}}]
-    {{/}}
-    """
   dimensions:
     """
     position: absolute;
     left: {{ left }}px; top: {{ top }}px;
     width: {{ right - left }}px; height: {{ bottom - top }}px;
     """
-  buttonContext:
-    """
-    <div class="netlogo-button-agent-context">
-    {{#if buttonType === "TURTLE" }}
-      T
-    {{elseif buttonType === "PATCH" }}
-      P
-    {{elseif buttonType === "LINK" }}
-      L
-    {{/if}}
-    </div>
-    """
+
 }
 # coffeelint: enable=max_line_length

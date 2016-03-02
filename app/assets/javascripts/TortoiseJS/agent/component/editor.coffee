@@ -1,4 +1,4 @@
-window.EditorWidget = Ractive.extend({
+window.RactiveEditorWidget = Ractive.extend({
   onrender: ->
     window.editor = CodeMirror(@find('.netlogo-code'), {
       value:   @get('code'),

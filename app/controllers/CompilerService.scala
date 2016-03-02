@@ -305,6 +305,7 @@ private[controllers] trait RequestResultGenerator {
 
   }
 
+  // scalastyle:off method.length
   private def tortoiseLiteJsUrls: Seq[URL] = {
 
     val webjarURLs =
@@ -326,14 +327,24 @@ private[controllers] trait RequestResultGenerator {
     val assetURLs =
       Seq(
         "javascripts/TortoiseJS/agent/colors.js",
+        "javascripts/TortoiseJS/agent/component/button.js",
+        "javascripts/TortoiseJS/agent/component/chooser.js",
+        "javascripts/TortoiseJS/agent/component/input.js",
+        "javascripts/TortoiseJS/agent/component/label.js",
+        "javascripts/TortoiseJS/agent/component/monitor.js",
+        "javascripts/TortoiseJS/agent/component/slider.js",
+        "javascripts/TortoiseJS/agent/component/switch.js",
+        "javascripts/TortoiseJS/agent/component/view.js",
+        "javascripts/TortoiseJS/agent/component/output.js",
+        "javascripts/TortoiseJS/agent/component/console.js",
+        "javascripts/TortoiseJS/agent/component/editor.js",
+        "javascripts/TortoiseJS/agent/component/info.js",
+        "javascripts/TortoiseJS/agent/component/plot.js",
+        "javascripts/TortoiseJS/agent/component/title.js",
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",
         "javascripts/TortoiseJS/agent/linkdrawer.js",
         "javascripts/TortoiseJS/agent/view.js",
-        "javascripts/TortoiseJS/agent/editor.js",
-        "javascripts/TortoiseJS/agent/info.js",
-        "javascripts/TortoiseJS/agent/output.js",
-        "javascripts/TortoiseJS/agent/console.js",
         "javascripts/TortoiseJS/agent/widgets.js",
         "javascripts/TortoiseJS/communication/connection.js",
         "javascripts/TortoiseJS/control/tortoise.js",
@@ -348,6 +359,7 @@ private[controllers] trait RequestResultGenerator {
     )
 
   }
+  // scalastyle:on method.length
 
   private def getIDedStmtsV(argMap: ArgMap, field: String): ValidationNel[String, IDedValues[String]] = {
     val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
