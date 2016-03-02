@@ -1,6 +1,7 @@
 window.RactiveButton = Ractive.extend({
   data: {
     dims:         undefined # String
+  , id:           undefined # String
   , widget:       undefined # ButtonWidget
   , errorClass:   undefined # String
   , ticksStarted: undefined # Boolean
@@ -25,7 +26,8 @@ window.RactiveButton = Ractive.extend({
 
     standardButton:
       """
-      <button class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
+      <button id="{{id}}"
+              class="netlogo-widget netlogo-button netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
               on-click="activateButton:{{widget.run}}"
@@ -42,7 +44,8 @@ window.RactiveButton = Ractive.extend({
 
     foreverButton:
       """
-      <label class="netlogo-widget netlogo-button netlogo-forever-button {{#widget.running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
+      <label id="{{id}}"
+             class="netlogo-widget netlogo-button netlogo-forever-button {{#widget.running}}netlogo-active{{/}} netlogo-command {{# !ticksStarted && widget.disableUntilTicksStart }}netlogo-disabled{{/}} {{errorClass}}"
              style="{{dims}}">
         {{>buttonContext}}
         <input type="checkbox" checked={{ widget.running }} {{# !ticksStarted && widget.disableUntilTicksStart }}disabled{{/}}/>

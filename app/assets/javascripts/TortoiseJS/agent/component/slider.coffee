@@ -1,6 +1,7 @@
 window.RactiveSlider = Ractive.extend({
   data: {
     dims:       undefined # String
+  , id:         undefined # String
   , widget:     undefined # SliderWidget
   , errorClass: undefined # String
   }
@@ -9,7 +10,8 @@ window.RactiveSlider = Ractive.extend({
 
   template:
     """
-    <label class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
+    <label id="{{id}}"
+           class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
            style="{{dims}}">
       <input type="range"
              max="{{widget.maxValue}}" min="{{widget.minValue}}"

@@ -1,6 +1,7 @@
 window.RactiveLabel = Ractive.extend({
   data: {
     dims:         undefined # String
+  , id:           undefined # String
   , widget:       undefined # LabelWidget
   , convertColor: netlogoColorToCSS
   }
@@ -14,7 +15,8 @@ window.RactiveLabel = Ractive.extend({
     # BCH 7/28/2015
     # coffeelint: disable=max_line_length
     """
-    <pre class="netlogo-widget netlogo-text-box"
+    <pre id="{{id}}"
+         class="netlogo-widget netlogo-text-box"
          style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
          >{{ widget.display }}</pre>
     """

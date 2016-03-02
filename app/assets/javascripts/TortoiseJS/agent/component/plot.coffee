@@ -1,6 +1,7 @@
 window.RactivePlot = Ractive.extend({
   data: {
     dims:   undefined # String
+  , id:     undefined # String
   , widget: undefined # PlotWidget
   }
 
@@ -8,7 +9,8 @@ window.RactivePlot = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-widget netlogo-plot netlogo-plot-{{widget.plotNumber}}"
+    <div id="{{id}}"
+         class="netlogo-widget netlogo-plot"
          style="{{dims}}"></div>
     """
 

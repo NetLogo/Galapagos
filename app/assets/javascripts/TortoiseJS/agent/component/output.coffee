@@ -1,6 +1,7 @@
 window.RactiveOutputArea = Ractive.extend({
   data: {
     dims:   undefined # String
+  , id:     undefined # String
   , widget: undefined # OutputWidget
   , output: undefined # String
   }
@@ -17,7 +18,8 @@ window.RactiveOutputArea = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
+    <div id="{{id}}"
+         class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
       <pre class='netlogo-output-area'>{{output}}</pre>
     </div>
     """

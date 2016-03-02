@@ -1,6 +1,7 @@
 window.RactiveView = Ractive.extend({
   data: {
     dims:   undefined # String
+  , id:     undefined # String
   , widget: undefined # ViewWidget
   , ticks:  undefined # String
   }
@@ -9,7 +10,8 @@ window.RactiveView = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-widget netlogo-view-container"
+    <div id="{{id}}"
+         class="netlogo-widget netlogo-view-container"
          style="{{dims}}">
       <div class="netlogo-widget netlogo-tick-counter">
         {{# widget.showTickCounter }}

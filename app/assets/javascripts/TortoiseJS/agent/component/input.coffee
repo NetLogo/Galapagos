@@ -1,6 +1,7 @@
 window.RactiveInput = Ractive.extend({
   data: {
     dims:   undefined # String
+  , id:     undefined # String
   , widget: undefined # InputWidget
   }
 
@@ -8,7 +9,8 @@ window.RactiveInput = Ractive.extend({
 
   template:
     """
-    <label class="netlogo-widget netlogo-input-box netlogo-input"
+    <label id="{{id}}"
+           class="netlogo-widget netlogo-input-box netlogo-input"
            style="{{dims}}">
       <div class="netlogo-label">{{widget.varName}}</div>
       {{# widget.boxtype === 'Number'}}<input type="number" value="{{widget.currentValue}}" />{{/}}

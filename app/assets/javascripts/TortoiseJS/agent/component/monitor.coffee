@@ -1,6 +1,7 @@
 window.RactiveMonitor = Ractive.extend({
   data: {
     dims:       undefined # String
+  , id:         undefined # String
   , widget:     undefined # MonitorWidget
   , errorClass: undefined # String
   }
@@ -9,7 +10,8 @@ window.RactiveMonitor = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-widget netlogo-monitor netlogo-output"
+    <div id="{{id}}"
+         class="netlogo-widget netlogo-monitor netlogo-output"
          style="{{dims}} font-size: {{widget.fontSize}}px;">
       <label class="netlogo-label {{errorClass}}" on-click=\"showErrors\">{{widget.display || widget.source}}</label>
       <output class="netlogo-value">{{widget.currentValue}}</output>

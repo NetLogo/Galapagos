@@ -1,6 +1,7 @@
 window.RactiveChooser = Ractive.extend({
   data: {
     dims:   undefined # String
+  , id:     undefined # String
   , widget: undefined # ChooserWidget
   }
 
@@ -8,7 +9,8 @@ window.RactiveChooser = Ractive.extend({
 
   template:
     """
-    <label class="netlogo-widget netlogo-chooser netlogo-input"
+    <label id="{{id}}"
+           class="netlogo-widget netlogo-chooser netlogo-input"
            style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
       <select class="netlogo-chooser-select" value="{{widget.currentValue}}">

@@ -240,8 +240,9 @@ reporterOf = (str) -> new Function("return #{str}")
 fillOutWidgets = (widgets, updateUICallback) ->
   # Note that this must execute before models so we can't call any model or
   # engine functions. BCH 11/5/2014
-  plotCount = 0
+  idCounter = 0
   for widget in widgets
+    widget.idNum = idCounter++
     if widget.varName?
       # Convert from NetLogo variables to Tortoise variables.
       widget.varName = widget.varName.toLowerCase()
@@ -297,8 +298,6 @@ fillOutWidgets = (widgets, updateUICallback) ->
         else
           widget.reporter     = () -> "N/A"
           widget.currentValue = "N/A"
-      when "plot"
-        widget.plotNumber = plotCount++
 
 
 # (Element, [widget]) -> [HighchartsOps]
@@ -308,7 +307,7 @@ createPlotOps = (container, widgets) ->
   for widget in widgets
     if widget.type == "plot"
       plotOps[widget.display] = new HighchartsOps(
-        container.querySelector(".netlogo-plot-#{widget.plotNumber}")
+        container.querySelector("#netlogo-plot-#{widget.idNum}")
       )
   plotOps
 
@@ -351,16 +350,16 @@ template =
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container">
       {{#widgets}}
-        {{# type === 'view'     }} <viewWidget    dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
-        {{# type === 'textBox'  }} <labelWidget   dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'switch'   }} <switchWidget  dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'button'   }} <buttonWidget  dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
-        {{# type === 'slider'   }} <sliderWidget  dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
-        {{# type === 'chooser'  }} <chooserWidget dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'monitor'  }} <monitorWidget dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
-        {{# type === 'inputBox' }} <inputWidget   dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'plot'     }} <plotWidget    dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'output'   }} <outputWidget  dims="{{>dimensions}}" widget={{this}} output="{{outputWidgetOutput}}" /> {{/}}
+        {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
+        {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
+        {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} output="{{outputWidgetOutput}}" /> {{/}}
       {{/}}
     </div>
 
@@ -404,6 +403,11 @@ partials = {
     position: absolute;
     left: {{ left }}px; top: {{ top }}px;
     width: {{ right - left }}px; height: {{ bottom - top }}px;
+    """
+
+  widgetID:
+    """
+    netlogo-{{type}}-{{idNum}}
     """
 
 }
