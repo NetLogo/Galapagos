@@ -338,7 +338,7 @@ template =
           </a>
         </div>
       </div>
-      <editableTitle modelTitle="{{ modelTitle }}"/>
+      <editableTitle title="{{modelTitle}}" isEditing="{{isEditing}}"/>
       {{# !readOnly }}
       <div class="netlogo-export-wrapper">
         <span style="margin-right: 4px;">Export:</span>
