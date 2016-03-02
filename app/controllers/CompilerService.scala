@@ -295,6 +295,7 @@ private[controllers] trait RequestResultGenerator {
     val stylesheets =
       Set(
         "/public/stylesheets/widgets.css",
+        "/public/stylesheets/ui-editor.css",
         "/public/stylesheets/netlogoweb.css",
         "/public/stylesheets/netlogo-syntax.css",
         "/public/lib/codemirror/lib/codemirror.css",
@@ -313,6 +314,7 @@ private[controllers] trait RequestResultGenerator {
         "lib/filesaver.js/FileSaver.js",
         "lib/google-caja/html-sanitizer-minified.js",
         "lib/markdown-js/markdown.js",
+        "lib/mousetrap/mousetrap.js",
         "lib/highcharts/adapters/standalone-framework.js",
         "lib/highcharts/highcharts.js",
         "lib/highcharts/modules/exporting.js",
@@ -341,6 +343,7 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/agent/component/info.js",
         "javascripts/TortoiseJS/agent/component/plot.js",
         "javascripts/TortoiseJS/agent/component/title.js",
+        "javascripts/TortoiseJS/agent/setupinterfaceeditor.js",
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",
         "javascripts/TortoiseJS/agent/linkdrawer.js",

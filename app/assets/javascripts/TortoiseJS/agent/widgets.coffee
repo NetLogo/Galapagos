@@ -43,7 +43,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     consoleOutput:      '',
     outputWidgetOutput: '',
     markdown:           sanitizedMarkdown,
-    hasFocus:           false
+    hasFocus:           false,
+    isEditing:          false
   }
 
   animateWithClass = (klass) ->
@@ -91,6 +92,9 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     magic:      true,
     data:       model
   })
+
+  mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
+  mousetrap.bind(['ctrl+i', 'command+i'], => ractive.fire('toggleInterfaceLock'))
 
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
@@ -140,6 +144,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         w.run()
   )
 
+  setupInterfaceEditor(ractive)
 
   controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output, dialog)
 
@@ -341,6 +346,8 @@ template =
       </div>
       {{/}}
     </div>
+
+    <div class="netlogo-interface-unlocker" on-click="toggleInterfaceLock"></div>
 
     <label class="netlogo-widget netlogo-speed-slider">
       <input type="range" min=-1 max=1 step=0.01 value={{speed}} />

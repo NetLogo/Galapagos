@@ -35,6 +35,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.webjars" % "chosen" % "1.3.0",
   "org.webjars.npm" % "filesaver.js" % "0.1.1",
+  "org.webjars.npm" % "mousetrap" % "1.5.3",
   "org.webjars.bower" % "google-caja" % "5669.0.0",
   "org.webjars" % "highcharts" % "4.2.0",
   "org.webjars" % "jquery" % "2.2.0",
