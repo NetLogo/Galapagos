@@ -95,7 +95,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   })
 
   mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
-  mousetrap.bind(['ctrl+i', 'command+i'], => ractive.fire('toggleInterfaceLock'))
+  mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], => ractive.fire('toggleInterfaceLock'))
 
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
@@ -354,7 +354,7 @@ template =
       </div>
     </div>
 
-    <div class="netlogo-interface-unlocker" on-click="toggleInterfaceLock"></div>
+    <div class="netlogo-interface-unlocker" style="display: none" on-click="toggleInterfaceLock"></div>
 
     <label class="netlogo-widget netlogo-speed-slider">
       <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
