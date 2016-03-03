@@ -8,20 +8,16 @@ window.RactiveOutputArea = Ractive.extend({
 
   isolated: true
 
-  oninit: ->
-    @observe('output', ->
-      @update('output').then(=>
-        outputElem = @find('.netlogo-output-area')
-        outputElem?.scrollTop = outputElem.scrollHeight
-      )
-    )
+  components: {
+    printArea: RactivePrintArea
+  }
 
   template:
     """
     <div id="{{id}}"
          on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
-      <pre class='netlogo-output-area'>{{output}}</pre>
+      <printArea id="{{id}}-print-area" output="{{output}}" />
     </div>
     <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
       <ul class="context-menu-list">

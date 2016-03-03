@@ -22,7 +22,7 @@ window.RactiveConsoleWidget = Ractive.extend({
   }
 
   components: {
-    outputArea: RactiveOutputArea
+    printArea: RactivePrintArea
   }
 
   onrender: ->
@@ -90,7 +90,7 @@ window.RactiveConsoleWidget = Ractive.extend({
     """
     <div class='netlogo-tab-content netlogo-command-center'
          intro='grow:{disable:"console-toggle"}' outro='shrink:{disable:"console-toggle"}'>
-      <outputArea output='{{output}}'/>
+      <printArea id='command-center-print-area' output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>
         <label>
