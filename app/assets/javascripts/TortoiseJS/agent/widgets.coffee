@@ -247,9 +247,8 @@ reporterOf = (str) -> new Function("return #{str}")
 fillOutWidgets = (widgets, updateUICallback) ->
   # Note that this must execute before models so we can't call any model or
   # engine functions. BCH 11/5/2014
-  idCounter = 0
-  for widget in widgets
-    widget.idNum = idCounter++
+  for widget, i in widgets
+    widget.id = i
     if widget.varName?
       # Convert from NetLogo variables to Tortoise variables.
       widget.varName = widget.varName.toLowerCase()
@@ -314,7 +313,7 @@ createPlotOps = (container, widgets) ->
   for widget in widgets
     if widget.type == "plot"
       plotOps[widget.display] = new HighchartsOps(
-        container.querySelector("#netlogo-plot-#{widget.idNum}")
+        container.querySelector("#netlogo-plot-#{widget.id}")
       )
   plotOps
 
@@ -423,7 +422,7 @@ partials = {
 
   widgetID:
     """
-    netlogo-{{type}}-{{idNum}}
+    netlogo-{{type}}-{{id}}
     """
 
 }
