@@ -189,7 +189,7 @@ class window.WidgetController
     for _, chartOps of @plotOps
       chartOps.redraw()
 
-    for widget, i in @widgets
+    for widget in @widgets
       if widget.currentValue?
         if widget.varName?
           widget.currentValue = world.observer.getGlobal(widget.varName)
