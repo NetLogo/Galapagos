@@ -21,9 +21,7 @@ window.RactiveView = Ractive.extend({
       </div>
     </div>
     <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-      <ul class="context-menu-list">
-        <li class="context-menu-item">Nothing to see here</li>
-      </ul>
+      Nothing to see here...
     </div>
     """
 
