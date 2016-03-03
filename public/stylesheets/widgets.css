@@ -415,8 +415,9 @@
 }
 
 .netlogo-monitor > .netlogo-value {
-    background-color: white;
-    padding: 2px 2px;
+  background-color: white;
+  min-height: 11px;
+  padding: 2px 2px;
 }
 
 .netlogo-value {

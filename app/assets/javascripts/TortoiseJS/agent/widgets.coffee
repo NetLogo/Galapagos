@@ -196,8 +196,9 @@ class window.WidgetController
         else if widget.reporter?
           try
             widget.currentValue = widget.reporter()
-            isInvalidNumber = (n) -> isNaN(n) or n in [undefined, null, Infinity, -Infinity]
-            if typeof widget.currentValue is "number" and isInvalidNumber(widget.currentValue)
+            value        = widget.currentValue
+            isValidValue = value? and ((typeof(value) isnt "number") or isFinite(value))
+            if not isValidValue
               widget.currentValue = 'N/A'
           catch err
             widget.currentValue = 'N/A'
