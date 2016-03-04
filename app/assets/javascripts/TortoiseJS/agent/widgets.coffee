@@ -26,8 +26,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   dropNLogoExtension = (s) ->
     s.slice(0, -6)
 
+  widgetObj = widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+
   model = {
-    widgets,
+    widgetObj,
     speed:              0.0,
     ticks:              "", # Remember, ticks initialize to nothing, not 0
     ticksStarted:       false,
@@ -127,8 +129,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     notify:  (str) -> clearMouse(); window.nlwAlerter.display("NetLogo Notification", true, str)
   }
 
-  ractive.observe('widgets.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
-    widget = widgets[widgetNum]
+  ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
+    widget = widgetObj[widgetNum]
     if world? and newVal != oldVal and isValidValue(widget, newVal)
       world.observer.setGlobal(widget.varName, newVal)
   )
@@ -141,13 +143,14 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     if @get('hasFocus')
       e = event.original
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
-      for w in widgets when w.type is 'button' and w.actionKey is char
+      for _, w of @get('widgetObj') when w.type is 'button' and w.actionKey is char
         w.run()
   )
 
   setupInterfaceEditor(ractive)
 
-  controller = new WidgetController(ractive, model, widgets, viewController, plotOps, mouse, write, output, dialog)
+  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
+  controller
 
 showErrors = (errors) ->
   if errors.length > 0
@@ -176,11 +179,11 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgets, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
+  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
 
   # () -> Unit
   runForevers: ->
-    for widget in @widgets
+    for widget in @widgets()
       if widget.type == 'button' and widget.forever and widget.running
         widget.run()
 
@@ -189,7 +192,7 @@ class window.WidgetController
     for _, chartOps of @plotOps
       chartOps.redraw()
 
-    for widget in @widgets
+    for widget in @widgets()
       if widget.currentValue?
         if widget.varName?
           widget.currentValue = world.observer.getGlobal(widget.varName)
@@ -226,6 +229,10 @@ class window.WidgetController
     else
       @model.ticks = ''
       @model.ticksStarted = false
+
+  # () => Array[Widget]
+  widgets: ->
+    v for _, v of @widgetObj
 
   # () -> number
   speed: -> @model.speed
@@ -364,7 +371,7 @@ template =
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
          on-contextmenu="showContextMenu:{{'widget-creation-disabled-message'}}">
-      {{#widgets}}
+      {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}

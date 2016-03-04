@@ -79,7 +79,7 @@ class window.SessionLite
       world.clearAll()
       @widgetController.redraw()
       code = @widgetController.code()
-      codeCompile(code, [], [], @widgetController.widgets, (res) =>
+      codeCompile(code, [], [], @widgetController.widgets(), (res) =>
         if res.model.success
           globalEval(res.model.result)
           @widgetController.ractive.set('isStale',          false)
@@ -94,7 +94,7 @@ class window.SessionLite
     (new BrowserCompiler()).exportNlogo({
       info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
       code:         @widgetController.ractive.get('code'),
-      widgets:      @widgetController.widgets,
+      widgets:      @widgetController.widgets(),
       turtleShapes: turtleShapes,
       linkShapes:   linkShapes
     })
@@ -153,7 +153,7 @@ class window.SessionLite
 
   run: (code) ->
     Tortoise.startLoading()
-    codeCompile(@widgetController.code(), [code], [], @widgetController.widgets,
+    codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
       (res) =>
         success = res.commands[0].success
         result  = res.commands[0].result
