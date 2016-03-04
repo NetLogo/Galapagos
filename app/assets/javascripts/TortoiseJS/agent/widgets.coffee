@@ -147,9 +147,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         w.run()
   )
 
-  setupInterfaceEditor(ractive)
-
   controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
+  setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
 showErrors = (errors) ->
@@ -229,6 +228,11 @@ class window.WidgetController
     else
       @model.ticks = ''
       @model.ticksStarted = false
+
+  # (Number) => Unit
+  removeWidgetById: (id) ->
+    delete @widgetObj[id]
+    return
 
   # () => Array[Widget]
   widgets: ->

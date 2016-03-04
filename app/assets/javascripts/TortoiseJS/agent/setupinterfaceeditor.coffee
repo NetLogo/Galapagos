@@ -31,8 +31,9 @@ window.attachWidgetMenus =
       menuItemDivs.forEach((elem) -> hideElem(elem); elemById("netlogo-widget-context-menu").appendChild(elem))
       return
 
+# (Ractive, (Number) => Unit) => Unit
 window.setupInterfaceEditor =
-  (ractive) ->
+  (ractive, removeWidgetById) ->
 
     document.addEventListener("click", -> pipeline(elemById, hideElem)("netlogo-widget-context-menu"))
 
@@ -108,3 +109,15 @@ window.setupInterfaceEditor =
 
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
+
+    ractive.on('*.deleteWidget'
+    , (e, widgetID, contextMenuID, widgetNum) ->
+        deleteById = (id) ->
+          elem = elemById(id)
+          elem.parentElement.removeChild(elem)
+        deleteById(widgetID)
+        deleteById(contextMenuID)
+        closeContextMenu()
+        removeWidgetById(widgetNum)
+        false
+    )
