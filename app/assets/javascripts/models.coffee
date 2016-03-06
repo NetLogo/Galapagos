@@ -68,23 +68,30 @@ exports.selectModel = (model) ->
 # (String) => Unit
 exports.selectModelByURL = (modelURL) ->
 
-  extractFirstMatch =
-    (regex) -> (str) -> (new RegExp(regex)).exec(str)[1]
+  extractNMatches =
+    (regex) -> (n) -> (str) ->
+      result = (new RegExp(regex)).exec(str)
+      [1..n].map((matchNumber) -> result[matchNumber])
 
   urlIsInternal =
     (url) ->
-      extractDomain = extractFirstMatch(".*?//?([^/]+)|()")
+      extractDomain = (str) -> extractNMatches(".*?//?([^/]+)|()")(1)(str)[0]
       extractDomain(window.location.href) is extractDomain(url)
 
   if urlIsInternal(modelURL)
 
-    modelPath    = extractFirstMatch(".*/modelslib/(.+)\.nlogo")(modelURL).replace(/%20/g, " ")
+    regexStr            = ".*/(modelslib/|test/|demomodels/)(.+).nlogo"
+    [prefix, modelName] = extractNMatches(regexStr)(2)(modelURL)
+    truePrefix          = if prefix is "modelslib/" then "" else prefix
+
+    modelPath    =     "#{prefix}#{modelName}".replace(/%20/g, " ")
+    truePath     = "#{truePrefix}#{modelName}".replace(/%20/g, " ")
     choiceElems  = document.getElementsByName('models')[0].children
     choicesArray = [].slice.call(choiceElems)
-    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerHTML is modelPath then x else acc), null)
+    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerHTML is truePath then x else acc), null)
 
     if choiceElem?
-      exports.selectModel("modelslib/#{modelPath}")
+      exports.selectModel(modelPath)
 
   return
 
