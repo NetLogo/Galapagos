@@ -32,6 +32,7 @@
 .netlogo-command:hover,.netlogo-input:hover {
     cursor:     pointer;
     box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+    z-index:    3;
 }
 
 .netlogo-command.netlogo-disabled:hover {
