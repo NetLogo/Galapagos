@@ -5,7 +5,7 @@ logLevel := Level.Warn
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.6")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
@@ -31,6 +31,6 @@ resolvers += Resolver.url(
     url("http://dl.bintray.com/content/netlogo/play-scraper"))(
         Resolver.ivyStylePatterns)
 
-addSbtPlugin("org.nlogo" % "play-scraper" % "0.6.2")
+addSbtPlugin("org.nlogo" % "play-scraper" % "0.7.0")
 
 libraryDependencies += "org.im4java" % "im4java" % "1.4.0" // only used for asset generation

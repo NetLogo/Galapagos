@@ -2,13 +2,17 @@ import
   org.scalatestplus.play.{PlaySpec, OneAppPerSuite}
 
 import
-  play.api.{libs, mvc, test},
+  akka.stream.Materializer
+
+import
+  play.api.{ Application, inject, libs, mvc, test },
+    inject.guice.GuiceApplicationBuilder,
     libs.{ iteratee, json },
       iteratee.Iteratee,
       json.{ JsObject, Json, JsString },
     mvc.{ EssentialAction, Result },
-    test.{ FakeRequest, FakeApplication, Helpers },
-      Helpers.{ await, call, defaultAwaitTimeout, writeableOf_AnyContentAsFormUrlEncoded }
+    test.{ FakeRequest, Helpers },
+      Helpers.{ await, call, contentAsString, defaultAwaitTimeout, writeableOf_AnyContentAsFormUrlEncoded }
 
 import
   scala.concurrent.Future
@@ -18,11 +22,13 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
   import CompilerServiceHelpers._
   import scala.concurrent.ExecutionContext.Implicits.global
 
-  override implicit lazy val app: FakeApplication =
-    FakeApplication(additionalConfiguration = Map(
-      "play.akka.shutdown-timeout" -> "2s",
-      "akka.log-dead-letters"      -> 0
-    ))
+  override implicit lazy val app: Application =
+    new GuiceApplicationBuilder()
+      .configure("play.akka.shutdown-timeout" -> "2s")
+      .configure("akka.log-dead-letters"      -> 0)
+      .build
+
+  implicit lazy val materializer: Materializer = app.materializer
 
   val longTimeout = akka.util.Timeout(60, java.util.concurrent.TimeUnit.SECONDS)
 
@@ -53,9 +59,7 @@ class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
   private def makeRequest(method: String, path: String, formBody: (String, String)*): Future[(Result, String)] = {
     val req = FakeRequest(method, path).withFormUrlEncodedBody(formBody: _*)
     val (_, handler) = app.requestHandler.handlerForRequest(req)
-    call(handler.asInstanceOf[EssentialAction], req).flatMap { res =>
-      res.body |>>> Iteratee.consume[Array[Byte]]().map(new String(_, "UTF-8")).map((res, _))
-    }
+    call(handler.asInstanceOf[EssentialAction], req).map(res => (res, contentAsString(Future(res))))
   }
 
   private def sanitizedJsonModel(rawJson: String, modelVars: String*): Map[String, String] = {

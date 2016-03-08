@@ -7,9 +7,8 @@ import
 
 import
   play.{ api, twirl },
-    api.{ mvc, Play },
+    api.{ Environment, mvc },
       mvc.{ Call, Request },
-      Play.current,
     twirl.api.Html
 
 import
@@ -24,22 +23,23 @@ import
  * sure that you understand Galapagos#326 before you do!)  --JAB (1/26/16)
  */
 trait TagBuilder {
-  def pathToHTML(path: String)(implicit request: Request[_]):                     Html
-  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_]): Html
+  def pathToHTML(path: String)(implicit request: Request[_], environment: Environment):                     Html
+  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html
 }
 
 object InlineTagBuilder extends TagBuilder {
 
-  private val pathToTag = pathToPair _ andThen (genTag _).tupled
-
-  override def pathToHTML(path: String)(implicit request: Request[_]): Html =
+  override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
     pathToTag(s"public/$path")
 
-  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_]): Html =
+  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
     pathToTag(resourcePath)
 
-  private def pathToPair(path: String): (String, URL) = {
-    val url    = Play.resource(path).getOrElse(throw new Exception(s"Unknown resource: $path"))
+  private def pathToTag(path: String)(implicit environment: Environment): Html =
+    (genTag _).tupled(pathToPair(path))
+
+  private def pathToPair(path: String)(implicit environment: Environment): (String, URL) = {
+    val url    = environment.resource(path).getOrElse(throw new Exception(s"Unknown resource: $path"))
     val source = usingSource(_.fromURL(url))(_.mkString)
     (source, url)
   }
@@ -58,10 +58,10 @@ object InlineTagBuilder extends TagBuilder {
 
 object OutsourceTagBuilder extends TagBuilder {
 
-  override def pathToHTML(path: String)(implicit request: Request[_]): Html =
+  override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
     genTag(routes.Assets.at(path).absoluteURL)
 
-  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_]): Html =
+  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
     genTag(call.absoluteURL)
 
   private def genTag(url: String): Html = {
