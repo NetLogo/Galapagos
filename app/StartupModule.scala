@@ -9,7 +9,8 @@ import
     ExecutionContext.Implicits.global
 
 import
-  play.api.cache.{ CacheApi, NamedCache }
+  play.api.{ cache, Environment },
+    cache.{ CacheApi, NamedCache }
 
 import
   akka.actor.{ ActorSystem, Props }
@@ -22,9 +23,9 @@ import
     ModelCollectionCompiler.CheckBuiltInModels
 
 @Singleton
-class Startup @Inject() (actorSystem: ActorSystem, @NamedCache("compilation-statuses") cache: CacheApi) {
+class Startup @Inject() (actorSystem: ActorSystem, @NamedCache("compilation-statuses") cache: CacheApi, environment: Environment) {
   val statusCacher       = actorSystem.actorOf(Props(classOf[StatusCacher], cache))
-  val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], ModelsLibrary, statusCacher))
+  val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], () => ModelsLibrary.allModels(environment.mode), statusCacher))
   actorSystem.scheduler.schedule(0.seconds, 30.minutes)(backgroundCompiler ! CheckBuiltInModels)
 }
 

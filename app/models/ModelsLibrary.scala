@@ -5,10 +5,10 @@ package models
 import java.io.File
 
 import
-  play.api.Mode
+  play.api.Mode.{ Dev, Mode }
 
 trait NetLogoModelCollection {
-  def allModels: Seq[File]
+  def allModels(implicit mode: Mode): Seq[File]
 }
 
 object ModelsLibrary extends NetLogoModelCollection {
@@ -25,8 +25,8 @@ object ModelsLibrary extends NetLogoModelCollection {
   def prettyFilepath(f: File): String =
     prettyFilepath(f.getPath)
 
-  override def allModels: Seq[File] =
-    if(play.api.Play.maybeApplication.exists(_.mode == Mode.Dev))
+  override def allModels(implicit mode: Mode): Seq[File] =
+    if (mode == Dev)
       modelLibraryFiles ++ demoModelFiles
     else
       modelLibraryFiles
