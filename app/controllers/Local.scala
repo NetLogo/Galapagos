@@ -3,30 +3,23 @@
 package controllers
 
 import
-  javax.inject.{ Inject, Provider }
+  javax.inject.Inject
 
 import
-  akka.{ stream, util },
-    stream.scaladsl.Source,
-    util.ByteString
-
-import
-  play.api.{ Configuration, Environment, http, libs, mvc },
-    http.HttpEntity.Streamed,
+  play.api.{ Application => PlayApplication, libs, mvc, Play },
     libs.iteratee.Enumerator,
     mvc.{ Action, AnyContent, Controller, ResponseHeader, Result }
 
 import
   models.Util.usingSource
 
-class Local @Inject() (environ: Environment, configuration: Configuration) extends Controller {
+class Local @Inject() (application: PlayApplication) extends Controller {
   import Local._
 
   private lazy val engineStr     = usingSource(_.fromURL(getClass.getResource(enginePath)))    (_.mkString)
   private lazy val agentModelStr = usingSource(_.fromURL(getClass.getResource(agentModelPath)))(_.mkString)
 
-  implicit val environment = environ
-  implicit val mode        = environment.mode
+  implicit val mode = Play.mode(application)
 
   def launch: Action[AnyContent] = Action {
     implicit request =>
@@ -51,13 +44,11 @@ class Local @Inject() (environ: Environment, configuration: Configuration) exten
     implicit request => OkJS(agentModelStr)
   }
 
-  private def OkJS(js: String) = {
-    val bytes = js.getBytes(configuration.getString("application.defaultEncoding").getOrElse("UTF-8"))
+  private def OkJS(js: String) =
     Result(
       header = ResponseHeader(OK, Map(CONTENT_TYPE -> "text/javascript")),
-      body   = Streamed(Source.single(ByteString.fromArray(bytes)), None, None)
+      body   = Enumerator(js.getBytes(play.Play.application.configuration.getString("application.defaultEncoding")))
     )
-  }
 
 }
 

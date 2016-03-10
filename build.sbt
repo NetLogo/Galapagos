@@ -28,8 +28,8 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   cache,
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.2" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0" % "test"
+  "com.typesafe.akka" %% "akka-testkit" % "2.3.11" % "test",
+  "org.scalatestplus" %% "play" % "1.4.0-M3" % "test"
 )
 
 libraryDependencies ++= Seq(

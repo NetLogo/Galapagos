@@ -14,22 +14,19 @@ import
     Validation.FlatMap.ValidationFlatMapRequested
 
 import
-  play.api.{ cache, Environment, mvc },
+  play.api.{ cache, mvc, Play },
     cache.{ CacheApi, NamedCache },
-    mvc.Controller
+    mvc.Controller,
+    Play.current
 
 import CompilerService._
 
 
 
-class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: CacheApi,
-                                                                     override protected val environment: Environment)
-  extends Controller with EnvironmentHolder with CacheProvider with CompilationRequestHandler with ModelStatusHandler
+class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: CacheApi)
+  extends Controller with CacheProvider with CompilationRequestHandler with ModelStatusHandler
 
 
-private[controllers] trait EnvironmentHolder {
-  protected def environment: Environment
-}
 
 private[controllers] object CompilerService {
 
@@ -84,7 +81,7 @@ private[controllers] object CompilationRequestHandler {
 
   type ModelResult = ValidationNel[String, ModelArgument]
 
-  def generateFromUrl(argMap: ArgMap, hostUri: String)(implicit environment: Environment): ModelResult =
+  def generateFromUrl(argMap: ArgMap, hostUri: String): ModelResult =
     extractModelString(argMap, urlMissingMsg).flatMap(url => fetchURL(url, hostUri) map ModelText.apply)
 
   def generateFromCode(argMap: ArgMap, hostUri: String): ModelResult = {
@@ -103,11 +100,11 @@ private[controllers] object CompilationRequestHandler {
   def generateFromNlogo(argMap: ArgMap, hostUri: String): ModelResult =
     extractModelString(argMap, nlogoMissingMsg) map ModelText.apply
 
-  private def fetchURL(url: String, hostUri: String)(implicit environment: Environment): ValidationNel[String, String] = {
+  private def fetchURL(url: String, hostUri: String): ValidationNel[String, String] = {
     val LocalHostRegex = s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$".r
     Try {
       (url match {
-        case LocalHostRegex(file) => Assets.resourceNameAt("/public", file).flatMap(environment.resource)
+        case LocalHostRegex(file) => Assets.resourceNameAt("/public", file).flatMap(Play.resource)
         case _                    => None
       }).getOrElse(new URL(url))
     } map {
@@ -135,13 +132,10 @@ private[controllers] object CompilationRequestHandler {
 
 private[controllers] trait CompilationRequestHandler extends RequestResultGenerator {
 
-  self: Controller with EnvironmentHolder =>
+  self: Controller =>
 
   import
     controllers.PlayUtil.EnhancedRequest
-
-  import
-    akka.stream.scaladsl.StreamConverters
 
   import
     scalaz.NonEmptyList
@@ -152,17 +146,14 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
       tortoise.CompiledModel
 
   import
-    play.api.{ http, libs, mvc },
-      http.HttpEntity.Streamed,
+    play.api.{ libs, mvc },
       libs.{ concurrent, iteratee },
         iteratee.Enumerator,
         concurrent.Execution.Implicits.defaultContext,
       mvc.{ Action, AnyContent, ResponseHeader, Result }
 
   import
-    CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }
-
-  private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment)
+    CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl, ModelObject, ModelResult, ModelText }
 
   def compileURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
   def compileCode:  Action[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
@@ -180,10 +171,10 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
 
   private def javascriptResource(fileName: String): Action[AnyContent] =
     Action {
-      environment.resourceAsStream(fileName).map(tortoiseJs =>
+      Play.resourceAsStream(fileName).map(tortoiseJs =>
         Result(
           header = ResponseHeader(OK, Map(CONTENT_TYPE -> "text/javascript")),
-          body   = Streamed(StreamConverters.fromInputStream(() => tortoiseJs), None, None)
+          body = Enumerator.fromStream(tortoiseJs)
         )).getOrElse(NotFound)
     }
 
@@ -223,7 +214,7 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
 
 private[controllers] trait RequestResultGenerator {
 
-  self: Controller with EnvironmentHolder =>
+  self: Controller =>
 
   import
     java.net.URL
@@ -279,7 +270,7 @@ private[controllers] trait RequestResultGenerator {
 
   protected def saveResult(argMap: ArgMap, modelV: ModelResultV): Result = {
 
-    val jsUrls = tortoiseLiteJsUrls.map(u => environment.resource(u.toString).getOrElse(u))
+    val jsUrls = tortoiseLiteJsUrls.map(u => Play.resource(u.toString).getOrElse(u))
 
     val bundleV =
       modelV
@@ -297,7 +288,7 @@ private[controllers] trait RequestResultGenerator {
 
     val slurpURL =
       (url: String) =>
-        environment.resource(url)
+        Play.resource(url)
           .map(assetUrl => usingSource(_.fromURL(assetUrl))(_.mkString))
           .getOrElse(throw new Exception(s"Missing stylesheet $url"))
 
@@ -368,7 +359,7 @@ private[controllers] trait RequestResultGenerator {
     val urls = (webjarURLs :+ engineJsPath) ++ assetURLs
 
     urls map (
-      url => environment.resource(url).getOrElse(throw new Exception(s"js file $url not available!"))
+      url => Play.resource(url).getOrElse(throw new Exception(s"js file $url not available!"))
     )
 
   }

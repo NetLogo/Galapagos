@@ -16,24 +16,21 @@ import
 import
   org.scalatest.{ Assertions, FlatSpec, OneInstancePerTest }
 
-import
-  play.api.Mode.{ Mode, Test }
-
 class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
 
   import ModelCollectionCompiler.CheckBuiltInModels
   import StatusCacher.AllBuiltInModels
 
   val modelsCollection = new NetLogoModelCollection {
-    override def allModels(implicit mode: Mode): Seq[File] = Seq(SmallWorld, TeamAssembly, BirdBreeder).map(_.file)
+    override def allModels: Seq[File] = Seq(SmallWorld, TeamAssembly, BirdBreeder).map(_.file)
   }
 
   lazy val observer = genInbox
-  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => modelsCollection.allModels(Test), observer.getRef()))
+  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], modelsCollection, observer.getRef()))
 
   it should "send an AllModels message with a list of all files" in {
     collectionCompiler ! CheckBuiltInModels
-    assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels(Test)))
+    assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels.toSeq))
   }
 
   it should "send a status update message with the compilation status of each file" in {

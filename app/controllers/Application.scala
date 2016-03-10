@@ -3,20 +3,20 @@
 package controllers
 
 import
-  javax.inject.{ Inject, Provider }
+  javax.inject.Inject
 
 import
   models.ModelsLibrary,
     ModelsLibrary.{ allModels, prettyFilepath }
 
 import
-  play.api.{ Environment, libs, Logger, mvc },
+  play.api.{ Application => PlayApplication, libs, Logger, Play, mvc },
     libs.json.Json,
     mvc.{AnyContent, Action, Controller}
 
-class Application @Inject() (environment: Environment)  extends Controller {
+class Application @Inject() (application: PlayApplication)  extends Controller {
 
-  private implicit val mode = environment.mode
+  private implicit val mode = Play.mode(application)
 
   def index: Action[AnyContent] = Action {
     implicit request =>
