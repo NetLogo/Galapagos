@@ -103,7 +103,6 @@ exports.handPickedModels = [
   "Sample Models/Art/Fireworks",
   "Sample Models/Art/Follower",
   "Sample Models/Biology/Ants",
-  "Sample Models/Biology/Autumn",
   "Sample Models/Biology/BeeSmart Hive Finding",
   "Sample Models/Biology/Daisyworld",
   "Sample Models/Biology/Evolution/Cooperation",
