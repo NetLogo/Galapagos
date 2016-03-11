@@ -17,10 +17,8 @@ script:
   - "sbt scalastyle"
   - "sbt coffeelint"
   - "sbt test"
-
-after_success:
-  - sbt scrapePlay
-  - sbt scrapeUpload
+  - "sbt scrapePlay"
+  - "sbt scrapeUpload"
 
 env:
   global:
