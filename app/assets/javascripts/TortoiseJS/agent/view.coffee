@@ -89,6 +89,8 @@ class View
     @centerY = @worldHeight / 2
     canvas.width =  @worldWidth * @patchsize * @quality
     canvas.height = @worldHeight * @patchsize * @quality
+    canvas.style.width = @worldWidth * @patchsize
+    canvas.style.height = @worldHeight * @patchsize
     ctx.font = @fontSize + 'px "Lucida Grande", sans-serif'
     ctx.imageSmoothingEnabled = false
     ctx.webkitImageSmoothingEnabled = false
@@ -182,6 +184,8 @@ class View
     target = @follow(model)
     @visibleCanvas.width = @canvas.width
     @visibleCanvas.height = @canvas.height
+    @visibleCanvas.style.width = @canvas.style.width
+    @visibleCanvas.style.height = @canvas.style.height
     if target?
       width = @visibleCanvas.width
       height = @visibleCanvas.height

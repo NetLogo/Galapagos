@@ -376,7 +376,7 @@ template =
          class="netlogo-widget-container"
          on-contextmenu="showContextMenu:{{'widget-creation-disabled-message'}}">
       {{#widgetObj:key}}
-        {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
+        {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
