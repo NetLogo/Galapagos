@@ -33,8 +33,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     speed:              0.0,
     ticks:              "", # Remember, ticks initialize to nothing, not 0
     ticksStarted:       false,
-    width:              Math.max.apply(Math, (w.right  for w in widgets)),
-    height:             Math.max.apply(Math, (w.bottom for w in widgets)),
+    width:              0,
+    height:             0,
     code,
     info,
     readOnly,
@@ -135,6 +135,15 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.observer.setGlobal(widget.varName, newVal)
   )
 
+  ractive.observe('widgetObj.*.right', ->
+    @set('width', Math.max.apply(Math, w.right for own i, w of @get('widgetObj') when w.right?))
+  )
+
+  ractive.observe('widgetObj.*.bottom', ->
+    @set('height', Math.max.apply(Math, w.bottom for own i, w of @get('widgetObj') when w.bottom?))
+  )
+
+
   ractive.on('checkFocus', (event) ->
     @set('hasFocus', document.activeElement is event.node)
   )
@@ -222,6 +231,10 @@ class window.WidgetController
           widget.stepValue = stepValue
           widget.minValue  = minValue - 0.000001
           widget.minValue  = minValue
+      if widget['type'] == 'view'
+        widget.right = widget.left + @viewController.container.scrollWidth
+        widget.bottom = widget.top + @viewController.container.scrollHeight
+
     if world.ticker.ticksAreStarted()
       @model.ticks = Math.floor(world.ticker.tickCount())
       @model.ticksStarted = true
@@ -338,7 +351,7 @@ isValidValue = (widget, value) ->
 # coffeelint: disable=max_line_length
 template =
   """
-  <div class="netlogo-model" style="width: {{width}}px;"
+  <div class="netlogo-model" style="min-width: {{width}}px;"
        tabindex="1" on-keydown="checkActionKeys" on-focus="checkFocus" on-blur="checkFocus">
     <div class="netlogo-header">
       <div class="netlogo-subheader">
