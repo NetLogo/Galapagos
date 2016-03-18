@@ -15,7 +15,13 @@ window.RactiveInput = Ractive.extend({
            style="{{dims}}">
       <div class="netlogo-label">{{widget.varName}}</div>
       {{# widget.boxtype === 'Number'}}<input type="number" value="{{widget.currentValue}}" />{{/}}
-      {{# widget.boxtype === 'String'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
+      {{# widget.boxtype === 'String'}}
+        {{#if widget.multiline === false}}
+          <input type="text" value="{{widget.currentValue}}" />
+        {{else}}
+          <textarea rows="4">{{widget.currentValue}}</textarea>
+        {{/if}}
+      {{/}}
       {{# widget.boxtype === 'String (reporter)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
       {{# widget.boxtype === 'String (commands)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
       <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
