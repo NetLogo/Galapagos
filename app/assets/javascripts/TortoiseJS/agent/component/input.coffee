@@ -19,7 +19,7 @@ window.RactiveInput = Ractive.extend({
         {{#if widget.multiline === false}}
           <input type="text" value="{{widget.currentValue}}" />
         {{else}}
-          <textarea rows="4">{{widget.currentValue}}</textarea>
+          <textarea class="netlogo-multiline-input">{{widget.currentValue}}</textarea>
         {{/if}}
       {{/}}
       {{# widget.boxtype === 'String (reporter)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
