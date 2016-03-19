@@ -116,7 +116,6 @@ exports.handPickedModels = [
   "Sample Models/Chemistry & Physics/Ising",
   "Sample Models/Chemistry & Physics/Waves/Wave Machine",
   "Sample Models/Computer Science/Cellular Automata/CA 1D Elementary",
-  "Sample Models/Computer Science/Cellular Automata/Life Turtle-Based",
   "Sample Models/Earth Science/Climate Change",
   "Sample Models/Earth Science/Erosion",
   "Sample Models/Earth Science/Fire",
