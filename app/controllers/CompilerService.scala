@@ -133,7 +133,7 @@ private[controllers] object CompilationRequestHandler {
   }
 }
 
-private[controllers] trait CompilationRequestHandler extends RequestResultGenerator {
+private[controllers] trait CompilationRequestHandler extends RequestResultGenerator with ResourceSender {
 
   self: Controller with EnvironmentHolder =>
 
@@ -174,18 +174,9 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
   def saveCode:  Action[AnyContent] = genCompileAction(generateFromCode,  saveResult)
   def saveNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
 
-  def tortoiseCompilerJs:    Action[AnyContent] = javascriptResource("tortoise-compiler.js")
+  def tortoiseCompilerJs:    Action[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
 
-  def tortoiseCompilerJsMap: Action[AnyContent] = javascriptResource("tortoise-compiler.js.map")
-
-  private def javascriptResource(fileName: String): Action[AnyContent] =
-    Action {
-      environment.resourceAsStream(fileName).map(tortoiseJs =>
-        Result(
-          header = ResponseHeader(OK, Map(CONTENT_TYPE -> "text/javascript")),
-          body   = Streamed(StreamConverters.fromInputStream(() => tortoiseJs), None, None)
-        )).getOrElse(NotFound)
-    }
+  def tortoiseCompilerJsMap: Action[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
 
   private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
     Action { implicit request =>
