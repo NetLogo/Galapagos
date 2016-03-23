@@ -35,7 +35,10 @@ window.attachWidgetMenus =
 window.setupInterfaceEditor =
   (ractive, removeWidgetById) ->
 
-    document.addEventListener("click", -> pipeline(elemById, hideElem)("netlogo-widget-context-menu"))
+    hideContextMenu = ->
+      pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+
+    document.addEventListener("click", hideContextMenu)
 
     document.addEventListener("contextmenu"
     , (e) ->
@@ -55,13 +58,11 @@ window.setupInterfaceEditor =
         hasClass = arrayContains(classes)
 
         if (not hasClass("netlogo-widget")) and (not hasClass("netlogo-widget-container"))
-          pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+          hideContextMenu()
 
     )
 
-    closeContextMenu = -> pipeline(elemById, hideElem)("netlogo-widget-context-menu")
-
-    window.onkeyup = (e) -> if e.keyCode is 27 then closeContextMenu()
+    window.onkeyup = (e) -> if e.keyCode is 27 then hideContextMenu()
 
     ractive.on('toggleInterfaceLock'
     , ->
@@ -117,7 +118,9 @@ window.setupInterfaceEditor =
           elem.parentElement.removeChild(elem)
         deleteById(widgetID)
         deleteById(contextMenuID)
-        closeContextMenu()
+        hideContextMenu()
         removeWidgetById(widgetNum)
         false
     )
+
+    ractive.on('*.hideContextMenu', hideContextMenu)
