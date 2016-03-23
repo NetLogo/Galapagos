@@ -330,6 +330,7 @@ private[controllers] trait RequestResultGenerator {
       Seq(
         "javascripts/TortoiseJS/agent/colors.js",
         "javascripts/TortoiseJS/agent/component/printarea.js",
+        "javascripts/TortoiseJS/agent/component/widget.js",
         "javascripts/TortoiseJS/agent/component/button.js",
         "javascripts/TortoiseJS/agent/component/chooser.js",
         "javascripts/TortoiseJS/agent/component/input.js",

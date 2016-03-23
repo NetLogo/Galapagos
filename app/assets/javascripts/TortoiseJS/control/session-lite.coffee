@@ -13,7 +13,7 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
-    @widgetController.ractive.on('editor.recompile',   (event) => @recompile())
+    @widgetController.ractive.on('*.recompile',        (event) => @recompile())
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
     @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
