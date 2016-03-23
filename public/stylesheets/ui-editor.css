@@ -28,8 +28,9 @@
 }
 
 .netlogo-widget.interface-unlocked:hover {
-  cursor: default;
   box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+  cursor:     default;
+  z-index:    3;
 }
 
 .context-menu-item {
@@ -66,4 +67,55 @@
   position:         absolute;
   width:            200px;
   z-index:          10;
+}
+
+.widget-edit-popup {
+  background-color: white;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  padding:          10px 10px 0 10px;
+  position:         absolute;
+  outline:          none;
+  width:            450px;
+  z-index:          100;
+}
+
+.widget-edit-form {
+  margin-bottom: 10px;
+}
+
+.widget-edit-form-title {
+  cursor:        default;
+  font-weight:   bold;
+  margin-bottom: 10px;
+  text-align:    center;
+  user-select:   none;
+}
+
+.widget-edit-form-button-container {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.widget-edit-closer {
+  color:       #7F7F7F;
+  cursor:      pointer;
+  font-weight: bold;
+  position:    absolute;
+  right:       10px;
+  top:         10px;
+  user-select: none;
+}
+
+.widget-edit-closer:hover {
+  color: black;
+}
+
+.widget-edit-text-size {
+  font-size: 20px;
+}
+
+.hidden {
+  display: none;
 }

@@ -329,6 +329,7 @@ private[controllers] trait RequestResultGenerator {
     val assetURLs =
       Seq(
         "javascripts/TortoiseJS/agent/colors.js",
+        "javascripts/TortoiseJS/agent/component/editform.js",
         "javascripts/TortoiseJS/agent/component/printarea.js",
         "javascripts/TortoiseJS/agent/component/widget.js",
         "javascripts/TortoiseJS/agent/component/button.js",

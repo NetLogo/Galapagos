@@ -26,6 +26,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   dropNLogoExtension = (s) ->
     s.slice(0, -6)
 
+  existsInObj = (f) -> (obj) ->
+    for _, v of obj when f(v)
+      return true
+    false
+
   widgetObj = widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
 
   model = {
@@ -154,6 +159,14 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
       for _, w of @get('widgetObj') when w.type is 'button' and w.actionKey is char
         w.run()
+  )
+
+  ractive.on('*.renameInterfaceGlobal'
+  , (oldName, newName, value) ->
+      if not existsInObj(({ varName }) -> varName is oldName)(@get('widgetObj'))
+        world.observer.setGlobal(oldName, undefined)
+      world.observer.setGlobal(newName, value)
+      false
   )
 
   controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
