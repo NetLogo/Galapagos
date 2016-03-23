@@ -86,8 +86,7 @@ class window.SessionLite
           @widgetController.ractive.set('lastCompiledCode', code)
         else
           @alertCompileError(res.model.result)
-        Tortoise.finishLoading()
-      )
+      , @alertCompileError)
     )
 
   getNlogo: ->
@@ -157,14 +156,14 @@ class window.SessionLite
       (res) =>
         success = res.commands[0].success
         result  = res.commands[0].result
-        Tortoise.finishLoading()
         if (success)
           try window.handlingErrors(new Function(result))()
           catch ex
             if not (ex instanceof Exception.HaltInterrupt)
               throw ex
         else
-          @alertCompileError(result))
+          @alertCompileError(result)
+    , @alertCompileError)
 
   alertCompileError: (result) ->
     alertText = result.map((err) -> err.message).join('\n')
@@ -177,7 +176,7 @@ globalEval = eval
 
 window.AgentModel = tortoise_require('agentmodel')
 
-window.codeCompile = (code, commands, reporters, widgets, onFulfilled) ->
+window.codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
   compileParams = {
     code:         code,
     widgets:      widgets,
@@ -186,7 +185,12 @@ window.codeCompile = (code, commands, reporters, widgets, onFulfilled) ->
     turtleShapes: turtleShapes ? [],
     linkShapes:   linkShapes ? []
   }
-  onFulfilled((new BrowserCompiler()).fromModel(compileParams))
+  try
+    onFulfilled((new BrowserCompiler()).fromModel(compileParams))
+  catch ex
+    onErrors([ex])
+  finally
+    Tortoise.finishLoading()
 
 window.serverNlogoCompile = (model, commands, reporters, widgets, onFulfilled) ->
   compileParams = {
