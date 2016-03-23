@@ -18,18 +18,34 @@ window.RactiveSwitch = Ractive.extend({
 
   template:
     """
-    <label id="{{id}}"
-           on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
-           class="netlogo-widget netlogo-switcher netlogo-input"
-           style="{{dims}}">
-      <input type="checkbox" checked={{ widget.currentValue }} />
-      <span class="netlogo-label">{{ widget.display }}</span>
-    </label>
-    <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-      <ul class="context-menu-list">
-        <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
-      </ul>
-    </div>
+    {{>switch}}
+    {{>contextMenu}}
     """
+
+  # coffeelint: disable=max_line_length
+  partials: {
+
+    switch:
+      """
+      <label id="{{id}}"
+             on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+             class="netlogo-widget netlogo-switcher netlogo-input"
+             style="{{dims}}">
+        <input type="checkbox" checked={{ widget.currentValue }} />
+        <span class="netlogo-label">{{ widget.display }}</span>
+      </label>
+      """
+
+    contextMenu:
+      """
+      <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
+        <ul class="context-menu-list">
+          <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
+        </ul>
+      </div>
+      """
+
+  }
+  # coffeelint: enable=max_line_length
 
 })
