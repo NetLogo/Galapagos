@@ -1,9 +1,4 @@
-window.RactiveSwitch = Ractive.extend({
-  data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # SwitchWidget
-  }
+window.RactiveSwitch = RactiveWidget.extend({
 
   isolated: true
 
@@ -11,6 +6,7 @@ window.RactiveSwitch = Ractive.extend({
   # update `on`, because that's what the widget reader looks at at compilation time in
   # order to determine the value of the Switch. --JAB (3/31/16)
   oninit: ->
+    @_super()
     Object.defineProperty(@get('widget'), "on", {
       get:     -> @currentValue
       set: (x) -> @currentValue = x
