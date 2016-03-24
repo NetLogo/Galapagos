@@ -153,16 +153,18 @@ class window.SessionLite
   run: (code) ->
     Tortoise.startLoading()
     codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
-      (res) =>
-        success = res.commands[0].success
-        result  = res.commands[0].result
-        if (success)
-          try window.handlingErrors(new Function(result))()
-          catch ex
-            if not (ex instanceof Exception.HaltInterrupt)
-              throw ex
+      ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
+        if modelSuccess
+          [{ result, success }] = commands
+          if (success)
+            try window.handlingErrors(new Function(result))()
+            catch ex
+              if not (ex instanceof Exception.HaltInterrupt)
+                throw ex
+          else
+            @alertCompileError(result)
         else
-          @alertCompileError(result)
+          @alertCompileError(modelResult)
     , @alertCompileError)
 
   alertCompileError: (result) ->
