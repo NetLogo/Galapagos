@@ -59,17 +59,18 @@ object InlineTagBuilder extends TagBuilder {
 object OutsourceTagBuilder extends TagBuilder {
 
   override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(routes.Assets.at(path).absoluteURL)
+    genTag(new URL(routes.Assets.at(path).absoluteURL))
 
   override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(call.absoluteURL)
+    genTag(new URL(call.absoluteURL))
 
-  private def genTag(url: String): Html = {
+  private def genTag(url: URL): Html = {
+    val protoRelativeURL = s"//${url.getAuthority}${url.getFile}"
     val FileExtensionRegex      = ".*\\.(.*)$".r
-    val FileExtensionRegex(ext) = url
+    val FileExtensionRegex(ext) = url.getPath
     ext match {
-      case "js"  => Html(s"""<script src="$url"></script>""")
-      case "css" => Html(s"""<link rel="stylesheet" href="$url"></link>""")
+      case "js"  => Html(s"""<script src="$protoRelativeURL"></script>""")
+      case "css" => Html(s"""<link rel="stylesheet" href="$protoRelativeURL"></link>""")
       case x     => throw new Exception(s"We don't know how to build a tag for '.$x' files")
     }
   }
