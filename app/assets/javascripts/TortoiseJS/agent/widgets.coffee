@@ -92,7 +92,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
     },
     magic:      true,
-    data:       model,
+    data:    -> model,
     oncomplete: attachWidgetMenus
   })
 

@@ -1,5 +1,5 @@
 window.RactiveConsoleWidget = Ractive.extend({
-  data: {
+  data: -> {
     input: '',
     agentTypes: ['observer', 'turtles', 'patches', 'links'],
     agentTypeIndex: 0,

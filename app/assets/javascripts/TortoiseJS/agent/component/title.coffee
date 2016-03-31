@@ -1,5 +1,5 @@
 window.RactiveModelTitle = Ractive.extend({
-  data: {
+  data: -> {
     title:     undefined # String
     isEditing: undefined # Boolean
   }

@@ -1,6 +1,6 @@
 window.RactivePrintArea = Ractive.extend({
 
-  data: {
+  data: -> {
     id:     undefined # String
   , output: undefined # String
   }

@@ -1,5 +1,5 @@
 window.RactiveChooser = Ractive.extend({
-  data: {
+  data: -> {
     dims:   undefined # String
   , id:     undefined # String
   , widget: undefined # ChooserWidget
