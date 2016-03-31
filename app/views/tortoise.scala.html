@@ -46,7 +46,9 @@
       reader.onload = function (e) {
         openNlogo(e.target.result);
       };
-      reader.readAsText(this.files[0]);
+      if (this.files.length > 0) {
+        reader.readAsText(this.files[0]);
+      }
     });
 
 
