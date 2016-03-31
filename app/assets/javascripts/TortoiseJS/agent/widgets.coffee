@@ -343,10 +343,11 @@ createPlotOps = (container, widgets) ->
 
 # (widget, Any) -> Boolean
 isValidValue = (widget, value) ->
-  switch widget.type
-    when 'slider'   then not isNaN(value)
-    when 'inputBox' then not (widget.boxtype == 'Number' and isNaN(value))
-    else  true
+  value? and
+    switch widget.type
+      when 'slider'   then not isNaN(value)
+      when 'inputBox' then not (widget.boxtype == 'Number' and isNaN(value))
+      else  true
 
 # coffeelint: disable=max_line_length
 template =
