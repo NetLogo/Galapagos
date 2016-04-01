@@ -1,9 +1,4 @@
-window.RactiveInput = Ractive.extend({
-  data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # InputWidget
-  }
+window.RactiveInput = RactiveWidget.extend({
 
   isolated: true
 

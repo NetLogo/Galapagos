@@ -1,9 +1,7 @@
-window.RactiveSlider = Ractive.extend({
+window.RactiveSlider = RactiveWidget.extend({
+
   data: -> {
-    dims:       undefined # String
-  , id:         undefined # String
-  , widget:     undefined # SliderWidget
-  , errorClass: undefined # String
+    errorClass: undefined # String
   }
 
   isolated: true

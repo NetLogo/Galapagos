@@ -1,9 +1,7 @@
-window.RactiveMonitor = Ractive.extend({
+window.RactiveMonitor = RactiveWidget.extend({
+
   data: -> {
-    dims:       undefined # String
-  , id:         undefined # String
-  , widget:     undefined # MonitorWidget
-  , errorClass: undefined # String
+    errorClass: undefined # String
   }
 
   isolated: true

@@ -14,7 +14,7 @@ window.RactiveWidget = Ractive.extend({
 
   oninit: ->
 
-    @findComponent('editForm').fire("activateCloakingDevice")
+    @findComponent('editForm')?.fire("activateCloakingDevice")
 
     @on('editWidget'
     , ->

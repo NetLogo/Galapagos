@@ -1,9 +1,4 @@
-window.RactivePlot = Ractive.extend({
-  data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # PlotWidget
-  }
+window.RactivePlot = RactiveWidget.extend({
 
   isolated: true
 

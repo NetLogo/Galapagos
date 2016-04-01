@@ -1,9 +1,7 @@
-window.RactiveView = Ractive.extend({
+window.RactiveView = RactiveWidget.extend({
+
   data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # ViewWidget
-  , ticks:  undefined # String
+    ticks:  undefined # String
   }
 
   isolated: true

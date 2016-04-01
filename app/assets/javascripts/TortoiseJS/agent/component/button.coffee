@@ -1,9 +1,7 @@
-window.RactiveButton = Ractive.extend({
+window.RactiveButton = RactiveWidget.extend({
+
   data: -> {
-    dims:         undefined # String
-  , id:           undefined # String
-  , widget:       undefined # ButtonWidget
-  , errorClass:   undefined # String
+    errorClass:   undefined # String
   , ticksStarted: undefined # Boolean
   }
 

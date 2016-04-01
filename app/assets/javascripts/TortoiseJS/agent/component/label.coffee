@@ -1,9 +1,7 @@
-window.RactiveLabel = Ractive.extend({
+window.RactiveLabel = RactiveWidget.extend({
+
   data: -> {
-    dims:         undefined # String
-  , id:           undefined # String
-  , widget:       undefined # LabelWidget
-  , convertColor: netlogoColorToCSS
+    convertColor: netlogoColorToCSS
   }
 
   isolated: true

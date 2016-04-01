@@ -1,9 +1,4 @@
-window.RactiveChooser = Ractive.extend({
-  data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # ChooserWidget
-  }
+window.RactiveChooser = RactiveWidget.extend({
 
   isolated: true
 
