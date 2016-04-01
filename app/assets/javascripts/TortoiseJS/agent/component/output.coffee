@@ -1,9 +1,7 @@
-window.RactiveOutputArea = Ractive.extend({
+window.RactiveOutputArea = RactiveWidget.extend({
+
   data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # OutputWidget
-  , output: undefined # String
+    output: undefined # String
   }
 
   isolated: true
