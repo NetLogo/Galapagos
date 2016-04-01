@@ -131,7 +131,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
-    if world? and newVal != oldVal and isValidValue(widget, newVal)
+    if widget.varName? and world? and newVal != oldVal and isValidValue(widget, newVal)
       world.observer.setGlobal(widget.varName, newVal)
   )
 
