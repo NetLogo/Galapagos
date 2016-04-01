@@ -17,7 +17,7 @@ window.RactiveOutputArea = Ractive.extend({
     <div id="{{id}}"
          on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
          class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
-      <printArea id="{{id}}-print-area" output="{{output}}" />
+      <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{output}}" />
     </div>
     <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
       <ul class="context-menu-list">

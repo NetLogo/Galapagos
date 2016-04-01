@@ -1,8 +1,9 @@
 window.RactivePrintArea = Ractive.extend({
 
   data: -> {
-    id:     undefined # String
-  , output: undefined # String
+    fontSize: undefined # Number
+  , id:       undefined # String
+  , output:   undefined # String
   }
 
   isolated: true
@@ -17,7 +18,8 @@ window.RactivePrintArea = Ractive.extend({
 
   template:
     """
-    <pre id='{{id}}' class='netlogo-output-area'>{{output}}</pre>
+    <pre id='{{id}}' class='netlogo-output-area'
+         style="font-size: {{fontSize}}px;">{{output}}</pre>
     """
 
 })
