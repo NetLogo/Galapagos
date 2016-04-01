@@ -6,6 +6,10 @@ OutputEditForm = EditForm.extend({
 
   isolated: true
 
+  components: {
+    formFontSize: RactiveEditFormFontSize
+  }
+
   validate: (form) ->
     { fontSize: form.fontSize.value }
 
@@ -15,9 +19,7 @@ OutputEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <label for="{{id}}-font-size">Font Size: </label>
-      <input id="{{id}}-font-size" class="widget-edit-text-size" name="fontSize" placeholder="(Required)"
-             type="number" value="{{fontSize}}" autofocus min=1 max=128 required />
+      <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
       """
 
   }
