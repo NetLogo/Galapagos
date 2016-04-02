@@ -1,6 +1,6 @@
 window.RactiveInfoTabEditor = Ractive.extend({
   onrender: ->
-    window.infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
+    infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
       value: @get('rawText'),
       tabsize: 2,
       mode: 'markdown',

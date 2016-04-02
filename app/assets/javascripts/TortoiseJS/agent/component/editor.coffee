@@ -1,6 +1,6 @@
 window.RactiveEditorWidget = Ractive.extend({
   onrender: ->
-    window.editor = CodeMirror(@find('.netlogo-code'), {
+    editor = CodeMirror(@find('.netlogo-code'), {
       value:   @get('code'),
       tabSize: 2,
       mode:    'netlogo',
