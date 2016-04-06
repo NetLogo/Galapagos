@@ -173,11 +173,6 @@
   border-color: rgb(238, 238, 238);
 }
 
-.netlogo-code {
-  border-top: 1px solid black;
-  font-family: monospace;
-}
-
 .netlogo-recompilation-button {
   width: 30%;
   margin: 12px auto;
@@ -186,16 +181,8 @@
   cursor: pointer;
 }
 
-.netlogo-code .CodeMirror {
-    height: 500px;
-}
-
 .netlogo-info-editor {
   border: 1px solid black;
-}
-
-.netlogo-info-editor .CodeMirror {
-    height: 500px;
 }
 
 .netlogo-toggle-edit-mode {
@@ -476,4 +463,9 @@
 
 .netlogo-widget-error:hover {
   cursor: pointer;
+}
+
+.CodeMirror {
+  border: 1px solid black;
+  height: 500px;
 }

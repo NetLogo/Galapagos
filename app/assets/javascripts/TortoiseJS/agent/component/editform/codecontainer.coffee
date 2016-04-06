@@ -2,6 +2,7 @@ RactiveCodeContainerBase = Ractive.extend({
 
   data: -> {
     code:             undefined # String
+  , extraAttrs:       undefined # String
   , extraClasses:     undefined # String
   , extraConfig:      undefined # Object
   , injectedClasses:  undefined # String
@@ -11,23 +12,36 @@ RactiveCodeContainerBase = Ractive.extend({
   , lastCompiledCode: undefined # String
   }
 
-  onrender: ->
-    baseConfig = { value: @get('code'), mode:  'netlogo', theme: 'netlogo-default' }
-    config     = Object.assign(baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
-    editor     = CodeMirror(@find("##{@get('id')}"), config)
-    editor.on('change', =>
-      newCode = editor.getValue()
-      @set('isStale', @get('lastCompiledCode') isnt newCode)
-      @set('code',    newCode)
-    )
+  oncomplete: ->
+    @_setupCodeMirror()
 
   isolated: true
 
   twoway: false
 
+  _setupCodeMirror: ->
+
+      baseConfig = { mode:  'netlogo', theme: 'netlogo-default' }
+      config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
+      editor     = CodeMirror.fromTextArea(@find("##{@get('id')}"), config)
+
+      editor.getDoc().setValue(@get('code'))
+
+      editor.on('change', =>
+        newCode = editor.getValue()
+        @set('isStale', @get('lastCompiledCode') isnt newCode)
+        @set('code',    newCode)
+      )
+
+      @on('teardown'
+      , ->
+          console.log("derp")
+          editor.toTextArea()
+      )
+
   template:
     """
-    <div id="{{id}}" class="netlogo-code {{extraClasses}} {{injectedClasses}}"></div>
+    <textarea id="{{id}}" class="{{extraClasses}} {{injectedClasses}}" {{extraAttrs}}></textarea>
     """
 
 })
