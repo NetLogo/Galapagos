@@ -307,6 +307,7 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.stepValue    = 1
       when "inputBox"
         widget.currentValue = widget.value
+        widget.display      = widget.varName
       when "button"
         if widget.forever then widget.running = false
         do (widget) ->

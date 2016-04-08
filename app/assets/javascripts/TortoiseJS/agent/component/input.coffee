@@ -1,3 +1,56 @@
+InputEditForm = EditForm.extend({
+
+  data: -> {
+    boxtype:     undefined # String
+  , display:     undefined # String
+  , isMultiline: undefined # Boolean
+  }
+
+  components: {
+    formCheckbox: RactiveEditFormCheckbox
+  , formDropdown: RactiveEditFormDropdown
+  , formVariable: RactiveEditFormVariable
+  , spacer:       RactiveEditFormSpacer
+  }
+
+  isolated: true
+
+  validate: (form) ->
+
+    boxtype = form.boxtype.value
+    varName = form.varName.value
+    out = { boxtype: boxtype, display: varName, multiline: form.multiline.checked, varName: varName.toLowerCase() }
+
+    if boxtype isnt @get('boxtype')
+      out.currentValue =
+        switch boxtype
+          when "Color"  then "#000000"
+          when "Number" then 0
+          else               ""
+
+    out
+
+  partials: {
+
+    title: "Input"
+
+    # coffeelint: disable=max_line_length
+    widgetFields:
+      """
+      <formVariable id="{{id}}-varname" name="varName" value="{{display}}" />
+      <spacer height="15px" />
+      <div style="display: flex; align-items: center;">
+        <formDropdown id="{{id}}-boxtype" choices="['Number', 'String', 'Color', 'String (reporter)', 'String (commands)']" label="Type" selected="{{boxtype}}" />
+        <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline" name="multiline" />
+      </div>
+      <spacer height="10px" />
+      """
+    # coffeelint: enable=max_line_length
+
+  }
+
+})
+
 window.RactiveInput = RactiveWidget.extend({
 
   isolated: true
@@ -18,10 +71,16 @@ window.RactiveInput = RactiveWidget.extend({
     }
   }
 
+  components: {
+    editForm: InputEditForm
+  }
+
   template:
     """
     {{>input}}
     {{>contextMenu}}
+    <editForm idBasis="{{id}}" boxtype="{{widget.boxtype}}"
+              display="{{widget.display}}" isMultiline="{{widget.multiline}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -53,6 +112,7 @@ window.RactiveInput = RactiveWidget.extend({
       """
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
+          <li class="context-menu-item" on-click="editWidget">Edit</li>
           <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
         </ul>
       </div>
