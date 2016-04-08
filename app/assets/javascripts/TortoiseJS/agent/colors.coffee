@@ -15,6 +15,19 @@ window.netlogoColorToOpaqueCSS = (netlogoColor) ->
   [r,g,b] = array = netlogoColorToRGB(netlogoColor)
   "rgb(#{r}, #{g}, #{b})"
 
+# (Number) => String
+window.netlogoColorToHexString = (netlogoColor) ->
+  rgb   = netlogoColorToRGB(netlogoColor)
+  hexes = rgb.map((x) -> hex = x.toString(16); if hex.length is 1 then "0#{hex}" else hex)
+  "##{hexes.join('')}"
+
+# (String) => Number
+window.hexStringToNetlogoColor = (hex) ->
+  hexPair   = "([0-9a-f]{2})"
+  rgbHexes  = hex.toLowerCase().match(new RegExp("##{hexPair}#{hexPair}#{hexPair}")).slice(1)
+  [r, g, b] = rgbHexes.map((x) -> parseInt(x, 16))
+  ColorModel.nearestColorNumberOfRGB(r, g, b)
+
 window.netlogoColorToRGB = (netlogoColor) ->
   switch typeof(netlogoColor)
     when "number" then cachedNetlogoColors[Math.floor(netlogoColor*10)]
