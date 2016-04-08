@@ -412,7 +412,7 @@ template =
         {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
         {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} output="{{outputWidgetOutput}}" /> {{/}}
+        {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} text="{{outputWidgetOutput}}" /> {{/}}
       {{/}}
     </div>
 
