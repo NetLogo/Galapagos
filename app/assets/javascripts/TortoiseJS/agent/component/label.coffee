@@ -1,3 +1,59 @@
+LabelEditForm = EditForm.extend({
+
+  data: -> {
+    color:       undefined # String
+  , fontSize:    undefined # Number
+  , text:        undefined # String
+  , transparent: undefined # Boolean
+  }
+
+  isolated: true
+
+  twoway: false
+
+  components: {
+    formCheckbox: RactiveEditFormCheckbox
+  , formFontSize: RactiveEditFormFontSize
+  , spacer:       RactiveEditFormSpacer
+  }
+
+  validate: (form) ->
+    color = window.hexStringToNetlogoColor(form.color.value)
+    { color, display: form.text.value, fontSize: form.fontSize.value
+    , transparent: form.transparent.checked }
+
+  partials: {
+
+    title: "Note"
+
+    # coffeelint: disable=max_line_length
+    widgetFields:
+      """
+      <label for="{{id}}-text">Text</label><br>
+      <textarea id="{{id}}-text" class="widget-edit-textbox"
+                name="text" placeholder="Enter note text here..."
+                autofocus>{{text}}</textarea>
+
+      <spacer height="20px" />
+
+      <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+
+      <spacer height="15px" />
+
+      <formCheckbox id="{{id}}-transparent-checkbox" isChecked={{transparent}} labelText="Transparent background" name="transparent" />
+
+      <spacer height="15px" />
+
+      <label for="{{id}}-text-color">Text color:</label>
+      <input id="{{id}}-text-color" class="widget-edit-color-picker" name="color"
+             type="color" value="{{color}}" />
+      """
+    # coffeelint: enable=max_line_length
+
+  }
+
+})
+
 window.RactiveLabel = RactiveWidget.extend({
 
   data: -> {
@@ -5,6 +61,15 @@ window.RactiveLabel = RactiveWidget.extend({
   }
 
   isolated: true
+
+  components: {
+    editForm: LabelEditForm
+  }
+
+  computed: {
+    hexColor: ->
+      window.netlogoColorToHexString(@get('widget').color)
+  }
 
   template:
     # Note that ">{{ display }}</pre>" thing is necessary. Since <pre> formats
@@ -20,9 +85,13 @@ window.RactiveLabel = RactiveWidget.extend({
          >{{ widget.display }}</pre>
     <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
       <ul class="context-menu-list">
+        <li class="context-menu-item" on-click="editWidget">Edit</li>
         <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
       </ul>
     </div>
+    <editForm idBasis="{{id}}" color="{{hexColor}}"
+              fontSize="{{widget.fontSize}}" text="{{widget.display}}"
+              transparent="{{widget.transparent}}" />
     """
     # coffeelint: enable=max_line_length
 
