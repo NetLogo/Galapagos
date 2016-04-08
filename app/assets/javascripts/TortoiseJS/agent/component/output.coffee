@@ -1,6 +1,6 @@
 OutputEditForm = EditForm.extend({
 
-  data: {
+  data: -> {
     fontSize: undefined # Number
   }
 

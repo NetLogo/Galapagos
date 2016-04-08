@@ -1,6 +1,6 @@
 SwitchEditForm = EditForm.extend({
 
-  data: {
+  data: -> {
     display: undefined # String
   }
 
