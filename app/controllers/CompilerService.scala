@@ -330,6 +330,7 @@ private[controllers] trait RequestResultGenerator {
       Seq(
         "javascripts/codemirror/mode.js",
         "javascripts/TortoiseJS/agent/colors.js",
+        "javascripts/TortoiseJS/agent/component/editform/checkbox.js",
         "javascripts/TortoiseJS/agent/component/editform/codecontainer.js",
         "javascripts/TortoiseJS/agent/component/editform/fontsize.js",
         "javascripts/TortoiseJS/agent/component/editform/spacer.js",
