@@ -85,6 +85,10 @@
   margin-bottom: 10px;
 }
 
+.widget-edit-form > label {
+  user-select: none;
+}
+
 .widget-edit-form-title {
   cursor:        default;
   font-weight:   bold;
