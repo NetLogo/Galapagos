@@ -120,6 +120,12 @@
   font-size: 20px;
 }
 
+.widget-edit-dropdown {
+  font-size: 14px;
+  height:    20px;
+  margin:    0 10px;
+}
+
 .widget-edit-textbox {
   font-size: 14px;
   height:    115px;

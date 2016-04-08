@@ -332,6 +332,7 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/agent/colors.js",
         "javascripts/TortoiseJS/agent/component/editform/checkbox.js",
         "javascripts/TortoiseJS/agent/component/editform/codecontainer.js",
+        "javascripts/TortoiseJS/agent/component/editform/dropdown.js",
         "javascripts/TortoiseJS/agent/component/editform/fontsize.js",
         "javascripts/TortoiseJS/agent/component/editform/spacer.js",
         "javascripts/TortoiseJS/agent/component/editform/variable.js",
