@@ -2,6 +2,22 @@ window.RactiveInput = RactiveWidget.extend({
 
   isolated: true
 
+  computed: {
+    hexColor: { # String
+      get: ->
+        try netlogoColorToHexString(@get('widget').currentValue)
+        catch ex
+          "#000000"
+      set: (hex) ->
+        color =
+          try hexStringToNetlogoColor(hex)
+          catch ex
+            0
+        @set('widget.currentValue', color)
+        return
+    }
+  }
+
   template:
     """
     {{>input}}
@@ -29,7 +45,7 @@ window.RactiveInput = RactiveWidget.extend({
         {{# widget.boxtype === 'String (reporter)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
         {{# widget.boxtype === 'String (commands)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
         <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
-        {{# widget.boxtype === 'Color'}}<input type="color" value="{{widget.currentValue}}" />{{/}}
+        {{# widget.boxtype === 'Color'}}<input type="color" value="{{hexColor}}" />{{/}}
       </label>
       """
 
