@@ -22,11 +22,13 @@ InputEditForm = EditForm.extend({
     out = { boxtype: boxtype, display: varName, multiline: form.multiline.checked, varName: varName.toLowerCase() }
 
     if boxtype isnt @get('boxtype')
-      out.currentValue =
+      default_ =
         switch boxtype
-          when "Color"  then "#000000"
+          when "Color"  then 0 # Color number for black
           when "Number" then 0
           else               ""
+      out.currentValue = default_
+      out.value        = default_
 
     out
 
