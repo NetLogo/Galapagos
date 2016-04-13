@@ -32,7 +32,7 @@ LabelEditForm = EditForm.extend({
       <label for="{{id}}-text">Text</label><br>
       <textarea id="{{id}}-text" class="widget-edit-textbox"
                 name="text" placeholder="Enter note text here..."
-                autofocus>{{text}}</textarea>
+                value="{{text}}" autofocus></textarea>
 
       <spacer height="20px" />
 
