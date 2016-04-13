@@ -35,7 +35,6 @@ RactiveCodeContainerBase = Ractive.extend({
 
       @on('teardown'
       , ->
-          console.log("derp")
           editor.toTextArea()
       )
 
