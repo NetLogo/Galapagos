@@ -19,7 +19,7 @@ LabelEditForm = EditForm.extend({
 
   validate: (form) ->
     color = window.hexStringToNetlogoColor(form.color.value)
-    { color, display: form.text.value, fontSize: form.fontSize.value
+    { color, display: form.text.value, fontSize: parseInt(form.fontSize.value)
     , transparent: form.transparent.checked }
 
   partials: {

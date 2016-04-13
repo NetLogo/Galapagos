@@ -11,7 +11,7 @@ OutputEditForm = EditForm.extend({
   }
 
   validate: (form) ->
-    { fontSize: form.fontSize.value }
+    { fontSize: parseInt(form.fontSize.value) }
 
   partials: {
 
