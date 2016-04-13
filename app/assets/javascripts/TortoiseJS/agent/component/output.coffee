@@ -6,6 +6,8 @@ OutputEditForm = EditForm.extend({
 
   isolated: true
 
+  twoway: false
+
   components: {
     formFontSize: RactiveEditFormFontSize
   }
@@ -43,7 +45,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
     """
     {{>output}}
     {{>contextMenu}}
-    <editForm idBasis="{{id}}" fontSize="{{widget.fontSize}}" twoway="false"/>
+    <editForm idBasis="{{id}}" fontSize="{{widget.fontSize}}" />
     """
 
   # coffeelint: disable=max_line_length

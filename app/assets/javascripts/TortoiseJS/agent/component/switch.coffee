@@ -6,6 +6,8 @@ SwitchEditForm = EditForm.extend({
 
   isolated: true
 
+  twoway: false
+
   components: {
     formVariable: RactiveEditFormVariable
   }
@@ -49,7 +51,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     """
     {{>switch}}
     {{>contextMenu}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" twoway="false"/>
+    <editForm idBasis="{{id}}" display="{{widget.display}}" />
     """
 
   # coffeelint: disable=max_line_length

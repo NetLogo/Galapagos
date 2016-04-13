@@ -15,6 +15,8 @@ InputEditForm = EditForm.extend({
 
   isolated: true
 
+  twoway: false
+
   validate: (form) ->
 
     boxtype = form.boxtype.value
