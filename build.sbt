@@ -6,7 +6,7 @@ name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -21,14 +21,14 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-cc6ea47"
+val tortoiseVersion = "1.0-7fc4235"
 
 libraryDependencies ++= Seq(
   filters,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   cache,
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.2" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.4.4" % "test",
   "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )
 
@@ -38,10 +38,10 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "mousetrap" % "1.5.3",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
   "org.webjars" % "highcharts" % "4.2.3",
-  "org.webjars" % "jquery" % "2.2.1",
+  "org.webjars" % "jquery" % "2.2.3",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.3",
-  "org.webjars" % "codemirror" % "5.11"
+  "org.webjars" % "codemirror" % "5.13.2"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
