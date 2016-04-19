@@ -190,7 +190,8 @@ window.handlingErrors = (f) -> ->
           ex.message
         else
           """A type error has occurred in the simulation engine.
-             More information about these sorts of errors can be found <a href="//netlogoweb.org/info#type-errors">here</a>.<br><br>
+             More information about these sorts of errors can be found
+             <a href="//netlogoweb.org/info#type-errors">here</a>.<br><br>
              Advanced users might find the generated error helpful, which is as follows:<br><br>
              <b>#{ex.message}</b><br><br>
              """
