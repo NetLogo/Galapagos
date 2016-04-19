@@ -107,7 +107,7 @@ reportCompilerError = (load) -> (res) ->
       contains = (s, x) -> s.indexOf(x) > -1
       message = err.message
       if contains(message, "Couldn't find corresponding reader") or contains(message, "Models must have 12 sections")
-        "#{message} (see <a href='/info#model-format-error'>here</a> for more information)"
+        "#{message} (see <a href='//netlogoweb.org/info#model-format-error'>here</a> for more information)"
       else
         message
   ).join('<br/>')
