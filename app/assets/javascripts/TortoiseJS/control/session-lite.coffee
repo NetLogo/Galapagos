@@ -23,7 +23,7 @@ class window.SessionLite
     @widgetController.ractive.get('modelTitle')
 
   startLoop: ->
-    if procedures.startup? then procedures.startup()
+    if procedures.startup? then window.handlingErrors(procedures.startup)()
     @widgetController.redraw()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
