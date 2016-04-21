@@ -412,6 +412,14 @@
     overflow: hidden;
 }
 
+.netlogo-code {
+  border: 1px solid black;
+}
+
+.netlogo-code-tab {
+  height: 500px;
+}
+
 .netlogo-input-box {
     padding: 2px 4px;
     display: flex;
@@ -466,6 +474,5 @@
 }
 
 .CodeMirror {
-  border: 1px solid black;
-  height: 500px;
+  height: auto;
 }

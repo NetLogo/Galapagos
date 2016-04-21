@@ -2,12 +2,10 @@ RactiveCodeContainerBase = Ractive.extend({
 
   data: -> {
     code:             undefined # String
-  , extraAttrs:       undefined # String
-  , extraClasses:     undefined # String
+  , extraClasses:     undefined # Array[String]
   , extraConfig:      undefined # Object
-  , injectedClasses:  undefined # String
-  , injectedConfig:   undefined # Object
   , id:               undefined # String
+  , injectedConfig:   undefined # Object
   , isStale:          undefined # Boolean
   , lastCompiledCode: undefined # String
   }
@@ -21,11 +19,9 @@ RactiveCodeContainerBase = Ractive.extend({
 
   _setupCodeMirror: ->
 
-      baseConfig = { mode:  'netlogo', theme: 'netlogo-default' }
+      baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
       config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
-      editor     = CodeMirror.fromTextArea(@find("##{@get('id')}"), config)
-
-      editor.getDoc().setValue(@get('code'))
+      editor     = new CodeMirror(@find("##{@get('id')}"), config)
 
       editor.on('change', =>
         newCode = editor.getValue()
@@ -33,14 +29,11 @@ RactiveCodeContainerBase = Ractive.extend({
         @set('code',    newCode)
       )
 
-      @on('teardown'
-      , ->
-          editor.toTextArea()
-      )
+      return
 
   template:
     """
-    <textarea id="{{id}}" class="{{extraClasses}} {{injectedClasses}}" {{extraAttrs}}></textarea>
+    <div id="{{id}}" class="netlogo-code {{(extraClasses || []).join(' ')}}"></div>
     """
 
 })
