@@ -418,7 +418,7 @@ template =
       {{/}}
     </div>
 
-    <div class="netlogo-tab-area">
+    <div class="netlogo-tab-area" style="max-width: {{Math.max(width, 500)}}px">
       {{# !readOnly }}
       <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
         <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
