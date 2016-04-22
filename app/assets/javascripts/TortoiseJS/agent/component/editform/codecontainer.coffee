@@ -6,8 +6,6 @@ RactiveCodeContainerBase = Ractive.extend({
   , extraConfig:      undefined # Object
   , id:               undefined # String
   , injectedConfig:   undefined # Object
-  , isStale:          undefined # Boolean
-  , lastCompiledCode: undefined # String
   }
 
   oncomplete: ->
@@ -22,12 +20,7 @@ RactiveCodeContainerBase = Ractive.extend({
       baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
       config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
       editor     = new CodeMirror(@find("##{@get('id')}"), config)
-
-      editor.on('change', =>
-        newCode = editor.getValue()
-        @set('isStale', @get('lastCompiledCode') isnt newCode)
-        @set('code',    newCode)
-      )
+      editor.on('change', => @set('code', editor.getValue()))
 
       return
 

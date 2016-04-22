@@ -1,12 +1,17 @@
 window.RactiveEditorWidget = Ractive.extend({
 
   data: -> {
-    isStale:  false     # Boolean
-    readOnly: undefined # Boolean
+    code:             undefined # String
+  , lastCompiledCode: undefined # String
+  , readOnly:         undefined # Boolean
   }
 
   components: {
     codeEditor: RactiveCodeContainerMultiline
+  }
+
+  computed: {
+    isStale: '${code} !== ${lastCompiledCode}'
   }
 
   template:

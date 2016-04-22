@@ -433,7 +433,7 @@ template =
         <span class="netlogo-tab-text">NetLogo Code</span>
       </label>
       {{#showCode}}
-        <editor code='{{code}}' readOnly='{{readOnly}}' />
+        <editor code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' readOnly='{{readOnly}}' />
       {{/}}
       <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
         <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
