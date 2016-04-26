@@ -131,12 +131,14 @@
       }
 
       window.addEventListener("message", function (e) {
-        if (session) {
-          session.teardown();
+        if (e.data.type === "nlw-load-model") {
+          if (session) {
+            session.teardown();
+          }
+          window.nlwAlerter.hide();
+          activeContainer = loadingOverlay;
+          Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
         }
-        window.nlwAlerter.hide();
-        activeContainer = loadingOverlay;
-        Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
       });
 
       if (parent !== window) {
@@ -153,7 +155,8 @@
             parent.postMessage({
               width:  activeContainer.offsetWidth,
               height: activeContainer.offsetHeight,
-              title:  document.title
+              title:  document.title,
+              type:   "nlw-resize"
             }, "*");
           }
         }, 200);
