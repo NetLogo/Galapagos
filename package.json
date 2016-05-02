@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "autoprefixer": "1.2.0",
-    "coffeelint"  : "1.10.1"
+    "coffeelint"  : "1.15.7"
   }
 }
