@@ -84,6 +84,7 @@ class window.SessionLite
           globalEval(res.model.result)
           @widgetController.ractive.set('isStale',          false)
           @widgetController.ractive.set('lastCompiledCode', code)
+          @widgetController.freshenUpWidgets(globalEval(res.widgets))
         else
           @alertCompileError(res.model.result)
       , @alertCompileError)

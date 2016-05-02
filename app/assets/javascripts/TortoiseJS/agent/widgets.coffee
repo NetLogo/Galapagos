@@ -265,6 +265,22 @@ class window.WidgetController
   widgets: ->
     v for _, v of @widgetObj
 
+  # Array[Widget] => Unit
+  freshenUpWidgets: (widgets) ->
+
+    # Note: This is fundamentally broken.  If I delete a widget with a lower index and then cause a
+    # recompile in one with a higher index, it will lead to an error or a totally messed up widget.
+    # This is because this code is bonkers.  Fixing this properly, however, would require some
+    # serious thinking or rearchitecting, which I don't want to get into right now.  I'll take care
+    # of that some other time, as this getting closer to real deployment. --JAB (5/2/16)
+    for widget, index in widgets
+      storedWidget = @widgetObj[index]
+      switch widget.type
+        when false
+          []
+
+    return
+
   # () -> number
   speed: -> @model.speed
 
