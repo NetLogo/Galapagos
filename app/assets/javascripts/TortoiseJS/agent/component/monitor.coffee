@@ -1,3 +1,74 @@
+MonitorEditForm = EditForm.extend({
+
+  data: -> {
+    display:   undefined # String
+  , fontSize:  undefined # Number
+  , precision: undefined # Number
+  , source:    undefined # String
+  }
+
+  components: {
+    formCode:     RactiveEditFormCodeContainer
+  , formFontSize: RactiveEditFormFontSize
+  , spacer:       RactiveEditFormSpacer
+  }
+
+  isolated: true
+
+  twoway: false
+
+  # Note how we obtain the code.  We don't grab it out of the form.  The code is not given a `name`.
+  # `name` is not valid on a `div`.  Our CodeMirror instances are using `div`s.  They *could* use
+  # `textarea`s, but I tried that, and it just makes things harder for us.  `textarea`s can take
+  # `name`s, yes, but CodeMirror only updates the true `textarea`'s value for submission when the
+  # `submit` event is triggered, and we're not using the proper `submit` event (since we're using
+  # Ractive's), so the `textarea` doesn't have the correct value when we get here.  It's much, much
+  # more straight-forward to just go digging in the form component for its value. --JAB (4/21/16)
+  validate: (form) ->
+    {
+        display: form.display.value
+    ,  fontSize: parseInt(form.fontSize.value)
+    , precision: parseInt(form.precision.value)
+    ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
+    }
+
+  partials: {
+
+    title: "Monitor"
+
+    # coffeelint: disable=max_line_length
+    widgetFields:
+      """
+      <formCode id="{{id}}-source" name="source" value="{{source}}" label="Reporter" />
+
+      <spacer height="15px" />
+
+      <div style="align-items: center; display: flex; flex-direction: row;">
+        <label for="{{id}}-display">Display name:</label>
+        <input  id="{{id}}-display" name="display" type="text" value="{{display}}"
+                style="flex-grow: 1; font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;" />
+      </div>
+
+      <spacer height="15px" />
+
+      <div style="align-items: center; display: flex; flex-direction: row;
+                  justify-content: space-between; margin: 0 50px 0 0;">
+
+        <label for="{{id}}">Decimal places: </label>
+        <input  id="{{id}}" name="precision" placeholder="(Required)"
+                style="font-size: 20px; height: 28px; padding: 2px;"
+                type="number" value="{{precision}}" min=-30 max=17 step=1 required />
+
+        <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+
+      </div>
+      """
+    # coffeelint: enable=max_line_length
+
+  }
+
+})
+
 window.RactiveMonitor = RactiveWidget.extend({
 
   data: -> {
@@ -6,10 +77,16 @@ window.RactiveMonitor = RactiveWidget.extend({
 
   isolated: true
 
+  components: {
+    editForm: MonitorEditForm
+  }
+
   template:
     """
     {{>monitor}}
     {{>contextMenu}}
+    <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
+              precision="{{widget.precision}}" source="{{widget.source}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -30,6 +107,7 @@ window.RactiveMonitor = RactiveWidget.extend({
       """
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
+          <li class="context-menu-item" on-click="editWidget">Edit</li>
           <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
         </ul>
       </div>

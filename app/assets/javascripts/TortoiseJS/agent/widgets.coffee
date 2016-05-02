@@ -276,8 +276,13 @@ class window.WidgetController
     for widget, index in widgets
       storedWidget = @widgetObj[index]
       switch widget.type
-        when false
-          []
+        when "monitor"
+          if widget.compilation.success
+            storedWidget.reporter     = reporterOf(widget.compiledSource)
+            storedWidget.currentValue = ""
+          else
+            storedWidget.reporter     = () -> "N/A"
+            storedWidget.currentValue = "N/A"
 
     return
 

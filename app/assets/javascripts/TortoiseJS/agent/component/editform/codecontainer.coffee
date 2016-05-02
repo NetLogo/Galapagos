@@ -1,14 +1,23 @@
 RactiveCodeContainerBase = Ractive.extend({
 
   data: -> {
-    code:             undefined # String
-  , extraClasses:     undefined # Array[String]
-  , extraConfig:      undefined # Object
-  , id:               undefined # String
-  , injectedConfig:   undefined # Object
+    code:           undefined # String
+  , extraClasses:   undefined # Array[String]
+  , extraConfig:    undefined # Object
+  , id:             undefined # String
+  , initialCode:    undefined # String
+  , injectedConfig: undefined # Object
   }
 
+  # An astute observer will ask what the purpose of `initialCode` is--why wouldn't we just make it
+  # equivalent to `code`?  It's a good (albeit maddening) question.  Ractive does some funny stuff
+  # if the code that comes in is the same as what is getting hit by `set` in the editor's on-change
+  # event.  Basically, even though we explicitly say all over the place that we don't want to be
+  # doing two-way binding, that `set` call will change the value here and everywhere up the chain.
+  # So, to avoid that, `initialCode` is a dummy variable, and we dump it into `code` as soon as
+  # reasonably possible.  --JAB (5/2/16)
   oncomplete: ->
+    @set('code', @get('initialCode'))
     @_setupCodeMirror()
 
   isolated: true
@@ -16,13 +25,11 @@ RactiveCodeContainerBase = Ractive.extend({
   twoway: false
 
   _setupCodeMirror: ->
-
-      baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
-      config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
-      editor     = new CodeMirror(@find("##{@get('id')}"), config)
-      editor.on('change', => @set('code', editor.getValue()))
-
-      return
+    baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
+    config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
+    editor     = new CodeMirror(@find("##{@get('id')}"), config)
+    editor.on('change', => @set('code', editor.getValue()))
+    return
 
   template:
     """
@@ -44,6 +51,30 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
   }
 
   isolated: true
+
+})
+
+window.RactiveEditFormCodeContainer = Ractive.extend({
+
+  data: -> {
+    id:    undefined # String
+  , label: undefined # String
+  , value: undefined # String
+  }
+
+  isolated: true
+
+  twoway: false
+
+  components: {
+    codeContainer: RactiveCodeContainerMultiline
+  }
+
+  template:
+    """
+    <label for="{{id}}">{{label}}</label><br>
+    <codeContainer id="{{id}}" initialCode="{{value}}" />
+    """
 
 })
 
