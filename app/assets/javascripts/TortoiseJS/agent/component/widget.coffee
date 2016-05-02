@@ -26,16 +26,22 @@ window.RactiveWidget = Ractive.extend({
     @on('*.updateWidgetValue'
     , (obj) ->
 
-        widget    = @get('widget')
-        startName = widget.varName
+        widget = @get('widget')
+
+        { varName: startName, source: startSource } = widget
 
         for k, v of obj
           widget[k] = v
 
-        endName = widget.varName
+        { varName: endName, source: endSource } = widget
 
-        if startName isnt endName
+        didRename     = startName   isnt endName
+        didChangeCode = startSource isnt endSource
+
+        if didRename
           @fire('renameInterfaceGlobal', startName, endName, widget.currentValue)
+
+        if didRename or didChangeCode
           @fire('recompile')
 
         false
