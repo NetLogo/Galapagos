@@ -48,6 +48,7 @@ iframe {
   min-height: 300px;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* Screw Safari/iOS -- JAB (5/1/16) */
 }
 
 .model-container {
