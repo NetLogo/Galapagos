@@ -275,14 +275,10 @@ class window.WidgetController
     # of that some other time, as this getting closer to real deployment. --JAB (5/2/16)
     for widget, index in widgets
       storedWidget = @widgetObj[index]
-      switch widget.type
-        when "monitor"
-          if widget.compilation.success
-            storedWidget.reporter     = reporterOf(widget.compiledSource)
-            storedWidget.currentValue = ""
-          else
-            storedWidget.reporter     = () -> "N/A"
-            storedWidget.currentValue = "N/A"
+      f =
+        switch widget.type
+          when "monitor" then setUpMonitor
+      f?(widget, storedWidget)
 
     return
 
@@ -358,13 +354,18 @@ fillOutWidgets = (widgets, updateUICallback) ->
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
-        if widget.compilation.success
-          widget.reporter     = reporterOf(widget.compiledSource)
-          widget.currentValue = ""
-        else
-          widget.reporter     = () -> "N/A"
-          widget.currentValue = "N/A"
+        setUpMonitor(widget, widget)
 
+# (Monitor, Monitor) => Unit
+setUpMonitor = (source, destination) ->
+  if source.compilation.success
+    destination.compiledSource = source.compiledSource
+    destination.reporter       = reporterOf(destination.compiledSource)
+    destination.currentValue   = ""
+  else
+    destination.reporter     = () -> "N/A"
+    destination.currentValue = "N/A"
+  return
 
 # (Element, [widget]) -> [HighchartsOps]
 # Creates the plot ops for Highchart interaction.
