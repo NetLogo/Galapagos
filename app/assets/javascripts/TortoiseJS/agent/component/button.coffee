@@ -47,7 +47,7 @@ ButtonEditForm = EditForm.extend({
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <div style="display: flex; align-items: center;">
+      <div style="display: flex; align-items: center; flex-direction: row;">
         <formDropdown id="{{id}}-type" choices="['observer', 'turtles', 'patches', 'links']" name="type" label="Agent(s):" selected="{{displayedType}}" />
         <formCheckbox id="{{id}}-forever-checkbox" isChecked={{isForever}} labelText="Forever" name="forever" />
       </div>
