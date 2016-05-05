@@ -277,6 +277,7 @@ class window.WidgetController
       storedWidget = @widgetObj[index]
       f =
         switch widget.type
+          when "button"  then setUpButton(=> @redraw(); @updateWidgets())
           when "monitor" then setUpMonitor
       f?(widget, storedWidget)
 
