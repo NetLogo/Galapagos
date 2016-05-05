@@ -327,34 +327,39 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.value
         widget.display      = widget.varName
       when "button"
-        if widget.forever then widget.running = false
-        do (widget) ->
-          if widget.compilation.success
-            task = window.handlingErrors(new Function(widget.compiledSource))
-            do (task) ->
-              wrappedTask =
-                if widget.forever
-                  () ->
-                    mustStop =
-                      try task() instanceof Exception.StopInterrupt
-                      catch ex
-                        ex instanceof Exception.HaltInterrupt
-                    if mustStop
-                      widget.running = false
-                      updateUICallback()
-                else
-                  () ->
-                    task()
-                    updateUICallback()
-              do (wrappedTask) ->
-                widget.run = wrappedTask
-          else
-            widget.run = () -> showErrors(["Button failed to compile with:\n" +
-                                           widget.compilation.messages.join('\n')])
+        setUpButton(updateUICallback)(widget, widget)
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
         setUpMonitor(widget, widget)
+
+# (() => Unit) => (Button, Button) => Unit
+setUpButton = (updateUI) -> (source, destination) ->
+  if source.forever then destination.running = false
+  if source.compilation.success
+    destination.compiledSource = source.compiledSource
+    task = window.handlingErrors(new Function(destination.compiledSource))
+    do (task) ->
+      wrappedTask =
+        if source.forever
+          () ->
+            mustStop =
+              try task() instanceof Exception.StopInterrupt
+              catch ex
+                ex instanceof Exception.HaltInterrupt
+            if mustStop
+              destination.running = false
+              updateUI()
+        else
+          () ->
+            task()
+            updateUI()
+      do (wrappedTask) ->
+        destination.run = wrappedTask
+  else
+    destination.run = () -> showErrors(["Button failed to compile with:\n" +
+                                        source.compilation.messages.join('\n')])
+  return
 
 # (Monitor, Monitor) => Unit
 setUpMonitor = (source, destination) ->
