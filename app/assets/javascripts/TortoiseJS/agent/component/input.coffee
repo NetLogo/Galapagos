@@ -44,7 +44,7 @@ InputEditForm = EditForm.extend({
       <formVariable id="{{id}}-varname" name="varName" value="{{display}}" />
       <spacer height="15px" />
       <div style="display: flex; align-items: center;">
-        <formDropdown id="{{id}}-boxtype" choices="['Number', 'String', 'Color', 'String (reporter)', 'String (commands)']" label="Type" selected="{{boxtype}}" />
+        <formDropdown id="{{id}}-boxtype" choices="['Number', 'String', 'Color', 'String (reporter)', 'String (commands)']" name="boxtype" label="Type" selected="{{boxtype}}" />
         <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline" name="multiline" />
       </div>
       <spacer height="10px" />
