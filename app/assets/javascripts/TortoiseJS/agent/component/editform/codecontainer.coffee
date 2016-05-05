@@ -17,7 +17,8 @@ RactiveCodeContainerBase = Ractive.extend({
   # So, to avoid that, `initialCode` is a dummy variable, and we dump it into `code` as soon as
   # reasonably possible.  --JAB (5/2/16)
   oncomplete: ->
-    @set('code', @get('initialCode'))
+    initialCode = @get('initialCode')
+    if initialCode? then @set('code', initialCode)
     @_setupCodeMirror()
 
   isolated: true
