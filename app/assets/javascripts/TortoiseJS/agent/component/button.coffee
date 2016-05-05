@@ -12,7 +12,7 @@ window.RactiveButton = RactiveWidget.extend({
   }
 
   oninit: ->
-    @on('activateButton', (event, run) -> run())
+    @on('activateButton', (event, run) -> if @get('isEnabled') then run())
 
   isolated: true
 
@@ -41,8 +41,7 @@ window.RactiveButton = RactiveWidget.extend({
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
-              on-click="activateButton:{{widget.run}}"
-              disabled={{ !isEnabled }}>
+              on-click="activateButton:{{widget.run}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
