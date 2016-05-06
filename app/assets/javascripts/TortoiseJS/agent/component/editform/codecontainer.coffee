@@ -7,6 +7,7 @@ RactiveCodeContainerBase = Ractive.extend({
   , id:             undefined # String
   , initialCode:    undefined # String
   , injectedConfig: undefined # Object
+  , style:          undefined # String
   }
 
   # An astute observer will ask what the purpose of `initialCode` is--why wouldn't we just make it
@@ -34,7 +35,7 @@ RactiveCodeContainerBase = Ractive.extend({
 
   template:
     """
-    <div id="{{id}}" class="netlogo-code {{(extraClasses || []).join(' ')}}"></div>
+    <div id="{{id}}" class="netlogo-code {{(extraClasses || []).join(' ')}}" style="{{style}}"></div>
     """
 
 })
@@ -60,6 +61,7 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
   data: -> {
     id:    undefined # String
   , label: undefined # String
+  , style: undefined # String
   , value: undefined # String
   }
 
@@ -73,8 +75,8 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
 
   template:
     """
-    <label for="{{id}}">{{label}}</label><br>
-    <codeContainer id="{{id}}" initialCode="{{value}}" />
+    <label for="{{id}}">{{label}}</label>
+    <codeContainer id="{{id}}" initialCode="{{value}}" style="{{style}}" />
     """
 
 })
