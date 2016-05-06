@@ -312,18 +312,7 @@ fillOutWidgets = (widgets, updateUICallback) ->
       when "switch"
         widget.currentValue = widget.on
       when "slider"
-        widget.currentValue = widget.default
-        if widget.compilation.success
-          widget.getMin  = reporterOf(widget.compiledMin)
-          widget.getMax  = reporterOf(widget.compiledMax)
-          widget.getStep = reporterOf(widget.compiledStep)
-        else
-          widget.getMin  = () -> widget.default
-          widget.getMax  = () -> widget.default
-          widget.getStep = () -> 0
-        widget.minValue     = widget.default
-        widget.maxValue     = widget.default + 1
-        widget.stepValue    = 1
+        setUpSlider(widget, widget)
       when "inputBox"
         widget.currentValue = widget.value
         widget.display      = widget.varName
@@ -372,6 +361,22 @@ setUpMonitor = (source, destination) ->
     destination.reporter     = () -> "N/A"
     destination.currentValue = "N/A"
   return
+
+# (Slider, Slider) => Unit
+setUpSlider = (source, destination) ->
+  dflt = source.default
+  destination.currentValue = dflt
+  if source.compilation.success
+    destination.getMin  = reporterOf(source.compiledMin)
+    destination.getMax  = reporterOf(source.compiledMax)
+    destination.getStep = reporterOf(source.compiledStep)
+  else
+    destination.getMin  = () -> dflt
+    destination.getMax  = () -> dflt
+    destination.getStep = () -> 0
+  destination.minValue     = dflt
+  destination.maxValue     = dflt + 1
+  destination.stepValue    = 1
 
 # (Element, [widget]) -> [HighchartsOps]
 # Creates the plot ops for Highchart interaction.
