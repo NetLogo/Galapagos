@@ -351,6 +351,7 @@ setUpButton = (updateUI) -> (source, destination) ->
   else
     destination.run =
       ->
+        destination.running = false
         showErrors(["Button failed to compile with:"].concat(source.compilation.messages))
   return
 
