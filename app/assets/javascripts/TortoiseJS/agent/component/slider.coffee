@@ -11,6 +11,8 @@ LabeledInput = Ractive.extend({
   , value:      undefined # String
   }
 
+  twoway: false
+
   template:
     """
     <label for="{{id}}" style="{{labelStyle}}">{{labelStr}}</label>
