@@ -94,7 +94,7 @@ SliderEditForm = EditForm.extend({
         </column>
       </div>
       <spacer height="5px" />
-      <span style="font-size: 12px;">min, increment, and max may be numbers of reporters</span>
+      <span style="font-size: 12px;">min, increment, and max may be numbers or reporters</span>
 
       <spacer height="15px" />
 
