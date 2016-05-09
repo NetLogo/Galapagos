@@ -28,15 +28,35 @@ window.RactiveWidget = Ractive.extend({
 
         widget = @get('widget')
 
-        { varName: startName, source: startSource, buttonType: startType } = widget
+        {
+          buttonType: startType
+        ,        max: startMax
+        ,        min: startMin
+        ,     source: startSource
+        ,       step: startStep
+        ,    varName: startName
+        } = widget
 
         for k, v of obj
           widget[k] = v
 
-        { varName: endName, source: endSource, buttonType: endType } = widget
+        {
+          buttonType: endType
+        ,        max: endMax
+        ,        min: endMin
+        ,     source: endSource
+        ,       step: endStep
+        ,    varName: endName
+        } = widget
 
-        didRename     =  startName   isnt endName
-        didChangeCode = (startSource isnt endSource) or (startType isnt endType)
+        didRename = startName isnt endName
+
+        didChangeCode =
+          (startMax    isnt endMax   ) or
+          (startMin    isnt endMin   ) or
+          (startSource isnt endSource) or
+          (startStep   isnt endStep  ) or
+          (startType   isnt endType  )
 
         if didRename
           @fire('renameInterfaceGlobal', startName, endName, widget.currentValue)

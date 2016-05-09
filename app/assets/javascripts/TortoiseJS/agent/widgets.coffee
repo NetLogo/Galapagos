@@ -279,6 +279,7 @@ class window.WidgetController
         switch widget.type
           when "button"  then setUpButton(=> @redraw(); @updateWidgets())
           when "monitor" then setUpMonitor
+          when "slider"  then setUpSlider
       f?(widget, storedWidget)
 
     return
