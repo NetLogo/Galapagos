@@ -275,6 +275,7 @@ class window.WidgetController
     # of that some other time, as this getting closer to real deployment. --JAB (5/2/16)
     for widget, index in widgets
       storedWidget = @widgetObj[index]
+      storedWidget.compilation = widget.compilation
       f =
         switch widget.type
           when "button"  then setUpButton(=> @redraw(); @updateWidgets())
