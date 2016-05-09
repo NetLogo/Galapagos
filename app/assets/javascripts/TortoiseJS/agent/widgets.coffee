@@ -349,8 +349,9 @@ setUpButton = (updateUI) -> (source, destination) ->
       do (wrappedTask) ->
         destination.run = wrappedTask
   else
-    destination.run = () -> showErrors(["Button failed to compile with:\n" +
-                                        source.compilation.messages.join('\n')])
+    destination.run =
+      ->
+        showErrors(["Button failed to compile with:"].concat(source.compilation.messages))
   return
 
 # (Monitor, Monitor) => Unit
