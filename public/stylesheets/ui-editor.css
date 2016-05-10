@@ -120,6 +120,23 @@
   font-size: 20px;
 }
 
+.widget-edit-checkbox {
+  height: 13px;
+}
+
+.widget-edit-input-label {
+  margin-right: 10px;
+  white-space:  nowrap;
+}
+
+.widget-edit-input {
+  width: 100%;
+}
+
+.widget-edit-input[type="number"] {
+  text-align: right;
+}
+
 .widget-edit-dropdown {
   font-size: 14px;
   height:    20px;

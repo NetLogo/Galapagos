@@ -14,9 +14,9 @@ window.RactiveEditFormCheckbox = Ractive.extend({
   template:
     """
     <div>
-      <input id="{{id}}" class="widget-edit-checkbox" style="height: 13px;"
+      <input id="{{id}}" class="widget-edit-checkbox"
              name="[[name]]" type="checkbox" checked="{{isChecked}}" />
-      <label for="{{id}}">{{labelText}}</label>
+      <label for="{{id}}" class="widget-edit-input-label">{{labelText}}</label>
     </div>
     """
 

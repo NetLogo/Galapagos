@@ -1,20 +1,13 @@
-window.RactiveEditFormFontSize = Ractive.extend({
+window.RactiveEditFormFontSize = RactiveEditFormLabeledInput.extend({
 
   data: -> {
-    id:    undefined # String
-  , name:  undefined # String
-  , value: undefined # String
+    attrs:    "min=0 step=1 required"
+  , labelStr: "Font size:"
+  , type:     "number"
   }
 
   isolated: true
 
   twoway: false
-
-  template:
-    """
-    <label for="{{id}}">Font size: </label>
-    <input id="{{id}}" class="widget-edit-text" name="{{name}}" placeholder="(Required)"
-           type="number" value="{{value}}" autofocus min=1 max=128 step=1 required />
-    """
 
 })

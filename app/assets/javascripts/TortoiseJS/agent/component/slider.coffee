@@ -1,27 +1,4 @@
 # coffeelint: disable=max_line_length
-LabeledInput = Ractive.extend({
-
-  data: -> {
-    id:         undefined # String
-  , labelStr:   undefined # String
-  , labelStyle: undefined # String
-  , name:       undefined # String
-  , style:      undefined # String
-  , type:       undefined # String
-  , value:      undefined # String
-  }
-
-  twoway: false
-
-  template:
-    """
-    <label for="{{id}}" style="{{labelStyle}}">{{labelStr}}</label>
-    <input id="{{id}}" name="{{name}}" type="{{type}}" value="{{value}}"
-           style="font-size: 20px; height: 26px; margin-left: 10px; {{style}}" />
-    """
-
-})
-
 FlexColumn = Ractive.extend({
   template:
     """
@@ -54,7 +31,7 @@ SliderEditForm = EditForm.extend({
   , formMinCode:  RactiveEditFormCodeContainer
   , formStepCode: RactiveEditFormCodeContainer
   , formVariable: RactiveEditFormVariable
-  , labeledInput: LabeledInput
+  , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
   }
 
@@ -103,9 +80,9 @@ SliderEditForm = EditForm.extend({
 
       <div class="flex-row" style="align-items: center;">
         <labeledInput id="{{id}}-value" labelStr="Value:" name="value" required type="number" value="{{value}}"
-                      style="flex-grow: 1; text-align: right; width: 100px;" />
+                      style="flex-grow: 1; text-align: right;" />
         <labeledInput id="{{id}}-units" labelStr="Units:" labelStyle="margin-left: 10px;" name="units" type="text" value="{{units}}"
-                      style="flex-grow: 1; padding: 4px; width: 100px;" />
+                      style="flex-grow: 1; padding: 4px;" />
       </div>
 
       <spacer height="15px" />
