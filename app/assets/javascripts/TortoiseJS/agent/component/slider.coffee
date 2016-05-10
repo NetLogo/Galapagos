@@ -59,7 +59,7 @@ SliderEditForm = EditForm.extend({
   }
 
   validate: (form) ->
-    value = parseFloat(form.value.value)
+    value = form.value.valueAsNumber
     {
       currentValue: value
     ,      default: value
