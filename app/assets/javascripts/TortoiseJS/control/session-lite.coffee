@@ -1,4 +1,3 @@
-DEFAULT_UPDATE_DELAY = 1000 / 60
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
 SLOW_UPDATE_EXP      = 4
@@ -29,13 +28,15 @@ class window.SessionLite
     requestAnimationFrame(@eventLoop)
 
   updateDelay: ->
-    speed = @widgetController.speed()
+    viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
+    speed      = @widgetController.speed()
+    delay      = 1000 / viewWidget.frameRate
     if speed > 0
       speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
-      DEFAULT_UPDATE_DELAY * (1 - speedFactor)
+      delay * (1 - speedFactor)
     else
       speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
-      MAX_UPDATE_DELAY * speedFactor + DEFAULT_UPDATE_DELAY * (1 - speedFactor)
+      MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
 
   redrawDelay: ->
     speed       = @widgetController.speed()
