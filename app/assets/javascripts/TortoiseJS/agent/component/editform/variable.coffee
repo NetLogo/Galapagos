@@ -14,7 +14,7 @@ window.RactiveEditFormVariable = Ractive.extend({
   template:
     """
     <label for="{{id}}">Global variable: </label>
-    <input id="{{id}}" class="widget-edit-text-size" name="{{name}}" placeholder="(Required)"
+    <input id="{{id}}" class="widget-edit-text" name="{{name}}" placeholder="(Required)"
            type="text" value="{{value}}"
            autofocus autocomplete="off"
            pattern="[=*!<>:#+/%'&$^.?\\-\\w]+"
