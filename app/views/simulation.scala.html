@@ -126,9 +126,16 @@
                            openSession,
                            displayError);
       } else if (window.location.search.length > 0) {
-        var url = window.location.search.slice(1);
-        console.log(url);
-        Tortoise.fromURL(url, modelContainer, openSession, displayError);
+
+        var query    = window.location.search.slice(1);
+        var pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
+        var paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
+
+        var url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
+        var modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
+
+        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
+
       }
 
       window.addEventListener("message", function (e) {

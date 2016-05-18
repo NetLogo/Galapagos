@@ -76,17 +76,18 @@ normalizedFileName = (path) ->
   pathComponents = path.split(/\/|\\/)
   decodeURI(pathComponents[pathComponents.length - 1])
 
-loadData = (container, pathOrURL, loader, onError) ->
+loadData = (container, pathOrURL, name, loader, onError) ->
   {
     container,
     loader,
     onError,
     modelPath: pathOrURL,
+    name
   }
 
 openSession = (load) -> (model) ->
-  filename = normalizedFileName(load.modelPath)
-  session  = newSession(load.container, model, false, filename, load.onError)
+  name    = load.name ? normalizedFileName(load.modelPath)
+  session = newSession(load.container, model, false, name, load.onError)
   load.loader.finish()
   session
 
@@ -130,16 +131,16 @@ finishLoading = ->
 
 fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
-    load = loadData(container, path, loader, onError)
+    load = loadData(container, path, undefined, loader, onError)
     handleCompilation(
       apply(callback, openSession(load)),
       reportCompilerError(load)
     )(nlogo)
   )
 
-fromURL = (url, container, callback, onError = defaultDisplayError(container)) ->
+fromURL = (url, modelName, container, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
-    load = loadData(container, url, loader, onError)
+    load = loadData(container, url, modelName, loader, onError)
     handleAjaxLoad(url,
       handleCompilation(
         apply(callback, openSession(load)),

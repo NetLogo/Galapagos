@@ -24,7 +24,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       (id) -> id)                                                   # ID Sanitizer
 
   dropNLogoExtension = (s) ->
-    s.slice(0, -6)
+    if s.match(/.*\.nlogo/)?
+      s.slice(0, -6)
+    else
+      s
 
   existsInObj = (f) -> (obj) ->
     for _, v of obj when f(v)
