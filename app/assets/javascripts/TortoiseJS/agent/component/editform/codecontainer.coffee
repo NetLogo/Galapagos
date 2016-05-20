@@ -27,7 +27,7 @@ RactiveCodeContainerBase = Ractive.extend({
   twoway: false
 
   _setupCodeMirror: ->
-    baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code') }
+    baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
     config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
     editor     = new CodeMirror(@find("##{@get('id')}"), config)
     editor.on('change', => @set('code', editor.getValue()))
