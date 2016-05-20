@@ -183,6 +183,7 @@
 
 .netlogo-info-editor {
   border: 1px solid black;
+  height: 500px;
 }
 
 .netlogo-toggle-edit-mode {
