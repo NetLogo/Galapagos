@@ -12,6 +12,7 @@ class window.AgentStreamController
     @mouseX      = 0
     @mouseY      = 0
     @initMouseTracking()
+    @initTouchTracking()
 
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
@@ -32,6 +33,45 @@ class window.AgentStreamController
       @mouseX = e.clientX - rect.left
       @mouseY = e.clientY - rect.top
     )
+
+  # Unit -> Unit
+  initTouchTracking: ->
+
+    endTouch =
+      (e) =>
+        @mouseDown   = false
+        @mouseInside = false
+        return
+
+    trackTouch =
+      ({ clientX, clientY }) =>
+        { bottom, left, top, right } = @view.visibleCanvas.getBoundingClientRect()
+        if (left <= clientX <= right) and (top <= clientY <= bottom)
+          @mouseInside = true
+          @mouseX      = clientX - left
+          @mouseY      = clientY - top
+        else
+          @mouseInside = false
+        return
+
+    document.addEventListener('touchend',    endTouch)
+    document.addEventListener('touchcancel', endTouch)
+
+    @view.visibleCanvas.addEventListener('touchmove'
+    , (e) =>
+        e.preventDefault()
+        trackTouch(e.changedTouches[0])
+        return
+    )
+
+    @view.visibleCanvas.addEventListener('touchstart'
+    , (e) =>
+        @mouseDown = true
+        trackTouch(e.touches[0])
+        return
+    )
+
+    return
 
   repaint: ->
     @view.transformToWorld(@model.world)
