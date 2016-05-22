@@ -27,6 +27,11 @@ trait TagBuilder {
   def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html
 }
 
+object TagBuilder {
+  def protocolRelativeURL(url: URL): String =
+    s"//${url.getAuthority}${url.getFile}"
+}
+
 object InlineTagBuilder extends TagBuilder {
 
   override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
@@ -65,7 +70,7 @@ object OutsourceTagBuilder extends TagBuilder {
     genTag(new URL(call.absoluteURL))
 
   private def genTag(url: URL): Html = {
-    val protoRelativeURL = s"//${url.getAuthority}${url.getFile}"
+    val protoRelativeURL        = TagBuilder.protocolRelativeURL(url)
     val FileExtensionRegex      = ".*\\.(.*)$".r
     val FileExtensionRegex(ext) = url.getPath
     ext match {
