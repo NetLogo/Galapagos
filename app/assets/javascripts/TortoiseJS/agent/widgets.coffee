@@ -389,11 +389,8 @@ setUpSlider = (source, destination) ->
 # Creates the plot ops for Highchart interaction.
 createPlotOps = (container, widgets) ->
   plotOps = {}
-  for widget in widgets
-    if widget.type == "plot"
-      plotOps[widget.display] = new HighchartsOps(
-        container.querySelector("#netlogo-plot-#{widget.id}")
-      )
+  for { display, id, type } in widgets when type is "plot"
+    plotOps[display] = new HighchartsOps(container.querySelector("#netlogo-plot-#{id}"))
   plotOps
 
 # (widget, Any) -> Boolean
