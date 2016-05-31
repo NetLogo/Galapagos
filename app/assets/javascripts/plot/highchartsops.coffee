@@ -44,13 +44,14 @@ class window.HighchartsOps extends PlotOps
       return
 
     registerPen = (pen) ->
-      num  = @_chart.series.length
-      mode = @modeToString(pen.getDisplayMode())
+      num       = @_chart.series.length
+      mode      = @modeToString(pen.getDisplayMode())
+      isScatter = mode is 'scatter'
       @_chart.addSeries({
         color:      @colorToRGBString(pen.getColor()),
         data:       [],
         dataLabels: { enabled: false },
-        marker:     { enabled: mode is 'scatter' },
+        marker:     { enabled: isScatter, radius: if isScatter then 1 else 4 },
         name:       pen.name,
         type:       mode
       })
