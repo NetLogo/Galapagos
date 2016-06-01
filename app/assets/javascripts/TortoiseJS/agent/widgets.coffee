@@ -132,9 +132,12 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     clear: -> model.outputWidgetOutput = ""
   }
 
+  # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
+  # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
   dialog = {
     confirm: (str) -> clearMouse(); window.confirm(str)
     notify:  (str) -> clearMouse(); window.nlwAlerter.display("NetLogo Notification", true, str)
+    yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
