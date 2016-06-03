@@ -104,6 +104,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     oncomplete: attachWidgetMenus
   })
 
+  container.querySelector('.netlogo-model').focus()
   mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
   mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], => ractive.fire('toggleInterfaceLock'))
 
