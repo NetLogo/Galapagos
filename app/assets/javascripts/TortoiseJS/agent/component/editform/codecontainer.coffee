@@ -59,10 +59,11 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
 window.RactiveEditFormCodeContainer = Ractive.extend({
 
   data: -> {
-    id:    undefined # String
-  , label: undefined # String
-  , style: undefined # String
-  , value: undefined # String
+    config: undefined # Object
+  , id:     undefined # String
+  , label:  undefined # String
+  , style:  undefined # String
+  , value:  undefined # String
   }
 
   isolated: true
@@ -76,7 +77,7 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
   template:
     """
     <label for="{{id}}">{{label}}</label>
-    <codeContainer id="{{id}}" initialCode="{{value}}" style="{{style}}" />
+    <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}" style="{{style}}" />
     """
 
 })
