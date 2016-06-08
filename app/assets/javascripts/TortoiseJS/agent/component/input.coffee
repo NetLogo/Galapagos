@@ -77,6 +77,7 @@ window.RactiveInput = RactiveWidget.extend({
 
   components: {
     editForm: InputEditForm
+  , editor:   RactiveCodeContainerMultiline
   }
 
   template:
@@ -105,9 +106,9 @@ window.RactiveInput = RactiveWidget.extend({
             <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}"></textarea>
           {{/if}}
         {{/}}
-        {{# widget.boxtype === 'String (reporter)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
-        {{# widget.boxtype === 'String (commands)'}}<input type="text" value="{{widget.currentValue}}" />{{/}}
-        <!-- TODO: Fix color input. It'd be nice to use html5s color input. -->
+        {{# widget.boxtype === 'String (reporter)' || widget.boxtype === 'String (commands)' }}
+          <editor id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 24px;" code="{{widget.currentValue}}" />
+        {{/}}
         {{# widget.boxtype === 'Color'}}<input type="color" value="{{hexColor}}" />{{/}}
       </label>
       """
