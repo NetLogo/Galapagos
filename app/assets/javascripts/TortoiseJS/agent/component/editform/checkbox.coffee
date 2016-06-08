@@ -1,7 +1,8 @@
 window.RactiveEditFormCheckbox = Ractive.extend({
 
   data: -> {
-    id:        undefined # String
+    disabled:  undefined # Boolean
+  , id:        undefined # String
   , isChecked: undefined # Boolean
   , labelText: undefined # String
   , name:      undefined # String
@@ -15,7 +16,8 @@ window.RactiveEditFormCheckbox = Ractive.extend({
     """
     <div>
       <input id="{{id}}" class="widget-edit-checkbox"
-             name="[[name]]" type="checkbox" checked="{{isChecked}}" />
+             name="[[name]]" type="checkbox" checked="{{isChecked}}"
+             {{# disabled }} disabled {{/}} />
       <label for="{{id}}" class="widget-edit-input-label">{{labelText}}</label>
     </div>
     """

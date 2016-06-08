@@ -87,7 +87,8 @@ SliderEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?" name="vertical" />
+      <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical? (not yet supported)"
+                    name="vertical" disabled="true" />
       """
 
   }
