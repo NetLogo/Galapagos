@@ -36,17 +36,21 @@ LabelEditForm = EditForm.extend({
 
       <spacer height="20px" />
 
-      <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+      <div class="flex-row" style="align-items: center;">
+        <div style="width: 48%;">
+          <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+        </div>
+        <spacer width="4%" />
+        <div style="width: 48%;">
+          <label for="{{id}}-text-color">Text color:</label>
+          <input id="{{id}}-text-color" class="widget-edit-color-picker" name="color"
+                 type="color" value="{{color}}" />
+        </div>
+      </div>
 
       <spacer height="15px" />
 
       <formCheckbox id="{{id}}-transparent-checkbox" isChecked={{transparent}} labelText="Transparent background" name="transparent" />
-
-      <spacer height="15px" />
-
-      <label for="{{id}}-text-color">Text color:</label>
-      <input id="{{id}}-text-color" class="widget-edit-color-picker" name="color"
-             type="color" value="{{color}}" />
       """
     # coffeelint: enable=max_line_length
 
