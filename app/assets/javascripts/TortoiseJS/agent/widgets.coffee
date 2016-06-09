@@ -278,7 +278,7 @@ class window.WidgetController
     # recompile in one with a higher index, it will lead to an error or a totally messed up widget.
     # This is because this code is bonkers.  Fixing this properly, however, would require some
     # serious thinking or rearchitecting, which I don't want to get into right now.  I'll take care
-    # of that some other time, as this getting closer to real deployment. --JAB (5/2/16)
+    # of that some other time, as this is getting closer to real deployment. --JAB (5/2/16)
     for widget, index in widgets
       storedWidget = @widgetObj[index]
       storedWidget.compilation = widget.compilation
