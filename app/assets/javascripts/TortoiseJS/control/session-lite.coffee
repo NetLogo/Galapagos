@@ -82,10 +82,24 @@ class window.SessionLite
       code = @widgetController.code()
       codeCompile(code, [], [], @widgetController.widgets(), (res) =>
         if res.model.success
+
+          # This can go away when `res.model.result` stops blowing away all of the globals
+          # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
+          sliderVals = {}
+
+          # FYI, this is also fundamentally broken by its reliance of widget indices.  --JAB (6/10/16)
+          for { currentValue, type }, i in @widgetController.widgets() when type is "slider"
+            sliderVals[i] = currentValue
+
           globalEval(res.model.result)
           @widgetController.ractive.set('isStale',          false)
           @widgetController.ractive.set('lastCompiledCode', code)
           @widgetController.freshenUpWidgets(globalEval(res.widgets))
+
+          for k, v of sliderVals
+            { varName } = @widgetController.widgets()[k]
+            world.observer.setGlobal(varName, v)
+
         else
           @alertCompileError(res.model.result)
       , @alertCompileError)
