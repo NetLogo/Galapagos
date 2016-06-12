@@ -25,7 +25,7 @@ LabeledInput = Ractive.extend({
 FlexColumn = Ractive.extend({
   template:
     """
-    <div style="display: flex; align-items: center; flex-direction: column; flex-grow: 1; max-width: 140px;">
+    <div class="flex-column" style="align-items: center; flex-grow: 1; max-width: 140px;">
       {{ yield }}
     </div>
     """
@@ -82,7 +82,7 @@ SliderEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="display: flex; align-items: stretch; flex-direction: row; justify-content: space-around">
+      <div class="flex-row" style="align-items: stretch; justify-content: space-around">
         <column>
           <formMinCode id="{{id}}-min-code" label="Minimum" name="minCode" config="{ scrollbarStyle: 'null' }"
                        style="width: 100%;" value="{{minCode}}" />
@@ -101,7 +101,7 @@ SliderEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="display: flex; align-items: center; flex-direction: row;">
+      <div class="flex-row" style="align-items: center;">
         <labeledInput id="{{id}}-value" labelStr="Value:" name="value" required type="number" value="{{value}}"
                       style="flex-grow: 1; text-align: right; width: 100px;" />
         <labeledInput id="{{id}}-units" labelStr="Units:" labelStyle="margin-left: 10px;" name="units" type="text" value="{{units}}"

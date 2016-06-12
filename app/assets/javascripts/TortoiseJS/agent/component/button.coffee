@@ -47,7 +47,7 @@ ButtonEditForm = EditForm.extend({
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <div style="display: flex; align-items: center; flex-direction: row;">
+      <div class="flex-row" style="align-items: center;">
         <formDropdown id="{{id}}-type" choices="['observer', 'turtles', 'patches', 'links']" name="type" label="Agent(s):" selected="{{displayedType}}" />
         <formCheckbox id="{{id}}-forever-checkbox" isChecked={{isForever}} labelText="Forever" name="forever" />
       </div>
@@ -62,7 +62,7 @@ ButtonEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="align-items: center; display: flex; flex-direction: row;">
+      <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-display">Display name:</label>
         <input  id="{{id}}-display" name="display" type="text" value="{{display}}"
                 style="flex-grow: 1; font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;" />
@@ -70,7 +70,7 @@ ButtonEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="align-items: center; display: flex; flex-direction: row;">
+      <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-action-key">Action key:</label>
         <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
                 style="font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;

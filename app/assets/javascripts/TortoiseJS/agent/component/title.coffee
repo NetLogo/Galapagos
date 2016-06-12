@@ -22,7 +22,7 @@ window.RactiveModelTitle = Ractive.extend({
   template:
     """
     <div class="netlogo-model-masthead">
-      <div style="display: flex; justify-content: center; height: 30px; line-height: 30px;">
+      <div class="flex-row" style="justify-content: center; height: 30px; line-height: 30px;">
         <h2 id="netlogo-title"
             on-contextmenu="showContextMenu:{{'title-context-items'}}"
             class="netlogo-widget netlogo-model-title"

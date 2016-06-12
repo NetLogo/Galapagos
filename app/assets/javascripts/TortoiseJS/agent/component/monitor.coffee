@@ -43,7 +43,7 @@ MonitorEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="align-items: center; display: flex; flex-direction: row;">
+      <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-display">Display name:</label>
         <input  id="{{id}}-display" name="display" type="text" value="{{display}}"
                 style="flex-grow: 1; font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;" />
@@ -51,7 +51,7 @@ MonitorEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div style="align-items: center; display: flex; flex-direction: row;
+      <div class="flex-row" style="align-items: center;
                   justify-content: space-between; margin: 0 50px 0 0;">
 
         <label for="{{id}}">Decimal places: </label>
