@@ -3,6 +3,10 @@
  * Where possible, css for certain elements should be moved out, although there are clearly some exceptions.
  */
 
+.hidden {
+  display: none;
+}
+
 .rounded {
   border-radius: 10px;
 }
