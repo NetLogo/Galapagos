@@ -111,6 +111,13 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
+  setUpViewProxies(viewModel, viewController.model.world)
+  fontSizeProxy =
+    addProxyTo( viewModel.proxies
+              , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
+              , "fontSize"
+              , viewModel.fontSize)
+
   outputWidget = widgets.filter((w) -> w.type == 'output')[0]
 
   plotOps = createPlotOps(container, widgets)
@@ -154,7 +161,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.observe('widgetObj.*.bottom', ->
     @set('height', Math.max.apply(Math, w.bottom for own i, w of @get('widgetObj') when w.bottom?))
   )
-
 
   ractive.on('checkFocus', (event) ->
     @set('hasFocus', document.activeElement is event.node)
@@ -388,6 +394,26 @@ setUpSlider = (source, destination) ->
   destination.minValue     = value
   destination.maxValue     = value + 1
   destination.stepValue    = 1
+  return
+
+# (Widgets.View, AgentStreamController.View) -> Unit
+setUpViewProxies = (widgetView, modelView) ->
+
+  translations = {
+    maxPxcor:           "maxpxcor"
+  , maxPycor:           "maxpycor"
+  , minPxcor:           "minpxcor"
+  , minPycor:           "minpycor"
+  , patchSize:          "patchsize"
+  , wrappingAllowedInX: "wrappingallowedinx"
+  , wrappingAllowedInY: "wrappingallowediny"
+  }
+
+  widgetView.proxies = {}
+
+  for wName, mName of translations
+    addProxyTo(widgetView.proxies, [[widgetView, wName], [modelView, mName]], wName, widgetView[wName])
+
   return
 
 # (Element, [widget]) -> [HighchartsOps]
