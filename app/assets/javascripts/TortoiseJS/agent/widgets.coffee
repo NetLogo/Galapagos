@@ -182,6 +182,24 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       false
   )
 
+  ractive.on('*.redraw-view'
+  , ->
+      viewController.repaint()
+  )
+
+  ractive.on('*.update-topology'
+  , ->
+      { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.model.world
+      world.changeTopology(wrapX, wrapY)
+  )
+
+  ractive.on('*.resize-view'
+  , ->
+      { minpxcor, maxpxcor, minpycor, maxpycor, patchSize } = viewController.model.world
+      world.patchSize = patchSize
+      world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
+  )
+
   controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller

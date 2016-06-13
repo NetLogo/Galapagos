@@ -64,10 +64,28 @@ window.WidgetEventGenerators = {
       type: "recompile"
     }
 
+  redrawView: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('redraw-view')
+      type: "redrawView"
+    }
+
   rename: (oldName, newName) ->
     {
       run:  (ractive, widget) -> ractive.fire('renameInterfaceGlobal', oldName, newName, widget.currentValue)
       type: "rename:#{oldName},#{newName}"
+    }
+
+  resizeView: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('resize-view')
+      type: "resizeView"
+    }
+
+  updateTopology: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('update-topology')
+      type: "updateTopology"
     }
 
 }

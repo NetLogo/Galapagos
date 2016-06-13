@@ -137,6 +137,11 @@
   text-align: right;
 }
 
+.widget-edit-hint-text {
+  font-size:   12px;
+  user-select: none;
+}
+
 .widget-edit-dropdown {
   font-size: 14px;
   height:    20px;
@@ -148,4 +153,12 @@
   height:    115px;
   max-width: 100%;
   min-width: 100%;
+}
+
+.widget-edit-fieldset {
+  border-radius: 8px;
+}
+
+.widget-edit-legend {
+  user-select: none;
 }
