@@ -26,31 +26,36 @@ window.RactiveWidget = Ractive.extend({
     @on('*.updateWidgetValue'
     , ({ proxies = {}, triggers = {}, values = {}}) ->
 
-        widget = @get('widget')
+        try
 
-        triggerNames = Object.keys(triggers)
+          widget = @get('widget')
 
-        oldies = triggerNames.reduce(((acc, x) -> acc[x] = widget[x]; acc), {})
+          triggerNames = Object.keys(triggers)
 
-        for k, v of values
-          widget[k] = v
+          oldies = triggerNames.reduce(((acc, x) -> acc[x] = widget[x]; acc), {})
 
-        for k, v of proxies
-          widget.proxies[k] = v
+          for k, v of values
+            widget[k] = v
 
-        eventArraysArray =
-          for name in triggerNames when widget[name] isnt oldies[name]
-            triggers[name].map((f) -> f(oldies[name], widget[name]))
+          for k, v of proxies
+            widget.proxies[k] = v
 
-        events = [].concat(eventArraysArray...)
+          eventArraysArray =
+            for name in triggerNames when widget[name] isnt oldies[name]
+              triggers[name].map((f) -> f(oldies[name], widget[name]))
 
-        uniqueEvents =
-          events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
+          events = [].concat(eventArraysArray...)
 
-        for event in uniqueEvents
-          event.run(this, widget)
+          uniqueEvents =
+            events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
 
-        false
+          for event in uniqueEvents
+            event.run(this, widget)
+
+        catch ex
+          console.error(ex)
+        finally
+          false
 
     )
 
