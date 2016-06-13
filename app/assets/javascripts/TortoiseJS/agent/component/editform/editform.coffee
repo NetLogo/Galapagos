@@ -43,6 +43,7 @@ window.EditForm = Ractive.extend({
         # Must unhide before measuring --JAB (3/21/16)
         elem = @getElem()
         elem.classList.remove('hidden')
+        elem.focus()
 
         dialogHalfWidth  = elem.offsetWidth  / 2
         dialogHalfHeight = elem.offsetHeight / 2
