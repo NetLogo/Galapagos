@@ -32,12 +32,18 @@ ButtonEditForm = EditForm.extend({
   validate: (form) ->
     key = form.actionKey.value
     {
-                   actionKey: if key.length is 1 then key.toUpperCase() else null
-    ,             buttonType: @_displayToType(form.type.value)
-    , disableUntilTicksStart: form.startsDisabled.checked
-    ,                display: form.display.value
-    ,                forever: form.forever.checked
-    ,                 source: @findComponent('formCode').findComponent('codeContainer').get('code')
+      triggers: {
+        buttonType: [WidgetEventGenerators.recompile]
+      ,     source: [WidgetEventGenerators.recompile]
+      }
+    , values: {
+                     actionKey: (if key.length is 1 then key.toUpperCase() else null)
+      ,             buttonType: @_displayToType(form.type.value)
+      , disableUntilTicksStart: form.startsDisabled.checked
+      ,                display: form.display.value
+      ,                forever: form.forever.checked
+      ,                 source: @findComponent('formCode').findComponent('codeContainer').get('code')
+      }
     }
 
   partials: {

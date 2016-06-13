@@ -21,7 +21,20 @@ InputEditForm = EditForm.extend({
 
     boxtype = form.boxtype.value
     varName = form.varName.value
-    out = { boxtype: boxtype, display: varName, multiline: form.multiline.checked, varName: varName.toLowerCase() }
+
+    weg = WidgetEventGenerators
+    out =
+      {
+        triggers: {
+          varName: [weg.recompile, weg.rename]
+        }
+      , values: {
+            boxtype: boxtype
+        ,   display: varName
+        , multiline: form.multiline.checked
+        ,   varName: varName.toLowerCase()
+        }
+      }
 
     if boxtype isnt @get('boxtype')
       default_ =
@@ -29,8 +42,8 @@ InputEditForm = EditForm.extend({
           when "Color"  then 0 # Color number for black
           when "Number" then 0
           else               ""
-      out.currentValue = default_
-      out.value        = default_
+      out.values.currentValue = default_
+      out.values.value        = default_
 
     out
 

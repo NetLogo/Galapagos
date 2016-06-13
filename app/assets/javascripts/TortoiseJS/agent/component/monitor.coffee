@@ -26,10 +26,15 @@ MonitorEditForm = EditForm.extend({
   # more straight-forward to just go digging in the form component for its value. --JAB (4/21/16)
   validate: (form) ->
     {
-        display: form.display.value
-    ,  fontSize: parseInt(form.fontSize.value)
-    , precision: parseInt(form.precision.value)
-    ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
+      triggers: {
+        source: [WidgetEventGenerators.recompile]
+      }
+    , values: {
+          display: form.display.value
+      ,  fontSize: parseInt(form.fontSize.value)
+      , precision: parseInt(form.precision.value)
+      ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
+      }
     }
 
   partials: {

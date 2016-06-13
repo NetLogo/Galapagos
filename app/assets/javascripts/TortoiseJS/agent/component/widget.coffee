@@ -24,48 +24,50 @@ window.RactiveWidget = Ractive.extend({
     )
 
     @on('*.updateWidgetValue'
-    , (obj) ->
+    , ({ proxies = {}, triggers = {}, values = {}}) ->
 
         widget = @get('widget')
 
-        {
-          buttonType: startType
-        ,        max: startMax
-        ,        min: startMin
-        ,     source: startSource
-        ,       step: startStep
-        ,    varName: startName
-        } = widget
+        triggerNames = Object.keys(triggers)
 
-        for k, v of obj
+        oldies = triggerNames.reduce(((acc, x) -> acc[x] = widget[x]; acc), {})
+
+        for k, v of values
           widget[k] = v
 
-        {
-          buttonType: endType
-        ,        max: endMax
-        ,        min: endMin
-        ,     source: endSource
-        ,       step: endStep
-        ,    varName: endName
-        } = widget
+        for k, v of proxies
+          widget.proxies[k] = v
 
-        didRename = startName isnt endName
+        eventArraysArray =
+          for name in triggerNames when widget[name] isnt oldies[name]
+            triggers[name].map((f) -> f(oldies[name], widget[name]))
 
-        didChangeCode =
-          (startMax    isnt endMax   ) or
-          (startMin    isnt endMin   ) or
-          (startSource isnt endSource) or
-          (startStep   isnt endStep  ) or
-          (startType   isnt endType  )
+        events = [].concat(eventArraysArray...)
 
-        if didRename
-          @fire('renameInterfaceGlobal', startName, endName, widget.currentValue)
+        uniqueEvents =
+          events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
 
-        if didRename or didChangeCode
-          @fire('recompile')
+        for event in uniqueEvents
+          event.run(this, widget)
 
         false
 
     )
 
 })
+
+window.WidgetEventGenerators = {
+
+  recompile: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('recompile')
+      type: "recompile"
+    }
+
+  rename: (oldName, newName) ->
+    {
+      run:  (ractive, widget) -> ractive.fire('renameInterfaceGlobal', oldName, newName, widget.currentValue)
+      type: "rename:#{oldName},#{newName}"
+    }
+
+}

@@ -38,15 +38,23 @@ SliderEditForm = EditForm.extend({
   validate: (form) ->
     value = form.value.valueAsNumber
     {
-      currentValue: value
-    ,      default: value
-    ,    direction: (if form.vertical.checked then "vertical" else "horizontal")
-    ,      display: form.varName.value
-    ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
-    ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
-    ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
-    ,        units: form.units.value
-    ,      varName: form.varName.value.toLowerCase()
+      triggers: {
+            max: [WidgetEventGenerators.recompile]
+      ,     min: [WidgetEventGenerators.recompile]
+      ,    step: [WidgetEventGenerators.recompile]
+      , varName: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
+      }
+    , values: {
+        currentValue: value
+      ,      default: value
+      ,    direction: (if form.vertical.checked then "vertical" else "horizontal")
+      ,      display: form.varName.value
+      ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
+      ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
+      ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
+      ,        units: form.units.value
+      ,      varName: form.varName.value.toLowerCase()
+      }
     }
 
   partials: {

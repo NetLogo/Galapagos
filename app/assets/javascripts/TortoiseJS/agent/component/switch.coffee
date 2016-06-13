@@ -13,8 +13,17 @@ SwitchEditForm = EditForm.extend({
   }
 
   validate: (form) ->
+    weg     = WidgetEventGenerators
     varName = form.varName.value
-    { display: varName, varName: varName.toLowerCase() }
+    {
+      triggers: {
+        varName: [weg.recompile, weg.rename]
+      }
+    , values: {
+        display: varName
+      , varName: varName.toLowerCase()
+      }
+    }
 
   partials: {
 
