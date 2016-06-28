@@ -1,47 +1,29 @@
-window.EditForm = Ractive.extend({
+window.RactiveModalDialog = Ractive.extend({
 
-  container: undefined # Element
   startX:    undefined # Number
   startY:    undefined # Number
   view:      undefined # Element
 
   data: -> {
-    idBasis: undefined # String
+    style:   undefined # String
   , xLoc:    undefined # Number
   , yLoc:    undefined # Number
-  }
-
-  computed: {
-    id: (-> "#{@get('idBasis')}-edit-window") # () => String
   }
 
   isolated: true
 
   twoway: false
 
-  # We make the bound values lazy and then call `resetPartials` when showing, so as to
-  # prevent the perpetuation of values after a change-and-cancel. --JAB (4/1/16)
-  lazy: true
-
   oninit: ->
-
-    @on('submit'
-    , ({ node }) ->
-        newProps = @validate(node)
-        if newProps?
-          @fire('updateWidgetValue', newProps)
-        @fire('activateCloakingDevice')
-        false
-    )
 
     @on('showYourself'
     , ->
 
-        containerMidX = @container.offsetWidth  / 2
-        containerMidY = @container.offsetHeight / 2
+        containerMidX = @el.offsetWidth  / 2
+        containerMidY = @el.offsetHeight / 2
 
         # Must unhide before measuring --JAB (3/21/16)
-        elem = @getElem()
+        elem = @find('*')
         elem.classList.remove('hidden')
         elem.focus()
 
@@ -51,19 +33,17 @@ window.EditForm = Ractive.extend({
         @set('xLoc', containerMidX - dialogHalfWidth)
         @set('yLoc', containerMidY - dialogHalfHeight)
 
-        @resetPartial('widgetFields', @partials.widgetFields)
-
         false
 
     )
 
     @on('activateCloakingDevice'
     , ->
-        @getElem().classList.add('hidden')
+        @find('*').classList.add('hidden')
         false
     )
 
-    @on('startEditDrag'
+    @on('startDialogDrag'
     , ({ original: { clientX, clientY, view } }) ->
         @view   = view
         @startX = @get('xLoc') - clientX
@@ -71,13 +51,13 @@ window.EditForm = Ractive.extend({
         return
     )
 
-    @on('stopEditDrag'
+    @on('stopDialogDrag'
     , ->
         @view = undefined
         return
     )
 
-    @on('dragEditDialog'
+    @on('dragDialog'
     , ({ original: { clientX, clientY, view } }) ->
         # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
         # We only take non-negative values here, to avoid the dialog disappearing --JAB (3/22/16)
@@ -87,7 +67,7 @@ window.EditForm = Ractive.extend({
         false
     )
 
-    @on('cancelEdit'
+    @on('closeDialog'
     , ->
         @fire('activateCloakingDevice')
         return
@@ -96,7 +76,7 @@ window.EditForm = Ractive.extend({
     @on('handleKey'
     , ({ original: { keyCode } }) ->
         if keyCode is 27
-          @fire('cancelEdit')
+          @fire('closeDialog')
           false
         return
     )
@@ -109,45 +89,67 @@ window.EditForm = Ractive.extend({
 
     return
 
-  oncomplete: ->
-
-    findParentByClass =
-      (clss) -> ({ parentElement: parent }) ->
-        if parent?
-          if parent.classList.contains(clss)
-            parent
-          else
-            findParentByClass(clss)(parent)
-        else
-          undefined
-
-    @container = findParentByClass('netlogo-widget-container')(@getElem())
-
-  getElem: ->
-    @find("##{@get('id')}")
-
   template:
     """
-    <div id="{{id}}"
-         class="widget-edit-popup widget-edit-text hidden"
-         style="top: {{yLoc}}px; left: {{xLoc}}px;"
+    <div class="netlogo-modal-popup hidden"
+         style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}};"
          on-contextmenu="blockContextMenu" on-keydown="handleKey"
-         on-drag="dragEditDialog" on-dragstart="startEditDrag"
-         on-dragend="stopEditDrag"
+         on-drag="dragDialog" on-dragstart="startDialogDrag"
+         on-dragend="stopDialogDrag"
          tabindex="0">
-      <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancelEdit">X</div>
-      <form class="widget-edit-form" on-submit="submit">
-        <div class="widget-edit-form-title">{{>title}}</div>
-        {{>widgetFields}}
-        <div class="widget-edit-form-button-container">
-          <input class="widget-edit-text" type="submit" value="OK" />
-          <input class="widget-edit-text" type="button" on-click="cancelEdit" value="Cancel" />
-        </div>
-      </form>
+      <div class="widget-edit-closer" on-click="closeDialog">X</div>
+      {{>innerContent}}
     </div>
     """
 
   partials: {
+    innerContent: ""
+  }
+
+})
+
+window.EditForm = RactiveModalDialog.extend({
+
+  isolated: true
+
+  twoway: false
+
+  # We make the bound values lazy and then call `resetPartial` when showing, so as to
+  # prevent the perpetuation of values after a change-and-cancel. --JAB (4/1/16)
+  lazy: true
+
+  oninit: ->
+
+    @_super()
+
+    @on('submit'
+    , ({ node }) ->
+        newProps = @validate(node)
+        if newProps?
+          @fire('updateWidgetValue', newProps)
+        @fire('activateCloakingDevice')
+        false
+    )
+
+    @on('showYourself'
+    , ->
+        @resetPartial('widgetFields', @partials.widgetFields)
+    )
+
+    return
+
+  partials: {
+    innerContent:
+      """
+      <form class="widget-edit-form" on-submit="submit">
+        <div class="netlogo-dialog-title">{{>title}}</div>
+        {{>widgetFields}}
+        <div class="widget-edit-form-button-container">
+          <input class="widget-edit-text" type="submit" value="OK" />
+          <input class="widget-edit-text" type="button" on-click="closeDialog" value="Cancel" />
+        </div>
+      </form>
+      """
     widgetFields: undefined
   }
 

@@ -475,6 +475,27 @@
   cursor: pointer;
 }
 
+.netlogo-modal-popup {
+  background-color: white;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  font-size:        20px;
+  padding:          10px 10px 0 10px;
+  position:         absolute;
+  outline:          none;
+  width:            450px;
+  z-index:          100;
+}
+
+.netlogo-dialog-title {
+  cursor:        default;
+  font-weight:   bold;
+  margin-bottom: 10px;
+  text-align:    center;
+  user-select:   none;
+}
+
 .CodeMirror {
   height: auto;
 }
