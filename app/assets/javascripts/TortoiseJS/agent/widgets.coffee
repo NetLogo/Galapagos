@@ -140,6 +140,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     clear: -> model.outputWidgetOutput = ""
   }
 
+  inspect = {
+    inspect: (agent) -> ractive.fire('inspect-agent', agent)
+  }
+
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
   # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
   dialog = {
@@ -182,6 +186,17 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       false
   )
 
+  ractive.on('inspect-agent',
+    (agent) ->
+      component = new RactiveInspectionWindow({
+        el:     container.querySelector('.netlogo-model')
+      , append: true
+      , data:   -> { agent }
+      })
+      component.fire('showYourself')
+      return
+  )
+
   ractive.on('*.redraw-view'
   , ->
       viewController.repaint()
@@ -200,7 +215,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
-  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
+  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog, inspect)
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
@@ -232,7 +247,7 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
+  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write, @output, @dialog, @inspect) ->
 
   # () -> Unit
   runForevers: ->

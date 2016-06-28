@@ -488,6 +488,16 @@
   z-index:          100;
 }
 
+.inspection-window-var-label {
+  margin-right:  10px;
+  max-width:     105px;
+  min-width:     105px;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  user-select:   none;
+  white-space:   nowrap;
+}
+
 .netlogo-dialog-title {
   cursor:        default;
   font-weight:   bold;
