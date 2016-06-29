@@ -31,7 +31,11 @@ class window.HighchartsOps extends PlotOps
         },
         series:  [],
         title:   { text: plot.name },
-        tooltip: { pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>' },
+        tooltip: {
+          formatter: ->
+            y = Number(Highcharts.numberFormat(@point.y, 3))
+            "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{y}</b><br/>"
+        },
         xAxis:   { title: { text: plot.xLabel } },
         yAxis:   { title: { text: plot.yLabel, x: -7 }, labels: { padding: 0, x: -15 } },
         plotOptions: {
