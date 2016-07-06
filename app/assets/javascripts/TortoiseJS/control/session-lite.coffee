@@ -16,6 +16,7 @@ class window.SessionLite
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
     @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
+    @widgetController.ractive.on('run-inspector-code', (code)  => @run(code))
     @drawEveryFrame = false
 
   modelTitle: ->

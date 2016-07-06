@@ -213,9 +213,20 @@
   flex-grow: 1;
 }
 
-.netlogo-command-center-editor .CodeMirror {
+.netlogo-code-input .CodeMirror {
   border: 1px solid #eee;
   height: auto;
+}
+
+.netlogo-inspector-editor .CodeMirror {
+  border: 1px solid #999;
+  height: auto;
+}
+
+.netlogo-inspector-var-editor .CodeMirror {
+  border: 1px solid #999;
+  height: auto;
+  width: 183px;
 }
 
 .netlogo-output-widget {

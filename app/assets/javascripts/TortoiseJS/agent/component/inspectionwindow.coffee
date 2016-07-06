@@ -12,6 +12,22 @@ LinkReadOnlies = {
 , end2: true
 }
 
+VarInput = RactiveNetLogoCodeInput.extend({
+
+  data: -> {
+    varName: undefined # String
+  }
+
+  isolated: true
+
+  setInput: (input) ->
+    @set('input', input)
+
+  _wrapInput: (input) ->
+    "set #{@get('varName')} (#{input})"
+
+})
+
 VarRow = Ractive.extend({
 
   data: -> {
@@ -20,10 +36,14 @@ VarRow = Ractive.extend({
     varName: undefined # String
   }
 
+  components: {
+    codeInput: VarInput
+  }
+
   computed: {
-    isReadOnly: 'this._getReadOnlyBundle()[${varName}] === true'
-    #value:      "Dump(${agent}.getVariable(${varName}), true)"
-    value:      '${agent}.getVariable(${varName})'
+    agentName:  '${agent}.toString()'
+  , isReadOnly: 'this._getReadOnlyBundle()[${varName}] === true'
+  , value:      'Dump(${agent}.getVariable(${varName}), true)'
   }
 
   isolated: true
@@ -35,12 +55,16 @@ VarRow = Ractive.extend({
     if type.isTurtle() then TurtleReadOnlies else if type.isLink() then LinkReadOnlies else PatchReadOnlies
 
   oninit: ->
-    @on('handleKeypress'
-    , ({ original: { keyCode, target } }) ->
-        if keyCode is 13 # Enter key
-          value = target.value
-          @get('agent').setVariable(@get('varName'), value)
-        return
+    @on('codeInput.run-code'
+    , (code) ->
+        @fire('run-code', code)
+        @fire('refresh-value')
+    )
+
+    @on('refresh-value'
+    , =>
+        value = @get('agent').getVariable(@get('agent'))
+        @findComponent('codeInput').setInput(Dump(value, true))
     )
 
   template:
@@ -48,9 +72,14 @@ VarRow = Ractive.extend({
     <div class="flex-row" style="align-items: center;">
       <label for="{{id}}-input" class="inspection-window-var-label" title="{{varName}}">{{varName}}</label>
       <div style="flex-grow: 1;">
-        <input id="{{id}}-input" class="widget-edit-text widget-edit-input" on-keyup="handleKeypress"
-               style="padding-right: 6px; text-align: right;" type="text" value="{{value}}"
-               {{# isReadOnly }} disabled {{/}} />
+        {{ #isReadOnly }}
+          <input id="{{id}}-input" class="widget-edit-text widget-edit-input"
+                 style="padding-right: 6px; text-align: right;" value="{{value}}" disabled />
+        {{else}}
+          <codeInput id="{{id}}-input" class="netlogo-inspector-var-editor"
+                     style="padding-right: 6px; text-align: right;"
+                     initialAskee="{{agentName}}" initialInput="{{value}}" varName="{{varName}}" />
+        {{/}}
       </div>
     </div>
     """
@@ -65,14 +94,16 @@ window.RactiveInspectionWindow = RactiveModalDialog.extend({
   }
 
   computed: {
-    id: '${agent}.toString().replace(/[ )(]/g, "")'
+    agentName: '${agent}.toString()'
+    id:        '${agentName}.replace(/[ )(]/g, "")'
   }
 
   isolated: true
 
   components: {
-    codeEditor: RactiveEditFormCodeContainer
-  , varRow:     VarRow
+    codeEditor:              RactiveEditFormCodeContainer
+  , inspectionCommandCenter: RactiveNetLogoCodeInput
+  , varRow:                  VarRow
   }
 
   _draw: ->
@@ -145,8 +176,8 @@ window.RactiveInspectionWindow = RactiveModalDialog.extend({
 
     commandCenter:
       """
-      <codeEditor id="{{id}}-code-input" label="" config="{ extraKeys: { Enter: function(editor) { ('ask {{agent.toString()}} [ ' + editor.getValue() + ' ]'); } }, scrollbarStyle: 'null' }"
-                  style="margin: 8px 0; width: 100%;" value="" />
+      <inspectionCommandCenter initialAskee="{{agentName}}" class="netlogo-inspector-editor"
+                               style="margin: 10px 0" />
       """
 
   }

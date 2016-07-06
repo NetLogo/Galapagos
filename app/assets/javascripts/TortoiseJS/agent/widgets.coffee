@@ -194,6 +194,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       , data:   -> { agent }
       })
       component.fire('showYourself')
+      component.on('*.run-code', (code) -> ractive.fire('run-inspector-code', code))
       return
   )
 
