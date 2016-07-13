@@ -209,26 +209,84 @@ ViewEditForm = EditForm.extend({
 window.RactiveView = RactiveWidget.extend({
 
   data: -> {
-    ticks: undefined # String
+
+    agentsUnderMouse:   undefined # Array[Agent]
+  , ticks:             undefined # String
+
+  , getAgentMenuText: (agent) ->
+      cleansed = agent.toString().replace(/[)(]/g, '')
+      "#{cleansed.charAt(0).toUpperCase()}#{cleansed.slice(1)}"
+
   }
 
   components: {
     editForm: ViewEditForm
   }
 
+
   isolated: true
+
+  oninit: ->
+    @_super()
+
+    @on('showContextMenu'
+    , ({ original: trueEvent }, menuItemsID) ->
+
+        trueEvent.preventDefault()
+
+        contextMenu               = @parent.find("#netlogo-widget-context-menu")
+        contextMenu.style.top     = "#{trueEvent.pageY}px"
+        contextMenu.style.left    = "#{trueEvent.pageX}px"
+        contextMenu.style.display = "block"
+
+        for child in contextMenu.children
+          child.style.display = "none"
+
+        @find("##{menuItemsID}").style.display = ""
+
+        canvas = @find('.netlogo-view-container').querySelector('canvas')
+        { left, height, top, width } = canvas.getBoundingClientRect()
+
+        x = event.clientX - left
+        y = event.clientY - top
+
+        topo = world.topology
+
+        xShrinkingFactor = width  / topo.width
+        yShrinkingFactor = height / topo.height
+
+        pxcor = (x / xShrinkingFactor) + topo.minPxcor
+        pycor = -((y / yShrinkingFactor) + topo.minPycor)
+
+        patch = world.getPatchAt(pxcor, pycor)
+
+        turtles = patch.inRadius(world.turtles(), 2).toArray().filter((t) -> not t.getVariable('hidden?'))
+        patches = [patch]
+
+        links =
+          world.links().filter(
+            (l) ->
+              { end1: { xcor: x1, ycor: y1 }, end2: { xcor: x2, ycor: y2 } } = l
+              tolerance = l.getVariable('thickness') + 0.5
+              (not l.getVariable('hidden?')) and (topo.distanceToLine(x1, y1, x2, y2, pxcor, pycor) < tolerance)
+          ).toArray()
+
+        @set('agentsUnderMouse', [].concat(turtles, patches, links))
+
+        false
+
+    )
+
+    @on('inspect'
+    , (e, agent) ->
+        InspectPrims.inspect(agent)
+    )
 
   template:
     """
     {{>view}}
     {{>contextMenu}}
-    <editForm idBasis="view"
-              maxX="{{widget.maxPxcor}}" maxY="{{widget.maxPycor}}"
-              minX="{{widget.minPxcor}}" minY="{{widget.minPycor}}"
-              wrapsInX="{{widget.wrappingAllowedInX}}" wrapsInY="{{widget.wrappingAllowedInY}}"
-              patchSize="{{widget.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
-              framerate="{{widget.frameRate}}"
-              isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+    {{>editForm}}
     """
 
   partials: {
@@ -252,8 +310,22 @@ window.RactiveView = RactiveWidget.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           <li class="context-menu-item" on-click="editWidget">Edit</li>
+          {{ # agentsUnderMouse }}
+            <li class="context-menu-item" on-click="inspect:{{.}}">Inspect {{getAgentMenuText(.)}}</li>
+          {{/}}
         </ul>
       </div>
+      """
+
+    editForm:
+      """
+      <editForm idBasis="view"
+                maxX="{{widget.maxPxcor}}" maxY="{{widget.maxPycor}}"
+                minX="{{widget.minPxcor}}" minY="{{widget.minPycor}}"
+                wrapsInX="{{widget.wrappingAllowedInX}}" wrapsInY="{{widget.wrappingAllowedInY}}"
+                patchSize="{{widget.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
+                framerate="{{widget.frameRate}}"
+                isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
       """
 
   }
