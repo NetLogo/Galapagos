@@ -245,18 +245,17 @@ window.RactiveView = RactiveWidget.extend({
         @find("##{menuItemsID}").style.display = ""
 
         canvas = @find('.netlogo-view-container').querySelector('canvas')
-        { left, height, top, width } = canvas.getBoundingClientRect()
+        { left:     cLeft, height: cHeight, top:      cTop, width: cWidth } = canvas.getBoundingClientRect()
+        { minPxcor: tLeft, height: tHeight, maxPycor: tTop, width: tWidth } = world.topology
 
-        x = event.clientX - left
-        y = event.clientY - top
+        x = event.clientX - cLeft
+        y = event.clientY - cTop
 
-        topo = world.topology
+        xShrinkingFactor = cWidth  / tWidth
+        yShrinkingFactor = cHeight / tHeight
 
-        xShrinkingFactor = width  / topo.width
-        yShrinkingFactor = height / topo.height
-
-        pxcor = (x / xShrinkingFactor) + topo.minPxcor
-        pycor = -((y / yShrinkingFactor) + topo.minPycor)
+        pxcor =   (x / xShrinkingFactor) + tLeft
+        pycor =   tTop - (y / yShrinkingFactor)
 
         patch = world.getPatchAt(pxcor, pycor)
 
@@ -268,7 +267,7 @@ window.RactiveView = RactiveWidget.extend({
             (l) ->
               { end1: { xcor: x1, ycor: y1 }, end2: { xcor: x2, ycor: y2 } } = l
               tolerance = l.getVariable('thickness') + 0.5
-              (not l.getVariable('hidden?')) and (topo.distanceToLine(x1, y1, x2, y2, pxcor, pycor) < tolerance)
+              (not l.getVariable('hidden?')) and (world.topology.distanceToLine(x1, y1, x2, y2, pxcor, pycor) < tolerance)
           ).toArray()
 
         @set('agentsUnderMouse', [].concat(turtles, patches, links))
