@@ -65,8 +65,8 @@ VarRow = Ractive.extend({
 
     @on('refresh-value'
     , =>
-        value = @get('agent').getVariable(@get('agent'))
-        @findComponent('codeInput').setInput(Dump(value, true))
+        value = @get('agent').getVariable(@get('varName'))
+        @findComponent('codeInput')?.setInput(Dump(value, true))
     )
 
   template:
