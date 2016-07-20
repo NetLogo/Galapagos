@@ -1,3 +1,5 @@
+ZoomMax = 1000
+
 TurtleReadOnlies = {
   who: true
 }
@@ -86,11 +88,56 @@ VarRow = Ractive.extend({
 
 })
 
+class MiniView
+
+  _scale:      undefined # Number
+  _focalPoint: undefined # Point
+
+  # (Canvas, View, Agent) -> MiniView
+  constructor: (@_canvas, @_fullView, agent) ->
+
+    [agentX, agentY] = agent.getCoords()
+
+    { height: cHeight, width: cWidth                     } = @_fullView
+    { height: tHeight, width: tWidth, minPxcor, maxPycor } = world.topology
+
+    proportionX = (agentX - (minPxcor - 0.5)) / tWidth
+    proportionY = ((maxPycor + 0.5) - agentY) / tHeight
+
+    x = cWidth  * proportionX
+    y = cHeight * proportionY
+
+    @_focalPoint   = { x, y }
+
+  # Unit -> Unit
+  redraw: ->
+
+    length = ZoomMax - @_scale
+    left   = @_focalPoint.x - (length / 2)
+    top    = @_focalPoint.y - (length / 2)
+
+    context = @_canvas.getContext("2d")
+    context.save()
+    context.setTransform(1, 0, 0, 1, 0, 0)
+    context.clearRect(0, 0, @_canvas.width, @_canvas.height)
+    context.drawImage(@_fullView
+                    , left, top, length, length
+                    , 0, 0, @_canvas.width, @_canvas.height)
+    context.restore()
+
+    return
+
+  # Number -> Unit
+  rescale: (@_scale) ->
+    @redraw()
+    return
+
 window.RactiveInspectionWindow = RactiveModalDialog.extend({
 
   data: -> {
     agent: undefined       # Agent
     style: "width: 300px;" # String
+    view:  undefined       # Canvas
   }
 
   computed: {
@@ -106,33 +153,24 @@ window.RactiveInspectionWindow = RactiveModalDialog.extend({
   , varRow:                  VarRow
   }
 
-  _draw: ->
-    context = @find("##{@get('id')}-canvas").getContext("2d")
-    context.fillStyle = "white"
-    context.font = "bold 30px Arial"
-    context.fillText("Unimplemented", 40, 80)
-
-  oninit: ->
-    @_super()
-
-    @on('watchAgent', -> @get('agent').watchMe(); return)
-
-    @on('handleZoom'
-    , ({ original: { target: { value } } }) ->
-        #scale = Math.pow(2, value)
-        #console.log(scale)
-        #canvas  = @find("##{@get('id')}-canvas")
-        #context = canvas.getContext("2d")
-        #context.clearRect(0, 0, canvas.width, canvas.height)
-        #context.translate(canvas.height / 2, canvas.width / 2)
-        #context.scale(scale, scale)
-        #@_draw()
-        return
-    )
-
   oncomplete: ->
     @_super()
-    @_draw()
+
+    canvas  = @find("##{@get('id')}-canvas")
+    context = canvas.getContext("2d")
+    context.imageSmoothingEnabled       = false
+    context.webkitImageSmoothingEnabled = false
+    context.mozImageSmoothingEnabled    = false
+    context.oImageSmoothingEnabled      = false
+    context.msImageSmoothingEnabled     = false
+
+    miniView = new MiniView(canvas, @get('view'), @get('agent'))
+
+    @on('watchAgent', -> @get('agent').watchMe(); return)
+    @on('handleZoom', ({ original: { target: { value } } }) -> miniView.rescale(parseFloat(value)); return)
+    @find('.inspector-zoom-slider').dispatchEvent(new CustomEvent('input')) # Trigger `handleZoom` right away
+
+    return
 
   partials: {
 
@@ -160,8 +198,8 @@ window.RactiveInspectionWindow = RactiveModalDialog.extend({
       <div class="flex-row" style="height: 35px; margin: 8px 0;">
         <input style="flex-grow: 1; font-size: 20px; font-weight: bold;" type="button"
                value="watch-me" on-click="watchAgent" />
-        <input style="flex-grow: 1" type="range" on-input="handleZoom"
-               min="-10" max="10" step="1" value="0" disabled />
+        <input class="inspector-zoom-slider" style="flex-grow: 1" on-input="handleZoom"
+               type="range" min="0" max="#{ZoomMax * .99}" step="#{ZoomMax * .01}" value="#{ZoomMax * .8}" />
       </div>
       """
 

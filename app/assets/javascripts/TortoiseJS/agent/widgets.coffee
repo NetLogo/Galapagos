@@ -191,7 +191,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       component = new RactiveInspectionWindow({
         el:     container.querySelector('.netlogo-model')
       , append: true
-      , data:   -> { agent }
+      , data:   -> { agent, view: viewController.view.visibleCanvas }
       })
       component.fire('showYourself')
       component.on('*.run-code', (code) -> ractive.fire('run-inspector-code', code))

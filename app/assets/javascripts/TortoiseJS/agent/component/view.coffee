@@ -214,8 +214,9 @@ window.RactiveView = RactiveWidget.extend({
   , ticks:             undefined # String
 
   , getAgentMenuText: (agent) ->
-      cleansed = agent.toString().replace(/[)(]/g, '')
-      "#{cleansed.charAt(0).toUpperCase()}#{cleansed.slice(1)}"
+      if agent?
+        cleansed = agent.toString().replace(/[)(]/g, '')
+        "#{cleansed.charAt(0).toUpperCase()}#{cleansed.slice(1)}"
 
   }
 
@@ -254,8 +255,8 @@ window.RactiveView = RactiveWidget.extend({
         xShrinkingFactor = cWidth  / tWidth
         yShrinkingFactor = cHeight / tHeight
 
-        pxcor =   (x / xShrinkingFactor) + tLeft
-        pycor =   tTop - (y / yShrinkingFactor)
+        pxcor =   (x / xShrinkingFactor) + (tLeft - 0.5)
+        pycor =   (tTop + 0.5) - (y / yShrinkingFactor)
 
         patch = world.getPatchAt(pxcor, pycor)
 
