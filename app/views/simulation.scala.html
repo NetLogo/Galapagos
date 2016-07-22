@@ -82,6 +82,9 @@
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
     <script>
+
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+
       var loadingOverlay  = $("#loading-overlay").get(0);
       var activeContainer = loadingOverlay;
       var modelContainer  = document.querySelector("#netlogo-model-container");
