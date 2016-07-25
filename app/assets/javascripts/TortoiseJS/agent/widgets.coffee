@@ -186,15 +186,23 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       false
   )
 
+  inspectionWindows = {}
+
   ractive.on('inspect-agent',
     (agent) ->
-      component = new RactiveInspectionWindow({
-        el:     container.querySelector('.netlogo-model')
-      , append: true
-      , data:   -> { agent, view: viewController.view.visibleCanvas }
-      })
+      createNewWindow =
+        ->
+          temp =
+            new RactiveInspectionWindow({
+              el:     container.querySelector('.netlogo-model')
+            , append: true
+            , data:   -> { agent, view: viewController.view.visibleCanvas }
+            })
+          temp.on('*.run-code', (code) -> ractive.fire('run-inspector-code', code))
+          inspectionWindows[agent.toString()] = temp
+          temp
+      component = inspectionWindows[agent.toString()] ? createNewWindow()
       component.fire('showYourself')
-      component.on('*.run-code', (code) -> ractive.fire('run-inspector-code', code))
       return
   )
 

@@ -8,6 +8,7 @@ window.RactiveModalDialog = Ractive.extend({
     style:   undefined # String
   , xLoc:    undefined # Number
   , yLoc:    undefined # Number
+  , zIndex:  undefined # Number
   }
 
   isolated: true
@@ -16,22 +17,33 @@ window.RactiveModalDialog = Ractive.extend({
 
   oninit: ->
 
+    @on('focus'
+    , ->
+        elem = @find('*')
+        elem.focus()
+        @set('zIndex', Math.floor(100 + window.performance.now()))
+    )
+
     @on('showYourself'
     , ->
 
-        containerMidX = @el.offsetWidth  / 2
-        containerMidY = @el.offsetHeight / 2
-
-        # Must unhide before measuring --JAB (3/21/16)
         elem = @find('*')
-        elem.classList.remove('hidden')
-        elem.focus()
+        @fire('focus')
 
-        dialogHalfWidth  = elem.offsetWidth  / 2
-        dialogHalfHeight = elem.offsetHeight / 2
+        # We don't want to reposition if it's already visible --JAB (7/25/16)
+        if elem.classList.contains('hidden')
 
-        @set('xLoc', containerMidX - dialogHalfWidth)
-        @set('yLoc', containerMidY - dialogHalfHeight)
+          # Must unhide before measuring --JAB (3/21/16)
+          elem.classList.remove('hidden')
+
+          containerMidX = @el.offsetWidth  / 2
+          containerMidY = @el.offsetHeight / 2
+
+          dialogHalfWidth  = elem.offsetWidth  / 2
+          dialogHalfHeight = elem.offsetHeight / 2
+
+          @set('xLoc', containerMidX - dialogHalfWidth)
+          @set('yLoc', containerMidY - dialogHalfHeight)
 
         false
 
@@ -92,10 +104,10 @@ window.RactiveModalDialog = Ractive.extend({
   template:
     """
     <div class="netlogo-modal-popup hidden"
-         style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}};"
+         style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}; {{ # zIndex }} z-index: {{zIndex}} {{/}}"
          on-contextmenu="blockContextMenu" on-keydown="handleKey"
          on-drag="dragDialog" on-dragstart="startDialogDrag"
-         on-dragend="stopDialogDrag"
+         on-dragend="stopDialogDrag" on-mousedown="focus"
          tabindex="0">
       <div class="widget-edit-closer" on-click="closeDialog">X</div>
       {{>innerContent}}
