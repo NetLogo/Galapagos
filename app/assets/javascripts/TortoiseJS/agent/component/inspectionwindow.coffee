@@ -69,6 +69,9 @@ VarRow = Ractive.extend({
         @findComponent('codeInput')?.setInput(Dump(value, true))
     )
 
+  oncomplete: ->
+    @findComponent('codeInput')?.refresh() # CodeMirror is whiny about reflows sometimes. --JAB (7/22/16)
+
   template:
     """
     <div class="flex-row" style="align-items: center;">

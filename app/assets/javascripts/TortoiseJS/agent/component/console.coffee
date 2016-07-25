@@ -1,5 +1,7 @@
 window.RactiveNetLogoCodeInput = Ractive.extend({
 
+  _editor: undefined # CodeMirror
+
   data: -> {
 
     initialAskee:  undefined # String
@@ -27,7 +29,7 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
 
   onrender: ->
 
-    editor = CodeMirror(@find('.netlogo-code-input'), {
+    @_editor = CodeMirror(@find('.netlogo-code-input'), {
       extraKeys: {
         Enter: => @_run()
         Up:    => @_moveInHistory(-1)
@@ -40,15 +42,20 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
     , value:          @get('input')
     })
 
-    editor.on('change', =>
-      @set('input', editor.getValue())
+    @_editor.on('change', =>
+      @set('input', @_editor.getValue())
     )
 
     @observe('input', (newValue) ->
-      if newValue isnt editor.getValue()
-        editor.setValue(newValue)
-        editor.execCommand('goLineEnd')
+      if newValue isnt @_editor.getValue()
+        @_editor.setValue(newValue)
+        @_editor.execCommand('goLineEnd')
     )
+
+  # Unit -> Unit
+  refresh: ->
+    @_editor.refresh()
+    return
 
   _moveInHistory: (index) ->
 
