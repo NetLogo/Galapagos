@@ -33,7 +33,7 @@ class window.HighchartsOps extends PlotOps
         title:   { text: plot.name },
         tooltip: {
           formatter: ->
-            y = Number(Highcharts.numberFormat(@point.y, 3))
+            y = Number(Highcharts.numberFormat(@point.y, 3, '.', ''))
             "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{y}</b><br/>"
         },
         xAxis:   { title: { text: plot.xLabel } },
