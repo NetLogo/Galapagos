@@ -121,7 +121,6 @@ class MiniView
 
     context = @_canvas.getContext("2d")
     context.save()
-    context.setTransform(1, 0, 0, 1, 0, 0)
     context.clearRect(0, 0, @_canvas.width, @_canvas.height)
     context.drawImage(@_fullView
                     , left, top, length, length

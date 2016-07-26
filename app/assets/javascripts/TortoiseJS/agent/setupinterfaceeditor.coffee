@@ -93,15 +93,22 @@ window.setupInterfaceEditor =
             trueEvent = e.original
             trueEvent.preventDefault()
 
-            contextMenu               = elemById("netlogo-widget-context-menu")
-            contextMenu.style.top     = "#{trueEvent.pageY}px"
-            contextMenu.style.left    = "#{trueEvent.pageX}px"
+            width  = window.innerWidth
+            height = window.innerHeight
+
+            contextMenu = elemById("netlogo-widget-context-menu")
             contextMenu.style.display = "block"
 
             for child in contextMenu.children
               hideElem(child)
 
             pipeline(elemById, showElem)(menuItemsID)
+
+            { height: rh, width: rw } = contextMenu.getBoundingClientRect()
+            x = Math.min(trueEvent.pageX, (width  - rw))
+            y = Math.min(trueEvent.pageY, (height - rh))
+            contextMenu.style.top  = "#{y}px"
+            contextMenu.style.left = "#{x}px"
 
             false
 

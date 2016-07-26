@@ -33,8 +33,9 @@ window.RactiveModalDialog = Ractive.extend({
         # We don't want to reposition if it's already visible --JAB (7/25/16)
         if elem.classList.contains('hidden')
 
-          # Must unhide before measuring --JAB (3/21/16)
+          # Must unhide before measuring and focusing --JAB (3/21/16)
           elem.classList.remove('hidden')
+          elem.focus()
 
           containerMidX = @el.offsetWidth  / 2
           containerMidY = @el.offsetHeight / 2
@@ -74,8 +75,10 @@ window.RactiveModalDialog = Ractive.extend({
         # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
         # We only take non-negative values here, to avoid the dialog disappearing --JAB (3/22/16)
         if @view is view and clientX > 0 and clientY > 0
-          @set('xLoc', @startX + clientX)
-          @set('yLoc', @startY + clientY)
+          rect        = this.find('*').getBoundingClientRect()
+          bufferSpace = 30
+          @set('xLoc', Math.max(0 - (rect.width  - bufferSpace), @startX + clientX))
+          @set('yLoc', Math.max(0 - (rect.height - bufferSpace), @startY + clientY))
         false
     )
 

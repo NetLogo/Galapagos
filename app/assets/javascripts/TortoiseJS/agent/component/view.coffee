@@ -236,14 +236,18 @@ window.RactiveView = RactiveWidget.extend({
         trueEvent.preventDefault()
 
         contextMenu               = @parent.find("#netlogo-widget-context-menu")
-        contextMenu.style.top     = "#{trueEvent.pageY}px"
-        contextMenu.style.left    = "#{trueEvent.pageX}px"
         contextMenu.style.display = "block"
 
         for child in contextMenu.children
           child.style.display = "none"
 
         @find("##{menuItemsID}").style.display = ""
+
+        { height: rh, width: rw } = contextMenu.getBoundingClientRect()
+        x = Math.min(trueEvent.pageX, (width  - (rw + 5)))
+        y = Math.min(trueEvent.pageY, (height - (rh + 5)))
+        contextMenu.style.top  = "#{y}px"
+        contextMenu.style.left = "#{x}px"
 
         canvas = @find('.netlogo-view-container').querySelector('canvas')
         { left:     cLeft, height: cHeight, top:      cTop, width: cWidth } = canvas.getBoundingClientRect()
