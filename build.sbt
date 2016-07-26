@@ -52,7 +52,7 @@ resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + 
 
 GalapagosAssets.settings
 
-pipelineStages in Assets += autoprefixer
+pipelineStages in Assets ++= Seq(autoprefixer, digest)
 
 fork in Test := false
 

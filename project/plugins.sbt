@@ -13,6 +13,8 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.0")
 
+addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.1.1")
+
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-deprecation",

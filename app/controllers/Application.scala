@@ -40,7 +40,7 @@ class Application @Inject() (environment: Environment)  extends Controller {
 
   def model(modelName: String): Action[AnyContent] = {
     Logger.info("\"%s\" requested".format(modelName))
-    Assets.at(path="/public/modelslib", modelName, true)
+    Assets.versioned(path="/public/modelslib", modelName)
   }
 
   def modelList: Action[AnyContent] = Action {
@@ -49,8 +49,8 @@ class Application @Inject() (environment: Environment)  extends Controller {
   }
 
   def robots: Action[AnyContent] =
-    Assets.at(path="/public/text", "robots.txt", true)
+    Assets.versioned(path="/public/text", "robots.txt")
 
   def humans: Action[AnyContent] =
-    Assets.at(path="/public/text", "humans.txt", true)
+    Assets.versioned(path="/public/text", "humans.txt")
 }

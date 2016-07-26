@@ -64,7 +64,7 @@ object InlineTagBuilder extends TagBuilder {
 object OutsourceTagBuilder extends TagBuilder {
 
   override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(new URL(routes.Assets.at(path).absoluteURL))
+    genTag(new URL(routes.Assets.versioned(path).absoluteURL))
 
   override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
     genTag(new URL(call.absoluteURL))
