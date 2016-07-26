@@ -97,7 +97,7 @@ class window.HighchartsOps extends PlotOps
   modeToString: (mode) ->
     { Bar, Line, Point } = PenBundle.DisplayMode
     switch mode
-      when Bar   then 'bar'
+      when Bar   then 'column'
       when Line  then 'line'
       when Point then 'scatter'
       else 'line'
