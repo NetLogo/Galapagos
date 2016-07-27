@@ -107,8 +107,9 @@ window.setupInterfaceEditor =
             { height: rh, width: rw } = contextMenu.getBoundingClientRect()
             x = Math.min(trueEvent.pageX, (width  - rw))
             y = Math.min(trueEvent.pageY, (height - rh))
-            contextMenu.style.top  = "#{y}px"
-            contextMenu.style.left = "#{x}px"
+            contextMenu.style.top    = "#{y}px"
+            contextMenu.style.left   = "#{x}px"
+            contextMenu.style.zIndex = Math.floor(100 + window.performance.now())
 
             false
 

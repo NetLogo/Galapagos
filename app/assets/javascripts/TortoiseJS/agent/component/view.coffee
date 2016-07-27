@@ -246,8 +246,9 @@ window.RactiveView = RactiveWidget.extend({
         { height: rh, width: rw } = contextMenu.getBoundingClientRect()
         x = Math.min(trueEvent.pageX, (width  - (rw + 5)))
         y = Math.min(trueEvent.pageY, (height - (rh + 5)))
-        contextMenu.style.top  = "#{y}px"
-        contextMenu.style.left = "#{x}px"
+        contextMenu.style.top    = "#{y}px"
+        contextMenu.style.left   = "#{x}px"
+        contextMenu.style.zIndex = Math.floor(100 + window.performance.now())
 
         canvas = @find('.netlogo-view-container').querySelector('canvas')
         { left:     cLeft, height: cHeight, top:      cTop, width: cWidth } = canvas.getBoundingClientRect()
