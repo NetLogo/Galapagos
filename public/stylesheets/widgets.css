@@ -490,7 +490,7 @@
   background-color: white;
   border:           1px solid black;
   border-radius:    5px;
-  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  box-shadow:       5px 5px 8px rgba(60, 60, 60, 0.7);
   font-size:        20px;
   padding:          10px 10px 0 10px;
   position:         absolute;
