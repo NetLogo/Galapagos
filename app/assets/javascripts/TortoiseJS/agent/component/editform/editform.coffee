@@ -1,3 +1,5 @@
+dialogs = []
+
 window.RactiveModalDialog = Ractive.extend({
 
   startX:    undefined # Number
@@ -16,6 +18,8 @@ window.RactiveModalDialog = Ractive.extend({
   twoway: false
 
   oninit: ->
+
+    dialogs.push(this)
 
     @on('focus'
     , ->
@@ -84,7 +88,15 @@ window.RactiveModalDialog = Ractive.extend({
 
     @on('closeDialog'
     , ->
+
         @fire('activateCloakingDevice')
+
+        visibleDialogs = dialogs.filter((d) -> not d.find('*').classList.contains('hidden'))
+        if visibleDialogs.length > 0
+          getZ = (d) -> parseInt(d.get('zIndex'))
+          foremostDialog = visibleDialogs.reduce((best, d) -> if getZ(best) >= getZ(d) then best else d)
+          foremostDialog.fire('focus')
+
         return
     )
 
