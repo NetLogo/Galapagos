@@ -225,31 +225,15 @@ window.RactiveView = RactiveWidget.extend({
     editForm: ViewEditForm
   }
 
-
   isolated: true
 
   oninit: ->
     @_super()
 
     @on('showContextMenu'
-    , ({ original: trueEvent }, menuItemsID) ->
+    , (e, menuItemsID) ->
 
-        trueEvent.preventDefault()
-
-        contextMenu               = @parent.find("#netlogo-widget-context-menu")
-        contextMenu.style.display = "block"
-
-        for child in contextMenu.children
-          child.style.display = "none"
-
-        @find("##{menuItemsID}").style.display = ""
-
-        { height: rh, width: rw } = contextMenu.getBoundingClientRect()
-        x = Math.min(trueEvent.pageX, (width  - (rw + 5)))
-        y = Math.min(trueEvent.pageY, (height - (rh + 5)))
-        contextMenu.style.top    = "#{y}px"
-        contextMenu.style.left   = "#{x}px"
-        contextMenu.style.zIndex = Math.floor(100 + window.performance.now())
+        e.shouldDisplayAnyway = true
 
         canvas = @find('.netlogo-view-container').querySelector('canvas')
         { left:     cLeft, height: cHeight, top:      cTop, width: cWidth } = canvas.getBoundingClientRect()
@@ -279,7 +263,7 @@ window.RactiveView = RactiveWidget.extend({
 
         @set('agentsUnderMouse', [].concat(turtles, patches, links))
 
-        false
+        return
 
     )
 

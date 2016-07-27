@@ -86,11 +86,10 @@ window.setupInterfaceEditor =
     )
 
     handleContextMenu =
-      (e, menuItemsID) ->
+      ({ original: trueEvent, shouldDisplayAnyway }, menuItemsID) ->
 
-          if @get("isEditing")
+          if @get("isEditing") or shouldDisplayAnyway
 
-            trueEvent = e.original
             trueEvent.preventDefault()
 
             width  = window.innerWidth
