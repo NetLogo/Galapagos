@@ -1,6 +1,6 @@
 dialogs = []
 
-window.RactiveModalDialog = Ractive.extend({
+window.RactiveOnTopDialog = Ractive.extend({
 
   startX:    undefined # Number
   startY:    undefined # Number
@@ -135,7 +135,7 @@ window.RactiveModalDialog = Ractive.extend({
 
 })
 
-window.EditForm = RactiveModalDialog.extend({
+window.EditForm = RactiveOnTopDialog.extend({
 
   isolated: true
 

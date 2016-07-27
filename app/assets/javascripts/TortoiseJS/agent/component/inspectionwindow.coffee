@@ -134,7 +134,7 @@ class MiniView
     @redraw()
     return
 
-window.RactiveInspectionWindow = RactiveModalDialog.extend({
+window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
 
   data: -> {
     agent: undefined       # Agent
