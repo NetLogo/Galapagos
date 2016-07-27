@@ -210,8 +210,9 @@ window.RactiveView = RactiveWidget.extend({
 
   data: -> {
 
-    agentsUnderMouse:   undefined # Array[Agent]
-  , ticks:             undefined # String
+    agentsUnderMouse: undefined # Array[Agent]
+  , isInEditMode:     undefined # Boolean
+  , ticks:            undefined # String
 
   , getAgentMenuText: (agent) ->
       if agent?
@@ -314,7 +315,9 @@ window.RactiveView = RactiveWidget.extend({
       """
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
-          <li class="context-menu-item" on-click="editWidget">Edit</li>
+          {{ # isInEditMode }}
+            <li class="context-menu-item" on-click="editWidget">Edit</li>
+          {{/}}
           {{ # agentsUnderMouse }}
             <li class="context-menu-item" on-click="inspect:{{.}}">Inspect {{getAgentMenuText(.)}}</li>
           {{/}}
