@@ -9,7 +9,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   # the widgets are filled out. So, we close over the `controller` variable
   # and then fill it out at the end when we actually make the thing.
   # BCH 11/10/2014
-  controller       = null
+  controller        = null
+  inspectionWindows = {}
   updateUICallback = ->
     controller.redraw()
     controller.updateWidgets()
@@ -152,6 +153,13 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
 
+  worldConfig = {
+    resizeWorld: ->
+      for _, iWindow of inspectionWindows
+        iWindow.teardown()
+      inspectionWindows = {}
+  }
+
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
     if widget.varName? and world? and newVal != oldVal and isValidValue(widget, newVal)
@@ -185,8 +193,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.observer.setGlobal(newName, value)
       false
   )
-
-  inspectionWindows = {}
 
   ractive.on('inspect-agent',
     (agent) ->
@@ -224,7 +230,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
-  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog, inspect)
+  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write
+                                  , output, dialog, inspect, worldConfig)
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
@@ -256,7 +263,8 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write, @output, @dialog, @inspect) ->
+  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write
+              , @output, @dialog, @inspect, @worldConfig) ->
 
   # () -> Unit
   runForevers: ->

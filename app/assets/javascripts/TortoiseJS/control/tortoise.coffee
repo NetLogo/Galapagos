@@ -65,10 +65,11 @@ newSession = (container, modelResult, readOnly = false, filename = "export", onE
   window.modelConfig ?= {}
   modelConfig.plotOps = widgetController.plotOps
   modelConfig.inspect = widgetController.inspect
-  modelConfig.mouse = widgetController.mouse
-  modelConfig.print = { write: widgetController.write }
-  modelConfig.output = widgetController.output
-  modelConfig.dialog = widgetController.dialog
+  modelConfig.mouse   = widgetController.mouse
+  modelConfig.print   = { write: widgetController.write }
+  modelConfig.output  = widgetController.output
+  modelConfig.dialog  = widgetController.dialog
+  modelConfig.world   = widgetController.worldConfig
   globalEval(modelResult.model.result)
   new SessionLite(widgetController, onError)
 
