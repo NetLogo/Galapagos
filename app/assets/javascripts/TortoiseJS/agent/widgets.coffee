@@ -148,6 +148,21 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
 
+  worldConfig = {
+    resizeWorld: ->
+
+      runningForeverButtons =
+        widgets.filter(
+          ({ type, forever, running }) ->
+              type is "button" and forever and running
+        )
+
+      runningForeverButtons.forEach((button) -> button.running = false)
+
+      return
+
+  }
+
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
     if widget.varName? and world? and newVal != oldVal and isValidValue(widget, newVal)
@@ -200,7 +215,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
-  controller = new WidgetController(ractive, model, widgetObj, viewController, plotOps, mouse, write, output, dialog)
+  controller = new WidgetController(ractive, model, widgetObj, viewController
+                                  , plotOps, mouse, write, output, dialog, worldConfig)
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
@@ -232,7 +248,8 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps, @mouse, @write, @output, @dialog) ->
+  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps
+              , @mouse, @write, @output, @dialog, @worldConfig) ->
 
   # () -> Unit
   runForevers: ->
