@@ -25,7 +25,7 @@ window.RactiveWidget = Ractive.extend({
     )
 
     @on('*.updateWidgetValue'
-    , ({ proxies = {}, triggers = {}, values = {}}) ->
+    , ({ triggers = {}, values = {} }) ->
 
         try
 
@@ -37,9 +37,6 @@ window.RactiveWidget = Ractive.extend({
 
           for k, v of values
             widget[k] = v
-
-          for k, v of proxies
-            widget.proxies[k] = v
 
           eventArraysArray =
             for name in triggerNames when widget[name] isnt oldies[name]

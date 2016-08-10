@@ -78,11 +78,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   viewController = new AgentStreamController(viewModel.fontSize)
 
   setUpViewProxies(viewModel, viewController.model.world)
-  fontSizeProxy =
-    addProxyTo( viewModel.proxies
-              , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
-              , "fontSize"
-              , viewModel.fontSize)
+  fontSizeProxy = setupProxy([[viewModel, "fontSize"], [viewController.view, "fontSize"]], viewModel.fontSize)
 
   Ractive.transitions.grow   = animateWithClass('growing')
   Ractive.transitions.shrink = animateWithClass('shrinking')
@@ -474,10 +470,8 @@ setUpViewProxies = (widgetView, modelView) ->
   , wrappingAllowedInY: "wrappingallowediny"
   }
 
-  widgetView.proxies = {}
-
   for wName, mName of translations
-    addProxyTo(widgetView.proxies, [[widgetView, wName], [modelView, mName]], wName, widgetView[wName])
+    setupProxy([[widgetView, wName], [modelView, mName]], widgetView[wName])
 
   return
 

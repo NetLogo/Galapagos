@@ -88,20 +88,18 @@ ViewEditForm = EditForm.extend({
       , wrappingAllowedInX: [weg.updateTopology, weg.redrawView]
       , wrappingAllowedInY: [weg.updateTopology, weg.redrawView]
       }
-    , proxies: {
+    , values: {
                   fontSize: form.turtleLabelSize.valueAsNumber
+      ,          frameRate: form.framerate.valueAsNumber
       ,           maxPxcor: form.maxX.valueAsNumber
       ,           maxPycor: form.maxY.valueAsNumber
       ,           minPxcor: form.minX.valueAsNumber
       ,           minPycor: form.minY.valueAsNumber
       ,          patchSize: form.patchSize.valueAsNumber
+      ,    showTickCounter: form.isShowingTicks.checked
+      ,   tickCounterLabel: form.tickLabel.value
       , wrappingAllowedInX: form.wrapsInX.checked
       , wrappingAllowedInY: form.wrapsInY.checked
-      }
-    , values: {
-               frameRate: form.framerate.valueAsNumber
-      ,  showTickCounter: form.isShowingTicks.checked
-      , tickCounterLabel: form.tickLabel.value
       }
     }
 

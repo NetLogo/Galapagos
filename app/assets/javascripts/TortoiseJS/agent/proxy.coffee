@@ -1,10 +1,10 @@
-# (Object _, [(Object _, String)], String, t) -> Object _
-window.addProxyTo =
-  (proxies, objKeyPairs, proxyKey, value) ->
+# ([(Object _, String)], t) -> Unit
+window.setupProxy =
+  (objKeyPairs, canonValue) ->
 
     apply = (x) -> (f) -> f(x)
 
-    backingValue = value
+    backingValue = canonValue
 
     # This `map` is side-effecting
     # We return a setter for each variable, yes, but we also rejigger any
@@ -21,16 +21,11 @@ window.addProxyTo =
 
           Object.defineProperty(obj, key, {
             get: proxyGetter
-            set: (newValue) -> proxies[proxyKey] = newValue
+            set: (newValue) -> backingValue = newValue; setters.forEach(apply(newValue))
           })
 
           proxySetter
 
       )
 
-    Object.defineProperty(proxies, proxyKey, {
-      get: -> backingValue
-      set: (newValue) -> backingValue = newValue; setters.forEach(apply(newValue))
-    })
-
-    proxies
+    return
