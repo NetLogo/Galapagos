@@ -2,15 +2,20 @@ dialogs = []
 
 window.RactiveOnTopDialog = Ractive.extend({
 
-  startX:    undefined # Number
-  startY:    undefined # Number
-  view:      undefined # Element
+  startX: undefined # Number
+  startY: undefined # Number
+  view:   undefined # Element
 
   data: -> {
-    style:   undefined # String
-  , xLoc:    undefined # Number
-  , yLoc:    undefined # Number
-  , zIndex:  undefined # Number
+    isMinimized: undefined # Boolean
+  ,       style: undefined # String
+  ,        xLoc: undefined # Number
+  ,        yLoc: undefined # Number
+  ,      zIndex: undefined # Number
+  }
+
+  components: {
+    spacer: RactiveEditFormSpacer
   }
 
   isolated: true
@@ -124,8 +129,15 @@ window.RactiveOnTopDialog = Ractive.extend({
          on-drag="dragDialog" on-dragstart="startDialogDrag"
          on-dragend="stopDialogDrag" on-mousedown="focus"
          tabindex="0">
-      <div class="widget-edit-closer" on-click="closeDialog">X</div>
-      {{>innerContent}}
+      <div class="netlogo-dialog-nav-options">
+        <div class="netlogo-dialog-nav-option" on-click="toggle('isMinimized')">{{ # !isMinimized }}–{{ else }}+{{/}}</div>
+        <spacer width="8px" />
+        <div class="netlogo-dialog-nav-option" on-click="closeDialog">X</div>
+      </div>
+      <div class="netlogo-dialog-title">{{>title}}</div>
+      <div style="{{ # isMinimized }}display: none;{{/}}">
+        {{>innerContent}}
+      </div>
     </div>
     """
 
@@ -169,7 +181,6 @@ window.EditForm = RactiveOnTopDialog.extend({
     innerContent:
       """
       <form class="widget-edit-form" on-submit="submit">
-        <div class="netlogo-dialog-title">{{>title}}</div>
         {{>widgetFields}}
         <div class="widget-edit-form-button-container">
           <input class="widget-edit-text" type="submit" value="OK" />

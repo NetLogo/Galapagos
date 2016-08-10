@@ -178,7 +178,6 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
 
     innerContent:
       """
-      {{>title}}
       {{>viewBox}}
       {{>subViewStrip}}
       {{>variables}}

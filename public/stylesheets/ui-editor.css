@@ -82,17 +82,21 @@
   text-align: center;
 }
 
-.widget-edit-closer {
-  color:       #7F7F7F;
-  cursor:      pointer;
-  font-weight: bold;
+.netlogo-dialog-nav-options {
+  display:     flex;
   position:    absolute;
   right:       10px;
   top:         10px;
   user-select: none;
 }
 
-.widget-edit-closer:hover {
+.netlogo-dialog-nav-option {
+  color:       #7F7F7F;
+  cursor:      pointer;
+  font-weight: bold;
+}
+
+.netlogo-dialog-nav-option:hover {
   color: black;
 }
 
