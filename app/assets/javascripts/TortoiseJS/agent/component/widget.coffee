@@ -19,6 +19,7 @@ window.RactiveWidget = Ractive.extend({
     @on('editWidget'
     , ->
         @fire('hideContextMenu')
+        @resetPartial('editForm', @partials.editForm)
         @findComponent('editForm').fire("showYourself")
         false
     )

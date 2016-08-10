@@ -74,6 +74,16 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         t.node.addEventListener(event, listener(listener))
       t.node.classList.add(klass)
 
+  viewModel = widgets.filter((w) -> w.type == 'view')[0]
+  viewController = new AgentStreamController(viewModel.fontSize)
+
+  setUpViewProxies(viewModel, viewController.model.world)
+  fontSizeProxy =
+    addProxyTo( viewModel.proxies
+              , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
+              , "fontSize"
+              , viewModel.fontSize)
+
   Ractive.transitions.grow   = animateWithClass('growing')
   Ractive.transitions.shrink = animateWithClass('shrinking')
 
@@ -109,15 +119,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
   mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], => ractive.fire('toggleInterfaceLock'))
 
-  viewModel = widgets.filter((w) -> w.type == 'view')[0]
-  viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
-
-  setUpViewProxies(viewModel, viewController.model.world)
-  fontSizeProxy =
-    addProxyTo( viewModel.proxies
-              , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
-              , "fontSize"
-              , viewModel.fontSize)
+  viewController.appendTo(container.querySelector('.netlogo-view-container'))
 
   outputWidget = widgets.filter((w) -> w.type == 'output')[0]
 

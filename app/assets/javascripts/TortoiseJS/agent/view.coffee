@@ -1,11 +1,13 @@
 class window.AgentStreamController
-  constructor: (@container, fontSize) ->
+
+  container: undefined # DOMElement
+
+  constructor: (fontSize) ->
     @view = new View(fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
     @drawingLayer = new DrawingLayer(@view, @turtleDrawer)
     @patchDrawer = new PatchDrawer(@view)
     @spotlightDrawer = new SpotlightDrawer(@view)
-    @container.appendChild(@view.visibleCanvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -17,6 +19,11 @@ class window.AgentStreamController
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
     @repaint()
+
+  # DOMElement -> Unit
+  appendTo: (@container) ->
+    @container.appendChild(@view.visibleCanvas)
+    return
 
   mouseXcor: => @view.xPixToPcor(@mouseX)
   mouseYcor: => @view.yPixToPcor(@mouseY)
