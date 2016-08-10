@@ -157,9 +157,22 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   worldConfig = {
     resizeWorld: ->
+
+      runningForeverButtons =
+        widgets.filter(
+          ({ type, forever, running }) ->
+              type is "button" and forever and running
+        )
+
+      runningForeverButtons.forEach((button) -> button.running = false)
+
       for _, iWindow of inspectionWindows
         iWindow.teardown()
+
       inspectionWindows = {}
+
+      return
+
   }
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
