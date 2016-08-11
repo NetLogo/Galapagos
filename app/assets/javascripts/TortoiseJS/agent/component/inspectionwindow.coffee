@@ -138,7 +138,7 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
 
   data: -> {
     agent: undefined       # Agent
-    style: "width: 300px;" # String
+    style: "width: 320px;" # String
     view:  undefined       # Canvas
   }
 
@@ -186,7 +186,7 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
 
     title:
       """
-      <div class="netlogo-dialog-title">{{agent.toString().replace(/[)(]/g, '')}}</div>
+      {{agent.toString().replace(/[)(]/g, '')}}
       """
 
     viewBox:

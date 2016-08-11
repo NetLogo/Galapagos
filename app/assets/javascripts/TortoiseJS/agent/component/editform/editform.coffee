@@ -123,29 +123,27 @@ window.RactiveOnTopDialog = Ractive.extend({
         return
     )
 
-    @on('blockContextMenu'
-    , ({ original }) ->
-        original.preventDefault()
-        false
-    )
-
     return
 
   template:
     """
-    <div class="netlogo-modal-popup hidden" draggable="true"
+    <div class="netlogo-modal-popup hidden"
          style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}; {{ # zIndex }} z-index: {{zIndex}} {{/}}"
-         on-contextmenu="blockContextMenu" on-keydown="handleKey"
-         on-drag="dragDialog" on-dragstart="startDialogDrag"
-         on-dragend="stopDialogDrag" on-mousedown="focus"
-         tabindex="0">
-      <div class="netlogo-dialog-nav-options">
-        <div class="netlogo-dialog-nav-option" on-click="toggle('isMinimized')">{{ # !isMinimized }}–{{ else }}+{{/}}</div>
-        <spacer width="8px" />
-        <div class="netlogo-dialog-nav-option" on-click="closeDialog">X</div>
+         on-keydown="handleKey" on-mousedown="focus" tabindex="0">
+      <div class="netlogo-dialog-title-strip" draggable="true"
+           {{ # isMinimized }}style="border-radius: 5px;"{{/}}
+           on-drag="dragDialog" on-dragstart="startDialogDrag"
+           on-dragend="stopDialogDrag">
+        <div class="netlogo-dialog-title vertically-centered">
+          {{>title}}
+        </div>
+        <div class="netlogo-dialog-nav-options">
+          <div class="netlogo-dialog-nav-option" on-click="toggle('isMinimized')">{{ # !isMinimized }}–{{ else }}+{{/}}</div>
+          <spacer width="8px" />
+          <div class="netlogo-dialog-nav-option" on-click="closeDialog">X</div>
+        </div>
       </div>
-      <div class="netlogo-dialog-title">{{>title}}</div>
-      <div style="{{ # isMinimized }}display: none;{{/}}">
+      <div style="margin: 7px 10px 0 10px; {{ # isMinimized }}display: none;{{/}}">
         {{>innerContent}}
       </div>
     </div>

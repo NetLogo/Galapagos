@@ -492,7 +492,6 @@
   border-radius:    5px;
   box-shadow:       5px 5px 8px rgba(60, 60, 60, 0.7);
   font-size:        20px;
-  padding:          10px 10px 0 10px;
   position:         absolute;
   outline:          none;
   width:            450px;
@@ -509,12 +508,38 @@
   white-space:   nowrap;
 }
 
-.netlogo-dialog-title {
+.netlogo-dialog-title-strip {
+  background:    #ffff9a;
+  border-radius: 5px 5px 0px 0px;
   cursor:        default;
   font-weight:   bold;
-  margin-bottom: 10px;
+  height:        30px;
   text-align:    center;
   user-select:   none;
+}
+
+.netlogo-dialog-nav-options {
+  display:     flex;
+  position:    absolute;
+  right:       10px;
+  top:         4px;
+  user-select: none;
+}
+
+.netlogo-dialog-nav-option {
+  color:       #7F7F7F;
+  cursor:      pointer;
+  font-weight: bold;
+}
+
+.netlogo-dialog-nav-option:hover {
+  color: black;
+}
+
+.vertically-centered {
+  position:  relative;
+  top:       50%;
+  transform: perspective(1px) translateY(-50%);
 }
 
 .CodeMirror {

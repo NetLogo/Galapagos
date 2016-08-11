@@ -82,24 +82,6 @@
   text-align: center;
 }
 
-.netlogo-dialog-nav-options {
-  display:     flex;
-  position:    absolute;
-  right:       10px;
-  top:         10px;
-  user-select: none;
-}
-
-.netlogo-dialog-nav-option {
-  color:       #7F7F7F;
-  cursor:      pointer;
-  font-weight: bold;
-}
-
-.netlogo-dialog-nav-option:hover {
-  color: black;
-}
-
 .widget-edit-text {
   font-size: 20px;
 }
