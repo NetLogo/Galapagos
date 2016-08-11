@@ -57,10 +57,11 @@
 }
 
 .alert-button {
-  font-size: 14px;
-  height: 25px;
-  min-width: 50%;
-  border-radius: 3px;
-  border: 1px solid lightgray;
   background-color: #e6e6e6;
+  border:           1px solid lightgray;
+  border-radius:    3px;
+  font-size:        14px;
+  height:           25px;
+  min-width:        50%;
+  user-select:      none;
 }
