@@ -66,11 +66,21 @@ window.RactiveOnTopDialog = Ractive.extend({
     )
 
     @on('startDialogDrag'
-    , ({ original: { clientX, clientY, view } }) ->
+    , ({ original: { clientX, clientY, dataTransfer, view } }) ->
+
+        # The drag image looks god-awful, so we create an invisible GIF to replace it. --JAB (8/11/16)
+        img     = document.createElement('img')
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+
+        dataTransfer.effectAllowed = "move"
+        dataTransfer.setDragImage(img, 0, 0)
+
         @view   = view
         @startX = @get('xLoc') - clientX
         @startY = @get('yLoc') - clientY
+
         return
+
     )
 
     @on('stopDialogDrag'
@@ -123,7 +133,7 @@ window.RactiveOnTopDialog = Ractive.extend({
 
   template:
     """
-    <div class="netlogo-modal-popup hidden"
+    <div class="netlogo-modal-popup hidden" draggable="true"
          style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}; {{ # zIndex }} z-index: {{zIndex}} {{/}}"
          on-contextmenu="blockContextMenu" on-keydown="handleKey"
          on-drag="dragDialog" on-dragstart="startDialogDrag"
