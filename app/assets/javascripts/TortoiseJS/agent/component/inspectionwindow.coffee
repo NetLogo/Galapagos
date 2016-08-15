@@ -1,4 +1,4 @@
-ZoomMax = 1000
+ZoomMax = 100
 
 TurtleReadOnlies = {
   who: true
@@ -115,9 +115,11 @@ class MiniView
   # Unit -> Unit
   redraw: ->
 
-    length = ZoomMax - @_scale
-    left   = @_focalPoint.x - (length / 2)
-    top    = @_focalPoint.y - (length / 2)
+    zoomFactor = (ZoomMax - @_scale) / ZoomMax
+    maxDim     = Math.max(@_fullView?.width ? 0, @_fullView?.height ? 0)
+    length     = maxDim * zoomFactor
+    left       = @_focalPoint.x - (length / 2)
+    top        = @_focalPoint.y - (length / 2)
 
     context = @_canvas.getContext("2d")
     context.save()
@@ -200,7 +202,7 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
         <input style="flex-grow: 1; font-size: 20px; font-weight: bold;" type="button"
                value="watch-me" on-click="watchAgent" />
         <input class="inspector-zoom-slider" style="flex-grow: 1" on-input="handleZoom"
-               type="range" min="0" max="#{ZoomMax * .99}" step="#{ZoomMax * .01}" value="#{ZoomMax * .8}" />
+               type="range" min="0" max="#{ZoomMax * .999}" step="#{ZoomMax * .001}" value="#{ZoomMax * .8}" />
       </div>
       """
 
