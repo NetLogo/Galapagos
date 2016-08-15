@@ -170,9 +170,15 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
 
     miniView = new MiniView(canvas, @get('view'), @get('agent'))
 
+    initialize = =>
+      @find('.inspector-zoom-slider').value = ZoomMax * .8
+      @find('.inspector-zoom-slider').dispatchEvent(new CustomEvent('input')) # Trigger `handleZoom` right away
+      return
+
     @on('watchAgent', -> @get('agent').watchMe(); return)
     @on('handleZoom', ({ original: { target: { value } } }) -> miniView.rescale(parseFloat(value)); return)
-    @find('.inspector-zoom-slider').dispatchEvent(new CustomEvent('input')) # Trigger `handleZoom` right away
+    @on('showYourself', initialize)
+    initialize()
 
     return
 
