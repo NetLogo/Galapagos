@@ -95,6 +95,20 @@ window.RactiveInput = RactiveWidget.extend({
   , editor:   RactiveCodeContainerMultiline
   }
 
+  oninit: ->
+
+    # Scroll to bottom on value change --JAB (8/17/16)
+    @observe('widget.currentValue'
+    , ->
+      elem = @find('.netlogo-multiline-input')
+      if elem?
+        scrollToBottom = -> elem.scrollTop = elem.scrollHeight
+        setTimeout(scrollToBottom, 0)
+      return
+    )
+
+    return
+
   template:
     """
     {{>input}}
