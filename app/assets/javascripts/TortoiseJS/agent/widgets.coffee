@@ -515,7 +515,7 @@ template =
       {{/}}
     </div>
 
-    <div id="netlogo-widget-context-menu" class="widget-context-menu">
+    <div id="netlogo-widget-context-menu" class="widget-context-menu" on-contextmenu="contextMenuJuke">
       <div id='widget-creation-disabled-message' style="display: none;">
         Widget creation is not yet available.  Check back soon.
       </div>

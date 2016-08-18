@@ -115,6 +115,14 @@ window.setupInterfaceEditor =
           else
             true
 
+    ractive.on('contextMenuJuke'
+    , ({ original }) ->
+        { clientX: x, clientY: y, type } = original
+        pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+        document.elementFromPoint(x, y).dispatchEvent(new MouseEvent(type, original))
+        false
+    )
+
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
 
