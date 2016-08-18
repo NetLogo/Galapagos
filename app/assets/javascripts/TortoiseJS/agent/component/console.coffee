@@ -179,7 +179,7 @@ window.RactiveConsoleWidget = Ractive.extend({
           {{/}}
           </select>
         </label>
-        <editor initialAskee="{{agentType}}" class="netlogo-command-center-editor" />
+        <editor id='command-center-editor' initialAskee="{{agentType}}" class="netlogo-command-center-editor" />
         <button on-click='clear-output'>Clear</button>
       </div>
     </div>
