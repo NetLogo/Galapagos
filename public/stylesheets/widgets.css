@@ -209,8 +209,9 @@
 }
 
 .netlogo-command-center-editor {
-  height: 1.25em;
+  height:    1.25em;
   flex-grow: 1;
+  width:     87%;
 }
 
 .netlogo-code-input .CodeMirror {
