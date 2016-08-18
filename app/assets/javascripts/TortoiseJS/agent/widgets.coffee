@@ -495,7 +495,8 @@ isValidValue = (widget, value) ->
 template =
   """
   <div class="netlogo-model" style="min-width: {{width}}px;"
-       tabindex="1" on-keydown="checkActionKeys" on-focus="checkFocus" on-blur="checkFocus">
+       tabindex="1" on-keydown="checkActionKeys" on-contextmenu="hideContextMenu"
+       on-focus="checkFocus" on-blur="checkFocus">
     <div class="netlogo-header">
       <div class="netlogo-subheader">
         <div class="netlogo-powered-by">

@@ -113,6 +113,7 @@ window.setupInterfaceEditor =
             false
 
           else
+            hideContextMenu()
             true
 
     ractive.on('contextMenuJuke'
