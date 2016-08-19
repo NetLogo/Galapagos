@@ -24,8 +24,8 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
 
   # Avoid two-way binding complications --JAB (7/7/16)
   oninit: ->
-    @set('askee', @get('initialAskee'))
-    @set('input', @get('initialInput'))
+    @set('askee', @get('initialAskee') ? @get('askee'))
+    @set('input', @get('initialInput') ? @get('input'))
 
   onrender: ->
 
@@ -179,7 +179,7 @@ window.RactiveConsoleWidget = Ractive.extend({
           {{/}}
           </select>
         </label>
-        <editor id='command-center-editor' initialAskee="{{agentType}}" class="netlogo-command-center-editor" />
+        <editor id='command-center-editor' askee="{{agentType}}" class="netlogo-command-center-editor" />
         <button on-click='clear-output'>Clear</button>
       </div>
     </div>
