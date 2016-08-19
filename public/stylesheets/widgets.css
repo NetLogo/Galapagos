@@ -221,7 +221,6 @@
 
 .netlogo-inspector-editor .CodeMirror {
   border: 1px solid #999;
-  height: auto;
 }
 
 .netlogo-inspector-var-editor .CodeMirror {
@@ -245,6 +244,7 @@
 
 .netlogo-command-center-input {
   display: flex;
+  flex-direction: row;
   flex-shrink: 0;
 }
 

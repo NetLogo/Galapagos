@@ -117,7 +117,7 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
 
   template:
     """
-    <div id="{{id}}" class="netlogo-code-input {{class}}" style="{{style}}"></div>
+    <div {{ # id }} id="{{id}}"{{/}} class="netlogo-code-input {{class}}" style="{{style}}"></div>
     """
 
 })
