@@ -152,8 +152,7 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
   isolated: true
 
   components: {
-    codeEditor:              RactiveEditFormCodeContainer
-  , inspectionCommandCenter: RactiveNetLogoCodeInput
+    inspectionCommandCenter: RactiveNetLogoCodeInput
   , varRow:                  VarRow
   }
 
@@ -173,6 +172,7 @@ window.RactiveInspectionWindow = RactiveOnTopDialog.extend({
     initialize = =>
       @find('.inspector-zoom-slider').value = ZoomMax * .8
       @find('.inspector-zoom-slider').dispatchEvent(new CustomEvent('input')) # Trigger `handleZoom` right away
+      @findComponent('inspectionCommandCenter').refresh() # CodeMirror is whiny about reflows --JAB (8/22/16)
       return
 
     @on('watchAgent', -> @get('agent').watchMe(); return)
