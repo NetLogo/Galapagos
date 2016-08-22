@@ -97,6 +97,8 @@ window.RactiveInput = RactiveWidget.extend({
 
   oninit: ->
 
+    @_super()
+
     # Scroll to bottom on value change --JAB (8/17/16)
     @observe('widget.currentValue'
     , ->
