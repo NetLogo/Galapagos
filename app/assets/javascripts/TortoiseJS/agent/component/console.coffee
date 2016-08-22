@@ -14,6 +14,8 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
   , historyIndex:   0
   , workingEntry:   {} # Stores { askee, input } when user up-arrows
 
+  , cmConfig: undefined # Object
+
   , class: undefined # String
   , id:    undefined # String
   , style: undefined # String
@@ -26,21 +28,26 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
   oninit: ->
     @set('askee', @get('initialAskee') ? @get('askee'))
     @set('input', @get('initialInput') ? @get('input'))
+    return
 
   onrender: ->
 
-    @_editor = CodeMirror(@find('.netlogo-code-input'), {
+    template = {
       extraKeys: {
-        Enter: => @_run()
-        Up:    => @_moveInHistory(-1)
-        Down:  => @_moveInHistory(1)
-        Tab:   => @fire('tab-key')
+        Enter:       => @_run()
+        Up:          => @_moveInHistory(-1)
+        Down:        => @_moveInHistory(1)
+        Tab:         false
+        'Shift-Tab': false
       }
     , mode:           'netlogo'
     , scrollbarStyle: 'null'
     , theme:          'netlogo-default'
     , value:          @get('input')
-    })
+    }
+
+    config = Object.assign({}, template, @get('cmConfig'))
+    @_editor = CodeMirror(@find('.netlogo-code-input'), config)
 
     @_editor.on('change', =>
       @set('input', @_editor.getValue())
@@ -51,6 +58,8 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
         @_editor.setValue(newValue)
         @_editor.execCommand('goLineEnd')
     )
+
+    return
 
   # Unit -> Unit
   refresh: ->
@@ -140,6 +149,9 @@ window.RactiveConsoleWidget = Ractive.extend({
         if index >= 0
           @set('agentTypeIndex', index)
     }
+    cmConfig: {
+      get: -> { extraKeys: { Tab: => @fire('tab-key') } }
+    }
   }
 
   components: {
@@ -161,7 +173,7 @@ window.RactiveConsoleWidget = Ractive.extend({
       @fire('run', code)
     )
 
-    @on('editor.tab-key', ->
+    @on('tab-key', ->
       @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
     )
 
@@ -179,7 +191,8 @@ window.RactiveConsoleWidget = Ractive.extend({
           {{/}}
           </select>
         </label>
-        <editor id='command-center-editor' askee="{{agentType}}" class="netlogo-command-center-editor" />
+        <editor id='command-center-editor' askee="{{agentType}}" class="netlogo-command-center-editor"
+                cmConfig="{{cmConfig}}" />
         <button on-click='clear-output'>Clear</button>
       </div>
     </div>

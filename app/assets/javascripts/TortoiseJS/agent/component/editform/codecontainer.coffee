@@ -74,6 +74,9 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
     codeContainer: RactiveCodeContainerMultiline
   }
 
+  oninit: ->
+    @set('config', Object.assign({}, { extraKeys: { Tab: false, 'Shift-Tab': false } }, @get('config')))
+
   template:
     """
     <label for="{{id}}">{{label}}</label>
