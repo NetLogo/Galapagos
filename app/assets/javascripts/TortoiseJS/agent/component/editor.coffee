@@ -23,7 +23,8 @@ window.RactiveEditorWidget = Ractive.extend({
                 on-click="recompile" {{# !isStale }}disabled{{/}} >Recompile Code</button>
       {{/}}
       <codeEditor id="netlogo-code-tab-editor" code="{{code}}"
-                  injectedConfig="{ readOnly: {{readOnly}} }" extraClasses="['netlogo-code-tab']" />
+                  injectedConfig="{ lineNumbers: true, readOnly: {{readOnly}} }"
+                  extraClasses="['netlogo-code-tab']" />
     </div>
     """
 
