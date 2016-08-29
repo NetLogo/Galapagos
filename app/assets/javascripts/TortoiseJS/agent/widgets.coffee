@@ -54,7 +54,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     outputWidgetOutput: '',
     markdown:           sanitizedMarkdown,
     hasFocus:           false,
-    isEditing:          false
+    isEditing:          false,
+    primaryView:        undefined
   }
 
   animateWithClass = (klass) ->
@@ -87,6 +88,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       editor:        RactiveEditorWidget,
       infotab:       RactiveInfoTabWidget,
 
+      tickCounter:   RactiveTickCounter,
+
       labelWidget:   RactiveLabel,
       switchWidget:  RactiveSwitch,
       buttonWidget:  RactiveButton,
@@ -109,6 +112,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], => ractive.fire('toggleInterfaceLock'))
 
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
+  ractive.set('primaryView', viewModel)
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
   setUpViewProxies(viewModel, viewController.model.world)
@@ -512,8 +516,10 @@ template =
     <div class="netlogo-interface-unlocker" style="display: none" on-click="toggleInterfaceLock"></div>
 
     <label class="netlogo-widget netlogo-speed-slider">
+      <span class="netlogo-label">model speed</span>
       <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
-      <span class="netlogo-label">speed</span>
+      <tickCounter isVisible="{{primaryView.showTickCounter}}"
+                   label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
     </label>
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"

@@ -239,11 +239,6 @@ window.RactiveView = RactiveWidget.extend({
            on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
            class="netlogo-widget netlogo-view-container"
            style="{{dims}}">
-        <div class="netlogo-widget netlogo-tick-counter">
-          {{# widget.showTickCounter }}
-            {{widget.tickCounterLabel}}: <span>{{ticks}}</span>
-          {{/}}
-        </div>
       </div>
       """
 
