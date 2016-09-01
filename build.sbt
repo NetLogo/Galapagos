@@ -28,7 +28,7 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   cache,
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.4" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.4.9" % "test",
   "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )
 
@@ -37,8 +37,8 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "filesaver.js" % "0.1.1",
   "org.webjars.npm" % "mousetrap" % "1.5.3",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
-  "org.webjars" % "highcharts" % "4.2.5",
-  "org.webjars" % "jquery" % "2.2.4",
+  "org.webjars" % "highcharts" % "4.2.6",
+  "org.webjars" % "jquery" % "3.1.0",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.3",
   "org.webjars" % "codemirror" % "5.13.2"
