@@ -14,7 +14,7 @@
     <div class="model-selection-bar">
       <div>
         <label>Search the Models Library:
-            <span class="model-list tortoise-model-list"></span>
+            <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
         </label>
       </div>
       <div>
@@ -96,7 +96,7 @@
 
     function openNlogo(nlogoContents) {
       window.location.hash = "";
-      filePath = $("#model-file-input")[0].value;
+      filePath = document.getElementById("model-file-input").value;
       modelContainer.contentWindow.postMessage({
         nlogo: nlogoContents,
         path: filePath,
@@ -112,7 +112,8 @@
       }
   }
 
-    exports.bindModelChooser($('.model-list'), initModel, pickModel, '@mode.toString.toLowerCase');
+    exports.bindModelChooser(document.getElementById('tortoise-model-list')
+                           , initModel, pickModel, '@mode.toString.toLowerCase');
   </script>
 }
 

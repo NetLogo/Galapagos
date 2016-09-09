@@ -1,21 +1,33 @@
 class window.NLWAlerter
-  constructor: (alertFrame, @isStandalone) ->
-    @alertWindow = $(alertFrame)
-    @alertContainer = $(alertFrame).find("#alert-dialog").get(0)
 
+  # Element -> Boolean -> NLWAlerter
+  constructor: (@_alertWindow, @_isStandalone) ->
+    @alertContainer = @_alertWindow.querySelector("#alert-dialog")
+
+  # String -> Boolean -> String -> Unit
   display: (title, dismissable, content) ->
-    @alertWindow.find("#alert-title").text(title)
-    @alertWindow.find("#alert-message").html(content)
-    if @isStandalone
-      $(".standalone-text").show()
-    if ! dismissable
-      @alertWindow.find("#alert-dismiss-container").hide()
+
+    @_alertWindow.querySelector("#alert-title").innerHTML = title
+    @_alertWindow.querySelector("#alert-message").innerHTML = content
+
+    if @_isStandalone
+      @_alertWindow.querySelector(".standalone-text").style.display = ''
+
+    if not dismissable
+      @_alertWindow.querySelector("#alert-dismiss-container").style.display = 'none'
     else
-      @alertWindow.find("#alert-dismiss-container").show()
-    @alertWindow.show()
+      @_alertWindow.querySelector("#alert-dismiss-container").style.display = ''
 
-  displayError: (content, dismissable=true, title="Error") ->
+    @_alertWindow.style.display = ''
+
+    return
+
+  # String -> Boolean -> String -> Unit
+  displayError: (content, dismissable = true, title = "Error") ->
     @display(title, dismissable, content)
+    return
 
-  hide: () ->
-    @alertWindow.hide()
+  # Unit -> Unit
+  hide: ->
+    @_alertWindow.style.display = 'none'
+    return

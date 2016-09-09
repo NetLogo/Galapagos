@@ -48,7 +48,7 @@ exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode
       allModelNames = JSON.parse(req.responseText)
       window.modelSelect = createModelSelection(container, allModelNames)
 
-      if container[0].classList.contains('tortoise-model-list')
+      if container.classList.contains('tortoise-model-list')
         $.ajax('/model/statuses.json', {
           complete: (req, status) ->
             allModelStatuses = JSON.parse(req.responseText)

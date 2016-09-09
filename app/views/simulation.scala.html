@@ -85,7 +85,7 @@
 
       Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
 
-      var loadingOverlay  = $("#loading-overlay").get(0);
+      var loadingOverlay  = document.getElementById("loading-overlay");
       var activeContainer = loadingOverlay;
       var modelContainer  = document.querySelector("#netlogo-model-container");
       var nlogoScript     = document.querySelector("#nlogo-code");
@@ -111,7 +111,7 @@
         isStandaloneHTML = true;
       }
 
-      window.nlwAlerter = new NLWAlerter($("#alert-overlay"), isStandaloneHTML);
+      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML);
 
       var displayError = function(error) {
         // in the case where we're still loading the model, we have to
