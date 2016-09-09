@@ -99,6 +99,12 @@ window.RactiveInput = RactiveWidget.extend({
 
     @_super()
 
+    @on('handleKeypress', ({ original: { keyCode, target } }) ->
+      if (not @get('isMultiline')) and keyCode is 13 # Enter key in single-line input
+        target.blur()
+        false
+    )
+
     # Scroll to bottom on value change --JAB (8/17/16)
     @observe('widget.currentValue'
     , ->
@@ -131,11 +137,7 @@ window.RactiveInput = RactiveWidget.extend({
         <div class="netlogo-label">{{widget.varName}}</div>
         {{# widget.boxtype === 'Number'}}<input type="number" value="{{widget.currentValue}}" />{{/}}
         {{# widget.boxtype === 'String'}}
-          {{#if widget.multiline === false}}
-            <input type="text" value="{{widget.currentValue}}" />
-          {{else}}
-            <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}"></textarea>
-          {{/if}}
+          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress"></textarea>
         {{/}}
         {{# widget.boxtype === 'String (reporter)' || widget.boxtype === 'String (commands)' }}
           <editor id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 24px;" code="{{widget.currentValue}}" />
