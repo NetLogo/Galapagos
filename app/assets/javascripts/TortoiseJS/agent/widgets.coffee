@@ -163,6 +163,14 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   }
 
+  exporting = {
+    exportOutput: (filename) ->
+      exportText = ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
+      exportBlob = new Blob([exportText], {type: "text/plain:charset=utf-8"})
+      saveAs(exportBlob, filename)
+      return
+  }
+
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
     if widget.varName? and world? and newVal != oldVal and isValidValue(widget, newVal)
@@ -216,7 +224,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   )
 
   controller = new WidgetController(ractive, model, widgetObj, viewController
-                                  , plotOps, mouse, write, output, dialog, worldConfig)
+                                  , plotOps, mouse, write, output, dialog, worldConfig, exporting)
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
@@ -249,7 +257,7 @@ window.handlingErrors = (f) -> ->
 
 class window.WidgetController
   constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps
-              , @mouse, @write, @output, @dialog, @worldConfig) ->
+              , @mouse, @write, @output, @dialog, @worldConfig, @exporting) ->
 
   # () -> Unit
   runForevers: ->
