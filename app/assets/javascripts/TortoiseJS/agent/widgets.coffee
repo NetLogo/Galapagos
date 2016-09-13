@@ -144,6 +144,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
   dialog = {
     confirm: (str) -> clearMouse(); window.confirm(str)
+    input:   (str) -> clearMouse(); window.prompt(str, "")
     notify:  (str) -> clearMouse(); window.nlwAlerter.display("NetLogo Notification", true, str)
     yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
