@@ -135,14 +135,18 @@ window.RactiveInput = RactiveWidget.extend({
              class="netlogo-widget netlogo-input-box netlogo-input"
              style="{{dims}}">
         <div class="netlogo-label">{{widget.varName}}</div>
-        {{# widget.boxtype === 'Number'}}<input type="number" value="{{widget.currentValue}}" />{{/}}
+        {{# widget.boxtype === 'Number'}}
+          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" />
+        {{/}}
         {{# widget.boxtype === 'String'}}
           <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress"></textarea>
         {{/}}
         {{# widget.boxtype === 'String (reporter)' || widget.boxtype === 'String (commands)' }}
-          <editor id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 24px;" code="{{widget.currentValue}}" />
+          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" />
         {{/}}
-        {{# widget.boxtype === 'Color'}}<input type="color" value="{{hexColor}}" />{{/}}
+        {{# widget.boxtype === 'Color'}}
+          <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" />
+        {{/}}
       </label>
       """
 
