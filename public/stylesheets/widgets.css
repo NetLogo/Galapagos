@@ -430,10 +430,9 @@
 }
 
 .netlogo-multiline-input {
-  flex-direction: column;
-  flex-grow:      1;
-  margin:         4px;
-  resize:         none;
+  flex-grow: 1;
+  margin:    4px;
+  resize:    none;
 }
 
 .netlogo-chooser {
