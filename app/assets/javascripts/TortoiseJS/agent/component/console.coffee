@@ -86,6 +86,11 @@ window.RactiveConsoleWidget = Ractive.extend({
         commandCenterEditor.execCommand('goLineEnd')
     )
 
+  # String -> Unit
+  appendText: (str) ->
+    @set('output', @get('output') + str)
+    return
+
   template:
     """
     <div class='netlogo-tab-content netlogo-command-center'

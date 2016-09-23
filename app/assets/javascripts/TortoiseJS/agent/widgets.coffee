@@ -136,8 +136,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   write = (str) -> model.consoleOutput += str
 
   output = {
-    write: (str) -> model.outputWidgetOutput += str
     clear: -> model.outputWidgetOutput = ""
+    write:
+      (str) ->
+        output = ractive.findComponent('outputWidget')
+        (output ? ractive.findComponent('console')).appendText(str)
   }
 
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,

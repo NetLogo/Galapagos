@@ -41,6 +41,11 @@ window.RactiveOutputArea = RactiveWidget.extend({
   , printArea: RactivePrintArea
   }
 
+  # String -> Unit
+  appendText: (str) ->
+    @set('text', @get('text') + str)
+    return
+
   template:
     """
     {{>output}}
