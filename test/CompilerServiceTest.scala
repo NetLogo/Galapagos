@@ -154,7 +154,7 @@ object CompilerServiceHelpers {
   val wsModelV = CompiledModel.fromModel(openModel(wolfSheep))
 
   def openModel(model: String): Model =
-    ModelReader.parseModel(model, CompilerUtilities)
+    ModelReader.parseModel(model, CompilerUtilities, Map())
 
   val widgetModel = CompiledModel.fromModel(openModel(modelText("test/tortoise/Widgets.nlogo")))
 }

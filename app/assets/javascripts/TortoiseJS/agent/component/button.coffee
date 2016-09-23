@@ -33,12 +33,12 @@ ButtonEditForm = EditForm.extend({
     key = form.actionKey.value
     {
       triggers: {
-        buttonType: [WidgetEventGenerators.recompile]
+        buttonKind: [WidgetEventGenerators.recompile]
       ,     source: [WidgetEventGenerators.recompile]
       }
     , values: {
                      actionKey: (if key.length is 1 then key.toUpperCase() else null)
-      ,             buttonType: @_displayToType(form.type.value)
+      ,             buttonKind: @_displayToType(form.type.value)
       , disableUntilTicksStart: form.startsDisabled.checked
       ,                display: form.display.value
       ,                forever: form.forever.checked
@@ -89,10 +89,10 @@ ButtonEditForm = EditForm.extend({
   }
 
   _displayToType: (display) ->
-    { observer: "OBSERVER" , turtles: "TURTLE", patches: "PATCH", links: "LINK" }[display]
+    { observer: "Observer" , turtles: "Turtle", patches: "Patch", links: "Link" }[display]
 
   _typeToDisplay: (type) ->
-    { OBSERVER: "observer", TURTLE: "turtles" , PATCH: "patches", LINK: "links" }[type]
+    { Observer: "observer", Turtle: "turtles" , Patch: "patches", Link: "links" }[type]
 
 })
 
@@ -126,7 +126,7 @@ window.RactiveButton = RactiveWidget.extend({
     {{>contextMenu}}
     <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
               idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
-              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonType}}" />
+              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
     """
 
   partials: {
@@ -171,11 +171,11 @@ window.RactiveButton = RactiveWidget.extend({
     buttonContext:
       """
       <div class="netlogo-button-agent-context">
-      {{#if widget.buttonType === "TURTLE" }}
+      {{#if widget.buttonKind === "TURTLE" }}
         T
-      {{elseif widget.buttonType === "PATCH" }}
+      {{elseif widget.buttonKind === "PATCH" }}
         P
-      {{elseif widget.buttonType === "LINK" }}
+      {{elseif widget.buttonKind === "LINK" }}
         L
       {{/if}}
       </div>

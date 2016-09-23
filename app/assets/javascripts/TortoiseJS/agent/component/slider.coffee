@@ -17,7 +17,7 @@ SliderEditForm = EditForm.extend({
   , stepCode:  undefined # String
   , units:     undefined # String
   , value:     undefined # Number
-  , varName:   undefined # String
+  , variable:  undefined # String
   }
 
   isolated: true
@@ -39,21 +39,21 @@ SliderEditForm = EditForm.extend({
     value = form.value.valueAsNumber
     {
       triggers: {
-            max: [WidgetEventGenerators.recompile]
-      ,     min: [WidgetEventGenerators.recompile]
-      ,    step: [WidgetEventGenerators.recompile]
-      , varName: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
+            max:  [WidgetEventGenerators.recompile]
+      ,     min:  [WidgetEventGenerators.recompile]
+      ,    step:  [WidgetEventGenerators.recompile]
+      , variable: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
       }
     , values: {
         currentValue: value
       ,      default: value
       ,    direction: (if form.vertical.checked then "vertical" else "horizontal")
-      ,      display: form.varName.value
+      ,      display: form.variable.value
       ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
       ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
       ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
       ,        units: form.units.value
-      ,      varName: form.varName.value.toLowerCase()
+      ,     variable: form.variable.value.toLowerCase()
       }
     }
 
@@ -63,7 +63,7 @@ SliderEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="varName" value="{{varName}}"/>
+      <formVariable id="{{id}}-varname" name="variable" value="{{variable}}"/>
 
       <spacer height="15px" />
 
@@ -121,7 +121,7 @@ window.RactiveSlider = RactiveWidget.extend({
     {{>contextMenu}}
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
-              value="{{widget.currentValue}}" varName="{{widget.varName}}" />
+              value="{{widget.currentValue}}" variable="{{widget.variable}}" />
     """
 
   partials: {

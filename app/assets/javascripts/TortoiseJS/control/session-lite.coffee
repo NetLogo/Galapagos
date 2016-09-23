@@ -97,8 +97,8 @@ class window.SessionLite
           @widgetController.freshenUpWidgets(globalEval(res.widgets))
 
           for k, v of sliderVals
-            { varName } = @widgetController.widgets()[k]
-            world.observer.setGlobal(varName, v)
+            { variable } = @widgetController.widgets()[k]
+            world.observer.setGlobal(variable, v)
 
         else
           @alertCompileError(res.model.result)

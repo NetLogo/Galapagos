@@ -13,15 +13,15 @@ SwitchEditForm = EditForm.extend({
   }
 
   validate: (form) ->
-    weg     = WidgetEventGenerators
-    varName = form.varName.value
+    weg      = WidgetEventGenerators
+    variable = form.variable.value
     {
       triggers: {
-        varName: [weg.recompile, weg.rename]
+        variable: [weg.recompile, weg.rename]
       }
     , values: {
-        display: varName
-      , varName: varName.toLowerCase()
+         display: variable
+      , variable: variable.toLowerCase()
       }
     }
 
@@ -31,7 +31,7 @@ SwitchEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="varName" value="{{display}}"/>
+      <formVariable id="{{id}}-varname" name="variable" value="{{display}}"/>
       """
 
   }

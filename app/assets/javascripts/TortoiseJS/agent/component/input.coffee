@@ -19,31 +19,36 @@ InputEditForm = EditForm.extend({
 
   validate: (form) ->
 
-    boxtype = form.boxtype.value
-    varName = form.varName.value
+    boxtype  = form.boxtype.value
+    variable = form.variable.value
 
     weg = WidgetEventGenerators
+
     out =
       {
         triggers: {
-          varName: [weg.recompile, weg.rename]
+          variable: [weg.recompile, weg.rename]
         }
       , values: {
-            boxtype: boxtype
-        ,   display: varName
-        , multiline: form.multiline.checked
-        ,   varName: varName.toLowerCase()
+          boxedValue: { type: boxtype }
+        ,    display: variable
+        ,   variable: variable.toLowerCase()
         }
       }
 
     if boxtype isnt @get('boxtype')
+
       default_ =
         switch boxtype
           when "Color"  then 0 # Color number for black
           when "Number" then 0
           else               ""
-      out.values.currentValue = default_
-      out.values.value        = default_
+
+      boxedValue.currentValue = default_
+      boxedValue.value        = default_
+
+    if boxtype isnt "Color" and boxtype isnt "Number"
+      boxedValue.multiline = form.multiline.checked
 
     out
 
@@ -54,13 +59,14 @@ InputEditForm = EditForm.extend({
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="varName" value="{{display}}" />
+      <formVariable id="{{id}}-varname" name="variable" value="{{display}}" />
       <spacer height="15px" />
       <div class="flex-row" style="align-items: center;">
         <formDropdown id="{{id}}-boxtype" name="boxtype" label="Type" selected="{{boxtype}}"
                       choices="['Number', 'String', 'Color', 'String (reporter)', 'String (commands)']"
                       disableds="['String (reporter)', 'String (commands)']" /> <!-- Disabled until `run`/`runresult` work on strings --JAB (6/8/16) -->
-        <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline" name="multiline" />
+        <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline"
+                      name="multiline" disabled="typeof({{isMultiline}}) == 'undefined'" />
       </div>
       <spacer height="10px" />
       """
@@ -121,8 +127,8 @@ window.RactiveInput = RactiveWidget.extend({
     """
     {{>input}}
     {{>contextMenu}}
-    <editForm idBasis="{{id}}" boxtype="{{widget.boxtype}}"
-              display="{{widget.display}}" isMultiline="{{widget.multiline}}" />
+    <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}"
+              display="{{widget.display}}" isMultiline="{{widget.boxedValue.multiline}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -134,17 +140,17 @@ window.RactiveInput = RactiveWidget.extend({
              on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
              class="netlogo-widget netlogo-input-box netlogo-input"
              style="{{dims}}">
-        <div class="netlogo-label">{{widget.varName}}</div>
-        {{# widget.boxtype === 'Number'}}
+        <div class="netlogo-label">{{widget.variable}}</div>
+        {{# widget.boxedValue.type === 'Number'}}
           <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" />
         {{/}}
-        {{# widget.boxtype === 'String'}}
+        {{# widget.boxedValue.type === 'String'}}
           <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress"></textarea>
         {{/}}
-        {{# widget.boxtype === 'String (reporter)' || widget.boxtype === 'String (commands)' }}
+        {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
           <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" />
         {{/}}
-        {{# widget.boxtype === 'Color'}}
+        {{# widget.boxedValue.type === 'Color'}}
           <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" />
         {{/}}
       </label>

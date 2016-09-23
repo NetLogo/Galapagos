@@ -25,7 +25,7 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
   import StatusCacher.AllBuiltInModels
 
   val modelsCollection = new NetLogoModelCollection {
-    override def allModels(implicit mode: Mode): Seq[File] = Seq(SmallWorld, TeamAssembly, BirdBreeder).map(_.file)
+    override def allModels(implicit mode: Mode): Seq[File] = Seq(OilCartel, TeamAssembly, BirdBreeder).map(_.file)
   }
 
   lazy val observer = genInbox
@@ -36,13 +36,14 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
     assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels(Test)))
   }
 
+  // If this test fails, perhaps Oil Cartel now compiles (because HubNet is supported)? --JAB (2/5/17)
   it should "send a status update message with the compilation status of each file" in {
     collectionCompiler ! CheckBuiltInModels
     assertInboxReceivedUnordered(
       observer, 1,
       CompilationSuccess(TeamAssembly.file) == _,
       CompilationSuccess(BirdBreeder.file) == _,
-      failureForTestSource(SmallWorld.file)
+      failureForTestSource(OilCartel.file)
     )
   }
 
@@ -65,7 +66,7 @@ trait AkkaTestHelper extends Assertions {
     def contents: String = Source.fromFile(file).mkString
   }
 
-  val SmallWorld   = new TestSource("public/modelslib/Sample Models/Networks/Small Worlds.nlogo")
+  val OilCartel    = new TestSource("public/modelslib/Sample Models/Social Science/Oil Cartel HubNet.nlogo")
   val TeamAssembly = new TestSource("public/modelslib/Sample Models/Networks/Team Assembly.nlogo")
   val Scatter      = new TestSource("public/modelslib/Sample Models/Social Science/Scatter.nlogo")
   val BirdBreeder  = new TestSource("public/modelslib/Curricular Models/BEAGLE Evolution/Bird Breeder.nlogo")

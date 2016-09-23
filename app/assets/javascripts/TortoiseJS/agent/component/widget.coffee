@@ -26,13 +26,16 @@ window.RactiveWidget = Ractive.extend({
     @on('*.updateWidgetValue'
     , ({ proxies = {}, triggers = {}, values = {}}) ->
 
+        getByPath = (obj) -> (path) ->
+          path.split('.').reduce(((acc, x) -> acc[x]), obj)
+
         try
 
           widget = @get('widget')
 
           triggerNames = Object.keys(triggers)
 
-          oldies = triggerNames.reduce(((acc, x) -> acc[x] = widget[x]; acc), {})
+          oldies = triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
 
           for k, v of values
             widget[k] = v
@@ -41,8 +44,8 @@ window.RactiveWidget = Ractive.extend({
             widget.proxies[k] = v
 
           eventArraysArray =
-            for name in triggerNames when widget[name] isnt oldies[name]
-              triggers[name].map((f) -> f(oldies[name], widget[name]))
+            for name in triggerNames when getByPath(widget) isnt oldies[name]
+              triggers[name].map((f) -> f(oldies[name], getByPath(widget)))
 
           events = [].concat(eventArraysArray...)
 

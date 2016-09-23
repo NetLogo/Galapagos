@@ -79,14 +79,14 @@ ViewEditForm = EditForm.extend({
     weg = WidgetEventGenerators
     {
       triggers: {
-                  fontSize: [                    weg.redrawView]
-      ,           maxPxcor: [    weg.resizeView, weg.redrawView]
-      ,           maxPycor: [    weg.resizeView, weg.redrawView]
-      ,           minPxcor: [    weg.resizeView, weg.redrawView]
-      ,           minPycor: [    weg.resizeView, weg.redrawView]
-      ,          patchSize: [                    weg.redrawView]
-      , wrappingAllowedInX: [weg.updateTopology, weg.redrawView]
-      , wrappingAllowedInY: [weg.updateTopology, weg.redrawView]
+        fontSize:                        [                    weg.redrawView]
+      , 'dimensions.maxPxcor':           [    weg.resizeView, weg.redrawView]
+      , 'dimensions.maxPycor':           [    weg.resizeView, weg.redrawView]
+      , 'dimensions.minPxcor':           [    weg.resizeView, weg.redrawView]
+      , 'dimensions.minPycor':           [    weg.resizeView, weg.redrawView]
+      , 'dimensions.patchSize':          [                    weg.redrawView]
+      , 'dimensions.wrappingAllowedInX': [weg.updateTopology, weg.redrawView]
+      , 'dimensions.wrappingAllowedInY': [weg.updateTopology, weg.redrawView]
       }
     , proxies: {
                   fontSize: form.turtleLabelSize.valueAsNumber
@@ -223,10 +223,10 @@ window.RactiveView = RactiveWidget.extend({
     {{>view}}
     {{>contextMenu}}
     <editForm idBasis="view"
-              maxX="{{widget.maxPxcor}}" maxY="{{widget.maxPycor}}"
-              minX="{{widget.minPxcor}}" minY="{{widget.minPycor}}"
-              wrapsInX="{{widget.wrappingAllowedInX}}" wrapsInY="{{widget.wrappingAllowedInY}}"
-              patchSize="{{widget.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
+              maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
+              minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
+              wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"
+              patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
               framerate="{{widget.frameRate}}"
               isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
     """

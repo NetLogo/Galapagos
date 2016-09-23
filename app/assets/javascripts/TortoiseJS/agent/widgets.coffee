@@ -115,7 +115,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.set('primaryView', viewModel)
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
-  setUpViewProxies(viewModel, viewController.model.world)
+  setUpDimensionsProxies(viewModel, viewController.model.world)
   fontSizeProxy =
     addProxyTo( viewModel.proxies
               , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
@@ -181,8 +181,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
-    if widget.varName? and world? and newVal != oldVal and isValidValue(widget, newVal)
-      world.observer.setGlobal(widget.varName, newVal)
+    if widget.variable? and world? and newVal != oldVal and isValidValue(widget, newVal)
+      world.observer.setGlobal(widget.variable, newVal)
   )
 
   ractive.observe('widgetObj.*.right', ->
@@ -207,7 +207,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.on('*.renameInterfaceGlobal'
   , (oldName, newName, value) ->
-      if not existsInObj(({ varName }) -> varName is oldName)(@get('widgetObj'))
+      if not existsInObj(({ variable }) -> variable is oldName)(@get('widgetObj'))
         world.observer.setGlobal(oldName, undefined)
       world.observer.setGlobal(newName, value)
       false
@@ -280,8 +280,8 @@ class window.WidgetController
 
     for widget in @widgets()
       if widget.currentValue?
-        if widget.varName?
-          widget.currentValue = world.observer.getGlobal(widget.varName)
+        if widget.variable?
+          widget.currentValue = world.observer.getGlobal(widget.variable)
         else if widget.reporter?
           try
             widget.currentValue = widget.reporter()
@@ -371,9 +371,9 @@ fillOutWidgets = (widgets, updateUICallback) ->
   # engine functions. BCH 11/5/2014
   for widget, i in widgets
     widget.id = i
-    if widget.varName?
+    if widget.variable?
       # Convert from NetLogo variables to Tortoise variables.
-      widget.varName = widget.varName.toLowerCase()
+      widget.variable = widget.variable.toLowerCase()
     switch widget['type']
       when "switch"
         widget.currentValue = widget.on
@@ -381,8 +381,8 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.default
         setUpSlider(widget, widget)
       when "inputBox"
-        widget.currentValue = widget.value
-        widget.display      = widget.varName
+        widget.currentValue = widget.boxedValue.value
+        widget.display      = widget.variable
       when "button"
         setUpButton(updateUICallback)(widget, widget)
       when "chooser"
@@ -447,8 +447,8 @@ setUpSlider = (source, destination) ->
   destination.stepValue    = 1
   return
 
-# (Widgets.View, AgentStreamController.View) -> Unit
-setUpViewProxies = (widgetView, modelView) ->
+# (Widgets.View.Dimensions, AgentStreamController.View) -> Unit
+setUpDimensionsProxies = (viewWidget, modelView) ->
 
   translations = {
     maxPxcor:           "maxpxcor"
@@ -460,10 +460,11 @@ setUpViewProxies = (widgetView, modelView) ->
   , wrappingAllowedInY: "wrappingallowediny"
   }
 
-  widgetView.proxies = {}
+  viewWidget.proxies = {}
 
   for wName, mName of translations
-    addProxyTo(widgetView.proxies, [[widgetView, wName], [modelView, mName]], wName, widgetView[wName])
+    addProxyTo(viewWidget.proxies, [[viewWidget.dimensions, wName]
+            , [modelView, mName]], wName, viewWidget.dimensions[wName])
 
   return
 
@@ -480,7 +481,7 @@ isValidValue = (widget, value) ->
   value? and
     switch widget.type
       when 'slider'   then not isNaN(value)
-      when 'inputBox' then not (widget.boxtype == 'Number' and isNaN(value))
+      when 'inputBox' then not (widget.boxedValue.type == 'Number' and isNaN(value))
       else  true
 
 # coffeelint: disable=max_line_length
