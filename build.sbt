@@ -21,14 +21,14 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-09abf30"
+val tortoiseVersion = "1.0-90ef383"
 
 libraryDependencies ++= Seq(
   filters,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   cache,
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.9" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.4.11" % "test",
   "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )
 
@@ -37,8 +37,8 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "filesaver.js" % "0.1.1",
   "org.webjars.npm" % "mousetrap" % "1.5.3",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
-  "org.webjars" % "highcharts" % "4.2.6",
-  "org.webjars" % "jquery" % "3.1.0",
+  "org.webjars" % "highcharts" % "4.2.7",
+  "org.webjars" % "jquery" % "3.1.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.3",
   "org.webjars" % "codemirror" % "5.13.2"
