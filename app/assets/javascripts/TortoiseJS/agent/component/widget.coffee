@@ -24,7 +24,11 @@ window.RactiveWidget = Ractive.extend({
     )
 
     @on('*.updateWidgetValue'
-    , ({ proxies = {}, triggers = {}, values = {}}) ->
+    , ({ proxies, triggers, values}) ->
+
+        proxies = proxies ? {}
+        triggers = triggers ? {}
+        values = values ? {}
 
         getByPath = (obj) -> (path) ->
           path.split('.').reduce(((acc, x) -> acc[x]), obj)

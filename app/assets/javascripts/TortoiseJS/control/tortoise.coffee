@@ -1,5 +1,12 @@
-nlogoCompile = (commands, reporters, widgets, onFulfilled) -> (model) ->
-  onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))
+# figure out how to get onFulfilled into worker thread
+nlogoCompile = (commands, reporters, widgets, load, onFulfilled) ->
+  { name, modelPath } = load
+  (model) ->
+    window.worker.postMessage({
+      type: 'NLOGO_COMPILE',
+      data: { model, commands, name, modelPath },
+    })
+    # onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))
 
 loadError = (url) ->
   """
@@ -49,8 +56,9 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
   req.send("")
 
 # handleCompilation : (ModelResult => (), ModelResult => ()) => (String) => ()
-handleCompilation = (onSuccess, onError) ->
+handleCompilation = (load, onSuccess, onError) ->
   nlogoCompile([], [], [],
+    load,
     (res) =>
       if res.model.success
         onSuccess(res)
@@ -135,10 +143,12 @@ fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(con
   loading((loader) ->
     segments = path.split(/\/|\\/)
     name     = segments[segments.length - 1]
-    load     = loadData(container, path, name, loader, onError)
+    # loader.finish hides $('#loading-overlay')
+    load = loadData(container, path, name, loader, onError)
     handleCompilation(
+      load,
       apply(callback, openSession(load)),
-      reportCompilerError(load)
+      reportCompilerError(load),
     )(nlogo)
   )
 
@@ -147,6 +157,7 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
     load = loadData(container, url, modelName, loader, onError)
     handleAjaxLoad(url,
       handleCompilation(
+        load,
         apply(callback, openSession(load)),
         reportCompilerError(load)),
       reportAjaxError(load))

@@ -1,4 +1,4 @@
-# (Element or string, [widget], string, string, boolean, string) -> WidgetController
+# (Element or string, [widget], string, string, boolean, string) -> WidgetControlleru
 window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   if typeof container == 'string'
     container = document.querySelector(container)
@@ -236,7 +236,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
   controller
 
-showErrors = (errors) ->
+window.showErrors = (errors) ->
   if errors.length > 0
     if window.nlwAlerter?
       window.nlwAlerter.displayError(errors.join('<br/>'))

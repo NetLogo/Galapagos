@@ -56,19 +56,19 @@ GalapagosAssets.settings
 pipelineStages ++= Seq(digest)
 
 // Also used in Dev mode
-pipelineStages in Assets ++= Seq(autoprefixer)
+// pipelineStages in Assets ++= Seq(autoprefixer)
 
 fork in Test := false
 
-includeFilter in autoprefixer := Def.setting {
-  val webJarDir     = (webJarsDirectory in Assets).value.getPath
-  val testWebJarDir = (webJarsDirectory in TestAssets).value.getPath
-  new FileFilter {
-    override def accept(file: java.io.File) = {
-      file.getName.endsWith(".css") && ! (file.getPath.contains(webJarDir) || file.getPath.contains(testWebJarDir))
-    }
-  }
-}.value
+// includeFilter in autoprefixer := Def.setting {
+//   val webJarDir     = (webJarsDirectory in Assets).value.getPath
+//   val testWebJarDir = (webJarsDirectory in TestAssets).value.getPath
+//   new FileFilter {
+//     override def accept(file: java.io.File) = {
+//       file.getName.endsWith(".css") && ! (file.getPath.contains(webJarDir) || file.getPath.contains(testWebJarDir))
+//     }
+//   }
+// }.value
 
 routesGenerator := InjectedRoutesGenerator
 

@@ -18,6 +18,8 @@ class window.SessionLite
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
+    @worker = window.worker
+
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
 
@@ -168,81 +170,24 @@ class window.SessionLite
 
   run: (code) ->
     Tortoise.startLoading()
-    codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
-      ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
-        if modelSuccess
-          [{ result, success }] = commands
-          if (success)
-            try window.handlingErrors(new Function(result))()
-            catch ex
-              if not (ex instanceof Exception.HaltInterrupt)
-                throw ex
-          else
-            @alertCompileError(result)
-        else
-          @alertCompileError(modelResult)
-    , @alertCompileError)
+
+    @worker.postMessage({
+      type: 'COMPILE_CODE',
+      data: {
+        compileArgs: [
+          @widgetController.code(),
+          [code],
+          [],
+          [@widgetController.widgets()[0]], # @widgetController.widgets(),
+        ]
+      },
+    })
 
   alertCompileError: (result) ->
     alertText = result.map((err) -> err.message).join('\n')
     @displayError(alertText)
 
-# See http://perfectionkills.com/global-eval-what-are-the-options/ for what
-# this is doing. This is a holdover till we get the model attaching to an
-# object instead of global namespace. - BCH 11/3/2014
-globalEval = eval
-
 window.AgentModel = tortoise_require('agentmodel')
-
-window.codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
-  compileParams = {
-    code:         code,
-    widgets:      widgets,
-    commands:     commands,
-    reporters:    reporters,
-    turtleShapes: turtleShapes ? [],
-    linkShapes:   linkShapes ? []
-  }
-  try
-    onFulfilled((new BrowserCompiler()).fromModel(compileParams))
-  catch ex
-    onErrors([ex])
-  finally
-    Tortoise.finishLoading()
-
-window.serverNlogoCompile = (model, commands, reporters, widgets, onFulfilled) ->
-  compileParams = {
-    model:     model,
-    commands:  JSON.stringify(commands),
-    reporters: JSON.stringify(reporters)
-  }
-  compileCallback = (res) ->
-    onFulfilled(JSON.parse(res))
-  ajax('/compile-nlogo', compileParams, compileCallback)
-
-window.serverCodeCompile = (code, commands, reporters, widgets, onFulfilled) ->
-  compileParams = {
-    code,
-    widgets:      JSON.stringify(widgets),
-    commands:     JSON.stringify(commands),
-    reporters:    JSON.stringify(reporters),
-    turtleShapes: JSON.stringify(turtleShapes ? []),
-    linkShapes:   JSON.stringify(linkShapes ? [])
-  }
-  compileCallback = (res) ->
-    onFulfilled(JSON.parse(res))
-  ajax('/compile-code', compileParams, compileCallback)
-
-window.ajax = (url, params, callback) ->
-  paramPairs = for key, value of params
-    encodeURIComponent(key) + '=' + encodeURIComponent(value)
-  req = new XMLHttpRequest()
-  req.open('POST', url)
-  req.onreadystatechange = ->
-    if req.readyState == req.DONE
-      callback(req.responseText)
-  req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-  req.send(paramPairs.join('&'))
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari

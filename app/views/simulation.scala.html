@@ -36,6 +36,8 @@
     @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
     @tagBuilder.callToHTML(routes.Local.engine,                       "/js/tortoise-engine.js")
 
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/workerreducer.js")
+
     @tagBuilder.pathToHTML("javascripts/codemirror/mode.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/colors.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/checkbox.js")
@@ -127,6 +129,7 @@
       };
 
       if (nlogoScript.textContent.length > 0) {
+        // nlogo, container, path, callback, onError
         Tortoise.fromNlogo(nlogoScript.textContent,
                            modelContainer,
                            nlogoScript.dataset.filename,
