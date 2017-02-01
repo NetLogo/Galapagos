@@ -133,7 +133,9 @@ finishLoading = ->
 
 fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
-    load = loadData(container, path, undefined, loader, onError)
+    segments = path.split(/\/|\\/)
+    name     = segments[segments.length - 1]
+    load     = loadData(container, path, name, loader, onError)
     handleCompilation(
       apply(callback, openSession(load)),
       reportCompilerError(load)
