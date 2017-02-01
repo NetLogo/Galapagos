@@ -18,8 +18,6 @@ class window.SessionLite
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
-    @worker = window.worker
-
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
 
@@ -170,8 +168,8 @@ class window.SessionLite
 
   run: (code) ->
     Tortoise.startLoading()
-
-    @worker.postMessage({
+    worker = window.workerManager.getWorker()
+    worker.postMessage({
       type: 'COMPILE_CODE',
       data: {
         compileArgs: [

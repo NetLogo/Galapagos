@@ -1,8 +1,7 @@
-worker = new Worker('/assets/javascripts/TortoiseJS/control/worker.js')
-
+# Needs to go with newSession
 globalEval = eval
 
-# Poached from tortoise.coffee
+# Poached from tortoise.coffee - temporary home :')
 newSession = (container, modelResult, readOnly = false, filename = "export", onError = undefined) ->
   widgets = globalEval(modelResult.widgets)
   widgetController = bindWidgets(container, widgets, modelResult.code,
@@ -18,31 +17,38 @@ newSession = (container, modelResult, readOnly = false, filename = "export", onE
   globalEval(modelResult.model.result)  # needs to be on worker
   new SessionLite(widgetController, onError)
 
-alertCompileError = (result) ->
-  result.map((err) -> err.message).join('\n')
-  alert(JSON.stringify(result))  # very jank
+class window.WorkerManager
+  _worker: undefined
 
-handleWorkerMessage = ({ data: { type, data } }) ->
-  action = {
-    'COMPILATION_ERROR': (data) -> alertCompileError(data)
-    'ERROR': (data) -> console.error("worker: #{data.message}")
-    'RUNTIME_ERROR': (data) -> window.showErrors(data.messages)
-    'FINISH_LOADING': (data) -> window.Tortoise.finishLoading()
-    'NLOGO_COMPILE_RESULT': (data) ->
-      { compileResult, name } = data
-      session = newSession(modelContainer, compileResult, false, name, alertCompileError)
+  constructor: (@_displayError) ->
+    @_worker = new Worker('/assets/javascripts/TortoiseJS/control/worker.js')
+    @_worker.addEventListener('message', @handleWorkerMessage)
 
-      # Finish loading
-      document.querySelector("#loading-overlay").style.display = "none"
-      openSession(session)
-    'PRINT': (data) -> session.widgetController.write(data.message)
-  }[type]
+  getWorker: -> @_worker
 
-  if action?
-    action(data)
-  else
-    console.error("main: received message from worker, but type #{type} was not recognized")
+  handleWorkerMessage: ({ data: { type, data } }) =>
+    action = {
+      'COMPILATION_ERROR': ({ messages }) =>
+        message = messages.map((m) -> m.message).join('\n')
+        @_displayError(message)
+      'ERROR': (data) ->
+        console.error("worker: #{data.message}")
+      'RUNTIME_ERROR': (data) ->
+        window.showErrors(data.messages)
+      'FINISH_LOADING': (data) ->
+        window.Tortoise.finishLoading()
+      'NLOGO_COMPILE_RESULT': (data) =>
+        { compileResult, name } = data
+        session = newSession(modelContainer, compileResult, false, name, @_displayError)
 
-worker.addEventListener('message', handleWorkerMessage)
-window.worker = worker
+        # Finish loading
+        document.querySelector("#loading-overlay").style.display = "none"
+        openSession(session)
+      'PRINT': (data) ->
+        session.widgetController.write(data.message)
+    }[type]
 
+    if action?
+      action(data)
+    else
+      console.error("main: received message from worker, but type #{type} was not recognized")

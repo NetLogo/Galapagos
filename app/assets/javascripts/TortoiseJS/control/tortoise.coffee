@@ -1,8 +1,9 @@
 # figure out how to get onFulfilled into worker thread
-nlogoCompile = (commands, reporters, widgets, load, onFulfilled) ->
-  { name, modelPath } = load
+nlogoCompile = (commands, reporters, widgets, { name, modelPath, onError }, onFulfilled) ->
   (model) ->
-    window.worker.postMessage({
+    window.workerManager = new WorkerManager(onError)
+    worker = workerManager.getWorker()
+    worker.postMessage({
       type: 'NLOGO_COMPILE',
       data: { model, commands, name, modelPath },
     })

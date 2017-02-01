@@ -92,18 +92,16 @@ handleCompileResult = ({ commands, model: { result: modelResult, success: modelS
     else
       postCompileError(result)
   else
-    postCompileError(result)
+    postCompileError(modelResult)
 
 ########################
 # Posting messages
 ########################
 
 postRuntimeError = (messages) ->
-  debugger
   postToMain('RUNTIME_ERROR', { messages: [ messages ] })
 
 postCompileError = (result) ->
-  debugger
   # Errors can't be cloned, so we can't post them directly.
   postToMain('COMPILATION_ERROR',
     { messages: result.map((err) -> { message: err.message, stack: err.stack }) })
