@@ -4,7 +4,7 @@ nlogoCompile = (commands, reporters, widgets, { name, modelPath, onError }, onFu
     window.workerManager = new WorkerManager(onError)
     worker = workerManager.getWorker()
     worker.postMessage({
-      type: 'NLOGO_COMPILE',
+      type: 'INITIAL_COMPILE',
       data: { model, commands, name, modelPath },
     })
     # onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))

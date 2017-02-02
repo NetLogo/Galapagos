@@ -10,10 +10,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   # and then fill it out at the end when we actually make the thing.
   # BCH 11/10/2014
   controller       = null
-  updateUICallback = ->
-    controller.redraw()
-    controller.updateWidgets()
-  fillOutWidgets(widgets, updateUICallback)
+  fillOutWidgets(widgets)
 
   sanitizedMarkdown = (md) ->
     # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
@@ -342,7 +339,7 @@ class window.WidgetController
       storedWidget.compilation = widget.compilation
       f =
         switch widget.type
-          when "button"  then setUpButton(=> @redraw(); @updateWidgets())
+          when "button"  then setUpButton
           when "monitor" then setUpMonitor
           when "slider"  then setUpSlider
       f?(widget, storedWidget)
@@ -366,7 +363,7 @@ reporterOf = (str) -> new Function("return #{str}")
 # ([widget], () -> Unit) -> WidgetController
 # Destructive - Adds everything for maintaining state to the widget models,
 # such `currentValue`s and actual functions for buttons instead of just code.
-fillOutWidgets = (widgets, updateUICallback) ->
+fillOutWidgets = (widgets) ->
   # Note that this must execute before models so we can't call any model or
   # engine functions. BCH 11/5/2014
   for widget, i in widgets
@@ -384,14 +381,14 @@ fillOutWidgets = (widgets, updateUICallback) ->
         widget.currentValue = widget.boxedValue.value
         widget.display      = widget.variable
       when "button"
-        setUpButton(updateUICallback)(widget, widget)
+        setUpButton(widget, widget)
       when "chooser"
         widget.currentValue = widget.choices[widget.currentChoice]
       when "monitor"
         setUpMonitor(widget, widget)
 
 # (() => Unit) => (Button, Button) => Unit
-setUpButton = (updateUI) -> (source, destination) ->
+setUpButton = (source, destination) ->
   if source.forever then destination.running = false
   if source.compilation.success
     destination.compiledSource = source.compiledSource
@@ -406,12 +403,10 @@ setUpButton = (updateUI) -> (source, destination) ->
                 ex instanceof Exception.HaltInterrupt
             if mustStop
               destination.running = false
-              updateUI()
-        else
-          () ->
-            task()
-            updateUI()
+        else task
       do (wrappedTask) ->
+        # The rest of this code builds a function for the widget's
+        # run property.
         destination.run = wrappedTask
   else
     destination.run =

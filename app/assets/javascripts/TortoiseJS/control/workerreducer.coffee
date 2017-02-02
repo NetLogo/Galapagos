@@ -37,7 +37,7 @@ class window.WorkerManager
         window.showErrors(data.messages)
       'FINISH_LOADING': (data) ->
         window.Tortoise.finishLoading()
-      'NLOGO_COMPILE_RESULT': (data) =>
+      'INITIAL_COMPILE_RESULT': (data) =>
         { compileResult, name } = data
         session = newSession(modelContainer, compileResult, false, name, @_displayError)
 

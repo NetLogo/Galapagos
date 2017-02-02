@@ -111,7 +111,15 @@ window.RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
-    @on('activateButton', (event, run) -> if @get('isEnabled') then run())
+    @on('activateButton', (event, run) ->
+      if @get('isEnabled')
+        worker = window.workerManager.getWorker()
+        worker.postMessage({
+          type: 'RUN_BUTTON',
+          data: {
+            id: session.widgetController.widgets().findIndex((w) => w is @get('widget'))
+          }
+        }))
 
   isolated: true
 

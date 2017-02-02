@@ -170,13 +170,15 @@ class window.SessionLite
     Tortoise.startLoading()
     worker = window.workerManager.getWorker()
     worker.postMessage({
-      type: 'COMPILE_CODE',
+      type: 'COMMAND_COMPILE',
       data: {
         compileArgs: [
           @widgetController.code(),
           [code],
           [],
-          [@widgetController.widgets()[0]], # @widgetController.widgets(),
+          JSON.stringify(@widgetController.widgets()),  # we do what we must, because, we can
+          # [@widgetController.widgets()[0]],
+          # @widgetController.widgets(),
         ]
       },
     })

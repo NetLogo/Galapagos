@@ -7,12 +7,13 @@ Exception = tortoise_require('util/exception')
 # object instead of global namespace. - BCH 11/3/2014
 globalEval = eval
 
+widgetHandlers = {}
+
 normalizedFileName = (path) ->
   pathComponents = path.split(/\/|\\/)
   decodeURI(pathComponents[pathComponents.length - 1])
 
-# codeCompile(data.compileArgs..., handleCompileResult, postCompileError)
-codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
+commandCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
   compileParams = {
     code:         code,
     widgets:      widgets,
@@ -22,7 +23,7 @@ codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
     linkShapes:   linkShapes ? []
   }
   try
-    onFulfilled((new BrowserCompiler()).fromModel(compileParams))  # find this
+    onFulfilled((new BrowserCompiler()).fromModel(compileParams))
   catch ex
     onErrors([ex])
   finally
@@ -107,7 +108,7 @@ postCompileError = (result) ->
     { messages: result.map((err) -> { message: err.message, stack: err.stack }) })
 
 postNlogoCompileResult = (data) ->
-  postToMain('NLOGO_COMPILE_RESULT', data)
+  postToMain('INITIAL_COMPILE_RESULT', data)
 
 # string, JSON ->
 postToMain = (type, data) -> self.postMessage({ type, data })
@@ -120,13 +121,31 @@ postToMain = (type, data) -> self.postMessage({ type, data })
 
 self.addEventListener('message', ({ data: { type, data } }) ->
   action = {
-    'COMPILE_CODE': () ->
-      codeCompile(data.compileArgs..., handleCompileResult, postCompileError)
-    'NLOGO_COMPILE': () ->
+    'RUN_BUTTON': () ->
+      { id } = data
+      widgetHandlers[id]()
+
+    'COMMAND_COMPILE': () ->
+      [ codeTab, commandCenter, reporters, widgets ] = data.compileArgs
+      commandCompile(
+        codeTab,
+        commandCenter,
+        reporters,
+        JSON.parse(widgets),  # temp -- stringified to avoid runtime errors
+        handleCompileResult,
+        postCompileError)
+
+    'INITIAL_COMPILE': () ->
       { model, commands, modelPath, name } = data
       compileResult = (new BrowserCompiler()).fromNlogo(model, commands)
-      modelName = name ? normalizedFileName(modelPath)
 
+      # Store widget handlers in a map
+      globalEval(compileResult.widgets)
+        .forEach((w, i) ->
+          if w.type is 'button' or w.type is 'monitor'
+            widgetHandlers[i] = handlingErrors(new Function(w.compiledSource)))
+
+      modelName = name ? normalizedFileName(modelPath)
       self.modelConfig = {}
       self.modelConfig.print = {
         write: (message) -> postToMain('PRINT', { message })
