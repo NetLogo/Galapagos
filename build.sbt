@@ -100,30 +100,30 @@ def travisBranch: String =
   else
     System.getenv("TRAVIS_BRANCH")
 
-scrapePublishCredential <<= Def.settingDyn {
+scrapePublishCredential := (Def.settingDyn {
   if (isTravis)
     Def.setting { fromEnvironmentVariables }
   else
     // Requires setting up a credentials profile, ask Robert for more details
     Def.setting { fromCredentialsProfile("nlw-admin") }
-}
+}).value
 
-scrapePublishBucketID <<= Def.settingDyn {
+scrapePublishBucketID := (Def.settingDyn {
   val branchDeploy = Map("master" -> "netlogo-web-prod-content")
 
   if (isTravis)
     Def.setting { branchDeploy.get(travisBranch) }
   else
     Def.setting { branchDeploy.get("master") }
-}
+}).value
 
-scrapePublishDistributionID <<= Def.settingDyn {
+scrapePublishDistributionID := (Def.settingDyn {
   val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
 
   if (isTravis)
     Def.setting { branchPublish.get(travisBranch) }
   else
     Def.setting { branchPublish.get("master") }
-}
+}).value
 
 scrapeAbsoluteURL := Some("netlogoweb.org")

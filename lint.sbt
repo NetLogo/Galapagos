@@ -25,4 +25,4 @@ coffeelint := {
   coffeeSources
 }
 
-coffeelint <<= coffeelint dependsOn (nodeModules in Assets)
+coffeelint := (coffeelint dependsOn (nodeModules in Assets)).value
