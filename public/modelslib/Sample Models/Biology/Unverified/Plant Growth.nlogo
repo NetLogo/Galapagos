@@ -185,10 +185,10 @@ end
 GRAPHICS-WINDOW
 219
 10
-553
-525
-40
-60
+551
+503
+-1
+-1
 4.0
 1
 10
@@ -258,7 +258,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 17
@@ -269,7 +269,7 @@ nutrient-density
 nutrient-density
 1
 3
-2
+2.0
 1
 1
 NIL
@@ -284,7 +284,7 @@ nutrient-concentration
 nutrient-concentration
 20
 100
-49
+49.0
 1
 1
 NIL
@@ -671,14 +671,14 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
-set nutrient-density 3
+resize-world -40 40 -40 40
+set nutrient-density 5
 setup-patches
 setup-plant
-repeat 5000 [ grow ]
+repeat 1000 [ grow ]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -693,7 +693,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

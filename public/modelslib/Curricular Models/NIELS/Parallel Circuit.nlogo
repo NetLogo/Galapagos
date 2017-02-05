@@ -52,16 +52,31 @@ to setup
         if pcolor = black [
         set xcor max-pxcor - 3
       ] ] ]
-  ask n-of (resistance-top-wire) patches with [top-wire? and pycor > (max-pycor / 2 + 1) and pxcor < (max-pxcor - 5) and pxcor > (min-pxcor + 5) and pcolor != black and pcolor != red]
-    [ sprout-nuclei 1 [
-        set color blue
-        set size 2.5
-         ] ]
-  ask n-of (resistance-bottom-wire) patches with [not top-wire? and pycor < (max-pycor / 2 - 0.1) and pxcor < (max-pxcor - 5) and pxcor > (min-pxcor + 5)and pcolor != black and pcolor != red]
-    [ sprout-nuclei 1 [
-        set color blue
-        set size 2.5
-         ] ]
+  ask n-of (resistance-top-wire) patches with [
+    top-wire? and pycor > (max-pycor / 2 + 1) and
+    pxcor < (max-pxcor - 5) and
+    pxcor > (min-pxcor + 5) and
+    pcolor != black and
+    pcolor != red
+  ] [
+    sprout-nuclei 1 [
+      set color blue
+      set size 2.5
+    ]
+  ]
+  ask n-of (resistance-bottom-wire) patches with [
+    not top-wire? and
+    pycor < (max-pycor / 2 - 0.1) and
+    pxcor < (max-pxcor - 5) and
+    pxcor > (min-pxcor + 5) and
+    pcolor != black and
+    pcolor != red
+  ] [
+    sprout-nuclei 1 [
+      set color blue
+      set size 2.5
+    ]
+  ]
 
   reset-ticks
 end
@@ -133,9 +148,9 @@ end
 GRAPHICS-WINDOW
 187
 11
-710
-261
-85
+708
+239
+-1
 -1
 3.0
 1
@@ -189,7 +204,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 457
@@ -212,19 +227,19 @@ PENS
 TEXTBOX
 192
 265
-236
+243
 299
-Battery-positive
+Battery-\npositive
 11
 0.0
 0
 
 TEXTBOX
-666
+661
 266
 714
 305
-Battery-negative\n
+Battery-\nnegative\n
 11
 0.0
 0
@@ -322,7 +337,7 @@ resistance-top-wire
 resistance-top-wire
 50
 150
-50
+50.0
 25
 1
 NIL
@@ -337,7 +352,7 @@ resistance-bottom-wire
 resistance-bottom-wire
 50
 150
-50
+50.0
 25
 1
 NIL
@@ -727,9 +742,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -746,7 +760,6 @@ true
 0
 Line -7500403 true 150 150 30 225
 Line -7500403 true 150 150 270 225
-
 @#$#@#$#@
 0
 @#$#@#$#@

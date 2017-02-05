@@ -71,17 +71,19 @@ to go
   ;;collisions are still valid.
   ifelse is-turtle? colliding-particle-2
   [
-    set colliding-particles filter [item 1 ? != colliding-particle-1 and
-                                    item 2 ? != colliding-particle-1 and
-                                    item 1 ? != colliding-particle-2 and
-                                    item 2 ? != colliding-particle-2]
+    set colliding-particles filter [ [pair] ->
+                                    item 1 pair != colliding-particle-1 and
+                                    item 2 pair != colliding-particle-1 and
+                                    item 1 pair != colliding-particle-2 and
+                                    item 2 pair != colliding-particle-2]
                               colliding-particles
     ask colliding-particle-2 [check-for-wall-collision]
     ask colliding-particle-2 [check-for-particle-collision]
   ]
   [
-    set colliding-particles filter [item 1 ? != colliding-particle-1 and
-                                    item 2 ? != colliding-particle-1]
+    set colliding-particles filter [ [pair] ->
+                                    item 1 pair != colliding-particle-1 and
+                                    item 2 pair != colliding-particle-1]
                               colliding-particles
   ]
   if colliding-particle-1 != nobody [ask colliding-particle-1 [check-for-wall-collision]]
@@ -358,7 +360,9 @@ to sort-collisions
   ifelse colliding-particles != []
    [
     set winners first colliding-particles
-    foreach colliding-particles [if first ? < first winners [set winners ?]]
+    foreach colliding-particles [ [pair] ->
+      if first pair < first winners [set winners pair]
+    ]
     ;;winners is now the collision that will occur next
     let dt first winners
     set colliding-particle-1 item 1 winners
@@ -569,10 +573,10 @@ end
 GRAPHICS-WINDOW
 228
 10
-502
-305
-16
-16
+500
+283
+-1
+-1
 8.0
 1
 20
@@ -619,7 +623,7 @@ initial-number
 initial-number
 1
 10
-10
+10.0
 1
 1
 NIL
@@ -640,7 +644,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 3
@@ -1133,9 +1137,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1151,7 +1154,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

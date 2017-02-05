@@ -11,12 +11,15 @@ to setup
   ;; Create the turtles that represent the waves
   ;; We need three lines across the world, so it sets
   ;; their xcor based on their incrementing turtle id
-  foreach sort patches with [pycor = 0]
-    [ ask ? [ sprout-lefts 1 [ set color yellow ] ] ]
-  foreach sort patches with [pycor = 0]
-    [ ask ? [ sprout-rights 1 [ set color cyan ] ] ]
-  foreach sort patches with [pycor = 0]
-    [ ask ? [ sprout-sums 1 [ set color red ] ] ]
+  foreach sort patches with [ pycor = 0 ] [ [p] ->
+    ask p [ sprout-lefts 1 [ set color yellow ] ]
+  ]
+  foreach sort patches with [ pycor = 0 ] [ [p] ->
+    ask p [ sprout-rights 1 [ set color cyan ] ]
+  ]
+  foreach sort patches with [ pycor = 0 ] [ [p] ->
+    ask p [ sprout-sums 1 [ set color red ] ]
+  ]
 
   ;; Initialize all variables to zero.  All of the turtles are stationary.
   set listening-point 0
@@ -186,10 +189,10 @@ end
 GRAPHICS-WINDOW
 323
 10
-817
-445
-60
-50
+815
+423
+-1
+-1
 4.0
 1
 10
@@ -225,7 +228,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 11
@@ -253,7 +256,7 @@ amplitude-left
 amplitude-left
 0.0
 50.0
-25
+25.0
 1.0
 1
 NIL
@@ -268,7 +271,7 @@ friction
 friction
 0.0
 100.0
-0
+98.0
 1.0
 1
 NIL
@@ -283,7 +286,7 @@ frequency-left
 frequency-left
 1.0
 100.0
-30
+30.0
 1.0
 1
 NIL
@@ -384,7 +387,7 @@ frequency-right
 frequency-right
 0.0
 100.0
-30
+30.0
 1.0
 1
 NIL
@@ -399,7 +402,7 @@ amplitude-right
 amplitude-right
 0.0
 50.0
-15
+15.0
 1.0
 1
 NIL
@@ -797,9 +800,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -815,7 +817,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

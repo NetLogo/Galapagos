@@ -456,7 +456,8 @@ to line-up
   set heading 0
   ifelse is-number? item current-question my-choices
   [ ifelse min [item current-question my-choices] of turtles < 0 or max [item current-question my-choices] of turtles > 10
-    [ set xcor ((1 + item current-question my-choices - min [item current-question my-choices] of turtles) * world-width / (1 + max [item current-question my-choices] of turtles - min [item current-question my-choices] of turtles) + min-pxcor)]
+    [ set xcor ((1 + item current-question my-choices - min [item current-question my-choices] of turtles) * world-width /
+        (1 + max [item current-question my-choices] of turtles - min [item current-question my-choices] of turtles) + min-pxcor)]
     [ set xcor ((1 + item current-question my-choices) * world-width / 12 + min-pxcor)]
   ]
   [ set xcor -1 * max-pxcor ]
@@ -823,12 +824,12 @@ end
 
 to do-one-item-histogram
   clear-plot
-  if length filter [is-number? ?] [item current-question my-choices] of turtles > 0
+  if length filter [ [n] -> is-number? n] [item current-question my-choices] of turtles > 0
   [ if max [item current-question my-choices] of turtles > 10
     [ set-plot-x-range plot-x-min (ceiling max [item current-question my-choices] of turtles + 1) ]
     if min [item current-question my-choices] of turtles < 0
     [ set-plot-x-range (floor min [item current-question my-choices] of turtles) plot-x-max]
-    let current-data map [item current-question [my-choices] of ? ] sort turtles
+    let current-data map [ [t] -> item current-question [my-choices] of t ] sort turtles
     if not empty? remove false current-data
     [
       set-current-plot-pen "data"
@@ -921,7 +922,10 @@ end
 ;Saving questions
 ;ALWAYS makes a web page.  Poller data is hidden in comments at the bottom.
 to save-questions-prompt
-  user-message "Select the directory and filename for your questions.  You should add an extension - either .htm or .html\nIf you don't add an extension, NetLogo will automatically add .html"
+  user-message (word
+    "Select the directory and filename for your questions. "
+    "You should add an extension - either .htm or .html\n"
+    "If you don't add an extension, NetLogo will automatically add .html")
   let option user-new-file
   ifelse is-string? option
   [ if not (substring option (length option - 5) (length option) = ".html")
@@ -1425,10 +1429,10 @@ end
 GRAPHICS-WINDOW
 317
 142
-600
-446
-10
-10
+598
+424
+-1
+-1
 13.0
 1
 10
@@ -1679,7 +1683,7 @@ auto-save-every
 auto-save-every
 5
 100
-5
+5.0
 5
 1
 votes
@@ -2084,7 +2088,7 @@ BUTTON
 1353
 233
 Save INDIVIDUAL responses
-NIL
+let where user-directory\nask turtles [ save-responses where ]
 NIL
 1
 T
@@ -2474,9 +2478,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -2537,10 +2540,10 @@ SLIDER
 338
 Choice
 Choice
-0
-50
+0.0
+50.0
 25
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -2611,7 +2614,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

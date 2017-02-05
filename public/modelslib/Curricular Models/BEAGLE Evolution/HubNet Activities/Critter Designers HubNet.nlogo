@@ -88,7 +88,6 @@ patches-own [
 
 to startup
   clear-all
-  hubnet-set-client-interface "COMPUTER" []
   hubnet-reset
   setup-vars
 end
@@ -168,7 +167,7 @@ end
 to randomize-critter
   set speed (1 + random 10) / 10
   set birthing-level (5 + random 46)
-  set behavior-dna reduce [word ?1 ?2] n-values 30 [random-action-letter]
+  set behavior-dna reduce [ [i action-letter] -> word i action-letter] n-values 30 [random-action-letter]
   set carnivore? (random 100 < 20)  ; 20% chance of being a carnivore
 end
 
@@ -673,10 +672,10 @@ end
 GRAPHICS-WINDOW
 505
 10
-1070
-536
-18
-16
+1068
+514
+-1
+-1
 15.0
 1
 10
@@ -712,7 +711,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 5
@@ -723,7 +722,7 @@ minimum-random-species
 minimum-random-species
 0
 25
-0
+0.0
 1
 1
 NIL
@@ -755,7 +754,7 @@ max-grass
 max-grass
 10
 100
-42
+42.0
 5
 1
 NIL
@@ -770,7 +769,7 @@ grass-growth
 grass-growth
 1
 100
-31
+31.0
 1
 1
 NIL
@@ -801,7 +800,7 @@ percent of living critters
 100.0
 true
 true
-"" "if (ticks mod 5 = 0 and ticks != 0) [\n  if (ticks mod 2000 = 0)\n  [\n    clear-all-plots\n    set-plot-x-range (ticks) / dt (ticks + 500) / dt\n  ]\n  if (ticks mod 2000) > 500  ; don't change the range until we've plotted all the way across once\n  [\n    set-plot-x-range (ticks - 500) / dt ticks / dt  ; only show the last 500 ticks\n  ]\n\n  foreach sort species-list\n  [\n    let crits critters with [ creator-id = ? ]\n    ; create-temporary-plot-pen will either create the pen, or set it current if it exists\n    create-temporary-plot-pen ?\n\n    let col [color] of one-of crits\n    if (col mod 10 > 7) ; make the whitish colors more visible on the plot\n      [ set col col - 1 ]\n    set-plot-pen-color col\n    plotxy (ticks / dt) (count crits) * 100 / count critters\n  ]\n  ]"
+"" "if (ticks mod 5 = 0 and ticks != 0) [\n  if (ticks mod 2000 = 0)\n  [\n    clear-all-plots\n    set-plot-x-range (ticks) / dt (ticks + 500) / dt\n  ]\n  if (ticks mod 2000) > 500  ; don't change the range until we've plotted all the way across once\n  [\n    set-plot-x-range (ticks - 500) / dt ticks / dt  ; only show the last 500 ticks\n  ]\n\n  foreach sort species-list\n  [ [the-creator-id] ->\n    let crits critters with [ creator-id = the-creator-id ]\n    ; create-temporary-plot-pen will either create the pen, or set it current if it exists\n    create-temporary-plot-pen the-creator-id\n\n    let col [color] of one-of crits\n    if (col mod 10 > 7) ; make the whitish colors more visible on the plot\n      [ set col col - 1 ]\n    set-plot-pen-color col\n    plotxy (ticks / dt) (count crits) * 100 / count critters\n  ]\n  ]"
 PENS
 "-players-" 1.0 0 -16777216 true "" ""
 
@@ -814,7 +813,7 @@ SLIDER
 #-placements-per-client
 0
 25
-10
+10.0
 1
 1
 NIL
@@ -1275,9 +1274,8 @@ Line -7500403 true 40 84 255 210
 Line -7500403 true 40 216 255 90
 Line -7500403 true 84 40 210 255
 Circle -7500403 true true 120 0 60
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -1312,8 +1310,8 @@ SLIDER
 190
 speed
 speed
-0
-2
+0.0
+2.0
 1
 0.01
 1
@@ -1334,7 +1332,7 @@ BUTTON
 144
 10
 239
-59
+43
 Change Shape
 NIL
 NIL
@@ -1358,7 +1356,7 @@ BUTTON
 114
 303
 241
-355
+336
 Place New Species
 NIL
 NIL
@@ -1416,10 +1414,10 @@ SLIDER
 232
 birthing-level
 birthing-level
-5
-50
+5.0
+50.0
 25
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1513,7 +1511,7 @@ true
 true
 "" ""
 PENS
-"-players-" 1.0 0 -16777216 true
+"-players-" 1.0 0 -16777216 true "" ""
 
 MONITOR
 10
@@ -1617,7 +1615,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

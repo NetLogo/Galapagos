@@ -93,7 +93,7 @@ to plot-color-distribution
   set-current-plot-pen "%-target-color"
   histogram %-target-color-list
   let maxbar modes %-target-color-list
-  let maxrange filter [ ? = item 0 maxbar ] %-target-color-list
+  let maxrange filter [ [c] -> c = item 0 maxbar ] %-target-color-list
   set-plot-y-range 0 length maxrange
 end
 
@@ -104,10 +104,10 @@ end
 GRAPHICS-WINDOW
 309
 10
-676
-398
-10
-10
+674
+376
+-1
+-1
 17.0
 1
 10
@@ -137,7 +137,7 @@ block-side
 block-side
 1
 17
-3
+3.0
 2
 1
 NIL
@@ -152,7 +152,7 @@ SLIDER
 %-target-color
 0
 100
-50
+50.0
 1
 1
 %
@@ -190,7 +190,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 111
@@ -219,7 +219,7 @@ true
 false
 "" ""
 PENS
-"%-target-color" 0.0010 1 -10899396 true "" ""
+"%-target-color" 0.001 1 -10899396 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -604,9 +604,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set block-side 7
 setup
@@ -625,7 +624,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

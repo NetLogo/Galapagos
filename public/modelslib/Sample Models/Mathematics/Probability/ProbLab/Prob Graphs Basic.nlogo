@@ -68,7 +68,7 @@ to update-and-plot-attempts
   set-plot-x-range 0 ( (max counter-list) + 5)
   histogram counter-list
   let maxbar modes counter-list
-  let maxrange length filter [ ? = item 0 maxbar ] counter-list
+  let maxrange length filter [ [the-counter] -> the-counter = item 0 maxbar ] counter-list
   set-plot-y-range 0 max list 10 maxrange
 end
 
@@ -86,7 +86,7 @@ to update-and-plot-successes
                                     ( 3 + ( ceiling ( 2 * mean successes-per-sample-list ) ) ) ) )
     histogram successes-per-sample-list
     let maxbar modes successes-per-sample-list
-    let maxrange length filter [ ? = item 0 maxbar ] successes-per-sample-list
+    let maxrange length filter [ [successes] -> successes = item 0 maxbar ] successes-per-sample-list
     set-plot-y-range 0 max list 25 maxrange
     set attempts-this-sample 0
     set successes-this-sample 0
@@ -101,10 +101,10 @@ end
 GRAPHICS-WINDOW
 243
 10
-498
-48
-17
-0
+496
+26
+-1
+-1
 7.0
 1
 10
@@ -140,7 +140,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 7
@@ -197,14 +197,14 @@ PENS
 
 SLIDER
 9
-179
+203
 184
-212
+236
 sample-space-size
 sample-space-size
 1
 10
-2
+2.0
 1
 1
 NIL
@@ -237,7 +237,7 @@ sample-size
 sample-size
 0
 100
-10
+10.0
 5
 1
 NIL
@@ -252,7 +252,7 @@ how-many-samples?
 how-many-samples?
 0
 1000
-1000
+1000.0
 10
 1
 NIL
@@ -270,10 +270,10 @@ total-attempts
 11
 
 MONITOR
-680
-66
-737
-111
+705
+70
+762
+115
 rate
 total-successes / total-attempts
 3
@@ -294,7 +294,7 @@ total-successes
 TEXTBOX
 551
 89
-677
+694
 107
 ________________     =
 11
@@ -381,9 +381,9 @@ mean successes-per-sample-list
 TEXTBOX
 9
 87
-139
-178
-The program will record and plot the random occurrence of the event \"1\" among other integers in the sample space of size...
+148
+191
+The program will\nrecord and plot the\nrandom occurrence\nof the event \"1\"\namong other integers\nin the sample space\nof size...
 11
 0.0
 0
@@ -400,10 +400,10 @@ mean counter-list
 11
 
 MONITOR
-143
-98
-193
-143
+142
+93
+192
+138
 NIL
 event
 3
@@ -826,9 +826,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -845,7 +844,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

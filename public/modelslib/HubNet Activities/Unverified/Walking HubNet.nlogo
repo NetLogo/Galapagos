@@ -442,10 +442,10 @@ end
 GRAPHICS-WINDOW
 226
 19
-736
-630
-12
-14
+734
+608
+-1
+-1
 20.0
 1
 11
@@ -509,7 +509,7 @@ simulation-speed
 simulation-speed
 0
 10
-5
+5.0
 0.1
 1
 NIL
@@ -616,7 +616,7 @@ walker-position
 walker-position
 -12
 12
-0
+0.0
 1
 1
 NIL
@@ -738,7 +738,7 @@ NIL
 
 Each student defines the motion of a walking character by setting its velocity on their client over time intervals.  The students have 9 different intervals for which they can set the velocity.  They can then send these velocities to their characters, where they see the character walking its route over the 9 intervals.  This is designed to help students understand the accumulation of distance as a function of time. This can serve as a jumping off point for advanced concepts ranging from derivatives and integrals to wave mechanics.
 
-For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/ps/
+For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/rp/ps/index.shtml.
 
 ## HOW IT WORKS
 
@@ -1292,9 +1292,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -1329,10 +1328,10 @@ SLIDER
 153
 interval-1
 interval-1
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1344,10 +1343,10 @@ SLIDER
 186
 interval-2
 interval-2
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1359,10 +1358,10 @@ SLIDER
 219
 interval-3
 interval-3
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1374,10 +1373,10 @@ SLIDER
 251
 interval-4
 interval-4
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1389,10 +1388,10 @@ SLIDER
 284
 interval-5
 interval-5
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1404,10 +1403,10 @@ SLIDER
 317
 interval-6
 interval-6
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1419,10 +1418,10 @@ SLIDER
 350
 interval-7
 interval-7
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1434,10 +1433,10 @@ SLIDER
 383
 interval-8
 interval-8
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1449,10 +1448,10 @@ SLIDER
 416
 interval-9
 interval-9
--6
-6
+-6.0
+6.0
 0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1468,7 +1467,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

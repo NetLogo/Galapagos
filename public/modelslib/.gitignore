@@ -24,9 +24,13 @@ target/
 /Code Examples/Communication-T-P Example.png
 /Code Examples/Communication-T-T Example.png
 /Code Examples/Diffuse Off Edges Example.png
+/Code Examples/File Output Example.png
 /Code Examples/Fully Connected Network Example.png
-/Code Examples/GIS/GIS General Examples.png
-/Code Examples/GIS/GIS Gradient Example.png
+/Code Examples/Extensions Examples/gis/GIS General Examples.png
+/Code Examples/Extensions Examples/gis/GIS Gradient Example.png
+/Code Examples/Extensions Examples/nw/NW General Examples.png
+/Code Examples/Extensions Examples/view2.5d/2.5d Patch View Example.png
+/Code Examples/Extensions Examples/csv/CSV Example.png
 /Code Examples/Grouping Turtles Example.png
 /Code Examples/Halo Example.png
 /Code Examples/Hatch Example.png
@@ -52,14 +56,14 @@ target/
 /Code Examples/Mouse Drag Multiple Example.png
 /Code Examples/Mouse Drag One Example.png
 /Code Examples/Move Towards Target Example.png
-/Code Examples/Movie Example.png
+/Code Examples/Extensions Examples/vid/Movie Recording Example.png
 /Code Examples/Myself Example.png
 /Code Examples/Neighborhoods Example.png
 /Code Examples/Network Example.png
 /Code Examples/Network Import Example.png
 /Code Examples/Next Patch Example.png
 /Code Examples/One Turtle Per Patch Example.png
-/Code Examples/Palette Example.png
+/Code Examples/Extensions Examples/palette/Palette Example.png
 /Code Examples/Partners Example.png
 /Code Examples/Patch Clusters Example.png
 /Code Examples/Patch Coordinates Example.png
@@ -71,13 +75,15 @@ target/
 /Code Examples/Scale-color Example.png
 /Code Examples/Scatter Example.png
 /Code Examples/Shape Animation Example.png
-/Code Examples/Sound/Beatbox.png
 /Code Examples/State Machine Example.png
 /Code Examples/Tie System Example.png
 /Code Examples/Transparency Example.png
 /Code Examples/Tutorial 3.png
 /Code Examples/Vision Cone Example.png
 /Code Examples/Wall Following Example.png
+/Curricular Models/EACH/
+/Curricular Models/GasLab/
+/Curricular Models/MaterialSim/
 /Curricular Models/BEAGLE Evolution/Bird Breeder.png
 /Curricular Models/BEAGLE Evolution/Bug Hunt Coevolution.png
 /Curricular Models/BEAGLE Evolution/Bug Hunt Consumers.png
@@ -86,13 +92,39 @@ target/
 /Curricular Models/BEAGLE Evolution/DNA Protein Synthesis.png
 /Curricular Models/BEAGLE Evolution/DNA Replication Fork.png
 /Curricular Models/BEAGLE Evolution/Fish Tank Genetic Drift.png
-/Curricular Models/BEAGLE Evolution/HubNet Activities/Bird Breeders HubNet.png
-/Curricular Models/BEAGLE Evolution/HubNet Activities/Bug Hunters Competition HubNet.png
-/Curricular Models/BEAGLE Evolution/HubNet Activities/Critter Designers HubNet.png
 /Curricular Models/BEAGLE Evolution/Plant Hybridization.png
 /Curricular Models/BEAGLE Evolution/Plant Speciation.png
 /Curricular Models/BEAGLE Evolution/Red Queen.png
-/Curricular Models/BeeSmart/BeeSmart - Hive Finding.png
+/Curricular Models/BEAGLE Evolution/Altruism.nlogo
+/Curricular Models/BEAGLE Evolution/Bug Hunt Camouflage.nlogo
+/Curricular Models/BEAGLE Evolution/Bug Hunt Speeds.nlogo
+/Curricular Models/BEAGLE Evolution/Cooperation.nlogo
+/Curricular Models/BEAGLE Evolution/Daisyworld.nlogo
+/Curricular Models/BEAGLE Evolution/GenDrift T interact.nlogo
+/Curricular Models/BEAGLE Evolution/Guppy Spots HubNet.nlogo
+/Curricular Models/BEAGLE Evolution/HubNet Activities/Bug Hunters Camouflage HubNet.nlogo
+/Curricular Models/BEAGLE Evolution/Mimicry.nlogo
+/Curricular Models/BEAGLE Evolution/Wolf Sheep Predation.nlogo
+/Curricular Models/GenEvo/GenEvo 1 Genetic Switch.png
+/Curricular Models/GenEvo/GenEvo 2 Genetic Drift.png
+/Curricular Models/GenEvo/GenEvo 3 Genetic Drift and Natural Selection.png
+/Curricular Models/GenEvo/GenEvo 4 Competition.png
+/Curricular Models/ProbLab/9-Blocks.nlogo
+/Curricular Models/ProbLab/Central Limit Theorem.nlogo
+/Curricular Models/ProbLab/Dice Stalagmite.nlogo
+/Curricular Models/ProbLab/Dice.nlogo
+/Curricular Models/ProbLab/Equidistant Probability.nlogo
+/Curricular Models/ProbLab/Expected Value Advanced.nlogo
+/Curricular Models/ProbLab/Expected Value.nlogo
+/Curricular Models/ProbLab/Partition Perms Distrib.nlogo
+/Curricular Models/ProbLab/Prob Graphs Basic.nlogo
+/Curricular Models/ProbLab/ProbLab Genetics.nlogo
+/Curricular Models/ProbLab/Random Basic Advanced.nlogo
+/Curricular Models/ProbLab/Random Basic.nlogo
+/Curricular Models/ProbLab/Random Combinations and Permutations.nlogo
+/Curricular Models/ProbLab/Sample Stalagmite.nlogo
+/Curricular Models/ProbLab/Shuffle Board.nlogo
+/Curricular Models/ProbLab/Stochastic Patchwork.nlogo
 /Curricular Models/Connected Chemistry/Connected Chemistry 1 Bike Tire.png
 /Curricular Models/Connected Chemistry/Connected Chemistry 2 Changing Pressure.png
 /Curricular Models/Connected Chemistry/Connected Chemistry 3 Circular Particles.png
@@ -120,6 +152,7 @@ target/
 /Curricular Models/ProbLab/4 Block Two Stalagmites.png
 /Curricular Models/ProbLab/4 Blocks.png
 /Curricular Models/ProbLab/Histo Blocks.png
+/Curricular Models/ProbLab/Sampler Solo.png
 /Curricular Models/Urban Suite/Urban Suite - Awareness.png
 /Curricular Models/Urban Suite/Urban Suite - Cells.png
 /Curricular Models/Urban Suite/Urban Suite - Economic Disparity.png
@@ -131,43 +164,19 @@ target/
 /Curricular Models/Urban Suite/Urban Suite - Structure from Randomness 1.png
 /Curricular Models/Urban Suite/Urban Suite - Structure from Randomness 2.png
 /Curricular Models/Urban Suite/Urban Suite - Tijuana Bordertowns.png
-/HubNet Activities/Bug Hunters Camouflage HubNet.png
-/HubNet Activities/Code Examples/Client Overrides Example HubNet.png
-/HubNet Activities/Code Examples/Client Perspective Example HubNet.png
-/HubNet Activities/Code Examples/Template HubNet.png
-/HubNet Activities/Dice Stalagmite HubNet.png
-/HubNet Activities/Disease Doctors HubNet.png
-/HubNet Activities/Disease HubNet.png
-/HubNet Activities/Gridlock HubNet.png
-/HubNet Activities/Memory HubNet.png
-/HubNet Activities/Minority Game HubNet.png
-/HubNet Activities/Polling HubNet.png
-/HubNet Activities/Root Beer Game HubNet.png
-/HubNet Activities/Sampler HubNet.png
-/HubNet Activities/Tragedy of the Commons HubNet.png
-/HubNet Activities/Unverified/Function HubNet.png
-/HubNet Activities/Unverified/Gridlock Alternate HubNet.png
-/HubNet Activities/Unverified/Guppy Spots HubNet.png
-/HubNet Activities/Unverified/Investments HubNet.png
-/HubNet Activities/Unverified/PANDA BEAR HubNet.png
-/HubNet Activities/Unverified/Polling Advanced HubNet.png
-/HubNet Activities/Unverified/Predator Prey Game HubNet.png
-/HubNet Activities/Unverified/Prisoners Dilemma HubNet.png
-/HubNet Activities/Unverified/Public Good HubNet.png
-/HubNet Activities/Unverified/Restaurants HubNet.png
-/HubNet Activities/Unverified/Walking HubNet.png
+/HubNet Activities/Bird Breeders HubNet.nlogo
+/HubNet Activities/Bug Hunters Competition HubNet.nlogo
+/HubNet Activities/Critter Designers HubNet.nlogo
+/HubNet Activities/Fish Spotters HubNet.nlogo
+/HubNet Activities/Oil Cartel HubNet.nlogo
 /IABM Textbook/chapter 0/Turtles Circling Simple.png
 /IABM Textbook/chapter 1/Ants Simple.png
 /IABM Textbook/chapter 2/Heroes and Cowards.png
 /IABM Textbook/chapter 2/Life Simple.png
 /IABM Textbook/chapter 2/Simple Economy.png
-/IABM Textbook/chapter 3/DLA extensions/DLA Simple Extension 1.png
 /IABM Textbook/chapter 3/DLA Extensions/DLA Simple Extension 1.png
-/IABM Textbook/chapter 3/DLA extensions/DLA Simple Extension 2.png
 /IABM Textbook/chapter 3/DLA Extensions/DLA Simple Extension 2.png
-/IABM Textbook/chapter 3/DLA extensions/DLA Simple Extension 3.png
 /IABM Textbook/chapter 3/DLA Extensions/DLA Simple Extension 3.png
-/IABM Textbook/chapter 3/DLA extensions/DLA Simple.png
 /IABM Textbook/chapter 3/DLA Extensions/DLA Simple.png
 /IABM Textbook/chapter 3/El Farol Extensions/El Farol Extension 1.png
 /IABM Textbook/chapter 3/El Farol Extensions/El Farol Extension 2.png
@@ -191,13 +200,13 @@ target/
 /IABM Textbook/chapter 5/Communication-T-T Network Example.png
 /IABM Textbook/chapter 5/Preferential Attachment Simple.png
 /IABM Textbook/chapter 5/Random Network.png
+/IABM Textbook/chapter 5/Traffic Basic Adaptive Individuals.png
 /IABM Textbook/chapter 5/Traffic Basic Adaptive.png
 /IABM Textbook/chapter 5/Traffic Basic Utility.png
 /IABM Textbook/chapter 5/Traffic Grid Goal.png
 /IABM Textbook/chapter 6/Spread of Disease.png
 /IABM Textbook/chapter 7/Voting Component Verification.png
 /IABM Textbook/chapter 7/Voting Sensitivity Analysis.png
-/IABM Textbook/chapter 8/Example HubNet.png
 /IABM Textbook/chapter 8/Run Example.png
 /IABM Textbook/chapter 8/Run Result Example.png
 /IABM Textbook/chapter 8/Sandpile Simple.png
@@ -215,7 +224,7 @@ target/
 /Sample Models/Biology/Ant Lines.png
 /Sample Models/Biology/Ants.png
 /Sample Models/Biology/Autumn.png
-/Sample Models/Biology/BeeSmart - Hive Finding.png
+/Sample Models/Biology/BeeSmart Hive Finding.png
 /Sample Models/Biology/Daisyworld.png
 /Sample Models/Biology/Disease Solo.png
 /Sample Models/Biology/Evolution/Altruism.png
@@ -227,6 +236,7 @@ target/
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift P local.png
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift T interact.png
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift T reproduce.png
+/Sample Models/Biology/Evolution/Mammoths.png
 /Sample Models/Biology/Evolution/Mimicry.png
 /Sample Models/Biology/Evolution/Peppered Moths.png
 /Sample Models/Biology/Evolution/Sunflower Biomorphs.png
@@ -291,6 +301,8 @@ target/
 /Sample Models/Chemistry & Physics/Heat/Unverified/Heat Diffusion.png
 /Sample Models/Chemistry & Physics/Heat/Unverified/Thermostat.png
 /Sample Models/Chemistry & Physics/Ising.png
+/Sample Models/Chemistry & Physics/Kicked Rotator.png
+/Sample Models/Chemistry & Physics/Kicked Rotators.png
 /Sample Models/Chemistry & Physics/Lennard-Jones.png
 /Sample Models/Chemistry & Physics/MaterialSim/MaterialSim Grain Growth.png
 /Sample Models/Chemistry & Physics/Mechanics/Random Balls.png
@@ -349,6 +361,7 @@ target/
 /Sample Models/Earth Science/Grand Canyon.png
 /Sample Models/Earth Science/Percolation.png
 /Sample Models/Earth Science/Unverified/Lightning.png
+/Sample Models/Games/Frogger.png
 /Sample Models/Games/Lunar Lander.png
 /Sample Models/Games/Minesweeper.png
 /Sample Models/Games/Pac-Man.png
@@ -373,11 +386,16 @@ target/
 /Sample Models/Mathematics/Probability/Birthdays.png
 /Sample Models/Mathematics/Probability/Galton Box.png
 /Sample Models/Mathematics/Probability/ProbLab/Dice Stalagmite.png
+/Sample Models/Mathematics/Probability/ProbLab/Dice.png
+/Sample Models/Mathematics/Probability/ProbLab/ProbLab Genetics.png
+/Sample Models/Mathematics/Probability/ProbLab/Random Basic.png
 /Sample Models/Mathematics/Probability/ProbLab/Stochastic Patchwork.png
 /Sample Models/Mathematics/Probability/ProbLab/Unverified/9-Blocks.png
+/Sample Models/Mathematics/Probability/ProbLab/Unverified/Central Limit Theorem.png
 /Sample Models/Mathematics/Probability/ProbLab/Unverified/Expected Value Advanced.png
-/Sample Models/Mathematics/Probability/ProbLab/Unverified/ProbLab Genetics.png
+/Sample Models/Mathematics/Probability/ProbLab/Unverified/Expected Value.png
 /Sample Models/Mathematics/Probability/ProbLab/Unverified/Random Basic Advanced.png
+/Sample Models/Mathematics/Probability/ProbLab/Unverified/Random Combinations and Permutations.png
 /Sample Models/Mathematics/Probability/ProbLab/Unverified/Sample Stalagmite.png
 /Sample Models/Mathematics/Probability/ProbLab/Unverified/Shuffle Board.png
 /Sample Models/Mathematics/Probability/Random Walk 360.png
@@ -397,6 +415,7 @@ target/
 /Sample Models/Networks/Small Worlds.png
 /Sample Models/Networks/Team Assembly.png
 /Sample Models/Networks/Virus on a Network.png
+/Sample Models/Philosophy/Signaling Game.png
 /Sample Models/Social Science/El Farol.png
 /Sample Models/Social Science/Ethnocentrism.png
 /Sample Models/Social Science/Hotelling's Law.png
@@ -404,6 +423,7 @@ target/
 /Sample Models/Social Science/Minority Game.png
 /Sample Models/Social Science/Party.png
 /Sample Models/Social Science/Paths.png
+/Sample Models/Psychology/Piaget-Vygotsky Game.png
 /Sample Models/Social Science/Rebellion.png
 /Sample Models/Social Science/Rumor Mill.png
 /Sample Models/Social Science/Scatter.png
@@ -411,19 +431,73 @@ target/
 /Sample Models/Social Science/Sugarscape/Sugarscape 1 Immediate Growback.png
 /Sample Models/Social Science/Sugarscape/Sugarscape 2 Constant Growback.png
 /Sample Models/Social Science/Sugarscape/Sugarscape 3 Wealth Distribution.png
+/Sample Models/Social Science/Traffic 2 Lanes.png
 /Sample Models/Social Science/Traffic Basic.png
 /Sample Models/Social Science/Traffic Grid.png
+/Sample Models/Social Science/Unverified/Artificial Anasazi.png
 /Sample Models/Social Science/Unverified/Bank Reserves.png
 /Sample Models/Social Science/Unverified/Cash Flow.png
-/Sample Models/Social Science/Unverified/El Farol Network Congestion.png
 /Sample Models/Social Science/Unverified/Minority Game.png
 /Sample Models/Social Science/Unverified/Prisoner's Dilemma/PD Basic Evolutionary.png
 /Sample Models/Social Science/Unverified/Prisoner's Dilemma/PD Basic.png
 /Sample Models/Social Science/Unverified/Prisoner's Dilemma/PD N-Person Iterated.png
 /Sample Models/Social Science/Unverified/Prisoner's Dilemma/PD Two Person Iterated.png
-/Sample Models/Social Science/Unverified/Traffic 2 Lanes.png
 /Sample Models/Social Science/Unverified/Traffic Intersection.png
 /Sample Models/Social Science/Voting.png
 /Sample Models/Social Science/Wealth Distribution.png
 /Sample Models/System Dynamics/Unverified/Tabonuco Yagrumo Hybrid.png
-/Sample Models/System Dynamics/Wolf Sheep Predation (docked).png
+/Sample Models/System Dynamics/Wolf Sheep Predation (Docked Hybrid).png
+/Sample Models/Biology/Unverified/Tabonuco Yagrumo Hybrid.nlogo
+/Sample Models/Biology/Unverified/Tabonuco Yagrumo.nlogo
+/Sample Models/Chemistry & Physics/Diffusion Limited Aggregation/DLA Simple.nlogo
+/Sample Models/Social Science/AIDS.nlogo
+/Sample Models/Social Science/Altruism.nlogo
+/Sample Models/Social Science/Cooperation.nlogo
+/Sample Models/Social Science/El Farol.nlogo
+/Sample Models/Social Science/Simple Birth Rates.nlogo
+/Sample Models/Social Science/Team Assembly.nlogo
+/Sample Models/Social Science/Unverified/Divide The Cake.nlogo
+Curricular Models/BEAGLE Evolution/Altruism.png
+Curricular Models/BEAGLE Evolution/Bug Hunt Camouflage.png
+Curricular Models/BEAGLE Evolution/Bug Hunt Speeds.png
+Curricular Models/BEAGLE Evolution/Cooperation.png
+Curricular Models/BEAGLE Evolution/Daisyworld.png
+Curricular Models/BEAGLE Evolution/GenDrift T interact.png
+Curricular Models/BEAGLE Evolution/Guppy Spots HubNet.png
+Curricular Models/BEAGLE Evolution/HubNet Activities/Bug Hunters Camouflage HubNet.png
+Curricular Models/BEAGLE Evolution/Mimicry.png
+Curricular Models/BEAGLE Evolution/Wolf Sheep Predation.png
+Curricular Models/ProbLab/9-Blocks.png
+Curricular Models/ProbLab/Central Limit Theorem.png
+Curricular Models/ProbLab/Dice Stalagmite.png
+Curricular Models/ProbLab/Dice.png
+Curricular Models/ProbLab/Equidistant Probability.png
+Curricular Models/ProbLab/Expected Value Advanced.png
+Curricular Models/ProbLab/Expected Value.png
+Curricular Models/ProbLab/Partition Perms Distrib.png
+Curricular Models/ProbLab/Prob Graphs Basic.png
+Curricular Models/ProbLab/ProbLab Genetics.png
+Curricular Models/ProbLab/Random Basic Advanced.png
+Curricular Models/ProbLab/Random Basic.png
+Curricular Models/ProbLab/Random Combinations and Permutations.png
+Curricular Models/ProbLab/Sample Stalagmite.png
+Curricular Models/ProbLab/Shuffle Board.png
+Curricular Models/ProbLab/Stochastic Patchwork.png
+HubNet Activities/Oil Cartel HubNet.png
+Sample Models/Biology/Unverified/Tabonuco Yagrumo Hybrid.png
+Sample Models/Biology/Unverified/Tabonuco Yagrumo.png
+Sample Models/Social Science/AIDS.png
+Sample Models/Social Science/Altruism.png
+Sample Models/Social Science/Cooperation.png
+Sample Models/Social Science/Simple Birth Rates.png
+Sample Models/Social Science/Team Assembly.png
+Sample Models/Social Science/Unverified/Divide The Cake.png
+Curricular Models/BEAGLE Evolution/HubNet Activities/glacier.jpg
+Curricular Models/BEAGLE Evolution/HubNet Activities/poppyfield.jpg
+Curricular Models/BEAGLE Evolution/HubNet Activities/seashore.jpg
+Curricular Models/BEAGLE Evolution/aquarium.jpg
+Curricular Models/BEAGLE Evolution/glacier.jpg
+Curricular Models/BEAGLE Evolution/poppyfield.jpg
+Curricular Models/BEAGLE Evolution/seashore.jpg
+/.cache-main
+/.cache-tests

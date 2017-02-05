@@ -35,6 +35,7 @@ to setup
   ask one-of vertices [ edgify ]
   ;; update the data in the display
   update
+  reset-ticks
 end
 
 ;; sets the turtle variables to appropriate initial values
@@ -183,10 +184,10 @@ end
 GRAPHICS-WINDOW
 347
 10
-907
-591
-5
-5
+905
+569
+-1
+-1
 50.0
 1
 20
@@ -222,7 +223,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 19
@@ -291,7 +292,7 @@ number-vertices
 number-vertices
 3
 10
-3
+3.0
 1
 1
 NIL
@@ -312,7 +313,7 @@ NIL
 W
 NIL
 NIL
-1
+0
 
 BUTTON
 121
@@ -329,7 +330,7 @@ NIL
 S
 NIL
 NIL
-1
+0
 
 BUTTON
 210
@@ -346,7 +347,7 @@ NIL
 D
 NIL
 NIL
-1
+0
 
 BUTTON
 33
@@ -363,7 +364,7 @@ NIL
 A
 NIL
 NIL
-1
+0
 
 INPUTBOX
 71
@@ -371,7 +372,7 @@ INPUTBOX
 156
 308
 step-size
-1
+1.0
 1
 0
 Number
@@ -382,7 +383,7 @@ INPUTBOX
 243
 308
 turn-amount
-90
+90.0
 1
 0
 Number
@@ -407,7 +408,7 @@ NIL
 TEXTBOX
 85
 146
-235
+254
 164
 controls for the red vertex
 11
@@ -417,9 +418,9 @@ controls for the red vertex
 TEXTBOX
 93
 84
-307
+338
 113
-click and drag the vertices with the mouse
+click and drag the vertices\nwith the mouse
 11
 0.0
 0
@@ -708,9 +709,8 @@ Line -7500403 true 216 40 79 269
 Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set number-vertices 6
 random-seed 4
@@ -729,7 +729,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

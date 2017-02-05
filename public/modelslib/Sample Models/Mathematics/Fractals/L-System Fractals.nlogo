@@ -164,10 +164,10 @@ end
 GRAPHICS-WINDOW
 284
 17
-696
-450
-100
-100
+694
+428
+-1
+-1
 2.0
 1
 10
@@ -203,7 +203,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 36
@@ -231,7 +231,7 @@ color-inc
 color-inc
 0.0
 100.0
-9
+9.0
 1.0
 1
 NIL
@@ -246,7 +246,7 @@ init-color
 init-color
 0.0
 140.0
-9
+9.0
 1.0
 1
 NIL
@@ -261,7 +261,7 @@ init-x
 init-x
 -100.0
 100.0
-0
+0.0
 1.0
 1
 NIL
@@ -276,7 +276,7 @@ init-y
 init-y
 -100.0
 100.0
-0
+0.0
 1.0
 1
 NIL
@@ -297,7 +297,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 15
@@ -419,11 +419,11 @@ NIL
 1
 
 TEXTBOX
-5
-240
-272
+17
+230
+284
 291
-Examples: Press the buttons to setup examples of L-System Fractals.  Then press the GO or GO ONCE buttons to see them draw.
+Examples: Press the buttons to setup\nexamples of L-System Fractals.  Then\npress the GO or GO ONCE buttons to\nsee them draw.
 11
 0.0
 0
@@ -812,9 +812,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 14 [ go ]
@@ -832,7 +831,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

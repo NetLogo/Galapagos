@@ -6,7 +6,6 @@ to setup
                 recolor ]
   set-plot-x-range 0 count patches
   reset-ticks
-  update-plot
 end
 
 to recolor  ;; patch procedure
@@ -21,14 +20,7 @@ to go
   let scaling-factor max [activity] of patches
   ask patches [ set activity activity / scaling-factor ]
   ask patches [ recolor ]
-  update-plot
   tick
-end
-
-to update-plot
-  plot-pen-reset
-  foreach reverse sort [activity] of patches
-    [ plot ? ]
 end
 
 
@@ -38,10 +30,10 @@ end
 GRAPHICS-WINDOW
 266
 10
-696
-461
-10
-10
+694
+439
+-1
+-1
 20.0
 1
 10
@@ -94,7 +86,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 51
@@ -127,7 +119,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" ""
+"default" 1.0 0 -16777216 true "" "plot-pen-reset\nforeach reverse sort [ activity ] of patches [ [the-activity] -> plot the-activity ]"
 
 BUTTON
 94
@@ -144,7 +136,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 36
@@ -527,9 +519,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup repeat 20 [ go ]
 @#$#@#$#@
@@ -546,7 +537,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

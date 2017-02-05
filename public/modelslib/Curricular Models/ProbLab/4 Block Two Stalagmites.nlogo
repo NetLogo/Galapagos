@@ -49,12 +49,9 @@ sample-organizers-own [
   original-pycor
 ]
 
-to go-org
-  super-go
-  organize-results
-end
 
-to super-go
+to go
+
   if stop-all? [
     ifelse stop-at-top? [
       stop
@@ -62,17 +59,27 @@ to super-go
       bump-down
     ]
   ]
-  ifelse popping? [
-    no-display
-    unpop
-    go
-    pop
-    display
-  ] [
-    go
-    display
-  ]
+
+  let popped? popping?
+  if popped? [ unpop ]
+
+  ;; The model keeps track of which different combinations
+  ;; have been discovered. Each column-kid reports whether
+  ;; or not its column has all the possible combinations.
+  ;; When bound? is true, a report from ALL column-kids
+  ;; that their columns are full will stop the run.
+  sample
+  drop-in-bin
+
+  if popped? [ pop ]
+
+  tick
   plot-it
+end
+
+to go-org
+  go
+  organize-results
 end
 
 ;; global controls the popping visuals
@@ -97,8 +104,8 @@ end
 to-report sample-summary-value ;; sample-organizers reporter
   let result 0
   let power-of-two 3
-  foreach sample-values [
-    if ? = 1 [
+  foreach sample-values [ [sample-value] ->
+    if sample-value = 1 [
       set result result + 2 ^ power-of-two
     ]
     set power-of-two power-of-two - 1
@@ -108,10 +115,9 @@ end
 
 to-report sample-patches ; sample-organizers procedure
   let result []
-  foreach n-values 2 [ ? ] [
-    let i ?
-    foreach n-values 2 [ ? ] [
-      set result lput patch-at ? (- i) result
+  foreach n-values 2 [ [n] -> n ] [ [i] ->
+    foreach n-values 2 [ [n] -> n ] [ [j] ->
+      set result lput patch-at j (- i) result
     ]
   ]
   report result
@@ -119,12 +125,12 @@ end
 
 to display-sample ; sample-organizers procedure
   let patch-popping-color popping-color
-  (foreach sample-values sample-patches [
-    ask ?2 [
+  (foreach sample-values sample-patches [ [sample-value sample-patch] ->
+    ask sample-patch [
       ifelse popping? [
         set pcolor patch-popping-color
       ] [
-        ifelse ?1 = 1 [
+        ifelse sample-value = 1 [
           set pcolor target-color
         ] [
           set pcolor other-color
@@ -155,8 +161,8 @@ end
 to make-a-sample-organizer ; sample-dudes procedure
   hatch-sample-organizers 1 [
     hide-turtle
-    set sample-values map [
-      ifelse-value ([ color ] of ? = target-color) [ 1 ] [ 0 ]
+    set sample-values map [ [the-sample-dude] ->
+      ifelse-value ([ color ] of the-sample-dude = target-color) [ 1 ] [ 0 ]
     ] sorted-sample-dudes
     display-sample
     set heading 180
@@ -180,12 +186,12 @@ to organize-column ; column-kids procedure
   let column-organizers sample-organizers with [
     pxcor + 1 = [pxcor] of myself
   ]
-  let organizers sort-by
-    [ [ sample-summary-value ] of ?1 < [ sample-summary-value ] of ?2 ]
-    [ self ] of column-organizers
+  let organizers sort-by [ [organizer-1 organizer-2] ->
+    [ sample-summary-value ] of organizer-1 < [ sample-summary-value ] of organizer-2
+  ] [ self ] of column-organizers
   let ycors sort [ pycor ] of column-organizers
-  (foreach organizers ycors [
-    ask ?1 [ set ycor ?2 ]
+  (foreach organizers ycors [ [the-organizer the-ycor] ->
+    ask the-organizer [ set ycor the-ycor ]
   ])
 end
 
@@ -325,17 +331,6 @@ to bump-down
   recolor-columns
 end
 
-to go
-  ;; The model keeps track of which different combinations
-  ;; have been discovered. Each column-kid reports whether
-  ;; or not its column has all the possible combinations.
-  ;; When bound? is true, a report from ALL column-kids
-  ;; that their columns are full will stop the run.
-  sample
-  drop-in-bin
-  tick
-end
-
 ;; This procedure creates a square sample of dimensions
 ;; side-times-side, e.g., 3-by-3, located to the left of
 ;; the columns. Each patch in this sample sprouts a turtle.
@@ -351,8 +346,8 @@ to sample
     (pxcor > sample-right-xcor - 2) and
     (pycor > (max-pycor - 2))
   ]
-  foreach sort sample-location-patch-agentset [
-    ask ? [
+  foreach sort sample-location-patch-agentset [ [the-patch-agentset] ->
+    ask the-patch-agentset [
       sprout 1 [
         hide-turtle
         set breed sample-dudes
@@ -499,26 +494,26 @@ to-report free-below? [ dude ]
 end
 
 to-report sorted-sample-dudes
-  report sort-by [
-    (([pxcor] of ?1 < [pxcor] of ?2) and ([pycor] of ?1 = [pycor] of ?2)) or
-    (([pycor] of ?1 > [pycor] of ?2))
+  report sort-by [ [sample-dude-1 sample-dude-2] ->
+    (([pxcor] of sample-dude-1 < [pxcor] of sample-dude-2) and ([pycor] of sample-dude-1 = [pycor] of sample-dude-2)) or
+    (([pycor] of sample-dude-1 > [pycor] of sample-dude-2))
   ] sample-dudes
 end
 
 ;; using lots of code from the grouped side stuff
 to-report calculate-left-sample-summary-value
   let sorted-left-sample-dudes
-  sort-by [
-    (([pxcor] of ?1 < [pxcor] of ?2) and ([pycor] of ?1 = [pycor] of ?2)) or
-    (([pycor] of ?1 > [pycor] of ?2))
+  sort-by [ [sample-dude-1 sample-dude-2] ->
+    (([pxcor] of sample-dude-1 < [pxcor] of sample-dude-2) and ([pycor] of sample-dude-1 = [pycor] of sample-dude-2)) or
+    (([pycor] of sample-dude-1 > [pycor] of sample-dude-2))
   ] left-sample-dudes
-  let left-sample-values map [
-    ifelse-value ([color] of ? = target-color) [1] [0]
+  let left-sample-values map [ [the-sample-dude] ->
+    ifelse-value ([color] of the-sample-dude = target-color) [1] [0]
   ] sorted-left-sample-dudes
   let result 0
   let power-of-two 3
-  foreach left-sample-values [
-    if ? = 1 [
+  foreach left-sample-values [ [sample-value] ->
+    if sample-value = 1 [
       set result result + 2 ^ power-of-two
     ]
     set power-of-two power-of-two - 1
@@ -534,7 +529,7 @@ to finish-off
   ;; might be "green green red green red green"
   ;; need to use map and sort instead of values-from cause of
   ;; the new randomized agentsets in 3.1pre2
-  let sample-color-combination map [ [color] of ? ] sorted-sample-dudes
+  let sample-color-combination map [ [the-sample-dude] -> [color] of the-sample-dude ] sorted-sample-dudes
 
   ;; determines which turtle lives at the bottom of the column where the sample is
   let this-column-kid one-of column-kids with [
@@ -574,7 +569,7 @@ end
 to-report binomrow [ n ]
   if n = 0 [ report [ 1 ] ]
   let prevrow binomrow (n - 1)
-  report (map [ ?1 + ?2 ] (fput 0 prevrow) (lput 0 prevrow))
+  report (map [ [a b] -> a + b ] (fput 0 prevrow) (lput 0 prevrow))
 end
 
 ;; reports the proportion of the sample space that has been generated up to now
@@ -597,15 +592,15 @@ to plot-it
   set-current-plot-pen "default"
   plot-pen-reset
   ; have to go through instead of calling histogram, because of the averaging pen
-  foreach individual-4-blocks-list [
-    plot ?
+  foreach individual-4-blocks-list [ [individual-4-block] ->
+    plot individual-4-block
   ]
   set-plot-y-range 0 max individual-4-blocks-list
 
   set-current-plot "Categorized 4-Blocks"
   histogram categorized-4-blocks-list
   let maxbar modes categorized-4-blocks-list
-  let maxrange filter [ ? = item 0 maxbar ] categorized-4-blocks-list
+  let maxrange filter [ [categorized-4-block] -> categorized-4-block = item 0 maxbar ] categorized-4-blocks-list
   set-plot-y-range 0 length maxrange
 end
 
@@ -616,10 +611,10 @@ end
 GRAPHICS-WINDOW
 455
 15
-738
-595
-45
-91
+736
+573
+-1
+-1
 3.0
 1
 10
@@ -649,7 +644,7 @@ probability-to-be-target-color
 probability-to-be-target-color
 0
 100
-50
+50.0
 1
 1
 %
@@ -661,7 +656,7 @@ BUTTON
 245
 128
 Go
-super-go
+go
 T
 1
 T
@@ -670,7 +665,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 90
@@ -678,7 +673,7 @@ BUTTON
 165
 128
 Go Once
-super-go
+go
 NIL
 1
 T
@@ -687,13 +682,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
 135
 165
-166
+168
 Organize Results
 organize-results
 NIL
@@ -738,7 +733,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
@@ -1243,9 +1238,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 150 [ go ]
@@ -1263,7 +1257,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

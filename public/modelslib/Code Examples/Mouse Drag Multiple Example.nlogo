@@ -13,6 +13,7 @@ to setup
   ]
   ;; initially, no turtles are selected
   set selected no-turtles
+  reset-ticks
 end
 
 to go
@@ -117,12 +118,12 @@ end
 ; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-180
+215
 10
-610
-461
-17
-17
+643
+439
+-1
+-1
 12.0
 1
 10
@@ -158,7 +159,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 8
@@ -180,9 +181,9 @@ NIL
 TEXTBOX
 14
 156
-163
-285
-After pressing SETUP and GO, you can select turtles by dragging a selection rectangle around them.\n\nOnce turtles are selected they will turn red.  You then move them by dragging them.
+199
+310
+After pressing SETUP and\nGO, you can select turtles\nby dragging a selection\nrectangle around them.\n\nOnce turtles are selected\nthey will turn red.  You then\nmove them by dragging them.
 11
 0.0
 0
@@ -502,9 +503,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -520,7 +520,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -491,10 +491,10 @@ end
 GRAPHICS-WINDOW
 362
 112
-792
-563
-10
-10
+790
+541
+-1
+-1
 20.0
 1
 10
@@ -530,7 +530,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 157
@@ -541,7 +541,7 @@ infection-chance
 infection-chance
 0
 100
-100
+100.0
 1
 1
 %
@@ -623,7 +623,7 @@ num-androids
 num-androids
 1
 200
-6
+6.0
 1
 1
 NIL
@@ -682,7 +682,7 @@ initial-number-sick
 initial-number-sick
 1
 20
-1
+1.0
 1
 1
 NIL
@@ -776,7 +776,7 @@ num-doctors
 num-doctors
 0
 100
-2
+2.0
 1
 1
 NIL
@@ -853,7 +853,7 @@ NIL
 
 This model is a modified version of the Disease activity which, simulates the spread of a disease through a population.  In this version the population can consist of students, which are turtles controlled by individual students via the HubNet Client, androids, infectable turtles controlled by the computer and doctors, un-infectable turtles that can heal other turtles.  Doctors do not exist in the Disease activity.
 
-For further documentation on the original Disease activity, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/ps/
+For further documentation on the original Disease activity, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/rp/ps/index.shtml.
 
 ## HOW IT WORKS
 
@@ -1392,9 +1392,8 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 Circle -2674135 true false 156 156 108
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -1485,10 +1484,10 @@ SLIDER
 128
 step-size
 step-size
+1.0
+5.0
 1
-5
-1
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1548,7 +1547,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -156,10 +156,10 @@ end
 GRAPHICS-WINDOW
 265
 10
-677
-443
-100
-100
+675
+421
+-1
+-1
 2.0
 1
 10
@@ -212,7 +212,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -223,7 +223,7 @@ population-size
 population-size
 1
 100
-50
+50.0
 1
 1
 NIL
@@ -238,7 +238,7 @@ attraction-to-personal-best
 attraction-to-personal-best
 0
 2
-2
+2.0
 0.1
 1
 NIL
@@ -253,7 +253,7 @@ attraction-to-global-best
 attraction-to-global-best
 0
 2
-1
+1.0
 0.1
 1
 NIL
@@ -289,7 +289,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 130
@@ -310,7 +310,7 @@ particle-speed-limit
 particle-speed-limit
 1
 20
-10
+10.0
 1
 1
 NIL
@@ -346,7 +346,7 @@ landscape-smoothness
 landscape-smoothness
 0
 100
-20
+20.0
 1
 1
 NIL
@@ -751,9 +751,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -769,7 +768,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

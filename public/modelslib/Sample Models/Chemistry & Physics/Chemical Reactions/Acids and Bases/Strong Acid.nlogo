@@ -21,7 +21,6 @@ to setup
   set base-added 0
   calculate-pH
   reset-ticks
-  update-plots
 end
 
 to go
@@ -30,8 +29,8 @@ to go
     [ fd 1                                        ;; move turtles around randomly
       rt random 10
       lt random 10 ]    ;; around the world
-  tick
   calculate-pH
+  tick
 end
 
 ;; adds hydroxide molecules to the solution
@@ -83,10 +82,10 @@ end
 GRAPHICS-WINDOW
 335
 10
-695
-391
-12
-12
+693
+369
+-1
+-1
 14.0
 1
 10
@@ -127,7 +126,7 @@ vol-acid
 vol-acid
 0
 100
-20
+20.0
 1
 1
 molecules
@@ -142,7 +141,7 @@ vol-base
 vol-base
 1
 100
-100
+100.0
 1
 1
 molecules
@@ -180,7 +179,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 212
@@ -652,9 +651,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -670,7 +668,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

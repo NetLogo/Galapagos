@@ -3,13 +3,23 @@ to use-new-seed
   let my-seed new-seed            ;; generate a new seed
   output-print word "Generated seed: " my-seed  ;; print it out
   random-seed my-seed             ;; use the new seed
+  reset-ticks
 end
 
 ;; Use a seed entered by the user
 to use-seed-from-user
-  let my-seed read-from-string user-input "Enter a random seed (an integer):"
-  output-print word "User-entered seed: " my-seed  ;; print it out
-  random-seed my-seed             ;; use the new seed
+  loop [
+    let my-seed user-input "Enter a random seed (an integer):"
+    carefully [ set my-seed read-from-string my-seed ] [ ]
+    ifelse is-number? my-seed and round my-seed = my-seed [
+      random-seed my-seed ;; use the new seed
+      output-print word "User-entered seed: " my-seed  ;; print it out
+      reset-ticks
+      stop
+    ] [
+      user-message "Please enter an integer."
+    ]
+  ]
 end
 
 ;; create turtles and assign them shapes randomly
@@ -32,10 +42,10 @@ end
 GRAPHICS-WINDOW
 59
 199
-762
-461
-1
-0
+760
+439
+-1
+-1
 231.0
 1
 18
@@ -88,7 +98,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 60
@@ -2943,9 +2953,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 random-seed -149638014 go
 @#$#@#$#@
@@ -2962,7 +2971,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

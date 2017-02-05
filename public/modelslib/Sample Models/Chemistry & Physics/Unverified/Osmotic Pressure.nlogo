@@ -426,10 +426,10 @@ end
 GRAPHICS-WINDOW
 275
 30
-1093
-389
-50
-20
+1091
+367
+-1
+-1
 8.0
 1
 10
@@ -482,7 +482,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 20
@@ -503,7 +503,7 @@ solute-left
 solute-left
 1
 100
-100
+100.0
 1
 1
 NIL
@@ -566,7 +566,7 @@ solute-right
 solute-right
 1
 100
-25
+25.0
 1
 1
 NIL
@@ -1030,9 +1030,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1048,7 +1047,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

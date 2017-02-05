@@ -1,17 +1,36 @@
 ;;;;;;;;;;;;; DNA molecules  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-breed [genes gene]                          ;; keeps a list of the dna code for a given gene
-breed [nucleotides nucleotide]              ;; the pieces that are inside the dna chain
-breed [promoters promoter]                  ;; a visualization agent (similar to a promoter protein) that attaches to every start codon location in a DNA chain
-breed [terminators terminator]              ;; a visualization agent that attaches to every stop codon location in a DNA chain
+
+;; keeps a list of the dna code for a given gene
+breed [genes gene]
+
+;; the pieces that are inside the dna chain
+breed [nucleotides nucleotide]
+
+;; a visualization agent (similar to a promoter protein)
+;; that attaches to every start codon location in a DNA chain
+breed [promoters promoter]
+
+;; a visualization agent that attaches to every stop codon location in a DNA chain
+breed [terminators terminator]
 
 ;;;;;;;;;;;;; mRNA molecules  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-breed [mRNA-nucleotides mRNA-nucleotide]    ;; the pieces that are inside the mRNA chain
-breed [mRNAs mRNA]                          ;; the tail ends of the mRNA chain
+
+;; the pieces that are inside the mRNA chain
+breed [mRNA-nucleotides mRNA-nucleotide]
+
+;; the tail ends of the mRNA chain
+breed [mRNAs mRNA]
 
 ;;;;;;;;;;;;; tRNA molecules  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-breed [tRNAs tRNA]                          ;; the center piece of the tRNA complex
-breed [tRNA-nucleotides tRNA-nucleotide]    ;; the pieces that are inside the tRNA complex
-breed [amino-acids amino-acid]              ;; the top part of the tRNA complex
+
+;; the center piece of the tRNA complex
+breed [tRNAs tRNA]
+
+;; the pieces that are inside the tRNA complex
+breed [tRNA-nucleotides tRNA-nucleotide]
+
+;; the top part of the tRNA complex
+breed [amino-acids amino-acid]
 
 ;;;;;;;;;;;;; protein molecules  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 breed [proteins protein]                    ;; holds proteins information
@@ -20,8 +39,15 @@ breed [proteins protein]                    ;; holds proteins information
 breed [tags tag]
 
 ;;;;;;;;;;;;; links ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-undirected-link-breed [taglines tagline]    ;; the link between an agent and where its label agent is.  This allows fine tuned placement of visualizing of labels
-directed-link-breed   [backbones backbone]  ;; the link between adjacent amino acids in a protein.  Tt will allows the entire protein to be folded up (not currently implemented)
+
+;; the link between an agent and where its label agent is.
+;; This allows fine tuned placement of visualizing of labels
+undirected-link-breed [taglines tagline]
+
+;; the link between adjacent amino acids in a protein.
+;; It will allows the entire protein to be folded up
+;; (not currently implemented)
+directed-link-breed   [backbones backbone]
 
 ;;;;;;;;;;;;;;;;;;;turtle variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 genes-own            [gene-number strand code start-position end-position]
@@ -34,7 +60,9 @@ amino-acids-own      [gene-number strand value place]
 nucleotides-own      [gene-number strand value place]
 mRNA-nucleotides-own [gene-number strand value place]
 tRNA-nucleotides-own [gene-number strand value place]
-tags-own             [value]                               ; the value for the label of the agent it is linked to when visualized.
+tags-own [
+  value ; the value for the label of the agent it is linked to when visualized.
+]
 
 
 
@@ -532,7 +560,9 @@ to make-protein [strand-type]
   let this-protein-value ""
   let these-amino-acids amino-acids with [breed = amino-acids and strand-type = strand and gene-number = this-gene-number]
   let ordered-amino-acids sort-on [who] these-amino-acids
-  foreach ordered-amino-acids [set this-protein-value (word   this-protein-value "-" ([value] of ?))]
+  foreach ordered-amino-acids [ [the-amino-acid] ->
+    set this-protein-value (word   this-protein-value "-" ([value] of the-amino-acid))
+  ]
   if not any? proteins with [strand = strand-type and value = this-protein-value] [
       hatch 1 [set breed proteins set value this-protein-value set hidden? true setxy 0 0]
   ]
@@ -551,16 +581,57 @@ end
 
 to go
   visualize-all-genes
-  ;; these ? variables keep track of button press events being cued by the user
-  if event-1-triggered?                         [ show-next-mrna "original"                  set event-1-triggered? false  set event-1-completed? true set event-2-completed? false set event-3-completed? false set event-4-completed? false]
-  if event-2-triggered? and event-1-completed?  [ release-next-mRNA-from-nucleus "original"  set event-2-triggered? false set event-3-completed? false set event-4-completed? false]
-  if event-3-triggered? and event-2-completed?  [ show-next-trna "original"                  set event-3-triggered? false  set event-3-completed? true set event-4-completed? false]
-  if event-4-triggered? and event-3-completed?  [ release-next-protein "original"            set event-4-triggered? false  set event-4-completed? true]
-
-  if event-6-triggered?                        [ show-next-mrna "duplicate"                  set event-6-triggered? false set event-6-completed? true set event-7-completed? false set event-8-completed? false set event-9-completed? false]
-  if event-7-triggered? and event-6-completed? [ release-next-mRNA-from-nucleus "duplicate"  set event-7-triggered? false set event-8-completed? false set event-9-completed? false]
-  if event-8-triggered? and event-7-completed? [ show-next-trna "duplicate"                  set event-8-triggered? false set event-8-completed? true  set event-9-completed? false]
-  if event-9-triggered? and event-8-completed? [ release-next-protein "duplicate"            set event-9-triggered? false set event-9-completed? true ]
+  ;; these boolean variables keep track of button press events being cued by the user
+  if event-1-triggered? [
+    show-next-mrna "original"
+    set event-1-triggered? false
+    set event-1-completed? true
+    set event-2-completed? false
+    set event-3-completed? false
+    set event-4-completed? false
+  ]
+  if event-2-triggered? and event-1-completed? [
+    release-next-mRNA-from-nucleus "original"
+    set event-2-triggered? false
+    set event-3-completed? false
+    set event-4-completed? false
+  ]
+  if event-3-triggered? and event-2-completed? [
+    show-next-trna "original"
+    set event-3-triggered? false
+    set event-3-completed? true
+    set event-4-completed? false
+  ]
+  if event-4-triggered? and event-3-completed? [
+    release-next-protein "original"
+    set event-4-triggered? false
+    set event-4-completed? true
+  ]
+  if event-6-triggered? [
+    show-next-mrna "duplicate"
+    set event-6-triggered? false
+    set event-6-completed? true
+    set event-7-completed? false
+    set event-8-completed? false
+    set event-9-completed? false
+  ]
+  if event-7-triggered? and event-6-completed? [
+    release-next-mRNA-from-nucleus "duplicate"
+    set event-7-triggered? false
+    set event-8-completed? false
+    set event-9-completed? false
+  ]
+  if event-8-triggered? and event-7-completed? [
+    show-next-trna "duplicate"
+    set event-8-triggered? false
+    set event-8-completed? true
+    set event-9-completed? false
+  ]
+  if event-9-triggered? and event-8-completed? [
+    release-next-protein "duplicate"
+    set event-9-triggered? false
+    set event-9-completed? true
+  ]
   move-mRNA-molecules-out-of-nucleus
   tick
 end
@@ -619,12 +690,23 @@ to make-duplicate-dna-string
     let loci-counter 0
     let dna-at-and-after-target substring mutating-copy-of-dna-string target-loci length mutating-copy-of-dna-string
 
-    if mutation-type = "deletion"
-      [repeat #-nucleotides-affected  [set  mutating-copy-of-dna-string remove-item target-loci mutating-copy-of-dna-string]]
-    if mutation-type  = "substitution"
-      [repeat #-nucleotides-affected  [set  mutating-copy-of-dna-string (replace-item (target-loci + loci-counter) mutating-copy-of-dna-string random-base-letter-DNA) set loci-counter loci-counter + 1] ]
-    if mutation-type  = "insertion"
-      [repeat #-nucleotides-affected [set  dna-at-and-after-target (word random-base-letter-DNA  dna-at-and-after-target) ] set mutating-copy-of-dna-string (word dna-before-target dna-at-and-after-target)]
+    if mutation-type = "deletion" [
+      repeat #-nucleotides-affected [
+        set  mutating-copy-of-dna-string remove-item target-loci mutating-copy-of-dna-string
+      ]
+    ]
+    if mutation-type  = "substitution" [
+      repeat #-nucleotides-affected [
+        set mutating-copy-of-dna-string (replace-item (target-loci + loci-counter) mutating-copy-of-dna-string random-base-letter-DNA)
+        set loci-counter loci-counter + 1
+      ]
+    ]
+    if mutation-type  = "insertion" [
+      repeat #-nucleotides-affected [
+        set  dna-at-and-after-target (word random-base-letter-DNA  dna-at-and-after-target)
+      ]
+      set mutating-copy-of-dna-string (word dna-before-target dna-at-and-after-target)
+    ]
 
  set duplicate-dna-string mutating-copy-of-dna-string
 end
@@ -685,7 +767,7 @@ end
 
 ;;;;;; returns values such as "Gly" for "GGA" or "Tyr" for "UAC" using the codon-to-amino-acid-key
 to-report which-protein-for-this-codon [this-codon]
- report item 1 (item 0 filter [first ? = this-codon] codon-to-amino-acid-key )
+ report item 1 (item 0 filter [ [pair] -> first pair = this-codon] codon-to-amino-acid-key )
 end
 
 ;;; reports a random base for a nucleotide in DNA
@@ -914,10 +996,10 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-460
+465
 10
-1214
-425
+1217
+403
 -1
 -1
 24.0
@@ -972,7 +1054,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 5
@@ -1010,7 +1092,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 5
@@ -1021,7 +1103,7 @@ SLIDER
 #-nucleotides-affected
 1
 6
-1
+1.0
 1
 1
 NIL
@@ -1052,7 +1134,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 280
@@ -1069,7 +1151,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 370
@@ -1086,7 +1168,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 295
@@ -1113,7 +1195,7 @@ count proteins with [strand = \"duplicate\"]
 TEXTBOX
 306
 263
-459
+461
 281
 Replicated DNA in new cell
 11
@@ -1135,7 +1217,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 OUTPUT
 5
@@ -1170,7 +1252,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 370
@@ -1187,7 +1269,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 280
@@ -1204,7 +1286,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 365
@@ -1221,7 +1303,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 336
@@ -1320,7 +1402,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 262
@@ -2209,9 +2291,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -2227,7 +2308,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

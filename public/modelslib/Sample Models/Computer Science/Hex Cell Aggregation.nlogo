@@ -129,10 +129,10 @@ end
 GRAPHICS-WINDOW
 289
 10
-703
-445
-50
-50
+701
+423
+-1
+-1
 4.0
 1
 10
@@ -185,7 +185,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 179
@@ -202,7 +202,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 9
@@ -292,7 +292,7 @@ TEXTBOX
 129
 280
 196
-The switches are only considered during SETUP and READ-SWITCHES.
+The switches are\nonly considered\nduring SETUP and\nREAD-SWITCHES.
 10
 0.0
 0
@@ -659,9 +659,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup repeat 3800 [ go ]
 @#$#@#$#@
@@ -678,7 +677,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

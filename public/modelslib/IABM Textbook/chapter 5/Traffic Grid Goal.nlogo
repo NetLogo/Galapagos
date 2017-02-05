@@ -412,10 +412,10 @@ end
 GRAPHICS-WINDOW
 327
 10
-670
-374
-18
-18
+668
+352
+-1
+-1
 9.0
 1
 15
@@ -481,7 +481,7 @@ grid-size-y
 grid-size-y
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -496,7 +496,7 @@ grid-size-x
 grid-size-x
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -522,7 +522,7 @@ num-cars
 num-cars
 1
 400
-200
+200.0
 1
 1
 NIL
@@ -552,7 +552,7 @@ BUTTON
 305
 78
 Go
-go\n
+go
 T
 1
 T
@@ -589,7 +589,7 @@ speed-limit
 speed-limit
 0.1
 1
-1
+1.0
 0.1
 1
 NIL
@@ -615,7 +615,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-20
+20.0
 1
 1
 NIL
@@ -630,7 +630,7 @@ current-phase
 current-phase
 0
 99
-0
+0.0
 1
 1
 %
@@ -814,9 +814,25 @@ At the moment, only two of the four arms of each intersection have traffic light
 
 ## RELATED MODELS
 
-This model is an adaptation of the TRAFFIC GRID model from the Social Sciences section of the NetLogo models library.
+- "Traffic Basic": a simple model of the movement of cars on a highway.
 
-It is also related to the TRAFFIC-BASIC-UTILITY and TRAFFIC-BASIC-ADAPTIVE models in the chapter 5 folder of the IABM TEXTBOOK folder. Each of the three traffic models from chapter five of the textbook demonstrates a different kind of agent cognition.
+- "Traffic Basic Utility": a version of "Traffic Basic" including a utility function for the cars.
+
+- "Traffic Basic Adaptive": a version of "Traffic Basic" where cars adapt their acceleration to try and maintain a smooth flow of traffic.
+
+- "Traffic Basic Adaptive Individuals": a version of "Traffic Basic Adaptive" where each car adapts individually, instead of all cars adapting in unison.
+
+- "Traffic 2 Lanes": a more sophisticated two-lane version of the "Traffic Basic" model.
+
+- "Traffic Intersection": a model of cars traveling through a single intersection.
+
+- "Traffic Grid": a model of traffic moving in a city grid, with stoplights at the intersections.
+
+- "Gridlock HubNet": a version of "Traffic Grid" where students control traffic lights in real-time.
+
+- "Gridlock Alternate HubNet": a version of "Gridlock HubNet" where students can enter NetLogo code to plot custom metrics.
+
+The traffic models from chapter 5 of the IABM textbook demonstrate different types of cognitive agents: "Traffic Basic Utility" demonstrates _utility-based agents_, "Traffic Grid Goal" demonstrates _goal-based agents_, and "Traffic Basic Adaptive" and "Traffic Basic Adaptive Individuals" demonstrate _adaptive agents_.
 
 ## HOW TO CITE
 
@@ -1129,9 +1145,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1147,7 +1162,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

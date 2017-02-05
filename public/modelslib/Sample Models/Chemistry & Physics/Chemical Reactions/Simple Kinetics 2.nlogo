@@ -128,12 +128,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-255
+320
 10
-640
-416
-12
-12
+703
+394
+-1
+-1
 15.0
 1
 10
@@ -186,12 +186,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 5
 228
-101
+150
 261
 redraw box
 draw-box
@@ -208,23 +208,23 @@ NIL
 SLIDER
 5
 194
-101
+150
 227
 edge-size
 edge-size
 1
 10
-1
+1.0
 1
 1
 NIL
 HORIZONTAL
 
 SWITCH
-116
-194
-251
-227
+170
+195
+305
+228
 temp-effect?
 temp-effect?
 1
@@ -234,13 +234,13 @@ temp-effect?
 SLIDER
 3
 86
-160
+178
 119
 Kb
 Kb
 0
 10
-10
+10.0
 0.1
 1
 NIL
@@ -249,22 +249,22 @@ HORIZONTAL
 SLIDER
 3
 120
-160
+178
 153
 Ku
 Ku
 0
 100
-20
+20.0
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-169
+200
 120
-252
+305
 153
 add reactant
 add-reactant
@@ -276,12 +276,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-169
+200
 86
-252
+305
 119
 add product
 add-product
@@ -293,28 +293,28 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
-116
-228
-251
-261
+170
+229
+305
+262
 temp
 temp
 -200
 200
-200
+200.0
 1
 1
 deg C
 HORIZONTAL
 
 MONITOR
-13
-269
-122
-314
+5
+270
+114
+315
 Reactant Conc
 react-conc
 1
@@ -322,10 +322,10 @@ react-conc
 11
 
 MONITOR
-123
-269
-226
-314
+115
+270
+218
+315
 Product Conc
 prod-conc
 1
@@ -335,7 +335,7 @@ prod-conc
 PLOT
 4
 319
-247
+304
 474
 Concentrations
 time
@@ -354,17 +354,17 @@ PENS
 TEXTBOX
 5
 164
-102
+160
 193
-Volume (pause model to change)
+Volume\n(pause model to change)
 11
 0.0
 0
 
 TEXTBOX
-165
+196
 68
-255
+286
 86
 Concentration
 11
@@ -372,10 +372,10 @@ Concentration
 0
 
 TEXTBOX
-117
-176
-207
-194
+171
+177
+261
+195
 Temperature
 11
 0.0
@@ -384,7 +384,7 @@ Temperature
 TEXTBOX
 4
 68
-161
+184
 86
 Rates (when temp-effect off)
 11
@@ -811,9 +811,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -829,7 +828,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
-0
+1
 @#$#@#$#@

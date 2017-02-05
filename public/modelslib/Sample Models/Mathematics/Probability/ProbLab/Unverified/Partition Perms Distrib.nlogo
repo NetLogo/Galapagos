@@ -84,7 +84,7 @@ to update-plot
   set-current-plot "Addends"
   histogram the-long-list
   let maxbar modes the-long-list
-  let maxrange length filter [ ? = item 0 maxbar ] the-long-list
+  let maxrange length filter [ [the-item] -> the-item = item 0 maxbar ] the-long-list
   set-plot-y-range 0 max list 10 maxrange
 end
 
@@ -112,7 +112,7 @@ to finish-up
     set-plot-x-range 1 ( 1 + max partition-series-list )
     histogram partition-series-list
     let maxbar modes partition-series-list
-    let maxrange length filter [ ? = item 0 maxbar ] partition-series-list
+    let maxrange length filter [ [partition] -> partition = item 0 maxbar ] partition-series-list
     set-plot-y-range 0 max list 10 maxrange
     set #addends-so-far-in-this-series 0
     set previous-short-list the-short-list
@@ -132,10 +132,10 @@ end
 GRAPHICS-WINDOW
 6
 47
-824
-102
-50
-1
+822
+80
+-1
+-1
 8.0
 1
 10
@@ -188,7 +188,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 179
@@ -239,7 +239,7 @@ target-total
 target-total
 2
 100
-72
+72.0
 1
 1
 NIL
@@ -254,7 +254,7 @@ num-successes
 num-successes
 0
 10000
-10000
+10000.0
 100
 1
 NIL
@@ -765,9 +765,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -784,7 +783,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

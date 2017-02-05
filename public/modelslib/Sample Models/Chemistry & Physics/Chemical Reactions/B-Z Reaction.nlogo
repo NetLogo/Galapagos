@@ -39,10 +39,10 @@ end
 GRAPHICS-WINDOW
 205
 10
-619
-445
-50
-50
+617
+423
+-1
+-1
 4.0
 1
 10
@@ -72,7 +72,7 @@ max-state
 max-state
 1
 200
-200
+200.0
 1
 1
 NIL
@@ -110,7 +110,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 15
@@ -121,7 +121,7 @@ k1
 k1
 1
 8
-3
+3.0
 1
 1
 NIL
@@ -136,7 +136,7 @@ k2
 k2
 1
 8
-3
+3.0
 1
 1
 NIL
@@ -151,7 +151,7 @@ g
 g
 0
 100
-28
+28.0
 1
 1
 NIL
@@ -236,7 +236,7 @@ A discussion of the chemistry behind the reaction, plus a movie and some picture
 
 The cellular automaton was presented by A.K. Dewdney in his "Computer Recreations" column in the August 1988 of Scientific American.
 
-See http://www.hermetic.ch/pca/bz.htm for a pretty screen shot of the cellular automaton running on a very large grid (using custom software for Windows, not NetLogo).
+See https://web.archive.org/web/20141227154826/http://www.hermetic.ch/pca/bz.htm for a pretty screen shot of the cellular automaton running on a very large grid (using custom software for Windows, not NetLogo).
 
 ## HOW TO CITE
 
@@ -545,9 +545,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 200 [ go ]
@@ -565,7 +564,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

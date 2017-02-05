@@ -78,10 +78,10 @@ end
 GRAPHICS-WINDOW
 209
 10
-701
-183
-120
-35
+699
+161
+-1
+-1
 2.0
 1
 10
@@ -111,7 +111,7 @@ number-of-electrons
 number-of-electrons
 150
 1000
-400
+400.0
 10
 1
 NIL
@@ -143,7 +143,7 @@ speed-of-electrons
 speed-of-electrons
 1
 5
-2
+2.0
 0.1
 1
 NIL
@@ -164,14 +164,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 20
 120
 200
 206
-Filling capacity of the electron sink is the maximum number of electrons that the sink can hold.\n\n
+Filling capacity of the\nelectron sink is the\nmaximum number of\nelectrons that the \nsink can hold.\n\n
 12
 0.0
 1
@@ -203,7 +203,7 @@ TEXTBOX
 255
 651
 283
-Unit Of Time: \"isecs\" = imaginary seconds
+Unit Of Time: \"isecs\" =\nimaginary seconds
 11
 113.0
 1
@@ -584,9 +584,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -603,7 +602,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

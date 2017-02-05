@@ -1,4 +1,4 @@
-breed [agents agent]
+breed [agents an-agent]
 breed [cops cop]
 
 globals [
@@ -156,8 +156,8 @@ end
 GRAPHICS-WINDOW
 325
 10
-735
-441
+733
+419
 -1
 -1
 10.0
@@ -212,7 +212,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -238,7 +238,7 @@ max-jail-term
 max-jail-term
 0.0
 50.0
-30
+30.0
 1.0
 1
 turns
@@ -264,7 +264,7 @@ vision
 vision
 0.0
 10.0
-7
+7.0
 .1
 1
 patches
@@ -290,7 +290,7 @@ initial-cop-density
 initial-cop-density
 0.0
 100.0
-4
+4.0
 0.1
 1
 %
@@ -338,7 +338,7 @@ initial-agent-density
 initial-agent-density
 0.0
 100.0
-70
+70.0
 1.0
 1
 %
@@ -391,7 +391,7 @@ BUTTON
 179
 283
 watch one
-set visualization \"3D\" \nask max-one-of agents [grievance]\n  [ set size 2 watch-me ]
+set visualization \"3D\"\nask max-one-of agents [grievance]\n  [ set size 2 watch-me ]
 NIL
 1
 T
@@ -400,7 +400,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 180
@@ -846,9 +846,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 5 [ go ]
@@ -866,7 +865,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

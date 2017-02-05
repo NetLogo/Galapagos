@@ -32,10 +32,10 @@ end
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+647
+448
+-1
+-1
 13.0
 1
 10
@@ -123,9 +123,9 @@ This model is in the IABM Textbook folder of the NetLogo Models Library. The mod
 
 ## WHAT IS IT?
 
-NetLogo has two different kinds of agentsets: constructed agentsets, that act as a 'snapshot' of a particular set of turtles at a particular point in time, and special agentets that always contain the most updated list of turtles.
+NetLogo has two different kinds of agentsets: constructed agentsets, that act as a 'snapshot' of a particular set of turtles at a particular point in time, and special agentsets that always contain the most updated list of turtles.
 
-This model explores the order with which constructed agent sets follow their commands.  In particular, this model explores how an agentset constructed by collecting agents with a certain property do not automatically update even if the properties of the agents change during a run of the model. The agentset  continues to consist of the agents that had that property at the time of agentset construction.  In other words, even though you ASK agents that have a particular criterion to take an action, not all agents after the ASK that satisfy that criterion will necessarily take that action, since some of the agent properties may have changed during the ASK execution.
+This model explores the order with which constructed agentsets follow their commands.  In particular, this model explores how an agentset constructed by collecting agents with a certain property do not automatically update even if the properties of the agents change during a run of the model. The agentset continues to consist of the agents that had that property at the time of agentset construction. In other words, even though you ASK agents that have a particular criterion to take an action, not all agents after the ASK that satisfy that criterion will necessarily take that action, since some of the agent properties may have changed during the ASK execution.
 
 ## HOW IT WORKS
 
@@ -476,9 +476,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -494,7 +493,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

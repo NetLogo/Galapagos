@@ -33,8 +33,8 @@ to setup-view
   let active-y round min-pycor
   let delta-y round (world-height / 5)
   let possibility-index 0
-  foreach n-values 5 [?] [
-    foreach n-values item ? num-orderings [?] [
+  foreach n-values 5 [ [n] -> n ] [ [i] ->
+    foreach n-values item i num-orderings [ [n] -> n ] [
       ask patch active-x active-y [
         let current-4-block item possibility-index all-possibilities
         ask patch-at 0 1 [
@@ -96,7 +96,7 @@ to go
   ]
   update-unordered-probabilities
   update-num-orderings
-  set expected-results (map [?1 * ?2] unordered-probabilities num-orderings)
+  set expected-results (map [[a b] -> a * b] unordered-probabilities num-orderings)
   update-plot
   ask turtles [
     ifelse color = green [
@@ -133,14 +133,14 @@ to handle-mouse
 end
 
 to update-unordered-probabilities
-  set unordered-probabilities n-values 5 [
-    column-prob 4 ?
+  set unordered-probabilities n-values 5 [ [n] ->
+    column-prob 4 n
   ]
 end
 
 to update-num-orderings
-  set num-orderings n-values 5 [
-    choose 4 ?
+  set num-orderings n-values 5 [ [n] ->
+    choose 4 n
   ]
 end
 
@@ -177,18 +177,18 @@ to update-plot
   ]
   ifelse plot-individual-blocks? [
     let greenness 0
-    (foreach expected-results num-orderings [
-      let per-block ?1 / ?2
+    (foreach expected-results num-orderings [ [a b] ->
+      let per-block a / b
       let value-to-plot per-block
-      repeat ?2 [
+      repeat b [
         plotxy greenness value-to-plot
         set value-to-plot value-to-plot + per-block
       ]
       set greenness greenness + 1
     ])
   ] [
-    foreach expected-results [
-      plot ?
+    foreach expected-results [ [result] ->
+      plot result
     ]
   ]
 end
@@ -203,11 +203,11 @@ end
 
 to-report chance-of-each-item-in-column [index]
   let result ""
-  foreach n-values 4 [?] [
-    if ? > 0 [
+  foreach n-values 4 [ [n] -> n] [ [the-item] ->
+    if the-item > 0 [
       set result word result " * "
     ]
-    ifelse ? < index [
+    ifelse the-item < index [
       set result (word result precision p 2)
     ] [
       set result (word result precision (1 - p) 2)
@@ -261,10 +261,10 @@ end
 GRAPHICS-WINDOW
 260
 225
-648
-613
+646
+591
 -1
-8
+-1
 21.0
 1
 7
@@ -319,9 +319,9 @@ NIL
 HORIZONTAL
 
 BUTTON
-25
+15
 10
-130
+120
 43
 Setup
 setup
@@ -336,9 +336,9 @@ NIL
 1
 
 BUTTON
-135
+125
 10
-240
+230
 43
 Go
 go
@@ -350,12 +350,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
-25
+15
 50
-240
+230
 83
 plot-individual-blocks?
 plot-individual-blocks?
@@ -397,19 +397,19 @@ number-of-items-in-column * probability-of-items-in-column
 11
 
 TEXTBOX
-28
+18
 133
-240
+238
 203
-Press Setup, then Go.\nUse the slider to change the p value.\nClick on a column in the View to see its information in the monitors. \n
+Press Setup, then Go.\nUse the slider to change the p value.\nClick on a column in the View to see\nits information in the monitors. \n
 11
 0.0
 1
 
 SWITCH
-25
+15
 88
-240
+230
 121
 auto-adjust-y-axis?
 auto-adjust-y-axis?
@@ -827,9 +827,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -845,7 +844,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

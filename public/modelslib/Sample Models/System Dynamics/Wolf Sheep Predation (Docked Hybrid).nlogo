@@ -1,14 +1,14 @@
 ;; Sheep and wolves are both breeds of turtle.
-breed [sheep a-sheep]  ;; sheep is its own plural, so we use "a-sheep" as the singular.
+breed [sheep a-sheep] ;; sheep is its own plural: we use "a-sheep" as the singular.
 breed [wolves wolf]
-turtles-own [energy]       ;; both wolves and sheep have energy
+turtles-own [energy]  ;; both wolves and sheep have energy
 
 to setup
   clear-all
   ask patches [ set pcolor green ]
   set-default-shape sheep "sheep"
-  create-sheep initial-number-sheep  ;; create the sheep, then initialize their variables
-  [
+  create-sheep initial-number-sheep [ ;; create the sheep
+    ;; then initialize their variables
     set color white
     set size 1.5  ;; easier to see
     set label-color blue - 2
@@ -16,8 +16,8 @@ to setup
     setxy random-xcor random-ycor
   ]
   set-default-shape wolves "wolf"
-  create-wolves initial-number-wolves  ;; create the wolves, then initialize their variables
-  [
+  create-wolves initial-number-wolves [ ;; create the wolves
+    ;; then initialize their variables
     set color black
     set size 1.5  ;; easier to see
     set energy random (2 * wolf-gain-from-food)
@@ -96,6 +96,10 @@ to step-aggregate
 end
 
 to compare
+  if dt = 0 [
+    user-message "Please click SETUP COMPARISON first."
+    stop
+  ]
   go
   step-aggregate
   set-current-plot "populations"
@@ -111,10 +115,10 @@ end
 GRAPHICS-WINDOW
 350
 10
-729
-410
-20
-20
+727
+388
+-1
+-1
 9.0
 1
 14
@@ -144,7 +148,7 @@ initial-number-sheep
 initial-number-sheep
 0.0
 250.0
-148
+148.0
 1.0
 1
 NIL
@@ -159,7 +163,7 @@ sheep-max-initial-energy
 sheep-max-initial-energy
 0.0
 50.0
-4
+4.0
 1.0
 1
 NIL
@@ -174,7 +178,7 @@ sheep-reproduce
 sheep-reproduce
 1.0
 20.0
-4
+4.0
 1.0
 1
 %
@@ -189,7 +193,7 @@ initial-number-wolves
 initial-number-wolves
 0.0
 250.0
-30
+30.0
 1.0
 1
 NIL
@@ -204,7 +208,7 @@ wolf-gain-from-food
 wolf-gain-from-food
 0.0
 100.0
-13
+13.0
 1.0
 1
 NIL
@@ -219,7 +223,7 @@ wolf-reproduce
 wolf-reproduce
 0.0
 20.0
-5
+5.0
 1.0
 1
 %
@@ -248,7 +252,7 @@ BUTTON
 159
 71
 go
-go\ntick\ndisplay-labels\n
+go\ntick\ndisplay-labels
 T
 1
 T
@@ -257,7 +261,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 8
@@ -365,7 +369,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 762
@@ -447,7 +451,7 @@ predatorEfficiency
 predatorEfficiency
 0.0
 10.0
-1
+1.0
 0.1
 1
 NIL
@@ -483,7 +487,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 902
@@ -871,11 +875,18 @@ Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 sheep
 false
 15
-Rectangle -1 true true 166 225 195 285
-Rectangle -1 true true 62 225 90 285
-Rectangle -1 true true 30 75 210 225
-Circle -1 true true 135 75 150
-Circle -7500403 true false 180 76 116
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
 
 square
 false
@@ -964,35 +975,23 @@ Line -7500403 true 84 40 221 269
 wolf
 false
 0
-Rectangle -7500403 true true 195 106 285 150
-Rectangle -7500403 true true 195 90 255 105
-Polygon -7500403 true true 240 90 217 44 196 90
-Polygon -16777216 true false 234 89 218 59 203 89
-Rectangle -1 true false 240 93 252 105
-Rectangle -16777216 true false 242 96 249 104
-Rectangle -16777216 true false 241 125 285 139
-Polygon -1 true false 285 125 277 138 269 125
-Polygon -1 true false 269 140 262 125 256 140
-Rectangle -7500403 true true 45 120 195 195
-Rectangle -7500403 true true 45 114 185 120
-Rectangle -7500403 true true 165 195 180 270
-Rectangle -7500403 true true 60 195 75 270
-Polygon -7500403 true true 45 105 15 30 15 75 45 150 60 120
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
 
 x
 false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 setup-aggregate
 repeat 75 [ go step-aggregate ]
 @#$#@#$#@
-0.0010
+0.001
     org.nlogo.sdm.gui.AggregateDrawing 25
         org.nlogo.sdm.gui.StockFigure "attributes" "attributes" 1 "FillColor" "Color" 225 225 175 270 100 60 40
             org.nlogo.sdm.gui.WrappedStock "sheepStock" "initial-number-sheep ;; taken from agent model's slider" 1
@@ -1076,7 +1075,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

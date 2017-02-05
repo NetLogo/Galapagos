@@ -1,7 +1,6 @@
 patches-own [
   pheromone            ;; amount of pheromone on this patch
   food                 ;; amount of food on this patch (0, 1, or 2)
-  nest?                ;; true on nest patches, false elsewhere
 ]
 
 turtles-own [
@@ -26,28 +25,37 @@ to setup-patches
 end
 
 to setup-nest
-  ;; set nest? variable to true inside the nest, false elsewhere
-  ask patches [ set nest? (distancexy 0 0) < 5 ]
+  ask patches with [ nest? ] [
+    set pcolor violet
+  ]
 end
 
 to setup-food
-  ask patches [
-    ;; setup food source one on the right
-    if (distancexy (0.6 * max-pxcor) 0) < 5 [ set food 2 ]
-    ;; setup food source two on the lower-left
-    if (distancexy (-0.6 * max-pxcor) (-0.6 * max-pycor)) < 5 [ set food 2 ]
-    ;; setup food source three on the upper-left
-    if (distancexy (-0.8 * max-pxcor) (0.8 * max-pycor)) < 5 [ set food 2 ]
+  ;; setup a food source on the right
+  ask patch (0.6 * max-pxcor) 0 [
+    make-food-source cyan
+  ]
+  ;; setup a food source on the lower-left
+  ask patch (-0.6 * max-pxcor) (-0.6 * max-pycor) [
+    make-food-source sky
+  ]
+  ;; setup a food source on the upper-left
+  ask patch (-0.8 * max-pxcor) (0.8 * max-pycor) [
+    make-food-source blue
+  ]
+end
+
+to make-food-source [ food-source-color ] ;; patch procedure
+  ask patches with [ distance myself < 5 ] [
+    set food 2
+    set pcolor food-source-color
   ]
 end
 
 to recolor-patches
-  ask patches [
+  ask patches with [ food = 0 and not nest? ] [
     ;; scale color to show pheromone concentration
     set pcolor scale-color green pheromone 0.1 5
-    ;; give color to nest and food sources
-    if nest? [ set pcolor violet ]
-    if food > 0 [ set pcolor cyan ]
   ]
 end
 
@@ -59,7 +67,10 @@ to go  ;; forever button
   ;; add ants one at a time
   if count turtles < population [ create-ant ]
 
-  ask turtles [ move recolor ]
+  ask turtles [
+    move
+    recolor
+  ]
   diffuse pheromone (diffusion-rate / 100)
   ask patches [
     ;; slowly evaporate pheromone
@@ -100,7 +111,6 @@ to look-for-food  ;; turtle procedure
     set carrying-food? true  ;; pick up food
     set food food - 1        ;; and reduce the food source
     rt 180                   ;; and turn around
-    stop
   ] [ ;; go in the direction where the pheromone smell is strongest
     uphill-pheromone
   ]
@@ -129,8 +139,9 @@ to wander  ;; turtle procedure
 end
 
 to recolor  ;; turtle procedure
-  set color red
-  if carrying-food? [ set color orange + 1]
+  ifelse carrying-food?
+    [ set color orange + 1 ]
+    [ set color red ]
 end
 
 to-report pheromone-scent-at-angle [ angle ]
@@ -139,17 +150,21 @@ to-report pheromone-scent-at-angle [ angle ]
   report [ pheromone ] of p
 end
 
+to-report nest? ;; patch or turtle reporter
+  report distancexy 0 0 < 5
+end
+
 
 ; Copyright 1997 Uri Wilensky.
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-257
+370
 10
-764
-538
-35
-35
+875
+516
+-1
+-1
 7.0
 1
 10
@@ -171,10 +186,10 @@ ticks
 30.0
 
 BUTTON
-46
-71
-126
-104
+100
+55
+180
+88
 NIL
 setup
 NIL
@@ -188,40 +203,40 @@ NIL
 1
 
 SLIDER
-31
-106
-221
-139
+85
+90
+275
+123
 diffusion-rate
 diffusion-rate
 0.0
 99.0
-50
+50.0
 1.0
 1
 NIL
 HORIZONTAL
 
 SLIDER
-31
-141
-221
-174
+85
+125
+275
+158
 evaporation-rate
 evaporation-rate
 0.0
 99.0
-10
+10.0
 1.0
 1
 NIL
 HORIZONTAL
 
 BUTTON
-136
-71
-211
-104
+190
+55
+265
+88
 NIL
 go
 T
@@ -235,15 +250,15 @@ NIL
 0
 
 SLIDER
-31
-36
-221
-69
+85
+20
+275
+53
 population
 population
 0.0
 200.0
-125
+125.0
 1.0
 1
 NIL
@@ -252,7 +267,7 @@ HORIZONTAL
 PLOT
 10
 180
-245
+360
 535
 Remaining Food
 Time
@@ -262,10 +277,13 @@ Food
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot sum [ food ] of patches"
+"total" 1.0 0 -16777216 true "" "plot sum [ food ] of patches"
+"right" 1.0 0 -11221820 true "" "plot sum [ food ] of patches with [ pcolor = cyan ]"
+"upper-left" 1.0 0 -13345367 true "" "plot sum [ food ] of patches with [ pcolor = blue ]"
+"lower-left" 1.0 0 -13791810 true "" "plot sum [ food ] of patches with [ pcolor = sky ]"
 
 @#$#@#$#@
 ## ACKNOWLEDGMENT
@@ -304,7 +322,7 @@ The consumption of the food is shown in a plot.  The line colors in the plot mat
 
 Try different placements for the food sources. What happens if two food sources are equidistant from the nest? When that happens in the real world, ant colonies typically exploit one source then the other (not at the same time).
 
-In this project, the ants use a "trick" to find their way back to the nest: they follow the "nest scent." Real ants use a variety of different approaches to find their way back to the nest. Try to implement some alternative strategies.
+In this model, the ants always "know" where the nest is: when they want to go back to the nest, they just turn towards the center of the world (using `facexy 0 0`). Real ants use a variety of different approaches to find their way back to the nest. Try to implement some alternative strategies.
 
 The ants only respond to chemical levels between 0.05 and 2.  The lower limit is used so the ants aren't infinitely sensitive.  Try removing the upper limit.  What happens?  Why?
 
@@ -639,9 +657,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -657,7 +674,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

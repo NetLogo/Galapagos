@@ -64,10 +64,10 @@ end
 GRAPHICS-WINDOW
 200
 10
-612
-443
-100
-100
+610
+421
+-1
+-1
 2.0
 1
 10
@@ -131,7 +131,7 @@ number
 number
 1
 2000
-400
+400.0
 1
 1
 NIL
@@ -146,7 +146,7 @@ density
 density
 0.0
 100.0
-20
+20.0
 1.0
 1
 %
@@ -508,9 +508,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 ask turtles [ repeat 150 [ go ] ]
@@ -528,7 +527,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

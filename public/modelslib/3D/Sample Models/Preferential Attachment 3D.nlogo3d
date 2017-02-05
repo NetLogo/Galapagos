@@ -103,8 +103,8 @@ GRAPHICS-WINDOW
 0
 245
 256
-22
-22
+-1
+-1
 5.0
 1
 10
@@ -195,7 +195,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
@@ -212,7 +212,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 195
@@ -688,9 +688,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 6.0-BETA1
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]
@@ -709,7 +708,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

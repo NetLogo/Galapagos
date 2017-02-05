@@ -33,10 +33,10 @@ end
 GRAPHICS-WINDOW
 199
 10
-614
-446
-40
-40
+612
+424
+-1
+-1
 5.0
 1
 10
@@ -66,7 +66,7 @@ num-bees
 num-bees
 1
 500
-250
+250.0
 1
 1
 NIL
@@ -104,7 +104,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 4
@@ -121,7 +121,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 95
@@ -138,7 +138,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -506,9 +506,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -524,7 +523,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

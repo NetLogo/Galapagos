@@ -88,7 +88,7 @@ to repopulate-from-two [parent1 parent2]
     if controlled-mutation? [set mutation who * 1 / (rows * columns)]
 
     ;; select one value from either parent for each of the four variables
-    set num-colors ([num-colors] of one-of list parent1 parent2) + int random-normal 0 (mutation * 10) mod 15 + (1)
+    set num-colors ([num-colors] of one-of list parent1 parent2) + int random-normal 0 (mutation * 10) mod 15 + 1
     set step-size ([step-size] of one-of list parent1 parent2) + random-normal 0 (mutation / 5)
     set turn-increment ([turn-increment] of one-of list parent1 parent2) + random-normal 0 (mutation / 20)
     set size-modifier ([size-modifier] of one-of list parent1 parent2) + random-normal 0 mutation
@@ -149,10 +149,10 @@ end
 GRAPHICS-WINDOW
 198
 10
-628
-461
-17
-17
+626
+439
+-1
+-1
 12.0
 1
 10
@@ -205,7 +205,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -216,7 +216,7 @@ rows
 rows
 1.0
 10.0
-5
+5.0
 1.0
 1
 NIL
@@ -231,7 +231,7 @@ columns
 columns
 1.0
 10.0
-5
+5.0
 1.0
 1
 NIL
@@ -630,9 +630,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -648,7 +647,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

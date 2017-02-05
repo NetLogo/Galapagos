@@ -4,10 +4,18 @@ to setup-simple-random
   create-turtles num-nodes
   layout-circle turtles (max-pxcor - 1)
   ;; Now make links one at a time until we have enough
+  if num-links > max-links [ set num-links max-links ]
   while [count links < num-links] [
     ;; Note that if the link already exists, nothing happens
     ask one-of turtles [ create-link-with one-of other turtles ]
   ]
+end
+
+to-report max-links
+  ;; report the maximum number of links that can be added
+  ;; to a random network, given the specified number
+  ;; of nodes, with 1000 as an arbitrary upper bound
+  report min (list (num-nodes * (num-nodes - 1) / 2) 1000)
 end
 
 to setup-erdos-renyi
@@ -33,10 +41,10 @@ end
 GRAPHICS-WINDOW
 202
 10
-641
-470
-16
-16
+639
+448
+-1
+-1
 13.0
 1
 10
@@ -99,8 +107,8 @@ SLIDER
 num-links
 num-links
 0
-100
-25
+max-links
+25.0
 1
 1
 NIL
@@ -141,7 +149,7 @@ num-nodes
 num-nodes
 2
 500
-24
+25.0
 1
 1
 NIL
@@ -464,9 +472,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-simple-random
 @#$#@#$#@
@@ -483,7 +490,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

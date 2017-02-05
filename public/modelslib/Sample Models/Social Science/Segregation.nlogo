@@ -80,10 +80,10 @@ end
 GRAPHICS-WINDOW
 353
 10
-771
-449
-25
-25
+769
+427
+-1
+-1
 8.0
 1
 10
@@ -153,7 +153,7 @@ SLIDER
 %-similar-wanted
 0
 100
-30
+30.0
 1
 1
 %
@@ -191,13 +191,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 104
-61
+60
 194
-95
+93
 go once
 go
 NIL
@@ -208,7 +208,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 780
@@ -229,7 +229,7 @@ density
 density
 50
 99
-95
+95.0
 1
 1
 %
@@ -697,9 +697,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -715,7 +714,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

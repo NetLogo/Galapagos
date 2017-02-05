@@ -51,7 +51,7 @@ to setup-continue
   if not done?  ;; make sure go has already been called
     [ stop ]
 
-  set value-list map [[value] of ?] sort patches with [pycor = row]  ;; copy cell states from bottom row to a list
+  set value-list map [ [p] -> [value] of p ] sort patches with [pycor = row]  ;; copy cell states from bottom row to a list
   setup-general
   ask patches with [pycor = row]  ;; copy states from list to top row
   [
@@ -127,10 +127,10 @@ end
 GRAPHICS-WINDOW
 257
 10
-669
-443
-100
-100
+667
+421
+-1
+-1
 2.0
 1
 10
@@ -183,7 +183,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 99
@@ -252,7 +252,7 @@ precision-level
 precision-level
 1
 16
-16
+16.0
 1
 1
 decimal places
@@ -655,9 +655,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-random
 repeat world-height - 1
@@ -676,7 +675,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -65,7 +65,7 @@ birds-own [
   first-genes second-genes third-genes fourth-genes fifth-genes sex-gene   ;; genetic information is stored in these five variables
   transporting? breeding? selected? just-bred? sequenced? released?       ;; the state of the bird is stored in these seven variables
   destination-patch                                                       ;; this variable is used for keeping track of where the bird is moving toward
-  release-counter                                                         ;; this variable counts down to keep track of how to visualize the "fading" out of a released bird
+  release-counter                                                         ;; counts down to keep track of how to visualize the "fading" out of a released bird
 ]
 
 eggs-own  [
@@ -73,7 +73,7 @@ eggs-own  [
   first-genes second-genes third-genes fourth-genes fifth-genes sex-gene   ;; genetic information is stored in these five variables
   transporting? breeding? selected? just-bred? sequenced? released?       ;; the state of the egg is stored in these seven variables
   destination-patch                                                       ;; this variable is used for keeping track of where the egg is moving toward
-  release-counter                                                         ;; this variable counts down to keep track of how to visualize the "fading" out of a released egg
+  release-counter                                                         ;; counts down to keep track of how to visualize the "fading" out of a released egg
 ]
 
 ;; owned-by corresponds a particular user-id
@@ -83,7 +83,8 @@ destination-flags-own [owned-by]
 first-traits-own      [owned-by first-genes  ]
 second-traits-own     [owned-by second-genes ]
 third-traits-own      [owned-by third-genes  ]
-fourth-traits-own      [owned-by fourth-genes fifth-genes sex-gene ]       ;; the fourth trait related to presence of feathers (head cap) is sex linked - it only appears if the individual is male)
+;; the fourth trait related to presence of feathers (head cap) is sex linked - it only appears if the individual is male)
+fourth-traits-own     [owned-by fourth-genes fifth-genes sex-gene ]
 
 
 
@@ -137,10 +138,26 @@ to setup
   set egg-size  0.55
 
   set genes-to-phenotype [
-    ["AA" "set color [150 150 150 255]"] ["Aa" "set color [150 150 150 255]"] ["aA" "set color [150 150 150 255]"] ["aa" "set color [0 150 255 255]"]        ;; sets crest colors
-    ["BB" "set color [150 150 150 255]"] ["Bb" "set color [150 150 150 255]"] ["bB" "set color [150 150 150 255]"] ["bb" "set color [155 0 100 255]"]        ;; sets wing colors
-    ["CC" "set color [150 150 150 255]"] ["Cc" "set color [150 150 150 255]"] ["cC" "set color [150 150 150 255]"] ["cc" "set color [255 0 200 255]"]        ;; sets chest colors
-    ["DD" "set color [150 150 150 255]"] ["Dd" "set color [150 150 150 255]"] ["dD" "set color [150 150 150 255]"] ["dd" "set color [255 0 0 255]" ]         ;; sets tail colors
+    ;; sets crest colors
+    ["AA" "set color [150 150 150 255]"]
+    ["Aa" "set color [150 150 150 255]"]
+    ["aA" "set color [150 150 150 255]"]
+    ["aa" "set color [0 150 255 255]"]
+    ;; sets wing colors
+    ["BB" "set color [150 150 150 255]"]
+    ["Bb" "set color [150 150 150 255]"]
+    ["bB" "set color [150 150 150 255]"]
+    ["bb" "set color [155 0 100 255]"]
+    ;; sets chest colors
+    ["CC" "set color [150 150 150 255]"]
+    ["Cc" "set color [150 150 150 255]"]
+    ["cC" "set color [150 150 150 255]"]
+    ["cc" "set color [255 0 200 255]"]
+    ;; sets tail colors
+    ["DD" "set color [150 150 150 255]"]
+    ["Dd" "set color [150 150 150 255]"]
+    ["dD" "set color [150 150 150 255]"]
+    ["dd" "set color [255 0 0 255]" ]
   ]
 
   set-default-shape birds "bird"
@@ -440,7 +457,7 @@ end
 
 to assign-new-player
   if not any? players with [user-id = hubnet-message-source and assigned?]  [  ;; no players with this id and is assigned
-    ask one-of players with [not assigned?] [ set user-id hubnet-message-source set assigned? true]
+    ask turtle-set one-of players with [not assigned?] [ set user-id hubnet-message-source set assigned? true]
   ]
   reset-player-numbers
 end
@@ -512,7 +529,11 @@ to calculate-all-alleles
   set frequency-allele-dominant-fourth-trait   (count birds with [(item 0 fourth-genes)  = "D"]) + (count birds with [(item 1 fourth-genes)  = "D"])
   set frequency-allele-recessive-fourth-trait  (count birds with [(item 0 fourth-genes)  = "d"]) + (count birds with [(item 1 fourth-genes)  = "d"])
 
-  if ((both-second-trait-alleles-exist? and both-first-trait-alleles-exist? and both-fourth-alleles-exist? and both-third-trait-alleles-exist? and both-sexes-exist?) = false)
+  if ((both-second-trait-alleles-exist? and
+    both-first-trait-alleles-exist? and
+    both-fourth-alleles-exist? and
+    both-third-trait-alleles-exist? and
+    both-sexes-exist?) = false)
    [user-message (word "The current of birds in all the cages of all the player does not have"
     " enough genetic diversity for it to be possible for you to find a way to develop the desired breed."
     "  Press HALT then press SETUP to start the model over and try again.")
@@ -701,7 +722,11 @@ to check-click-on-bird-or-egg [msg]
       set destination-patch nobody
       set this-bird-or-egg self
       hatch 1 [
-        set breed selection-tags set owned-by this-player-number set color (lput 150 extract-rgb (player-tag-and-destination-flag-color this-player-number ) ) set heading 0 set size 1.0 set label ""
+        set breed selection-tags set owned-by this-player-number
+        set color (lput 150 extract-rgb (player-tag-and-destination-flag-color this-player-number ) )
+        set heading 0
+        set size 1.0
+        set label ""
         create-link-from this-bird-or-egg [set hidden? true tie]
       ]
     ]
@@ -1006,8 +1031,14 @@ end
 
 to-report is-other-players-cage-or-occupied-site? [this-player-number this-user-id ]
   let validity? false
-  if ((patch-owned-by >= 1 and patch-owned-by <= 4) and patch-owned-by != this-player-number)  [set validity? true ]   ;;You can not move a bird/egg to another players cage or dna sequencer
-  if (any? other birds-here or any? other eggs-here) [set validity? true ]                 ;; You can not move a bird/egg on top of another bird/egg
+  if ((patch-owned-by >= 1 and patch-owned-by <= 4) and patch-owned-by != this-player-number) [
+    ;;You can not move a bird/egg to another players cage or dna sequencer
+    set validity? true
+  ]
+  if (any? other birds-here or any? other eggs-here) [
+    ;; You can not move a bird/egg on top of another bird/egg
+    set validity? true
+  ]
   report validity?
 end
 
@@ -1129,8 +1160,8 @@ end
 GRAPHICS-WINDOW
 455
 55
-1025
-646
+1023
+624
 -1
 -1
 56.0
@@ -1185,7 +1216,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 OUTPUT
 15
@@ -1288,7 +1319,7 @@ max-#-of-DNA-tests
 max-#-of-DNA-tests
 0
 36
-16
+16.0
 1
 1
 NIL
@@ -1369,7 +1400,7 @@ SLIDER
 #-of-required-goal-birds
 1
 24
-12
+12.0
 1
 1
 NIL
@@ -1440,7 +1471,7 @@ SLIDER
 #-of-players
 1
 4
-4
+4.0
 1
 1
 NIL
@@ -2241,9 +2272,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -2367,10 +2397,10 @@ true
 true
 "" ""
 PENS
-"a" 1.0 0 -8990512 true
-"b" 1.0 0 -2674135 true
-"c" 1.0 0 -1664597 true
-"d" 1.0 0 -7858858 true
+"a" 1.0 0 -8990512 true "" ""
+"b" 1.0 0 -2674135 true "" ""
+"c" 1.0 0 -1664597 true "" ""
+"d" 1.0 0 -7858858 true "" ""
 
 PLOT
 10
@@ -2388,10 +2418,10 @@ true
 true
 "" ""
 PENS
-"A" 1.0 0 -16777216 true
-"B" 1.0 0 -3026479 true
-"C" 1.0 0 -3889007 true
-"D" 1.0 0 -9276814 true
+"A" 1.0 0 -16777216 true "" ""
+"B" 1.0 0 -3026479 true "" ""
+"C" 1.0 0 -3889007 true "" ""
+"D" 1.0 0 -9276814 true "" ""
 
 PLOT
 10
@@ -2409,10 +2439,10 @@ true
 true
 "" ""
 PENS
-"1 variation" 1.0 0 -4079321 true
-"2 variations" 1.0 0 -8330359 true
-"3 variations" 1.0 0 -12087248 true
-"4 variations" 1.0 0 -14333415 true
+"1 variation" 1.0 0 -4079321 true "" ""
+"2 variations" 1.0 0 -8330359 true "" ""
+"3 variations" 1.0 0 -12087248 true "" ""
+"4 variations" 1.0 0 -14333415 true "" ""
 
 @#$#@#$#@
 default
@@ -2425,7 +2455,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

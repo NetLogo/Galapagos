@@ -56,10 +56,10 @@ end
 GRAPHICS-WINDOW
 290
 15
-729
-475
-16
-16
+727
+453
+-1
+-1
 13.0
 1
 10
@@ -133,7 +133,7 @@ number
 number
 3
 200
-68
+68.0
 1
 1
 NIL
@@ -310,12 +310,6 @@ This model is from Chapter Two of the book "Introduction to Agent-Based Modeling
 * Wilensky, U. & Rand, W. (2015). Introduction to Agent-Based Modeling: Modeling Natural, Social and Engineered Complex Systems with NetLogo. Cambridge, MA. MIT Press.
 
 This model is in the IABM Textbook folder of the NetLogo Models Library. The model, as well as any updates to the model, can also be found on the textbook website: http://www.intro-to-abm.com/.
-
-## UPDATES TO THE MODEL SINCE TEXTBOOK PUBLICATION
-
-In the textbook version of the code, there is a slight chance that a turtle's friend is also its enemy. Here, we prevent this from happening by choosing the enemy of a turtle amongst the set of other turtles not including its friend.
-
-Also, we could not resist adding a few interesting preset configurations. Have fun playing with them!
 
 ## WHAT IS IT?
 
@@ -680,9 +674,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -698,7 +691,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

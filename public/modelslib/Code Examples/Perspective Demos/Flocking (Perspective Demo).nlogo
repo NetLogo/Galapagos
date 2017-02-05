@@ -8,7 +8,8 @@ to setup
   create-turtles population
     [ set color yellow - 2 + random 7  ;; random shades look nice
       set size 1.5  ;; easier to see
-      setxy random-xcor random-ycor ]
+      setxy random-xcor random-ycor
+      set flockmates no-turtles ]
   ask patches
     [ set pcolor green - random 2 ]
   reset-ticks
@@ -107,10 +108,10 @@ end
 GRAPHICS-WINDOW
 250
 10
-806
-587
-45
-45
+804
+565
+-1
+-1
 6.0
 1
 10
@@ -132,10 +133,10 @@ ticks
 30.0
 
 BUTTON
-10
-102
-86
-135
+9
+122
+85
+155
 NIL
 setup
 NIL
@@ -149,10 +150,10 @@ NIL
 1
 
 BUTTON
-91
-102
-172
-135
+90
+122
+171
+155
 NIL
 go
 T
@@ -163,58 +164,58 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
-9
-64
-232
-97
+8
+84
+231
+117
 population
 population
 1
 1000
-200
+200.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-8
-465
-231
-498
+7
+485
+230
+518
 max-align-turn
 max-align-turn
 0
 20
-5
+5.0
 0.25
 1
 degrees
 HORIZONTAL
 
 SLIDER
-8
-499
-231
-532
+7
+519
+230
+552
 max-cohere-turn
 max-cohere-turn
 0
 20
-3
+3.0
 0.25
 1
 degrees
 HORIZONTAL
 
 SLIDER
-8
-533
-231
-566
+7
+553
+230
+586
 max-separate-turn
 max-separate-turn
 0
@@ -226,30 +227,30 @@ degrees
 HORIZONTAL
 
 SLIDER
-8
-397
-231
-430
+7
+417
+230
+450
 vision
 vision
 0
 10
-3
+3.0
 0.5
 1
 patches
 HORIZONTAL
 
 SLIDER
-8
-431
-231
-464
+7
+451
+230
+484
 minimum-separation
 minimum-separation
 0
 5
-1
+1.0
 0.25
 1
 patches
@@ -259,17 +260,17 @@ TEXTBOX
 10
 13
 244
-59
-This is a version of the Flocking model, modified to show off NetLogo's perspective features. Try it in both 2D and 3D.\n
+69
+This is a version of the Flocking model,\nmodified to show off NetLogo's\nperspective features. Try it in both\n2D and 3D.\n
 11
 0.0
 0
 
 BUTTON
-9
-155
-237
-188
+8
+175
+236
+208
 NIL
 watch one-of turtles
 NIL
@@ -280,13 +281,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-10
-190
-237
-223
+9
+210
+236
+243
 NIL
 follow one-of turtles
 NIL
@@ -297,13 +298,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-117
-225
-237
-258
+116
+245
+236
+278
 NIL
 reset-perspective
 NIL
@@ -317,10 +318,10 @@ NIL
 1
 
 BUTTON
-29
-337
-92
-370
+28
+357
+91
+390
 NIL
 pen-up
 NIL
@@ -334,10 +335,10 @@ NIL
 1
 
 BUTTON
-94
-337
-212
-370
+93
+357
+211
+390
 NIL
 clear-drawing
 NIL
@@ -351,10 +352,10 @@ NIL
 1
 
 MONITOR
-10
-225
-116
-270
+9
+245
+115
+290
 NIL
 subject
 3
@@ -362,10 +363,10 @@ subject
 11
 
 BUTTON
-29
-302
-212
-335
+28
+322
+211
+355
 subject pen-down
 if subject != nobody\n[ ask subject [ pen-down ] ]
 NIL
@@ -670,9 +671,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -689,7 +689,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -55,10 +55,10 @@ end
 GRAPHICS-WINDOW
 201
 10
-708
-538
-35
-35
+706
+516
+-1
+-1
 7.0
 1
 10
@@ -94,10 +94,10 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
-19
+14
 155
 189
 189
@@ -446,9 +446,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 random-seed 2
 setup
@@ -469,7 +468,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

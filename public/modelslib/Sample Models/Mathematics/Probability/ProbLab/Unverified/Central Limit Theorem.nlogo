@@ -230,10 +230,10 @@ end
 GRAPHICS-WINDOW
 171
 10
-553
-413
-15
-15
+551
+391
+-1
+-1
 12.0
 1
 10
@@ -280,7 +280,7 @@ range
 range
 0
 30
-30
+30.0
 1
 1
 NIL
@@ -308,25 +308,25 @@ PENS
 "sums-mean" 1.0 0 -13345367 true "" ""
 
 SLIDER
-7
-275
-161
-308
+6
+296
+160
+329
 sample-size
 sample-size
 1
 10
-10
+10.0
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-91
-361
-164
-414
+90
+382
+163
+435
 NIL
 go
 T
@@ -337,13 +337,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-10
-361
-84
-414
+9
+382
+83
+435
 Go Once
 go
 NIL
@@ -423,10 +423,10 @@ and/or
 0
 
 TEXTBOX
-26
-257
-150
-275
+9
+271
+147
+289
 Sampling Commands:
 11
 0.0
@@ -535,10 +535,10 @@ NIL
 1
 
 SWITCH
-20
-319
-148
-352
+19
+340
+147
+373
 also-sums?
 also-sums?
 1
@@ -995,11 +995,12 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
-need-to-manually-make-preview-for-this-model
+setup
+create-population
+go
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1014,7 +1015,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

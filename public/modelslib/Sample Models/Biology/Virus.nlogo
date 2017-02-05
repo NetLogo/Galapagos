@@ -144,10 +144,10 @@ end
 GRAPHICS-WINDOW
 280
 10
-780
-531
-17
-17
+778
+509
+-1
+-1
 14.0
 1
 10
@@ -177,7 +177,7 @@ duration
 duration
 0.0
 99.0
-20
+20.0
 1.0
 1
 weeks
@@ -192,7 +192,7 @@ chance-recover
 chance-recover
 0.0
 99.0
-75
+75.0
 1.0
 1
 %
@@ -207,7 +207,7 @@ infectiousness
 infectiousness
 0.0
 99.0
-65
+65.0
 1.0
 1
 %
@@ -277,7 +277,7 @@ number-people
 number-people
 10
 carrying-capacity
-150
+150.0
 1
 1
 NIL
@@ -357,15 +357,13 @@ If a person has been infected and recovered, how immune are they to the virus?  
 
 How easily does the virus spread?  Some viruses with which we are familiar spread very easily.  Some viruses spread from the smallest contact every time.  Others (the HIV virus, which is responsible for AIDS, for example) require significant contact, perhaps many times, before the virus is transmitted.  In this model, infectiousness is determined by the INFECTIOUSNESS slider.
 
-Several of the core parameters of this model are set as constants in the code. They could be exposed as sliders if desired.  The turtles' lifespan is set to 50 years, the carrying capacity of the world is set to 300 and the chance to reproduce is set to 1%.
-
 ### Duration of infectiousness
 
 How long is a person infected before they either recover or die?  This length of time is essentially the virus's window of opportunity for transmission to new hosts. In this model, duration of infectiousness is determined by the DURATION slider.
 
 ### Hard-coded parameters
 
-Three important parameters of this model are set as constants in the code (See setup-constants procedure). They can be exposed as sliders if desired. The turtles’ lifespan is set to 50 years, the carrying capacity of the world is set to 300, the duration of immunity is set to 52 weeks, and the birth-rate is set to a 1 in 100 chance of reproducing per tick when the number of people is less than the carrying capacity.
+Four important parameters of this model are set as constants in the code (See `setup-constants` procedure). They can be exposed as sliders if desired. The turtles’ lifespan is set to 50 years, the carrying capacity of the world is set to 300, the duration of immunity is set to 52 weeks, and the birth-rate is set to a 1 in 100 chance of reproducing per tick when the number of people is less than the carrying capacity.
 
 ## HOW TO USE IT
 
@@ -735,9 +733,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -753,7 +750,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

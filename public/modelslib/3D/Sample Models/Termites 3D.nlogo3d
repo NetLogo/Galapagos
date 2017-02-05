@@ -13,7 +13,7 @@ to setup
            random-zcor
     tilt-up random 360
     right random 360
-    set next-task task search-for-chip
+    set next-task [ [] -> search-for-chip ]
     set steps 0
   ]
   ask turtle 0
@@ -43,12 +43,13 @@ to search-for-chip   ;; turtle procedure -- "picks up chip" by turning orange
     [ set pcolor black
       set color orange
       set steps 20
-      set next-task task find-new-pile ]
+      set next-task [ [] -> find-new-pile ]
+    ]
 end
 
 to find-new-pile  ;; turtle procedure -- look for yellow patches
   if pcolor = yellow
-    [ set next-task task put-down-chip ]
+    [ set next-task [ [] -> put-down-chip ] ]
 end
 
 to put-down-chip  ;; turtle procedure -- finds empty spot & drops chip
@@ -56,12 +57,12 @@ to put-down-chip  ;; turtle procedure -- finds empty spot & drops chip
    [ set pcolor yellow
      set color white
      set steps 20
-     set next-task task get-away ]
+     set next-task [ [] -> get-away ] ]
 end
 
 to get-away  ;; turtle procedure -- get out of yellow pile
   if pcolor = black
-    [ set next-task task search-for-chip ]
+    [ set next-task [ [] -> search-for-chip ] ]
 end
 
 
@@ -73,8 +74,8 @@ GRAPHICS-WINDOW
 0
 310
 331
-12
-12
+-1
+-1
 12.0
 1
 10
@@ -123,7 +124,7 @@ number
 number
 1
 300
-50
+50.0
 1
 1
 NIL
@@ -138,7 +139,7 @@ density
 density
 0.0
 100.0
-2
+2.0
 1.0
 1
 %
@@ -587,9 +588,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -606,7 +606,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

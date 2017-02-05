@@ -102,6 +102,7 @@ to setup
                          " block with " count patches-in-set-block
                          " squares in it.  Now press Create Combi.")
   set am-i-set-up? true
+  reset-ticks
 end
 
 
@@ -490,10 +491,10 @@ end
 GRAPHICS-WINDOW
 510
 60
-770
-341
-2
-2
+768
+319
+-1
+-1
 50.0
 1
 10
@@ -523,7 +524,7 @@ SLIDER
 #choices
 2
 6
-2
+2.0
 1
 1
 NIL
@@ -703,7 +704,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 7
@@ -720,7 +721,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 7
@@ -742,7 +743,7 @@ width
 width
 1
 5
-3
+3.0
 1
 1
 NIL
@@ -757,7 +758,7 @@ height
 height
 1
 2
-1
+1.0
 1
 1
 NIL
@@ -802,7 +803,7 @@ sample-size
 sample-size
 100
 100000
-1000
+1000.0
 100
 1
 NIL
@@ -832,7 +833,7 @@ analysis-type
 TEXTBOX
 525
 444
-685
+740
 462
 Samples and Steps This Run:
 11
@@ -840,21 +841,21 @@ Samples and Steps This Run:
 0
 
 TEXTBOX
-435
+417
 115
 507
 163
-Set your combination here ----->
+Set your\ncombination\nhere ----->
 11
 0.0
 0
 
 TEXTBOX
-435
+418
 230
 503
-330
-The model guesses your combination here ----->
+326
+The model\nguesses your\ncombination\nhere ----->
 11
 0.0
 0
@@ -874,12 +875,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 9
 252
-159
+194
 270
 Successes in This Sample:
 11
@@ -887,7 +888,7 @@ Successes in This Sample:
 0
 
 TEXTBOX
-223
+214
 252
 409
 270
@@ -1427,11 +1428,10 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
-need-to-manually-make-preview-for-this-model
+setup
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1446,7 +1446,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

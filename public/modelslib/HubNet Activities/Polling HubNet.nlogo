@@ -345,10 +345,10 @@ end
 GRAPHICS-WINDOW
 461
 98
-744
-402
-10
-10
+742
+380
+-1
+-1
 13.0
 1
 10
@@ -648,7 +648,7 @@ NIL
 
 This model can be used to poll data from a set of students using HubNet Clients.  The teacher can input questions to ask and then the students can input their choice in response to the question.  The collective data can then be plotted.
 
-For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/ps/
+For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/rp/ps/index.shtml.
 
 ## HOW TO USE IT
 
@@ -1024,9 +1024,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -1036,7 +1035,7 @@ BUTTON
 76
 127
 203
-176
+160
 Choose
 NIL
 NIL
@@ -1053,10 +1052,10 @@ SLIDER
 122
 Choice
 Choice
+0.0
+9.0
 0
-9
-0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1092,7 +1091,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

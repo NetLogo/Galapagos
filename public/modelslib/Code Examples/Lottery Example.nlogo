@@ -44,10 +44,10 @@ end
 GRAPHICS-WINDOW
 171
 10
-532
-392
-19
-19
+530
+370
+-1
+-1
 9.0
 1
 14
@@ -100,14 +100,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
-43
-187
-133
-324
-Bigger turtles have a bigger chance of winning the lottery.  A turtle's number is how many times it won.
+35
+186
+167
+340
+Bigger turtles have\na bigger chance of\nwinning the lottery.\nA turtle's number\nis how many times\nit won.
 11
 0.0
 0
@@ -127,7 +127,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 558
@@ -143,7 +143,7 @@ mean # of wins
 10.0
 true
 false
-"" "clear-plot\nforeach sort remove-duplicates [ size ] of turtles [\n  plotxy ? mean [ label ] of turtles with [ size = ? ]\n]"
+"" "clear-plot\nforeach sort remove-duplicates [ size ] of turtles [[the-size] ->\n  plotxy the-size mean [ label ] of turtles with [ size = the-size ]\n]"
 PENS
 "default" 1.0 1 -16777216 true "" ""
 
@@ -445,9 +445,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -463,7 +462,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

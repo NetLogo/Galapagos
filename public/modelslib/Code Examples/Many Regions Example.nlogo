@@ -1,9 +1,9 @@
 globals [
-  regions ; a list of regions definitions, where each region is a list of its min pxcor and max pxcor
+  region-boundaries ; a list of regions definitions, where each region is a list of its min pxcor and max pxcor
 ]
 
 patches-own [
-  region ; the region that the patch is in, patches outside all regions have region = 0
+  region ; the number of the region that the patch is in, patches outside all regions have region = 0
 ]
 
 to setup
@@ -36,11 +36,11 @@ to color-regions
 end
 
 to setup-turtles
-  ; This procedure simply creates turtles in the different.
+  ; This procedure simply creates turtles in the different regions.
   ; The `foreach` pattern shown can be used whenever you
   ; need to do something for each different region.
-  foreach n-values length regions [ ? + 1 ] [
-    let region-patches patches with [ region = ? ]
+  foreach n-values length region-boundaries [ [n] -> n + 1 ] [ [region-number] ->
+    let region-patches patches with [ region = region-number ]
     create-turtles number-of-turtles-per-region [
       move-to one-of region-patches
       set color pcolor + 3
@@ -71,33 +71,35 @@ to move ; turtle procedure
 
 end
 
-to setup-regions [ n ]
+to setup-regions [ num-regions ]
   ; First, draw some dividers at the intervals reported by `region-divisions`:
-  foreach region-divisions n draw-region-division
+  foreach region-divisions num-regions draw-region-division
   ; Store our region definitions globally for faster access:
-  set regions region-definitions n
+  set region-boundaries calculate-region-boundaries num-regions
   ; Set the `region` variable for all patches included in regions:
-  (foreach regions (n-values n [ ? + 1 ]) [
-    ; We're looping through region definitions (?1) and region numbers (?2)
-    ask patches with [ pxcor >= first ?1 and pxcor <= last ?1 ] [ set region ?2 ]
+  let region-numbers n-values num-regions [ [n] -> n + 1 ]
+  (foreach region-boundaries region-numbers [ [boundaries region-number] ->
+    ask patches with [ pxcor >= first boundaries and pxcor <= last boundaries ] [
+      set region region-number
+    ]
   ])
 end
 
-to-report region-definitions [ n ]
+to-report calculate-region-boundaries [ num-regions ]
   ; The region definitions are built from the region divisions:
-  let divisions region-divisions n
+  let divisions region-divisions num-regions
   ; Each region definition lists the min-pxcor and max-pxcor of the region.
   ; To get those, we use `map` on two "shifted" copies of the division list,
   ; which allow us to scan through all pairs of dividers
   ; and built our list of definitions from those pairs:
-  report (map [ list (?1 + 1) (?2 - 1) ] (but-last divisions) (but-first divisions))
+  report (map [ [d1 d2] -> list (d1 + 1) (d2 - 1) ] (but-last divisions) (but-first divisions))
 end
 
-to-report region-divisions [ n ]
+to-report region-divisions [ num-regions ]
   ; This procedure reports a list of pxcor that should be outside every region.
   ; Patches with these pxcor will act as "dividers" between regions.
-  report n-values (n + 1) [
-    [ pxcor ] of patch (min-pxcor + (? * ((max-pxcor - min-pxcor) / n))) 0
+  report n-values (num-regions + 1) [ [n] ->
+    [ pxcor ] of patch (min-pxcor + (n * ((max-pxcor - min-pxcor) / num-regions))) 0
   ]
 end
 
@@ -126,11 +128,11 @@ end
 to keep-in-region [ which-region ] ; turtle procedure
 
   ; This is the procedure that make sure that turtles don't leave the region they're
-  ; supposed to be in. It is your responsability to call this whenever a turtle moves.
+  ; supposed to be in. It is your responsibility to call this whenever a turtle moves.
   if region != which-region [
     ; Get our region boundaries from the global region list:
-    let region-min-pxcor first item (which-region - 1) regions
-    let region-max-pxcor last item (which-region - 1) regions
+    let region-min-pxcor first item (which-region - 1) region-boundaries
+    let region-max-pxcor last item (which-region - 1) region-boundaries
     ; The total width is (min - max) + 1 because `pxcor`s are in the middle of patches:
     let region-width (region-max-pxcor - region-min-pxcor) + 1
     ifelse xcor < region-min-pxcor [ ; if we crossed to the left,
@@ -152,10 +154,10 @@ end
 GRAPHICS-WINDOW
 245
 10
-1100
-470
-32
-16
+1098
+448
+-1
+-1
 13.0
 1
 10
@@ -185,7 +187,7 @@ number-of-regions
 number-of-regions
 1
 32
-4
+4.0
 1
 1
 NIL
@@ -217,7 +219,7 @@ number-of-turtles-per-region
 number-of-turtles-per-region
 1
 100
-10
+10.0
 1
 1
 NIL
@@ -238,7 +240,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 170
@@ -255,7 +257,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -608,9 +610,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -626,7 +627,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

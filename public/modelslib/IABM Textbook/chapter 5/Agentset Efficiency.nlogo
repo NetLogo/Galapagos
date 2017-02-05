@@ -98,10 +98,10 @@ end
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+647
+448
+-1
+-1
 13.0
 1
 10
@@ -230,7 +230,7 @@ SETUP creates a world where roughly half the patches are red and half the patche
 
 GO-1 sets the labels of red patches to a small random number (0-4) and the labels of green patches to a larger random number (5-9). It only sets the label of each patch if there are at least 5 patches of the other color.
 
-GO-2 is a more efficient implementation of GO-1, as it only computes the `red-patches` and `green-patches` agentsets once instead of twice.
+GO-2 is a more efficient implementation of GO-1, as it only computes the `red-patches` and `green-patches` agentsets once instead of recomputing the green patches again for each red patch and recomputing the red patches again for each green patch.
 
 GO-3 is written as if the intention is to swap green patches with red patches. However, because of a bug in the code, it first changes all the red patches to green patches, and then doesn't change any patches to red. GO-3 has unexpected behavior and is given here as an example of the potential pitfalls of changing agentsets on the fly.
 
@@ -626,9 +626,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup go-1
 @#$#@#$#@
@@ -645,7 +644,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

@@ -35,7 +35,6 @@ to setup
   set base-added 0
   calculate-pH
   reset-ticks
-  plot-pH
 end
 
 to go
@@ -48,9 +47,8 @@ to go
     [ fd 1
       rt random 10
       lt random 10 ]
-  tick
   calculate-pH
-  plot-pH
+  tick
 end
 
 ;; adds base molecules to the solution
@@ -131,13 +129,6 @@ to calculate-pH
         set pH 14 - pOH ] ]
 end
 
-;; plotting procedures
-
-to plot-pH
-  set-current-plot "pH Curve"
-  plot pH
-end
-
 to record-pH
   set-current-plot "Titration Curve"
   plotxy base-added pH
@@ -150,10 +141,10 @@ end
 GRAPHICS-WINDOW
 335
 10
-695
-391
-12
-12
+693
+369
+-1
+-1
 14.0
 1
 10
@@ -194,7 +185,7 @@ vol-acid
 vol-acid
 0
 100
-100
+100.0
 1
 1
 molecules
@@ -209,7 +200,7 @@ vol-base
 vol-base
 1
 100
-100
+100.0
 1
 1
 molecules
@@ -247,7 +238,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 217
@@ -317,7 +308,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2674135 true "" ""
+"default" 1.0 0 -2674135 true "" "plot pH"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -724,9 +715,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -742,7 +732,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

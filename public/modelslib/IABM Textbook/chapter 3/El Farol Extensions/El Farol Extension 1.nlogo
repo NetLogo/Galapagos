@@ -103,18 +103,18 @@ end
 ;; currently being used and updates the performance of all strategies
 to update-strategies
   let best-score memory-size * 100 + 1
-  foreach strategies [
+  foreach strategies [ [the-strategy] ->
     let score 0
     let week 1
     repeat memory-size [
-      set prediction predict-attendance ? sublist history week (week + memory-size)
+      set prediction predict-attendance the-strategy sublist history week (week + memory-size)
       ;; increment the score by the difference between this week's attendance and your prediction for this week
       set score score + abs (item (week - 1) history - prediction)
       set week week + 1
     ]
     if (score <= best-score) [
       set best-score score
-      set best-strategy ?
+      set best-strategy the-strategy
     ]
   ]
 end
@@ -138,7 +138,7 @@ to-report predict-attendance [strategy subhistory]
   ;; one can think of it as the the agent's prediction of the bar's attendance
   ;; in the absence of any other data
   ;; then we multiply each week in the history by its respective weight
-  report 100 * first strategy + sum (map [?1 * ?2] butfirst strategy subhistory)
+  report 100 * first strategy + sum (map [ [weight week] -> week * weight ] butfirst strategy subhistory)
 end
 
 ;; In this model it doesn't really matter exactly which patch
@@ -160,10 +160,10 @@ end
 GRAPHICS-WINDOW
 298
 10
-728
-461
-17
-17
+726
+439
+-1
+-1
 12.0
 1
 24
@@ -227,7 +227,7 @@ memory-size
 memory-size
 1
 10
-5
+5.0
 1
 1
 NIL
@@ -242,7 +242,7 @@ number-strategies
 number-strategies
 1
 20
-10
+10.0
 1
 1
 NIL
@@ -276,7 +276,7 @@ overcrowding-threshold
 overcrowding-threshold
 0
 100
-60
+60.0
 1
 1
 NIL
@@ -313,7 +313,7 @@ The BAR ATTENDANCE plot shows the average attendance at the bar over time.
 
 ## THINGS TO NOTICE
 
-Does the color scaling visualization help you identify itneresting patterns of behavior in the model?
+Does the color scaling visualization help you identify interesting patterns of behavior in the model?
 
 ## NETLOGO FEATURES
 
@@ -322,11 +322,6 @@ Lists are used to represent strategies and attendance histories.
 `n-values` is useful for generating random strategies.
 
 ## RELATED MODELS
-
-In the NetLogo models library:
-
-There is a model called El Farol Network Congestion that uses the El Farol Bar Problem as a model of how to choose the best path in a network.
-Wilensky, U. (2003). NetLogo El Farol Congestion model.  http://ccl.northwestern.edu/netlogo/models/ElFarolCongestion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Arthur's original model has been generalized as the Minority Game and is included in the models library.
 Wilensky, U. (2004).  NetLogo Minority Game model.  http://ccl.northwestern.edu/netlogo/models/MinorityGame.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
@@ -658,9 +653,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -676,7 +670,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

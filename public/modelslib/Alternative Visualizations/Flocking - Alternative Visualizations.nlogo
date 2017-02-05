@@ -14,7 +14,8 @@ to setup
       if first question != "D"
         [ set color yellow - 2 + random 7 ]  ;; random shades look nice
       setxy random-xcor random-ycor
-      rt random-float 360 ]
+      rt random-float 360
+      set flockmates no-turtles ]
   reset-ticks
 end
 
@@ -167,10 +168,10 @@ end
 GRAPHICS-WINDOW
 250
 10
-757
-538
-35
-35
+755
+516
+-1
+-1
 7.0
 1
 10
@@ -223,7 +224,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 11
@@ -234,7 +235,7 @@ population
 population
 1
 1000
-300
+300.0
 1
 1
 NIL
@@ -249,7 +250,7 @@ max-align-turn
 max-align-turn
 0.0
 20.0
-5
+5.0
 0.25
 1
 degrees
@@ -264,7 +265,7 @@ max-cohere-turn
 max-cohere-turn
 0
 20
-3
+3.0
 0.25
 1
 degrees
@@ -294,7 +295,7 @@ vision
 vision
 0
 10
-3
+3.0
 0.5
 1
 patches
@@ -309,20 +310,20 @@ minimum-separation
 minimum-separation
 0
 5
-1
+1.0
 0.25
 1
 patches
 HORIZONTAL
 
 CHOOSER
-283
-560
-725
-605
+249
+538
+756
+583
 question
 question
-"0 None" "1 Are the boids aligned?" "2 Are the boids in separation or cohesion mode?" "3 Do all of the boids end up following the same leader?" "4 Are the boids aligned ? Are the boids in separation or cohesion mode?"
+"0 None" "1 Are the boids aligned?" "2 Are the boids in separation or cohesion mode?" "3 Do all of the boids end up following the same leader?" "4 Are the boids aligned? Are the boids in separation or cohesion mode?"
 0
 
 SLIDER
@@ -345,7 +346,7 @@ TEXTBOX
 8
 251
 55
-You can change the question while the simulation is running. \n(While the go button is pressed...)
+You can change the question\nwhile the simulation is running. \n(While the go button is pressed...)
 11
 0.0
 0
@@ -355,7 +356,7 @@ TEXTBOX
 347
 247
 375
-reduce the step to better observe the interactions
+reduce the step to better\nobserve the interactions
 11
 0.0
 0
@@ -397,7 +398,7 @@ Value of 0 = "NONE". This gives the same behavior as the standard flocking model
 Value of 1 = "Are the boids aligned". Boids with the same direction have the same color. Clusters with the same heading can be easily distinguished.
 Value of 2 = "Are the boids in separation or cohesion mode?". This colors the boids red when they are separating and green when they are cohering.
 Value of 3 = "Do all of the boids end up following the same leader?". Each flock gets a different color.
-Value of 4 = "Are the boids aligned ? Are the boids in separation or cohesion mode?". Boids with the same direction have the same color. Boids in separation mode have the default shape, Boids in cohesion mode have a "line" shape.
+Value of 4 = "Are the boids aligned? Are the boids in separation or cohesion mode?". Boids with the same direction have the same color. Boids in separation mode have the default shape, Boids in cohesion mode have a "line" shape.
 
 ## THINGS TO NOTICE
 
@@ -773,9 +774,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set population 200
 setup
@@ -794,7 +794,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

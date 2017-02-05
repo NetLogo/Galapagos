@@ -66,8 +66,8 @@ end
 GRAPHICS-WINDOW
 298
 10
-628
-361
+626
+339
 -1
 -1
 2.0
@@ -122,7 +122,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 7
@@ -133,7 +133,7 @@ density
 density
 0
 100
-20
+20.0
 1
 1
 %
@@ -154,7 +154,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 8
@@ -165,7 +165,7 @@ radius
 radius
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -186,7 +186,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -566,9 +566,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 ask patch 0 0
@@ -589,7 +588,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

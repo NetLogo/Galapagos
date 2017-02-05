@@ -68,17 +68,16 @@ to setup
 
   ifelse full-setup?
   [
-    let users map [[user-id] of ?] sort patches with [is-string? user-id]
-    let phases map [[my-phase] of ?] sort patches with [is-string? user-id]
+    let users  map [ [p] -> [user-id] of p] sort patches with [is-string? user-id]
+    let phases map [ [p] -> [my-phase] of p] sort patches with [is-string? user-id]
     clear-patches
     setup-patches
     setup-intersections
     ;; reassign the clients to intersections
-    (foreach users phases
-    [
-      get-free-intersection ?1
-      ask intersections with [ user-id = ?1 ]
-        [ set my-phase ?2 ]
+    (foreach users phases [ [the-user the-phase] ->
+      get-free-intersection the-user
+      ask intersections with [ user-id = the-user ]
+        [ set my-phase the-phase ]
     ])
   ]
   [ setup-intersections ]
@@ -554,10 +553,10 @@ end
 GRAPHICS-WINDOW
 283
 96
-663
-497
-18
-18
+661
+475
+-1
+-1
 10.0
 1
 10
@@ -580,10 +579,10 @@ ticks
 
 TEXTBOX
 7
-427
-266
-449
-This chooser determines which plot is drawn.
+411
+185
+453
+This chooser determines\nwhich plot is drawn.
 11
 0.0
 0
@@ -712,7 +711,7 @@ grid-size-y
 grid-size-y
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -727,7 +726,7 @@ grid-size-x
 grid-size-x
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -775,7 +774,7 @@ number
 number
 0
 400
-200
+200.0
 1
 1
 cars
@@ -840,7 +839,7 @@ speed-limit
 speed-limit
 0.1
 1
-1
+1.0
 0.1
 1
 NIL
@@ -883,7 +882,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-20
+20.0
 1
 1
 NIL
@@ -925,7 +924,7 @@ Challenge the students to develop strategies to improve traffic and discuss the 
 
 The coordinates for the traffic lights are based on the first quadrant of the Cartesian plane.  Therefore, the traffic light with the coordinates (0,0) is in the lowest row and the left-most column.  The traffic light above it has coordinates (0,1) and the traffic light to the right of it has (1,0).
 
-For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/ps/
+For further documentation, see the Participatory Simulations Guide found at http://ccl.northwestern.edu/rp/ps/index.shtml.
 
 ## HOW TO USE IT
 
@@ -1021,6 +1020,26 @@ Using HubNet, try running this simulation with AUTO? being true.  Try to find a 
 ## EXTENDING THE MODEL
 
 Currently, the maximum speed limit (found in the SPEED-LIMIT slider) for the cars is 1.0.  This is due to the fact that the cars must look ahead the speed that they are traveling to see if there are cars ahead of them.  If there aren't, they speed up.  If there are, they slow down.  Looking ahead for a value greater than 1 is a little bit tricky.  Try implementing the correct behavior for speeds greater than 1.
+
+## RELATED MODELS
+
+- "Traffic Basic": a simple model of the movement of cars on a highway.
+
+- "Traffic Basic Utility": a version of "Traffic Basic" including a utility function for the cars.
+
+- "Traffic Basic Adaptive": a version of "Traffic Basic" where cars adapt their acceleration to try and maintain a smooth flow of traffic.
+
+- "Traffic Basic Adaptive Individuals": a version of "Traffic Basic Adaptive" where each car adapts individually, instead of all cars adapting in unison.
+
+- "Traffic 2 Lanes": a more sophisticated two-lane version of the "Traffic Basic" model.
+
+- "Traffic Intersection": a model of cars traveling through a single intersection.
+
+- "Traffic Grid": a model of traffic moving in a city grid, with stoplights at the intersections.
+
+- "Traffic Grid Goal": a version of "Traffic Grid" where the cars have goals, namely to drive to and from work.
+
+- "Gridlock Alternate HubNet": a version of "Gridlock HubNet" where students can enter NetLogo code to plot custom metrics.
 
 ## HOW TO CITE
 
@@ -1334,9 +1353,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -1385,10 +1403,10 @@ SLIDER
 134
 Phase
 Phase
+0.0
+99.0
 0
-99
-0
-1
+1.0
 1
 NIL
 HORIZONTAL
@@ -1424,7 +1442,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

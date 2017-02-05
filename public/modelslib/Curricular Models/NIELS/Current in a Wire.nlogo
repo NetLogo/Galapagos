@@ -93,7 +93,6 @@ to go
   tick
 
   ;; Keep plotting
-  do-plot
 end
 
 
@@ -126,19 +125,6 @@ to move
    ]
 end
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Plotting procedures ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
-
-to do-plot
-
-  ;; plot current vs. time
-  set-current-plot "Current vs Time"
-  plotxy ticks (charge-flow) / ticks
-
-end
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Procedures for Counting Current  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,10 +148,10 @@ end
 GRAPHICS-WINDOW
 185
 14
-879
-177
-85
-16
+877
+155
+-1
+-1
 4.0
 1
 30
@@ -218,12 +204,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 186
 186
-307
+311
 206
 Battery-positive (B+)
 11
@@ -255,7 +241,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 27
@@ -272,7 +258,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 313
@@ -301,7 +287,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" ""
+"default" 1.0 0 -16777216 true "" "if ticks > 0 [ plotxy ticks (charge-flow) / ticks ]"
 
 MONITOR
 313
@@ -323,7 +309,7 @@ resistance
 resistance
 10
 20
-10
+10.0
 2.5
 1
 NIL
@@ -338,7 +324,7 @@ number-of-electrons
 number-of-electrons
 400
 800
-800
+800.0
 200
 1
 NIL
@@ -353,7 +339,7 @@ voltage
 voltage
 2
 6
-6
+6.0
 1
 1
 NIL
@@ -789,9 +775,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -808,7 +793,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

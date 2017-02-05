@@ -55,12 +55,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-569
-343
-831
-386
-10
-0
+575
+347
+835
+368
+-1
+-1
 12.0
 1
 10
@@ -82,10 +82,10 @@ ticks
 30.0
 
 PLOT
-5
-369
-516
-541
+8
+372
+514
+539
 productivity
 time
 1000kg per ha
@@ -100,10 +100,10 @@ PENS
 "productivity" 1.0 0 -16777216 true "" ""
 
 PLOT
-3
-10
-514
-183
+6
+13
+512
+181
 trees
 NIL
 NIL
@@ -119,10 +119,10 @@ PENS
 "yagrumo" 1.0 0 -2064490 true "" ""
 
 BUTTON
-652
-14
-718
-47
+655
+17
+716
+50
 setup
 setup
 NIL
@@ -136,10 +136,10 @@ NIL
 1
 
 BUTTON
-729
-14
-792
-47
+732
+17
+790
+50
 go
 go
 T
@@ -150,28 +150,28 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
-652
-99
-869
-132
+655
+102
+867
+135
 user-hurricane-interval
 user-hurricane-interval
 0
 100
-20
+20.0
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-651
-58
-823
-91
+654
+61
+821
+94
 NIL
 setup repeat 250 [ go ]
 NIL
@@ -185,10 +185,10 @@ NIL
 1
 
 MONITOR
-520
-187
-666
-232
+523
+190
+664
+235
 NIL
 amount-of-tabonuco
 3
@@ -196,10 +196,10 @@ amount-of-tabonuco
 11
 
 MONITOR
-520
-241
-667
-286
+523
+244
+665
+289
 NIL
 amount-of-yagrumo
 3
@@ -207,10 +207,10 @@ amount-of-yagrumo
 11
 
 SLIDER
-652
-139
-863
-172
+655
+142
+861
+175
 user-hurricane-strength
 user-hurricane-strength
 0
@@ -222,10 +222,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-805
-14
-868
-47
+808
+17
+866
+50
 step
 go
 NIL
@@ -236,13 +236,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
-521
-61
-609
-106
+524
+64
+607
+109
 NIL
 productivity
 3
@@ -250,10 +250,10 @@ productivity
 11
 
 PLOT
-4
-187
-515
-359
+7
+190
+513
+357
 output
 time
 NIL
@@ -637,9 +637,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -776,7 +775,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

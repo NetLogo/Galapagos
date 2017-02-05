@@ -110,11 +110,12 @@ to-report amplitude-here [ids-to-exclude]
   if count components > 0 [
     ;; get list of the wave-ids with components on this patch
     let wave-ids-here remove-duplicates [ wave-id ] of components
-    foreach ids-to-exclude [ set wave-ids-here remove ? wave-ids-here ]
+    foreach ids-to-exclude [ [id] -> set wave-ids-here remove id wave-ids-here ]
 
     ;; for each wave id, sum the maximum amplitude here
-    foreach wave-ids-here [ set total-amplitude total-amplitude +
-        [amplitude] of max-one-of components with [ wave-id = ? ]
+    foreach wave-ids-here [ [id] ->
+      set total-amplitude total-amplitude +
+        [amplitude] of max-one-of components with [ wave-id = id ]
           [ amplitude ]
     ]
   ]
@@ -150,9 +151,9 @@ end
 GRAPHICS-WINDOW
 240
 20
-860
-261
-30
+858
+239
+-1
 -1
 10.0
 1
@@ -246,7 +247,7 @@ plane-speed
 plane-speed
 0
 1514
-378
+757.0
 1
 1
 miles per hour
@@ -278,14 +279,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 100
 160
 220
 188
-Mach 1 = 757 mph = speed-of-sound
+Mach 1 = 757 mph\n= speed-of-sound
 11
 0.0
 0
@@ -657,9 +658,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -675,7 +675,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

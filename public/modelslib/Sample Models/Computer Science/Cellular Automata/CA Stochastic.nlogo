@@ -45,7 +45,7 @@ to setup-continue
     set-plot-x-range ticks (ticks + world-height)
   ]
 
-  set on?-list map [ [on?] of ?] sort patches with [ pycor = row ]  ;; copy states from bottom row to list
+  set on?-list map [ [p] -> [on?] of p ] sort patches with [ pycor = row ]  ;; copy states from bottom row to list
   setup-general
   ask patches with [ pycor = row ]
   [
@@ -155,7 +155,7 @@ to build-prob-list
   ]
 
   ;; make a list of the probabilities of each pattern occurring
-  set prob-list map [? / (sum counter-list)] counter-list
+  set prob-list map [ [counter] -> counter / (sum counter-list)] counter-list
 end
 
 
@@ -208,10 +208,10 @@ end
 GRAPHICS-WINDOW
 348
 10
-680
-363
-80
-80
+678
+341
+-1
+-1
 2.0
 1
 10
@@ -247,7 +247,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 11
@@ -258,7 +258,7 @@ III
 III
 0
 100
-0
+0.0
 0.5
 1
 %
@@ -273,7 +273,7 @@ IIO
 IIO
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -288,7 +288,7 @@ IOI
 IOI
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -303,7 +303,7 @@ IOO
 IOO
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -318,7 +318,7 @@ OII
 OII
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -333,7 +333,7 @@ OIO
 OIO
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -348,7 +348,7 @@ OOI
 OOI
 0
 100
-50
+50.0
 0.5
 1
 %
@@ -363,7 +363,7 @@ OOO
 OOO
 0
 100
-0
+0.0
 0.5
 1
 %
@@ -378,7 +378,7 @@ density
 density
 0
 100
-25
+25.0
 0.5
 1
 %
@@ -431,7 +431,7 @@ off-color
 off-color
 0
 100
-0
+0.0
 0.5
 1
 NIL
@@ -446,7 +446,7 @@ on-color
 on-color
 0
 100
-95
+95.0
 0.5
 1
 NIL
@@ -488,7 +488,7 @@ example
 example
 1
 5
-1
+1.0
 1
 1
 NIL
@@ -510,8 +510,8 @@ true
 true
 "" "if not plot? [ stop ]"
 PENS
-"topologic" 1.0 0 -8630108 true "" ";; X = 4 (correlation length): size of subsequences analyzed\n;; topological entropy = 1/X * the log of the sum of the probabilities rounded up\nplotxy ticks 1 / 4 * (log (sum (map [1] (filter [? > 0] prob-list))) 2)"
-"metric" 1.0 0 -955883 true "" ";; metric entropy = -1/X * the sum of the products of each probability and its log\nplotxy ticks -1 / 4 * sum ( map[? * log ? 2] (filter [? > 0] prob-list))"
+"topologic" 1.0 0 -8630108 true "" ";; X = 4 (correlation length): size of subsequences analyzed\n;; topological entropy = 1/X * the log of the sum of the probabilities rounded up\nplotxy ticks 1 / 4 * (log (sum (map [1] (filter [ [prob] -> prob > 0] prob-list))) 2)"
+"metric" 1.0 0 -955883 true "" ";; metric entropy = -1/X * the sum of the products of each probability and its log\nplotxy ticks -1 / 4 * sum ( map [ [prob] -> prob * log prob 2 ] (filter [ [prob] -> prob > 0 ] prob-list))"
 
 SWITCH
 225
@@ -955,9 +955,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set example 4
 setup-example
@@ -977,7 +976,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

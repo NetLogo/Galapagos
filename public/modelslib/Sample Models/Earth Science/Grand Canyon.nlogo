@@ -36,8 +36,8 @@ to startup
   ;; adjust the color-min a little so patches don't end up black
   set color-min min-elevation - ((color-max - min-elevation) / 10)
   ;; transfer the data from the file into the sorted patches
-  (foreach sort patches patch-elevations [
-    ask ?1 [ set elevation ?2 ]
+  (foreach sort patches patch-elevations [ [the-patch the-elevation] ->
+    ask the-patch [ set elevation the-elevation ]
   ])
   set-default-shape turtles "circle"
   setup
@@ -114,10 +114,10 @@ end
 GRAPHICS-WINDOW
 216
 10
-828
-643
-150
-150
+826
+621
+-1
+-1
 2.0
 1
 10
@@ -153,7 +153,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 30
@@ -181,7 +181,7 @@ rain-rate
 rain-rate
 0
 10
-5
+5.0
 1
 1
 drops / tick
@@ -192,7 +192,7 @@ TEXTBOX
 138
 190
 170
-Click on the map to place raindrops manually
+Click on the map to place\nraindrops manually
 11
 0.0
 0
@@ -212,7 +212,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 16
@@ -246,7 +246,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 54
@@ -636,9 +636,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 startup
 set draw? true
@@ -657,7 +656,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -49,11 +49,11 @@ to setup
 end
 
 to setup-bacteria
-  foreach [1 2 3 4 5 6] [
+  foreach [1 2 3 4 5 6] [ [this-variation] ->
     create-bacteria initial-bacteria-per-variation [
       set label-color black
       set size 1
-      set variation ?
+      set variation this-variation
       make-flagella
       setxy random-xcor random-ycor
     ]
@@ -195,10 +195,10 @@ end
 GRAPHICS-WINDOW
 280
 10
-754
-505
-14
-14
+752
+483
+-1
+-1
 16.0
 1
 10
@@ -267,7 +267,7 @@ PLOT
 10.0
 true
 false
-"" ";; the HISTOGRAM primitive can't make a multi-colored histogram,\n;; so instead we plot each bar individually\nclear-plot\nforeach [1 2 3 4 5 6] [\n  set-current-plot-pen word ?  \" \"\n  plotxy ? count bacteria with [variation = ?]\n]"
+"" ";; the HISTOGRAM primitive can't make a multi-colored histogram,\n;; so instead we plot each bar individually\nclear-plot\nforeach [1 2 3 4 5 6] [ [this-variation] ->\n  set-current-plot-pen word this-variation  \" \"\n  plotxy this-variation count bacteria with [variation = this-variation]\n]"
 PENS
 "1 " 1.0 1 -8630108 true "" ""
 "2 " 1.0 1 -13345367 true "" ""
@@ -303,7 +303,7 @@ initial-bacteria-per-variation
 initial-bacteria-per-variation
 1
 10
-5
+5.0
 1
 1
 NIL
@@ -796,9 +796,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -814,7 +813,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

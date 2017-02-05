@@ -40,10 +40,10 @@ end
 GRAPHICS-WINDOW
 267
 10
-682
-446
-40
-40
+680
+424
+-1
+-1
 5.0
 1
 10
@@ -119,7 +119,7 @@ TEXTBOX
 82
 246
 161
-Press \"patch draw\" or \"turtle draw\", then move the mouse over the view, hold down the mouse button, and move the mouse to draw.
+Press \"patch draw\" or \"turtle draw\",\nthen move the mouse over the view,\nhold down the mouse button, and\nmove the mouse to draw.
 11
 0.0
 0
@@ -450,9 +450,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -469,7 +468,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

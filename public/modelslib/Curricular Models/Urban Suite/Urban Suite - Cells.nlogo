@@ -107,10 +107,10 @@ end
 GRAPHICS-WINDOW
 320
 10
-735
-446
-40
-40
+733
+424
+-1
+-1
 5.0
 1
 10
@@ -163,7 +163,7 @@ NIL
 N
 NIL
 NIL
-1
+0
 
 BUTTON
 165
@@ -180,7 +180,7 @@ NIL
 F
 NIL
 NIL
-1
+0
 
 CHOOSER
 5
@@ -194,14 +194,14 @@ neighborhood
 
 SLIDER
 5
-240
+257
 193
-273
+290
 probability
 probability
 0
 100
-100
+100.0
 1
 1
 percent
@@ -222,7 +222,7 @@ NIL
 G
 NIL
 NIL
-1
+0
 
 BUTTON
 80
@@ -239,7 +239,7 @@ NIL
 R
 NIL
 NIL
-1
+0
 
 CHOOSER
 150
@@ -272,33 +272,33 @@ PENS
 TEXTBOX
 8
 96
-243
+263
 156
-A cell may be turned on if the number of cells in its neighborhood that are already on, is greater than 0 and satisfies the n-count expression.
+A cell may be turned on if the number\nof cells in its neighborhood that are\nalready on, is greater than 0 and\nsatisfies the n-count expression.
 11
 0.0
 1
 
 TEXTBOX
-5
-219
-262
-243
-The chance each eligible cell has of turning on:
+8
+221
+265
+255
+The chance each eligible cell\nhas of turning on:
 11
 0.0
 1
 
 SLIDER
 199
-240
+257
 308
-273
+290
 age-limit
 age-limit
 0
 100
-55
+55.0
 1
 1
 NIL
@@ -319,7 +319,7 @@ NIL
 C
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -689,9 +689,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -729,7 +728,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

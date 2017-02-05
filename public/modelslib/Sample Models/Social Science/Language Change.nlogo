@@ -240,10 +240,10 @@ end
 GRAPHICS-WINDOW
 375
 10
-749
-405
-45
-45
+747
+383
+-1
+-1
 4.0
 1
 10
@@ -314,7 +314,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 110
@@ -348,7 +348,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 226
@@ -383,7 +383,7 @@ num-nodes
 num-nodes
 2
 100
-100
+100.0
 1
 1
 NIL
@@ -398,7 +398,7 @@ percent-grammar-1
 percent-grammar-1
 0
 100
-60
+60.0
 1
 1
 %
@@ -444,7 +444,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 225
@@ -486,9 +486,9 @@ logistic?
 TEXTBOX
 15
 205
-195
-360
-* threshold-val and sink state only apply for \"individual\" and \"threshold\" updating algorithms\n\n* when logistic? is off, there's a built-in bias towards grammar 1\n\n* alpha only applies to the \"reward\" updating algorithm and when logistic? is on
+210
+356
+* threshold-val and sink state only\napply for \"individual\" and \"threshold\"\nupdating algorithms\n\n* when logistic? is off, there's a\nbuilt-in bias towards grammar 1\n\n* alpha only applies to the\n\"reward\" updating algorithm\nand when logistic? is on
 10
 0.0
 0
@@ -508,7 +508,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -900,9 +900,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -918,7 +917,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

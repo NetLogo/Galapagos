@@ -142,10 +142,10 @@ end
 GRAPHICS-WINDOW
 248
 10
-763
-546
-50
-50
+761
+524
+-1
+-1
 5.0
 1
 10
@@ -198,7 +198,7 @@ NIL
 G
 NIL
 NIL
-1
+0
 
 BUTTON
 13
@@ -215,7 +215,7 @@ NIL
 J
 NIL
 NIL
-1
+0
 
 BUTTON
 83
@@ -232,7 +232,7 @@ NIL
 K
 NIL
 NIL
-1
+0
 
 BUTTON
 158
@@ -249,14 +249,14 @@ NIL
 L
 NIL
 NIL
-1
+0
 
 TEXTBOX
-44
+20
 154
-194
+215
 231
-Land on the blue landing pad!\n\nYou must land straight, and land very gently.
+Land on the blue landing pad!\n\nYou must land straight,\nand land very gently.
 11
 0.0
 0
@@ -270,7 +270,7 @@ platform-width
 platform-width
 4.0
 20.0
-10
+10.0
 2.0
 1
 NIL
@@ -285,7 +285,7 @@ terrain-bumpiness
 terrain-bumpiness
 0.0
 10.0
-2
+2.0
 1.0
 1
 NIL
@@ -692,9 +692,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 random-seed 1
 setup
@@ -712,7 +711,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

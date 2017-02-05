@@ -66,6 +66,7 @@ to new
   [ set pcolor black ]
   ;; setup the new piece
   new-piece
+  reset-ticks
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -309,10 +310,10 @@ end
 GRAPHICS-WINDOW
 183
 10
-478
-416
-9
-12
+476
+394
+-1
+-1
 15.0
 1
 10
@@ -376,7 +377,7 @@ NIL
 L
 NIL
 NIL
-1
+0
 
 BUTTON
 8
@@ -393,7 +394,7 @@ NIL
 J
 NIL
 NIL
-1
+0
 
 BUTTON
 24
@@ -410,7 +411,7 @@ NIL
 S
 NIL
 NIL
-1
+0
 
 BUTTON
 91
@@ -427,7 +428,7 @@ NIL
 D
 NIL
 NIL
-1
+0
 
 BUTTON
 63
@@ -444,7 +445,7 @@ NIL
 ,
 NIL
 NIL
-1
+0
 
 MONITOR
 93
@@ -483,7 +484,7 @@ NIL
 P
 NIL
 NIL
-1
+0
 
 SLIDER
 6
@@ -494,7 +495,7 @@ starting-level
 starting-level
 0
 9
-0
+0.0
 1
 1
 NIL
@@ -509,7 +510,7 @@ debris-level
 debris-level
 0
 10
-0
+0.0
 1
 1
 NIL
@@ -551,7 +552,7 @@ NIL
 K
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -947,9 +948,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 random-seed 1
 set starting-level 9
@@ -969,7 +969,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

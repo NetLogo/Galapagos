@@ -60,7 +60,7 @@ to show-patch-data
   clear-patches
   clear-turtles
   ifelse ( is-list? patch-data )
-    [ foreach patch-data [ ask patch first ? item 1 ? [ set pcolor last ? ] ] ]
+    [ foreach patch-data [ [three-tuple] -> ask patch first three-tuple item 1 three-tuple [ set pcolor last three-tuple ] ] ]
     [ user-message "You need to load in patch data first!" ]
   display
 end
@@ -92,10 +92,10 @@ end
 GRAPHICS-WINDOW
 246
 10
-571
-356
-17
-17
+569
+334
+-1
+-1
 9.0
 1
 10
@@ -168,11 +168,11 @@ NIL
 1
 
 TEXTBOX
-10
-155
-246
-187
-By default, the only valid file is File IO Patch Data.txt in the model's directory.
+11
+144
+247
+186
+By default, the only valid file is\nFile IO Patch Data.txt\nin the model's directory.
 11
 0.0
 0
@@ -473,9 +473,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -492,7 +491,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

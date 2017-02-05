@@ -1,13 +1,13 @@
 to setup
   clear-all
   let threedshapes [ "default" "circle" "dot" "square" "triangle" "cylinder" "line" "line half" "car" ]
-  foreach threedshapes [
+  foreach threedshapes [ [the-shape] ->
     create-turtles 1
-    [ set shape ?
+    [ set shape the-shape
       set size 2
       set xcor (5 * who) + min-pxcor + 6
       ask patch xcor min-pycor
-      [ set plabel ?
+      [ set plabel the-shape
         set plabel-color blue - 2 ]
       set color red
     ]
@@ -17,10 +17,11 @@ to setup
   ;; car looks best from the side
   ask turtles with [ shape = "car" ]
   [ set heading 90 ]
+  reset-ticks
 end
 
 to demo
-  foreach sort turtles [ show-off ? ]
+  foreach sort turtles [ [t] -> show-off t ]
 end
 
 to show-off [ t ]
@@ -38,10 +39,10 @@ end
 GRAPHICS-WINDOW
 25
 14
-695
-105
-27
-2
+693
+83
+-1
+-1
 12.0
 1
 14
@@ -94,7 +95,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 170
@@ -111,7 +112,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 170
@@ -128,7 +129,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 344
@@ -145,7 +146,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 344
@@ -162,7 +163,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 344
@@ -179,7 +180,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 172
@@ -206,7 +207,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -496,9 +497,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -515,7 +515,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

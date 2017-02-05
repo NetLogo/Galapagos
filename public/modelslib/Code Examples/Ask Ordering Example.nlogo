@@ -13,22 +13,30 @@ end
 ;;; three different version of GO
 
 to go-random
-  ask turtles
-    [ fd 1 ]
+  ask turtles [
+    fd 1
+    display
+  ]
   tick
 end
 
 to go-by-who-number
-  foreach sort turtles
-    [ ask ?
-        [ fd 1 ] ]
+  foreach sort turtles [ [t] ->
+    ask t [
+      fd 1
+      display
+    ]
+  ]
   tick
 end
 
 to go-by-size
-  foreach sort-by [[size] of ?1 > [size] of ?2] turtles
-    [ ask ?
-        [ fd 1 ] ]
+  foreach sort-by [ [a b] -> [ size ] of a > [ size ] of b ] turtles [ [t] ->
+    ask t [
+      fd 1
+      display
+    ]
+  ]
   tick
 end
 
@@ -40,10 +48,10 @@ end
 GRAPHICS-WINDOW
 10
 97
-632
-332
+630
+310
 -1
-8
+-1
 12.0
 1
 12
@@ -58,8 +66,8 @@ GRAPHICS-WINDOW
 50
 -8
 8
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -86,7 +94,7 @@ TEXTBOX
 53
 575
 81
-Stop one GO button before starting another.
+Stop one GO button before\nstarting another.
 11
 0.0
 0
@@ -106,7 +114,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 127
@@ -123,7 +131,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 291
@@ -140,17 +148,7 @@ NIL
 NIL
 NIL
 NIL
-1
-
-TEXTBOX
-221
-12
-509
-39
-Use the speed slider, above, to slow the model down so you can see what's happening.
-11
-0.0
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -160,8 +158,6 @@ Agentsets in NetLogo are always in random order.  This code example demonstrates
 ## NETLOGO FEATURES
 
 `sort` and `sort-by` are used to specify ordering.
-
-View updates are set to "continuous", so when you slow the model down far enough you can see the turtles moving one at a time.
 
 <!-- 2007 -->
 @#$#@#$#@
@@ -431,9 +427,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -450,7 +445,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

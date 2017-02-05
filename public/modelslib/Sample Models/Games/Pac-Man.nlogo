@@ -38,6 +38,7 @@ to new  ;; Observer Button
   set extra-lives 0
   set scared 0
   set level-over? false
+  reset-ticks
 end
 
 to load-map  ;; Observer Procedure
@@ -343,10 +344,10 @@ end
 GRAPHICS-WINDOW
 243
 10
-694
-482
-10
-10
+692
+460
+-1
+-1
 21.0
 1
 10
@@ -410,7 +411,7 @@ NIL
 P
 NIL
 NIL
-1
+0
 
 BUTTON
 88
@@ -427,7 +428,7 @@ NIL
 I
 NIL
 NIL
-1
+0
 
 BUTTON
 143
@@ -444,7 +445,7 @@ NIL
 L
 NIL
 NIL
-1
+0
 
 BUTTON
 88
@@ -461,7 +462,7 @@ NIL
 K
 NIL
 NIL
-1
+0
 
 BUTTON
 33
@@ -478,7 +479,7 @@ NIL
 J
 NIL
 NIL
-1
+0
 
 MONITOR
 121
@@ -511,7 +512,7 @@ difficulty
 difficulty
 0
 7
-4
+4.0
 1
 1
 NIL
@@ -957,9 +958,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 new
 @#$#@#$#@
@@ -976,7 +976,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

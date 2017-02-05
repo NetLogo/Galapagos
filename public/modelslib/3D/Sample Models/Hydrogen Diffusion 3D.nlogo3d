@@ -262,8 +262,8 @@ GRAPHICS-WINDOW
 0
 245
 252
-8
-8
+-1
+-1
 13.0
 1
 10
@@ -301,7 +301,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 15
@@ -392,7 +392,7 @@ end-percent
 end-percent
 0
 100
-23
+23.0
 1
 1
 %
@@ -489,10 +489,10 @@ HORIZONTAL
 
 TEXTBOX
 15
-230
 225
-260
-Turns on/off the color visualizations for the nth free hydrogen
+230
+255
+Turns on/off the color visualizations\nfor the nth free hydrogen
 11
 0.0
 1
@@ -535,7 +535,7 @@ TEXTBOX
 145
 220
 175
-Enables or disables the grid markings
+Enables or disables\nthe grid markings
 11
 0.0
 1
@@ -543,7 +543,7 @@ Enables or disables the grid markings
 TEXTBOX
 235
 10
-430
+440
 36
 Hydrogen Desorption Probabilities
 11
@@ -553,7 +553,7 @@ Hydrogen Desorption Probabilities
 TEXTBOX
 235
 145
-430
+440
 171
 Hydrogen Absorption Probabilities
 11
@@ -563,9 +563,9 @@ Hydrogen Absorption Probabilities
 TEXTBOX
 235
 250
-430
+445
 290
-Probability to move to depleted red patch vs different colored patch
+Probability to move to depleted red\npatch vs different colored patch
 11
 0.0
 1
@@ -573,9 +573,9 @@ Probability to move to depleted red patch vs different colored patch
 TEXTBOX
 15
 60
-160
+195
 90
-Simulation termination % (of initial hydrogen)
+Simulation termination %\n(of initial hydrogen)
 11
 0.0
 1
@@ -1010,9 +1010,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1028,7 +1027,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

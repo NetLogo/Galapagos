@@ -274,7 +274,11 @@ to cool
   ifelse ( outside-energy > 20 ) [ set outside-energy outside-energy - energy-increment ] [ set outside-energy 0 ]
   if (outside-energy <= 0) [
     set outside-energy min-outside-energy
-    user-message "You are currently trying to cool the walls of the container below absolute zero (OK or -273C).  Absolute zero is the lowest theoretical temperature for all matter in the universe and has never been achieved in a real-world laboratory"
+    user-message (word
+      "You are currently trying to cool the walls of the container below "
+      "absolute zero (OK or -273C).  Absolute zero is the lowest theoretical "
+      "temperature for all matter in the universe and has never been "
+      "achieved in a real-world laboratory")
   ]
   recalculate-wall-color
   ask heatable-walls [set pcolor wall-color]
@@ -584,8 +588,11 @@ end
 
 ;; reports true if there wall is at a fixed temperature
 to-report isothermal-wall?
-  ifelse (( abs pxcor = -1 * box-edge-x) and (abs pycor <= box-edge-y)) or ((abs pycor = box-edge-y) and (abs pxcor <= box-edge-x)) and not insulated? and not insulated-walls?
-    [report true][report false]
+  report
+    (( abs pxcor = -1 * box-edge-x) and (abs pycor <= box-edge-y)) or
+    ((abs pycor = box-edge-y) and (abs pxcor <= box-edge-x)) and
+    not insulated? and
+    not insulated-walls?
 end
 
 
@@ -595,10 +602,10 @@ end
 GRAPHICS-WINDOW
 485
 10
-1015
-449
-32
-25
+1013
+427
+-1
+-1
 8.0
 1
 10
@@ -634,7 +641,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 5
@@ -662,7 +669,7 @@ init-wall-position
 init-wall-position
 5
 60
-6
+6.0
 1
 1
 NIL
@@ -683,7 +690,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 285
@@ -748,7 +755,7 @@ SLIDER
 #-N2
 0
 200
-0
+0.0
 1
 1
 NIL
@@ -763,7 +770,7 @@ SLIDER
 #-H2
 0
 200
-0
+0.0
 5
 1
 NIL
@@ -778,7 +785,7 @@ initial-gas-temp
 initial-gas-temp
 0
 400
-90
+90.0
 5
 1
 NIL
@@ -910,7 +917,7 @@ SLIDER
 #-NH3
 0
 200
-200
+200.0
 1
 1
 NIL
@@ -931,7 +938,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 140
@@ -959,7 +966,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 140
@@ -976,7 +983,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1142,9 +1149,8 @@ square
 false
 0
 Rectangle -7500403 true true 0 0 297 299
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1160,7 +1166,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

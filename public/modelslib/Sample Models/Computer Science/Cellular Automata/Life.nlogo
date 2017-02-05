@@ -60,10 +60,10 @@ end
 GRAPHICS-WINDOW
 285
 10
-699
-445
-50
-50
+697
+423
+-1
+-1
 4.0
 1
 10
@@ -93,7 +93,7 @@ initial-density
 initial-density
 0.0
 100.0
-35
+35.0
 0.1
 1
 %
@@ -131,7 +131,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 122
@@ -148,7 +148,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 178
@@ -165,7 +165,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 12
@@ -198,9 +198,9 @@ NIL
 TEXTBOX
 124
 125
-277
+283
 193
-When this button is down, you can add or remove cells by holding down the mouse button and \"drawing\".
+When this button is down,\nyou can add or remove\ncells by holding down\nthe mouse button\nand \"drawing\".
 11
 0.0
 0
@@ -228,7 +228,7 @@ INPUTBOX
 274
 369
 fgcolor
-123
+123.0
 1
 0
 Color
@@ -239,7 +239,7 @@ INPUTBOX
 274
 431
 bgcolor
-79
+79.0
 1
 0
 Color
@@ -635,9 +635,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-random repeat 20 [ go ]
 @#$#@#$#@
@@ -654,7 +653,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

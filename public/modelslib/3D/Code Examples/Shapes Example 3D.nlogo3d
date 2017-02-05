@@ -2,14 +2,14 @@ to setup
   clear-all
   let threedshapes [ "default" "square" "circle" "triangle" "cylinder" "line" ]
   let positions [ "rt 60" "rt 120" "tilt-up 60" "tilt-up 120" "tilt-up 180" ]
-  foreach threedshapes [
+  foreach threedshapes [ [the-shape] ->
     create-turtles 1
-    [ set shape ?
+    [ set shape the-shape
       set size 2
       set xcor (5 * who) + min-pxcor + 6
       set ycor max-pycor - 6
       set zcor 0
-      ask patch xcor (max-pycor - 3) 0 [ set plabel ? ]
+      ask patch xcor (max-pycor - 3) 0 [ set plabel the-shape ]
       set color red ]
   ]
 
@@ -33,8 +33,8 @@ GRAPHICS-WINDOW
 0
 502
 427
-20
-16
+-1
+-1
 12.0
 1
 10
@@ -509,9 +509,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -528,7 +527,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

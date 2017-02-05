@@ -318,10 +318,10 @@ end
 GRAPHICS-WINDOW
 329
 11
-906
-609
-40
-40
+904
+587
+-1
+-1
 7.0
 1
 18
@@ -357,7 +357,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 12
@@ -385,7 +385,7 @@ number-of-particles
 number-of-particles
 1
 1000
-100
+100.0
 1
 1
 NIL
@@ -466,7 +466,7 @@ box-size
 box-size
 5
 100
-95
+95.0
 1
 1
 %
@@ -481,7 +481,7 @@ init-particle-speed
 init-particle-speed
 1
 20
-10
+10.0
 1
 1
 NIL
@@ -496,7 +496,7 @@ particle-mass
 particle-mass
 1
 20
-1
+1.0
 1
 1
 NIL
@@ -545,7 +545,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 15
@@ -562,7 +562,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 15
@@ -579,7 +579,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 135
@@ -601,9 +601,9 @@ NIL
 TEXTBOX
 14
 346
-282
+290
 390
-This is a version of the GasLab Gas in a Box model, modified to show off NetLogo's perspective features. Try it in both 2D and 3D.
+This is a version of the GasLab Gas in a Box\nmodel, modified to show off NetLogo's\nperspective features. Try it in both 2D and 3D.
 11
 0.0
 0
@@ -923,9 +923,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 75 [ go ]
@@ -944,7 +943,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

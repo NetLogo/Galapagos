@@ -41,10 +41,10 @@ end
 GRAPHICS-WINDOW
 278
 15
-717
-475
-16
-16
+715
+453
+-1
+-1
 13.0
 1
 10
@@ -91,7 +91,7 @@ transparency
 transparency
 0
 255
-110
+110.0
 1
 1
 NIL
@@ -112,7 +112,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 54
@@ -129,7 +129,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -439,9 +439,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -458,7 +457,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -56,6 +56,7 @@ to setup              ;; Initializes the game
   set-default-shape river-turtles "turtle"
   set level start-level
   next-level
+  reset-ticks
 end
 
 to next-level        ;; This will call the appropriate level procedure, where the level is created
@@ -525,10 +526,10 @@ end
 GRAPHICS-WINDOW
 316
 10
-666
-381
-8
-8
+664
+359
+-1
+-1
 20.0
 1
 10
@@ -564,7 +565,7 @@ NIL
 J
 NIL
 NIL
-1
+0
 
 BUTTON
 236
@@ -581,7 +582,7 @@ NIL
 L
 NIL
 NIL
-1
+0
 
 BUTTON
 171
@@ -598,7 +599,7 @@ NIL
 I
 NIL
 NIL
-1
+0
 
 BUTTON
 172
@@ -615,7 +616,7 @@ NIL
 K
 NIL
 NIL
-1
+0
 
 BUTTON
 23
@@ -649,7 +650,7 @@ NIL
 S
 NIL
 NIL
-1
+0
 
 MONITOR
 168
@@ -693,7 +694,7 @@ start-lives
 start-lives
 1
 5
-5
+5.0
 1
 1
 NIL
@@ -708,7 +709,7 @@ start-time
 start-time
 10
 60
-60
+60.0
 5
 1
 NIL
@@ -723,7 +724,7 @@ start-level
 start-level
 1
 5
-1
+1.0
 1
 1
 NIL
@@ -1267,12 +1268,9 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
-need-to-manually-make-preview-for-this-model
-;; (because it uses the sound extension)
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1287,7 +1285,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

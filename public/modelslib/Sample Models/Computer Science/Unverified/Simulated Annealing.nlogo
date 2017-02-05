@@ -9,7 +9,6 @@ to setup
   ]
   ask patches [ update-visual ]
   set global-energy (sum [find-energy] of patches )
-  plot global-energy
   set temperature 1
   reset-ticks
 end
@@ -25,7 +24,6 @@ to go
   ; we lower the temperature after 1000 attempted swaps
   set temperature temperature * (1 - cooling-rate / 100)
   set global-energy (sum [find-energy] of patches )
-  plot global-energy
   tick
 end
 
@@ -89,8 +87,8 @@ end
 GRAPHICS-WINDOW
 205
 10
-635
-461
+633
+439
 -1
 -1
 14.0
@@ -145,7 +143,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -156,7 +154,7 @@ cooling-rate
 cooling-rate
 0
 50
-1
+1.0
 0.1
 1
 %
@@ -171,7 +169,7 @@ swap-radius
 swap-radius
 1
 5
-1
+1.0
 1
 1
 NIL
@@ -226,7 +224,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -2674135 true "" ""
+"default" 1.0 0 -2674135 true "" "plot global-energy"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -589,9 +587,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -607,7 +604,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

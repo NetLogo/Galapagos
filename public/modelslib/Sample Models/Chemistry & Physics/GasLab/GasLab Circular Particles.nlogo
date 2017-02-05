@@ -58,10 +58,10 @@ to make-particles
   ]
   ;; When space is tight, placing the big particles first improves
   ;; our chances of eventually finding places for all of them.
-  foreach sort-by [[size] of ?1 > [size] of ?2] particles [
-    ask ? [
+  foreach sort-by [ [a b] -> [ size ] of a > [ size ] of b ] particles [ [the-particle] ->
+    ask the-particle [
       position-randomly
-      while [overlapping?] [ position-randomly ]
+      while [ overlapping? ] [ position-randomly ]
     ]
   ]
 end
@@ -118,18 +118,20 @@ to recalculate-particles-that-just-collided
   ;; position wasn't affected, those collisions are still valid.
   ifelse is-turtle? particle2
     [
-      set collisions filter [item 1 ? != particle1 and
-                             item 2 ? != particle1 and
-                             item 1 ? != particle2 and
-                             item 2 ? != particle2]
-                            collisions
+      set collisions filter [ [the-collision] ->
+        item 1 the-collision != particle1 and
+        item 2 the-collision != particle1 and
+        item 1 the-collision != particle2 and
+        item 2 the-collision != particle2
+      ] collisions
       ask particle2 [ check-for-wall-collision ]
       ask particle2 [ check-for-particle-collision ]
     ]
     [
-      set collisions filter [item 1 ? != particle1 and
-                             item 2 ? != particle1]
-                            collisions
+      set collisions filter [ [the-collision] ->
+        item 1 the-collision != particle1 and
+        item 2 the-collision != particle1
+      ] collisions
     ]
   if particle1 != nobody [ ask particle1 [ check-for-wall-collision ] ]
   if particle1 != nobody [ ask particle1 [ check-for-particle-collision ] ]
@@ -137,9 +139,10 @@ to recalculate-particles-that-just-collided
   ;; happened to be calculated as happening again a very tiny amount of
   ;; time into the future, so we remove any collisions that involves
   ;; the same two particles (or particle and wall) as last time.
-  set collisions filter [item 1 ? != particle1 or
-                         item 2 ? != particle2]
-                        collisions
+  set collisions filter [ [the-collision] ->
+    item 1 the-collision != particle1 or
+    item 2 the-collision != particle2
+  ] collisions
   ;; All done.
   set particle1 nobody
   set particle2 nobody
@@ -299,7 +302,9 @@ to choose-next-collision
   ;; Take the smallest time-step from the list (which represents the next collision that will
   ;; happen in time).  Use this time step as the tick-delta for all the particles to move through
   let winner first collisions
-  foreach collisions [ if first ? < first winner [ set winner ? ] ]
+  foreach collisions [ [the-collision] ->
+    if first the-collision < first winner [ set winner the-collision ]
+  ]
   ;; winner is now the collision that will occur next
   let dt item 0 winner
   ;; If the next collision is more than 1 in the future,
@@ -482,10 +487,10 @@ end
 GRAPHICS-WINDOW
 272
 10
-687
-446
-40
-40
+685
+424
+-1
+-1
 5.0
 1
 20
@@ -532,7 +537,7 @@ initial-number-particles
 initial-number-particles
 1
 250
-60
+60.0
 1
 1
 NIL
@@ -553,7 +558,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 0
@@ -564,7 +569,7 @@ largest-particle-size
 largest-particle-size
 1
 10
-6
+6.0
 0.5
 1
 NIL
@@ -579,7 +584,7 @@ smallest-particle-size
 smallest-particle-size
 1
 5
-2
+2.0
 0.5
 1
 NIL
@@ -1085,9 +1090,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1103,7 +1107,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

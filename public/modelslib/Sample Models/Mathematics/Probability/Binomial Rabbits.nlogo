@@ -192,11 +192,11 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-282
-10
-697
-446
-22
+319
+13
+732
+427
+-1
 -1
 9.0
 1
@@ -233,7 +233,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 193
@@ -267,7 +267,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 3
@@ -278,7 +278,7 @@ hop-1
 hop-1
 -5
 5
-1
+1.0
 1
 1
 NIL
@@ -293,7 +293,7 @@ hop-2
 hop-2
 -5
 5
--1
+-1.0
 1
 1
 NIL
@@ -308,7 +308,7 @@ hop-3
 hop-3
 -5
 5
-0
+0.0
 1
 1
 NIL
@@ -323,7 +323,7 @@ ratio-1
 ratio-1
 0
 10
-1
+1.0
 1
 1
 NIL
@@ -338,7 +338,7 @@ ratio-2
 ratio-2
 0
 10
-1
+1.0
 1
 1
 NIL
@@ -353,7 +353,7 @@ hops
 hops
 0
 99
-20
+20.0
 1
 1
 NIL
@@ -368,7 +368,7 @@ x-scaling
 x-scaling
 1
 10
-1
+1.0
 1
 1
 NIL
@@ -383,7 +383,7 @@ number
 number
 1
 4000
-2400
+2400.0
 1
 1
 NIL
@@ -398,7 +398,7 @@ ratio-3
 ratio-3
 0
 10
-0
+0.0
 1
 1
 NIL
@@ -427,9 +427,9 @@ y-scale
 11
 
 TEXTBOX
-19
+9
 374
-268
+312
 428
 GREEN LINE - Starting rabbit position\nPURPLE LINE - Average rabbit position\nYELLOW LINES - Number of rabbits at that position
 11
@@ -828,9 +828,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -846,7 +845,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

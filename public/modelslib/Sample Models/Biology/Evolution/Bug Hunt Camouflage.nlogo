@@ -268,10 +268,10 @@ end
 GRAPHICS-WINDOW
 536
 10
-956
-451
-20
-20
+954
+429
+-1
+-1
 10.0
 1
 10
@@ -324,7 +324,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 13
@@ -346,7 +346,7 @@ carrying-capacity
 carrying-capacity
 0
 100
-15
+15.0
 5
 1
 NIL
@@ -361,7 +361,7 @@ offspring-distance
 offspring-distance
 1
 20
-8
+8.0
 1
 1
 NIL
@@ -431,7 +431,7 @@ bug-size
 bug-size
 0.5
 5
-1
+1.0
 0.5
 1
 NIL
@@ -480,7 +480,7 @@ max-mutation-step
 max-mutation-step
 0
 100
-26
+26.0
 1
 1
 NIL
@@ -517,9 +517,9 @@ count bugs
 
 PLOT
 10
-278
+303
 170
-398
+423
 Current Hues
 hue
 number
@@ -535,9 +535,9 @@ PENS
 
 PLOT
 170
-278
+303
 347
-398
+423
 Current Brightnesses
 <-- dark   bright --->
 number
@@ -553,9 +553,9 @@ PENS
 
 PLOT
 347
-278
+303
 532
-398
+423
 Current Saturations
 <-- grayish   colorful-->
 number
@@ -571,9 +571,9 @@ PENS
 
 PLOT
 9
-399
+424
 169
-519
+544
 Initial Hues
 hue
 number
@@ -589,9 +589,9 @@ PENS
 
 PLOT
 347
-399
+424
 532
-519
+544
 Initial Saturations
 <--grayish   colorful-->
 number
@@ -607,9 +607,9 @@ PENS
 
 PLOT
 170
-398
+423
 347
-518
+543
 Initial Brightnesses
 <-- dark   bright --->
  number
@@ -645,10 +645,10 @@ PENS
 
 TEXTBOX
 12
-259
+270
 532
-307
-Histograms of the Number of Bugs with Different Color Attributes in the Bug Population:
+318
+Histograms of the Number of Bugs with Different\nColor Attributes in the Bug Population:
 12
 103.0
 1
@@ -755,22 +755,6 @@ What if bugs moved?
 `import-drawing` is the primitive that loads the image into the drawing, which in this case is merely a backdrop instead of something agents actually draw in.
 
 Because this model depends on interaction with the user, we measure the passage of time in seconds.  We use `timer` to measure how much time passes each time through `go`, and we use `tick-advance` to advance the clock by that amount.  (A simpler approach would have been to not use the tick counter at all and only use `timer`, but the problem with `timer` is that it keeps advancing even when `go` isn't pressed.)
-
-In the code for flashing the bugs, we use `ask-concurrent`.  We could have avoided it as follows, but the downside is that an extra turtle variable would have been required.
-
-      turtles-own [old-color]
-
-      ask bugs [ set old-color color ]
-      repeat 3 [
-        ask bugs [ set color black ]
-        display
-        wait 0.1
-        ask turtles [ set color white ]
-        display
-        wait 0.1
-      ]
-      ask bugs [ set color old-color ]
-      display
 
 ## RELATED MODELS
 
@@ -1137,9 +1121,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-M3
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -1156,7 +1139,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

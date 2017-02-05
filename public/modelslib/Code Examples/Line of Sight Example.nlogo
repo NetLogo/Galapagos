@@ -71,10 +71,10 @@ end
 GRAPHICS-WINDOW
 274
 10
-713
-470
-16
-16
+711
+448
+-1
+-1
 13.0
 1
 12
@@ -127,7 +127,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 43
@@ -138,7 +138,7 @@ maximum-visibility
 maximum-visibility
 1.0
 16.0
-9
+9.0
 1.0
 1
 NIL
@@ -165,9 +165,9 @@ PENS
 TEXTBOX
 8
 396
-260
-464
-This shows the elevations of the patches ahead of the orange turtle. The leftmost line is the patch the turtle is standing on. Orange lines are patches the turtle can see.
+268
+480
+This shows the elevations of the patches\nahead of the orange turtle.\n\nThe leftmost line is the patch the turtle is\nstanding on. Orange lines are patches the \nturtle can see.
 11
 0.0
 0
@@ -472,9 +472,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -490,7 +489,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

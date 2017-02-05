@@ -46,7 +46,6 @@ patches-own [
 
 
 to startup ;; setting up hubnet
-  hubnet-set-client-interface "COMPUTER" []
   hubnet-reset
   setup
 end
@@ -400,10 +399,10 @@ end
 GRAPHICS-WINDOW
 405
 10
-915
-541
-12
-12
+913
+519
+-1
+-1
 20.0
 1
 10
@@ -456,7 +455,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 0
@@ -496,7 +495,7 @@ initial-#-automated-bugs
 initial-#-automated-bugs
 0
 100
-0
+0.0
 1
 1
 NIL
@@ -511,7 +510,7 @@ amount-grassland
 amount-grassland
 0
 100
-100
+100.0
 1
 1
 %
@@ -526,7 +525,7 @@ length-competition
 length-competition
 0
 3000
-500
+500.0
 100
 1
 NIL
@@ -591,7 +590,7 @@ player-vision
 player-vision
 1
 10
-4
+4.0
 1
 1
 NIL
@@ -672,7 +671,7 @@ sprout-delay-time
 sprout-delay-time
 0
 200
-50
+50.0
 50
 1
 NIL
@@ -933,9 +932,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -989,7 +987,7 @@ true
 true
 "" ""
 PENS
-"bugs" 20.0 1 -16777216 true
+"bugs" 20.0 1 -16777216 true "" ""
 
 MONITOR
 10
@@ -1017,7 +1015,7 @@ true
 true
 "" ""
 PENS
-"bugs" 1.0 0 -16777216 true
+"bugs" 1.0 0 -16777216 true "" ""
 
 @#$#@#$#@
 default
@@ -1030,7 +1028,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

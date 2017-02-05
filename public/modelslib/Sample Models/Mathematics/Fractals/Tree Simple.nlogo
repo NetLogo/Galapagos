@@ -51,10 +51,10 @@ end
 GRAPHICS-WINDOW
 265
 10
-677
-443
-100
-100
+675
+421
+-1
+-1
 2.0
 1
 10
@@ -90,7 +90,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 22
@@ -118,7 +118,7 @@ color-inc
 color-inc
 0.0
 100.0
-7
+7.0
 1.0
 1
 NIL
@@ -133,7 +133,7 @@ init-color
 init-color
 0.0
 140.0
-45
+45.0
 1.0
 1
 NIL
@@ -148,7 +148,7 @@ init-x
 init-x
 -125.0
 125.0
-0
+0.0
 1.0
 1
 NIL
@@ -163,7 +163,7 @@ init-y
 init-y
 -100.0
 100.0
--50
+-50.0
 1.0
 1
 NIL
@@ -184,7 +184,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 85
@@ -561,9 +561,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 10 [ go ]
@@ -581,7 +580,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

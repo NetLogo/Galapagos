@@ -50,12 +50,12 @@ end
 ; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-279
-10
-604
-356
-17
-17
+302
+11
+625
+335
+-1
+-1
 9.0
 1
 10
@@ -147,9 +147,9 @@ NIL
 TEXTBOX
 105
 289
-271
+280
 374
-EXAMPLE #3: Demonstrates \"myself\" in combination with -of, with, min-one-of, distance, and towards
+EXAMPLE #3: Demonstrates\n\"myself\" in combination with\n\"-of\", \"with\", \"min-one-of\",\n\"distance\", and \"towards\"
 11
 0.0
 0
@@ -157,9 +157,9 @@ EXAMPLE #3: Demonstrates \"myself\" in combination with -of, with, min-one-of, d
 TEXTBOX
 98
 109
-263
+280
 171
-EXAMPLE #1: Demonstrates \"myself\" in combination with ask and in-radius
+EXAMPLE #1: Demonstrates\n\"myself\" in combination with\n\"ask\" and \"in-radius\"
 11
 0.0
 0
@@ -167,9 +167,9 @@ EXAMPLE #1: Demonstrates \"myself\" in combination with ask and in-radius
 TEXTBOX
 102
 200
+295
 267
-267
-EXAMPLE #2: Demonstrates \"myself\" in combination with ask and -of
+EXAMPLE #2: Demonstrates\n\"myself\" in combination with\n\"ask\" and \"-of\"
 11
 0.0
 0
@@ -462,9 +462,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 splotch
@@ -482,7 +481,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

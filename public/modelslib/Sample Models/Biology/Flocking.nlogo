@@ -8,7 +8,8 @@ to setup
   create-turtles population
     [ set color yellow - 2 + random 7  ;; random shades look nice
       set size 1.5  ;; easier to see
-      setxy random-xcor random-ycor ]
+      setxy random-xcor random-ycor
+      set flockmates no-turtles ]
   reset-ticks
 end
 
@@ -108,10 +109,10 @@ end
 GRAPHICS-WINDOW
 250
 10
-757
-538
-35
-35
+755
+516
+-1
+-1
 7.0
 1
 10
@@ -164,7 +165,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 9
@@ -175,7 +176,7 @@ population
 population
 1.0
 1000.0
-300
+300.0
 1.0
 1
 NIL
@@ -190,7 +191,7 @@ max-align-turn
 max-align-turn
 0.0
 20.0
-5
+5.0
 0.25
 1
 degrees
@@ -205,7 +206,7 @@ max-cohere-turn
 max-cohere-turn
 0.0
 20.0
-3
+3.0
 0.25
 1
 degrees
@@ -235,7 +236,7 @@ vision
 vision
 0.0
 10.0
-3
+3.0
 0.5
 1
 patches
@@ -250,7 +251,7 @@ minimum-separation
 minimum-separation
 0.0
 5.0
-1
+1.0
 0.25
 1
 patches
@@ -642,9 +643,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set population 200
 setup
@@ -663,7 +663,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

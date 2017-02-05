@@ -433,8 +433,8 @@ end
 GRAPHICS-WINDOW
 280
 45
-690
-476
+688
+454
 -1
 -1
 4.0
@@ -466,7 +466,7 @@ sample-block-side
 sample-block-side
 1
 11
-3
+3.0
 2
 1
 NIL
@@ -508,7 +508,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 121
@@ -517,7 +517,7 @@ SWITCH
 154
 organize?
 organize?
-1
+0
 1
 -1000
 
@@ -541,7 +541,7 @@ SLIDER
 %-target-color
 0
 100
-50
+0.0
 1
 1
 NIL
@@ -562,7 +562,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -573,7 +573,7 @@ cluster-guesses
 cluster-guesses
 1
 10
-3
+3.0
 1
 1
 NIL
@@ -594,7 +594,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 120
@@ -633,7 +633,7 @@ abnormality
 abnormality
 0
 10
-4
+4.0
 1
 1
 NIL
@@ -665,7 +665,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
@@ -682,14 +682,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
-25
+20
 480
 245
-605
-The histogram simulates a typical run in a classroom. The aggregation of students' guesses approximates a normal distribution, and the classroom mean is a few % scores off of the population value.
+601
+The histogram simulates a typical run\nin a classroom. The aggregation of\nstudents' guesses approximates a\nnormal distribution, and the\nclassroom mean is a few % scores\noff of the population value.
 11
 0.0
 0
@@ -987,11 +987,12 @@ Line -16777216 false 58 211 67 192
 Polygon -6459832 true true 38 138 66 149
 Polygon -6459832 true true 46 128 33 120 21 118 11 123 3 138 5 160 13 178 9 192 0 199 20 196 25 179 24 161 25 148 45 140
 Polygon -6459832 true true 67 122 96 126 63 144
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
-need-to-manually-make-preview-for-this-model
+set %-target-color 20
+setup
+reveal
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1006,7 +1007,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

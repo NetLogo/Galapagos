@@ -160,8 +160,8 @@ end
 GRAPHICS-WINDOW
 371
 10
-781
-441
+779
+419
 -1
 -1
 4.0
@@ -193,7 +193,7 @@ bug-count
 bug-count
 1
 500
-100
+100.0
 1
 1
 bugs
@@ -231,7 +231,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 164
@@ -272,7 +272,7 @@ random-move-chance
 random-move-chance
 0
 100
-0
+0.0
 1.0
 1
 %
@@ -305,7 +305,7 @@ min-ideal-temp
 min-ideal-temp
 0
 200
-10
+10.0
 1
 1
 NIL
@@ -320,7 +320,7 @@ max-ideal-temp
 max-ideal-temp
 0
 200
-40
+40.0
 1
 1
 NIL
@@ -335,7 +335,7 @@ max-output-heat
 max-output-heat
 0
 100
-25
+25.0
 1
 1
 NIL
@@ -350,7 +350,7 @@ min-output-heat
 min-output-heat
 0
 100
-5
+5.0
 1
 1
 NIL
@@ -425,15 +425,15 @@ TEXTBOX
 251
 153
 280
-(OK to change during run)
+(OK to change\nduring run)
 11
 0.0
 0
 
 BUTTON
-430
+462
 445
-536
+568
 478
 ideal-temp
 set color-by-unhappiness? false\nask turtles [ color-by-ideal-temp ]
@@ -448,9 +448,9 @@ NIL
 1
 
 BUTTON
-541
+573
 445
-657
+689
 478
 happiness
 set color-by-unhappiness? true
@@ -465,19 +465,19 @@ NIL
 1
 
 TEXTBOX
-371
-466
-418
-496
+376
+453
+459
+483
 Color bug by:
 11
 0.0
 0
 
 BUTTON
-430
+462
 481
-537
+569
 514
 watch saddest
 watch max-one-of turtles [ unhappiness ]
@@ -489,12 +489,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-541
+573
 481
-659
+691
 514
 watch happiest
 watch min-one-of turtles [ unhappiness ]
@@ -506,12 +506,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-662
+694
 481
-799
+831
 514
 NIL
 reset-perspective
@@ -913,9 +913,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -931,7 +930,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -51,8 +51,8 @@ to setup-continue
   let on?-list []
   if not gone?  ;; make sure go has already been called
     [ stop ]
-  set on?-list map [[on?] of ?] sort patches with [pycor = row]  ;; copy cell states from the
-                                                                 ;; current row to a list
+  ;; copy cell states from the current row to a list
+  set on?-list map [ [p] -> [ on? ] of p ] sort patches with [ pycor = row ]
   setup-general
   ask patches with [ pycor = row ]
   [
@@ -174,21 +174,20 @@ to show-rules  ;; preview cell state transitions
   ask patches with [pycor > max-pycor - 12]
     [ set pcolor gray - 1 ]
   let i 0
-  foreach list-rules
-  [
+  foreach list-rules [ [the-rule] ->
     let px (min-pxcor + i * floor (world-width / 8) + floor (world-width / 16)) - 4
     ask patch px (max-pycor - 4)
     [
       sprout 1
       [
         set xcor xcor - 3
-        print-block item 0 ?  ;; left cell
+        print-block item 0 the-rule  ;; left cell
         set xcor xcor + 3
-        print-block item 1 ?  ;; center cell
+        print-block item 1 the-rule  ;; center cell
         set xcor xcor + 3
-        print-block item 2 ?  ;; right cell
+        print-block item 2 the-rule  ;; right cell
         setxy (xcor - 3) (ycor - 3)
-        print-block item 3 ?  ;; next cell state
+        print-block item 3 the-rule  ;; next cell state
         die
       ]
     ]
@@ -224,10 +223,10 @@ end
 GRAPHICS-WINDOW
 229
 12
-753
-301
-128
-64
+751
+279
+-1
+-1
 2.0
 1
 10
@@ -399,7 +398,7 @@ rule
 rule
 0.0
 255.0
-105
+105.0
 1.0
 1
 NIL
@@ -414,7 +413,7 @@ density
 density
 0.0
 100.0
-10
+10.0
 1.0
 1
 %
@@ -435,7 +434,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 12
@@ -471,7 +470,7 @@ INPUTBOX
 134
 466
 foreground
-55
+55.0
 1
 0
 Color
@@ -482,7 +481,7 @@ INPUTBOX
 255
 466
 background
-0
+0.0
 1
 0
 Color
@@ -893,9 +892,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-random repeat world-height - 1 [ go ]
 @#$#@#$#@
@@ -912,7 +910,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

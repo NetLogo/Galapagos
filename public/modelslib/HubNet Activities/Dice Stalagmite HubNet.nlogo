@@ -152,8 +152,8 @@ end
 to single-die-check-visible  ;; single-die procedure
   if single-outcomes = [] [ stop ]
   let mode first modes single-outcomes
-  let height-of-tallest-column length filter [? = mode] single-outcomes
-  let height-of-my-column length filter [? = die-value] single-outcomes
+  let height-of-tallest-column length filter [ [n] -> n = mode] single-outcomes
+  let height-of-my-column length filter [ [n] -> n = die-value] single-outcomes
   if (height-of-tallest-column - height-of-my-column) >= world-height - 2 [ die ]
 end
 
@@ -161,8 +161,8 @@ end
 to paired-die-check-visible  ;; paired-die procedure
   if pair-outcomes = [] [ stop ]
   let mode first modes pair-outcomes
-  let height-of-tallest-column length filter [? = mode] pair-outcomes
-  let height-of-my-column length filter [? = pair-sum] pair-outcomes
+  let height-of-tallest-column length filter [ [n] -> n = mode] pair-outcomes
+  let height-of-my-column length filter [ [n] -> n = pair-sum] pair-outcomes
   if (height-of-tallest-column - height-of-my-column) >= world-height - 2 [ die ]
 end
 
@@ -319,8 +319,8 @@ end
 GRAPHICS-WINDOW
 170
 60
-614
-525
+612
+503
 -1
 -1
 14.0
@@ -898,9 +898,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -913,7 +912,7 @@ CHOOSER
 107
 Die_A
 Die_A
-"--" 1 2 3 4 5 6
+\"--\" 1 2 3 4 5 6
 0
 
 CHOOSER
@@ -923,7 +922,7 @@ CHOOSER
 107
 Die_B
 Die_B
-"--" 1 2 3 4 5 6
+\"--\" 1 2 3 4 5 6
 0
 
 BUTTON
@@ -961,7 +960,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

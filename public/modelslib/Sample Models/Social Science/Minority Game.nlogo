@@ -95,10 +95,12 @@ to update-scores-and-strategy  ;; turtles procedure
   let max-strategies []
   let counter 0
   ;; this picks a strategy with the largest virtual score
-  foreach strategies-scores
-    [ if (? = max-score)
-        [ set max-strategies lput counter max-strategies ]
-      set counter counter + 1 ]
+  foreach strategies-scores [ [the-score] ->
+    if (the-score = max-score) [
+      set max-strategies lput counter max-strategies
+    ]
+    set counter counter + 1
+  ]
   set current-strategy one-of max-strategies
   if (choice = minority)
     [ set score score + 1 ]
@@ -109,14 +111,12 @@ end
 to increment-scores  ;; turtles procedure
   ;; here we use MAP to simultaneously walk down both the list
   ;; of strategies, and the list of those strategies' scores.
-  ;; ?1 is the current strategy, and ?2 is the current score.
   ;; For each strategy, we check to see if that strategy selected
   ;; the minority.  If it did, we increase its score by one,
   ;; otherwise we leave the score alone.
-  set strategies-scores
-      (map [ifelse-value (item history ?1 = minority)
-              [?2 + 1] [?2]]
-           strategies strategies-scores)
+  set strategies-scores (map [ [the-strategy the-score] ->
+    ifelse-value (item history the-strategy = minority) [ the-score + 1] [ the-score ]
+  ] strategies strategies-scores)
 end
 
 ;; updates turtle's choice and re-colors them
@@ -158,7 +158,7 @@ end
 
 ;; converts a binary number (stored in a list of 0's and 1's) to a decimal number
 to-report decimal [binary-num]
-  report reduce [(2 * ?1) + ?2] binary-num
+  report reduce [ [a b] -> (2 * a) + b ] binary-num
 end
 
 
@@ -168,10 +168,10 @@ end
 GRAPHICS-WINDOW
 402
 10
-727
-356
-17
-17
+725
+334
+-1
+-1
 9.0
 1
 10
@@ -224,7 +224,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 17
@@ -235,7 +235,7 @@ number
 number
 1
 1501
-501
+501.0
 2
 1
 NIL
@@ -250,7 +250,7 @@ memory
 memory
 1
 12
-6
+6.0
 1
 1
 NIL
@@ -265,7 +265,7 @@ strategies-per-agent
 strategies-per-agent
 1
 10
-5
+5.0
 1
 1
 NIL
@@ -749,9 +749,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat max-pxcor [ go ]
@@ -769,7 +768,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -78,10 +78,10 @@ end
 GRAPHICS-WINDOW
 304
 10
-633
-360
-14
-14
+631
+338
+-1
+-1
 11.0
 1
 10
@@ -134,7 +134,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 142
@@ -151,7 +151,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 11
@@ -168,7 +168,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 142
@@ -179,7 +179,7 @@ radius
 radius
 1
 5
-2
+2.0
 1
 1
 NIL
@@ -200,7 +200,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 142
@@ -213,11 +213,11 @@ points
 0
 
 TEXTBOX
-37
+14
 284
-253
-360
-You can control whether neighborhoods wrap around the edges of the world by editing the view and turning horizontal and/or vertical wrapping on or off.
+285
+349
+You can control whether neighborhoods\nwrap around the edges of the world by\nediting the view and turning horizontal \nand/or vertical wrapping on or off.
 11
 0.0
 0
@@ -530,9 +530,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 paint-neighbors
@@ -550,7 +549,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

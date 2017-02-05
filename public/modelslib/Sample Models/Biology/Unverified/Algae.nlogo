@@ -33,6 +33,7 @@ to setup-globals
 end
 
 to setup-environment
+  if change-day-length? [ set day-length 12 ]
   ask air [ set light 1 ]
   ask ground [ set light 0 ]
   ask water [ set light 0 ]
@@ -85,13 +86,13 @@ end
 
 to go
   if not any? algae [ stop ]
-  ;; 24 hour days
-  let day ticks / 24
-  ;; assume all months are the same length
-  let month day / 10
-  ;; day length cycles up and down based on the time of year
   if change-day-length? [
-    set day-length 12 + 4 * sin ( month * 180 / 12 )
+    ;; 24 hour days
+    let day ticks / 24
+    ;; assume all months are the same length
+    let month day / 10
+    ;; day length cycles up and down based on the time of year
+    set day-length precision (12 + 4 * sin (month * 180 / 12)) 2
   ]
   if day-and-night? [
     spread-light
@@ -140,8 +141,8 @@ to spread-light
     ask water [ set light 0 ]
     ;; we sort the water patches top to bottom and then ask them in turn
     ;; to grab some light from above
-    foreach sort water [
-      ask ? [
+    foreach sort water [ [the-water] ->
+      ask the-water [
         let light-gained light-spreadiness * [light] of patch-at 0 1
         set light light + light-gained
       ]
@@ -168,12 +169,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-309
-10
-589
-671
-4
-10
+346
+13
+624
+652
+-1
+-1
 30.0
 1
 8
@@ -244,7 +245,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 11
@@ -298,15 +299,15 @@ PENS
 "default" 1.0 1 -16777216 true "" "histogram [ ycor ] of algae"
 
 SLIDER
-14
-500
-197
-533
+15
+502
+199
+535
 day-length
 day-length
 8
 16
-12.143958568001993
+12.0
 0.1
 1
 hours
@@ -336,20 +337,20 @@ day-and-night?
 
 TEXTBOX
 205
-504
-298
-531
+510
+330
+530
 light hours per 24
 11
 0.0
 0
 
 TEXTBOX
-207
-410
-306
-457
-change light throughout the day
+205
+415
+331
+445
+change light\nthroughout the day
 11
 0.0
 0
@@ -357,9 +358,9 @@ change light throughout the day
 TEXTBOX
 205
 455
-305
-497
-change duration of light from day to day
+330
+490
+change duration of\nlight from day to day
 11
 0.0
 0
@@ -731,10 +732,12 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
+resize-world -12 12 -12 12
+setup
+repeat 75 [ go ]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -749,7 +752,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
-0
+1
 @#$#@#$#@

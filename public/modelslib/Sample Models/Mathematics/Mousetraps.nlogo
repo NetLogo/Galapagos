@@ -45,10 +45,10 @@ end
 GRAPHICS-WINDOW
 281
 10
-774
-524
-80
-80
+772
+502
+-1
+-1
 3.0
 1
 10
@@ -101,7 +101,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 10
@@ -154,7 +154,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 23
@@ -230,7 +230,7 @@ Reactor X-Section and Reactor Top Down are two different views of nuclear fissio
 
 ## CREDITS AND REFERENCES
 
-This model is based on the "Mousetrap" demo included with the Swarm agent-based modeling toolkit ([http://www.swarm.org](http://www.swarm.org)). See https://web.archive.org/web/20020719084215/http://acoma.santafe.edu/projects/swarm/examples/mousetrap/.  Note that this model and that demo differ in various details.
+This model is based on the "Mousetrap" demo included with the Swarm agent-based modeling toolkit ([http://www.swarm.org](http://www.swarm.org/wiki/Main_Page)). See https://web.archive.org/web/20020719084215/http://acoma.santafe.edu/projects/swarm/examples/mousetrap/.  Note that this model and that demo differ in various details.
 
 ## HOW TO CITE
 
@@ -539,9 +539,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 40 [ go ]
@@ -559,7 +558,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

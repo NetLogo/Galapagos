@@ -18,11 +18,10 @@ to setup
   let month-lengths [31 28 31 30 31 30 31 31 30 31 30 31]
   ;; now build up the list of all the day names in the year
   set days []
-  ;; sets ?1 equal each month name and ?2 to the number of days in that month
-  (foreach months month-lengths
-  [ ;; use "sentence" to repeatedly glue lists together, so we wind
+  (foreach months month-lengths [ [month month-length] ->
+    ;; use "sentence" to repeatedly glue lists together, so we wind
     ;; up with one big list
-    set days (sentence days make-month ?1 ?2)
+    set days (sentence days make-month month month-length)
   ])
   reset-ticks
 end
@@ -31,9 +30,9 @@ end
 to-report make-month [month month-length]
   ;; use n-values to generate a list of the numbers from 1 to
   ;; the end of the month
-  let day-numbers n-values month-length [? + 1]
+  let day-numbers n-values month-length [ [n] -> n + 1]
   ;; now glue onto the month name each number
-  report map [(word month " " ?)] day-numbers
+  report map [ [day] -> (word month " " day) ] day-numbers
 end
 
 to go
@@ -73,7 +72,7 @@ to make-turtles
 end
 
 to sort-turtles
-  ;; sort-by takes an agentset and returns a sorted list
+  ;; sort-on takes a criterion (birthday) and an agentset, and returns a list of agents sorted on that criterion
   let sorted sort-on [birthday] turtles
   ;; finally, we position each turtle according to its position
   ;; in the sorted list
@@ -97,10 +96,10 @@ end
 GRAPHICS-WINDOW
 152
 10
-432
-731
-4
-11
+430
+709
+-1
+-1
 30.0
 1
 16
@@ -136,7 +135,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 25
@@ -181,7 +180,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -222,7 +221,7 @@ Include leap year birthdays in the list of possibilities.
 
 ## NETLOGO FEATURES
 
-This model uses lists a lot, including list primitives such as `map`, `foreach`, `item`, `position`, `sentence`, and `sort-by`.  Lists are used mostly to make the model display actual day names, instead of just numbers from 0 to 364.  Lists are also used when sorting the turtles by birthday.
+This model uses lists a lot, including list primitives such as `map`, `foreach`, `item`, `position`, `sentence`, and `sort-on`.  Lists are used mostly to make the model display actual day names, instead of just numbers from 0 to 364.  Lists are also used when sorting the turtles by birthday.
 
 ## RELATED MODELS
 
@@ -535,9 +534,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 go
@@ -555,7 +553,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -162,10 +162,10 @@ end
 GRAPHICS-WINDOW
 245
 10
-570
-416
-10
-12
+568
+394
+-1
+-1
 15.0
 1
 10
@@ -218,7 +218,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 21
@@ -229,7 +229,7 @@ infection-chance
 infection-chance
 0
 100
-100
+100.0
 1
 1
 %
@@ -262,7 +262,7 @@ num-androids
 num-androids
 1
 300
-60
+60.0
 1
 1
 NIL
@@ -294,7 +294,7 @@ NIL
 I
 NIL
 NIL
-1
+0
 
 BUTTON
 654
@@ -311,7 +311,7 @@ NIL
 L
 NIL
 NIL
-1
+0
 
 BUTTON
 584
@@ -328,7 +328,7 @@ NIL
 J
 NIL
 NIL
-1
+0
 
 BUTTON
 615
@@ -345,7 +345,7 @@ NIL
 K
 NIL
 NIL
-1
+0
 
 SWITCH
 595
@@ -435,7 +435,7 @@ step-size
 step-size
 1
 5
-1
+1.0
 1
 1
 NIL
@@ -456,7 +456,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1198,9 +1198,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 random-seed 3
 setup-clear
@@ -1220,7 +1219,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

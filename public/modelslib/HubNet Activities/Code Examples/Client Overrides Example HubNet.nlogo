@@ -93,10 +93,10 @@ end
 GRAPHICS-WINDOW
 231
 10
-661
-461
-10
-10
+659
+439
+-1
+-1
 20.0
 1
 10
@@ -156,7 +156,7 @@ TEXTBOX
 92
 227
 137
-Users click on their client view to reveal the color of patches at that location.
+Users click on their client view\nto reveal the color of patches\nat that location.
 12
 0.0
 1
@@ -469,13 +469,10 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
-; setup
-; ask one-of patches [ set pcolor true-color ask neighbors [ set pcolor true-color ] ]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -512,7 +509,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

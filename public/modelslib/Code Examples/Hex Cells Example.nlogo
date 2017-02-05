@@ -60,10 +60,10 @@ end
 GRAPHICS-WINDOW
 240
 10
-777
-568
-15
-15
+775
+546
+-1
+-1
 17.0
 1
 10
@@ -116,7 +116,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 73
@@ -133,7 +133,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 115
@@ -463,9 +463,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup1
 repeat 20 [ go ]
@@ -483,7 +482,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

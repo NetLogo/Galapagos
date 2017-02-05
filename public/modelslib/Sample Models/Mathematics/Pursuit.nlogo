@@ -167,10 +167,10 @@ end
 GRAPHICS-WINDOW
 310
 10
-803
-524
-80
-80
+801
+502
+-1
+-1
 3.0
 1
 10
@@ -206,7 +206,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 26
@@ -217,7 +217,7 @@ step-size
 step-size
 1
 5
-1
+1.0
 1
 1
 NIL
@@ -232,7 +232,7 @@ num-followers
 num-followers
 0
 50
-4
+4.0
 1
 1
 NIL
@@ -256,7 +256,7 @@ SWITCH
 120
 show-trail?
 show-trail?
-1
+0
 1
 -1000
 
@@ -462,7 +462,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 26
@@ -479,7 +479,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 17
@@ -1017,9 +1017,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup 6
 repeat 175 [ go ]
@@ -1037,7 +1036,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

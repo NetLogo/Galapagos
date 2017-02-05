@@ -92,10 +92,10 @@ end
 GRAPHICS-WINDOW
 273
 10
-640
-398
-25
-25
+638
+376
+-1
+-1
 7.0
 1
 10
@@ -183,7 +183,7 @@ number
 number
 500
 2500
-2000
+2000.0
 10
 1
 NIL
@@ -198,7 +198,7 @@ SLIDER
 %-similar-wanted
 0.0
 100.0
-30
+30.0
 1.0
 1
 %
@@ -245,9 +245,9 @@ SLIDER
 533
 number-of-ethnicities
 number-of-ethnicities
-0
+2
 5
-3
+3.0
 1
 1
 NIL
@@ -262,7 +262,7 @@ SLIDER
 %-different-wanted
 0
 100
-30
+30.0
 1
 1
 %
@@ -649,9 +649,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -667,7 +666,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

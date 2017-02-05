@@ -143,7 +143,7 @@ to do-reproduction
                                        set potential-mates (fput self potential-mates)]
 
     ;; pick mate randomly weighted by compatibility
-    let compatibilities map [compatibility self ?] potential-mates
+    let compatibilities map [ [potential-mate] -> compatibility self potential-mate] potential-mates
     let mate (pick-weighted (potential-mates) (compatibilities))
 
     ;; spawn children
@@ -293,14 +293,14 @@ end
 ;; where highly weighted choices are more likely to be selected than others
 to-report pick-weighted [ options weights ]
   let wsum 0
-  foreach weights [
-    set wsum (wsum + ?)
+  foreach weights [ [weight] ->
+    set wsum (wsum + weight)
   ]
   let wret wsum * (random-float 1)
   let ret 0
   set wsum 0
-  foreach weights [
-    set wsum (wsum + ?)
+  foreach weights [ [weight] ->
+    set wsum (wsum + weight)
     if wsum > wret [ report (item ret options) ]
     set ret (ret + 1)
   ]
@@ -333,8 +333,8 @@ end
 GRAPHICS-WINDOW
 512
 10
-1198
-301
+1196
+279
 -1
 -1
 26.0
@@ -389,7 +389,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 385
@@ -400,7 +400,7 @@ chance-tolerance-mutation
 chance-tolerance-mutation
 0
 100
-10
+10.0
 1
 1
 %
@@ -415,7 +415,7 @@ tolerance-mutation-stdev
 tolerance-mutation-stdev
 0
 50
-20
+20.0
 1
 1
 NIL
@@ -449,7 +449,7 @@ plants-per-patch
 plants-per-patch
 1
 5
-2
+2.0
 1
 1
 NIL
@@ -464,7 +464,7 @@ frontier-sharpness
 frontier-sharpness
 .1
 2
-1
+1.0
 .1
 1
 NIL
@@ -498,7 +498,7 @@ chance-flower-time-mutation
 chance-flower-time-mutation
 0
 100
-10
+10.0
 1
 1
 %
@@ -513,7 +513,7 @@ flower-time-mutation-stdev
 flower-time-mutation-stdev
 0
 100
-10
+10.0
 1
 1
 NIL
@@ -528,7 +528,7 @@ pollen-radius
 pollen-radius
 0
 50
-30
+30.0
 1
 1
 NIL
@@ -580,7 +580,7 @@ flower-duration
 flower-duration
 0
 30
-20
+20.0
 1
 1
 days
@@ -1076,146 +1076,11 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
-@#$#@#$#@
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
-<experiments>
-  <experiment name="experiment" repetitions="2" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="301"/>
-    <metric>percent-same-flowering-time</metric>
-    <enumeratedValueSet variable="mean-offspring">
-      <value value="3"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="F">
-      <value value="5"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="carrying-capacity">
-      <value value="3"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="B">
-      <value value="50"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-recombination">
-      <value value="false"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-margin">
-      <value value="30"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="tolerance-recombination">
-      <value value="true"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="fertilization-radius" first="1" step="3" last="30"/>
-    <enumeratedValueSet variable="flower-time-mut-prob">
-      <value value="0.099"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="dispersion-probability">
-      <value value="0.5"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="fitness-calculation">
-      <value value="&quot;original&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-mut-stdev">
-      <value value="5"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="frontier-sharpness" first="0.1" step="0.4" last="2"/>
-    <enumeratedValueSet variable="A">
-      <value value="50"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="tolerance-mutation-prob">
-      <value value="0.038"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="tolerance-mutation-stdev">
-      <value value="3.9"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="experiment" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="301"/>
-    <metric>percent-same-flowering-time</metric>
-    <enumeratedValueSet variable="B">
-      <value value="40"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="fitness-calculation">
-      <value value="&quot;original&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-margin">
-      <value value="30"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="tolerance-mutation-stdev">
-      <value value="4"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="dispersion-probability">
-      <value value="0.5"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="C">
-      <value value="0"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-recombination">
-      <value value="false"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="frontier-sharpness">
-      <value value="0.1"/>
-      <value value="0.2"/>
-      <value value="0.3"/>
-      <value value="0.4"/>
-      <value value="0.6"/>
-      <value value="0.8"/>
-      <value value="1"/>
-      <value value="1.5"/>
-      <value value="2"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="fertilization-radius" first="1" step="2" last="17"/>
-    <enumeratedValueSet variable="tolerance-mutation-prob">
-      <value value="0.04"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-mut-prob">
-      <value value="0.1"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="show-blooming?">
-      <value value="false"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="flower-time-mut-stdev">
-      <value value="5"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="A">
-      <value value="40"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="stack-plants-at-patch?">
-      <value value="false"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="carrying-capacity">
-      <value value="2"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="tolerance-recombination">
-      <value value="true"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="mean-offspring">
-      <value value="3"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="experiment" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="401"/>
-    <metric>percent-same-flowering-time</metric>
-    <steppedValueSet variable="frontier-sharpness" first="0.2" step="0.3" last="1.6"/>
-    <steppedValueSet variable="flower-time-margin" first="2" step="5" last="28"/>
-  </experiment>
-  <experiment name="experiment" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="401"/>
-    <metric>percent-same-flowering-time</metric>
-    <steppedValueSet variable="flower-time-margin" first="1" step="5" last="30"/>
-    <steppedValueSet variable="fertilization-radius" first="1" step="5" last="30"/>
-  </experiment>
-</experiments>
+@#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
 default
@@ -1228,7 +1093,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

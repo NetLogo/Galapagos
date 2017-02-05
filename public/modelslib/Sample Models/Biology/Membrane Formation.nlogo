@@ -89,10 +89,10 @@ end
 GRAPHICS-WINDOW
 245
 13
-765
-554
-25
-25
+763
+532
+-1
+-1
 10.0
 1
 10
@@ -122,7 +122,7 @@ num-water
 num-water
 0
 1000
-750
+750.0
 1
 1
 NIL
@@ -137,7 +137,7 @@ num-lipids
 num-lipids
 1
 500
-250
+250.0
 1
 1
 NIL
@@ -175,7 +175,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 30
@@ -253,7 +253,7 @@ true
 true
 "" ""
 PENS
-"ratio" 1.0 0 -16777216 true "" "plot mean [\ncount oils in-radius interaction-distance \n/ count turtles in-radius interaction-distance with [not (link-neighbor? myself)]\n] of oils"
+"ratio" 1.0 0 -16777216 true "" "plot mean [\ncount oils in-radius interaction-distance\n/ count turtles in-radius interaction-distance with [not (link-neighbor? myself)]\n] of oils"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -637,9 +637,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 250 [ go ]
@@ -657,7 +656,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

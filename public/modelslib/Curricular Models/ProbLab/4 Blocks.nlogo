@@ -112,13 +112,14 @@ to make-histogram
     let col-height 0 ;; keeps track of total height of a given histogram column
     let perm-category 0 ;; keeps track of which segment of a given histogram column
                         ;; corresponds to a specific block permutation
-    foreach [0 1 2 3 4] [ ;; foreach histogram column, which represents the number
-                          ;; of blocks that are the target-color
-      let column ?
+    foreach [0 1 2 3 4] [ [column] ->
+    ;; foreach histogram column, which represents the number
+    ;; of blocks that are the target-color
       set col-height 0 ; since it's a new column, start at the bottom
-      foreach n-values (choose 4 column) [?] [ ;; foreach possible permutation
-                                               ;; of blocks in this column, add
-                                               ;; a piece of the histogram
+      foreach n-values (choose 4 column) [[n] -> n] [
+      ;; foreach possible permutation
+      ;; of blocks in this column, add
+      ;; a piece of the histogram
         set col-height col-height + item perm-category stratified-list
         plotxy column col-height
         set perm-category perm-category + 1
@@ -129,7 +130,7 @@ to make-histogram
   ] [
     histogram target-color-list
     let maxbar modes target-color-list
-    let maxrange filter [ ? = item 0 maxbar ] target-color-list
+    let maxrange filter [ [the-target-color] -> the-target-color = item 0 maxbar ] target-color-list
     set-plot-y-range 0 length maxrange
   ]
 end
@@ -141,8 +142,8 @@ end
 GRAPHICS-WINDOW
 15
 10
-315
-331
+313
+309
 -1
 -1
 145.0
@@ -197,7 +198,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 320
@@ -243,7 +244,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 15
@@ -254,7 +255,7 @@ probability-to-be-target-color
 probability-to-be-target-color
 0
 100
-50
+50.0
 1
 1
 %
@@ -650,9 +651,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -668,7 +668,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

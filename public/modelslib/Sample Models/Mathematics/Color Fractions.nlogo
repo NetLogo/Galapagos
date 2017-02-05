@@ -6,27 +6,31 @@ to setup
     [ set plabel-color black
       set column-number pxcor + max-pxcor ]
   go
+  reset-ticks
 end
 
 to go
   let n numerator
   ;; go through every patch one at a time in order,
   ;; (left to right, top to bottom)
-  foreach sort patches
-    [ ask ?
-        [ ifelse column-number >= width
-            ;; patches outside the given width are black
-            [ set plabel ""
-              set pcolor black ]
-            ;; other patches get a color and label
-            [ ;; perform the division
-              set plabel floor (n / denominator)
-              ifelse plabel = 0
-                [ set pcolor gray + 1.5 ]          ;; 0 is gray
-                [ set pcolor plabel * 10 + 6 ]     ;; other digits get colors
-              ;; compute the new numerator
-              set n 10 * remainder n denominator
-            ] ] ]
+  foreach sort patches [ [p] ->
+    ask p [
+      ifelse column-number >= width [
+        ;; patches outside the given width are black
+        set plabel ""
+        set pcolor black
+      ] [
+        ;; other patches get a color and label
+        ;; perform the division
+        set plabel floor (n / denominator)
+        ifelse plabel = 0
+          [ set pcolor gray + 1.5 ]          ;; 0 is gray
+          [ set pcolor plabel * 10 + 6 ]     ;; other digits get colors
+                                             ;; compute the new numerator
+        set n 10 * remainder n denominator
+      ]
+    ]
+  ]
   ;; put a decimal point after the number in the
   ;; upper left corner patch
   ask patch min-pxcor max-pycor
@@ -41,10 +45,10 @@ end
 GRAPHICS-WINDOW
 333
 10
-666
-432
-9
-11
+664
+410
+-1
+-1
 17.0
 1
 13
@@ -74,7 +78,7 @@ numerator
 numerator
 0
 100
-1
+1.0
 1
 1
 NIL
@@ -89,7 +93,7 @@ denominator
 denominator
 1
 100
-7
+7.0
 1
 1
 NIL
@@ -110,7 +114,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 9
@@ -121,7 +125,7 @@ width
 width
 1
 19
-19
+19.0
 1
 1
 NIL
@@ -149,7 +153,7 @@ TEXTBOX
 128
 240
 159
-You can move the sliders while the GO button is running.
+You can move the sliders while\nthe GO button is running.
 11
 0.0
 0
@@ -215,7 +219,7 @@ Change the colors so you only use one color, but vary the lightness/darkness.
 
 Modify the program so you can visualize square roots and pi.
 
-Extend the program so you can have a full fraction Calculator such as the one in the references http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&lang=en&do=activity&activity=calc&level=0.
+Extend the program so you can have a full fraction Calculator such as [the one in the references](https://web.archive.org/web/20060708132645/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
 
 ## NETLOGO FEATURES
 
@@ -229,12 +233,7 @@ Division
 
 ## CREDITS AND REFERENCES
 
-This model is adapted from:
-Color Calculator Information for teachers:
-http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&lang=en&do=asides&activity=calc
-and
-Color Calculator:
-http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&lang=en&do=activity&activity=calc&level=0
+This model is adapted from: [Color Calculator Information for teachers](https://web.archive.org/web/20060708132243/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=asides&amp;activity=calc) and [Color Calculator](https://web.archive.org/web/20060708132645/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
 
 This model implements activities originally published in:
 Nathalie Sinclair, Rina Zazkis and Peter Liljedahl.  Number Worlds: Visual and Experimental Access to Elementary Number Theory Concepts.  International Journal of Computers for Mathematical Learning, Volume 8, Number 3, pages 235 - 263, January 2003.
@@ -544,9 +543,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -563,7 +561,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

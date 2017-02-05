@@ -330,8 +330,8 @@ end
 GRAPHICS-WINDOW
 350
 20
-870
-561
+868
+539
 -1
 -1
 10.0
@@ -363,7 +363,7 @@ mutation-rate
 mutation-rate
 0.0
 1.0
-0.0050
+0.005
 0.0010
 1
 NIL
@@ -393,7 +393,7 @@ immigrants-per-day
 immigrants-per-day
 0.0
 100.0
-1
+1.0
 1.0
 1
 NIL
@@ -476,7 +476,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 10
@@ -1009,15 +1009,14 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-full repeat 150 [ go ]
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="experiment104" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 104" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1048,7 +1047,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1066,7 +1065,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment105" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 105" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1097,7 +1096,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1115,7 +1114,7 @@ setup-full repeat 150 [ go ]
       <value value="100"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment106" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 106" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="4000"/>
@@ -1146,7 +1145,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1164,7 +1163,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment107" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 107" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="1000"/>
@@ -1195,7 +1194,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1213,7 +1212,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment108" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 108" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1244,7 +1243,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1262,7 +1261,7 @@ setup-full repeat 150 [ go ]
       <value value="25"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment109" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 109" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1293,7 +1292,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.02"/>
@@ -1311,7 +1310,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment110" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 110" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1360,7 +1359,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment111" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 111" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1409,7 +1408,7 @@ setup-full repeat 150 [ go ]
       <value value="50"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="experiment113" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Experiment 113" repetitions="10" runMetricsEveryStep="false">
     <setup>setup-empty</setup>
     <go>go</go>
     <timeLimit steps="2000"/>
@@ -1440,7 +1439,7 @@ setup-full repeat 150 [ go ]
       <value value="0.5"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="mutation-rate">
-      <value value="0.0050"/>
+      <value value="0.005"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="cost-of-giving">
       <value value="0.01"/>
@@ -1471,7 +1470,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

@@ -257,10 +257,10 @@ end
 GRAPHICS-WINDOW
 735
 30
-1137
-453
-24
-24
+1135
+431
+-1
+-1
 8.0
 1
 10
@@ -284,9 +284,9 @@ ticks
 TEXTBOX
 35
 10
-315
+320
 80
-Model starting point (you can start from a random arrangement or a picture from a microscope. You can also determine if you want a certain percentage of a second element, sometimes called grain refiner)
+Model starting point (you can start from a\nrandom arrangement or a picture from a\nmicroscope. You can also determine if you\nwant a certain percentage of a second\nelement, sometimes called grain refiner)
 11
 0.0
 0
@@ -300,7 +300,7 @@ annealing-temperature
 annealing-temperature
 0.0
 100.0
-0
+0.0
 1.0
 1
 %
@@ -321,7 +321,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 605
@@ -349,7 +349,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 30
@@ -360,7 +360,7 @@ percent-element2
 percent-element2
 0
 99
-0
+0.0
 1
 1
 %
@@ -489,7 +489,7 @@ brush-size
 brush-size
 1.0
 6.0
-3
+3.0
 1.0
 1
 NIL
@@ -498,9 +498,9 @@ HORIZONTAL
 TEXTBOX
 30
 320
-295
-365
-Draw/edit grains (this is optional, you can use this to \"draw\" new grain structures, or edit the grains at any point during the simulation)
+315
+361
+Draw/edit grains (this is optional, you can use\nthis to \"draw\" new grain structures, or edit\nthe grains at any point during the simulation)
 11
 0.0
 0
@@ -538,9 +538,9 @@ Grain size plot and calculations
 TEXTBOX
 34
 200
-304
+324
 245
-Change the shape of atoms (different shapes might help visualize the atomic planes, or the proportion of different types of grains)
+Change the shape of atoms (different shapes\nmight help visualize the atomic planes, or the\nproportion of different types of grains)
 11
 0.0
 0
@@ -551,7 +551,7 @@ BUTTON
 292
 550
 go once
-go\n
+go
 NIL
 1
 T
@@ -560,7 +560,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 CHOOSER
 30
@@ -592,9 +592,9 @@ NIL
 TEXTBOX
 345
 365
-540
+555
 406
-This slider determines how often the grain size is measured
+This slider determines how often\nthe grain size is measured
 11
 0.0
 1
@@ -602,9 +602,9 @@ This slider determines how often the grain size is measured
 TEXTBOX
 344
 478
-724
+749
 553
-A high annealing temperature makes some atoms randomly jump to the next grain. When it is zero, only the energetically favorable jumps will happen. Temperature here is represented as a relative value -- a percentage of random jumps out of the possible jumps. 100% means that all the jumps are random.
+A high annealing temperature makes some atoms randomly jump\nto the next grain. When it is zero, only the energetically favorable\njumps will happen. Temperature here is represented as a relative\nvalue -- a percentage of random jumps out of the possible jumps.\n100% means that all the jumps are random.
 11
 0.0
 1
@@ -612,7 +612,7 @@ A high annealing temperature makes some atoms randomly jump to the next grain. W
 TEXTBOX
 30
 175
-305
+320
 193
 _____________________________________________
 11
@@ -622,7 +622,7 @@ _____________________________________________
 TEXTBOX
 30
 295
-315
+325
 321
 _____________________________________________
 11
@@ -688,7 +688,7 @@ ticks-per-measurement
 ticks-per-measurement
 1
 200
-50
+50.0
 1
 1
 NIL
@@ -833,7 +833,7 @@ Blikstein, P. & Wilensky, U. (2004) MaterialSim: An agent-based simulation toolk
 
 The core algorithm of the model was developed at the University of Sao Paulo and published in:  Blikstein, P. and Tschiptschin, A. P. Monte Carlo simulation of grain growth (II). Materials Research, Sao Carlos, 2 (3), p. 133-138, jul. 1999.
 
-Available for download at: http://www.blikstein.com/paulo/documents/papers/BliksteinTschiptschin-MonteCarlo-MaterialsResearch1999.pdf. See also http://www.pmt.usp.br/paulob/montecarlo/ for more information (in Portuguese).
+Available for download at: http://www.scielo.br/scielo.php?script=sci_arttext&pid=S1516-14391999000300004&lng=en&nrm=iso&tlng=en. See also http://www.pmt.usp.br/paulob/montecarlo/ for more information (in Portuguese).
 
 ## HOW TO CITE
 
@@ -1188,9 +1188,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1206,7 +1205,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

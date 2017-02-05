@@ -28,15 +28,13 @@ end
 to setup-all-tags-list
   set all-tags []
   let tag-elements ["a" "b" "c"]
-  foreach tag-elements
-  [
-    let i ?
-    set all-tags lput (list ?) all-tags
-    foreach tag-elements [
-      let j ?
-      set all-tags fput (list i ?) all-tags
-      foreach tag-elements
-        [ set all-tags fput (list i j ?) all-tags ]
+  foreach tag-elements [ [i] ->
+    set all-tags lput (list i) all-tags
+    foreach tag-elements [ [j] ->
+      set all-tags fput (list i j) all-tags
+      foreach tag-elements [ [k] ->
+        set all-tags fput (list i j k) all-tags
+      ]
     ]
   ]
 end
@@ -64,7 +62,7 @@ end
 
 to recolor-turtle  ;; turtle procedure
   set color tag-color mating
-  set label reduce [word ?1 ?2] (sentence offense "." defense)
+  set label reduce [ [a b] -> word a b ] (sentence offense "." defense)
 end
 
 to-report tag-color [tag]
@@ -168,14 +166,16 @@ to-report cross [tag1 tag2]
     [ report sentence cross sublist tag1 0 length tag2 tag2 sublist tag1 length tag2 length tag1 ]
   if length tag2 > length tag1
     [ report sentence cross tag1 sublist tag2 0 length tag1 sublist tag2 length tag1 length tag2 ]
-  report (map [one-of (list ?1 ?2)] tag1 tag2)
+  report (map [ [t1 t2] -> one-of (list t1 t2)] tag1 tag2)
 end
 
 ;; Mutates a given string
 to-report mutate [tag]
-  report map [ifelse-value (random-float 100 >= mutation-rate)
-                [?] [one-of remove ? ["a" "b" "c"]]]
-             tag
+  report map [ [letter] ->
+    ifelse-value (random-float 100 >= mutation-rate)
+      [ letter ]
+      [ one-of remove letter ["a" "b" "c"] ]
+  ] tag
 end
 
 ;; This procedure determines how resources are transferred between
@@ -215,7 +215,9 @@ to-report match-score [tag1 tag2]
     [ report (length tag2 - length tag1) + match-score sublist tag1 0 length tag2 tag2 ]
   if length tag2 > length tag1
     [ report (length tag1 - length tag2) + match-score tag1 sublist tag2 0 length tag1 ]
-  report sum (map [ifelse-value (?1 = ?2) [2] [-2]] tag1 tag2)
+  report sum (map [ [letter1 letter2] ->
+    ifelse-value (letter1 = letter2) [2] [-2]
+  ] tag1 tag2)
 end
 
 
@@ -225,10 +227,10 @@ end
 GRAPHICS-WINDOW
 513
 10
-963
-481
-5
-5
+961
+459
+-1
+-1
 40.0
 1
 10
@@ -258,7 +260,7 @@ init-num-creatures
 init-num-creatures
 25
 1000
-400
+400.0
 25
 1
 NIL
@@ -296,7 +298,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 329
@@ -307,7 +309,7 @@ replenish-speed
 replenish-speed
 0
 5
-1
+1.0
 0.1
 1
 NIL
@@ -322,7 +324,7 @@ replicate-chance
 replicate-chance
 0
 10
-0
+0.0
 0.1
 1
 %
@@ -364,7 +366,7 @@ true
 false
 "set-plot-x-range 0 length all-tags" ""
 PENS
-"default" 1.0 1 -16777216 true "" ";; The HISTOGRAM primitive doesn't support giving different bars\n;; different colors, so we roll our own histogramming code here.\nplot-pen-reset\nforeach all-tags [\n  set-plot-pen-color tag-color ?\n  plot count turtles with [mating = ?]\n]"
+"default" 1.0 1 -16777216 true "" ";; The HISTOGRAM primitive doesn't support giving different bars\n;; different colors, so we roll our own histogramming code here.\nplot-pen-reset\nforeach all-tags [ [the-tag] ->\n  set-plot-pen-color tag-color the-tag\n  plot count turtles with [ mating = the-tag ]\n]"
 
 SLIDER
 329
@@ -375,7 +377,7 @@ mutation-rate
 mutation-rate
 0
 10
-0
+0.0
 0.1
 1
 %
@@ -456,7 +458,7 @@ mating-selectivity
 mating-selectivity
 -6
 6
-0
+0.0
 1
 1
 NIL
@@ -908,9 +910,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -926,7 +927,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

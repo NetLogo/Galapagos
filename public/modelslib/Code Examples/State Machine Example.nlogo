@@ -16,7 +16,7 @@ to setup
   create-turtles number [
     set color white
     setxy random-xcor random-ycor
-    set next-task task search-for-chip
+    set next-task [ [] -> search-for-chip ]
     set size 5  ;; easier to see
   ]
   reset-ticks
@@ -42,12 +42,13 @@ to search-for-chip   ;; turtle procedure -- "picks up chip" by turning orange
     [ set pcolor black
       set color orange
       set steps 20
-      set next-task task find-new-pile ]
+      set next-task [ [] -> find-new-pile ]
+    ]
 end
 
 to find-new-pile  ;; turtle procedure -- look for yellow patches
   if pcolor = yellow
-    [ set next-task task put-down-chip ]
+    [ set next-task [ [] -> put-down-chip ] ]
 end
 
 to put-down-chip  ;; turtle procedure -- finds empty spot & drops chip
@@ -55,12 +56,12 @@ to put-down-chip  ;; turtle procedure -- finds empty spot & drops chip
    [ set pcolor yellow
      set color white
      set steps 20
-     set next-task task get-away ]
+     set next-task [ [] -> get-away ] ]
 end
 
 to get-away  ;; turtle procedure -- get out of yellow pile
   if pcolor = black
-    [ set next-task task search-for-chip ]
+    [ set next-task [ [] -> search-for-chip ] ]
 end
 
 
@@ -71,10 +72,10 @@ end
 GRAPHICS-WINDOW
 228
 10
-640
-443
-100
-100
+638
+421
+-1
+-1
 2.0
 1
 10
@@ -121,7 +122,7 @@ number
 number
 1
 1000
-400
+400.0
 1
 1
 NIL
@@ -136,7 +137,7 @@ density
 density
 0.0
 100.0
-20
+20.0
 1.0
 1
 %
@@ -157,7 +158,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -448,9 +449,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup repeat 10000 [ go ]
 @#$#@#$#@
@@ -467,7 +467,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

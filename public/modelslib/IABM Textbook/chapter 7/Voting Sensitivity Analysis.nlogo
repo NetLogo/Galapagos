@@ -17,12 +17,13 @@ to setup
 end
 
 to go
+  ;; keep track of whether any patch has changed their vote
+  let any-votes-changed? false
   ask patches [
     set total (sum [ vote ] of neighbors)
   ]
   ;; use two ask patches blocks so all patches compute "total"
   ;; before any patches change their votes
-  let votes-changed 0
   ask patches [
     let previous-vote vote
     if total < 3 [ set vote 0 ] ;; if majority of your neighbors vote 0, set your vote to 0
@@ -40,11 +41,11 @@ to go
         [ set vote 1 ]
     ]
     if total > 5 [ set vote 1 ] ;; if majority of your neighbors vote 1, set your vote to 1
-    ;; increase our counter when the vote is not the same as before
-    if vote != previous-vote [ set votes-changed votes-changed + 1 ]
+    if vote != previous-vote [ set any-votes-changed? true ]
     recolor-patch
   ]
-  if votes-changed = 0 [ stop ] ;; stop when the model stabilizes
+  ;; if the votes have stabilized, we stop the simulation
+  if not any-votes-changed? [ stop ]
   tick
 end
 
@@ -74,10 +75,10 @@ end
 GRAPHICS-WINDOW
 230
 10
-693
-494
-75
-75
+691
+472
+-1
+-1
 3.0
 1
 10
@@ -185,7 +186,7 @@ initial-green-pct
 initial-green-pct
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -551,9 +552,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -584,7 +584,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

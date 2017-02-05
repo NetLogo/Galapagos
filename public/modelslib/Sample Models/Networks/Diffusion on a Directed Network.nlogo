@@ -126,10 +126,10 @@ end
 GRAPHICS-WINDOW
 215
 10
-645
-461
-10
-10
+643
+439
+-1
+-1
 20.0
 1
 10
@@ -182,7 +182,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -193,7 +193,7 @@ link-chance
 link-chance
 0
 100
-50
+50.0
 1
 1
 %
@@ -208,7 +208,7 @@ grid-size
 grid-size
 3
 19
-9
+9.0
 2
 1
 NIL
@@ -241,7 +241,7 @@ diffusion-rate
 diffusion-rate
 0
 100
-10
+10.0
 1
 1
 %
@@ -262,7 +262,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 110
@@ -279,7 +279,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -647,9 +647,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -676,7 +675,6 @@ true
 0
 Line -7500403 true 150 150 120 180
 Line -7500403 true 150 150 180 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

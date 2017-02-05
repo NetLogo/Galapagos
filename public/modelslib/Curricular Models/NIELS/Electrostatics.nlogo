@@ -131,10 +131,10 @@ end
 GRAPHICS-WINDOW
 194
 10
-706
-543
-125
-125
+704
+521
+-1
+-1
 2.0
 1
 18
@@ -181,7 +181,7 @@ charge
 charge
 -8
 8.0
--4
+-4.0
 4
 1
 units
@@ -202,7 +202,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 740
@@ -213,21 +213,21 @@ fade-rate
 fade-rate
 0
 100
-40
+40.0
 5
 1
 %
 HORIZONTAL
 
 TEXTBOX
-15
-83
+11
+82
 187
-157
-Click and hold the mouse in the view while GO is pressed to control a positive electrostatic charge.
+156
+Click and hold the mouse in\nthe view while GO is pressed\nto control a positive\nelectrostatic charge.
 11
 0.0
-0
+1
 
 PLOT
 709
@@ -256,7 +256,7 @@ permittivity
 permittivity
 1
 9
-9
+9.0
 2
 1
 units
@@ -723,9 +723,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -742,7 +741,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -50,13 +50,12 @@ to new
       setxy 10 10
     ]
 
-    foreach n-values 4 [ ? ]
-    [
+    foreach n-values 4 [ [i] -> i ] [ [i] ->
       create-ghosts 1
       [
         set shape "ghost"
-        set color item ? ghost-colors
-        setxy 10 (9 - ?)
+        set color item i ghost-colors
+        setxy 10 (9 - i)
         set heading 0
         set eaten? false
       ]
@@ -269,10 +268,10 @@ end
 GRAPHICS-WINDOW
 285
 10
-736
-482
-10
-10
+734
+460
+-1
+-1
 21.0
 1
 10
@@ -330,7 +329,7 @@ which-ghost
 which-ghost
 1
 4
-1
+1.0
 1
 1
 NIL
@@ -985,9 +984,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 import-world "../pacmap4.csv"
 @#$#@#$#@
@@ -1004,7 +1002,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

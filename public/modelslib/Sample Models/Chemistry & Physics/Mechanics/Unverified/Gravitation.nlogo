@@ -128,10 +128,10 @@ end
 GRAPHICS-WINDOW
 195
 10
-607
-443
-100
-100
+605
+421
+-1
+-1
 2.0
 1
 10
@@ -178,7 +178,7 @@ number
 number
 0
 100
-10
+10.0
 1
 1
 particles
@@ -193,7 +193,7 @@ mass
 mass
 0.0
 1000
-50
+50.0
 1.0
 1
 NIL
@@ -214,7 +214,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 72
@@ -245,9 +245,9 @@ HORIZONTAL
 TEXTBOX
 10
 232
-182
+192
 311
-Click and hold the mouse in the view while GO is running to act as a gravitational source with mass set by the slider value.
+Click and hold the mouse in\nthe view while GO is running\nto act as a gravitational\nsource with mass set by the\nslider value.
 11
 0.0
 0
@@ -614,9 +614,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -632,7 +631,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

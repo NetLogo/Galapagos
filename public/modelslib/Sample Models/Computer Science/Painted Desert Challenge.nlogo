@@ -13,6 +13,7 @@ to setup
       set chip? false
       setxy random-xcor random-ycor
       set size 2 ] ;; easier to see
+  reset-ticks
 end
 
 to go
@@ -72,10 +73,10 @@ end
 GRAPHICS-WINDOW
 208
 10
-704
-527
-40
-40
+702
+505
+-1
+-1
 6.0
 1
 10
@@ -111,7 +112,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
@@ -139,7 +140,7 @@ colors
 colors
 1
 14
-8
+8.0
 1
 1
 NIL
@@ -154,7 +155,7 @@ number
 number
 1
 400
-250
+250.0
 1
 1
 NIL
@@ -169,7 +170,7 @@ density
 density
 0.0
 99.0
-45
+45.0
 1.0
 1
 %
@@ -540,9 +541,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 ask turtles [ repeat 50 [ go ] ]
@@ -560,7 +560,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

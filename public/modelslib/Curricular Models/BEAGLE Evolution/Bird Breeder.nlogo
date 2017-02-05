@@ -80,6 +80,7 @@ to setup
     calculate-all-alleles
     visualize-genetics
     give-instructions
+    reset-ticks
 end
 
 
@@ -116,10 +117,26 @@ to set-scenario
 
     set genes-to-phenotype
       [
-        ["AA"  "set color (yellow - 1)"] ["Aa"  "set color orange"] ["aA"  "set color orange"] ["aa"  "set color red"]                                                       ;; sets body color
-        ["BB"  "set shape second-trait-shape-3"] ["Bb"  "set shape second-trait-shape-2"] ["bB"  "set shape second-trait-shape-2"] ["bb"  "set shape second-trait-shape-1"]  ;; fire shape
-        ["CC"  "set color (gray - 2.5)"] ["Cc"  "set color (gray + 1)"] ["cC"  "set color (gray + 1)"] ["cc"  "set color white"]                                             ;; sets breast color
-        ["DD"  "set shape fourth-shape-1"] ["Dd"  "set shape fourth-shape-2"] ["dD"  "set shape fourth-shape-2"] ["dd"  "set shape fourth-shape-3" ]                             ;; sets tail shape
+        ;; sets body color
+        ["AA"  "set color (yellow - 1)"]
+        ["Aa"  "set color orange"]
+        ["aA"  "set color orange"]
+        ["aa"  "set color red"]
+        ;; fire shape
+        ["BB"  "set shape second-trait-shape-3"]
+        ["Bb"  "set shape second-trait-shape-2"]
+        ["bB"  "set shape second-trait-shape-2"]
+        ["bb"  "set shape second-trait-shape-1"]
+        ;; sets breast color
+        ["CC"  "set color (gray - 2.5)"]
+        ["Cc"  "set color (gray + 1)"]
+        ["cC"  "set color (gray + 1)"]
+        ["cc"  "set color white"]
+        ;; sets tail shape
+        ["DD"  "set shape fourth-shape-1"]
+        ["Dd"  "set shape fourth-shape-2"]
+        ["dD"  "set shape fourth-shape-2"]
+        ["dd"  "set shape fourth-shape-3" ]
       ]
     ]
 end
@@ -737,10 +754,10 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-296
+320
 10
-806
-541
+828
+519
 -1
 -1
 50.0
@@ -795,7 +812,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 5
@@ -812,7 +829,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 6
@@ -840,7 +857,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 153
@@ -851,7 +868,7 @@ cost-for-breeding
 cost-for-breeding
 0
 20
-10
+10.0
 5
 1
 NIL
@@ -866,7 +883,7 @@ reward-for-goal-bird
 reward-for-goal-bird
 200
 1000
-1000
+1000.0
 100
 1
 NIL
@@ -887,7 +904,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 3
@@ -898,7 +915,7 @@ cost-contribution
 cost-contribution
 0
 20
-10
+10.0
 5
 1
 NIL
@@ -925,9 +942,9 @@ OUTPUT
 TEXTBOX
 13
 424
-283
+316
 466
-Bird Scenario Goal:  breed 3 birds each with a blue head cap, purple breast, red wing, and red tail
+Bird Scenario Goal:  breed 3 birds each with a blue\nhead cap, purple breast, red wing, and red tail
 11
 0.0
 0
@@ -962,9 +979,9 @@ scenario
 TEXTBOX
 13
 460
-269
+306
 516
-Dragon Scenario Goal:  breed 3 dragons each fire breathing, with a white breast, a red body, and a rope tail.
+Dragon Scenario Goal:  breed 3 dragons each\nfire breathing, with a white breast, a red body,\nand a rope tail.
 11
 0.0
 0
@@ -984,7 +1001,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1636,9 +1653,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1654,7 +1670,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -85,21 +85,18 @@ to link-preferentially [nodeset k]
   [
     ;; to make a link either to or from each preceding
     ;; node in the sorted list.
-    foreach neighbor-choice-list
-    [
+    foreach neighbor-choice-list [ [neighbor] ->
       ifelse random 2 = 0
-      [ create-link-to ? ]
-      [ create-link-from ? ]
+        [ create-link-to neighbor ]
+        [ create-link-from neighbor ]
     ]
     ;; add k copies of this node to the beginning of the sublist
     set neighbor-choice-list sentence (n-values k [self]) neighbor-choice-list
   ]
 
   ;; ask each node after the kth node in order...
-  foreach sublist node-list (k + 1) (length node-list)
-  [
-    ask ?
-    [
+  foreach sublist node-list (k + 1) (length node-list) [ [node] ->
+    ask node [
       ;; ...to make k links
       let temp-neighbor-list neighbor-choice-list
       repeat k
@@ -115,8 +112,8 @@ to link-preferentially [nodeset k]
         ;; linked to again
         set neighbor-choice-list fput neighbor neighbor-choice-list
         ifelse random 2 = 0
-        [ create-link-to neighbor ]
-        [ create-link-from neighbor ]
+          [ create-link-to neighbor ]
+          [ create-link-from neighbor ]
       ]
       set neighbor-choice-list sentence (n-values k [self]) neighbor-choice-list
     ]
@@ -250,10 +247,10 @@ end
 GRAPHICS-WINDOW
 255
 10
-685
-461
-10
-10
+683
+439
+-1
+-1
 20.0
 1
 10
@@ -306,7 +303,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 25
@@ -353,7 +350,7 @@ number-of-surfers
 number-of-surfers
 1
 100
-5
+5.0
 1
 1
 NIL
@@ -395,7 +392,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -785,9 +782,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -814,7 +810,6 @@ true
 0
 Line -7500403 true 150 150 105 210
 Line -7500403 true 150 150 195 210
-
 @#$#@#$#@
 1
 @#$#@#$#@

@@ -14,20 +14,22 @@ end
 ;; we use SORT to get the turtles in order by who number.
 
 to go-forward
-  foreach sort turtles [
-    ask ? [
+  foreach sort turtles [ [t] ->
+    ask t [
       fd 1
       turn
-    ] ]
+    ]
+  ]
   tick
 end
 
 to go-reverse
-  foreach reverse sort turtles [
-    ask ? [
+  foreach reverse sort turtles [ [t] ->
+    ask t [
       turn
       bk 1
-    ] ]
+    ]
+  ]
   tick
 end
 
@@ -46,10 +48,10 @@ end
 GRAPHICS-WINDOW
 220
 10
-712
-523
-120
-120
+710
+501
+-1
+-1
 2.0
 1
 10
@@ -102,7 +104,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 18
@@ -113,7 +115,7 @@ num-vants
 num-vants
 1
 16
-1
+1.0
 1
 1
 NIL
@@ -134,7 +136,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -504,9 +506,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 60000 [ go-forward ]
@@ -524,7 +525,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

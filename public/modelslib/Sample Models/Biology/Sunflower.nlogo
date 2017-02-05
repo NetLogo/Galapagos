@@ -32,10 +32,10 @@ end
 GRAPHICS-WINDOW
 293
 10
-728
-466
-8
-8
+726
+444
+-1
+-1
 25.0
 1
 10
@@ -88,7 +88,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 4
@@ -114,7 +114,7 @@ turn-increment
 turn-increment
 0
 3.236
-0.618034
+0.619
 1.0E-6
 1
 degrees
@@ -146,7 +146,7 @@ num-colors
 num-colors
 1
 14
-1
+1.0
 1
 1
 NIL
@@ -538,9 +538,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 250 [ go ]
@@ -558,7 +557,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

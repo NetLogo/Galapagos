@@ -146,10 +146,10 @@ end
 GRAPHICS-WINDOW
 393
 17
-854
-499
-20
-20
+852
+477
+-1
+-1
 11.0
 1
 10
@@ -213,7 +213,7 @@ num-people
 num-people
 2
 500
-200
+200.0
 1
 1
 NIL
@@ -277,7 +277,7 @@ num-infected
 num-infected
 0
 num-people
-3
+3.0
 1
 1
 NIL
@@ -331,7 +331,7 @@ disease-decay
 disease-decay
 0
 10
-10
+10.0
 1
 1
 ticks
@@ -751,9 +751,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -842,7 +841,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

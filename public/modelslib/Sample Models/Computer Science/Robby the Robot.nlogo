@@ -55,7 +55,7 @@ to setup
     ;; So 243 (3^5) is the chromosome length allowing any possible situation to be represented.
     set chromosome n-values 243 [random-action]
     ;; calculate the frequency of the 7 basic actions (or "alleles") in each chromosome
-    set allele-distribution map [occurrences ? chromosome] ["move-north" "move-east" "move-south" "move-west" "move-random" "stay-put" "pick-up-can"]
+    set allele-distribution map [ [action] -> occurrences action chromosome ] ["move-north" "move-east" "move-south" "move-west" "move-random" "stay-put" "pick-up-can"]
   ]
   calculate-population-fitnesses
   let best-individual max-one-of individuals [fitness]
@@ -69,7 +69,11 @@ to setup
   display-fitness best-individual
 
   plot-pen-up
-  plotxy -1 0        ;plots are initialized to begin at an x-value of 0, this moves the plot-pen to the point (-1,0) so that best-fitness for generation 0 will be drawn at x = 0
+
+  ; plots are initialized to begin at an x-value of 0, this moves the plot-pen to
+  ; the point (-1,0) so that best-fitness for generation 0 will be drawn at x = 0
+  plotxy -1 0
+
   set-plot-y-range (precision best-fitness 0) (precision best-fitness 0) + 3
   plot best-fitness
   plot-pen-down
@@ -222,12 +226,13 @@ to create-next-generation ;[best-individual]
     let child-chromosomes crossover ([chromosome] of parent1) ([chromosome] of parent2)
 
     ; create the two children, with their new genetic material
+    let actions ["move-north" "move-east" "move-south" "move-west" "move-random" "stay-put" "pick-up-can"]
     ask parent1 [
       hatch 1 [
         rt random 360 fd random-float 3.0
         set chromosome item 0 child-chromosomes
         ;; record the distribution of basic actions (or "alleles") for each individual
-        set allele-distribution map [occurrences ? chromosome] ["move-north" "move-east" "move-south" "move-west" "move-random" "stay-put" "pick-up-can"]
+        set allele-distribution map [ [action] -> occurrences action chromosome ] actions
       ]
     ]
     ask parent2 [
@@ -235,7 +240,7 @@ to create-next-generation ;[best-individual]
         rt random 360 fd random-float 3.0
         set chromosome item 1 child-chromosomes
         ;; record the distribution of basic actions (or "alleles") for each individual
-        set allele-distribution map [occurrences ? chromosome] ["move-north" "move-east" "move-south" "move-west" "move-random" "stay-put" "pick-up-can"]
+        set allele-distribution map [ [action] -> occurrences action chromosome ] actions
        ]
     ]
   ]
@@ -246,8 +251,7 @@ end
 
 ;; each individual takes NUM-ACTIONS-PER-ENVIRONMENT actions according to its strategy on NUM-ENVIRONMENTS-FOR-FITNESS random environments
 to calculate-population-fitnesses
-  foreach sort individuals [
-    let current-individual ?
+  foreach sort individuals [ [current-individual] ->
     let score-sum 0
     repeat num-environments-for-fitness [
       initialize-robot [chromosome] of current-individual
@@ -289,9 +293,11 @@ end
 ;; MUTATION-RATE slider.  In the MAP, "[?]" means "return the same value".
 
 to mutate   ;; individual procedure
-  set chromosome map [ifelse-value (random-float 1 < mutation-rate)
-                        [random-action] [?]]
-                     chromosome
+  set chromosome map [ [action] ->
+    ifelse-value (random-float 1 < mutation-rate)
+      [random-action]
+      [action]
+  ] chromosome
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -400,8 +406,7 @@ end
 
 ;; count the number of occurrences of an item in a list
 to-report occurrences [x a-list]
-  report reduce
-    [ifelse-value (?2 = x) [?1 + 1] [?1]] (fput 0 a-list)
+  report reduce [ [n the-item] -> ifelse-value (the-item = x) [ n + 1 ] [ n ] ] (fput 0 a-list)
 end
 
 ;; measure distance between two chromosomes
@@ -409,7 +414,7 @@ end
 to-report chromosome-distance [individual1 individual2]
   let max-dist  273 * sqrt 2
   ;; compute the euclidean distance between allele distributions
-  let dist2 reduce + (map [(?1  - ?2) ^ 2] [allele-distribution] of individual1 [allele-distribution] of individual2)
+  let dist2 sum (map [ [a1 a2] -> (a1  - a2) ^ 2 ] [allele-distribution] of individual1 [allele-distribution] of individual2)
   ;; scale the distance to fit in the view
   let dist-candidate max-pxcor * sqrt dist2 / ( max-dist / 10)
   ;; if distance is too large, report the edge of the view
@@ -424,8 +429,8 @@ end
 GRAPHICS-WINDOW
 336
 16
-646
-347
+644
+325
 -1
 -1
 30.0
@@ -457,7 +462,7 @@ population-size
 population-size
 20
 500
-100
+100.0
 2
 1
 NIL
@@ -535,7 +540,7 @@ TEXTBOX
 26
 258
 58
-Speed up speed slider or turn off view updates for faster response.
+Speed up speed slider or turn off\nview updates for faster response.
 11
 0.0
 1
@@ -566,7 +571,7 @@ number-of-generations
 number-of-generations
 1
 1000
-100
+100.0
 1
 1
 NIL
@@ -587,7 +592,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 340
@@ -634,14 +639,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 537
 487
 658
 518
-Watch Robby move one step at a time.
+Watch Robby move\none step at a time.
 10
 0.0
 1
@@ -651,7 +656,7 @@ TEXTBOX
 424
 676
 476
-Setup and view Robby's environment by randomly distributing cans throughout the world.
+Setup and view Robby's\nenvironment by randomly\ndistributing cans\nthroughout the world.
 10
 0.0
 1
@@ -661,7 +666,7 @@ TEXTBOX
 393
 660
 435
-After running the GA,  watch Robby use the best evolved strategy:
+After running the GA,  watch Robby use\nthe best evolved strategy:
 14
 95.0
 1
@@ -681,7 +686,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 249
@@ -758,14 +763,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 535
 530
 670
 558
-Return to a view of the strategies.
+Return to a view of\nthe strategies.
 10
 0.0
 1
@@ -1170,9 +1175,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup repeat 5 [ go ]
 @#$#@#$#@
@@ -1189,7 +1193,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

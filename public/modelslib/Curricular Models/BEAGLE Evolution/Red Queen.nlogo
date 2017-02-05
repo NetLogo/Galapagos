@@ -8,8 +8,6 @@ to setup
   ask patches [ set pcolor white ]
   set-default-shape frogs "frog top"
   setup-individuals
-  growth-plot
-  trait-plot
   reset-ticks
 end
 
@@ -71,8 +69,6 @@ to go
   ]
 
   tick
-  growth-plot
-  trait-plot
 end
 
 to hunt-frogs
@@ -101,22 +97,6 @@ to reproduce
  ]
 end
 
-to growth-plot
-  set-current-plot "populations"
-  set-current-plot-pen "frogs"
-  plot count frogs
-  set-current-plot-pen "snakes"
-  plot count snakes
-end
-
-to trait-plot
-  set-current-plot "traits"
-  set-current-plot-pen "poison"
-  plot average-poison
-  set-current-plot-pen "resistance"
-  plot average-resistance
-end
-
 to-report average-poison
   ifelse count frogs > 0
     [ report mean [ poison ] of frogs ]
@@ -136,10 +116,10 @@ end
 GRAPHICS-WINDOW
 227
 10
-657
-461
-17
-17
+655
+439
+-1
+-1
 12.0
 1
 10
@@ -175,7 +155,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 35
@@ -203,7 +183,7 @@ initial-number-frogs
 initial-number-frogs
 1
 150
-150
+150.0
 1
 1
 NIL
@@ -218,7 +198,7 @@ initial-number-snakes
 initial-number-snakes
 1
 150
-150
+150.0
 1
 1
 NIL
@@ -239,7 +219,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 440
@@ -311,8 +291,8 @@ true
 false
 "" ""
 PENS
-"frogs" 1.0 0 -2674135 true "" ""
-"snakes" 1.0 0 -13345367 true "" ""
+"frogs" 1.0 0 -2674135 true "" "plot count frogs"
+"snakes" 1.0 0 -13345367 true "" "plot count snakes"
 
 PLOT
 202
@@ -330,8 +310,8 @@ true
 false
 "" ""
 PENS
-"poison" 1.0 0 -2674135 true "" ""
-"resistance" 1.0 0 -13345367 true "" ""
+"poison" 1.0 0 -2674135 true "" "plot average-poison"
+"resistance" 1.0 0 -13345367 true "" "plot average-resistance"
 
 SLIDER
 4
@@ -342,7 +322,7 @@ initial-poison-mean
 initial-poison-mean
 0
 50
-25
+25.0
 1
 1
 NIL
@@ -357,7 +337,7 @@ initial-resistance-mean
 initial-resistance-mean
 0
 50
-25
+25.0
 1
 1
 NIL
@@ -372,7 +352,7 @@ max-population
 max-population
 0
 500
-500
+500.0
 1
 1
 NIL
@@ -747,9 +727,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -772,21 +751,6 @@ NetLogo 5.2.0
     <enumeratedValueSet variable="initial-number-snakes">
       <value value="150"/>
     </enumeratedValueSet>
-  </experiment>
-  <experiment name="experiment" repetitions="10" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <metric>count turtles</metric>
-    <enumeratedValueSet variable="initial-number-frogs">
-      <value value="150"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-resistance-mean">
-      <value value="25"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-number-snakes">
-      <value value="150"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="initial-poison-mean" first="0" step="5" last="50"/>
   </experiment>
   <experiment name="Final Counts" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
@@ -818,7 +782,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

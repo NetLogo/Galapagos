@@ -54,7 +54,7 @@ to setup-continue
   if not gone? [stop]
 
   let value-list []
-  set value-list map [[value] of ?] sort patches with [pycor = current-row]  ;; copy cell states from the current row to a list
+  set value-list map [ [p] -> [value] of p ] sort patches with [pycor = current-row]  ;; copy cell states from the current row to a list
   clear-patches
   clear-turtles
   set current-row max-pycor  ;; reset current row to top
@@ -152,10 +152,10 @@ end
 GRAPHICS-WINDOW
 233
 10
-757
-299
-128
-64
+755
+277
+-1
+-1
 2.0
 1
 10
@@ -185,7 +185,7 @@ sum-0
 sum-0
 0.0
 2.0
-0
+0.0
 1.0
 1
 NIL
@@ -200,7 +200,7 @@ sum-1
 sum-1
 0.0
 2.0
-2
+2.0
 1.0
 1
 NIL
@@ -215,7 +215,7 @@ sum-2
 sum-2
 0.0
 2.0
-1
+1.0
 1.0
 1
 NIL
@@ -230,7 +230,7 @@ sum-3
 sum-3
 0.0
 2.0
-0
+0.0
 1.0
 1
 NIL
@@ -245,7 +245,7 @@ sum-4
 sum-4
 0.0
 2.0
-2
+2.0
 1.0
 1
 NIL
@@ -260,7 +260,7 @@ sum-5
 sum-5
 0.0
 2.0
-0
+0.0
 1.0
 1
 NIL
@@ -275,7 +275,7 @@ sum-6
 sum-6
 0.0
 2.0
-2
+2.0
 1.0
 1
 NIL
@@ -313,7 +313,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 236
@@ -324,7 +324,7 @@ color-zero
 color-zero
 0.0
 139.0
-90
+90.0
 1.0
 1
 NIL
@@ -339,7 +339,7 @@ color-one
 color-one
 0.0
 139.0
-93
+93.0
 1.0
 1
 NIL
@@ -354,7 +354,7 @@ color-two
 color-two
 0.0
 139.0
-96
+96.0
 1.0
 1
 NIL
@@ -369,7 +369,7 @@ code
 code
 0.0
 2186.0
-1635
+1635.0
 1.0
 1
 NIL
@@ -384,7 +384,7 @@ one-two-proportion
 one-two-proportion
 0.0
 100.0
-50
+50.0
 1.0
 1
 NIL
@@ -399,7 +399,7 @@ density
 density
 0.0
 100.0
-10
+10.0
 1.0
 1
 %
@@ -425,9 +425,9 @@ NIL
 TEXTBOX
 124
 65
-215
+226
 98
-Random Settings:
+Random\nSettings:
 11
 0.0
 0
@@ -851,9 +851,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup-random
 repeat world-height - 1 [ go ]
@@ -871,7 +870,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

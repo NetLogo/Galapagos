@@ -14,12 +14,15 @@ to setup
 end
 
 to go
+  ;; keep track of whether any patch has changed their vote
+  let any-votes-changed? false
   ask patches [
     set total (sum [ vote ] of neighbors)
   ]
   ;; use two ask patches blocks so all patches compute "total"
   ;; before any patches change their votes
   ask patches [
+    let previous-vote vote
     if total < 3 [ set vote 0 ] ;; if majority of your neighbors vote 0, set your vote to 0
     if total = 3 [
       ifelse award-close-calls-to-loser?
@@ -35,8 +38,11 @@ to go
         [ set vote 1 ]
     ]
     if total > 5 [ set vote 1 ] ;; if majority of your neighbors vote 1, set your vote to 1
+    if vote != previous-vote [ set any-votes-changed? true ]
     recolor-patch
   ]
+  ;; if the votes have stabilized, we stop the simulation
+  if not any-votes-changed? [ stop ]
   tick
 end
 
@@ -63,10 +69,10 @@ end
 GRAPHICS-WINDOW
 230
 10
-693
-494
-75
-75
+691
+472
+-1
+-1
 3.0
 1
 10
@@ -173,6 +179,10 @@ This model is from Chapter Seven of the book "Introduction to Agent-Based Modeli
 * Wilensky, U. & Rand, W. (2015). Introduction to Agent-Based Modeling: Modeling Natural, Social and Engineered Complex Systems with NetLogo. Cambridge, MA. MIT Press.
 
 This model is in the IABM Textbook folder of the NetLogo Models Library. The model, as well as any updates to the model, can also be found on the textbook website: http://www.intro-to-abm.com/.
+
+## UPDATES TO THE MODEL SINCE TEXTBOOK PUBLICATION
+
+The code for the `go` procedure of this model has been improved since the textbook's publication: it now stops the simulation if no votes have changed in the last tick.
 
 ## WHAT IS IT?
 
@@ -525,9 +535,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -543,7 +552,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -42,8 +42,8 @@ end
 
 to find-top-species  ;;find the percentage of the most populous species
   let winning-amount 0
-  foreach base-colors [
-    let how-many count turtles with [color = ?]
+  foreach base-colors [ [c] ->
+    let how-many count turtles with [color = c]
     if how-many > winning-amount
       [ set winning-amount how-many ]
   ]
@@ -97,10 +97,10 @@ end
 GRAPHICS-WINDOW
 305
 10
-735
-461
-17
-17
+733
+439
+-1
+-1
 12.0
 1
 10
@@ -136,7 +136,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 18
@@ -164,7 +164,7 @@ colors
 colors
 2
 10
-5
+5.0
 1
 1
 NIL
@@ -179,7 +179,7 @@ number
 number
 1
 1000
-300
+300.0
 1
 1
 NIL
@@ -215,7 +215,7 @@ PENS
 MONITOR
 35
 151
-143
+152
 196
 % most populous
 max-percent
@@ -279,7 +279,7 @@ TEXTBOX
 391
 281
 419
-As the model runs, you may optionally create and remove walls that separate groups of turtles.
+As the model runs, you may optionally create and\nremove walls that separate groups of turtles.
 10
 0.0
 0
@@ -634,9 +634,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -652,7 +651,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -99,10 +99,10 @@ end
 GRAPHICS-WINDOW
 309
 10
-624
-346
-30
-30
+622
+324
+-1
+-1
 5.0
 1
 10
@@ -155,7 +155,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 7
@@ -166,7 +166,7 @@ initial-density
 initial-density
 0
 100
-50
+50.0
 1
 1
 %
@@ -202,7 +202,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 216
@@ -230,7 +230,7 @@ inner-radius-x
 inner-radius-x
 0
 10
-3
+3.0
 1
 1
 cells
@@ -245,7 +245,7 @@ inner-radius-y
 inner-radius-y
 0
 10
-3
+3.0
 1
 1
 cells
@@ -260,7 +260,7 @@ outer-radius-x
 outer-radius-x
 0
 10
-6
+6.0
 1
 1
 cells
@@ -275,7 +275,7 @@ outer-radius-y
 outer-radius-y
 0
 10
-6
+6.0
 1
 1
 cells
@@ -341,13 +341,13 @@ Voting, in the Social Science section, is based on simpler rules but generates p
 
 The mechanism of "diffusion-driven instability" was first proposed by Alan Turing in 1952. B.N. Nagorcka first proposed applying it to hair and fur. The particular variant presented in this model was proposed by David Young.
 
-In building this model, we used information on this web site: http://classes.yale.edu/fractals/Panorama/Biology/Leopard/Leopard.html .
+In building this model, we used information on this web site: http://users.math.yale.edu/public_html/People/frame/Fractals/Panorama/Biology/Leopard/Leopard.html
 
 Research published in Nature Genetics (Economou et al, 2012) appears to confirm the mechanisms the model proposes.
 http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3303118/
 
 A news article in IO9 by Alasdair Wilkins describing the research can be found here.
-http://io9.com/5886406/scientists-confirm-alan-turings-50-year-old-theory-for-why-tigers-have-stripes
+http://io9.gizmodo.com/5886406/scientists-confirm-alan-turings-50-year-old-theory-for-why-tigers-have-stripes
 
 Here is a quote from the Wilkins article:
 
@@ -691,9 +691,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -709,7 +708,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

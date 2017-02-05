@@ -311,10 +311,10 @@ end
 GRAPHICS-WINDOW
 303
 8
-733
-459
-10
-10
+731
+437
+-1
+-1
 20.0
 1
 10
@@ -390,7 +390,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 8
@@ -401,7 +401,7 @@ n-random
 n-random
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -416,7 +416,7 @@ n-cooperate
 n-cooperate
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -431,7 +431,7 @@ n-defect
 n-defect
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -446,7 +446,7 @@ n-tit-for-tat
 n-tit-for-tat
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -461,7 +461,7 @@ n-unforgiving
 n-unforgiving
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -476,7 +476,7 @@ n-unknown
 n-unknown
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -485,7 +485,7 @@ HORIZONTAL
 TEXTBOX
 12
 175
-178
+248
 315
       PAYOFF:\n             Partner    \nTurtle    C       D\n-------------------------\n    C        3      0  \n-------------------------\n    D        5      1\n-------------------------\n(C = Cooperate, D = Defect)
 11
@@ -507,7 +507,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -921,9 +921,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -939,7 +938,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

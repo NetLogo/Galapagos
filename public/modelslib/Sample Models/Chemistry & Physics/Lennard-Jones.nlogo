@@ -150,12 +150,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-240
+239
 10
-745
-536
-16
-16
+742
+514
+-1
+-1
 15.0
 1
 10
@@ -182,7 +182,7 @@ BUTTON
 204
 250
 NIL
-setup\n
+setup
 NIL
 1
 T
@@ -219,7 +219,7 @@ num-atoms
 num-atoms
 1
 1000
-250
+250.0
 1
 1
 NIL
@@ -298,7 +298,7 @@ TEXTBOX
 10
 238
 81
-Model starting point. You can choose the number of atoms, the density and the initial configuration (random or hexagonally-close-packed)
+Model starting point. You can\nchoose the number of atoms,\nthe density and the initial\nconfiguration (random or\nhexagonally-close-packed)
 11
 0.0
 1
@@ -306,7 +306,7 @@ Model starting point. You can choose the number of atoms, the density and the in
 TEXTBOX
 31
 251
-208
+223
 279
 _____________________________
 11
@@ -319,7 +319,7 @@ BUTTON
 117
 386
 go-once
-go\n
+go
 NIL
 1
 T
@@ -328,12 +328,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 3
 263
-21
+27
 299
 2
 30
@@ -343,9 +343,9 @@ TEXTBOX
 TEXTBOX
 30
 270
-225
+231
 312
-Adjust the temperature and run the model. The temperature can be adjusted while the model runs\n
+Adjust the temperature and run\nthe model. The temperature can\nbe adjusted while the model runs\n
 11
 0.0
 1
@@ -401,7 +401,7 @@ Note that the number of atoms is very small compared to most real systems. Also,
 
 To learn more about the Lennard-Jones potential see:
 
-* http://chemwiki.ucdavis.edu/Physical_Chemistry/Physical_Properties_of_Matter/Intermolecular_Forces/Lennard-Jones_Potential
+* http://chemwiki.ucdavis.edu/Physical_Chemistry/Physical_Properties_of_Matter/Atomic_and_Molecular_Properties/Intermolecular_Forces/Specific_Interactions/Lennard-Jones_Potential
 * https://en.wikipedia.org/wiki/Lennard-Jones_potential
 
 ## HOW TO USE IT
@@ -783,9 +783,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -801,7 +800,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

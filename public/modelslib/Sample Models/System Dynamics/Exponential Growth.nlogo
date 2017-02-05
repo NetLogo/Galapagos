@@ -18,12 +18,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-417
-10
-799
-413
-15
-15
+423
+14
+803
+395
+-1
+-1
 12.0
 1
 10
@@ -45,10 +45,10 @@ ticks
 30.0
 
 MONITOR
-182
-57
-354
-102
+185
+60
+352
+105
 Stock
 stock
 4
@@ -56,10 +56,10 @@ stock
 11
 
 BUTTON
-28
-24
-148
-57
+31
+27
+146
+60
 NIL
 setup\n
 NIL
@@ -73,10 +73,10 @@ NIL
 1
 
 BUTTON
-28
-61
-148
-94
+31
+64
+146
+97
 NIL
 go\n
 T
@@ -87,13 +87,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
-23
-152
-378
-413
+26
+155
+376
+411
 populations
 NIL
 NIL
@@ -108,10 +108,10 @@ PENS
 "Stock" 1.0 0 -16777216 true "" ""
 
 SLIDER
-181
-15
-353
-48
+184
+18
+351
+51
 growth-rate-slider
 growth-rate-slider
 0
@@ -464,13 +464,12 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
-0.0010
+0.001
     org.nlogo.sdm.gui.AggregateDrawing 6
         org.nlogo.sdm.gui.StockFigure "attributes" "attributes" 1 "FillColor" "Color" 225 225 175 307 122 60 40
             org.nlogo.sdm.gui.WrappedStock "stock" "1" 0
@@ -501,7 +500,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

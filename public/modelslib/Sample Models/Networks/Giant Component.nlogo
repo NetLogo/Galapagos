@@ -138,10 +138,10 @@ end
 GRAPHICS-WINDOW
 393
 17
-858
-503
-45
-45
+856
+481
+-1
+-1
 5.0
 1
 10
@@ -194,7 +194,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 207
@@ -205,7 +205,7 @@ num-nodes
 num-nodes
 2
 500
-80
+80.0
 1
 1
 NIL
@@ -256,7 +256,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 227
@@ -284,7 +284,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -326,6 +326,14 @@ Run it with a small number of nodes (like 10) and watch the plot.  How does it d
 ## EXTENDING THE MODEL
 
 Right now the probability of any two nodes getting connected to each other is the same. Can you think of ways to make some nodes more attractive to connect to than others?  How would that impact the formation of the giant component?
+
+When creating new links in the `add-edge` procedure, you might be wondering why we don't do something like this:
+
+    ask one-of turtles [
+      create-link-with one-of other turtles with [ not link-neighbor? myself ]
+    ]
+
+Imagine that we have one node in the network that is already connected to most of the other nodes. In the original version of `add-edge`, if that node is picked as one of the two nodes between which we try to create an edge, it will probably get rejected because it is likely that it's already linked with the other node picked. In this alternate version of `add-edge`, however, we tell NetLogo to explicitly go looking for a node that is not already connected to the first one (even if there are very few of those). That makes a big difference. Try it and see how it impacts the formation of the giant component.
 
 ## NETWORK CONCEPTS
 
@@ -663,9 +671,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -681,7 +688,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

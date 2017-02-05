@@ -127,7 +127,6 @@ to go
   if count (poor) >= 20 [kill-poor]
   if count (jobs) >= max-jobs [kill-service]
   update-view
-  do-plots
   tick
 end
 
@@ -304,29 +303,6 @@ to update-patch-color
   ]]]]]
 end
 
-;;
-;; Plotting Procedure
-;;
-
-to do-plots
-  let r-total 0
-  let p-total 0
-  let step 0
-  let r-time 0
-  let p-time 0
-
-  set-current-plot "Travel Distance"
-  set r-total 0
-  set r-time 0
-  set p-total 0
-  set p-time 0
-  set-current-plot-pen "rich"
-  plot median [ min [distance myself] of jobs ] of rich
-
-  set-current-plot-pen "poor"
-  plot median [ min [distance myself] of jobs ] of poor
-end
-
 
 ; Copyright 2007 Uri Wilensky.
 ; See Info tab for full copyright and license.
@@ -334,10 +310,10 @@ end
 GRAPHICS-WINDOW
 350
 10
-805
-486
-44
-44
+803
+464
+-1
+-1
 5.0
 1
 10
@@ -401,7 +377,7 @@ number-of-tests
 number-of-tests
 0
 30
-15
+15.0
 1
 1
 NIL
@@ -423,8 +399,8 @@ true
 true
 "" ""
 PENS
-"rich" 1.0 0 -3508570 true "" ""
-"poor" 1.0 0 -14070903 true "" ""
+"rich" 1.0 0 -3508570 true "" "plot median [ min [distance myself] of jobs ] of rich"
+"poor" 1.0 0 -14070903 true "" "plot median [ min [distance myself] of jobs ] of poor"
 
 BUTTON
 218
@@ -486,7 +462,7 @@ residents-per-job
 residents-per-job
 0
 500
-100
+100.0
 10
 1
 NIL
@@ -501,7 +477,7 @@ poor-per-step
 poor-per-step
 0
 15
-5
+5.0
 1
 1
 NIL
@@ -516,7 +492,7 @@ rich-per-step
 rich-per-step
 0
 15
-5
+5.0
 1
 1
 NIL
@@ -548,7 +524,7 @@ poor-price-priority
 poor-price-priority
 -1
 1
-0
+0.0
 .1
 1
 NIL
@@ -563,7 +539,7 @@ rich-quality-priority
 rich-quality-priority
 -1
 1
-0
+0.0
 0.1
 1
 NIL
@@ -578,7 +554,7 @@ max-jobs
 max-jobs
 5
 20
-10
+10.0
 1
 1
 NIL
@@ -593,7 +569,7 @@ death-rate
 death-rate
 0
 15
-4
+4.0
 1
 1
 NIL
@@ -710,7 +686,7 @@ There are five view modes, which are controlled by the buttons VIEW PRICE, VIEW 
 
 VIEW PRICE displays the land-price value of each location, with white being a high price, black being a low price, and the various shades of yellow are in between.
 
-VIEW QUALITY displays the quality value of each location, with white being a high price, black being a low price, and the various shades of green are in between.
+VIEW QUALITY displays the quality value of each location, with white being a high quality, black being a low quality, and the various shades of green are in between.
 
 VIEW DIST. displays the distance from each location to a place of employment.  Brighter colors demonstrate closeness.
 
@@ -1046,9 +1022,8 @@ Line -16777216 false 58 211 67 192
 Polygon -6459832 true true 38 138 66 149
 Polygon -6459832 true true 46 128 33 120 21 118 11 123 3 138 5 160 13 178 9 192 0 199 20 196 25 179 24 161 25 148 45 140
 Polygon -6459832 true true 67 122 96 126 63 144
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1064,7 +1039,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

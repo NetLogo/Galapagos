@@ -163,10 +163,10 @@ end
 GRAPHICS-WINDOW
 255
 10
-650
-426
-17
-17
+648
+404
+-1
+-1
 11.0
 1
 10
@@ -190,9 +190,9 @@ ticks
 TEXTBOX
 11
 282
-232
+244
 350
-To group turtles into a fixed number of groups, each of similar size, select the number of groups and press assign-by-number.
+To group turtles into a fixed number\nof groups, each of similar size, select\nthe number of groups and press\nassign-by-number.
 11
 0.0
 0
@@ -202,7 +202,7 @@ TEXTBOX
 135
 220
 192
-To group turtles into groups of a particular size, select the size and press assign-by-size.
+To group turtles into groups of a\nparticular size, select the size and\npress assign-by-size.
 11
 0.0
 0
@@ -222,7 +222,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 11
@@ -239,7 +239,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 11
@@ -256,7 +256,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 11
@@ -267,7 +267,7 @@ group-size
 group-size
 1
 100
-16
+16.0
 1
 1
 NIL
@@ -299,7 +299,7 @@ number-of-groups
 number-of-groups
 1
 100
-16
+16.0
 1
 1
 NIL
@@ -314,7 +314,7 @@ number-of-turtles
 number-of-turtles
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -610,9 +610,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set number-of-groups 25
 setup
@@ -632,7 +631,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

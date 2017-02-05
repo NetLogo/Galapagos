@@ -34,11 +34,19 @@ end
 ;; It uses WHILE to ensure we get NUM-LINKS links.
 to wire3
   ask links [ die ]
+  if num-links > max-links [ set num-links max-links ]
   while [ count links < num-links ] [
     ask one-of turtles [
       create-link-with one-of other turtles
     ]
   ]
+end
+
+;; Report the maximum number of links that can be added
+;; to a random network, given the specified number
+;; of nodes, with 1000 as an arbitrary upper bound
+to-report max-links
+  report min (list (num-nodes * (num-nodes - 1) / 2) 1000)
 end
 
 ;; A variant of the classic Erdős-Rényi where each possible pair of nodes
@@ -61,10 +69,10 @@ end
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+647
+448
+-1
+-1
 13.0
 1
 10
@@ -111,7 +119,7 @@ num-nodes
 num-nodes
 0
 200
-100
+100.0
 1
 1
 NIL
@@ -125,8 +133,8 @@ SLIDER
 num-links
 num-links
 0
-min (list (num-nodes * (num-nodes - 1) / 2) 1000)
-100
+max-links
+100.0
 1
 1
 NIL
@@ -662,9 +670,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup wire1
 @#$#@#$#@
@@ -681,7 +688,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

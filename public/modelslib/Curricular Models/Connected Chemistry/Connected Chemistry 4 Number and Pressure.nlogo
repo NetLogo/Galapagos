@@ -494,10 +494,10 @@ end
 GRAPHICS-WINDOW
 212
 10
-487
-306
-26
-26
+485
+284
+-1
+-1
 5.0
 1
 10
@@ -533,7 +533,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 140
@@ -579,7 +579,7 @@ number-to-add
 number-to-add
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -600,7 +600,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 2
@@ -611,7 +611,7 @@ initial-number
 initial-number
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -861,9 +861,8 @@ square
 false
 0
 Rectangle -7500403 true true 30 30 270 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -879,7 +878,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

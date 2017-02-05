@@ -157,17 +157,6 @@ to avoid-walls ;; turtle procedure
   [ rt 180 ]
 end
 
-;;
-;; PLOTTING
-;;
-
-;; if there are any turtles with turtle-rule as their rule, plot the
-;; mean distance from the origin
-to plot-rule-mean [turtle-rule]
-  if any? (turtles with [rule = turtle-rule])
-  [ plot mean [distance origin] of (turtles with [rule = turtle-rule]) ]
-end
-
 
 ; Copyright 2004 Uri Wilensky.
 ; See Info tab for full copyright and license.
@@ -175,10 +164,10 @@ end
 GRAPHICS-WINDOW
 276
 10
-709
-464
-23
-23
+707
+442
+-1
+-1
 9.0
 1
 10
@@ -208,7 +197,7 @@ initial-radius
 initial-radius
 0
 20
-10
+10.0
 0.5
 1
 NIL
@@ -223,7 +212,7 @@ num-random-min
 num-random-min
 0
 200
-100
+100.0
 1
 1
 NIL
@@ -238,7 +227,7 @@ num-random
 num-random
 0
 200
-0
+0.0
 1
 1
 NIL
@@ -276,7 +265,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 724
@@ -287,7 +276,7 @@ num-random-away
 num-random-away
 0
 200
-0
+0.0
 1
 1
 NIL
@@ -337,13 +326,13 @@ average distance
 100.0
 true
 false
-"set-plot-x-range 0 30\nset-plot-y-range  0 5 ; set initial y range to half of height" ""
+"set-plot-x-range 0 30\nset-plot-y-range  0 5 ; set initial y range to half of height" "foreach [ \"random-min\" \"random-away\" \"random\" \"open-min\" \"open-min-max\" ] [ [r] ->\n  ;; if there are any turtles with turtle-rule as their rule,\n  ;; plot the mean distance from the origin\n  if any? turtles with [ rule = r ] [\n    set-current-plot-pen r\n    plot mean [ distance origin ] of turtles with [ rule = r ]\n  ]\n]"
 PENS
-"random-min" 1.0 0 -8630108 true "" "plot-rule-mean \"random-min\""
-"random-away" 1.0 0 -2064490 true "" "plot-rule-mean \"random-away\""
-"random" 1.0 0 -6459832 true "" "plot-rule-mean \"random\""
-"open-min" 1.0 0 -13345367 true "" "plot-rule-mean \"open-min\""
-"open-min-max" 1.0 0 -955883 true "" "plot-rule-mean \"open-min-max\""
+"random-min" 1.0 0 -8630108 true "" ""
+"random-away" 1.0 0 -2064490 true "" ""
+"random" 1.0 0 -6459832 true "" ""
+"open-min" 1.0 0 -13345367 true "" ""
+"open-min-max" 1.0 0 -955883 true "" ""
 
 SLIDER
 724
@@ -369,7 +358,7 @@ too-far
 too-far
 0.1
 5
-2
+2.0
 0.1
 1
 NIL
@@ -394,7 +383,7 @@ num-open-min-max
 num-open-min-max
 0
 200
-50
+50.0
 1
 1
 NIL
@@ -419,7 +408,7 @@ num-open-min
 num-open-min
 0
 200
-0
+0.0
 1
 1
 NIL
@@ -434,7 +423,7 @@ step-size
 step-size
 0.1
 2
-1
+1.0
 0.1
 1
 NIL
@@ -870,9 +859,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set too-close 1.5
 set too-far 2.0
@@ -893,7 +881,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

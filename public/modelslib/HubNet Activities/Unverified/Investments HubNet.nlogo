@@ -188,10 +188,10 @@ end
 GRAPHICS-WINDOW
 265
 10
-795
-561
-6
-6
+793
+539
+-1
+-1
 40.0
 1
 12
@@ -227,7 +227,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 40
@@ -259,7 +259,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 41
@@ -270,7 +270,7 @@ car-cost
 car-cost
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -644,9 +644,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -715,8 +714,8 @@ SLIDER
 164
 fraction-to-invest
 fraction-to-invest
-0
-1
+0.0
+1.0
 0
 0.01
 1
@@ -788,7 +787,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

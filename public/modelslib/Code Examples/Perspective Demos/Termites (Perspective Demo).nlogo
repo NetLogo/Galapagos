@@ -11,6 +11,7 @@ to setup
     setxy random-xcor random-ycor
     set size 5  ;; easier to see
   ]
+  reset-ticks
 end
 
 to go ;; turtle procedure
@@ -62,12 +63,12 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-250
-49
-683
-503
-70
-70
+255
+45
+686
+477
+-1
+-1
 3.0
 1
 10
@@ -103,7 +104,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 45
@@ -131,7 +132,7 @@ number
 number
 1
 300
-175
+175.0
 1
 1
 NIL
@@ -146,7 +147,7 @@ density
 density
 0.0
 100.0
-25
+25.0
 1.0
 1
 %
@@ -167,7 +168,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
@@ -184,27 +185,27 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 11
 161
-245
+251
 220
-This is a version of the Termites model, modified to show off NetLogo's perspective features. Try it in both 2D and 3D.
+This is a version of the Termites model,\nmodified to show off NetLogo's\nperspective features. Try it in both\n2D and 3D.
 11
 0.0
 0
 
 TEXTBOX
-250
-10
-462
-41
-Termites move fast! Use the speed slider to slow them down.
+255
+6
+535
+47
+Termites move fast! Use the speed slider\nto slow them down.
 11
 0.0
-0
+1
 
 BUTTON
 11
@@ -221,7 +222,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 10
@@ -249,7 +250,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 11
@@ -266,7 +267,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 106
@@ -283,7 +284,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -577,9 +578,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -596,7 +596,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

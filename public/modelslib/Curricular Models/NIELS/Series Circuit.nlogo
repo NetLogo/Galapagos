@@ -108,11 +108,6 @@ to go
       set xcor (- 2) ]
   ]
   tick
-
-  ;; Keep plotting
-  if ticks > 20
-  [ do-plot ]
-
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -154,28 +149,16 @@ to move
 end
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Plotting procedures ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;
-to do-plot
-  set-current-plot "Current"
-  set-current-plot-pen "left current"
-  plotxy ticks charge-flow-left / ticks
-  set-current-plot-pen "right current"
-  plotxy ticks charge-flow-right / ticks
-end
-
-
 ; Copyright 2007 Pratim Sengupta and Uri Wilensky.
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
 184
 10
-878
-173
-85
-16
+876
+151
+-1
+-1
 4.0
 1
 30
@@ -228,7 +211,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 391
@@ -246,8 +229,8 @@ true
 true
 "" ""
 PENS
-"left current" 1.0 0 -16777216 true "" ""
-"right current" 1.0 0 -13345367 true "" ""
+"left current" 1.0 0 -16777216 true "" "if ticks > 20 [ plotxy ticks charge-flow-left / ticks ]"
+"right current" 1.0 0 -13345367 true "" "if ticks > 20 [ plotxy ticks charge-flow-right / ticks ]"
 
 MONITOR
 275
@@ -275,7 +258,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 5
@@ -292,7 +275,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 6
@@ -309,7 +292,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 6
@@ -326,7 +309,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 209
@@ -392,7 +375,7 @@ resistance-left-wire
 resistance-left-wire
 30
 70
-60
+60.0
 10
 1
 NIL
@@ -407,7 +390,7 @@ resistance-right-wire
 resistance-right-wire
 30
 70
-30
+30.0
 10
 1
 NIL
@@ -838,9 +821,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -857,7 +839,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

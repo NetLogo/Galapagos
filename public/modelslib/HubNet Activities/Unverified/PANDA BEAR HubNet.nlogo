@@ -307,10 +307,10 @@ end
 GRAPHICS-WINDOW
 330
 10
-890
-591
-5
-5
+888
+569
+-1
+-1
 50.0
 1
 20
@@ -727,9 +727,8 @@ Line -7500403 true 216 40 79 269
 Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -883,7 +882,7 @@ INPUTBOX
 194
 361
 turn-amount
-90
+90.0
 1
 0
 Number
@@ -894,7 +893,7 @@ INPUTBOX
 112
 361
 step-size
-1
+1.0
 1
 0
 Number
@@ -924,7 +923,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

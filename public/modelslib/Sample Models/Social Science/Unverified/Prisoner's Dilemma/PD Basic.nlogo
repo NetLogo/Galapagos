@@ -57,10 +57,10 @@ end
 GRAPHICS-WINDOW
 313
 10
-673
-391
-17
-17
+671
+369
+-1
+-1
 10.0
 1
 10
@@ -193,7 +193,7 @@ TEXTBOX
 24
 308
 80
-Decide whether to remain silent or confess and then answer the police to receive your sentence.
+Decide whether to remain silent or confess and\nthen answer the police to receive your sentence.
 11
 0.0
 0
@@ -628,9 +628,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -647,7 +646,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

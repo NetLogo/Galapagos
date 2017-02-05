@@ -21,12 +21,14 @@ to setup
   clear-all
   ;; too dark and too light are hard to distinguish from each other,
   ;; so only use 13-17, 23-27, ..., 133-137
-  set available-colors shuffle filter [(? mod 10 >= 3) and (? mod 10 <= 7)]
-                                      n-values 140 [?]
+  set available-colors shuffle filter [ [c] ->
+    (c mod 10 >= 3) and (c mod 10 <= 7)
+  ] n-values 140 [ [n] -> n ]
   set-default-shape points "circle 3"
   ask n-of number patches [ make-point ]
   ask patches [ recolor ]
   set current-point nobody
+  reset-ticks
 end
 
 to make-point ; patch procedure
@@ -123,10 +125,10 @@ end
 GRAPHICS-WINDOW
 195
 10
-556
-392
-175
-175
+554
+370
+-1
+-1
 1.0
 1
 10
@@ -173,7 +175,7 @@ number
 number
 1.0
 70.0
-40
+40.0
 1.0
 1
 NIL
@@ -194,7 +196,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 20
@@ -210,9 +212,9 @@ show-updates?
 TEXTBOX
 13
 241
-180
+189
 294
-While the GO button is down, you can drag the points around with the mouse.
+While the GO button is down,\nyou can drag the points\naround with the mouse.
 11
 0.0
 0
@@ -592,9 +594,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -611,7 +612,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -1,16 +1,15 @@
 breed [ people person ]
-
-; just used to make pretty graphics
 breed [ trees tree ]
 
 turtles-own [ health ]
 
-patches-own[ pollution
-             is-power-plant?
-             is-tree? ]
+patches-own [
+  pollution
+  is-power-plant?
+]
+
 to setup
   clear-all
-  reset-ticks
 
   set-default-shape people "person"
   set-default-shape trees "tree"
@@ -26,16 +25,18 @@ to setup
 
   create-people initial-population [
     set color black
-    randomize-position
+    setxy random-pxcor random-pycor
     set health 5
   ]
 
-  do-plot
+  reset-ticks
 end
 
 to go
-  ask people
-  [
+
+  if not any? people [ stop ]
+
+  ask people [
     wander
     reproduce
     maybe-plant
@@ -43,80 +44,73 @@ to go
     maybe-die
   ]
 
-diffuse pollution 0.8
- ask patches [ pollute ]
+  diffuse pollution 0.8
 
- ask trees [ cleanup maybe-die ]
+  ask patches [ pollute ]
 
- if not any? people
-   [ stop ]
+  ask trees [
+    cleanup
+    maybe-die
+  ]
 
- do-plot
- tick
+  tick
 end
 
 to create-power-plants
-  ask n-of power-plants patches [ set is-power-plant? true ]
+  ask n-of power-plants patches [
+    set is-power-plant? true
+  ]
 end
 
 to pollute  ;; patch procedure
-  if ( is-power-plant? )
-  [
+  if is-power-plant? [
     set pcolor red
     set pollution polluting-rate
   ]
-  set pcolor scale-color red ( pollution - .1 ) 5 0
+  set pcolor scale-color red (pollution - .1) 5 0
 end
 
 to cleanup  ;; tree procedure
-    set pcolor green + 3
-    set pollution max (list 0 ( pollution - 1 ) )
-    ask neighbors [ set pollution max (list 0 ( pollution - .5 ) ) ]
-    set health health - 0.1
+  set pcolor green + 3
+  set pollution max (list 0 (pollution - 1))
+  ask neighbors [
+    set pollution max (list 0 (pollution - .5))
+  ]
+  set health health - 0.1
 end
 
-to wander   ;; person procedure
+to wander  ;; person procedure
   rt random-float 50
   lt random-float 50
   fd 1
   set health health - 0.1
 end
 
-to reproduce ;; person procedure
-  if ( ( health > 4 ) and ( ( random-float 1 ) < birth-rate ) )
-    [ hatch-people 1 [ set health 5 ] ]
+to reproduce  ;; person procedure
+  if health > 4 and random-float 1 < birth-rate [
+    hatch-people 1 [
+      set health 5
+    ]
+  ]
 end
 
-to maybe-plant ;; person procedure
-  if ( ( random-float 1 ) < planting-rate )
-  [ hatch-trees 1 [ set health 5 set color green ] ]
+to maybe-plant  ;; person procedure
+  if random-float 1 < planting-rate [
+    hatch-trees 1 [
+      set health 5
+      set color green
+    ]
+  ]
 end
 
 to eat-pollution  ;; person procedure
-  if ( pollution > 0.5 )
-  [
+  if pollution > 0.5 [
     set health (health - (pollution / 10))
   ]
 end
 
-
-to maybe-die     ;;die if you run out of health
-  if ( health <= 0 )
-    [ die ]
-end
-
-to do-plot
-  set-current-plot-pen "trees"
-  plot count trees
-  set-current-plot-pen "people"
-  plot count people
-  set-current-plot-pen "pollution"
-  plot sum [pollution] of patches
-end
-
-to randomize-position
-  setxy random-float world-width
-        random-float world-height
+to maybe-die  ;; die if you run out of health
+  if health <= 0 [ die ]
 end
 
 
@@ -126,10 +120,10 @@ end
 GRAPHICS-WINDOW
 296
 13
-803
-485
-35
-31
+801
+463
+-1
+-1
 7.0
 1
 10
@@ -182,7 +176,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 25
@@ -193,7 +187,7 @@ power-plants
 power-plants
 0
 20
-2
+2.0
 1
 1
 NIL
@@ -208,7 +202,7 @@ initial-population
 initial-population
 0
 100
-30
+30.0
 10
 1
 NIL
@@ -230,9 +224,9 @@ true
 true
 "" ""
 PENS
-"trees" 1.0 0 -10899396 true "" ""
-"people" 1.0 0 -2674135 true "" ""
-"pollution" 1.0 0 -8630108 true "" ""
+"trees" 1.0 0 -10899396 true "" "plot count trees"
+"people" 1.0 0 -2674135 true "" "plot count people"
+"pollution" 1.0 0 -8630108 true "" "plot sum [ pollution ] of patches"
 
 MONITOR
 195
@@ -269,7 +263,7 @@ polluting-rate
 polluting-rate
 0
 5
-3
+3.0
 1
 1
 NIL
@@ -313,9 +307,13 @@ Trees, however, clean up pollution in the cell they are planted, and the neighbo
 Trees live for a set period of time and cannot reproduce.
 
 Each time step (tick) of the model, people agents
+
 1. move randomly to an adjacent cell
+
 2. with some probability, they may plant a landscape element
+
 3. if they are healthy enough, with some probability, they may reproduce (clone)
+
 4. if their health has dropped to 0, they die.
 
 ## HOW TO USE IT
@@ -354,7 +352,7 @@ Make the pollution rate dependent upon the number of people.
 
 ## NETLOGO FEATURES
 
-This model uses the DIFFUSE command to spread pollution.
+This model uses the `diffuse` command to spread pollution.
 
 ## RELATED MODELS
 
@@ -684,9 +682,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -702,7 +699,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

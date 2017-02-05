@@ -23,6 +23,7 @@ to setup
       set velocity [ 0 0 0 ]
       set acceleration [ 0 0 0 ]
       set color yellow + 2 - random-float 6
+      set flockmates no-turtles
     ]
   ask turtle 0 [ set color red ]
 
@@ -122,7 +123,7 @@ to-report center-urge ;; bird reporter
   [ report (list 0 0 0) ]
   report
     (map
-      [ ?2 - ?1 ]
+      [ [a b] -> b - a ]
       (list xcor ycor zcor)
       (list
         mean [ xcor ] of flockmates
@@ -137,7 +138,7 @@ to-report velocity-urge ;; bird reporter
   [ report (list 0 0 0) ]
   report
     ( map
-      [ ?1 - ?2 ]
+      [ [a b] -> a - b ]
       (list
         mean [ item 0 velocity ] of flockmates
         mean [ item 1 velocity ] of flockmates
@@ -220,25 +221,25 @@ end
 ;; vector operations
 ;;
 to-report add [ v1 v2 ]
-  report (map [ ?1 + ?2 ] v1 v2)
+  report (map [ [a b] -> a + b ] v1 v2)
 end
 
 to-report subtract [ v1 v2 ]
-  report (map [ ?1 - ?2 ] v1 v2)
+  report (map [ [a b] -> a - b ] v1 v2)
 end
 
 to-report scale [ scalar vector ]
-  report map [ scalar * ? ] vector
+  report map [ [n] -> scalar * n ] vector
 end
 
 to-report magnitude [ vector ]
-  report sqrt sum map [ ? * ? ] vector
+  report sqrt sum map [ [n] -> n * n ] vector
 end
 
 to-report normalize [ vector ]
   let m magnitude vector
   if m = 0 [ report vector ]
-  report map [ ? / m ] vector
+  report map [ [n] -> n / m ] vector
 end
 
 
@@ -250,8 +251,8 @@ GRAPHICS-WINDOW
 0
 260
 281
-12
-12
+-1
+-1
 10.0
 1
 10
@@ -306,7 +307,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 94
@@ -317,7 +318,7 @@ population
 population
 0
 200
-60
+60.0
 1
 1
 NIL
@@ -347,7 +348,7 @@ wander-constant
 wander-constant
 0
 20
-4
+4.0
 1
 1
 NIL
@@ -362,7 +363,7 @@ world-center-constant
 world-center-constant
 0
 20
-10
+10.0
 1
 1
 NIL
@@ -377,7 +378,7 @@ center-constant
 center-constant
 0
 20
-8
+8.0
 1
 1
 NIL
@@ -392,7 +393,7 @@ velocity-constant
 velocity-constant
 0
 20
-6
+6.0
 1
 1
 NIL
@@ -407,7 +408,7 @@ spacing-constant
 spacing-constant
 0
 20
-14
+14.0
 1
 1
 NIL
@@ -422,7 +423,7 @@ max-velocity
 max-velocity
 0
 20
-4
+4.0
 1
 1
 NIL
@@ -437,7 +438,7 @@ max-acceleration
 max-acceleration
 0
 20
-1
+1.0
 1
 1
 NIL
@@ -452,7 +453,7 @@ cruise-distance
 cruise-distance
 0
 5
-1
+1.0
 0.1
 1
 NIL
@@ -473,7 +474,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 105
@@ -495,7 +496,7 @@ avoidance-constant
 avoidance-constant
 0
 100
-50
+50.0
 1
 1
 NIL
@@ -602,7 +603,7 @@ This model uses lists and `map` fairly extensively to represent and manipulate v
 
 ## CREDITS AND REFERENCES
 
-This model is based on Jon Klein's "Swarm" demo for breve, (see http://www.spiderland.org/breve/) which was inspired by Craig Reynolds classic Boids flocking algorithm.
+This model is based on Jon Klein's "Swarm" demo for breve, (see http://www.spiderland.org/s/) which was inspired by Craig Reynolds classic Boids flocking algorithm.
 
 ## HOW TO CITE
 
@@ -920,9 +921,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 3D 5.2.0
+NetLogo 3D 6.0-BETA1
 @#$#@#$#@
 setup
 watch turtle 0
@@ -941,7 +941,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

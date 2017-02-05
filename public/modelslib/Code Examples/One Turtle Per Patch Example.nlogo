@@ -93,10 +93,10 @@ end
 GRAPHICS-WINDOW
 321
 10
-656
-366
-12
-12
+654
+344
+-1
+-1
 13.0
 1
 10
@@ -122,7 +122,7 @@ TEXTBOX
 125
 242
 156
-Three different strategies for turtles to follow:
+Three different strategies\nfor turtles to follow:
 11
 0.0
 0
@@ -136,7 +136,7 @@ num-turtles
 num-turtles
 0
 600
-400
+400.0
 1
 1
 NIL
@@ -145,9 +145,9 @@ HORIZONTAL
 TEXTBOX
 6
 334
-307
+315
 409
-With strategies #1 and #2, this should always be 1.  With strategy #3, it may be greater than 1 while the turtles are still finding new places.  But after unpressing the forever button, it should always return to 1.
+With strategies #1 and #2, this should always be 1.\nWith strategy #3, it may be greater than 1 while the\nturtles are still finding new places.  But after\nunpressing the forever button, it should always\nreturn to 1.
 11
 0.0
 0
@@ -178,7 +178,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 46
@@ -195,7 +195,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 46
@@ -212,7 +212,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 112
@@ -525,9 +525,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 @#$#@#$#@
@@ -544,7 +543,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

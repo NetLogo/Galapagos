@@ -95,17 +95,17 @@ end
 to update-strategies
   ;; initialize best-score to a maximum, which is the lowest possible score
   let best-score memory-size * 100 + 1
-  foreach strategies [
+  foreach strategies [ [the-strategy] ->
     let score 0
     let week 1
     repeat memory-size [
-      set prediction predict-attendance ? sublist history week (week + memory-size)
+      set prediction predict-attendance the-strategy sublist history week (week + memory-size)
       set score score + abs (item (week - 1) history - prediction)
       set week week + 1
     ]
     if (score <= best-score) [
       set best-score score
-      set best-strategy ?
+      set best-strategy the-strategy
     ]
   ]
 end
@@ -129,7 +129,7 @@ to-report predict-attendance [strategy subhistory]
   ;; one can think of it as the the agent's prediction of the bar's attendance
   ;; in the absence of any other data
   ;; then we multiply each week in the history by its respective weight
-  report 100 * first strategy + sum (map [?1 * ?2] butfirst strategy subhistory)
+  report 100 * first strategy + sum (map [ [weight week] -> weight * week ] butfirst strategy subhistory)
 end
 
 ;; In this model it doesn't really matter exactly which patch
@@ -151,10 +151,10 @@ end
 GRAPHICS-WINDOW
 298
 10
-728
-461
-17
-17
+726
+439
+-1
+-1
 12.0
 1
 24
@@ -218,7 +218,7 @@ memory-size
 memory-size
 1
 10
-5
+5.0
 1
 1
 NIL
@@ -233,7 +233,7 @@ number-strategies
 number-strategies
 1
 20
-10
+10.0
 1
 1
 NIL
@@ -267,7 +267,7 @@ overcrowding-threshold
 overcrowding-threshold
 0
 100
-60
+60.0
 1
 1
 NIL
@@ -288,7 +288,7 @@ El Farol is a bar in Santa Fe, New Mexico.  The bar is popular --- especially on
 
 El Farol was originally put forth by Brian Arthur (1994) as an example of how one might model economic systems of boundedly rational agents who use inductive reasoning.
 
-This is a verison of the El Farol model in the Social Science Section of the NetLogo Models Library. This version is intended for use with the IABM textbook. It is NOT intended for textbook users to understand all the code in this model as the point in this section of the textbook is to extend the model by adding new output measures to the model, and not to alter the fundamental algorithm of the model.
+This is a version of the El Farol model in the Social Science Section of the NetLogo Models Library. This version is intended for use with the IABM textbook. It is NOT intended for textbook users to understand all the code in this model as the point in this section of the textbook is to extend the model by adding new output measures to the model, and not to alter the fundamental algorithm of the model.
 
 ## HOW IT WORKS
 
@@ -331,11 +331,6 @@ Lists are used to represent strategies and attendance histories.
 `n-values` is useful for generating random strategies.
 
 ## RELATED MODELS
-
-In the NetLogo models library:
-
-There is a model called El Farol Network Congestion that uses the El Farol Bar Problem as a model of how to choose the best path in a network.
-Wilensky, U. (2003). NetLogo El Farol Congestion model.  http://ccl.northwestern.edu/netlogo/models/ElFarolCongestion.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Arthur's original model has been generalized as the Minority Game and is included in the Social Sciences section of the NetLogo models library.
 
@@ -668,9 +663,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -686,7 +680,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

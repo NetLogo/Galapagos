@@ -56,10 +56,10 @@ end
 GRAPHICS-WINDOW
 252
 10
-691
-470
-16
-16
+689
+448
+-1
+-1
 13.0
 1
 10
@@ -112,7 +112,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 54
@@ -129,14 +129,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
 45
 209
 207
 279
-To see the difference, adjust the speed slider towards \"slower\" until you see the turtles moving one at a time.
+To see the difference,\nadjust the speed slider\ntowards \"slower\" until you\nsee the turtles moving\none at a time.
 11
 0.0
 1
@@ -146,7 +146,7 @@ TEXTBOX
 95
 229
 128
-example of difference between ASK and ASK-CONCURRENT:
+example of difference between\nASK and ASK-CONCURRENT:
 11
 0.0
 1
@@ -166,14 +166,14 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 TEXTBOX
-52
+35
 302
 225
 332
-slightly more involved example of ASK-CONCURRENT:
+slightly more involved\nexample of ASK-CONCURRENT:
 11
 0.0
 1
@@ -182,6 +182,8 @@ slightly more involved example of ASK-CONCURRENT:
 ## WHAT IS IT?
 
 This example demonstrates the difference between the `ask` and `ask-concurrent` commands.
+
+Note: using `ask-concurrent` is not recommended. It is only there for backward compatibility.
 
 ## HOW TO USE IT
 
@@ -488,9 +490,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -506,7 +507,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

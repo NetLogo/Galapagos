@@ -164,7 +164,7 @@ to histogram-labels
   set-current-plot "All Values From Messengers"
   histogram list-of-labels
   let maxbar modes list-of-labels
-  let maxrange length ( filter [ ? = item 0 maxbar ] list-of-labels )
+  let maxrange length ( filter [ [the-label] -> the-label = item 0 maxbar ] list-of-labels )
   set-plot-y-range 0 max list 10 maxrange
 end
 
@@ -213,10 +213,10 @@ end
 GRAPHICS-WINDOW
 187
 10
-803
-275
-50
-19
+801
+253
+-1
+-1
 6.0
 1
 12
@@ -269,7 +269,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 12
@@ -280,7 +280,7 @@ num-messengers
 num-messengers
 1
 30
-2
+2.0
 1
 1
 NIL
@@ -324,7 +324,7 @@ sample-space
 sample-space
 1
 100
-100
+100.0
 1
 1
 NIL
@@ -789,11 +789,11 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
-random-seed 0 set sample-space 50 set height 35 setup repeat 100 [ go ]
+setup
+repeat 500 [ go ]
 place-messengers-and-choose-random-values
 @#$#@#$#@
 @#$#@#$#@
@@ -809,7 +809,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

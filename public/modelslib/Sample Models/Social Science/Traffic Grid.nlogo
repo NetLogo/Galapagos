@@ -362,10 +362,10 @@ end
 GRAPHICS-WINDOW
 327
 10
-670
-374
-18
-18
+668
+352
+-1
+-1
 9.0
 1
 12
@@ -431,7 +431,7 @@ grid-size-y
 grid-size-y
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -446,7 +446,7 @@ grid-size-x
 grid-size-x
 1
 9
-5
+5.0
 1
 1
 NIL
@@ -472,7 +472,7 @@ num-cars
 num-cars
 1
 400
-200
+200.0
 1
 1
 NIL
@@ -511,7 +511,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 208
@@ -539,7 +539,7 @@ speed-limit
 speed-limit
 0.1
 1
-1
+1.0
 0.1
 1
 NIL
@@ -565,7 +565,7 @@ ticks-per-cycle
 ticks-per-cycle
 1
 100
-20
+20.0
 1
 1
 NIL
@@ -580,7 +580,7 @@ current-phase
 current-phase
 0
 99
-0
+0.0
 1
 1
 %
@@ -601,7 +601,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
 9
@@ -629,7 +629,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -713,11 +713,23 @@ It also uses a chooser to allow the user to choose between several different pos
 
 ## RELATED MODELS
 
-Traffic Basic simulates the flow of a single lane of traffic in one direction
-Traffic 2 Lanes adds a second lane of traffic
-Traffic Intersection simulates a single intersection
+- "Traffic Basic": a simple model of the movement of cars on a highway.
 
-The HubNet activity Gridlock has very similar functionality but allows a group of users to control the cars in a participatory fashion.
+- "Traffic Basic Utility": a version of "Traffic Basic" including a utility function for the cars.
+
+- "Traffic Basic Adaptive": a version of "Traffic Basic" where cars adapt their acceleration to try and maintain a smooth flow of traffic.
+
+- "Traffic Basic Adaptive Individuals": a version of "Traffic Basic Adaptive" where each car adapts individually, instead of all cars adapting in unison.
+
+- "Traffic 2 Lanes": a more sophisticated two-lane version of the "Traffic Basic" model.
+
+- "Traffic Intersection": a model of cars traveling through a single intersection.
+
+- "Traffic Grid Goal": a version of "Traffic Grid" where the cars have goals, namely to drive to and from work.
+
+- "Gridlock HubNet": a version of "Traffic Grid" where students control traffic lights in real-time.
+
+- "Gridlock Alternate HubNet": a version of "Gridlock HubNet" where students can enter NetLogo code to plot custom metrics.
 
 ## HOW TO CITE
 
@@ -1026,9 +1038,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1044,7 +1055,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

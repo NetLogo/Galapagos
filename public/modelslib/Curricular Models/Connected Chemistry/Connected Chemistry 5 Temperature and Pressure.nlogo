@@ -408,7 +408,12 @@ to cool-walls
     [ set outside-energy outside-energy - temp-increment ]
     [ set outside-energy 0 ]
   if (outside-energy = 0)
-    [ user-message "You are currently trying to cool the walls of the container below absolute zero (OK or -273C).  Absolute zero is the lowest theoretical temperature for all matter in the universe and has never been achieved in a real-world laboratory"]
+    [ user-message (word
+      "You are currently trying to cool the walls of the container below "
+      "absolute zero (OK or -273C).  Absolute zero is the lowest theoretical "
+      "temperature for all matter in the universe and has never been "
+      "achieved in a real-world laboratory")
+    ]
 end
 
 to heat-walls
@@ -569,10 +574,10 @@ end
 GRAPHICS-WINDOW
 232
 10
-510
-309
-33
-33
+508
+287
+-1
+-1
 4.0
 1
 10
@@ -608,7 +613,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 0
@@ -636,7 +641,7 @@ initial-number
 initial-number
 1
 400
-100
+100.0
 1
 1
 NIL
@@ -726,7 +731,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 123
@@ -743,7 +748,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 PLOT
 510
@@ -970,9 +975,8 @@ square
 false
 0
 Rectangle -7500403 true true 0 0 297 299
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -988,7 +992,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

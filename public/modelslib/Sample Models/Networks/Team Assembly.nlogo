@@ -217,10 +217,10 @@ end
 GRAPHICS-WINDOW
 347
 10
-761
-445
-50
-50
+759
+423
+-1
+-1
 4.0
 1
 10
@@ -242,9 +242,9 @@ ticks
 30.0
 
 BUTTON
-8
+9
 20
-113
+114
 53
 NIL
 setup
@@ -259,10 +259,10 @@ NIL
 1
 
 BUTTON
-121
-67
-219
-100
+119
+20
+224
+53
 NIL
 go
 T
@@ -273,13 +273,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
-8
-67
-113
-100
+227
+20
+332
+53
 go once
 go\nrepeat 3 [layout]
 NIL
@@ -290,13 +290,13 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SWITCH
-229
-22
-330
-55
+9
+65
+171
+98
 layout?
 layout?
 0
@@ -304,10 +304,10 @@ layout?
 -1000
 
 BUTTON
-229
-67
-331
-100
+175
+65
+335
+98
 redo layout
 layout
 T
@@ -318,7 +318,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 10
@@ -329,7 +329,7 @@ p
 p
 0.0
 100.0
-40
+40.0
 1.0
 1
 %
@@ -344,7 +344,7 @@ q
 q
 0.0
 100.0
-65
+65.0
 1.0
 1
 %
@@ -359,7 +359,7 @@ team-size
 team-size
 3
 8
-4
+4.0
 1
 1
 NIL
@@ -368,7 +368,7 @@ HORIZONTAL
 TEXTBOX
 14
 158
-229
+323
 177
 probability of choosing an incumbent
 11
@@ -378,7 +378,7 @@ probability of choosing an incumbent
 TEXTBOX
 11
 218
-277
+314
 236
 probability of choosing a previous collaborator
 11
@@ -406,17 +406,6 @@ PENS
 "incumbent-incumbent" 1.0 0 -1184463 true "" ""
 "previous collaborators" 1.0 0 -2674135 true "" ""
 
-SWITCH
-122
-21
-222
-54
-plot?
-plot?
-0
-1
--1000
-
 SLIDER
 8
 110
@@ -426,7 +415,7 @@ max-downtime
 max-downtime
 7
 100
-40
+40.0
 1
 1
 NIL
@@ -487,7 +476,6 @@ Click the SETUP button to start with a single team.  Click GO ONCE to assemble a
 
 ### Visualization Controls
 - LAYOUT?: controls whether or not the spring layout algorithm runs at each tick.  This procedure attempts to move the nodes around to make the structure of the network easier to see.  Switching off LAYOUT? will significantly increase the speed of the model.
-- PLOT?: switches on and off the plots. Again, off speeds up the model.
 
 The REDO LAYOUT button lets you run the layout algorithm without assembling new teams.
 
@@ -549,7 +537,7 @@ Giant Component - shows how critical points exist in which a network can transit
 ## CREDITS AND REFERENCES
 
 This model is based on:
-R Guimera, B Uzzi, J Spiro, L Amaral; Team Assembly Mechanisms Determine Collaboration Network Structure and Team Performance. Science 2005, V308, N5722, p697-702 http://amaral-lab.org/media/publication_pdfs/Guimera-2005-Science-308-697.pdf
+R Guimera, B Uzzi, J Spiro, L Amaral; Team Assembly Mechanisms Determine Collaboration Network Structure and Team Performance. Science 2005, V308, N5722, p697-702 https://amaral.northwestern.edu/media/publication_pdfs/Guimera-2005-Science-308-697.pdf
 
 ## HOW TO CITE
 
@@ -856,9 +844,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]
@@ -877,7 +864,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -43,8 +43,8 @@ end
 GRAPHICS-WINDOW
 233
 16
-744
-128
+742
+106
 -1
 -1
 1.0
@@ -144,7 +144,7 @@ top-10-pct-wealth
 TEXTBOX
 563
 176
-679
+718
 206
 Total wealth = $50,000
 11
@@ -534,9 +534,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-M3
+NetLogo 6.0-BETA1
 @#$#@#$#@
 resize-world 0 500 0 500 setup ask turtles [ set size 5 ] repeat 150 [ go ]
 @#$#@#$#@
@@ -553,7 +552,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

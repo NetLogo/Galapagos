@@ -9,10 +9,10 @@
 GRAPHICS-WINDOW
 70
 105
-509
-149
-16
-0
+507
+127
+-1
+-1
 13.0
 1
 20
@@ -329,7 +329,7 @@ WWW<sup>[1]</sup>
 
  * To prevent a special character from being treated as markup, put a backslash (`\`) before it.
 
- * We use GitHub flavored newlines (http://github.github.com/github-flavored-markdown/) instead of traditional Markdown handling of newlines. This means that newlines are treated as real line breaks, instead of being being combined with the previous line into a single paragraph.
+ * We use GitHub flavored newlines (https://github.github.com/github-flavored-markdown/) instead of traditional Markdown handling of newlines. This means that newlines are treated as real line breaks, instead of being combined with the previous line into a single paragraph.
 
 ## Other features
 
@@ -635,9 +635,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
@@ -654,7 +653,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

@@ -180,10 +180,10 @@ end
 GRAPHICS-WINDOW
 307
 145
-572
-431
-25
-25
+570
+409
+-1
+-1
 5.0
 1
 10
@@ -213,7 +213,7 @@ alpha
 alpha
 0.0010
 10.0
-10
+10.0
 1.0E-4
 1
 NIL
@@ -228,7 +228,7 @@ top-temp
 top-temp
 1.0
 100.0
-81
+81.0
 1.0
 1
 NIL
@@ -243,7 +243,7 @@ right-temp
 right-temp
 1.0
 100.0
-100
+100.0
 1.0
 1
 NIL
@@ -258,7 +258,7 @@ bottom-temp
 bottom-temp
 1.0
 100.0
-41
+41.0
 1.0
 1
 NIL
@@ -273,7 +273,7 @@ initial-plate-temp
 initial-plate-temp
 1.0
 100.0
-87
+87.0
 1.0
 1
 NIL
@@ -294,7 +294,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 SLIDER
 267
@@ -305,7 +305,7 @@ left-temp
 left-temp
 1.0
 100.0
-3
+3.0
 1.0
 1
 NIL
@@ -343,7 +343,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 160
@@ -375,9 +375,9 @@ material-type
 TEXTBOX
 155
 90
-292
+315
 163
-Choose a material and then press UPDATE ALPHA based on that material, or set ALPHA directly from the slider.
+Choose a material and\nthen press UPDATE ALPHA\nbased on that material,\nor set ALPHA directly\nfrom the slider.
 11
 0.0
 1
@@ -776,9 +776,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -794,7 +793,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

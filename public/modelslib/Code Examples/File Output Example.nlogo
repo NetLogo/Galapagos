@@ -44,8 +44,8 @@ to write-to-file
   file-print (word "---------- Tick Number: " ticks "-----------")
   ;; use SORT so the turtles print their data in order by who number,
   ;; rather than in random order
-  foreach sort turtles [
-    ask ? [
+  foreach sort turtles [ [t] ->
+    ask t [
       file-print (word self ": pxcor: " pxcor " pycor: " pycor " value: " value)
     ]
   ]
@@ -60,10 +60,10 @@ end
 GRAPHICS-WINDOW
 304
 10
-629
-356
-17
-17
+627
+334
+-1
+-1
 9.0
 1
 10
@@ -140,7 +140,7 @@ TEXTBOX
 165
 270
 193
-After you stop the GO button, click this to close the file.
+After you stop the GO button, click this\nto close the file.
 11
 0.0
 0
@@ -149,8 +149,8 @@ TEXTBOX
 15
 20
 279
-54
-Choose a directory where you have write permission and choose a unique filename.
+51
+Choose a directory where you have write\npermission and choose a unique filename.
 11
 0.0
 0
@@ -449,11 +449,12 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.0
+NetLogo 6.0-BETA1
 @#$#@#$#@
-need-to-manually-make-preview-for-this-model
+create-turtles 15 [
+  setxy random-xcor random-ycor
+]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -468,7 +469,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 1
 @#$#@#$#@

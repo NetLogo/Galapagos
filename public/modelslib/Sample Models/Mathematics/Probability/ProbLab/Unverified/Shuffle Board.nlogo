@@ -231,7 +231,7 @@ to-report relative-heights [ listerama ]
   set list-of-dividends but-first list-of-dividends
   if empty? list-of-divisors  ;; if there are no divisors (or similarly, dividends)
     [ report "N/A" ]            ;; it is not possible to calculate relative-heights
-  report mean ( map [ ?1 / ?2 ] list-of-dividends list-of-divisors )
+  report mean ( map [ [dividend divisor] -> dividend / divisor ] list-of-dividends list-of-divisors )
 end
 
 to-report first-n [index full-list]
@@ -244,9 +244,9 @@ to-report bin-list [input-list]
   if input-list = [] [ report [] ]
   let result []
   let bin 0
-  foreach n-values ( max input-list + 1 ) [?] [
-    set bin ?
-    set result lput ( length filter [ ? = bin ] input-list ) result
+  foreach n-values ( max input-list + 1 ) [ [n] -> n ] [ [n] ->
+    set bin n
+    set result lput ( length filter [ [input] -> input = bin ] input-list ) result
   ]
   report result
 end
@@ -278,13 +278,13 @@ to do-plot
   set-current-plot "Frequency of Distances to Prizes"
   histogram target-color-differences-list
   let maxbar modes target-color-differences-list
-  let maxrange length ( filter [ ? = item 0 maxbar ] target-color-differences-list )
+  let maxrange length ( filter [ [difference] -> difference = item 0 maxbar ] target-color-differences-list )
   set-plot-y-range 0 max list 10 maxrange
 
   set-current-plot "Frequency of Streaks by Length"
   histogram target-color-successive-list
   set maxbar modes target-color-successive-list
-  set maxrange length ( filter [ ? = item 0 maxbar ] target-color-successive-list )
+  set maxrange length ( filter [ [successive] -> successive = item 0 maxbar ] target-color-successive-list )
   set-plot-y-range 0 max list 10 maxrange
 end
 
@@ -295,10 +295,10 @@ end
 GRAPHICS-WINDOW
 302
 10
-752
-481
-5
-5
+750
+459
+-1
+-1
 40.0
 1
 12
@@ -328,7 +328,7 @@ average-distance
 average-distance
 2
 10
-5
+5.0
 1
 1
 NIL
@@ -423,7 +423,7 @@ truncate-after-column
 truncate-after-column
 2
 30
-12
+12.0
 1
 1
 NIL
@@ -485,7 +485,7 @@ TEXTBOX
 445
 176
 491
-Columns factor is the mean ratio of consecutive columns
+Columns factor is\nthe mean ratio of\nconsecutive columns
 11
 0.0
 0
@@ -1205,9 +1205,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-RC1
+NetLogo 6.0-BETA1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1223,7 +1222,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@

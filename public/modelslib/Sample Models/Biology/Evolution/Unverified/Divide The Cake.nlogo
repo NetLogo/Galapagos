@@ -93,10 +93,10 @@ end
 GRAPHICS-WINDOW
 361
 10
-779
-449
-25
-25
+777
+427
+-1
+-1
 8.0
 1
 10
@@ -161,7 +161,7 @@ travel-distance
 travel-distance
 0
 10
-1
+1.0
 1
 1
 NIL
@@ -176,7 +176,7 @@ modest-proportion
 modest-proportion
 0
 99
-50
+50.0
 1
 1
 NIL
@@ -191,7 +191,7 @@ fair-proportion
 fair-proportion
 0
 99
-50
+50.0
 1
 1
 NIL
@@ -206,7 +206,7 @@ greedy-proportion
 greedy-proportion
 0
 99
-50
+50.0
 1
 1
 NIL
@@ -221,7 +221,7 @@ initial-number
 initial-number
 2
 1000
-200
+200.0
 1
 1
 NIL
@@ -259,7 +259,7 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 MONITOR
 70
@@ -697,9 +697,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.2.1-M3
+NetLogo 6.0-BETA1
 @#$#@#$#@
 setup
 repeat 20 [ go ]
@@ -717,7 +716,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
 0
 @#$#@#$#@
