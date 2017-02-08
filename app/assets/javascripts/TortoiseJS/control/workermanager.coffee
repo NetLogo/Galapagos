@@ -19,15 +19,29 @@ newSession = (container, modelResult, readOnly = false, filename = "export", onE
 
 class window.WorkerManager
   _worker: undefined
+  _viewUpdates: undefined
 
   constructor: (@_displayError) ->
     @_worker = new Worker('/assets/javascripts/TortoiseJS/control/worker.js')
     @_worker.addEventListener('message', @handleWorkerMessage)
+    @_viewUpdates = []
 
   getWorker: -> @_worker
 
+  flushViewUpdates: ->
+    updates = @_viewUpdates
+    @_viewUpdates = []
+    updates
+
+  hasViewUpdates: -> @_viewUpdates.length > 0
+
+  kill: -> @_worker.postMessage({ type: 'POISON_PILL' })
+
   handleWorkerMessage: ({ data: { type, data } }) =>
     action = {
+      'VIEW_STATE_UPDATE': ({ updates }) =>
+        @_viewUpdates = @_viewUpdates.concat(updates)
+        console.log(@_viewUpdates)
       'COMPILATION_ERROR': ({ messages }) =>
         message = messages.map((m) -> m.message).join('\n')
         @_displayError(message)

@@ -1,3 +1,4 @@
+self.window = self
 self.importScripts('/tortoise-compiler.js', '/netlogo-engine.js')
 
 Exception = tortoise_require('util/exception')
@@ -77,7 +78,8 @@ handlingErrors = (f) -> ->
              Advanced users might find the generated error helpful, which is as follows:<br><br>
              <b>#{ex.message}</b><br><br>
           """
-      postRuntimeError(message)
+      # postRuntimeError takes an array
+      postRuntimeError([message])
       throw new Exception.HaltInterrupt
     else
       throw ex
@@ -96,11 +98,56 @@ handleCompileResult = ({ commands, model: { result: modelResult, success: modelS
     postCompileError(modelResult)
 
 ########################
+# Event loop
+########################
+
+MAX_UPDATE_DELAY     = 1000
+FAST_UPDATE_EXP      = 0.5
+SLOW_UPDATE_EXP      = 4
+MAX_UPDATE_TIME      = 100
+
+DEFAULT_REDRAW_DELAY = 1000 / 30
+MAX_REDRAW_DELAY     = 1000
+REDRAW_EXP           = 2
+
+rafId = -1
+lastRedraw = 0
+lastUpdate = 0
+drawEveryFrame = false
+
+eventLoop = (timestamp) ->
+  # rafId = requestAnimationFrame(eventLoop)
+  # debugger
+  updatesDeadline = Math.min(lastRedraw + redrawDelay, now() + MAX_UPDATE_TIME)
+
+  # updateDelay() = 100
+  maxNumUpdates = if drawEveryFrame then 1 else (now() - lastUpdate) / 100
+
+  for i in [1..maxNumUpdates] by 1  # maxNumUpdates can be 0. Need to guarantee i is ascending.
+    lastUpdate = now()
+    if now() >= updatesDeadline
+      break
+
+  if Updater.hasUpdates()
+    redrawDelay = DEFAULT_REDRAW_DELAY
+    if i > maxNumUpdates or
+      now() - lastRedraw > DEFAULT_REDRAW_DELAY or
+      drawEveryFrame
+        lastRedraw = now()
+        updates = Updater.collectUpdates()
+        postViewStateUpdate(updates)
+
+self.setInterval(eventLoop, 5000)
+
+########################
 # Posting messages
 ########################
 
+postViewStateUpdate = (updates) ->
+  postToMain('VIEW_STATE_UPDATE', { updates })
+
 postRuntimeError = (messages) ->
-  postToMain('RUNTIME_ERROR', { messages: [ messages ] })
+  postToMain('RUNTIME_ERROR', { messages })
 
 postCompileError = (result) ->
   # Errors can't be cloned, so we can't post them directly.
@@ -143,20 +190,29 @@ self.addEventListener('message', ({ data: { type, data } }) ->
       globalEval(compileResult.widgets)
         .forEach((w, i) ->
           if w.type is 'button' or w.type is 'monitor'
-            widgetHandlers[i] = handlingErrors(new Function(w.compiledSource)))
+            widgetHandlers[i] =
+              if w.compilation.success
+                handlingErrors(new Function(w.compiledSource))
+              else
+                # Make error handling better by not having fake semantic
+                # names that actually correspond to differences in
+                # data forms.
+                () -> postRuntimeError(['Button failed to compile with:'].concat(w.compilation.messages)))
 
       modelName = name ? normalizedFileName(modelPath)
       self.modelConfig = {}
       self.modelConfig.print = {
         write: (message) -> postToMain('PRINT', { message })
       }
-      selfResult = compileResult.model.result.replace(/\bwindow\b/g, 'self')
+      selfResult = compileResult.model.result # .replace(/\bwindow\b/g, 'self')
       globalEval(selfResult)
 
       postNlogoCompileResult({
         compileResult,
         modelName,
       })
+
+    'POISON_PILL': () -> self.close()
   }[type]
 
   if action
@@ -164,3 +220,5 @@ self.addEventListener('message', ({ data: { type, data } }) ->
   else
     postToMain('ERROR', { message: "Received undefined message type #{type}" })
 )
+
+now = performance?.now.bind(performance) ? Date.now.bind(Date)

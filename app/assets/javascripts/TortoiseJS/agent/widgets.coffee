@@ -351,7 +351,9 @@ class window.WidgetController
 
   # () -> Unit
   redraw: () ->
-    if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
+    wm = window.workerManager
+    if wm.hasViewUpdates()
+      @viewController.update(wm.flushViewUpdates())
 
   # () -> Unit
   teardown: -> @ractive.teardown()
@@ -387,7 +389,7 @@ fillOutWidgets = (widgets) ->
       when "monitor"
         setUpMonitor(widget, widget)
 
-# (() => Unit) => (Button, Button) => Unit
+# (Button, Button) => Unit
 setUpButton = (source, destination) ->
   if source.forever then destination.running = false
   if source.compilation.success
@@ -409,10 +411,9 @@ setUpButton = (source, destination) ->
         # run property.
         destination.run = wrappedTask
   else
-    destination.run =
-      ->
-        destination.running = false
-        showErrors(["Button failed to compile with:"].concat(source.compilation.messages))
+    destination.run = ->
+      destination.running = false
+      showErrors(["Button failed to compile with:"].concat(source.compilation.messages))
   return
 
 # (Monitor, Monitor) => Unit

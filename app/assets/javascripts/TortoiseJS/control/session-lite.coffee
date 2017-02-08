@@ -18,6 +18,7 @@ class window.SessionLite
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
+
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
 
@@ -57,7 +58,8 @@ class window.SessionLite
       if now() >= updatesDeadline
         break
 
-    if Updater.hasUpdates()
+    wm = window.workerManager
+    if wm.hasViewUpdates()
       # First conditional checks if we're on time with updates. If so, we may as
       # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
       if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
