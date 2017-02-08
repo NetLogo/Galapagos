@@ -90,7 +90,7 @@ scrapeRoutes ++= Seq(
   "/web"
   )
 
-scrapeDelay := 60
+scrapeDelay := 120
 
 def isTravis: Boolean = System.getenv("TRAVIS") == "true"
 
