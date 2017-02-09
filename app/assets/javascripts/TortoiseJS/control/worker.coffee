@@ -157,6 +157,9 @@ postCompileError = (result) ->
 postNlogoCompileResult = (data) ->
   postToMain('INITIAL_COMPILE_RESULT', data)
 
+postInterfaceGlobals = (globals) ->
+  postToMain('INTERFACE_GLOBALS', { globals })
+
 # string, JSON ->
 postToMain = (type, data) -> self.postMessage({ type, data })
 
@@ -168,6 +171,10 @@ postToMain = (type, data) -> self.postMessage({ type, data })
 
 self.addEventListener('message', ({ data: { type, data } }) ->
   action = {
+    'WIDGET_VALUE_CHANGE': () ->
+      { name, value } = data
+      self.world.observer.setGlobal(name, value)
+
     'RUN_BUTTON': () ->
       { id } = data
       widgetHandlers[id]()
@@ -181,6 +188,13 @@ self.addEventListener('message', ({ data: { type, data } }) ->
         JSON.parse(widgets),  # temp -- stringified to avoid runtime errors
         handleCompileResult,
         postCompileError)
+
+      interfaceGlobalNames = world.observer._interfaceGlobalNames
+      interfaceGlobals = {}
+      interfaceGlobalNames.forEach((name) ->
+        interfaceGlobals[name] = world.observer.getGlobal(name))
+
+      postInterfaceGlobals(interfaceGlobals)
 
     'INITIAL_COMPILE': () ->
       { model, commands, modelPath, name } = data

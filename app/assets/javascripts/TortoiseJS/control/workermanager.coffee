@@ -39,6 +39,15 @@ class window.WorkerManager
 
   handleWorkerMessage: ({ data: { type, data } }) =>
     action = {
+      'INTERFACE_GLOBALS': ({ globals }) =>
+        widgetVars = {}
+        for w in session.widgetController.widgets()
+          if w.variable?
+            widgetVars[w.variable] = w
+
+        for name, value in globals
+          widget = widgetVars[name]
+          widget.currentValue = value
       'VIEW_STATE_UPDATE': ({ updates }) =>
         @_viewUpdates = @_viewUpdates.concat(updates)
         console.log(@_viewUpdates)

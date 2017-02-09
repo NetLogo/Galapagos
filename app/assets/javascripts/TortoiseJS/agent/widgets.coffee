@@ -178,8 +178,16 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
     widget = widgetObj[widgetNum]
-    if widget.variable? and world? and newVal != oldVal and isValidValue(widget, newVal)
-      world.observer.setGlobal(widget.variable, newVal)
+    if widget.variable? and newVal != oldVal and isValidValue(widget, newVal)
+      # UI changes should send updated value to engine
+      worker = window.workerManager.getWorker()
+      worker.postMessage({
+        type: 'WIDGET_VALUE_CHANGE',
+        data: {
+          name: widget.variable,
+          value: newVal,
+        }
+      })
   )
 
   ractive.observe('widgetObj.*.right', ->
@@ -277,9 +285,7 @@ class window.WidgetController
 
     for widget in @widgets()
       if widget.currentValue?
-        if widget.variable?
-          widget.currentValue = world.observer.getGlobal(widget.variable)
-        else if widget.reporter?
+        if widget.reporter?
           try
             widget.currentValue = widget.reporter()
             value        = widget.currentValue
