@@ -93,16 +93,16 @@ scrapeRoutes ++= Seq(
 
 scrapeDelay := 120
 
-def isTravis: Boolean = System.getenv("TRAVIS") == "true"
+def isJenkins: Boolean = Option(System.getenv("JENKINS_HOME")).nonEmpty
 
-def travisBranch: String =
-  if (System.getenv("TRAVIS_PULL_REQUEST") != "false")
-    "PR-" + System.getenv("TRAVIS_PULL_REQUEST")
+def jenkinsBranch: String =
+  if (Option(System.getenv("CHANGE_TARGET")).isEmpty)
+    System.getenv("BRANCH_NAME")
   else
-    System.getenv("TRAVIS_BRANCH")
+    "PR-" + System.getenv("CHANGE_ID") + "-" + System.getenv("CHANGE_TARGET")
 
 scrapePublishCredential := (Def.settingDyn {
-  if (isTravis)
+  if (isJenkins)
     Def.setting { fromEnvironmentVariables }
   else
     // Requires setting up a credentials profile, ask Robert for more details
@@ -112,8 +112,8 @@ scrapePublishCredential := (Def.settingDyn {
 scrapePublishBucketID := (Def.settingDyn {
   val branchDeploy = Map("master" -> "netlogo-web-prod-content")
 
-  if (isTravis)
-    Def.setting { branchDeploy.get(travisBranch) }
+  if (isJenkins)
+    Def.setting { branchDeploy.get(jenkinsBranch) }
   else
     Def.setting { branchDeploy.get("master") }
 }).value
@@ -121,8 +121,8 @@ scrapePublishBucketID := (Def.settingDyn {
 scrapePublishDistributionID := (Def.settingDyn {
   val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
 
-  if (isTravis)
-    Def.setting { branchPublish.get(travisBranch) }
+  if (isJenkins)
+    Def.setting { branchPublish.get(jenkinsBranch) }
   else
     Def.setting { branchPublish.get("master") }
 }).value
