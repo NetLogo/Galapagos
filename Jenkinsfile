@@ -1,6 +1,5 @@
 #!/usr/bin/env groovy
 
-
 pipeline {
 
   agent any
@@ -9,7 +8,7 @@ pipeline {
     stage('Start') {
       steps {
         library 'netlogo-shared'
-        sendNotifications 'STARTED'
+        sendNotifications('NetLogo/Galapagos', 'STARTED')
       }
     }
 
@@ -39,7 +38,7 @@ pipeline {
   post {
     always {
       library 'netlogo-shared'
-      sendNotifications currentBuild.result
+      sendNotifications('NetLogo/Galapagos', currentBuild.result)
     }
   }
 
