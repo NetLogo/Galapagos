@@ -11,7 +11,6 @@
 ###
 
 ###global Highcharts, window, document, Blob ###
-# coffeelint: disable=no_implicit_parens
 ((factory) ->
   if typeof module == 'object' and module.exports
     module.exports = factory
