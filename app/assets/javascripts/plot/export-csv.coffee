@@ -11,14 +11,14 @@
 ###
 
 ###global Highcharts, window, document, Blob ###
-
+# coffeelint: disable=no_implicit_parens
 ((factory) ->
   if typeof module == 'object' and module.exports
     module.exports = factory
   else
-    factory Highcharts
+    factory(Highcharts)
   return
-) (Highcharts) ->
+)((Highcharts) ->
 
   getContent = (chart, href, extension, content, MIME) ->
     a = undefined
@@ -36,23 +36,17 @@
     if window.Blob and window.navigator.msSaveOrOpenBlob
       # Falls to msSaveOrOpenBlob if download attribute is not supported
       blobObject = new Blob([ content ])
-      window.navigator.msSaveOrOpenBlob blobObject, name + '.' + extension
+      window.navigator.msSaveOrOpenBlob(blobObject, name + '.' + extension)
       # Download attribute supported
     else if downloadAttrSupported
       a = document.createElement('a')
       a.href = href
       a.target = '_blank'
       a.download = name + '.' + extension
-      chart.container.append a
+      chart.container.append(a)
       # #111
       a.click()
       a.remove()
-    else
-      # Fall back to server side handling
-      Highcharts.post url,
-        data: content
-        type: MIME
-        extension: extension
     return
 
   'use strict'
@@ -60,9 +54,11 @@
   pick = Highcharts.pick
   seriesTypes = Highcharts.seriesTypes
   downloadAttrSupported = document.createElement('a').download != undefined
-  Highcharts.setOptions lang:
-    downloadCSV: 'Download CSV'
-    downloadXLS: 'Download XLS'
+  Highcharts.setOptions(
+    {lang: {
+      downloadCSV: 'Download CSV'
+      downloadXLS: 'Download XLS'
+    }})
 
   ###*
   # Get the data rows as a two dimensional array
@@ -82,12 +78,13 @@
     dateFormat = options.dateFormat or '%Y-%m-%d %H:%M:%S'
     columnHeaderFormatter = options.columnHeaderFormatter or (item, key, keyLength) ->
       if item instanceof Highcharts.Axis
-        return item.options.title and item.options.title.text or (if item.isDatetimeAxis then 'DateTime' else 'Category')
+        return item.options.title and item.options.title.text or
+        (if item.isDatetimeAxis then 'DateTime' else 'Category')
       if item then item.name + (if keyLength > 1 then ' (' + key + ')' else '') else 'Category'
     xAxisIndices = []
     # Loop the series and index values
     i = 0
-    each @series, (series) ->
+    each(@series, (series) ->
       keys = series.options.keys
       pointArrayMap = keys or series.pointArrayMap or [ 'y' ]
       valueCount = pointArrayMap.length
@@ -96,9 +93,10 @@
       xAxisIndex = Highcharts.inArray(series.xAxis, xAxes)
       j = undefined
       # Map the categories for value axes
-      each pointArrayMap, (prop) ->
+      each(pointArrayMap, (prop) ->
         categoryMap[prop] = series[prop + 'Axis'] and series[prop + 'Axis'].categories or []
         return
+      )
       if series.options.includeInCSVExport != false and series.visible != false
         # #55
         # Build a lookup for X axis index and the position of the first
@@ -107,16 +105,16 @@
         if !Highcharts.find(xAxisIndices, ((index) ->
             index[0] == xAxisIndex
           ))
-          xAxisIndices.push [
+          xAxisIndices.push([
             xAxisIndex
             i
-          ]
+          ])
         # Add the column headers, usually the same as series names
         j = 0
         while j < valueCount
-          names.push columnHeaderFormatter(series, pointArrayMap[j], pointArrayMap.length)
+          names.push(columnHeaderFormatter(series, pointArrayMap[j], pointArrayMap.length))
           j = j + 1
-        each series.points, (point, pIdx) ->
+        each(series.points, (point, pIdx) ->
           key = if requireSorting then point.x else pIdx
           prop = undefined
           val = undefined
@@ -139,13 +137,14 @@
             # Pick a Y axis category if present
             j = j + 1
           return
+        )
         i = i + j
       return
+    )
     # Make a sortable array
     for x of rows
-      `x = x`
       if rows.hasOwnProperty(x)
-        rowArr.push rows[x]
+        rowArr.push(rows[x])
     binding = undefined
     xAxisIndex = undefined
     column = undefined
@@ -157,14 +156,14 @@
       column = xAxisIndices[i][1]
       xAxis = xAxes[xAxisIndex]
       # Sort it by X values
-      rowArr.sort (a, b) ->
-        a.xValues[xAxisIndex] - (b.xValues[xAxisIndex])
+      rowArr.sort((a, b) ->
+        a.xValues[xAxisIndex] - (b.xValues[xAxisIndex]))
       # Add header row
       xTitle = columnHeaderFormatter(xAxis)
       #dataRows = [[xTitle].concat(names)];
-      dataRows[0].splice column, 0, xTitle
+      dataRows[0].splice(column, 0, xTitle)
       # Add the category column
-      each rowArr, (row) ->
+      each(rowArr, (row) ->
         category = row.name
         if !category
           if xAxis.isDatetimeAxis
@@ -176,8 +175,9 @@
           else
             category = row.x
         # Add the X/date/category
-        row.splice column, 0, category
+        row.splice(column, 0, category)
         return
+      )
     dataRows = dataRows.concat(rowArr)
     dataRows
 
@@ -189,7 +189,7 @@
     html = '<table><thead>'
     rows = @getDataRows()
     # Transform the rows to HTML
-    each rows, (row, i) ->
+    each(rows, (row, i) ->
       tag = if i then 'td' else 'th'
       val = undefined
       j = undefined
@@ -212,6 +212,7 @@
       if !i
         html += '</thead><tbody>'
       return
+    )
     html += '</tbody></table>'
     html
   ###*
@@ -226,7 +227,7 @@
     lineDelimiter = options.lineDelimiter or '\n'
     # '\n' isn't working with the js csv data extraction
     # Transform the rows to CSV
-    each rows, (row, i) ->
+    each(rows, (row, i) ->
       val = ''
       j = row.length
       n = if useLocalDecimalPoint then 1.1.toLocaleString()[1] else '.'
@@ -244,6 +245,7 @@
       if i < rows.length - 1
         csv += lineDelimiter
       return
+    )
     csv
 
   ###*
@@ -252,7 +254,7 @@
 
   Highcharts.Chart::downloadCSV = ->
     csv = @getCSV(true)
-    getContent this, 'data:text/csv,\ufeff' + encodeURIComponent(csv), 'csv', csv, 'text/csv'
+    getContent(this, 'data:text/csv,\ufeff' + encodeURIComponent(csv), 'csv', csv, 'text/csv')
     return
 
   ###*
@@ -261,13 +263,21 @@
 
   Highcharts.Chart::downloadXLS = ->
     uri = 'data:application/vnd.ms-excel;base64,'
-    template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' + '<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' + '<x:Name>Ark1</x:Name>' + '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' + '<style>td{border:none;font-family: Calibri, sans-serif;} .number{mso-number-format:"0.00";}</style>' + '<meta name=ProgId content=Excel.Sheet>' + '<meta charset=UTF-8>' + '</head><body>' + @getTable(true) + '</body></html>'
+    template = '<html xmlns:o="urn:schemas-microsoft-com:office:office"' +
+    'xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">' +
+    '<head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>' +
+    '<x:Name>Ark1</x:Name>' +
+    '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>' +
+    '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->' +
+    '<style>td{border:none;font-family: Calibri, sans-serif;} .number{mso-number-format:"0.00";}</style>' +
+    '<meta name=ProgId content=Excel.Sheet>' + '<meta charset=UTF-8>' +
+    '</head><body>' + @getTable(true) + '</body></html>'
 
     base64 = (s) ->
-      window.btoa unescape(encodeURIComponent(s))
+      window.btoa(unescape(encodeURIComponent(s)))
       # #50
 
-    getContent this, uri + base64(template), 'xls', template, 'application/vnd.ms-excel'
+    getContent(this, uri + base64(template), 'xls', template, 'application/vnd.ms-excel')
     return
 
 
@@ -275,7 +285,7 @@
   # run a simple PHP script that returns a file. The source code for the PHP script can be viewed at
   # https://raw.github.com/highslide-software/highcharts.com/master/studies/csv-export/csv.php
   if Highcharts.getOptions().exporting
-    Highcharts.getOptions().exporting.buttons.contextButton.menuItems.push {
+    Highcharts.getOptions().exporting.buttons.contextButton.menuItems.push({
       textKey: 'downloadCSV'
       onclick: ->
         @downloadCSV()
@@ -286,8 +296,7 @@
       onclick: ->
         @downloadXLS()
         return
-
-    }
+    })
   # Series specific
   if seriesTypes.map
     seriesTypes.map::exportKey = 'name'
@@ -296,6 +305,6 @@
   if seriesTypes.treemap
     seriesTypes.treemap::exportKey = 'name'
   return
-
+)
 # ---
 # generated by js2coffee 2.2.0
