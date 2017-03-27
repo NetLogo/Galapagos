@@ -319,6 +319,7 @@ private[controllers] trait RequestResultGenerator {
         "lib/highcharts/adapters/standalone-framework.js",
         "lib/highcharts/highcharts.js",
         "lib/highcharts/modules/exporting.js",
+	"lib/github-com-highcharts-export-csv/export-csv.js",
         "lib/ractive/ractive.js",
         "lib/codemirror/lib/codemirror.js",
         "lib/codemirror/addon/dialog/dialog.js",
