@@ -92,7 +92,7 @@ class window.HighchartsOps extends PlotOps
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
     @_chart              = Highcharts.chart(elemID, {})
     @_penNameToSeriesNum = {}
-
+    @_chart.options.exporting.buttons.contextButton.menuItems.pop()
   # (PenBundle.DisplayMode) => String
   modeToString: (mode) ->
     { Bar, Line, Point } = PenBundle.DisplayMode
