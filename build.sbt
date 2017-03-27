@@ -41,7 +41,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "3.1.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.3",
-  "org.webjars" % "codemirror" % "5.13.2"
+  "org.webjars" % "codemirror" % "5.13.2",
+  "org.webjars.bower" % "github-com-highcharts-export-csv" % "1.4.3"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
