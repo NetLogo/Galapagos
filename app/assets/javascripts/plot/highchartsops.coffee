@@ -92,7 +92,12 @@ class window.HighchartsOps extends PlotOps
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
     @_chart              = Highcharts.chart(elemID, {})
     @_penNameToSeriesNum = {}
-
+    #These pops remove the two redundant functions from the export-csv plugin
+    #see https://github.com/highcharts/export-csv and
+    #https://github.com/NetLogo/Galapagos/pull/364#discussion_r108308828 for more info
+    #--Camden Clark (3/27/17)
+    @_chart.options.exporting.buttons.contextButton.menuItems.pop()
+    @_chart.options.exporting.buttons.contextButton.menuItems.pop()
   # (PenBundle.DisplayMode) => String
   modeToString: (mode) ->
     { Bar, Line, Point } = PenBundle.DisplayMode
