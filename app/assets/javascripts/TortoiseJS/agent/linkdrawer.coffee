@@ -54,12 +54,17 @@ class window.LinkDrawer
   drawSubline: ({x1, y1, x2, y2}, dashPattern, thickness, color, isCurved, controlX, controlY, ctx) ->
     ctx.save()
     ctx.beginPath()
+
     ctx.setLineDash(dashPattern.map((x) => x * @view.onePixel))
     ctx.strokeStyle = netlogoColorToCSS(color)
     ctx.lineWidth   = thickness
+
     ctx.lineCap = if isCurved then 'round' else 'square'
+
     @traceCurvedLine(x1, y1, x2, y2, controlX, controlY, ctx)
+
     ctx.stroke()
+
     ctx.setLineDash([1, 0])
     ctx.restore()
 
@@ -68,7 +73,6 @@ class window.LinkDrawer
 
     theta = @calculateShortestLineAngle(x, y, cx, cy)
 
-    
     shiftCoefficientX = if x - cx > 0 then -1 else 1
     shiftCoefficientY = if y - cy > 0 then -1 else 1
 
@@ -77,6 +81,7 @@ class window.LinkDrawer
     sy    = y + shift * Math.abs(Math.sin(theta)) * shiftCoefficientY
 
     shapeTheta = Math.atan2(sy - y, sx - x) - Math.PI / 2
+
     ctx.translate(sx, sy)
 
     if linkShape['direction-indicator'].rotate
@@ -90,7 +95,7 @@ class window.LinkDrawer
     baseThickness  = 3 / 2
 
     if thickness <= 1
-      scale         = 1 / @view.onePixel / 4
+      scale         = 1 / @view.onePixel / 2
       realThickness = thickness * baseThickness
     else
       scale         = thicknessFactor / 2
@@ -125,6 +130,7 @@ class window.LinkDrawer
 
     linkShape = @shapes[shapeName]
     { curviness, lines } = linkShape
+
     lines.forEach(
       (line) =>
 
