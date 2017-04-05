@@ -15,6 +15,7 @@ class window.SessionLite
     @widgetController.ractive.on('*.recompile',        (event) => @recompile())
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
     @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
+    @widgetController.ractive.on('newModel',           (event) => @newModel())
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
@@ -152,6 +153,12 @@ class window.SessionLite
           else
             alert("Couldn't get standalone page")
       req.send("")
+
+  newModel:() ->
+    if confirm("Are you sure you want to create a new model?")
+      console.log("This is a new blank model.")
+    else
+      console.log("Returning you to your old model.")
 
   makeForm:(method, path, data) ->
     form = document.createElement('form')
