@@ -13,6 +13,9 @@
   <div class="tortoise inner-content">
     <div class="model-selection-bar">
       <div>
+         <button id="new-model">New Model</button>
+      </div>
+      <div>
         <label>Search the Models Library:
             <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
         </label>
@@ -37,6 +40,7 @@
     var exports = {};
   </script>
   <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/new-model.js")'></script>
   <script>
     var modelContainer = document.querySelector('#model-container');
     var hostPrefix     = location.protocol + '//' + location.host;
@@ -51,6 +55,17 @@
       }
     });
 
+    document.querySelector('#new-model').addEventListener('click', function() {
+      if (confirm('Would you like to create a new model? (You will lose your changes.)')) {
+        var encoded = exports.newModel;
+        window.location.hash = "";
+        modelContainer.contentWindow.postMessage({
+          nlogo: encoded,
+          path: "New",
+          type: "nlw-load-model"
+        }, "*");
+      }
+    });
 
     function pickModel(url) {
       var encoded = encodeURI(hostPrefix + '/assets/' + url);
