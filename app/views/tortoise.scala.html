@@ -40,6 +40,7 @@
     var exports = {};
   </script>
   <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/new-model.js")'></script>
   <script>
     var modelContainer = document.querySelector('#model-container');
     var hostPrefix     = location.protocol + '//' + location.host;
@@ -56,9 +57,14 @@
 
     document.querySelector('#new-model').addEventListener('click', function() {
       if (confirm('Would you like to create a new model? (You will lose your changes.)')) {
-        var encoded = encodeURI(hostPrefix + '/assets/modelslib/New.nlogo');
-        openURL(encoded);
-      } 
+        var encoded = exports.newModel;
+        window.location.hash = "";
+        modelContainer.contentWindow.postMessage({
+          nlogo: encoded,
+          path: "New",
+          type: "nlw-load-model"
+        }, "*");
+      }
     });
 
     function pickModel(url) {
