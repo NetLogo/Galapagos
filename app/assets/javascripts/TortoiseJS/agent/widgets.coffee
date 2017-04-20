@@ -508,7 +508,6 @@ template =
       {{/}}
     </div>
 
-    <button class="netlogo-ugly-button" style="align-self: right; margin-right: 5px;" on-click="newModel" >New model</button>
     <div id="netlogo-widget-context-menu" class="widget-context-menu">
       <div id='widget-creation-disabled-message' style="display: none;">
         Widget creation is not yet available.  Check back soon.
