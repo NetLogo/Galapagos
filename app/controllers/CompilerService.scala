@@ -15,16 +15,15 @@ import
 
 import
   play.api.{ cache, Environment, mvc },
-    cache.{ CacheApi, NamedCache },
-    mvc.Controller
+    cache.{ NamedCache, SyncCacheApi },
+    mvc.{ AbstractController, ControllerComponents }
 
 import CompilerService._
 
-
-
-class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: CacheApi,
+class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: SyncCacheApi,
+                                                                     components: ControllerComponents,
                                                                      override protected val environment: Environment)
-  extends Controller with EnvironmentHolder with CacheProvider with CompilationRequestHandler with ModelStatusHandler
+  extends AbstractController(components) with EnvironmentHolder with CacheProvider with CompilationRequestHandler with ModelStatusHandler
 
 
 private[controllers] trait EnvironmentHolder {
@@ -135,7 +134,7 @@ private[controllers] object CompilationRequestHandler {
 
 private[controllers] trait CompilationRequestHandler extends RequestResultGenerator with ResourceSender {
 
-  self: Controller with EnvironmentHolder =>
+  self: AbstractController with EnvironmentHolder =>
 
   import
     controllers.PlayUtil.EnhancedRequest
@@ -157,26 +156,26 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
       libs.{ concurrent, iteratee },
         iteratee.Enumerator,
         concurrent.Execution.Implicits.defaultContext,
-      mvc.{ Action, AnyContent, ResponseHeader, Result }
+      mvc.{ Action => ActionType, AnyContent, ResponseHeader, Result }
 
   import
     CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }
 
   private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment)
 
-  def compileURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
-  def compileCode:  Action[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
-  def compileNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, jsonResult)
+  def compileURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
+  def compileCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
+  def compileNlogo: ActionType[AnyContent] = genCompileAction(generateFromNlogo, jsonResult)
 
-  def exportCode: Action[AnyContent] = genCompileAction(generateFromCode, exportResult)
+  def exportCode: ActionType[AnyContent] = genCompileAction(generateFromCode, exportResult)
 
-  def saveURL:   Action[AnyContent] = genCompileAction(generateFromUrl,   saveResult)
-  def saveCode:  Action[AnyContent] = genCompileAction(generateFromCode,  saveResult)
-  def saveNlogo: Action[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
+  def saveURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   saveResult)
+  def saveCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  saveResult)
+  def saveNlogo: ActionType[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
 
-  def tortoiseCompilerJs:    Action[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
+  def tortoiseCompilerJs:    ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
 
-  def tortoiseCompilerJsMap: Action[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
+  def tortoiseCompilerJsMap: ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
 
   private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
     Action { implicit request =>
@@ -214,7 +213,7 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
 
 private[controllers] trait RequestResultGenerator {
 
-  self: Controller with EnvironmentHolder =>
+  self: AbstractController with EnvironmentHolder =>
 
   import
     java.net.URL
@@ -407,22 +406,22 @@ private[controllers] trait RequestResultGenerator {
 
 private[controllers] trait ModelStatusHandler {
 
-  self: Controller with CacheProvider =>
+  self: AbstractController with CacheProvider =>
 
   import
     play.api.{ libs, mvc },
       libs.json.{ Json, JsObject },
-      mvc.{ Action, AnyContent }
+      mvc.{ Action => ActionType, AnyContent }
 
   import
     models.{ CompilationFailure, CompilationSuccess, ModelCompilationStatus, ModelsLibrary, StatusCacher },
       ModelsLibrary.prettyFilepath,
       StatusCacher.AllBuiltInModelsCacheKey
 
-  def modelStatuses: Action[AnyContent] = Action {
+  def modelStatuses: ActionType[AnyContent] = Action {
     implicit request =>
       val resultJson =
-        cache.getOrElse(AllBuiltInModelsCacheKey)(Seq[String]())
+        cache.get(AllBuiltInModelsCacheKey).getOrElse(Seq[String]())
           .map(genStatusJson)
           .foldLeft(Json.obj())(_ ++ _)
       Ok(Json.stringify(resultJson))
@@ -444,5 +443,5 @@ private[controllers] trait ModelStatusHandler {
 }
 
 private[controllers] trait CacheProvider {
-  protected def cache: CacheApi
+  protected def cache: SyncCacheApi
 }

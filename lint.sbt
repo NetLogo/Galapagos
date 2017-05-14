@@ -6,11 +6,11 @@ import scala.concurrent.duration.{ FiniteDuration, SECONDS }
 
 lazy val coffeelint = taskKey[Seq[File]]("lint coffeescript files in Galapagos")
 
-def allCoffeeSources(directories: File*): Seq[File] =
+def allCoffeeSources(directories: Seq[File]): Seq[File] =
   (PathFinder(directories) ** "*.coffee").get
 
 coffeelint := {
-  val coffeeSources = allCoffeeSources((sourceDirectory in Assets).value, (sourceDirectory in TestAssets).value)
+  val coffeeSources = allCoffeeSources(Seq((sourceDirectory in Assets).value, (sourceDirectory in TestAssets).value))
   val coffeelintConfig = baseDirectory.value / "coffeelint.json"
   val allArgs = Seq("-f", coffeelintConfig.getPath) ++ coffeeSources.map(_.getPath)
   SbtJsTask.executeJs(

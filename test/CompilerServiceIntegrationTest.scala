@@ -1,8 +1,4 @@
-import
-  org.scalatestplus.play.{PlaySpec, OneAppPerSuite}
-
-import
-  akka.stream.Materializer
+import scala.concurrent.Future
 
 import
   play.api.{ Application, inject, libs, mvc, test },
@@ -14,10 +10,12 @@ import
     test.{ FakeRequest, Helpers },
       Helpers.{ await, call, contentAsString, defaultAwaitTimeout, writeableOf_AnyContentAsFormUrlEncoded }
 
-import
-  scala.concurrent.Future
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-class CompilerServiceIntegrationTest extends PlaySpec with OneAppPerSuite {
+import akka.stream.Materializer
+
+class CompilerServiceIntegrationTest extends PlaySpec with GuiceOneAppPerSuite {
 
   import CompilerServiceHelpers._
   import scala.concurrent.ExecutionContext.Implicits.global

@@ -6,7 +6,7 @@ name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -24,12 +24,14 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlaySc
 val tortoiseVersion = "1.0-8d76feb"
 
 libraryDependencies ++= Seq(
+  ehcache,
   filters,
+  guice,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
-  cache,
-  "com.typesafe.akka" %% "akka-testkit" % "2.4.14" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0" % "test"
+  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.1" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-RC1" % "test"
 )
 
 libraryDependencies ++= Seq(
@@ -50,6 +52,8 @@ resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
 resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
 
 resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
+
+resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/" // Needed for akka-http (for now, at least) --JAB 5/23/17
 
 GalapagosAssets.settings
 

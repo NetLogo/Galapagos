@@ -7,9 +7,12 @@ import
 
 import
   play.api.{ Configuration, Environment, mvc },
-    mvc.{ Action, AnyContent, Controller }
+    mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
 
-class Local @Inject() (environ: Environment, configuration: Configuration) extends Controller with ResourceSender {
+class Local @Inject() ( components: ControllerComponents
+                      , configuration: Configuration
+                      , environ: Environment
+                      )  extends AbstractController(components) with ResourceSender {
 
   import Local._
 
