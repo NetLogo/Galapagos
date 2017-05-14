@@ -232,7 +232,7 @@ Many models in the NetLogo models library can be thought as systems composed of 
 
 The B-Z reaction is named after Boris Belousov and Anatol Zhabotinsky, the Russian scientists who discovered it in the 1950's.
 
-A discussion of the chemistry behind the reaction, plus a movie and some pictures, are available at http://msemac.redwoods.edu/~darnold/math55/deproj/Sp98/Gabe/index.htm.
+A discussion of the chemistry behind the reaction, plus a movie and some pictures, are available at http://www.faidherbe.org/site/cours/dupuis/oscil.htm.
 
 The cellular automaton was presented by A.K. Dewdney in his "Computer Recreations" column in the August 1988 of Scientific American.
 
@@ -546,7 +546,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat 200 [ go ]

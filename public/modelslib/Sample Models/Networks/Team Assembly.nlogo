@@ -152,7 +152,7 @@ to color-collaborations
         ]
         [
           ifelse ([incumbent?] of end1) or ([incumbent?] of end2)
-            [ set color green ]  ;; one member is an incumbent
+            [ set color turquoise ]  ;; one member is an incumbent
             [ set color blue ]   ;; both members are newcomers
         ]
       ]
@@ -399,10 +399,10 @@ cumulative count
 10.0
 true
 false
-"" ";; plot stacked histogram of link types\nlet total 0\nset-current-plot-pen \"previous collaborators\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = red]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"incumbent-incumbent\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = yellow]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"newcomer-incumbent\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = green]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"newcomer-newcomer\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = blue]\nplot-pen-down plotxy ticks total"
+"" ";; plot stacked histogram of link types\nlet total 0\nset-current-plot-pen \"previous collaborators\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = red]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"incumbent-incumbent\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = yellow]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"newcomer-incumbent\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = turquoise]\nplot-pen-down plotxy ticks total\nset-current-plot-pen \"newcomer-newcomer\"\nplot-pen-up plotxy ticks total\nset total total + count links with [color = blue]\nplot-pen-down plotxy ticks total"
 PENS
 "newcomer-newcomer" 1.0 0 -13345367 true "" ""
-"newcomer-incumbent" 1.0 0 -10899396 true "" ""
+"newcomer-incumbent" 1.0 0 -14835848 true "" ""
 "incumbent-incumbent" 1.0 0 -1184463 true "" ""
 "previous collaborators" 1.0 0 -2674135 true "" ""
 
@@ -845,7 +845,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 set layout? false
 setup repeat 175 [ go ]

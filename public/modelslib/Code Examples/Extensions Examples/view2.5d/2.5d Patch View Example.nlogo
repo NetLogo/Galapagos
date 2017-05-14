@@ -23,7 +23,7 @@ to setup
 
   ; show the 2.5 patch view, with the patch height corresponding the patch color:
   ; light patches are higher, dark patches are lower
-  view2.5d:patch-view window-name [ [the-patch] -> [ pcolor ] of the-patch ]
+  view2.5d:patch-view window-name [ the-patch -> [ pcolor ] of the-patch ]
 
   view2.5d:decorate-patch-view window-name ; add turtles to the patch-view
   view2.5d:set-observer-angles window-name 32 24 ; change the camera angle
@@ -428,7 +428,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

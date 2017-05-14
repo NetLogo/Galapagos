@@ -133,7 +133,7 @@ end
 ;; The probability that each bit will be flipped is controlled by the
 ;; MUTATION-RATE slider.
 to mutate   ;; turtle procedure
-  set bits map [ [b] ->
+  set bits map [ b ->
     ifelse-value (random-float 100.0 < mutation-rate)
       [ 1 - b ]
       [ b ]
@@ -747,7 +747,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

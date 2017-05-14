@@ -156,5 +156,5 @@ object CompilerServiceHelpers {
   def openModel(model: String): Model =
     ModelReader.parseModel(model, CompilerUtilities, Map())
 
-  val widgetModel = CompiledModel.fromModel(openModel(modelText("test/tortoise/Widgets.nlogo")))
+  val widgetModel = CompiledModel.fromModel(openModel(modelText("../demomodels/All Widgets.nlogo")))
 }

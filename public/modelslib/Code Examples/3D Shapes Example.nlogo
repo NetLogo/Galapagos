@@ -1,7 +1,7 @@
 to setup
   clear-all
   let threedshapes [ "default" "circle" "dot" "square" "triangle" "cylinder" "line" "line half" "car" ]
-  foreach threedshapes [ [the-shape] ->
+  foreach threedshapes [ the-shape ->
     create-turtles 1
     [ set shape the-shape
       set size 2
@@ -21,7 +21,7 @@ to setup
 end
 
 to demo
-  foreach sort turtles [ [t] -> show-off t ]
+  foreach sort turtles show-off
 end
 
 to show-off [ t ]
@@ -57,8 +57,8 @@ GRAPHICS-WINDOW
 27
 -2
 2
-1
-1
+0
+0
 1
 ticks
 100.0
@@ -103,7 +103,7 @@ BUTTON
 315
 256
 bigger
-every 0.01 [ set size size + 0.01 ]
+every 0.01 [\n  set size min list world-height size + 0.01\n]\n
 T
 1
 T
@@ -120,7 +120,7 @@ BUTTON
 316
 292
 smaller
-every 0.01 [ set size size - 0.01 ]
+every 0.01 [\n  set size max list 0 size - 0.01\n]
 T
 1
 T
@@ -498,7 +498,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

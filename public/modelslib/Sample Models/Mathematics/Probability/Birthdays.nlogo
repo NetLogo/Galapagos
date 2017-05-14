@@ -30,9 +30,9 @@ end
 to-report make-month [month month-length]
   ;; use n-values to generate a list of the numbers from 1 to
   ;; the end of the month
-  let day-numbers n-values month-length [ [n] -> n + 1]
+  let day-numbers n-values month-length [ n -> n + 1]
   ;; now glue onto the month name each number
-  report map [ [day] -> (word month " " day) ] day-numbers
+  report map [ day -> (word month " " day) ] day-numbers
 end
 
 to go
@@ -535,7 +535,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 go

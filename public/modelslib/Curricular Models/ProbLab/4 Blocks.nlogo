@@ -22,10 +22,10 @@ to initialize
   reset-ticks
   set-colors
   set target-color-list []
-  ask patches [ set pcolor white - 1]
+  ask patches [ set pcolor white - 1 ]
 
   ;; counts the frequency of each of the 16 permutations:
-  set stratified-list n-values 16 [0]
+  set stratified-list n-values 16 [ 0 ]
 
   ;; This list indexes the positions of the 16 permutations
   ;; in the CT by the bitmask of the four patches.
@@ -57,7 +57,7 @@ end
 ;;;;;;;;;;;;;;;;;;
 
 to go
-  if one-by-one-choices? [ask patches [set pcolor white - 1 ] display wait .3]
+  if one-by-one-choices? [ ask patches [ set pcolor white - 1 ] display wait .3 ]
   ask patches
   [
     ifelse random-float 100 < probability-to-be-target-color [
@@ -108,29 +108,29 @@ to make-histogram
     clear-plot
     plotxy 0 0
     plotxy 4 0
-    let range 0 ;; keeps track of the highest column
+    let max-column-height 0 ;; keeps track of the highest column
     let col-height 0 ;; keeps track of total height of a given histogram column
     let perm-category 0 ;; keeps track of which segment of a given histogram column
                         ;; corresponds to a specific block permutation
-    foreach [0 1 2 3 4] [ [column] ->
-    ;; foreach histogram column, which represents the number
-    ;; of blocks that are the target-color
+    foreach [0 1 2 3 4] [ column ->
+      ;; foreach histogram column, which represents the number
+      ;; of blocks that are the target-color
       set col-height 0 ; since it's a new column, start at the bottom
-      foreach n-values (choose 4 column) [[n] -> n] [
+      foreach range (choose 4 column) [
       ;; foreach possible permutation
       ;; of blocks in this column, add
       ;; a piece of the histogram
         set col-height col-height + item perm-category stratified-list
         plotxy column col-height
         set perm-category perm-category + 1
-        set range max list range col-height
+        set max-column-height max list max-column-height col-height
       ]
     ]
-    if range > 9 [set-plot-y-range 0 range + 1]
+    if max-column-height > 9 [ set-plot-y-range 0 max-column-height + 1 ]
   ] [
     histogram target-color-list
     let maxbar modes target-color-list
-    let maxrange filter [ [the-target-color] -> the-target-color = item 0 maxbar ] target-color-list
+    let maxrange filter [ the-target-color -> the-target-color = item 0 maxbar ] target-color-list
     set-plot-y-range 0 length maxrange
   ]
 end
@@ -277,7 +277,7 @@ stratified?
 
 4-Blocks simulates an empirical probability experiment in which the randomness generator is a compound of 4 squares that each can independently be either green or blue.  The model helps us conceptualize relations between theoretical and empirical aspects of the binomial function: combinatorial analysis (what we can get) and experimentation (what we actually get).
 
-This model is a part of the ProbLab curriculum.  The ProbLab Curriculum is currently under development at the CCL.  For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/ and http://edrl.berkeley.edu/content/design.
+This model is a part of the ProbLab curriculum.  The ProbLab Curriculum is currently under development at the CCL.  For more information about the ProbLab Curriculum please refer to http://ccl.northwestern.edu/curriculum/ProbLab/ and https://edrl.berkeley.edu/content/design.
 
 ## HOW IT WORKS
 
@@ -652,7 +652,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

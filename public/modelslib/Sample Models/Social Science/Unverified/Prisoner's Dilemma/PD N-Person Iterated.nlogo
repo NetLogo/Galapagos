@@ -526,15 +526,17 @@ When two turtles interact, they display their respective payoffs as labels.
 
 Each turtle's payoff for each round will determined as follows:
 
-                 | Partner's Action
-      Turtle's   |
-       Action    |   C       D
-     ------------|-----------------
-           C     |   3       0
-     ------------|-----------------
-           D     |   5       1
-     ------------|-----------------
-      (C = Cooperate, D = Defect)
+```text
+             | Partner's Action
+  Turtle's   |
+   Action    |   C       D
+ ------------|-----------------
+       C     |   3       0
+ ------------|-----------------
+       D     |   5       1
+ ------------|-----------------
+  (C = Cooperate, D = Defect)
+```
 
 (Note: This way of determining payoff is the opposite of how it was done in the PD BASIC model. In PD BASIC, you were awarded something bad- jail time. In this model, something good is awarded- money.)
 
@@ -922,7 +924,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

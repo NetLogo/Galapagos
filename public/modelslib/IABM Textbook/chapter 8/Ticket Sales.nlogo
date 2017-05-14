@@ -123,7 +123,7 @@ to setup-maps
   display-tracts ;; display the tract borders
 
   ;; locate whether a patch intersects a tract, if it does assign it that tract
-  foreach gis:feature-list-of nyc-tracts-dataset [ [feature] ->
+  foreach gis:feature-list-of nyc-tracts-dataset [ feature ->
     ask patches gis:intersecting feature [
       set tract-id gis:property-value feature "STFID"
     ]
@@ -724,7 +724,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -591,27 +591,29 @@ Options (Switches)
 
 There are seven types of pieces.  These are all the shapes that can be made by four blocks stuck together.
 
-       [][]      Square-Block - good filler in flat areas,
-       [][]         hard to place in jagged areas
+```text
+   [][]      Square-Block - good filler in flat areas,
+   [][]         hard to place in jagged areas
 
-       [][][]    L-Block - fits well into deep holes
-       []
+   [][][]    L-Block - fits well into deep holes
+   []
 
-         [][]    S-Block - good filler in jagged areas,
-       [][]         hard to place in flat areas
+     [][]    S-Block - good filler in jagged areas,
+   [][]         hard to place in flat areas
 
-       [][][]    T-Block - good average piece, can fit
-         []         almost anywhere well
+   [][][]    T-Block - good average piece, can fit
+     []         almost anywhere well
 
-       [][]      Reverse S-Block (Or Z-Block) - good
-         [][]       filler in jagged areas, hard to
+   [][]      Reverse S-Block (Or Z-Block) - good
+     [][]       filler in jagged areas, hard to
                     place in flat areas
 
-       [][][]    Reverse L-Block - fits well into
-           []       deep holes
+   [][][]    Reverse L-Block - fits well into
+       []       deep holes
 
-       [][][][]  I-Bar - Only piece that allows you to
-                    clear 4 lines at once (aka a Tetris)
+   [][][][]  I-Bar - Only piece that allows you to
+                clear 4 lines at once (aka a Tetris)
+```
 
 Scoring System:
 Note: Points are scored using level + 1 so that points are still scored at level 0.
@@ -949,7 +951,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 random-seed 1
 set starting-level 9

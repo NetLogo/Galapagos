@@ -116,9 +116,9 @@ end
 
 to recolor-patches
   ifelse show-popularity? [
-    let range (minimum-route-popularity * 3)
+    let max-value (minimum-route-popularity * 3)
     ask patches with [ pcolor != gray ] [
-      set pcolor scale-color green popularity (- range) range
+      set pcolor scale-color green popularity (- max-value) max-value
     ]
   ] [
     ask patches with [ pcolor != gray ] [
@@ -667,7 +667,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

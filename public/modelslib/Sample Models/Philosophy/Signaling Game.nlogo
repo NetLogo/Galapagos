@@ -94,7 +94,7 @@ end
 
 to setup-states
   set-default-shape states "circle 2"
-  foreach state-labels number-of-states [ [the-label] ->
+  foreach state-labels number-of-states [ the-label ->
     create-states 1 [
       set label the-label
       set color sky
@@ -107,7 +107,7 @@ end
 
 to setup-signals
   set-default-shape signals "square 2"
-  foreach signal-labels number-of-signals [ [the-label] ->
+  foreach signal-labels number-of-signals [ the-label ->
     create-signals 1 [
       set label the-label
       set color magenta
@@ -182,7 +182,7 @@ end
 
 to spread-x [ y agents ] ; observer procedure
   let d world-width / (count agents + 1)
-  let xs n-values count agents [ [n] -> (min-pxcor - 0.5) + d + (d * n) ]
+  let xs n-values count agents [ n -> (min-pxcor - 0.5) + d + (d * n) ]
   (foreach sort agents xs [ [a x] -> ask a [ setxy x y ] ])
 end
 
@@ -191,7 +191,7 @@ to-report state-labels [ n ]
 end
 
 to-report signal-labels [ n ]
-  report n-values n [ [the-label] -> the-label ]
+  report n-values n [ the-label -> the-label ]
 end
 
 to-report base-shade-of [ some-color ]
@@ -224,21 +224,21 @@ to print-probabilities
 end
 
 to-report probability-table [ ys xs this-player ]
-  let columns-labels fput "" map [ [x] -> [ label ] of x ] sort xs
+  let columns-labels fput "" map [ x -> [ label ] of x ] sort xs
   let separators fput "" n-values count xs [ "---" ]
-  let rows map [ [y] -> [ make-row urn-with y ] of this-player ] sort ys
+  let rows map [ y -> [ make-row urn-with y ] of this-player ] sort ys
   let formatted-rows map format-list (fput columns-labels fput separators rows)
   report reduce [ [a b] -> (word a "\n" b) ] formatted-rows
 end
 
 to-report make-row [ this-urn ]
   let header-column word ([ label ] of [ end1 ] of this-urn) " :"
-  let other-columns map [ [p] -> p * 100 ] probabilities this-urn
+  let other-columns map [ p -> p * 100 ] probabilities this-urn
   report fput header-column other-columns
 end
 
 to-report format-list [ this-list ]
-  let formatted-values map [ [value] -> format-value value 4 ] this-list
+  let formatted-values map [ value -> format-value value 4 ] this-list
   report reduce [ [a b] -> (word a "  " b) ] formatted-values
 end
 
@@ -252,7 +252,7 @@ end
 
 to-report probabilities [ this-urn ]
   let this-breed [ breed ] of first [ balls ] of this-urn
-  report normalize map [ [a] -> instances a [ balls ] of this-urn ] sort this-breed
+  report normalize map [ a -> instances a [ balls ] of this-urn ] sort this-breed
 end
 
 to-report instances [ x this-list ]
@@ -262,7 +262,7 @@ end
 
 to-report normalize [ this-list ]
   let total sum this-list
-  report map [ [n] -> n / total ] this-list
+  report map [ n -> n / total ] this-list
 end
 
 to-report probability-of-success
@@ -491,7 +491,7 @@ Signaling games were discussed by the philosopher David Lewis in his book _Conve
 
 This is just one example. Signals are everywhere. Airport marshallers use hand signals to direct planes on a runway. Boats use flags to warn the crew of other boats about certain situations ("there has been a mutiny on board", "we're carrying explosives", etc.)
 
-Communication systems work even if the signals used to represent world states have nothing in common with the state they represent. You don't need something a signal that looks like a boat to represent the fact that the British troops are coming by boat. All that is needed is for everyone involved to agree that a particular signal represents a particular state of the world: when that happens, we say that everyone shares the same "convention".
+Communication systems work even if the signals used to represent world states have nothing in common with the state they represent. You don't need something that looks like a boat to represent the fact that the British troops are coming by boat. All that is needed is for everyone involved to agree that a particular signal represents a particular state of the world: when that happens, we say that everyone shares the same "convention".
 
 David Lewis' signaling game assumes that agents already have an agreed upon convention and that they are rational enough to follow it. Another philosopher, Brian Skyrms showed that it was possible for a convention to emerge even if agents have not agreed in advance about which signal to use for which state.
 
@@ -904,7 +904,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 resize-world -14 14 -14 14
 setup repeat 75 [ go ]

@@ -13,7 +13,7 @@ to go
   let n numerator
   ;; go through every patch one at a time in order,
   ;; (left to right, top to bottom)
-  foreach sort patches [ [p] ->
+  foreach sort patches [ p ->
     ask p [
       ifelse column-number >= width [
         ;; patches outside the given width are black
@@ -219,7 +219,7 @@ Change the colors so you only use one color, but vary the lightness/darkness.
 
 Modify the program so you can visualize square roots and pi.
 
-Extend the program so you can have a full fraction Calculator such as [the one in the references](https://web.archive.org/web/20060708132645/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
+Extend the program so you can have a full fraction Calculator such as [the one in the references](http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
 
 ## NETLOGO FEATURES
 
@@ -233,7 +233,7 @@ Division
 
 ## CREDITS AND REFERENCES
 
-This model is adapted from: [Color Calculator Information for teachers](https://web.archive.org/web/20060708132243/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=asides&amp;activity=calc) and [Color Calculator](https://web.archive.org/web/20060708132645/http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
+This model is adapted from: [Color Calculator Information for teachers](http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=asides&amp;activity=calc) and [Color Calculator](http://tapor1.mcmaster.ca/~sgs/cgi-bin/Maths/maths.cgi?theme=none&amp;lang=en&amp;do=activity&amp;activity=calc&amp;level=0).
 
 This model implements activities originally published in:
 Nathalie Sinclair, Rina Zazkis and Peter Liljedahl.  Number Worlds: Visual and Experimental Access to Elementary Number Theory Concepts.  International Journal of Computers for Mathematical Learning, Volume 8, Number 3, pages 235 - 263, January 2003.
@@ -544,7 +544,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 @#$#@#$#@
