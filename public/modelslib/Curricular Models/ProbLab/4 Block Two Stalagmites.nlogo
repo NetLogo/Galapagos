@@ -104,7 +104,7 @@ end
 to-report sample-summary-value ;; sample-organizers reporter
   let result 0
   let power-of-two 3
-  foreach sample-values [ [sample-value] ->
+  foreach sample-values [ sample-value ->
     if sample-value = 1 [
       set result result + 2 ^ power-of-two
     ]
@@ -115,8 +115,8 @@ end
 
 to-report sample-patches ; sample-organizers procedure
   let result []
-  foreach n-values 2 [ [n] -> n ] [ [i] ->
-    foreach n-values 2 [ [n] -> n ] [ [j] ->
+  foreach [0 1] [ i ->
+    foreach [0 1] [ j ->
       set result lput patch-at j (- i) result
     ]
   ]
@@ -161,7 +161,7 @@ end
 to make-a-sample-organizer ; sample-dudes procedure
   hatch-sample-organizers 1 [
     hide-turtle
-    set sample-values map [ [the-sample-dude] ->
+    set sample-values map [ the-sample-dude ->
       ifelse-value ([ color ] of the-sample-dude = target-color) [ 1 ] [ 0 ]
     ] sorted-sample-dudes
     display-sample
@@ -346,7 +346,7 @@ to sample
     (pxcor > sample-right-xcor - 2) and
     (pycor > (max-pycor - 2))
   ]
-  foreach sort sample-location-patch-agentset [ [the-patch-agentset] ->
+  foreach sort sample-location-patch-agentset [ the-patch-agentset ->
     ask the-patch-agentset [
       sprout 1 [
         hide-turtle
@@ -507,12 +507,12 @@ to-report calculate-left-sample-summary-value
     (([pxcor] of sample-dude-1 < [pxcor] of sample-dude-2) and ([pycor] of sample-dude-1 = [pycor] of sample-dude-2)) or
     (([pycor] of sample-dude-1 > [pycor] of sample-dude-2))
   ] left-sample-dudes
-  let left-sample-values map [ [the-sample-dude] ->
+  let left-sample-values map [ the-sample-dude ->
     ifelse-value ([color] of the-sample-dude = target-color) [1] [0]
   ] sorted-left-sample-dudes
   let result 0
   let power-of-two 3
-  foreach left-sample-values [ [sample-value] ->
+  foreach left-sample-values [ sample-value ->
     if sample-value = 1 [
       set result result + 2 ^ power-of-two
     ]
@@ -529,7 +529,7 @@ to finish-off
   ;; might be "green green red green red green"
   ;; need to use map and sort instead of values-from cause of
   ;; the new randomized agentsets in 3.1pre2
-  let sample-color-combination map [ [the-sample-dude] -> [color] of the-sample-dude ] sorted-sample-dudes
+  let sample-color-combination map [ the-sample-dude -> [color] of the-sample-dude ] sorted-sample-dudes
 
   ;; determines which turtle lives at the bottom of the column where the sample is
   let this-column-kid one-of column-kids with [
@@ -592,7 +592,7 @@ to plot-it
   set-current-plot-pen "default"
   plot-pen-reset
   ; have to go through instead of calling histogram, because of the averaging pen
-  foreach individual-4-blocks-list [ [individual-4-block] ->
+  foreach individual-4-blocks-list [ individual-4-block ->
     plot individual-4-block
   ]
   set-plot-y-range 0 max individual-4-blocks-list
@@ -600,7 +600,7 @@ to plot-it
   set-current-plot "Categorized 4-Blocks"
   histogram categorized-4-blocks-list
   let maxbar modes categorized-4-blocks-list
-  let maxrange filter [ [categorized-4-block] -> categorized-4-block = item 0 maxbar ] categorized-4-blocks-list
+  let maxrange filter [ categorized-4-block -> categorized-4-block = item 0 maxbar ] categorized-4-blocks-list
   set-plot-y-range 0 length maxrange
 end
 
@@ -844,30 +844,34 @@ Both representations are stacked dot plots of the samples themselves ("stalagmit
 
 If you toss four coins, what is the chance of getting exactly three heads? To figure out the answer with precision, we need to know all the possible compound events in this experiment, that is, all the unique configurations of four coin states -- whether each is heads (H) or tails (T). To make sense of the list, below, imagine that you have tagged the coins with little identifiers, such as "A", "B", "C", and "D", and you always list the state of these four coins according to the order "ABCD".
 
-    HHHH
-    HHHT
-    HHTH
-    HTHH
-    THHH
-    HHTT
-    HTHT
-    HTTH
-    THTH
-    TTHH
-    THHT
-    TTTH
-    TTHT
-    THTT
-    HTTT
-    TTTT
+```text
+HHHH
+HHHT
+HHTH
+HTHH
+THHH
+HHTT
+HTHT
+HTTH
+THTH
+TTHH
+THHT
+TTTH
+TTHT
+THTT
+HTTT
+TTTT
+```
 
 Assuming fair coins, all the sixteen compound events, above, are equally likely (equiprobable).  But we could pool them indiscriminately into their five sets so as to form five aggregates that are heteroprobable:
 
-    4H0T
-    3H1T
-    2H2T
-    1H3T
-    0H4T
+```text
+4H0T
+3H1T
+2H2T
+1H3T
+0H4T
+```
 
 The likelihood of the four coins landing as each of these five aggregate events are related as 1:4:6:4:1, reflecting the number of unique compounds events in each.  And yet, most aggregate representations, such as histograms, do not make explicit this relation between the two different ways of parsing the sample space -- as sixteen equiprobable elemental events or as five heteroprobable aggregate events.  Consequently, students are liable to miss out on opportunities to make sense of the conventional aggregate representation
 
@@ -1239,7 +1243,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat 150 [ go ]

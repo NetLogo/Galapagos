@@ -1,12 +1,46 @@
+extensions [ rnd ]
+
+to setup
+  clear-all
+  set-default-shape turtles "circle"
+  create-ordered-turtles length base-colors
+  align-turtles
+  reset-ticks
+end
+
+to go
+  if sum [ size ] of turtles >= world-width [ stop ]
+  let winner ifelse-value weighted-selection?
+    [ rnd:weighted-one-of turtles [ size ] ]
+    [ one-of turtles ]
+  ask winner [ set size size + 1 ]
+  align-turtles
+  tick
+end
+
+to align-turtles
+  let x 0 - sum [ size ] of turtles / 2
+  foreach sort turtles [ t ->
+    ask t [
+      set xcor x + (size / 2)
+      set x x + size
+    ]
+  ]
+end
+
+
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-621
+295
 10
-1060
-470
-16
-16
-13.0
+819
+479
+-1
+-1
+4.0
 1
 10
 1
@@ -16,23 +50,23 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
-0
-0
+-64
+64
+-57
+57
+1
+1
 1
 ticks
 30.0
 
 BUTTON
-10
-10
-73
-43
+45
+45
+140
+78
 NIL
-ca
+setup
 NIL
 1
 T
@@ -44,12 +78,12 @@ NIL
 1
 
 BUTTON
-11
-60
-74
-93
+145
+45
+240
+78
 NIL
-ca
+go
 T
 1
 T
@@ -58,187 +92,65 @@ NIL
 NIL
 NIL
 NIL
-1
-
-BUTTON
-14
-103
-77
-136
-NIL
-fd 1
-NIL
-1
-T
-TURTLE
-NIL
-NIL
-NIL
-NIL
-1
-
-SLIDER
-26
-144
-198
-177
-slider-var
-slider-var
-min-pxcor
-max-pxcor
--3
-1
-1
-NIL
-HORIZONTAL
-
-SWITCH
-52
-206
-175
-239
-switch-var
-switch-var
-1
-1
--1000
-
-CHOOSER
-24
-252
-205
-297
-chooser-var
-chooser-var
-"string" 1 [[1 2 3] 4 5] true false 3.141592653589793
 0
-
-INPUTBOX
-28
-314
-196
-374
-string-input
-NIL
-1
-0
-String
-
-INPUTBOX
-21
-386
-258
-513
-multi-line-input
-NIL
-1
-1
-String
-
-INPUTBOX
-316
-61
-471
-121
-color-input
-0
-1
-0
-Color
-
-INPUTBOX
-315
-142
-470
-202
-reporter-input
-NIL
-1
-0
-String (reporter)
-
-MONITOR
-316
-309
-409
-354
-NIL
-count turtles
-17
-1
-11
 
 PLOT
-335
-386
-535
-536
-plot 1
-NIL
-NIL
+10
+175
+285
+350
+Turtle Sizes
+Rank
+Size
 0.0
-10.0
+1.0
 0.0
-10.0
+1.0
 true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count turtles"
+"default" 1.0 1 -16777216 true "set-plot-x-range 1 count turtles + 1" "plot-pen-reset\nset-plot-y-range 0 max [ size ] of turtles + 1\nlet turtles-by-size reverse sort-on [ size ] turtles\n(foreach turtles-by-size n-values count turtles [ n -> n + 1 ] [ [t n] ->\n  ask t [\n    set-plot-pen-color color - 1\n    plotxy n size\n  ]\n])"
 
-OUTPUT
-262
-568
-502
-622
-12
-
-TEXTBOX
-559
-544
-709
-562
-hi
-11
-0.0
+SWITCH
+45
+85
+240
+118
+weighted-selection?
+weighted-selection?
+0
 1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+This example demonstrates the use of the `rnd` extension to do weighted random selection.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+We create as many turtles as there are base colors in NetLogo (i.e., 14) and align them horizontally on the screen. Initially, all turtles have size 1. At each tick we randomly pick one turtle and increase its size by 1. The model stops when the total width of the turtles is enough to horizontally fill the world.
+
+The model offers two ways to randomly select turtles. When WEIGHTED-SELECTION? is turned off, the selection is done in a uniform fashion, using `one-of turtles`, and each turtle has the same probability of being picked. When WEIGHTED-SELECTION? is turned on, we use `rnd:weighted-one-of turtles [ size ]` instead, so bigger turtles stand a greater chance of being picked. For example, a turtle with size 2 is twice as likely to be picked as a turtle with size 1.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+Press SETUP to initialize the model and GO to run it.
+
+The WEIGHTED-SELECTION? switch control whether or not the random selection is proportional to the size of the turtle.
+
+The TURTLE SIZES bar plot shows the size of each turtle, in decreasing order.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
-
-## THINGS TO TRY
-
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
-
-## EXTENDING THE MODEL
-
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
-## NETLOGO FEATURES
-
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+Try a few runs with WEIGHTED-SELECTION? turned on, and then a few runs where it's turned off. Can you notice the change in the distribution of sizes in the TURTLE SIZES plot?
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+The **Lottery Example** model achieves a very similar thing using only regular NetLogo primitives. Can you think of a way to rewrite the **Lottery Example** model using the `rnd` extension?
 
-## CREDITS AND REFERENCES
-
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+<!-- 2016 -->
 @#$#@#$#@
 default
 true
@@ -544,9 +456,8 @@ false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
-
 @#$#@#$#@
-NetLogo 5.1.0
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -562,7 +473,6 @@ true
 0
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
-
 @#$#@#$#@
-0
+1
 @#$#@#$#@

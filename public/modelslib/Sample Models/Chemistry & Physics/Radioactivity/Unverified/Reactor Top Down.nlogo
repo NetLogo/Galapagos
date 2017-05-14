@@ -381,11 +381,13 @@ The manual controls are very simple.  The ADD-RODS and REMOVE-RODS buttons contr
 
 The automatic controller is basically an ON and OFF controller. It is based on 1) comparison of power generated and power rated and 2) the power change. The mechanism is described in the following table:
 
-                         Power > Power Rated   Power < Power Rated
-                         -------------------   -------------------
-      Power Change > 0:       Add Rods            Do Nothing
+```text
+                     Power > Power Rated   Power < Power Rated
+                     -------------------   -------------------
+  Power Change > 0:       Add Rods            Do Nothing
 
-      Power Change < 0:      Do nothing           Remove Rods
+  Power Change < 0:      Do nothing           Remove Rods
+```
 
 The controller should be fine-tuned.
 
@@ -725,7 +727,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat 60 [ auto-react ]

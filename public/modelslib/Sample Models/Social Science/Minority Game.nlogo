@@ -95,7 +95,7 @@ to update-scores-and-strategy  ;; turtles procedure
   let max-strategies []
   let counter 0
   ;; this picks a strategy with the largest virtual score
-  foreach strategies-scores [ [the-score] ->
+  foreach strategies-scores [ the-score ->
     if (the-score = max-score) [
       set max-strategies lput counter max-strategies
     ]
@@ -750,7 +750,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat max-pxcor [ go ]

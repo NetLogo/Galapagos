@@ -61,7 +61,7 @@ to label-beats
   ;; when we hit a number, we turn that whole column
   ;; dark gray.
   let n 0
-  foreach text [ [s] ->
+  foreach text [ s ->
     let x (-1 * max-pxcor + n + 1)
     ;; "s" is used inside foreach to refer to the
     ;; current item of the list we're looping through
@@ -669,7 +669,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -344,7 +344,7 @@ The mechanism of "diffusion-driven instability" was first proposed by Alan Turin
 In building this model, we used information on this web site: http://users.math.yale.edu/public_html/People/frame/Fractals/Panorama/Biology/Leopard/Leopard.html
 
 Research published in Nature Genetics (Economou et al, 2012) appears to confirm the mechanisms the model proposes.
-http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3303118/
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3303118/
 
 A news article in IO9 by Alasdair Wilkins describing the research can be found here.
 http://io9.gizmodo.com/5886406/scientists-confirm-alan-turings-50-year-old-theory-for-why-tigers-have-stripes
@@ -692,7 +692,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

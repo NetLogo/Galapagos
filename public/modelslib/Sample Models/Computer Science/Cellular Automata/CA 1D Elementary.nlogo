@@ -52,7 +52,7 @@ to setup-continue
   if not gone?  ;; make sure go has already been called
     [ stop ]
   ;; copy cell states from the current row to a list
-  set on?-list map [ [p] -> [ on? ] of p ] sort patches with [ pycor = row ]
+  set on?-list map [ p -> [ on? ] of p ] sort patches with [ pycor = row ]
   setup-general
   ask patches with [ pycor = row ]
   [
@@ -174,7 +174,7 @@ to show-rules  ;; preview cell state transitions
   ask patches with [pycor > max-pycor - 12]
     [ set pcolor gray - 1 ]
   let i 0
-  foreach list-rules [ [the-rule] ->
+  foreach list-rules [ the-rule ->
     let px (min-pxcor + i * floor (world-width / 8) + floor (world-width / 16)) - 4
     ask patch px (max-pycor - 4)
     [
@@ -893,7 +893,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup-random repeat world-height - 1 [ go ]
 @#$#@#$#@

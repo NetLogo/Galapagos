@@ -5,31 +5,38 @@ globals [
   cell-color                 ; the color of the cell
   cell-wall                  ; a patch set that contains the patches on the cell wall
   cell-patches               ; a patch set that contains the patches inside the cell
+  operon                     ; a patch set that contains the operon patches
   promoter                   ; a patch set that contains the patches that represent the promoter
   operator                   ; a patch set that contains the patches that represent the operator
   terminator                 ; a patch set that contains the patches that represent the terminator
-  lacZ-production-num        ; number of lacZ proteins produced per transcription event
-  lacZ-production-cost       ; cost incurred by the cell to produce one molecule of lacZ protein
-  lacY-production-num        ; number of lacZ proteins produced per transcription event
-  lacY-production-cost       ; cost incurred by the cell to produce one molecule of lacZ protein
+  LacZ-production-num        ; number of LacZ proteins produced per transcription event
+  LacZ-production-cost       ; cost incurred by the cell to produce one molecule of LacZ protein
+  LacY-production-num        ; number of LacZ proteins produced per transcription event
+  LacY-production-cost       ; cost incurred by the cell to produce one molecule of LacZ protein
   initial-energy             ; initial energy of the cell
   lactose-upper-limit        ; a variable to set the lactose quantity in the external environment
 
   ; Global (cellular) properties
-  energy                     ; keeps track of the energy of the cell
-  division-number            ; a counter to keep track of number of cell division events
-  inhibited?                 ; boolean for whether or not the operator is inhibited
+  energy                           ; keeps track of the energy of the cell
+  ticks-at-start-of-cell-division  ; to keep track of cell division time
+  ticks-at-end-of-cell-division    ; to keep track of cell division time
+  cell-division-time               ; time taken for the cell to divide
+  division-number                  ; a counter to keep track of number of cell division events
+  inhibited?                       ; boolean for whether or not the operator is inhibited
 ]
 
-breed [ lacIs lacI ]         ; the lacI repressor protein (purple proteins)
-breed [ lacZs lacZ ]         ; the lacZ beta-galactosidase enzyme (light red proteins)
-breed [ lacYs lacY ]         ; the lacY lactose permease enzyme (light red rectangles)
+breed [ LacIs LacI ]         ; the LacI repressor protein (purple proteins)
+breed [ LacZs LacZ ]         ; the LacZ beta-galactosidase enzyme (light red proteins)
+breed [ LacYs LacY ]         ; the LacY lactose permease enzyme (light red rectangles)
 breed [ RNAPs RNAP ]         ; RNA Polymerase (brown proteins) that binds to the DNA and synthesizes mRNA
-breed [ lactoses lactose ]   ; lactose molecules (grey)
+breed [ lactoses lactose ]   ; lactose molecules (gray)
 
-lacIs-own [
-  partner                ; if it's a lacI complex, then partner is a lactose molecule
-  bound-to-operator?     ; a boolean to track if a lacI is bound to DNA as an inhibitor of transcription
+breed [ mask-turtles mask-turtle ]   ; turtles to mask the background during animation of cell division
+breed [ daughter-cell-turtles daughter-cell-turtle ]  ; turtles to animate cell division process
+
+LacIs-own [
+  partner                ; if it's a LacI complex, then partner is a lactose molecule
+  bound-to-operator?     ; a boolean to track if a LacI is bound to DNA as an inhibitor of transcription
 ]
 
 RNAPs-own [
@@ -37,7 +44,7 @@ RNAPs-own [
 ]
 
 lactoses-own [
-  partner     ; a partner is a lacI molecule with which an ONPG forms a complex
+  partner     ; a partner is a LacI molecule with which an ONPG forms a complex
   inside?     ; a boolean to track if a lactose molecule is inside the cell
 ]
 
@@ -49,20 +56,21 @@ to setup
   set cell-height 16
   set initial-energy 1000
   set lactose-upper-limit 1500
-  set lacZ-production-num 5
-  set lacZ-production-cost 10
-  set lacY-production-num 5
-  set lacY-production-cost 10
+  set LacZ-production-num 5
+  set LacZ-production-cost 10
+  set LacY-production-num 5
+  set LacY-production-cost 10
 
   ; Initialize all of our global property variables
   set energy initial-energy
+  set ticks-at-start-of-cell-division 0
   set division-number 0
   set inhibited? false
 
   draw-cell
 
   ; add the necessary proteins to the cell
-  create-lacIs lacI-number [
+  create-LacIs LacI-number [
     set bound-to-operator? false
     set partner nobody
     set-shape
@@ -80,20 +88,30 @@ to setup
   reset-ticks
 end
 
+to reset   ;; to reset the parameters to default setting
+  set LacI-number 25
+  set RNAP-number 25
+  set LacI-bond-leakage 0.02
+  set LacI-lactose-binding-chance 0.99991
+  set LacI-lactose-separation-chance 0.001
+  set LacY-degradation-chance 4.0E-4
+  set LacZ-degradation-chance 1.0E-4
+end
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;  Runtime Procedures ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to go
-  go-lacI
-  go-lacY
-  go-lacZ
-  go-lactose
-  go-RNAP
+  go-LacIs
+  go-LacYs
+  go-LacZs
+  go-lactoses
+  go-RNAPs
 
   ; if glucose? is ON, we get a steady stream of energy
   if glucose? [ set energy energy + 10 ]
   ; but it takes energy to maintain all of the proteins so consume some energy
-  set energy (energy - (count RNAPs + count lacIs + count lacZs) / 100 )
+  set energy (energy - (count RNAPs + count LacIs + count LacZs) / 100 )
 
   ; If we're in LevelSpace, then let the population model control division and lactose distribution.
   if not LevelSpace? [
@@ -105,6 +123,7 @@ to go
     ; if we're out of energy, die
     if (energy < 0) [ user-message "The cell has run out of energy. It's dead!" stop ]
   ]
+  show-switch-color
   tick
 end
 
@@ -115,18 +134,19 @@ to move ; turtle procedure
   forward 1
 end
 
-; procedure for movement and molecular interactions of lacI proteins
-to go-lacI
-  ; a lacI bound with the operator might dissociate from the operator
-  ask lacIs with [ bound-to-operator? ] [
-    if (random-float 1 < lacI-bond-leakage) [
+; procedure for movement and molecular interactions of LacI proteins
+to go-LacIs
+
+  ; a LacI bound with the operator might dissociate from the operator
+  ask LacIs with [ bound-to-operator? ] [
+    if (random-float 1 < LacI-bond-leakage) [
       dissociate-from-operator
     ]
   ]
 
-  ; lacIs with partners might dissociate from their partners
-  ask lacIs with [ partner != nobody ] [
-     if (random-float 1 < lacI-lactose-separation-chance) [
+  ; LacIs with partners might dissociate from their partners
+  ask LacIs with [ partner != nobody ] [
+     if (random-float 1 < LacI-lactose-separation-chance) [
       ask partner [
         set partner nobody
         move-to myself
@@ -134,19 +154,20 @@ to go-lacI
         forward 1
       ]
       set partner nobody
+      set-shape
       forward -1
     ]
   ]
 
-  ; lacIs without partners either bind with the operator
-  ask lacIs with [ partner = nobody ] [
+  ; LacIs without partners either bind with the operator
+  ask LacIs with [ partner = nobody ] [
     ifelse (not inhibited?) and ((member? patch-here operator) or (member? patch-ahead 1 operator)) [
       set bound-to-operator? true
       set inhibited? true
       set heading 0
       setxy -12 1
     ] [ ; or maybe bind with a lactose
-      if (count lactoses-here with [ partner = nobody ] > 0  and (random-float 1 < lacI-lactose-binding-chance)) [
+      if (count lactoses-here with [ partner = nobody ] > 0  and (random-float 1 < LacI-lactose-binding-chance)) [
         set partner one-of lactoses-here with [ partner = nobody ]
         set-shape
         ask partner [
@@ -158,11 +179,11 @@ to go-lacI
     ]
   ]
 
-  ask lacIs with [ not bound-to-operator? ] [ move ]
+  ask LacIs with [ not bound-to-operator? ] [ move ]
 end
 
-; procedure for lacIs to dissociate from the operator
-to dissociate-from-operator ; lacI procedure
+; procedure for LacIs to dissociate from the operator
+to dissociate-from-operator ; LacI procedure
   if (bound-to-operator?) [
     set bound-to-operator? false
     set inhibited? false
@@ -170,10 +191,10 @@ to dissociate-from-operator ; lacI procedure
   ]
 end
 
-; procedure for movement and interactions of lacY proteins
-to go-lacY
-  ask lacYs [
-    ; if lacY hits the cellwall, it gets installed on the cell wall
+; procedure for movement and interactions of LacY proteins
+to go-LacYs
+  ask LacYs [
+    ; if LacY hits the cellwall, it gets installed on the cell wall
     ifelse (member? patch-ahead 2 cell-wall) [
       ask patch-ahead 2 [ set pcolor (red + 2) ]
       die
@@ -181,30 +202,30 @@ to go-lacY
     ; otherwise we just move normally
     [ move ]
   ]
-  ; each tick, the installed lacYs have a chance of degrading
+  ; each tick, the installed LacYs have a chance of degrading
   ask patches with [pcolor = (red + 2)] [
-    if (random-float 1 < lacY-degradation-chance) [ set pcolor cell-color ]
+    if (random-float 1 < LacY-degradation-chance) [ set pcolor cell-color ]
   ]
 end
 
-; procedure for movement and interactions of lacZ proteins
-to go-lacZ
-  ; lacZs near lactose can digest that lactose and produce energy
-  ask lacZs with [ any? lactoses in-radius 1 with [ partner = nobody ] ] [
-    ask lactoses in-radius 1 with [ partner = nobody ] [
+; procedure for movement and interactions of LacZ proteins
+to go-LacZs
+  ; LacZs near lactose can digest that lactose and produce energy
+  ask LacZs with [ any? lactoses in-radius 1 with [ partner = nobody ] ] [
+    ask lactoses in-radius 2 with [ partner = nobody ] [
       set energy energy + 10
       die
     ]
   ]
-  ask lacZs [
+  ask LacZs [
     move
-    if (random-float 1 < lacZ-degradation-chance) [ die ] ; there's a chance lacZ degrades
+    if (random-float 1 < LacZ-degradation-chance) [ die ] ; there's a chance LacZ degrades
   ]
 end
 
 ; procedure for movement and interactions of lactose molecules
-to go-lactose
-  ; any lactoses near an installed lacY get pumped into the cell
+to go-lactoses
+  ; any lactoses near an installed LacY get pumped into the cell
   ask lactoses with [ ([ pcolor ] of patch-ahead 2 = (red + 2)) and not inside? ] [
     move-to patch-ahead 2 set heading towards patch 0 0 ; make sure the lactose gets inside the cell
     fd 3
@@ -216,7 +237,7 @@ end
 
 
 ; procedure for movement and molecular interactions of RNAPs
-to go-RNAP
+to go-RNAPs
   ; In the presence of glucose, the probability of trancription is less.
   let transcription-probability ifelse-value (glucose?) [ 0.1 ] [ 1 ]
 
@@ -254,32 +275,33 @@ end
 
 ; procedure to synthesize proteins upon dna transcription
 to synthesize-proteins
-  hatch-lacYs lacY-production-num [
+  hatch-LacYs LacY-production-num [
     gen-xy-inside-inside
     set-shape
   ]
-  hatch-lacZs lacZ-production-num [
+  hatch-LacZs LacZ-production-num [
     gen-xy-inside-inside
     set-shape
   ]
-  set energy energy - (lacY-production-cost * lacY-production-num) - (lacZ-production-cost * lacZ-production-num)
+  set energy energy - (LacY-production-cost * LacY-production-num) - (LacZ-production-cost * LacZ-production-num)
 end
 
-; procedure to simulate cell division; each type of turtle (except RNAPs and lacIs) population is halved
+; procedure to simulate cell division; each type of turtle (except RNAPs and LacIs) population is halved
 to divide-cell
-  ask n-of (count lacIs with [ partner != nobody ] / 2) lacIs with [ partner != nobody ] [
-    ask partner [ die ]
-    set partner nobody
-    set-shape
-  ]
+  animate-cell-division
+
   ask n-of (count lactoses with [ inside? and partner = nobody ] / 2) lactoses with [ inside? and partner = nobody ] [ die ]
-  ask n-of (count lacYs / 2) lacYs [ die ]
-  ask n-of (count patches with [ pcolor = (red + 2) ] / 2) patches with [ pcolor = (red + 2) ] [ set pcolor cell-color ]
-  ask n-of (count lacZs / 2) lacZs [ die ]
+  ask n-of (count LacYs / 2) LacYs [ die ]
+  ask n-of (count LacZs / 2) LacZs [ die ]
+  ask n-of (count patches with [pcolor = (red + 2) ] / 2)patches with [pcolor = (red + 2)] [set pcolor cell-color]
 
   set energy energy / 2
   set division-number division-number + 1
+  set ticks-at-end-of-cell-division ticks
+  set cell-division-time (ticks-at-end-of-cell-division - ticks-at-start-of-cell-division)
+  set ticks-at-start-of-cell-division ticks
 end
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;  Helper Procedures ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -313,7 +335,7 @@ to draw-cell
   ask cell-patches [ set pcolor white ]
 
   ; the operon patches are blue
-  let operon patches with [ (pycor > -1 and pycor < 2) and (pxcor > -10 and pxcor < 17) ]
+  set operon patches with [ (pycor > -1 and pycor < 2) and (pxcor > -10 and pxcor < 17) ]
   ask operon [ set pcolor blue ]
 
   ; promoter is green
@@ -337,14 +359,107 @@ to draw-cell
   ask terminator [ set pcolor gray ]
 end
 
+; procedure to animate the process of cell division
+to animate-cell-division
+
+  create-mask-turtles 1 [
+    set size 1000
+    set color black
+    set shape "square"
+  ]
+
+  ask cell-wall [
+    sprout-daughter-cell-turtles 1 [
+      set color cell-color + 2
+      set shape "square"
+      set size 2
+      set heading 45
+    ]
+  ]
+
+  ask cell-wall [
+    sprout-daughter-cell-turtles 1 [
+      set color cell-color + 2
+      set shape "square"
+      set size 2
+      set heading 225
+    ]
+  ]
+
+  ask cell-patches [
+    sprout-daughter-cell-turtles 1 [
+      set color pcolor
+      set shape "square"
+      set size 2
+      set heading 45
+    ]
+  ]
+
+  ask cell-patches [
+    sprout-daughter-cell-turtles 1 [
+      set color pcolor
+      set shape "square"
+      set size 2
+      set heading 225
+    ]
+  ]
+
+  ask (patch-set operon promoter operator terminator) [
+    sprout-daughter-cell-turtles 1 [
+      set color [ pcolor ] of myself + 2
+      set shape "square"
+      set size 2
+      set heading 45
+    ]
+  ]
+
+  ask (patch-set operon promoter operator terminator) [
+    sprout-daughter-cell-turtles 1 [
+      set color [ pcolor ] of myself + 2
+      set shape "square"
+      set size 2
+      set heading 225
+    ]
+  ]
+
+  ask (turtle-set LacYs LacZs RNAPs LacIs lactoses with [inside?]) [
+    hatch 1 [
+      gen-xy-inside-inside
+      set breed daughter-cell-turtles
+      set shape [shape] of myself
+      set color [color] of myself + 2
+      set heading 45
+    ]
+  ]
+
+  ask (turtle-set LacYs LacZs RNAPs LacIs lactoses with [inside?]) [
+    hatch 1 [
+      gen-xy-inside-inside
+      set breed daughter-cell-turtles
+      set shape [shape] of myself
+      set color [color] of myself + 2
+      set heading 225
+    ]
+  ]
+
+  repeat 23 [
+    ask daughter-cell-turtles [ fd 1 ]
+    display
+  ]
+
+  ask mask-turtles [ die ]
+  ask daughter-cell-turtles [ die ]
+end
+
+
 ; procedure that assigns a specific shape to an agent based on breed
 to set-shape ; turtle procedure
-  if breed = lacIs [
+  if breed = LacIs [
     set size 6
     ifelse partner = nobody [
-      set shape "lacI"
-    ][ ; if you have a partner, you're a lacI-lactose-complex
-      set shape "lacI-lactose-complex"
+      set shape "LacI"
+    ][ ; if you have a partner, you're a LacI-lactose-complex
+      set shape "LacI-lactose-complex"
       set size 6
     ]
   ]
@@ -362,13 +477,13 @@ to set-shape ; turtle procedure
       set hidden? true
      ]
   ]
-  if breed = lacYs [
+  if breed = LacYs [
     set shape "pump"
     set color (red + 2)
     set size 3
   ]
-  if breed = lacZs [
-    set shape "protein"
+  if breed = LacZs [
+    set shape "protein2"
     set color (red + 2)
     set size 4
   ]
@@ -412,6 +527,25 @@ to set-cell-color [ the-color ]
   ask cell-wall [ set pcolor the-color ]
 end
 
+to show-switch-color
+  if count lacZs <= 10 [
+    ask cell-patches [ set pcolor white ]
+  ]
+  if count lacZs > 10 and count lacZs <= 20 [
+    ask cell-patches [ set pcolor 99 ]
+  ]
+  if count lacZs > 20 and count lacZs <= 30 [
+    ask cell-patches [ set pcolor 98 ]
+  ]
+  if count lacZs > 30 [
+    ask cell-patches [ set pcolor 97 ]
+  ]
+  ask operon [ set pcolor blue ]
+  ask promoter [ set pcolor green ]
+  ask operator [ set pcolor orange ]
+  ask terminator [ set pcolor gray ]
+end
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;  LevelSpace Procedures ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -419,8 +553,8 @@ end
 to set-initial-variables [ the-list ]
 
   ; 'the-list' is the following list of numbers (or counts) and booleans
-  ; [ cell-color initial-energy energy initial-lacYs initial-lacYs-inserted initial-lacZs
-  ;    initial-lacI-lactose-complexes initial-lactose-inside initial-lactose-outside
+  ; [ cell-color initial-energy energy initial-LacYs initial-LacYs-inserted initial-LacZs
+  ;    initial-LacI-lactose-complexes initial-lactose-inside initial-lactose-outside
   ;    glucose?-setting lactose?-setting ]
 
   ; we use NetLogo's `item` primitive to directly select elements of the list
@@ -433,14 +567,14 @@ to set-initial-variables [ the-list ]
 
   ; create the necessary turtles
   ask n-of (item 3 the-list) cell-wall [ set pcolor red + 2 ]
-  create-lacYs (item 2 the-list) [ gen-xy-inside-inside ]
-  create-lacZs (item 4 the-list) [ gen-xy-inside-inside ]
+  create-LacYs (item 2 the-list) [ gen-xy-inside-inside ]
+  create-LacZs (item 4 the-list) [ gen-xy-inside-inside ]
   create-lactoses (item 6 the-list) [
     set inside? true
     set partner nobody
     gen-xy-inside-inside
   ]
-  ask n-of (item 5 the-list) lacIs [
+  ask n-of (item 5 the-list) LacIs [
     hatch-lactoses 1 [
       set inside? true
       set partner myself
@@ -452,8 +586,8 @@ end
 
 ; procedure to extract list of variables to use in the population model when using LevelSpace
 to-report send-variables-list
-  report (list (energy) (count lacYs) (count (patches with [pcolor = red + 2])) (count lacZs)
-      (count (lacIs with [ partner != nobody ])) (count (lactoses with [ (inside?) and (partner = nobody) ])) (count (lactoses with [ not inside? ])))
+  report (list (energy) (count LacYs) (count (patches with [pcolor = red + 2])) (count LacZs)
+      (count (LacIs with [ partner != nobody ])) (count (lactoses with [ (inside?) and (partner = nobody) ])) (count (lactoses with [ not inside? ])))
 end
 
 
@@ -491,7 +625,7 @@ BUTTON
 10
 10
 90
-80
+43
 NIL
 setup
 NIL
@@ -508,7 +642,7 @@ BUTTON
 95
 10
 175
-80
+43
 NIL
 go
 T
@@ -524,14 +658,14 @@ NIL
 SLIDER
 10
 360
-325
+165
 393
-lacI-bond-leakage
-lacI-bond-leakage
+LacI-bond-leakage
+LacI-bond-leakage
 0
 0.1
-0.1
-0.0001
+0.02
+0.001
 1
 NIL
 HORIZONTAL
@@ -541,11 +675,11 @@ SLIDER
 400
 325
 433
-lacI-lactose-binding-chance
-lacI-lactose-binding-chance
+LacI-lactose-binding-chance
+LacI-lactose-binding-chance
 0.99990
 1
-0.9999
+0.99991
 0.00001
 1
 NIL
@@ -556,27 +690,12 @@ SLIDER
 480
 325
 513
-lacY-degradation-chance
-lacY-degradation-chance
+LacY-degradation-chance
+LacY-degradation-chance
 0
 0.01
-2.0E-4
+4.0E-4
 0.0001
-1
-NIL
-HORIZONTAL
-
-SLIDER
-10
-320
-165
-353
-lacI-number
-lacI-number
-1
-50
-15.0
-1
 1
 NIL
 HORIZONTAL
@@ -586,11 +705,26 @@ SLIDER
 320
 325
 353
+LacI-number
+LacI-number
+1
+50
+25.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+170
+360
+325
+393
 RNAP-number
 RNAP-number
 0
 50
-15.0
+25.0
 1
 1
 NIL
@@ -601,12 +735,12 @@ SLIDER
 440
 325
 473
-lacI-lactose-separation-chance
-lacI-lactose-separation-chance
+LacI-lactose-separation-chance
+LacI-lactose-separation-chance
 0
 0.01
-0.00377
-0.00001
+0.001
+0.001
 1
 NIL
 HORIZONTAL
@@ -616,8 +750,8 @@ SLIDER
 520
 325
 553
-lacZ-degradation-chance
-lacZ-degradation-chance
+LacZ-degradation-chance
+LacZ-degradation-chance
 0
 0.01
 1.0E-4
@@ -633,7 +767,7 @@ SWITCH
 43
 lactose?
 lactose?
-0
+1
 1
 -1000
 
@@ -642,7 +776,7 @@ PLOT
 360
 945
 555
-Average Cell Division Time
+Cell Division Time
 Time
 Number of Ticks
 0.0
@@ -653,7 +787,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "if division-number > 0 [ plotxy ticks (ticks / division-number) ]"
+"default" 1.0 0 -16777216 true "" "if division-number > 0 [ plot cell-division-time ]"
 
 SWITCH
 180
@@ -662,27 +796,16 @@ SWITCH
 78
 glucose?
 glucose?
-1
+0
 1
 -1000
-
-MONITOR
-810
-385
-932
-430
-Cell Division Time
-ifelse-value (division-number > 0) [\n  precision (ticks / division-number) 0\n][\n \"n/a\"\n]
-17
-1
-11
 
 PLOT
 330
 360
 635
 555
-lacZ Number
+LacZ Number
 Time
 Frequency
 0.0
@@ -693,7 +816,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot count lacZs"
+"default" 1.0 0 -16777216 true "" "plot count LacZs"
 
 SWITCH
 50
@@ -724,41 +847,88 @@ false
 PENS
 "default" 1.0 0 -16777216 true "" "plot energy"
 
+BUTTON
+10
+45
+175
+78
+save screenshot
+export-interface (word \"GenEvo 1 Genetic Switch \" date-and-time \".png\")
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+MONITOR
+755
+490
+932
+535
+average-cell-division-time
+ifelse-value (division-number > 0) [\n  precision (ticks-at-end-of-cell-division / division-number) 0\n][\n \"n/a\"\n]
+17
+1
+11
+
+BUTTON
+10
+320
+165
+353
+reset
+reset
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model simulates a complex phenomenon in molecular biology: the “switching” (on and off) of genes. Through specific regulatory proteins and specific DNA sequences, each regulated gene has the ability to turn on or off in response to environmental stimuli.
+This model simulates a complex phenomenon in molecular biology: the “switching” (on and off) of genes depending on environmental conditions. Through molecular interactions between specific regulatory proteins and specific DNA sequences, each regulated gene is turn on or off in response to environmental stimuli.
 
-Specifically, it is a model of the [lac-operon](https://en.wikipedia.org/wiki/Lac_operon) of a bacterium (E. coli.), which is responsible for the uptake and digestion of lactose through the synthesis of the enzymes [permease (lacY)](https://en.wikipedia.org/wiki/Lactose_permease) and [beta-galactosidase (lacZ)](https://en.wikipedia.org/wiki/Beta-galactosidase).
+Specifically, it is a model of the [lac-operon](https://en.wikipedia.org/wiki/Lac_operon) of a bacterium (E. coli.), which is responsible for the uptake and digestion of lactose, when lactose is the preferred energy source in the environment. It simulates the regulation of synthesis of the enzymes [permease (LacY)](https://en.wikipedia.org/wiki/Lactose_permease) and [beta-galactosidase (LacZ)](https://en.wikipedia.org/wiki/Beta-galactosidase).
 
 ## HOW IT WORKS
 
-While the genetic switch is in essence, a positive feedback loop, it is responsible for regulating the synthesis of proteins required to conduct the uptake and digestion of lactose.
+This genetic switch is in essence, a positive feedback loop. It is responsible for regulating the synthesis of proteins (LacZ and LacY in this model) required to conduct the uptake and digestion of lactose.
 
-In this model, there are in fact two sugars: glucose and lactose. Glucose is "preferred" as an energy source over lactose. When there is glucose and/or no lactose in the surrounding environment, the genetic switch is at an _off steady-state_. This is because the repressor protein [lacI](https://en.wikipedia.org/wiki/Lac_repressor) prevents (mostly) the bacteria from producing the proteins, by binding to the <a href="https://en.wikipedia.org/wiki/Operator_(biology)">operator site</a> of the DNA. In this steady state, relatively little permease (lacY) and beta-galactosidase (lacZ) are produced.
+In this model, there are in fact two sugars: glucose and lactose. Glucose is "preferred" as an energy source over lactose. When there is glucose and/or no lactose in the surrounding environment, the genetic switch is at an _off steady-state_. This is because the repressor protein [LacI](https://en.wikipedia.org/wiki/Lac_repressor) prevents (mostly) the bacteria from producing the proteins, by binding to the <a href="https://en.wikipedia.org/wiki/Operator_(biology)">operator site</a> of the DNA. In this steady state, relatively little permease (LacY) and beta-galactosidase (LacZ) are produced.
 
-When lactose is introduced to the outside environment, the lactose molecules enter into the bacterium through permeases (lacYs) that get inserted into the cell-wall. Some lactose molecules that enter the cell bind to lacIs, preventing them from binding to the operator site of the DNA. This, in turn, causes more lacYs to be produced which causes more lactose to enter the cell, thus creating a positive feedback loop. The lacZs, meanwhile digest free roaming lactoses inside the cell for energy.
+When lactose is introduced to the outside environment, the lactose molecules enter into the bacterial cell through permease proteins (LacYs). Some lactose molecules that enter the cell bind to LacIs, preventing LacIs from binding to the operator site of the DNA. This, in turn, causes more LacYs to be produced. The LacYs get inserted into the cell-wall, which causes more lactose to enter the cell, thus creating a positive feedback loop. The LacZs, meanwhile digest lactose molecules inside the cell to produce energy.
 
-The effect of glucose (through [cAMP](https://en.wikipedia.org/wiki/Cyclic_adenosine_monophosphate)) is only implicitly modelled by changing affecting the amount of lacZ and lacI produced.
+The genetic switch is turned on, when there is lactose and no glucose in the environment. Turning on of the switch is represented by changing the color of the cell to shades of blue color.
+
+The effect of glucose (through [cAMP](https://en.wikipedia.org/wiki/Cyclic_adenosine_monophosphate)) is only implicitly modelled. The rate at which LacZ and LacI are produced reduces significantly when glucose is present.
 
 ### Important Proteins
 1. *RNAP* – These are RNA polymerases that synthesize mRNA from DNA. These are represented by brown blobs in the model. This model does not include mRNAs.
-2. *lacI* – The purple-colored shapes in the model represent a repressor (lacI proteins). They bind to the operator region (see below) of the DNA and do not let RNAP to pass along the gene, thus stopping protein synthesis. When lactose binds to lacI, they form lacI-lactose complexes (shown by a purple shape with a grey dot attached to it). These complexes cannot bind to the operator region of the DNA.
-3. *lacY* – These are shown in the model as light red rectangles. They are produced when an RNAP passes along the gene. When they hit the cell-wall, they get installed on the cell-wall (shown by light patches). Lactose (grey pentagons) from the outside environment is transported inside the cell through these light red patches.
-4. *lacZ* – These are shown as light red colored proteins. They are present inside the cell. When they collide with a lactose molecule, the lactose molecule is digested and energy is produced.
+2. *LacI* – The purple-colored shapes in the model represent a repressor (LacI proteins). They bind to the operator region (see below) of the DNA and do not let RNAP to pass along the gene, thus stopping protein synthesis. When lactose binds to LacI, they form LacI-lactose complexes (shown by a purple shape with a grey dot attached to it). These complexes cannot bind to the operator region of the DNA.
+3. *LacY* – These are shown in the model as light red rectangles. They are produced when an RNAP passes along the gene. When they hit the cell-wall, they get installed on the cell-wall (shown by light patches). Lactose (grey pentagons) from the outside environment is transported inside the cell through these light red patches.
+4. *LacZ* – These are shown as light red colored proteins. They are present inside the cell. When they collide with a lactose molecule, the lactose molecule is digested and energy is produced.
 
 ### DNA Regions
 There are four important DNA regions in this model:
 
 1. *Promoter* – This region is indicated by the color green. As an RNAP binds to the promoter region and if the operator is free, it moves along DNA to start transcription.
-2. *Operator* – This region is indicated by the color orange. The lacI repressor protein binds to this region and prevents RNAP from moving along the DNA.
-3. *Operon* – This is indicated by the color blue. This is where the genetic material necessary to create lacY and lacZ is found.
+2. *Operator* – This region is indicated by the color orange. The repressor protein, LacI, binds to this region and prevents RNAP from moving along the DNA.
+3. *Operon* – This is indicated by the color blue. This is where lacY and lacZ genes are. This model includes only these two genes of the operon.
 4. *Terminator* – This is indicated by the color grey. RNAP separates from the DNA when it reaches this region.
 
-As RNAP moves along the gene, lacY and lacZ molecules are produced (five molecules per transcription). We do not show translation by ribosomes in this model.
+As RNAP moves along the gene, LacY and LacZ proteins are produced (five molecules per transcription). We do not show translation by ribosomes in this model.
 
 ### Energy of the cell
-Producing and maintaining the protein machinery for a cell takes energy. So as a cell produces proteins and maintains those proteins (RNAPs, lacIs and lacZs), its energy decreases.
+Producing and maintaining the protein machinery for a cell takes energy. So as a cell produces proteins and maintains those proteins (RNAPs, LacIs and LacZs), its energy decreases.
 
 Energy of the cell increases when lactose inside the cell is digested.
 
@@ -777,17 +947,17 @@ Once all the sliders are set to the desired levels, the user should click SETUP 
 
 To observe the switching behavior of the genetic switch, set GLUCOSE? to ON and LACTOSE? to OFF. Let the simulation run for a few hundred ticks. Observe the changes in the energy of the cell as time progresses and cell divides. The energy drops to half when a cell divides.
 
-To run the simulation faster, uncheck the 'view updates' box for several thousand ticks. Observe the lacZ production in the graph. It varies because of the stochastic nature of the molecular interactions in the cell. This variability even when the switch "is off" is why genetic switches are referred to as "leaky".
+To run the simulation faster, uncheck the 'view updates' box for several thousand ticks. Observe the LacZ production in the graph. It varies because of the stochastic nature of the molecular interactions in the cell. This variability even when the switch "is off" is why genetic switches are referred to as "leaky".
 
-Set GLUCOSE? to OFF and LACTOSE? to ON to see the behavior of the genetic switch by observing change in the lacZ production.
+Set GLUCOSE? to OFF and LACTOSE? to ON to see the behavior of the genetic switch by observing change in the LacZ production.
 
 While molecular interactions (micro) are best observed through running the simulation with 'view updates' checked, to observe cellular behavior (macro), 'view updates' should be unchecked and the simulation should be run for several thousand ticks.
 
 ### Buttons
 
-The SETUP button initializes the model
+The SETUP button initializes the model.
 
-The GO button runs the simulation until the cell dies
+The GO button runs the simulation until the cell dies.
 
 ### Switches
 
@@ -797,34 +967,34 @@ GLUCOSE?  - If ON, glucose is added to the external medium. Glucose is implicitl
 
 ### Sliders
 
-LACI-NUMBER - Sets the number of lacIs
+LACI-NUMBER - Sets the number of LacIs
 
 RNAP-NUMBER - Sets the number of RNAPs
 
-LACI-BOND-LEAKAGE - This is the chance a lacI molecule bonded to the operator detaches from the operator
+LACI-BOND-LEAKAGE - This is the chance a LacI molecule bonded to the operator detaches from the operator
 
-LACI-LACTOSE-BINDING-CHANCE - Sets the chance that a lactose and a lacI come together to form a lacI-lactose complex
+LACI-LACTOSE-BINDING-CHANCE - Sets the chance that a lactose and a LacI come together to form a LacI-lactose complex
 
-LACI-LACTOSE-SEPARATION-CHANCE - Sets the chance that a lacI-lactose complex separates
+LACI-LACTOSE-SEPARATION-CHANCE - Sets the chance that a LacI-lactose complex separates
 
-LACY-DEGRADATION-CHANCE - Sets the chance of degradation of a lacY that is installed on the cell-wall
+LACY-DEGRADATION-CHANCE - Sets the chance of degradation of a LacY that is installed on the cell-wall
 
-LACZ-DEGRADATION-CHANCE - Sets the chance of degradation of a lacZ molecules in the cell
+LACZ-DEGRADATION-CHANCE - Sets the chance of degradation of a LacZ molecules in the cell
 
 ### Plots
 
 Energy – Plots the amount of energy in the cell over time
 
-lacZ Number – Plots the number of lacZ molecules inside a cell
+lacZ Number – Plots the number of LacZ molecules inside a cell
 
-Average Cell Division Time – Plots the average number of ticks between two cell division events. It can be used as a growth rate indicator.
+Cell Division Time – Plots the number of ticks between two cell division events. It can be used as a growth rate indicator. Shorter cell division time indicates higher growth rate.
 
 ## THINGS TO NOTICE
 
 Notice the three parts of the molecular mechanism involved in the control of the genetic switch:
-1. Uptake of lactose from outside to inside through lacY
-2. Repression by lacI in absence of lactose
-3. Formation of lacI-lactose complex in presence of lactose and removal of repression
+1. Uptake of lactose from outside to inside through LacY
+2. Repression by LacI in absence of lactose
+3. Formation of LacI-lactose complex in presence of lactose and removal of repression
 
 Notice the changes in energy of the cells when lactose is added (that is, when LACTOSE? is ON and when LACTOSE? is OFF).
 
@@ -832,7 +1002,7 @@ Notice the energy changes when a cell divides.
 
 Notice the changes in the Average Cell Division Time as time progresses.
 
-Notice the effect of changes in the environmental conditions (ON/OFF of GLUCOSE? and LACTOSE? on the Average Cell Division Time and the lacZ Number.
+Notice the effect of changes in the environmental conditions (ON/OFF of GLUCOSE? and LACTOSE? on the Average Cell Division Time and the LacZ Number.
 
 ## THINGS TO TRY
 
@@ -850,8 +1020,8 @@ This model uses NetLogo's `with` primitive extensively. This is because, althoug
 
 ## RELATED MODELS
 
-* GenDrift Sample Models
 * GenEvo Curricular Models
+* GenDrift Sample Models
 
 ## HOW TO CITE
 
@@ -1064,7 +1234,7 @@ Line -7500403 true 150 0 150 150
 
 pentagon
 false
-15
+1
 Polygon -7500403 true false 150 90 90 135 120 195 180 195 210 135
 
 person
@@ -1094,6 +1264,11 @@ true
 Polygon -7500403 false true 165 75 135 75 135 90 165 105 165 75 165 60 135 105 165 120 180 120 180 90 150 75 150 105 180 135 165 135 165 120 180 120 195 135 195 105 195 105 165 105 150 105 165 90 180 75 165 75 150 90 165 105 150 120 135 150 120 150 120 165 150 165 180 165 165 135 165 135
 Polygon -7500403 false true 165 150 165 165 150 180 135 165 120 195 150 210 165 180 180 165 150 165 135 150 135 165 120 165 120 210 150 195 180 195 180 180 195 165 165 150 165 150 210 165 180 210 150 180 135 210 120 225 150 225
 Polygon -7500403 false true 135 120 120 120 150 135 150 150 180 150 150 120 120 135 135 105 105 105 180 135 210 150 105 120 105 135 210 195
+
+protein2
+true
+0
+Polygon -7500403 true true 150 60 60 210 240 210 150 60 150 60
 
 pump
 true
@@ -1196,8 +1371,9 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

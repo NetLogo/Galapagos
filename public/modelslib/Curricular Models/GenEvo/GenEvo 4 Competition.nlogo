@@ -4,6 +4,7 @@ globals [
   ; These are constant variables used to specify simulation restrictions
   global-lactose-limit         ; variable to specify lactose quantity
   initial-energy               ; variable to specify initial energy of bacterial cells
+  old-models-list                  ; list of ls:models to identify newly created model
 ]
 
 breed [ ecolis ecoli ]
@@ -31,7 +32,7 @@ to setup
   ls:reset
   ; set the constant values
   set initial-energy 1000
-  set global-lactose-limit (initial-number-of-cells * 5000)
+  set global-lactose-limit (initial-number-of-types * 5000)
   generate-cells ; create the cells
   if lactose? [ distribute-lactose ] ; distribute lactose if the option is selected
   reset-ticks
@@ -39,10 +40,10 @@ end
 
 ; procedure to generate E. coli cells. If choose-models is OFF, default cell model is created for all the cells.
 to generate-cells
-  let color-list [ gray red brown yellow green cyan violet magenta ]
+  let color-list [ red orange brown yellow green cyan violet magenta ]
 
   let i 0
-  create-ecolis initial-number-of-cells [
+  create-ecolis initial-number-of-types [
     set color (item i color-list)
     setxy random-xcor random-ycor
     set shape "ecoli"
@@ -70,7 +71,7 @@ to create-my-model ; turtle procedure
   ; In that case, we kill the E. coli so we this doesn't mess anything up.
   ifelse my-model-path != False [
     ls:create-interactive-models 1 my-model-path
-    set my-model last ls:models
+    set my-model max ls:models
     ls:hide my-model
 
     ls:let initial-variables-list generate-initial-variables-list
@@ -269,14 +270,14 @@ true
 true
 "" ""
 PENS
-"gray" 1.0 0 -7500403 true "" "plot count ecolis with [ color = gray ]"
-"red" 1.0 0 -2674135 true "" "if initial-number-of-cells > 1 [ plot count ecolis with [ color = red ] ]"
-"brown" 1.0 0 -6459832 true "" "if initial-number-of-cells > 2 [ plot count ecolis with [ color = brown ] ]"
-"yellow" 1.0 0 -1184463 true "" "if initial-number-of-cells > 3 [ plot count ecolis with [ color = yellow ] ]"
-"green" 1.0 0 -10899396 true "" "if initial-number-of-cells > 4 [ plot count ecolis with [ color = green ] ]"
-"cyan" 1.0 0 -11221820 true "" "if initial-number-of-cells > 5 [ plot count ecolis with [ color = cyan ] ]"
-"violet" 1.0 0 -8630108 true "" "if initial-number-of-cells > 6 [ plot count ecolis with [ color = violet ] ]"
-"magenta" 1.0 0 -5825686 true "" "if initial-number-of-cells > 7 [ plot count ecolis with [ color = magenta ] ]"
+"red" 1.0 0 -2674135 true "" "plot count ecolis with [ color = red ]"
+"orange" 1.0 0 -955883 true "" "if initial-number-of-types > 1 [ plot count ecolis with [ color = orange ] ]"
+"brown" 1.0 0 -6459832 true "" "if initial-number-of-types > 2 [ plot count ecolis with [ color = brown ] ]"
+"yellow" 1.0 0 -1184463 true "" "if initial-number-of-types > 3 [ plot count ecolis with [ color = yellow ] ]"
+"green" 1.0 0 -10899396 true "" "if initial-number-of-types > 4 [ plot count ecolis with [ color = green ] ]"
+"cyan" 1.0 0 -11221820 true "" "if initial-number-of-types > 5 [ plot count ecolis with [ color = cyan ] ]"
+"violet" 1.0 0 -8630108 true "" "if initial-number-of-types > 6 [ plot count ecolis with [ color = violet ] ]"
+"magenta" 1.0 0 -5825686 true "" "if initial-number-of-types > 7 [ plot count ecolis with [ color = magenta ] ]"
 
 SWITCH
 140
@@ -294,11 +295,11 @@ SLIDER
 50
 460
 83
-initial-number-of-cells
-initial-number-of-cells
+initial-number-of-types
+initial-number-of-types
 1
 8
-3.0
+7.0
 1
 1
 NIL
@@ -311,7 +312,7 @@ SWITCH
 83
 glucose?
 glucose?
-1
+0
 1
 -1000
 
@@ -337,7 +338,7 @@ PLOT
 320
 460
 514
-Trait Distribution Histogram
+Type Frequency Distribution Histogram
 Trait
 Frequency
 0.0
@@ -348,8 +349,8 @@ true
 false
 "" ""
 PENS
-"gray" 1.0 1 -7500403 true "" "histogram [ 1 ] of ecolis with [ color = gray ]"
-"red" 1.0 1 -2674135 true "" "histogram [ 2 ] of ecolis with [ color = red ]"
+"red" 1.0 1 -2674135 true "" "histogram [ 1 ] of ecolis with [ color = red ]"
+"orange" 1.0 1 -955883 true "" "histogram [ 2 ] of ecolis with [ color = orange ]"
 "brown" 1.0 1 -6459832 true "" "histogram [ 3 ] of ecolis with [ color = brown ]"
 "yellow" 1.0 1 -1184463 true "" "histogram [ 4 ] of ecolis with [ color = yellow ]"
 "green" 1.0 1 -10899396 true "" "histogram [ 4 ] of ecolis with [ color = green ]"
@@ -784,8 +785,9 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

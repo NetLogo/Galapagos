@@ -169,13 +169,17 @@ Each turtle that represents a piece of the fire is born and then dies without ev
 
 Set the density of trees to 55%. At this setting, there is virtually no chance that the fire will reach the right edge of the forest. Set the density of trees to 70%. At this setting, it is almost certain that the fire will reach the right edge. There is a sharp transition around 59% density. At 59% density, the fire has a 50/50 chance of reaching the right edge.
 
-Try setting up and running a BehaviorSpace experiment (see Tools menu) to analyze the percent burned at different tree density levels.
+Try setting up and running a BehaviorSpace experiment (see Tools menu) to analyze the percent burned at different tree density levels. Plot the burn-percentage against the density. What kind of curve do you get?
+
+Try changing the size of the lattice (`max-pxcor` and `max-pycor` in the Model Settings). Does it change the burn behavior of the fire?
 
 ## EXTENDING THE MODEL
 
-What if the fire could spread in eight directions (including diagonals)? To do that, use "neighbors" instead of "neighbors4". How would that change the fire's chances of reaching the right edge? In this model, what "critical density" of trees is needed for the fire to propagate?
+What if the fire could spread in eight directions (including diagonals)? To do that, use `neighbors` instead of `neighbors4`. How would that change the fire's chances of reaching the right edge? In this model, what "critical density" of trees is needed for the fire to propagate?
 
 Add wind to the model so that the fire can "jump" greater distances in certain directions.
+
+Add the ability to plant trees where you want them. What configurations of trees allow the fire to cross the forest? Which don't? Why is over 59% density likely to result in a tree configuration that works? Why does the likelihood of such a configuration increase so rapidly at the 59% density?
 
 ## NETLOGO FEATURES
 
@@ -508,7 +512,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 set density 60.0
 setup

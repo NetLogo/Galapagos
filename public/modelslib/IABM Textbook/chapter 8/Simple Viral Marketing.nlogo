@@ -248,7 +248,7 @@ Finally, the model only allows users to choose one centrality measure by which t
 
 Stonedahl, Forrest, William Rand, and Uri Wilensky (2010), "Evolving Viral Marketing Strategies," Genetic and Evolutionary Computation Conference (GECCO), July 7-11, Portland, OR, USA
 
-Rand, William M. and Rust, Roland T., Agent-Based Modeling in Marketing: Guidelines for Rigor (June 10, 2011). International Journal of Research in Marketing, 2011; Robert H. Smith School Research Paper No. RHS 06-132. Available at SSRN: http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1818543
+Rand, William M. and Rust, Roland T., Agent-Based Modeling in Marketing: Guidelines for Rigor (June 10, 2011). International Journal of Research in Marketing, 2011; Robert H. Smith School Research Paper No. RHS 06-132. Available at SSRN: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1818543
 
 This model is a simplified model based on another model by Arthur Hjorth (arthur.hjorth@u.northwestern.edu).
 
@@ -587,7 +587,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup repeat 40 [ layout ] repeat 15 [ go ]
 @#$#@#$#@

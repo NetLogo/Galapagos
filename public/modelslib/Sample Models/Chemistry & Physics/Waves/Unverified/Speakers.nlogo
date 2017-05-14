@@ -11,13 +11,13 @@ to setup
   ;; Create the turtles that represent the waves
   ;; We need three lines across the world, so it sets
   ;; their xcor based on their incrementing turtle id
-  foreach sort patches with [ pycor = 0 ] [ [p] ->
+  foreach sort patches with [ pycor = 0 ] [ p ->
     ask p [ sprout-lefts 1 [ set color yellow ] ]
   ]
-  foreach sort patches with [ pycor = 0 ] [ [p] ->
+  foreach sort patches with [ pycor = 0 ] [ p ->
     ask p [ sprout-rights 1 [ set color cyan ] ]
   ]
-  foreach sort patches with [ pycor = 0 ] [ [p] ->
+  foreach sort patches with [ pycor = 0 ] [ p ->
     ask p [ sprout-sums 1 [ set color red ] ]
   ]
 
@@ -801,7 +801,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

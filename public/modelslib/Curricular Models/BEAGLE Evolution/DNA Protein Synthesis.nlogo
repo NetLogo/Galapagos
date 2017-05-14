@@ -470,12 +470,12 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to visualize-all-genes
-   ask (turtle-set promoters terminators)[ask link-neighbors [set hidden? not show-genes?] set hidden? not show-genes?]
+   ask (turtle-set promoters terminators)[ask tagline-neighbors [set hidden? not show-genes?] set hidden? not show-genes?]
 end
 
 
 to hide-genes  [strand-type]
-   ask (turtle-set promoters terminators)  with [strand = strand-type] [ask link-neighbors [set hidden? true] set hidden? true]
+   ask (turtle-set promoters terminators)  with [strand = strand-type] [ask tagline-neighbors [set hidden? true] set hidden? true]
 end
 
 
@@ -560,7 +560,7 @@ to make-protein [strand-type]
   let this-protein-value ""
   let these-amino-acids amino-acids with [breed = amino-acids and strand-type = strand and gene-number = this-gene-number]
   let ordered-amino-acids sort-on [who] these-amino-acids
-  foreach ordered-amino-acids [ [the-amino-acid] ->
+  foreach ordered-amino-acids [ the-amino-acid ->
     set this-protein-value (word   this-protein-value "-" ([value] of the-amino-acid))
   ]
   if not any? proteins with [strand = strand-type and value = this-protein-value] [
@@ -767,7 +767,7 @@ end
 
 ;;;;;; returns values such as "Gly" for "GGA" or "Tyr" for "UAC" using the codon-to-amino-acid-key
 to-report which-protein-for-this-codon [this-codon]
- report item 1 (item 0 filter [ [pair] -> first pair = this-codon] codon-to-amino-acid-key )
+ report item 1 (item 0 filter [ pair -> first pair = this-codon] codon-to-amino-acid-key )
 end
 
 ;;; reports a random base for a nucleotide in DNA
@@ -2292,7 +2292,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -413,7 +413,7 @@ Flocking
 ## CREDITS AND REFERENCES
 
 This model is loosely based on rules introduced in the paper:
-Nathan, A. & Barbosa, V. C. (2008). V-like formations in flocks of artificial birds. Artificial Life, 14(2), pp. 179-188. (available at http://arxiv.org/pdf/cs/0611032.pdf)
+Nathan, A. & Barbosa, V. C. (2008). V-like formations in flocks of artificial birds. Artificial Life, 14(2), pp. 179-188. (available at https://arxiv.org/pdf/cs/0611032.pdf)
 
 ## HOW TO CITE
 
@@ -721,7 +721,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat 1000 [ go ]
