@@ -6,7 +6,7 @@ name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -27,9 +27,11 @@ libraryDependencies ++= Seq(
   filters,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
-  cache,
+  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
+  "org.joda" % "joda-convert" % "1.8.1", // Used to avoid warnings (which are turned into errors) about `joda.convert`, which we don't even use...? --JAB (3/13/17)
+  ehcache,
   "com.typesafe.akka" %% "akka-testkit" % "2.4.14" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0" % "test"
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M3" % "test"
 )
 
 libraryDependencies ++= Seq(
