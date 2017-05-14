@@ -1,7 +1,5 @@
 import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
 
-import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
-
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -19,7 +17,7 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 val tortoiseVersion = "1.0-935e4ee"
 
@@ -75,26 +73,6 @@ includeFilter in autoprefixer := Def.setting {
 
 routesGenerator := InjectedRoutesGenerator
 
-scrapeRoutes ++= Seq(
-  "/humans.txt",
-  "/info",
-  "/whats-new",
-  "/model/list.json",
-  "/model/statuses.json",
-  "/netlogo-engine.js",
-  "/netlogo-agentmodel.js",
-  "/tortoise-compiler.js",
-  "/tortoise-compiler.js.map",
-  "/server-error",
-  "/not-found",
-  "/robots.txt",
-  "/standalone",
-  "/launch",
-  "/web"
-  )
-
-scrapeDelay := 120
-
 def isTravis: Boolean = System.getenv("TRAVIS") == "true"
 
 def travisBranch: String =
@@ -102,31 +80,3 @@ def travisBranch: String =
     "PR-" + System.getenv("TRAVIS_PULL_REQUEST")
   else
     System.getenv("TRAVIS_BRANCH")
-
-scrapePublishCredential := (Def.settingDyn {
-  if (isTravis)
-    Def.setting { fromEnvironmentVariables }
-  else
-    // Requires setting up a credentials profile, ask Robert for more details
-    Def.setting { fromCredentialsProfile("nlw-admin") }
-}).value
-
-scrapePublishBucketID := (Def.settingDyn {
-  val branchDeploy = Map("master" -> "netlogo-web-prod-content")
-
-  if (isTravis)
-    Def.setting { branchDeploy.get(travisBranch) }
-  else
-    Def.setting { branchDeploy.get("master") }
-}).value
-
-scrapePublishDistributionID := (Def.settingDyn {
-  val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
-
-  if (isTravis)
-    Def.setting { branchPublish.get(travisBranch) }
-  else
-    Def.setting { branchPublish.get("master") }
-}).value
-
-scrapeAbsoluteURL := Some("netlogoweb.org")
