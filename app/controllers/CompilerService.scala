@@ -315,7 +315,6 @@ private[controllers] trait RequestResultGenerator {
         "lib/google-caja/html-sanitizer-minified.js",
         "lib/markdown-js/markdown.js",
         "lib/mousetrap/mousetrap.js",
-        "lib/highcharts/adapters/standalone-framework.js",
         "lib/highcharts/highcharts.js",
         "lib/highcharts/modules/exporting.js",
         "lib/github-com-highcharts-export-csv/export-csv.js",
