@@ -1,7 +1,5 @@
 import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
 
-import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
-
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -19,7 +17,7 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 val tortoiseVersion = "1.0-935e4ee"
 
