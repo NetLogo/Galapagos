@@ -173,6 +173,8 @@
           window.nlwAlerter.hide();
           activeContainer = loadingOverlay;
           Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
+        } else if (e.data.type === "nlw-update-model-state") {
+          session.widgetController.setCode(e.data.codeTabContents);
         }
       });
 
