@@ -6,6 +6,8 @@ window.RactiveEditorWidget = Ractive.extend({
   , readOnly:         undefined # Boolean
   }
 
+  isolated: true
+
   components: {
     codeEditor: RactiveCodeContainerMultiline
   }
@@ -13,6 +15,11 @@ window.RactiveEditorWidget = Ractive.extend({
   computed: {
     isStale: '${code} !== ${lastCompiledCode}'
   }
+
+  # (String) => Unit
+  setCode: (code) ->
+    @findComponent('codeEditor').setCode(code)
+    return
 
   template:
     """

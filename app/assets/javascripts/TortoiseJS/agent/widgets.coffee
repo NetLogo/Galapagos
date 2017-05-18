@@ -352,6 +352,14 @@ class window.WidgetController
   # () -> number
   speed: -> @model.speed
 
+  # (String) => Unit
+  setCode: (code) ->
+    @ractive.set('code', code)
+    if @ractive.findComponent('editor')?
+      @ractive.findComponent('editor').setCode(code)
+    @ractive.fire('controller.recompile')
+    return
+
   # () -> Unit
   redraw: () ->
     if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
