@@ -367,7 +367,8 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/control/tortoise.js",
         "javascripts/TortoiseJS/control/session-lite.js",
         "javascripts/plot/highchartsops.js",
-        "javascripts/new-model.js"
+        "javascripts/new-model.js",
+        "javascripts/alert.js"
       ).map(path => s"/public/$path")
 
     val urls = (webjarURLs :+ engineJsPath) ++ assetURLs

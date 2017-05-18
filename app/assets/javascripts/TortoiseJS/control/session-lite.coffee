@@ -77,7 +77,7 @@ class window.SessionLite
   recompile: ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
-    Tortoise.startLoading( =>
+    Tortoise.startLoading(=>
       world.clearAll()
       @widgetController.redraw()
       code = @widgetController.code()
@@ -170,7 +170,7 @@ class window.SessionLite
 
     return
 
-  makeForm:(method, path, data) ->
+  makeForm: (method, path, data) ->
     form = document.createElement('form')
     form.setAttribute('method', method)
     form.setAttribute('action', path)
