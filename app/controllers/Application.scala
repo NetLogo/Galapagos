@@ -12,9 +12,12 @@ import
 import
   play.api.{ Environment, libs, Logger, mvc },
     libs.json.Json,
-    mvc.{AnyContent, Action, Controller}
+    mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
 
-class Application @Inject() (environment: Environment)  extends Controller {
+class Application @Inject() ( assets: Assets
+                            , components: ControllerComponents
+                            , environment: Environment
+                            )  extends AbstractController(components) {
 
   private implicit val mode = environment.mode
 
@@ -40,7 +43,7 @@ class Application @Inject() (environment: Environment)  extends Controller {
 
   def model(modelName: String): Action[AnyContent] = {
     Logger.info("\"%s\" requested".format(modelName))
-    Assets.versioned(path="/public/modelslib", modelName)
+    assets.versioned(path="/public/modelslib", modelName)
   }
 
   def modelList: Action[AnyContent] = Action {
@@ -49,8 +52,8 @@ class Application @Inject() (environment: Environment)  extends Controller {
   }
 
   def robots: Action[AnyContent] =
-    Assets.versioned(path="/public/text", "robots.txt")
+    assets.versioned(path="/public/text", "robots.txt")
 
   def humans: Action[AnyContent] =
-    Assets.versioned(path="/public/text", "humans.txt")
+    assets.versioned(path="/public/text", "humans.txt")
 }

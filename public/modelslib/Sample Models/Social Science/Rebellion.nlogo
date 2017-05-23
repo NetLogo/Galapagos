@@ -1,5 +1,5 @@
-breed [agents an-agent]
-breed [cops cop]
+breed [ agents an-agent ]
+breed [ cops cop ]
 
 globals [
   k                   ; factor for determining arrest probability
@@ -20,26 +20,33 @@ patches-own [
 to setup
   clear-all
 
-  ;; set globals
+  ; set globals
   set k 2.3
   set threshold 0.1
 
   ask patches [
-    ;; make background a slightly dark gray
+    ; make background a slightly dark gray
     set pcolor gray - 1
-    ;; cache patch neighborhoods
+    ; cache patch neighborhoods
     set neighborhood patches in-radius vision
   ]
 
-  ;; create cops
+  if initial-cop-density + initial-agent-density > 100 [
+    user-message (word
+      "The sum of INITIAL-COP-DENSITY and INITIAL-AGENT-DENSITY "
+      "should not be greater than 100.")
+    stop
+  ]
+
+  ; create cops
   create-cops round (initial-cop-density * .01 * count patches) [
-    move-to one-of patches with [not any? turtles-here]
+    move-to one-of patches with [ not any? turtles-here ]
     display-cop
   ]
 
-  ;; create agents
+  ; create agents
   create-agents round (initial-agent-density * .01 * count patches) [
-    move-to one-of patches with [not any? turtles-here]
+    move-to one-of patches with [ not any? turtles-here ]
     set heading 0
     set risk-aversion random-float 1.0
     set perceived-hardship random-float 1.0
@@ -48,23 +55,21 @@ to setup
     display-agent
   ]
 
-  ;; start clock and plot initial state of system
+  ; start clock and plot initial state of system
   reset-ticks
 end
 
 to go
   ask turtles [
     ; Rule M: Move to a random site within your vision
-    if (breed = agents and jail-term = 0) or breed = cops
-      [ move ]
+    if (breed = agents and jail-term = 0) or breed = cops [ move ]
     ;   Rule A: Determine if each agent should be active or quiet
     if breed = agents and jail-term = 0 [ determine-behavior ]
     ;  Rule C: Cops arrest a random active agent within their radius
     if breed = cops [ enforce ]
   ]
   ; Jailed agents get their term reduced at the end of each clock tick
-  ask agents
-    [ if jail-term > 0 [ set jail-term jail-term - 1 ] ]
+  ask agents [ if jail-term > 0 [ set jail-term jail-term - 1 ] ]
   ; update agent display
   ask agents [ display-agent ]
   ask cops [ display-cop ]
@@ -72,20 +77,21 @@ to go
   tick
 end
 
-;; AGENT AND COP BEHAVIOR
+; AGENT AND COP BEHAVIOR
 
-;; move to an empty patch
-to move ;; turtle procedure
-  if movement? or (breed = cops) [
-    ;; move to a patch in vision; candidate patches are
-    ;; empty or contain only jailed agents
-    let targets neighborhood with
-                [not any? cops-here and all? agents-here [jail-term > 0]]
+; move to an empty patch
+to move ; turtle procedure
+  if movement? or breed = cops [
+    ; move to a patch in vision; candidate patches are
+    ; empty or contain only jailed agents
+    let targets neighborhood with [
+      not any? cops-here and all? agents-here [ jail-term > 0 ]
+    ]
     if any? targets [ move-to one-of targets ]
   ]
 end
 
-;; AGENT BEHAVIOR
+; AGENT BEHAVIOR
 
 to determine-behavior
   set active? (grievance - risk-aversion * estimated-arrest-probability > threshold)
@@ -97,34 +103,34 @@ end
 
 to-report estimated-arrest-probability
   let c count cops-on neighborhood
-  let a 1 + count (agents-on neighborhood) with [active?]
-  ;; See Info tab for a discussion of the following formula
+  let a 1 + count (agents-on neighborhood) with [ active? ]
+  ; See Info tab for a discussion of the following formula
   report 1 - exp (- k * floor (c / a))
 end
 
-;; COP BEHAVIOR
+; COP BEHAVIOR
 
 to enforce
-  if any? (agents-on neighborhood) with [active?] [
-    ;; arrest suspect
-    let suspect one-of (agents-on neighborhood) with [active?]
+  if any? (agents-on neighborhood) with [ active? ] [
+    ; arrest suspect
+    let suspect one-of (agents-on neighborhood) with [ active? ]
+    move-to suspect  ; move to patch of the jailed agent
     ask suspect [
       set active? false
       set jail-term random max-jail-term
     ]
-    move-to suspect  ;; move to patch of the jailed agent
   ]
 end
 
-;; VISUALIZATION OF AGENTS AND COPS
+; VISUALIZATION OF AGENTS AND COPS
 
-to display-agent  ;; agent procedure
+to display-agent  ; agent procedure
   ifelse visualization = "2D"
     [ display-agent-2d ]
     [ display-agent-3d ]
 end
 
-to display-agent-2d  ;; agent procedure
+to display-agent-2d  ; agent procedure
   set shape "circle"
   ifelse active?
     [ set color red ]
@@ -133,7 +139,7 @@ to display-agent-2d  ;; agent procedure
         [ set color scale-color green grievance 1.5 -0.5 ] ]
 end
 
-to display-agent-3d  ;; agent procedure
+to display-agent-3d  ; agent procedure
   set color scale-color green grievance 1.5 -0.5
   ifelse active?
     [ set shape "person active" ]
@@ -482,7 +488,7 @@ Note the use of a patch variable to store precomputed neighborhood agentsets.  T
 ## CREDITS AND REFERENCES
 
 This model, and the preceding explanation, is adapted from Joshua M. Epstein, "Modeling civil violence: An agent-based computational approach", Proceedings of the National Academy of Sciences, Vol. 99, Suppl. 3, May 14, 2002, and is available at
-http://www.ncbi.nlm.nih.gov/pmc/articles/PMC128592/.
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC128592/.
 
 ## HOW TO CITE
 
@@ -847,7 +853,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 repeat 5 [ go ]

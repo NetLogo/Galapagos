@@ -294,7 +294,7 @@ For a more technical treatment, see:
 
 Barabási's webpage has additional information at: http://www.barabasi.com/
 
-The layout algorithm is based on the Fruchterman-Reingold layout algorithm.  More information about this algorithm can be obtained at: http://emr.cs.iit.edu/~reingold/force-directed.pdf.
+The layout algorithm is based on the Fruchterman-Reingold layout algorithm.  More information about this algorithm can be obtained at: https://cs.brown.edu/~rt/gdhandbook/chapters/force-directed.pdf.
 
 For a model similar to the one described in the suggested extension, please consult:
 
@@ -635,7 +635,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

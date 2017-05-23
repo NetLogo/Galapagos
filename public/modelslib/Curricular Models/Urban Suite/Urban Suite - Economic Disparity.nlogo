@@ -748,7 +748,7 @@ It might also be interesting to compare it to the models "Wealth Distribution" a
 
 ## CREDITS AND REFERENCES
 
-This model was loosely based on a model originally written by William Rand and Derek Robinson as part of the Sluce Project at the University of Michigan ([http://vserver1.cscs.lsa.umich.edu/sluce/](http://vserver1.cscs.lsa.umich.edu/sluce/)).  For more about the original model (SOME) that was the basis for this model, please see:
+This model was loosely based on a model originally written by William Rand and Derek Robinson as part of the Sluce Project at the University of Michigan.  For more about the original model (SOME) that was the basis for this model, please see:
 
 Brown D.G., Robinson D.T., Nassauer J.I., An L., Page S.E., Low B., Rand W., Zellner M., and R. Riolo (In Press) "Exurbia from the Bottom-Up: Agent-Based Modeling and Empirical Requirements." Geoforum.
 
@@ -1023,7 +1023,7 @@ Polygon -6459832 true true 38 138 66 149
 Polygon -6459832 true true 46 128 33 120 21 118 11 123 3 138 5 160 13 178 9 192 0 199 20 196 25 179 24 161 25 148 45 140
 Polygon -6459832 true true 67 122 96 126 63 144
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

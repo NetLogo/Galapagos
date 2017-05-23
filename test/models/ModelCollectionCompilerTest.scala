@@ -10,14 +10,14 @@ import
 
 import
   akka.{ actor, testkit },
-    actor.{ ActorDSL, ActorSystem, Inbox, Props },
+    actor.{ ActorSystem, Inbox, Props },
     testkit.{ TestActorRef, TestKitBase }
 
 import
   org.scalatest.{ Assertions, FlatSpec, OneInstancePerTest }
 
 import
-  play.api.Mode.{ Mode, Test }
+  play.api.Mode
 
 class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
 
@@ -29,11 +29,11 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
   }
 
   lazy val observer = genInbox
-  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => modelsCollection.allModels(Test), observer.getRef()))
+  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => modelsCollection.allModels(Mode.Test), observer.getRef()))
 
   it should "send an AllModels message with a list of all files" in {
     collectionCompiler ! CheckBuiltInModels
-    assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels(Test)))
+    assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels(Mode.Test)))
   }
 
   // If this test fails, perhaps Oil Cartel now compiles (because HubNet is supported)? --JAB (2/5/17)
@@ -99,8 +99,8 @@ trait AkkaTestHelper extends Assertions {
   // https://github.com/akka/akka/issues/15409 .  It seems to just be a timing issue, so let's be the little train
   // that could and just keep on a-tryin'! --JAB (11/11/14)
   @annotation.tailrec
-  final protected def genInbox: Inbox =
-    try ActorDSL.inbox
+  final protected def genInbox(implicit system: ActorSystem): Inbox =
+    try Inbox.create(system)
     catch {
       case ex: ClassCastException => genInbox
     }

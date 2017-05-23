@@ -132,7 +132,7 @@ to setup-sites
 
   ; added randomness to the seed list and made it quadratic to
   ; amplify differences between better quality sites
-  let quality-list map [ [n] -> round (((n + random 10 - 4) / 10) ^ 2) ] input-quality-list
+  let quality-list map [ n -> round (((n + random 10 - 4) / 10) ^ 2) ] input-quality-list
 
   (foreach (sort sites) (n-of count sites color-list) (n-of count sites quality-list) [ [the-site the-color the-quality] ->
     ask the-site [                  ; ask the next site in the sorted list of sites
@@ -279,7 +279,7 @@ end
 
 to dance ; bee procedure
   let dancers (turtle-set students robots) with [ state = "dancing" and bee-timer > 0 ]
-  foreach [ 0 1 0 -1 0 ] [ [n] ->
+  foreach [ 0 1 0 -1 0 ] [ n ->
     ask dancers [
       set heading (towards supported-site) + ([ quality ] of supported-site * n)
     ]
@@ -1169,7 +1169,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

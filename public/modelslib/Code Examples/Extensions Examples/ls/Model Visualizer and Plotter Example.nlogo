@@ -5,12 +5,17 @@ to setup
   ls:reset
   clear-all
   create-turtles num-models [    ; create a turtle for each created model
-
     ; create a Wolf Sheep Predation child model
     ls:create-models 1 "../../../Sample Models/Biology/Wolf Sheep Predation.nlogo"
 
     set model-id last ls:models  ; and assign model-id to the turtle
+    ; In order for the model to behave deterministically for a given random seed
+    ; we must set the random seed of it's children.
+    ; See https://ccl.northwestern.edu/netlogo/docs/programming.html#random for
+    ; more information on random seeds.
+    ls:let seed random (2 ^ 31)
     ls:ask model-id [
+      random-seed seed
       set grass? true setup      ; setup their models
     ]
     move-to-new-position         ; move to its model's values
@@ -83,7 +88,7 @@ PENS
 "Min Count Wolves" 1.0 0 -2674135 true "" "plot min [count wolves] ls:of ls:models"
 "Max Count Wolves" 1.0 0 -2674135 true "" "plot max [count wolves] ls:of ls:models"
 "Min Count Sheep" 1.0 0 -13345367 true "" "plot min [count sheep] ls:of ls:models"
-"Max Count Sheep" 1.0 0 -13345367 true "" "plot min [count sheep] ls:of ls:models"
+"Max Count Sheep" 1.0 0 -13345367 true "" "plot max [count sheep] ls:of ls:models"
 "Max Count Grass" 1.0 0 -13840069 true "" "plot max [count patches with [pcolor = green] / 4] ls:of ls:models"
 "Min Count Grass" 1.0 0 -13840069 true "" "plot min [count patches with [pcolor = green] / 4] ls:of ls:models"
 
@@ -477,7 +482,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

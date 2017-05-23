@@ -401,9 +401,11 @@ This model demonstrates the kinetics of single-substrate enzyme-catalysis. The i
 
 The standard equation for this reaction is shown below.
 
-                      Kc          Kr
-            E + S <=======> E-S ------> E + P
-                      Kd
+```text
+                  Kc          Kr
+        E + S <=======> E-S ------> E + P
+                  Kd
+```
 
 Here E represents Enzyme, S Substrate, E-S Enzyme-Substrate complex, and P product.  The rate constants are Kc for complex formation, Kd for complex dissociation, Kr for catalysis.  The first step in catalysis is the formation of the E-S complex.  This can consist of either covalent or non-covalent bonding.  The rates of complex formation and dissociation are very fast because they are determined by collision and separation of the molecules.  The next step is for the enzyme to catalyze the conversion of substrate to product.  This rate is much slower because the energy required for catalysis is much higher than that required for collision or separation.
 
@@ -803,7 +805,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

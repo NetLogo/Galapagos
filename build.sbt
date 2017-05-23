@@ -1,12 +1,10 @@
 import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
 
-import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
-
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -19,17 +17,19 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-val tortoiseVersion = "1.0-8d76feb"
+val tortoiseVersion = "1.0-935e4ee"
 
 libraryDependencies ++= Seq(
   filters,
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
-  cache,
+  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
+  "org.joda" % "joda-convert" % "1.8.1", // Used to avoid warnings (which are turned into errors) about `joda.convert`, which we don't even use...? --JAB (3/13/17)
+  ehcache,
   "com.typesafe.akka" %% "akka-testkit" % "2.4.14" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0" % "test"
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-M3" % "test"
 )
 
 libraryDependencies ++= Seq(
@@ -73,26 +73,6 @@ includeFilter in autoprefixer := Def.setting {
 
 routesGenerator := InjectedRoutesGenerator
 
-scrapeRoutes ++= Seq(
-  "/humans.txt",
-  "/info",
-  "/whats-new",
-  "/model/list.json",
-  "/model/statuses.json",
-  "/netlogo-engine.js",
-  "/netlogo-agentmodel.js",
-  "/tortoise-compiler.js",
-  "/tortoise-compiler.js.map",
-  "/server-error",
-  "/not-found",
-  "/robots.txt",
-  "/standalone",
-  "/launch",
-  "/web"
-  )
-
-scrapeDelay := 120
-
 def isTravis: Boolean = System.getenv("TRAVIS") == "true"
 
 def travisBranch: String =
@@ -100,31 +80,3 @@ def travisBranch: String =
     "PR-" + System.getenv("TRAVIS_PULL_REQUEST")
   else
     System.getenv("TRAVIS_BRANCH")
-
-scrapePublishCredential := (Def.settingDyn {
-  if (isTravis)
-    Def.setting { fromEnvironmentVariables }
-  else
-    // Requires setting up a credentials profile, ask Robert for more details
-    Def.setting { fromCredentialsProfile("nlw-admin") }
-}).value
-
-scrapePublishBucketID := (Def.settingDyn {
-  val branchDeploy = Map("master" -> "netlogo-web-prod-content")
-
-  if (isTravis)
-    Def.setting { branchDeploy.get(travisBranch) }
-  else
-    Def.setting { branchDeploy.get("master") }
-}).value
-
-scrapePublishDistributionID := (Def.settingDyn {
-  val branchPublish = Map("master" -> "E3AIHWIXSMPCAI")
-
-  if (isTravis)
-    Def.setting { branchPublish.get(travisBranch) }
-  else
-    Def.setting { branchPublish.get("master") }
-}).value
-
-scrapeAbsoluteURL := Some("netlogoweb.org")

@@ -90,9 +90,9 @@ to setup
   [
     ;; if we have clients logged in we want to make sure to
     ;; keep the appropriate info around
-    let users map [ [p] -> [user-id] of p] sort patches with [is-string? user-id]
-    let plot-metrics map [ [p] -> [my-plot-metric] of p] sort patches with [is-string? user-id]
-    let phases map [ [p] -> [my-phase] of p] sort patches with [is-string? user-id]
+    let users map [ p -> [user-id] of p] sort patches with [is-string? user-id]
+    let plot-metrics map [ p -> [my-plot-metric] of p] sort patches with [is-string? user-id]
+    let phases map [ p -> [my-phase] of p] sort patches with [is-string? user-id]
     clear-patches
     setup-patches
     setup-intersections
@@ -1777,7 +1777,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

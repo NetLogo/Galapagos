@@ -28,11 +28,11 @@ end
 to setup-all-tags-list
   set all-tags []
   let tag-elements ["a" "b" "c"]
-  foreach tag-elements [ [i] ->
+  foreach tag-elements [ i ->
     set all-tags lput (list i) all-tags
-    foreach tag-elements [ [j] ->
+    foreach tag-elements [ j ->
       set all-tags fput (list i j) all-tags
-      foreach tag-elements [ [k] ->
+      foreach tag-elements [ k ->
         set all-tags fput (list i j k) all-tags
       ]
     ]
@@ -171,7 +171,7 @@ end
 
 ;; Mutates a given string
 to-report mutate [tag]
-  report map [ [letter] ->
+  report map [ letter ->
     ifelse-value (random-float 100 >= mutation-rate)
       [ letter ]
       [ one-of remove letter ["a" "b" "c"] ]
@@ -366,7 +366,7 @@ true
 false
 "set-plot-x-range 0 length all-tags" ""
 PENS
-"default" 1.0 1 -16777216 true "" ";; The HISTOGRAM primitive doesn't support giving different bars\n;; different colors, so we roll our own histogramming code here.\nplot-pen-reset\nforeach all-tags [ [the-tag] ->\n  set-plot-pen-color tag-color the-tag\n  plot count turtles with [ mating = the-tag ]\n]"
+"default" 1.0 1 -16777216 true "" ";; The HISTOGRAM primitive doesn't support giving different bars\n;; different colors, so we roll our own histogramming code here.\nplot-pen-reset\nforeach all-tags [ the-tag ->\n  set-plot-pen-color tag-color the-tag\n  plot count turtles with [ mating = the-tag ]\n]"
 
 SLIDER
 329
@@ -558,9 +558,11 @@ Holland describes several additional extensions in some detail in Chapter 3 of _
 
 Holland discusses an interesting example from nature that can be imitated in Echo -- the Caterpillar-Fly-Ant triangle.  The triangle refers to the stable, triangular relation between the three different species: Species 1 --  Flies lay eggs on caterpillars and become prey through their larva.  Species 2 -- Ants are aggressive predators on the flies, but not of caterpillars.  Species 3 -- Caterpillars produce nectar on their skin which ants find very attractive.  The more ants around a caterpillar the less likely it is to be attacked by a predatory fly.  This can be represented in Echo with the following tags:
 
-     ant - offense: aaa, defense: cb
-     fly - offense: aab, defense: aaa
-     caterpillar - offense: c, defense: aab
+```text
+ ant - offense: aaa, defense: cb
+ fly - offense: aab, defense: aaa
+ caterpillar - offense: c, defense: aab
+```
 
 Notice that the ants' offense tag matches perfectly with the fly's defense tag, making it a perfect predatory on the fly.  Likewise, the fly's offense tag matches perfectly on the caterpillar making it a perfect predator on the caterpillar.  The ant consumes the nectar of the caterpillar but does not prey on the caterpillar; thus, the ant and caterpillar have tags that result in an exchange of resources.
 
@@ -911,7 +913,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

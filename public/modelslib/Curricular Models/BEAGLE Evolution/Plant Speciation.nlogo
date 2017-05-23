@@ -143,7 +143,7 @@ to do-reproduction
                                        set potential-mates (fput self potential-mates)]
 
     ;; pick mate randomly weighted by compatibility
-    let compatibilities map [ [potential-mate] -> compatibility self potential-mate] potential-mates
+    let compatibilities map [ potential-mate -> compatibility self potential-mate] potential-mates
     let mate (pick-weighted (potential-mates) (compatibilities))
 
     ;; spawn children
@@ -293,13 +293,13 @@ end
 ;; where highly weighted choices are more likely to be selected than others
 to-report pick-weighted [ options weights ]
   let wsum 0
-  foreach weights [ [weight] ->
+  foreach weights [ weight ->
     set wsum (wsum + weight)
   ]
   let wret wsum * (random-float 1)
   let ret 0
   set wsum 0
-  foreach weights [ [weight] ->
+  foreach weights [ weight ->
     set wsum (wsum + weight)
     if wsum > wret [ report (item ret options) ]
     set ret (ret + 1)
@@ -681,9 +681,9 @@ The key mechanism that drives speciation to emerge in this model is a fitness fu
 
 Fitness is a hyperbolic paraboloid function that can be visualized as a linear function dependent on tolerance whose slope and y-intercept also vary linearly with respect to increases in metal in the soil.  This linear function would have the following slopes in various metal levels:
 
-    - negative slope in clean ground -> high tolerance is bad
-    - positive slope in dirty ground -> high tolerance is good
-    - slope of zero: in between -> no benefit or disadvantage to any tolerance level
+  - negative slope in clean ground -> high tolerance is bad
+  - positive slope in dirty ground -> high tolerance is good
+  - slope of zero: in between -> no benefit or disadvantage to any tolerance level
 
 This is a model of a "tradeoff", where specializing in one variation of a trait is advantageous in one environmental extreme, but specializing in another variation of the trait is advantageous in a different environmental extreme. Intermediate "hybridization," or averaging between both variations, is disadvantageous in both environments or at least not advantageous in any.  Such tradeoff models can lead to speciation when other traits permit a population to reproductively fragment and isolate itself into non-interbreeding sub populations.
 
@@ -1077,7 +1077,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

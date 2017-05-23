@@ -35,7 +35,7 @@ to setup
   set-default-shape predators "x"
 
   ask patches [ set pcolor white ]   ;; white background
-  foreach [1 2 3 4 5 6] [ [this-variation] ->
+  foreach [1 2 3 4 5 6] [ this-variation ->
     create-bugs initial-bugs-each-variation [ set color-variation this-variation ]
   ]
   ask bugs [
@@ -806,7 +806,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 setup
 @#$#@#$#@

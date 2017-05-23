@@ -407,8 +407,6 @@ In particular, it is demonstrating the same concept as the "Urban Suite - Positi
 
 Also, the Segregation library model in NetLogo also explores how individuals decide where to locate but based on very different preferences.
 
-For another urban settlement model, see the SOME model (created by the SLUCE project at University of Michigan), which explores residential settlements.   http://vserver1.cscs.lsa.umich.edu/sluce/education/sluce_ed.htm
-
 ## CREDITS AND REFERENCES
 
 This model is loosely based on the model presented in this paper:  Arthur, W.B. (1988), "Urban systems and historical path dependence", in Ausubel, J.H., Herman, R. (Eds), Cities and their Vital Systems: Infrastructure, Past, Present and Future, National Academy Press, Washington, DC, pp.85-97.
@@ -725,7 +723,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

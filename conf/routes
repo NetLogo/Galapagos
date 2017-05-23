@@ -40,6 +40,6 @@ GET         /model/statuses.json                controllers.CompilerService.mode
 GET         /netlogo-engine.js                  controllers.Local.engine
 GET         /netlogo-agentmodel.js              controllers.Local.agentModel
 
-GET         /favicon.ico                        controllers.Assets.versioned(path="/public", file: Asset = "images/favicon.ico")
+GET         /favicon.ico                        controllers.Assets.versioned(file = "images/favicon.ico")
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                       controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                       controllers.Assets.versioned(file)

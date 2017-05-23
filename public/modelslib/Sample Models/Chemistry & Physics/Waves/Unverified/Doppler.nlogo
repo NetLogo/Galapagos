@@ -110,10 +110,10 @@ to-report amplitude-here [ids-to-exclude]
   if count components > 0 [
     ;; get list of the wave-ids with components on this patch
     let wave-ids-here remove-duplicates [ wave-id ] of components
-    foreach ids-to-exclude [ [id] -> set wave-ids-here remove id wave-ids-here ]
+    foreach ids-to-exclude [ id -> set wave-ids-here remove id wave-ids-here ]
 
     ;; for each wave id, sum the maximum amplitude here
-    foreach wave-ids-here [ [id] ->
+    foreach wave-ids-here [ id ->
       set total-amplitude total-amplitude +
         [amplitude] of max-one-of components with [ wave-id = id ]
           [ amplitude ]
@@ -659,7 +659,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0-BETA1
+NetLogo 6.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

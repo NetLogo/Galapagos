@@ -21,7 +21,7 @@ object PlayUtil {
         formData =>
           val fileKVs = formData.files map {
             formFile =>
-              val file = formFile.ref.file
+              val file = formFile.ref.path.toFile
               val arr  =
                 if (file.length > 20E6.toLong)
                   "UPLOADED FILE TOO LARGE".getBytes

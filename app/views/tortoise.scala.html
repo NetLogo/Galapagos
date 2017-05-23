@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@()(implicit mode: Mode.Mode, request: Request[_])
+@()(implicit mode: Mode, request: Request[_])
 
 @extraHead = {
   <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css")' />

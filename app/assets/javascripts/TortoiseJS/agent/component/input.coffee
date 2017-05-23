@@ -127,8 +127,13 @@ window.RactiveInput = RactiveWidget.extend({
     """
     {{>input}}
     {{>contextMenu}}
+    {{# widget.boxedValue.type === 'Color' || widget.boxedValue.type === 'Number' }}
     <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}"
+              display="{{widget.display}}" />
+    {{ else }}
+        <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}"
               display="{{widget.display}}" isMultiline="{{widget.boxedValue.multiline}}" />
+    {{/}}
     """
 
   # coffeelint: disable=max_line_length

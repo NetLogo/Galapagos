@@ -229,17 +229,17 @@ to-report subtract [ v1 v2 ]
 end
 
 to-report scale [ scalar vector ]
-  report map [ [n] -> scalar * n ] vector
+  report map [ n -> scalar * n ] vector
 end
 
 to-report magnitude [ vector ]
-  report sqrt sum map [ [n] -> n * n ] vector
+  report sqrt sum map [ n -> n * n ] vector
 end
 
 to-report normalize [ vector ]
   let m magnitude vector
   if m = 0 [ report vector ]
-  report map [ [n] -> n / m ] vector
+  report map [ n -> n / m ] vector
 end
 
 
@@ -922,7 +922,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 3D 6.0-BETA1
+NetLogo 3D 6.0
 @#$#@#$#@
 setup
 watch turtle 0
