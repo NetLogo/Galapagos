@@ -15,6 +15,7 @@ class window.SessionLite
     @widgetController.ractive.on('*.recompile',        (event) => @recompile())
     @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
     @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
+    @widgetController.ractive.on('openNewFile',        (event) => @openNewFile())
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
     @drawEveryFrame = false
 
@@ -152,6 +153,22 @@ class window.SessionLite
           else
             alert("Couldn't get standalone page")
       req.send("")
+
+  # () => Unit
+  openNewFile: ->
+
+    if confirm('Are you sure you want to open a new model?  You will lose any changes that you have not exported.')
+
+      parent.postMessage({
+        hash: "NewModel",
+        type: "nlw-set-hash"
+      }, "*");
+
+      window.postMessage({
+        type: "nlw-open-new"
+      }, "*");
+
+    return
 
   makeForm:(method, path, data) ->
     form = document.createElement('form')

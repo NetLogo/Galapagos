@@ -74,6 +74,7 @@
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/session-lite.js")
     @tagBuilder.pathToHTML("javascripts/plot/highchartsops.js")
     @tagBuilder.pathToHTML("javascripts/alert.js")
+    @tagBuilder.pathToHTML("javascripts/new-model.js")
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
@@ -126,6 +127,23 @@
         }
       };
 
+      var loadModel = function(nlogo, path) {
+          if (session) {
+            session.teardown();
+          }
+          window.nlwAlerter.hide();
+          activeContainer = loadingOverlay;
+          Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
+        };
+
+      window.addEventListener("message", function (e) {
+        if (e.data.type === "nlw-load-model") {
+          loadModel(e.data.nlogo, e.data.path);
+        } else if (e.data.type === "nlw-open-new") {
+          loadModel(exports.newModel, "NewModel");
+        }
+      });
+
       if (nlogoScript.textContent.length > 0) {
         Tortoise.fromNlogo(nlogoScript.textContent,
                            modelContainer,
@@ -143,6 +161,8 @@
 
         Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
 
+      } else {
+        loadModel(exports.newModel, "NewModel");
       }
 
       window.addEventListener("message", function (e) {

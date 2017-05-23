@@ -500,11 +500,17 @@ template =
       </div>
       <editableTitle title="{{modelTitle}}" isEditing="{{isEditing}}"/>
       {{# !readOnly }}
-      <div class="netlogo-export-wrapper">
-        <span style="margin-right: 4px;">Export:</span>
-        <button class="netlogo-ugly-button" on-click="exportnlogo">NetLogo</button>
-        <button class="netlogo-ugly-button" on-click="exportHtml">HTML</button>
-      </div>
+        <div class="flex-column" style="align-items: flex-end;">
+          <div class="netlogo-export-wrapper">
+            <span style="margin-right: 4px;">File:</span>
+            <button class="netlogo-ugly-button" on-click="openNewFile">New</button>
+          </div>
+          <div class="netlogo-export-wrapper">
+            <span style="margin-right: 4px;">Export:</span>
+            <button class="netlogo-ugly-button" on-click="exportnlogo">NetLogo</button>
+            <button class="netlogo-ugly-button" on-click="exportHtml">HTML</button>
+          </div>
+        </div>
       {{/}}
     </div>
 
