@@ -95,10 +95,10 @@ class window.LinkDrawer
     baseThickness  = 3 / 2
 
     if thickness <= 1
-      scale         = 1 / @view.onePixel / 2
+      scale         = 1 / @view.onePixel / 4
       realThickness = thickness * baseThickness
     else
-      scale         = thicknessFactor / 2
+      scale         = thicknessFactor / 4
       realThickness = baseThickness
 
     ctx.scale(scale, scale)
