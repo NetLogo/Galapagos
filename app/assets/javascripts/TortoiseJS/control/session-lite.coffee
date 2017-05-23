@@ -162,11 +162,11 @@ class window.SessionLite
       parent.postMessage({
         hash: "NewModel",
         type: "nlw-set-hash"
-      }, "*");
+      }, "*")
 
       window.postMessage({
         type: "nlw-open-new"
-      }, "*");
+      }, "*")
 
     return
 
