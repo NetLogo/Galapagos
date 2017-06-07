@@ -36,9 +36,17 @@ pipeline {
   }
 
   post {
-    always {
+    failure {
       library 'netlogo-shared'
-      sendNotifications('NetLogo/Galapagos', currentBuild.result)
+      sendNotifications('NetLogo/Galapagos', 'FAILURE')
+    }
+    success {
+      library 'netlogo-shared'
+      sendNotifications('NetLogo/Galapagos', 'SUCCESS')
+    }
+    unstable {
+      library 'netlogo-shared'
+      sendNotifications('NetLogo/Galapagos', 'UNSTABLE')
     }
   }
 
