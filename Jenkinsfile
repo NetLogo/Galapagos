@@ -29,7 +29,6 @@ pipeline {
         library 'netlogo-shared'
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
           sbt 'scrapePlay'
-          sbt 'scrapeUpload'
         }
       }
     }
