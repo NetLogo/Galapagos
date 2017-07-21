@@ -3,9 +3,7 @@ import scala.concurrent.Future
 import
   play.api.{ Application, inject, libs, mvc, test },
     inject.guice.GuiceApplicationBuilder,
-    libs.{ iteratee, json },
-      iteratee.Iteratee,
-      json.{ JsObject, Json, JsString },
+    libs.json.{ JsObject, Json, JsString },
     mvc.{ EssentialAction, Result },
     test.{ FakeRequest, Helpers },
       Helpers.{ await, call, contentAsString, defaultAwaitTimeout, writeableOf_AnyContentAsFormUrlEncoded }

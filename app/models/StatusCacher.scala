@@ -6,9 +6,6 @@ import
   java.io.File
 
 import
-  javax.inject.Inject
-
-import
   akka.actor.Actor
 
 import

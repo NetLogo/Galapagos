@@ -140,9 +140,6 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
     controllers.PlayUtil.EnhancedRequest
 
   import
-    akka.stream.scaladsl.StreamConverters
-
-  import
     scalaz.NonEmptyList
 
   import
@@ -151,12 +148,7 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
       tortoise.CompiledModel
 
   import
-    play.api.{ http, libs, mvc },
-      http.HttpEntity.Streamed,
-      libs.{ concurrent, iteratee },
-        iteratee.Enumerator,
-        concurrent.Execution.Implicits.defaultContext,
-      mvc.{ Action => ActionType, AnyContent, ResponseHeader, Result }
+    play.api.mvc.{ Action => ActionType, AnyContent, Result }
 
   import
     CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }

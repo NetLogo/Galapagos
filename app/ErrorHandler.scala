@@ -4,7 +4,7 @@ import
   javax.inject.{ Inject, Provider }
 
 import
-  play.api.{ Configuration, Environment, http, mvc => apimvc, OptionalSourceMapper, Play, routing => apirouting},
+  play.api.{ Configuration, Environment, http, mvc => apimvc, OptionalSourceMapper, routing => apirouting},
       http.DefaultHttpErrorHandler,
       apimvc.{ Result, Results, RequestHeader },
         Results.Status,

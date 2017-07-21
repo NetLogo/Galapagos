@@ -12,10 +12,7 @@ import
   play.api.libs.json.Json
 
 import
-  org.nlogo.tortoise.{ CompiledModel, json => tortoisejson },
-    tortoisejson.{ JsonLibrary, WidgetToJson },
-      JsonLibrary.{ toNative, nativeToString },
-      WidgetToJson.widget2Json
+  org.nlogo.tortoise.{ CompiledModel }
 
 import
   scala.io.Codec

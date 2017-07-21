@@ -3,7 +3,7 @@
 package controllers
 
 import
-  javax.inject.{ Inject, Provider }
+  javax.inject.{ Inject }
 
 import
   models.ModelsLibrary,
