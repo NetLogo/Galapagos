@@ -1,10 +1,12 @@
 import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
 
+import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
+
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.1"
+scalaVersion := "2.12.2"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -12,14 +14,17 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-feature",
   "-language:_",
-  "-Xlint",
+  // Scala 2.12.2 produces warnings for unused imports, but Play generates
+  // files as part of compilation that have unused imports, so we have to
+  // disable these warnings for now.  -JMB July 2017
+  "-Xlint:-unused",
   "-Ywarn-value-discard",
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-935e4ee"
+val tortoiseVersion = "1.0-d9cbd58"
 
 libraryDependencies ++= Seq(
   ehcache,
