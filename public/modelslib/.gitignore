@@ -7,7 +7,7 @@ target/
 /test/applet/NetLogo.jar
 /test/applet/NetLogoLite.jar
 /test/benchmarks/firebig*.csv
-/index.txt
+/index.conf
 /Alternative Visualizations/Ethnocentrism - Alternative Visualization.png
 /Alternative Visualizations/Flocking - Alternative Visualizations.png
 /Alternative Visualizations/Heat Diffusion - Alternative Visualization.png
@@ -29,8 +29,11 @@ target/
 /Code Examples/Extensions Examples/gis/GIS General Examples.png
 /Code Examples/Extensions Examples/gis/GIS Gradient Example.png
 /Code Examples/Extensions Examples/nw/NW General Examples.png
+/Code Examples/Extensions Examples/rnd/Rnd Example.png
 /Code Examples/Extensions Examples/view2.5d/2.5d Patch View Example.png
 /Code Examples/Extensions Examples/csv/CSV Example.png
+/Code Examples/Extensions Examples/arduino/
+/Code Examples/Extensions Examples/bitmap/
 /Code Examples/Grouping Turtles Example.png
 /Code Examples/Halo Example.png
 /Code Examples/Hatch Example.png
@@ -105,10 +108,6 @@ target/
 /Curricular Models/BEAGLE Evolution/HubNet Activities/Bug Hunters Camouflage HubNet.nlogo
 /Curricular Models/BEAGLE Evolution/Mimicry.nlogo
 /Curricular Models/BEAGLE Evolution/Wolf Sheep Predation.nlogo
-/Curricular Models/GenEvo/GenEvo 1 Genetic Switch.png
-/Curricular Models/GenEvo/GenEvo 2 Genetic Drift.png
-/Curricular Models/GenEvo/GenEvo 3 Genetic Drift and Natural Selection.png
-/Curricular Models/GenEvo/GenEvo 4 Competition.png
 /Curricular Models/ProbLab/9-Blocks.nlogo
 /Curricular Models/ProbLab/Central Limit Theorem.nlogo
 /Curricular Models/ProbLab/Dice Stalagmite.nlogo
@@ -116,7 +115,7 @@ target/
 /Curricular Models/ProbLab/Equidistant Probability.nlogo
 /Curricular Models/ProbLab/Expected Value Advanced.nlogo
 /Curricular Models/ProbLab/Expected Value.nlogo
-/Curricular Models/ProbLab/Partition Perms Distrib.nlogo
+/Curricular Models/ProbLab/Partition Permutation Distribution.nlogo
 /Curricular Models/ProbLab/Prob Graphs Basic.nlogo
 /Curricular Models/ProbLab/ProbLab Genetics.nlogo
 /Curricular Models/ProbLab/Random Basic Advanced.nlogo
@@ -216,6 +215,7 @@ target/
 /Sample Models/Art/Diffusion Graphics.png
 /Sample Models/Art/Fireworks.png
 /Sample Models/Art/Follower.png
+/Sample Models/Art/GenJam - Duple.png
 /Sample Models/Art/Optical Illusions.png
 /Sample Models/Art/Sound Machines.png
 /Sample Models/Art/Unverified/Geometron Top-Down.png
@@ -227,11 +227,16 @@ target/
 /Sample Models/Biology/BeeSmart Hive Finding.png
 /Sample Models/Biology/Daisyworld.png
 /Sample Models/Biology/Disease Solo.png
+/Sample Models/Biology/Fairy Circles.png
 /Sample Models/Biology/Evolution/Altruism.png
+/Sample Models/Biology/Evolution/Anisogamy.png
+/Sample Models/Biology/Evolution/Bacterial Infection.png
 /Sample Models/Biology/Evolution/Bug Hunt Camouflage.png
 /Sample Models/Biology/Evolution/Bug Hunt Speeds.png
 /Sample Models/Biology/Evolution/Cooperation.png
 /Sample Models/Biology/Evolution/Echo.png
+/Sample Models/Biology/Evolution/Ethnocentrism.nlogo
+/Sample Models/Biology/Evolution/Ethnocentrism.png
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift P global.png
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift P local.png
 /Sample Models/Biology/Evolution/Genetic Drift/GenDrift T interact.png
@@ -264,6 +269,7 @@ target/
 /Sample Models/Biology/Unverified/Wolf Sheep Stride Inheritance.png
 /Sample Models/Biology/Virus.png
 /Sample Models/Biology/Wolf Sheep Predation.png
+/Sample Models/Chemistry & Physics/Chaos in a Box.png
 /Sample Models/Chemistry & Physics/Chemical Reactions/Acids and Bases/Buffer.png
 /Sample Models/Chemistry & Physics/Chemical Reactions/Acids and Bases/Strong Acid.png
 /Sample Models/Chemistry & Physics/Chemical Reactions/Acids and Bases/Unverified/Diprotic Acid.png
@@ -349,6 +355,7 @@ target/
 /Sample Models/Computer Science/Particle Systems/Particle System Fountain.png
 /Sample Models/Computer Science/Particle Systems/Particle System Waterfall.png
 /Sample Models/Computer Science/Robby the Robot.png
+/Sample Models/Computer Science/SmoothLife.png
 /Sample Models/Computer Science/Turing Machine 2D.png
 /Sample Models/Computer Science/Unverified/Merge Sort.png
 /Sample Models/Computer Science/Unverified/Simulated Annealing.png
@@ -474,7 +481,7 @@ Curricular Models/ProbLab/Dice.png
 Curricular Models/ProbLab/Equidistant Probability.png
 Curricular Models/ProbLab/Expected Value Advanced.png
 Curricular Models/ProbLab/Expected Value.png
-Curricular Models/ProbLab/Partition Perms Distrib.png
+Curricular Models/ProbLab/Partition Permutation Distribution.png
 Curricular Models/ProbLab/Prob Graphs Basic.png
 Curricular Models/ProbLab/ProbLab Genetics.png
 Curricular Models/ProbLab/Random Basic Advanced.png
@@ -501,3 +508,5 @@ Curricular Models/BEAGLE Evolution/poppyfield.jpg
 Curricular Models/BEAGLE Evolution/seashore.jpg
 /.cache-main
 /.cache-tests
+*.tmp.nlogo
+*.tmp.nlogo3d

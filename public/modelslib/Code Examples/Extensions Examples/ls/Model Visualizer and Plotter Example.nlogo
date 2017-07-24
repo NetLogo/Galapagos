@@ -16,7 +16,8 @@ to setup
     ls:let seed random (2 ^ 31)
     ls:ask model-id [
       random-seed seed
-      set grass? true setup      ; setup their models
+      set model-version "sheep-wolves-grass"
+      setup      ; setup their models
     ]
     move-to-new-position         ; move to its model's values
     pen-down                     ; set pen down
@@ -482,7 +483,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.2-RC2
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

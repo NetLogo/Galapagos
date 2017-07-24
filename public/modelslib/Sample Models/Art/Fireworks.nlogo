@@ -49,7 +49,7 @@ end
 ; slider FIREWORKS and sets all the initial values for each firework.
 to init-rockets
   clear-drawing
-  create-rockets (random fireworks) [
+  create-rockets (random max-fireworks) + 1 [
     setxy random-xcor min-pycor
     set x-vel ((random-float (2 * initial-x-vel)) - (initial-x-vel))
     set y-vel ((random-float initial-y-vel) + initial-y-vel * 2)
@@ -183,8 +183,8 @@ SLIDER
 38
 232
 71
-fireworks
-fireworks
+max-fireworks
+max-fireworks
 1
 40
 20.0
@@ -629,10 +629,10 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.2-RC2
 @#$#@#$#@
 set trails? true
-set fireworks 30
+set max-fireworks 30
 random-seed 3
 setup
 repeat 50 [ go ]

@@ -15,7 +15,7 @@ to setup
 
   ls:create-interactive-models 1 "../../../Sample Models/Biology/Wolf Sheep Predation.nlogo"
   set wolf-sheep-predation-model last ls:models
-  ls:ask wolf-sheep-predation-model [ set grass? true ]
+  ls:ask wolf-sheep-predation-model [ set model-version "sheep-wolves-grass" ]
 
   ; the climate change model requires time to run before it stabilizes,
   ; so we hide it for now so it runs faster.
@@ -465,7 +465,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.2-RC2
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

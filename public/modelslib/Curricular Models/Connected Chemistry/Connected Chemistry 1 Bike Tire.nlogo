@@ -207,12 +207,12 @@ end
 
 ;; allows the user to place a particle using the mouse
 to place-particles
-  if mouse-down?
-  [
-    paint-particles number-of-particles-to-add mouse-xcor mouse-ycor
-    while [mouse-down?] [ ] ; wait until mouse button released
+  every 0.2 [
+    if mouse-down? [
+      paint-particles number-of-particles-to-add mouse-xcor mouse-ycor
+    ]
+    set total-particle-number (count particles)
   ]
-   set total-particle-number (count particles)
   display
 end
 
@@ -523,7 +523,7 @@ nothing
 true
 0
 @#$#@#$#@
-NetLogo 6.0
+NetLogo 6.0.2-RC2
 @#$#@#$#@
 setup
 set box-x 18
