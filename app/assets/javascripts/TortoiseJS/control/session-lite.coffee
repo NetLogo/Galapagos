@@ -182,6 +182,51 @@ class window.SessionLite
       form.appendChild(field)
     form
 
+  # (Object[Any], ([{ config: Object[Any], results: Object[Array[Any]] }]) => Unit) => Unit
+  asyncRunBabyBehaviorSpace: (config, reaction) ->
+    Tortoise.startLoading(=>
+      reaction(@runBabyBehaviorSpace(config))
+      Tortoise.finishLoading()
+    )
+
+  # (Object[Any]) => [{ config: Object[Any], results: Object[Array[Any]] }]
+  runBabyBehaviorSpace: ({ parameterSet, repetitionsPerCombo, metrics, setupCode, goCode
+                         , stopConditionCode, iterationLimit }) ->
+
+    dumper                       = tortoise_require('engine/dump')
+    { last, map, toObject, zip } = tortoise_require('brazier/array')
+    { pipeline                 } = tortoise_require('brazier/function')
+
+    result = (new BrowserCompiler()).fromModel({ code: @widgetController.code(), widgets: @widgetController.widgets()
+                                               , commands: [setupCode, goCode]
+                                               , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
+                                               , turtleShapes: [], linkShapes: []
+                                               })
+
+    unwrapCompilation =
+      (prefix, defaultCode) -> ({ result: compiledCode, success }) ->
+        new Function("#{prefix}#{if success then compiledCode else defaultCode}")
+
+    [setup, go]      = result.commands .map(unwrapCompilation(""       , ""  ))
+    [metricFs..., _] = result.reporters.map(unwrapCompilation("return ", "-1"))
+    stopCondition    = unwrapCompilation("return ", "false")(last(result.reporters))
+
+    convert = ([{ reporter, interval }, f]) -> [reporter, { reporter: f, interval }]
+    compiledMetrics = pipeline(zip(metrics), map(convert), toObject)(metricFs)
+
+    massagedConfig = { parameterSet, repetitionsPerCombo, metrics: compiledMetrics
+                     , setup, go, stopCondition, iterationLimit }
+    setGlobal      = world.observer.setGlobal.bind(world.observer)
+
+    miniDump = (x) ->
+      if Array.isArray(x)
+        x.map(miniDump)
+      else if typeof(x) in ["boolean", "number", "string"]
+        x
+      else
+        dumper(x)
+
+    window.runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
 
   run: (code) ->
     Tortoise.startLoading()

@@ -70,6 +70,7 @@
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/linkdrawer.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/view.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/widgets.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/babybehaviorspace.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/tortoise.js")
     @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/session-lite.js")
     @tagBuilder.pathToHTML("javascripts/plot/highchartsops.js")
@@ -175,7 +176,13 @@
           Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
         } else if (e.data.type === "nlw-update-model-state") {
           session.widgetController.setCode(e.data.codeTabContents);
-        }
+        } else if (e.data.type === "run-baby-behaviorspace") {
+          var reaction =
+            function(results) {
+              e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
+            };
+          session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+       }
       });
 
       if (parent !== window) {
