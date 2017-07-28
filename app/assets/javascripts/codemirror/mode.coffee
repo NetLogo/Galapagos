@@ -14,6 +14,7 @@ keywords = [
 ]
 
 commands = [
+  '__apply',
   '__bench',
   '__change-topology',
   '__done',
@@ -207,6 +208,7 @@ reporters = [
   '>',
   '>=',
   '\\^',
+  '__apply-result',
   '__boom',
   '__check-syntax',
   '__dump',
@@ -285,6 +287,7 @@ reporters = [
   'in-link-neighbors',
   'in-radius',
   'in-radius-nowrap',
+  'insert-item',
   'int',
   'is-agent\\?',
   'is-agentset\\?',
@@ -392,6 +395,7 @@ reporters = [
   'random-pycor',
   'random-xcor',
   'random-ycor',
+  'range',
   'read-from-string',
   'reduce',
   'remainder',
