@@ -28,6 +28,7 @@ window.RactiveChooser = RactiveWidget.extend({
       """
       {{# typeof . === "string"}}{{.}}{{/}}
       {{# typeof . === "number"}}{{.}}{{/}}
+      {{# typeof . === "boolean"}}{{.}}{{/}}
       {{# typeof . === "object"}}
         [{{#.}}
           {{>literal}}
