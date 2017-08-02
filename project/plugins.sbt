@@ -30,6 +30,6 @@ resolvers += Resolver.url(
     url("http://dl.bintray.com/content/netlogo/play-scraper"))(
         Resolver.ivyStylePatterns)
 
-addSbtPlugin("org.nlogo" % "play-scraper" % "0.7.5")
+addSbtPlugin("org.nlogo" % "play-scraper" % "0.7.6")
 
 libraryDependencies += "org.im4java" % "im4java" % "1.4.0" // only used for asset generation
