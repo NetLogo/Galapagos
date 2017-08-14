@@ -177,6 +177,12 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       exportBlob = new Blob([exportText], {type: "text/plain:charset=utf-8"})
       saveAs(exportBlob, filename)
       return
+    exportView: (filename) ->
+      anchor = document.createElement("a")
+      anchor.setAttribute("href", viewController.view.visibleCanvas.toDataURL("img/png"))
+      anchor.setAttribute("download", filename)
+      anchor.click()
+      return
   }
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
