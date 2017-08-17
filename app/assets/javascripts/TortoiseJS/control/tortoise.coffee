@@ -1,6 +1,3 @@
-nlogoCompile = (commands, reporters, widgets, onFulfilled) -> (model) ->
-  onFulfilled((new BrowserCompiler()).fromNlogo(model, commands))
-
 loadError = (url) ->
   """
     Unable to load NetLogo model from #{url}, please ensure:
@@ -33,9 +30,6 @@ toNetLogoMarkdown = (md) ->
     (match, commentText) ->
       "<!-- #{commentText} -->")
 
-apply = (callback, generator) -> (input) ->
-  callback(generator(input))
-
 # handleAjaxLoad : String, (String) => (), (XMLHttpRequest) => () => Unit
 handleAjaxLoad = (url, onSuccess, onFailure) =>
   req = new XMLHttpRequest()
@@ -47,15 +41,6 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
       else
         onSuccess(req.responseText)
   req.send("")
-
-# handleCompilation : (ModelResult => (), ModelResult => ()) => (String) => ()
-handleCompilation = (onSuccess, onError) ->
-  nlogoCompile([], [], [],
-    (res) =>
-      if res.model.success
-        onSuccess(res)
-      else
-        onError(res))
 
 # newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
 newSession = (container, modelResult, readOnly = false, filename = "export", onError = undefined) ->
@@ -104,7 +89,7 @@ loading = (process) ->
 defaultDisplayError = (container) ->
   (errors) -> container.innerHTML = "<div style='padding: 5px 10px;'>#{errors}</div>"
 
-reportCompilerError = (load) -> (res) ->
+reportCompilerError = (load) -> (res, giveRecompileNotice = false) ->
   errors = res.model.result.map(
     (err) ->
       contains = (s, x) -> s.indexOf(x) > -1
@@ -114,7 +99,12 @@ reportCompilerError = (load) -> (res) ->
       else
         message
   ).join('<br/>')
-  load.onError(errors)
+  load.onError(
+    if giveRecompileNotice
+      "#{errors}<br/>Please correct the problems in NetLogo Code and Recompile Code to properly run the model."
+    else
+      errors
+  )
   load.loader.finish()
 
 reportAjaxError = (load) -> (req) ->
@@ -133,24 +123,55 @@ finishLoading = ->
 
 fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
-    segments = path.split(/\/|\\/)
-    name     = segments[segments.length - 1]
-    load     = loadData(container, path, name, loader, onError)
-    handleCompilation(
-      apply(callback, openSession(load)),
-      reportCompilerError(load)
-    )(nlogo)
+    segments  = path.split(/\/|\\/)
+    name      = segments[segments.length - 1]
+    load      = loadData(container, path, name, loader, onError)
+
+    handleCompilation(nlogo, callback, load)
   )
 
 fromURL = (url, modelName, container, callback, onError = defaultDisplayError(container)) ->
   loading((loader) ->
-    load = loadData(container, url, modelName, loader, onError)
-    handleAjaxLoad(url,
-      handleCompilation(
-        apply(callback, openSession(load)),
-        reportCompilerError(load)),
-      reportAjaxError(load))
+    load    = loadData(container, url, modelName, loader, onError)
+    compile = (nlogo) ->
+      handleCompilation(nlogo, callback, load)
+
+    handleAjaxLoad(url, compile, reportAjaxError(load))
   )
+
+handleCompilation = (nlogo, callback, load) ->
+  onSuccess = (input) -> callback(openSession(load)(input))
+  onFailure = reportCompilerError(load)
+  compiler = (new BrowserCompiler())
+  result   = compiler.fromNlogo(nlogo, [])
+  if result.model.success
+    onSuccess(result)
+  else
+    success = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
+    onFailure(result, success)
+    return
+
+# If we have a compiler failure, maybe just the code section has errors.
+# We do a second chance compile to see if it'll work without code so we
+# can get some widgets/plots on the screen and let the user fix those
+# errors up.  -JMB August 2017
+
+# (String, BrowserCompiler, (Model) => Session?) => Boolean
+fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
+  first = nlogo.indexOf("@#$#@#$#@")
+  if first < 0
+    false
+  else
+    newNlogo = nlogo.substring(first)
+    result = compiler.fromNlogo(newNlogo, [])
+    if !result.model.success
+      false
+    else
+      # It mutates state, but it's an easy way to get the code re-added
+      # so it can be edited/fixed.
+      result.code = nlogo.substring(0, first)
+      onSuccess(result)
+      result.model.success
 
 Tortoise = {
   startLoading,
