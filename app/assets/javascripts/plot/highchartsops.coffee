@@ -27,17 +27,50 @@ class window.HighchartsOps extends PlotOps
         credits: { enabled: false },
         legend:  {
           enabled: plot.isLegendEnabled,
-          margin: 5
+          margin: 5,
+          itemStyle: { fontSize: "10px" }
         },
         series:  [],
-        title:   { text: plot.name },
+        title:   {
+          text: plot.name,
+          style: { fontSize: "12px" }
+        },
+        exporting: {
+          buttons: {
+            contextButton: {
+              height: 10,
+              symbolSize: 10,
+              symbolStrokeWidth: 1,
+              symbolY: 5
+            }
+          }
+        }
         tooltip: {
           formatter: ->
             y = Number(Highcharts.numberFormat(@point.y, 3, '.', ''))
             "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{y}</b><br/>"
         },
-        xAxis:   { title: { text: plot.xLabel } },
-        yAxis:   { title: { text: plot.yLabel, x: -7 }, labels: { padding: 0, x: -15 } },
+        xAxis: {
+          title: {
+            text:  plot.xLabel,
+            style: { fontSize: '10px' }
+          },
+          labels: {
+            style: { fontSize: '9px' }
+          }
+        },
+        yAxis: {
+          title: {
+            text:  plot.yLabel,
+            x:     -7,
+            style: { fontSize: '10px' }
+          },
+          labels: {
+            padding: 0,
+            x:       -15,
+            style:   { fontSize: '9px' }
+          }
+        },
         plotOptions: {
           series: {
             turboThreshold: 1
