@@ -8,7 +8,7 @@ MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
 class window.SessionLite
-  constructor: (@widgetController, @displayError) ->
+  constructor: (@widgetController, lastCompileFailed, @displayError) ->
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
@@ -17,6 +17,7 @@ class window.SessionLite
     @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
     @widgetController.ractive.on('openNewFile',        (event) => @openNewFile())
     @widgetController.ractive.on('console.run',        (code)  => @run(code))
+    @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
     @drawEveryFrame = false
 
   modelTitle: ->
@@ -93,8 +94,9 @@ class window.SessionLite
             sliderVals[i] = currentValue
 
           globalEval(res.model.result)
-          @widgetController.ractive.set('isStale',          false)
-          @widgetController.ractive.set('lastCompiledCode', code)
+          @widgetController.ractive.set('isStale',           false)
+          @widgetController.ractive.set('lastCompiledCode',  code)
+          @widgetController.ractive.set('lastCompileFailed', false)
           @widgetController.freshenUpWidgets(globalEval(res.widgets))
 
           for k, v of sliderVals
@@ -102,6 +104,7 @@ class window.SessionLite
             world.observer.setGlobal(variable, v)
 
         else
+          @widgetController.ractive.set('lastCompileFailed', true)
           @alertCompileError(res.model.result)
       , @alertCompileError)
     )

@@ -43,7 +43,7 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
   req.send("")
 
 # newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
-newSession = (container, modelResult, readOnly = false, filename = "export", onError = undefined) ->
+newSession = (container, modelResult, readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
   widgets = globalEval(modelResult.widgets)
   widgetController = bindWidgets(container, widgets, modelResult.code,
     toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
@@ -56,7 +56,7 @@ newSession = (container, modelResult, readOnly = false, filename = "export", onE
   modelConfig.dialog    = widgetController.dialog
   modelConfig.world     = widgetController.worldConfig
   globalEval(modelResult.model.result)
-  new SessionLite(widgetController, onError)
+  new SessionLite(widgetController, lastCompileFailed, onError)
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->
@@ -72,9 +72,9 @@ loadData = (container, pathOrURL, name, loader, onError) ->
     name
   }
 
-openSession = (load) -> (model) ->
+openSession = (load) -> (model, lastCompileFailed) ->
   name    = load.name ? normalizedFileName(load.modelPath)
-  session = newSession(load.container, model, false, name, load.onError)
+  session = newSession(load.container, model, false, name, lastCompileFailed, load.onError)
   load.loader.finish()
   session
 
@@ -89,7 +89,7 @@ loading = (process) ->
 defaultDisplayError = (container) ->
   (errors) -> container.innerHTML = "<div style='padding: 5px 10px;'>#{errors}</div>"
 
-reportCompilerError = (load) -> (res, giveRecompileNotice = false) ->
+reportCompilerError = (load) -> (res) ->
   errors = res.model.result.map(
     (err) ->
       contains = (s, x) -> s.indexOf(x) > -1
@@ -99,12 +99,7 @@ reportCompilerError = (load) -> (res, giveRecompileNotice = false) ->
       else
         message
   ).join('<br/>')
-  load.onError(
-    if giveRecompileNotice
-      "#{errors}<br/>Please correct the problems in NetLogo Code and Recompile Code to properly run the model."
-    else
-      errors
-  )
+  load.onError(errors)
   load.loader.finish()
 
 reportAjaxError = (load) -> (req) ->
@@ -140,12 +135,12 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
   )
 
 handleCompilation = (nlogo, callback, load) ->
-  onSuccess = (input) -> callback(openSession(load)(input))
+  onSuccess = (input, lastCompileFailed) -> callback(openSession(load)(input, lastCompileFailed))
   onFailure = reportCompilerError(load)
   compiler = (new BrowserCompiler())
   result   = compiler.fromNlogo(nlogo, [])
   if result.model.success
-    onSuccess(result)
+    onSuccess(result, false)
   else
     success = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
     onFailure(result, success)
@@ -170,7 +165,7 @@ fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
       # It mutates state, but it's an easy way to get the code re-added
       # so it can be edited/fixed.
       result.code = nlogo.substring(0, first)
-      onSuccess(result)
+      onSuccess(result, true)
       result.model.success
 
 Tortoise = {

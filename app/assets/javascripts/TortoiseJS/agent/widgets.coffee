@@ -47,6 +47,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     info,
     readOnly,
     lastCompiledCode:   code,
+    lastCompileFailed:  false,
     isStale:            false,
     exportForm:         false,
     modelTitle:         dropNLogoExtension(filename),
@@ -572,7 +573,7 @@ template =
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
         <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
-        <span class="netlogo-tab-text">NetLogo Code</span>
+        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
       </label>
       {{#showCode}}
         <editor code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' readOnly='{{readOnly}}' />
