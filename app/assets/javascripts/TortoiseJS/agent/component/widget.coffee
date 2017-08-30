@@ -41,8 +41,8 @@ window.RactiveWidget = RactiveContextable.extend({
           widget.proxies[k] = v
 
         eventArraysArray =
-          for name in triggerNames when getByPath(widget) isnt oldies[name]
-            triggers[name].map((f) -> f(oldies[name], getByPath(widget)))
+          for name in triggerNames when getByPath(widget)(name) isnt oldies[name]
+            triggers[name].map((f) -> f(oldies[name], getByPath(widget)(name)))
 
         events = [].concat(eventArraysArray...)
 
