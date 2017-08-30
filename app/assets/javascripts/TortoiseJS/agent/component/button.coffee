@@ -167,11 +167,11 @@ window.RactiveButton = RactiveWidget.extend({
     buttonContext:
       """
       <div class="netlogo-button-agent-context">
-      {{#if widget.buttonKind === "TURTLE" }}
+      {{#if widget.buttonKind === "Turtle" }}
         T
-      {{elseif widget.buttonKind === "PATCH" }}
+      {{elseif widget.buttonKind === "Patch" }}
         P
-      {{elseif widget.buttonKind === "LINK" }}
+      {{elseif widget.buttonKind === "Link" }}
         L
       {{/if}}
       </div>
