@@ -137,14 +137,6 @@
         Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
       };
 
-      window.addEventListener("message", function (e) {
-        if (e.data.type === "nlw-load-model") {
-          loadModel(e.data.nlogo, e.data.path);
-        } else if (e.data.type === "nlw-open-new") {
-          loadModel(exports.newModel, "NewModel");
-        }
-      });
-
       if (nlogoScript.textContent.length > 0) {
         Tortoise.fromNlogo(nlogoScript.textContent,
                            modelContainer,
@@ -168,12 +160,9 @@
 
       window.addEventListener("message", function (e) {
         if (e.data.type === "nlw-load-model") {
-          if (session) {
-            session.teardown();
-          }
-          window.nlwAlerter.hide();
-          activeContainer = loadingOverlay;
-          Tortoise.fromNlogo(e.data.nlogo, modelContainer, e.data.path, openSession, displayError);
+          loadModel(e.data.nlogo, e.data.path);
+        } else if (e.data.type === "nlw-open-new") {
+          loadModel(exports.newModel, "NewModel");
         } else if (e.data.type === "nlw-update-model-state") {
           session.widgetController.setCode(e.data.codeTabContents);
         } else if (e.data.type === "run-baby-behaviorspace") {
