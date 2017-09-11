@@ -129,13 +129,13 @@
       };
 
       var loadModel = function(nlogo, path) {
-          if (session) {
-            session.teardown();
-          }
-          window.nlwAlerter.hide();
-          activeContainer = loadingOverlay;
-          Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
-        };
+        if (session) {
+          session.teardown();
+        }
+        window.nlwAlerter.hide();
+        activeContainer = loadingOverlay;
+        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
+      };
 
       window.addEventListener("message", function (e) {
         if (e.data.type === "nlw-load-model") {
