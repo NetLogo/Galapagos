@@ -27,7 +27,7 @@ window.RactiveInfoTabWidget = Ractive.extend({
   template:
     """
     <div class='netlogo-tab-content netlogo-info'
-         intro='grow:{disable:"info-toggle"}' outro='shrink:{disable:"info-toggle"}'>
+         grow-in='{disable:"info-toggle"}' shrink-out='{disable:"info-toggle"}'>
       <label class='netlogo-toggle-edit-mode'>
         <input type='checkbox' checked='{{editing}}'>
         Edit Mode

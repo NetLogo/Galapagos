@@ -236,7 +236,7 @@ window.RactiveView = RactiveWidget.extend({
     view:
       """
       <div id="{{id}}"
-           on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+           on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
            class="netlogo-widget netlogo-view-container"
            style="{{dims}}">
       </div>

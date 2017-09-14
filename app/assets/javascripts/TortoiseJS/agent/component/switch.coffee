@@ -69,7 +69,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     switch:
       """
       <label id="{{id}}"
-             on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
              class="netlogo-widget netlogo-switcher netlogo-input"
              style="{{dims}}">
         <input type="checkbox" checked={{ widget.currentValue }} />
@@ -82,7 +82,7 @@ window.RactiveSwitch = RactiveWidget.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
+          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
         </ul>
       </div>
       """

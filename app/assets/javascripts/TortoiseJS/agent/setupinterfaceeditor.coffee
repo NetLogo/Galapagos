@@ -92,6 +92,7 @@ window.setupInterfaceEditor =
 
             trueEvent = e.original
             trueEvent.preventDefault()
+            trueEvent.stopPropagation()
 
             contextMenu               = elemById("netlogo-widget-context-menu")
             contextMenu.style.top     = "#{trueEvent.pageY}px"
@@ -112,7 +113,7 @@ window.setupInterfaceEditor =
     ractive.on('*.showContextMenu', handleContextMenu)
 
     ractive.on('*.deleteWidget'
-    , (e, widgetID, contextMenuID, widgetNum) ->
+    , (widgetID, contextMenuID, widgetNum) ->
         deleteById = (id) ->
           elem = elemById(id)
           elem.parentElement.removeChild(elem)

@@ -62,7 +62,7 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set('input', '')
         @set('workingEntry', {})
 
-    @on('clear-history', (event) ->
+    @on('clear-history', ->
       @set('output', '')
     )
 
@@ -96,7 +96,7 @@ window.RactiveConsoleWidget = Ractive.extend({
   template:
     """
     <div class='netlogo-tab-content netlogo-command-center'
-         intro='grow:{disable:"console-toggle"}' outro='shrink:{disable:"console-toggle"}'>
+         grow-in='{disable:"console-toggle"}' shrink-out='{disable:"console-toggle"}'>
       <printArea id='command-center-print-area' output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>

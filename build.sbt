@@ -45,7 +45,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "highcharts" % "5.0.14",
   "org.webjars" % "jquery" % "3.2.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars" % "ractive" % "0.7.3",
+  "org.webjars.npm" % "ractive" % "0.8.2",
   "org.webjars" % "codemirror" % "5.24.2",
   "org.webjars.bower" % "github-com-highcharts-export-csv" % "1.4.3"
 )

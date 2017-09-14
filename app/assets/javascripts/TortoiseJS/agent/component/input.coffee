@@ -111,6 +111,8 @@ window.RactiveInput = RactiveWidget.extend({
         false
     )
 
+  onrender: ->
+
     # Scroll to bottom on value change --JAB (8/17/16)
     @observe('widget.currentValue'
     , ->
@@ -140,7 +142,7 @@ window.RactiveInput = RactiveWidget.extend({
     input:
       """
       <label id="{{id}}"
-             on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
              class="netlogo-widget netlogo-input-box netlogo-input"
              style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
@@ -164,7 +166,7 @@ window.RactiveInput = RactiveWidget.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
+          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
         </ul>
       </div>
       """

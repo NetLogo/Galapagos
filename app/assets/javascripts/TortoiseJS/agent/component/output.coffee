@@ -58,7 +58,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
     output:
       """
-      <div id="{{id}}" on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+      <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
            class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
       </div>
@@ -69,7 +69,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
+          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
         </ul>
       </div>
       """

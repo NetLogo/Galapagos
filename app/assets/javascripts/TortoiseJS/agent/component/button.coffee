@@ -111,7 +111,7 @@ window.RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
-    @on('activateButton', (event, run) -> if @get('isEnabled') then run())
+    @on('activateButton', (run) -> if @get('isEnabled') then run())
 
   isolated: true
 
@@ -143,11 +143,11 @@ window.RactiveButton = RactiveWidget.extend({
     standardButton:
       """
       <button id="{{id}}"
-              on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+              on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
-              on-click="activateButton:{{widget.run}}">
+              on-click="@this.fire('activateButton', @this.get('widget.run'))">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
@@ -157,7 +157,7 @@ window.RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}"
-             on-contextmenu="showContextMenu:{{id + '-context-menu'}}"
+             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
              style="{{dims}}">
         {{>buttonContext}}
@@ -186,7 +186,7 @@ window.RactiveButton = RactiveWidget.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="deleteWidget:{{id}},{{id + '-context-menu'}},{{widget.id}}">Delete</li>
+          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
         </ul>
       </div>
       """

@@ -200,8 +200,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     @set('height', Math.max.apply(Math, w.bottom for own i, w of @get('widgetObj') when w.bottom?))
   )
 
-  ractive.on('checkFocus', (event) ->
-    @set('hasFocus', document.activeElement is event.node)
+  ractive.on('checkFocus', (node) ->
+    @set('hasFocus', document.activeElement is node)
   )
 
   ractive.on('checkActionKeys', (event) ->
@@ -503,7 +503,9 @@ isValidValue = (widget, value) ->
 template =
   """
   <div class="netlogo-model" style="min-width: {{width}}px;"
-       tabindex="1" on-keydown="checkActionKeys" on-focus="checkFocus" on-blur="checkFocus">
+       tabindex="1" on-keydown="@this.fire('checkActionKeys', event)"
+       on-focus="@this.fire('checkFocus', event.node)"
+       on-blur="@this.fire('checkFocus', event.node)">
     <div class="netlogo-header">
       <div class="netlogo-subheader">
         <div class="netlogo-powered-by">
@@ -546,7 +548,7 @@ template =
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
-         on-contextmenu="showContextMenu:{{'widget-creation-disabled-message'}}">
+         on-contextmenu="@this.fire('showContextMenu', event, 'widget-creation-disabled-message')">
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
