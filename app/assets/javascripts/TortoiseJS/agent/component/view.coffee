@@ -63,8 +63,6 @@ ViewEditForm = EditForm.extend({
     }
   }
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -216,8 +214,6 @@ window.RactiveView = RactiveWidget.extend({
     editForm: ViewEditForm
   }
 
-  isolated: true
-
   template:
     """
     {{>view}}
@@ -236,7 +232,7 @@ window.RactiveView = RactiveWidget.extend({
     view:
       """
       <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+           on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
            class="netlogo-widget netlogo-view-container"
            style="{{dims}}">
       </div>

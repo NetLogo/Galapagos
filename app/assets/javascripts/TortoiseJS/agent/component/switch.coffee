@@ -4,8 +4,6 @@ SwitchEditForm = EditForm.extend({
     display: undefined # String
   }
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -40,8 +38,6 @@ SwitchEditForm = EditForm.extend({
 
 window.RactiveSwitch = RactiveWidget.extend({
 
-  isolated: true
-
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
   # update `on`, because that's what the widget reader looks at at compilation time in
   # order to determine the value of the Switch. --JAB (3/31/16)
@@ -69,7 +65,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     switch:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
              class="netlogo-widget netlogo-switcher netlogo-input"
              style="{{dims}}">
         <input type="checkbox" checked={{ widget.currentValue }} />

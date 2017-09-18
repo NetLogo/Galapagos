@@ -18,8 +18,6 @@ ButtonEditForm = EditForm.extend({
         node.value = ""
     )
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -111,9 +109,7 @@ window.RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
-    @on('activateButton', (run) -> if @get('isEnabled') then run())
-
-  isolated: true
+    @on('activateButton', (_, run) -> if @get('isEnabled') then run())
 
   components: {
     editForm: ButtonEditForm
@@ -143,7 +139,7 @@ window.RactiveButton = RactiveWidget.extend({
     standardButton:
       """
       <button id="{{id}}"
-              on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+              on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
@@ -157,7 +153,7 @@ window.RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
              style="{{dims}}">
         {{>buttonContext}}

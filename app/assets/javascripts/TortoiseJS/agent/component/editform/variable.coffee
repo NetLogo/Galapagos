@@ -6,8 +6,6 @@ window.RactiveEditFormVariable = Ractive.extend({
   , value: undefined # String
   }
 
-  isolated: true
-
   twoway: false
 
   # coffeelint: disable=max_line_length

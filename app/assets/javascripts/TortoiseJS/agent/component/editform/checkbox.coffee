@@ -8,8 +8,6 @@ window.RactiveEditFormCheckbox = Ractive.extend({
   , name:      undefined # String
   }
 
-  isolated: true
-
   twoway: false
 
   template:

@@ -86,34 +86,33 @@ window.setupInterfaceEditor =
     )
 
     handleContextMenu =
-      (e, menuItemsID) ->
+      (_, trueEvent, menuItemsID) ->
 
-          if @get("isEditing")
+        if @get("isEditing")
 
-            trueEvent = e.original
-            trueEvent.preventDefault()
-            trueEvent.stopPropagation()
+          trueEvent.preventDefault()
+          trueEvent.stopPropagation()
 
-            contextMenu               = elemById("netlogo-widget-context-menu")
-            contextMenu.style.top     = "#{trueEvent.pageY}px"
-            contextMenu.style.left    = "#{trueEvent.pageX}px"
-            contextMenu.style.display = "block"
+          contextMenu               = elemById("netlogo-widget-context-menu")
+          contextMenu.style.top     = "#{trueEvent.pageY}px"
+          contextMenu.style.left    = "#{trueEvent.pageX}px"
+          contextMenu.style.display = "block"
 
-            for child in contextMenu.children
-              hideElem(child)
+          for child in contextMenu.children
+            hideElem(child)
 
-            pipeline(elemById, showElem)(menuItemsID)
+          pipeline(elemById, showElem)(menuItemsID)
 
-            false
+          false
 
-          else
-            true
+        else
+          true
 
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
 
     ractive.on('*.deleteWidget'
-    , (widgetID, contextMenuID, widgetNum) ->
+    , (_, widgetID, contextMenuID, widgetNum) ->
         deleteById = (id) ->
           elem = elemById(id)
           elem.parentElement.removeChild(elem)

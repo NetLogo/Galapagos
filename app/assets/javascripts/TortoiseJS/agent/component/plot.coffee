@@ -1,11 +1,9 @@
 window.RactivePlot = RactiveWidget.extend({
 
-  isolated: true
-
   template:
     """
     <div id="{{id}}"
-         on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+         on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
          class="netlogo-widget netlogo-plot"
          style="{{dims}}"></div>
     <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">

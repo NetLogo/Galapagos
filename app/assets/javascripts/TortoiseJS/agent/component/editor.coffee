@@ -6,8 +6,6 @@ window.RactiveEditorWidget = Ractive.extend({
   , readOnly:         undefined # Boolean
   }
 
-  isolated: true
-
   components: {
     codeEditor: RactiveCodeContainerMultiline
   }

@@ -12,11 +12,11 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
-    @widgetController.ractive.on('*.recompile',        (event) => @recompile())
-    @widgetController.ractive.on('exportnlogo',        (event) => @exportnlogo(event))
-    @widgetController.ractive.on('exportHtml',         (event) => @exportHtml(event))
-    @widgetController.ractive.on('openNewFile',        (event) => @openNewFile())
-    @widgetController.ractive.on('console.run',        (code)  => @run(code))
+    @widgetController.ractive.on('*.recompile',        (_, event) => @recompile())
+    @widgetController.ractive.on('exportnlogo',        (_, event) => @exportnlogo(event))
+    @widgetController.ractive.on('exportHtml',         (_, event) => @exportHtml(event))
+    @widgetController.ractive.on('openNewFile',        (_, event) => @openNewFile())
+    @widgetController.ractive.on('console.run',        (_, code)  => @run(code))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
     @drawEveryFrame = false
 

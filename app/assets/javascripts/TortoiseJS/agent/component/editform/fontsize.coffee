@@ -6,8 +6,6 @@ window.RactiveEditFormFontSize = RactiveEditFormLabeledInput.extend({
   , type:     "number"
   }
 
-  isolated: true
-
   twoway: false
 
 })

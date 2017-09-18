@@ -12,8 +12,6 @@ window.RactiveEditFormDropdown = Ractive.extend({
 
   }
 
-  isolated: true
-
   twoway: false
 
   template:

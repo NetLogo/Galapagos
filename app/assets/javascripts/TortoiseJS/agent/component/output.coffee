@@ -4,8 +4,6 @@ OutputEditForm = EditForm.extend({
     fontSize: undefined # Number
   }
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -34,8 +32,6 @@ window.RactiveOutputArea = RactiveWidget.extend({
     text: undefined # String
   }
 
-  isolated: true
-
   components: {
     editForm:  OutputEditForm
   , printArea: RactivePrintArea
@@ -58,7 +54,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
     output:
       """
-      <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+      <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
            class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
       </div>

@@ -10,8 +10,6 @@ window.RactiveWidget = Ractive.extend({
     editForm: undefined # Element
   }
 
-  isolated: true
-
   oninit: ->
 
     @findComponent('editForm')?.fire("activateCloakingDevice")
@@ -24,7 +22,7 @@ window.RactiveWidget = Ractive.extend({
     )
 
     @on('*.updateWidgetValue'
-    , ({ proxies = {}, triggers = {}, values = {}}) ->
+    , (_, { proxies = {}, triggers = {}, values = {}}) ->
 
         getByPath = (obj) -> (path) ->
           path.split('.').reduce(((acc, x) -> acc[x]), obj)

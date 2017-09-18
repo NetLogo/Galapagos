@@ -6,8 +6,6 @@ window.RactiveTickCounter = Ractive.extend({
   , value:     undefined # Number
   }
 
-  isolated: true
-
   twoway: false
 
   template:

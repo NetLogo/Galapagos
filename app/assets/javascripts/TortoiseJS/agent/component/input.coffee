@@ -13,8 +13,6 @@ InputEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  isolated: true
-
   twoway: false
 
   validate: (form) ->
@@ -78,8 +76,6 @@ InputEditForm = EditForm.extend({
 
 window.RactiveInput = RactiveWidget.extend({
 
-  isolated: true
-
   computed: {
     hexColor: { # String
       get: ->
@@ -142,7 +138,7 @@ window.RactiveInput = RactiveWidget.extend({
     input:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
              class="netlogo-widget netlogo-input-box netlogo-input"
              style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>

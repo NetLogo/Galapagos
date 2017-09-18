@@ -12,8 +12,6 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
   , value:      undefined # String
   }
 
-  isolated: true
-
   twoway: false
 
   template:

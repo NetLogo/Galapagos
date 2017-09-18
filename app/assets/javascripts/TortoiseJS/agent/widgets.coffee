@@ -103,7 +103,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       viewWidget:    RactiveView
 
     },
-    magic:      true,
     data:    -> model,
     oncomplete: attachWidgetMenus
   })
@@ -200,20 +199,19 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     @set('height', Math.max.apply(Math, w.bottom for own i, w of @get('widgetObj') when w.bottom?))
   )
 
-  ractive.on('checkFocus', (node) ->
+  ractive.on('checkFocus', (_, node) ->
     @set('hasFocus', document.activeElement is node)
   )
 
-  ractive.on('checkActionKeys', (event) ->
+  ractive.on('checkActionKeys', (_, e) ->
     if @get('hasFocus')
-      e = event.original
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
       for _, w of @get('widgetObj') when w.type is 'button' and w.actionKey is char
         w.run()
   )
 
   ractive.on('*.renameInterfaceGlobal'
-  , (oldName, newName, value) ->
+  , (_, oldName, newName, value) ->
       if not existsInObj(({ variable }) -> variable is oldName)(@get('widgetObj'))
         world.observer.setGlobal(oldName, undefined)
       world.observer.setGlobal(newName, value)
@@ -326,6 +324,8 @@ class window.WidgetController
     else
       @model.ticks = ''
       @model.ticksStarted = false
+
+    @ractive.update()
 
   # (Number) => Unit
   removeWidgetById: (id) ->
@@ -503,9 +503,9 @@ isValidValue = (widget, value) ->
 template =
   """
   <div class="netlogo-model" style="min-width: {{width}}px;"
-       tabindex="1" on-keydown="@this.fire('checkActionKeys', event)"
-       on-focus="@this.fire('checkFocus', event.node)"
-       on-blur="@this.fire('checkFocus', event.node)">
+       tabindex="1" on-keydown="@this.fire('checkActionKeys', @event)"
+       on-focus="@this.fire('checkFocus', @node)"
+       on-blur="@this.fire('checkFocus', @node)">
     <div class="netlogo-header">
       <div class="netlogo-subheader">
         <div class="netlogo-powered-by">
@@ -548,7 +548,7 @@ template =
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
-         on-contextmenu="@this.fire('showContextMenu', event, 'widget-creation-disabled-message')">
+         on-contextmenu="@this.fire('showContextMenu', @event, 'widget-creation-disabled-message')">
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}

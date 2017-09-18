@@ -1,11 +1,9 @@
 window.RactiveChooser = RactiveWidget.extend({
 
-  isolated: true
-
   template:
     """
     <label id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+           on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
            class="netlogo-widget netlogo-chooser netlogo-input"
            style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>

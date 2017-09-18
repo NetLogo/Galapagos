@@ -20,8 +20,6 @@ SliderEditForm = EditForm.extend({
   , variable:  undefined # String
   }
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -113,8 +111,6 @@ window.RactiveSlider = RactiveWidget.extend({
     editForm: SliderEditForm
   }
 
-  isolated: true
-
   template:
     """
     {{>slider}}
@@ -129,7 +125,7 @@ window.RactiveSlider = RactiveWidget.extend({
     slider:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
              class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
              style="{{dims}}">
         <input type="range"

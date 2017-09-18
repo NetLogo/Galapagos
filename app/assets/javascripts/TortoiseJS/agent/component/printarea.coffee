@@ -6,8 +6,6 @@ window.RactivePrintArea = Ractive.extend({
   , output:   undefined # String
   }
 
-  isolated: true
-
   oninit: ->
     @observe('output', ->
       @update('output').then(=>

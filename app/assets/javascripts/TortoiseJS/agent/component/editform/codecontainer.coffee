@@ -24,8 +24,6 @@ RactiveCodeContainerBase = Ractive.extend({
     if initialCode? then @set('code', initialCode)
     @_setupCodeMirror()
 
-  isolated: true
-
   twoway: false
 
   _setupCodeMirror: ->
@@ -59,8 +57,6 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     }
   }
 
-  isolated: true
-
 })
 
 window.RactiveEditFormCodeContainer = Ractive.extend({
@@ -72,8 +68,6 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
   , style:  undefined # String
   , value:  undefined # String
   }
-
-  isolated: true
 
   twoway: false
 
@@ -95,7 +89,5 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
 #  data: -> {
 #    extraClasses: "single-line"
 #  }
-#
-#  isolated: true
 #
 #})

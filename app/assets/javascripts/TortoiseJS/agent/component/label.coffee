@@ -7,8 +7,6 @@ LabelEditForm = EditForm.extend({
   , transparent: undefined # Boolean
   }
 
-  isolated: true
-
   twoway: false
 
   components: {
@@ -70,8 +68,6 @@ window.RactiveLabel = RactiveWidget.extend({
     convertColor: netlogoColorToCSS
   }
 
-  isolated: true
-
   components: {
     editForm: LabelEditForm
   }
@@ -98,7 +94,7 @@ window.RactiveLabel = RactiveWidget.extend({
     label:
       """
       <pre id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+           on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
            class="netlogo-widget netlogo-text-box"
            style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>

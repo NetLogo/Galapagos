@@ -4,8 +4,6 @@ window.RactiveModelTitle = Ractive.extend({
     isEditing: undefined # Boolean
   }
 
-  isolated: true
-
   oninit: ->
 
     defaultOnEmpty = (s) -> if s is '' then "Untitled" else s
@@ -24,7 +22,7 @@ window.RactiveModelTitle = Ractive.extend({
     <div class="netlogo-model-masthead">
       <div class="flex-row" style="justify-content: center; height: 30px; line-height: 30px;">
         <h2 id="netlogo-title"
-            on-contextmenu="@this.fire('showContextMenu', event, 'title-context-items')"
+            on-contextmenu="@this.fire('showContextMenu', @event, 'title-context-items')"
             class="netlogo-widget netlogo-model-title"
             on-dblclick="editTitle">
           {{ title }}

@@ -15,8 +15,6 @@ window.EditForm = Ractive.extend({
     id: (-> "#{@get('idBasis')}-edit-window") # () => String
   }
 
-  isolated: true
-
   twoway: false
 
   # We make the bound values lazy and then call `resetPartials` when showing, so as to

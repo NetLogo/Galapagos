@@ -24,6 +24,8 @@ window.RactiveInfoTabWidget = Ractive.extend({
   components: {
     infoeditor: RactiveInfoTabEditor
   },
+  toMarkdown: (x) ->
+    window.markdown.toHTML(x)
   template:
     """
     <div class='netlogo-tab-content netlogo-info'
@@ -33,7 +35,7 @@ window.RactiveInfoTabWidget = Ractive.extend({
         Edit Mode
       </label>
       {{# !editing }}
-        <div class='netlogo-info-markdown'>{{{markdown(rawText)}}}</div>
+        <div class='netlogo-info-markdown'>{{{toMarkdown(rawText)}}}</div>
       {{ else }}
         <infoeditor rawText='{{rawText}}' />
       {{ / }}

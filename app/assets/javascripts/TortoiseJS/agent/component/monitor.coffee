@@ -13,8 +13,6 @@ MonitorEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  isolated: true
-
   twoway: false
 
   # Note how we obtain the code.  We don't grab it out of the form.  The code is not given a `name`.
@@ -80,8 +78,6 @@ window.RactiveMonitor = RactiveWidget.extend({
     errorClass: undefined # String
   }
 
-  isolated: true
-
   components: {
     editForm: MonitorEditForm
   }
@@ -100,7 +96,7 @@ window.RactiveMonitor = RactiveWidget.extend({
     monitor:
       """
       <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', event, id + '-context-menu')"
+           on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
            class="netlogo-widget netlogo-monitor netlogo-output"
            style="{{dims}} font-size: {{widget.fontSize}}px;">
         <label class="netlogo-label {{errorClass}}" on-click=\"showErrors\">{{widget.display || widget.source}}</label>

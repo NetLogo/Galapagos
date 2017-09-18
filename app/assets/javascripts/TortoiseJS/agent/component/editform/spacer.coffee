@@ -5,8 +5,6 @@ window.RactiveEditFormSpacer = Ractive.extend({
   , width:  undefined # String
   }
 
-  isolated: true
-
   template:
     """
     <div style="{{>height}} {{>width}}"></div>

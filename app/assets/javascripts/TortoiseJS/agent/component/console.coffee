@@ -9,8 +9,6 @@ window.RactiveConsoleWidget = Ractive.extend({
     output: ''
   }
 
-  isolated: true
-
   computed: {
     agentType: {
       get: -> @get('agentTypes')[@get('agentTypeIndex')]
