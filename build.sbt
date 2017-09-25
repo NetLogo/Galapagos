@@ -33,20 +33,20 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "tortoise" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   "com.typesafe.play" %% "play-iteratees" % "2.6.1",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.1" % "test",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0-RC1" % "test"
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.3" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.1" % "test"
 )
 
 libraryDependencies ++= Seq(
-  "org.webjars" % "chosen" % "1.3.0",
+  "org.webjars" % "chosen" % "1.7.0",
   "org.webjars.npm" % "filesaver.js" % "0.1.1",
-  "org.webjars.npm" % "mousetrap" % "1.5.3",
+  "org.webjars.npm" % "mousetrap" % "1.6.1",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
-  "org.webjars" % "highcharts" % "5.0.6",
-  "org.webjars" % "jquery" % "3.1.1",
+  "org.webjars" % "highcharts" % "5.0.14",
+  "org.webjars" % "jquery" % "3.2.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars" % "ractive" % "0.7.3",
-  "org.webjars" % "codemirror" % "5.13.2",
+  "org.webjars" % "codemirror" % "5.24.2",
   "org.webjars.bower" % "github-com-highcharts-export-csv" % "1.4.3"
 )
 
