@@ -303,7 +303,7 @@ private[controllers] trait RequestResultGenerator {
 
     val webjarURLs =
       Seq(
-        "lib/filesaver.js/FileSaver.js",
+        "lib/filesaver/FileSaver.js",
         "lib/google-caja/html-sanitizer-minified.js",
         "lib/markdown-js/markdown.js",
         "lib/mousetrap/mousetrap.js",
