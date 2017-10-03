@@ -12,7 +12,7 @@ import
   play.api.libs.json.Json
 
 import
-  org.nlogo.tortoise.{ CompiledModel }
+  org.nlogo.tortoise.compiler.CompiledModel
 
 import
   scala.io.Codec

@@ -33,7 +33,7 @@ private[controllers] trait EnvironmentHolder {
 private[controllers] object CompilerService {
 
   import
-    org.nlogo.tortoise.CompiledModel,
+    org.nlogo.tortoise.compiler.CompiledModel,
       CompiledModel.CompileResult
 
   // Outer validation indicates the validity of the model representation, whereas CompileResult indicates whether the
@@ -66,7 +66,7 @@ private[controllers] object CompilationRequestHandler {
     org.nlogo.{ core, tortoise },
       core.{ Model, Shape },
         Shape.{ LinkShape, VectorShape },
-      tortoise.{ json => tortoisejson },
+      tortoise.compiler.{ json => tortoisejson },
         tortoisejson.{ ShapeToJsonConverters, TortoiseJson },
           ShapeToJsonConverters.{ readLinkShapes, readVectorShapes }
 
@@ -145,7 +145,7 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
   import
     org.nlogo.{ core, tortoise },
       core.CompilerException,
-      tortoise.CompiledModel
+      tortoise.compiler.CompiledModel
 
   import
     play.api.mvc.{ Action => ActionType, AnyContent, Result }

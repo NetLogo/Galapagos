@@ -8,7 +8,7 @@ import
 import
   org.nlogo.{ core, tortoise },
     core.Widget,
-    tortoise.{ json => tortoisejson },
+    tortoise.compiler.{ json => tortoisejson },
       tortoisejson.{ TortoiseJson, WidgetToJson },
         TortoiseJson.{ JsArray => TortoiseArray },
         WidgetToJson.readWidgetJson

@@ -3,7 +3,7 @@
 package models.json
 
 import
-  org.nlogo.tortoise.json.TortoiseJson,
+  org.nlogo.tortoise.compiler.json.TortoiseJson,
     TortoiseJson.{
       fields,
       JsArray  => TortoiseArray,

@@ -6,7 +6,7 @@ import
   org.nlogo.{ core, tortoise },
     core.{ CompilerException, model },
       model.ModelReader,
-    tortoise.{ CompiledModel, CompiledWidget },
+    tortoise.compiler.{ CompiledModel, CompiledWidget },
       CompiledModel.CompileResult
 
 import

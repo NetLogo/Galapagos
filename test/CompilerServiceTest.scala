@@ -7,7 +7,7 @@ import
     core.{ CompilerException, model, Model },
       model.ModelReader,
     parse.CompilerUtilities,
-    tortoise.CompiledModel
+    tortoise.compiler.CompiledModel
 
 import
   org.scalatestplus.play.PlaySpec

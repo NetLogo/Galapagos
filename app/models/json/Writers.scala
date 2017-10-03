@@ -5,7 +5,7 @@ package models.json
 import
   org.nlogo.{ core, tortoise },
     core.CompilerException,
-    tortoise.{ CompiledModel, CompiledWidget, WidgetCompiler },
+    tortoise.compiler.{ CompiledModel, CompiledWidget, WidgetCompiler },
       CompiledModel.CompileResult
 
 import

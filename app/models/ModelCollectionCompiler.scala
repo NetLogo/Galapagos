@@ -9,7 +9,7 @@ import
   akka.actor.{ Actor, ActorRef }
 
 import
-  org.nlogo.tortoise.CompiledModel
+  org.nlogo.tortoise.compiler.CompiledModel
 
 import
   models.Util.usingSource
