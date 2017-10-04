@@ -86,7 +86,6 @@ window.RactiveMonitor = RactiveWidget.extend({
   template:
     """
     {{>monitor}}
-    {{>contextMenu}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
               precision="{{widget.precision}}" source="{{widget.source}}" />
     """
