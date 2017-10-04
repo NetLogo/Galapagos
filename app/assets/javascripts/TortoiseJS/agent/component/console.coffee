@@ -48,6 +48,8 @@ window.RactiveConsoleWidget = Ractive.extend({
       input = @get('input')
       if input.trim().length > 0
         agentType = @get('agentType')
+        if Converter.isReporter(input)
+          input = "show #{input}"
         @set('output', "#{@get('output')}#{agentType}> #{input}\n")
         history = @get('history')
         lastEntry = if history.length > 0 then history[history.length - 1] else {agentType: '', input: ''}
