@@ -104,7 +104,8 @@ SliderEditForm = EditForm.extend({
 window.RactiveSlider = RactiveWidget.extend({
 
   data: -> {
-    errorClass: undefined # String
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+  , errorClass: undefined # String
   }
 
   components: {
@@ -114,7 +115,6 @@ window.RactiveSlider = RactiveWidget.extend({
   template:
     """
     {{>slider}}
-    {{>contextMenu}}
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               value="{{widget.currentValue}}" variable="{{widget.variable}}" />
@@ -125,7 +125,7 @@ window.RactiveSlider = RactiveWidget.extend({
     slider:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event)"
              class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
              style="{{dims}}">
         <input type="range"
@@ -142,16 +142,6 @@ window.RactiveSlider = RactiveWidget.extend({
           </span>
         </div>
       </label>
-      """
-
-    contextMenu:
-      """
-      <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-        <ul class="context-menu-list">
-          <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
-        </ul>
-      </div>
       """
 
   }

@@ -76,6 +76,10 @@ InputEditForm = EditForm.extend({
 
 window.RactiveInput = RactiveWidget.extend({
 
+  data: -> {
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+  }
+
   computed: {
     hexColor: { # String
       get: ->
@@ -124,7 +128,6 @@ window.RactiveInput = RactiveWidget.extend({
   template:
     """
     {{>input}}
-    {{>contextMenu}}
     <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}" display="{{widget.display}}"
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
@@ -138,7 +141,7 @@ window.RactiveInput = RactiveWidget.extend({
     input:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
+             on-contextmenu="@this.fire('showContextMenu', @event)"
              class="netlogo-widget netlogo-input-box netlogo-input"
              style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
@@ -155,16 +158,6 @@ window.RactiveInput = RactiveWidget.extend({
           <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" />
         {{/}}
       </label>
-      """
-
-    contextMenu:
-      """
-      <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-        <ul class="context-menu-list">
-          <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
-        </ul>
-      </div>
       """
 
   }

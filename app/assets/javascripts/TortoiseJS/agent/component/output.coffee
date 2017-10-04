@@ -29,7 +29,8 @@ OutputEditForm = EditForm.extend({
 window.RactiveOutputArea = RactiveWidget.extend({
 
   data: -> {
-    text: undefined # String
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+  , text:               undefined # String
   }
 
   components: {
@@ -45,7 +46,6 @@ window.RactiveOutputArea = RactiveWidget.extend({
   template:
     """
     {{>output}}
-    {{>contextMenu}}
     <editForm idBasis="{{id}}" fontSize="{{widget.fontSize}}" />
     """
 
@@ -54,19 +54,9 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
     output:
       """
-      <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
+      <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', @event)"
            class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
-      </div>
-      """
-
-    contextMenu:
-      """
-      <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-        <ul class="context-menu-list">
-          <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
-        </ul>
       </div>
       """
 

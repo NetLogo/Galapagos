@@ -85,6 +85,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     components: {
 
       console:       RactiveConsoleWidget,
+      contextMenu:   RactiveContextMenu,
       editableTitle: RactiveModelTitle,
       editor:        RactiveEditorWidget,
       infotab:       RactiveInfoTabWidget,
@@ -103,8 +104,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       viewWidget:    RactiveView
 
     },
-    data:    -> model,
-    oncomplete: attachWidgetMenus
+    data: -> model
   })
 
   container.querySelector('.netlogo-model').focus()
@@ -238,7 +238,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   controller = new WidgetController(ractive, model, widgetObj, viewController
                                   , plotOps, mouse, write, output, dialog, worldConfig, exporting)
-  setupInterfaceEditor(ractive, controller.removeWidgetById.bind(controller))
+
+  ractive.on('*.unregisterWidget', (_, id) -> controller.removeWidgetById(id))
+
+  setupInterfaceEditor(ractive)
+
   controller
 
 showErrors = (errors) ->
@@ -531,13 +535,9 @@ template =
       {{/}}
     </div>
 
-    <div id="netlogo-widget-context-menu" class="widget-context-menu">
-      <div id='widget-creation-disabled-message' style="display: none;">
-        Widget creation is not yet available.  Check back soon.
-      </div>
-    </div>
-
     <div class="netlogo-interface-unlocker" style="display: none" on-click="toggleInterfaceLock"></div>
+
+    <contextMenu></contextMenu>
 
     <label class="netlogo-widget netlogo-speed-slider">
       <span class="netlogo-label">model speed</span>

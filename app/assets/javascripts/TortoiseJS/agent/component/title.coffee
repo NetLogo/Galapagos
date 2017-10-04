@@ -1,7 +1,9 @@
-window.RactiveModelTitle = Ractive.extend({
+window.RactiveModelTitle = RactiveContextable.extend({
+
   data: -> {
-    title:     undefined # String
-    isEditing: undefined # Boolean
+    contextMenuOptions: [@standardOptions(this).edit]
+    isEditing:          undefined # Boolean
+    title:              undefined # String
   }
 
   oninit: ->
@@ -22,17 +24,12 @@ window.RactiveModelTitle = Ractive.extend({
     <div class="netlogo-model-masthead">
       <div class="flex-row" style="justify-content: center; height: 30px; line-height: 30px;">
         <h2 id="netlogo-title"
-            on-contextmenu="@this.fire('showContextMenu', @event, 'title-context-items')"
+            on-contextmenu="@this.fire('showContextMenu', @event)"
             class="netlogo-widget netlogo-model-title"
             on-dblclick="editTitle">
           {{ title }}
         </h2>
       </div>
-    </div>
-    <div id="title-context-items" class="netlogo-widget-editor-menu-items">
-      <ul class="context-menu-list">
-        <li class="context-menu-item" on-click="editTitle">Edit</li>
-      </ul>
     </div>
     """
 

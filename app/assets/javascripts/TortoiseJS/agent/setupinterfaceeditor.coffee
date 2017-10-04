@@ -4,12 +4,6 @@ elemById = (id) ->
 elemsByClass = (className) ->
   document.getElementsByClassName(className)
 
-hideElem = (elem) ->
-  elem.style.display = "none"
-
-showElem = (elem) ->
-  elem.style.display = ""
-
 arrayContains = (xs) -> (x) ->
   xs.indexOf(x) isnt -1
 
@@ -25,18 +19,12 @@ pipeline = (functions...) ->
       out = f(out)
     out
 
-window.attachWidgetMenus =
-    ->
-      menuItemDivs = pipeline(elemsByClass, nodeListToArray)('netlogo-widget-editor-menu-items')
-      menuItemDivs.forEach((elem) -> hideElem(elem); elemById("netlogo-widget-context-menu").appendChild(elem))
-      return
-
 # (Ractive, (Number) => Unit) => Unit
 window.setupInterfaceEditor =
-  (ractive, removeWidgetById) ->
+  (ractive) ->
 
     hideContextMenu = ->
-      pipeline(elemById, hideElem)("netlogo-widget-context-menu")
+      ractive.findComponent('contextMenu').fire('coverThineself')
 
     document.addEventListener("click", hideContextMenu)
 
@@ -86,41 +74,19 @@ window.setupInterfaceEditor =
     )
 
     handleContextMenu =
-      (_, trueEvent, menuItemsID) ->
-
+      ({ component }, trueEvent) ->
         if @get("isEditing")
-
           trueEvent.preventDefault()
           trueEvent.stopPropagation()
-
-          contextMenu               = elemById("netlogo-widget-context-menu")
-          contextMenu.style.top     = "#{trueEvent.pageY}px"
-          contextMenu.style.left    = "#{trueEvent.pageX}px"
-          contextMenu.style.display = "block"
-
-          for child in contextMenu.children
-            hideElem(child)
-
-          pipeline(elemById, showElem)(menuItemsID)
-
+          @findComponent('contextMenu').fire('revealThineself'
+                                            , component.get('contextMenuOptions')
+                                            , trueEvent.pageX
+                                            , trueEvent.pageY
+                                            )
           false
-
         else
           true
 
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
-
-    ractive.on('*.deleteWidget'
-    , (_, widgetID, contextMenuID, widgetNum) ->
-        deleteById = (id) ->
-          elem = elemById(id)
-          elem.parentElement.removeChild(elem)
-        deleteById(widgetID)
-        deleteById(contextMenuID)
-        hideContextMenu()
-        removeWidgetById(widgetNum)
-        false
-    )
-
     ractive.on('*.hideContextMenu', hideContextMenu)

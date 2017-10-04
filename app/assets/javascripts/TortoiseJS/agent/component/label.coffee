@@ -65,7 +65,8 @@ LabelEditForm = EditForm.extend({
 window.RactiveLabel = RactiveWidget.extend({
 
   data: -> {
-    convertColor: netlogoColorToCSS
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+  , convertColor:       netlogoColorToCSS
   }
 
   components: {
@@ -80,7 +81,6 @@ window.RactiveLabel = RactiveWidget.extend({
   template:
     """
     {{>label}}
-    {{>contextMenu}}
     {{>form}}
     """
 
@@ -94,20 +94,10 @@ window.RactiveLabel = RactiveWidget.extend({
     label:
       """
       <pre id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event, id + '-context-menu')"
+           on-contextmenu="@this.fire('showContextMenu', @event)"
            class="netlogo-widget netlogo-text-box"
            style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>
-      """
-
-    contextMenu:
-      """
-      <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
-        <ul class="context-menu-list">
-          <li class="context-menu-item" on-click="editWidget">Edit</li>
-          <li class="context-menu-item" on-click="@this.fire('deleteWidget', id, id + '-context-menu', widget.id)">Delete</li>
-        </ul>
-      </div>
       """
 
     form:
