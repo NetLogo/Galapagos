@@ -82,12 +82,3 @@ window.RactiveEditFormCodeContainer = Ractive.extend({
     """
 
 })
-
-# INCOMPLETE
-#window.RactiveCodeContainerSingleLine = RactiveCodeContainerBase.extend({
-#
-#  data: -> {
-#    extraClasses: "single-line"
-#  }
-#
-#})
