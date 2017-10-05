@@ -23,28 +23,28 @@ window.RactiveContextMenu = Ractive.extend({
 
   data: -> {
     options: undefined # ContextMenuOptions
+  , visible: false     # Boolean
   }
 
   on: {
 
     coverThineself: ->
-      if @el?
-        contextMenu               = @find("#netlogo-widget-context-menu")
-        contextMenu.style.display = "none"
+      @set('visible', false)
       return
 
     revealThineself: (_, options, x, y) ->
       @set('options', options)
+      @set('visible', true)
       contextMenu               = @find("#netlogo-widget-context-menu")
       contextMenu.style.top     = "#{y}px"
       contextMenu.style.left    = "#{x}px"
-      contextMenu.style.display = "block"
       return
 
   }
 
   template:
     """
+    {{# visible }}
     <div id="netlogo-widget-context-menu" class="widget-context-menu">
       {{# options === undefined }}
         <div id='widget-creation-disabled-message' style="display: none;">
@@ -64,6 +64,7 @@ window.RactiveContextMenu = Ractive.extend({
         </div>
       {{/}}
     </div>
+    {{/}}
     """
 
 })

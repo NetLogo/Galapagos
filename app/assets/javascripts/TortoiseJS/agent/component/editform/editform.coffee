@@ -1,12 +1,12 @@
 window.EditForm = Ractive.extend({
 
-  container: undefined # Element
   startX:    undefined # Number
   startY:    undefined # Number
   view:      undefined # Element
 
   data: -> {
     idBasis: undefined # String
+  , visible: undefined # Boolean
   , xLoc:    undefined # Number
   , yLoc:    undefined # Number
   }
@@ -35,13 +35,24 @@ window.EditForm = Ractive.extend({
     @on('showYourself'
     , ->
 
-        containerMidX = @container.offsetWidth  / 2
-        containerMidY = @container.offsetHeight / 2
+        findParentByClass =
+          (clss) -> ({ parentElement: parent }) ->
+            if parent?
+              if parent.classList.contains(clss)
+                parent
+              else
+                findParentByClass(clss)(parent)
+            else
+              undefined
 
         # Must unhide before measuring --JAB (3/21/16)
+        @set('visible', true)
         elem = @getElem()
-        elem.classList.remove('hidden')
         elem.focus()
+
+        container     = findParentByClass('netlogo-widget-container')(elem)
+        containerMidX = container.offsetWidth  / 2
+        containerMidY = container.offsetHeight / 2
 
         dialogHalfWidth  = elem.offsetWidth  / 2
         dialogHalfHeight = elem.offsetHeight / 2
@@ -57,7 +68,7 @@ window.EditForm = Ractive.extend({
 
     @on('activateCloakingDevice'
     , ->
-        @getElem().classList.add('hidden')
+        @set('visible', false)
         false
     )
 
@@ -107,27 +118,14 @@ window.EditForm = Ractive.extend({
 
     return
 
-  oncomplete: ->
-
-    findParentByClass =
-      (clss) -> ({ parentElement: parent }) ->
-        if parent?
-          if parent.classList.contains(clss)
-            parent
-          else
-            findParentByClass(clss)(parent)
-        else
-          undefined
-
-    @container = findParentByClass('netlogo-widget-container')(@getElem())
-
   getElem: ->
     @find("##{@get('id')}")
 
   template:
     """
+    {{# visible }}
     <div id="{{id}}"
-         class="widget-edit-popup widget-edit-text hidden"
+         class="widget-edit-popup widget-edit-text"
          style="top: {{yLoc}}px; left: {{xLoc}}px;"
          on-contextmenu="blockContextMenu" on-keydown="handleKey"
          on-drag="dragEditDialog" on-dragstart="startEditDrag"
@@ -143,6 +141,7 @@ window.EditForm = Ractive.extend({
         </div>
       </form>
     </div>
+    {{/}}
     """
 
   partials: {
