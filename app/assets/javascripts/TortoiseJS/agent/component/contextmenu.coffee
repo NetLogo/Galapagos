@@ -35,9 +35,9 @@ window.RactiveContextMenu = Ractive.extend({
     revealThineself: (_, options, x, y) ->
       @set('options', options)
       @set('visible', true)
-      contextMenu               = @find("#netlogo-widget-context-menu")
-      contextMenu.style.top     = "#{y}px"
-      contextMenu.style.left    = "#{x}px"
+      contextMenu            = @find("#netlogo-widget-context-menu")
+      contextMenu.style.top  = "#{y}px"
+      contextMenu.style.left = "#{x}px"
       return
 
   }
