@@ -4,6 +4,7 @@ InputEditForm = EditForm.extend({
     boxtype:     undefined # String
   , display:     undefined # String
   , isMultiline: undefined # Boolean
+  , value:       undefined # Any
   }
 
   components: {
@@ -20,35 +21,32 @@ InputEditForm = EditForm.extend({
     boxtype  = form.boxtype.value
     variable = form.variable.value
 
-    weg = WidgetEventGenerators
-
-    out =
-      {
-        triggers: {
-          variable: [weg.recompile, weg.rename]
-        }
-      , values: {
-          boxedValue: { type: boxtype }
-        ,    display: variable
-        ,   variable: variable.toLowerCase()
-        }
-      }
-
-    if boxtype isnt @get('boxtype')
-
-      default_ =
+    value =
+      if boxtype is @get('boxtype')
+        @get('value')
+      else
         switch boxtype
           when "Color"  then 0 # Color number for black
           when "Number" then 0
           else               ""
 
-      boxedValue.currentValue = default_
-      boxedValue.value        = default_
+    boxedValueBasis =
+      if boxtype isnt "Color" and boxtype isnt "Number"
+        { multiline: form.multiline.checked }
+      else
+        {}
 
-    if boxtype isnt "Color" and boxtype isnt "Number"
-      boxedValue.multiline = form.multiline.checked
-
-    out
+    {
+      triggers: {
+        variable: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
+      }
+    , values: {
+          boxedValue: Object.assign(boxedValueBasis, { type: boxtype, value: value })
+      , currentValue: value
+      ,      display: variable
+      ,     variable: variable.toLowerCase()
+      }
+    }
 
   partials: {
 
@@ -64,7 +62,7 @@ InputEditForm = EditForm.extend({
                       choices="['Number', 'String', 'Color', 'String (reporter)', 'String (commands)']"
                       disableds="['String (reporter)', 'String (commands)']" /> <!-- Disabled until `run`/`runresult` work on strings --JAB (6/8/16) -->
         <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline"
-                      name="multiline" disabled="typeof({{isMultiline}}) == 'undefined'" />
+                      name="multiline" disabled="typeof({{isMultiline}}) === 'undefined'" />
       </div>
       <spacer height="10px" />
       """
@@ -106,7 +104,7 @@ window.RactiveInput = RactiveWidget.extend({
     @_super()
 
     @on('handleKeypress', ({ original: { keyCode, target } }) ->
-      if (not @get('isMultiline')) and keyCode is 13 # Enter key in single-line input
+      if (not @get('widget.boxedValue.multiline')) and keyCode is 13 # Enter key in single-line input
         target.blur()
         false
     )
@@ -131,7 +129,7 @@ window.RactiveInput = RactiveWidget.extend({
     <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}" display="{{widget.display}}"
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
-              {{/}}
+              {{/}} value="{{widget.currentValue}}"
               />
     """
 
