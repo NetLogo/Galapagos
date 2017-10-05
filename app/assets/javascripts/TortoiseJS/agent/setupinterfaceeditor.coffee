@@ -79,7 +79,7 @@ window.setupInterfaceEditor =
           trueEvent.preventDefault()
           trueEvent.stopPropagation()
           @findComponent('contextMenu').fire('revealThineself'
-                                            , component.get('contextMenuOptions')
+                                            , component?.get('contextMenuOptions')
                                             , trueEvent.pageX
                                             , trueEvent.pageY
                                             )

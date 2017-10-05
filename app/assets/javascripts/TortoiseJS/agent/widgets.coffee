@@ -548,7 +548,7 @@ template =
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
-         on-contextmenu="@this.fire('showContextMenu', @event, 'widget-creation-disabled-message')">
+         on-contextmenu="@this.fire('showContextMenu', @event)">
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}

@@ -47,7 +47,7 @@ window.RactiveContextMenu = Ractive.extend({
     {{# visible }}
     <div id="netlogo-widget-context-menu" class="widget-context-menu">
       {{# options === undefined }}
-        <div id='widget-creation-disabled-message' style="display: none;">
+        <div id="widget-creation-disabled-message">
           Widget creation is not yet available.  Check back soon.
         </div>
       {{ else }}
