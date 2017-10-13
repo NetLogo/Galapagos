@@ -50,7 +50,7 @@ SliderEditForm = EditForm.extend({
       ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
       ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
       ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
-      ,        units: form.units.value
+      ,        units: (if form.units.value isnt "" then form.units.value else undefined)
       ,     variable: form.variable.value.toLowerCase()
       }
     }

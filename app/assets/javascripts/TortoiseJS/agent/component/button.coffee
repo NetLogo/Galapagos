@@ -38,7 +38,7 @@ ButtonEditForm = EditForm.extend({
                      actionKey: (if key.length is 1 then key.toUpperCase() else null)
       ,             buttonKind: @_displayToType(form.type.value)
       , disableUntilTicksStart: form.startsDisabled.checked
-      ,                display: form.display.value
+      ,                display: (if form.display.value isnt "" then form.display.value else undefined)
       ,                forever: form.forever.checked
       ,                 source: @findComponent('formCode').findComponent('codeContainer').get('code')
       }

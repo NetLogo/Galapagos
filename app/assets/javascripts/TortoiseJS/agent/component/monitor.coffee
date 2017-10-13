@@ -28,7 +28,7 @@ MonitorEditForm = EditForm.extend({
         source: [WidgetEventGenerators.recompile]
       }
     , values: {
-          display: form.display.value
+          display: (if form.display.value isnt "" then form.display.value else undefined)
       ,  fontSize: parseInt(form.fontSize.value)
       , precision: parseInt(form.precision.value)
       ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
