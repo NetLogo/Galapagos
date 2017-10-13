@@ -68,6 +68,7 @@ window.RactiveConsoleWidget = Ractive.extend({
       value: @get('input'),
       mode:  'netlogo',
       theme: 'netlogo-default',
+      scrollbarStyle: 'null',
       extraKeys: {
         Enter: run
         Up:    => moveInHistory(-1)
