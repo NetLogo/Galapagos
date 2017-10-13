@@ -2,7 +2,7 @@
 logLevel := Level.Warn
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.2")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.3")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
@@ -23,7 +23,7 @@ scalacOptions ++= Seq(
 
 lazy val root = project.in(file(".")).dependsOn(sbtAutoprefixer)
 
-lazy val sbtAutoprefixer = uri("git://github.com/gpgekko/sbt-autoprefixer#ec763821944c9990f20766d64768ea6836788ef2")
+lazy val sbtAutoprefixer = uri("git://github.com/gpgekko/sbt-autoprefixer#7b3772c47d2bc09c138165e6e20dec41c716a6ce")
 
 resolvers += Resolver.url(
   "play-scraper",
