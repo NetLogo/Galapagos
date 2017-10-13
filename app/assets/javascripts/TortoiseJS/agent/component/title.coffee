@@ -1,7 +1,7 @@
 window.RactiveModelTitle = RactiveContextable.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit]
+    contextMenuOptions: [{ text: "Edit", isEnabled: true, action: => @fire('editTitle') }]
     isEditing:          undefined # Boolean
     title:              undefined # String
   }
