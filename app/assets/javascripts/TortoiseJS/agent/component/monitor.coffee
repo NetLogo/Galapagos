@@ -54,14 +54,13 @@ MonitorEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div class="flex-row" style="align-items: center;
-                  justify-content: space-between; margin: 0 50px 0 0;">
+      <div class="flex-row" style="align-items: center; justify-content: space-between;">
 
         <label for="{{id}}">Decimal places: </label>
         <input  id="{{id}}" name="precision" placeholder="(Required)"
                 style="font-size: 20px; height: 28px; padding: 2px;"
                 type="number" value="{{precision}}" min=-30 max=17 step=1 required />
-
+        <spacer width="50px" />
         <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
 
       </div>
