@@ -85,7 +85,7 @@ SliderEditForm = EditForm.extend({
       <spacer height="15px" />
 
       <div class="flex-row" style="align-items: center;">
-        <labeledInput id="{{id}}-value" labelStr="Value:" name="value" required type="number" value="{{value}}"
+        <labeledInput id="{{id}}-value" labelStr="Value:" name="value" type="number" value="{{value}}" attrs="required step='any'"
                       style="flex-grow: 1; text-align: right;" />
         <labeledInput id="{{id}}-units" labelStr="Units:" labelStyle="margin-left: 10px;" name="units" type="text" value="{{units}}"
                       style="flex-grow: 1; padding: 4px;" />

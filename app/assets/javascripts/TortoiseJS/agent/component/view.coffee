@@ -167,7 +167,7 @@ ViewEditForm = EditForm.extend({
           <div class="flex-column" style="flex-grow: 1;">
             <labeledInput id="{{id}}-patch-size" labelStr="Patch size:"
                           name="patchSize" type="number" value="{{patchSize}}"
-                          attrs="min=-1 required" />
+                          attrs="min=-1 step='any' required" />
             <div class="widget-edit-hint-text">measured in pixels</div>
           </div>
           <spacer width="20px" />
@@ -181,7 +181,7 @@ ViewEditForm = EditForm.extend({
 
         <labeledInput id="{{id}}-framerate" labelStr="Frame rate:" name="framerate"
                       style="text-align: right;" type="number" value="{{framerate}}"
-                      attrs="min=0 step=1 required" />
+                      attrs="min=0 step='any' required" />
         <div class="widget-edit-hint-text">Frames per second at normal speed</div>
 
       </fieldset>
