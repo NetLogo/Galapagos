@@ -34,10 +34,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       return true
     false
 
-  widgetObj = widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-
   model = {
-    widgetObj,
+    widgetObj:          widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
     speed:              0.0,
     ticks:              "", # Remember, ticks initialize to nothing, not 0
     ticksStarted:       false,
@@ -192,7 +190,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   }
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
-    widget = widgetObj[widgetNum]
+    widget = @get('widgetObj')[widgetNum]
     if widget.variable? and world? and newVal != oldVal and isValidValue(widget, newVal)
       world.observer.setGlobal(widget.variable, newVal)
   )
@@ -242,8 +240,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
-  controller = new WidgetController(ractive, model, widgetObj, viewController
-                                  , plotOps, mouse, write, output, dialog, worldConfig, exporting)
+  controller = new WidgetController(ractive, model, viewController, plotOps, mouse
+                                  , write, output, dialog, worldConfig, exporting)
 
   ractive.on('*.unregisterWidget', (_, id) -> controller.removeWidgetById(id))
 
@@ -279,7 +277,7 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
-  constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps
+  constructor: (@ractive, @model, @viewController, @plotOps
               , @mouse, @write, @output, @dialog, @worldConfig, @exporting) ->
 
   # () -> Unit
@@ -339,15 +337,17 @@ class window.WidgetController
 
   # (Number) => Unit
   removeWidgetById: (id) ->
-    delete @widgetObj[id]
+    delete @ractive.get('widgetObj')[id]
     return
 
   # () => Array[Widget]
   widgets: ->
-    v for _, v of @widgetObj
+    v for _, v of @ractive.get('widgetObj')
 
   # Array[Widget] => Unit
   freshenUpWidgets: (widgets) ->
+
+    widgetObj = @ractive.get('widgetObj')
 
     # Note: This is fundamentally broken.  If I delete a widget with a lower index and then cause a
     # recompile in one with a higher index, it will lead to an error or a totally messed up widget.
@@ -355,7 +355,7 @@ class window.WidgetController
     # serious thinking or rearchitecting, which I don't want to get into right now.  I'll take care
     # of that some other time, as this is getting closer to real deployment. --JAB (5/2/16)
     for widget, index in widgets
-      storedWidget = @widgetObj[index]
+      storedWidget = widgetObj[index]
       storedWidget.compilation = widget.compilation
       f =
         switch widget.type
