@@ -1,7 +1,7 @@
 window.RactivePlot = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).delete]
+    contextMenuOptions: [@standardOptions(this).deleteAndRecompile]
   }
 
   template:

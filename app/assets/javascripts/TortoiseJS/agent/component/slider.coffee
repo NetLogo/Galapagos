@@ -104,7 +104,7 @@ SliderEditForm = EditForm.extend({
 window.RactiveSlider = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
   , errorClass: undefined # String
   }
 

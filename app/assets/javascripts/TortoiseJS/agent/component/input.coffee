@@ -75,7 +75,7 @@ InputEditForm = EditForm.extend({
 window.RactiveInput = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
   }
 
   computed: {

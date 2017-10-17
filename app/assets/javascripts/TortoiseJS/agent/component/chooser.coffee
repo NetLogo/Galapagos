@@ -51,7 +51,7 @@ ChooserEditForm = EditForm.extend({
 window.RactiveChooser = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
   }
 
   components: {

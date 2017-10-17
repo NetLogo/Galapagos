@@ -39,7 +39,7 @@ SwitchEditForm = EditForm.extend({
 window.RactiveSwitch = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
   }
 
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
