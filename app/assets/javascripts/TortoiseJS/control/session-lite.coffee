@@ -87,11 +87,11 @@ class window.SessionLite
 
           # This can go away when `res.model.result` stops blowing away all of the globals
           # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
-          sliderVals = {}
+          widgetVals = {}
 
           # FYI, this is also fundamentally broken by its reliance of widget indices.  --JAB (6/10/16)
-          for { currentValue, type }, i in @widgetController.widgets() when type is "slider"
-            sliderVals[i] = currentValue
+          for { currentValue, type }, i in @widgetController.widgets() when type in ["chooser", "inputBox", "slider", "switch"]
+            widgetVals[i] = currentValue
 
           globalEval(res.model.result)
           @widgetController.ractive.set('isStale',           false)
@@ -99,7 +99,7 @@ class window.SessionLite
           @widgetController.ractive.set('lastCompileFailed', false)
           @widgetController.freshenUpWidgets(globalEval(res.widgets))
 
-          for k, v of sliderVals
+          for k, v of widgetVals
             { variable } = @widgetController.widgets()[k]
             world.observer.setGlobal(variable, v)
 
