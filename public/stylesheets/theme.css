@@ -7,6 +7,7 @@ body {
 }
 
 code {
+  white-space: pre;
   color: #C9228E;
 }
 

@@ -307,6 +307,27 @@
     <strong>have</strong> entered an infinite loop, the recommended solution is to
     terminate the browser tab.</p>
 
+    @linkableHeader("repeat-go", "I want to run my 'go' procedure many times with 'repeat', but it doesn't update the view!")
+
+    <p>A common NetLogo task is to run a procedure a number of times and then stop.  This is easy to do by using code like: <code>repeat 10 [ go ]</code> or <code>repeat 50 [ my-proc ]</code>.  In desktop NetLogo, if your procedure uses <code>tick</code>, then the view will also update for each time the procedure is called.  In NetLogo Web, however, no visual updates will happen until all repeats of the procedure are complete.  This is due to technical limitations of the browser environment.</p>
+
+    <p>There is an easy workaround, it just requires a couple small changes to the model.  Use a button in your model set to run forever and have that forever button run a repeat/count procedure.  Inside that procedure, you can count ticks using a global variable and call <code>stop</code> once you've reached your tick count limit.  This will allow view updates to happen, run the required number of steps, and then stop execution as expected.</p>
+
+    <code>    ; this assumes you have a global variable, 'ticked', declared and set to 0 in 'setup'
+    ; and a procedure named 'go' to run.  Just run this proc in a forever button.
+    to go-repeat
+      set ticked (ticked + 1)
+      go
+      ; can change 100 to whatever number of ticks you'd prefer
+      if (ticked > 100) [
+        ; resetting the ticked value before we stop lets people re-press the buttom
+        ; to run another 100 ticks
+        set ticked 0
+        stop
+      ]
+    end
+    </code>
+
   @linkableHeader("performance", "Why does everything seem so much slower in NetLogo Web?")
 
   <p>There are a couple of reasons for this.  One of the big ones is that the
