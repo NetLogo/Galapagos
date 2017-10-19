@@ -75,6 +75,12 @@ window.WidgetEventGenerators = {
       type: "redrawView"
     }
 
+  refreshChooser: ->
+    {
+      run: (ractive, widget) -> ractive.fire('refresh-chooser', widget)
+      type: "refreshChooser"
+    }
+
   rename: (oldName, newName) ->
     {
       run:  (ractive, widget) -> ractive.fire('renameInterfaceGlobal', oldName, newName, widget.currentValue)

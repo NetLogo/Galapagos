@@ -1,3 +1,5 @@
+{ eq } = tortoise_require('brazier/equals')
+
 # (Element or string, [widget], string, string, boolean, string) -> WidgetController
 window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   if typeof container == 'string'
@@ -220,6 +222,13 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         world.observer.setGlobal(oldName, undefined)
       world.observer.setGlobal(newName, value)
       false
+  )
+
+  ractive.on('*.refresh-chooser', (_, chooser) ->
+    chooser.currentChoice = Math.max(0, chooser.choices.findIndex(eq(chooser.currentValue)))
+    chooser.currentValue  = chooser.choices[chooser.currentChoice]
+    world.observer.setGlobal(chooser.variable, chooser.currentValue)
+    false
   )
 
   ractive.on('*.redraw-view'

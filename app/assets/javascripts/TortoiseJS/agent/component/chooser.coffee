@@ -24,11 +24,12 @@ ChooserEditForm = EditForm.extend({
     choicesArr = Converter.stringToJSValue("[#{choices}]")
     {
       triggers: {
-        variable: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
+         choices: [WidgetEventGenerators.refreshChooser]
+      , variable: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
       }
     , values: {
-        choices:  choicesArr
-      , display:  varName
+         choices: choicesArr
+      ,  display: varName
       , variable: varName.toLowerCase()
       }
     }
@@ -71,7 +72,7 @@ window.RactiveChooser = RactiveWidget.extend({
       {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}"/>
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
     """
 
   partials: {
