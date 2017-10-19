@@ -397,7 +397,7 @@ class window.WidgetController
 
 reporterOf = (str) -> new Function("return #{str}")
 
-# ([widget], () -> Unit) -> WidgetController
+# ([widget], () -> Unit) -> Unit
 # Destructive - Adds everything for maintaining state to the widget models,
 # such `currentValue`s and actual functions for buttons instead of just code.
 fillOutWidgets = (widgets, updateUICallback) ->
@@ -410,19 +410,40 @@ fillOutWidgets = (widgets, updateUICallback) ->
       widget.variable = widget.variable.toLowerCase()
     switch widget['type']
       when "switch"
-        widget.currentValue = widget.on
+        setUpSwitch(widget, widget)
       when "slider"
         widget.currentValue = widget.default
         setUpSlider(widget, widget)
       when "inputBox"
-        widget.currentValue = widget.boxedValue.value
-        widget.display      = widget.variable
+        setUpInputBox(widget, widget)
       when "button"
         setUpButton(updateUICallback)(widget, widget)
       when "chooser"
-        widget.currentValue = widget.choices[widget.currentChoice]
+        setUpChooser(widget, widget)
       when "monitor"
         setUpMonitor(widget, widget)
+  return
+
+# (InputBox, InputBox) => Unit
+setUpInputBox = (source, destination) ->
+  destination.boxedValue   = source.boxedValue
+  destination.currentValue = destination.boxedValue.value
+  destination.variable     = source.variable
+  destination.display      = destination.variable
+  return
+
+# (Switch, Switch) => Unit
+setUpSwitch = (source, destination) ->
+  destination.on           = source.on
+  destination.currentValue = destination.on
+  return
+
+# (Chooser, Chooser) => Unit
+setUpChooser = (source, destination) ->
+  destination.choices       = source.choices
+  destination.currentChoice = source.currentChoice
+  destination.currentValue  = destination.choices[destination.currentChoice]
+  return
 
 # (() => Unit) => (Button, Button) => Unit
 setUpButton = (updateUI) -> (source, destination) ->
@@ -467,17 +488,20 @@ setUpMonitor = (source, destination) ->
 
 # (Slider, Slider) => Unit
 setUpSlider = (source, destination) ->
-  value = source.currentValue
+  destination.default      = source.default
+  destination.compiledMin  = source.compiledMin
+  destination.compiledMax  = source.compiledMax
+  destination.compiledStep = source.compiledStep
   if source.compilation.success
-    destination.getMin  = reporterOf(source.compiledMin)
-    destination.getMax  = reporterOf(source.compiledMax)
-    destination.getStep = reporterOf(source.compiledStep)
+    destination.getMin  = reporterOf(destination.compiledMin)
+    destination.getMax  = reporterOf(destination.compiledMax)
+    destination.getStep = reporterOf(destination.compiledStep)
   else
-    destination.getMin  = () -> value
-    destination.getMax  = () -> value
+    destination.getMin  = () -> destination.currentValue
+    destination.getMax  = () -> destination.currentValue
     destination.getStep = () -> 0
-  destination.minValue     = value
-  destination.maxValue     = value + 1
+  destination.minValue     = destination.currentValue
+  destination.maxValue     = destination.currentValue + 1
   destination.stepValue    = 1
   return
 
