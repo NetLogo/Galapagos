@@ -82,27 +82,14 @@ class window.SessionLite
       world.clearAll()
       @widgetController.redraw()
       code = @widgetController.code()
-      codeCompile(code, [], [], @widgetController.widgets(), (res) =>
+      oldWidgets = @widgetController.widgets()
+      codeCompile(code, [], [], oldWidgets, (res) =>
         if res.model.success
-
-          # This can go away when `res.model.result` stops blowing away all of the globals
-          # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
-          widgetVals = {}
-
-          # FYI, this is also fundamentally broken by its reliance of widget indices.  --JAB (6/10/16)
-          for { currentValue, type }, i in @widgetController.widgets() when type in ["chooser", "inputBox", "slider", "switch"]
-            widgetVals[i] = currentValue
-
           globalEval(res.model.result)
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
-          @widgetController.freshenUpWidgets(globalEval(res.widgets))
-
-          for k, v of widgetVals
-            { variable } = @widgetController.widgets()[k]
-            world.observer.setGlobal(variable, v)
-
+          @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
         else
           @widgetController.ractive.set('lastCompileFailed', true)
           @alertCompileError(res.model.result)

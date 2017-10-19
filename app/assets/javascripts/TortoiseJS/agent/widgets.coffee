@@ -353,25 +353,34 @@ class window.WidgetController
   widgets: ->
     v for _, v of @ractive.get('widgetObj')
 
-  # Array[Widget] => Unit
-  freshenUpWidgets: (widgets) ->
+  # (Array[Widget], Array[Widget]) => Unit
+  freshenUpWidgets: (realWidgets, newWidgets) ->
 
-    widgetObj = @ractive.get('widgetObj')
+    for newWidget, index in newWidgets
 
-    # Note: This is fundamentally broken.  If I delete a widget with a lower index and then cause a
-    # recompile in one with a higher index, it will lead to an error or a totally messed up widget.
-    # This is because this code is bonkers.  Fixing this properly, however, would require some
-    # serious thinking or rearchitecting, which I don't want to get into right now.  I'll take care
-    # of that some other time, as this is getting closer to real deployment. --JAB (5/2/16)
-    for widget, index in widgets
-      storedWidget = widgetObj[index]
-      storedWidget.compilation = widget.compilation
-      f =
-        switch widget.type
-          when "button"  then setUpButton(=> @redraw(); @updateWidgets())
-          when "monitor" then setUpMonitor
-          when "slider"  then setUpSlider
-      f?(widget, storedWidget)
+      [matcher, setterUpper] =
+        switch newWidget.type
+          when "button"   then [  buttonEquals, setUpButton(=> @redraw(); @updateWidgets())]
+          when "chooser"  then [ chooserEquals, setUpChooser]
+          when "inputBox" then [inputBoxEquals, setUpInputBox]
+          when "monitor"  then [ monitorEquals, setUpMonitor]
+          when "output"   then [  outputEquals, (->)]
+          when "plot"     then [    plotEquals, (->)]
+          when "slider"   then [  sliderEquals, setUpSlider]
+          when "switch"   then [  switchEquals, setUpSwitch]
+          when "textBox"  then [ textBoxEquals, (->)]
+          when "view"     then [    viewEquals, (->)]
+          else                 throw new Error("Unknown widget type: #{newWidget.type}")
+
+      realWidget = realWidgets.find(matcher(newWidget))
+
+      if realWidget?
+        realWidget.compilation = newWidget.compilation
+        setterUpper(newWidget, realWidget)
+        # This can go away when `res.model.result` stops blowing away all of the globals
+        # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
+        if newWidget.type in ["chooser", "inputBox", "slider", "switch"]
+          world.observer.setGlobal(newWidget.variable, realWidget.currentValue)
 
     return
 
@@ -394,6 +403,43 @@ class window.WidgetController
   teardown: -> @ractive.teardown()
 
   code: -> @ractive.get('code')
+
+# [T <: Widget] @ Array[String] -> T -> T -> Boolean
+compareWidgetsOn = (props) -> (w1) -> (w2) ->
+  locationProps = ['bottom', 'left', 'right', 'top']
+  w1.type is w2.type and locationProps.concat(props).every((prop) -> eq(w1[prop])(w2[prop]))
+
+# Button -> Button -> Boolean
+buttonEquals = compareWidgetsOn(['buttonKind', 'disableUntilTicksStart', 'forever', 'source'])
+
+# Chooser -> Chooser -> Boolean
+chooserEquals = compareWidgetsOn(['choices', 'display', 'variable'])
+
+# InputBox -> InputBox -> Boolean
+inputBoxEquals = compareWidgetsOn(['boxedValue', 'variable'])
+
+# Monitor -> Monitor -> Boolean
+monitorEquals = compareWidgetsOn(['display', 'fontSize', 'precision', 'source'])
+
+# Output -> Output -> Boolean
+outputEquals = compareWidgetsOn(['fontSize'])
+
+# Plot -> Plot -> Boolean
+plotEquals = compareWidgetsOn(['autoPlotOn', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode'
+                             , 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin'])
+
+# Slider -> Slider -> Boolean
+sliderEquals = compareWidgetsOn(['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable'])
+
+# Switch -> Switch -> Boolean
+switchEquals = compareWidgetsOn(['display', 'on', 'variable'])
+
+# TextBox -> TextBox -> Boolean
+textBoxEquals = compareWidgetsOn(['color', 'display', 'fontSize', 'transparent'])
+
+# View -> View -> Boolean
+viewEquals = compareWidgetsOn(['dimensions', 'fontSize', 'frameRate'
+                             , 'showTickCounter', 'tickCounterLabel', 'updateMode'])
 
 reporterOf = (str) -> new Function("return #{str}")
 
