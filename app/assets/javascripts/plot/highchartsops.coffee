@@ -75,6 +75,14 @@ class window.HighchartsOps extends PlotOps
           series: {
             turboThreshold: 1
           },
+          column: {
+            pointPadding: 0,
+            pointWidth:   8,
+            borderWidth:  1,
+            groupPadding: 0,
+            shadow:       false,
+            grouping:     false
+          }
         }
       })
       @_penNameToSeriesNum = {}
