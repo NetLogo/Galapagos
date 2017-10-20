@@ -7,8 +7,6 @@ class window.AgentStreamController
     @spotlightDrawer = new SpotlightDrawer(@view)
     @container.appendChild(@view.visibleCanvas)
 
-    @beepSound   = new Audio('/assets/audio/beep.mp3')
-
     @mouseDown   = false
     @mouseInside = false
     @mouseX      = 0
@@ -19,8 +17,6 @@ class window.AgentStreamController
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
     @repaint()
-
-  playBeep: => @beepSound.play()
 
   mouseXcor: => @view.xPixToPcor(@mouseX)
   mouseYcor: => @view.yPixToPcor(@mouseY)

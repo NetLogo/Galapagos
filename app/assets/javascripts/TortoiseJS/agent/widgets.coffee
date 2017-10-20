@@ -137,10 +137,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     peekY: viewController.mouseYcor
   }
 
-  audio = {
-    peekBeep: viewController.playBeep
-  }
-
   write = (str) -> model.consoleOutput += str
 
   output = {
@@ -241,7 +237,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   )
 
   controller = new WidgetController(ractive, model, widgetObj, viewController
-                                  , plotOps, audio, mouse, write, output, dialog, worldConfig, exporting)
+                                  , plotOps, mouse, write, output, dialog, worldConfig, exporting)
 
   ractive.on('*.unregisterWidget', (_, id) -> controller.removeWidgetById(id))
 
@@ -278,7 +274,7 @@ window.handlingErrors = (f) -> ->
 
 class window.WidgetController
   constructor: (@ractive, @model, @widgetObj, @viewController, @plotOps
-              , @audio, @mouse, @write, @output, @dialog, @worldConfig, @exporting) ->
+              , @mouse, @write, @output, @dialog, @worldConfig, @exporting) ->
 
   # () -> Unit
   runForevers: ->

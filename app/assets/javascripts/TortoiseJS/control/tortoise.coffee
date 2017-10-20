@@ -48,7 +48,6 @@ newSession = (container, modelResult, readOnly = false, filename = "export", las
   widgetController = bindWidgets(container, widgets, modelResult.code,
     toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
   window.modelConfig ?= {}
-  modelConfig.audio     = widgetController.audio
   modelConfig.plotOps   = widgetController.plotOps
   modelConfig.exporting = widgetController.exporting
   modelConfig.mouse     = widgetController.mouse
