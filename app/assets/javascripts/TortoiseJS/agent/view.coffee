@@ -511,8 +511,6 @@ class PatchDrawer
         imageData.data[j+2] = b
         imageData.data[j+3] = 255
     @scratchCtx.putImageData(imageData, 0, 0)
-    # translate so scale flips the image at the right point
-    trans = minY + maxY
     @view.ctx.drawImage(@scratchCanvas, 0, 0, @view.canvas.width, @view.canvas.height)
 
   labelPatches: (patches) ->
