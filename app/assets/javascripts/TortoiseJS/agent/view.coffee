@@ -106,6 +106,7 @@ class View
     @visibleCanvas.height = 500
     @visibleCanvas.style.width = "100%"
     @visibleCtx = @visibleCanvas.getContext('2d')
+    @_zoomLevel = null
 
   transformToWorld: (world) ->
     @transformCanvasToWorld(world, @canvas, @ctx)
@@ -220,6 +221,15 @@ class View
     persp = model.observer.perspective
     if persp == FOLLOW or persp == RIDE then @watch(model) else null
 
+  # (Number) => Unit
+  setZoom: (zoomLevel) ->
+    @_zoomLevel =
+      if Number.isInteger(zoomLevel)
+        Math.min(Math.max(0, zoomLevel), Math.floor(@worldWidth / 2), Math.floor(@worldHeight / 2))
+      else
+        null
+    return
+
   repaint: (model) ->
     target = @follow(model)
     @visibleCanvas.width = @canvas.width
@@ -242,6 +252,34 @@ class View
       @centerX = @worldCenterX
       @centerY = @worldCenterY
       @visibleCtx.drawImage(@canvas, 0, 0)
+    @_handleZoom()
+
+  # A very naïve and unaesthetic implementation!
+  # I'm just throwing this together for a janky `hubnet-send-follow`.
+  # Do better! --JAB (10/21/17)
+  #
+  # () => Unit
+  _handleZoom: ->
+    if @_zoomLevel isnt null
+
+      length = ((2 * @_zoomLevel) + 1) * (2 * @patchsize)
+      left   = (@visibleCanvas.width  / 2) - (length / 2)
+      top    = (@visibleCanvas.height / 2) - (length / 2)
+
+      tempCanvas        = document.createElement('canvas')
+      tempCanvas.width  = @visibleCanvas.width
+      tempCanvas.height = @visibleCanvas.height
+      tempCanvas.getContext('2d').drawImage(@visibleCanvas, 0, 0)
+
+      @visibleCtx.save()
+      @visibleCtx.setTransform(1, 0, 0, 1, 0, 0)
+      @visibleCtx.clearRect(0, 0, @visibleCanvas.width, @visibleCanvas.height)
+      @visibleCtx.drawImage(tempCanvas
+                          , left, top, length, length
+                          , 0, 0, @visibleCanvas.width, @visibleCanvas.height)
+      @visibleCtx.restore()
+
+    return
 
 class Drawer
   constructor: (@view) ->
