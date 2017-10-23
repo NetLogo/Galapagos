@@ -554,7 +554,7 @@ template =
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
-        {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" dims="{{>dimensions}}" vdims="{{>verticalDimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
         {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
         {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
         {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
@@ -603,6 +603,15 @@ partials = {
     position: absolute;
     left: {{ left }}px; top: {{ top }}px;
     width: {{ right - left }}px; height: {{ bottom - top }}px;
+    """
+
+  verticalDimensions:
+    """
+    position: absolute;
+    left: {{ left }}px; top: {{ top }}px;
+    width: {{ bottom - top }}px; height: {{ right - left }}px;
+    transform: translateY({{ bottom - top }}px) rotate(270deg);
+    transform-origin: top left;
     """
 
   widgetID:

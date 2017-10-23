@@ -93,8 +93,8 @@ SliderEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical? (not yet supported)"
-                    name="vertical" disabled="true" />
+      <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?"
+                    name="vertical" />
       """
 
   }
@@ -127,7 +127,7 @@ window.RactiveSlider = RactiveWidget.extend({
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)"
              class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
-             style="{{dims}}">
+             style="{{widget.direction == "vertical" ? vdims : dims}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"
                step="{{widget.stepValue}}" value="{{widget.currentValue}}" />
