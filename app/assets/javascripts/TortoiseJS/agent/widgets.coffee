@@ -375,8 +375,14 @@ class window.WidgetController
       realWidget = realWidgets.find(matcher(newWidget))
 
       if realWidget?
+
         realWidget.compilation = newWidget.compilation
+
         setterUpper(newWidget, realWidget)
+
+        if widget.variable?
+          widget.variable = widget.variable.toLowerCase()
+
         # This can go away when `res.model.result` stops blowing away all of the globals
         # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
         if newWidget.type in ["chooser", "inputBox", "slider", "switch"]
