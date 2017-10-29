@@ -1,6 +1,7 @@
 window.RactiveConsoleWidget = Ractive.extend({
   data: -> {
     input: '',
+    isEditing: undefined # Boolean (for widget editing)
     agentTypes: ['observer', 'turtles', 'patches', 'links'],
     agentTypeIndex: 0,
     history: [], # Array of {agentType, input} objects
@@ -85,6 +86,16 @@ window.RactiveConsoleWidget = Ractive.extend({
       if newValue != commandCenterEditor.getValue()
         commandCenterEditor.setValue(newValue)
         commandCenterEditor.execCommand('goLineEnd')
+    )
+
+    @observe('isEditing', (isEditing) ->
+      commandCenterEditor.setOption('readOnly', if isEditing then 'nocursor' else false)
+      classes = this.find('.netlogo-command-center-editor').querySelector('.CodeMirror-scroll').classList
+      if isEditing
+        classes.add('cm-disabled')
+      else
+        classes.remove('cm-disabled')
+      return
     )
 
   # String -> Unit

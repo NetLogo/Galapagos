@@ -8,6 +8,7 @@ RactiveCodeContainerBase = Ractive.extend({
   , extraConfig:    undefined # Object
   , id:             undefined # String
   , initialCode:    undefined # String
+  , isDisabled:     false
   , injectedConfig: undefined # Object
   , style:          undefined # String
   }
@@ -31,6 +32,15 @@ RactiveCodeContainerBase = Ractive.extend({
     config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
     @_editor   = new CodeMirror(@find("##{@get('id')}"), config)
     @_editor.on('change', => @set('code', @_editor.getValue()))
+    @observe('isDisabled', (isDisabled) ->
+      @_editor.setOption('readOnly', if isDisabled then 'nocursor' else false)
+      classes = this.find('.netlogo-code').querySelector('.CodeMirror-scroll').classList
+      if isDisabled
+        classes.add('cm-disabled')
+      else
+        classes.remove('cm-disabled')
+      return
+    )
     return
 
   # (String) => Unit

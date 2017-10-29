@@ -144,16 +144,16 @@ window.RactiveInput = RactiveWidget.extend({
              style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
-          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" />
+          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" {{# isEditing }}disabled{{/}} />
         {{/}}
         {{# widget.boxedValue.type === 'String'}}
-          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress"></textarea>
+          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress" {{# isEditing }}disabled{{/}} ></textarea>
         {{/}}
         {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
-          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" />
+          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
-          <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" />
+          <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" {{# isEditing }}disabled{{/}} />
         {{/}}
       </label>
       """

@@ -104,7 +104,7 @@ window.RactiveButton = RactiveWidget.extend({
 
   computed: {
     isEnabled: {
-      get: -> @get('ticksStarted') or (not @get('widget').disableUntilTicksStart)
+      get: -> (@get('ticksStarted') or (not @get('widget').disableUntilTicksStart)) and (not @get('isEditing'))
     }
   }
 

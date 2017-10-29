@@ -12,13 +12,21 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
-    @widgetController.ractive.on('*.recompile',        (_, event) => @recompile())
-    @widgetController.ractive.on('exportnlogo',        (_, event) => @exportnlogo(event))
-    @widgetController.ractive.on('exportHtml',         (_, event) => @exportHtml(event))
-    @widgetController.ractive.on('openNewFile',        (_, event) => @openNewFile())
-    @widgetController.ractive.on('console.run',        (_, code)  => @run(code))
+    @widgetController.ractive.on('*.recompile',          (_, event)     => @recompile())
+    @widgetController.ractive.on('exportnlogo',          (_, event)     => @exportnlogo(event))
+    @widgetController.ractive.on('exportHtml',           (_, event)     => @exportHtml(event))
+    @widgetController.ractive.on('openNewFile',          (_, event)     => @openNewFile())
+    @widgetController.ractive.on('console.run',          (_, code)      => @run(code))
+    @widgetController.ractive.on('editingModeChangedTo', (_, isEditing) => @setEventLoop(not isEditing))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
     @drawEveryFrame = false
+
+  # (Boolean) => Unit
+  setEventLoop: (isOn) ->
+    cancelAnimationFrame(@_eventLoopTimeout)
+    if isOn
+      requestAnimationFrame(@eventLoop)
+    return
 
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')

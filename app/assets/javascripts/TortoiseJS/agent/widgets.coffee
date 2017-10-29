@@ -255,6 +255,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
                                   , write, output, dialog, worldConfig, exporting)
 
+  ractive.on('*.updateWidgets', -> controller.updateWidgets())
+
   ractive.on('*.unregisterWidget', (_, id) -> controller.removeWidgetById(id))
 
   setupInterfaceEditor(ractive)
@@ -644,16 +646,16 @@ template =
          class="netlogo-widget-container"
          on-contextmenu="@this.fire('showContextMenu', @event)">
       {{#widgetObj:key}}
-        {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
-        {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
-        {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" dims="{{>dimensions}}" vdims="{{>verticalDimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
-        {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
-        {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
-        {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" dims="{{>dimensions}}" widget={{this}} text="{{outputWidgetOutput}}" /> {{/}}
+        {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" dims="position: absolute; left: {{left}}; top: {{top}};" widget={{this}} ticks="{{ticks}}" /> {{/}}
+        {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
+        {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" vdims="{{>verticalDimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+        {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} /> {{/}}
+        {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" dims="{{>dimensions}}" widget={{this}} text="{{outputWidgetOutput}}" /> {{/}}
       {{/}}
     </div>
 
@@ -664,7 +666,7 @@ template =
         <span class="netlogo-tab-text">Command Center</span>
       </label>
       {{#showConsole}}
-        <console output="{{consoleOutput}}"/>
+        <console output="{{consoleOutput}}" isEditing="{{isEditing}}"/>
       {{/}}
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">

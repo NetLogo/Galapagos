@@ -130,7 +130,8 @@ window.RactiveSlider = RactiveWidget.extend({
              style="{{widget.direction == "vertical" ? vdims : dims}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"
-               step="{{widget.stepValue}}" value="{{widget.currentValue}}" />
+               step="{{widget.stepValue}}" value="{{widget.currentValue}}"
+               {{# isEditing }}disabled{{/}} />
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="showErrors">{{widget.display}}</span>
           <span class="netlogo-slider-value">

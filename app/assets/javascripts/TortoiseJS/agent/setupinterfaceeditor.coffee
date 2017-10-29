@@ -57,6 +57,7 @@ window.setupInterfaceEditor =
 
         isEditing = not @get('isEditing')
         @set('isEditing', isEditing)
+        @fire('editingModeChangedTo', isEditing)
 
         applyClassChanges =
           if isEditing

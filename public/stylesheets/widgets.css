@@ -491,3 +491,7 @@
 .CodeMirror {
   height: auto;
 }
+
+.CodeMirror-scroll.cm-disabled {
+  background-color: #ebebe4;
+}

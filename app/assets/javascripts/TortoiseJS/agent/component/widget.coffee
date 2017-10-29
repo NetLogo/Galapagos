@@ -1,9 +1,10 @@
 window.RactiveWidget = RactiveContextable.extend({
 
   data: -> {
-    dims:   undefined # String
-  , id:     undefined # String
-  , widget: undefined # Widget
+    dims:      undefined # String
+  , id:        undefined # String
+  , isEditing: undefined # Boolean
+  , widget:    undefined # Widget
   }
 
   components: {
@@ -51,6 +52,8 @@ window.RactiveWidget = RactiveContextable.extend({
 
         for event in uniqueEvents
           event.run(this, widget)
+
+        @fire('updateWidgets')
 
       catch ex
         console.error(ex)
