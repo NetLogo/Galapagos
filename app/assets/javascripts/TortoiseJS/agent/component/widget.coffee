@@ -1,14 +1,29 @@
 window.RactiveWidget = RactiveContextable.extend({
 
   data: -> {
-    dims:      undefined # String
+
+    left:      undefined # Number
+  , right:     undefined # Number
+  , top:       undefined # Number
+  , bottom:    undefined # Number
+
   , id:        undefined # String
   , isEditing: undefined # Boolean
   , widget:    undefined # Widget
+
   }
 
   components: {
     editForm: undefined # Element
+  }
+
+  computed: {
+    dims: ->
+      """
+      position: absolute;
+      left: #{@get('left')}px; top: #{@get('top')}px;
+      width: #{@get('right') - @get('left')}px; height: #{@get('bottom') - @get('top')}px;
+      """
   }
 
   on: {

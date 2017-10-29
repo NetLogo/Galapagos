@@ -127,7 +127,7 @@ window.RactiveSlider = RactiveWidget.extend({
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)"
              class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
-             style="{{widget.direction == "vertical" ? vdims : dims}}">
+             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"
                step="{{widget.stepValue}}" value="{{widget.currentValue}}"
@@ -143,6 +143,15 @@ window.RactiveSlider = RactiveWidget.extend({
           </span>
         </div>
       </label>
+      """
+
+    verticalDims:
+      """
+      position: absolute;
+      left: {{ left }}px; top: {{ top }}px;
+      width: {{ bottom - top }}px; height: {{ right - left }}px;
+      transform: translateY({{ bottom - top }}px) rotate(270deg);
+      transform-origin: top left;
       """
 
   }
