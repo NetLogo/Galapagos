@@ -212,7 +212,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.on('checkActionKeys', (_, e) ->
     if @get('hasFocus')
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
-      for _, w of @get('widgetObj') when w.type is 'button' and w.actionKey is char
+      for _, w of @get('widgetObj') when w.type is 'button' and
+                                         w.actionKey is char and
+                                         ractive.findAllComponents('buttonWidget').
+                                           find((b) -> b.get('widget') is w).get('isEnabled')
         w.run()
   )
 
