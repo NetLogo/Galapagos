@@ -59,6 +59,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
     output:
       """
       <div id="{{id}}" on-contextmenu="@this.fire('showContextMenu', @event)"
+           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-output netlogo-output-widget" style="{{dims}}">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
       </div>

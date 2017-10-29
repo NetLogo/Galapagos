@@ -96,6 +96,7 @@ window.RactiveMonitor = RactiveWidget.extend({
       """
       <div id="{{id}}"
            on-contextmenu="@this.fire('showContextMenu', @event)"
+           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-monitor netlogo-output"
            style="{{dims}} font-size: {{widget.fontSize}}px;">
         <label class="netlogo-label {{errorClass}}" on-click=\"showErrors\">{{widget.display || widget.source}}</label>

@@ -1,16 +1,9 @@
-window.RactiveWidget = RactiveContextable.extend({
+window.RactiveWidget = RactiveDraggableAndContextable.extend({
 
   data: -> {
-
-    left:      undefined # Number
-  , right:     undefined # Number
-  , top:       undefined # Number
-  , bottom:    undefined # Number
-
-  , id:        undefined # String
+    id:        undefined # String
   , isEditing: undefined # Boolean
   , widget:    undefined # Widget
-
   }
 
   components: {

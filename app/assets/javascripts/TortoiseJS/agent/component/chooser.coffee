@@ -59,10 +59,12 @@ window.RactiveChooser = RactiveWidget.extend({
     editForm: ChooserEditForm
   }
 
+  # coffeelint: disable=max_line_length
   template:
     """
     <label id="{{id}}"
            on-contextmenu="@this.fire('showContextMenu', @event)"
+           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-chooser netlogo-input"
            style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
@@ -90,5 +92,6 @@ window.RactiveChooser = RactiveWidget.extend({
       """
 
   }
+  # coffeelint: enable=max_line_length
 
 })

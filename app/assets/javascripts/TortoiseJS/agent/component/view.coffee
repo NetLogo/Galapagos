@@ -215,6 +215,7 @@ window.RactiveView = RactiveWidget.extend({
     editForm: ViewEditForm
   }
 
+  # coffeelint: disable=max_line_length
   template:
     """
     {{>view}}
@@ -233,11 +234,13 @@ window.RactiveView = RactiveWidget.extend({
       """
       <div id="{{id}}"
            on-contextmenu="@this.fire('showContextMenu', @event)"
+           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-view-container"
            style="{{dims}}">
       </div>
       """
 
   }
+  # coffeelint: enable=max_line_length
 
 })

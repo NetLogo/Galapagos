@@ -140,6 +140,7 @@ window.RactiveButton = RactiveWidget.extend({
       """
       <button id="{{id}}"
               on-contextmenu="@this.fire('showContextMenu', @event)"
+              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
               type="button"
               style="{{dims}}"
@@ -154,6 +155,7 @@ window.RactiveButton = RactiveWidget.extend({
       """
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)"
+             {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}"
              style="{{dims}}">
         {{>buttonContext}}

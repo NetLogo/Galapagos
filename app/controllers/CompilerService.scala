@@ -331,6 +331,7 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/agent/component/editform/fontsize.js",
         "javascripts/TortoiseJS/agent/component/editform/editform.js",
         "javascripts/TortoiseJS/agent/component/contextmenu.js",
+        "javascripts/TortoiseJS/agent/component/draggable.js",
         "javascripts/TortoiseJS/agent/component/tickcounter.js",
         "javascripts/TortoiseJS/agent/component/printarea.js",
         "javascripts/TortoiseJS/agent/component/widget.js",
