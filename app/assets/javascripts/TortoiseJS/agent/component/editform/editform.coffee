@@ -73,11 +73,18 @@ window.EditForm = Ractive.extend({
     )
 
     @on('startEditDrag'
-    , ({ original: { clientX, clientY, view } }) ->
+    , ({ original: { clientX, clientY, dataTransfer, view } }) ->
+
+        invisiGIF = document.createElement('img')
+        invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+        dataTransfer.setDragImage(invisiGIF, 0, 0)
+
         @view   = view
         @startX = @get('xLoc') - clientX
         @startY = @get('yLoc') - clientY
+
         return
+
     )
 
     @on('stopEditDrag'
@@ -128,7 +135,7 @@ window.EditForm = Ractive.extend({
          class="widget-edit-popup widget-edit-text"
          style="top: {{yLoc}}px; left: {{xLoc}}px;"
          on-contextmenu="blockContextMenu" on-keydown="handleKey"
-         on-drag="dragEditDialog" on-dragstart="startEditDrag"
+         draggable="true" on-drag="dragEditDialog" on-dragstart="startEditDrag"
          on-dragend="stopEditDrag"
          tabindex="0">
       <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancelEdit">X</div>
