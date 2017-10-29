@@ -160,18 +160,6 @@ class window.SessionLite
 
     return
 
-  makeForm: (method, path, data) ->
-    form = document.createElement('form')
-    form.setAttribute('method', method)
-    form.setAttribute('action', path)
-    for name, value of data
-      field = document.createElement('input')
-      field.setAttribute('type', 'hidden')
-      field.setAttribute('name', name)
-      field.setAttribute('value', value)
-      form.appendChild(field)
-    form
-
   # (Object[Any], ([{ config: Object[Any], results: Object[Array[Any]] }]) => Unit) => Unit
   asyncRunBabyBehaviorSpace: (config, reaction) ->
     Tortoise.startLoading(=>
