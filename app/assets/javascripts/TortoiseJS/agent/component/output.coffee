@@ -43,6 +43,10 @@ window.RactiveOutputArea = RactiveWidget.extend({
     @set('text', @get('text') + str)
     return
 
+  setText: (str) ->
+    @set('text', str)
+    return
+
   template:
     """
     {{>output}}
