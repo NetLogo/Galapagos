@@ -137,8 +137,13 @@ class window.HighchartsOps extends PlotOps
     #see https://github.com/highcharts/export-csv and
     #https://github.com/NetLogo/Galapagos/pull/364#discussion_r108308828 for more info
     #--Camden Clark (3/27/17)
-    @_chart.options.exporting.buttons.contextButton.menuItems.pop()
-    @_chart.options.exporting.buttons.contextButton.menuItems.pop()
+    #I heard you like hacks, so I put hacks in your hacks.
+    #Highcharts uses the same menuItems for all charts, so we have to apply the hack once. - JMB November 2017
+    if(!@_chart.options.exporting.buttons.contextButton.menuItems.popped?)
+      @_chart.options.exporting.buttons.contextButton.menuItems.pop()
+      @_chart.options.exporting.buttons.contextButton.menuItems.pop()
+      @_chart.options.exporting.buttons.contextButton.menuItems.popped = true
+
   # (PenBundle.DisplayMode) => String
   modeToString: (mode) ->
     { Bar, Line, Point } = PenBundle.DisplayMode
