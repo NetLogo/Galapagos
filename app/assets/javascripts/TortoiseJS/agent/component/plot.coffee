@@ -9,7 +9,7 @@ window.RactivePlot = RactiveWidget.extend({
     <div id="{{id}}"
          on-contextmenu="@this.fire('showContextMenu', @event)"
          class="netlogo-widget netlogo-plot"
-         style="{{dims}}"></div>
+         style="{{dims}}z-index: {{3200 - this.widget.top}};"></div>
     """
 
 })

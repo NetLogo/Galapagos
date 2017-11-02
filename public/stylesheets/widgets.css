@@ -454,6 +454,11 @@
 .netlogo-plot {
     box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
     border: 1px solid black;
+    overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+}
+
+.highcharts-container {
+  overflow: visible !important; /* Let our context-menus be free - JMB November 2017 */
 }
 
 .netlogo-forever-button > input {
