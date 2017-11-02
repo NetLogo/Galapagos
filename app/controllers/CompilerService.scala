@@ -309,7 +309,7 @@ private[controllers] trait RequestResultGenerator {
         "lib/mousetrap/mousetrap.js",
         "lib/highcharts/highcharts.js",
         "lib/highcharts/modules/exporting.js",
-        "lib/github-com-highcharts-export-csv/export-csv.js",
+        "lib/highcharts/modules/export-data.js",
         "lib/ractive/ractive.js",
         "lib/codemirror/lib/codemirror.js",
         "lib/codemirror/addon/dialog/dialog.js",
