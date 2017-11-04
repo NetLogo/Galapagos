@@ -84,24 +84,24 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     partials:   partials,
     components: {
 
-      console:       RactiveConsoleWidget,
-      contextMenu:   RactiveContextMenu,
-      editableTitle: RactiveModelTitle,
-      editor:        RactiveEditorWidget,
-      infotab:       RactiveInfoTabWidget,
+      console:       RactiveConsoleWidget
+    , contextMenu:   RactiveContextMenu
+    , editableTitle: RactiveModelTitle
+    , editor:        RactiveEditorWidget
+    , infotab:       RactiveInfoTabWidget
 
-      tickCounter:   RactiveTickCounter,
+    , tickCounter:   RactiveTickCounter
 
-      labelWidget:   RactiveLabel,
-      switchWidget:  RactiveSwitch,
-      buttonWidget:  RactiveButton,
-      sliderWidget:  RactiveSlider,
-      chooserWidget: RactiveChooser,
-      monitorWidget: RactiveMonitor,
-      inputWidget:   RactiveInput,
-      outputWidget:  RactiveOutputArea,
-      plotWidget:    RactivePlot,
-      viewWidget:    RactiveView
+    , labelWidget:   RactiveLabel
+    , switchWidget:  RactiveSwitch
+    , buttonWidget:  RactiveButton
+    , sliderWidget:  RactiveSlider
+    , chooserWidget: RactiveChooser
+    , monitorWidget: RactiveMonitor
+    , inputWidget:   RactiveInput
+    , outputWidget:  RactiveOutputArea
+    , plotWidget:    RactivePlot
+    , viewWidget:    RactiveView
 
     },
     data: -> model
