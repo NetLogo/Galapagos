@@ -631,7 +631,7 @@ template =
       </div>
       <editableTitle title="{{modelTitle}}" isEditing="{{isEditing}}"/>
       {{# !readOnly }}
-        <div class="flex-column" style="align-items: flex-end;">
+        <div class="flex-column" style="align-items: flex-end; user-select: none;">
           <div class="netlogo-export-wrapper">
             <span style="margin-right: 4px;">File:</span>
             <button class="netlogo-ugly-button" on-click="openNewFile">New</button>
