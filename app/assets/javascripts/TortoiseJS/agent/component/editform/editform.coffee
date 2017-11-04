@@ -22,109 +22,89 @@ window.EditForm = Ractive.extend({
   # prevent the perpetuation of values after a change-and-cancel. --JAB (4/1/16)
   lazy: true
 
-  oninit: ->
+  on: {
 
-    @on('submit'
-    , ({ node }) ->
-        newProps = @validate(node)
-        if newProps?
-          @fire('updateWidgetValue', newProps)
-        @fire('activateCloakingDevice')
-        false
-    )
+    submit: ({ node }) ->
+      newProps = @validate(node)
+      if newProps?
+        @fire('updateWidgetValue', newProps)
+      @fire('activateCloakingDevice')
+      false
 
-    @on('showYourself'
-    , ->
+    showYourself: ->
 
-        findParentByClass =
-          (clss) -> ({ parentElement: parent }) ->
-            if parent?
-              if parent.classList.contains(clss)
-                parent
-              else
-                findParentByClass(clss)(parent)
+      findParentByClass =
+        (clss) -> ({ parentElement: parent }) ->
+          if parent?
+            if parent.classList.contains(clss)
+              parent
             else
-              undefined
+              findParentByClass(clss)(parent)
+          else
+            undefined
 
-        # Must unhide before measuring --JAB (3/21/16)
-        @set('visible', true)
-        elem = @getElem()
-        elem.focus()
+      # Must unhide before measuring --JAB (3/21/16)
+      @set('visible', true)
+      elem = @getElem()
+      elem.focus()
 
-        container     = findParentByClass('netlogo-widget-container')(elem)
-        containerMidX = container.offsetWidth  / 2
-        containerMidY = container.offsetHeight / 2
+      container     = findParentByClass('netlogo-widget-container')(elem)
+      containerMidX = container.offsetWidth  / 2
+      containerMidY = container.offsetHeight / 2
 
-        dialogHalfWidth  = elem.offsetWidth  / 2
-        dialogHalfHeight = elem.offsetHeight / 2
+      dialogHalfWidth  = elem.offsetWidth  / 2
+      dialogHalfHeight = elem.offsetHeight / 2
 
-        @set('xLoc', containerMidX - dialogHalfWidth)
-        @set('yLoc', containerMidY - dialogHalfHeight)
+      @set('xLoc', containerMidX - dialogHalfWidth)
+      @set('yLoc', containerMidY - dialogHalfHeight)
 
-        @resetPartial('widgetFields', @partials.widgetFields)
+      @resetPartial('widgetFields', @partials.widgetFields)
 
+      false
+
+    activateCloakingDevice: ->
+      @set('visible', false)
+      false
+
+    startEditDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->
+
+      invisiGIF = document.createElement('img')
+      invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+      dataTransfer.setDragImage(invisiGIF, 0, 0)
+
+      @view   = view
+      @startX = @get('xLoc') - clientX
+      @startY = @get('yLoc') - clientY
+
+      return
+
+    stopEditDrag: ->
+      @view = undefined
+      return
+
+    dragEditDialog: ({ original: { clientX, clientY, view } }) ->
+      # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
+      # We only take non-negative values here, to avoid the dialog disappearing --JAB (3/22/16)
+      if @view is view and clientX > 0 and clientY > 0
+        @set('xLoc', @startX + clientX)
+        @set('yLoc', @startY + clientY)
+      false
+
+    cancelEdit: ->
+      @fire('activateCloakingDevice')
+      return
+
+    handleKey: ({ original: { keyCode } }) ->
+      if keyCode is 27
+        @fire('cancelEdit')
         false
+      return
 
-    )
+    blockContextMenu: ({ original }) ->
+      original.preventDefault()
+      false
 
-    @on('activateCloakingDevice'
-    , ->
-        @set('visible', false)
-        false
-    )
-
-    @on('startEditDrag'
-    , ({ original: { clientX, clientY, dataTransfer, view } }) ->
-
-        invisiGIF = document.createElement('img')
-        invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-        dataTransfer.setDragImage(invisiGIF, 0, 0)
-
-        @view   = view
-        @startX = @get('xLoc') - clientX
-        @startY = @get('yLoc') - clientY
-
-        return
-
-    )
-
-    @on('stopEditDrag'
-    , ->
-        @view = undefined
-        return
-    )
-
-    @on('dragEditDialog'
-    , ({ original: { clientX, clientY, view } }) ->
-        # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
-        # We only take non-negative values here, to avoid the dialog disappearing --JAB (3/22/16)
-        if @view is view and clientX > 0 and clientY > 0
-          @set('xLoc', @startX + clientX)
-          @set('yLoc', @startY + clientY)
-        false
-    )
-
-    @on('cancelEdit'
-    , ->
-        @fire('activateCloakingDevice')
-        return
-    )
-
-    @on('handleKey'
-    , ({ original: { keyCode } }) ->
-        if keyCode is 27
-          @fire('cancelEdit')
-          false
-        return
-    )
-
-    @on('blockContextMenu'
-    , ({ original }) ->
-        original.preventDefault()
-        false
-    )
-
-    return
+  }
 
   getElem: ->
     @find("##{@get('id')}")
