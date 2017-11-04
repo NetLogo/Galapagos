@@ -75,7 +75,7 @@ window.RactiveMonitor = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-    errorClass:         undefined # String
+  , errorClass:         undefined # String
   }
 
   components: {

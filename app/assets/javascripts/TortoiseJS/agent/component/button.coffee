@@ -98,8 +98,8 @@ window.RactiveButton = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , errorClass:   undefined # String
-  , ticksStarted: undefined # Boolean
+  , errorClass:         undefined # String
+  , ticksStarted:       undefined # Boolean
   }
 
   computed: {

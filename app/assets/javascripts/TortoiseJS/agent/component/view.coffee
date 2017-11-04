@@ -208,7 +208,7 @@ window.RactiveView = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit]
-    ticks:              undefined # String
+  , ticks:              undefined # String
   }
 
   components: {

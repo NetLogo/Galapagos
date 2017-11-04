@@ -105,7 +105,7 @@ window.RactiveSlider = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
-  , errorClass: undefined # String
+  , errorClass:         undefined # String
   }
 
   components: {
