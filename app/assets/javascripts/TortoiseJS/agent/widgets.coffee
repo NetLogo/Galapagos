@@ -337,8 +337,11 @@ class window.WidgetController
           widget.minValue  = minValue - 0.000001
           widget.minValue  = minValue
       if widget['type'] == 'view'
-        widget.right = widget.left + @viewController.container.scrollWidth
-        widget.bottom = widget.top + @viewController.container.scrollHeight
+        { maxPxcor, maxPycor, minPxcor, minPycor, patchSize } = widget.dimensions
+        desiredWidth  = Math.round(patchSize * (maxPxcor - minPxcor + 1))
+        desiredHeight = Math.round(patchSize * (maxPycor - minPycor + 1))
+        widget.right  = widget.left + desiredWidth
+        widget.bottom = widget.top  + desiredHeight
 
     if world.ticker.ticksAreStarted()
       @model.ticks = Math.floor(world.ticker.tickCount())
