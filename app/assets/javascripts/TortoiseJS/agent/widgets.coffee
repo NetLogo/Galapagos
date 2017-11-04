@@ -243,7 +243,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.on('*.resize-view'
   , ->
       { minpxcor, maxpxcor, minpycor, maxpycor, patchSize } = viewController.model.world
-      world.patchSize = patchSize
+      world.setPatchSize(patchSize)
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
