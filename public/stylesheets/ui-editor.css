@@ -42,7 +42,12 @@
   user-select:   none;
 }
 
-.context-menu-item:hover {
+.context-menu-item.disabled {
+  color:  #999;
+  cursor: default;
+}
+
+.context-menu-item:hover:not(.disabled) {
   background-color: #0066aa;
   color:            white;
 }

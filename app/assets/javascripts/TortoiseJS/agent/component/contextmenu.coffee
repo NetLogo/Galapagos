@@ -36,6 +36,9 @@ window.RactiveContextMenu = Ractive.extend({
 
   on: {
 
+    ignoreClick: ->
+      false
+
     coverThineself: ->
       @set('visible', false)
       return
@@ -65,7 +68,7 @@ window.RactiveContextMenu = Ractive.extend({
               {{# ..isEnabled }}
                 <li class="context-menu-item" on-click="..action()">{{..text}}</li>
               {{ else }}
-                <li class="context-menu-item disabled">{{..text}}</li>
+                <li class="context-menu-item disabled" on-click="ignoreClick">{{..text}}</li>
               {{/}}
             {{/}}
           </ul>
