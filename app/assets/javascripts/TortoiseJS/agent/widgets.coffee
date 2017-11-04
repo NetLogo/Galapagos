@@ -234,11 +234,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     false
   )
 
-  ractive.on('*.redraw-view'
-  , ->
-      viewController.repaint()
-  )
-
   ractive.on('*.update-topology'
   , ->
       { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.model.world
@@ -254,6 +249,12 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
                                   , write, output, dialog, worldConfig, exporting)
+
+  ractive.on('*.redraw-view'
+  , ->
+      controller.redraw()
+      viewController.repaint()
+  )
 
   ractive.on('*.updateWidgets', -> controller.updateWidgets())
 
