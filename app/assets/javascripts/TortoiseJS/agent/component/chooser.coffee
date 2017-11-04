@@ -53,6 +53,7 @@ window.RactiveChooser = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
+  , resizeDirs:         ['left', 'right']
   }
 
   components: {
@@ -63,7 +64,7 @@ window.RactiveChooser = RactiveWidget.extend({
   template:
     """
     <label id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)"
+           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-chooser netlogo-input"
            style="{{dims}}">

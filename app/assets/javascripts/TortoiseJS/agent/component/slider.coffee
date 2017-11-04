@@ -108,6 +108,13 @@ window.RactiveSlider = RactiveWidget.extend({
   , errorClass:         undefined # String
   }
 
+  computed: {
+    resizeDirs: {
+      get: -> if @get('widget.direction') isnt 'vertical' then ['left', 'right'] else ['top', 'bottom']
+      set: (->)
+    }
+  }
+
   components: {
     editForm: SliderEditForm
   }
@@ -125,7 +132,7 @@ window.RactiveSlider = RactiveWidget.extend({
     slider:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)"
+             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
              class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">

@@ -88,6 +88,28 @@ window.setupInterfaceEditor =
         else
           true
 
+    justSelectIt = (event) -> ractive.findComponent('resizer').setTarget(event.component)
+
+    selectThatWidget =
+      (event, trueEvent) ->
+        if ractive.get("isEditing")
+          trueEvent.preventDefault()
+          trueEvent.stopPropagation()
+          justSelectIt(event)
+        return
+
+    deselectThoseWidgets = ->
+      ractive.findComponent('resizer').clearTarget()
+      return
+
+    ractive.observe("isEditing", (isEditing) ->
+      deselectThoseWidgets()
+      return
+    )
+
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
     ractive.on('*.hideContextMenu', hideContextMenu)
+    ractive.on('*.selectComponent', justSelectIt)
+    ractive.on('*.selectWidget'   , selectThatWidget)
+    ractive.on('deselectWidgets'  , deselectThoseWidgets)

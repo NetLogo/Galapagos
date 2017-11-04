@@ -89,6 +89,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     , editableTitle: RactiveModelTitle
     , editor:        RactiveEditorWidget
     , infotab:       RactiveInfoTabWidget
+    , resizer:       RactiveResizer
 
     , tickCounter:   RactiveTickCounter
 
@@ -240,12 +241,20 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.changeTopology(wrapX, wrapY)
   )
 
+  setPatchSize = (patchSize) ->
+    viewModel.dimensions.patchSize = patchSize
+    viewModel.proxies.patchSize    = patchSize
+    world.setPatchSize(patchSize)
+    return
+
   ractive.on('*.resize-view'
   , ->
-      { minpxcor, maxpxcor, minpycor, maxpycor, patchSize } = viewController.model.world
-      world.setPatchSize(patchSize)
+      { minpxcor, maxpxcor, minpycor, maxpycor, patchsize } = viewController.model.world
+      setPatchSize(patchsize)
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
+
+  ractive.on('*.set-patch-size' , (_, patchSize) -> setPatchSize(patchSize))
 
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
                                   , write, output, dialog, worldConfig, exporting)
@@ -356,6 +365,7 @@ class window.WidgetController
   # (Number) => Unit
   removeWidgetById: (id) ->
     delete @ractive.get('widgetObj')[id]
+    @ractive.fire('deselectWidgets')
     return
 
   # () => Array[Widget]
@@ -648,7 +658,9 @@ template =
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
-         on-contextmenu="@this.fire('showContextMenu', @event)">
+         on-contextmenu="@this.fire('showContextMenu', @event)"
+         on-click="@this.fire('deselectWidgets', @event)">
+      <resizer isEnabled="{{isEditing}}" />
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}

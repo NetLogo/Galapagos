@@ -40,6 +40,7 @@ window.RactiveSwitch = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).deleteAndRecompile]
+  , resizeDirs:         ['left', 'right']
   }
 
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
@@ -68,7 +69,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     switch:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)"
+             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
              class="netlogo-widget netlogo-switcher netlogo-input"
              style="{{dims}}">

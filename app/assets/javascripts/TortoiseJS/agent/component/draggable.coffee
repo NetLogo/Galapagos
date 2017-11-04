@@ -17,9 +17,13 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
 
   on: {
 
-    startWidgetDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->
+    startWidgetDrag: (event) ->
+
+      { original: { clientX, clientY, dataTransfer, view } } = event
 
       if @get('isEditing')
+
+        @fire('selectComponent', event.component)
 
         invisiGIF = document.createElement('img')
         invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'

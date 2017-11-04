@@ -161,3 +161,15 @@
 .widget-edit-legend {
   user-select: none;
 }
+
+.widget-selected {
+  z-index: 50;
+}
+
+.widget-resize-handle {
+  background-color: #727272;
+  height:           10px;
+  width:            10px;
+  position:         absolute;
+  z-index:          60;
+}

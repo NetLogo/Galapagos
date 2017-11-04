@@ -1,9 +1,10 @@
 window.RactiveWidget = RactiveDraggableAndContextable.extend({
 
   data: -> {
-    id:        undefined # String
-  , isEditing: undefined # Boolean
-  , widget:    undefined # Widget
+    id:         undefined # String
+  , isEditing:  undefined # Boolean
+  , resizeDirs: ['left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight']
+  , widget:     undefined # Widget
   }
 
   components: {

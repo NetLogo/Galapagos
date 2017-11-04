@@ -76,6 +76,7 @@ window.RactiveMonitor = RactiveWidget.extend({
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , errorClass:         undefined # String
+  , resizeDirs:         ['left', 'right']
   }
 
   components: {
@@ -95,7 +96,7 @@ window.RactiveMonitor = RactiveWidget.extend({
     monitor:
       """
       <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)"
+           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-monitor netlogo-output"
            style="{{dims}} font-size: {{widget.fontSize}}px;">

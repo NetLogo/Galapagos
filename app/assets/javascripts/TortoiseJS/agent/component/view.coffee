@@ -208,11 +208,45 @@ window.RactiveView = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit]
+  , resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
   , ticks:              undefined # String
   }
 
   components: {
     editForm: ViewEditForm
+  }
+
+  on: {
+
+    'widget-resized': (_, oldLeft, oldRight, oldTop, oldBottom, newLeft, newRight, newTop, newBottom) ->
+
+      oldWidth  = oldRight  - oldLeft
+      oldHeight = oldBottom - oldTop
+
+      newWidth  = newRight  - newLeft
+      newHeight = newBottom - newTop
+
+      dWidth  = Math.abs(oldWidth  - newWidth )
+      dHeight = Math.abs(oldHeight - newHeight)
+
+      ratio     = if dWidth > dHeight then newWidth / oldWidth else newHeight / oldHeight
+      patchSize = parseFloat((@get('widget.dimensions.patchSize') * ratio).toFixed(2))
+
+      scaledWidth  = patchSize * (@get('widget.dimensions.maxPxcor') - @get('widget.dimensions.minPxcor') + 1)
+      scaledHeight = patchSize * (@get('widget.dimensions.maxPycor') - @get('widget.dimensions.minPycor') + 1)
+
+      dx = Math.round((scaledWidth  - oldWidth ) / 2)
+      dy = Math.round((scaledHeight - oldHeight) / 2)
+
+      @set('widget.top'   , oldTop    - dy)
+      @set('widget.bottom', oldBottom + dy)
+      @set('widget.left'  , oldLeft   - dx)
+      @set('widget.right' , oldRight  + dx)
+
+      @findComponent('editForm').set('patchSize', patchSize)
+      @fire('set-patch-size', patchSize)
+      @fire('redraw-view')
+
   }
 
   # coffeelint: disable=max_line_length
@@ -233,7 +267,7 @@ window.RactiveView = RactiveWidget.extend({
     view:
       """
       <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)"
+           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-view-container"
            style="{{dims}}">

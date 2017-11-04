@@ -8,7 +8,7 @@ window.RactivePlot = RactiveWidget.extend({
   template:
     """
     <div id="{{id}}"
-         on-contextmenu="@this.fire('showContextMenu', @event)"
+         on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
          {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
          class="netlogo-widget netlogo-plot"
          style="{{dims}}z-index: {{3200 - this.widget.top}};{{ #isEditing }}padding: 10px;{{/}}"></div>
