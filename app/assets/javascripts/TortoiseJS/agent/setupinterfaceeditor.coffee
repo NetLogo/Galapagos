@@ -5,6 +5,25 @@ arrayContains = (xs) -> (x) ->
 window.setupInterfaceEditor =
   (ractive) ->
 
+    justSelectIt = (event) -> ractive.findComponent('resizer').setTarget(event.component)
+
+    selectThatWidget =
+      (event, trueEvent) ->
+        if ractive.get("isEditing")
+          trueEvent.preventDefault()
+          trueEvent.stopPropagation()
+          justSelectIt(event)
+        return
+
+    deselectThoseWidgets = ->
+      ractive.findComponent('resizer').clearTarget()
+      return
+
+    ractive.observe("isEditing", (isEditing) ->
+      deselectThoseWidgets()
+      return
+    )
+
     hideContextMenu = ->
       ractive.findComponent('contextMenu').fire('coverThineself')
 
@@ -53,25 +72,6 @@ window.setupInterfaceEditor =
           false
         else
           true
-
-    justSelectIt = (event) -> ractive.findComponent('resizer').setTarget(event.component)
-
-    selectThatWidget =
-      (event, trueEvent) ->
-        if ractive.get("isEditing")
-          trueEvent.preventDefault()
-          trueEvent.stopPropagation()
-          justSelectIt(event)
-        return
-
-    deselectThoseWidgets = ->
-      ractive.findComponent('resizer').clearTarget()
-      return
-
-    ractive.observe("isEditing", (isEditing) ->
-      deselectThoseWidgets()
-      return
-    )
 
     ractive.on(  'showContextMenu', handleContextMenu)
     ractive.on('*.showContextMenu', handleContextMenu)
