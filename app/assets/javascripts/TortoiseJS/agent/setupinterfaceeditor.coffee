@@ -1,23 +1,5 @@
-elemById = (id) ->
-  document.getElementById(id)
-
-elemsByClass = (className) ->
-  document.getElementsByClassName(className)
-
 arrayContains = (xs) -> (x) ->
   xs.indexOf(x) isnt -1
-
-nodeListToArray = (nodeList) ->
-  Array.prototype.slice.call(nodeList)
-
-# [T] @ (Function1[T, T]*) => Function1[T, T]
-pipeline = (functions...) ->
-  (args...) ->
-    [h, fs...] = functions
-    out = h(args...)
-    for f in fs
-      out = f(out)
-    out
 
 # (Ractive, (Number) => Unit) => Unit
 window.setupInterfaceEditor =
