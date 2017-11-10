@@ -45,8 +45,6 @@ window.setupInterfaceEditor =
     handleContextMenu =
       ({ component }, trueEvent) ->
         if @get("isEditing")
-          trueEvent.preventDefault()
-          trueEvent.stopPropagation()
           @findComponent('contextMenu').fire('revealThineself'
                                             , component?.get('contextMenuOptions')
                                             , trueEvent.pageX
