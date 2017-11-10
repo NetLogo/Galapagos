@@ -474,25 +474,29 @@ reporterOf = (str) -> new Function("return #{str}")
 fillOutWidgets = (widgets, updateUICallback) ->
   # Note that this must execute before models so we can't call any model or
   # engine functions. BCH 11/5/2014
-  for widget, i in widgets
-    widget.id = i
-    if widget.variable?
-      # Convert from NetLogo variables to Tortoise variables.
-      widget.variable = widget.variable.toLowerCase()
-    switch widget['type']
-      when "switch"
-        setUpSwitch(widget, widget)
-      when "slider"
-        widget.currentValue = widget.default
-        setUpSlider(widget, widget)
-      when "inputBox"
-        setUpInputBox(widget, widget)
-      when "button"
-        setUpButton(updateUICallback)(widget, widget)
-      when "chooser"
-        setUpChooser(widget, widget)
-      when "monitor"
-        setUpMonitor(widget, widget)
+  for widget, id in widgets
+    fillOutWidget(widget, id, updateUICallback)
+  return
+
+fillOutWidget = (widget, id, updateUICallback) ->
+  widget.id = id
+  if widget.variable?
+    # Convert from NetLogo variables to Tortoise variables.
+    widget.variable = widget.variable.toLowerCase()
+  switch widget['type']
+    when "switch"
+      setUpSwitch(widget, widget)
+    when "slider"
+      widget.currentValue = widget.default
+      setUpSlider(widget, widget)
+    when "inputBox"
+      setUpInputBox(widget, widget)
+    when "button"
+      setUpButton(updateUICallback)(widget, widget)
+    when "chooser"
+      setUpChooser(widget, widget)
+    when "monitor"
+      setUpMonitor(widget, widget)
   return
 
 # (InputBox, InputBox) => Unit
