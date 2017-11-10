@@ -365,6 +365,7 @@ class window.WidgetController
   # (Number) => Unit
   removeWidgetById: (id) ->
     delete @ractive.get('widgetObj')[id]
+    @ractive.update('widgetObj')
     @ractive.fire('deselectWidgets')
     return
 
@@ -406,6 +407,8 @@ class window.WidgetController
         # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
         if newWidget.type in ["chooser", "inputBox", "slider", "switch"]
           world.observer.setGlobal(newWidget.variable, realWidget.currentValue)
+
+    @updateWidgets()
 
     return
 
