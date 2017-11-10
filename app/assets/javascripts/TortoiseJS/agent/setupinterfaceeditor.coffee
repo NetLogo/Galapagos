@@ -64,12 +64,16 @@ window.setupInterfaceEditor =
     handleContextMenu =
       ({ component }, trueEvent) ->
         if @get("isEditing")
+
           @findComponent('contextMenu').fire('revealThineself'
+                                            , component
                                             , component?.get('contextMenuOptions')
                                             , trueEvent.pageX
                                             , trueEvent.pageY
                                             )
+
           false
+
         else
           true
 

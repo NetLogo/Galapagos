@@ -31,7 +31,10 @@ window.RactiveContextMenu = Ractive.extend({
 
   data: -> {
     options: undefined # ContextMenuOptions
-  , visible: false     # Boolean
+  , mouseX:          0 # Number
+  , mouseY:          0 # Number
+  , target:  undefined # Ractive
+  , visible:     false # Boolean
   }
 
   on: {
@@ -43,12 +46,11 @@ window.RactiveContextMenu = Ractive.extend({
       @set('visible', false)
       return
 
-    revealThineself: (_, options, x, y) ->
-      @set('options', options)
+    revealThineself: (_, component, options, x, y) ->
+      @set('target' , component)
       @set('visible', true)
-      contextMenu            = @find("#netlogo-widget-context-menu")
-      contextMenu.style.top  = "#{y}px"
-      contextMenu.style.left = "#{x}px"
+      @set('mouseX' , x)
+      @set('mouseY' , y)
       return
 
   }
@@ -56,7 +58,7 @@ window.RactiveContextMenu = Ractive.extend({
   template:
     """
     {{# visible }}
-    <div id="netlogo-widget-context-menu" class="widget-context-menu">
+    <div id="netlogo-widget-context-menu" class="widget-context-menu" style="top: {{mouseY}}px; left: {{mouseX}}px;">
       {{# options === undefined }}
         <div id="widget-creation-disabled-message">
           Widget creation is not yet available.  Check back soon.
@@ -66,7 +68,7 @@ window.RactiveContextMenu = Ractive.extend({
           <ul class="context-menu-list">
             {{# options }}
               {{# ..isEnabled }}
-                <li class="context-menu-item" on-click="..action()">{{..text}}</li>
+                <li class="context-menu-item" on-click="..action(target, mouseX, mouseY)">{{..text}}</li>
               {{ else }}
                 <li class="context-menu-item disabled" on-click="ignoreClick">{{..text}}</li>
               {{/}}
