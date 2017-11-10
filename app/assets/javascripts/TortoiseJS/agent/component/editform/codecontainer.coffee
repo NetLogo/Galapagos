@@ -22,7 +22,7 @@ RactiveCodeContainerBase = Ractive.extend({
   # reasonably possible.  --JAB (5/2/16)
   oncomplete: ->
     initialCode = @get('initialCode')
-    if initialCode? then @set('code', initialCode)
+    @set('code', initialCode ? @get('code') ? "")
     @_setupCodeMirror()
 
   twoway: false
