@@ -389,8 +389,8 @@ class window.WidgetController
 
         setterUpper(newWidget, realWidget)
 
-        if widget.variable?
-          widget.variable = widget.variable.toLowerCase()
+        if newWidget.variable?
+          realWidget.variable = newWidget.variable.toLowerCase()
 
         # This can go away when `res.model.result` stops blowing away all of the globals
         # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
