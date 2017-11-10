@@ -145,7 +145,7 @@ window.RactiveInput = RactiveWidget.extend({
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-input-box netlogo-input"
+             class="netlogo-widget netlogo-input-box netlogo-input{{#isEditing}} interface-unlocked{{/}}"
              style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}

@@ -19,12 +19,13 @@ window.RactiveEditorWidget = Ractive.extend({
     @findComponent('codeEditor').setCode(code)
     return
 
+  # coffeelint: disable=max_line_length
   template:
     """
     <div class="netlogo-tab-content netlogo-code-container"
          grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
       {{# !readOnly }}
-        <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button"
+        <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button{{#isEditing}} interface-unlocked{{/}}"
                 on-click="recompile" {{# !isStale }}disabled{{/}} >Recompile Code</button>
       {{/}}
       <codeEditor id="netlogo-code-tab-editor" code="{{code}}"
@@ -32,5 +33,6 @@ window.RactiveEditorWidget = Ractive.extend({
                   extraClasses="['netlogo-code-tab']" />
     </div>
     """
+  # coffeelint: enable=max_line_length
 
 })

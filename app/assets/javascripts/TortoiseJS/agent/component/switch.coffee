@@ -71,7 +71,7 @@ window.RactiveSwitch = RactiveWidget.extend({
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-switcher netlogo-input"
+             class="netlogo-widget netlogo-switcher netlogo-input{{#isEditing}} interface-unlocked{{/}}"
              style="{{dims}}">
         <input type="checkbox" checked="{{ widget.currentValue }}" {{# isEditing }} disabled{{/}} />
         <span class="netlogo-label">{{ widget.display }}</span>

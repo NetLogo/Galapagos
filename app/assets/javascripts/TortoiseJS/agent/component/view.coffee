@@ -269,7 +269,7 @@ window.RactiveView = RactiveWidget.extend({
       <div id="{{id}}"
            on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-view-container"
+           class="netlogo-widget netlogo-view-container{{#isEditing}} interface-unlocked{{/}}"
            style="{{dims}}">
       </div>
       """

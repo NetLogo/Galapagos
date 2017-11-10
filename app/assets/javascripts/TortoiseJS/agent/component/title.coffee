@@ -25,7 +25,7 @@ window.RactiveModelTitle = RactiveContextable.extend({
       <div class="flex-row" style="justify-content: center; height: 30px; line-height: 30px;">
         <h2 id="netlogo-title"
             on-contextmenu="@this.fire('showContextMenu', @event)"
-            class="netlogo-widget netlogo-model-title"
+            class="netlogo-widget netlogo-model-title{{#isEditing}} interface-unlocked{{/}}"
             on-dblclick="editTitle">
           {{ title }}
         </h2>

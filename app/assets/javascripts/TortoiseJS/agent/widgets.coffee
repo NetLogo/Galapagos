@@ -645,11 +645,11 @@ template =
       {{/}}
     </div>
 
-    <div class="netlogo-interface-unlocker" style="display: none" on-click="toggleInterfaceLock"></div>
+    <div class="netlogo-interface-unlocker" style="display: none" class="{{#isEditing}}interface-unlocked{{/}}" on-click="toggleInterfaceLock"></div>
 
     <contextMenu></contextMenu>
 
-    <label class="netlogo-widget netlogo-speed-slider">
+    <label class="netlogo-widget netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
       <span class="netlogo-label">model speed</span>
       <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
       <tickCounter isVisible="{{primaryView.showTickCounter}}"

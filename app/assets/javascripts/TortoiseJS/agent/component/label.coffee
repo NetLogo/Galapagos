@@ -96,7 +96,7 @@ window.RactiveLabel = RactiveWidget.extend({
       <pre id="{{id}}"
            on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-text-box"
+           class="netlogo-widget netlogo-text-box{{#isEditing}} interface-unlocked{{/}}"
            style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>
       """

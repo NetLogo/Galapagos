@@ -134,7 +134,7 @@ window.RactiveSlider = RactiveWidget.extend({
       <label id="{{id}}"
              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}"
+             class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"
