@@ -519,7 +519,7 @@ setUpChooser = (source, destination) ->
 # (() => Unit) => (Button, Button) => Unit
 setUpButton = (updateUI) -> (source, destination) ->
   if source.forever then destination.running = false
-  if source.compilation.success
+  if source.compilation?.success
     destination.compiledSource = source.compiledSource
     task = window.handlingErrors(new Function(destination.compiledSource))
     do (task) ->
@@ -543,12 +543,12 @@ setUpButton = (updateUI) -> (source, destination) ->
     destination.run =
       ->
         destination.running = false
-        showErrors(["Button failed to compile with:"].concat(source.compilation.messages))
+        showErrors(["Button failed to compile with:"].concat(source.compilation?.messages ? []))
   return
 
 # (Monitor, Monitor) => Unit
 setUpMonitor = (source, destination) ->
-  if source.compilation.success
+  if source.compilation?.success
     destination.compiledSource = source.compiledSource
     destination.reporter       = reporterOf(destination.compiledSource)
     destination.currentValue   = ""
@@ -563,7 +563,7 @@ setUpSlider = (source, destination) ->
   destination.compiledMin  = source.compiledMin
   destination.compiledMax  = source.compiledMax
   destination.compiledStep = source.compiledStep
-  if source.compilation.success
+  if source.compilation?.success
     destination.getMin  = reporterOf(destination.compiledMin)
     destination.getMax  = reporterOf(destination.compiledMax)
     destination.getStep = reporterOf(destination.compiledStep)
