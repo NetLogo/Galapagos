@@ -5,11 +5,12 @@ window.EditForm = Ractive.extend({
   view:      undefined # Element
 
   data: -> {
-    idBasis: undefined # String
-  , style:   undefined # String
-  , visible: undefined # Boolean
-  , xLoc:    undefined # Number
-  , yLoc:    undefined # Number
+    amProvingMyself: false     # Boolean
+  , idBasis:         undefined # String
+  , style:           undefined # String
+  , visible:         undefined # Boolean
+  , xLoc:            undefined # Number
+  , yLoc:            undefined # Number
   }
 
   computed: {
@@ -25,6 +26,7 @@ window.EditForm = Ractive.extend({
   on: {
 
     submit: ({ node }) ->
+      @set('amProvingMyself', false)
       newProps = @validate(node)
       if newProps?
         @fire('updateWidgetValue', newProps)
@@ -67,6 +69,13 @@ window.EditForm = Ractive.extend({
     activateCloakingDevice: ->
       @set('visible', false)
       @fire('unlockSelection')
+      if @get('amProvingMyself')
+        @fire('hasBeenProvenUnworthy')
+      false
+
+    proveYourWorth: ->
+      @fire('showYourself')
+      @set('amProvingMyself', true)
       false
 
     startEditDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->

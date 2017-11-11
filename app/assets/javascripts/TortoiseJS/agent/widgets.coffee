@@ -269,6 +269,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.on('*.unregisterWidget', (_, id) -> controller.removeWidgetById(id))
 
+  ractive.on('createWidget'
+  , (_, widgetType, pageX, pageY) ->
+      controller.createWidget(widgetType, pageX, pageY)
+  )
+
   setupInterfaceEditor(ractive)
 
   controller
@@ -303,6 +308,24 @@ window.handlingErrors = (f) -> ->
 class window.WidgetController
   constructor: (@ractive, @model, @viewController, @plotOps
               , @mouse, @write, @output, @dialog, @worldConfig, @importExport) ->
+
+  # (String, Number, Number) => Unit
+  createWidget: (widgetType, x, y) ->
+
+    rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
+    adjustedX = Math.round(x - rect.x)
+    adjustedY = Math.round(y - rect.y)
+    base      = { left: adjustedX, top: adjustedY, type: widgetType }
+    mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY)
+    widget    = Object.assign(base, mixin)
+
+    id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
+    fillOutWidget(widget, id, (=> @redraw(); @updateWidgets()))
+    @ractive.get('widgetObj')[id] = widget
+    @ractive.update('widgetObj')
+    @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initializeWidget')
+
+    return
 
   # () -> Unit
   runForevers: ->
@@ -470,6 +493,22 @@ viewEquals = compareWidgetsOn(['dimensions', 'fontSize', 'frameRate'
                              , 'showTickCounter', 'tickCounterLabel', 'updateMode'])
 
 reporterOf = (str) -> new Function("return #{str}")
+
+# coffeelint: disable=max_line_length
+# (String, Number, Number) => Unit
+defaultWidgetMixinFor = (widgetType, x, y) ->
+  switch widgetType
+    when "output"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
+    when "switch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
+    when "slider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
+    when "plot"     then { bottom: y + 60, right: x + 180 }
+    when "textBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
+# coffeelint: enable=max_line_length
 
 # ([widget], () -> Unit) -> Unit
 # Destructive - Adds everything for maintaining state to the widget models,

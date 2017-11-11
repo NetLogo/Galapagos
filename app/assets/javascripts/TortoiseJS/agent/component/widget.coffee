@@ -31,6 +31,13 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
       @findComponent('editForm')?.fire("activateCloakingDevice")
       return
 
+    initializeWidget: ->
+      @findComponent('editForm').fire("proveYourWorth")
+      false
+
+    "*.hasBeenProvenUnworthy": ->
+      @fire('unregisterWidget', @get('widget').id) # Original event name: "cutMyLifeIntoPieces" --JAB (11/8/17)
+
     "*.updateWidgetValue": (_, { proxies = {}, triggers = {}, values = {}}) ->
 
       getByPath = (obj) -> (path) ->
