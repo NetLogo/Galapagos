@@ -62,8 +62,14 @@ window.setupInterfaceEditor =
     )
 
     handleContextMenu =
-      ({ component }, trueEvent) ->
+      (a, b, c) ->
         if @get("isEditing")
+
+          [{ component }, trueEvent] =
+            if not c?
+              [a, b]
+            else
+              [b, c]
 
           @findComponent('contextMenu').fire('revealThineself'
                                             , component

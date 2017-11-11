@@ -665,7 +665,7 @@ template =
 
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
-         on-contextmenu="@this.fire('showContextMenu', @event)"
+         on-contextmenu="@this.fire('showContextMenu', { component: @this }, @event)"
          on-click="@this.fire('deselectWidgets', @event)">
       <resizer isEnabled="{{isEditing}}" />
       {{#widgetObj:key}}
