@@ -441,8 +441,7 @@ class window.WidgetController
   # (String) => Unit
   setCode: (code) ->
     @ractive.set('code', code)
-    if @ractive.findComponent('editor')?
-      @ractive.findComponent('editor').setCode(code)
+    @ractive.findComponent('editor').setCode(code)
     @ractive.fire('controller.recompile')
     return
 
