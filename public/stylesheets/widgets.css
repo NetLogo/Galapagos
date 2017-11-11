@@ -289,8 +289,8 @@
     padding: 0px;
 }
 
-.netlogo-disabled {
-  color: grey;
+.netlogo-disabled, .interface-unlocked {
+  color: #707070;
 }
 
 .netlogo-button.clear-button {
