@@ -29,12 +29,12 @@ window.RactiveContextable = Ractive.extend({
         component.fire('unregisterWidget', component.get('widget').id)
     }
   , deleteAndRecompile: {
-    text: "Delete"
-  , isEnabled: true
-  , action: ->
-      component.fire('hideContextMenu')
-      component.fire('unregisterWidget', component.get('widget').id)
-      component.fire('recompile')
+      text: "Delete"
+    , isEnabled: true
+    , action: ->
+        component.fire('hideContextMenu')
+        component.fire('unregisterWidget', component.get('widget').id)
+        component.fire('recompile')
     }
   , edit: { text: "Edit", isEnabled: true, action: -> component.fire('editWidget') }
   }
