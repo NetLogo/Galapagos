@@ -111,6 +111,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   container.querySelector('.netlogo-model').focus()
   mousetrap = Mousetrap(container.querySelector('.netlogo-model'))
   mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], => ractive.fire('toggleInterfaceLock'))
+  mousetrap.bind(['del', 'backspace']                       , => ractive.fire('deleteSelected'))
 
   viewModel = widgets.filter((w) -> w.type == 'view')[0]
   ractive.set('primaryView', viewModel)
