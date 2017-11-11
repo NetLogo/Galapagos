@@ -48,6 +48,8 @@ window.EditForm = Ractive.extend({
       elem = @getElem()
       elem.focus()
 
+      @fire('lockSelection', @parent)
+
       container     = findParentByClass('netlogo-widget-container')(elem)
       containerMidX = container.offsetWidth  / 2
       containerMidY = container.offsetHeight / 2
@@ -64,6 +66,7 @@ window.EditForm = Ractive.extend({
 
     activateCloakingDevice: ->
       @set('visible', false)
+      @fire('unlockSelection')
       false
 
     startEditDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->

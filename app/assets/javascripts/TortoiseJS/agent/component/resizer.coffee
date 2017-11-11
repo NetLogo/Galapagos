@@ -1,8 +1,9 @@
 window.RactiveResizer = Ractive.extend({
 
-  lastX: undefined # Number
-  lastY: undefined # Number
-  view:  undefined # Element
+  isLocked: false     # Boolean
+  lastX:    undefined # Number
+  lastY:    undefined # Number
+  view:     undefined # Element
 
   data: -> {
     isEnabled: false # Boolean
@@ -28,15 +29,31 @@ window.RactiveResizer = Ractive.extend({
 
   # () => Unit
   clearTarget: ->
-    @get('target')?.find('.netlogo-widget').classList.remove('widget-selected')
-    @set('target', null)
+    target = @get('target')
+    if not @isLocked and target?
+      if not target.destroyed
+        target.find('.netlogo-widget').classList.remove('widget-selected')
+      @set('target', null)
     return
 
   # (Element) => Unit
   setTarget: (newTarget) ->
-    @clearTarget()
-    @set('target', newTarget)
-    newTarget.find('.netlogo-widget').classList.add('widget-selected')
+    if not @isLocked
+      @clearTarget()
+      @set('target', newTarget)
+      newTarget.find('.netlogo-widget').classList.add('widget-selected')
+    return
+
+  # (Element) => Unit
+  lockTarget: (newTarget) ->
+    if not @isLocked and newTarget?
+      @setTarget(newTarget)
+      @isLocked = true
+    return
+
+  # () => Unit
+  unlockTarget: ->
+    @isLocked = false
     return
 
   on: {

@@ -5,6 +5,14 @@ arrayContains = (xs) -> (x) ->
 window.setupInterfaceEditor =
   (ractive) ->
 
+    lockSelection = (_, component) ->
+      ractive.findComponent('resizer').lockTarget(component)
+      return
+
+    unlockSelection = ->
+      ractive.findComponent('resizer').unlockTarget()
+      return
+
     justSelectIt = (event) -> ractive.findComponent('resizer').setTarget(event.component)
 
     selectThatWidget =
@@ -25,7 +33,11 @@ window.setupInterfaceEditor =
     )
 
     hideContextMenu = ->
-      ractive.findComponent('contextMenu').fire('coverThineself')
+      contextMenu = ractive.findComponent('contextMenu')
+      if contextMenu.get('visible')
+        contextMenu.fire('coverThineself')
+        unlockSelection()
+      return
 
     document.addEventListener("click", hideContextMenu)
 
@@ -67,6 +79,7 @@ window.setupInterfaceEditor =
 
           [{ component }, trueEvent] =
             if not c?
+              lockSelection(null, component)
               [a, b]
             else
               [b, c]
@@ -89,3 +102,5 @@ window.setupInterfaceEditor =
     ractive.on('*.selectComponent', justSelectIt)
     ractive.on('*.selectWidget'   , selectThatWidget)
     ractive.on('deselectWidgets'  , deselectThoseWidgets)
+    ractive.on('*.lockSelection'  , lockSelection)
+    ractive.on('*.unlockSelection', unlockSelection)
