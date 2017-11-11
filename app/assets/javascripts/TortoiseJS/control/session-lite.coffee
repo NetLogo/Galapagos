@@ -12,7 +12,7 @@ class window.SessionLite
     @_eventLoopTimeout = -1
     @_lastRedraw = 0
     @_lastUpdate = 0
-    @widgetController.ractive.on('*.recompile',          (_, event)     => @recompile())
+    @widgetController.ractive.on('*.recompile',          (_, callback)  => @recompile(callback))
     @widgetController.ractive.on('exportnlogo',          (_, event)     => @exportnlogo(event))
     @widgetController.ractive.on('exportHtml',           (_, event)     => @exportHtml(event))
     @widgetController.ractive.on('openNewFile',          (_, event)     => @openNewFile())
@@ -83,7 +83,8 @@ class window.SessionLite
     @widgetController.teardown()
     cancelAnimationFrame(@_eventLoopTimeout)
 
-  recompile: ->
+  # (() => Unit) => Unit
+  recompile: (successCallback = (->)) ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
     Tortoise.startLoading(=>
@@ -98,6 +99,7 @@ class window.SessionLite
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+          successCallback()
         else
           @widgetController.ractive.set('lastCompileFailed', true)
           @alertCompileError(res.model.result)
