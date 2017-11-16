@@ -113,11 +113,15 @@ window.RactiveInput = RactiveWidget.extend({
 
     # Scroll to bottom on value change --JAB (8/17/16)
     @observe('widget.currentValue'
-    , ->
+    , (newValue) ->
+
       elem = @find('.netlogo-multiline-input')
       if elem?
         scrollToBottom = -> elem.scrollTop = elem.scrollHeight
         setTimeout(scrollToBottom, 0)
+
+      @findComponent('editor')?.setCode(newValue)
+
       return
     )
 

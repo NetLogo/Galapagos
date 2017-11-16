@@ -45,7 +45,8 @@ RactiveCodeContainerBase = Ractive.extend({
 
   # (String) => Unit
   setCode: (code) ->
-    @_editor.setValue(code)
+    if @_editor? and @_editor.getValue() isnt code
+      @_editor.setValue(code)
     return
 
   template:
