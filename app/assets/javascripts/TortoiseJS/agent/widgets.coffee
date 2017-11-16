@@ -254,7 +254,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
   )
 
-  ractive.on('*.set-patch-size' , (_, patchSize) -> setPatchSize(patchSize))
+  ractive.on('*.set-patch-size', (_, patchSize) -> setPatchSize(patchSize))
 
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
                                   , write, output, dialog, worldConfig, importExport)
