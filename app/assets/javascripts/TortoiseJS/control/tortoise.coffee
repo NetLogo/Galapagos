@@ -48,13 +48,13 @@ newSession = (container, modelResult, readOnly = false, filename = "export", las
   widgetController = bindWidgets(container, widgets, modelResult.code,
     toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
   window.modelConfig ?= {}
-  modelConfig.plotOps   = widgetController.plotOps
-  modelConfig.exporting = widgetController.exporting
-  modelConfig.mouse     = widgetController.mouse
-  modelConfig.print     = { write: widgetController.write }
-  modelConfig.output    = widgetController.output
-  modelConfig.dialog    = widgetController.dialog
-  modelConfig.world     = widgetController.worldConfig
+  modelConfig.plotOps      = widgetController.plotOps
+  modelConfig.importExport = widgetController.importExport
+  modelConfig.mouse        = widgetController.mouse
+  modelConfig.print        = { write: widgetController.write }
+  modelConfig.output       = widgetController.output
+  modelConfig.dialog       = widgetController.dialog
+  modelConfig.world        = widgetController.worldConfig
   globalEval(modelResult.model.result)
   new SessionLite(widgetController, lastCompileFailed, onError)
 

@@ -178,7 +178,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   }
 
-  exporting = {
+  importExport = {
     exportOutput: (filename) ->
       exportText = ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
       exportBlob = new Blob([exportText], {type: "text/plain:charset=utf-8"})
@@ -257,7 +257,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.on('*.set-patch-size' , (_, patchSize) -> setPatchSize(patchSize))
 
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
-                                  , write, output, dialog, worldConfig, exporting)
+                                  , write, output, dialog, worldConfig, importExport)
 
   ractive.on('*.redraw-view'
   , ->
@@ -302,7 +302,7 @@ window.handlingErrors = (f) -> ->
 
 class window.WidgetController
   constructor: (@ractive, @model, @viewController, @plotOps
-              , @mouse, @write, @output, @dialog, @worldConfig, @exporting) ->
+              , @mouse, @write, @output, @dialog, @worldConfig, @importExport) ->
 
   # () -> Unit
   runForevers: ->
