@@ -355,6 +355,8 @@ class window.WidgetController
             widget.currentValue = 'N/A'
         if widget.precision? and typeof widget.currentValue == 'number' and isFinite(widget.currentValue)
           widget.currentValue = NLMath.precision(widget.currentValue, widget.precision)
+      if widget['type'] == 'inputBox'
+        widget.boxedValue.value = widget.currentValue
       if widget['type'] == 'slider'
         # Soooooo apparently range inputs don't visually update when you set
         # their max, but they DO update when you set their min (and will take
