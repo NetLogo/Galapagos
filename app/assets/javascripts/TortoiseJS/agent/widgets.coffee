@@ -760,7 +760,7 @@ template =
         <span class="netlogo-tab-text">Model Info</span>
       </label>
       {{#showInfo}}
-        <infotab rawText='{{info}}' editing='false' />
+        <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
       {{/}}
     </div>
   </div>

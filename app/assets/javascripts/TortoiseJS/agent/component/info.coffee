@@ -1,11 +1,16 @@
 window.RactiveInfoTabEditor = Ractive.extend({
+
+  data: -> {
+    isEditing: false
+  }
+
   onrender: ->
     infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
       value: @get('rawText'),
       tabsize: 2,
       mode: 'markdown',
       theme: 'netlogo-default',
-      editing: @get('editing'),
+      editing: @get('isEditing'),
       lineWrapping: true
     })
 
@@ -30,11 +35,7 @@ window.RactiveInfoTabWidget = Ractive.extend({
     """
     <div class='netlogo-tab-content netlogo-info'
          grow-in='{disable:"info-toggle"}' shrink-out='{disable:"info-toggle"}'>
-      <label class='netlogo-toggle-edit-mode'>
-        <input type='checkbox' checked='{{editing}}'>
-        Edit Mode
-      </label>
-      {{# !editing }}
+      {{# !isEditing }}
         <div class='netlogo-info-markdown'>{{{toMarkdown(rawText)}}}</div>
       {{ else }}
         <infoeditor rawText='{{rawText}}' />
