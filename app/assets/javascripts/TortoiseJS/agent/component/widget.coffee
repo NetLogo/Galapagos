@@ -84,7 +84,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
     editorOverlay: """
                    {{ #isEditing }}
                      <div draggable="true" style="{{dims}} z-index: 50;"
-                          on-click="@this.fire('selectWidget', @event)"
+                          on-click="@this.fire('hideContextMenu') && @this.fire('selectWidget', @event)"
                           on-contextmenu="@this.fire('showContextMenu', @event)"
                           on-dblclick="@this.fire('editWidget')"
                           on-dragstart="startWidgetDrag"
