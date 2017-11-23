@@ -646,8 +646,8 @@ setUpDimensionsProxies = (viewWidget, modelView) ->
   viewWidget.proxies = {}
 
   for wName, mName of translations
-    addProxyTo(viewWidget.proxies, [[viewWidget.dimensions, wName]
-            , [modelView, mName]], wName, viewWidget.dimensions[wName])
+    addProxyTo(viewWidget.proxies, [[viewWidget.dimensions, wName], [modelView, mName]]
+             , wName, viewWidget.dimensions[wName])
 
   return
 
