@@ -1,9 +1,10 @@
 window.RactiveResizer = Ractive.extend({
 
-  isLocked: false     # Boolean
-  lastX:    undefined # Number
-  lastY:    undefined # Number
-  view:     undefined # Element
+  isLocked:     false     # Boolean
+  lastUpdateMs: undefined # Number
+  lastX:        undefined # Number
+  lastY:        undefined # Number
+  view:         undefined # Element
 
   data: -> {
     isEnabled: false # Boolean
@@ -58,89 +59,73 @@ window.RactiveResizer = Ractive.extend({
 
   on: {
 
-    startHandleDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->
+    startHandleDrag: (event) ->
+      CommonDrag.dragstart.call(this, event, (x, y) =>
+        @lastX = x
+        @lastY = y
+      )
 
-      invisiGIF = document.createElement('img')
-      invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-      dataTransfer.setDragImage(invisiGIF, 0, 0)
+    dragHandle: (event) ->
+      CommonDrag.drag.call(this, event, (x, y) =>
 
-      @view         = view
-      @lastX        = clientX
-      @lastY        = clientY
-      @lastUpdateMs = (new Date).getTime()
+        target    = @get('target')
+        oldLeft   = target.get('left')
+        oldRight  = target.get('right')
+        oldTop    = target.get('top')
+        oldBottom = target.get('bottom')
 
-      return
+        left   = ['left'  , @lastX, x]
+        right  = ['right' , @lastX, x]
+        top    = ['top'   , @lastY, y]
+        bottom = ['bottom', @lastY, y]
+
+        direction = event.original.target.dataset.direction
+
+        adjusters =
+          switch direction
+            when "Bottom"     then [bottom]
+            when "BottomLeft" then [bottom, left]
+            when "BottomRight"then [bottom, right]
+            when "Left"       then [left]
+            when "Right"      then [right]
+            when "Top"        then [top]
+            when "TopLeft"    then [top, left]
+            when "TopRight"   then [top, right]
+            else throw new Error("What the heck resize direction is '#{direction}'?")
+
+        exceedsOpposite = (dir, value) =>
+          opposite =
+            switch dir
+              when 'left'   then 'right'
+              when 'right'  then 'left'
+              when 'top'    then 'bottom'
+              when 'bottom' then 'top'
+              else throw new Error("What the heck opposite direction is '#{dir}'?")
+          oppositeValue = @get(opposite)
+          ((opposite is 'left'  or opposite is 'top'   ) and newValue <= (oppositeValue + 26)) or
+          ((opposite is 'right' or opposite is 'bottom') and newValue >= (oppositeValue - 26))
+
+        for [dir, lastCor, currentCor] in adjusters
+          newValue = target.get(dir) - (lastCor - currentCor)
+          if not exceedsOpposite(dir, newValue)
+            target.set(dir, newValue)
+
+        @lastX = x
+        @lastY = y
+
+        @get('target').fire('widget-resized'
+                           , oldLeft           , oldRight           , oldTop           , oldBottom
+                           , target.get('left'), target.get('right'), target.get('top'), target.get('bottom')
+                           )
+
+      )
 
     stopHandleDrag: ->
-      if @view?
-        @view         = undefined
-        @lastX        = undefined
-        @lastY        = undefined
-        @lastUpdateMs = undefined
-      return
+      CommonDrag.dragend.call(this, =>
+        @lastX = undefined
+        @lastY = undefined
+      )
 
-    dragHandle: ({ original: { clientX, clientY, target: { dataset: { direction } }, view } }) ->
-
-      if @view?
-
-        # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
-        # We only take non-negative values here, to avoid the widget disappearing --JAB (3/22/16, 10/29/17)
-
-        # Only update drag coords 30 times per second.  If we don't throttle,
-        # all of this `set`ing murders the CPU --JAB (10/29/17)
-        if @view is view and clientX > 0 and clientY > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 30)
-
-          target    = @get('target')
-          oldLeft   = target.get('left')
-          oldRight  = target.get('right')
-          oldTop    = target.get('top')
-          oldBottom = target.get('bottom')
-
-          left   = ['left'  , @lastX, clientX]
-          right  = ['right' , @lastX, clientX]
-          top    = ['top'   , @lastY, clientY]
-          bottom = ['bottom', @lastY, clientY]
-
-          adjusters =
-            switch direction
-              when "Bottom"     then [bottom]
-              when "BottomLeft" then [bottom, left]
-              when "BottomRight"then [bottom, right]
-              when "Left"       then [left]
-              when "Right"      then [right]
-              when "Top"        then [top]
-              when "TopLeft"    then [top, left]
-              when "TopRight"   then [top, right]
-              else throw new Error("What the heck resize direction is '#{direction}'?")
-
-          exceedsOpposite = (dir, value) =>
-            opposite =
-              switch dir
-                when 'left'   then 'right'
-                when 'right'  then 'left'
-                when 'top'    then 'bottom'
-                when 'bottom' then 'top'
-                else throw new Error("What the heck opposite direction is '#{dir}'?")
-            oppositeValue = @get(opposite)
-            ((opposite is 'left'  or opposite is 'top'   ) and newValue <= (oppositeValue + 26)) or
-            ((opposite is 'right' or opposite is 'bottom') and newValue >= (oppositeValue - 26))
-
-          for [dir, lastCor, currentCor] in adjusters
-            newValue = target.get(dir) - (lastCor - currentCor)
-            if not exceedsOpposite(dir, newValue)
-              target.set(dir, newValue)
-
-          @lastX = clientX
-          @lastY = clientY
-
-          @lastUpdateMs = (new Date).getTime()
-
-          @get('target').fire('widget-resized'
-                             , oldLeft           , oldRight           , oldTop           , oldBottom
-                             , target.get('left'), target.get('right'), target.get('top'), target.get('bottom')
-                             )
-
-      false
 
   }
 

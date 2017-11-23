@@ -1,8 +1,9 @@
 window.EditForm = Ractive.extend({
 
-  startX:    undefined # Number
-  startY:    undefined # Number
-  view:      undefined # Element
+  lastUpdateMs: undefined # Number
+  startX:       undefined # Number
+  startY:       undefined # Number
+  view:         undefined # Element
 
   data: -> {
     amProvingMyself: false     # Boolean
@@ -78,29 +79,20 @@ window.EditForm = Ractive.extend({
       @set('amProvingMyself', true)
       false
 
-    startEditDrag: ({ original: { clientX, clientY, dataTransfer, view } }) ->
+    startEditDrag: (event) ->
+      CommonDrag.dragstart.call(this, event, (x, y) =>
+        @startX = @get('xLoc') - x
+        @startY = @get('yLoc') - y
+      )
 
-      invisiGIF = document.createElement('img')
-      invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-      dataTransfer.setDragImage(invisiGIF, 0, 0)
-
-      @view   = view
-      @startX = @get('xLoc') - clientX
-      @startY = @get('yLoc') - clientY
-
-      return
+    dragEditDialog: (event) ->
+      CommonDrag.drag.call(this, event, (x, y) =>
+        @set('xLoc', @startX + x)
+        @set('yLoc', @startY + y)
+      )
 
     stopEditDrag: ->
-      @view = undefined
-      return
-
-    dragEditDialog: ({ original: { clientX, clientY, view } }) ->
-      # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
-      # We only take non-negative values here, to avoid the dialog disappearing --JAB (3/22/16)
-      if @view is view and clientX > 0 and clientY > 0
-        @set('xLoc', @startX + clientX)
-        @set('yLoc', @startY + clientY)
-      false
+      CommonDrag.dragend.call(this, (->))
 
     cancelEdit: ->
       @fire('activateCloakingDevice')
