@@ -159,3 +159,6 @@ class window.HighchartsOps extends PlotOps
 
   redraw: ->
     @_chart.redraw()
+
+  resizeElem: (x, y) ->
+    @_chart.setSize(x, y, false)

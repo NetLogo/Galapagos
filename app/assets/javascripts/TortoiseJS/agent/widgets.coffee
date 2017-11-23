@@ -308,8 +308,13 @@ window.handlingErrors = (f) -> ->
       throw ex
 
 class window.WidgetController
+
   constructor: (@ractive, @model, @viewController, @plotOps
               , @mouse, @write, @output, @dialog, @worldConfig, @importExport) ->
+
+    for display, chartOps of @plotOps
+      component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
+      component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
 
   # (String, Number, Number) => Unit
   createWidget: (widgetType, x, y) ->
