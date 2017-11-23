@@ -4,9 +4,13 @@ window.CommonDrag = {
 
   dragstart: ({ original: { clientX, clientY, dataTransfer, view } }, callback) ->
 
+    # The invisible GIF is used to hide the ugly "ghost" images that appear by default when dragging
+    # The `setData` thing is done because, without it, Firefox feels that the drag hasn't really begun
+    # So we give them some bogus drag data and get on with our lives. --JAB (11/22/17)
     invisiGIF = document.createElement('img')
     invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
     dataTransfer.setDragImage(invisiGIF, 0, 0)
+    dataTransfer.setData('text/plain', '')
 
     @view         = view
     @lastUpdateMs = (new Date).getTime()
@@ -18,20 +22,29 @@ window.CommonDrag = {
 
     if @view?
 
+      # Thanks, Firefox! --JAB (11/23/17)
+      root = ((r) -> if r.parent? then arguments.callee(r.parent) else r)(this)
+      x    = if clientX isnt 0 then clientX else (root.get('lastDragX') ? -1)
+      y    = if clientY isnt 0 then clientY else (root.get('lastDragY') ? -1)
+
       # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
       # We only take non-negative values here, to avoid the widget disappearing --JAB (3/22/16, 10/29/17)
 
       # Only update drag coords 30 times per second.  If we don't throttle,
       # all of this `set`ing murders the CPU --JAB (10/29/17)
-      if @view is view and clientX > 0 and clientY > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 30)
+      if @view is view and x > 0 and y > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 30)
         @lastUpdateMs = (new Date).getTime()
-        callback(clientX, clientY)
+        callback(x, y)
 
     false
 
   dragend: (callback) ->
 
     if @view?
+
+      root = ((r) -> if r.parent? then arguments.callee(r.parent) else r)(this)
+      root.set('lastDragX', undefined)
+      root.set('lastDragY', undefined)
 
       @view         = undefined
       @lastUpdateMs = undefined

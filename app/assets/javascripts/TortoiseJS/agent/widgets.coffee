@@ -48,6 +48,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     readOnly,
     lastCompiledCode:   code,
     lastCompileFailed:  false,
+    lastDragX:          undefined,
+    lastDragY:          undefined,
     isStale:            false,
     exportForm:         false,
     modelTitle:         dropNLogoExtension(filename),
@@ -206,6 +208,13 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   ractive.observe('widgetObj.*.bottom', ->
     @set('height', Math.max.apply(Math, w.bottom for own i, w of @get('widgetObj') when w.bottom?))
+  )
+
+  # Thanks, Firefox.  Maybe just put the proper values in the `drag` event, in the
+  # future, instead of sending us `0` for them every time? --JAB (11/23/17)
+  ractive.on('hailSatan', ({ event: { clientX, clientY } }) ->
+    @set("lastDragX", clientX)
+    @set("lastDragY", clientY)
   )
 
   ractive.on('checkFocus', (_, node) ->
@@ -713,7 +722,7 @@ template =
     <div style="position: relative; width: {{width}}px; height: {{height}}px"
          class="netlogo-widget-container"
          on-contextmenu="@this.fire('showContextMenu', { component: @this }, @event)"
-         on-click="@this.fire('deselectWidgets', @event)">
+         on-click="@this.fire('deselectWidgets', @event)" on-dragover="hailSatan">
       <resizer isEnabled="{{isEditing}}" />
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
