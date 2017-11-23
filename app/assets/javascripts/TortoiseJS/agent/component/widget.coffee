@@ -23,9 +23,11 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   on: {
 
     editWidget: ->
-      @fire('hideContextMenu')
-      @findComponent('editForm').fire("showYourself")
-      false
+      if @get('isEditing')
+        @fire('hideContextMenu')
+        @findComponent('editForm').fire("showYourself")
+        false
+      return
 
     init: ->
       @findComponent('editForm')?.fire("activateCloakingDevice")

@@ -64,7 +64,7 @@ window.RactiveChooser = RactiveWidget.extend({
   template:
     """
     <label id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
+           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
            {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
            class="netlogo-widget netlogo-chooser netlogo-input{{#isEditing}} interface-unlocked{{/}}"
            style="{{dims}}">

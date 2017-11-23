@@ -139,7 +139,7 @@ window.RactiveButton = RactiveWidget.extend({
     standardButton:
       """
       <button id="{{id}}"
-              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
+              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
               {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
               type="button"
@@ -154,7 +154,7 @@ window.RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
+             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
              style="{{dims}}">
