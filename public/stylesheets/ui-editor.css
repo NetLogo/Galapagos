@@ -156,8 +156,15 @@
 
 .widget-edit-dropdown {
   font-size: 14px;
-  height:    20px;
+  height:    30px;
   margin:    0 10px;
+}
+
+.widget-edit-inputbox {
+  font-size:   20px;
+  height:      33px;
+  margin-left: 10px;
+  padding:      4px;
 }
 
 .widget-edit-textbox {

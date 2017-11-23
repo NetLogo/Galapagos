@@ -49,7 +49,7 @@ MonitorEditForm = EditForm.extend({
       <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-display">Display name:</label>
         <input  id="{{id}}-display" name="display" type="text" value="{{display}}"
-                style="flex-grow: 1; font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;" />
+                class="widget-edit-inputbox" style="flex-grow: 1;" />
       </div>
 
       <spacer height="15px" />
@@ -58,7 +58,7 @@ MonitorEditForm = EditForm.extend({
 
         <label for="{{id}}">Decimal places: </label>
         <input  id="{{id}}" name="precision" placeholder="(Required)"
-                style="font-size: 20px; height: 28px; padding: 2px;"
+                class="widget-edit-inputbox" style="width: 70px;"
                 type="number" value="{{precision}}" min=-30 max=17 step=1 required />
         <spacer width="50px" />
         <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>

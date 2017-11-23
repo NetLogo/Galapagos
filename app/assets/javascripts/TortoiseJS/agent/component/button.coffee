@@ -69,7 +69,7 @@ ButtonEditForm = EditForm.extend({
       <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-display">Display name:</label>
         <input  id="{{id}}-display" name="display" type="text" value="{{display}}"
-                style="flex-grow: 1; font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;" />
+                class="widget-edit-inputbox" style="flex-grow: 1;" />
       </div>
 
       <spacer height="15px" />
@@ -77,8 +77,7 @@ ButtonEditForm = EditForm.extend({
       <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-action-key">Action key:</label>
         <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
-                style="font-size: 20px; height: 26px; margin-left: 10px; padding: 4px;
-                       text-transform: uppercase; width: 30px;"
+                class="widget-edit-inputbox" style="text-transform: uppercase; width: 30px;"
                 on-keypress="handleActionKeyPress" />
       </div>
       """

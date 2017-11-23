@@ -19,7 +19,7 @@ OutputEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+      <formFontSize id="{{id}}-font-size" name="fontSize" style="margin-left: 0;" value="{{fontSize}}"/>
       """
 
   }
