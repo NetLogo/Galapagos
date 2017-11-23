@@ -146,7 +146,8 @@ window.RactiveSlider = RactiveWidget.extend({
             <input type="number"
                    style="width: {{widget.currentValue.toString().length + 3.0}}ch"
                    min={{widget.minValue}} max={{widget.maxValue}}
-                   value={{widget.currentValue}} step={{widget.stepValue}} />
+                   value={{widget.currentValue}} step={{widget.stepValue}}
+                   {{# isEditing }}disabled{{/}} />
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
         </div>

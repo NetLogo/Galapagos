@@ -700,7 +700,7 @@ template =
 
     <label class="netlogo-widget netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
       <span class="netlogo-label">model speed</span>
-      <input type="range" min=-1 max=1 step=0.01 value={{speed}} />
+      <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} />
       <tickCounter isVisible="{{primaryView.showTickCounter}}"
                    label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
     </label>
