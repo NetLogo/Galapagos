@@ -697,12 +697,12 @@ template =
         <div class="flex-column" style="align-items: flex-end; user-select: none;">
           <div class="netlogo-export-wrapper">
             <span style="margin-right: 4px;">File:</span>
-            <button class="netlogo-ugly-button" on-click="openNewFile">New</button>
+            <button class="netlogo-ugly-button" on-click="openNewFile"{{#isEditing}} disabled{{/}}>New</button>
           </div>
           <div class="netlogo-export-wrapper">
             <span style="margin-right: 4px;">Export:</span>
-            <button class="netlogo-ugly-button" on-click="exportnlogo">NetLogo</button>
-            <button class="netlogo-ugly-button" on-click="exportHtml">HTML</button>
+            <button class="netlogo-ugly-button" on-click="exportnlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
+            <button class="netlogo-ugly-button" on-click="exportHtml"{{#isEditing}} disabled{{/}}>HTML</button>
           </div>
         </div>
       {{/}}
