@@ -1,12 +1,20 @@
-genWidgetCreator = (name, widgetType, isEnabled = true) ->
-  { text: "Create #{name}", isEnabled, action: (context, mouseX, mouseY) -> context.fire('createWidget', widgetType, mouseX, mouseY) }
+genWidgetCreator = (name, widgetType, isEnabled = true, enabler = (-> false)) ->
+  { text: "Create #{name}", enabler, isEnabled
+  , action: (context, mouseX, mouseY) -> context.fire('createWidget', widgetType, mouseX, mouseY)
+  }
+
+alreadyHasA = (componentName) -> (ractive) ->
+  if ractive.parent?
+    alreadyHasAnOutput(ractive.parent)
+  else
+    not ractive.findComponent(componentName)?
 
 backgroundOptions = [ ["Button",  "button"]
                     , ["Chooser", "chooser"]
                     , ["Input",   "inputBox"]
                     , ["Label",   "textBox"]
                     , ["Monitor", "monitor"]
-                    , ["Output",  "output"]
+                    , ["Output",  "output", false, alreadyHasA('outputWidget')]
                     , ["Plot",    "plot", false]
                     , ["Slider",  "slider"]
                     , ["Switch",  "switch"]
@@ -77,7 +85,7 @@ window.RactiveContextMenu = Ractive.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           {{# options }}
-            {{# ..isEnabled }}
+            {{# (..enabler !== undefined && ..enabler(target)) || ..isEnabled }}
               <li class="context-menu-item" on-click="..action(target, mouseX, mouseY)">{{..text}}</li>
             {{ else }}
               <li class="context-menu-item disabled" on-click="ignoreClick">{{..text}}</li>
