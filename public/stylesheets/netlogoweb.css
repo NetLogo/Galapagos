@@ -9,6 +9,10 @@
   background-color: #BCBCE5;
   color: #888888;
 }
+.netlogo-button.interface-unlocked:active {
+  background-color: #BACFF3;
+  color: #707070
+}
 .netlogo-input {
   background-color: #8FE585;
 }
