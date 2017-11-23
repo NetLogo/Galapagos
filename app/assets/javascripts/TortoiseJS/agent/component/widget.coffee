@@ -23,7 +23,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   on: {
 
     editWidget: ->
-      if @get('isEditing')
+      if @get('isNotEditable') isnt true
         @fire('hideContextMenu')
         @findComponent('editForm').fire("showYourself")
         false
@@ -78,6 +78,20 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
       finally
         false
 
+  }
+
+  partials: {
+    editorOverlay: """
+                   {{ #isEditing }}
+                     <div draggable="true" style="{{dims}} z-index: 50;"
+                          on-click="@this.fire('selectWidget', @event)"
+                          on-contextmenu="@this.fire('showContextMenu', @event)"
+                          on-dblclick="@this.fire('editWidget')"
+                          on-dragstart="startWidgetDrag"
+                          on-drag="dragWidget"
+                          on-dragend="stopWidgetDrag"></div>
+                   {{/}}
+                   """
   }
 
 })

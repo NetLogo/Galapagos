@@ -82,6 +82,7 @@ window.RactiveLabel = RactiveWidget.extend({
     """
     {{>label}}
     {{>form}}
+    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length
@@ -93,10 +94,7 @@ window.RactiveLabel = RactiveWidget.extend({
     # BCH 7/28/2015
     label:
       """
-      <pre id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-text-box{{#isEditing}} interface-unlocked{{/}}"
+      <pre id="{{id}}" class="netlogo-widget netlogo-text-box{{#isEditing}} interface-unlocked{{/}}"
            style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>
       """

@@ -61,6 +61,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     """
     {{>switch}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" />
+    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length
@@ -68,11 +69,7 @@ window.RactiveSwitch = RactiveWidget.extend({
 
     switch:
       """
-      <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-             {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-switcher netlogo-input{{#isEditing}} interface-unlocked{{/}}"
-             style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
         <input type="checkbox" checked="{{ widget.currentValue }}" {{# isEditing }} disabled{{/}} />
         <span class="netlogo-label">{{ widget.display }}</span>
       </label>

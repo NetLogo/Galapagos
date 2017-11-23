@@ -123,6 +123,7 @@ window.RactiveButton = RactiveWidget.extend({
     <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
               idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
               startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+    {{>editorOverlay}}
     """
 
   partials: {
@@ -138,12 +139,8 @@ window.RactiveButton = RactiveWidget.extend({
 
     standardButton:
       """
-      <button id="{{id}}"
-              on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-              {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
+      <button id="{{id}}" type="button" style="{{dims}}"
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
-              type="button"
-              style="{{dims}}"
               on-click="@this.fire('activateButton', @this.get('widget.run'))">
         {{>buttonContext}}
         {{>label}}
@@ -153,11 +150,8 @@ window.RactiveButton = RactiveWidget.extend({
 
     foreverButton:
       """
-      <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-             {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
-             style="{{dims}}">
+      <label id="{{id}}" style="{{dims}}"
+             class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}}{{#isEditing}} interface-unlocked{{/}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}

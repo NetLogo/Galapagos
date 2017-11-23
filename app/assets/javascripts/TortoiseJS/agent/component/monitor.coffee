@@ -88,6 +88,7 @@ window.RactiveMonitor = RactiveWidget.extend({
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
               precision="{{widget.precision}}" source="{{widget.source}}" />
+    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length
@@ -95,10 +96,7 @@ window.RactiveMonitor = RactiveWidget.extend({
 
     monitor:
       """
-      <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-monitor netlogo-output{{#isEditing}} interface-unlocked{{/}}"
+      <div id="{{id}}" class="netlogo-widget netlogo-monitor netlogo-output{{#isEditing}} interface-unlocked{{/}}"
            style="{{dims}} font-size: {{widget.fontSize}}px;">
         <label class="netlogo-label {{errorClass}}" on-click=\"showErrors\">{{widget.display || widget.source}}</label>
         <output class="netlogo-value">{{widget.currentValue}}</output>

@@ -125,16 +125,14 @@ window.RactiveSlider = RactiveWidget.extend({
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               value="{{widget.default}}" variable="{{widget.variable}}" />
+    {{>editorOverlay}}
     """
 
   partials: {
 
     slider:
       """
-      <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-             {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
+      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"

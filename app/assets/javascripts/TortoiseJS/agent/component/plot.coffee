@@ -2,6 +2,7 @@ window.RactivePlot = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).deleteAndRecompile]
+  , isNotEditable:      true
   , menuIsOpen:         false
   , resizeCallback:     ((x, y) ->)
   }
@@ -46,13 +47,8 @@ window.RactivePlot = RactiveWidget.extend({
   template:
     """
     <div id="{{id}}" class="netlogo-widget netlogo-plot{{#isEditing}} interface-unlocked{{/}}"
-         on-contextmenu="@this.fire('showContextMenu', @event)"
          style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"></div>
-    {{ #isEditing }}
-      <div on-click="@this.fire('selectWidget', @event)"
-           draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag"
-           on-dragend="stopWidgetDrag" style="{{dims}} z-index: 50;"></div>
-    {{/}}
+    {{>editorOverlay}}
     """
   # coffeelint: enable=max_line_length
 

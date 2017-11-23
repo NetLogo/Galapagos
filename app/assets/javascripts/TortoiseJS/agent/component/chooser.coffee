@@ -63,11 +63,7 @@ window.RactiveChooser = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
-    <label id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-chooser netlogo-input{{#isEditing}} interface-unlocked{{/}}"
-           style="{{dims}}">
+    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
       <select class="netlogo-chooser-select" value="{{widget.currentValue}}"{{# isEditing }} disabled{{/}} >
       {{#widget.choices}}
@@ -76,6 +72,7 @@ window.RactiveChooser = RactiveWidget.extend({
       </select>
     </label>
     <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
+    {{>editorOverlay}}
     """
 
   partials: {

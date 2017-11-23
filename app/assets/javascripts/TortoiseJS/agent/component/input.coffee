@@ -135,6 +135,7 @@ window.RactiveInput = RactiveWidget.extend({
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
               />
+    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length
@@ -142,11 +143,7 @@ window.RactiveInput = RactiveWidget.extend({
 
     input:
       """
-      <label id="{{id}}"
-             on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)" on-dblclick="@this.fire('editWidget')"
-             {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-             class="netlogo-widget netlogo-input-box netlogo-input{{#isEditing}} interface-unlocked{{/}}"
-             style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
           <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" {{# isEditing }}disabled{{/}} />

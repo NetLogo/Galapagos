@@ -260,18 +260,14 @@ window.RactiveView = RactiveWidget.extend({
               patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
               framerate="{{widget.frameRate}}"
               isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+    {{>editorOverlay}}
     """
 
   partials: {
 
     view:
       """
-      <div id="{{id}}"
-           on-contextmenu="@this.fire('showContextMenu', @event)" on-click="@this.fire('selectWidget', @event)"
-           {{ #isEditing }} draggable="true" on-drag="dragWidget" on-dragstart="startWidgetDrag" on-dragend="stopWidgetDrag" {{/}}
-           class="netlogo-widget netlogo-view-container{{#isEditing}} interface-unlocked{{/}}"
-           style="{{dims}}">
-      </div>
+      <div id="{{id}}" class="netlogo-widget netlogo-view-container{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}"></div>
       """
 
   }
