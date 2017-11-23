@@ -116,22 +116,24 @@ window.EditForm = Ractive.extend({
   template:
     """
     {{# visible }}
-    <div id="{{id}}"
-         class="widget-edit-popup widget-edit-text"
-         style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}"
-         on-contextmenu="blockContextMenu" on-keydown="handleKey"
-         draggable="true" on-drag="dragEditDialog" on-dragstart="startEditDrag"
-         on-dragend="stopEditDrag"
-         tabindex="0">
-      <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancelEdit">X</div>
-      <form class="widget-edit-form" on-submit="submit">
-        <div class="widget-edit-form-title">{{>title}}</div>
-        {{>widgetFields}}
-        <div class="widget-edit-form-button-container">
-          <input class="widget-edit-text" type="submit" value="OK" />
-          <input class="widget-edit-text" type="button" on-click="cancelEdit" value="Cancel" />
-        </div>
-      </form>
+    <div class="widget-edit-form-overlay">
+      <div id="{{id}}"
+           class="widget-edit-popup widget-edit-text"
+           style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}"
+           on-contextmenu="blockContextMenu" on-keydown="handleKey"
+           draggable="true" on-drag="dragEditDialog" on-dragstart="startEditDrag"
+           on-dragend="stopEditDrag"
+           tabindex="0">
+        <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancelEdit">X</div>
+        <form class="widget-edit-form" on-submit="submit">
+          <div class="widget-edit-form-title">{{>title}}</div>
+          {{>widgetFields}}
+          <div class="widget-edit-form-button-container">
+            <input class="widget-edit-text" type="submit" value="OK" />
+            <input class="widget-edit-text" type="button" on-click="cancelEdit" value="Cancel" />
+          </div>
+        </form>
+      </div>
     </div>
     {{/}}
     """
