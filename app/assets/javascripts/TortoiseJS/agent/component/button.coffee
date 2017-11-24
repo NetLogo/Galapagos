@@ -28,7 +28,8 @@ ButtonEditForm = EditForm.extend({
   }
 
   validate: (form) ->
-    key = form.actionKey.value
+    key    = form.actionKey.value
+    source = @findComponent('formCode').findComponent('codeContainer').get('code')
     {
       triggers: {
         buttonKind: [WidgetEventGenerators.recompile]
@@ -40,7 +41,7 @@ ButtonEditForm = EditForm.extend({
       , disableUntilTicksStart: form.startsDisabled.checked
       ,                display: (if form.display.value isnt "" then form.display.value else undefined)
       ,                forever: form.forever.checked
-      ,                 source: @findComponent('formCode').findComponent('codeContainer').get('code')
+      ,                 source: (if source isnt "" then source else undefined)
       }
     }
 
