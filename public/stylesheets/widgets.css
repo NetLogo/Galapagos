@@ -434,6 +434,7 @@
 
 .netlogo-multiline-input {
   flex-grow: 1;
+  height:    0; /* This is a hack to get Input widget labels the right heights in Firefox --JAB (11/23/17) */
   margin:    4px;
   resize:    none;
 }
