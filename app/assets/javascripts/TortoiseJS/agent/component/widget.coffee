@@ -49,29 +49,36 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
 
         widget = @get('widget')
 
-        triggerNames = Object.keys(triggers)
+        widgets       = Object.values(this.parent.get('widgetObj'))
+        isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
 
-        oldies = triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
+        if values.variable? and widgets.some(isTroublesome)
+          @fire('rejectDuplicateVar', values.variable)
+        else
 
-        for k, v of values
-          widget[k] = v
+          triggerNames = Object.keys(triggers)
 
-        for k, v of proxies
-          widget.proxies[k] = v
+          oldies = triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
 
-        eventArraysArray =
-          for name in triggerNames when getByPath(widget)(name) isnt oldies[name]
-            triggers[name].map((f) -> f(oldies[name], getByPath(widget)(name)))
+          for k, v of values
+            widget[k] = v
 
-        events = [].concat(eventArraysArray...)
+          for k, v of proxies
+            widget.proxies[k] = v
 
-        uniqueEvents =
-          events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
+          eventArraysArray =
+            for name in triggerNames when getByPath(widget)(name) isnt oldies[name]
+              triggers[name].map((f) -> f(oldies[name], getByPath(widget)(name)))
 
-        for event in uniqueEvents
-          event.run(this, widget)
+          events = [].concat(eventArraysArray...)
 
-        @fire('updateWidgets')
+          uniqueEvents =
+            events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
+
+          for event in uniqueEvents
+            event.run(this, widget)
+
+          @fire('updateWidgets')
 
       catch ex
         console.error(ex)

@@ -217,6 +217,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     @set("lastDragY", clientY)
   )
 
+  ractive.on('*.rejectDuplicateVar', (_, varName) ->
+    showErrors(["There is already a widget of a different type with a variable named '#{varName}'"])
+  )
+
   ractive.on('checkFocus', (_, node) ->
     @set('hasFocus', document.activeElement is node)
   )
