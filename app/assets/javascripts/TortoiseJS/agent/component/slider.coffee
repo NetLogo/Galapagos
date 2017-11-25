@@ -11,10 +11,14 @@ FlexColumn = Ractive.extend({
 SliderEditForm = EditForm.extend({
 
   data: -> {
-    direction: undefined # String
+    bottom:    undefined # Number
+  , direction: undefined # String
+  , left:      undefined # Number
   , maxCode:   undefined # String
   , minCode:   undefined # String
+  , right:     undefined # Number
   , stepCode:  undefined # String
+  , top:       undefined # Number
   , units:     undefined # String
   , value:     undefined # Number
   , variable:  undefined # String
@@ -34,7 +38,22 @@ SliderEditForm = EditForm.extend({
   }
 
   validate: (form) ->
+
     value = form.value.valueAsNumber
+
+    oldTop    = @get('top')
+    oldRight  = @get('right')
+    oldBottom = @get('bottom')
+    oldLeft   = @get('left')
+
+    [right, bottom] =
+      if @get('direction') is 'horizontal' and form.vertical.checked
+        [oldLeft + (oldBottom - oldTop), oldTop + (oldRight - oldLeft)]
+      else if @get('direction') is 'vertical' and not form.vertical.checked
+        [oldTop + (oldRight - oldLeft), oldLeft + (oldBottom - oldTop)]
+      else
+        [oldRight, oldBottom]
+
     {
       triggers: {
             max:  [WidgetEventGenerators.recompile]
@@ -43,12 +62,14 @@ SliderEditForm = EditForm.extend({
       , variable: [WidgetEventGenerators.recompile, WidgetEventGenerators.rename]
       }
     , values: {
-        currentValue: value
+              bottom
+      , currentValue: value
       ,      default: value
       ,    direction: (if form.vertical.checked then "vertical" else "horizontal")
       ,      display: form.variable.value
       ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
       ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
+      ,        right
       ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
       ,        units: (if form.units.value isnt "" then form.units.value else undefined)
       ,     variable: form.variable.value.toLowerCase()
@@ -124,7 +145,8 @@ window.RactiveSlider = RactiveWidget.extend({
     {{>slider}}
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
-              value="{{widget.default}}" variable="{{widget.variable}}" />
+              top="{{widget.top}}" right="{{widget.right}}" bottom="{{widget.bottom}}"
+              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}" />
     {{>editorOverlay}}
     """
 
