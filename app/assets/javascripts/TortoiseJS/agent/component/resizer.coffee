@@ -60,7 +60,7 @@ window.RactiveResizer = Ractive.extend({
   on: {
 
     startHandleDrag: (event) ->
-      CommonDrag.dragstart.call(this, event, (x, y) =>
+      CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
         @lastX = x
         @lastY = y
       )

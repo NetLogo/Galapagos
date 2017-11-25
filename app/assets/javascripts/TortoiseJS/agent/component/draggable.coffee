@@ -2,19 +2,28 @@
 # and these functions should be called with `call(<Ractive>, <args...>)` --JAB (11/23/17)
 window.CommonDrag = {
 
-  dragstart: ({ original: { clientX, clientY, dataTransfer, view } }, callback) ->
+  dragstart: ({ original }, checkIsValid, callback) ->
 
-    # The invisible GIF is used to hide the ugly "ghost" images that appear by default when dragging
-    # The `setData` thing is done because, without it, Firefox feels that the drag hasn't really begun
-    # So we give them some bogus drag data and get on with our lives. --JAB (11/22/17)
-    invisiGIF = document.createElement('img')
-    invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-    dataTransfer.setDragImage(invisiGIF, 0, 0)
-    dataTransfer.setData('text/plain', '')
+    { clientX, clientY, dataTransfer, view } = original
 
-    @view         = view
-    @lastUpdateMs = (new Date).getTime()
-    callback(clientX, clientY)
+    if checkIsValid(clientX, clientY)
+
+      # The invisible GIF is used to hide the ugly "ghost" images that appear by default when dragging
+      # The `setData` thing is done because, without it, Firefox feels that the drag hasn't really begun
+      # So we give them some bogus drag data and get on with our lives. --JAB (11/22/17)
+      invisiGIF = document.createElement('img')
+      invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+      dataTransfer.setDragImage(invisiGIF, 0, 0)
+      dataTransfer.setData('text/plain', '')
+
+      @view         = view
+      @lastUpdateMs = (new Date).getTime()
+      callback(clientX, clientY)
+
+    else
+
+      original.preventDefault()
+      false
 
     return
 
@@ -76,7 +85,7 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
   on: {
 
     startWidgetDrag: (event) ->
-      CommonDrag.dragstart.call(this, event, (x, y) =>
+      CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
         @fire('selectComponent', event.component)
         @startLeft    = @get(  'left') - x
         @startRight   = @get( 'right') - x

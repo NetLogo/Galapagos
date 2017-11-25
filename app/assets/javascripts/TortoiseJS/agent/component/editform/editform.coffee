@@ -80,7 +80,13 @@ window.EditForm = Ractive.extend({
       false
 
     startEditDrag: (event) ->
-      CommonDrag.dragstart.call(this, event, (x, y) =>
+      checkIsValid = (x, y) ->
+        elem = document.elementFromPoint(x, y)
+        switch elem.tagName.toLowerCase()
+          when "input"    then elem.type.toLowerCase() isnt "number" and elem.type.toLowerCase() isnt "text"
+          when "textarea" then false
+          else                 true
+      CommonDrag.dragstart.call(this, event, checkIsValid, (x, y) =>
         @startX = @get('xLoc') - x
         @startY = @get('yLoc') - y
       )
