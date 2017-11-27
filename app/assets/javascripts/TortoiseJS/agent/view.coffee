@@ -104,6 +104,7 @@ class View
     @visibleCanvas.classList.add('netlogo-canvas', 'unselectable')
     @visibleCanvas.width = 500
     @visibleCanvas.height = 500
+    @visibleCanvas.target = null
     @visibleCanvas.style.width = "100%"
     @visibleCtx = @visibleCanvas.getContext('2d')
     @_zoomLevel = null
@@ -236,6 +237,9 @@ class View
     @visibleCanvas.height = @canvas.height
     @visibleCanvas.style.width = @canvas.style.width
     @visibleCanvas.style.height = @canvas.style.height
+    @visibleCanvas.target = target
+    @visibleCanvas.wrapX = @wrapX
+    @visibleCanvas.wrapY = @wrapY
     if target?
       width = @visibleCanvas.width
       height = @visibleCanvas.height

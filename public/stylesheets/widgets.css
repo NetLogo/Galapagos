@@ -1,3 +1,4 @@
+
 /*
  * General-purpose widget styles, applied regardless of what the widget "theme" is
  */
@@ -202,23 +203,31 @@
   padding: 6px 8px;
 }
 
-/* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
- * Center with text, instead of becoming horizontally scrollable, the input grows in width, even if it means becoming
- * larger than the input's container.  So the input (rather than the text) just flows off the side of the screen.
- * If I go down a level in the CSS and set the width on the CodeMirror instance directly, that kind of fixes the
- * problem, but only if I know the expect width that I want (which I don't).  However, if I come here and set the
- * width to *any* numeric value, the input always fits exactly the amount of space it's supposed to use.  Fricken weird.
- * --JAB (10/12/17)
- */
 .netlogo-command-center-editor {
-  height: 1.25em;
+  height:    1.25em;
   flex-grow: 1;
-  width: 42px; /* Arbitrary as hell; see comment above. --JAB (10/12/17) */
+  width:     87%;
 }
 
 .netlogo-command-center-editor .CodeMirror {
   border: 1px solid #878782;
   height: auto;
+}
+
+.netlogo-code-input .CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+
+.netlogo-inspector-editor .CodeMirror {
+  border: 1px solid #999;
+}
+
+.netlogo-inspector-var-editor .CodeMirror {
+  border: 1px solid #999;
+  height: auto;
+  width: 183px;
+  font-size: 14px;
 }
 
 .netlogo-output-widget {
@@ -236,6 +245,7 @@
 
 .netlogo-command-center-input {
   display: flex;
+  flex-direction: row;
   flex-shrink: 0;
 }
 
@@ -481,6 +491,62 @@
 
 .netlogo-widget-error:hover {
   cursor: pointer;
+}
+
+.netlogo-modal-popup {
+  background-color: white;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       5px 5px 8px rgba(60, 60, 60, 0.7);
+  font-size:        20px;
+  position:         absolute;
+  outline:          none;
+  width:            450px;
+  z-index:          100;
+}
+
+.inspection-window-var-label {
+  margin-right:  10px;
+  max-width:     105px;
+  min-width:     105px;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  user-select:   none;
+  white-space:   nowrap;
+}
+
+.netlogo-dialog-title-strip {
+  background:    #ffff9a;
+  border-radius: 5px 5px 0px 0px;
+  cursor:        default;
+  font-weight:   bold;
+  height:        30px;
+  text-align:    center;
+  user-select:   none;
+}
+
+.netlogo-dialog-nav-options {
+  display:     flex;
+  position:    absolute;
+  right:       10px;
+  top:         4px;
+  user-select: none;
+}
+
+.netlogo-dialog-nav-option {
+  color:       #7F7F7F;
+  cursor:      pointer;
+  font-weight: bold;
+}
+
+.netlogo-dialog-nav-option:hover {
+  color: black;
+}
+
+.vertically-centered {
+  position:  relative;
+  top:       50%;
+  transform: perspective(1px) translateY(-50%);
 }
 
 .CodeMirror {

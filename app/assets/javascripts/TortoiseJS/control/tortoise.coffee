@@ -49,6 +49,7 @@ newSession = (container, modelResult, readOnly = false, filename = "export", las
     toNetLogoWebMarkdown(modelResult.info), readOnly, filename)
   window.modelConfig ?= {}
   modelConfig.plotOps      = widgetController.plotOps
+  modelConfig.inspect   = widgetController.inspect
   modelConfig.importExport = widgetController.importExport
   modelConfig.mouse        = widgetController.mouse
   modelConfig.print        = { write: widgetController.write }

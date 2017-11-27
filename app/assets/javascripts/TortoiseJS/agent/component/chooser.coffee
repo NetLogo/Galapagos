@@ -1,4 +1,4 @@
-ChooserEditForm = EditForm.extend({
+ChooserEditForm = RactiveOnTopDialog.extend({
 
   data: -> {
     choices: undefined # String

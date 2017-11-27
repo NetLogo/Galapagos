@@ -18,6 +18,7 @@ class window.SessionLite
     @widgetController.ractive.on('openNewFile',          (_, event)     => @openNewFile())
     @widgetController.ractive.on('console.run',          (_, code)      => @run(code))
     @widgetController.ractive.on('editingModeChangedTo', (_, isEditing) => @setEventLoop(not isEditing))
+    @widgetController.ractive.on('run-inspector-code',   (_, code)      => @run(code))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
     @drawEveryFrame = false
 

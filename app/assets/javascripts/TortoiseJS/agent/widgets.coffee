@@ -11,7 +11,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   # the widgets are filled out. So, we close over the `controller` variable
   # and then fill it out at the end when we actually make the thing.
   # BCH 11/10/2014
-  controller       = null
+  controller        = null
+  inspectionWindows = {}
   updateUICallback = ->
     controller.redraw()
     controller.updateWidgets()
@@ -87,6 +88,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     components: {
 
       console:       RactiveConsoleWidget
+    , codeInput:     RactiveNetLogoCodeInput
     , contextMenu:   RactiveContextMenu
     , editableTitle: RactiveModelTitle
     , editor:        RactiveEditorWidget
@@ -158,6 +160,10 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
           model.consoleOutput += str
   }
 
+  inspect = {
+    inspect: (agent) -> ractive.fire('inspect-agent', agent)
+  }
+
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
   # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
   dialog = {
@@ -177,6 +183,11 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
         )
 
       runningForeverButtons.forEach((button) -> button.running = false)
+
+      for _, iWindow of inspectionWindows
+        iWindow.teardown()
+
+      inspectionWindows = {}
 
       return
 
@@ -250,6 +261,27 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     false
   )
 
+  ractive.on('inspect-agent', (_, agent) ->
+    createNewWindow =
+      ->
+        temp =
+          new RactiveInspectionWindow({
+            el:     container.querySelector('.netlogo-model')
+          , append: true
+          , data:   -> { agent, view: viewController.view.visibleCanvas }
+          })
+        temp.on('*.run-code', (_, code) -> ractive.fire('run-inspector-code', code))
+        inspectionWindows[agent.toString()] = temp
+        temp
+    component = inspectionWindows[agent.toString()] ? createNewWindow()
+    component.fire('showYourself')
+    return
+  )
+
+  ractive.on('update-inspect', ->
+    w.fire('redraw') for _, w of inspectionWindows
+  )
+
   ractive.on('*.update-topology'
   , ->
       { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.model.world
@@ -272,7 +304,7 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.on('*.set-patch-size', (_, patchSize) -> setPatchSize(patchSize))
 
   controller = new WidgetController(ractive, model, viewController, plotOps, mouse
-                                  , write, output, dialog, worldConfig, importExport)
+                                  , write, output, dialog, inspect, worldConfig, importExport)
 
   ractive.on('*.redraw-view'
   , ->
@@ -323,7 +355,7 @@ window.handlingErrors = (f) -> ->
 class window.WidgetController
 
   constructor: (@ractive, @model, @viewController, @plotOps
-              , @mouse, @write, @output, @dialog, @worldConfig, @importExport) ->
+              , @mouse, @write, @output, @dialog, @inspect, @worldConfig, @importExport) ->
 
     for display, chartOps of @plotOps
       component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
@@ -470,6 +502,7 @@ class window.WidgetController
   # () -> Unit
   redraw: () ->
     if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
+    @ractive.fire('update-inspect')
 
   # () -> Unit
   teardown: -> @ractive.teardown()
