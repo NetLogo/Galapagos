@@ -78,6 +78,7 @@ class window.AgentStreamController
     @patchDrawer.repaint(@model)
     @drawingLayer.repaint(@model)
     @turtleDrawer.repaint(@model)
+    @view.saveCleanCanvas()
     @spotlightDrawer.repaint(@model)
     @view.repaint(@model)
 
@@ -111,6 +112,15 @@ class View
 
   transformToWorld: (world) ->
     @transformCanvasToWorld(world, @canvas, @ctx)
+
+  saveCleanCanvas: ->
+    @cleanCanvas = document.createElement('canvas')
+    @cleanCtx = @cleanCanvas.getContext('2d')
+    @cleanCanvas.width = @canvas.width
+    @cleanCanvas.height = @canvas.height
+    @cleanCanvas.style.width = @canvas.style.width
+    @cleanCanvas.style.height = @canvas.style.height
+    @cleanCtx.drawImage(@canvas, 0, 0)
 
   transformCanvasToWorld: (world, canvas, ctx) ->
     # 2 seems to look significantly better even on devices with devicePixelratio < 1. BCH 7/12/2015
@@ -240,6 +250,7 @@ class View
     @visibleCanvas.target = target
     @visibleCanvas.wrapX = @wrapX
     @visibleCanvas.wrapY = @wrapY
+    @visibleCanvas.canvas = @cleanCanvas
     if target?
       width = @visibleCanvas.width
       height = @visibleCanvas.height

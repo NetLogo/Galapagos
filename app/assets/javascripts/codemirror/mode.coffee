@@ -178,6 +178,8 @@ commands = [
   'stamp',
   'stamp-erase',
   'stop',
+  'stop-inspecting',
+  'stop-inspecting-dead-agents',
   'tick',
   'tick-advance',
   'tie',

@@ -269,11 +269,11 @@ class MiniView
 
     [agentX, agentY] = @_agent.getCoords()
 
-    { height: cHeight, width: cWidth, target             } = @_fullView
+    { height: cHeight, width: cWidth, target, canvas     } = @_fullView
     { height: tHeight, width: tWidth, minPxcor, maxPycor } = world.topology
 
-    proportionX = ((agentX - (if target then target.xcor else 0)) - (minPxcor - 0.5)) / tWidth
-    proportionY = ((maxPycor + 0.5) - (agentY - (if target then target.ycor else 0))) / tHeight
+    proportionX = ((agentX - (if target then 0 else 0)) - (minPxcor - 0.5)) / tWidth
+    proportionY = ((maxPycor + 0.5) - (agentY - (if target then 0 else 0))) / tHeight
 
     x = cWidth  * proportionX
     y = cHeight * proportionY
@@ -282,10 +282,9 @@ class MiniView
 
   # Unit -> Unit
   redraw: ->
-
     @_getFocalPoint()
 
-    { target, wrapX, wrapY }  = @_fullView
+    { target, wrapX, wrapY, canvas }  = @_fullView
 
     zoomFactor = (ZoomMax - @_scale) / ZoomMax
     maxDim     = Math.max(@_fullView?.width ? 0, @_fullView?.height ? 0)
@@ -297,8 +296,8 @@ class MiniView
     context.save()
     context.clearRect(0, 0, @_canvas.width, @_canvas.height)
 
-    xs = if wrapX then [0, @_fullView?.width,  2 * @_fullView?.width ] else [left]
-    ys = if wrapY then [0, @_fullView?.height, 2 * @_fullView?.height] else [top]
+    xs = if wrapX then [left - @_fullView?.width, left, left + @_fullView?.width ] else [left]
+    ys = if wrapY then [top  - @_fullView?.height, top, top  + @_fullView?.height] else [top]
 
     tempCanvas        = document.createElement('canvas')
     tempCanvas.width  = @_fullView?.width * 3
@@ -306,11 +305,14 @@ class MiniView
 
     for dx in xs
       for dy in ys
-        tempCanvas.getContext('2d').drawImage(@_fullView, dx, dy)
+        # tempCanvas.getContext('2d').drawImage(@_fullView, dx, dy)
+        context.drawImage(canvas
+                        , dx, dy, length, length
+                        , 0, 0, @_canvas.width, @_canvas.height)
 
-    context.drawImage(tempCanvas
-                    , left + @_fullView?.width, top + @_fullView?.height, length, length
-                    , 0, 0, @_canvas.width, @_canvas.height)
+    # context.drawImage(tempCanvas
+    #                 , left + @_fullView?.width, top + @_fullView?.height, length, length
+    #                 , 0, 0, @_canvas.width, @_canvas.height)
 
     context.restore()
 

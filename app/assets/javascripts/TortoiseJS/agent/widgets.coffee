@@ -161,7 +161,9 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   }
 
   inspect = {
-    inspect: (agent) -> ractive.fire('inspect-agent', agent)
+    inspect:        (agent)   -> ractive.fire('inspect-agent', agent)
+    stopInspecting: (agent)   -> ractive.fire('stop-inspecting', agent)
+    stopInspectingDeadAgents: -> ractive.fire('stop-inspecting-dead-agents')
   }
 
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
@@ -276,6 +278,19 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
     component = inspectionWindows[agent.toString()] ? createNewWindow()
     component.fire('showYourself')
     return
+  )
+
+  ractive.on('stop-inspecting', (_, agent) ->
+    if (inspectionWindows[agent.toString()])
+      inspectionWindows[agent.toString()].teardown()
+      delete inspectionWindows[agent.toString()]
+  )
+
+  ractive.on('stop-inspecting-dead-agents', ->
+    for _, w of inspectionWindows
+      if w.get('agent').id == -1
+        w.teardown()
+        delete inspectionWindows[w.get('agent').toString()]
   )
 
   ractive.on('update-inspect', ->
