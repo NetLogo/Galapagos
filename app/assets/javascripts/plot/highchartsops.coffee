@@ -47,8 +47,9 @@ class window.HighchartsOps extends PlotOps
         }
         tooltip: {
           formatter: ->
-            y = Number(Highcharts.numberFormat(@point.y, 3, '.', ''))
-            "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{y}</b><br/>"
+            x = Number(Highcharts.numberFormat(@point.x, 2, '.', ''))
+            y = Number(Highcharts.numberFormat(@point.y, 2, '.', ''))
+            "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{x}, #{y}</b><br/>"
         },
         xAxis: {
           title: {
