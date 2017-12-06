@@ -27,12 +27,14 @@ window.EditForm = Ractive.extend({
   on: {
 
     submit: ({ node }) ->
-      @set('amProvingMyself', false)
-      newProps = @validate(node)
-      if newProps?
-        @fire('updateWidgetValue', newProps)
-      @fire('activateCloakingDevice')
-      false
+      try
+        @set('amProvingMyself', false)
+        newProps = @validate(node)
+        if newProps?
+          @fire('updateWidgetValue', newProps)
+      finally
+        @fire('activateCloakingDevice')
+        false
 
     showYourself: ->
 
