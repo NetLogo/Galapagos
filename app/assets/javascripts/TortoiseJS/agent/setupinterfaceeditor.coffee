@@ -16,10 +16,11 @@ window.setupInterfaceEditor =
     deleteSelected = ->
       selected          = ractive.findComponent('resizer').get('target')
       hasNoEditWindowUp = not document.querySelector('.widget-edit-popup')?
-      if ractive.get('isEditing') and selected? and selected.get('widget')? and hasNoEditWindowUp
+      widget            = selected.get('widget')
+      if ractive.get('isEditing') and selected? and widget? and (widget.type isnt "view") and hasNoEditWindowUp
         unlockSelection()
         deselectThoseWidgets()
-        ractive.fire('unregisterWidget', selected.get('widget').id)
+        ractive.fire('unregisterWidget', widget.id)
       return
 
     justSelectIt = (event) -> ractive.findComponent('resizer').setTarget(event.component)
