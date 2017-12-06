@@ -42,11 +42,13 @@ window.setupInterfaceEditor =
       return
     )
 
-    hideContextMenu = ->
-      contextMenu = ractive.findComponent('contextMenu')
-      if contextMenu.get('visible')
-        contextMenu.fire('coverThineself')
-        unlockSelection()
+    hideContextMenu = (event) ->
+      if event?.button isnt 2 # Thanks, Firefox, you freaking moron. --JAB (12/6/17)
+                              # See this ticket: https://bugzilla.mozilla.org/show_bug.cgi?id=184051
+        contextMenu = ractive.findComponent('contextMenu')
+        if contextMenu.get('visible')
+          contextMenu.fire('coverThineself')
+          unlockSelection()
       return
 
     document.addEventListener("click", hideContextMenu)
@@ -69,11 +71,11 @@ window.setupInterfaceEditor =
         hasClass = arrayContains(classes)
 
         if (not hasClass("netlogo-widget")) and (not hasClass("netlogo-widget-container"))
-          hideContextMenu()
+          hideContextMenu(e)
 
     )
 
-    window.onkeyup = (e) -> if e.keyCode is 27 then hideContextMenu()
+    window.onkeyup = (e) -> if e.keyCode is 27 then hideContextMenu(e)
 
     ractive.on('toggleInterfaceLock'
     , ->
