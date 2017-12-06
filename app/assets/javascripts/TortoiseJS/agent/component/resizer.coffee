@@ -40,9 +40,11 @@ window.RactiveResizer = Ractive.extend({
   # (Element) => Unit
   setTarget: (newTarget) ->
     if not @isLocked
-      @clearTarget()
-      @set('target', newTarget)
-      newTarget.find('.netlogo-widget').classList.add('widget-selected')
+      setTimeout((=> # Use `setTimeout`, so any pending `clearTarget` resolves first --JAB (12/6/17)
+        @clearTarget()
+        @set('target', newTarget)
+        newTarget.find('.netlogo-widget').classList.add('widget-selected')
+      ), 0)
     return
 
   # (Element) => Unit
