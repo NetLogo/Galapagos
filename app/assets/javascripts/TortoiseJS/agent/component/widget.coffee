@@ -40,7 +40,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
     "*.hasBeenProvenUnworthy": ->
       @fire('unregisterWidget', @get('widget').id) # Original event name: "cutMyLifeIntoPieces" --JAB (11/8/17)
 
-    "*.updateWidgetValue": (_, { proxies = {}, triggers = {}, values = {}}) ->
+    "*.updateWidgetValue": ({ proxies = {}, triggers = {}, values = {}}) ->
 
       getByPath = (obj) -> (path) ->
         path.split('.').reduce(((acc, x) -> acc[x]), obj)
