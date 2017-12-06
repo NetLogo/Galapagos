@@ -1,9 +1,10 @@
 window.RactiveEditorWidget = Ractive.extend({
 
   data: -> {
-    code:             undefined # String
-  , lastCompiledCode: undefined # String
-  , readOnly:         undefined # Boolean
+    code:              undefined # String
+  , lastCompiledCode:  undefined # String
+  , lastCompileFailed:     false # Boolean
+  , readOnly:          undefined # Boolean
   }
 
   components: {
@@ -11,7 +12,7 @@ window.RactiveEditorWidget = Ractive.extend({
   }
 
   computed: {
-    isStale: '${code} !== ${lastCompiledCode}'
+    isStale: '(${code} !== ${lastCompiledCode}) || ${lastCompileFailed}'
   }
 
   # (String) => Unit
