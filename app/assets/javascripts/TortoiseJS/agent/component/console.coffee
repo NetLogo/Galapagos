@@ -132,7 +132,6 @@ window.RactiveNetLogoCodeInput = Ractive.extend({
 })
 
 window.RactiveConsoleWidget = Ractive.extend({
-
   data: -> {
     input: '',
     isEditing: undefined # Boolean (for widget editing)
@@ -144,44 +143,82 @@ window.RactiveConsoleWidget = Ractive.extend({
     output: ''
   }
 
-  isolated: true
-
   computed: {
     agentType: {
-      get: '${agentTypes}[${agentTypeIndex}]'
+      get: -> @get('agentTypes')[@get('agentTypeIndex')]
       set: (val) ->
         index = @get('agentTypes').indexOf(val)
         if index >= 0
           @set('agentTypeIndex', index)
     }
-    cmConfig: {
-      get: -> { extraKeys: {
-        Tab: => @fire('tab-key')
-       } }
-    }
   }
 
   components: {
-    editor:    RactiveNetLogoCodeInput
-  , printArea: RactivePrintArea
+    printArea: RactivePrintArea
   }
 
-  oninit: ->
+  onrender: ->
+    changeAgentType = =>
+      @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
 
-    @on('clear-output', ->
+    moveInHistory = (index) =>
+      newIndex = @get('historyIndex') + index
+      if newIndex < 0
+        newIndex = 0
+      else if newIndex > @get('history').length
+        newIndex = @get('history').length
+      if @get('historyIndex') == @get('history').length
+        @set('workingEntry', {agentType: @get('agentType'), input: @get('input')})
+      if newIndex == @get('history').length
+        @set(@get('workingEntry'))
+      else
+        entry = @get('history')[newIndex]
+        @set(entry)
+      @set('historyIndex', newIndex)
+
+    run = =>
+      input = @get('input')
+      if input.trim().length > 0
+        agentType = @get('agentType')
+        if Converter.isReporter(input)
+          input = "show #{input}"
+        @set('output', "#{@get('output')}#{agentType}> #{input}\n")
+        history = @get('history')
+        lastEntry = if history.length > 0 then history[history.length - 1] else {agentType: '', input: ''}
+        if lastEntry.input != input or lastEntry.agentType != agentType
+          history.push({agentType, input})
+        @set('historyIndex', history.length)
+        if agentType != 'observer'
+          input = "ask #{agentType} [ #{input} ]"
+        @fire('run', input)
+        @set('input', '')
+        @set('workingEntry', {})
+
+    @on('clear-history', ->
       @set('output', '')
     )
 
-    @on('editor.add-output-line', (_, askee, output) ->
-      @set('output', "#{@get('output')}#{askee}> #{output}\n")
+    commandCenterEditor = CodeMirror(@find('.netlogo-command-center-editor'), {
+      value: @get('input'),
+      mode:  'netlogo',
+      theme: 'netlogo-default',
+      scrollbarStyle: 'null',
+      extraKeys: {
+        Enter: run
+        Up:    => moveInHistory(-1)
+        Down:  => moveInHistory(1)
+        Tab:   => changeAgentType()
+      }
+    })
+
+    commandCenterEditor.on('change', =>
+      @set('input', commandCenterEditor.getValue())
     )
 
-    @on('editor.run-code', (_, code) ->
-      @fire('run', code)
-    )
-
-    @on('editor.tab-key', ->
-      @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
+    @observe('input', (newValue) ->
+      if newValue != commandCenterEditor.getValue()
+        commandCenterEditor.setValue(newValue)
+        commandCenterEditor.execCommand('goLineEnd')
     )
 
     @observe('isEditing', (isEditing) ->
@@ -202,7 +239,7 @@ window.RactiveConsoleWidget = Ractive.extend({
   template:
     """
     <div class='netlogo-tab-content netlogo-command-center'
-         intro='grow:{disable:"console-toggle"}' outro='shrink:{disable:"console-toggle"}'>
+         grow-in='{disable:"console-toggle"}' shrink-out='{disable:"console-toggle"}'>
       <printArea id='command-center-print-area' output='{{output}}'/>
       <div class='netlogo-command-center-input'>
         <label>
@@ -212,11 +249,9 @@ window.RactiveConsoleWidget = Ractive.extend({
           {{/}}
           </select>
         </label>
-        <editor id='command-center-editor' askee="{{agentType}}" class="netlogo-command-center-editor"
-                 />
-        <button on-click='clear-output'>Clear</button>
+        <div class="netlogo-command-center-editor"></div>
+        <button on-click='clear-history'>Clear</button>
       </div>
     </div>
     """
-
 })
