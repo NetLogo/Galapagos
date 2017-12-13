@@ -34,7 +34,7 @@ window.EditForm = Ractive.extend({
           @fire('updateWidgetValue', newProps)
       finally
         @fire('activateCloakingDevice')
-        false
+        return false
 
     showYourself: ->
 

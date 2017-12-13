@@ -83,7 +83,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
       catch ex
         console.error(ex)
       finally
-        false
+        return false
 
   }
 
