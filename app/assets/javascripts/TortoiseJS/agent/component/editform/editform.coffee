@@ -112,10 +112,6 @@ window.EditForm = Ractive.extend({
         false
       return
 
-    blockContextMenu: ({ original }) ->
-      original.preventDefault()
-      false
-
   }
 
   getElem: ->
@@ -128,7 +124,7 @@ window.EditForm = Ractive.extend({
       <div id="{{id}}"
            class="widget-edit-popup widget-edit-text"
            style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}"
-           on-contextmenu="blockContextMenu" on-keydown="handleKey"
+           on-keydown="handleKey"
            draggable="true" on-drag="dragEditDialog" on-dragstart="startEditDrag"
            on-dragend="stopEditDrag"
            tabindex="0">
