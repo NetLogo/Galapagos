@@ -87,7 +87,7 @@ window.setupInterfaceEditor =
 
     handleContextMenu =
       (a, b, c) ->
-        if @get("isEditing")
+        if @get("isEditing") and not @findAllComponents('editForm').some((form) -> form.get('visible'))
 
           [{ component }, trueEvent] =
             if not c?
