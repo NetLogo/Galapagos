@@ -131,7 +131,7 @@ ViewEditForm = EditForm.extend({
 
     coordColumn:
       """
-      <div class="flex-column" style="width: 46%;">
+      <div class="flex-column">
 
         <coordInput id="{{id}}-min-x" label="min-pxcor:" name="minX" value="{{minX}}"
                     min="-50000" max="0" hint="minimum x coordinate for patches" />
@@ -150,7 +150,7 @@ ViewEditForm = EditForm.extend({
 
     wrappingColumn:
       """
-      <div class="flex-column" style="width: 46%;">
+      <div class="flex-column">
         <formCheckbox id="{{id}}-wraps-in-x" isChecked="{{ wrapsInX }}"
                       labelText="Wraps horizontally" name="wrapsInX" />
         <spacer height="10px" />

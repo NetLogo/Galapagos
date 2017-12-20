@@ -132,6 +132,10 @@
   font-size: 20px;
 }
 
+.widget-edit-checkbox-wrapper {
+  white-space: nowrap;
+}
+
 .widget-edit-checkbox {
   height: 13px;
 }
