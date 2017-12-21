@@ -510,14 +510,37 @@ class TurtleDrawer extends Drawer
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
     @view.usePatchCoordinates()( =>
-      for id, link of links
-        end1 = turtles[link.end1]
-        end2 = turtles[link.end2]
-        @drawLink(link, end1, end2, world.wrappingallowedinx, world.wrappingallowediny)
+      @drawAgents(links,
+        if (world.linkbreeds?) then world.linkbreeds else [ "LINKS" ],
+        (link) =>
+          @drawLink(link, turtles[link.end1], turtles[link.end2], world.wrappingallowedinx, world.wrappingallowediny)
+      )
       @view.ctx.lineWidth = @onePixel
-      for id, turtle of turtles
-        @drawTurtle(turtle)
+      @drawAgents(turtles,
+        if (world.turtlebreeds?) then world.turtlebreeds else [ "TURTLES" ],
+        (turtle) =>
+          @drawTurtle(turtle)
+      )
+      return
     )
+
+  drawAgents: (agents, breeds, draw) ->
+    breededAgents = { }
+    for _, agent of agents
+      members = []
+      breedName = agent.breed.toUpperCase()
+      if not breededAgents[breedName]?
+        breededAgents[breedName] = members
+      else
+        members = breededAgents[breedName]
+      members.push(agent)
+
+    for breedName in breeds
+      if breededAgents[breedName]?
+        members = breededAgents[breedName]
+        for agent in members
+          draw(agent)
+
 
 # Works by creating a scratchCanvas that has a pixel per patch. Those pixels
 # are colored accordingly. Then, the scratchCanvas is drawn onto the main
