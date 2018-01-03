@@ -42,11 +42,11 @@ libraryDependencies ++= Seq(
   "org.webjars.bower" % "filesaver" % "1.3.3",
   "org.webjars.npm" % "mousetrap" % "1.6.1",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
-  "org.webjars" % "highcharts" % "5.0.14",
+  "org.webjars" % "highcharts" % "6.0.4",
   "org.webjars" % "jquery" % "3.2.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars.npm" % "ractive" % "0.9.3",
-  "org.webjars" % "codemirror" % "5.24.2"
+  "org.webjars" % "codemirror" % "5.33.0"
 )
 
 resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
