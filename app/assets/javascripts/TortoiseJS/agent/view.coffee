@@ -2,7 +2,7 @@ class window.AgentStreamController
   constructor: (@container, fontSize) ->
     @view = new View(fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
-    @drawingLayer = new DrawingLayer(@view, @turtleDrawer)
+    @drawingLayer = new DrawingLayer(@view, @turtleDrawer, () => @repaint())
     @patchDrawer = new PatchDrawer(@view)
     @spotlightDrawer = new SpotlightDrawer(@view)
     @container.appendChild(@view.visibleCanvas)
@@ -298,10 +298,12 @@ Possible drawing events:
   }
 }
 
+{ type: "import-drawing", sourcePath }
+
 ###
 
 class DrawingLayer extends Drawer
-  constructor: (@view, @turtleDrawer) ->
+  constructor: (@view, @turtleDrawer, @repaintView) ->
     @canvas    = document.createElement('canvas')
     @canvas.id = 'dlayer'
     @ctx       = @canvas.getContext('2d')
@@ -312,6 +314,26 @@ class DrawingLayer extends Drawer
 
   clearDrawing: ->
     @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
+
+  importDrawing: (sourcePath) =>
+    @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
+    image = new Image()
+    image.onload = () =>
+      canvasRatio = @canvas.width / @canvas.height
+      imageRatio  = image.width / image.height
+      width  = @canvas.width
+      height = @canvas.height
+      if(canvasRatio >= imageRatio)
+        # canvas is "wider" than the image, use full image height and partial width
+        width = (imageRatio / canvasRatio) * @canvas.width
+      else
+        # canvas is "thinner" than the image, use full image width and partial height
+        height = (canvasRatio / imageRatio) * @canvas.height
+      @ctx.drawImage(image, (@canvas.width - width) / 2, (@canvas.height - height) / 2, width, height)
+      @repaintView()
+      return
+    image.src = sourcePath
+    return
 
   _rgbToCss: ([r, g, b]) ->
     "rgb(#{r}, #{g}, #{b})"
@@ -379,9 +401,10 @@ class DrawingLayer extends Drawer
   draw: ->
     @events.forEach((event) =>
       switch event.type
-        when 'clear-drawing' then @clearDrawing()
-        when 'line'          then @drawLine(event)
-        when 'stamp-image'   then @drawStamp(event)
+        when 'clear-drawing'  then @clearDrawing()
+        when 'line'           then @drawLine(event)
+        when 'stamp-image'    then @drawStamp(event)
+        when 'import-drawing' then @importDrawing(event.sourcePath)
     )
 
   repaint: (model) ->
