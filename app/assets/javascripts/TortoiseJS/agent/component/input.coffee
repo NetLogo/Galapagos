@@ -146,10 +146,10 @@ window.RactiveInput = RactiveWidget.extend({
       <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
-          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" {{# isEditing }}disabled{{/}} />
+          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" lazy="true" {{# isEditing }}disabled{{/}} />
         {{/}}
         {{# widget.boxedValue.type === 'String'}}
-          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress" {{# isEditing }}disabled{{/}} ></textarea>
+          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handleKeypress" lazy="true" {{# isEditing }}disabled{{/}} ></textarea>
         {{/}}
         {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
           <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
