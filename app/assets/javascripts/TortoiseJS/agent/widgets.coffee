@@ -630,6 +630,7 @@ setUpSlider = (source, destination) ->
   destination.compiledMin  = source.compiledMin
   destination.compiledMax  = source.compiledMax
   destination.compiledStep = source.compiledStep
+
   if source.compilation?.success
     destination.getMin  = reporterOf(destination.compiledMin)
     destination.getMax  = reporterOf(destination.compiledMax)
@@ -637,10 +638,11 @@ setUpSlider = (source, destination) ->
   else
     destination.getMin  = () -> destination.currentValue
     destination.getMax  = () -> destination.currentValue
-    destination.getStep = () -> 0
-  destination.minValue     = destination.currentValue
-  destination.maxValue     = destination.currentValue + 1
-  destination.stepValue    = 1
+    destination.getStep = () -> 0.001
+
+  destination.minValue  = destination.currentValue
+  destination.maxValue  = destination.currentValue + 1
+  destination.stepValue = 0.001
   return
 
 # (Widgets.View.Dimensions, AgentStreamController.View) -> Unit
