@@ -183,6 +183,9 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   }
 
   importExport = {
+    exportFile: (contents) -> (filename) ->
+      saveAs(new Blob([contents], {type: "text/plain:charset=utf-8"}), filename)
+      return
     exportOutput: (filename) ->
       exportText = ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
       exportBlob = new Blob([exportText], {type: "text/plain:charset=utf-8"})
@@ -194,6 +197,23 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
       anchor.setAttribute("download", filename)
       anchor.click()
       return
+    importWorld: (trueImport) -> ->
+
+      listener =
+        (event) ->
+          reader = new FileReader
+          reader.onload = (e) -> trueImport(e.target.result)
+          if event.target.files.length > 0
+            reader.readAsText(event.target.files[0])
+          elem.removeEventListener('change', listener)
+
+      elem = ractive.find('#import-world-input')
+      elem.addEventListener('change', listener)
+      elem.click()
+      elem.value = ""
+
+      return
+
   }
 
   ractive.observe('widgetObj.*.currentValue', (newVal, oldVal, keyPath, widgetNum) ->
@@ -769,6 +789,9 @@ template =
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
       {{/}}
     </div>
+
+    <input id="import-world-input" type="file" name="import-world" style="display: none;" />
+
   </div>
   """
 
