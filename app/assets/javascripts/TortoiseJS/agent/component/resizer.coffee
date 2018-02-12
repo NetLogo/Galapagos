@@ -107,10 +107,14 @@ window.RactiveResizer = Ractive.extend({
           ((opposite is 'left'  or opposite is 'top'   ) and newValue <= (oppositeValue + 26)) or
           ((opposite is 'right' or opposite is 'bottom') and newValue >= (oppositeValue - 26))
 
+        findAdjustment = (n) -> n - (Math.round(n / 10) * 10)
+
         for [dir, lastCor, currentCor] in adjusters
-          newValue = target.get(dir) - (lastCor - currentCor)
-          if not exceedsOpposite(dir, newValue)
-            target.set(dir, newValue)
+          newValue   = target.get(dir) - (lastCor - currentCor)
+          adjustment = findAdjustment(newValue)
+          adjusted   = newValue - adjustment
+          if not exceedsOpposite(dir, adjusted)
+            target.set(dir, adjusted)
 
         @lastX = x
         @lastY = y

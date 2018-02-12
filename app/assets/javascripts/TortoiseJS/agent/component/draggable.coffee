@@ -95,10 +95,17 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
 
     dragWidget: (event) ->
       CommonDrag.drag.call(this, event, (x, y) =>
-        @set(  'left', @startLeft   + x)
-        @set( 'right', @startRight  + x)
-        @set(   'top', @startTop    + y)
-        @set('bottom', @startBottom + y)
+
+        findAdjustment = (n) -> n - (Math.round(n / 5) * 5)
+
+        xAdjust = findAdjustment(@startLeft + x)
+        yAdjust = findAdjustment(@startTop  + y)
+
+        @set(  'left', @startLeft   + x - xAdjust)
+        @set( 'right', @startRight  + x - xAdjust)
+        @set(   'top', @startTop    + y - yAdjust)
+        @set('bottom', @startBottom + y - yAdjust)
+
       )
 
     stopWidgetDrag: ->
