@@ -87,24 +87,31 @@ class window.SessionLite
   recompile: (successCallback = (->)) ->
     # This is a temporary workaround for the fact that models can't be reloaded
     # without clearing the world. BCH 1/9/2015
-    Tortoise.startLoading(=>
-      world.clearAll()
-      @widgetController.redraw()
-      code = @widgetController.code()
-      oldWidgets = @widgetController.widgets()
-      codeCompile(code, [], [], oldWidgets, (res) =>
+
+    code       = @widgetController.code()
+    oldWidgets = @widgetController.widgets()
+
+    onCompile =
+      (res) =>
+
         if res.model.success
+
+          world.clearAll()
           globalEval(res.model.result)
+
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
+          @widgetController.redraw()
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+
           successCallback()
+
         else
           @widgetController.ractive.set('lastCompileFailed', true)
           @alertCompileError(res.model.result)
-      , @alertCompileError)
-    )
+
+    Tortoise.startLoading(=> codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
 
   getNlogo: ->
     (new BrowserCompiler()).exportNlogo({
