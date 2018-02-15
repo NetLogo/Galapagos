@@ -73,7 +73,7 @@ ViewEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     weg = WidgetEventGenerators
     {
       triggers: {

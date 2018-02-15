@@ -18,7 +18,7 @@ ChooserEditForm = EditForm.extend({
     }
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     varName    = form.varName.value
     choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
     choicesArr = Converter.stringToJSValue("[#{choices}]")

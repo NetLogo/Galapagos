@@ -10,7 +10,7 @@ OutputEditForm = EditForm.extend({
     formFontSize: RactiveEditFormFontSize
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     { values: { fontSize: parseInt(form.fontSize.value) } }
 
   partials: {

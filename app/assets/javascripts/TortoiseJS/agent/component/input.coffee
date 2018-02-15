@@ -16,7 +16,7 @@ InputEditForm = EditForm.extend({
 
   twoway: false
 
-  validate: (form) ->
+  genProps: (form) ->
 
     boxtype  = form.boxtype.value
     variable = form.variable.value

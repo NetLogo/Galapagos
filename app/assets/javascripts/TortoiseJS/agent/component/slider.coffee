@@ -37,7 +37,7 @@ SliderEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  validate: (form) ->
+  genProps: (form) ->
 
     value = form.value.valueAsNumber
 

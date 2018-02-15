@@ -10,7 +10,7 @@ SwitchEditForm = EditForm.extend({
     formVariable: RactiveEditFormVariable
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     weg      = WidgetEventGenerators
     variable = form.variable.value
     {

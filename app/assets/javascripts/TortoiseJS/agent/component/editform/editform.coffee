@@ -29,7 +29,7 @@ window.EditForm = Ractive.extend({
     submit: ({ node }) ->
       try
         @set('amProvingMyself', false)
-        newProps = @validate(node)
+        newProps = @genProps(node)
         if newProps?
           @fire('updateWidgetValue', newProps)
       finally

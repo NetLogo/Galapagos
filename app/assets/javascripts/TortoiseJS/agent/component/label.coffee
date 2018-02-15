@@ -15,7 +15,7 @@ LabelEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     color = window.hexStringToNetlogoColor(form.color.value)
     {
       values: {

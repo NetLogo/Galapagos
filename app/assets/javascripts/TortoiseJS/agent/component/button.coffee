@@ -27,7 +27,7 @@ ButtonEditForm = EditForm.extend({
   , spacer:       RactiveEditFormSpacer
   }
 
-  validate: (form) ->
+  genProps: (form) ->
     key    = form.actionKey.value
     source = @findComponent('formCode').findComponent('codeContainer').get('code')
     {
