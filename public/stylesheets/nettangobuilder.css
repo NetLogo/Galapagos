@@ -1,0 +1,143 @@
+body#ntp-body, html#ntp-body {
+  background: #fff;
+}
+
+.ntb-block-def {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+  margin: 0.5em;
+  background: #fff;
+}
+
+.ntb-block-def-json {
+  resize: none;
+  min-height: 8em;
+  margin: 0.5em;
+}
+
+.ntb-block-defs-list, .ntb-block-defs-controls {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  align-content: center;
+  align-items: center;
+}
+
+.ntb-button, .ntb-container .widget-edit-text {
+  margin: 4px;
+  font-size: 13px;
+  padding: 8px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+  border-color: #999;
+  border-width: 1px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.ntb-list-menu {
+  list-style-image: none;
+  list-style-type: none;
+  margin: 10px;
+  padding: 0px;
+}
+
+.ntb-list-menu > li {
+  color: #666;
+  margin: 4px;
+  font-size: 13px;
+  padding: 8px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+}
+.ntb-list-menu > li.ntb-list-menu-item {
+  color: #06a;
+}
+.ntb-list-menu > li.ntb-list-menu-title {
+  border-bottom: 1px solid #666;
+}
+.ntb-list-menu > li.ntb-list-menu-item:hover {
+  background: #06a;
+  color: #fff;
+}
+
+.ntb-popup {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+.ntb-block-defaults, .ntb-confirm-delete {
+  position: absolute;
+  top: 24px;
+  background: #fff;
+  border: 1px solid #000;
+}
+
+.ntb-controls {
+  display: flex;
+  flex-direction: column;
+  margin: 1em;
+  margin-top: 0;
+}
+
+#ntb-code {
+  min-height: 16em;
+}
+
+#ntb-extra-css {
+  min-height: 8em;
+}
+
+.ntb-block-space-name {
+  border: 0px;
+  background: #eee;
+  font-size: 20px;
+  text-align: center;
+}
+
+.nt-canvas {
+  border: 1px solid #000;
+  width: 100%;
+}
+
+.model-container, .netlogo-model {
+  border: 0px;
+  border-radius: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 0px;
+}
+
+.inner-content, .model-selection-bar {
+  background: #fff;
+  border: 0px;
+  border-radius: 0px;
+}
+
+div.ntb-form-row > div {
+  margin: 6px;
+}
+
+#nettango-options {
+  min-width: 800px;
+}
+
+#nettango-options label {
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+}
+
+#model-recompile-overlay {
+  display: none;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}

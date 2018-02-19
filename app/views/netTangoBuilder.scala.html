@@ -1,0 +1,269 @@
+@import play.api.Mode
+
+@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
+
+@extraHead = {
+  @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+  @tagBuilder.pathToHTML("stylesheets/widgets.css")
+  @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css")' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css")' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css")' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css")' />
+  @tagBuilder.pathToHTML("stylesheets/ntango.css")
+  @tagBuilder.pathToHTML("stylesheets/nettangobuilder.css")
+}
+
+@content = {
+  <div class="tortoise inner-content">
+    <div class="model-selection-bar">
+      <div>
+        <label>Choose a base model:
+            <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
+        </label>
+      </div>
+      <div>
+        <label>Upload a base model:
+            <input id="model-file-input" type="file" name="model" />
+        </label>
+      </div>
+    </div>
+    <div class="model-box" style="position: relative;">
+      <iframe id="model-container" class="model-container" src="about:blank"></iframe>
+      <div id="model-recompile-overlay">
+        <button class="ntb-button" onclick="window.recompile('ntb-recompile');">Recompile</button>
+      </div>
+    </div>
+
+    <div id="nettango-options" class="model-box">
+    </div>
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("javascripts/codemirror/mode.js")
+
+    @tagBuilder.pathToHTML("lib/ractive/ractive.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/checkbox.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/codecontainer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/dropdown.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/labeledinput.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/spacer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/variable.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/fontsize.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/editform.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/contextmenu.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/draggable.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/resizer.js")
+
+    @tagBuilder.pathToHTML("ntango.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/labelledinput.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/dropdown.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/popupmenu.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangoblockdefaults.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangoblockform.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangotestingdefaults.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangodefs.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangobuilder.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangostorage.js")
+  </div>
+}
+
+@extraBody = {
+  <script src='@routes.Assets.versioned("lib/jquery/jquery.js")' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js")' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("lib/filesaver/FileSaver.js")' type="text/javascript"></script>
+  <script>
+    var exports = {};
+  </script>
+  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js")'></script>
+  <script>
+    var modelContainer    = document.getElementById('model-container')
+    window.modelContainer = modelContainer
+    var hostPrefix        = location.protocol + '//' + location.host
+
+    window.addEventListener("message", function(e) {
+      if (e.data.type === "nlw-resize") {
+        var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+
+        var height = e.data.height;
+        var width  = e.data.width;
+        var title  = e.data.title;
+
+        // Quack, quack!
+        // Who doesn't love duck typing? --JAB (11/9/15)
+        if ([height, width, title].every(isValid)) {
+          modelContainer.width  = width;
+          modelContainer.height = height;
+          // document.title        = title;
+        }
+      }
+    });
+
+    function pickModel(url) {
+      var encoded = encodeURI(hostPrefix + '/assets/' + url);
+      exports.selectModelByURL(encoded);
+      modelContainer.src = "/web?"+encoded;
+    }
+
+    function initModel() {
+      //console.log('initModel()')
+    }
+
+    function setModelCode(filePath, code) {
+      modelContainer.contentWindow.postMessage({
+        nlogo: code,
+        path: filePath,
+        type: "nlw-load-model"
+      }, "*")
+    }
+
+    function setNetTangoCode(ntbCode) {
+      var widgets = modelContainer.contentWindow.session.widgetController
+      var oldCode = widgets.code()
+      var newCode = replaceNetTangoCode(oldCode, ntbCode)
+      widgets.setCode(newCode)
+      hideRecompileOverlay()
+    }
+
+    function replaceNetTangoCode(oldCode, ntbCode) {
+      var newCode = ""
+      var ntbCode = "\n; --- NETTANGO BEGIN ---\n\n" + ntbCode + "\n\n; --- NETTANGO END ---\n"
+      if (oldCode.indexOf("; --- NETTANGO BEGIN ---") >= 0) {
+         newCode = oldCode.replace(new RegExp("((?:^|\n); --- NETTANGO BEGIN ---\n)([^]*)(\n; --- NETTANGO END ---)"), ntbCode)
+      } else {
+         newCode = oldCode + ntbCode
+      }
+      return newCode
+    }
+
+    exports.bindModelChooser(document.getElementById('tortoise-model-list'), initModel, pickModel, '@mode.toString.toLowerCase')
+
+    window.ractive = new Ractive({
+      el: document.getElementById('nettango-options'),
+      template: "<tangoBuilder playMode='false' />\n<testingDefaults />",
+      data: () => { },
+      components: {
+          tangoBuilder:    RactiveNetTangoBuilder
+        , testingDefaults: RactiveNetTangoTestingDefaults
+      }
+    })
+
+    var storage = new NetTangoStorage(window.localStorage)
+
+    function exportNetTango(toFile) {
+      var parser = new DOMParser()
+
+      var ntPlayer = new Request('/ntango-play')
+      var playerFetch = fetch(ntPlayer).then((ntResp) => {
+        if(ntResp.ok) {
+          return ntResp.text();
+        }
+      }).then((text) => {
+        return parser.parseFromString(text, 'text/html')
+      }).then((exportDom) => {
+        // need to strip any "in-progress" blocks that have been setup and recompile before we get this code
+        var nlogoRes = modelContainer.contentWindow.session.getNlogo()
+        if(nlogoRes.success) {
+          var builder = window.ractive.findComponent('tangoBuilder')
+          var netTangoData = getNetTangoBuilderData(builder, nlogoRes.result)
+          netTangoData.title = modelContainer.contentWindow.session.modelTitle()
+          storeNetTangoData(netTangoData)
+
+          if(toFile) {
+            var nlogoCodeElement = exportDom.getElementById('nlogo-code')
+            nlogoCodeElement.dataset.filename = modelContainer.contentWindow.session.modelTitle()
+            nlogoCodeElement.textContent = netTangoData.code
+
+            var netTangoCodeElement = exportDom.getElementById('ntango-code')
+            // for export we don't want the code in the netTango data (it's in the nlogo-code element)
+            delete netTangoData.code
+            netTangoCodeElement.textContent = JSON.stringify(netTangoData)
+
+            var styleElement = modelContainer.contentWindow.document.getElementById('ntb-injected-style')
+            if (styleElement !== null) {
+               var newElement = exportDom.createElement('style')
+               newElement.id = 'ntb-injected-style'
+               newElement.innerHTML = builder.compileCss(true, builder.get('extraCss'))
+               exportDom.head.appendChild(newElement)
+            }
+
+            var exportWrapper = document.createElement('div')
+            exportWrapper.appendChild(exportDom.documentElement)
+            exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
+
+            saveAs(exportBlob, 'ntExportTest.html')
+          }
+        }
+      })
+    }
+
+    function storeNetTangoData(netTangoData) {
+        for (var prop of [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ]) {
+          storage.set(prop, netTangoData[prop]);
+        }
+    }
+
+    function getNetTangoBuilderData(builder, oldCode) {
+      var netTangoData = builder.getNetTangoBuilderData()
+      var newCode = replaceNetTangoCode(oldCode, builder.getEmptyNetTangoProcedures())
+      netTangoData.code = newCode
+      return netTangoData;
+    }
+
+    function hideRecompileOverlay() {
+      var overlay = document.getElementById('model-recompile-overlay')
+      overlay.style.display = "none"
+    }
+
+    function enableRecompileOverlay() {
+      var overlay = document.getElementById('model-recompile-overlay')
+      overlay.style.display = "flex"
+    }
+
+    function loadNetTangoData(data) {
+      var builder = window.ractive.findComponent('tangoBuilder')
+      builder.load(data)
+    }
+
+    window.recompile = () => {
+      var defs = window.ractive.findComponent('tangoDefs')
+      defs.recompile()
+    }
+
+    window.ractive.on('*.save',                (_, code) => exportNetTango(false))
+    window.ractive.on('*.ntb-recompile',       (_, code) => setNetTangoCode(code))
+    window.ractive.on('*.netlogo-code-change', (_, title, code) => setModelCode(title, code))
+    window.ractive.on('*.ntb-code-dirty',      (_)       => enableRecompileOverlay())
+    window.ractive.on('*.export-nettango',     (_)       => exportNetTango(true))
+    window.ractive.on('*.load-nettango-data',  (_, data) => loadNetTangoData(data))
+
+    var fileInput = document.getElementById('model-file-input')
+    fileInput.addEventListener('change', function (event) {
+      var reader = new FileReader()
+      reader.onload = function (e) {
+        setModelCode(fileInput.value, e.target.result)
+      };
+      if (this.files.length > 0) {
+        reader.readAsText(this.files[0])
+      }
+    })
+
+    var firstLoad = true
+    modelContainer.onload = () => {
+      var builder = window.ractive.findComponent('tangoBuilder')
+      var nt = storage.inProgress;
+      if (nt && firstLoad) {
+        builder.load(nt)
+        firstLoad = false
+      } else {
+        builder.refreshCss()
+      }
+    }
+    modelContainer.src = '/web'
+  </script>
+}
+
+@views.html.mainTheme(content, "NetTango Web Builder", Option("launch"), extraHead, extraBody)
