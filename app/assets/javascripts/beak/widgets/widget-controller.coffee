@@ -119,9 +119,9 @@ class window.WidgetController
     @ractive.get('speed')
 
   # (String) => Unit
-  setCode: (code) ->
+  setCode: (code) =>
     @ractive.set('code', code)
-    @ractive.findComponent('codePane').setCode(code)
+    @ractive.findComponent('codePane')?.setCode(code)
     @ractive.fire('controller.recompile')
     return
 
