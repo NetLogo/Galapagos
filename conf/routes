@@ -18,6 +18,8 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
+GET         /ntango                             controllers.Local.ntango
+GET         /ntango-play                        controllers.Local.ntangoPlay
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

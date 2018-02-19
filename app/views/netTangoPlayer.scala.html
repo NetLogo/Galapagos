@@ -1,0 +1,320 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
+    @tagBuilder.pathToHTML("stylesheets/ntango.css")
+    @tagBuilder.pathToHTML("stylesheets/nettangobuilder.css")
+  </head>
+  <body style="margin: 0px;">
+    @views.html.spinner()
+    @views.html.errorAlert()
+    <div style="position: relative;">
+      <div id="netlogo-model-container" style="display: flex;">
+      </div>
+      <div id="model-recompile-overlay">
+        <button class="ntb-button" onclick="window.recompile('ntb-recompile');">Recompile</button>
+      </div>
+      </div>
+    <div id="nettango-options" class="model-box ntb-container">
+    </div>
+    @tagBuilder.pathToHTML("lib/jquery/jquery.js")
+    @tagBuilder.pathToHTML("lib/filesaver/FileSaver.js")
+    @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+    @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+    @tagBuilder.pathToHTML("lib/mousetrap/mousetrap.js")
+    @tagBuilder.pathToHTML("lib/highcharts/highcharts.js")
+    @tagBuilder.pathToHTML("lib/highcharts/modules/exporting.js")
+    @tagBuilder.pathToHTML("lib/highcharts/modules/export-data.js")
+    @tagBuilder.pathToHTML("lib/ractive/ractive.js")
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+
+    @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
+    @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
+
+    @tagBuilder.pathToHTML("javascripts/codemirror/mode.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/colors.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/checkbox.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/codecontainer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/dropdown.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/labeledinput.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/spacer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/variable.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/fontsize.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editform/editform.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/contextmenu.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/draggable.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/resizer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/tickcounter.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/printarea.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/widget.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/button.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/chooser.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/input.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/label.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/monitor.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/slider.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/switch.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/view.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/output.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/console.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/editor.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/info.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/plot.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/component/title.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/proxy.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/setupinterfaceeditor.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/drawshape.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/defaultshapes.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/linkdrawer.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/view.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/agent/widgets.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/babybehaviorspace.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/tortoise.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/control/session-lite.js")
+    @tagBuilder.pathToHTML("javascripts/plot/highchartsops.js")
+    @tagBuilder.pathToHTML("javascripts/alert.js")
+    @tagBuilder.pathToHTML("javascripts/new-model.js")
+
+    @tagBuilder.pathToHTML("ntango.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/labelledinput.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/dropdown.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/popupmenu.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangoblockdefaults.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangoblockform.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangodefs.js")
+    @tagBuilder.pathToHTML("javascripts/TortoiseJS/nettango/nettangobuilder.js")
+
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Local.standalone
+    )
+
+    <!-- This can be used to insert NetLogo code into this page -->
+    <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
+    <script type="text/json" id="ntango-code"></script>
+
+    <script>
+
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+
+      var loadingOverlay  = document.getElementById("loading-overlay");
+      var activeContainer = loadingOverlay;
+      var modelContainer  = document.querySelector("#netlogo-model-container");
+      var nlogoScript     = document.querySelector("#nlogo-code");
+      var standaloneURL   = "@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))";
+      var pageTitle       = function(modelTitle) {
+        if (modelTitle != null && modelTitle != "") {
+          return "NetLogo Web: " + modelTitle;
+        } else {
+          return "NetLogo Web";
+        }
+      };
+      var session;
+      var openSession = function(s) {
+        session = s;
+        document.title = pageTitle(session.modelTitle());
+        activeContainer = modelContainer;
+        session.startLoop();
+      };
+
+      var isStandaloneHTML = false;
+
+      if (nlogoScript.textContent.length > 0) {
+        isStandaloneHTML = true;
+      }
+
+      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML);
+
+      var displayError = function(error) {
+        // in the case where we're still loading the model, we have to
+        // post an error that cannot be dismissed, as well as ensuring that
+        // the frame we're in matches the size of the error on display.
+        if (activeContainer === loadingOverlay) {
+          window.nlwAlerter.displayError(error, false);
+          activeContainer = window.nlwAlerter.alertContainer;
+        } else {
+          window.nlwAlerter.displayError(error);
+        }
+      };
+
+      var loadModel = function(nlogo, path) {
+        if (session) {
+          session.teardown();
+        }
+        window.nlwAlerter.hide();
+        activeContainer = loadingOverlay;
+        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
+      };
+
+      if (nlogoScript.textContent.length > 0) {
+        Tortoise.fromNlogo(nlogoScript.textContent,
+                           modelContainer,
+                           nlogoScript.dataset.filename,
+                           openSession,
+                           displayError);
+      } else if (window.location.search.length > 0) {
+
+        var query    = window.location.search.slice(1);
+        var pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
+        var paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
+
+        var url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
+        var modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
+
+        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
+
+      } else {
+        loadModel(exports.newModel, "NewModel");
+      }
+
+      window.addEventListener("message", function (e) {
+        if (e.data.type === "nlw-load-model") {
+          loadModel(e.data.nlogo, e.data.path);
+        } else if (e.data.type === "nlw-open-new") {
+          loadModel(exports.newModel, "NewModel");
+        } else if (e.data.type === "nlw-update-model-state") {
+          session.widgetController.setCode(e.data.codeTabContents);
+        } else if (e.data.type === "run-baby-behaviorspace") {
+          var reaction =
+            function(results) {
+              e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
+            };
+          session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+       }
+      });
+
+      if (parent !== window) {
+        var width = "", height = "";
+        window.setInterval(function() {
+          if (activeContainer.offsetWidth  !== width ||
+              activeContainer.offsetHeight !== height ||
+              (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
+            if (session !== undefined) {
+              document.title = pageTitle(session.modelTitle());
+            }
+            width = activeContainer.offsetWidth;
+            height = activeContainer.offsetHeight;
+            parent.postMessage({
+              width:  activeContainer.offsetWidth,
+              height: activeContainer.offsetHeight,
+              title:  document.title,
+              type:   "nlw-resize"
+            }, "*");
+          }
+        }, 200);
+      }
+
+      window.modelContainer = modelContainer
+      var ntangoCode        = document.getElementById('ntango-code')
+
+      window.addEventListener("message", function(e) {
+        if (e.data.type === "nlw-resize") {
+          var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+
+          var height = e.data.height;
+          var width  = e.data.width;
+          var title  = e.data.title;
+
+          // Quack, quack!
+          // Who doesn't love duck typing? --JAB (11/9/15)
+          if ([height, width, title].every(isValid)) {
+            modelContainer.width  = width;
+            modelContainer.height = height;
+            // document.title        = title;
+          }
+        }
+      });
+
+      function setModelCode(code) {
+        window.postMessage({
+          nlogo: code,
+          path: "Testing",
+          type: "nlw-load-model"
+        }, "*")
+      }
+
+      function setNetTangoCode(ntbCode) {
+        var widgets = window.session.widgetController
+        var oldCode = widgets.code()
+        var newCode = ""
+        var ntbCode = "\n; --- NETTANGO BEGIN ---\n\n" + ntbCode + "\n\n; --- NETTANGO END ---\n"
+        if (oldCode.indexOf("; --- NETTANGO BEGIN ---") >= 0) {
+           newCode = oldCode.replace(new RegExp("((?:^|\n); --- NETTANGO BEGIN ---\n)([^]*)(\n; --- NETTANGO END ---)"), ntbCode)
+        } else {
+           newCode = oldCode + ntbCode
+        }
+        widgets.setCode(newCode)
+        hideRecompileOverlay()
+      }
+
+      function findElement(id) {
+        return document.getElementById(id)
+      }
+      function createElement(elementType) {
+        return document.createElement(elementType)
+      }
+      function appendElement(element) {
+        document.body.appendChild(element)
+      }
+
+      var floof = 100
+
+      window.ractive = new Ractive({
+        el: document.getElementById('nettango-options'),
+        template: "<tangoBuilder playMode='true' findElement='{{ findElement }}' createElement='{{ createElement }}' appendElement='{{ appendElement }}' />",
+        data: () => {
+          return {
+            findElement:   findElement,
+            createElement: createElement,
+            appendElement: appendElement
+          }
+        },
+        components: {
+          tangoBuilder: RactiveNetTangoBuilder
+        }
+      })
+
+      function hideRecompileOverlay() {
+        var overlay = document.getElementById('model-recompile-overlay')
+        overlay.style.display = "none"
+      }
+
+      function enableRecompileOverlay() {
+        var overlay = document.getElementById('model-recompile-overlay')
+        overlay.style.display = "flex"
+      }
+
+      window.recompile = () => {
+        var builder = window.ractive.findComponent('tangoDefs')
+        builder.recompile()
+      }
+
+      window.ractive.on('*.ntb-recompile', (_, code) => setNetTangoCode(code))
+      window.ractive.on('*.ntb-code-dirty', () => enableRecompileOverlay())
+      window.ractive.on('*.netlogo-code-change', (_, code) => setModelCode(code))
+
+      window.onload = () => {
+        builder = window.ractive.findComponent('tangoBuilder')
+        // builder.refreshCss()
+        var netTangoCodeElement = document.getElementById('ntango-code')
+        var blocksJson = netTangoCodeElement.textContent === undefined || netTangoCodeElement.textContent === '' ? '{}' : netTangoCodeElement.textContent
+        var data = JSON.parse(blocksJson)
+        builder.load(data)
+      }
+    </script>
+  </body>
+</html>
