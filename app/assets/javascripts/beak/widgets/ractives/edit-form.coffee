@@ -6,12 +6,17 @@ window.EditForm = Ractive.extend({
   view:         undefined # Element
 
   data: -> {
-    amProvingMyself: false     # Boolean
-  , idBasis:         undefined # String
-  , style:           undefined # String
-  , visible:         undefined # Boolean
-  , xLoc:            undefined # Number
-  , yLoc:            undefined # Number
+    parentClass:     'netlogo-widget-container'
+  , submitLabel:     'OK'
+  , cancelLabel:     'Cancel'
+  , horizontalOffset: 0.5      # Number
+  , verticalOffset:   0.5       # Number
+  , amProvingMyself:  false     # Boolean
+  , idBasis:          undefined # String
+  , style:            undefined # String
+  , visible:          undefined # Boolean
+  , xLoc:             undefined # Number
+  , yLoc:             undefined # Number
   }
 
   computed: {
@@ -56,9 +61,9 @@ window.EditForm = Ractive.extend({
       @fire(  'lock-selection', @parent)
       @fire('edit-form-opened', this)
 
-      container     = findParentByClass('netlogo-widget-container')(elem)
-      containerMidX = container.offsetWidth  / 2
-      containerMidY = container.offsetHeight / 2
+      container     = findParentByClass(@get('parentClass'))(elem)
+      containerMidX = container.offsetWidth  * @get('horizontalOffset')
+      containerMidY = container.offsetHeight * @get('verticalOffset')
 
       dialogHalfWidth  = elem.offsetWidth  / 2
       dialogHalfHeight = elem.offsetHeight / 2
@@ -135,8 +140,8 @@ window.EditForm = Ractive.extend({
           <div class="widget-edit-form-title">{{>title}}</div>
           {{>widgetFields}}
           <div class="widget-edit-form-button-container">
-            <input class="widget-edit-text" type="submit" value="OK" />
-            <input class="widget-edit-text" type="button" on-click="cancel-edit" value="Cancel" />
+            <input class="widget-edit-text" type="submit" value="{{ submitLabel }}" />
+            <input class="widget-edit-text" type="button" on-click="cancel-edit" value="{{ cancelLabel }}" />
           </div>
         </form>
       </div>
