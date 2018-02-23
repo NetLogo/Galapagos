@@ -120,12 +120,8 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
   ractive.set('primaryView', viewModel)
   viewController = new AgentStreamController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
 
-  setUpDimensionsProxies(viewModel, viewController.model.world)
-  fontSizeProxy =
-    addProxyTo( viewModel.proxies
-              , [[viewModel, "fontSize"], [viewController.view, "fontSize"]]
-              , "fontSize"
-              , viewModel.fontSize)
+  entwineDimensions(viewModel, viewController.model.world)
+  entwine([[viewModel, "fontSize"], [viewController.view, "fontSize"]], viewModel.fontSize)
 
   outputWidget = widgets.filter((w) -> w.type == 'output')[0]
 
@@ -278,7 +274,6 @@ window.bindWidgets = (container, widgets, code, info, readOnly, filename) ->
 
   setPatchSize = (patchSize) ->
     viewModel.dimensions.patchSize = patchSize
-    viewModel.proxies.patchSize    = patchSize
     world.setPatchSize(patchSize)
     return
 
@@ -665,8 +660,22 @@ setUpSlider = (source, destination) ->
   destination.stepValue = 0.001
   return
 
-# (Widgets.View.Dimensions, AgentStreamController.View) -> Unit
-setUpDimensionsProxies = (viewWidget, modelView) ->
+# (Array[(Object[Any], String)], Any) => Unit
+entwine =
+  (objKeyPairs, value) ->
+
+    backingValue = value
+
+    for [obj, key] in objKeyPairs
+      Object.defineProperty(obj, key, {
+        get: -> backingValue
+        set: (newValue) -> backingValue = newValue
+      })
+
+    return
+
+# (Widgets.View.Dimensions, AgentStreamController.View) => Unit
+entwineDimensions = (viewWidget, modelView) ->
 
   translations = {
     maxPxcor:           "maxpxcor"
@@ -678,11 +687,8 @@ setUpDimensionsProxies = (viewWidget, modelView) ->
   , wrappingAllowedInY: "wrappingallowediny"
   }
 
-  viewWidget.proxies = {}
-
   for wName, mName of translations
-    addProxyTo(viewWidget.proxies, [[viewWidget.dimensions, wName], [modelView, mName]]
-             , wName, viewWidget.dimensions[wName])
+    entwine([[viewWidget.dimensions, wName], [modelView, mName]], viewWidget.dimensions[wName])
 
   return
 

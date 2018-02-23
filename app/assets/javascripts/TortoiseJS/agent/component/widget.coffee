@@ -40,10 +40,15 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
     "*.hasBeenProvenUnworthy": ->
       @fire('unregisterWidget', @get('widget').id) # Original event name: "cutMyLifeIntoPieces" --JAB (11/8/17)
 
-    "*.updateWidgetValue": ({ proxies = {}, triggers = {}, values = {}}) ->
+    "*.updateWidgetValue": ({ triggers = {}, values = {}}) ->
 
       getByPath = (obj) -> (path) ->
         path.split('.').reduce(((acc, x) -> acc[x]), obj)
+
+      setByPath = (obj) -> (path) -> (value) ->
+        [parents..., key] = path.split('.')
+        lastParent = parents.reduce(((acc, x) -> acc[x]), obj)
+        lastParent[key] = value
 
       try
 
@@ -61,10 +66,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
           oldies = triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
 
           for k, v of values
-            widget[k] = v
-
-          for k, v of proxies
-            widget.proxies[k] = v
+            setByPath(widget)(k)(v)
 
           eventArraysArray =
             for name in triggerNames when getByPath(widget)(name) isnt oldies[name]

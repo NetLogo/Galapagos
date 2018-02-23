@@ -350,7 +350,6 @@ private[controllers] trait RequestResultGenerator {
         "javascripts/TortoiseJS/agent/component/info.js",
         "javascripts/TortoiseJS/agent/component/plot.js",
         "javascripts/TortoiseJS/agent/component/title.js",
-        "javascripts/TortoiseJS/agent/proxy.js",
         "javascripts/TortoiseJS/agent/setupinterfaceeditor.js",
         "javascripts/TortoiseJS/agent/drawshape.js",
         "javascripts/TortoiseJS/agent/defaultshapes.js",

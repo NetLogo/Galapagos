@@ -86,20 +86,18 @@ ViewEditForm = EditForm.extend({
       , 'dimensions.wrappingAllowedInX': [weg.updateTopology, weg.redrawView]
       , 'dimensions.wrappingAllowedInY': [weg.updateTopology, weg.redrawView]
       }
-    , proxies: {
-                  fontSize: form.turtleLabelSize.valueAsNumber
-      ,           maxPxcor: form.maxX.valueAsNumber
-      ,           maxPycor: form.maxY.valueAsNumber
-      ,           minPxcor: form.minX.valueAsNumber
-      ,           minPycor: form.minY.valueAsNumber
-      ,          patchSize: form.patchSize.valueAsNumber
-      , wrappingAllowedInX: form.wrapsInX.checked
-      , wrappingAllowedInY: form.wrapsInY.checked
-      }
     , values: {
-               frameRate: form.framerate.valueAsNumber
-      ,  showTickCounter: form.isShowingTicks.checked
-      , tickCounterLabel: form.tickLabel.value
+        'dimensions.maxPxcor'          : form.maxX.valueAsNumber
+      , 'dimensions.maxPycor'          : form.maxY.valueAsNumber
+      , 'dimensions.minPxcor'          : form.minX.valueAsNumber
+      , 'dimensions.minPycor'          : form.minY.valueAsNumber
+      , 'dimensions.patchSize'         : form.patchSize.valueAsNumber
+      , 'dimensions.wrappingAllowedInX': form.wrapsInX.checked
+      , 'dimensions.wrappingAllowedInY': form.wrapsInY.checked
+      , fontSize                       : form.turtleLabelSize.valueAsNumber
+      , frameRate                      : form.framerate.valueAsNumber
+      , showTickCounter                : form.isShowingTicks.checked
+      , tickCounterLabel               : form.tickLabel.value
       }
     }
 
