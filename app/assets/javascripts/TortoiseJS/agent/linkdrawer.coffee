@@ -11,7 +11,7 @@ class window.LinkDrawer
     directionIndicators = {}
     for name, shape of @shapes
       directionIndicators[name] = shape['direction-indicator']
-    @linkShapeDrawer = new ShapeDrawer(directionIndicators)
+    @linkShapeDrawer = new ShapeDrawer(directionIndicators, @view.onePixel)
 
   traceCurvedLine: (x1, y1, x2, y2, cx, cy, ctx) =>
     ctx.moveTo(x1, y1)
@@ -91,15 +91,13 @@ class window.LinkDrawer
 
     # one pixel should == one patch (before scale) -- JTT 4/15/15
     thicknessFactor = thickness / @view.onePixel
-
-    baseThickness  = 3 / 2
-
+    
     if thickness <= 1
-      scale         = 1 / @view.onePixel / 2
-      realThickness = thickness * baseThickness
+      scale         = 1 / @view.onePixel / 5
+      realThickness = thickness * 10
     else
       scale         = thicknessFactor / 2
-      realThickness = baseThickness
+      realThickness = 0.5
 
     ctx.scale(scale, scale)
 
