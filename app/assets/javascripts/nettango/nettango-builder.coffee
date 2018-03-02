@@ -49,7 +49,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       @set('editSpaceNumber', spaceNumber)
       form = @findComponent('blockEditForm')
       form.setDefault(blockGroup, blockNumber)
-      form.fire('showYourself')
+      form.fire('show-yourself')
       overlay = document.querySelector('.widget-edit-form-overlay')
       overlay.style.height   = "100%"
       overlay.style.width    = "100%"
