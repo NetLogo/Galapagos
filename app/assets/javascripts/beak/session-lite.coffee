@@ -113,8 +113,6 @@ class window.SessionLite
 
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
-    # This is a temporary workaround for the fact that models can't be reloaded
-    # without clearing the world. BCH 1/9/2015
 
     code       = @widgetController.code()
     oldWidgets = @widgetController.widgets()
@@ -124,9 +122,11 @@ class window.SessionLite
 
         if res.model.success
 
+          state = world.exportState()
           world.clearAll()
           @widgetController.redraw() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
           globalEval(res.model.result)
+          world.importState(state)
 
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
