@@ -15,6 +15,11 @@
     @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
+
+    <!-- HubNet Web -->
+    @tagBuilder.pathToHTML("stylesheets/extensions.css")
+    @tagBuilder.pathToHTML("javascripts/hubnet/stylesheets/hubnet-web.css")
+    @tagBuilder.pathToHTML("lib/socket.io-client/dist/socket.io.js")
   </head>
   <body style="margin: 0px;">
     <script>window.exports = {};</script>
@@ -23,6 +28,7 @@
     <div id="netlogo-model-container" style="display: inline-block;"></div>
     <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
     @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
+    <div id="netlogo-extensions-container" style="display: inline-block;"></div>
     @tagBuilder.pathToHTML("lib/jquery/jquery.js")
     @tagBuilder.pathToHTML("lib/chosen/chosen.jquery.js")
     @tagBuilder.pathToHTML("lib/file-saver/FileSaver.js")
@@ -100,6 +106,15 @@
     @tagBuilder.pathToHTML("javascripts/beak/session-lite.js")
     @tagBuilder.pathToHTML("javascripts/beak/tortoise.js")
 
+    <!-- HubNet Web -->
+    @tagBuilder.pathToHTML("lib/pako/dist/pako.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/webrtc-adapter.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/kompressor.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/server.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/client.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/components/connectionManager.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/hubnet-web.js")
+
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
     )
@@ -129,6 +144,7 @@
         document.title = pageTitle(session.modelTitle());
         activeContainer = modelContainer;
         session.startLoop();
+        window.hubnet = new HubNetWeb('netlogo-extensions-container', window.workspace, session)
       };
 
       var isStandaloneHTML = false;

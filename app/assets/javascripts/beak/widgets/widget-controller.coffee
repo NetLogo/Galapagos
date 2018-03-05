@@ -2,6 +2,7 @@ class window.WidgetController
 
   # (Ractive, ViewController, Configs)
   constructor: (@ractive, @viewController, @configs) ->
+    @updateSpies = []
 
     for display, chartOps of @configs.plotOps
       component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
@@ -127,7 +128,10 @@ class window.WidgetController
 
   # () => Unit
   redraw: ->
-    if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
+    if Updater.hasUpdates()
+      updates = Updater.collectUpdates()
+      @viewController.update(updates)
+      @updateSpies.forEach((spy) => spy(updates))
     return
 
   # () => Unit
