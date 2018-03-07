@@ -44,15 +44,10 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
 
 # newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
 newSession = (container, modelResult, readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
-
-  widgets          = globalEval(modelResult.widgets)
-  info             = toNetLogoWebMarkdown(modelResult.info)
-  widgetController = initializeUI(container, widgets, modelResult.code, info, readOnly, filename)
-
-  window.modelConfig = Object.assign(window.modelConfig ? {}, widgetController.configs)
-  globalEval(modelResult.model.result)
-
-  new SessionLite(widgetController, lastCompileFailed, onError)
+  { code, info, model: { result }, widgets: wiggies } = modelResult
+  widgets = globalEval(wiggies)
+  info    = toNetLogoWebMarkdown(info)
+  new SessionLite(container, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->

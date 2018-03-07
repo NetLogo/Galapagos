@@ -36,10 +36,18 @@ globalEval = eval
 window.AgentModel = tortoise_require('agentmodel')
 
 class window.SessionLite
-  constructor: (@widgetController, lastCompileFailed, @displayError) ->
+
+  widgetController: undefined # WidgetController
+
+  # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
+  constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
+
     @_eventLoopTimeout = -1
-    @_lastRedraw = 0
-    @_lastUpdate = 0
+    @_lastRedraw       = 0
+    @_lastUpdate       = 0
+    @drawEveryFrame    = false
+
+    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename)
     @widgetController.ractive.on('*.recompile'            , (_, callback)  => @recompile(callback))
     @widgetController.ractive.on('export-nlogo'           , (_, event)     => @exportNlogo(event))
     @widgetController.ractive.on('export-html'            , (_, event)     => @exportHtml(event))
@@ -47,7 +55,9 @@ class window.SessionLite
     @widgetController.ractive.on('console.run'            , (_, code)      => @run(code))
     @widgetController.ractive.on('editing-mode-changed-to', (_, isEditing) => @setEventLoop(not isEditing))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
-    @drawEveryFrame = false
+
+    window.modelConfig = Object.assign(window.modelConfig ? {}, @widgetController.configs)
+    globalEval(modelJS)
 
   # (Boolean) => Unit
   setEventLoop: (isOn) ->
