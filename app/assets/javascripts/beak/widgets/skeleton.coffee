@@ -8,27 +8,27 @@ dropNLogoExtension = (s) ->
 window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename) ->
 
   model = {
-    widgetObj:          widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-    speed:              0.0,
-    ticks:              "", # Remember, ticks initialize to nothing, not 0
-    ticksStarted:       false,
-    width:              0,
-    height:             0,
-    code,
-    info,
-    isReadOnly,
-    lastCompiledCode:   code,
-    lastCompileFailed:  false,
-    lastDragX:          undefined,
-    lastDragY:          undefined,
-    isStale:            false,
-    exportForm:         false,
-    modelTitle:         dropNLogoExtension(filename),
-    consoleOutput:      '',
-    outputWidgetOutput: '',
-    hasFocus:           false,
-    isEditing:          false,
-    primaryView:        undefined
+    code
+  , consoleOutput:      ''
+  , exportForm:         false
+  , hasFocus:           false
+  , height:             0
+  , info
+  , isEditing:          false
+  , isReadOnly
+  , isStale:            false
+  , lastCompiledCode:   code
+  , lastCompileFailed:  false
+  , lastDragX:          undefined
+  , lastDragY:          undefined
+  , modelTitle:         dropNLogoExtension(filename)
+  , outputWidgetOutput: ''
+  , primaryView:        undefined
+  , speed:              0.0
+  , ticks:              "" # Remember, ticks initialize to nothing, not 0
+  , ticksStarted:       false
+  , widgetObj:          widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+  , width:              0
   }
 
   animateWithClass = (klass) ->
