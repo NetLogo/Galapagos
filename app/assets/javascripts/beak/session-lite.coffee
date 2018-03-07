@@ -42,7 +42,10 @@ class window.SessionLite
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
-    checkIsReporter = (str) -> Converter.isReporter(str)
+    checkIsReporter =
+      (str) =>
+        compileRequest = { code: @widgetController.code(), widgets: @widgetController.widgets() }
+        (new BrowserCompiler()).isReporter(str, compileRequest)
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
