@@ -4,6 +4,7 @@ window.RactiveConsoleWidget = Ractive.extend({
     isEditing: undefined # Boolean (for widget editing)
     agentTypes: ['observer', 'turtles', 'patches', 'links'],
     agentTypeIndex: 0,
+    checkIsReporter: undefined # (String) => Boolean
     history: [], # Array of {agentType, input} objects
     historyIndex: 0,
     workingEntry: {}, # Stores {agentType, input} when user up arrows
@@ -47,7 +48,7 @@ window.RactiveConsoleWidget = Ractive.extend({
       input = @get('input')
       if input.trim().length > 0
         agentType = @get('agentType')
-        if Converter.isReporter(input)
+        if @get('checkIsReporter')(input)
           input = "show #{input}"
         @set('output', "#{@get('output')}#{agentType}> #{input}\n")
         history = @get('history')

@@ -4,11 +4,12 @@ dropNLogoExtension = (s) ->
   else
     s
 
-# (Element, Array[Widget], String, String, Boolean, String, String) => Ractive
-window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename) ->
+# (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
+window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
 
   model = {
-    code
+    checkIsReporter
+  , code
   , consoleOutput:      ''
   , exportForm:         false
   , hasFocus:           false
@@ -149,7 +150,7 @@ template =
         <span class="netlogo-tab-text">Command Center</span>
       </label>
       {{#showConsole}}
-        <console output="{{consoleOutput}}" isEditing="{{isEditing}}"/>
+        <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
       {{/}}
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">

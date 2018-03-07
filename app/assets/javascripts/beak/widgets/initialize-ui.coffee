@@ -1,5 +1,5 @@
-# (Element|String, Array[Widget], String, String, Boolean, String, String) => WidgetController
-window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename) ->
+# (Element|String, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => WidgetController
+window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -16,7 +16,7 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename) 
 
   window.setUpWidgets(widgets, updateUI)
 
-  ractive = window.generateRactiveSkeleton(container, widgets, code, info, isReadOnly, filename)
+  ractive = window.generateRactiveSkeleton(container, widgets, code, info, isReadOnly, filename, checkIsReporter)
 
   container.querySelector('.netlogo-model').focus()
 

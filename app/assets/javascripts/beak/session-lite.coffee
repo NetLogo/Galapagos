@@ -42,12 +42,14 @@ class window.SessionLite
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
+    checkIsReporter = (str) -> Converter.isReporter(str)
+
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
     @_lastUpdate       = 0
     @drawEveryFrame    = false
 
-    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename)
+    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter)
     @widgetController.ractive.on('*.recompile'            , (_, callback)  => @recompile(callback))
     @widgetController.ractive.on('export-nlogo'           , (_, event)     => @exportNlogo(event))
     @widgetController.ractive.on('export-html'            , (_, event)     => @exportHtml(event))
