@@ -7,6 +7,8 @@ DEFAULT_REDRAW_DELAY = 1000 / 30
 MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
+NETLOGO_VERSION      = '2.3.0'
+
 codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
   compileParams = {
     code:         code,
@@ -61,7 +63,8 @@ class window.SessionLite
     @widgetController.ractive.on('editing-mode-changed-to', (_, isEditing) => @setEventLoop(not isEditing))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
-    window.modelConfig = Object.assign(window.modelConfig ? {}, @widgetController.configs)
+    window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
+    window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
 
   # (Boolean) => Unit
