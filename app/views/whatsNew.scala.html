@@ -1,5 +1,29 @@
 <div class="inner-content">
 
+  <h2>March 9th, 2018 - v2.3.0</h2>
+
+  <h3>Newly Support NetLogo Features</h3>
+
+  <ul>
+    <li><code>import-world</code> and <code>export-world</code> are now supported.</li>
+    <li><code>import-drawing</code> has a basic implementation that tries to load an image at the given URL.</li>
+    <li><code>netlogo-version</code> will return a string value that matches the version from these release notes.</li>
+  </ul>
+
+  <h3>Improvements and Bug Fixes</h3>
+
+  <ul>
+    <li>World will not clear on a recompile unless there are code changes that require it.</li>
+    <li>Agents are now rendered in breed declaration order, as they are in desktop.</li>
+    <li>Number input widgets display correctly in Firefox when set to a small size.</li>
+    <li>Input widgets now update values only when an edit is complete, to avoid causing problems with incomplete changes while models are running.</li>
+    <li>The command console will now properly insert <code>show</code> when using any reporter, not just some.</li>
+    <li>Histograms now properly round down when bucketing data.</li>
+    <li>Small improvement to the display of link shapes so they are more reasonably sized.</li>
+    <li>Plot update commands recognize <code>stop</code>.</li>
+    <li>Plots now use a clone of the main model random number generator, as they do in desktop NetLogo.</li>
+  </ul>
+
   <h2>January 8th, 2018 - v2.2.3</h2>
 
   <h3>Improvements and Bug Fixes</h3>
