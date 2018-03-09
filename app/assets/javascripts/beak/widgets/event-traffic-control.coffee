@@ -108,7 +108,6 @@ window.controlEventTraffic = (controller) ->
   toggleInterfaceLock = ->
     isEditing = not ractive.get('isEditing')
     ractive.set('isEditing', isEditing)
-    ractive.fire('editing-mode-changed-to', isEditing)
     return
 
   # (Node) => Unit

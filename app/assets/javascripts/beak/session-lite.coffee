@@ -60,19 +60,11 @@ class window.SessionLite
     @widgetController.ractive.on('export-html'            , (_, event)     => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'          , (_, event)     => @openNewFile())
     @widgetController.ractive.on('console.run'            , (_, code)      => @run(code))
-    @widgetController.ractive.on('editing-mode-changed-to', (_, isEditing) => @setEventLoop(not isEditing))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
-
-  # (Boolean) => Unit
-  setEventLoop: (isOn) ->
-    cancelAnimationFrame(@_eventLoopTimeout)
-    if isOn
-      requestAnimationFrame(@eventLoop)
-    return
 
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
@@ -95,7 +87,7 @@ class window.SessionLite
       MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
 
   redrawDelay: ->
-    speed       = @widgetController.speed()
+    speed = @widgetController.speed()
     if speed > 0
       speedFactor = Math.pow(Math.abs(@widgetController.speed()), REDRAW_EXP)
       MAX_REDRAW_DELAY * speedFactor + DEFAULT_REDRAW_DELAY * (1 - speedFactor)
@@ -107,11 +99,12 @@ class window.SessionLite
     updatesDeadline = Math.min(@_lastRedraw + @redrawDelay(), now() + MAX_UPDATE_TIME)
     maxNumUpdates   = if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
 
-    for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
-      @_lastUpdate = now()
-      @widgetController.runForevers()
-      if now() >= updatesDeadline
-        break
+    if not @widgetController.ractive.get('isEditing')
+      for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
+        @_lastUpdate = now()
+        @widgetController.runForevers()
+        if now() >= updatesDeadline
+          break
 
     if Updater.hasUpdates()
       # First conditional checks if we're on time with updates. If so, we may as
