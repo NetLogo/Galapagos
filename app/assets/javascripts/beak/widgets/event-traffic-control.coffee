@@ -107,7 +107,6 @@ window.controlEventTraffic = (controller) ->
 
   # (Number) => Unit
   setPatchSize = (patchSize) ->
-    viewModel.dimensions.patchSize = patchSize
     world.setPatchSize(patchSize)
     refreshDims()
     return

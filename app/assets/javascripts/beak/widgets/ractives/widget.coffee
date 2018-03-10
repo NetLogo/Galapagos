@@ -24,6 +24,12 @@ WidgetEventGenerators = {
       type: "rename:#{oldName},#{newName}"
     }
 
+  resizePatches: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('set-patch-size', widget.dimensions.patchSize)
+      type: "resizePatches"
+    }
+
   resizeView: ->
     {
       run:  (ractive, widget) -> ractive.fire('resize-view')

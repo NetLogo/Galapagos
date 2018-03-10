@@ -208,7 +208,7 @@ window.RactiveView = RactiveWidget.extend({
     , 'dimensions.maxPycor':           [    @_weg.resizeView, @_weg.redrawView]
     , 'dimensions.minPxcor':           [    @_weg.resizeView, @_weg.redrawView]
     , 'dimensions.minPycor':           [    @_weg.resizeView, @_weg.redrawView]
-    , 'dimensions.patchSize':          [                      @_weg.redrawView]
+    , 'dimensions.patchSize':          [ @_weg.resizePatches, @_weg.redrawView]
     , 'dimensions.wrappingAllowedInX': [@_weg.updateTopology, @_weg.redrawView]
     , 'dimensions.wrappingAllowedInY': [@_weg.updateTopology, @_weg.redrawView]
     }
