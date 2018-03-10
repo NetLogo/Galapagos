@@ -70,6 +70,12 @@ window.controlEventTraffic = (controller) ->
     world.observer.setGlobal(chooser.variable, chooser.currentValue)
     false
 
+  # () => Unit
+  refreshDims = ->
+    onWidgetRightChange()
+    onWidgetBottomChange()
+    return
+
   # (String) => Unit
   rejectDupe = (varName) ->
     showErrors(["There is already a widget of a different type with a variable named '#{varName}'"])
@@ -96,12 +102,14 @@ window.controlEventTraffic = (controller) ->
     { minpxcor, maxpxcor, minpycor, maxpycor, patchsize } = viewController.model.world
     setPatchSize(patchsize)
     world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
+    refreshDims()
     return
 
   # (Number) => Unit
   setPatchSize = (patchSize) ->
     viewModel.dimensions.patchSize = patchSize
     world.setPatchSize(patchSize)
+    refreshDims()
     return
 
   # () => Unit
@@ -118,8 +126,7 @@ window.controlEventTraffic = (controller) ->
   # (_, Number, Boolean) => Unit
   unregisterWidget = (_, id, wasNew) ->
     controller.removeWidgetById(id, wasNew)
-    onWidgetRightChange()
-    onWidgetBottomChange()
+    refreshDims()
     return
 
   # () => Unit
