@@ -8,8 +8,7 @@
  </check>
  <check level="error" class="org.scalastyle.file.HeaderMatchesChecker" enabled="true">
   <parameters>
-    <parameter name="header"><![CDATA[// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos
-      ]]></parameter>
+    <parameter name="header"><![CDATA[// (C) Uri Wilensky. https://github.com/NetLogo/Galapagos]]></parameter>
   </parameters>
  </check>
  <check level="error" class="org.scalastyle.scalariform.SpacesAfterPlusChecker" enabled="true"></check>

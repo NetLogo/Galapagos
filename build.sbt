@@ -1,12 +1,10 @@
-import com.typesafe.sbt.web.Import.WebKeys.webJarsDirectory
-
 import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
 
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.4"
 
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -14,7 +12,7 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-feature",
   "-language:_",
-  // Scala 2.12.2 produces warnings for unused imports, but Play generates
+  // Scala 2.12.4 produces warnings for unused imports, but Play generates
   // files as part of compilation that have unused imports, so we have to
   // disable these warnings for now.  -JMB July 2017
   "-Xlint:-unused",
@@ -33,7 +31,7 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "compilerjvm" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   "com.typesafe.play" %% "play-iteratees" % "2.6.1",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.8" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.11" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 )
 
@@ -49,13 +47,9 @@ libraryDependencies ++= Seq(
   "org.webjars" % "codemirror" % "5.33.0"
 )
 
-resolvers += bintray.Opts.resolver.repo("netlogo", "TortoiseAux")
+resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
 
-resolvers += bintray.Opts.resolver.repo("netlogo", "NetLogoHeadless")
-
-resolvers += Resolver.file("Local repo", file(System.getProperty("user.home") + "/.ivy2/local"))(Resolver.ivyStylePatterns)
-
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/" // Needed for akka-http (for now, at least) --JAB 5/23/17
+resolvers += Resolver.bintrayRepo("netlogo", "NetLogoHeadless")
 
 GalapagosAssets.settings
 
