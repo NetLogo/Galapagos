@@ -36,7 +36,7 @@ end
 
 ;; the Barabasi-Albert method of creating a PA graph
 to create-preferential-attachment
-  nw:generate-preferential-attachment turtles links 500 [
+  nw:generate-preferential-attachment turtles links 500 1 [
     set size 2
     set shape "circle"
     set color blue
@@ -587,7 +587,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.0.3
 @#$#@#$#@
 setup repeat 40 [ layout ] repeat 15 [ go ]
 @#$#@#$#@

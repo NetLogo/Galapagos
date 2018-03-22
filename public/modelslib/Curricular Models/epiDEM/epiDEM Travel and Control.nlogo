@@ -820,7 +820,7 @@ In addition to travel and control measures, notice that this model introduces li
 
 ## RELATED MODELS
 
-epiDEM basic, AIDS, Virus and Virus on a Network are related models.
+epiDEM basic, HIV, Virus and Virus on a Network are related models.
 
 ## HOW TO CITE
 
@@ -1146,7 +1146,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -200,9 +200,11 @@ to delete-segment
   if mouse-down? [
     if mouse-has-gotten-air? [
       let candidate (one-of dots with [ distancexy mouse-xcor mouse-ycor < 0.3 ])
-      ask segments [
-        if end1 = dot [who] of candidate [die]
-        if end2 = dot [who] of candidate [die]
+      if candidate != nobody [
+        ask segments [
+          if end1 = dot [who] of candidate [die]
+          if end2 = dot [who] of candidate [die]
+        ]
       ]
     ]
   ]
@@ -806,7 +808,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

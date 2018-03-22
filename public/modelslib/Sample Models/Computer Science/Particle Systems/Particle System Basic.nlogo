@@ -238,7 +238,7 @@ Particle Systems by Allen Martin
 http://web.cs.wpi.edu/~matt/courses/cs563/talks/psys.html
 
 William T.  Reeves, "Particle Systems - A Technique for Modeling a Class of Fuzzy Objects", Computer Graphics 17:3 pp.  359-376, 1983 (SIGGRAPH 83).
-http://dl.acm.org/citation.cfm?id=357320
+https://dl.acm.org/citation.cfm?id=357320
 
 Physically based modeling Online SIGGRAPH 2001 Course Notes
 http://www.pixar.com/companyinfo/research/pbm2001/
@@ -713,7 +713,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.2
+NetLogo 6.0.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
