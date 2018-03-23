@@ -15,9 +15,9 @@ pipeline {
     stage('Build and Test') {
       steps {
         library 'netlogo-shared'
-        sbt 'scalastyle'
-        sbt 'coffeelint'
-        sbt 'test'
+        sbt('scalastyle', 'sbt-1.1.1')
+        sbt('coffeelint', 'sbt-1.1.1')
+        sbt('test', 'sbt-1.1.1')
       }
     }
 
@@ -28,9 +28,9 @@ pipeline {
       steps {
         library 'netlogo-shared'
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          sbt 'scrapePlay'
+          sbt('scrapePlay', 'sbt-1.1.1')
           sh 'cp -Rv public/modelslib/ target/play-scrape/assets/'
-          sbt 'scrapeUpload'
+          sbt('scrapeUpload', 'sbt-1.1.1')
         }
       }
     }
@@ -42,9 +42,9 @@ pipeline {
       steps {
         library 'netlogo-shared'
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          sbt 'scrapePlay'
+          sbt('scrapePlay', 'sbt-1.1.1')
           sh 'cp -Rv public/modelslib/ target/play-scrape/assets/'
-          sbt 'scrapeUpload'
+          sbt('scrapeUpload', 'sbt-1.1.1')
         }
       }
     }
