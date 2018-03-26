@@ -45,24 +45,43 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
-    '*.createBlock': (_, spaceNumber, blockGroup, blockNumber) ->
-      @set('editSpaceNumber', spaceNumber)
-      form = @findComponent('blockEditForm')
-      form.setDefault(blockGroup, blockNumber)
-      form.fire('show-yourself')
-      overlay = document.querySelector('.widget-edit-form-overlay')
-      overlay.style.height   = "100%"
-      overlay.style.width    = "100%"
-      overlay.style.top      = 0
-      overlay.style.left     = 0
-      overlay.style.position = "absolute"
-      overlay.style.display  = "block"
+    '*.create-block': (_, spaceNumber, blockGroup, blockNumber) ->
+      block = NetTangoBlockDefaults.getBlockDefault(blockGroup, blockNumber)
+      @showBlockForm(spaceNumber, "Add New Block", "new-block-added", block)
+      return
+
+    '*.edit-block': (_, spaceNumber, blockNumber) ->
+      @set('blockEditor.blockNumber', blockNumber)
+      space = @findComponent('tangoDefs').get('spaces')[spaceNumber]
+      block = space.defs.blocks[blockNumber]
+      @showBlockForm(spaceNumber, "Update Block", "block-updated", block)
       return
 
     'blockEditForm.new-block-added': (_, spaceNumber, block) ->
       @findComponent('tangoDefs').addBlockToSpace(spaceNumber, block)
       return
+
+    'blockEditForm.block-updated': (_, spaceNumber, block, blockNumber) ->
+      @findComponent('tangoDefs').updateBlock(spaceNumber, blockNumber, block)
+      return
+
   }
+
+  showBlockForm: (spaceNumber, label, event, block) ->
+    @set('blockEditor.submitLabel', label)
+    @set('blockEditor.submitEvent', event)
+    @set('blockEditor.spaceNumber', spaceNumber)
+    form = @findComponent('blockEditForm')
+    form.setBlock(block)
+    form.fire('show-yourself')
+    overlay = document.querySelector('.widget-edit-form-overlay')
+    overlay.style.height   = "100%"
+    overlay.style.width    = "100%"
+    overlay.style.top      = 0
+    overlay.style.left     = 0
+    overlay.style.position = "absolute"
+    overlay.style.display  = "block"
+    return
 
   components: {
     tangoDefs:     RactiveNetTangoDefs
@@ -75,8 +94,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     playMode:        false,
     lastCss:         "",
     extraCssIsDirty: false,
-    showBlockEditor: false,
-    editSpaceNumber: undefined,
+    blockEditor:     {
+      show:          false,
+      spaceNumber: undefined,
+      blockNumber: undefined,
+      submitEvent: undefined,
+      submitLabel: "Add New Block"
+    },
     contextMenu: {
       show:     false
     }
@@ -229,8 +253,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
       <popupmenu visible="{{contextMenu.show}}" elementId="clear-all-button" />
 
-      <blockEditForm visible="{{ showBlockEditor }}" spaceNumber="{{ editSpaceNumber }}" parentClass="ntb-container"
-        horizontalOffset="{{ 0.5 }}" verticalOffset="{{ 0.25 }}" />
+      <blockEditForm visible="{{ blockEditor.show }}" spaceNumber="{{ blockEditor.spaceNumber }}" blockNumber="{{ blockEditor.blockNumber }}" parentClass="ntb-container"
+        horizontalOffset="{{ 0.5 }}" verticalOffset="{{ 0.25 }}" submitLabel="{{ blockEditor.submitLabel }}" submitEvent="{{ blockEditor.submitEvent }}" />
 
       <div class="ntb-controls">
         {{# !playMode }}

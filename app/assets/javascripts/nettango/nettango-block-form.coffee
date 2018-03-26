@@ -1,27 +1,29 @@
 window.RactiveNetTangoBlockForm = EditForm.extend({
   data: () -> {
-    spaceName:   undefined       # String
-    spaceNumber: undefined       # String
-    block:       undefined#@copy(NetTangoBlockDefaults['basics'].items[0]) # Block
+    spaceName:   undefined # String
+    spaceNumber: undefined # String
+    block:       undefined # Block
+    blockNumber: undefined # Integer
+    submitEvent: undefined # String
   }
 
   on: {
 
     'submit': (_) ->
-      @fire('new-block-added', @get('spaceNumber'), @getBlock())
+      @fire(@get('submitEvent'), @get('spaceNumber'), @getBlock(), @get('blockNumber'))
       # Reset the "working" block to have new values in case it isn't reset before next open
-      @set('block', @copyBlock(NetTangoBlockDefaults['basics'].items[0]))
+      @set('block', NetTangoBlockDefaults.getBlockDefault('basics', 0))
       return
 
     'add-parameter': (_) ->
       num = @get('block.params.length')
       @push('block.params', @defaultParam(num))
       return false
+
   }
 
   oninit: ->
-     @_super()
-     @set('submitLabel', 'Add New Block')
+    @_super()
 
   components: {
       formCheckbox:  RactiveEditFormCheckbox
@@ -39,28 +41,19 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , def:  "10"
   }
 
-  setDefault: (group, number) ->
-    @set('block', @copyBlock(NetTangoBlockDefaults[group].items[number]))
+  setBlock: (block) ->
+    @set('block', block)
     return
 
-  copyBlock: (block) ->
-    copy = { }
-    for key, value of block
-      copy[key] = value
-    copy.params = []
-    if block.params?.length > 0
-      for param in block.params
-        paramCopy = { }
-        for key, value of param
-          paramCopy[key] = value
-        copy.params.push(paramCopy)
-    return copy
+  # this does something useful for widgets, but not for us, I think?
+  genProps: (_) ->
+    null
 
   getBlock: () ->
     blockValues = @get('block')
     block = { }
     [ 'action', 'type', 'format', 'start', 'required', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
-      .filter(`(f) => blockValues.hasOwnProperty(f)`)
+      .filter(`(f) => blockValues.hasOwnProperty(f) && blockValues[f] !== ""`)
       .forEach(`(f) => block[f] = blockValues[f]`)
     if blockValues.control
       block['clauses'] = []

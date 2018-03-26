@@ -16,11 +16,25 @@ createCommand = (overrides) ->
     , params:      []                      # Array[Parameter]
   }
   if overrides?
-    for key, prop of overrides
-      command[key] = prop
+    Object.assign(command, overrides)
   command
 
-defaults = {
+
+copyBlock = (block) ->
+  copy = Object.assign({ }, block)
+  copy.params = []
+  if block.params?.length > 0
+    block.params.forEach((param) ->
+      paramCopy = Object.assign({ }, param)
+      copy.params.push(paramCopy)
+    )
+  return copy
+
+getBlockDefault = (group, number) ->
+  block = copyBlock(NetTangoBlockDefaults.blocks[group].items[number])
+  return block
+
+blocks = {
   basics: {
     , name: "Basics"
     , items: [
@@ -180,4 +194,4 @@ defaults = {
   }
 }
 
-window.NetTangoBlockDefaults = defaults
+window.NetTangoBlockDefaults = { blocks, copyBlock, getBlockDefault }

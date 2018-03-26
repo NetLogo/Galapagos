@@ -2,10 +2,7 @@ window.RactivePopupMenu = Ractive.extend({
   on: {
     'exec': (_, tag, groupId, itemNum) ->
       content = @get('content')
-      if (content[groupId].items[itemNum].event)
-        @fire(content[groupId].items[itemNum].event, tag, groupId, itemNum)
-      else
-        @fire(content.event, tag, groupId, itemNum)
+      @fire(content[groupId].items[itemNum].event ? content.event, tag, groupId, itemNum)
   }
 
   observe: {
