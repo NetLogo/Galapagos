@@ -154,7 +154,18 @@
 
     var storage = new NetTangoStorage(window.localStorage)
 
-    function exportNetTango(toFile) {
+    function importNetTango(files) {
+      if(files.length == 0) { return }
+      var reader = new FileReader()
+      reader.onload = function (e) {
+        var ntData = JSON.parse(e.target.result)
+        var builder = window.ractive.findComponent('tangoBuilder')
+        builder.load(ntData)
+      }
+      reader.readAsText(files[0])
+    }
+
+    function exportNetTango(target) {
       var parser = new DOMParser()
 
       var ntPlayer = new Request('/ntango-play')
@@ -173,7 +184,8 @@
           netTangoData.title = modelContainer.contentWindow.session.modelTitle()
           storeNetTangoData(netTangoData)
 
-          if(toFile) {
+          // TODO - convert to switch once this is CoffeeScript
+          if (target === 'standalone') {
             var nlogoCodeElement = exportDom.getElementById('nlogo-code')
             nlogoCodeElement.dataset.filename = modelContainer.contentWindow.session.modelTitle()
             nlogoCodeElement.textContent = netTangoData.code
@@ -185,10 +197,10 @@
 
             var styleElement = modelContainer.contentWindow.document.getElementById('ntb-injected-style')
             if (styleElement !== null) {
-               var newElement = exportDom.createElement('style')
-               newElement.id = 'ntb-injected-style'
-               newElement.innerHTML = builder.compileCss(true, builder.get('extraCss'))
-               exportDom.head.appendChild(newElement)
+              var newElement = exportDom.createElement('style')
+              newElement.id = 'ntb-injected-style'
+              newElement.innerHTML = builder.compileCss(true, builder.get('extraCss'))
+              exportDom.head.appendChild(newElement)
             }
 
             var exportWrapper = document.createElement('div')
@@ -196,6 +208,10 @@
             exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
 
             saveAs(exportBlob, 'ntExportTest.html')
+          } else if (target === 'json') {
+            var filter = (k, v) => { if (k === 'defsJson') { return undefined } else { return v } }
+            jsonBlob = new Blob([JSON.stringify(netTangoData, filter)], { type: 'text/json:charset=utf-8' })
+            saveAs(jsonBlob, 'ntExportTest.json')
           }
         }
       })
@@ -234,12 +250,14 @@
       defs.recompile()
     }
 
-    window.ractive.on('*.save',                (_, code) => exportNetTango(false))
-    window.ractive.on('*.ntb-recompile',       (_, code) => setNetTangoCode(code))
-    window.ractive.on('*.netlogo-code-change', (_, title, code) => setModelCode(title, code))
-    window.ractive.on('*.ntb-code-dirty',      (_)       => enableRecompileOverlay())
-    window.ractive.on('*.export-nettango',     (_)       => exportNetTango(true))
-    window.ractive.on('*.load-nettango-data',  (_, data) => loadNetTangoData(data))
+    window.ractive.on('*.save',                 (_, code) => exportNetTango('storage'))
+    window.ractive.on('*.ntb-recompile',        (_, code) => setNetTangoCode(code))
+    window.ractive.on('*.netlogo-code-change',  (_, title, code) => setModelCode(title, code))
+    window.ractive.on('*.ntb-code-dirty',       (_)       => enableRecompileOverlay())
+    window.ractive.on('*.export-nettango',      (_)       => exportNetTango('standalone'))
+    window.ractive.on('*.export-nettango-json', (_)       => exportNetTango('json'))
+    window.ractive.on('*.import-nettango-json', (_)       => importNetTango(_.node.files))
+    window.ractive.on('*.load-nettango-data',   (_, data) => loadNetTangoData(data))
 
     var fileInput = document.getElementById('model-file-input')
     fileInput.addEventListener('change', function (event) {

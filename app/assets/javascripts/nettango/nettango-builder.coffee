@@ -264,6 +264,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           <button class="ntb-button" on-click="save" >Save NetTango Progress</button>
           <button class="ntb-button" on-click="export-nettango" >Export NetTango Page</button>
           <button id="clear-all-button" class="ntb-button" on-click="clear-all-check" >Clear Model and Spaces</button>
+          <button class="ntb-button" on-click="export-nettango-json" >Export NetTango JSON</button>
+          <label class="ntb-file-label">Import NetTango JSON<input class="ntb-file-button" type="file" on-change="import-nettango-json" ></label>
         </div>
         {{/}}
 
