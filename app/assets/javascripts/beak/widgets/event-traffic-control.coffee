@@ -135,9 +135,10 @@ window.controlEventTraffic = (controller) ->
     return
 
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
-  mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'], -> ractive.fire('toggle-interface-lock'))
-  mousetrap.bind('del'                                      , -> ractive.fire('delete-selected'))
-  mousetrap.bind('escape'                                   , -> ractive.fire('deselect-widgets'))
+  mousetrap.bind(['up', 'down', 'left', 'right']            , (_, name) -> ractive.fire('nudge-widget', name))
+  mousetrap.bind(['ctrl+shift+alt+i', 'command+shift+alt+i'],           -> ractive.fire('toggle-interface-lock'))
+  mousetrap.bind('del'                                      ,           -> ractive.fire('delete-selected'))
+  mousetrap.bind('escape'                                   ,           -> ractive.fire('deselect-widgets'))
 
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.right'       , onWidgetRightChange)

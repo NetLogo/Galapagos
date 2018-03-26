@@ -30,6 +30,7 @@ window.handleWidgetSelection =
     justSelectIt =
       (event) ->
         resizer().setTarget(event.component)
+        return
 
     selectThatWidget =
       (event, trueEvent) ->
@@ -50,9 +51,19 @@ window.handleWidgetSelection =
         return
     )
 
+    nudgeWidget =
+      (event, direction) ->
+        selected = resizer().get('target')
+        if selected?
+          selected.nudge(direction)
+          false
+        else
+          true
+
     ractive.on('*.select-component', justSelectIt)
     ractive.on('*.select-widget'   , selectThatWidget)
     ractive.on('deselect-widgets'  , deselectThoseWidgets)
     ractive.on('delete-selected'   , deleteSelected)
+    ractive.on('nudge-widget'      , nudgeWidget)
     ractive.on('*.lock-selection'  , lockSelection)
     ractive.on('*.unlock-selection', unlockSelection)
