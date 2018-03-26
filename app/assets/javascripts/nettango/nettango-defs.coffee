@@ -13,13 +13,29 @@ window.RactiveNetTangoDefs = Ractive.extend({
       return
 
     'show-block-defaults': (_, spaceNumber) ->
+      NetTangoBlockDefaults.blocks.event = 'create-block'
       menu = @findComponent('popupmenu')
-      NetTangoBlockDefaults.event = 'createBlock'
-      menu.set('content', NetTangoBlockDefaults)
+      menu.set('content', NetTangoBlockDefaults.blocks)
       @set('contextMenu.buttonId', "add-block-button-#{spaceNumber}")
       @set('contextMenu.tag', spaceNumber)
       @set('contextMenu.show', true)
       return false
+
+    'show-block-modify': (_, spaceNumber) ->
+      menu = @findComponent('popupmenu')
+      modifyMenu = @createModifyMenuContent(spaceNumber)
+      menu.set('content', modifyMenu)
+      @set('contextMenu.buttonId', "modify-block-button-#{spaceNumber}")
+      @set('contextMenu.tag', spaceNumber)
+      @set('contextMenu.show', true)
+      return false
+
+    '*.delete-block': (_, spaceNumber, blockNumber) ->
+      space = @get('spaces')[spaceNumber]
+      space.defs.blocks.splice(blockNumber, 1)
+      @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
+      @initNetTangoForSpace(space)
+      return
 
     'confirm-delete': (_, spaceNumber) ->
       menu = @findComponent('popupmenu')
@@ -81,6 +97,15 @@ window.RactiveNetTangoDefs = Ractive.extend({
     @initNetTangoForSpace(space)
     return
 
+  updateBlock: (spaceNumber, blockNumber, block) ->
+    spaces = @get('spaces')
+    space = spaces[spaceNumber]
+    if(not space?) then console.error('ah geeze')
+    space.defs.blocks[blockNumber] = block
+    @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
+    @initNetTangoForSpace(space)
+    return
+
   initNetTangoForSpace: (space) ->
     ntId = space.spaceId + "-canvas"
     # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes on each init.
@@ -90,6 +115,19 @@ window.RactiveNetTangoDefs = Ractive.extend({
     canvas.style = "height: #{space.height}px; width: #{space.width}px"
     NetTango.init(ntId, space.defs)
     return
+
+  createModifyMenuContent: (spaceNumber) ->
+    content = []
+    space = @get('spaces')[spaceNumber]
+    dele = { event: 'delete-block', action: 'delete' }
+    edit = { event: 'edit-block', action: 'edit' }
+    for def, num in space.defs.blocks
+      key = "block#{num}"
+      content.push({
+        name:  def.action
+        items: [dele, edit]
+      })
+    content
 
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
@@ -150,6 +188,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
           {{# !playMode }}
           <div class="ntb-block-defs-controls" >
             <button id="add-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'show-block-defaults', spaceNum ]">Add Block ▼</button>
+            <button id="modify-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'show-block-modify', spaceNum ]">Modify Block ▼</button>
             <button id="delete-space-button-{{spaceNum}}" class="ntb-button" on-click="[ 'confirm-delete', spaceNum ]" >Delete Block Space</button>
           </div>
           {{/}}
