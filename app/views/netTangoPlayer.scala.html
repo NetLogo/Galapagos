@@ -105,6 +105,8 @@
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-testing-defaults.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-defs.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-builder.js")
+    @tagBuilder.pathToHTML("javascripts/nettango/nettango-storage.js")
+    @tagBuilder.pathToHTML("javascripts/nettango/nettango-controller.js")
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
@@ -254,74 +256,20 @@
         }, "*")
       }
 
-      function setNetTangoCode(ntbCode) {
-        var widgets = window.session.widgetController
-        var oldCode = widgets.code()
-        var newCode = ""
-        var ntbCode = "\n; --- NETTANGO BEGIN ---\n\n" + ntbCode + "\n\n; --- NETTANGO END ---\n"
-        if (oldCode.indexOf("; --- NETTANGO BEGIN ---") >= 0) {
-           newCode = oldCode.replace(new RegExp("((?:^|\n); --- NETTANGO BEGIN ---\n)([^]*)(\n; --- NETTANGO END ---)"), ntbCode)
-        } else {
-           newCode = oldCode + ntbCode
-        }
-        widgets.setCode(newCode)
-        hideRecompileOverlay()
-      }
+      var overlay = document.getElementById('model-recompile-overlay')
+      var getModelElementById = (id)          => window.document.getElementById(id)
+      var createElement       = (elementType) => document.createElement(elementType)
+      var appendElement       = (element)     => document.body.appendChild(element)
+      var getWidgetController = ()            => window.session.widgetController
+      var netTango = new NetTangoController(
+        'nettango-options', window.localStorage, overlay, true,
+        setModelCode, getModelElementById, createElement, appendElement, getWidgetController, window.saveAs
+      )
 
-      function findElement(id) {
-        return document.getElementById(id)
-      }
-      function createElement(elementType) {
-        return document.createElement(elementType)
-      }
-      function appendElement(element) {
-        document.body.appendChild(element)
-      }
+      window.ractive   = netTango.ractive // ???
+      window.recompile = netTango.recompile
+      window.onload    = netTango.onModelLoad
 
-      var floof = 100
-
-      window.ractive = new Ractive({
-        el: document.getElementById('nettango-options'),
-        template: "<tangoBuilder playMode='true' findElement='{{ findElement }}' createElement='{{ createElement }}' appendElement='{{ appendElement }}' />",
-        data: () => {
-          return {
-            findElement:   findElement,
-            createElement: createElement,
-            appendElement: appendElement
-          }
-        },
-        components: {
-          tangoBuilder: RactiveNetTangoBuilder
-        }
-      })
-
-      function hideRecompileOverlay() {
-        var overlay = document.getElementById('model-recompile-overlay')
-        overlay.style.display = "none"
-      }
-
-      function enableRecompileOverlay() {
-        var overlay = document.getElementById('model-recompile-overlay')
-        overlay.style.display = "flex"
-      }
-
-      window.recompile = () => {
-        var builder = window.ractive.findComponent('tangoDefs')
-        builder.recompile()
-      }
-
-      window.ractive.on('*.ntb-recompile', (_, code) => setNetTangoCode(code))
-      window.ractive.on('*.ntb-code-dirty', () => enableRecompileOverlay())
-      window.ractive.on('*.netlogo-code-change', (_, code) => setModelCode(code))
-
-      window.onload = () => {
-        builder = window.ractive.findComponent('tangoBuilder')
-        // builder.refreshCss()
-        var netTangoCodeElement = document.getElementById('ntango-code')
-        var blocksJson = netTangoCodeElement.textContent === undefined || netTangoCodeElement.textContent === '' ? '{}' : netTangoCodeElement.textContent
-        var data = JSON.parse(blocksJson)
-        builder.load(data)
-      }
     </script>
   </body>
 </html>
