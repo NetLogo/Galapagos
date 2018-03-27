@@ -39,9 +39,9 @@ window.CommonDrag = {
       # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
       # We only take non-negative values here, to avoid the widget disappearing --JAB (3/22/16, 10/29/17)
 
-      # Only update drag coords 30 times per second.  If we don't throttle,
+      # Only update drag coords 60 times per second.  If we don't throttle,
       # all of this `set`ing murders the CPU --JAB (10/29/17)
-      if @view is view and x > 0 and y > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 30)
+      if @view is view and x > 0 and y > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 60)
         @lastUpdateMs = (new Date).getTime()
         callback(x, y)
 
