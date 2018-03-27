@@ -94,8 +94,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     playMode:        false,
     lastCss:         "",
     extraCssIsDirty: false,
-    blockEditor:     {
-      show:          false,
+    blockEditor: {
+      show:        false,
       spaceNumber: undefined,
       blockNumber: undefined,
       submitEvent: undefined,
@@ -105,9 +105,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       show:     false
     }
     # Dependency injection :-P  -JMB
-    @findElement,
-    @createElement,
-    @appendElement,
+    findElement:   () ->,
+    createElement: () ->,
+    appendElement: () ->,
     # Below are the actual NetTango Builder data points
     extraCss: "",
     title: "Blank Model",
@@ -175,17 +175,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     spaceProcs = for _, space of spaces
       space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
     spaceProcs.join("\n")
-
-  findElement: (id) ->
-    modelContainer = document.getElementById('model-container')
-    return modelContainer.contentWindow.document.getElementById(id)
-
-  createElement: (elementType) ->
-    modelContainer.contentWindow.document.createElement(elementType)
-
-  appendElement: (element) ->
-    modelContainer.contentWindow.document.body.appendChild(element)
-    return
 
   refreshCss: () ->
     # we use a fancy "CSS Injection" technique to get styles applied to the model iFrame.
