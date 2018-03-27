@@ -17,6 +17,7 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   , info
   , isEditing:          false
   , isReadOnly
+  , isResizerVisible:   true
   , isStale:            false
   , lastCompiledCode:   code
   , lastCompileFailed:  false
@@ -134,7 +135,7 @@ template =
          class="netlogo-widget-container"
          on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
          on-click="@this.fire('deselect-widgets', @event)" on-dragover="hail-satan">
-      <resizer isEnabled="{{isEditing}}" />
+      <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
       {{#widgetObj:key}}
         {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
         {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}

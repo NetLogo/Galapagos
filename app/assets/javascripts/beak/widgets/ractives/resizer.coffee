@@ -8,6 +8,7 @@ window.RactiveResizer = Ractive.extend({
 
   data: -> {
     isEnabled: false # Boolean
+  , isVisible: true  # Boolean
   , target:    null  # Ractive
   }
 
@@ -138,7 +139,7 @@ window.RactiveResizer = Ractive.extend({
   # coffeelint: disable=max_line_length
   template:
     """
-    {{# isEnabled && target !== null }}
+    {{# isEnabled && isVisible && target !== null }}
     <div class="widget-resizer" style="{{dims}}">
       {{ #target.get("resizeDirs").includes("bottom")      }}<div draggable="true" on-drag="drag-handle" on-dragstart="start-handle-drag" on-dragend="stop-handle-drag" class="widget-resize-handle" data-direction="Bottom"      style="cursor:  s-resize; bottom:          0; left:   {{midX}};"></div>{{/}}
       {{ #target.get("resizeDirs").includes("bottomLeft")  }}<div draggable="true" on-drag="drag-handle" on-dragstart="start-handle-drag" on-dragend="stop-handle-drag" class="widget-resize-handle" data-direction="BottomLeft"  style="cursor: sw-resize; bottom:          0; left:          0;"></div>{{/}}

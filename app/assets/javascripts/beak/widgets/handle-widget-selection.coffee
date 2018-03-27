@@ -51,6 +51,14 @@ window.handleWidgetSelection =
         return
     )
 
+    hideResizer =
+      ->
+        if ractive.get("isEditing")
+          ractive.set('isResizerVisible', not ractive.get('isResizerVisible'))
+          false
+        else
+          true
+
     nudgeWidget =
       (event, direction) ->
         selected = resizer().get('target')
@@ -64,6 +72,7 @@ window.handleWidgetSelection =
     ractive.on('*.select-widget'   , selectThatWidget)
     ractive.on('deselect-widgets'  , deselectThoseWidgets)
     ractive.on('delete-selected'   , deleteSelected)
+    ractive.on('hide-resizer'      , hideResizer)
     ractive.on('nudge-widget'      , nudgeWidget)
     ractive.on('*.lock-selection'  , lockSelection)
     ractive.on('*.unlock-selection', unlockSelection)
