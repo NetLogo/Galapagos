@@ -37,7 +37,7 @@ window.RactiveResizer = Ractive.extend({
       @set('target', null)
     return
 
-  # (Element) => Unit
+  # (Ractive) => Unit
   setTarget: (newTarget) ->
     if not @isLocked
       setTimeout((=> # Use `setTimeout`, so any pending `clearTarget` resolves first --JAB (12/6/17)
@@ -47,7 +47,7 @@ window.RactiveResizer = Ractive.extend({
       ), 0)
     return
 
-  # (Element) => Unit
+  # (Ractive) => Unit
   lockTarget: (newTarget) ->
     if not @isLocked and newTarget?
       @setTarget(newTarget)
