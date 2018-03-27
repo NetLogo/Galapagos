@@ -47,10 +47,9 @@ SliderEditForm = EditForm.extend({
     oldLeft   = @get('left')
 
     [right, bottom] =
-      if @get('direction') is 'horizontal' and form.vertical.checked
+      if (@get('direction') is 'horizontal' and     form.vertical.checked) or
+         (@get('direction') is 'vertical'   and not form.vertical.checked)
         [oldLeft + (oldBottom - oldTop), oldTop + (oldRight - oldLeft)]
-      else if @get('direction') is 'vertical' and not form.vertical.checked
-        [oldTop + (oldRight - oldLeft), oldLeft + (oldBottom - oldTop)]
       else
         [oldRight, oldBottom]
 
