@@ -1,6 +1,6 @@
 window.RactiveResizer = Ractive.extend({
 
-  isLocked:     false     # Boolean
+  _isLocked:    false     # Boolean
   _xAdjustment: undefined # Number
   _yAdjustment: undefined # Number
 
@@ -30,7 +30,7 @@ window.RactiveResizer = Ractive.extend({
   # () => Unit
   clearTarget: ->
     target = @get('target')
-    if not @isLocked and target?
+    if not @_isLocked and target?
       if not target.destroyed
         target.find('.netlogo-widget').classList.remove('widget-selected')
       @set('target', null)
@@ -38,7 +38,7 @@ window.RactiveResizer = Ractive.extend({
 
   # (Ractive) => Unit
   setTarget: (newTarget) ->
-    if not @isLocked
+    if not @_isLocked
       setTimeout((=> # Use `setTimeout`, so any pending `clearTarget` resolves first --JAB (12/6/17)
         @clearTarget()
         @set('target', newTarget)
@@ -48,14 +48,14 @@ window.RactiveResizer = Ractive.extend({
 
   # (Ractive) => Unit
   lockTarget: (newTarget) ->
-    if not @isLocked and newTarget?
+    if not @_isLocked and newTarget?
       @setTarget(newTarget)
-      @isLocked = true
+      @_isLocked = true
     return
 
   # () => Unit
   unlockTarget: ->
-    @isLocked = false
+    @_isLocked = false
     return
 
   on: {
