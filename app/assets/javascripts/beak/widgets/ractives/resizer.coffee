@@ -2,9 +2,9 @@ window.RactiveResizer = Ractive.extend({
 
   isLocked:     false     # Boolean
   lastUpdateMs: undefined # Number
-  lastX:        undefined # Number
-  lastY:        undefined # Number
   view:         undefined # Element
+  _xAdjustment: undefined # Number
+  _yAdjustment: undefined # Number
 
   data: -> {
     isEnabled: false # Boolean
@@ -64,8 +64,9 @@ window.RactiveResizer = Ractive.extend({
 
     'start-handle-drag': (event) ->
       CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
-        @lastX = x
-        @lastY = y
+        { x, y } = @find('.widget-resizer').getBoundingClientRect()
+        @_xAdjustment = x - @get('left')
+        @_yAdjustment = y - @get('top')
       )
 
     'drag-handle': (event) ->
@@ -77,10 +78,10 @@ window.RactiveResizer = Ractive.extend({
         oldTop    = target.get('top')
         oldBottom = target.get('bottom')
 
-        left   = ['left'  , @lastX, x]
-        right  = ['right' , @lastX, x]
-        top    = ['top'   , @lastY, y]
-        bottom = ['bottom', @lastY, y]
+        left   = ['left'  , x - @_xAdjustment]
+        right  = ['right' , x - @_xAdjustment]
+        top    = ['top'   , y - @_yAdjustment]
+        bottom = ['bottom', y - @_yAdjustment]
 
         direction = event.original.target.dataset.direction
 
@@ -96,7 +97,7 @@ window.RactiveResizer = Ractive.extend({
             when "TopRight"   then [top, right]
             else throw new Error("What the heck resize direction is '#{direction}'?")
 
-        exceedsOpposite = (dir, value) =>
+        clamp = (dir, value) =>
           opposite =
             switch dir
               when 'left'   then 'right'
@@ -105,20 +106,16 @@ window.RactiveResizer = Ractive.extend({
               when 'bottom' then 'top'
               else throw new Error("What the heck opposite direction is '#{dir}'?")
           oppositeValue = @get(opposite)
-          ((opposite is 'left'  or opposite is 'top'   ) and newValue <= (oppositeValue + 26)) or
-          ((opposite is 'right' or opposite is 'bottom') and newValue >= (oppositeValue - 26))
+          if opposite is 'left' or opposite is 'top'
+            Math.max(value, oppositeValue + 26)
+          else
+            Math.min(value, oppositeValue - 26)
 
-        findAdjustment = (n) -> n - (Math.round(n / 10) * 10)
+        snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
 
-        for [dir, lastCor, currentCor] in adjusters
-          newValue   = target.get(dir) - (lastCor - currentCor)
-          adjustment = findAdjustment(newValue)
-          adjusted   = newValue - adjustment
-          if not exceedsOpposite(dir, adjusted)
-            target.set(dir, adjusted)
-
-        @lastX = x
-        @lastY = y
+        for [dir, currentCor] in adjusters
+          snapped = snapToGrid(currentCor)
+          target.set(dir, clamp(dir, snapped))
 
         @get('target').fire('widget-resized'
                            , oldLeft           , oldRight           , oldTop           , oldBottom
@@ -129,8 +126,8 @@ window.RactiveResizer = Ractive.extend({
 
     'stop-handle-drag': ->
       CommonDrag.dragend.call(this, =>
-        @lastX = undefined
-        @lastY = undefined
+        @_xAdjustment = undefined
+        @_yAdjustment = undefined
       )
 
   }
