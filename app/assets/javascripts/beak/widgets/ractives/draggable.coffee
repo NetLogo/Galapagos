@@ -102,12 +102,15 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
       )
 
     'drag-widget': (event) ->
+
+      isSnapping = not event.original.ctrlKey
+
       CommonDrag.drag.call(this, event, (x, y) =>
 
         findAdjustment = (n) -> n - (Math.round(n / 5) * 5)
 
-        xAdjust = findAdjustment(@startLeft + x)
-        yAdjust = findAdjustment(@startTop  + y)
+        xAdjust = if isSnapping then findAdjustment(@startLeft + x) else 0
+        yAdjust = if isSnapping then findAdjustment(@startTop  + y) else 0
 
         @set(  'left', @startLeft   + x - xAdjust)
         @set( 'right', @startRight  + x - xAdjust)

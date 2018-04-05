@@ -70,6 +70,9 @@ window.RactiveResizer = Ractive.extend({
       )
 
     'drag-handle': (event) ->
+
+      isSnapping = not event.original.ctrlKey
+
       CommonDrag.drag.call(this, event, (x, y) =>
 
         target    = @get('target')
@@ -114,7 +117,7 @@ window.RactiveResizer = Ractive.extend({
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
 
         for [dir, currentCor] in adjusters
-          snapped = snapToGrid(currentCor)
+          snapped = if isSnapping then snapToGrid(currentCor) else currentCor
           target.set(dir, clamp(dir, snapped))
 
         @get('target').fire('widget-resized'
