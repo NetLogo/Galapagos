@@ -110,9 +110,9 @@ window.RactiveResizer = Ractive.extend({
               else throw new Error("What the heck opposite direction is '#{dir}'?")
           oppositeValue = @get(opposite)
           if opposite is 'left' or opposite is 'top'
-            Math.max(value, oppositeValue + 26)
+            Math.max(value, oppositeValue + 35)
           else
-            Math.min(value, oppositeValue - 26)
+            Math.min(value, oppositeValue - 35)
 
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
 
