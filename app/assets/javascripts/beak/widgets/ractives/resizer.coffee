@@ -1,8 +1,6 @@
 window.RactiveResizer = Ractive.extend({
 
   isLocked:     false     # Boolean
-  lastUpdateMs: undefined # Number
-  view:         undefined # Element
   _xAdjustment: undefined # Number
   _yAdjustment: undefined # Number
 
