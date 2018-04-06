@@ -116,7 +116,7 @@ template =
       {{/}}
     </div>
 
-    <div class="netlogo-interface-unlocker-container" style="display: none" on-click="toggle-interface-lock">
+    <div class="netlogo-interface-unlocker-container" on-click="toggle-interface-lock">
       <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
       <spacer width="5px" />
       <span style="font-size: 14px; margin-top: 3px;">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
