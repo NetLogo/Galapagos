@@ -63,7 +63,7 @@ window.RactiveChooser = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
-    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
+    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{classes}}" style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
       <select class="netlogo-chooser-select" value="{{widget.currentValue}}"{{# isEditing }} disabled{{/}} >
       {{#widget.choices}}

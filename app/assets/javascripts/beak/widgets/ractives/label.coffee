@@ -94,7 +94,7 @@ window.RactiveLabel = RactiveWidget.extend({
     # BCH 7/28/2015
     label:
       """
-      <pre id="{{id}}" class="netlogo-widget netlogo-text-box{{#isEditing}} interface-unlocked{{/}}"
+      <pre id="{{id}}" class="netlogo-widget netlogo-text-box {{classes}}"
            style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>
       """

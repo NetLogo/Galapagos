@@ -153,7 +153,7 @@ window.RactiveSlider = RactiveWidget.extend({
 
     slider:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}}{{#isEditing}} interface-unlocked{{/}}"
+      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
         <input type="range"
                max="{{widget.maxValue}}" min="{{widget.minValue}}"

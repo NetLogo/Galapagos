@@ -60,6 +60,10 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   }
 
   computed: {
+    classes: ->
+      """
+      #{if @get('isEditing')  then 'interface-unlocked' else ''}
+      """
     dims: ->
       """
       position: absolute;

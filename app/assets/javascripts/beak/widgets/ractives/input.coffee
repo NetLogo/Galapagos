@@ -139,7 +139,7 @@ window.RactiveInput = RactiveWidget.extend({
 
     input:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input {{classes}}" style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
           <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" lazy="true" {{# isEditing }}disabled{{/}} />

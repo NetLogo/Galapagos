@@ -62,7 +62,7 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
     output:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-output netlogo-output-widget{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
+      <div id="{{id}}" class="netlogo-widget netlogo-output netlogo-output-widget {{classes}}" style="{{dims}}">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
       </div>
       """

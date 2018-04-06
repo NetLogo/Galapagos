@@ -66,7 +66,7 @@ window.RactiveSwitch = RactiveWidget.extend({
 
     switch:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{classes}}" style="{{dims}}">
         <input type="checkbox" checked="{{ widget.currentValue }}" {{# isEditing }} disabled{{/}} />
         <span class="netlogo-label">{{ widget.display }}</span>
       </label>

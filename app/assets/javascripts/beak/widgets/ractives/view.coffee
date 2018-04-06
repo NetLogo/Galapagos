@@ -264,7 +264,7 @@ window.RactiveView = RactiveWidget.extend({
 
     view:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-view-container{{#isEditing}} interface-unlocked{{/}}" style="{{dims}}"></div>
+      <div id="{{id}}" class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}"></div>
       """
 
   }
