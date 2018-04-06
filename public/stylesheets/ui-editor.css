@@ -2,6 +2,14 @@
  * Style for things relevant to the widget/interface editor
  */
 
+.editor-overlay {
+  z-index: 50;
+}
+
+.editor-overlay.selected {
+  z-index: 55;
+}
+
 .netlogo-interface-unlocker-container {
   align-items:    center;
   color:          #4f4f4f;
@@ -42,6 +50,10 @@ netlogo-interface-unlocker-container:hover .netlogo-interface-unlocker.interface
   box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
   cursor:     default;
   z-index:    3;
+}
+
+.netlogo-widget.selected {
+  z-index: 53;
 }
 
 .context-menu-item {
@@ -195,10 +207,6 @@ netlogo-interface-unlocker-container:hover .netlogo-interface-unlocker.interface
 
 .widget-edit-legend {
   user-select: none;
-}
-
-.widget-selected {
-  z-index: 50;
 }
 
 .widget-resize-handle {

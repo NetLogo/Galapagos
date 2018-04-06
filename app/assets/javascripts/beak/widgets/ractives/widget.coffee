@@ -51,6 +51,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   data: -> {
     id:         undefined # String
   , isEditing:  undefined # Boolean
+  , isSelected: undefined # Boolean
   , resizeDirs: ['left', 'right', 'top', 'bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight']
   , widget:     undefined # Widget
   }
@@ -63,6 +64,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
     classes: ->
       """
       #{if @get('isEditing')  then 'interface-unlocked' else ''}
+      #{if @get('isSelected') then 'selected'           else ''}
       """
     dims: ->
       """
@@ -151,7 +153,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   partials: {
     editorOverlay: """
                    {{ #isEditing }}
-                     <div draggable="true" style="{{dims}} z-index: 50;"
+                     <div draggable="true" style="{{dims}}" class="editor-overlay{{#isSelected}} selected{{/}}"
                           on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
                           on-contextmenu="@this.fire('show-context-menu', @event)"
                           on-dblclick="@this.fire('edit-widget')"

@@ -32,7 +32,7 @@ window.RactiveResizer = Ractive.extend({
     target = @get('target')
     if not @_isLocked and target?
       if not target.destroyed
-        target.find('.netlogo-widget').classList.remove('widget-selected')
+        target.set('isSelected', false)
       @set('target', null)
     return
 
@@ -42,7 +42,7 @@ window.RactiveResizer = Ractive.extend({
       setTimeout((=> # Use `setTimeout`, so any pending `clearTarget` resolves first --JAB (12/6/17)
         @clearTarget()
         @set('target', newTarget)
-        newTarget.find('.netlogo-widget').classList.add('widget-selected')
+        newTarget.set('isSelected', true)
       ), 0)
     return
 
