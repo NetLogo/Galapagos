@@ -53,6 +53,7 @@ window.handleContextMenu =
             else
               [b, c]
 
+          ractive.fire('deselect-widgets')
           @findComponent('contextMenu').fire('reveal-thineself', component, pageX, pageY)
 
           false
