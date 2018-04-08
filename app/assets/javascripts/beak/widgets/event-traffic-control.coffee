@@ -11,7 +11,11 @@ window.controlEventTraffic = (controller) ->
                                          w.actionKey is char and
                                          ractive.findAllComponents('buttonWidget').
                                            find((b) -> b.get('widget') is w).get('isEnabled')
-        w.run()
+        if w.forever
+          w.running = not w.running
+        else
+          w.run()
+
     return
 
   # (String, Number, Number) => Unit
