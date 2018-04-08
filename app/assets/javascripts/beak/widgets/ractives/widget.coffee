@@ -20,7 +20,9 @@ WidgetEventGenerators = {
 
   refreshChooser: ->
     {
-      run: (ractive, widget) -> ractive.fire('refresh-chooser', widget)
+      # For whatever reason, if Ractive finds second argument of `fire` to be an object (in this case, our `widget`),
+      # it merges that arg into the context and ruins everything. --JAB (4/8/18)
+      run: (ractive, widget) -> ractive.fire('refresh-chooser', "ignore", widget)
       type: "refreshChooser"
     }
 

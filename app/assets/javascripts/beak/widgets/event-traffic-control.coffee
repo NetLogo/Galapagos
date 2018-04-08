@@ -160,7 +160,7 @@ window.controlEventTraffic = (controller) ->
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
   ractive.on('show-errors'              , (_, event)         -> window.showErrors(event.context.compilation.messages))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
-  ractive.on('*.refresh-chooser'        , (_, chooser)       -> refreshChooser(chooser))
+  ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))
   ractive.on('*.reject-duplicate-var'   , (_, varName)       -> rejectDupe(varName))
   ractive.on('*.rename-interface-global', (_, oldN, newN, x) -> renameGlobal(oldN, newN, x))
   ractive.on('*.set-patch-size'         , (_, patchSize)     -> setPatchSize(patchSize))
