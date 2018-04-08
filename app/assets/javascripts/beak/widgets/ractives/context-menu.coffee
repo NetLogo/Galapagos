@@ -84,9 +84,9 @@ window.RactiveContextMenu = Ractive.extend({
         <ul class="context-menu-list">
           {{# options }}
             {{# (..enabler !== undefined && ..enabler(target)) || ..isEnabled }}
-              <li class="context-menu-item" on-click="..action(target, mouseX, mouseY)">{{..text}}</li>
+              <li class="context-menu-item" on-mouseup="..action(target, mouseX, mouseY)">{{..text}}</li>
             {{ else }}
-              <li class="context-menu-item disabled" on-click="ignore-click">{{..text}}</li>
+              <li class="context-menu-item disabled" on-mouseup="ignore-click">{{..text}}</li>
             {{/}}
           {{/}}
         </ul>
