@@ -12,8 +12,9 @@ ButtonEditForm = EditForm.extend({
   computed: { displayedType: { get: -> @_typeToDisplay(@get('type')) } }
 
   on: {
-    'handle-action-key-press': ({ node }) ->
-      node.value = ""
+    'handle-action-key-press': ({ event: { key }, node }) ->
+      if key isnt "Enter"
+        node.value = ""
   }
 
   twoway: false
