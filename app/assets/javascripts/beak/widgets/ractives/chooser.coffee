@@ -55,9 +55,11 @@ window.RactiveChooser = RactiveWidget.extend({
   }
 
   eventTriggers: ->
+    recompileEvent =
+      if @findComponent('editForm').get('amProvingMyself') then @_weg.recompileLite else @_weg.recompile
     {
        choices: [@_weg.refreshChooser]
-    , variable: [@_weg.recompile, @_weg.rename]
+    , variable: [recompileEvent, @_weg.rename]
     }
 
   # coffeelint: disable=max_line_length

@@ -28,11 +28,11 @@ window.EditForm = Ractive.extend({
 
     submit: ({ node }) ->
       try
-        @set('amProvingMyself', false)
         newProps = @genProps(node)
         if newProps?
           @fire('update-widget-value', {}, newProps)
       finally
+        @set('amProvingMyself', false)
         @fire('activate-cloaking-device')
         return false
 
