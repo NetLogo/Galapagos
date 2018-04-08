@@ -19,6 +19,10 @@ class window.WidgetController
 
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
     window.setUpWidget(widget, id, (=> @redraw(); @updateWidgets()))
+
+    if widget.currentValue?
+      world.observer.setGlobal(widget.variable, widget.currentValue)
+
     @ractive.get('widgetObj')[id] = widget
     @ractive.update('widgetObj')
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
