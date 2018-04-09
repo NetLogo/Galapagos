@@ -10,6 +10,11 @@
   z-index: 55;
 }
 
+.netlogo-interface-mode-text {
+  font-size:  14px;
+  margin-top:  3px;
+}
+
 .netlogo-interface-unlocker-container {
   align-items:    center;
   color:          #4f4f4f;

@@ -119,7 +119,7 @@ template =
     <div class="netlogo-interface-unlocker-container" on-click="toggle-interface-lock">
       <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
       <spacer width="5px" />
-      <span style="font-size: 14px; margin-top: 3px;">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
+      <span class="netlogo-interface-mode-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
     </div>
 
     <contextMenu></contextMenu>
