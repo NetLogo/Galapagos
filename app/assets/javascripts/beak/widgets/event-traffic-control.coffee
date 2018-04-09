@@ -3,6 +3,8 @@ window.controlEventTraffic = (controller) ->
 
   { ractive, viewController } = controller
 
+  openDialogs = new Set([])
+
   # (Event) => Unit
   checkActionKeys = (e) ->
     if ractive.get('hasFocus')
@@ -30,6 +32,16 @@ window.controlEventTraffic = (controller) ->
   hailSatan = ({ event: { clientX, clientY } }) ->
     ractive.set("lastDragX", clientX)
     ractive.set("lastDragY", clientY)
+    return
+
+  onCloseDialog = (dialog) ->
+    openDialogs.delete(dialog)
+    ractive.set('someDialogIsOpen', openDialogs.size is 0)
+    return
+
+  onOpenDialog = (dialog) ->
+    openDialogs.add(dialog)
+    ractive.set('someDialogIsOpen', true)
     return
 
   # () => Unit
@@ -117,8 +129,9 @@ window.controlEventTraffic = (controller) ->
 
   # () => Unit
   toggleInterfaceLock = ->
-    isEditing = not ractive.get('isEditing')
-    ractive.set('isEditing', isEditing)
+    if not @get('someDialogIsOpen')
+      isEditing = not ractive.get('isEditing')
+      ractive.set('isEditing', isEditing)
     return
 
   # (Node) => Unit
@@ -165,5 +178,8 @@ window.controlEventTraffic = (controller) ->
   ractive.on('*.rename-interface-global', (_, oldN, newN, x) -> renameGlobal(oldN, newN, x))
   ractive.on('*.set-patch-size'         , (_, patchSize)     -> setPatchSize(patchSize))
   ractive.on('*.update-widgets'         ,                    -> controller.updateWidgets())
+
+  ractive.on('*.dialog-closed', (_, dialog) -> onCloseDialog(dialog))
+  ractive.on('*.dialog-opened', (_, dialog) ->  onOpenDialog(dialog))
 
   return

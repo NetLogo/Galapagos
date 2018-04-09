@@ -54,6 +54,7 @@ window.EditForm = Ractive.extend({
       elem.focus()
 
       @fire('lock-selection', @parent)
+      @fire( 'dialog-opened', this)
 
       container     = findParentByClass('netlogo-widget-container')(elem)
       containerMidX = container.offsetWidth  / 2
@@ -72,6 +73,7 @@ window.EditForm = Ractive.extend({
     'activate-cloaking-device': ->
       @set('visible', false)
       @fire('unlock-selection')
+      @fire('dialog-closed', this)
       if @get('amProvingMyself')
         @fire('has-been-proven-unworthy')
       false

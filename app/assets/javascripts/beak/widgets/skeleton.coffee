@@ -26,6 +26,7 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   , modelTitle:         dropNLogoExtension(filename)
   , outputWidgetOutput: ''
   , primaryView:        undefined
+  , someDialogIsOpen:   false
   , speed:              0.0
   , ticks:              "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:       false
@@ -116,7 +117,7 @@ template =
       {{/}}
     </div>
 
-    <div class="netlogo-interface-unlocker-container" on-click="toggle-interface-lock">
+    <div class="netlogo-interface-unlocker-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
       <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
       <spacer width="5px" />
       <span class="netlogo-interface-mode-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
