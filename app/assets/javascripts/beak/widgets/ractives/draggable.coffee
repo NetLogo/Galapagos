@@ -112,10 +112,22 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
         xAdjust = if isSnapping then findAdjustment(@startLeft + x) else 0
         yAdjust = if isSnapping then findAdjustment(@startTop  + y) else 0
 
-        @set(  'left', @startLeft   + x - xAdjust)
-        @set( 'right', @startRight  + x - xAdjust)
-        @set(   'top', @startTop    + y - yAdjust)
-        @set('bottom', @startBottom + y - yAdjust)
+        newLeft = @startLeft + x - xAdjust
+        newTop  = @startTop  + y - yAdjust
+
+        if newLeft < 0
+          @set( 'left', 0)
+          @set('right', @startRight - @startLeft)
+        else
+          @set( 'left', newLeft)
+          @set('right', @startRight + x - xAdjust)
+
+        if newTop < 0
+          @set(   'top', 0)
+          @set('bottom', @startBottom - @startTop)
+        else
+          @set(   'top', newTop)
+          @set('bottom', @startBottom + y - yAdjust)
 
       )
 
