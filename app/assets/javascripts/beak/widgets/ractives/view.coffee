@@ -249,6 +249,7 @@ window.RactiveView = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
+    {{>editorOverlay}}
     {{>view}}
     <editForm idBasis="view"
               maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
@@ -257,7 +258,6 @@ window.RactiveView = RactiveWidget.extend({
               patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
               framerate="{{widget.frameRate}}"
               isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
-    {{>editorOverlay}}
     """
 
   partials: {

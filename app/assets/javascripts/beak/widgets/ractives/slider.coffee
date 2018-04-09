@@ -141,12 +141,12 @@ window.RactiveSlider = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>slider}}
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               top="{{widget.top}}" right="{{widget.right}}" bottom="{{widget.bottom}}"
               left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}" />
-    {{>editorOverlay}}
     """
 
   partials: {

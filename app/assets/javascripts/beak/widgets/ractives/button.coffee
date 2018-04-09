@@ -117,11 +117,11 @@ window.RactiveButton = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
+    {{>editorOverlay}}
     {{>button}}
     <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
               idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
               startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
-    {{>editorOverlay}}
     """
 
   partials: {

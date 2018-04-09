@@ -52,9 +52,9 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>output}}
     <editForm idBasis="{{id}}" fontSize="{{widget.fontSize}}" style="width: 285px;" />
-    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length

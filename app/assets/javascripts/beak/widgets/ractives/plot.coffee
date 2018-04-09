@@ -46,9 +46,9 @@ window.RactivePlot = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
+    {{>editorOverlay}}
     <div id="{{id}}" class="netlogo-widget netlogo-plot {{classes}}"
          style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"></div>
-    {{>editorOverlay}}
     """
   # coffeelint: enable=max_line_length
 

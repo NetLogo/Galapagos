@@ -127,13 +127,13 @@ window.RactiveInput = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>input}}
     <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}" display="{{widget.display}}"
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
               />
-    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length

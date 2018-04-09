@@ -80,9 +80,9 @@ window.RactiveLabel = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>label}}
     {{>form}}
-    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length

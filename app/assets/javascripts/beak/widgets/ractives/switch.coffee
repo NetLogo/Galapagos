@@ -58,9 +58,9 @@ window.RactiveSwitch = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>switch}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" />
-    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length

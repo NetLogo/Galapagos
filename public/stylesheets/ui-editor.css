@@ -46,7 +46,7 @@
   user-select: none;
 }
 
-.netlogo-widget.interface-unlocked:hover {
+.netlogo-widget.interface-unlocked:hover, .editor-overlay:hover + .netlogo-widget.interface-unlocked {
   box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
   cursor:     default;
   z-index:    3;

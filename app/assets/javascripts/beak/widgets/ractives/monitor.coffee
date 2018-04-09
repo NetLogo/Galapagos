@@ -82,10 +82,10 @@ window.RactiveMonitor = RactiveWidget.extend({
 
   template:
     """
+    {{>editorOverlay}}
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
               precision="{{widget.precision}}" source="{{widget.source}}" />
-    {{>editorOverlay}}
     """
 
   # coffeelint: disable=max_line_length

@@ -65,6 +65,7 @@ window.RactiveChooser = RactiveWidget.extend({
   # coffeelint: disable=max_line_length
   template:
     """
+    {{>editorOverlay}}
     <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{classes}}" style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
       <select class="netlogo-chooser-select" value="{{widget.currentValue}}"{{# isEditing }} disabled{{/}} >
@@ -74,7 +75,6 @@ window.RactiveChooser = RactiveWidget.extend({
       </select>
     </label>
     <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
-    {{>editorOverlay}}
     """
 
   partials: {
