@@ -15,6 +15,7 @@
   color:          #4f4f4f;
   display:        flex;
   flex-direction: row;
+  width:          150px;
 }
 
 .netlogo-interface-unlocker-container:hover {
