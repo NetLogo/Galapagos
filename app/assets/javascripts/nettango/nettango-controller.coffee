@@ -22,14 +22,14 @@ class window.NetTangoController
     })
     @storage = new NetTangoStorage(localStorage)
 
-    @ractive.on('*.save',                 (_, code)        => @exportNetTango('storage'))
-    @ractive.on('*.ntb-recompile',        (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.netlogo-code-change',  (_, title, code) => @setModelCode(title, code))
-    @ractive.on('*.ntb-code-dirty',       (_)              => @enableRecompileOverlay())
-    @ractive.on('*.export-nettango',      (_)              => @exportNetTango('standalone'))
-    @ractive.on('*.export-nettango-json', (_)              => @exportNetTango('json'))
-    @ractive.on('*.import-nettango-json', (local)          => @importNetTango(local.node.files))
-    @ractive.on('*.load-nettango-data',   (_, data)        => @builder.load(data))
+    @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
+    @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
+    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @setModelCode(title, code))
+    @ractive.on('*.ntb-code-dirty',           (_)              => @enableRecompileOverlay())
+    @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
+    @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
+    @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
+    @ractive.on('*.ntb-load-nettango-data',   (_, data)        => @builder.load(data))
 
   # () => Unit
   recompile: () =>
@@ -99,6 +99,9 @@ class window.NetTangoController
 
     if (target is 'json')
       @exportJSON(netTangoData)
+      return
+
+    if (target is 'storage')
       return
 
     # else target is 'standalone'

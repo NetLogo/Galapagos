@@ -15,7 +15,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       @set('block', NetTangoBlockDefaults.getBlockDefault('basics', 0))
       return
 
-    'add-parameter': (_) ->
+    'ntb-add-parameter': (_) ->
       num = @get('block.params.length')
       @push('block.params', @defaultParam(num))
       return false
@@ -114,7 +114,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Parameters</label>
-          <button class="ntb-button" on-click="add-parameter">Add Parameter</button>
+          <button class="ntb-button" on-click="ntb-add-parameter">Add Parameter</button>
         </div>
         {{#params:number }}
           <div class="flex-row ntb-form-row">

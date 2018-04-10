@@ -8,20 +8,23 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         return
       )
 
-    'clear-all-check': (_) ->
+    'ntb-refresh-css': (_) ->
+      @refreshCss()
+
+    'ntb-clear-all-check': (_) ->
       menu = @findComponent('popupmenu')
       menu.set('content', {
         sureCheck: {
           , name: 'Are you sure?'
           , items: [
-            { action: 'Yes, clear all data', event: 'clear-all' }
+            { action: 'Yes, clear all data', event: 'ntb-clear-all' }
           ]
         }
       })
       @set('contextMenu.show', true)
       return false
 
-    '*.clear-all': (_) ->
+    '*.ntb-clear-all': (_) ->
       # TODO - vomit
       modelContainer = document.getElementById('model-container')
       blankData = {
@@ -40,28 +43,28 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       }
       @load(blankData)
 
-    'create-blockspace': (_) ->
+    'ntb-create-blockspace': (_) ->
       defsComponent = @findComponent('tangoDefs')
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
-    '*.create-block': (_, spaceNumber, blockGroup, blockNumber) ->
+    '*.ntb-create-block': (_, spaceNumber, blockGroup, blockNumber) ->
       block = NetTangoBlockDefaults.getBlockDefault(blockGroup, blockNumber)
-      @showBlockForm(spaceNumber, "Add New Block", "new-block-added", block)
+      @showBlockForm(spaceNumber, "Add New Block", "ntb-new-block-added", block)
       return
 
-    '*.edit-block': (_, spaceNumber, blockNumber) ->
+    '*.ntb-edit-block': (_, spaceNumber, blockNumber) ->
       @set('blockEditor.blockNumber', blockNumber)
       space = @findComponent('tangoDefs').get('spaces')[spaceNumber]
       block = space.defs.blocks[blockNumber]
-      @showBlockForm(spaceNumber, "Update Block", "block-updated", block)
+      @showBlockForm(spaceNumber, "Update Block", "ntb-block-updated", block)
       return
 
-    'blockEditForm.new-block-added': (_, spaceNumber, block) ->
+    'blockEditForm.ntb-new-block-added': (_, spaceNumber, block) ->
       @findComponent('tangoDefs').addBlockToSpace(spaceNumber, block)
       return
 
-    'blockEditForm.block-updated': (_, spaceNumber, block, blockNumber) ->
+    'blockEditForm.ntb-block-updated': (_, spaceNumber, block, blockNumber) ->
       @findComponent('tangoDefs').updateBlock(spaceNumber, blockNumber, block)
       return
 
@@ -231,7 +234,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     defsComponent.set('codeIsDirty', false)
 
     if(!@get('playMode') and ntData.code?)
-      @fire('netlogo-code-change', ntData.title, ntData.code)
+      @fire('ntb-netlogo-code-change', ntData.title, ntData.code)
 
     @refreshCss()
     return
@@ -248,13 +251,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       <div class="ntb-controls">
         {{# !playMode }}
         <div class="ntb-block-defs-controls">
-          <button class="ntb-button" on-click="create-blockspace" >Add New Block Space</button>
-          <button class="ntb-button" on-click="refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
-          <button class="ntb-button" on-click="save" >Save NetTango Progress</button>
-          <button class="ntb-button" on-click="export-nettango" >Export NetTango Page</button>
-          <button id="clear-all-button" class="ntb-button" on-click="clear-all-check" >Clear Model and Spaces</button>
-          <button class="ntb-button" on-click="export-nettango-json" >Export NetTango JSON</button>
-          <label class="ntb-file-label">Import NetTango JSON<input class="ntb-file-button" type="file" on-change="import-nettango-json" ></label>
+          <button class="ntb-button" on-click="ntb-create-blockspace" >Add New Block Space</button>
+          <button class="ntb-button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
+          <button class="ntb-button" on-click="ntb-save" >Save NetTango Progress</button>
+          <button class="ntb-button" on-click="ntb-export-nettango" >Export NetTango Page</button>
+          <button id="clear-all-button" class="ntb-button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
+          <button class="ntb-button" on-click="ntb-export-nettango-json" >Export NetTango JSON</button>
+          <label class="ntb-file-label">Import NetTango JSON<input class="ntb-file-button" type="file" on-change="ntb-import-nettango-json" ></label>
         </div>
         {{/}}
 

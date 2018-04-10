@@ -19,7 +19,6 @@ createCommand = (overrides) ->
     Object.assign(command, overrides)
   command
 
-
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
   copy.params = []

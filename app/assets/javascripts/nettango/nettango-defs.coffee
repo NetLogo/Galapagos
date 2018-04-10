@@ -8,12 +8,12 @@ window.RactiveNetTangoDefs = Ractive.extend({
         return
       )
 
-    '*.delete-blockspace': (_, spaceNumber) ->
+    '*.ntb-delete-blockspace': (_, spaceNumber) ->
       @splice('spaces', spaceNumber, 1)
       return
 
-    'show-block-defaults': (_, spaceNumber) ->
-      NetTangoBlockDefaults.blocks.event = 'create-block'
+    'ntb-show-block-defaults': (_, spaceNumber) ->
+      NetTangoBlockDefaults.blocks.event = 'ntb-create-block'
       menu = @findComponent('popupmenu')
       menu.set('content', NetTangoBlockDefaults.blocks)
       @set('contextMenu.buttonId', "add-block-button-#{spaceNumber}")
@@ -21,7 +21,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
       @set('contextMenu.show', true)
       return false
 
-    'show-block-modify': (_, spaceNumber) ->
+    'ntb-show-block-modify': (_, spaceNumber) ->
       menu = @findComponent('popupmenu')
       modifyMenu = @createModifyMenuContent(spaceNumber)
       menu.set('content', modifyMenu)
@@ -30,20 +30,20 @@ window.RactiveNetTangoDefs = Ractive.extend({
       @set('contextMenu.show', true)
       return false
 
-    '*.delete-block': (_, spaceNumber, blockNumber) ->
+    '*.ntb-delete-block': (_, spaceNumber, blockNumber) ->
       space = @get('spaces')[spaceNumber]
       space.defs.blocks.splice(blockNumber, 1)
       @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
       @initNetTangoForSpace(space)
       return
 
-    'confirm-delete': (_, spaceNumber) ->
+    'ntb-confirm-delete': (_, spaceNumber) ->
       menu = @findComponent('popupmenu')
       menu.set('content', {
         sureCheck: {
           , name: 'Are you sure?'
           , items: [
-            { action: 'Yes, delete block space', event: 'delete-blockspace' }
+            { action: 'Yes, delete block space', event: 'ntb-delete-blockspace' }
           ]
         }
       })
@@ -62,7 +62,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
         @fire('ntb-code-dirty')
       return
 
-    'apply-json-to-space': (_, space, number) ->
+    'ntb-apply-json-to-space': (_, space, number) ->
       newDefs = JSON.parse(space.defsJson)
       @set("spaces[#{number}].defs", newDefs)
       @initNetTangoForSpace(space)
@@ -119,8 +119,8 @@ window.RactiveNetTangoDefs = Ractive.extend({
   createModifyMenuContent: (spaceNumber) ->
     content = []
     space = @get('spaces')[spaceNumber]
-    dele = { event: 'delete-block', action: 'delete' }
-    edit = { event: 'edit-block', action: 'edit' }
+    dele = { event: 'ntb-delete-block', action: 'delete' }
+    edit = { event: 'ntb-edit-block', action: 'edit' }
     for def, num in space.defs.blocks
       key = "block#{num}"
       content.push({
@@ -187,9 +187,9 @@ window.RactiveNetTangoDefs = Ractive.extend({
           <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
           {{# !playMode }}
           <div class="ntb-block-defs-controls" >
-            <button id="add-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'show-block-defaults', spaceNum ]">Add Block ▼</button>
-            <button id="modify-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'show-block-modify', spaceNum ]">Modify Block ▼</button>
-            <button id="delete-space-button-{{spaceNum}}" class="ntb-button" on-click="[ 'confirm-delete', spaceNum ]" >Delete Block Space</button>
+            <button id="add-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', spaceNum ]">Add Block ▼</button>
+            <button id="modify-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-modify', spaceNum ]">Modify Block ▼</button>
+            <button id="delete-space-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-confirm-delete', spaceNum ]" >Delete Block Space</button>
           </div>
           {{/}}
           <div class="nt-container" id="{{ spaceId }}" >
@@ -198,7 +198,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
           {{# !playMode }}
           <div class="ntb-block-defs-controls">
             <label for="{{ spaceId }}-json">Block Definition JSON</label>
-            <button class="ntb-button" on-click="[ 'apply-json-to-space', this, spaceNum ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
+            <button class="ntb-button" on-click="[ 'ntb-apply-json-to-space', this, spaceNum ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
           </div>
           <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change', this, spaceNum ]" lazy />
           {{/}}
