@@ -36,7 +36,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   defaultParam: (num) -> {
       name: "param#{num}"
-    , type: "number"
+    , type: "num"
     , unit: undefined
     , def:  "10"
   }
@@ -66,7 +66,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
       if paramValues.type == 'range'
         [ 'min', 'max', 'step' ].forEach(`(f) => param[f] = paramValues[f]`)
-      else if paramValues.type == 'select'
+      else if paramValues.type == 'selection'
         param['values'] = paramValues['values'].split(/\s*;\s*|\n/).filter(`(s) => s != ""`)
       param
 
@@ -121,7 +121,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
             <labelledInput id="param-{{ number }}-name" name="name" type="text" value="{{ name }}" label="Name" style="flex-grow: 1;" />
 
             <dropdown id="param-{{ number }}-type" name="{{ type }}" value="{{ type }}" label="Type" style="flex-grow: 1;"
-              options="{{ [ 'int', 'number', 'text', 'range', 'select' ] }}"
+              options="{{ [ 'bool', 'num', 'int', 'range', 'text', 'selection' ] }}"
               />
 
             <labelledInput id="param-{{ number }}-unit" name="unit" type="text" value="{{ unit }}" label="Unit label" style="flex-grow: 1;" />
@@ -135,7 +135,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       """
       # coffeelint: enable=max_line_length
 
-    'param-number': ""
+    'param-bool': ""
+    'param-num': ""
     'param-int': ""
     'param-text': ""
 
