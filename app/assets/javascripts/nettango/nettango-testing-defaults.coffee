@@ -1,6 +1,6 @@
 window.RactiveNetTangoTestingDefaults = Ractive.extend({
   on: {
-    'testing-defaults': (_) ->
+    'ntb-testing-defaults': (_) ->
       wspDefaults = {
         extraCss: "/* test of extraCss load */"
         title: "Wolves and Sheep"
@@ -16,7 +16,7 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
         ]
         , code: @codeDefault
       }
-      @fire('load-nettango-data', { }, wspDefaults)
+      @fire('ntb-load-nettango-data', { }, wspDefaults)
       return
   }
 
@@ -24,7 +24,7 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
     <div class="ntb-container" style="position: relative;">
       <div class="ntb-controls">
         <div class="ntb-block-defs-controls">
-          <button class="ntb-button" on-click="testing-defaults" >Load WSP Testing Defaults</button>
+          <button class="ntb-button" on-click="ntb-testing-defaults" >Load WSP Testing Defaults</button>
         </div>
       </div>
     </div>
