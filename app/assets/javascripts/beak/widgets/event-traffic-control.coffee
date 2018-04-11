@@ -36,7 +36,7 @@ window.controlEventTraffic = (controller) ->
 
   onCloseDialog = (dialog) ->
     openDialogs.delete(dialog)
-    ractive.set('someDialogIsOpen', openDialogs.size is 0)
+    ractive.set('someDialogIsOpen', openDialogs.size > 0)
     return
 
   onOpenDialog = (dialog) ->
