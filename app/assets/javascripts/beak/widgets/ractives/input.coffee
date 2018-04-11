@@ -73,25 +73,10 @@ window.RactiveInput = RactiveWidget.extend({
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   }
 
-  computed: {
-    hexColor: { # String
-      get: ->
-        try netlogoColorToHexString(@get('widget').currentValue)
-        catch ex
-          "#000000"
-      set: (hex) ->
-        color =
-          try hexStringToNetlogoColor(hex)
-          catch ex
-            0
-        @set('widget.currentValue', color)
-        return
-    }
-  }
-
   components: {
-    editForm: InputEditForm
-  , editor:   RactiveCodeContainerMultiline
+    colorInput: RactiveColorInput
+  , editForm:   InputEditForm
+  , editor:     RactiveCodeContainerMultiline
   }
 
   eventTriggers: ->
@@ -153,7 +138,7 @@ window.RactiveInput = RactiveWidget.extend({
           <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
-          <input class="netlogo-multiline-input" style="margin: 0; width: 100%;" type="color" value="{{hexColor}}" {{# isEditing }}disabled{{/}} />
+          <colorInput class="netlogo-multiline-input" style="margin: 0; width: 100%;" value="{{widget.currentValue}}" isEnabled="{{!isEditing}}" />
         {{/}}
       </label>
       """

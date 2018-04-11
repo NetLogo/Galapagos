@@ -329,6 +329,7 @@ private[controllers] trait RequestResultGenerator {
         "new-model.js",
         "beak/widgets/ractives/subcomponent/checkbox.js",
         "beak/widgets/ractives/subcomponent/code-container.js",
+        "beak/widgets/ractives/subcomponent/color-input.js",
         "beak/widgets/ractives/subcomponent/dropdown.js",
         "beak/widgets/ractives/subcomponent/labeled-input.js",
         "beak/widgets/ractives/subcomponent/font-size.js",

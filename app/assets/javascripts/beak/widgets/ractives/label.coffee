@@ -5,25 +5,33 @@ LabelEditForm = EditForm.extend({
   , fontSize:    undefined # Number
   , text:        undefined # String
   , transparent: undefined # Boolean
+  , _color:      undefined # String
   }
 
   twoway: false
 
   components: {
-    formCheckbox: RactiveEditFormCheckbox
+    colorInput:   RactiveColorInput
+  , formCheckbox: RactiveEditFormCheckbox
   , formFontSize: RactiveEditFormFontSize
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
   }
 
   genProps: (form) ->
-    color = window.hexStringToNetlogoColor(form.color.value)
     {
-            color
+            color: @findComponent('colorInput').get('value')
     ,     display: form.text.value
     ,    fontSize: parseInt(form.fontSize.value)
     , transparent: form.transparent.checked
     }
+
+  on: {
+    init: ->
+      # A hack (because two-way binding isn't fully properly disabling?!) --JAB (4/11/18)
+      @set('_color', @get('color'))
+      return
+  }
 
   partials: {
 
@@ -45,7 +53,12 @@ LabelEditForm = EditForm.extend({
         </div>
         <spacer width="4%" />
         <div style="width: 48%;">
-          <labeledInput id="{{id}}-text-color" labelStr="Text color:" name="color" class="widget-edit-color-pick" type="color" value="{{color}}" />
+          <div class="flex-row" style="align-items: center;">
+            <label for="{{id}}-text-color" class="widget-edit-input-label">Text color:</label>
+            <div style="flex-grow: 1;">
+              <colorInput id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick" value="{{_color}}" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -73,11 +86,6 @@ window.RactiveLabel = RactiveWidget.extend({
   eventTriggers: ->
     {}
 
-  computed: {
-    hexColor: ->
-      window.netlogoColorToHexString(@get('widget').color)
-  }
-
   template:
     """
     {{>editorOverlay}}
@@ -101,7 +109,7 @@ window.RactiveLabel = RactiveWidget.extend({
 
     form:
       """
-      <editForm idBasis="{{id}}" color="{{hexColor}}"
+      <editForm idBasis="{{id}}" color="{{widget.color}}"
                 fontSize="{{widget.fontSize}}" text="{{widget.display}}"
                 transparent="{{widget.transparent}}" />
       """
