@@ -107,6 +107,18 @@ blocks = {
             name: "percent"
         } ]
       })
+      , createCommand({
+        , action:  "if"
+        , type:    "nlogo:if"
+        , format:  "if {0}"
+        , control: true
+        , blockColor: '#8899aa'
+        , params: [ {
+            type: "bool",
+            def:  false,
+            name: "case"
+        } ]
+      })
     ]
   }
   , observerCommands: {
