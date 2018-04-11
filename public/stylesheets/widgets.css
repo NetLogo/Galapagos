@@ -26,7 +26,8 @@
 }
 
 .netlogo-command,.netlogo-input {
-    user-select: none;
+    user-select:      none;
+    -moz-user-select: none;
 }
 
 .netlogo-command:hover,.netlogo-input:hover {
@@ -89,6 +90,7 @@
   font-weight: bold;
   text-align: center;
   user-select: none;
+  -moz-user-select: none;
 }
 
 .netlogo-tab-content {
@@ -99,7 +101,8 @@
 }
 
 .unselectable {
-  user-select: none;
+  user-select:      none;
+  -moz-user-select: none;
 }
 
 .growing {
