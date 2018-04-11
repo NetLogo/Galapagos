@@ -129,11 +129,32 @@ window.RactiveNetTangoDefs = Ractive.extend({
       })
     content
 
+  expressionDefaults: () ->
+    return [
+      { name: "true",  type: "bool" },
+      { name: "false", type: "bool" },
+      { name: "AND",   type: "bool", arguments: [ "bool", "bool"],  format: "({0} and {1})" },
+      { name: "OR",    type: "bool", arguments: [ "bool", "bool" ], format: "({0} or {1})" },
+      { name: "NOT",   type: "bool", arguments: [ "bool"],          format: "(not {0})" },
+      { name: ">",     type: "bool", arguments: [ "num", "num" ] },
+      { name: ">=",    type: "bool", arguments: [ "num", "num" ] },
+      { name: "<",     type: "bool", arguments: [ "num", "num" ] },
+      { name: "<=",    type: "bool", arguments: [ "num", "num" ] },
+      { name: "!=",    type: "bool", arguments: [ "num", "num" ] },
+      { name: "=",     type: "bool", arguments: [ "num", "num" ] },
+      { name: "+",     type: "num",  arguments: [ "num", "num"] },
+      { name: "-",     type: "num",  arguments: [ "num", "num"] },
+      { name: "×",     type: "num",  arguments: [ "num", "num"], format: "({0} * {1})" },
+      { name: "/",     type: "num",  arguments: [ "num", "num"] },
+      { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
+    ]
+
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
     id      = @get('nextId')
     spaceId = "ntb-defs-#{id}"
     defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [] }
+    defs.expressions = defs.expressions ? @expressionDefaults()
     space = {
         id:                id
       , spaceId:           spaceId
