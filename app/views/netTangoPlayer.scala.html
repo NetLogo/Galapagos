@@ -268,7 +268,8 @@
         setModelCode, getModelElementById, createElement, appendElement, getWidgetController, window.saveAs
       )
 
-      window.ractive   = netTango.ractive // ???
+      exports.toHTML = markdown.toHTML // TODO - this should not be necessary, but `exports` doesn't exist when we import `markdown-js`
+      window.ractive   = netTango.ractive // TODO - decide if thisis necessary
       window.recompile = netTango.recompile
       window.onload    = netTango.onModelLoad
 
