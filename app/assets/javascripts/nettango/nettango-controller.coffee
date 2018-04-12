@@ -78,9 +78,10 @@ class window.NetTangoController
     if (not files? or files.length is 0)
       return
     reader = new FileReader()
-    reader.onload = (e) ->
+    reader.onload = (e) =>
       ntData = JSON.parse(e.target.result)
       @builder.load(ntData)
+      return
     reader.readAsText(files[0])
     return
 
