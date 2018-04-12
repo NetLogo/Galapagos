@@ -38,6 +38,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           , infoTab:          true
           , speedBar:         true
           , fileButtons:      true
+          , authoring:        true
           , poweredBy:        false
         }
       }
@@ -145,6 +146,12 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         checkedCssBuild:  '.netlogo-export-wrapper { display: none; }',
         checkedCssExport: '.netlogo-export-wrapper { display: none; }'
       },
+      authoring: {
+        label: "Hide authoring unlock",
+        checked: true,
+        checkedCssBuild:  '.netlogo-interface-unlocker-container { background: #eee; }',
+        checkedCssExport: '.netlogo-interface-unlocker-container { display: none; }'
+      }
       poweredBy: {
         label: "Hide 'Powered by NetLogo' link",
         checked: false,
