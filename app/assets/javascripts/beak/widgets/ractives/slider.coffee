@@ -120,6 +120,15 @@ window.RactiveSlider = RactiveWidget.extend({
   , errorClass:         undefined # String
   }
 
+  on: {
+    'reset-if-invalid': (context) ->
+      # input elements don't reject out-of-range hand-typed numbers so we have to do the dirty work
+      if (context.node.validity.rangeOverflow)
+        @set('widget.currentValue', @get('widget.maxValue'))
+      else if (context.node.validity.rangeUnderflow)
+        @set('widget.currentValue', @get('widget.minValue'))
+  }
+
   computed: {
     resizeDirs: {
       get: -> if @get('widget.direction') isnt 'vertical' then ['left', 'right'] else ['top', 'bottom']
@@ -162,10 +171,10 @@ window.RactiveSlider = RactiveWidget.extend({
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="show-errors">{{widget.display}}</span>
           <span class="netlogo-slider-value">
-            <input type="number"
+            <input type="number" on-change="reset-if-invalid"
                    style="width: {{widget.currentValue.toString().length + 3.0}}ch"
-                   min={{widget.minValue}} max={{widget.maxValue}}
-                   value={{widget.currentValue}} step={{widget.stepValue}}
+                   min="{{widget.minValue}}" max="{{widget.maxValue}}"
+                   value="{{widget.currentValue}}" step="{{widget.stepValue}}"
                    {{# isEditing }}disabled{{/}} />
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
