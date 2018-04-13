@@ -82,6 +82,18 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
       """
   }
 
+  # (Object[Number]) => Unit
+  handleResize: ({ left, right, top, bottom }) ->
+    @set('widget.left'  , left  )
+    @set('widget.right' , right )
+    @set('widget.top'   , top   )
+    @set('widget.bottom', bottom)
+    return
+
+  # () => Unit
+  handleResizeEnd: ->
+    return
+
   on: {
 
     'edit-widget': ->

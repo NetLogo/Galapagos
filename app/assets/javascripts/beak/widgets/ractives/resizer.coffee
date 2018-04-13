@@ -69,9 +69,11 @@ window.RactiveResizer = Ractive.extend({
 
     'drag-handle': (event) ->
 
-      isSnapping = not event.original.ctrlKey
-
       CommonDrag.drag.call(this, event, (x, y) =>
+
+        snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
+        isSnapping = not event.original.ctrlKey
+        [snappedX, snappedY] = if isSnapping then [x, y].map(snapToGrid) else [x, y]
 
         target    = @get('target')
         oldLeft   = target.get('left')
@@ -79,10 +81,10 @@ window.RactiveResizer = Ractive.extend({
         oldTop    = target.get('top')
         oldBottom = target.get('bottom')
 
-        left   = ['left'  , x - @_xAdjustment]
-        right  = ['right' , x - @_xAdjustment]
-        top    = ['top'   , y - @_yAdjustment]
-        bottom = ['bottom', y - @_yAdjustment]
+        left   = ['left'  , snappedX - @_xAdjustment]
+        right  = ['right' , snappedX - @_xAdjustment]
+        top    = ['top'   , snappedY - @_yAdjustment]
+        bottom = ['bottom', snappedY - @_yAdjustment]
 
         direction = event.original.target.dataset.direction
 
@@ -112,16 +114,18 @@ window.RactiveResizer = Ractive.extend({
           else
             Math.min(value, oppositeValue - 35)
 
-        snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
+        dirCoordPairs = adjusters.map(([dir, currentCor]) -> [dir, clamp(dir, currentCor)])
 
-        for [dir, currentCor] in adjusters
-          snapped = if isSnapping then snapToGrid(currentCor) else currentCor
-          target.set(dir, clamp(dir, snapped))
+        newChanges =
+          if dirCoordPairs.every(([dir, coord]) -> not (((dir is 'left') or (dir is 'top')) and (coord < 0)))
+            dirCoordPairs.reduce(((acc, [dir, coord]) -> acc[dir] = coord; acc), {})
+          else
+            {}
 
-        @get('target').fire('widget-resized'
-                           , oldLeft           , oldRight           , oldTop           , oldBottom
-                           , target.get('left'), target.get('right'), target.get('top'), target.get('bottom')
-                           )
+        oldCoords = { left: oldLeft, top: oldTop, bottom: oldBottom, right: oldRight }
+        newCoords = Object.assign(oldCoords, newChanges)
+
+        @get('target').handleResize(newCoords)
 
       )
 
@@ -129,6 +133,7 @@ window.RactiveResizer = Ractive.extend({
       CommonDrag.dragend.call(this, =>
         @_xAdjustment = undefined
         @_yAdjustment = undefined
+        @get('target').handleResizeEnd()
       )
 
   }

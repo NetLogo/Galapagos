@@ -213,9 +213,15 @@ window.RactiveView = RactiveWidget.extend({
     , 'dimensions.wrappingAllowedInY': [@_weg.updateTopology, @_weg.redrawView]
     }
 
-  on: {
+  # (Object[Number]) => Unit
+  handleResize: ({ left: newLeft, right: newRight, top: newTop, bottom: newBottom }) ->
 
-    'widget-resized': (_, oldLeft, oldRight, oldTop, oldBottom, newLeft, newRight, newTop, newBottom) ->
+    if newLeft >= 0 and newTop >= 0
+
+      oldLeft   = @get('left'  )
+      oldRight  = @get('right' )
+      oldTop    = @get('top'   )
+      oldBottom = @get('bottom')
 
       oldWidth  = oldRight  - oldLeft
       oldHeight = oldBottom - oldTop
@@ -226,25 +232,36 @@ window.RactiveView = RactiveWidget.extend({
       dWidth  = Math.abs(oldWidth  - newWidth )
       dHeight = Math.abs(oldHeight - newHeight)
 
-      ratio     = if dWidth > dHeight then newWidth / oldWidth else newHeight / oldHeight
+      ratio     = if dWidth > dHeight then newHeight / oldHeight else newWidth / oldWidth
       patchSize = parseFloat((@get('widget.dimensions.patchSize') * ratio).toFixed(2))
 
       scaledWidth  = patchSize * (@get('widget.dimensions.maxPxcor') - @get('widget.dimensions.minPxcor') + 1)
       scaledHeight = patchSize * (@get('widget.dimensions.maxPycor') - @get('widget.dimensions.minPycor') + 1)
 
-      dx = Math.round((scaledWidth  - oldWidth ) / 2)
-      dy = Math.round((scaledHeight - oldHeight) / 2)
+      dx = scaledWidth  - oldWidth
+      dy = scaledHeight - oldHeight
 
-      @set('widget.top'   , oldTop    - dy)
-      @set('widget.bottom', oldBottom + dy)
-      @set('widget.left'  , oldLeft   - dx)
-      @set('widget.right' , oldRight  + dx)
+      movedLeft = newLeft isnt oldLeft
+      movedUp   = newTop  isnt oldTop
 
-      @findComponent('editForm').set('patchSize', patchSize)
-      @fire('set-patch-size', patchSize)
-      @fire('redraw-view')
+      [top , bottom] = if movedUp   then [oldTop  - dy, newBottom] else [newTop , oldBottom + dy]
+      [left,  right] = if movedLeft then [oldLeft - dx, newRight ] else [newLeft, oldRight  + dx]
 
-  }
+      if left >= 0 and top >= 0
+
+        @set('widget.top'   , Math.round(top   ))
+        @set('widget.bottom', Math.round(bottom))
+        @set('widget.left'  , Math.round(left  ))
+        @set('widget.right' , Math.round(right ))
+
+        @findComponent('editForm').set('patchSize', patchSize)
+
+    return
+
+  # () => Unit
+  handleResizeEnd: ->
+    @fire('set-patch-size', @findComponent('editForm').get('patchSize'))
+    return
 
   # coffeelint: disable=max_line_length
   template:
