@@ -24,11 +24,12 @@ RactiveCodeContainerBase = Ractive.extend({
     initialCode = @get('initialCode')
     @set('code', initialCode ? @get('code') ? "")
     @_setupCodeMirror()
+    return
 
   twoway: false
 
   _setupCodeMirror: ->
-    baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code'), viewportMargin: Infinity }
+    baseConfig = { mode:  'netlogo', theme: 'netlogo-default', value: @get('code').toString(), viewportMargin: Infinity }
     config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
     @_editor   = new CodeMirror(@find("##{@get('id')}"), config)
     @_editor.on('change', => @set('code', @_editor.getValue()))
@@ -45,8 +46,9 @@ RactiveCodeContainerBase = Ractive.extend({
 
   # (String) => Unit
   setCode: (code) ->
-    if @_editor? and @_editor.getValue() isnt code
-      @_editor.setValue(code)
+    str = code.toString()
+    if @_editor? and @_editor.getValue() isnt str
+      @_editor.setValue(str)
     return
 
   template:
