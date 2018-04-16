@@ -80,11 +80,31 @@ window.RactiveInput = RactiveWidget.extend({
   }
 
   eventTriggers: ->
-    recompileEvent =
-      if @findComponent('editForm').get('amProvingMyself') then @_weg.recompileLite else @_weg.recompile
-    { variable: [recompileEvent, @_weg.rename] }
+    amProvingSelf  = @findComponent('editForm').get('amProvingMyself')
+    recompileEvent = if amProvingSelf then @_weg.recompileLite else @_weg.recompile
+    {
+      currentValue: [@_weg.updateEngineValue]
+    ,     variable: [recompileEvent, @_weg.rename]
+    }
 
   on: {
+
+    # We get this event even when switching boxtypes (from Command/Reporter to anything else).
+    # However, this is a problem for Color and Number Inputs, because the order of things is:
+    #
+    #   * Set new default value (`0`)
+    #   * Plug it into the editor (where it converts to `"0"`)
+    #   * Update the data model with this value
+    #   * Throw out the editor and replace it with the proper HTML element
+    #   * Oh, gosh, my number is actually a string
+    #
+    # The proper fix is really to get rid of the editor before stuffing the new value into it,
+    # but that sounds fidgetty.  This fix is also fidgetty, but it's only fidgetty here, for Inputs;
+    # other widget types are left unbothered by this. --JAB (4/16/18)
+    'code-changed': (_, newValue) ->
+      if @get('widget').boxedValue.type.includes("String ")
+        @set('widget.currentValue', newValue)
+      false
 
     'handle-keypress': ({ original: { keyCode, target } }) ->
       if (not @get('widget.boxedValue.multiline')) and keyCode is 13 # Enter key in single-line input
@@ -135,7 +155,7 @@ window.RactiveInput = RactiveWidget.extend({
           <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handle-keypress" lazy="true" {{# isEditing }}disabled{{/}} ></textarea>
         {{/}}
         {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
-          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" code="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
+          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" initialCode="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
           <colorInput class="netlogo-multiline-input" style="margin: 0; width: 100%;" value="{{widget.currentValue}}" isEnabled="{{!isEditing}}" />

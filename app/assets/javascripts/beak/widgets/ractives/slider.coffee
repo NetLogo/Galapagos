@@ -142,10 +142,11 @@ window.RactiveSlider = RactiveWidget.extend({
 
   eventTriggers: ->
     {
-           max: [@_weg.recompile]
-    ,      min: [@_weg.recompile]
-    ,     step: [@_weg.recompile]
-    , variable: [@_weg.recompile, @_weg.rename]
+      currentValue: [@_weg.updateEngineValue]
+    ,          max: [@_weg.recompile]
+    ,          min: [@_weg.recompile]
+    ,         step: [@_weg.recompile]
+    ,     variable: [@_weg.recompile, @_weg.rename]
     }
 
   template:

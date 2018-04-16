@@ -44,6 +44,12 @@ WidgetEventGenerators = {
       type: "resizeView"
     }
 
+  updateEngineValue: ->
+    {
+      run: (ractive, widget) -> world.observer.setGlobal(widget.variable, widget.currentValue)
+      type: "updateCurrentValue"
+    }
+
   updateTopology: ->
     {
       run:  (ractive, widget) -> ractive.fire('update-topology')
