@@ -51,8 +51,6 @@ resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
 
 resolvers += Resolver.bintrayRepo("netlogo", "NetLogoHeadless")
 
-GalapagosAssets.settings
-
 // Used in Prod
 pipelineStages ++= Seq(digest)
 

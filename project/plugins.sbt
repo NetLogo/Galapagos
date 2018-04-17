@@ -23,5 +23,3 @@ scalacOptions ++= Seq(
 resolvers += Resolver.bintrayIvyRepo("netlogo", "play-scraper")
 
 addSbtPlugin("org.nlogo" % "play-scraper" % "0.8.1")
-
-libraryDependencies += "org.im4java" % "im4java" % "1.4.0" // only used for asset generation
