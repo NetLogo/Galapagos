@@ -7,7 +7,7 @@ import
 
 import
   play.api.{ Configuration, Environment, mvc },
-    mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
+    mvc._ // necessary for an implicit auto-conversion to HttpRequest for relative paths in views
 
 class Local @Inject() ( components: ControllerComponents
                       , configuration: Configuration
@@ -20,7 +20,7 @@ class Local @Inject() ( components: ControllerComponents
   implicit val mode        = environment.mode
 
   def launch: Action[AnyContent] = Action {
-    implicit request =>
+    implicit req =>
       Ok(views.html.tortoise())
   }
 

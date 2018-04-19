@@ -107,7 +107,7 @@ class window.NetTangoController
 
     # else target is 'standalone'
     parser = new DOMParser()
-    ntPlayer = new Request('/ntango-play')
+    ntPlayer = new Request('./ntango-play')
     at = @
     playerFetch = fetch(ntPlayer).then((ntResp) ->
       if (ntResp.ok)
