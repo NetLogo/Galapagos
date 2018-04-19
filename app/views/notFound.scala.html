@@ -1,7 +1,9 @@
+@(request: RequestHeader)
+
 <div class="flex-column" style="justify-content: center; padding: 0 150px; height: 100%;">
     <div class="normal_font rounded" style="background-color: #CDE4EB; padding: 3%;">
         <h1 style="margin: auto; text-align: center;">Not Found</h1>
-        <img src="@routes.Assets.versioned("images/404.png")" class="center" style="margin-top: 50px; background-color: #222222;"/>
+        <img src="@routes.Assets.versioned("images/404.png").relative(request)" class="center" style="margin-top: 50px; background-color: #222222;"/>
         <div class="normal_font server-error" class="center">
             This page isn't available.
             If you think you've reached this page in error, please contact <a href="mailto:bugs@@ccl.northwestern.edu">the website administrator</a>.

@@ -3,10 +3,10 @@
 @()(implicit mode: Mode, request: Request[_])
 
 @extraHead = {
-  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css")' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css")' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css")' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css")' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css").relative' />
 }
 
 @content = {
@@ -30,16 +30,20 @@
 }
 
 @extraBody = {
-  <script src='@routes.Assets.versioned("lib/jquery/jquery.js")' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js")' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/filesaver/FileSaver.js")' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("lib/jquery/jquery.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("lib/filesaver/FileSaver.js").relative' type="text/javascript"></script>
   <script>
     var exports = {};
   </script>
-  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js").relative'></script>
   <script>
     var modelContainer = document.querySelector('#model-container');
     var hostPrefix     = location.protocol + '//' + location.host;
+    var pathSplits = location.pathname.split("/")
+    if(pathSplits.length > 2) {
+      hostPrefix = hostPrefix + "/" + pathSplits[1]
+    }
 
     var modelFileInput = document.querySelector('#model-file-input');
     modelFileInput.addEventListener('click', function (event) { this.value = '' })
@@ -70,10 +74,10 @@
       }
       if (url === "NewModel") {
         exports.selectModel("Select a model");
-        modelContainer.contentWindow.location.replace("/web");
+        modelContainer.contentWindow.location.replace("./web");
       } else {
         exports.selectModelByURL(url);
-        modelContainer.contentWindow.location.replace("/web?"+url);
+        modelContainer.contentWindow.location.replace("./web?"+url);
       }
     }
 
@@ -120,7 +124,7 @@
       if (window.location.hash) {
         var hash = window.location.hash.substring(1);
         if (hash === "NewModel") {
-          modelContainer.contentWindow.location.replace("/web");
+          modelContainer.contentWindow.location.replace("./web");
         } else {
           openModelFromUrl(hash);
         }

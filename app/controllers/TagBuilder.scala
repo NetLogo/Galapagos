@@ -64,15 +64,14 @@ object InlineTagBuilder extends TagBuilder {
 object OutsourceTagBuilder extends TagBuilder {
 
   override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(new URL(routes.Assets.versioned(path).absoluteURL))
+    genTag(routes.Assets.versioned(path).relative)
 
   override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(new URL(call.absoluteURL))
+    genTag(call.relative)
 
-  private def genTag(url: URL): Html = {
-    val protoRelativeURL        = TagBuilder.protocolRelativeURL(url)
+  private def genTag(protoRelativeURL: String): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
-    val FileExtensionRegex(ext) = url.getPath
+    val FileExtensionRegex(ext) = protoRelativeURL
     ext match {
       case "js"  => Html(s"""<script src="$protoRelativeURL"></script>""")
       case "css" => Html(s"""<link rel="stylesheet" href="$protoRelativeURL"></link>""")
