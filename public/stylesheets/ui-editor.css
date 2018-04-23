@@ -65,6 +65,10 @@
   z-index: 53;
 }
 
+.netlogo-widget-container.interface-unlocked {
+  background-color: rgb(234, 255, 225);
+}
+
 .context-menu-item {
   border-bottom: solid 1px #dfdfdf;
   color:         #0066aa;
