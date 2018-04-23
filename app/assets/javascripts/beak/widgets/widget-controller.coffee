@@ -153,7 +153,7 @@ updateWidget = (widget) ->
           if isntValidValue
             'N/A'
           else
-            if precision?
+            if widget.precision?
               NLMath.precision(value, widget.precision)
             else
               value
