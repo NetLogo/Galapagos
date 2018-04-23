@@ -62,7 +62,7 @@ window.handleWidgetSelection =
     nudgeWidget =
       (event, direction) ->
         selected = resizer().get('target')
-        if selected?
+        if selected? and (not ractive.get('someDialogIsOpen'))
           selected.nudge(direction)
           false
         else
