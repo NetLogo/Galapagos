@@ -26,7 +26,8 @@
 }
 
 .netlogo-interface-unlocker-container.enabled:hover {
-  color: #000000;
+  color:  #000000;
+  cursor: pointer;
 }
 
 .netlogo-interface-unlocker {
