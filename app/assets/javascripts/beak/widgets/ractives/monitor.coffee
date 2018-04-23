@@ -24,9 +24,11 @@ MonitorEditForm = EditForm.extend({
   # Ractive's), so the `textarea` doesn't have the correct value when we get here.  It's much, much
   # more straight-forward to just go digging in the form component for its value. --JAB (4/21/16)
   genProps: (form) ->
+    fontSize = parseInt(form.fontSize.value)
     {
         display: (if form.display.value isnt "" then form.display.value else undefined)
-    ,  fontSize: parseInt(form.fontSize.value)
+    ,  fontSize
+    ,    bottom: @parent.get('widget.top') + (2 * fontSize) + 23
     , precision: parseInt(form.precision.value)
     ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
     }
