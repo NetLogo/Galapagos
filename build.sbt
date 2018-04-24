@@ -75,6 +75,8 @@ scrapeRoutes ++= Seq(
   "/robots.txt",
   "/standalone",
   "/launch",
+  "/ntango",
+  "/ntango-play",
   "/web"
   )
 
