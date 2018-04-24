@@ -24,7 +24,7 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.tortoise())
   }
 
-  def ntango: Action[AnyContent] = Action {
+  def ntangoBuild: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.netTangoBuilder(OutsourceTagBuilder))
   }
