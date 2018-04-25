@@ -46,7 +46,7 @@ class window.NetTangoController
       @firstLoad = false
     else
       netTangoCodeElement = @getModelElementById('ntango-code')
-      if (netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
+      if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
         data = JSON.parse(netTangoCodeElement.textContent)
         @builder.load(data)
       else
