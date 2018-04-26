@@ -108,7 +108,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
   initNetTangoForSpace: (space) ->
     ntId = space.spaceId + "-canvas"
-    # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes on each init.
+    # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes each init.
     canvas = document.getElementById(ntId)
     canvas.height = space.height * 2
     canvas.width = space.width * 2
@@ -200,6 +200,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
   }
 
   template:
+    # coffeelint: disable=max_line_length
     """
     <popupmenu visible="{{contextMenu.show}}" elementId="{{contextMenu.buttonId}}" tag="{{contextMenu.tag}}" />
     <div class="ntb-block-defs-list">
@@ -229,4 +230,5 @@ window.RactiveNetTangoDefs = Ractive.extend({
     <label for="ntb-code">NetLogo Code</label>
     <textarea id="ntb-code" readOnly>{{ code }}</textarea>
     """
+    # coffeelint: enable=max_line_length
 })

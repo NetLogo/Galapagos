@@ -1,3 +1,18 @@
+copyBlock = (block) ->
+  copy = Object.assign({ }, block)
+  copy.params = []
+  if block.params?.length > 0
+    block.params.forEach((param) ->
+      paramCopy = Object.assign({ }, param)
+      copy.params.push(paramCopy)
+    )
+  return copy
+
+getBlockDefault = (group, number) ->
+  block = copyBlock(NetTangoBlockDefaults.blocks[group].items[number])
+  return block
+
+# coffeelint: disable=max_line_length
 createCommand = (overrides) ->
   command = {
     , action:      "command"               # String
@@ -18,20 +33,6 @@ createCommand = (overrides) ->
   if overrides?
     Object.assign(command, overrides)
   command
-
-copyBlock = (block) ->
-  copy = Object.assign({ }, block)
-  copy.params = []
-  if block.params?.length > 0
-    block.params.forEach((param) ->
-      paramCopy = Object.assign({ }, param)
-      copy.params.push(paramCopy)
-    )
-  return copy
-
-getBlockDefault = (group, number) ->
-  block = copyBlock(NetTangoBlockDefaults.blocks[group].items[number])
-  return block
 
 blocks = {
   basics: {
@@ -204,5 +205,6 @@ blocks = {
     ]
   }
 }
+# coffeelint: enable=max_line_length
 
 window.NetTangoBlockDefaults = { blocks, copyBlock, getBlockDefault }

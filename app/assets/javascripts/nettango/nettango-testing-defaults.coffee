@@ -32,15 +32,20 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
 
   wolfSpaceDefault: {
     name: "Wolves"
+    # coffeelint: disable=max_line_length
     defs: { blocks: [ { "action": "\uD83D\uDC3A wolf actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-actions", "blockColor": "#b55", "required": true }, { "action": "wolf meets sheep ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-meets-sheep", "blockColor": "#b55", "required": true }, { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] }, { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] }, { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]", "blockColor": "#916da0" }, { "action": "die", "blockColor": "#916da0", }, { "action": "\uD83D\uDC11 ask nearby sheep", "blockColor": "#89a", "format": "ask sheep in-radius 3", "clauses": [ ] }, { "action": "chance", "blockColor": "#89a", "format": "if random 100 < {0}", "clauses": [ ], "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+    # coffeelint: enable=max_line_length
   }
 
   sheepSpaceDefault: {
     name: "Sheep"
+    # coffeelint: disable=max_line_length
     defs: { blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to sheep-actions", "blockColor": "#b55", "required": true }, { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] }, { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] }, { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]", "blockColor": "#916da0" }, { "action": "die", "blockColor": "#916da0", }, { "action": "chance", "blockColor": "#89a", "format": "if random 100 < {0}", "clauses": [ ], "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+    # coffeelint: enable=max_line_length
   }
 
   codeDefault:
+    # coffeelint: disable=max_line_length
     """
 globals [ max-sheep ]  ; don't let sheep population grow too large
 
@@ -666,5 +671,6 @@ Line -7500403 true 150 150 210 180
 1
 @#$#@#$#@
     """
+    # coffeelint: enable=max_line_length
 
 })

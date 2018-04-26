@@ -23,7 +23,9 @@ window.RactiveNetTangoParameter = Ractive.extend({
     dropdown:      RactiveDropdown
   }
 
-  template: """
+  template:
+    # coffeelint: disable=max_line_length
+    """
     <div class="flex-row ntb-form-row">
       <labelledInput id="param-{{ number }}-name" name="name" type="text" value="{{ p.name }}" label="Name" style="flex-grow: 1;" />
 
@@ -35,26 +37,31 @@ window.RactiveNetTangoParameter = Ractive.extend({
       <labelledInput id="param-{{ number }}-def"  name="def"  type="text" value="{{ p.def }}" label="Default"     style="flex-grow: 1;" />
     </div>
     {{> `param-${p.type}` }}
-  """
+    """
+    # coffeelint: enable=max_line_length
 
   partials: {
+    # coffeelint: disable=max_line_length
     'param-bool': ""
     'param-num': ""
     'param-int': ""
     'param-text': ""
 
-    'param-selection':  """
+    'param-selection':
+      """
       <div class="flex-row">
         <labelledInput id="param-{{ number }}-values" name="values" type="text" value="{{ p.values }}" label="Options" />
       </div>
-    """
+      """
 
-    'param-range':  """
+    'param-range':
+      """
       <div class="flex-row">
         <labelledInput id="param-{{ number }}-min"  name="min"  type="number" value="{{ p.min }}"  label="Min" style="flex-grow: 1;" />
         <labelledInput id="param-{{ number }}-max"  name="max"  type="number" value="{{ p.max }}"  label="Max" style="flex-grow: 1;" />
         <labelledInput id="param-{{ number }}-step" name="step" type="number" value="{{ p.step }}" label="Step size" style="flex-grow: 1;" />
       </div>
       """
+    # coffeelint: enable=max_line_length
   }
 })

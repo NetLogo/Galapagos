@@ -212,10 +212,12 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     newCss   = "#{newCss}\n#{extraCss}"
     # override the rounded corners of tabs to make them easier to hide with CSS and without JS
     # TODO - find a better way to store these values
+    # coffeelint: disable=max_line_length
     newCss = newCss + '\n.netlogo-tab:first-child { border-radius: 0px; }'
     newCss = newCss + '\n.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }'
     newCss = newCss + '\n.netlogo-tab { border: 1px solid rgb(36, 36, 121); }'
     newCss = newCss + '\n.netlogo-tab-area { margin: 0px; }'
+    # coffeelint: enable=max_line_length
     newCss
 
   load: (ntData) ->
@@ -247,6 +249,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     return
 
   template:
+    # coffeelint: disable=max_line_length
     """
     <div class="ntb-container" style="position: relative;">
 
@@ -285,4 +288,5 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       </div>
     </div>
     """
+    # coffeelint: enable=max_line_length
 })

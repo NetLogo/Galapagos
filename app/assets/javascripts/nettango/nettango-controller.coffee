@@ -18,7 +18,16 @@ class window.NetTangoController
           tangoBuilder:    RactiveNetTangoBuilder
         , testingDefaults: RactiveNetTangoTestingDefaults
       },
-      template: "<tangoBuilder playMode='{{ playMode }}' findElement='{{ findElement }}' createElement='{{ createElement }}' appendElement='{{ appendElement }}' />\n#{if (@playMode) then '' else '<testingDefaults />'}"
+      template:
+        """
+        <tangoBuilder
+          playMode='{{ playMode }}'
+          findElement='{{ findElement }}'
+          createElement='{{ createElement }}'
+          appendElement='{{ appendElement }}'
+          />\n
+          #{if (@playMode) then '' else '<testingDefaults />'}
+        """
     })
     @storage = new NetTangoStorage(localStorage)
 

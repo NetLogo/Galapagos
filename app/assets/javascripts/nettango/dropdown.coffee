@@ -15,7 +15,9 @@ window.RactiveDropdown = Ractive.extend({
     changeEvent: undefined # String
   }
 
-  template: """
+  template:
+    # coffeelint: disable=max_line_length
+    """
     <div style="flex: column; padding: 0px;{{ style }}">
       <label for="{{ id }}">{{ label }}</label>
       <select id="{{ id }}" value="{{ value }}" twoway="true" style="margin: 6px; font-size: 16pt;" on-change="changed" >
@@ -24,5 +26,6 @@ window.RactiveDropdown = Ractive.extend({
         {{/options }}
       </select>
     </div>
-  """
+    """
+    # coffeelint: enable=max_line_length
 })
