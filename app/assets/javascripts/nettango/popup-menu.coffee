@@ -22,7 +22,8 @@ window.RactivePopupMenu = Ractive.extend({
     element = document.getElementById(elementId)
     if(element)
       # for this to work, both the element and the popup menu must be in the same relative parent.
-      @set('style', "z-index: 1000;position:absolute;left:#{ element.offsetLeft + 18 }px;top:#{ element.offsetTop + 18 }px;")
+      style = "z-index: 1000;position:absolute;left:#{ element.offsetLeft + 18 }px;top:#{ element.offsetTop + 18 }px;"
+      @set('style', style)
     return
 
   data: () -> {

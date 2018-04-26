@@ -53,22 +53,24 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   getBlock: () ->
     blockValues = @get('block')
     block = { }
+    # coffeelint: disable=max_line_length
     [ 'action', 'type', 'format', 'start', 'required', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
-      .filter(`(f) => blockValues.hasOwnProperty(f) && blockValues[f] !== ""`)
-      .forEach(`(f) => block[f] = blockValues[f]`)
+      .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] != "")
+      .forEach((f) -> block[f] = blockValues[f])
+    # coffeelint: enable=max_line_length
     if blockValues.control
       block['clauses'] = []
 
     block.params = for paramValues in blockValues.params
       param = { }
-      [ 'name', 'unit', 'type' ].forEach(`(f) => param[f] = paramValues[f]`)
+      [ 'name', 'unit', 'type' ].forEach((f) -> param[f] = paramValues[f])
       # Using `default` as a property name gives Ractive some issues, so we "translate" it back here.
       param['default'] = paramValues['def']
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
-      if paramValues.type == 'range'
-        [ 'min', 'max', 'step' ].forEach(`(f) => param[f] = paramValues[f]`)
-      else if paramValues.type == 'selection'
-        param['values'] = paramValues['values'].split(/\s*;\s*|\n/).filter(`(s) => s != ""`)
+      if paramValues.type is 'range'
+        [ 'min', 'max', 'step' ].forEach((f) -> param[f] = paramValues[f])
+      else if paramValues.type is 'selection'
+        param['values'] = paramValues['values'].split(/\s*;\s*|\n/).filter((s) -> s != "")
       param
 
     block
@@ -77,8 +79,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
     title: "{{ spaceName }} Block"
 
-    # coffeelint: disable=max_line_length
     widgetFields:
+      # coffeelint: disable=max_line_length
       """
       {{# block }}
 
