@@ -21,7 +21,7 @@ ButtonEditForm = EditForm.extend({
 
   components: {
     formCheckbox: RactiveEditFormCheckbox
-  , formCode:     RactiveEditFormCodeContainer
+  , formCode:     RactiveEditFormMultilineCode
   , formDropdown: RactiveEditFormDropdown
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer

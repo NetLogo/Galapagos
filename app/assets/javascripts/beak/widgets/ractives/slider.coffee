@@ -29,9 +29,9 @@ SliderEditForm = EditForm.extend({
   components: {
     column:       FlexColumn
   , formCheckbox: RactiveEditFormCheckbox
-  , formMaxCode:  RactiveEditFormCodeContainer
-  , formMinCode:  RactiveEditFormCodeContainer
-  , formStepCode: RactiveEditFormCodeContainer
+  , formMaxCode:  RactiveEditFormOneLineCode
+  , formMinCode:  RactiveEditFormOneLineCode
+  , formStepCode: RactiveEditFormOneLineCode
   , formVariable: RactiveEditFormVariable
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer

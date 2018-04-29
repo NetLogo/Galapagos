@@ -72,26 +72,46 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
 
 })
 
-window.RactiveEditFormCodeContainer = Ractive.extend({
+window.RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
 
-  data: -> {
-    config: undefined # Object
-  , id:     undefined # String
-  , label:  undefined # String
-  , style:  undefined # String
-  , value:  undefined # String
-  }
-
-  twoway: false
-
-  components: {
-    codeContainer: RactiveCodeContainerMultiline
-  }
-
-  template:
-    """
-    <label for="{{id}}">{{label}}</label>
-    <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}" style="{{style}}" />
-    """
+  oncomplete: ->
+    @._super()
+    forceOneLine =
+      (_, change) ->
+        oneLineText = change.text.join('').replace(/\n/g, '')
+        change.update(change.from, change.to, [oneLineText])
+        true
+    @_editor.on('beforeChange', forceOneLine)
+    return
 
 })
+
+# (Ractive) => Ractive
+editFormCodeContainerFactory =
+  (container) ->
+    Ractive.extend({
+
+      data: -> {
+        config: undefined # Object
+      , id:     undefined # String
+      , label:  undefined # String
+      , style:  undefined # String
+      , value:  undefined # String
+      }
+
+      twoway: false
+
+      components: {
+        codeContainer: container
+      }
+
+      template:
+        """
+        <label for="{{id}}">{{label}}</label>
+        <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}" style="{{style}}" />
+        """
+
+    })
+
+window.RactiveEditFormOneLineCode   = editFormCodeContainerFactory(RactiveCodeContainerOneLine)
+window.RactiveEditFormMultilineCode = editFormCodeContainerFactory(RactiveCodeContainerMultiline)

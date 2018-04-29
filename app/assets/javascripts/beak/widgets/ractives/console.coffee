@@ -79,6 +79,12 @@ window.RactiveConsoleWidget = Ractive.extend({
       }
     })
 
+    commandCenterEditor.on('beforeChange', (_, change) ->
+      oneLineText = change.text.join('').replace(/\n/g, '')
+      change.update(change.from, change.to, [oneLineText])
+      true
+    )
+
     commandCenterEditor.on('change', =>
       @set('input', commandCenterEditor.getValue())
     )

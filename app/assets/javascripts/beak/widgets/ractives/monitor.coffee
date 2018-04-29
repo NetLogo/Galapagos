@@ -8,7 +8,7 @@ MonitorEditForm = EditForm.extend({
   }
 
   components: {
-    formCode:     RactiveEditFormCodeContainer
+    formCode:     RactiveEditFormMultilineCode
   , formFontSize: RactiveEditFormFontSize
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer

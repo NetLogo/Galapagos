@@ -8,7 +8,7 @@ ChooserEditForm = EditForm.extend({
   twoway: false
 
   components: {
-    formCode:     RactiveEditFormCodeContainer
+    formCode:     RactiveEditFormMultilineCode
   , formVariable: RactiveEditFormVariable
   }
 
