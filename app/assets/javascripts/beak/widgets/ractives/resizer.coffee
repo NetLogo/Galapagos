@@ -74,6 +74,8 @@ window.RactiveResizer = Ractive.extend({
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
         isSnapping = not event.original.ctrlKey
         [snappedX, snappedY] = if isSnapping then [x, y].map(snapToGrid) else [x, y]
+        xCoord               = snappedX - @_xAdjustment
+        yCoord               = snappedY - @_yAdjustment
 
         target    = @get('target')
         oldLeft   = target.get('left')
@@ -81,10 +83,10 @@ window.RactiveResizer = Ractive.extend({
         oldTop    = target.get('top')
         oldBottom = target.get('bottom')
 
-        left   = ['left'  , snappedX - @_xAdjustment]
-        right  = ['right' , snappedX - @_xAdjustment]
-        top    = ['top'   , snappedY - @_yAdjustment]
-        bottom = ['bottom', snappedY - @_yAdjustment]
+        left   = ['left'  , xCoord]
+        right  = ['right' , xCoord]
+        top    = ['top'   , yCoord]
+        bottom = ['bottom', yCoord]
 
         direction = event.original.target.dataset.direction
 
