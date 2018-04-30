@@ -101,6 +101,7 @@ window.RactiveResizer = Ractive.extend({
             else throw new Error("What the heck resize direction is '#{direction}'?")
 
         clamp = (dir, value) =>
+
           opposite =
             switch dir
               when 'left'   then 'right'
@@ -108,11 +109,16 @@ window.RactiveResizer = Ractive.extend({
               when 'top'    then 'bottom'
               when 'bottom' then 'top'
               else throw new Error("What the heck opposite direction is '#{dir}'?")
-          oppositeValue = @get(opposite)
-          if opposite is 'left' or opposite is 'top'
-            Math.max(value, oppositeValue + 35)
-          else
-            Math.min(value, oppositeValue - 35)
+
+
+          oppositeValue = target.get(opposite)
+
+          switch opposite
+            when 'left'   then Math.max(value, oppositeValue + target.minWidth )
+            when 'top'    then Math.max(value, oppositeValue + target.minHeight)
+            when 'right'  then Math.min(value, oppositeValue - target.minWidth )
+            when 'bottom' then Math.min(value, oppositeValue - target.minHeight)
+            else throw new Error("No, really, what the heck opposite direction is '#{opposite}'?")
 
         dirCoordPairs = adjusters.map(([dir, currentCor]) -> [dir, clamp(dir, currentCor)])
 

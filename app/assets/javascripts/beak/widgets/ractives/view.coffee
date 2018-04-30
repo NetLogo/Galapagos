@@ -263,6 +263,9 @@ window.RactiveView = RactiveWidget.extend({
     @fire('set-patch-size', @findComponent('editForm').get('patchSize'))
     return
 
+  minWidth:  10
+  minHeight: 10
+
   # coffeelint: disable=max_line_length
   template:
     """

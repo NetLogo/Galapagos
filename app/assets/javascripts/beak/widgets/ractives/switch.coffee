@@ -56,6 +56,9 @@ window.RactiveSwitch = RactiveWidget.extend({
       if @findComponent('editForm').get('amProvingMyself') then @_weg.recompileLite else @_weg.recompile
     { variable: [recompileEvent, @_weg.rename] }
 
+  minWidth:  35
+  minHeight: 33
+
   template:
     """
     {{>editorOverlay}}

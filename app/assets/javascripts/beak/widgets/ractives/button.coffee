@@ -114,6 +114,9 @@ window.RactiveButton = RactiveWidget.extend({
     ,     source: [@_weg.recompile]
     }
 
+  minWidth:  35
+  minHeight: 30
+
   # coffeelint: disable=max_line_length
   template:
     """

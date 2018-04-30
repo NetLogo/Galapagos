@@ -82,6 +82,9 @@ window.RactiveMonitor = RactiveWidget.extend({
   eventTriggers: ->
     { source: [@_weg.recompile] }
 
+  minWidth:  20
+  minHeight: 45
+
   template:
     """
     {{>editorOverlay}}

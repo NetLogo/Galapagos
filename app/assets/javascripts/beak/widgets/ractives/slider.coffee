@@ -149,6 +149,9 @@ window.RactiveSlider = RactiveWidget.extend({
     ,     variable: [@_weg.recompile, @_weg.rename]
     }
 
+  minWidth:  60
+  minHeight: 33
+
   template:
     """
     {{>editorOverlay}}

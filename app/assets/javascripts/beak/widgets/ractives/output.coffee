@@ -50,6 +50,9 @@ window.RactiveOutputArea = RactiveWidget.extend({
     @set('text', str)
     return
 
+  minWidth:  15
+  minHeight: 25
+
   template:
     """
     {{>editorOverlay}}

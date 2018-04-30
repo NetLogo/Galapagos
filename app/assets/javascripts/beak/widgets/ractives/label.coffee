@@ -86,6 +86,9 @@ window.RactiveLabel = RactiveWidget.extend({
   eventTriggers: ->
     {}
 
+  minWidth:  13
+  minHeight: 13
+
   template:
     """
     {{>editorOverlay}}

@@ -129,6 +129,9 @@ window.RactiveInput = RactiveWidget.extend({
 
   }
 
+  minWidth:  70
+  minHeight: 43
+
   template:
     """
     {{>editorOverlay}}

@@ -62,6 +62,9 @@ window.RactiveChooser = RactiveWidget.extend({
     , variable: [recompileEvent, @_weg.rename]
     }
 
+  minWidth:  55
+  minHeight: 45
+
   # coffeelint: disable=max_line_length
   template:
     """

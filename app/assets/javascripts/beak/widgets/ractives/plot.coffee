@@ -43,6 +43,9 @@ window.RactivePlot = RactiveWidget.extend({
 
   }
 
+  minWidth:  100
+  minHeight: 85
+
   # coffeelint: disable=max_line_length
   template:
     """
