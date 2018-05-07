@@ -37,6 +37,7 @@ window.controlEventTraffic = (controller) ->
   onCloseDialog = (dialog) ->
     openDialogs.delete(dialog)
     ractive.set('someDialogIsOpen', openDialogs.size > 0)
+    document.querySelector('.netlogo-model').focus()
     return
 
   onOpenDialog = (dialog) ->
