@@ -1,6 +1,21 @@
 isMac            = window.navigator.platform.startsWith('Mac')
 platformCtrlHtml = if isMac then "&#8984;" else "ctrl"
 
+# (Array[String], String) => String
+keyRow =
+  (keys, explanation) ->
+    """<tr>
+         <td class="help-keys">#{keys.map((key) -> "<kbd>" + key + "</kbd>").join('')}</td>
+         <td class="help-explanation">#{explanation}</td>
+       </tr>"""
+
+# (Array[Array[Array[String], String]]) => String
+keyTable =
+  (entries) ->
+    """<table class="help-key-table">
+         #{entries.map(([keys, explanation]) -> keyRow(keys, explanation)).join('\n')}
+       </table>"""
+
 window.RactiveHelpDialog = Ractive.extend({
 
   data: -> {
@@ -39,40 +54,38 @@ window.RactiveHelpDialog = Ractive.extend({
   template:
     """
     <div id="help-dialog" class="help-popup"
-         style="{{# !isVisible }}display: none;{{/}} top: {{(wareaHeight * .1) + 150}}px; left: {{wareaWidth * .1}}px; height: {{wareaHeight * .8}}px; width: {{wareaWidth * .8}}px; {{style}}"
+         style="{{# !isVisible }}display: none;{{/}} top: {{(wareaHeight * .1) + 150}}px; left: {{wareaWidth * .1}}px; width: {{wareaWidth * .8}}px; {{style}}"
          on-keydown="handle-key" tabindex="0">
       <div id="{{id}}-closer" class="widget-edit-closer" on-click="close-popup">X</div>
       <div>{{>helpText}}</div>
     </div>
     """
-  # coffeelint: enable=max_line_length
 
   partials: {
 
     helpAuthoringEditWidget:
-      """
-      <li><kbd>enter</kbd> - submit form</li>
-      <li><kbd>escape</kbd> - close form and ignore any changes made</li>
-      """
+      keyTable([
+        [["enter" ], "submit form"]
+      , [["escape"], "close form and ignore any changes made"]
+      ])
 
     helpAuthoringStandard:
-      """
-      <li>#{platformCtrlHtml}+<kbd>shift</kbd>+<kbd>alt</kbd>+<kbd>i</kbd> - switch to interactive mode</li>
-      <li>#{platformCtrlHtml}+<kbd>shift</kbd>+<kbd>h</kbd> - toggle resizer visibility</li>
-      <li><kbd>escape</kbd> - close context menu if it is open; deselect a widget that is selected</li>
-      <li>#{platformCtrlHtml} - hold to ignore "snap to grid" while moving or resizing this widget</li>
-      <li>{{# !isMac }}<kbd>delete</kbd> - delete the widget{{/}}</li>
-      <li><kbd>&uarr;/&darr;/&larr;/&rarr;</kbd> - move widget, agnostic of grid</li>
-      """
+      keyTable([
+        [[platformCtrlHtml, "shift", "alt", "i" ], "switch to interactive mode"]
+      , [[platformCtrlHtml, "shift", "h"        ], "toggle resizer visibility"]
+      , [["escape"                              ], "close context menu if it is open, or deselect any selected widget"]
+      , [[platformCtrlHtml                      ], "hold to ignore \"snap to grid\" while moving or resizing this widget"]
+      , [["&uarr;", "&darr;", "&larr;", "&rarr;"], "move widget, agnostic of grid"]
+      ].concat(if isMac then [[["delete"], "delete the widget"]] else []))
 
     helpInteractive:
-      """
-      <li>#{platformCtrlHtml}+<kbd>shift</kbd>+<kbd>alt</kbd>+<kbd>i</kbd> - switch to authoring mode</li>
-      """
+      keyTable([
+        [[platformCtrlHtml, "shift", "alt", "i"], "switch to authoring mode"]
+      ])
 
     helpText:
       """
-      <ul>
+      <table>
         {{# stateName === 'interactive' }}
           {{>helpInteractive}}
         {{elseif stateName === 'authoring - plain' }}
@@ -82,9 +95,10 @@ window.RactiveHelpDialog = Ractive.extend({
         {{else}}
           Invalid help state.
         {{/}}
-      </ul>
+      </table>
       """
 
   }
+  # coffeelint: enable=max_line_length
 
 })
