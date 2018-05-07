@@ -40,9 +40,19 @@ window.controlEventTraffic = (controller) ->
     document.querySelector('.netlogo-model').focus()
     return
 
+  onCloseEditForm = (editForm) ->
+    ractive.set('someEditFormIsOpen', false)
+    onCloseDialog(editForm)
+    return
+
   onOpenDialog = (dialog) ->
     openDialogs.add(dialog)
     ractive.set('someDialogIsOpen', true)
+    return
+
+  onOpenEditForm = (editForm) ->
+    ractive.set('someEditFormIsOpen', true)
+    onOpenDialog(editForm)
     return
 
   # () => Unit
@@ -180,7 +190,9 @@ window.controlEventTraffic = (controller) ->
   ractive.on('*.set-patch-size'         , (_, patchSize)     -> setPatchSize(patchSize))
   ractive.on('*.update-widgets'         ,                    -> controller.updateWidgets())
 
-  ractive.on('*.dialog-closed', (_, dialog) -> onCloseDialog(dialog))
-  ractive.on('*.dialog-opened', (_, dialog) ->  onOpenDialog(dialog))
+  ractive.on('*.dialog-closed'   , (_, dialog) -> onCloseDialog(dialog))
+  ractive.on('*.dialog-opened'   , (_, dialog) ->  onOpenDialog(dialog))
+  ractive.on('*.edit-form-closed', (_, editForm) -> onCloseEditForm(editForm))
+  ractive.on('*.edit-form-opened', (_, editForm) ->  onOpenEditForm(editForm))
 
   return

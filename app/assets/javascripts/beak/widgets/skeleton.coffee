@@ -27,6 +27,7 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   , outputWidgetOutput: ''
   , primaryView:        undefined
   , someDialogIsOpen:   false
+  , someEditFormIsOpen: false
   , speed:              0.0
   , ticks:              "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:       false
@@ -54,9 +55,11 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   Ractive.transitions.shrink = animateWithClass('shrinking')
 
   new Ractive({
-    el:         container,
-    template:   template,
-    partials:   partials,
+
+    el:       container,
+    template: template,
+    partials: partials,
+
     components: {
 
       console:       RactiveConsoleWidget
