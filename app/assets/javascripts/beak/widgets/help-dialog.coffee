@@ -76,7 +76,7 @@ window.RactiveHelpDialog = Ractive.extend({
       , [["escape"                              ], "close context menu if it is open, or deselect any selected widget"]
       , [[platformCtrlHtml                      ], "hold to ignore \"snap to grid\" while moving or resizing this widget"]
       , [["&uarr;", "&darr;", "&larr;", "&rarr;"], "move widget, agnostic of grid"]
-      ].concat(if isMac then [[["delete"], "delete the widget"]] else []))
+      ].concat(if not isMac then [[["delete"], "delete the selected widget"]] else []))
 
     helpInteractive:
       keyTable([
