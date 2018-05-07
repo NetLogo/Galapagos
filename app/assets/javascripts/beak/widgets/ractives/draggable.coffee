@@ -103,7 +103,8 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
 
     'drag-widget': (event) ->
 
-      isSnapping = not event.original.ctrlKey
+      isMac      = window.navigator.platform.startsWith('Mac')
+      isSnapping = ((not isMac and not event.original.ctrlKey) or (isMac and not event.original.metaKey))
 
       CommonDrag.drag.call(this, event, (x, y) =>
 

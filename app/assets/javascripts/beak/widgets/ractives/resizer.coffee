@@ -72,7 +72,8 @@ window.RactiveResizer = Ractive.extend({
       CommonDrag.drag.call(this, event, (x, y) =>
 
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
-        isSnapping = not event.original.ctrlKey
+        isMac      = window.navigator.platform.startsWith('Mac')
+        isSnapping = ((not isMac and not event.original.ctrlKey) or (isMac and not event.original.metaKey))
         [snappedX, snappedY] = if isSnapping then [x, y].map(snapToGrid) else [x, y]
         xCoord               = snappedX - @_xAdjustment
         yCoord               = snappedY - @_yAdjustment
