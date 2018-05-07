@@ -494,3 +494,25 @@
 .CodeMirror-scroll.cm-disabled {
   background-color: #ebebe4;
 }
+
+.help-popup {
+  background-color: white;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  font-size:        20px;
+  padding:          10px 10px 0 10px;
+  position:         absolute;
+  outline:          none;
+  z-index:          200;
+}
+
+.modal-overlay {
+  background-color: rgba(200,200,200,0.7);
+  bottom:           0;
+  left:             0;
+  position:         absolute;
+  right:            0;
+  top:              0;
+  z-index:          99;
+}

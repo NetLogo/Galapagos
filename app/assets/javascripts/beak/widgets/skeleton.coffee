@@ -16,6 +16,8 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   , height:             0
   , info
   , isEditing:          false
+  , isHelpVisible:      false
+  , isOverlayUp:        false
   , isReadOnly
   , isResizerVisible:   true
   , isStale:            false
@@ -66,6 +68,7 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
     , contextMenu:   RactiveContextMenu
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveModelCodeComponent
+    , helpDialog:    RactiveHelpDialog
     , infotab:       RactiveInfoTabWidget
     , resizer:       RactiveResizer
 
@@ -85,6 +88,18 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
     , spacer:        RactiveEditFormSpacer
 
     },
+
+    computed: {
+      stateName: ->
+        if @get('isEditing')
+          if @get('someEditFormIsOpen')
+            'authoring - editing widget'
+          else
+            'authoring - plain'
+        else
+          'interactive'
+    },
+
     data: -> model
   })
 
@@ -95,6 +110,7 @@ template =
        tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
        on-focus="@this.fire('track-focus', @node)"
        on-blur="@this.fire('track-focus', @node)">
+    <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
     <div class="netlogo-header">
       <div class="netlogo-subheader">
         <div class="netlogo-powered-by">
@@ -126,6 +142,7 @@ template =
       <span class="netlogo-interface-mode-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
     </div>
 
+    <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
     <contextMenu></contextMenu>
 
     <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">

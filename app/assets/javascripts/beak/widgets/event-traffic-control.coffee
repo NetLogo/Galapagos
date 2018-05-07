@@ -25,6 +25,11 @@ window.controlEventTraffic = (controller) ->
     controller.createWidget(widgetType, pageX, pageY)
     return
 
+  dropOverlay = ->
+    ractive.set('isHelpVisible', false)
+    ractive.set('isOverlayUp',   false)
+    return
+
   # Thanks, Firefox.  Maybe just put the proper values in the `drag` event, in the
   # future, instead of sending us `0` for them every time? --JAB (11/23/17)
   #
@@ -44,6 +49,25 @@ window.controlEventTraffic = (controller) ->
     ractive.set('someEditFormIsOpen', false)
     onCloseDialog(editForm)
     return
+
+  onQMark = do ->
+
+    focusedElement = undefined
+
+    ->
+
+      helpIsNowVisible = not ractive.get('isHelpVisible')
+      ractive.set('isHelpVisible', helpIsNowVisible)
+
+      elem =
+        if helpIsNowVisible
+          focusedElement = document.activeElement
+          ractive.find('#help-dialog')
+        else
+          focusedElement
+      elem.focus()
+
+      return
 
   onOpenDialog = (dialog) ->
     openDialogs.add(dialog)
@@ -169,6 +193,8 @@ window.controlEventTraffic = (controller) ->
   mousetrap.bind('del'                                      ,           -> ractive.fire('delete-selected'))
   mousetrap.bind('escape'                                   ,           -> ractive.fire('deselect-widgets'))
 
+  mousetrap.bind('?', onQMark)
+
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.right'       , onWidgetRightChange)
   ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)
@@ -182,6 +208,7 @@ window.controlEventTraffic = (controller) ->
 
   ractive.on('check-action-keys'        , (_, event)         -> checkActionKeys(event))
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
+  ractive.on('drop-overlay'             , (_, event)         -> dropOverlay())
   ractive.on('show-errors'              , (_, event)         -> window.showErrors(event.context.compilation.messages))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
   ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))

@@ -364,6 +364,7 @@ private[controllers] trait RequestResultGenerator {
         "beak/widgets/event-traffic-control.js",
         "beak/widgets/handle-context-menu.js",
         "beak/widgets/handle-widget-selection.js",
+        "beak/widgets/help-dialog.js",
         "beak/widgets/initialize-ui.js",
         "beak/widgets/set-up-widgets.js",
         "beak/widgets/skeleton.js",
