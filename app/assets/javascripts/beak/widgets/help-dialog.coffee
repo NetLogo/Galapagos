@@ -1,5 +1,5 @@
 isMac            = window.navigator.platform.startsWith('Mac')
-platformCtrlHtml = "<kbd>{{# isMac }}&#8984;{{else}}ctrl{{/}}</kbd>"
+platformCtrlHtml = if isMac then "&#8984;" else "ctrl"
 
 window.RactiveHelpDialog = Ractive.extend({
 
