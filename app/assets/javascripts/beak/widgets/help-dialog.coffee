@@ -71,7 +71,7 @@ window.RactiveHelpDialog = Ractive.extend({
 
     helpAuthoringStandard:
       keyTable([
-        [[platformCtrlHtml, "shift", "alt", "i" ], "switch to interactive mode"]
+        [[platformCtrlHtml, "shift", "l"        ], "switch to interactive mode"]
       , [[platformCtrlHtml, "shift", "h"        ], "toggle resizer visibility"]
       , [["escape"                              ], "close context menu if it is open, or deselect any selected widget"]
       , [[platformCtrlHtml                      ], "hold to ignore \"snap to grid\" while moving or resizing this widget"]
@@ -80,7 +80,7 @@ window.RactiveHelpDialog = Ractive.extend({
 
     helpInteractive:
       keyTable([
-        [[platformCtrlHtml, "shift", "alt", "i"], "switch to authoring mode"]
+        [[platformCtrlHtml, "shift", "l"], "switch to authoring mode"]
       ])
 
     helpText:
