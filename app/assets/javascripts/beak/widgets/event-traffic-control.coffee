@@ -54,18 +54,24 @@ window.controlEventTraffic = (controller) ->
 
     focusedElement = undefined
 
-    ->
+    ({ target }) ->
 
-      helpIsNowVisible = not ractive.get('isHelpVisible')
-      ractive.set('isHelpVisible', helpIsNowVisible)
+      isProbablyEditingText =
+        (target.tagName.toLowerCase() in ["input", "textarea"] and not target.readOnly) or
+        target.contentEditable is "true"
 
-      elem =
-        if helpIsNowVisible
-          focusedElement = document.activeElement
-          ractive.find('#help-dialog')
-        else
-          focusedElement
-      elem.focus()
+      if not isProbablyEditingText
+
+        helpIsNowVisible = not ractive.get('isHelpVisible')
+        ractive.set('isHelpVisible', helpIsNowVisible)
+
+        elem =
+          if helpIsNowVisible
+            focusedElement = document.activeElement
+            ractive.find('#help-dialog')
+          else
+            focusedElement
+        elem.focus()
 
       return
 
