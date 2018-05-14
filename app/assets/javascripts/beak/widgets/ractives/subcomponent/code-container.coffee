@@ -10,6 +10,7 @@ RactiveCodeContainerBase = Ractive.extend({
   , initialCode:    undefined # String
   , isDisabled:     false
   , injectedConfig: undefined # Object
+  , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
   }
 
@@ -29,10 +30,18 @@ RactiveCodeContainerBase = Ractive.extend({
   twoway: false
 
   _setupCodeMirror: ->
+
     baseConfig = { mode: 'netlogo', theme: 'netlogo-default', value: @get('code').toString(), viewportMargin: Infinity }
     config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
     @_editor   = new CodeMirror(@find("##{@get('id')}"), config)
-    @_editor.on('change', => @set('code', @_editor.getValue()); @parent.fire('code-changed', @_editor.getValue()))
+
+    @_editor.on('change', =>
+      code = @_editor.getValue()
+      @set('code', code)
+      @parent.fire('code-changed', code)
+      @get('onchange')(code)
+    )
+
     @observe('isDisabled', (isDisabled) ->
       @_editor.setOption('readOnly', if isDisabled then 'nocursor' else false)
       classes = this.find('.netlogo-code').querySelector('.CodeMirror-scroll').classList
@@ -42,6 +51,7 @@ RactiveCodeContainerBase = Ractive.extend({
         classes.remove('cm-disabled')
       return
     )
+
     return
 
   # (String) => Unit
@@ -92,11 +102,12 @@ editFormCodeContainerFactory =
     Ractive.extend({
 
       data: -> {
-        config: undefined # Object
-      , id:     undefined # String
-      , label:  undefined # String
-      , style:  undefined # String
-      , value:  undefined # String
+        config:   undefined # Object
+      , id:       undefined # String
+      , label:    undefined # String
+      , onchange: (->)      # (String) => Unit
+      , style:    undefined # String
+      , value:    undefined # String
       }
 
       twoway: false
@@ -108,7 +119,8 @@ editFormCodeContainerFactory =
       template:
         """
         <label for="{{id}}">{{label}}</label>
-        <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}" style="{{style}}" />
+        <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"
+                       onchange="{{onchange}}" style="{{style}}" />
         """
 
     })
