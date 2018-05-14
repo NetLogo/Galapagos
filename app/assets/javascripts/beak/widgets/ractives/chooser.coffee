@@ -3,6 +3,18 @@ ChooserEditForm = EditForm.extend({
   data: -> {
     choices: undefined # String
   , display: undefined # String
+  , setHiddenInput: ( # We do this so we can validate the contents of the CodeMirror input --JAB (5/14/18)
+      (code) ->
+        elem        = this.find("##{@get('id')}-choices-hidden")
+        elem.value  = code
+        validityStr =
+          try
+            Converter.stringToJSValue("[#{code}]")
+            ""
+          catch ex
+            "Invalid format: Must be a space-separated list of NetLogo literal values"
+        elem.setCustomValidity(validityStr)
+    )
   }
 
   twoway: false
@@ -36,7 +48,9 @@ ChooserEditForm = EditForm.extend({
       """
       <formVariable id="{{id}}-varname" value="{{display}}"        name="varName" />
       <formCode     id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
-                    label="Choices" config="{}" style="" />
+                    label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
+             style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
       """
 
