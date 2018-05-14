@@ -70,7 +70,7 @@ ButtonEditForm = EditForm.extend({
       <div class="flex-row" style="align-items: center;">
         <label for="{{id}}-action-key">Action key:</label>
         <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
-                class="widget-edit-inputbox" style="text-transform: uppercase; width: 30px;"
+                class="widget-edit-inputbox" style="text-transform: uppercase; width: 33px;"
                 on-keypress="handle-action-key-press" />
       </div>
       """

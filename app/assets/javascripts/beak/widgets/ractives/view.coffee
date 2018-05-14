@@ -271,7 +271,7 @@ window.RactiveView = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>view}}
-    <editForm idBasis="view"
+    <editForm idBasis="view" style="width: 510px;"
               maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
               minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
               wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"

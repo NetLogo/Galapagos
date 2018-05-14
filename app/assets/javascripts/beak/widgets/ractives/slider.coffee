@@ -91,10 +91,8 @@ SliderEditForm = EditForm.extend({
                        style="width: 100%;" value="{{maxCode}}" />
         </column>
       </div>
-      <spacer height="5px" />
-      <span style="font-size: 12px;">min, increment, and max may be numbers or reporters</span>
 
-      <spacer height="15px" />
+      <div class="widget-edit-hint-text" style="margin-left: 4px; margin-right: 4px;">min, increment, and max may be numbers or reporters</div>
 
       <div class="flex-row" style="align-items: center;">
         <labeledInput id="{{id}}-value" labelStr="Default value:" name="value" type="number" value="{{value}}" attrs="required step='any'"
