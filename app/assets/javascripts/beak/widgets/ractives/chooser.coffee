@@ -37,6 +37,7 @@ ChooserEditForm = EditForm.extend({
       <formVariable id="{{id}}-varname" value="{{display}}"        name="varName" />
       <formCode     id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
                     label="Choices" config="{}" style="" />
+      <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
       """
 
   }
