@@ -14,6 +14,8 @@ import
     libs.json.Json,
     mvc.{ AbstractController, Action, AnyContent, ControllerComponents }
 
+import play.twirl.api.Html
+
 class Application @Inject() ( assets: Assets
                             , components: ControllerComponents
                             , environment: Environment
@@ -21,25 +23,12 @@ class Application @Inject() ( assets: Assets
 
   private implicit val mode = environment.mode
 
-  def index: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.mainTheme(views.html.index(), "NetLogo Web"))
-  }
-
-  def info: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.mainTheme(views.html.info(), "NetLogo Web FAQ", Option("info")))
-  }
-
-  def whatsNew: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.mainTheme(views.html.whatsNew(), "What's New in NetLogo Web", Option("updates")))
-  }
-
-  def serverError: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.mainTheme(views.html.serverError(), "NetLogo Web - Error"))
-  }
+  // scalastyle:off public.methods.have.type
+  def index       = themedPage(views.html.index()      , "NetLogo Web")
+  def info        = themedPage(views.html.info()       , "NetLogo Web FAQ"          , Option("info"))
+  def serverError = themedPage(views.html.serverError(), "NetLogo Web - Error")
+  def whatsNew    = themedPage(views.html.whatsNew()   , "What's New in NetLogo Web", Option("updates"))
+  // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {
     Logger.info("\"%s\" requested".format(modelName))
@@ -59,5 +48,8 @@ class Application @Inject() ( assets: Assets
 
   def favicon: Action[AnyContent] =
     assets.versioned(path="/public/images", file = "favicon.ico")
+
+  private def themedPage(html: Html, title: String, selectedTopLink: Option[String] = None): Action[AnyContent] =
+    Action { implicit request => Ok(views.html.mainTheme(html, title, selectedTopLink)) }
 
 }
