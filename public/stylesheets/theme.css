@@ -128,3 +128,13 @@ body.not_full_height {
 .classic-blue:visited {
   color: #0069d6;
 }
+
+.prominent-list {
+  font-size:       22px;
+  font-weight:     bold;
+  list-style-type: none;
+}
+
+.prominent-list a {
+  text-decoration: none;
+}

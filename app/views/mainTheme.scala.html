@@ -25,12 +25,12 @@
 
           case class TopLink(id: String, url: String, text: String)
 
-          val LaunchLink  = TopLink("launch",  "/launch",                             "Launch")
-          val UpdatesLink = TopLink("updates", "/whats-new",                          "What's New")
-          val InfoLink    = TopLink("info",    "/info",                               "FAQ")
+          val LaunchLink  = TopLink("launch" , "/launch"                            , "Launch")
+          val UpdatesLink = TopLink("updates", "/whats-new"                         , "What's New")
+          val DocsLink    = TopLink("docs"   , "/docs/index"                        , "Documentation")
           val NetLogoLink = TopLink("netlogo", "http://ccl.northwestern.edu/netlogo", "About NetLogo")
 
-          Html(Seq(LaunchLink, UpdatesLink, InfoLink, NetLogoLink).map {
+          Html(Seq(LaunchLink, UpdatesLink, DocsLink, NetLogoLink).map {
             case TopLink(id, url, text) =>
               val baseClasses  = "topbar-quick-link topbar-text topbar-link brand"
               val extraClasses = if (selectedTopLink.contains(id)) " selected" else ""

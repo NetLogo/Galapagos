@@ -24,8 +24,9 @@ class Application @Inject() ( assets: Assets
   private implicit val mode = environment.mode
 
   // scalastyle:off public.methods.have.type
+  def docs        = themedPage(views.html.docs()       , "NetLogo Web Docs"         , Option("docs"))
+  def faq         = themedPage(views.html.faq()        , "NetLogo Web FAQ")
   def index       = themedPage(views.html.index()      , "NetLogo Web")
-  def info        = themedPage(views.html.info()       , "NetLogo Web FAQ"          , Option("info"))
   def serverError = themedPage(views.html.serverError(), "NetLogo Web - Error")
   def whatsNew    = themedPage(views.html.whatsNew()   , "What's New in NetLogo Web", Option("updates"))
   // scalastyle:on public.methods.have.type
