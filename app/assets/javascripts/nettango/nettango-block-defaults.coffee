@@ -180,13 +180,22 @@ blocks = {
         , action: "change color"
         , format: "set color {0}"
         , params: [ {
-            type: "range",
-            min:  0,
-            max:  155,
-            step: 1,
-            def:  50,
-            name: "color",
-            unit: ""
+          name: "color",
+          unit: "",
+          type: "select",
+          default: "",
+          values: [
+            "red",
+            "violet",
+            "blue",
+            "green",
+            "yellow",
+            "orange",
+            "white",
+            "black",
+            "grey",
+            "brown"
+          ]
         } ]
       })
       , createCommand({
