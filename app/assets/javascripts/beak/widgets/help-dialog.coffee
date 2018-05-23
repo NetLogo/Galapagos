@@ -74,8 +74,8 @@ window.RactiveHelpDialog = Ractive.extend({
         [[platformCtrlHtml, "shift", "l"        ], "switch to interactive mode"]
       , [[platformCtrlHtml, "shift", "h"        ], "toggle resizer visibility"]
       , [["escape"                              ], "close context menu if it is open, or deselect any selected widget"]
-      , [[platformCtrlHtml                      ], "hold to ignore \"snap to grid\" while moving or resizing this widget"]
-      , [["&uarr;", "&darr;", "&larr;", "&rarr;"], "move widget, agnostic of grid"]
+      , [[platformCtrlHtml                      ], "hold to ignore \"snap to grid\" while moving or resizing the selected widget"]
+      , [["&uarr;", "&darr;", "&larr;", "&rarr;"], "move widget, irrespective of the grid"]
       ].concat(if not isMac then [[["delete"], "delete the selected widget"]] else []))
 
     helpInteractive:
