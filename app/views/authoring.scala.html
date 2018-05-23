@@ -1,0 +1,41 @@
+<div class="inner-content" style="margin: 0 10%; text-align: justify;">
+
+  <h2>Authoring in NetLogo Web</h2>
+
+  <p>Like desktop NetLogo, NetLogo Web supports model authoring, meaning that it is possible to change "Code" and "Info" content and to create, edit, move, resize, and delete widgets. Unlike in desktop NetLogo, though, NetLogo Web models operate in one of two different modes at any given time: <i>interactive mode</i> or <i>authoring mode</i>. While in interactive mode, the model is usable "like normal", which is to say that widgets cannot be added, removed, resized, repositioned, or edited, but they <em>can</em> be interacted with (for example, clicking buttons or adjusting slider values). While in authoring mode, the Command Center and widgets are disabled, and the model cannot run or be interacted with, while widgets can be added, removed, resized, repositioned, and edited. The model's "Info" content can only be modified in authoring mode. The model's "Code" content can be modified in either mode.</p>
+
+  <p>To toggle between the two modes, click the gray lock icon in the top-left corner of model area (right below the "powered by NetLogo" link).  At any time while using NetLogo Web, press <kbd>?</kbd> to the get the list of currently relevant keyboard shortcuts.</p>
+
+  <p>Note: Since this document is about how to use authoring mode, from here on out, we will assume that your model is currently in authoring mode.</p>
+
+  <h3>Editing</h3>
+
+  <p>Existing widgets can have their properties edited by double-clicking them or right-clicking them and selecting "Edit", which will then open a widget configuration dialog box. This is true of the model's title, as well. If you press the <kbd>Escape</kbd> key, click the 'X' in the corner of the dialog window, or click "Cancel", all changes to the widget configuration dialog will be discarded, and the dialog will close. Otherwise, upon clicking "OK", all changes to the widget configuration dialog will be accepted and applied to the corresponding widget.</p>
+
+  <h3>Creation</h3>
+
+  <p>In order to create new widgets, right-click the light green background of the widget area. This will give you a menu of creatable widgets to choose from. When you click one of the options in that menu, a dialog will appear for configuring the new widget that you are creating. If you press the <kbd>Escape</kbd> key, click the 'X' in the corner of the dialog window, or click "Cancel", creation of the widget will be aborted, and the dialog will close. Otherwise, clicking "OK" will finalize the creation of the widget.</p>
+
+  <p>Note: Plot widgets cannot currently be created or edited in NetLogo Web, but we plan to add that functionality soon.</p>
+
+  <p>Note: A single model cannot have more than one View widget or Output widget.</p>
+
+  <h3>Selection, Sizing, and Movement</h3>
+
+  <p>You can move a widget to a different location in the widget area by clicking and dragging it to the new location. You can even move it to the right or bottom edge of the widget area in order to trigger an automatic expansion of the widget area.</p>
+
+  <p>If you single-click on a widget, it will become selected. The selected widget can be resized by grabbing and dragging the gray boxes that appear on its edges. Widgets automatically "snap to grid" when moved or resized, but, if you're editing a model from the desktop application version of NetLogo, you might find that the widgets are not necessarily snapping to the same grid between the two platforms. To help with this, the <kbd>Ctrl</kbd> key (or <kbd>&#8984;</kbd> on Mac OS) can be held down to avoid snapping to the grid while moving or resizing a widget, and the arrow keys can be used to move the selected widget one pixel in the arrow key's direction.</p>
+
+  <p>Note: If you would like to hide the gray boxes around selected widgets (for example, if the boxes are making it difficult for you to line up some widgets), the boxes can be toggled with the <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>h</kbd> key combination (or <kbd>&#8984;</kbd><kbd>Shift</kbd><kbd>h</kbd> on Mac OS).</p>
+
+  <p>Note: NetLogo Web does not yet support having multiple widgets selected at once.</p>
+
+  <h3>Deletion</h3>
+
+  <p>With the exception of the View widget, all widgets can also be deleted. In order to delete a widget, right-click the widget and select "Delete".  However, just like in desktop NetLogo, deleting a widget can cause the model to start generating compilation errors (for example, if you delete a Slider widget that declares a variable that is referenced in the "Code" section). Of course, this can be remedied by adding a new widget that declares that global variable anew, or by removing any references to the now-deleted variable by editing the "Code" pane and changing the code inside of any non-compiling (red text) widgets.</p>
+
+  <h3>Saving Your Changes</h3>
+
+  <p>To learn about how to retain any changes you made in authoring mode, please see the <a href="/docs/faq#saving">"How can I save models from NetLogo Web?" section of the FAQ</a>.</p>
+
+</div>

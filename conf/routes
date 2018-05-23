@@ -4,6 +4,7 @@
 
 # General
 GET         /                                   controllers.Application.index
+GET         /docs/authoring                     controllers.Application.authoring
 GET         /docs/faq                           controllers.Application.faq
 GET         /docs/index                         controllers.Application.docs
 GET         /whats-new                          controllers.Application.whatsNew

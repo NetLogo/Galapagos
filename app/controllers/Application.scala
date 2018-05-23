@@ -24,11 +24,12 @@ class Application @Inject() ( assets: Assets
   private implicit val mode = environment.mode
 
   // scalastyle:off public.methods.have.type
-  def docs        = themedPage(views.html.docs()       , "NetLogo Web Docs"         , Option("docs"))
+  def authoring   = themedPage(views.html.authoring()  , "NetLogo Web Docs - Authoring")
+  def docs        = themedPage(views.html.docs()       , "NetLogo Web Docs"            , Option("docs"))
   def faq         = themedPage(views.html.faq()        , "NetLogo Web FAQ")
   def index       = themedPage(views.html.index()      , "NetLogo Web")
   def serverError = themedPage(views.html.serverError(), "NetLogo Web - Error")
-  def whatsNew    = themedPage(views.html.whatsNew()   , "What's New in NetLogo Web", Option("updates"))
+  def whatsNew    = themedPage(views.html.whatsNew()   , "What's New in NetLogo Web"   , Option("updates"))
   // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {

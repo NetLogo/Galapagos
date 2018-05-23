@@ -11,6 +11,25 @@ code {
   color: #C9228E;
 }
 
+/* Credit for the `kbd` CSS goes to the fine folks at GitHub.
+ * Their code is released under the MIT license. Copyright (c) 2018 GitHub Inc.
+ * https://assets-cdn.github.com/assets/github-ef9e6df593c3136722bd837c0437786d.css
+ * JAB (5/7/18)
+ */
+kbd {
+  background-color:    #fafbfc;
+  border-bottom-color: #c6cbd1;
+  border-radius:       3px;
+  border:              solid 1px #d1d5da;
+  box-shadow:          inset 0 -1px 0 #c6cbd1;
+  color:               #404040;
+  display:             inline-block;
+  font:                16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height:         15px;
+  padding:             3px 5px;
+  vertical-align:      middle;
+}
+
 .topbar {
   align-items: center;
   background-color: #222222;
