@@ -43,6 +43,9 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   }
 
   setBlock: (block) ->
+    block.params.filter((p) -> p.type is 'select' and p['values']).forEach((p) ->
+      p['valuesString'] = p['values'].join(';')
+    )
     @set('block', block)
     return
 
@@ -70,7 +73,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       if paramValues.type is 'range'
         [ 'min', 'max', 'step' ].forEach((f) -> param[f] = paramValues[f])
       else if paramValues.type is 'select'
-        param['values'] = paramValues['values'].split(/\s*;\s*|\n/).filter((s) -> s != "")
+        param['values'] = paramValues['valuesString'].split(/\s*;\s*|\n/).filter((s) -> s != "")
       param
 
     block
