@@ -50,7 +50,7 @@ window.RactiveNetTangoParameter = Ractive.extend({
     'param-select':
       """
       <div class="flex-row">
-        <labelledInput id="param-{{ number }}-values" name="values" type="text" value="{{ p.values }}" label="Options" />
+        <labelledInput id="param-{{ number }}-values" name="values" type="text" value="{{ p.values }}" label="Options (; separated)" />
       </div>
       """
 
