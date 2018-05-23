@@ -47,10 +47,10 @@
 
   <ul>
     <li>Most of the NetLogo programming language</li>
-    <li>Plotting</li>
     <li>The Command Center</li>
     <li>Editable "Code" and "Info" tabs</li>
-    <li>Functioning widgets of all kinds</li>
+    <li>Widgets</li>
+    <li>Authoring support</li>
     <li>The ability to export models for use in the desktop edition of NetLogo</li>
     <li>The ability to export models as standalone HTML pages</li>
   </ul>
@@ -58,16 +58,15 @@
   @linkableHeader("deficiencies", "What features of NetLogo does NetLogo Web lack at the moment?")
 
   <ul>
-    <li>Many of the less-common NetLogo language primitives</li>
     <li>High performance</li>
-    <li>An interface editor</li>
     <li>Extensions</li>
     <li>Reading from and writing to external files</li>
     <li>3D models and the "3D View" of 2D models</li>
     <li>HubNet</li>
     <li>BehaviorSpace</li>
     <li>Other less-central NetLogo features (e.g., System Dynamics Modeler)</li>
-    <li>Some less-common widget configurations (e.g., vertical sliders)</li>
+    <li>NetLogo language primitives relating to any of the above</li>
+    <li>NetLogo language primitives relating to some kinds imports and exports</li>
   </ul>
 
   <p>That said, there are very few things in NetLogo that have been left
@@ -158,7 +157,7 @@
      NetLogo or NetLogo Web.</p>
 
   <p>With a model downloaded from NetLogo Web, you can use the desktop
-     version of NetLogo to make whatever changes to the model that you
+     version of NetLogo, make whatever changes to the model that you
      would like, save those changes, and then open the new version of
      the model in NetLogo Web (using "Upload a Model" in NetLogo Web, like before).</p>
 
@@ -218,14 +217,13 @@
      link, using the URL of the model on the web server for the
      <code><strong>modelURL</strong></code> value.</p>
 
-  @linkableHeader("generate-simple-pages", "Is there an automatic way to generate a model page everytime I create a new version of my model?")
+  @linkableHeader("generate-simple-pages", "Is there an automatic way to generate a model page every time I create a new version of my model?")
 
   <p>You can link to <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-     (where <code><strong>modelURL</strong></code> is the URL of your model).  Everytime
-     someone goes to that link (or an iframe is loaded that uses that link
-     as the source URL), the most recent version of your model will be
-     fetched from <code><strong>modelURL</strong></code> and turned into a simple model
-     page.</p>
+     (where <code><strong>modelURL</strong></code> is the URL of your model).  Every
+     time someone goes to that link (or an iframe is loaded that uses that link as
+     the source URL), the most recent version of your model will be fetched from
+     <code><strong>modelURL</strong></code> and turned into a simple model page.</p>
 
   <p>While this generally should not be a problem, this method requires
      having an active connection to our website (netlogoweb.org) in order
