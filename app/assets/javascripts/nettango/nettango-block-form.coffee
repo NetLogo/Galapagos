@@ -27,7 +27,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   components: {
       formCheckbox:  RactiveEditFormCheckbox
-    , formCode:      RactiveEditFormCodeContainer
+    , formCode:      RactiveCodeContainerOneLine
     , formDropdown:  RactiveEditFormDropdown
     , spacer:        RactiveEditFormSpacer
     , labelledInput: RactiveLabelledInput
