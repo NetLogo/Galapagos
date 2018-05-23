@@ -69,7 +69,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
       if paramValues.type is 'range'
         [ 'min', 'max', 'step' ].forEach((f) -> param[f] = paramValues[f])
-      else if paramValues.type is 'selection'
+      else if paramValues.type is 'select'
         param['values'] = paramValues['values'].split(/\s*;\s*|\n/).filter((s) -> s != "")
       param
 

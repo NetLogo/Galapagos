@@ -12,7 +12,7 @@ window.RactiveNetTangoParameter = Ractive.extend({
         when 'bool' then false
         when 'num', 'int' then 10
         when 'text' then ""
-        when 'range', 'selection' then null
+        when 'range', 'select' then null
         else null
       @set('p.def', newDefVal)
       return
@@ -30,7 +30,7 @@ window.RactiveNetTangoParameter = Ractive.extend({
       <labelledInput id="param-{{ number }}-name" name="name" type="text" value="{{ p.name }}" label="Name" style="flex-grow: 1;" />
 
       <dropdown id="param-{{ number }}-type" name="{{ p.type }}" value="{{ p.type }}" label="Type" style="flex-grow: 1;"
-        options="{{ [ 'bool', 'num', 'int', 'range', 'text', 'selection' ] }}" changeEvent="ntb-param-type-changed"
+        options="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-param-type-changed"
         />
 
       <labelledInput id="param-{{ number }}-unit" name="unit" type="text" value="{{ p.unit }}" label="Unit label" style="flex-grow: 1;" />
@@ -47,7 +47,7 @@ window.RactiveNetTangoParameter = Ractive.extend({
     'param-int': ""
     'param-text': ""
 
-    'param-selection':
+    'param-select':
       """
       <div class="flex-row">
         <labelledInput id="param-{{ number }}-values" name="values" type="text" value="{{ p.values }}" label="Options" />
