@@ -60,6 +60,7 @@ routesGenerator := InjectedRoutesGenerator
 
 scrapeRoutes ++= Seq(
   "/humans.txt",
+  "/docs/authoring",
   "/docs/faq",
   "/docs/index",
   "/whats-new",

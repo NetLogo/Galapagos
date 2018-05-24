@@ -54,4 +54,32 @@ class Application @Inject() ( assets: Assets
   private def themedPage(html: Html, title: String, selectedTopLink: Option[String] = None): Action[AnyContent] =
     Action { implicit request => Ok(views.html.mainTheme(html, title, selectedTopLink)) }
 
+  private lazy val codeMirrorHtml: Html = {
+
+    def resolve(p: String)   = routes.Assets.versioned(p)
+    def linkTag(x: String)   = s"""<link rel="stylesheet" media="screen" href="$x">"""
+    def scriptTag(x: String) = s"""<script src="$x"></script>"""
+
+    val cssURLs = Seq( "lib/codemirror/lib/codemirror"
+                     , "stylesheets/netlogo-syntax"
+                     ).map((x) => resolve(s"$x.css").toString)
+    val cssTags = cssURLs.map(linkTag)
+
+    val jsURLs = Seq( "lib/codemirror"
+                    , "addon/dialog/dialog"
+                    , "addon/mode/simple"
+                    , "addon/search/searchcursor"
+                    , "addon/search/search"
+                    ).map((x) => resolve(s"lib/codemirror/$x.js").toString)
+    val jsTags = jsURLs.map(scriptTag)
+
+    val modeJSURLs = Seq( "keywords"
+                        , "codemirror-mode"
+                        ).map((x) => resolve(s"javascripts/$x.js").toString)
+    val modeJSTags = modeJSURLs.map(scriptTag)
+
+    Html((cssTags ++ jsTags ++ modeJSTags).mkString("\n"))
+
+  }
+
 }
