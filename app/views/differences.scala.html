@@ -1,0 +1,95 @@
+@import views.ViewUtils
+
+@linkableHeader(rawHeaderID: String, header: String, style: String = "") = {
+  @defining(ViewUtils.idSafe(rawHeaderID)) { headerId =>
+    <a id="@headerId" class="anchor-header"></a>
+    <div class="link-header" style="@style">
+      <a href="#@headerId" style="text-decoration: none; color: black; margin-right: 5px;">
+        <img class="link-img" src="@routes.Assets.versioned("images/link.svg")" />
+      </a>
+      <h2>@Html(header)</h2>
+    </div>
+  }
+}
+
+<div class="inner-content" style="margin: 0 10%; text-align: justify;">
+
+  <h1 style="margin: 5px 0 30px 0;">NetLogo Web Differences</h1>
+
+  @linkableHeader("unimplemented", "Things currently unimplemented in NetLogo Web")
+
+  <em>Please note that our goal is to implement as many of desktop NetLogo's features as is reasonably possible, so many of these "unimplemented" features are likely to eventually appear in NetLogo Web in some form or another.</em>
+
+  <ul>
+    <li>HubNet</li>
+    <li>File-related primitives (for example, <code>file-open</code>)</li>
+    <li><code>ask-concurrent</code>/<code>without-interruption</code></li>
+    <li><code>display</code>/<code>no-display</code></li>
+    <li><code>export-interface</code></li>
+    <li><code>inspect</code></li>
+    <li><code>user-one-of</code></li>
+    <li>Extensions</li>
+    <li>3D</li>
+    <li>BehaviorSpace</li>
+    <li>Shapes Editor</li>
+    <li>System Dynamics Modeler</li>
+  </ul>
+
+  @linkableHeader("import-prims", "<code>import-*</code> primitives")
+
+  <p>Here in NetLogo Web, <code>import-*</code> primitives work a bit differently from how they work in desktop NetLogo.  For one, when importing a file in NetLogo Web, the string argument to the <code>import-*</code> primitive is accepted (out of a need for compatibility with desktop NetLogo) but ignored (due to the fact that browser-based applications cannot automatically read files directly from your computer).  Instead, NetLogo Web will open up a file dialog and ask you to manually select the to-be-imported file from your file system, regardless of the value of the string argument.</p>
+
+  <p>Secondly, these primitives behave differently in a way that, under particular circumstances, can be surprising.  In desktop NetLogo, importing a file happens "synchronously", which is to say that, if your model says to run <code>import-world</code> on line 10 of a 20-line procedure, NetLogo will <em>not</em> run lines 11-20 until after <code>import-world</code> has completed.  In browser-based applications, though, files cannot be read synchronously.  Instead, they are always read <em>asynchronously</em>, with line 10 of the aforementioned, hypothetical 20-line procedure now telling the browser that it should import the file <em>whenever the browser is ready</em>, followed by the browser immediately running lines 11-20 before actually importing that file.  Once those lines have been run and the browser doesn't have anything else to do, <em>then</em> it will import the file.</p>
+
+  <p>What this translates to is that, in the uncommon case that your procedure relies on an <code>import-*</code> primitive executing before that procedure has ended, NetLogo Web will behave differently than desktop NetLogo, and your model might need to be re-architected a bit in order to get the two models running in the same way on both platforms.</p>
+
+  @linkableHeader("wait", "The <code>wait</code> primitive")
+
+  <p><code>wait</code> is a primitive that functions significantly differently in NetLogo Web.  Normal desktop applications allow programs to have multiple "threads" of code running at the same time.  This is allows a program to have one thread for running heavy computations (like executing NetLogo code) and another thread that works to update what you see on your screen, to reflect the computations that have been done by the other thread (while that hard-working thread is still doing other hard work).  In the browser, there's just one thread for everything (caveat: that's not <em>strictly</em> true, but multi-threaded browser-based programs are unacceptably slow, for the time being, at least).  Since there's only one thread and don't really have the ability to suspend our current thread, switch to a different task, and come back at will, primitives like <code>display</code> cannot work as expected.  Instead, the visualization update from <code>display</code> can only happen after all queued NetLogo procedures have temporarily finished running (which defeats the entire purpose of using <code>display</code>, anyway, because a "when the browser gets around to it" visualization update is going to happen whether <code>display</code> had been called or not).</p>
+
+  <p>This poses major problems for <code>display</code>, but it might not be apparent how it's a problem for <code>wait</code>.  Well, first, because <code>wait</code> is most frequently used in conjunction with <code>display</code>, so if you can't use <code>display</code>, you're missing out on most of the usefulness of <code>wait</code>.  But it also causes problems for <code>wait</code> directly.  The thing is, since there aren't multiple threads in the browser, browsers don't give tools for blocking execution and waiting for a certain amount of time to pass before going on (which is essentially the definition of <code>wait</code>).  Instead, they only give tools for saying, "After <em>this much</em> time has elapsed, and then once you don't have anything else to do, run this code."  Unfortunately, that sort of execution model is incompatible with how <code>wait</code> is used in desktop NetLogo.</p>
+
+  <p>So what <em>can</em> we do with <code>wait</code> in NetLogo Web?  The <em>best</em> thing that we can do is honestly something that a web developer really shouldn't ever do, which is to just keep our browser tab's lone thread busy with pointless work for the amount of time that we were told to wait.  The upside is that it waits as long as its argument says to wait, and then proceeds to run the rest of the queued NetLogo code.  The downside is that you still will not see any visualization changes until <code>wait</code> and the rest of the currently enqueued code has been run, plus this produces a bad user experience, because it locks up the entire browser tab and prevents interaction with the widgets, and, if the <code>wait</code> waits for long of enough, it could even prompt your browser to ask if you want to close this "unresponsive" tab.  Unfortunately, that's about the best we can do with the tools that the browsers give us.</p>
+
+  <p>And please note that we don't recommend using <code>wait</code>, to begin with, in either desktop NetLogo or NetLogo Web.  <code>wait</code> mostly continues to exist for backwards compatibility with models made before NetLogo's modern idioms were settled upon.  Ultimately, you can almost always work around the need for <code>wait</code> in a way that is less likely to cause problems, more idiomatic to NetLogo, and that will work in NetLogo Web.  The only exception is when you <em>really</em> want to wait until a number of seconds have passed on your clock before doing something.  And that's "almost never".</p>
+
+  <p>One of the problems that using <code>wait</code> can cause, even on in desktop NetLogo, is that it can end up making a model perform differently on different computers.  So if you try to use <code>wait</code> to control animation speed, a use of <code>wait 0.1</code> might cause the animation to look good on your computer while also making the program unpleasantly slow on older, lower-performance computers, and simultaneously too fast on, for example, newer, more-powerful computers that might come out after yours, because the <code>wait</code> takes the same amount of time on each machine, but the other bits of NetLogo code won't, so they might require a <code>wait 0.01</code> or a <code>wait 0.2</code> in order to get the same visual effect.  The proper, "works on all computers" way for varying the speed of a NetLogo model is to simply adjust the "speed" slider as necessary.</p>
+
+  <p style="margin-bottom: 10px;">So what <em>can</em> you do to make idiomatic NetLogo models with well-timed animations?  One might be tempted to use <code>every</code>, and that could "work", but it would also have most of the same problems as <code>wait</code>.  Instead, the best option to build little "state machines" out of global variables, where your <code>go</code> is run in a "forever" button, and each iteration of <code>go</code> changes the global variable to set the animation state, like this:</p>
+
+  <textarea id="wait-example-code">globals [animation-index]
+
+to setup
+  clear-all
+  set animation-index 0
+  create-turtles 1 [ set color red set size 20 ]
+  reset-ticks
+end
+
+to bad-go
+  let turtle-state-count 0
+  while [turtle-state-count < 6] [
+    wait 0.1
+    ask turtle 0 [ set color (item turtle-state-count base-colors) ]
+    set turtle-state-count (turtle-state-count + 1)
+  ]
+  tick
+end
+
+to go
+  let turtle-state-count 6
+  set animation-index ((animation-index + 1) mod turtle-state-count)
+  ask turtle 0 [ set color (item animation-index base-colors) ]
+  tick-advance (1 / turtle-state-count)
+end</textarea>
+
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var elem    = document.getElementById('wait-example-code');
+  var config  = { mode: 'netlogo', readOnly: 'nocursor', theme: 'netlogo-default', viewportMargin: Infinity };
+  var editor  = CodeMirror.fromTextArea(elem, config);
+  editor.setSize(null, 375);
+});
+</script>

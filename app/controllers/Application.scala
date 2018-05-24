@@ -25,6 +25,7 @@ class Application @Inject() ( assets: Assets
 
   // scalastyle:off public.methods.have.type
   def authoring   = themedPage(views.html.authoring()  , "NetLogo Web Docs - Authoring")
+  def differences = themedPage(views.html.differences(), "NetLogo Web vs. NetLogo"     , None            , codeMirrorHtml)
   def docs        = themedPage(views.html.docs()       , "NetLogo Web Docs"            , Option("docs"))
   def faq         = themedPage(views.html.faq()        , "NetLogo Web FAQ")
   def index       = themedPage(views.html.index()      , "NetLogo Web")
@@ -51,8 +52,9 @@ class Application @Inject() ( assets: Assets
   def favicon: Action[AnyContent] =
     assets.versioned(path="/public/images", file = "favicon.ico")
 
-  private def themedPage(html: Html, title: String, selectedTopLink: Option[String] = None): Action[AnyContent] =
-    Action { implicit request => Ok(views.html.mainTheme(html, title, selectedTopLink)) }
+  private def themedPage( html: Html, title: String, selectedTopLink: Option[String] = None
+                        , extraHead: Html = Html("")): Action[AnyContent] =
+    Action { implicit request => Ok(views.html.mainTheme(html, title, selectedTopLink, extraHead)) }
 
   private lazy val codeMirrorHtml: Html = {
 
