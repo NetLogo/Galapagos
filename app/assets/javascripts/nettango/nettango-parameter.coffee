@@ -37,6 +37,9 @@ window.RactiveNetTangoParameter = Ractive.extend({
       <labelledInput id="param-{{ number }}-def"  name="def"  type="text" value="{{ p.def }}" label="Default"     style="flex-grow: 1;" />
     </div>
     {{> `param-${p.type}` }}
+    <div>
+      <button class="ntb-button" on-click="[ 'ntb-delete-parameter', number ]">Delete {{ p.name }} Parameter</button>
+    </div>
     """
     # coffeelint: enable=max_line_length
 
