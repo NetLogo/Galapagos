@@ -20,6 +20,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       @push('block.params', @defaultParam(num))
       return false
 
+    '*.ntb-delete-parameter': (_, num) ->
+      @splice('block.params', num, 1)
+      return false
+
   }
 
   oninit: ->
