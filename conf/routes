@@ -7,7 +7,6 @@ GET         /                                   controllers.Application.index
 GET         /docs/authoring                     controllers.Application.authoring
 GET         /docs/differences                   controllers.Application.differences
 GET         /docs/faq                           controllers.Application.faq
-GET         /docs/index                         controllers.Application.docs
 GET         /whats-new                          controllers.Application.whatsNew
 GET         /model/list.json                    controllers.Application.modelList
 GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)

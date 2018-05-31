@@ -52,6 +52,10 @@ kbd {
   white-space: nowrap;
 }
 
+.topbar-label {
+  cursor: pointer;
+}
+
 .topbar-link-box {
   align-items: center;
   display: flex;
@@ -91,6 +95,39 @@ kbd {
 }
 
 .topbar-text:active {
+  color: #ffff9a;
+}
+
+.topbar-hint-box {
+  background-color: #222222;
+  border:           1px solid #f3f3f3;
+  border-radius:    4px;
+  box-shadow:       0 2px 10px rgba(0, 0, 0, .2);
+  color:            #f3f3f3;
+  display:          none;
+  font-family:      'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overflow:         hidden;
+  position:         absolute;
+  top:              41px;
+  width:            200px;
+}
+
+.topbar-hint-list {
+  list-style:   none;
+  margin:       10px 10px;
+  padding-left: 0;
+}
+
+.topbar-hint-link {
+  color:           #f3f3f3;
+  text-decoration: none;
+}
+
+.topbar-hint-link:hover {
+  text-decoration: underline;
+}
+
+.topbar-hint-link:active {
   color: #ffff9a;
 }
 

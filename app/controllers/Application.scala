@@ -26,7 +26,6 @@ class Application @Inject() ( assets: Assets
   // scalastyle:off public.methods.have.type
   def authoring   = themedPage(views.html.authoring()  , "NetLogo Web Docs - Authoring")
   def differences = themedPage(views.html.differences(), "NetLogo Web vs. NetLogo"     , None            , codeMirrorHtml)
-  def docs        = themedPage(views.html.docs()       , "NetLogo Web Docs"            , Option("docs"))
   def faq         = themedPage(views.html.faq()        , "NetLogo Web FAQ")
   def index       = themedPage(views.html.index()      , "NetLogo Web")
   def serverError = themedPage(views.html.serverError(), "NetLogo Web - Error")
