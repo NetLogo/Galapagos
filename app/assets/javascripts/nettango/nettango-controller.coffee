@@ -8,18 +8,37 @@ class window.NetTangoController
     at = @
     @ractive = new Ractive({
       el:       element,
+
+      on: {
+        'complete': (_) ->
+          popupmenu = @findComponent('popupmenu')
+          builder = @findComponent('tangoBuilder')
+          builder.setPopupMenu(popupmenu)
+
+          document.addEventListener('click', (event) ->
+            if event?.button isnt 2
+              popupmenu.unpop()
+          )
+
+          return
+      }
+
       data:     () -> {
         findElement:   at.getModelElementById,
         createElement: at.createElement,
         appendElement: at.appendElement,
         playMode:      at.playMode
       }
+
       components: {
           tangoBuilder:    RactiveNetTangoBuilder
         , testingDefaults: RactiveNetTangoTestingDefaults
+        , popupmenu:       RactivePopupMenu
       },
+
       template:
         """
+        <popupmenu></popupmenu>
         <tangoBuilder
           playMode='{{ playMode }}'
           findElement='{{ findElement }}'

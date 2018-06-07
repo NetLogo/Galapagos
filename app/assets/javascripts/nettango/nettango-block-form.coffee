@@ -12,7 +12,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     'submit': (_) ->
       @fire(@get('submitEvent'), @get('spaceNumber'), @getBlock(), @get('blockNumber'))
       # Reset the "working" block to have new values in case it isn't reset before next open
-      @set('block', NetTangoBlockDefaults.getBlockDefault('basics', 0))
+      @set('block', NetTangoBlockDefaults.blocks.items[0].items[0])
       return
 
     'ntb-add-parameter': (_) ->
@@ -47,9 +47,12 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   }
 
   setBlock: (block) ->
-    block.params.filter((p) -> p.type is 'select' and p['values']).forEach((p) ->
-      p['valuesString'] = p['values'].join(';')
-    )
+    if block.params?
+      block.params.filter((p) -> p.type is 'select' and p['values']).forEach((p) ->
+        p['valuesString'] = p['values'].join(';')
+      )
+    else
+      block.params = []
     @set('block', block)
     return
 

@@ -1,27 +1,22 @@
 window.RactiveNetTangoBuilder = Ractive.extend({
   on: {
-    'init': (_) ->
-      at = @
-      document.addEventListener('click', (event) ->
-        if event?.button isnt 2
-          at.set('contextMenu.show', false)
-        return
-      )
 
     'ntb-refresh-css': (_) ->
       @refreshCss()
 
-    'ntb-clear-all-check': (_) ->
-      menu = @findComponent('popupmenu')
-      menu.set('content', {
-        sureCheck: {
-          , name: 'Are you sure?'
-          , items: [
-            { action: 'Yes, clear all data', event: 'ntb-clear-all' }
-          ]
-        }
-      })
-      @set('contextMenu.show', true)
+    'ntb-clear-all-check': ({ event: { pageX, pageY } }) ->
+      clearMenu = {
+        name: "_",
+        items: [
+          {
+            name: 'Are you sure?',
+            items: [
+              { name: 'Yes, clear all data', eventName: 'ntb-clear-all' }
+            ]
+          }
+        ]
+      }
+      @popupmenu.popup(@, pageX, pageY, clearMenu)
       return false
 
     '*.ntb-clear-all': (_) ->
@@ -49,8 +44,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
-    '*.ntb-create-block': (_, spaceNumber, blockGroup, blockNumber) ->
-      block = NetTangoBlockDefaults.getBlockDefault(blockGroup, blockNumber)
+    '*.ntb-create-block': (_, spaceNumber, blockBase) ->
+      block = NetTangoBlockDefaults.copyBlock(blockBase)
       @showBlockForm(spaceNumber, "Add New Block", "ntb-new-block-added", block)
       return
 
@@ -90,7 +85,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   components: {
     tangoDefs:     RactiveNetTangoDefs
     blockEditForm: RactiveNetTangoBlockForm
-    popupmenu:     RactivePopupMenu
   }
 
   data: () -> {
@@ -105,9 +99,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       submitEvent: undefined,
       submitLabel: "Add New Block"
     },
-    contextMenu: {
-      show:     false
-    }
     # Dependency injection :-P  -JMB
     findElement:   () ->,
     createElement: () ->,
@@ -248,12 +239,16 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     @refreshCss()
     return
 
+  setPopupMenu: (popupmenu) ->
+    @popupmenu = popupmenu
+    defsComponent = @findComponent('tangoDefs')
+    defsComponent.popupmenu = popupmenu
+    return
+
   template:
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-container" style="position: relative;">
-
-      <popupmenu visible="{{contextMenu.show}}" elementId="clear-all-button" />
 
       <blockEditForm visible="{{ blockEditor.show }}" spaceNumber="{{ blockEditor.spaceNumber }}" blockNumber="{{ blockEditor.blockNumber }}" parentClass="ntb-container"
         horizontalOffset="{{ 0.5 }}" verticalOffset="{{ 0.25 }}" submitLabel="{{ blockEditor.submitLabel }}" submitEvent="{{ blockEditor.submitEvent }}" />
