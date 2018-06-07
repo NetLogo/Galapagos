@@ -1,33 +1,18 @@
 window.RactiveNetTangoDefs = Ractive.extend({
   on: {
-    'init': (_) ->
-      at = @
-      document.addEventListener('click', (event) ->
-        if event?.button isnt 2
-          at.set('contextMenu.show', false)
-        return
-      )
 
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       @splice('spaces', spaceNumber, 1)
       return
 
-    'ntb-show-block-defaults': (_, spaceNumber) ->
-      NetTangoBlockDefaults.blocks.event = 'ntb-create-block'
-      menu = @findComponent('popupmenu')
-      menu.set('content', NetTangoBlockDefaults.blocks)
-      @set('contextMenu.buttonId', "add-block-button-#{spaceNumber}")
-      @set('contextMenu.tag', spaceNumber)
-      @set('contextMenu.show', true)
+    'ntb-show-block-defaults': ({ event: { pageX, pageY } }, spaceNumber) ->
+      NetTangoBlockDefaults.blocks.eventName = 'ntb-create-block'
+      @popupmenu.popup(@, pageX, pageY, NetTangoBlockDefaults.blocks, spaceNumber)
       return false
 
-    'ntb-show-block-modify': (_, spaceNumber) ->
-      menu = @findComponent('popupmenu')
+    'ntb-show-block-modify': ({ event: { pageX, pageY } }, spaceNumber) ->
       modifyMenu = @createModifyMenuContent(spaceNumber)
-      menu.set('content', modifyMenu)
-      @set('contextMenu.buttonId', "modify-block-button-#{spaceNumber}")
-      @set('contextMenu.tag', spaceNumber)
-      @set('contextMenu.show', true)
+      @popupmenu.popup(@, pageX, pageY, modifyMenu, spaceNumber)
       return false
 
     '*.ntb-delete-block': (_, spaceNumber, blockNumber) ->
@@ -37,19 +22,19 @@ window.RactiveNetTangoDefs = Ractive.extend({
       @initNetTangoForSpace(space)
       return
 
-    'ntb-confirm-delete': (_, spaceNumber) ->
-      menu = @findComponent('popupmenu')
-      menu.set('content', {
-        sureCheck: {
-          , name: 'Are you sure?'
-          , items: [
-            { action: 'Yes, delete block space', event: 'ntb-delete-blockspace' }
-          ]
-        }
-      })
-      @set('contextMenu.buttonId', "delete-space-button-#{spaceNumber}")
-      @set('contextMenu.tag', spaceNumber)
-      @set('contextMenu.show', true)
+    'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
+      delMenu = {
+        name: "_"
+        items: [
+          {
+            name: 'Are you sure?'
+            , items: [
+              { name: 'Yes, delete block space', eventName: 'ntb-delete-blockspace' }
+            ]
+          }
+        ]
+      }
+      @popupmenu.popup(@, pageX, pageY, delMenu, spaceNumber)
       return false
 
     'ntb-code-change': (_) ->
@@ -117,17 +102,20 @@ window.RactiveNetTangoDefs = Ractive.extend({
     return
 
   createModifyMenuContent: (spaceNumber) ->
-    content = []
     space = @get('spaces')[spaceNumber]
-    dele = { event: 'ntb-delete-block', action: 'delete' }
-    edit = { event: 'ntb-edit-block', action: 'edit' }
-    for def, num in space.defs.blocks
-      key = "block#{num}"
-      content.push({
+    dele = { eventName: 'ntb-delete-block', name: 'delete' }
+    edit = { eventName: 'ntb-edit-block', name: 'edit' }
+    items = for def, num in space.defs.blocks
+      itemDele = Object.assign({ data: num }, dele)
+      itemEdit = Object.assign({ data: num }, edit)
+      {
         name:  def.action
-        items: [dele, edit]
-      })
-    content
+        items: [itemDele, itemEdit]
+      }
+    {
+      name: "_",
+      items: items
+    }
 
   expressionDefaults: () ->
     return [
@@ -186,23 +174,12 @@ window.RactiveNetTangoDefs = Ractive.extend({
     spaces:             [],
     lastCompiledCode:   "",
     codeIsDirty:        false,
-    confirmDelete:      false,
-    contextMenu:        {
-      , show:     false
-      , content:  undefined
-      , buttonId: undefined
-      , tag:      undefined
-    }
-  }
-
-  components: {
-    popupmenu: RactivePopupMenu
+    confirmDelete:      false
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
-    <popupmenu visible="{{contextMenu.show}}" elementId="{{contextMenu.buttonId}}" tag="{{contextMenu.tag}}" />
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}
         <div class="ntb-block-def">
