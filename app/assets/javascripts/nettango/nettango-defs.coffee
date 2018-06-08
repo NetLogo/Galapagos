@@ -58,6 +58,10 @@ window.RactiveNetTangoDefs = Ractive.extend({
       if(oldDefsJson != space.defsJson)
         @set("spaces[#{number}].defsJsonChanged", true)
       return
+
+    'ntb-size-change': (_, space) ->
+      @initNetTangoForSpace(space)
+      return
   }
 
   recompile: () ->
@@ -95,10 +99,10 @@ window.RactiveNetTangoDefs = Ractive.extend({
     ntId = space.spaceId + "-canvas"
     # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes each init.
     canvas = document.getElementById(ntId)
-    canvas.height = space.height * 2
-    canvas.width = space.width * 2
-    canvas.style = "height: #{space.height}px; width: #{space.width}px"
+    canvas.height = space.height
+    canvas.width = space.width
     NetTango.init(ntId, space.defs)
+    # canvas.style = "height: #{space.height}px; width: #{space.width}px"
     return
 
   createModifyMenuContent: (spaceNumber) ->
@@ -159,10 +163,9 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
     @push('spaces', space)
     @set('nextId', id + 1)
-    ntId = spaceId + "-canvas"
-    NetTango.init(ntId, defs)
+    @initNetTangoForSpace(space)
     at = @
-    NetTango.onProgramChanged(ntId, (id) ->
+    NetTango.onProgramChanged(space.spaceId + "-canvas", (id) ->
       at.fire('ntb-code-change')
       return
     )
@@ -177,6 +180,10 @@ window.RactiveNetTangoDefs = Ractive.extend({
     confirmDelete:      false
   }
 
+  components: {
+    labelledInput: RactiveLabelledInput
+  }
+
   template:
     # coffeelint: disable=max_line_length
     """
@@ -189,10 +196,12 @@ window.RactiveNetTangoDefs = Ractive.extend({
             <button id="add-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', spaceNum ]">Add Block ▼</button>
             <button id="modify-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-modify', spaceNum ]">Modify Block ▼</button>
             <button id="delete-space-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-confirm-delete', spaceNum ]" >Delete Block Space</button>
+            <labelledInput id="width-{{spaceNum}}" name="width" type="number" value="{{ width }}" label="Width" />
+            <labelledInput id="height-{{spaceNum}}" name="height" type="number" value="{{ height }}" label="Height" />
           </div>
           {{/}}
           <div class="nt-container" id="{{ spaceId }}" >
-            <canvas class="nt-canvas" height="{{ 2 * height }}" width="{{ 2 * width }}" style="height: {{ height }}px;width: {{ width }}px;" id="{{ spaceId }}-canvas" />
+            <canvas id="{{ spaceId }}-canvas" class="nt-canvas" />
           </div>
           {{# !playMode }}
           <div class="ntb-block-defs-controls">
