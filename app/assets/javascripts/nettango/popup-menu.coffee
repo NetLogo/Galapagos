@@ -4,7 +4,7 @@ window.RactivePopupMenu = Ractive.extend({
   # Content = Item | Items
   # Items { name: String, eventName: String, items: Array[Content] }
   # Item { name: String, eventName: String, data: POJO  }
-  # The `event` string is optional for an Item - if not given the event on the parent Items will be used
+  # The `eventName` string is optional for an Item - if not given the event on the parent Items will be used
 
   on: {
 
@@ -15,32 +15,30 @@ window.RactivePopupMenu = Ractive.extend({
 
     'popup-submenu': ({ event: { pageX, pageY } }, item, itemNum) ->
       @set("submenus[#{item.level}].item", item)
-      @updatePosition(pageX, pageY, "submenus[#{item.level}].style")
-      return
-
-    'hide-submenu': (_) ->
-      @set("submenus[#{level}.style", 'display: none;')
+      @_updatePosition(pageX, pageY, "submenus[#{item.level}].style")
       return
 
   }
 
   popup: (target, left, top, content, tag) ->
-    maxLevel = @markContent(content)
+    maxLevel = @_markContent(content)
     submenus = for num in [1..maxLevel]
       { style: "display: none;" }
     @set('submenus', submenus)
     @set('tag', tag)
     @set('content', content)
     @set('target', target)
-    @updatePosition(left, top, 'style')
+    @_updatePosition(left, top, 'style')
+    return
 
   unpop: () ->
     @set('style', 'display: none;')
     @get('submenus').forEach( (_, level) =>
       @set("submenus[#{level}].style", 'display: none;')
     )
+    return
 
-  markContent: (content) ->
+  _markContent: (content) ->
     # tag all the content levels with ID numbers
     # build a total ID array so we can create a collection of popup menu levels
     # TODO - Maybe require this be explicitly called by someone using the popup-menu
@@ -54,7 +52,7 @@ window.RactivePopupMenu = Ractive.extend({
     setLevelRec(content, 0)
     return maxLevel
 
-  updatePosition: (left, top, property) ->
+  _updatePosition: (left, top, property) ->
     style = "z-index: 1000; position: absolute; left: #{ left + 10 }px; top: #{ top + 2 }px;"
     @set(property, style)
     return
