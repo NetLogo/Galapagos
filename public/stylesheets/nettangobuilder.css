@@ -6,7 +6,11 @@ body#ntp-body, html#ntp-body {
   display: flex;
   flex-direction: column;
   padding: 0.5em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
   margin: 0.5em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
   background: #fff;
 }
 
@@ -16,13 +20,37 @@ body#ntp-body, html#ntp-body {
   margin: 0.5em;
 }
 
-.ntb-block-defs-list, .ntb-block-defs-controls {
+.ntb-block-defs-list {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+  align-content: top;
+  align-items: top;
+}
+
+.ntb-block-defs-controls {
   display: flex;
   flex-direction: row;
   margin-left: auto;
   margin-right: auto;
   align-content: center;
   align-items: center;
+}
+
+.ntb-block-defs-controls label {
+  display: block;
+  width: 100%;
+  font-size: 13px;
+  text-align: center;
+}
+
+.ntb-block-defs-controls input {
+  font-size: 13px;
+  height: auto;
+  margin: 0.1em;
+  padding: 0.1em;
+  text-align: right;
 }
 
 .ntb-button, .ntb-container .widget-edit-text, .ntb-file-label {
