@@ -1,43 +1,10 @@
 window.RactiveNetTangoDefs = Ractive.extend({
   on: {
+    'complete': (_) ->
+      blockEditForm = @findComponent('blockEditForm')
+      @set('blockEditForm', blockEditForm)
 
-    '*.ntb-delete-blockspace': (_, spaceNumber) ->
-      @splice('spaces', spaceNumber, 1)
-      return
-
-    'ntb-show-block-defaults': ({ event: { pageX, pageY } }, spaceNumber) ->
-      NetTangoBlockDefaults.blocks.eventName = 'ntb-create-block'
-      @popupmenu.popup(@, pageX, pageY, NetTangoBlockDefaults.blocks, spaceNumber)
-      return false
-
-    'ntb-show-block-modify': ({ event: { pageX, pageY } }, spaceNumber) ->
-      modifyMenu = @createModifyMenuContent(spaceNumber)
-      @popupmenu.popup(@, pageX, pageY, modifyMenu, spaceNumber)
-      return false
-
-    '*.ntb-delete-block': (_, spaceNumber, blockNumber) ->
-      space = @get('spaces')[spaceNumber]
-      space.defs.blocks.splice(blockNumber, 1)
-      @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
-      @initNetTangoForSpace(space)
-      return
-
-    'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
-      delMenu = {
-        name: "_"
-        items: [
-          {
-            name: 'Are you sure?'
-            , items: [
-              { name: 'Yes, delete block space', eventName: 'ntb-delete-blockspace' }
-            ]
-          }
-        ]
-      }
-      @popupmenu.popup(@, pageX, pageY, delMenu, spaceNumber)
-      return false
-
-    'ntb-code-change': (_) ->
+    '*.ntb-code-change': (_) ->
       lastCode    = @get('lastCode')
       newCode     = @assembleCode()
       codeIsDirty = lastCode != newCode
@@ -47,21 +14,10 @@ window.RactiveNetTangoDefs = Ractive.extend({
         @fire('ntb-code-dirty')
       return
 
-    'ntb-apply-json-to-space': (_, space, number) ->
-      newDefs = JSON.parse(space.defsJson)
-      @set("spaces[#{number}].defs", newDefs)
-      @initNetTangoForSpace(space)
+    '*.ntb-delete-blockspace': (_, spaceNumber) ->
+      @splice('spaces', spaceNumber, 1)
       return
 
-    'ntb-space-json-change': (_, space, number) ->
-      oldDefsJson = JSON.stringify(space.defs, null, '  ')
-      if(oldDefsJson != space.defsJson)
-        @set("spaces[#{number}].defsJsonChanged", true)
-      return
-
-    'ntb-size-change': (_, space) ->
-      @initNetTangoForSpace(space)
-      return
   }
 
   recompile: () ->
@@ -76,50 +32,6 @@ window.RactiveNetTangoDefs = Ractive.extend({
     spaceCodes = for space, _ in spaces
       "; Code for #{space.name}\n#{NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')}".trim()
     spaceCodes.join("\n\n")
-
-  addBlockToSpace: (spaceNumber, block) ->
-    spaces = @get('spaces')
-    space = spaces[spaceNumber]
-    if(not space?) then console.error('ah geeze')
-    space.defs.blocks.push(block)
-    @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
-    @initNetTangoForSpace(space)
-    return
-
-  updateBlock: (spaceNumber, blockNumber, block) ->
-    spaces = @get('spaces')
-    space = spaces[spaceNumber]
-    if(not space?) then console.error('ah geeze')
-    space.defs.blocks[blockNumber] = block
-    @set("spaces[#{spaceNumber}].defsJson", JSON.stringify(space.defs, null, '  '))
-    @initNetTangoForSpace(space)
-    return
-
-  initNetTangoForSpace: (space) ->
-    ntId = space.spaceId + "-canvas"
-    # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes each init.
-    canvas = document.getElementById(ntId)
-    canvas.height = space.height
-    canvas.width = space.width
-    NetTango.init(ntId, space.defs)
-    # canvas.style = "height: #{space.height}px; width: #{space.width}px"
-    return
-
-  createModifyMenuContent: (spaceNumber) ->
-    space = @get('spaces')[spaceNumber]
-    dele = { eventName: 'ntb-delete-block', name: 'delete' }
-    edit = { eventName: 'ntb-edit-block', name: 'edit' }
-    items = for def, num in space.defs.blocks
-      itemDele = Object.assign({ data: num }, dele)
-      itemEdit = Object.assign({ data: num }, edit)
-      {
-        name:  def.action
-        items: [itemDele, itemEdit]
-      }
-    {
-      name: "_",
-      items: items
-    }
 
   expressionDefaults: () ->
     return [
@@ -150,6 +62,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
     space = {
         id:                id
       , spaceId:           spaceId
+      , spaceNumber:       @get('nextId')
       , name:              "Block Space #{id}"
       , width:             215
       , height:            250
@@ -163,54 +76,31 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
     @push('spaces', space)
     @set('nextId', id + 1)
-    @initNetTangoForSpace(space)
-    at = @
-    NetTango.onProgramChanged(space.spaceId + "-canvas", (id) ->
-      at.fire('ntb-code-change')
-      return
-    )
     return space
 
   data: () -> {
-    playMode:           false,
-    nextId:             0,
-    spaces:             [],
-    lastCompiledCode:   "",
-    codeIsDirty:        false,
-    confirmDelete:      false
+    playMode:         false,
+    nextId:           0,
+    spaces:           [],
+    lastCompiledCode: "",
+    codeIsDirty:      false,
+    popupmenu:        null,
+    blockEditForm:    null
   }
 
   components: {
-    labelledInput: RactiveLabelledInput
+    tangoSpace:    RactiveNetTangoSpace
+    blockEditForm: RactiveNetTangoBlockForm
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
+    <blockEditForm parentClass="ntb-container" horizontalOffset="{{ 0.5 }}" verticalOffset="{{ 0.25 }}" />
+
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}
-        <div class="ntb-block-def">
-          <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
-          {{# !playMode }}
-          <div class="ntb-block-defs-controls" >
-            <button id="add-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', spaceNum ]">Add Block ▼</button>
-            <button id="modify-block-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-show-block-modify', spaceNum ]">Modify Block ▼</button>
-            <button id="delete-space-button-{{spaceNum}}" class="ntb-button" on-click="[ 'ntb-confirm-delete', spaceNum ]" >Delete Block Space</button>
-            <labelledInput id="width-{{spaceNum}}" name="width" type="number" value="{{ width }}" label="Width" />
-            <labelledInput id="height-{{spaceNum}}" name="height" type="number" value="{{ height }}" label="Height" />
-          </div>
-          {{/}}
-          <div class="nt-container" id="{{ spaceId }}" >
-            <canvas id="{{ spaceId }}-canvas" class="nt-canvas" />
-          </div>
-          {{# !playMode }}
-          <div class="ntb-block-defs-controls">
-            <label for="{{ spaceId }}-json">Block Definition JSON</label>
-            <button class="ntb-button" on-click="[ 'ntb-apply-json-to-space', this, spaceNum ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
-          </div>
-          <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change', this, spaceNum ]" lazy />
-          {{/}}
-        </div>
+        <tangoSpace space="{{ this }}" popupmenu="{{ popupmenu }}" blockEditForm="{{ blockEditForm }}" />
       {{/spaces }}
     </div>
     <label for="ntb-code">NetLogo Code</label>

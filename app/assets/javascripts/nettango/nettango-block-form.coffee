@@ -10,7 +10,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   on: {
 
     'submit': (_) ->
-      @fire(@get('submitEvent'), @get('spaceNumber'), @getBlock(), @get('blockNumber'))
+      target = @get('target')
+      target.fire(@get('submitEvent'), @get('spaceNumber'), @getBlock(), @get('blockNumber'))
       # Reset the "working" block to have new values in case it isn't reset before next open
       @set('block', NetTangoBlockDefaults.blocks.items[0].items[0])
       return
@@ -55,6 +56,16 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       block.params = []
     @set('block', block)
     return
+
+  show: (target, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent) ->
+    @set('target', target)
+    @set('spaceName', spaceName)
+    @set('spaceNumber', spaceNumber)
+    @set('block', block)
+    @set('blockNumber', blockNumber)
+    @set('submitLabel', submitLabel)
+    @set('submitEvent', submitEvent)
+    @fire('show-yourself')
 
   # this does something useful for widgets, but not for us, I think?
   genProps: (_) ->
