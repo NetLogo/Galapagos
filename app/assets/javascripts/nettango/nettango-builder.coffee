@@ -44,47 +44,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
-    '*.ntb-create-block': (_, spaceNumber, blockBase) ->
-      block = NetTangoBlockDefaults.copyBlock(blockBase)
-      @showBlockForm(spaceNumber, "Add New Block", "ntb-new-block-added", block)
-      return
-
-    '*.ntb-edit-block': (_, spaceNumber, blockNumber) ->
-      @set('blockEditor.blockNumber', blockNumber)
-      space = @findComponent('tangoDefs').get('spaces')[spaceNumber]
-      block = space.defs.blocks[blockNumber]
-      @showBlockForm(spaceNumber, "Update Block", "ntb-block-updated", block)
-      return
-
-    'blockEditForm.ntb-new-block-added': (_, spaceNumber, block) ->
-      @findComponent('tangoDefs').addBlockToSpace(spaceNumber, block)
-      return
-
-    'blockEditForm.ntb-block-updated': (_, spaceNumber, block, blockNumber) ->
-      @findComponent('tangoDefs').updateBlock(spaceNumber, blockNumber, block)
-      return
-
   }
-
-  showBlockForm: (spaceNumber, label, event, block) ->
-    @set('blockEditor.submitLabel', label)
-    @set('blockEditor.submitEvent', event)
-    @set('blockEditor.spaceNumber', spaceNumber)
-    form = @findComponent('blockEditForm')
-    form.setBlock(block)
-    form.fire('show-yourself')
-    overlay = document.querySelector('.widget-edit-form-overlay')
-    overlay.style.height   = "100%"
-    overlay.style.width    = "100%"
-    overlay.style.top      = 0
-    overlay.style.left     = 0
-    overlay.style.position = "absolute"
-    overlay.style.display  = "block"
-    return
 
   components: {
     tangoDefs:     RactiveNetTangoDefs
-    blockEditForm: RactiveNetTangoBlockForm
   }
 
   data: () -> {
@@ -241,17 +204,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   setPopupMenu: (popupmenu) ->
     @popupmenu = popupmenu
-    defsComponent = @findComponent('tangoDefs')
-    defsComponent.popupmenu = popupmenu
+    @set('popupmenu', popupmenu)
     return
 
   template:
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-container" style="position: relative;">
-
-      <blockEditForm visible="{{ blockEditor.show }}" spaceNumber="{{ blockEditor.spaceNumber }}" blockNumber="{{ blockEditor.blockNumber }}" parentClass="ntb-container"
-        horizontalOffset="{{ 0.5 }}" verticalOffset="{{ 0.25 }}" submitLabel="{{ blockEditor.submitLabel }}" submitEvent="{{ blockEditor.submitEvent }}" />
 
       <div class="ntb-controls">
         {{# !playMode }}
@@ -266,7 +225,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         </div>
         {{/}}
 
-        <tangoDefs id="ntb-defs" playMode={{ playMode }} />
+        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupmenu={{ popupmenu }} />
 
         {{# !playMode }}
           <ul style-list-style="none">
