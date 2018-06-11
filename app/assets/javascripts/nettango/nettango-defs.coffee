@@ -100,7 +100,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}
-        <tangoSpace space="{{ this }}" popupmenu="{{ popupmenu }}" blockEditForm="{{ blockEditForm }}" />
+        <tangoSpace space="{{ this }}" playMode="{{ playMode }}" popupmenu="{{ popupmenu }}" blockEditForm="{{ blockEditForm }}" />
       {{/spaces }}
     </div>
     <label for="ntb-code">NetLogo Code</label>
