@@ -21,7 +21,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @get('popupmenu').popup(@, pageX, pageY, modifyMenu, space.id)
       return false
 
-    '*.ntb-delete-block': (_, space, blockNumber) ->
+    '*.ntb-delete-block': (_, spaceNumber, blockNumber) ->
+      space = @get('space')
       space.defs.blocks.splice(blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @initNetTangoForSpace(space)
