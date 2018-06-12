@@ -47,7 +47,9 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , def:  "10"
   }
 
-  setBlock: (block) ->
+  _setBlock: (sourceBlock) ->
+    # Copy so we drop any uncommitted changes
+    block = NetTangoBlockDefaults.copyBlock(sourceBlock)
     if block.params?
       block.params.filter((p) -> p.type is 'select' and p['values']).forEach((p) ->
         p['valuesString'] = p['values'].join(';')
@@ -58,10 +60,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     return
 
   show: (target, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent) ->
+    @_setBlock(block)
     @set('target', target)
     @set('spaceName', spaceName)
     @set('spaceNumber', spaceNumber)
-    @set('block', block)
     @set('blockNumber', blockNumber)
     @set('submitLabel', submitLabel)
     @set('submitEvent', submitEvent)
