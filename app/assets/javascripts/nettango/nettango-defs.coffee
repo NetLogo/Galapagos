@@ -64,8 +64,8 @@ window.RactiveNetTangoDefs = Ractive.extend({
       , spaceId:           spaceId
       , spaceNumber:       @get('nextId')
       , name:              "Block Space #{id}"
-      , width:             215
-      , height:            250
+      , width:             430
+      , height:            500
       , defs:              defs
       , defsJson:          JSON.stringify(defs, null, '  ')
       , defsJsonChanged:   false
