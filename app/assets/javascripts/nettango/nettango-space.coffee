@@ -81,6 +81,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     '*.ntb-block-updated': (_, spaceNumber, block, blockNumber) ->
       space = @get('space')
+      space.defs.blocks[blockNumber] = block
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @initNetTangoForSpace(space)
       return
@@ -89,7 +90,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   showBlockForm: (spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
-    form.setBlock(block)
     form.show(@, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent)
     overlay = document.querySelector('.widget-edit-form-overlay')
     overlay.style.height   = "100%"
