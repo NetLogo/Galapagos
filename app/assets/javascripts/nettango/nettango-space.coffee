@@ -91,6 +91,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
     form = @get('blockEditForm')
     form.setBlock(block)
     form.show(@, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent)
+    overlay = document.querySelector('.widget-edit-form-overlay')
+    overlay.style.height   = "100%"
+    overlay.style.width    = "100%"
+    overlay.style.top      = 0
+    overlay.style.left     = 0
+    overlay.style.position = "absolute"
+    overlay.style.display  = "block"
     return
 
   initNetTangoForSpace: (space) ->
