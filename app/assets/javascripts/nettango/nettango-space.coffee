@@ -164,8 +164,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
         <button id="add-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
         <button id="modify-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-modify', this ]">Modify Block ▼</button>
         <button id="delete-space-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
-        <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" />
-        <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" />
+        <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
+        <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
       </div>
       {{/}}
       <div class="nt-container" id="{{ spaceId }}" >
