@@ -13,15 +13,15 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
-      @get('popupmenu').popup(@, pageX, pageY, NetTangoBlockDefaults.blocks, space.id)
+      @get('popupmenu').popup(@, pageX, pageY, NetTangoBlockDefaults.blocks)
       return false
 
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       modifyMenu = @createModifyMenuContent(space)
-      @get('popupmenu').popup(@, pageX, pageY, modifyMenu, space.id)
+      @get('popupmenu').popup(@, pageX, pageY, modifyMenu)
       return false
 
-    '*.ntb-delete-block': (_, spaceNumber, blockNumber) ->
+    '*.ntb-delete-block': (_, blockNumber) ->
       space = @get('space')
       space.defs.blocks.splice(blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
@@ -60,26 +60,26 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @initNetTangoForSpace(space)
       return
 
-    '*.ntb-show-create-block-form': (_, spaceNumber, blockBase) ->
+    '*.ntb-show-create-block-form': (_, blockBase) ->
       space = @get('space')
       block = NetTangoBlockDefaults.copyBlock(blockBase)
-      @showBlockForm(space.name, spaceNumber, block, null, "Add New Block", "ntb-block-added")
+      @showBlockForm(space.name, block, null, "Add New Block", "ntb-block-added")
       return
 
-    '*.ntb-block-added': (_, spaceNumber, block) ->
+    '*.ntb-block-added': (_, block) ->
       space = @get('space')
       space.defs.blocks.push(block)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @initNetTangoForSpace(space)
       return
 
-    '*.ntb-show-edit-block-form': (_, spaceNumber, blockNumber) ->
+    '*.ntb-show-edit-block-form': (_, blockNumber) ->
       space = @get('space')
       block = space.defs.blocks[blockNumber]
-      @showBlockForm(space.name, spaceNumber, block, blockNumber, "Update Block", "ntb-block-updated")
+      @showBlockForm(space.name, block, blockNumber, "Update Block", "ntb-block-updated")
       return
 
-    '*.ntb-block-updated': (_, spaceNumber, block, blockNumber) ->
+    '*.ntb-block-updated': (_, block, blockNumber) ->
       space = @get('space')
       space.defs.blocks[blockNumber] = block
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
@@ -88,9 +88,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   }
 
-  showBlockForm: (spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent) ->
+  showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
-    form.show(@, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent)
+    form.show(@, spaceName, block, blockNumber, submitLabel, submitEvent)
     overlay = document.querySelector('.widget-edit-form-overlay')
     overlay.style.height   = "100%"
     overlay.style.width    = "100%"

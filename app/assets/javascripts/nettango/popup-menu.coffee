@@ -8,9 +8,14 @@ window.RactivePopupMenu = Ractive.extend({
 
   on: {
 
-    'exec': (_, eventName, data) ->
-      target = @get('target')
-      target.fire(eventName ? @get('content').eventName, @get('tag'), data)
+    'exec': (_, eventName, itemData) ->
+      target   = @get('target')
+      event    = eventName ? @get('content').eventName
+      menuData = @get('menuData')
+      if (menuData?)
+        target.fire(event, {}, menuData, itemData)
+      else
+        target.fire(event, {}, itemData)
       return
 
     'popup-submenu': ({ event: { pageX, pageY } }, item, itemNum) ->
@@ -20,12 +25,12 @@ window.RactivePopupMenu = Ractive.extend({
 
   }
 
-  popup: (target, left, top, content, tag) ->
+  popup: (target, left, top, content, menuData) ->
     maxLevel = @_markContent(content)
     submenus = for num in [1..maxLevel]
       { style: "display: none;" }
     @set('submenus', submenus)
-    @set('tag', tag)
+    @set('menuData', menuData)
     @set('content', content)
     @set('target', target)
     @_updatePosition(left, top, 'style')
@@ -61,7 +66,7 @@ window.RactivePopupMenu = Ractive.extend({
     visible:   false,
     target:    undefined,
     content:   undefined,
-    tag:       undefined,
+    menuData:  undefined,
     style:     'display: none;'
     submenus:  []
   }
