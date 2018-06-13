@@ -1,7 +1,6 @@
 window.RactiveNetTangoBlockForm = EditForm.extend({
   data: () -> {
     spaceName:   undefined # String
-    spaceNumber: undefined # String
     block:       undefined # Block
     blockNumber: undefined # Integer
     submitEvent: undefined # String
@@ -11,9 +10,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
     'submit': (_) ->
       target = @get('target')
-      target.fire(@get('submitEvent'), @get('spaceNumber'), @getBlock(), @get('blockNumber'))
-      # Reset the "working" block to have new values in case it isn't reset before next open
-      @set('block', NetTangoBlockDefaults.blocks.items[0].items[0])
+      target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
       return
 
     'ntb-add-parameter': (_) ->
@@ -59,11 +56,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     @set('block', block)
     return
 
-  show: (target, spaceName, spaceNumber, block, blockNumber, submitLabel, submitEvent) ->
+  show: (target, spaceName, block, blockNumber, submitLabel, submitEvent) ->
     @_setBlock(block)
     @set('target', target)
     @set('spaceName', spaceName)
-    @set('spaceNumber', spaceNumber)
     @set('blockNumber', blockNumber)
     @set('submitLabel', submitLabel)
     @set('submitEvent', submitEvent)
