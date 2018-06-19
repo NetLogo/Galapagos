@@ -38,14 +38,14 @@ body#ntp-body, html#ntp-body {
   align-items: center;
 }
 
-.ntb-block-defs-controls label {
+.ntb-block-defs-controls > div > label {
   display: block;
   width: 100%;
   font-size: 13px;
   text-align: center;
 }
 
-.ntb-block-defs-controls input {
+.ntb-block-defs-controls input[type="number"] {
   font-size: 13px;
   height: auto;
   margin: 0.1em;
