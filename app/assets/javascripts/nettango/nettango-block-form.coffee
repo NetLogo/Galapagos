@@ -13,13 +13,13 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
       return
 
-    'ntb-add-parameter': (_) ->
-      num = @get('block.params.length')
-      @push('block.params', @defaultParam(num))
+    'ntb-add-p-thing': (_, pType) ->
+      num = @get("block.#{pType}.length")
+      @push("block.#{pType}", @defaultParam(pType, num))
       return false
 
-    '*.ntb-delete-parameter': (_, num) ->
-      @splice('block.params', num, 1)
+    '*.ntb-delete-p-thing': (_, pType, num) ->
+      @splice("block.#{pType}", num, 1)
       return false
 
   }
@@ -37,8 +37,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , parameter:     RactiveNetTangoParameter
   }
 
-  defaultParam: (num) -> {
-      name: "param#{num}"
+  defaultParam: (pType, num) -> {
+      name: "#{pType}#{num}"
     , type: "num"
     , unit: undefined
     , def:  "10"
@@ -47,12 +47,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   _setBlock: (sourceBlock) ->
     # Copy so we drop any uncommitted changes
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
-    if block.params?
-      block.params.filter((p) -> p.type is 'select' and p['values']).forEach((p) ->
-        p['valuesString'] = p['values'].join(';')
-      )
-    else
-      block.params = []
     @set('block', block)
     return
 
@@ -80,19 +74,25 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     if blockValues.control
       block['clauses'] = []
 
-    block.params = for paramValues in blockValues.params
-      param = { }
-      [ 'name', 'unit', 'type' ].forEach((f) -> param[f] = paramValues[f])
-      # Using `default` as a property name gives Ractive some issues, so we "translate" it back here.
-      param['default'] = paramValues['def']
-      # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
-      if paramValues.type is 'range'
-        [ 'min', 'max', 'step' ].forEach((f) -> param[f] = paramValues[f])
-      else if paramValues.type is 'select'
-        param['values'] = paramValues['valuesString'].split(/\s*;\s*|\n/).filter((s) -> s != "")
-      param
+    block.params     = @processPThings(blockValues.params)
+    block.properties = @processPThings(blockValues.properties)
 
     block
+
+  processPThings: (pThings) ->
+    pCopies = for pValues in pThings
+      pThing = { }
+      [ 'name', 'unit', 'type' ].forEach((f) -> pThing[f] = pValues[f])
+      # Using `default` as a property name gives Ractive some issues, so we "translate" it back here.
+      pThing.default = pValues.def
+      # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
+      if pValues.type is 'range'
+        [ 'min', 'max', 'step' ].forEach((f) -> pThing[f] = pValues[f])
+      else if pValues.type is 'select'
+        pThing.values = pValues.valuesString.split(/\s*;\s*|\n/).filter((s) -> s isnt "")
+      pThing
+
+    pCopies
 
   partials: {
 
@@ -113,7 +113,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <labelledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" label="Format" style="flex-grow: 1;" />
+      <labelledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" label="Code Format ({#} for param, {P#} for property)" style="flex-grow: 1;" />
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
         <formCheckbox id="{{ id }}-start" isChecked={{ start }} labelText="Start Block" name="startblock" />
@@ -136,11 +136,21 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Parameters</label>
-          <button class="ntb-button" on-click="ntb-add-parameter">Add Parameter</button>
+          <button class="ntb-button" on-click="[ 'ntb-add-p-thing', 'params' ]">Add Parameter</button>
         </div>
         {{#params:number }}
-          <parameter number="{{ number }}" p="{{ this }}" />
+          <parameter number="{{ number }}" p="{{ this }}" pType="params" />
         {{/params }}
+      </div>
+
+      <div class="flex-column" >
+        <div class="ntb-block-defs-controls">
+          <label>Block Properties</label>
+          <button class="ntb-button" on-click="[ 'ntb-add-p-thing', 'properties' ]">Add Property</button>
+        </div>
+        {{#properties:number }}
+          <parameter number="{{ number }}" p="{{ this }}" pType="properties" />
+        {{/properties }}
       </div>
 
       {{/block }}
