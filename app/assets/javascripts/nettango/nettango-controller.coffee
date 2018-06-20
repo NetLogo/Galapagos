@@ -69,7 +69,7 @@ class window.NetTangoController
   onModelLoad: () =>
     @builder = @ractive.findComponent('tangoBuilder')
     nt       = @storage.inProgress
-    if (nt? && !@playMode && @firstLoad)
+    if (nt? and not @playMode and @firstLoad)
       @builder.load(nt)
       @firstLoad = false
     else
@@ -116,7 +116,7 @@ class window.NetTangoController
   # (String) => Unit
   exportNetTango: (target) ->
     nlogoRes = modelContainer.contentWindow.session.getNlogo()
-    if(!nlogoRes.success)
+    if(not nlogoRes.success)
       throw new Error("Unable to get existing NetLogo code for replacement")
 
     # need to strip any "in-progress" blocks that have been setup and recompile before we get this code

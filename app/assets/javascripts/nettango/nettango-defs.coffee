@@ -7,7 +7,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
     '*.ntb-code-change': (_) ->
       lastCode    = @get('lastCode')
       newCode     = @assembleCode()
-      codeIsDirty = lastCode != newCode
+      codeIsDirty = lastCode isnt newCode
       @set('codeIsDirty', codeIsDirty)
       @set('code', newCode)
       if codeIsDirty
