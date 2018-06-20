@@ -35,7 +35,7 @@
           val DocsLabel    = TopLabel("docs"                                               , "Documentation")
           val NetLogoLink  = TopLink ("netlogo"     , "http://ccl.northwestern.edu/netlogo", "About NetLogo")
 
-          Html(Seq(LaunchLink, UpdatesLink, DocsLabel, NetLogoLink).map {
+          Html(Seq(NetTangoLink, LaunchLink, UpdatesLink, DocsLabel, NetLogoLink).map {
 
             case TopLabel(id, text) =>
               val baseClasses = "topbar-quick-link topbar-text topbar-label topbar-link brand"
