@@ -118,7 +118,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   checkForDirtyCss: () ->
     lastCss  = @get('lastCss')
     extraCss = @get('extraCss')
-    @set('extraCssIsDirty', lastCss != extraCss)
+    @set('extraCssIsDirty', lastCss isnt extraCss)
 
   getNetTangoBuilderData: () ->
     spaces = @findComponent('tangoDefs').get('spaces')
@@ -144,7 +144,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     # we use a fancy "CSS Injection" technique to get styles applied to the model iFrame.
     styleElement = @get('findElement')('ntb-injected-style')
 
-    if (!styleElement)
+    if (not styleElement)
       styleElement    = @get('createElement')('style')
       styleElement.id = 'ntb-injected-style'
       @get('appendElement')(styleElement)
@@ -160,7 +160,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     newCss     = ''
     tabOptions = @get('tabOptions')
     for name, option of tabOptions
-      if(option.checked and option.checkedCssBuild != '')
+      if(option.checked and option.checkedCssBuild isnt '')
         newCss = "#{newCss}\n#{if (forExport) then option.checkedCssExport else option.checkedCssBuild}"
 
     newCss   = "#{newCss}\n#{extraCss}"
@@ -196,7 +196,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     defsComponent.set('lastCode', '')
     defsComponent.set('codeIsDirty', false)
 
-    if(!@get('playMode') and ntData.code?)
+    if(not @get('playMode') and ntData.code?)
       @fire('ntb-netlogo-code-change', ntData.title, ntData.code)
 
     @refreshCss()

@@ -51,7 +51,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     'ntb-space-json-change': (_, space) ->
       oldDefsJson = JSON.stringify(space.defs, null, '  ')
-      if(oldDefsJson != space.defsJson)
+      if(oldDefsJson isnt space.defsJson)
         @set("spaces[#{number}].defsJsonChanged", true)
       return
 
