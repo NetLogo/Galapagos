@@ -1,12 +1,23 @@
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
-  copy.params = []
-  if block.params?.length > 0
-    block.params.forEach((param) ->
-      paramCopy = Object.assign({ }, param)
-      copy.params.push(paramCopy)
-    )
-  return copy
+
+  copyPThings = (b, pThings) ->
+    if b[pThings]?
+      b[pThings].map( (pThing) ->
+        pThing['def'] = pThing['default']
+        pCopy = Object.assign({ }, pThing)
+        if pThing.type is 'select'
+          pCopy.values = pThing.values.slice()
+          pCopy.valuesString = pCopy.values.join(';')
+        pCopy
+      )
+    else
+      []
+
+  copy.params     = copyPThings(block, 'params')
+  copy.properties = copyPThings(block, 'properties')
+
+  copy
 
 createCommand = (overrides) ->
   command = {
@@ -24,6 +35,7 @@ createCommand = (overrides) ->
     , fontSize:    12
     , fontFace:    "'Poppins', sans-serif"
     , params:      []
+    , properties:  []
   }
   if overrides?
     Object.assign(command, overrides)
@@ -56,6 +68,7 @@ blocks = {
             , fontSize:    12
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
+            , properties:  []
           }
         },
         {
@@ -75,6 +88,7 @@ blocks = {
             , fontSize:    12
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
+            , properties:  []
           }
         }
       ]
@@ -99,6 +113,7 @@ blocks = {
             , fontSize:    12
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
+            , properties:  []
           }
         },
         {
@@ -236,7 +251,7 @@ blocks = {
           data: createCommand({
             , action: "random color"
             , format: "set color random {0}"
-            , params: [ {
+            , properties: [ {
                 type: "range",
                 min:  0,
                 max:  155,
