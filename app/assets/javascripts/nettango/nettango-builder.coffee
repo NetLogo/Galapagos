@@ -175,26 +175,19 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     newCss
 
   load: (ntData) ->
-    # load spaces and block definitions
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
     for spaceVals in (ntData.spaces ? [])
       defsComponent.createSpace(spaceVals)
 
-    # load tab options
     tabOptions = @get('tabOptions')
     for key, prop of (ntData.tabOptions ? { })
       if tabOptions.hasOwnProperty(key)
         @set("tabOptions.#{key}.checked", prop)
 
-    # load other properties
     for propName in [ 'extraCss' ]
       if ntData.hasOwnProperty(propName)
         @set(propName, ntData[propName])
-
-    defsComponent.set('code', '')
-    defsComponent.set('lastCode', '')
-    defsComponent.set('codeIsDirty', false)
 
     if(not @get('playMode') and ntData.code?)
       @fire('ntb-netlogo-code-change', ntData.title, ntData.code)
