@@ -3,7 +3,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     'complete': (_) ->
       space = @get('space')
-      @initNetTangoForSpace(space)
+      @initNetTango(space)
       at = @
       NetTango.onProgramChanged(space.spaceId + "-canvas", (id) ->
         at.fire('ntb-code-change')
@@ -25,7 +25,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       space.defs.blocks.splice(blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @initNetTangoForSpace(space)
+      @updateNetTango(space)
       return
 
     'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
@@ -46,7 +46,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
       @set("spaces[#{number}].defs", newDefs)
-      @initNetTangoForSpace(space)
+      @updateNetTango(space)
       return
 
     'ntb-space-json-change': (_, space) ->
@@ -57,7 +57,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     '*.ntb-size-change': (_) ->
       space = @get('space')
-      @initNetTangoForSpace(space)
+      @updateNetTango(space)
       return
 
     '*.ntb-show-create-block-form': (_, blockBase) ->
@@ -70,7 +70,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       space.defs.blocks.push(block)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @initNetTangoForSpace(space)
+      @updateNetTango(space)
       return
 
     '*.ntb-show-edit-block-form': (_, blockNumber) ->
@@ -83,7 +83,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       space.defs.blocks[blockNumber] = block
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @initNetTangoForSpace(space)
+      @updateNetTango(space)
       return
 
   }
@@ -100,13 +100,22 @@ window.RactiveNetTangoSpace = Ractive.extend({
     overlay.style.display  = "block"
     return
 
-  initNetTangoForSpace: (space) ->
+  initNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
-    # Not a huge fan of this, but the Ractive data binding isn't doing the job and NetTango resets the sizes each init.
     canvas = document.getElementById(ntId)
     canvas.height = space.height
     canvas.width = space.width
     NetTango.init(ntId, space.defs)
+    return
+
+  updateNetTango: (space) ->
+    ntId = space.spaceId + "-canvas"
+    old = NetTango.save(ntId)
+    NetTango.restore(ntId, {
+      blocks:      space.defs.blocks,
+      expressions: space.defs.expressions,
+      program:     old.program
+    })
     return
 
   createModifyMenuContent: (space) ->
