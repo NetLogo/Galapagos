@@ -4,9 +4,11 @@ window.RactiveNetTangoDefs = Ractive.extend({
     'complete': (_) ->
       blockEditForm = @findComponent('blockEditForm')
       @set('blockEditForm', blockEditForm)
+      return
 
-    '*.ntb-code-change': (_) ->
-      @updateCode()
+    '*.ntb-code-change': (_, ntCanvasId, isInitialLoad) ->
+      @updateCode(isInitialLoad)
+      return
 
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       @splice('spaces', spaceNumber, 1)
@@ -14,14 +16,17 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
   }
 
-  updateCode: () ->
+  updateCode: (isInitialLoad) ->
     lastCode    = @get('lastCode')
     newCode     = @assembleCode()
     codeIsDirty = lastCode isnt newCode
     @set('codeIsDirty', codeIsDirty)
     @set('code', newCode)
     if codeIsDirty
-      @fire('ntb-code-dirty')
+      if isInitialLoad
+        @set('lastCode', newCode)
+      else
+        @fire('ntb-code-dirty')
     return
 
   recompile: () ->
