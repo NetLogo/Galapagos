@@ -1,24 +1,28 @@
 window.RactiveNetTangoDefs = Ractive.extend({
   on: {
+
     'complete': (_) ->
       blockEditForm = @findComponent('blockEditForm')
       @set('blockEditForm', blockEditForm)
 
     '*.ntb-code-change': (_) ->
-      lastCode    = @get('lastCode')
-      newCode     = @assembleCode()
-      codeIsDirty = lastCode isnt newCode
-      @set('codeIsDirty', codeIsDirty)
-      @set('code', newCode)
-      if codeIsDirty
-        @fire('ntb-code-dirty')
-      return
+      @updateCode()
 
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       @splice('spaces', spaceNumber, 1)
       return
 
   }
+
+  updateCode: () ->
+    lastCode    = @get('lastCode')
+    newCode     = @assembleCode()
+    codeIsDirty = lastCode isnt newCode
+    @set('codeIsDirty', codeIsDirty)
+    @set('code', newCode)
+    if codeIsDirty
+      @fire('ntb-code-dirty')
+    return
 
   recompile: () ->
     ntbCode = @assembleCode()
@@ -30,7 +34,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
   assembleCode: () ->
     spaces = @get('spaces')
     spaceCodes = for space, _ in spaces
-      "; Code for #{space.name}\n#{NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')}".trim()
+      "; Code for #{space.name}\n#{space.netLogoCode}".trim()
     spaceCodes.join("\n\n")
 
   expressionDefaults: () ->

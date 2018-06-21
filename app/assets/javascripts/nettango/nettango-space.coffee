@@ -4,11 +4,14 @@ window.RactiveNetTangoSpace = Ractive.extend({
     'complete': (_) ->
       space = @get('space')
       @initNetTango(space)
+      space.netLogoCode = NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')
       at = @
-      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntId) ->
-        at.fire('ntb-code-change', {}, ntId)
+      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntCanvasId) ->
+        space.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
+        at.fire('ntb-code-change', {}, ntCanvasId)
         return
       )
+      @fire('ntb-code-change', {}, space.spaceId + "-canvas")
       return
 
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
@@ -28,8 +31,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
-    'ntb-code-change': (_, ntId) ->
-      netTangoData = NetTango.save(ntId)
+    'ntb-code-change': (_, ntCanvasId) ->
+      netTangoData = NetTango.save(ntCanvasId)
       @set('space.defs.program', netTangoData.program)
       return
 
@@ -160,7 +163,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   data: () -> {
     playMode:      false,
-    space:         [],
+    space:         null,
+    netLogoCode:   "",
     blockEditForm: null
   }
 
