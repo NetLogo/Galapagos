@@ -94,7 +94,7 @@ class window.NetTangoController
   @replaceNetTangoCode: (oldCode, builderCode) ->
     BEGIN = "; --- NETTANGO BEGIN ---"
     END   = "; --- NETTANGO END ---"
-    builderCode = "\n#{BEGIN}\n\n#{builderCode}\n\n#{END}\n"
+    builderCode = "\n#{BEGIN}\n\n#{builderCode}\n\n#{END}"
     newCode = if (oldCode.indexOf(BEGIN) >= 0)
        oldCode.replace(new RegExp("((?:^|\n)#{BEGIN}\n)([^]*)(\n#{END})"), builderCode)
     else
