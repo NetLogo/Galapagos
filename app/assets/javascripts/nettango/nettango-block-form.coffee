@@ -67,12 +67,15 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
     # coffeelint: disable=max_line_length
-    [ 'action', 'type', 'format', 'start', 'required', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+    [ 'action', 'type', 'format', 'start', 'required', 'control', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
     # coffeelint: enable=max_line_length
     if blockValues.control
-      block['clauses'] = []
+      block.clauses = if blockValues.type is 'nlogo:ifelse'
+        [{ name: "else", action: "else", format: "" }]
+      else
+        []
 
     block.params     = @processPThings(blockValues.params)
     block.properties = @processPThings(blockValues.properties)
