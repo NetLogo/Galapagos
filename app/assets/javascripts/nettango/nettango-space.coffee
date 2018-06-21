@@ -8,10 +8,10 @@ window.RactiveNetTangoSpace = Ractive.extend({
       at = @
       NetTango.onProgramChanged(space.spaceId + "-canvas", (ntCanvasId) ->
         space.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
-        at.fire('ntb-code-change', {}, ntCanvasId)
+        at.fire('ntb-code-change', {}, ntCanvasId, false)
         return
       )
-      @fire('ntb-code-change', {}, space.spaceId + "-canvas")
+      @fire('ntb-code-change', {}, space.spaceId + "-canvas", true)
       return
 
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->

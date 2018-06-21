@@ -119,18 +119,18 @@ class window.NetTangoController
     if(not nlogoRes.success)
       throw new Error("Unable to get existing NetLogo code for replacement")
 
-    # need to strip any "in-progress" blocks that have been setup and recompile before we get this code
-    netTangoData = @getNetTangoBuilderData(nlogoRes.result)
+    netTangoData = @builder.getNetTangoBuilderData()
+    netTangoData.code = nlogoRes.result
     netTangoData.title = modelContainer.contentWindow.session.modelTitle()
 
     # always store for 'storage' target
     @storeNetTangoData(netTangoData)
 
-    if (target is 'json')
-      @exportJSON(netTangoData)
+    if (target is 'storage')
       return
 
-    if (target is 'storage')
+    if (target is 'json')
+      @exportJSON(netTangoData)
       return
 
     # else target is 'standalone'
@@ -185,13 +185,6 @@ class window.NetTangoController
       at.storage.set(prop, netTangoData[prop])
     )
     return
-
-  # (String) => String
-  getNetTangoBuilderData: (oldCode) ->
-    netTangoData = @builder.getNetTangoBuilderData()
-    newCode = NetTangoController.replaceNetTangoCode(oldCode, @builder.getEmptyNetTangoProcedures())
-    netTangoData.code = newCode
-    netTangoData
 
   # (Unit) => Unit
   hideRecompileOverlay: () ->
