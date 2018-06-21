@@ -5,8 +5,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
       at = @
-      NetTango.onProgramChanged(space.spaceId + "-canvas", (id) ->
-        at.fire('ntb-code-change')
+      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntId) ->
+        at.fire('ntb-code-change', {}, ntId)
         return
       )
       return
@@ -28,6 +28,11 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
+    'ntb-code-change': (_, ntId) ->
+      netTangoData = NetTango.save(ntId)
+      @set('space.defs.program', netTangoData.program)
+      return
+
     'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
       delMenu = {
         name: "_"
@@ -41,7 +46,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         ]
       }
       @get('popupmenu').popup(@, pageX, pageY, delMenu, spaceNumber)
-      return false
+      return
 
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
