@@ -72,11 +72,31 @@ blocks = {
           }
         },
         {
-          name: 'nested statement',
+          name: 'nested statement (if)',
           data: {
             , action:      "nested statement"
             , type:        "nlogo:if"
             , format:      "if random 10 < 5"
+            , start:       false
+            , control:     true
+            , required:    false
+            , limit:       undefined
+            , blockColor:  '#8899aa'
+            , textColor:   '#ffffff'
+            , borderColor: '#000000'
+            , fontWeight:  400
+            , fontSize:    12
+            , fontFace:    "'Poppins', sans-serif"
+            , params:      []
+            , properties:  []
+          }
+        },
+        {
+          name: 'nested statement (if-else)',
+          data: {
+            , action:      "nested statement"
+            , type:        "nlogo:ifelse"
+            , format:      "ifelse (random 10 < count turtles)"
             , start:       false
             , control:     true
             , required:    false
