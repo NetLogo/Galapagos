@@ -50,14 +50,14 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
-      @set("spaces[#{number}].defs", newDefs)
+      @set("space.defs", newDefs)
       @updateNetTango(space)
       return
 
     'ntb-space-json-change': (_, space) ->
       oldDefsJson = JSON.stringify(space.defs, null, '  ')
       if(oldDefsJson isnt space.defsJson)
-        @set("spaces[#{number}].defsJsonChanged", true)
+        @set("space.defsJsonChanged", true)
       return
 
     '*.ntb-size-change': (_) ->
