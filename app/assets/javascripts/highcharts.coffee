@@ -140,7 +140,7 @@ class window.HighchartsOps extends PlotOps
     #--Camden Clark (3/27/17)
     #I heard you like hacks, so I put hacks in your hacks.
     #Highcharts uses the same menuItems for all charts, so we have to apply the hack once. - JMB November 2017
-    if(!@_chart.options.exporting.buttons.contextButton.menuItems.popped?)
+    if(not @_chart.options.exporting.buttons.contextButton.menuItems.popped?)
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.popped = true

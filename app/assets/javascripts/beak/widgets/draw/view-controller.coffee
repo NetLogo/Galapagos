@@ -207,7 +207,7 @@ class View
   # Returns the agent being watched, or null.
   watch: (model) ->
     {observer, turtles, links, patches} = model
-    if model.observer.perspective != OBSERVE and observer.targetagent and observer.targetagent[1] >= 0
+    if model.observer.perspective isnt OBSERVE and observer.targetagent and observer.targetagent[1] >= 0
       [type, id] = observer.targetagent
       switch type
         when @turtleType then model.turtles[id]
@@ -219,7 +219,7 @@ class View
   # Returns the agent being followed, or null.
   follow: (model) ->
     persp = model.observer.perspective
-    if persp == FOLLOW or persp == RIDE then @watch(model) else null
+    if persp is FOLLOW or persp is RIDE then @watch(model) else null
 
   # (Number) => Unit
   setZoom: (zoomLevel) ->
@@ -481,7 +481,7 @@ class SpotlightDrawer extends Drawer
       watched = @view.watch(model)
       if watched?
         [xcor, ycor, size] = @dimensions(watched)
-        @drawSpotlight(xcor, ycor,  @adjustSize(size), model.observer.perspective == WATCH)
+        @drawSpotlight(xcor, ycor,  @adjustSize(size), model.observer.perspective is WATCH)
     )
 
 class TurtleDrawer extends Drawer

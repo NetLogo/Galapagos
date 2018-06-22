@@ -35,9 +35,9 @@ window.RactiveConsoleWidget = Ractive.extend({
         newIndex = 0
       else if newIndex > @get('history').length
         newIndex = @get('history').length
-      if @get('historyIndex') == @get('history').length
+      if @get('historyIndex') is @get('history').length
         @set('workingEntry', {agentType: @get('agentType'), input: @get('input')})
-      if newIndex == @get('history').length
+      if newIndex is @get('history').length
         @set(@get('workingEntry'))
       else
         entry = @get('history')[newIndex]
@@ -53,10 +53,10 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set('output', "#{@get('output')}#{agentType}> #{input}\n")
         history = @get('history')
         lastEntry = if history.length > 0 then history[history.length - 1] else {agentType: '', input: ''}
-        if lastEntry.input != input or lastEntry.agentType != agentType
+        if lastEntry.input isnt input or lastEntry.agentType isnt agentType
           history.push({agentType, input})
         @set('historyIndex', history.length)
-        if agentType != 'observer'
+        if agentType isnt 'observer'
           input = "ask #{agentType} [ #{input} ]"
         @fire('run', input)
         @set('input', '')
@@ -90,7 +90,7 @@ window.RactiveConsoleWidget = Ractive.extend({
     )
 
     @observe('input', (newValue) ->
-      if newValue != commandCenterEditor.getValue()
+      if newValue isnt commandCenterEditor.getValue()
         commandCenterEditor.setValue(newValue)
         commandCenterEditor.execCommand('goLineEnd')
     )

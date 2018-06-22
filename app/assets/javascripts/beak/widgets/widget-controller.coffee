@@ -32,7 +32,7 @@ class window.WidgetController
   # () => Unit
   runForevers: ->
     for widget in @widgets()
-      if widget.type == 'button' and widget.forever and widget.running
+      if widget.type is 'button' and widget.forever and widget.running
         widget.run()
     return
 
@@ -178,7 +178,7 @@ updateWidget = (widget) ->
       maxValue  = widget.getMax()
       stepValue = widget.getStep()
       minValue  = widget.getMin()
-      if widget.maxValue != maxValue or widget.stepValue != stepValue or widget.minValue != minValue
+      if widget.maxValue isnt maxValue or widget.stepValue isnt stepValue or widget.minValue isnt minValue
         widget.maxValue  = maxValue
         widget.stepValue = stepValue
         widget.minValue  = minValue - 0.000001

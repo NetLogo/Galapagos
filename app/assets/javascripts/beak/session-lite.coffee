@@ -191,7 +191,7 @@ class window.SessionLite
       window.req = new XMLHttpRequest()
       req.open('GET', standaloneURL)
       req.onreadystatechange = =>
-        if req.readyState == req.DONE
+        if req.readyState is req.DONE
           if req.status is 200
             nlogo = @getNlogo()
             if nlogo.success

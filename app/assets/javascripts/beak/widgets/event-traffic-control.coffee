@@ -103,12 +103,12 @@ window.controlEventTraffic = (controller) ->
         value? and
           switch widget.type
             when 'slider'   then not isNaN(value)
-            when 'inputBox' then not (widget.boxedValue.type == 'Number' and isNaN(value))
+            when 'inputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
             else  true
 
     widget = ractive.get('widgetObj')[widgetNum]
 
-    if widget.variable? and world? and newVal != oldVal and widgetHasValidValue(widget, newVal)
+    if widget.variable? and world? and newVal isnt oldVal and widgetHasValidValue(widget, newVal)
       world.observer.setGlobal(widget.variable, newVal)
 
     return
