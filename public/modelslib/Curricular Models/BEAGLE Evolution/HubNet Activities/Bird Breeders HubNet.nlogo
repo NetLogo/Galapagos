@@ -1284,10 +1284,10 @@ true
 true
 "" ""
 PENS
-"A_1" 1.0 0 -16777216 true "plotxy number-selections frequency-allele-dominant-first-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-first-trait]"
-"B_1" 1.0 0 -3026479 true "plotxy number-selections frequency-allele-dominant-second-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-second-trait]"
-"C_1" 1.0 0 -3889007 true "plotxy number-selections frequency-allele-dominant-third-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-third-trait]"
-"D_1" 1.0 0 -9276814 true "plotxy number-selections frequency-allele-dominant-fourth-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-fourth-trait]"
+"A" 1.0 0 -16777216 true "plotxy number-selections frequency-allele-dominant-first-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-first-trait]"
+"B" 1.0 0 -3026479 true "plotxy number-selections frequency-allele-dominant-second-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-second-trait]"
+"C" 1.0 0 -3889007 true "plotxy number-selections frequency-allele-dominant-third-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-third-trait]"
+"D" 1.0 0 -9276814 true "plotxy number-selections frequency-allele-dominant-fourth-trait" "if new-selection-event-occurred? \n[plotxy number-selections frequency-allele-dominant-fourth-trait]"
 
 PLOT
 20
@@ -2273,7 +2273,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.3
+NetLogo 6.0.4
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

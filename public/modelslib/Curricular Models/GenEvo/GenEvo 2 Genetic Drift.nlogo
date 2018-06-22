@@ -130,6 +130,15 @@ to-report types
 
 end
 
+; to convert the string for export-interface 'date-and-time' command to work on windows machines
+to-report replace-all [target replacement str]
+  let acc str
+  while [position target acc != false] [
+    set acc (replace-item (position target acc) acc replacement)
+  ]
+  report acc
+end
+
 
 ; Copyright 2016 Uri Wilensky.
 ; See Info tab for full copyright and license.
@@ -287,7 +296,7 @@ BUTTON
 440
 58
 save screenshot
-export-interface (word \"GenEvo 2 Genetic Drift \" date-and-time \".png\")
+export-interface (word \"GenEvo 2 Genetic Drift \" (replace-all \":\" \"-\" date-and-time) \".png\")
 NIL
 1
 T
@@ -687,7 +696,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.3
+NetLogo 6.0.4
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
