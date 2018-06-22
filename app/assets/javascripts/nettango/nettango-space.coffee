@@ -118,6 +118,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   updateNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
+    canvas = document.getElementById(ntId)
+    canvas.height = space.height
+    canvas.width = space.width
     old = NetTango.save(ntId)
     NetTango.restore(ntId, {
       blocks:      space.defs.blocks,
