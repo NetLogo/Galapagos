@@ -142,10 +142,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
     canvas.height = space.height
     canvas.width = space.width
     old = NetTango.save(ntId)
+    # NetTango includes "empty" procedures as code with the save, but those cause ghost blocks when we change things
+    # and reload, so we clear them out
+    newChains = old.program.chains.filter((ch) -> ch.length > 1)
     NetTango.restore(ntId, {
       blocks:      space.defs.blocks,
       expressions: space.defs.expressions,
-      program:     old.program
+      program:     { chains: newChains }
     })
     return
 
