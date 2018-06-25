@@ -94,6 +94,26 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
+    '*.ntb-block-up': (_, blockNumber) ->
+      space = @get('space')
+      if (blockNumber > 0)
+        swap = space.defs.blocks[blockNumber - 1]
+        space.defs.blocks[blockNumber - 1] = space.defs.blocks[blockNumber]
+        space.defs.blocks[blockNumber] = swap
+        @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+        @updateNetTango(space)
+      return
+
+    '*.ntb-block-down': (_, blockNumber) ->
+      space = @get('space')
+      if (blockNumber < (space.defs.blocks.length - 1))
+        swap = space.defs.blocks[blockNumber + 1]
+        space.defs.blocks[blockNumber + 1] = space.defs.blocks[blockNumber]
+        space.defs.blocks[blockNumber] = swap
+        @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+        @updateNetTango(space)
+      return
+
   }
 
   showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
@@ -132,12 +152,16 @@ window.RactiveNetTangoSpace = Ractive.extend({
   createModifyMenuContent: (space) ->
     dele = { eventName: 'ntb-delete-block', name: 'delete' }
     edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
+    up = { eventName: 'ntb-block-up', name: 'move up' }
+    dn = { eventName: 'ntb-block-down', name: 'move down' }
     items = for def, num in space.defs.blocks
       itemDele = Object.assign({ data: num }, dele)
       itemEdit = Object.assign({ data: num }, edit)
+      itemUp   = Object.assign({ data: num }, up)
+      itemDn   = Object.assign({ data: num }, dn)
       {
         name:  def.action
-        items: [itemDele, itemEdit]
+        items: [itemDele, itemEdit, itemUp, itemDn]
       }
     {
       name: "_",
