@@ -146,12 +146,12 @@ blocks = {
             , blockColor: '#8899aa'
             , params: [ {
                 type: "range",
-                min:  0,
-                max:  100,
-                step: 0.5,
-                def:  20,
-                unit: "%",
-                name: "percent"
+                min:     0,
+                max:     100,
+                step:    0.5,
+                default: 20,
+                unit:    "%",
+                name:    "percent"
             } ]
           })
         },
@@ -164,9 +164,9 @@ blocks = {
             , control: true
             , blockColor: '#8899aa'
             , params: [ {
-                type: "bool",
-                def:  false,
-                name: "case"
+                type:    "bool",
+                default: false,
+                name:    "case"
             } ]
           })
         }
@@ -181,12 +181,12 @@ blocks = {
             , action: "create turtles"
             , format: "crt {0} [ fd 1 ]"
             , params: [ {
-                type: "range",
-                min:  1,
-                max:  100,
-                step: 1,
-                def:  10,
-                name: "turtles"
+                type:    "range",
+                min:     1,
+                max:     100,
+                step:    1,
+                default: 10,
+                name:    "turtles"
               } ]
           })
         }
@@ -201,12 +201,12 @@ blocks = {
             , action: "forward"
             , format: "fd {0}"
             , params: [ {
-                type: "range",
-                min:  0,
-                max:  3,
-                step: 0.1,
-                def:  1,
-                name: "steps"
+                type:    "range",
+                min:     0,
+                max:     3,
+                step:    0.1,
+                default: 1,
+                name:    "steps"
               } ]
           })
         },
@@ -216,14 +216,14 @@ blocks = {
             , action: "wiggle"
             , format: "left (random {0} - ({0} / 2))"
             , params: [ {
-                type:   "range",
-                min:    0,
-                max:    180,
-                step:   3,
-                def:    30,
-                random: true,
-                name:   "amount",
-                unit:   "°"
+                type:    "range",
+                min:     0,
+                max:     180,
+                step:    3,
+                default: 30,
+                random:  true,
+                name:    "amount",
+                unit:    "°"
             } ]
           })
         },
@@ -270,15 +270,15 @@ blocks = {
           name: "random color",
           data: createCommand({
             , action: "random color"
-            , format: "set color random {0}"
+            , format: "set color random {P0}"
             , properties: [ {
-                type: "range",
-                min:  0,
-                max:  155,
-                step: 1,
-                def:  50,
-                name: "color",
-                unit: ""
+                type:    "range",
+                min:     0,
+                max:     155,
+                step:    1,
+                default: 50,
+                name:    "color",
+                unit:    ""
             } ]
           })
         }
