@@ -2,9 +2,10 @@ window.RactivePopupMenu = Ractive.extend({
 
   # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
   # Content = Item | Items
-  # Items { name: String, eventName: String, items: Array[Content] }
-  # Item { name: String, eventName: String, data: POJO  }
-  # The `eventName` string is optional for an Item - if not given the event on the parent Items will be used
+  # Item    = { name: String, eventName: String, data: POJO  }
+  # Items   = { name: String, eventName: String, items: Array[Content] }
+  # The `eventName` string is optional for an Item - if not given the event on the root `content` will be used
+  # The `menuData` (if sent via the `popup()` method) and the `data` for each item will be passed to the fired event
 
   on: {
 
@@ -18,7 +19,7 @@ window.RactivePopupMenu = Ractive.extend({
         target.fire(event, {}, itemData)
       return
 
-    'popup-submenu': ({ event: { pageX, pageY } }, item, itemNum) ->
+    'popup-submenu': ({ event: { pageX, pageY } }, item) ->
       @set("submenus[#{item.level}].item", item)
       @_updatePosition(pageX, pageY, "submenus[#{item.level}].style")
       return
@@ -48,14 +49,14 @@ window.RactivePopupMenu = Ractive.extend({
     # build a total ID array so we can create a collection of popup menu levels
     # TODO - Maybe require this be explicitly called by someone using the popup-menu
     # instead of tattoing their data without permission
-    maxLevel = 0
     setLevelRec = (item, level) ->
-      if level > maxLevel then maxLevel = level
       item.level = level
-      if item.items
-        item.items.forEach( (item) -> setLevelRec(item, level + 1) )
+      maxLevel = if item.items?
+        Math.max(item.items.map( (item) -> setLevelRec(item, level + 1) )...)
+      else
+        level
+      maxLevel
     setLevelRec(content, 0)
-    return maxLevel
 
   _updatePosition: (left, top, property) ->
     style = "z-index: 1000; position: absolute; left: #{ left + 10 }px; top: #{ top + 2 }px;"
@@ -88,17 +89,17 @@ window.RactivePopupMenu = Ractive.extend({
       </div>
     {{/submenus }}
 
-    {{#partial group }}
-      <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-menu-item"
-        on-mouseover="[ 'popup-submenu', this, itemNum ]">{{ name }} ▶</li>
-    {{/partial}}
-
     {{#partial item }}
       {{#if items }}
         {{> group }}
       {{ else }}
         <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">{{ name }}</li>
       {{/if }}
+    {{/partial}}
+
+    {{#partial group }}
+      <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-menu-item"
+        on-mouseover="[ 'popup-submenu', this ]">{{ name }} ▶</li>
     {{/partial}}
   """
 })
