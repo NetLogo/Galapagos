@@ -20,6 +20,8 @@ class window.NetTangoController
               popupmenu.unpop()
           )
 
+          Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () -> at.exportNetTango('json'))
+
           return
       }
 
@@ -115,13 +117,14 @@ class window.NetTangoController
 
   # (String) => Unit
   exportNetTango: (target) ->
-    nlogoRes = modelContainer.contentWindow.session.getNlogo()
+    content  = modelContainer.contentWindow ? window
+    nlogoRes = content.session.getNlogo()
     if(not nlogoRes.success)
       throw new Error("Unable to get existing NetLogo code for replacement")
 
-    netTangoData = @builder.getNetTangoBuilderData()
-    netTangoData.code = nlogoRes.result
-    netTangoData.title = modelContainer.contentWindow.session.modelTitle()
+    netTangoData       = @builder.getNetTangoBuilderData()
+    netTangoData.code  = nlogoRes.result
+    netTangoData.title = content.session.modelTitle()
 
     # always store for 'storage' target
     @storeNetTangoData(netTangoData)
