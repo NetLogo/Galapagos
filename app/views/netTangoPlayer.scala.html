@@ -262,16 +262,17 @@
       }
 
       var overlay = document.getElementById('model-recompile-overlay')
-      var getModelElementById = (id)          => window.document.getElementById(id)
-      var createElement       = (elementType) => document.createElement(elementType)
-      var appendElement       = (element)     => document.body.appendChild(element)
-      var getWidgetController = ()            => window.session.widgetController
-      var netTango = new NetTangoController(
-        'nettango-options', window.localStorage, overlay, true,
-        setModelCode, getModelElementById, createElement, appendElement, getWidgetController, window.saveAs
-      )
+      var theOutsideWorld = {
+          setModelCode:        setModelCode
+        , getModelElementById: (id)          => window.document.getElementById(id)
+        , createElement:       (elementType) => document.createElement(elementType)
+        , appendElement:       (element)     => document.body.appendChild(element)
+        , getWidgetController: ()            => window.session.widgetController
+        , saveAs:              window.saveAs
+      }
+      var netTango = new NetTangoController('nettango-options', window.localStorage, overlay, true, theOutsideWorld)
 
-      exports.toHTML = markdown.toHTML // TODO - this should not be necessary, but `exports` doesn't exist when we import `markdown-js`
+      exports.toHTML   = markdown.toHTML // TODO - this should not be necessary, but `exports` doesn't exist when we import `markdown-js`
       window.ractive   = netTango.ractive // TODO - decide if thisis necessary
       window.recompile = netTango.recompile
       window.onload    = netTango.onModelLoad

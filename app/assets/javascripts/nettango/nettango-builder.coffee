@@ -20,10 +20,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       return false
 
     '*.ntb-clear-all': (_) ->
-      # TODO - vomit
-      modelContainer = document.getElementById('model-container')
       blankData = {
-          code:       modelContainer.contentWindow.exports.newModel
+          code:       @get('newModel')
         , spaces:     []
         , extraCss:   ""
         , title:      "Blank Model"
@@ -53,6 +51,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   data: () -> {
     # These are the NetTango Builder controlling variables
     playMode:        false,
+    newModel:        undefined,
     lastCss:         "",
     extraCssIsDirty: false,
     blockEditor: {

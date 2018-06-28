@@ -48,6 +48,7 @@
     @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
     @tagBuilder.pathToHTML("lib/mousetrap/mousetrap.js")
     @tagBuilder.pathToHTML("javascripts/keywords.js")
+    @tagBuilder.pathToHTML("javascripts/new-model.js")
     @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
 
     @tagBuilder.pathToHTML("lib/ractive/ractive.js")
@@ -85,9 +86,6 @@
   <script src='@routes.Assets.versioned("lib/jquery/jquery.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("lib/filesaver/FileSaver.js").relative' type="text/javascript"></script>
-  <script>
-    var exports = {};
-  </script>
   <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js").relative'></script>
   <script>
     var modelContainer    = document.getElementById('model-container')
@@ -148,14 +146,16 @@
     })
 
     var overlay = document.getElementById('model-recompile-overlay')
-    var getModelElementById = (id)          => modelContainer.contentWindow.document.getElementById(id)
-    var createElement       = (elementType) => document.createElement(elementType)
-    var appendElement       = (element)     => modelContainer.contentWindow.document.body.appendChild(element)
-    var getWidgetController = ()            => modelContainer.contentWindow.session.widgetController
-    var netTango = new NetTangoController(
-      'nettango-options', window.localStorage, overlay, false,
-      setModelCode, getModelElementById, createElement, appendElement, getWidgetController, window.saveAs
-    )
+    var theOutsideWorld = {
+        setModelCode:        setModelCode
+      , getModelElementById: (id)          => modelContainer.contentWindow.document.getElementById(id)
+      , createElement:       (elementType) => document.createElement(elementType)
+      , appendElement:       (element)     => modelContainer.contentWindow.document.body.appendChild(element)
+      , getWidgetController: ()            => modelContainer.contentWindow.session.widgetController
+      , saveAs:              window.saveAs
+      , newModel:            window.exports.newModel
+    }
+    var netTango = new NetTangoController('nettango-options', window.localStorage, overlay, false, theOutsideWorld)
 
     window.recompile      = netTango.recompile
     modelContainer.onload = netTango.onModelLoad

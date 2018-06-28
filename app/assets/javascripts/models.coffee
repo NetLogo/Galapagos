@@ -1,4 +1,6 @@
-exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
+window.exports = window.exports ? {}
+
+window.exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
 
   PUBLIC_PATH_SEGMENT_LENGTH = "public/".length
 
