@@ -70,7 +70,7 @@
     "level": "ignore"
   },
   "no_stand_alone_at": {
-    "level": "ignore"
+    "level": "error"
   },
   "no_tabs": {
     "level": "error"
