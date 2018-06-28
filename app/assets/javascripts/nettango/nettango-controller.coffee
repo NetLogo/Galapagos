@@ -1,24 +1,21 @@
 class window.NetTangoController
 
-  constructor: (element, localStorage, @overlay, @playMode,
-    @setModelCode, @getModelElementById, @createElement,
-    @appendElement, @getWidgetController, @saveAs
-  ) ->
+  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld) ->
     @firstLoad = true
     @storage = new NetTangoStorage(localStorage)
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
-    @ractive = @createRactive(element, @getModelElementById, @createElement, @appendElement, @playMode)
+    @ractive = @createRactive(element, @theOutsideWorld, @playMode)
     @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @setModelCode(title, code))
+    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @theOutsideWorld.setModelCode(title, code))
     @ractive.on('*.ntb-code-dirty',           (_)              => @enableRecompileOverlay())
     @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
     @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
     @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
     @ractive.on('*.ntb-load-nettango-data',   (_, data)        => @builder.load(data))
 
-  createRactive: (element, getModelElementById, createElement, appendElement, playMode) ->
+  createRactive: (element, theOutsideWorld, playMode) ->
     new Ractive({
       el: element,
 
@@ -38,10 +35,11 @@ class window.NetTangoController
       }
 
       data: () -> {
-        findElement:   getModelElementById,
-        createElement: createElement,
-        appendElement: appendElement,
-        playMode:      playMode
+        findElement:   theOutsideWorld.getModelElementById,
+        createElement: theOutsideWorld.createElement,
+        appendElement: theOutsideWorld.appendElement,
+        newModel:      theOutsideWorld.newModel,
+        playMode:      playMode,
       }
 
       components: {
@@ -58,6 +56,7 @@ class window.NetTangoController
           findElement='{{ findElement }}'
           createElement='{{ createElement }}'
           appendElement='{{ appendElement }}'
+          newModel='{{ newModel }}'
           />
           {{#if !playMode }}
             <testingDefaults />
@@ -80,7 +79,7 @@ class window.NetTangoController
       @builder.load(nt)
       @firstLoad = false
     else
-      netTangoCodeElement = @getModelElementById('ntango-code')
+      netTangoCodeElement = @theOutsideWorld.getModelElementById('ntango-code')
       if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
         data = JSON.parse(netTangoCodeElement.textContent)
         @builder.load(data)
@@ -90,7 +89,7 @@ class window.NetTangoController
 
   # (String) => Unit
   setNetTangoCode: (ntbCode) ->
-    widgets = @getWidgetController()
+    widgets = @theOutsideWorld.getWidgetController()
     oldCode = widgets.code()
     newCode = NetTangoController.replaceNetTangoCode(oldCode, ntbCode)
     widgets.setCode(newCode)
@@ -165,24 +164,24 @@ class window.NetTangoController
     delete netTangoData.code
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
-    styleElement = @getModelElementById('ntb-injected-style')
+    styleElement = @theOutsideWorld.getModelElementById('ntb-injected-style')
     if (styleElement?)
       newElement = exportDom.createElement('style')
       newElement.id = 'ntb-injected-style'
       newElement.innerHTML = @builder.compileCss(true, @builder.get('extraCss'))
       exportDom.head.appendChild(newElement)
 
-    exportWrapper = @createElement('div')
+    exportWrapper = @theOutsideWorld.createElement('div')
     exportWrapper.appendChild(exportDom.documentElement)
     exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
-    @saveAs(exportBlob, 'ntExportTest.html')
+    @theOutsideWorld.saveAs(exportBlob, 'ntExportTest.html')
     return
 
   # (POJO) => Unit
   exportJSON: (netTangoData) ->
     filter = (k, v) -> if (k is 'defsJson') then undefined else v
     jsonBlob = new Blob([JSON.stringify(netTangoData, filter)], { type: 'text/json:charset=utf-8' })
-    @saveAs(jsonBlob, 'ntExportTest.json')
+    @theOutsideWorld.saveAs(jsonBlob, 'ntExportTest.json')
     return
 
   # (POJO) => Unit
