@@ -48,7 +48,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         ]
       }
       @get('popupmenu').popup(this, pageX, pageY, delMenu, spaceNumber)
-      return
+      return false
 
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
