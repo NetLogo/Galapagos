@@ -51,7 +51,7 @@ window.RactivePopupMenu = Ractive.extend({
     # instead of tattoing their data without permission
     setLevelRec = (item, level) ->
       item.level = level
-      maxLevel = if item.items?
+      maxLevel = if item.items? and item.items.length > 0
         Math.max(item.items.map( (item) -> setLevelRec(item, level + 1) )...)
       else
         level
