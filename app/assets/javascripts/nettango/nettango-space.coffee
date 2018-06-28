@@ -118,7 +118,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
   showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
     form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
-    overlay = document.querySelector('.widget-edit-form-overlay')
+    overlay = @root.find('.widget-edit-form-overlay')
     overlay.style.height   = "100%"
     overlay.style.width    = "100%"
     overlay.style.top      = 0
@@ -129,7 +129,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   initNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
-    canvas = document.getElementById(ntId)
+    canvas = @find("##{ntId}")
     canvas.height = space.height
     canvas.width = space.width
     NetTango.init(ntId, space.defs)
@@ -137,7 +137,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   updateNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
-    canvas = document.getElementById(ntId)
+    canvas = @find("##{ntId}")
     canvas.height = space.height
     canvas.width = space.width
     old = NetTango.save(ntId)
