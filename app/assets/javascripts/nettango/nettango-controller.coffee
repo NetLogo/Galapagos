@@ -1,15 +1,29 @@
 class window.NetTangoController
 
   constructor: (element, localStorage, @overlay, @playMode,
-    @setModelCode, @getModelElementById, @createElement, @appendElement, @getWidgetController, @saveAs
+    @setModelCode, @getModelElementById, @createElement,
+    @appendElement, @getWidgetController, @saveAs
   ) ->
     @firstLoad = true
+    @storage = new NetTangoStorage(localStorage)
+    Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
-    at = @
-    @ractive = new Ractive({
-      el:       element,
+    @ractive = @createRactive(element, @getModelElementById, @createElement, @appendElement, @playMode)
+    @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
+    @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
+    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @setModelCode(title, code))
+    @ractive.on('*.ntb-code-dirty',           (_)              => @enableRecompileOverlay())
+    @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
+    @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
+    @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
+    @ractive.on('*.ntb-load-nettango-data',   (_, data)        => @builder.load(data))
+
+  createRactive: (element, getModelElementById, createElement, appendElement, playMode) ->
+    new Ractive({
+      el: element,
 
       on: {
+
         'complete': (_) ->
           popupmenu = @findComponent('popupmenu')
           builder = @findComponent('tangoBuilder')
@@ -20,22 +34,20 @@ class window.NetTangoController
               popupmenu.unpop()
           )
 
-          Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () -> at.exportNetTango('json'))
-
           return
       }
 
-      data:     () -> {
-        findElement:   at.getModelElementById,
-        createElement: at.createElement,
-        appendElement: at.appendElement,
-        playMode:      at.playMode
+      data: () -> {
+        findElement:   getModelElementById,
+        createElement: createElement,
+        appendElement: appendElement,
+        playMode:      playMode
       }
 
       components: {
-          tangoBuilder:    RactiveNetTangoBuilder
+          popupmenu:       RactivePopupMenu
+        , tangoBuilder:    RactiveNetTangoBuilder
         , testingDefaults: RactiveNetTangoTestingDefaults
-        , popupmenu:       RactivePopupMenu
       },
 
       template:
@@ -46,20 +58,13 @@ class window.NetTangoController
           findElement='{{ findElement }}'
           createElement='{{ createElement }}'
           appendElement='{{ appendElement }}'
-          />\n
-          #{if (@playMode) then '' else '<testingDefaults />'}
+          />
+          {{#if playMode }}
+            <testingDefaults />
+          {{/if}}
         """
-    })
-    @storage = new NetTangoStorage(localStorage)
 
-    @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
-    @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @setModelCode(title, code))
-    @ractive.on('*.ntb-code-dirty',           (_)              => @enableRecompileOverlay())
-    @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
-    @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
-    @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-nettango-data',   (_, data)        => @builder.load(data))
+    })
 
   # () => Unit
   recompile: () =>
