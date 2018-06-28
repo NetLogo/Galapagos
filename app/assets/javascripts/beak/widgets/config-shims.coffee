@@ -35,6 +35,26 @@ genImportExportConfig = (ractive, viewController) ->
       anchor.click()
       return
 
+    importDrawing: (trueImport) -> (path) ->
+
+      listener =
+        (event) ->
+          reader = new FileReader
+          reader.onload =
+            (e) ->
+              trueImport(path)
+              viewController.drawingLayer.importDrawing(e.target.result)
+          if event.target.files.length > 0
+            reader.readAsDataURL(event.target.files[0])
+          elem.removeEventListener('change', listener)
+
+      elem = ractive.find('#import-drawing-input')
+      elem.addEventListener('change', listener)
+      elem.click()
+      elem.value = ""
+
+      return
+
     importWorld: (trueImport) -> ->
 
       listener =

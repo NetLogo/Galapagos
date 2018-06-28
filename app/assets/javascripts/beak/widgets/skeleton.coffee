@@ -197,7 +197,8 @@ template =
       {{/}}
     </div>
 
-    <input id="import-world-input" type="file" name="import-world" style="display: none;" />
+    <input id="import-drawing-input" type="file" name="import-drawing" style="display: none;" />
+    <input id="import-world-input"   type="file" name="import-world"   style="display: none;" />
 
   </div>
   """
