@@ -5,10 +5,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
       space.netLogoCode = NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')
-      at = @
-      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntCanvasId) ->
+      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntCanvasId) =>
         space.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
-        at.fire('ntb-code-change', {}, ntCanvasId, false)
+        @fire('ntb-code-change', {}, ntCanvasId, false)
         return
       )
       @fire('ntb-code-change', {}, space.spaceId + "-canvas", true)
@@ -16,12 +15,12 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
-      @get('popupmenu').popup(@, pageX, pageY, NetTangoBlockDefaults.blocks)
+      @get('popupmenu').popup(this, pageX, pageY, NetTangoBlockDefaults.blocks)
       return false
 
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       modifyMenu = @createModifyMenuContent(space)
-      @get('popupmenu').popup(@, pageX, pageY, modifyMenu)
+      @get('popupmenu').popup(this, pageX, pageY, modifyMenu)
       return false
 
     '*.ntb-delete-block': (_, blockNumber) ->
@@ -48,7 +47,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
           }
         ]
       }
-      @get('popupmenu').popup(@, pageX, pageY, delMenu, spaceNumber)
+      @get('popupmenu').popup(this, pageX, pageY, delMenu, spaceNumber)
       return
 
     'ntb-apply-json-to-space': (_, space) ->
@@ -118,7 +117,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
-    form.show(@, spaceName, block, blockNumber, submitLabel, submitEvent)
+    form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
     overlay = document.querySelector('.widget-edit-form-overlay')
     overlay.style.height   = "100%"
     overlay.style.width    = "100%"

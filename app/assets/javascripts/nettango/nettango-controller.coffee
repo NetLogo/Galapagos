@@ -59,7 +59,7 @@ class window.NetTangoController
           createElement='{{ createElement }}'
           appendElement='{{ appendElement }}'
           />
-          {{#if playMode }}
+          {{#if !playMode }}
             <testingDefaults />
           {{/if}}
         """
@@ -142,16 +142,15 @@ class window.NetTangoController
       return
 
     # else target is 'standalone'
-    parser = new DOMParser()
-    ntPlayer = new Request('./ntango-play')
-    at = @
-    playerFetch = fetch(ntPlayer).then((ntResp) ->
+    parser      = new DOMParser()
+    ntPlayer    = new Request('./ntango-play')
+    playerFetch = fetch(ntPlayer).then( (ntResp) ->
       if (ntResp.ok)
         ntResp.text()
-    ).then((text) ->
+    ).then( (text) ->
       parser.parseFromString(text, 'text/html')
-    ).then((exportDom) ->
-      at.exportStandalone(exportDom, netTangoData)
+    ).then( (exportDom) =>
+      @exportStandalone(exportDom, netTangoData)
     )
     return
 
@@ -188,10 +187,8 @@ class window.NetTangoController
 
   # (POJO) => Unit
   storeNetTangoData: (netTangoData) ->
-    at = @
-    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ].forEach((prop) ->
-      at.storage.set(prop, netTangoData[prop])
-    )
+    set = (prop) => @storage.set(prop, netTangoData[prop])
+    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ].forEach(set)
     return
 
   # (Unit) => Unit
