@@ -16,7 +16,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           }
         ]
       }
-      @popupmenu.popup(@, pageX, pageY, clearMenu)
+      @popupmenu.popup(this, pageX, pageY, clearMenu)
       return false
 
     '*.ntb-clear-all': (_) ->
