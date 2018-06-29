@@ -26,7 +26,7 @@ class window.NetTangoController
           builder = @findComponent('tangoBuilder')
           builder.setPopupMenu(popupmenu)
 
-          document.addEventListener('click', (event) ->
+          theOutsideWorld.addEventListener('click', (event) ->
             if event?.button isnt 2
               popupmenu.unpop()
           )
