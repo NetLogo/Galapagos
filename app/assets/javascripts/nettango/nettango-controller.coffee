@@ -136,8 +136,10 @@ class window.NetTangoController
     if (target is 'storage')
       return
 
+    title = @theOutsideWorld.getModelTitle()
+
     if (target is 'json')
-      @exportJSON(netTangoData)
+      @exportJSON(title, netTangoData)
       return
 
     # else target is 'standalone'
@@ -149,14 +151,14 @@ class window.NetTangoController
     ).then( (text) ->
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
-      @exportStandalone(exportDom, netTangoData)
+      @exportStandalone(title, exportDom, netTangoData)
     )
     return
 
-  # (Document, POJO) => Unit
-  exportStandalone: (exportDom, netTangoData) ->
+  # (String, Document, POJO) => Unit
+  exportStandalone: (title, exportDom, netTangoData) ->
     nlogoCodeElement = exportDom.getElementById('nlogo-code')
-    nlogoCodeElement.dataset.filename = modelContainer.contentWindow.session.modelTitle()
+    nlogoCodeElement.dataset.filename = title
     nlogoCodeElement.textContent = netTangoData.code
 
     netTangoCodeElement = exportDom.getElementById('ntango-code')
@@ -174,14 +176,14 @@ class window.NetTangoController
     exportWrapper = @theOutsideWorld.createElement('div')
     exportWrapper.appendChild(exportDom.documentElement)
     exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
-    @theOutsideWorld.saveAs(exportBlob, 'ntExportTest.html')
+    @theOutsideWorld.saveAs(exportBlob, "#{title}.html")
     return
 
-  # (POJO) => Unit
-  exportJSON: (netTangoData) ->
+  # (String, POJO) => Unit
+  exportJSON: (title, netTangoData) ->
     filter = (k, v) -> if (k is 'defsJson') then undefined else v
     jsonBlob = new Blob([JSON.stringify(netTangoData, filter)], { type: 'text/json:charset=utf-8' })
-    @theOutsideWorld.saveAs(jsonBlob, 'ntExportTest.json')
+    @theOutsideWorld.saveAs(jsonBlob, "#{title}.NetTango.json")
     return
 
   # (POJO) => Unit

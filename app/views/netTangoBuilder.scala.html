@@ -152,6 +152,7 @@
       , createElement:       (elementType) => document.createElement(elementType)
       , appendElement:       (element)     => modelContainer.contentWindow.document.body.appendChild(element)
       , getWidgetController: ()            => modelContainer.contentWindow.session.widgetController
+      , getModelTitle:       ()            => modelContainer.contentWindow.session.modelTitle()
       , saveAs:              window.saveAs
       , newModel:            window.exports.newModel
     }
