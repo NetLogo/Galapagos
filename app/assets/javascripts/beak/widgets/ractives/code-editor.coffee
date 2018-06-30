@@ -60,7 +60,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     """
     <div class="netlogo-tab-content netlogo-code-container"
          grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
-      &nbsp;   
+      &nbsp;
       <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown">
         <option hidden disabled selected>Jump to Procedure</option>
         {{#each procedureNames:name}}
