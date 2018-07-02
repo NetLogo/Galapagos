@@ -165,8 +165,6 @@
 }
 
 .netlogo-code-container {
-    display: flex;
-    flex-flow: column;
     background-color: white;
     margin-top: 0;
 }
@@ -183,6 +181,25 @@
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.netlogo-procedurenames-dropdown {
+  width: 30%;
+  margin: 12px auto;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.netlogo-codetab-widget-list {
+  padding: 0;
+  margin: 12px 12px;
+  display: inline;
+}
+
+.netlogo-codetab-widget-listitem {
+  display: inline;
+  padding: 6px;
 }
 
 .netlogo-info-editor {
