@@ -80,6 +80,12 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     }
   }
 
+  highlightProcedure: (procedureName, index) ->
+    end   = @_editor.posFromIndex(index)
+    start = CodeMirror.Pos(end.line, end.ch - procedureName.length)
+    @_editor.setSelection(start, end)
+    return
+
 })
 
 window.RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
