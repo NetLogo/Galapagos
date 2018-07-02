@@ -192,6 +192,11 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       @fire('ntb-netlogo-code-change', ntData.title, ntData.code)
 
     @refreshCss()
+
+    # if this was an import, clear the value so we can re-import the same file in Chrome and Safari
+    importInput = @find('#ntb-import-json')
+    importInput.value = ''
+
     return
 
   setPopupMenu: (popupmenu) ->
@@ -213,7 +218,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           <button class="ntb-button" on-click="ntb-export-nettango" >Export NetTango Page</button>
           <button id="clear-all-button" class="ntb-button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
           <button class="ntb-button" on-click="ntb-export-nettango-json" >Export NetTango JSON</button>
-          <label class="ntb-file-label">Import NetTango JSON<input class="ntb-file-button" type="file" on-change="ntb-import-nettango-json" ></label>
+          <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-nettango-json" ></label>
         </div>
         {{/}}
 
