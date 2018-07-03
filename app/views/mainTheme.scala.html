@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(content: Html, title: String = "NetLogo Web", selectedTopLink: Option[String] = None, extraHead: Html = Html(""), extraBody: Html = Html(""))(implicit mode: Mode, request: RequestHeader)
+@(content: Html, title: String = "NetLogo Web", selectedTopLink: Option[String] = None, extraHead: Html = Html(""), extraBody: Html = Html(""), relativizer: String = "")(implicit mode: Mode, request: RequestHeader)
 
 <!DOCTYPE html>
 
@@ -29,9 +29,9 @@
           case class TopLink(id: String, url: String, text: String) extends TopSomething
           case class TopLabel(id: String, text: String)             extends TopSomething
 
-          val NetTangoLink = TopLink("ntango-build" , "./ntango-build"                     , "NetTango Builder")
-          val LaunchLink   = TopLink ("launch"      , "./launch"                           , "Launch")
-          val UpdatesLink  = TopLink ("updates"     , "./whats-new"                        , "What's New")
+          val NetTangoLink = TopLink ("ntango-build", s"./${relativizer}ntango-build"      , "NetTango Builder")
+          val LaunchLink   = TopLink ("launch"      , s"./${relativizer}launch"            , "Launch")
+          val UpdatesLink  = TopLink ("updates"     , s"./${relativizer}whats-new"         , "What's New")
           val DocsLabel    = TopLabel("docs"                                               , "Documentation")
           val NetLogoLink  = TopLink ("netlogo"     , "http://ccl.northwestern.edu/netlogo", "About NetLogo")
 
