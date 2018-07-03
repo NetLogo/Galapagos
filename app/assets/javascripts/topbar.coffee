@@ -36,9 +36,11 @@ window.addEventListener('click', ({ target }) ->
 
 window.addEventListener('load', ->
 
-  authoringLink   = { text: "Authoring"        , url: "/docs/authoring"   }
-  differencesLink = { text: "What's Different?", url: "/docs/differences" }
-  faqLink         = { text: "FAQ"              , url: "/docs/faq"         }
+  relativizer     = if window.location.pathname.indexOf('/docs/') is -1 then "" else "../"
+
+  authoringLink   = { text: "Authoring"        , url: "./#{relativizer}docs/authoring"   }
+  differencesLink = { text: "What's Different?", url: "./#{relativizer}docs/differences" }
+  faqLink         = { text: "FAQ"              , url: "./#{relativizer}docs/faq"         }
   docHintInfo     = { elemID: 'docs-label', links: [authoringLink, differencesLink, faqLink] }
 
   [docHintInfo].forEach(({ elemID, links }) ->
