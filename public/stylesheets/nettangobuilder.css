@@ -15,7 +15,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-block-def-json {
-  resize: none;
+  resize: vertical;
   min-height: 8em;
   margin: 0.5em;
 }
