@@ -170,6 +170,7 @@
 }
 
 .netlogo-ugly-button {
+  color:      black;
   text-align: center;
   background-color: rgb(240, 240, 240);
   border-color: rgb(238, 238, 238);
@@ -296,7 +297,8 @@
 }
 
 .netlogo-button {
-    border: inherit;
+    border:  inherit;
+    color:   black;
     display: flex;
     justify-content: space-around;
     align-items: center;
