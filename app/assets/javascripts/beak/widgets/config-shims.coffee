@@ -74,6 +74,13 @@ genImportExportConfig = (ractive, viewController) ->
 
   }
 
+# () => InspectionConfig
+genInspectionConfig = ->
+  inspect        = ((agent) -> window.alert("Agent inspection is not yet implemented"))
+  stopInspecting = ((agent) ->)
+  clearDead      = (->)
+  { inspect, stopInspecting, clearDead }
+
 # (ViewController) => MouseConfig
 genMouseConfig = (viewController) ->
   {
@@ -126,6 +133,7 @@ window.genConfigs = (ractive, viewController, container) ->
   {
     dialog:       genDialogConfig(viewController)
   , importExport: genImportExportConfig(ractive, viewController)
+  , inspection:   genInspectionConfig()
   , mouse:        genMouseConfig(viewController)
   , output:       genOutputConfig(ractive, appendToConsole)
   , print:        { write: appendToConsole }
