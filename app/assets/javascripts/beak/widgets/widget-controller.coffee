@@ -149,11 +149,12 @@ updateWidget = (widget) ->
       else if widget.reporter?
         try
           value = widget.reporter()
-          isntValidValue = not (value? and ((typeof(value) isnt "number") or isFinite(value)))
+          isNum = (typeof(value) is "number")
+          isntValidValue = not (value? and (not isNum or isFinite(value)))
           if isntValidValue
             'N/A'
           else
-            if widget.precision?
+            if widget.precision? and isNum
               NLMath.precision(value, widget.precision)
             else
               value
