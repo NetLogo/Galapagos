@@ -121,7 +121,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-row ntb-form-row" style="align-items: center;">
         <formCheckbox id="{{ id }}-start" isChecked={{ start }} labelText="Start Block" name="startblock" />
         <formCheckbox id="{{ id }}-control" isChecked={{ control }} labelText="Control Block" name="controlblock" />
-        <labelledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" label="Limit" style="flex-grow: 1;" />
+        <labelledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" label="Limit" style="flex-grow: 1;"
+          min="1" max="100" />
       </div>
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
