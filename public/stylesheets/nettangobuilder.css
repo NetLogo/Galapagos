@@ -18,6 +18,7 @@ body#ntp-body, html#ntp-body {
   resize: vertical;
   min-height: 8em;
   margin: 0.5em;
+  background: #eee;
 }
 
 .ntb-block-defs-list {
@@ -135,6 +136,7 @@ body#ntp-body, html#ntp-body {
 
 #ntb-extra-css {
   min-height: 8em;
+  background: #eee;
 }
 
 .ntb-block-space-name {
