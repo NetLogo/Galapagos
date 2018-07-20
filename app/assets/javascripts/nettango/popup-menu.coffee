@@ -98,7 +98,7 @@ window.RactivePopupMenu = Ractive.extend({
     {{/partial}}
 
     {{#partial group }}
-      <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-menu-item"
+      <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-submenu"
         on-mouseover="[ 'popup-submenu', this ]">{{ name }} ▶</li>
     {{/partial}}
   """

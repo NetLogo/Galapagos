@@ -68,6 +68,11 @@ body#ntp-body, html#ntp-body {
   background-color: #fff;
 }
 
+.ntb-button, .ntb-file-label {
+  cursor: pointer;
+  user-select: none;
+}
+
 .ntb-file-button {
   opacity: 0;
   width: 1px;
@@ -89,13 +94,16 @@ body#ntp-body, html#ntp-body {
   padding-top: 2px;
   padding-bottom: 3px;
 }
-.ntb-list-menu > li.ntb-list-menu-item {
+.ntb-list-menu > li.ntb-list-menu-item, .ntb-list-menu > li.ntb-list-submenu {
   color: #06a;
+}
+.ntb-list-menu > li.ntb-list-menu-item {
+  cursor: pointer;
 }
 .ntb-list-menu > li.ntb-list-menu-title {
   border-bottom: 1px solid #666;
 }
-.ntb-list-menu > li.ntb-list-menu-item:hover {
+.ntb-list-menu > li.ntb-list-menu-item:hover, .ntb-list-menu > li.ntb-list-submenu:hover {
   background: #06a;
   color: #fff;
 }
@@ -104,6 +112,7 @@ body#ntp-body, html#ntp-body {
   position: absolute;
   background: #fff;
   border: 1px solid #000;
+  user-select: none;
 }
 
 .ntb-block-defaults, .ntb-confirm-delete {
