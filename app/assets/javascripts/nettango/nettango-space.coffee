@@ -149,6 +149,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
       expressions: space.defs.expressions,
       program:     { chains: newChains }
     })
+    space.netLogoCode = NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')
+    @fire('ntb-code-change', {}, space.spaceId + "-canvas", true)
     return
 
   createModifyMenuContent: (space) ->

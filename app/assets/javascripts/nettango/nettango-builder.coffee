@@ -178,6 +178,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     defsComponent.set('spaces', [])
     for spaceVals in (ntData.spaces ? [])
       defsComponent.createSpace(spaceVals)
+    defsComponent.updateCode(true)
 
     tabOptions = @get('tabOptions')
     for key, prop of (ntData.tabOptions ? { })
