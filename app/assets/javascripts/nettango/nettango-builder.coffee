@@ -213,7 +213,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         {{# !playMode }}
         <div class="ntb-block-defs-controls">
           <button class="ntb-button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-          <button class="ntb-button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
           <button class="ntb-button" on-click="ntb-save" >Save NetTango Progress</button>
           <button class="ntb-button" on-click="ntb-export-nettango" >Export NetTango Page</button>
           <button id="clear-all-button" class="ntb-button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
@@ -232,7 +231,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           </li>{{/tabOptions }}
           </ul>
 
-          <label for="ntb-extra-css">Extra CSS to include</label>
+          <div class="ntb-block-defs-controls">
+            <label for="ntb-extra-css">Extra CSS to include</label>
+            <button class="ntb-button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
+          </div>
           <textarea id="ntb-extra-css" type="text" on-change-keyup-paste="@this.checkForDirtyCss()" value="{{ extraCss }}" ></textarea>
           <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
         {{/}}
