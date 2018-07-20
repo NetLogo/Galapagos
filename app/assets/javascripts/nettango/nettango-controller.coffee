@@ -183,7 +183,7 @@ class window.NetTangoController
   exportJSON: (title, netTangoData) ->
     filter = (k, v) -> if (k is 'defsJson') then undefined else v
     jsonBlob = new Blob([JSON.stringify(netTangoData, filter)], { type: 'text/json:charset=utf-8' })
-    @theOutsideWorld.saveAs(jsonBlob, "#{title}.NetTango.json")
+    @theOutsideWorld.saveAs(jsonBlob, "#{title}.ntjson")
     return
 
   # (POJO) => Unit
