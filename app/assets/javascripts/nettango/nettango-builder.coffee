@@ -196,7 +196,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     # if this was an import, clear the value so we can re-import the same file in Chrome and Safari
     importInput = @find('#ntb-import-json')
-    importInput.value = ''
+    if importInput?
+      importInput.value = ''
 
     return
 
