@@ -210,9 +210,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
       <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
       {{# !playMode }}
       <div class="ntb-block-defs-controls" >
-        <button id="add-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
-        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-modify', this ]" {{#if defs.blocks.length === 0 }}disabled{{/if}}>Modify Block ▼</button>
-        <button id="delete-space-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
+        <button id="add-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
+        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-modify', this ]" {{#if defs.blocks.length === 0 }}disabled{{/if}}>Modify Block ▼</button>
+        <button id="delete-space-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
         <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
         <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
       </div>
@@ -223,7 +223,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       {{# !playMode }}
       <div class="ntb-block-defs-controls">
         <label for="{{ spaceId }}-json">Block Definition JSON</label>
-        <button class="ntb-button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
+        <button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
       </div>
       <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change', this ]" lazy />
       {{/}}

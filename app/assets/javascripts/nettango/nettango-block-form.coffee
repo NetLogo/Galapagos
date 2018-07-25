@@ -140,7 +140,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Parameters</label>
-          <button class="ntb-button" on-click="[ 'ntb-add-p-thing', 'params' ]">Add Parameter</button>
+          <button class="ntb-button" type="button" on-click="[ 'ntb-add-p-thing', 'params' ]">Add Parameter</button>
         </div>
         {{#params:number }}
           <parameter number="{{ number }}" p="{{ this }}" pType="params" />
@@ -150,7 +150,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Properties</label>
-          <button class="ntb-button" on-click="[ 'ntb-add-p-thing', 'properties' ]">Add Property</button>
+          <button class="ntb-button" type="button" on-click="[ 'ntb-add-p-thing', 'properties' ]">Add Property</button>
         </div>
         {{#properties:number }}
           <parameter number="{{ number }}" p="{{ this }}" pType="properties" />

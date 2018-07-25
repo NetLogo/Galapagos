@@ -213,11 +213,11 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       <div class="ntb-controls">
         {{# !playMode }}
         <div class="ntb-block-defs-controls">
-          <button class="ntb-button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-          <button class="ntb-button" on-click="ntb-save" >Save NetTango Progress</button>
-          <button class="ntb-button" on-click="ntb-export-nettango" >Export NetTango Page</button>
-          <button id="clear-all-button" class="ntb-button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
-          <button class="ntb-button" on-click="ntb-export-nettango-json" >Export NetTango JSON</button>
+          <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
+          <button class="ntb-button" type="button" on-click="ntb-save" >Save NetTango Progress</button>
+          <button class="ntb-button" type="button" on-click="ntb-export-nettango" >Export NetTango Page</button>
+          <button id="clear-all-button" class="ntb-button" type="button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
+          <button class="ntb-button" on-click="ntb-export-nettango-json" type="button">Export NetTango JSON</button>
           <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-nettango-json" ></label>
         </div>
         {{/}}
@@ -234,7 +234,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
           <div class="ntb-block-defs-controls">
             <label for="ntb-extra-css">Extra CSS to include</label>
-            <button class="ntb-button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
+            <button class="ntb-button" type="button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
           </div>
           <textarea id="ntb-extra-css" type="text" on-change-keyup-paste="@this.checkForDirtyCss()" value="{{ extraCss }}" ></textarea>
           <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
