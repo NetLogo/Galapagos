@@ -157,7 +157,15 @@
       , saveAs:              window.saveAs
       , newModel:            window.exports.newModel
     }
-    var netTango = new NetTangoController('nettango-options', window.localStorage, overlay, false, theOutsideWorld)
+
+    var ls
+    try {
+      ls = window.localStorage
+    } catch (exception) {
+      ls = NetTangoStorage.fakeStorage()
+    }
+
+    var netTango = new NetTangoController('nettango-options', ls, overlay, false, theOutsideWorld)
 
     window.recompile      = netTango.recompile
     modelContainer.onload = netTango.onModelLoad
