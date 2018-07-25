@@ -272,7 +272,15 @@
         , getModelTitle:       ()                => window.session.modelTitle()
         , saveAs:              window.saveAs
       }
-      var netTango = new NetTangoController('nettango-options', window.localStorage, overlay, true, theOutsideWorld)
+
+      var ls
+      try {
+        ls = window.localStorage
+      } catch (exception) {
+        ls = NetTangoStorage.fakeStorage()
+      }
+
+      var netTango = new NetTangoController('nettango-options', ls, overlay, true, theOutsideWorld)
 
       exports.toHTML   = markdown.toHTML // TODO - this should not be necessary, but `exports` doesn't exist when we import `markdown-js`
       window.ractive   = netTango.ractive // TODO - decide if thisis necessary
