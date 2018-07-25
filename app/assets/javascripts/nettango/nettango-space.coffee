@@ -25,7 +25,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     '*.ntb-delete-block': (_, blockNumber) ->
       space = @get('space')
-      space.defs.blocks.splice(blockNumber, 1)
+      @splice("space.defs.blocks", blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space)
       return
@@ -75,7 +75,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     '*.ntb-block-added': (_, block) ->
       space = @get('space')
-      space.defs.blocks.push(block)
+      @push("space.defs.blocks", block)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space)
       return
@@ -211,7 +211,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       {{# !playMode }}
       <div class="ntb-block-defs-controls" >
         <button id="add-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
-        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-modify', this ]">Modify Block ▼</button>
+        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-show-block-modify', this ]" {{#if defs.blocks.length === 0 }}disabled{{/if}}>Modify Block ▼</button>
         <button id="delete-space-button-{{ spaceId }}" class="ntb-button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
         <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
         <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
