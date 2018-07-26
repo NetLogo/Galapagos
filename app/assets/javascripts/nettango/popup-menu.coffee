@@ -89,6 +89,7 @@ window.RactivePopupMenu = Ractive.extend({
     {{#submenus:num }}
       <div id="ntb-popup-{{ num }}" class="ntb-popup" style="{{ this.style }}">
         <ul class="ntb-list-menu">
+          <li>{{ this.item.name }}</li>
           {{# this.item.items:itemNum }}
             {{> item }}
           {{/}}
