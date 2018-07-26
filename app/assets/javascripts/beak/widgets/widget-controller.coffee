@@ -121,7 +121,7 @@ class window.WidgetController
   # (String) => Unit
   setCode: (code) ->
     @ractive.set('code', code)
-    @ractive.findComponent('editor').setCode(code)
+    @ractive.findComponent('codePane').setCode(code)
     @ractive.fire('controller.recompile')
     return
 
