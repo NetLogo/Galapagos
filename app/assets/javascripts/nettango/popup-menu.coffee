@@ -19,9 +19,16 @@ window.RactivePopupMenu = Ractive.extend({
         target.fire(event, {}, itemData)
       return
 
-    'popup-submenu': ({ event: { pageX, pageY } }, item) ->
+    'popup-submenu': (_, item, level, itemNum) ->
       @set("submenus[#{item.level}].item", item)
-      @_updatePosition(pageX, pageY, "submenus[#{item.level}].style")
+
+      parentMenu = @find("#ntb-popup-#{ if level is 1 then 'root' else level - 1}")
+      left = parentMenu.offsetLeft + (parentMenu.offsetWidth / 2)
+
+      parentItem = @find("#ntb-popup-#{level}-#{itemNum}")
+      top = parentMenu.offsetTop + parentItem.offsetTop + (parentItem.offsetHeight / 3)
+
+      @_updatePosition(left, top, "submenus[#{item.level}].style")
       return
 
   }
@@ -73,7 +80,7 @@ window.RactivePopupMenu = Ractive.extend({
   }
 
   template: """
-    <div class="ntb-popup" style="{{style}}">
+    <div id="ntb-popup-root" class="ntb-popup" style="{{style}}">
       <ul class="ntb-list-menu">{{# content.items:itemNum }}
         {{> item }}
       {{/content.items }}</ul>
@@ -99,7 +106,7 @@ window.RactivePopupMenu = Ractive.extend({
 
     {{#partial group }}
       <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-submenu"
-        on-mouseover="[ 'popup-submenu', this ]">{{ name }} ▶</li>
+        on-mouseover="[ 'popup-submenu', this, level, itemNum ]">{{ name }} ▶</li>
     {{/partial}}
   """
 })
