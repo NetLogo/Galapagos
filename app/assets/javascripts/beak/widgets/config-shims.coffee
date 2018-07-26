@@ -40,10 +40,7 @@ genImportExportConfig = (ractive, viewController) ->
       listener =
         (event) ->
           reader = new FileReader
-          reader.onload =
-            (e) ->
-              trueImport(path)
-              viewController.drawingLayer.importDrawing(e.target.result)
+          reader.onload = (e) -> trueImport(e.target.result)
           if event.target.files.length > 0
             reader.readAsDataURL(event.target.files[0])
           elem.removeEventListener('change', listener)
