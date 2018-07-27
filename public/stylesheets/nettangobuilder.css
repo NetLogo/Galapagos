@@ -188,3 +188,17 @@ div.ntb-form-row > div {
   width: 100%;
   height: 100%;
 }
+
+.ntb-toggle-block {
+  display: block;
+}
+
+.ntb-toggle-block > input[type=checkbox] {
+  display: none;
+}
+
+.ntb-toggle-block > div {
+  user-select: none;
+  margin: 6px;
+  padding: 2px;
+}
