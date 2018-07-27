@@ -196,7 +196,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     playMode:      false,
     space:         null,
     netLogoCode:   "",
-    blockEditForm: null
+    blockEditForm: null,
+    showJson:      false
   }
 
   components: {
@@ -222,10 +223,16 @@ window.RactiveNetTangoSpace = Ractive.extend({
       </div>
       {{# !playMode }}
       <div class="ntb-block-defs-controls">
-        <label for="{{ spaceId }}-json">Block Definition JSON</label>
-        <button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>
+        <label class="ntb-toggle-block" >
+          <input id="info-toggle" type="checkbox" checked="{{ showJson }}" />
+          <div>{{#if showJson }}▲{{else}}▼{{/if}} Block Definition JSON</div>
+        </label>
+        {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>{{/ showJson }}
       </div>
-      <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change', this ]" lazy />
+      {{# showJson }}
+      <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
+       this ]" lazy />
+      {{/ showJson }}
       {{/}}
     </div>
     {{/}}"""
