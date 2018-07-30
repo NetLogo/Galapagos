@@ -72,9 +72,9 @@ blocks = {
           }
         },
         {
-          name: 'nested statement (if)',
+          name: 'if',
           data: {
-            , action:      "nested statement"
+            , action:      "if"
             , type:        "nlogo:if"
             , format:      "if random 10 < 5"
             , start:       false
@@ -89,12 +89,13 @@ blocks = {
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
+            , clauses:     []
           }
         },
         {
-          name: 'nested statement (if-else)',
+          name: 'ifelse',
           data: {
-            , action:      "nested statement"
+            , action:      "ifelse"
             , type:        "nlogo:ifelse"
             , format:      "ifelse (random 10 < count turtles)"
             , start:       false
@@ -109,6 +110,7 @@ blocks = {
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
+            , clauses:     [{ name: "else", action: "else", format: "" }]
           }
         }
       ]
@@ -120,7 +122,7 @@ blocks = {
           name: 'ask turtles',
           data: {
             , action:      "ask turtles"
-            , type:        "nlogo:ask"
+            , type:        "nlogo:if"
             , format:      "ask turtles"
             , start:       false
             , control:     true
@@ -134,6 +136,7 @@ blocks = {
             , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
+            , clauses:     []
           }
         },
         {
@@ -153,21 +156,7 @@ blocks = {
                 unit:    "%",
                 name:    "percent"
             } ]
-          })
-        },
-        {
-          name: "if",
-          data: createCommand({
-            , action:  "if"
-            , type:    "nlogo:if"
-            , format:  "if {0}"
-            , control: true
-            , blockColor: '#8899aa'
-            , params: [ {
-                type:    "bool",
-                default: false,
-                name:    "case"
-            } ]
+            , clauses: []
           })
         }
       ]
@@ -188,6 +177,7 @@ blocks = {
                 default: 10,
                 name:    "turtles"
               } ]
+            , clauses: []
           })
         }
       ]

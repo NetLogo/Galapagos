@@ -47,6 +47,17 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   _setBlock: (sourceBlock) ->
     # Copy so we drop any uncommitted changes
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
+
+    block.builderType = switch block.type
+      when "nlogo:procedure" or (block.start and not block.control)
+        'Procedure'
+      when "nlogo:if"        or (not block.start and block.control and block.clauses?.length is 0)
+        '1 Block Clause (if/ask/create)'
+      when "nlogo:ifelse"    or (not block.start and block.control and block.clauses?.length is 1)
+        '2 Block Clause (ifelse)'
+      else
+        'Command'
+
     @set('block', block)
     return
 
@@ -66,16 +77,32 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   getBlock: () ->
     blockValues = @get('block')
     block = { }
+
     # coffeelint: disable=max_line_length
-    [ 'action', 'type', 'format', 'start', 'required', 'control', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+    [ 'action', 'format', 'required', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
     # coffeelint: enable=max_line_length
-    if blockValues.control
-      block.clauses = if blockValues.type is 'nlogo:ifelse'
-        [{ name: "else", action: "else", format: "" }]
+
+    switch blockValues.builderType
+      when 'Procedure'
+        block.type    = 'nlogo:procedure'
+        block.start   = true
+        block.control = false
+      when '1 Block Clause (if/ask/create)'
+        block.type    = 'nlogo:if'
+        block.start   = false
+        block.control = true
+        block.clauses = []
+      when '2 Block Clause (ifelse)'
+        block.type    = 'nlogo:ifelse'
+        block.start   = false
+        block.control = true
+        block.clauses = [{ name: "else", action: "else", format: "" }]
       else
-        []
+        block.type    = 'nlogo:command'
+        block.start   = false
+        block.control = false
 
     block.params     = @processPThings(blockValues.params)
     block.properties = @processPThings(blockValues.properties)
@@ -110,20 +137,18 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <dropdown id="{{ id }}-type" name="{{ type }}" value="{{ type }}" label="Type"
-        options="{{ [ 'nlogo:procedure', 'nlogo:command', 'nlogo:if', 'nlogo:ifelse', 'nlogo:ask' ] }}"
-        />
+      <div class="flex-row ntb-form-row" style="align-items: center;">
+        <dropdown id="{{ id }}-type" name="{{ builderType }}" value="{{ builderType }}" label="Type"
+          options="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
+          />
+        <labelledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" label="Limit" style="flex-grow: 1;"
+          min="1" max="100" />
+      </div>
 
       <spacer height="15px" />
 
       <labelledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" label="Code Format ({#} for param, {P#} for property)" style="flex-grow: 1;" />
 
-      <div class="flex-row ntb-form-row" style="align-items: center;">
-        <formCheckbox id="{{ id }}-start" isChecked={{ start }} labelText="Start Block" name="startblock" />
-        <formCheckbox id="{{ id }}-control" isChecked={{ control }} labelText="Control Block" name="controlblock" />
-        <labelledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" label="Limit" style="flex-grow: 1;"
-          min="1" max="100" />
-      </div>
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
         <labelledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" label="Font weight" style="flex-grow: 1;" />
