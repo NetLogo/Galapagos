@@ -107,9 +107,10 @@ kbd {
   display:          none;
   font-family:      'Helvetica Neue', Helvetica, Arial, sans-serif;
   overflow:         hidden;
-  position:         absolute;
+  position:         fixed;
   top:              41px;
   width:            200px;
+  z-index:          10;
 }
 
 .topbar-hint-list {
