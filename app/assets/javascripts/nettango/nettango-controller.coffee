@@ -215,16 +215,18 @@ class window.NetTangoController
 
   # (Array[Widget]) => Unit
   pauseForevers: (widgets) ->
-    @runningIndices = Object.getOwnPropertyNames(widgets)
-      .filter( (index) ->
-        widget = widgets[index]
-        widget.type is "button" and widget.forever and widget.running
-      )
-    @runningIndices.forEach( (index) -> widgets[index].running = false )
+    if not @runningIndices? or @runningIndices.length is 0
+      @runningIndices = Object.getOwnPropertyNames(widgets)
+        .filter( (index) ->
+          widget = widgets[index]
+          widget.type is "button" and widget.forever and widget.running
+        )
+      @runningIndices.forEach( (index) -> widgets[index].running = false )
     return
 
   # (Array[Widget]) => Unit
   rerunForevers: (widgets) ->
     if @runningIndices? and @runningIndices.length > 0
       @runningIndices.forEach( (index) -> widgets[index].running = true )
+    @runningIndices = []
     return
