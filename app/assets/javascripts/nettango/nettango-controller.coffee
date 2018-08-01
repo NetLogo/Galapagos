@@ -9,7 +9,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
     @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @theOutsideWorld.setModelCode(title, code))
-    @ractive.on('*.ntb-code-dirty',           (_)              => @enableRecompileOverlay())
+    @ractive.on('*.ntb-code-dirty',           (_)              => @markCodeDirty())
     @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
     @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
     @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
@@ -87,13 +87,24 @@ class window.NetTangoController
         @builder.refreshCss()
     return
 
+  # () => Unit
+  markCodeDirty: () ->
+    @enableRecompileOverlay()
+    widgetController = @theOutsideWorld.getWidgetController()
+    widgets = widgetController.ractive.get('widgetObj')
+    @pauseForevers(widgets)
+    return
+
   # (String) => Unit
   setNetTangoCode: (ntbCode) ->
-    widgets = @theOutsideWorld.getWidgetController()
-    oldCode = widgets.code()
+    widgetController = @theOutsideWorld.getWidgetController()
+    oldCode = widgetController.code()
     newCode = NetTangoController.replaceNetTangoCode(oldCode, ntbCode)
-    widgets.setCode(newCode)
     @hideRecompileOverlay()
+    widgetController.setCode(newCode, () =>
+      widgets = widgetController.ractive.get('widgetObj')
+      @rerunForevers(widgets)
+    )
     return
 
   # (String, String) => String
@@ -192,12 +203,28 @@ class window.NetTangoController
     [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ].forEach(set)
     return
 
-  # (Unit) => Unit
+  # () => Unit
+  enableRecompileOverlay: () ->
+    overlay.style.display = "flex"
+    return
+
+  # () => Unit
   hideRecompileOverlay: () ->
     overlay.style.display = "none"
     return
 
-  # (Unit) => Unit
-  enableRecompileOverlay: () ->
-    overlay.style.display = "flex"
+  # (Array[Widget]) => Unit
+  pauseForevers: (widgets) ->
+    @runningIndices = Object.getOwnPropertyNames(widgets)
+      .filter( (index) ->
+        widget = widgets[index]
+        widget.type is "button" and widget.forever and widget.running
+      )
+    @runningIndices.forEach( (index) -> widgets[index].running = false )
+    return
+
+  # (Array[Widget]) => Unit
+  rerunForevers: (widgets) ->
+    if @runningIndices? and @runningIndices.length > 0
+      @runningIndices.forEach( (index) -> widgets[index].running = true )
     return
