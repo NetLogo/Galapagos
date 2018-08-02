@@ -6,6 +6,7 @@
     <base target="_parent" />
     @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
     @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.css")
     @tagBuilder.pathToHTML("lib/chosen/chosen.css")
     @tagBuilder.pathToHTML("stylesheets/classes.css")
     @tagBuilder.pathToHTML("stylesheets/widgets.css")
@@ -35,6 +36,7 @@
     @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
     @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
     @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.js")
 
     @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
     @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")

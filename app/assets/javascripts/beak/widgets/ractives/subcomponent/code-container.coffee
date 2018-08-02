@@ -86,6 +86,9 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     @_editor.setSelection(start, end)
     return
 
+  getEditor: ->
+    @_editor
+
 })
 
 window.RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
