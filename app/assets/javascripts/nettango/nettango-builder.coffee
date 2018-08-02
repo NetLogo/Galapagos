@@ -1,73 +1,25 @@
 window.RactiveNetTangoBuilder = Ractive.extend({
-  on: {
-
-    'ntb-refresh-css': (_) ->
-      @refreshCss()
-
-    'ntb-clear-all-check': ({ event: { pageX, pageY } }) ->
-      clearMenu = {
-        name: "_",
-        items: [
-          {
-            name: 'Are you sure?',
-            items: [
-              { name: 'Yes, clear all data', eventName: 'ntb-clear-all' }
-            ]
-          }
-        ]
-      }
-      @popupmenu.popup(this, pageX, pageY, clearMenu)
-      return false
-
-    '*.ntb-clear-all': (_) ->
-      blankData = {
-          code:       @get('newModel')
-        , spaces:     []
-        , extraCss:   ""
-        , title:      "Blank Model"
-        , tabOptions: {
-            commandCenterTab: true
-          , codeTab:          true
-          , infoTab:          true
-          , speedBar:         true
-          , fileButtons:      true
-          , authoring:        true
-          , poweredBy:        false
-        }
-      }
-      @load(blankData)
-
-    'ntb-create-blockspace': (_) ->
-      defsComponent = @findComponent('tangoDefs')
-      defsComponent.createSpace({ defs: { blocks: [] } })
-      return
-
-  }
-
-  components: {
-    tangoDefs:     RactiveNetTangoDefs
-  }
 
   data: () -> {
-    # These are the NetTango Builder controlling variables
-    playMode:        false,
-    newModel:        undefined,
-    lastCss:         "",
-    extraCssIsDirty: false,
+    playMode:        false,        # Boolean
+    newModel:        undefined,    # String
+    lastCss:         "",           # String
+    extraCssIsDirty: false,        # Boolean
     blockEditor: {
-      show:        false,
-      spaceNumber: undefined,
-      blockNumber: undefined,
-      submitEvent: undefined,
-      submitLabel: "Add New Block"
+      show:        false,          # Boolean
+      spaceNumber: undefined,      # Integer
+      blockNumber: undefined,      # Integer
+      submitEvent: undefined,      # String
+      submitLabel: "Add New Block" # String
     },
-    # Dependency injection :-P  -JMB
-    findElement:   () ->,
-    createElement: () ->,
-    appendElement: () ->,
-    # Below are the actual NetTango Builder data points
-    extraCss: "",
-    title: "Blank Model",
+
+    findElement:   () ->, # (String)  => Element
+    createElement: () ->, # (String)  => Element
+    appendElement: () ->, # (Element) => Unit
+
+    extraCss: "",         # String
+    title: "Blank Model", # String
+
     tabOptions: {
       commandCenterTab: {
         label: "Hide command center tab",
@@ -114,11 +66,65 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     }
   }
 
+  on: {
+
+    # (Context) => Unit
+    'ntb-refresh-css': (_) ->
+      @refreshCss()
+      return
+
+    # (Context) => Boolean
+    'ntb-clear-all-check': ({ event: { pageX, pageY } }) ->
+      clearMenu = {
+        name: "_",
+        items: [
+          {
+            name: 'Are you sure?',
+            items: [
+              { name: 'Yes, clear all data', eventName: 'ntb-clear-all' }
+            ]
+          }
+        ]
+      }
+      @popupmenu.popup(this, pageX, pageY, clearMenu)
+      return false
+
+    # (Context) => Unit
+    '*.ntb-clear-all': (_) ->
+      blankData = {
+          code:       @get('newModel')
+        , spaces:     []
+        , extraCss:   ""
+        , title:      "Blank Model"
+        , tabOptions: {
+            commandCenterTab: true
+          , codeTab:          true
+          , infoTab:          true
+          , speedBar:         true
+          , fileButtons:      true
+          , authoring:        true
+          , poweredBy:        false
+        }
+      }
+      @load(blankData)
+      return
+
+    # (Context) => Unit
+    'ntb-create-blockspace': (_) ->
+      defsComponent = @findComponent('tangoDefs')
+      defsComponent.createSpace({ defs: { blocks: [] } })
+      return
+
+  }
+
+  # () => Unit
   checkForDirtyCss: () ->
     lastCss  = @get('lastCss')
     extraCss = @get('extraCss')
     @set('extraCssIsDirty', lastCss isnt extraCss)
+    return
 
+  # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
     spaces = @findComponent('tangoDefs').get('spaces')
     tabOptions = { }
@@ -133,12 +139,14 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       , extraCss: @get('extraCss')
     }
 
+  # () => String
   getEmptyNetTangoProcedures: () ->
     spaces = @findComponent('tangoDefs').get('spaces')
     spaceProcs = for _, space of spaces
       space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
     spaceProcs.join("\n")
 
+  # () => Unit
   refreshCss: () ->
     # we use a fancy "CSS Injection" technique to get styles applied to the model iFrame.
     styleElement = @get('findElement')('ntb-injected-style')
@@ -155,6 +163,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     styleElement.innerHTML = @compileCss(@get('playMode'), extraCss)
     return
 
+  # (Boolean, String) => String
   compileCss: (forExport, extraCss) ->
     newCss     = ''
     tabOptions = @get('tabOptions')
@@ -162,9 +171,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       if(option.checked and option.checkedCssBuild isnt '')
         newCss = "#{newCss}\n#{if (forExport) then option.checkedCssExport else option.checkedCssBuild}"
 
-    newCss   = "#{newCss}\n#{extraCss}"
+    newCss = "#{newCss}\n#{extraCss}"
     # override the rounded corners of tabs to make them easier to hide with CSS and without JS
-    # TODO - find a better way to store these values
     # coffeelint: disable=max_line_length
     newCss = newCss + '\n.netlogo-tab:first-child { border-radius: 0px; }'
     newCss = newCss + '\n.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }'
@@ -173,6 +181,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     # coffeelint: enable=max_line_length
     newCss
 
+  # (NetTangoBuilderData) => Unit
   load: (ntData) ->
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
@@ -201,10 +210,15 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     return
 
+  # (PopupMenu) => Unit
   setPopupMenu: (popupmenu) ->
     @popupmenu = popupmenu
     @set('popupmenu', popupmenu)
     return
+
+  components: {
+    tangoDefs:     RactiveNetTangoDefs
+  }
 
   template:
     # coffeelint: disable=max_line_length

@@ -1,15 +1,29 @@
 window.RactiveNetTangoDefs = Ractive.extend({
+
+  data: () -> {
+    playMode:         false, # Boolean
+    nextId:           0,     # Integer
+    spaces:           [],    # Array[NetTangoSpace]
+    lastCompiledCode: "",    # String
+    codeIsDirty:      false, # Boolean
+    popupmenu:        null,  # PopupMenu
+    blockEditForm:    null   # RactiveNetTangoBlockForm
+  }
+
   on: {
 
+    # (Context) => Unit
     'complete': (_) ->
       blockEditForm = @findComponent('blockEditForm')
       @set('blockEditForm', blockEditForm)
       return
 
+    # (Context, String, Boolean) => Unit
     '*.ntb-code-change': (_, ntCanvasId, isInitialLoad) ->
       @updateCode(isInitialLoad)
       return
 
+    # (Context, Integer) => Unit
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       spaces = @get('spaces')
       @set('spaces', spaces.filter( (s) -> s.id isnt spaceNumber ))
@@ -17,6 +31,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
 
   }
 
+  # (Boolean) => Unit
   updateCode: (isInitialLoad) ->
     lastCode    = @get('lastCode')
     newCode     = @assembleCode()
@@ -30,6 +45,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
         @fire('ntb-code-dirty')
     return
 
+  # () => Unit
   recompile: () ->
     ntbCode = @assembleCode()
     @fire('ntb-recompile', ntbCode)
@@ -37,12 +53,14 @@ window.RactiveNetTangoDefs = Ractive.extend({
     @set('codeIsDirty', false)
     return
 
+  # () => Unit
   assembleCode: () ->
     spaces = @get('spaces')
     spaceCodes = for space, _ in spaces
       "; Code for #{space.name}\n#{space.netLogoCode}".trim()
     spaceCodes.join("\n\n")
 
+  # () => Array[NetTangoExpressionOperator]
   expressionDefaults: () ->
     return [
       { name: "true",  type: "bool" },
@@ -63,6 +81,7 @@ window.RactiveNetTangoDefs = Ractive.extend({
       { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
     ]
 
+  # (NetTangoSpace) => NetTangoSpace
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
     id      = @get('nextId')
@@ -87,16 +106,6 @@ window.RactiveNetTangoDefs = Ractive.extend({
     @push('spaces', space)
     @set('nextId', id + 1)
     return space
-
-  data: () -> {
-    playMode:         false,
-    nextId:           0,
-    spaces:           [],
-    lastCompiledCode: "",
-    codeIsDirty:      false,
-    popupmenu:        null,
-    blockEditForm:    null
-  }
 
   components: {
     tangoSpace:    RactiveNetTangoSpace

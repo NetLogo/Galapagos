@@ -1,6 +1,16 @@
 window.RactiveNetTangoSpace = Ractive.extend({
+
+  data: () -> {
+    playMode:      false, # Boolean
+    space:         null,  # NetTangoSpace
+    netLogoCode:   "",    # String
+    blockEditForm: null,  # RactiveNetTangoBlockForm
+    showJson:      false  # Boolean
+  }
+
   on: {
 
+    # (Context) => Unit
     'complete': (_) ->
       space = @get('space')
       @initNetTango(space)
@@ -13,16 +23,19 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @fire('ntb-code-change', {}, space.spaceId + "-canvas", true)
       return
 
+    # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
       @get('popupmenu').popup(this, pageX, pageY, NetTangoBlockDefaults.blocks)
       return false
 
+    # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       modifyMenu = @createModifyMenuContent(space)
       @get('popupmenu').popup(this, pageX, pageY, modifyMenu)
       return false
 
+    # (Context, Integer) => Unit
     '*.ntb-delete-block': (_, blockNumber) ->
       space = @get('space')
       @splice("space.defs.blocks", blockNumber, 1)
@@ -30,11 +43,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
+    # (Context, String) => Unit
     'ntb-code-change': (_, ntCanvasId) ->
       netTangoData = NetTango.save(ntCanvasId)
       @set('space.defs.program', netTangoData.program)
       return
 
+    # (Context, Integer) => Boolean
     'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
       delMenu = {
         name: "_"
@@ -50,29 +65,34 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @get('popupmenu').popup(this, pageX, pageY, delMenu, spaceNumber)
       return false
 
+    # (Context, NetTangoSpace) => Unit
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
       @set("space.defs", newDefs)
       @updateNetTango(space)
       return
 
+    # (Context, NetTangoSpace) => Unit
     'ntb-space-json-change': (_, space) ->
       oldDefsJson = JSON.stringify(space.defs, null, '  ')
       if(oldDefsJson isnt space.defsJson)
         @set("space.defsJsonChanged", true)
       return
 
+    # (Context) => Unit
     '*.ntb-size-change': (_) ->
       space = @get('space')
       @updateNetTango(space)
       return
 
+    # (Context, NetTangoBlock) => Unit
     '*.ntb-show-create-block-form': (_, blockBase) ->
       space = @get('space')
       block = NetTangoBlockDefaults.copyBlock(blockBase)
       @showBlockForm(space.name, block, null, "Add New Block", "ntb-block-added")
       return
 
+    # (Context, NetTangoBlock) => Unit
     '*.ntb-block-added': (_, block) ->
       space = @get('space')
       @push("space.defs.blocks", block)
@@ -80,12 +100,14 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
+    # (Context, Integer) => Unit
     '*.ntb-show-edit-block-form': (_, blockNumber) ->
       space = @get('space')
       block = space.defs.blocks[blockNumber]
       @showBlockForm(space.name, block, blockNumber, "Update Block", "ntb-block-updated")
       return
 
+    # (Context, NetTangoBlock, Integer) => Unit
     '*.ntb-block-updated': (_, block, blockNumber) ->
       space = @get('space')
       space.defs.blocks[blockNumber] = block
@@ -93,6 +115,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @updateNetTango(space)
       return
 
+    # (Context, Integer) => Unit
     '*.ntb-block-up': (_, blockNumber) ->
       space = @get('space')
       if (blockNumber > 0)
@@ -103,6 +126,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         @updateNetTango(space)
       return
 
+    # (Context, Integer) => Unit
     '*.ntb-block-down': (_, blockNumber) ->
       space = @get('space')
       if (blockNumber < (space.defs.blocks.length - 1))
@@ -115,6 +139,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   }
 
+  # (String, NetTangoBlock, Integer, String, String) => Unit
   showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
     form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
@@ -127,6 +152,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     overlay.style.display  = "block"
     return
 
+  # (NetTangoSpace) => Unit
   initNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
     canvas = @find("##{ntId}")
@@ -135,6 +161,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     NetTango.init(ntId, space.defs)
     return
 
+  # (NetTangoSpace) => Unit
   updateNetTango: (space) ->
     ntId = space.spaceId + "-canvas"
     canvas = @find("##{ntId}")
@@ -153,6 +180,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     @fire('ntb-code-change', {}, space.spaceId + "-canvas", false)
     return
 
+  # (NetTangoSpace) => Content
   createModifyMenuContent: (space) ->
     dele = { eventName: 'ntb-delete-block', name: 'delete' }
     edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
@@ -172,6 +200,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       items: items
     }
 
+  # () => Array[NetTangoExpressionOperator]
   expressionDefaults: () ->
     return [
       { name: "true",  type: "bool" },
@@ -192,21 +221,14 @@ window.RactiveNetTangoSpace = Ractive.extend({
       { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
     ]
 
-  data: () -> {
-    playMode:      false,
-    space:         null,
-    netLogoCode:   "",
-    blockEditForm: null,
-    showJson:      false
-  }
-
   components: {
     labelledInput: RactiveLabelledInput
   }
 
   template:
     # coffeelint: disable=max_line_length
-    """{{#space }}
+    """
+    {{# space }}
     <div class="ntb-block-def">
       <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
       {{# !playMode }}
@@ -217,7 +239,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
         <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
       </div>
-      {{/}}
+      {{/ !playMode }}
       <div class="nt-container" id="{{ spaceId }}" >
         <canvas id="{{ spaceId }}-canvas" class="nt-canvas" />
       </div>
@@ -233,8 +255,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
       <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
        this ]" lazy />
       {{/ showJson }}
-      {{/}}
+      {{/ !playMode }}
     </div>
-    {{/}}"""
+    {{/ space }}
+    """
     # coffeelint: enable=max_line_length
 })

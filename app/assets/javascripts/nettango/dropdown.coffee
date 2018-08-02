@@ -1,18 +1,22 @@
 window.RactiveDropdown = Ractive.extend({
+
+  data: () -> {
+    style:       undefined # String
+    id:          undefined # String
+    value:       undefined # Any
+    name:        undefined # String
+    label:       undefined # String
+    options:     undefined # Array[String]
+    changeEvent: undefined # String
+  }
+
   on: {
+    # (Context) => Unit
     '*.changed': (_) ->
       event = @get('changeEvent')
       if (event?)
         @fire(event)
-  }
-  data: () -> {
-    style: undefined # String
-    id:    undefined # String
-    value: undefined # Any
-    name:  undefined # String
-    label: undefined # String
-    options: undefined # Array[String]
-    changeEvent: undefined # String
+      return
   }
 
   template:

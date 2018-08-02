@@ -1,5 +1,7 @@
 window.RactiveNetTangoTestingDefaults = Ractive.extend({
+
   on: {
+    # (Context) => Unit
     'ntb-testing-defaults': (_) ->
       wspDefaults = {
         extraCss: "/* test of extraCss load */"
