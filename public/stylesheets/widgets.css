@@ -203,6 +203,15 @@
   padding: 6px;
 }
 
+.netlogo-autocomplete-label {
+  font-size: 16px;
+}
+
+.netlogo-autocomplete-checkbox {
+  width: 14px;
+  height: 14px;
+}
+
 .netlogo-info-editor {
   border: 1px solid black;
   height: 500px;

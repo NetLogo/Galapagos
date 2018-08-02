@@ -5,7 +5,8 @@ window.RactiveModelCodeComponent = Ractive.extend({
   , isReadOnly:        undefined # Boolean
   , lastCompiledCode:  undefined # String
   , lastCompileFailed:     false # Boolean
-  , procedureNames:           {}
+  , procedureNames:           {} # Object[String, Number]
+  , autoCompleteStatus:    false # Boolean
   }
 
   components: {
@@ -49,9 +50,43 @@ window.RactiveModelCodeComponent = Ractive.extend({
     $('#procedurenames-dropdown').trigger('chosen:updated')
     return
 
+  setupAutoComplete: (hintList) ->
+    CodeMirror.registerHelper('hintWords', 'netlogo', hintList)
+    editor = @findComponent('codeEditor').getEditor()
+    editor.on('keyup', (cm, event) =>
+      if not cm.state.completionActive and event.keyCode > 64 and event.keyCode < 91 and @get('autoCompleteStatus')
+        cm.showHint({completeSingle: false})
+    )
+    return
+
+  netLogoHintHelper: (cm, options) ->
+    cur = cm.getCursor()
+    token = cm.getTokenAt(cur)
+    to = CodeMirror.Pos(cur.line, token.end)
+    if token.string and /\S/.test(token.string[token.string.length - 1])
+      term = token.string
+      from = CodeMirror.Pos(cur.line, token.start)
+    else
+      term = ''
+      from = to
+    found = options.words.filter( (word) -> word.slice(0, term.length) is term )
+    if found.length > 0
+      return { list: found, from: from, to: to }
+
+  autoCompleteWords: ->
+    keywords = new Set(window.keywords.all)
+    keywordsList = Array.from(keywords).map((item) -> item.replace("\\", ""))
+    Object.keys(@getProcedureNames()).concat(keywordsList)
+
   on: {
     'complete': (_) ->
       @setupProceduresDropdown()
+      CodeMirror.registerHelper('hint', 'fromList', @netLogoHintHelper)
+      @setupAutoComplete(@autoCompleteWords())
+      return
+
+    'recompile': (_) ->
+      @setupAutoComplete(@autoCompleteWords())
       return
   }
 
@@ -73,6 +108,12 @@ window.RactiveModelCodeComponent = Ractive.extend({
             <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button{{#isEditing}} interface-unlocked{{/}}"
                 on-click="recompile" {{# !isStale }}disabled{{/}} >Recompile Code</button>
           {{/}}
+        </li>
+        <li class="netlogo-codetab-widget-listitem">
+          <input type='checkbox' class="netlogo-autocomplete-checkbox" checked='{{autoCompleteStatus}}'>
+          <label class="netlogo-autocomplete-label">
+            Auto Complete {{# autoCompleteStatus}}Enabled{{else}}Disabled{{/}}
+          </label>
         </li>
       </ul>
       <codeEditor id="netlogo-code-tab-editor" code="{{code}}"
