@@ -16,20 +16,20 @@ window.RactiveLabelledInput = Ractive.extend({
     # (Context) => Unit
     'exec': (_) ->
       if (@get('type') is 'number')
-        value = @get('value')
-        min   = @get('min')
-        max   = @get('max')
-        value = if (min? and value < min)
-          min
-        else if (max? and value > max)
-          max
-        else
-          value
-        @set('value', value)
+        @set('value', @clampNumber(@get('value'), @get('min'), @get('max')))
       event = @get('onChange')
       @fire(event, _)
       return
   }
+
+  # (Number, Number, Number) => Number
+  clampNumber: (value, min, max) ->
+    if (min? and value < min)
+      min
+    else if (max? and value > max)
+      max
+    else
+      value
 
   template:
     """
