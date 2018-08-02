@@ -165,21 +165,22 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   # (Boolean, String) => String
   compileCss: (forExport, extraCss) ->
-    newCss     = ''
     tabOptions = @get('tabOptions')
-    for name, option of tabOptions
-      if(option.checked and option.checkedCssBuild isnt '')
-        newCss = "#{newCss}\n#{if (forExport) then option.checkedCssExport else option.checkedCssBuild}"
 
-    newCss = "#{newCss}\n#{extraCss}"
-    # override the rounded corners of tabs to make them easier to hide with CSS and without JS
-    # coffeelint: disable=max_line_length
-    newCss = newCss + '\n.netlogo-tab:first-child { border-radius: 0px; }'
-    newCss = newCss + '\n.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }'
-    newCss = newCss + '\n.netlogo-tab { border: 1px solid rgb(36, 36, 121); }'
-    newCss = newCss + '\n.netlogo-tab-area { margin: 0px; }'
-    # coffeelint: enable=max_line_length
-    newCss
+    newCss = Object.getOwnPropertyNames(tabOptions)
+      .filter( (prop) -> tabOptions[prop].checked and tabOptions[prop].checkedCssBuild isnt '' )
+      .map( (prop) -> if (forExport) then tabOptions[prop].checkedCssExport else tabOptions[prop].checkedCssBuild )
+
+    newCss = newCss.concat([
+      extraCss,
+      # override the rounded corners of tabs to make them easier to hide with CSS and without JS
+      '.netlogo-tab:first-child { border-radius: 0px; }',
+      '.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }',
+      '.netlogo-tab { border: 1px solid rgb(36, 36, 121); }',
+      '.netlogo-tab-area { margin: 0px; }'
+    ])
+
+    newCss.join('\n')
 
   # (NetTangoBuilderData) => Unit
   load: (ntData) ->
