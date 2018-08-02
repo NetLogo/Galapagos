@@ -58,9 +58,9 @@ class window.NetTangoController
           appendElement='{{ appendElement }}'
           newModel='{{ newModel }}'
           />
-          {{#if !playMode }}
+          {{# !playMode }}
             <testingDefaults />
-          {{/if}}
+          {{/}}
         """
 
     })

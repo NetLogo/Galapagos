@@ -98,11 +98,11 @@ window.RactivePopupMenu = Ractive.extend({
     {{/submenus }}
 
     {{#partial item }}
-      {{#if items }}
+      {{# items !== undefined }}
         {{> group }}
       {{ else }}
         <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">{{ name }}</li>
-      {{/if }}
+      {{/}}
     {{/partial}}
 
     {{#partial group }}

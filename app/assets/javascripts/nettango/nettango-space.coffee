@@ -212,7 +212,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       {{# !playMode }}
       <div class="ntb-block-defs-controls" >
         <button id="add-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
-        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-modify', this ]" {{#if defs.blocks.length === 0 }}disabled{{/if}}>Modify Block ▼</button>
+        <button id="modify-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-modify', this ]" {{# defs.blocks.length === 0 }}disabled{{/}}>Modify Block ▼</button>
         <button id="delete-space-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
         <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
         <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
@@ -225,7 +225,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       <div class="ntb-block-defs-controls">
         <label class="ntb-toggle-block" >
           <input id="info-toggle" type="checkbox" checked="{{ showJson }}" />
-          <div>{{#if showJson }}▲{{else}}▼{{/if}} Block Definition JSON</div>
+          <div>{{# showJson }}▲{{else}}▼{{/}} Block Definition JSON</div>
         </label>
         {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>{{/ showJson }}
       </div>
