@@ -1,14 +1,24 @@
 window.RactivePopupMenu = Ractive.extend({
 
+  data: () -> {
+    visible:   false,           # Boolean
+    target:    undefined,       # String
+    content:   undefined,       # Content
+    menuData:  undefined,       # Any
+    style:     'display: none;' # String
+    submenus:  []               # Array[{ style: String, item: Content }]
+  }
+
   # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
   # Content = Item | Items
-  # Item    = { name: String, eventName: String, data: POJO  }
+  # Item    = { name: String, eventName: String, data: Any  }
   # Items   = { name: String, eventName: String, items: Array[Content] }
   # The `eventName` string is optional for an Item - if not given the event on the root `content` will be used
   # The `menuData` (if sent via the `popup()` method) and the `data` for each item will be passed to the fired event
 
   on: {
 
+    # (Context, String, Any) => Unit
     'exec': (_, eventName, itemData) ->
       target   = @get('target')
       event    = eventName ? @get('content').eventName
@@ -19,6 +29,7 @@ window.RactivePopupMenu = Ractive.extend({
         target.fire(event, {}, itemData)
       return
 
+    # (Context, Content, Integer, Integer) => Unit
     'popup-submenu': (_, item, level, itemNum) ->
       @set("submenus[#{item.level}].item", item)
 
@@ -33,17 +44,19 @@ window.RactivePopupMenu = Ractive.extend({
 
   }
 
+  # (String, Number, Number, Content, Any) => Unit
   popup: (target, left, top, content, menuData) ->
     maxLevel = @_markContent(content)
     submenus = for num in [1..maxLevel]
       { style: "display: none;" }
     @set('submenus', submenus)
     @set('menuData', menuData)
-    @set('content', content)
-    @set('target', target)
+    @set('content',  content)
+    @set('target',   target)
     @_updatePosition(left, top, 'style')
     return
 
+  # () => Unit
   unpop: () ->
     @set('style', 'display: none;')
     @get('submenus').forEach( (_, level) =>
@@ -51,11 +64,10 @@ window.RactivePopupMenu = Ractive.extend({
     )
     return
 
+  # (Content) => Integer
   _markContent: (content) ->
-    # tag all the content levels with ID numbers
-    # build a total ID array so we can create a collection of popup menu levels
-    # TODO - Maybe require this be explicitly called by someone using the popup-menu
-    # instead of tattoing their data without permission
+    # tag all the content levels with ID numbers, build a total ID array so we can create
+    # a collection of popup menu levels
     setLevelRec = (item, level) ->
       item.level = level
       maxLevel = if item.items? and item.items.length > 0
@@ -65,19 +77,11 @@ window.RactivePopupMenu = Ractive.extend({
       maxLevel
     setLevelRec(content, 0)
 
+  # (Number, Number, String) => Unit
   _updatePosition: (left, top, property) ->
     style = "z-index: 1000; position: absolute; left: #{ left + 10 }px; top: #{ top + 2 }px;"
     @set(property, style)
     return
-
-  data: () -> {
-    visible:   false,
-    target:    undefined,
-    content:   undefined,
-    menuData:  undefined,
-    style:     'display: none;'
-    submenus:  []
-  }
 
   template: """
     <div id="ntb-popup-root" class="ntb-popup" style="{{style}}">

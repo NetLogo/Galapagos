@@ -1,4 +1,5 @@
 window.RactiveNetTangoBlockForm = EditForm.extend({
+
   data: () -> {
     spaceName:   undefined # String
     block:       undefined # Block
@@ -8,16 +9,19 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   on: {
 
+    # (Context) => Unit
     'submit': (_) ->
       target = @get('target')
       target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
       return
 
+    # (Context, String) => Boolean
     'ntb-add-p-thing': (_, pType) ->
       num = @get("block.#{pType}.length")
       @push("block.#{pType}", @defaultParam(pType, num))
       return false
 
+    # (Context, String, Integer) => Boolean
     '*.ntb-delete-p-thing': (_, pType, num) ->
       @splice("block.#{pType}", num, 1)
       return false
@@ -27,16 +31,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   oninit: ->
     @_super()
 
-  components: {
-      formCheckbox:  RactiveEditFormCheckbox
-    , formCode:      RactiveCodeContainerOneLine
-    , formDropdown:  RactiveEditFormDropdown
-    , spacer:        RactiveEditFormSpacer
-    , labelledInput: RactiveLabelledInput
-    , dropdown:      RactiveDropdown
-    , parameter:     RactiveNetTangoParameter
-  }
-
+  # (String, Integer) => NetTangoParameter
   defaultParam: (pType, num) -> {
       name: "#{pType}#{num}"
     , type: "num"
@@ -44,6 +39,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , def:  "10"
   }
 
+  # (NetTangoBlock) => Unit
   _setBlock: (sourceBlock) ->
     # Copy so we drop any uncommitted changes
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
@@ -61,6 +57,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     @set('block', block)
     return
 
+  # (String, String, NetTangoBlock, Integer, String, String) => Unit
   show: (target, spaceName, block, blockNumber, submitLabel, submitEvent) ->
     @_setBlock(block)
     @set('target', target)
@@ -69,11 +66,13 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     @set('submitLabel', submitLabel)
     @set('submitEvent', submitEvent)
     @fire('show-yourself')
+    return
 
-  # this does something useful for widgets, but not for us, I think?
+  # This does something useful for widgets in `EditForm`, but we don't need it
   genProps: (_) ->
     null
 
+  # () => NetTangoBlock
   getBlock: () ->
     blockValues = @get('block')
     block = { }
@@ -109,6 +108,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
     block
 
+  # (Array[NetTangoParameter]) => Array[NetTangoParameter]
   processPThings: (pThings) ->
     pCopies = for pValues in pThings
       pThing = { }
@@ -123,6 +123,16 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       pThing
 
     pCopies
+
+  components: {
+      formCheckbox:  RactiveEditFormCheckbox
+    , formCode:      RactiveCodeContainerOneLine
+    , formDropdown:  RactiveEditFormDropdown
+    , spacer:        RactiveEditFormSpacer
+    , labelledInput: RactiveLabelledInput
+    , dropdown:      RactiveDropdown
+    , parameter:     RactiveNetTangoParameter
+  }
 
   partials: {
 

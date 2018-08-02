@@ -1,11 +1,13 @@
 window.RactiveNetTangoParameter = Ractive.extend({
+
   data: () -> {
-    number: undefined, # Int
-    p:      undefined, # NetTango parameter POJO
-    pType:  undefined  # "params" or "properties"
+    number: undefined, # Integer
+    p:      undefined, # NetTangoParameter
+    pType:  undefined  # String ("params" or "properties")
   }
 
   on: {
+    # (Context) => Unit
     '*.ntb-param-type-changed': (_) ->
       # reset our default to the appropriate value...
       p = @get('p')

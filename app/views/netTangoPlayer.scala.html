@@ -282,8 +282,8 @@
 
       var netTango = new NetTangoController('nettango-options', ls, overlay, true, theOutsideWorld)
 
-      exports.toHTML   = markdown.toHTML // TODO - this should not be necessary, but `exports` doesn't exist when we import `markdown-js`
-      window.ractive   = netTango.ractive // TODO - decide if thisis necessary
+      exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
+      window.ractive   = netTango.ractive
       window.recompile = netTango.recompile
       window.onload    = netTango.onModelLoad
 

@@ -1,4 +1,5 @@
 class window.NetTangoStorage
+
   constructor: (@localStorage) ->
     inProgressJson = @localStorage.getItem('ntInProgress')
     if (inProgressJson)
@@ -8,14 +9,17 @@ class window.NetTangoStorage
       @inProgress = { }
       @localStorage.setItem('ntInProgress', JSON.stringify(@inProgress))
 
+  # (String) => Any
   get: (key) ->
     @inProgress[key]
 
+  # (String, Any) => Unit
   set: (key, value) ->
     @inProgress[key] = value
     @localStorage.setItem('ntInProgress', JSON.stringify(@inProgress))
     return
 
+  # (Unit) => NetTangoStorage
   @fakeStorage: () ->
     _ls = { }
     {

@@ -17,13 +17,22 @@ class window.NetTangoController
 
   createRactive: (element, theOutsideWorld, playMode) ->
     new Ractive({
+
       el: element,
+
+      data: () -> {
+        findElement:   theOutsideWorld.getModelElementById, # (String) => Element
+        createElement: theOutsideWorld.createElement,       # (String) => Element
+        appendElement: theOutsideWorld.appendElement,       # (Element) => Unit
+        newModel:      theOutsideWorld.newModel,            # () => String
+        playMode:      playMode,                            # Boolean
+      }
 
       on: {
 
         'complete': (_) ->
           popupmenu = @findComponent('popupmenu')
-          builder = @findComponent('tangoBuilder')
+          builder   = @findComponent('tangoBuilder')
           builder.setPopupMenu(popupmenu)
 
           theOutsideWorld.addEventListener('click', (event) ->
@@ -32,14 +41,6 @@ class window.NetTangoController
           )
 
           return
-      }
-
-      data: () -> {
-        findElement:   theOutsideWorld.getModelElementById,
-        createElement: theOutsideWorld.createElement,
-        appendElement: theOutsideWorld.appendElement,
-        newModel:      theOutsideWorld.newModel,
-        playMode:      playMode,
       }
 
       components: {
@@ -166,7 +167,7 @@ class window.NetTangoController
     )
     return
 
-  # (String, Document, POJO) => Unit
+  # (String, Document, NetTangoBuilderData) => Unit
   exportStandalone: (title, exportDom, netTangoData) ->
     nlogoCodeElement = exportDom.getElementById('nlogo-code')
     nlogoCodeElement.dataset.filename = title
@@ -190,14 +191,14 @@ class window.NetTangoController
     @theOutsideWorld.saveAs(exportBlob, "#{title}.html")
     return
 
-  # (String, POJO) => Unit
+  # (String, NetTangoBuilderData) => Unit
   exportJSON: (title, netTangoData) ->
     filter = (k, v) -> if (k is 'defsJson') then undefined else v
     jsonBlob = new Blob([JSON.stringify(netTangoData, filter)], { type: 'text/json:charset=utf-8' })
     @theOutsideWorld.saveAs(jsonBlob, "#{title}.ntjson")
     return
 
-  # (POJO) => Unit
+  # (NetTangoBuilderData) => Unit
   storeNetTangoData: (netTangoData) ->
     set = (prop) => @storage.set(prop, netTangoData[prop])
     [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ].forEach(set)

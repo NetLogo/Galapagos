@@ -1,20 +1,5 @@
 window.RactiveLabelledInput = Ractive.extend({
-  on: {
-    'exec': (_) ->
-      if (@get('type') is 'number')
-        value = @get('value')
-        min = @get('min')
-        max = @get('max')
-        value = if (min? and value < min)
-          min
-        else if (max? and value > max)
-          max
-        else
-          value
-        @set('value', value)
-      event = @get('onChange')
-      @fire(event, _)
-  }
+
   data: () -> {
     style:    undefined # String
     id:       undefined # String
@@ -25,6 +10,25 @@ window.RactiveLabelledInput = Ractive.extend({
     onChange: undefined # String
     min:      undefined # Number
     max:      undefined # Number
+  }
+
+  on: {
+    # (Context) => Unit
+    'exec': (_) ->
+      if (@get('type') is 'number')
+        value = @get('value')
+        min   = @get('min')
+        max   = @get('max')
+        value = if (min? and value < min)
+          min
+        else if (max? and value > max)
+          max
+        else
+          value
+        @set('value', value)
+      event = @get('onChange')
+      @fire(event, _)
+      return
   }
 
   template:

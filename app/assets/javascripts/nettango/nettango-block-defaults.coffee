@@ -1,6 +1,8 @@
+# (NetTangoBlock) => NetTangoBlock
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
 
+  # (NetTangoBlock, String) => Array[NetTangoP(roperty|arameter)]
   copyPThings = (b, pThings) ->
     if b[pThings]?
       b[pThings].map( (pThing) ->
@@ -19,6 +21,7 @@ copyBlock = (block) ->
 
   copy
 
+# (NetTangoBlock) => NetTangoBlock
 createCommand = (overrides) ->
   command = {
     , action:      "command"
