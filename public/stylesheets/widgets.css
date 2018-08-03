@@ -212,6 +212,35 @@
   height: 14px;
 }
 
+.netlogo-codeusage-popup {
+  position:absolute;
+  z-index: 10;
+  border:1px solid #B2B2B2;    
+  background: white;
+  box-shadow: 3px 3px 2px #E9E9E9;
+  border-radius:4px;
+  max-height: 15em;
+  overflow-y: auto;
+}
+
+.netlogo-codeusage-list {
+  list-style:none;
+  margin-top:1px;
+  padding: 1px;
+  font-size:90%;
+  font-family: monospace;
+}
+
+.netlogo-codeusage-item {
+  padding: 1px;
+}
+
+.netlogo-codeusage-item:hover {
+  color: white;
+  background:#284570;
+  border-radius:2px;
+}
+
 .netlogo-info-editor {
   border: 1px solid black;
   height: 500px;

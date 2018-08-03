@@ -7,6 +7,11 @@ window.RactiveModelCodeComponent = Ractive.extend({
   , lastCompileFailed:     false # Boolean
   , procedureNames:           {} # Object[String, Number]
   , autoCompleteStatus:    false # Boolean
+  , codeUsage:                [] # Array[{pos: CodeMirror.Pos, lineNumber: Number, line: String }]
+  , usageVisibility:       false # Boolean
+  , selectedCode:      undefined # String
+  , usageLeft:         undefined # String
+  , usageTop:          undefined # String
   }
 
   components: {
@@ -78,15 +83,67 @@ window.RactiveModelCodeComponent = Ractive.extend({
     keywordsList = Array.from(keywords).map((item) -> item.replace("\\", ""))
     Object.keys(@getProcedureNames()).concat(keywordsList)
 
+  setupCodeUsagePopup: ->
+    editor = @findComponent('codeEditor').getEditor()
+    codeUsageMap = {
+      'Ctrl-U': =>
+        if editor.somethingSelected()
+          @setCodeUsage()
+      ,'Cmd-U': =>
+        if editor.somethingSelected()
+          @setCodeUsage()
+    }
+
+    editor.on('cursorActivity', (cm) =>
+      if @get('usageVisibility')
+        @set('usageVisibility', false)
+    )
+    
+    return
+
+  getCodeUsage: ->
+    editor = @findComponent('codeEditor').getEditor()
+    selectedCode = editor.getSelection().trim()
+    @set('selectedCode', selectedCode)
+    codeString = @get('code')
+    check = ///\b(#{selectedCode})\b///g
+    codeUsage = []
+    while (match = check.exec(codeString))
+      pos        = editor.posFromIndex(match.index + match[1].length)
+      lineNumber = pos.line + 1
+      line       = editor.getLine(pos.line)
+      codeUsage.push( { pos, lineNumber, line } )
+    codeUsage
+      
+  setCodeUsage: ->
+    codeUsage = @getCodeUsage()
+    editor = @findComponent('codeEditor').getEditor()
+    @set('codeUsage', codeUsage)
+    pos = editor.cursorCoords(editor.getCursor())
+    @set('usageLeft', pos.left)
+    @set('usageTop', pos.top)
+    @set('usageVisibility', true)
+    return
+
   on: {
     'complete': (_) ->
       @setupProceduresDropdown()
       CodeMirror.registerHelper('hint', 'fromList', @netLogoHintHelper)
       @setupAutoComplete(@autoCompleteWords())
+      @setupCodeUsagePopup()
       return
 
     'recompile': (_) ->
       @setupAutoComplete(@autoCompleteWords())
+      return
+
+    'jump-to-usage': (context, usagePos) ->
+      editor = @findComponent('codeEditor').getEditor()
+      selectedCode = @get('selectedCode')
+      end = usagePos
+      start = CodeMirror.Pos(end.line, end.ch - selectedCode.length)
+      editor.setSelection(start, end)
+      @set('usageVisibility', false)
       return
   }
 
@@ -119,6 +176,15 @@ window.RactiveModelCodeComponent = Ractive.extend({
       <codeEditor id="netlogo-code-tab-editor" code="{{code}}"
                   injectedConfig="{ lineNumbers: true, readOnly: {{isReadOnly}} }"
                   extraClasses="['netlogo-code-tab']" />
+    </div>
+    <div class="netlogo-codeusage-popup" style="left: {{usageLeft}}px; top: {{usageTop}}px;">
+      {{# usageVisibility}}
+        <ul class="netlogo-codeusage-list">
+          {{#each codeUsage}}
+            <li class="netlogo-codeusage-item" on-click="[ 'jump-to-usage', this.pos ]">{{this.lineNumber}}: {{this.line}}</li>
+          {{/each}}
+        </ul>
+      {{/}}
     </div>
     """
   # coffeelint: enable=max_line_length
