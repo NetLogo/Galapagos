@@ -6,14 +6,14 @@ class window.NetTangoController
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
     @ractive = @createRactive(element, @theOutsideWorld, @playMode)
-    @ractive.on('*.ntb-save',                 (_, code)        => @exportNetTango('storage'))
-    @ractive.on('*.ntb-recompile',            (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.ntb-netlogo-code-change',  (_, title, code) => @theOutsideWorld.setModelCode(title, code))
-    @ractive.on('*.ntb-code-dirty',           (_)              => @markCodeDirty())
-    @ractive.on('*.ntb-export-nettango',      (_)              => @exportNetTango('standalone'))
-    @ractive.on('*.ntb-export-nettango-json', (_)              => @exportNetTango('json'))
-    @ractive.on('*.ntb-import-nettango-json', (local)          => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-nettango-data',   (_, data)        => @builder.load(data))
+    @ractive.on('*.ntb-save',         (_, code)        => @exportNetTango('storage'))
+    @ractive.on('*.ntb-recompile',    (_, code)        => @setNetTangoCode(code))
+    @ractive.on('*.ntb-model-change', (_, title, code) => @theOutsideWorld.setModelCode(title, code))
+    @ractive.on('*.ntb-code-dirty',   (_)              => @markCodeDirty())
+    @ractive.on('*.ntb-export-page',  (_)              => @exportNetTango('standalone'))
+    @ractive.on('*.ntb-export-json',  (_)              => @exportNetTango('json'))
+    @ractive.on('*.ntb-import-json',  (local)          => @importNetTango(local.node.files))
+    @ractive.on('*.ntb-load-data',    (_, data)        => @builder.load(data))
 
   createRactive: (element, theOutsideWorld, playMode) ->
     new Ractive({

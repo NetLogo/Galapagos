@@ -200,7 +200,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         @set(propName, ntData[propName])
 
     if(not @get('playMode') and ntData.code?)
-      @fire('ntb-netlogo-code-change', ntData.title, ntData.code)
+      @fire('ntb-model-change', ntData.title, ntData.code)
 
     @refreshCss()
 
@@ -231,10 +231,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         <div class="ntb-block-defs-controls">
           <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
           <button class="ntb-button" type="button" on-click="ntb-save" >Save NetTango Progress</button>
-          <button class="ntb-button" type="button" on-click="ntb-export-nettango" >Export NetTango Page</button>
+          <button class="ntb-button" type="button" on-click="ntb-export-page" >Export NetTango Page</button>
           <button id="clear-all-button" class="ntb-button" type="button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
-          <button class="ntb-button" on-click="ntb-export-nettango-json" type="button">Export NetTango JSON</button>
-          <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-nettango-json" ></label>
+          <button class="ntb-button" on-click="ntb-export-json" type="button">Export NetTango JSON</button>
+          <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" ></label>
         </div>
         {{/}}
 

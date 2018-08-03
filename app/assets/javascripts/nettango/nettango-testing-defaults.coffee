@@ -18,7 +18,7 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
         ]
         , code: @codeDefault
       }
-      @fire('ntb-load-nettango-data', { }, wspDefaults)
+      @fire('ntb-load-data', { }, wspDefaults)
       return
   }
 
