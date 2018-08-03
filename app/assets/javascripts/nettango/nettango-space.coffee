@@ -5,7 +5,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     space:         null,  # NetTangoSpace
     netLogoCode:   "",    # String
     blockEditForm: null,  # RactiveNetTangoBlockForm
-    showJson:      false  # Boolean
+    showJson:      false, # Boolean
+    popupMenu:     null   # RactivePopupMenu
   }
 
   on: {
@@ -26,13 +27,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
-      @get('popupmenu').popup(this, pageX, pageY, NetTangoBlockDefaults.blocks)
+      @get('popupMenu').popup(this, pageX, pageY, NetTangoBlockDefaults.blocks)
       return false
 
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       modifyMenu = @createModifyMenuContent(space)
-      @get('popupmenu').popup(this, pageX, pageY, modifyMenu)
+      @get('popupMenu').popup(this, pageX, pageY, modifyMenu)
       return false
 
     # (Context, Integer) => Unit
@@ -62,7 +63,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
           }
         ]
       }
-      @get('popupmenu').popup(this, pageX, pageY, delMenu, spaceNumber)
+      @get('popupMenu').popup(this, pageX, pageY, delMenu, spaceNumber)
       return false
 
     # (Context, NetTangoSpace) => Unit

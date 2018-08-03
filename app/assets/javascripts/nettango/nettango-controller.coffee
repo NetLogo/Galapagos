@@ -26,18 +26,18 @@ class window.NetTangoController
         appendElement: theOutsideWorld.appendElement,       # (Element) => Unit
         newModel:      theOutsideWorld.newModel,            # () => String
         playMode:      playMode,                            # Boolean
+        popupMenu:     undefined                            # RactivePopupMenu
       }
 
       on: {
 
         'complete': (_) ->
-          popupmenu = @findComponent('popupmenu')
-          builder   = @findComponent('tangoBuilder')
-          builder.setPopupMenu(popupmenu)
+          popupMenu = @findComponent('popupmenu')
+          @set('popupMenu', popupMenu)
 
           theOutsideWorld.addEventListener('click', (event) ->
             if event?.button isnt 2
-              popupmenu.unpop()
+              popupMenu.unpop()
           )
 
           return
@@ -58,6 +58,7 @@ class window.NetTangoController
           createElement='{{ createElement }}'
           appendElement='{{ appendElement }}'
           newModel='{{ newModel }}'
+          popupMenu='{{ popupMenu }}'
           />
           {{# !playMode }}
             <testingDefaults />
