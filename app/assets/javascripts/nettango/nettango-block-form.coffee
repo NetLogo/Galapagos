@@ -2,7 +2,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   data: () -> {
     spaceName:   undefined # String
-    block:       undefined # Block
+    block:       undefined # NetTangoBlock
     blockNumber: undefined # Integer
     submitEvent: undefined # String
   }
@@ -158,7 +158,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <spacer height="15px" />
 
       <labelledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" label="Code Format ({#} for param, {P#} for property)" style="flex-grow: 1;" />
-
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
         <labelledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" label="Font weight" style="flex-grow: 1;" />
