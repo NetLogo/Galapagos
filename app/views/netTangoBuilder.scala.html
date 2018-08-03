@@ -148,7 +148,8 @@
     var overlay = document.getElementById('model-recompile-overlay')
     var theOutsideWorld = {
         setModelCode:        setModelCode
-      , getModelElementById: (id)              => modelContainer.contentWindow.document.getElementById(id)
+      , getModelCode:        ()                => modelContainer.contentWindow.session.getNlogo()
+      , getElementById:      (id)              => modelContainer.contentWindow.document.getElementById(id)
       , createElement:       (elementType)     => document.createElement(elementType)
       , appendElement:       (element)         => modelContainer.contentWindow.document.body.appendChild(element)
       , addEventListener:    (event, callback) => document.addEventListener(event, callback)
