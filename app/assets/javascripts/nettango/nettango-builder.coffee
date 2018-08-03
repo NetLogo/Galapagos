@@ -5,6 +5,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     newModel:        undefined,    # String
     lastCss:         "",           # String
     extraCssIsDirty: false,        # Boolean
+    popupMenu:       undefined,    # RactivePopupMenu
     blockEditor: {
       show:        false,          # Boolean
       spaceNumber: undefined,      # Integer
@@ -86,7 +87,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           }
         ]
       }
-      @popupmenu.popup(this, pageX, pageY, clearMenu)
+      @get('popupMenu').popup(this, pageX, pageY, clearMenu)
       return false
 
     # (Context) => Unit
@@ -211,12 +212,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     return
 
-  # (PopupMenu) => Unit
-  setPopupMenu: (popupmenu) ->
-    @popupmenu = popupmenu
-    @set('popupmenu', popupmenu)
-    return
-
   components: {
     tangoDefs:     RactiveNetTangoDefs
   }
@@ -238,7 +233,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         </div>
         {{/}}
 
-        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupmenu={{ popupmenu }} />
+        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} />
 
         {{# !playMode }}
           <ul style-list-style="none">
