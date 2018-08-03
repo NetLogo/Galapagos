@@ -21,12 +21,12 @@ class window.NetTangoController
       el: element,
 
       data: () -> {
-        findElement:   theOutsideWorld.getModelElementById, # (String) => Element
-        createElement: theOutsideWorld.createElement,       # (String) => Element
-        appendElement: theOutsideWorld.appendElement,       # (Element) => Unit
-        newModel:      theOutsideWorld.newModel,            # () => String
-        playMode:      playMode,                            # Boolean
-        popupMenu:     undefined                            # RactivePopupMenu
+        findElement:   theOutsideWorld.getElementById, # (String) => Element
+        createElement: theOutsideWorld.createElement,  # (String) => Element
+        appendElement: theOutsideWorld.appendElement,  # (Element) => Unit
+        newModel:      theOutsideWorld.newModel,       # () => String
+        playMode:      playMode,                       # Boolean
+        popupMenu:     undefined                       # RactivePopupMenu
       }
 
       on: {
@@ -81,7 +81,7 @@ class window.NetTangoController
       @builder.load(nt)
       @firstLoad = false
     else
-      netTangoCodeElement = @theOutsideWorld.getModelElementById('ntango-code')
+      netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
       if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
         data = JSON.parse(netTangoCodeElement.textContent)
         @builder.load(data)
@@ -134,22 +134,21 @@ class window.NetTangoController
 
   # (String) => Unit
   exportNetTango: (target) ->
-    content  = modelContainer.contentWindow ? window
-    nlogoRes = content.session.getNlogo()
-    if(not nlogoRes.success)
+    title = @theOutsideWorld.getModelTitle()
+
+    modelCodeMaybe = @theOutsideWorld.getModelCode()
+    if(not modelCodeMaybe.success)
       throw new Error("Unable to get existing NetLogo code for replacement")
 
     netTangoData       = @builder.getNetTangoBuilderData()
-    netTangoData.code  = nlogoRes.result
-    netTangoData.title = content.session.modelTitle()
+    netTangoData.code  = modelCodeMaybe.result
+    netTangoData.title = title
 
     # always store for 'storage' target
     @storeNetTangoData(netTangoData)
 
     if (target is 'storage')
       return
-
-    title = @theOutsideWorld.getModelTitle()
 
     if (target is 'json')
       @exportJSON(title, netTangoData)
@@ -179,7 +178,7 @@ class window.NetTangoController
     delete netTangoData.code
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
-    styleElement = @theOutsideWorld.getModelElementById('ntb-injected-style')
+    styleElement = @theOutsideWorld.getElementById('ntb-injected-style')
     if (styleElement?)
       newElement = exportDom.createElement('style')
       newElement.id = 'ntb-injected-style'
