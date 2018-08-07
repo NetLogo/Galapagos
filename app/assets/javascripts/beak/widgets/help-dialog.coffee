@@ -81,6 +81,7 @@ window.RactiveHelpDialog = Ractive.extend({
     helpInteractive:
       keyTable([
         [[platformCtrlHtml, "shift", "l"], "switch to authoring mode"]
+      , [[platformCtrlHtml, "u"         ], "find all usages of selected text (when in NetLogo Code editor)"]
       ])
 
     helpText:
