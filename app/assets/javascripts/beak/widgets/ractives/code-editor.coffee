@@ -93,6 +93,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
         if editor.somethingSelected()
           @setCodeUsage()
     }
+    editor.addKeyMap(codeUsageMap)
 
     editor.on('cursorActivity', (cm) =>
       if @get('usageVisibility')
