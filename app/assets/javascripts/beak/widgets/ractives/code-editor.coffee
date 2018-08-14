@@ -82,7 +82,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     allKeywords       = new Set(window.keywords.all)
     supportedKeywords = Array.from(allKeywords)
       .filter( (kw) -> (not window.keywords.unsupported.includes(kw)) )
-      .map   ( (kw) -> kw.replace("\\", "") )
+      .map(    (kw) -> kw.replace("\\", "") )
     Object.keys(@getProcedureNames()).concat(supportedKeywords)
 
   setupCodeUsagePopup: ->
