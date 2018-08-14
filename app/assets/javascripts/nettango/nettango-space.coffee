@@ -232,6 +232,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     {{# space }}
     <div class="ntb-block-def">
       <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
+
       {{# !playMode }}
       <div class="ntb-block-defs-controls" >
         <button id="add-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
@@ -241,9 +242,11 @@ window.RactiveNetTangoSpace = Ractive.extend({
         <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
       </div>
       {{/ !playMode }}
+
       <div class="nt-container" id="{{ spaceId }}" >
         <canvas id="{{ spaceId }}-canvas" class="nt-canvas" />
       </div>
+
       {{# !playMode }}
       <div class="ntb-block-defs-controls">
         <label class="ntb-toggle-block" >
@@ -252,6 +255,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         </label>
         {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>{{/ showJson }}
       </div>
+
       {{# showJson }}
       <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
        this ]" lazy />

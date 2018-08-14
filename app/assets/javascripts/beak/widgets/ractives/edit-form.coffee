@@ -6,9 +6,9 @@ window.EditForm = Ractive.extend({
   view:         undefined # Element
 
   data: -> {
-    parentClass:     'netlogo-widget-container'
-  , submitLabel:     'OK'
-  , cancelLabel:     'Cancel'
+    parentClass:     'netlogo-widget-container' # String
+  , submitLabel:     'OK'       # String
+  , cancelLabel:     'Cancel'   # String
   , horizontalOffset: undefined # Number
   , verticalOffset:   undefined # Number
   , amProvingMyself:  false     # Boolean
@@ -69,8 +69,8 @@ window.EditForm = Ractive.extend({
       dialogHalfWidth  = elem.offsetWidth  / 2
       dialogHalfHeight = elem.offsetHeight / 2
 
-      @set('xLoc', @get('horizontalOffset') ? containerMidX - dialogHalfWidth)
-      @set('yLoc', @get('verticalOffset')   ? containerMidY - dialogHalfHeight)
+      @set('xLoc', @get('horizontalOffset') ? (containerMidX - dialogHalfWidth))
+      @set('yLoc', @get('verticalOffset')   ? (containerMidY - dialogHalfHeight))
 
       @resetPartial('widgetFields', @partials.widgetFields)
 

@@ -1,4 +1,4 @@
-window.RactiveNetTangoDefs = Ractive.extend({
+window.RactiveNetTangoSpaces = Ractive.extend({
 
   data: () -> {
     playMode:         false, # Boolean
