@@ -213,7 +213,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     return
 
   components: {
-    tangoDefs:     RactiveNetTangoDefs
+    tangoDefs:     RactiveNetTangoSpaces
   }
 
   template:

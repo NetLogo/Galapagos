@@ -19,7 +19,7 @@ class window.NetTangoStorage
     @localStorage.setItem('ntInProgress', JSON.stringify(@inProgress))
     return
 
-  # (Unit) => NetTangoStorage
+  # () => NetTangoStorage
   @fakeStorage: () ->
     _ls = { }
     {
