@@ -40,7 +40,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
       @setProcedureNames()
     )
     return
- 
+
   getProcedureNames: ->
     codeString = @get('code')
     procedureNames = {}
@@ -48,7 +48,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     while (procedureMatch = procedureCheck.exec(codeString))
       procedureNames[procedureMatch[1]] = procedureMatch.index + procedureMatch[0].length
     procedureNames
-    
+
   setProcedureNames: ->
     procedureNames = @getProcedureNames()
     @set('procedureNames', procedureNames)
@@ -79,9 +79,11 @@ window.RactiveModelCodeComponent = Ractive.extend({
       return { list: found, from: from, to: to }
 
   autoCompleteWords: ->
-    keywords = new Set(window.keywords.all)
-    keywordsList = Array.from(keywords).map((item) -> item.replace("\\", ""))
-    Object.keys(@getProcedureNames()).concat(keywordsList)
+    allKeywords       = new Set(window.keywords.all)
+    supportedKeywords = Array.from(allKeywords)
+      .filter( (kw) -> (not window.keywords.unsupported.includes(kw)) )
+      .map   ( (kw) -> kw.replace("\\", "") )
+    Object.keys(@getProcedureNames()).concat(supportedKeywords)
 
   setupCodeUsagePopup: ->
     editor = @findComponent('codeEditor').getEditor()
@@ -99,7 +101,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
       if @get('usageVisibility')
         @set('usageVisibility', false)
     )
-    
+
     return
 
   getCodeUsage: ->
@@ -115,7 +117,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
       line       = editor.getLine(pos.line)
       codeUsage.push( { pos, lineNumber, line } )
     codeUsage
-      
+
   setCodeUsage: ->
     codeUsage = @getCodeUsage()
     editor = @findComponent('codeEditor').getEditor()

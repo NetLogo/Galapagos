@@ -543,6 +543,58 @@ constants = [
   'white'
 ]
 
+unsupported = [
+  'ask-concurrent',
+  'beep',
+  'display',
+  'export-interface',
+  'file-close',
+  'file-close-all',
+  'file-delete',
+  'file-flush',
+  'file-open',
+  'file-print',
+  'file-show',
+  'file-type',
+  'file-write',
+  'hubnet-broadcast',
+  'hubnet-broadcast-clear-output',
+  'hubnet-broadcast-message',
+  'hubnet-clear-override',
+  'hubnet-clear-overrides',
+  'hubnet-kick-all-clients',
+  'hubnet-kick-client',
+  'hubnet-fetch-message',
+  'hubnet-reset',
+  'hubnet-reset-perspective',
+  'hubnet-send',
+  'hubnet-send-clear-output',
+  'hubnet-send-follow',
+  'hubnet-send-message',
+  'hubnet-send-override',
+  'hubnet-send-watch',
+  'inspect',
+  'no-display',
+  'set-current-directory',
+  'file-at-end\\?',
+  'file-exists\\?',
+  'file-read',
+  'file-read-characters',
+  'file-read-line',
+  'hubnet-clients-list',
+  'hubnet-enter-message\\?',
+  'hubnet-exit-message\\?',
+  'hubnet-message',
+  'hubnet-message-source',
+  'hubnet-message-tag',
+  'hubnet-message-waiting\\?',
+  'movie-status',
+  'user-directory',
+  'user-file',
+  'user-new-file',
+  'user-one-of'
+]
+
 allMixedCase = [].concat(commands, constants, directives, linkVars, patchVars, reporters, turtleVars)
 all          = allMixedCase.map((x) -> x.toLowerCase())
 
@@ -556,4 +608,5 @@ window.keywords =
   , patchVars
   , reporters
   , turtleVars
+  , unsupported
   }
