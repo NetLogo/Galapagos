@@ -41,7 +41,9 @@
     var modelContainer = document.querySelector('#model-container');
     var hostPrefix     = location.protocol + '//' + location.host;
 
-    document.querySelector('#model-file-input').addEventListener('change', function (event) {
+    var modelFileInput = document.querySelector('#model-file-input');
+    modelFileInput.addEventListener('click', function (event) { this.value = '' })
+    modelFileInput.addEventListener('change', function (event) {
       var reader = new FileReader();
       reader.onload = function (e) {
         openNlogo(e.target.result);
