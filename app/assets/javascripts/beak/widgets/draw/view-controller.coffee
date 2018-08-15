@@ -384,7 +384,8 @@ class DrawingLayer extends Drawer
         @ctx.save()
 
         @ctx.strokeStyle = @_rgbToCss(penColor)
-        @ctx.lineWidth   = @view.onePixel
+        @ctx.lineWidth   = size * @view.onePixel
+        @ctx.lineCap     = 'round'
 
         @ctx.beginPath()
 
