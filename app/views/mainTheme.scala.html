@@ -29,13 +29,12 @@
           case class TopLink(id: String, url: String, text: String) extends TopSomething
           case class TopLabel(id: String, text: String)             extends TopSomething
 
-          val NetTangoLink = TopLink ("ntango-build", s"./${relativizer}ntango-build"      , "NetTango Builder")
           val LaunchLink   = TopLink ("launch"      , s"./${relativizer}launch"            , "Launch")
           val UpdatesLink  = TopLink ("updates"     , s"./${relativizer}whats-new"         , "What's New")
           val DocsLabel    = TopLabel("docs"                                               , "Documentation")
           val NetLogoLink  = TopLink ("netlogo"     , "http://ccl.northwestern.edu/netlogo", "About NetLogo")
 
-          Html(Seq(NetTangoLink, LaunchLink, UpdatesLink, DocsLabel, NetLogoLink).map {
+          Html(Seq(LaunchLink, UpdatesLink, DocsLabel, NetLogoLink).map {
 
             case TopLabel(id, text) =>
               val baseClasses = "topbar-quick-link topbar-text topbar-label topbar-link brand"
