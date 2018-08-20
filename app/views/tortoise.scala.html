@@ -55,23 +55,32 @@
 
     function pickModel(url) {
       var encoded = encodeURI(hostPrefix + '/assets/' + url);
-      openURL(encoded);
+      window.location.hash = encoded;
     }
 
     function pickRandom() {
       var model = exports.handPickedModels[Math.floor(Math.random() * exports.handPickedModels.length)];
       exports.selectModel(model);
-      pickModel(model + ".nlogo")
+      pickModel(model + ".nlogo");
     }
 
-    function openURL(url) {
-      window.location.hash = url;
+    function openModelFromUrl(url) {
       if (decodeURI(url) === url) {
         url = encodeURI(url);
       }
-      exports.selectModelByURL(window.location.hash.slice(1));
-      modelContainer.src = "/web?"+url;
+      if (url === "NewModel") {
+        exports.selectModel("Select a model");
+        modelContainer.contentWindow.location.replace("/web");
+      } else {
+        exports.selectModelByURL(url);
+        modelContainer.contentWindow.location.replace("/web?"+url);
+      }
     }
+
+    window.addEventListener("hashchange", function(e) {
+      var url = window.location.hash.slice(1);
+      openModelFromUrl(url);
+    })
 
     window.addEventListener("message", function(e) {
 
@@ -111,9 +120,9 @@
       if (window.location.hash) {
         var hash = window.location.hash.substring(1);
         if (hash === "NewModel") {
-          modelContainer.src = "/web";
+          modelContainer.contentWindow.location.replace("/web");
         } else {
-          openURL(hash);
+          openModelFromUrl(hash);
         }
       } else {
         pickRandom();
