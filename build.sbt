@@ -22,7 +22,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-0abb163"
+val tortoiseVersion = "1.0-3ebb85d"
 
 libraryDependencies ++= Seq(
   ehcache,
@@ -31,20 +31,20 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "compilerjvm" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   "com.typesafe.play" %% "play-iteratees" % "2.6.1",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.11" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.14" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 )
 
 libraryDependencies ++= Seq(
-  "org.webjars" % "chosen" % "1.7.0",
+  "org.webjars" % "chosen" % "1.8.7",
   "org.webjars.bower" % "filesaver" % "1.3.3",
   "org.webjars.npm" % "mousetrap" % "1.6.1",
   "org.webjars.bower" % "google-caja" % "6005.0.0",
-  "org.webjars" % "highcharts" % "6.0.4",
-  "org.webjars" % "jquery" % "3.2.1",
+  "org.webjars" % "highcharts" % "6.1.1",
+  "org.webjars" % "jquery" % "3.3.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars.npm" % "ractive" % "0.9.3",
-  "org.webjars" % "codemirror" % "5.33.0"
+  "org.webjars.npm" % "ractive" % "0.9.9",
+  "org.webjars.npm" % "codemirror" % "5.39.2"
 )
 
 resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
