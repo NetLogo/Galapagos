@@ -88,7 +88,7 @@ exports.selectModelByURL = (modelURL) ->
     truePath     = "#{truePrefix}#{modelName}".replace(/%20/g, " ")
     choiceElems  = document.getElementsByName('models')[0].children
     choicesArray = [].slice.call(choiceElems)
-    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerHTML is truePath then x else acc), null)
+    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerText is truePath then x else acc), null)
 
     if choiceElem?
       exports.selectModel(modelPath)
