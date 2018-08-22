@@ -129,7 +129,7 @@
       var activeContainer = loadingOverlay;
       var modelContainer  = document.querySelector("#netlogo-model-container");
       var nlogoScript     = document.querySelector("#nlogo-code");
-      var standaloneURL   = "@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))";
+      var standaloneURL   = "https:@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))";
       var pageTitle       = function(modelTitle) {
         if (modelTitle != null && modelTitle != "") {
           return "NetLogo Web: " + modelTitle;
