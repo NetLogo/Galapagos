@@ -31,7 +31,7 @@ libraryDependencies ++= Seq(
   "org.nlogo" % "compilerjvm" % tortoiseVersion,
   "org.nlogo" % "netlogowebjs" % tortoiseVersion,
   "com.typesafe.play" %% "play-iteratees" % "2.6.1",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.14" % "test",
+  "com.typesafe.akka" %% "akka-testkit" % "2.5.15" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
 )
 

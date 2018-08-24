@@ -23,3 +23,5 @@ scalacOptions ++= Seq(
 resolvers += Resolver.bintrayIvyRepo("netlogo", "play-scraper")
 
 addSbtPlugin("org.nlogo" % "play-scraper" % "0.8.1")
+
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.4")
