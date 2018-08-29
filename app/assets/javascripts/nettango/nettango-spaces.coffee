@@ -27,6 +27,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       spaces = @get('spaces')
       @set('spaces', spaces.filter( (s) -> s.id isnt spaceNumber ))
+      @updateCode(false)
       return
 
   }
