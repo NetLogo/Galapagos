@@ -36,7 +36,7 @@ window.RactiveLabelledInput = Ractive.extend({
     <div style="flex: column; padding: 0px;{{ style }}">
       <label for="{{ id }}">{{ label }}</label>
       <input id="{{ id }}" name="{{ name }}" type="{{ type }}" value="{{ value }}" min="{{ min }}" max="{{ max }}"
-        class="widget-edit-inputbox" style="margin: 0px; width: 90%; min-width: 30px;" lazy
+        class="widget-edit-inputbox" style="margin: 0px; width: 90%; min-width: 30px;" lazy step="any"
         on-change="exec"
         >
     </div>
