@@ -149,7 +149,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   # () => Unit
   refreshCss: () ->
-    # we use a fancy "CSS Injection" technique to get styles applied to the model iFrame.
+    # We use a fancy "CSS Injection" technique to get styles applied to the model iFrame - JMB August 2018
     styleElement = @get('findElement')('ntb-injected-style')
 
     if (not styleElement)
@@ -174,7 +174,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     newCss = newCss.concat([
       extraCss,
-      # override the rounded corners of tabs to make them easier to hide with CSS and without JS
+      # Override the rounded corners of tabs to make them easier to hide with CSS and without JS - JMB August 2018
       '.netlogo-tab:first-child { border-radius: 0px; }',
       '.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }',
       '.netlogo-tab { border: 1px solid rgb(36, 36, 121); }',
@@ -205,7 +205,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     @refreshCss()
 
-    # if this was an import, clear the value so we can re-import the same file in Chrome and Safari
+    # If this was an import, clear the value so we can re-import the same file in Chrome and Safari - JMB August 2018
     importInput = @find('#ntb-import-json')
     if importInput?
       importInput.value = ''

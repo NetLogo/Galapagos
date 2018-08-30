@@ -144,7 +144,7 @@ class window.NetTangoController
     netTangoData.code  = modelCodeMaybe.result
     netTangoData.title = title
 
-    # always store for 'storage' target
+    # Always store for 'storage' target - JMB August 2018
     @storeNetTangoData(netTangoData)
 
     if (target is 'storage')
@@ -154,7 +154,7 @@ class window.NetTangoController
       @exportJSON(title, netTangoData)
       return
 
-    # else target is 'standalone'
+    # Else target is 'standalone' - JMB August 2018
     parser      = new DOMParser()
     ntPlayer    = new Request('./ntango-play')
     playerFetch = fetch(ntPlayer).then( (ntResp) ->
@@ -174,7 +174,7 @@ class window.NetTangoController
     nlogoCodeElement.textContent = netTangoData.code
 
     netTangoCodeElement = exportDom.getElementById('ntango-code')
-    # for standalone we don't want the code in the netTango data (it's in the nlogo-code element)
+    # For standalone we don't want the code in the netTango data (it's in the nlogo-code element) - JMB August 2018
     delete netTangoData.code
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
