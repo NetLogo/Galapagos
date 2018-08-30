@@ -14,11 +14,11 @@ window.RactiveLabelledInput = Ractive.extend({
 
   on: {
     # (Context) => Unit
-    'exec': (_) ->
+    'exec': (context) ->
       if (@get('type') is 'number')
         @set('value', @clampNumber(@get('value'), @get('min'), @get('max')))
       event = @get('onChange')
-      @fire(event, _)
+      @fire(event, context)
       return
   }
 
