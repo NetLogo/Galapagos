@@ -188,13 +188,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
     up = { eventName: 'ntb-block-up', name: 'move up' }
     dn = { eventName: 'ntb-block-down', name: 'move down' }
     items = for def, num in space.defs.blocks
-      itemDele = Object.assign({ data: num }, dele)
-      itemEdit = Object.assign({ data: num }, edit)
-      itemUp   = Object.assign({ data: num }, up)
-      itemDn   = Object.assign({ data: num }, dn)
       {
         name:  def.action
-        items: [itemDele, itemEdit, itemUp, itemDn]
+        items: [dele, edit, up, dn].map((x) -> Object.assign({ data: num }, x))
       }
     {
       name: "_",
