@@ -26,6 +26,15 @@ body#ntp-body, html#ntp-body {
   align-items: top;
 }
 
+.ntb-block-edit-overlay {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  display: block;
+}
+
 .ntb-block-defs-controls {
   display: flex;
   flex-direction: row;
