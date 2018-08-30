@@ -9,7 +9,7 @@ window.RactiveNetTangoParameter = Ractive.extend({
   on: {
     # (Context) => Unit
     '*.ntb-param-type-changed': (_) ->
-      # reset our default to the appropriate value...
+      # Reset our default to the appropriate value  - JMB August 2018
       p = @get('p')
       newDefVal = switch p.type
         when 'bool' then false

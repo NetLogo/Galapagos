@@ -3,7 +3,6 @@ class window.NetTangoStorage
   constructor: (@localStorage) ->
     inProgressJson = @localStorage.getItem('ntInProgress')
     if (inProgressJson)
-      # decode the JSON
       @inProgress = JSON.parse(inProgressJson)
     else
       @inProgress = { }

@@ -41,7 +41,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   # (NetTangoBlock) => Unit
   _setBlock: (sourceBlock) ->
-    # Copy so we drop any uncommitted changes
+    # Copy so we drop any uncommitted changes - JMB August 2018
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
 
     block.builderType = switch block.type
@@ -68,7 +68,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     @fire('show-yourself')
     return
 
-  # This does something useful for widgets in `EditForm`, but we don't need it
+  # This does something useful for widgets in `EditForm`, but we don't need it - JMB August 2018
   genProps: (_) ->
     null
 
@@ -113,9 +113,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     pCopies = for pValues in pThings
       pThing = { }
       [ 'name', 'unit', 'type' ].forEach((f) -> pThing[f] = pValues[f])
-      # Using `default` as a property name gives Ractive some issues, so we "translate" it back here.
+      # Using `default` as a property name gives Ractive some issues, so we "translate" it back here - JMB August 2018
       pThing.default = pValues.def
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
+      # - JMB August 2018
       if pValues.type is 'range'
         [ 'min', 'max', 'step' ].forEach((f) -> pThing[f] = pValues[f])
       else if pValues.type is 'select'

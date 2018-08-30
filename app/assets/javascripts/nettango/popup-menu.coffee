@@ -15,6 +15,7 @@ window.RactivePopupMenu = Ractive.extend({
   # Items   = { name: String, eventName: String, items: Array[Content] }
   # The `eventName` string is optional for an Item - if not given the event on the root `content` will be used
   # The `menuData` (if sent via the `popup()` method) and the `data` for each item will be passed to the fired event
+  # -JMB August 2018
 
   on: {
 
@@ -67,7 +68,7 @@ window.RactivePopupMenu = Ractive.extend({
   # (Content) => Integer
   _markContent: (content) ->
     # tag all the content levels with ID numbers, build a total ID array so we can create
-    # a collection of popup menu levels
+    # a collection of popup menu levels - JMB August 2018
     setLevelRec = (item, level) ->
       item.level = level
       maxLevel = if item.items? and item.items.length > 0
