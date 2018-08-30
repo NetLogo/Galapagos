@@ -36,7 +36,7 @@ window.addEventListener('click', ({ target }) ->
 
 window.addEventListener('load', ->
 
-  relativizer     = if window.location.pathname.indexOf('/docs/') is -1 then "" else "../"
+  relativizer     = if window.location.pathname.includes('/docs/') then "" else "../"
 
   authoringLink   = { text: "Authoring"        , url: "./#{relativizer}docs/authoring"   }
   differencesLink = { text: "What's Different?", url: "./#{relativizer}docs/differences" }
