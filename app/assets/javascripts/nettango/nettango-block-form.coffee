@@ -16,14 +16,14 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       return
 
     # (Context, String) => Boolean
-    'ntb-add-p-thing': (_, pType) ->
-      num = @get("block.#{pType}.length")
-      @push("block.#{pType}", @defaultParam(pType, num))
+    'ntb-add-attribute': (_, attributeType) ->
+      num = @get("block.#{attributeType}.length")
+      @push("block.#{attributeType}", @defaultAttribute(attributeType, num))
       return false
 
     # (Context, String, Integer) => Boolean
-    '*.ntb-delete-p-thing': (_, pType, num) ->
-      @splice("block.#{pType}", num, 1)
+    '*.ntb-delete-attribute': (_, attributeType, num) ->
+      @splice("block.#{attributeType}", num, 1)
       return false
 
   }
@@ -31,9 +31,9 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   oninit: ->
     @_super()
 
-  # (String, Integer) => NetTangoParameter
-  defaultParam: (pType, num) -> {
-      name: "#{pType}#{num}"
+  # (String, Integer) => NetTangoAttribute
+  defaultAttribute: (attributeType, num) -> {
+      name: "#{attributeType}#{num}"
     , type: "num"
     , unit: undefined
     , def:  "10"
@@ -103,27 +103,27 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         block.start   = false
         block.control = false
 
-    block.params     = @processPThings(blockValues.params)
-    block.properties = @processPThings(blockValues.properties)
+    block.params     = @processAttributes(blockValues.params)
+    block.properties = @processAttributes(blockValues.properties)
 
     block
 
-  # (Array[NetTangoParameter]) => Array[NetTangoParameter]
-  processPThings: (pThings) ->
-    pCopies = for pValues in pThings
-      pThing = { }
-      [ 'name', 'unit', 'type' ].forEach((f) -> pThing[f] = pValues[f])
+  # (Array[NetTangoAttribute]) => Array[NetTangoAttribute]
+  processAttributes: (attributes) ->
+    attributeCopies = for attrValues in attributes
+      attribute = { }
+      [ 'name', 'unit', 'type' ].forEach((f) -> attribute[f] = attrValues[f])
       # Using `default` as a property name gives Ractive some issues, so we "translate" it back here - JMB August 2018
-      pThing.default = pValues.def
+      attribute.default = attrValues.def
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
       # - JMB August 2018
-      if pValues.type is 'range'
-        [ 'min', 'max', 'step' ].forEach((f) -> pThing[f] = pValues[f])
-      else if pValues.type is 'select'
-        pThing.values = pValues.valuesString.split(/\s*;\s*|\n/).filter((s) -> s isnt "")
-      pThing
+      if attrValues.type is 'range'
+        [ 'min', 'max', 'step' ].forEach((f) -> attribute[f] = attrValues[f])
+      else if attrValues.type is 'select'
+        attribute.values = attrValues.valuesString.split(/\s*;\s*|\n/).filter((s) -> s isnt "")
+      attribute
 
-    pCopies
+    attributeCopies
 
   components: {
       formCheckbox:  RactiveEditFormCheckbox
@@ -132,7 +132,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , spacer:        RactiveEditFormSpacer
     , labelledInput: RactiveLabelledInput
     , dropdown:      RactiveDropdown
-    , parameter:     RactiveNetTangoParameter
+    , attribute:     RactiveNetTangoAttribute
   }
 
   partials: {
@@ -175,20 +175,20 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Parameters</label>
-          <button class="ntb-button" type="button" on-click="[ 'ntb-add-p-thing', 'params' ]">Add Parameter</button>
+          <button class="ntb-button" type="button" on-click="[ 'ntb-add-attribute', 'params' ]">Add Parameter</button>
         </div>
         {{#params:number }}
-          <parameter number="{{ number }}" p="{{ this }}" pType="params" />
+          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="params" />
         {{/params }}
       </div>
 
       <div class="flex-column" >
         <div class="ntb-block-defs-controls">
           <label>Block Properties</label>
-          <button class="ntb-button" type="button" on-click="[ 'ntb-add-p-thing', 'properties' ]">Add Property</button>
+          <button class="ntb-button" type="button" on-click="[ 'ntb-add-attribute', 'properties' ]">Add Property</button>
         </div>
         {{#properties:number }}
-          <parameter number="{{ number }}" p="{{ this }}" pType="properties" />
+          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="properties" />
         {{/properties }}
       </div>
 

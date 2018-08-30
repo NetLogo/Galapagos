@@ -1,23 +1,22 @@
+# (NetTangoBlock, String) => Array[NetTangoAttribute]
+copyAttributes = (b, attributeType) ->
+  if b[attributeType]?
+    b[attributeType].map( (attribute) ->
+      attribute['def'] = attribute['default']
+      attrCopy = Object.assign({ }, attribute)
+      if attribute.type is 'select'
+        attrCopy.values = attribute.values.slice()
+        attrCopy.valuesString = attribute.values.join(';')
+      attrCopy
+    )
+  else
+    []
+
 # (NetTangoBlock) => NetTangoBlock
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
-
-  # (NetTangoBlock, String) => Array[NetTangoP(roperty|arameter)]
-  copyPThings = (b, pThings) ->
-    if b[pThings]?
-      b[pThings].map( (pThing) ->
-        pThing['def'] = pThing['default']
-        pCopy = Object.assign({ }, pThing)
-        if pThing.type is 'select'
-          pCopy.values = pThing.values.slice()
-          pCopy.valuesString = pCopy.values.join(';')
-        pCopy
-      )
-    else
-      []
-
-  copy.params     = copyPThings(block, 'params')
-  copy.properties = copyPThings(block, 'properties')
+  copy.params     = copyAttributes(block, 'params')
+  copy.properties = copyAttributes(block, 'properties')
 
   copy
 
