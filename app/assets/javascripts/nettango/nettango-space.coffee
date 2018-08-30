@@ -145,12 +145,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     form = @get('blockEditForm')
     form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
     overlay = @root.find('.widget-edit-form-overlay')
-    overlay.style.height   = "100%"
-    overlay.style.width    = "100%"
-    overlay.style.top      = 0
-    overlay.style.left     = 0
-    overlay.style.position = "absolute"
-    overlay.style.display  = "block"
+    overlay.classList.add('ntb-block-edit-overlay')
     return
 
   # (NetTangoSpace) => Unit
