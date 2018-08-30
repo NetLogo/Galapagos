@@ -5,12 +5,8 @@ body#ntp-body, html#ntp-body {
 .ntb-block-def {
   display: flex;
   flex-direction: column;
-  padding: 0.5em;
-  padding-left: 0.2em;
-  padding-right: 0.2em;
-  margin: 0.5em;
-  margin-left: 0.2em;
-  margin-right: 0.2em;
+  padding: 0.5em 0.2em;
+  margin: 0.5em 0.2em;
   background: #fff;
 }
 
