@@ -77,11 +77,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    # coffeelint: disable=max_line_length
-    [ 'action', 'format', 'required', 'limit', 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+    [ 'action', 'format', 'required', 'limit', 'blockColor',
+      'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
-    # coffeelint: enable=max_line_length
 
     switch blockValues.builderType
       when 'Procedure'
