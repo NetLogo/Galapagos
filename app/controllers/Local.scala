@@ -20,7 +20,7 @@ class Local @Inject() ( components: ControllerComponents
   implicit val mode        = environment.mode
 
   def launch: Action[AnyContent] = Action {
-    implicit req =>
+    implicit request =>
       Ok(views.html.tortoise())
   }
 
