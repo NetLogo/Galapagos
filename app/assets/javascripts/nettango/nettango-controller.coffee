@@ -15,7 +15,14 @@ class window.NetTangoController
     @ractive.on('*.ntb-import-json',  (local)          => @importNetTango(local.node.files))
     @ractive.on('*.ntb-load-data',    (_, data)        => @builder.load(data))
 
+  getTestingDefaults: () ->
+    if (@playMode)
+      Ractive.extend({ })
+    else
+      RactiveNetTangoTestingDefaults
+
   createRactive: (element, theOutsideWorld, playMode) ->
+
     new Ractive({
 
       el: element,
@@ -46,7 +53,7 @@ class window.NetTangoController
       components: {
           popupmenu:       RactivePopupMenu
         , tangoBuilder:    RactiveNetTangoBuilder
-        , testingDefaults: RactiveNetTangoTestingDefaults
+        , testingDefaults: @getTestingDefaults()
       },
 
       template:
