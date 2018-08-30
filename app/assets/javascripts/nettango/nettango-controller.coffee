@@ -213,12 +213,12 @@ class window.NetTangoController
 
   # () => Unit
   enableRecompileOverlay: () ->
-    overlay.style.display = "flex"
+    @overlay.style.display = "flex"
     return
 
   # () => Unit
   hideRecompileOverlay: () ->
-    overlay.style.display = "none"
+    @overlay.style.display = ""
     return
 
   # (Array[Widget]) => Unit
