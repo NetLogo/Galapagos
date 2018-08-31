@@ -193,7 +193,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     }
 
   components: {
-    labelledInput: RactiveLabelledInput
+    labeledInput: RactiveTwoWayLabeledInput
   }
 
   template:
@@ -208,8 +208,10 @@ window.RactiveNetTangoSpace = Ractive.extend({
         <button id="add-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
         <button id="modify-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-modify', this ]" {{# defs.blocks.length === 0 }}disabled{{/}}>Modify Block ▼</button>
         <button id="delete-space-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
-        <labelledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" label="Width" onChange="ntb-size-change" min="50" max="1600" />
-        <labelledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" label="Height" onChange="ntb-size-change" min="50" max="1600" />
+        <labeledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" labelStr="Width"
+          onChange="ntb-size-change" min="50" max="1600" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" labelStr="Height"
+          onChange="ntb-size-change" min="50" max="1600" divClass="ntb-flex-column" class="ntb-input" />
       </div>
       {{/ !playMode }}
 

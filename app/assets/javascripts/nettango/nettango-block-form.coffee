@@ -129,7 +129,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , formCode:      RactiveCodeContainerOneLine
     , formDropdown:  RactiveEditFormDropdown
     , spacer:        RactiveEditFormSpacer
-    , labelledInput: RactiveLabelledInput
+    , labeledInput:  RactiveTwoWayLabeledInput
     , dropdown:      RactiveDropdown
     , attribute:     RactiveNetTangoAttribute
   }
@@ -143,7 +143,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       """
       {{# block }}
 
-      <labelledInput id="{{ id }}-name" name="name" type="text" value="{{ action }}" label="Display name" style="flex-grow: 1;" />
+      <labeledInput id="{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
+        divClass="ntb-flex-column" class="ntb-input" />
 
       <spacer height="15px" />
 
@@ -151,24 +152,31 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         <dropdown id="{{ id }}-type" name="{{ builderType }}" value="{{ builderType }}" label="Type"
           options="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
           />
-        <labelledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" label="Limit" style="flex-grow: 1;"
-          min="1" max="100" />
+        <labeledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
+          min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
       </div>
 
       <spacer height="15px" />
 
-      <labelledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" label="Code Format ({#} for param, {P#} for property)" style="flex-grow: 1;" />
+      <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for param, {P#} for property)"
+        divClass="ntb-flex-column" class="ntb-input" />
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
-        <labelledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" label="Font weight" style="flex-grow: 1;" />
-        <labelledInput id="{{ id }}-f-size"   name="font-size"   type="number" value="{{ fontSize }}"   label="Font size"   style="flex-grow: 1;" />
-        <labelledInput id="{{ id }}-f-face"   name="font-face"   type="text"   value="{{ fontFace }}"   label="Typeface"    style="flex-grow: 2;" />
+        <labeledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" labelStr="Font weight"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-f-size"   name="font-size"   type="number" value="{{ fontSize }}"   labelStr="Font size"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-f-face"   name="font-face"   type="text"   value="{{ fontFace }}"   labelStr="Typeface"
+          divClass="ntb-flex-column" class="ntb-input" />
       </div>
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
-        <labelledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  label="Block color"  style="flex-grow: 1;" />
-        <labelledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   label="Text color"   style="flex-grow: 1;" />
-        <labelledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" label="Border color" style="flex-grow: 1;" />
+        <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   labelStr="Text color"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" labelStr="Border color"
+          divClass="ntb-flex-column" class="ntb-input" />
       </div>
 
       <div class="flex-column" >
