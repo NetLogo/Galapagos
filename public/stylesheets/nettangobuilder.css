@@ -59,7 +59,7 @@ body#ntp-body, html#ntp-body {
   text-align: right;
 }
 
-.ntb-button, .ntb-container .widget-edit-text, .ntb-file-label {
+.ntb-button, .ntb-file-label {
   margin: 4px;
   font-size: 13px;
   padding: 8px;
@@ -147,6 +147,29 @@ body#ntp-body, html#ntp-body {
   background: #eee;
   font-size: 20px;
   text-align: center;
+}
+
+.ntb-flex-column {
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  align-items: stretch;
+}
+
+.ntb-input {
+  margin: 0px 10px;
+  width: 90%;
+  min-width: 30px;
+  font-size: 20px;
+  height: 33px;
+  padding: 4px;
+  text-align: left;
+}
+
+.ntb-flex-column .widget-edit-input-label {
+  align-items: flex-start;
+  text-align: center;
+  font-size: 16px;
 }
 
 .nt-canvas {

@@ -22,22 +22,22 @@ window.RactiveNetTangoAttribute = Ractive.extend({
   }
 
   components: {
-    labelledInput: RactiveLabelledInput
-    dropdown:      RactiveDropdown
+    labeledInput: RactiveTwoWayLabeledInput
+    dropdown:     RactiveDropdown
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
     <div class="flex-row ntb-form-row">
-      <labelledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" label="Name" style="flex-grow: 1;" />
+      <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Name" divClass="ntb-flex-column" class="ntb-input" />
 
       <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" value="{{ attribute.type }}" label="Type" style="flex-grow: 1;"
         options="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
         />
 
-      <labelledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" label="Unit label" style="flex-grow: 1;" />
-      <labelledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}" label="Default"  style="flex-grow: 1;" />
+      <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
     </div>
     {{> `param-${attribute.type}` }}
     <div>
@@ -56,16 +56,16 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     'param-select':
       """
       <div class="flex-row">
-        <labelledInput id="param-{{ id }}-values" name="values" type="text" value="{{ attribute.valuesString }}" label="Options (; separated)" />
+        <labeledInput id="param-{{ id }}-values" name="values" type="text" value="{{ attribute.valuesString }}" labelStr="Options (; separated)" divClass="ntb-flex-column" class="ntb-input" />
       </div>
       """
 
     'param-range':
       """
       <div class="flex-row">
-        <labelledInput id="param-{{ id }}-min"  name="min"  type="number" value="{{ attribute.min }}"  label="Min" style="flex-grow: 1;" />
-        <labelledInput id="param-{{ id }}-max"  name="max"  type="number" value="{{ attribute.max }}"  label="Max" style="flex-grow: 1;" />
-        <labelledInput id="param-{{ id }}-step" name="step" type="number" value="{{ attribute.step }}" label="Step size" style="flex-grow: 1;" />
+        <labeledInput id="param-{{ id }}-min"  name="min"  type="number" value="{{ attribute.min }}"  labelStr="Min" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="param-{{ id }}-max"  name="max"  type="number" value="{{ attribute.max }}"  labelStr="Max" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="param-{{ id }}-step" name="step" type="number" value="{{ attribute.step }}" labelStr="Step size" divClass="ntb-flex-column" class="ntb-input" />
       </div>
       """
     # coffeelint: enable=max_line_length
