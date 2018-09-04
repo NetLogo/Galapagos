@@ -145,7 +145,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <div class="flex-row ntb-form-row" style="align-items: center;">
+      <div class="flex-row ntb-form-row">
         <dropdown id="{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
           choices="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
           divClass="ntb-flex-column"
@@ -159,7 +159,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for param, {P#} for property)"
         divClass="ntb-flex-column" class="ntb-input" />
 
-      <div class="flex-row ntb-form-row" style="align-items: center;">
+      <div class="flex-row ntb-form-row">
         <labeledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" labelStr="Font weight"
           divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="{{ id }}-f-size"   name="font-size"   type="number" value="{{ fontSize }}"   labelStr="Font size"
@@ -168,7 +168,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
           divClass="ntb-flex-column" class="ntb-input" />
       </div>
 
-      <div class="flex-row ntb-form-row" style="align-items: center;">
+      <div class="flex-row ntb-form-row">
         <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
           divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   labelStr="Text color"

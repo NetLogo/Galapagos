@@ -197,6 +197,10 @@ body#ntp-body, html#ntp-body {
   border-radius: 0px;
 }
 
+.ntb-form-row {
+  align-items: center;
+}
+
 div.ntb-form-row > div {
   margin: 6px;
 }
