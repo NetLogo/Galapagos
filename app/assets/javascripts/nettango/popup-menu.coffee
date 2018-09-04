@@ -1,12 +1,14 @@
 window.RactivePopupMenu = Ractive.extend({
 
   data: () -> {
-    visible:   false,           # Boolean
-    target:    undefined,       # String
-    content:   undefined,       # Content
-    menuData:  undefined,       # Any
-    style:     'display: none;' # String
-    submenus:  []               # Array[{ style: String, item: Content }]
+    visible:   false,     # Boolean
+    target:    undefined, # String
+    content:   undefined, # Content
+    menuData:  undefined, # Any
+    left:      0,         # Number
+    top:       0,         # Number
+    class:     "",        # String
+    submenus:  []         # Array[{ left: Number, top: Number, class: String, item: Content }]
   }
 
   # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
@@ -40,7 +42,7 @@ window.RactivePopupMenu = Ractive.extend({
       parentItem = @find("#ntb-popup-#{level}-#{itemNum}")
       top = parentMenu.offsetTop + parentItem.offsetTop + (parentItem.offsetHeight / 3)
 
-      @_updatePosition(left, top, "submenus[#{item.level}].style")
+      @_updatePosition(left, top, "submenus[#{item.level}].")
       return
 
   }
@@ -49,19 +51,19 @@ window.RactivePopupMenu = Ractive.extend({
   popup: (target, left, top, content, menuData) ->
     maxLevel = @_markContent(content)
     submenus = for num in [1..maxLevel]
-      { style: "display: none;" }
+      { left: 0, top: 0, class: "" }
     @set('submenus', submenus)
     @set('menuData', menuData)
     @set('content',  content)
     @set('target',   target)
-    @_updatePosition(left, top, 'style')
+    @_updatePosition(left, top, "")
     return
 
   # () => Unit
   unpop: () ->
-    @set('style', 'display: none;')
+    @set('class', "")
     @get('submenus').forEach( (_, level) =>
-      @set("submenus[#{level}].style", 'display: none;')
+      @set("submenus[#{level}].class", "")
     )
     return
 
@@ -79,20 +81,21 @@ window.RactivePopupMenu = Ractive.extend({
     setLevelRec(content, 0)
 
   # (Number, Number, String) => Unit
-  _updatePosition: (left, top, property) ->
-    style = "z-index: 1000; position: absolute; left: #{ left + 10 }px; top: #{ top + 2 }px;"
-    @set(property, style)
+  _updatePosition: (left, top, prefix) ->
+    @set("#{prefix}left",  left + 10)
+    @set("#{prefix}top",   top  + 2)
+    @set("#{prefix}class", 'ntb-popup-active')
     return
 
   template: """
-    <div id="ntb-popup-root" class="ntb-popup" style="{{style}}">
+    <div id="ntb-popup-root" class="ntb-popup {{ class }}" style="left: {{ left }}px; top: {{ top }}px;">
       <ul class="ntb-list-menu">{{# content.items:itemNum }}
         {{> item }}
       {{/content.items }}</ul>
     </div>
 
     {{#submenus:num }}
-      <div id="ntb-popup-{{ num }}" class="ntb-popup" style="{{ this.style }}">
+      <div id="ntb-popup-{{ num }}" class="ntb-popup {{ class }}" style="left: {{ left }}px; top: {{ top }}px;">
         <ul class="ntb-list-menu">
           <li>{{ this.item.name }}</li>
           {{# this.item.items:itemNum }}
