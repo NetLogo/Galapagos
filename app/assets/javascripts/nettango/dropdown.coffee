@@ -9,15 +9,6 @@ window.RactiveDropdown = Ractive.extend({
     changeEvent: undefined # String
   }
 
-  on: {
-    # (Context) => Unit
-    '*.changed': (_) ->
-      event = @get('changeEvent')
-      if (event?)
-        @fire(event)
-      return
-  }
-
   template:
     """
     <div style="flex: column; padding: 0px;{{ style }}">

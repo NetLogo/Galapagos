@@ -125,13 +125,10 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     attributeCopies
 
   components: {
-      formCheckbox:  RactiveEditFormCheckbox
-    , formCode:      RactiveCodeContainerOneLine
-    , formDropdown:  RactiveEditFormDropdown
-    , spacer:        RactiveEditFormSpacer
-    , labeledInput:  RactiveTwoWayLabeledInput
-    , dropdown:      RactiveDropdown
-    , attribute:     RactiveNetTangoAttribute
+    , spacer:       RactiveEditFormSpacer
+    , labeledInput: RactiveTwoWayLabeledInput
+    , dropdown:     RactiveTwoWayDropdown
+    , attribute:    RactiveNetTangoAttribute
   }
 
   partials: {
@@ -149,8 +146,9 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       <spacer height="15px" />
 
       <div class="flex-row ntb-form-row" style="align-items: center;">
-        <dropdown id="{{ id }}-type" name="{{ builderType }}" value="{{ builderType }}" label="Type"
-          options="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
+        <dropdown id="{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
+          choices="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
+          divClass="ntb-flex-column"
           />
         <labeledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
           min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
