@@ -213,13 +213,15 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     return
 
   components: {
-    tangoDefs:     RactiveNetTangoSpaces
+      tangoDefs:    RactiveNetTangoSpaces
+    , errorDisplay: RactiveErrorDisplay
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-container" style="position: relative;">
+      <errorDisplay></errorDisplay>
 
       <div class="ntb-controls">
         {{# !playMode }}

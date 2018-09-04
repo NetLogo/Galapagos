@@ -165,12 +165,15 @@ class window.NetTangoController
     parser      = new DOMParser()
     ntPlayer    = new Request('./ntango-play')
     playerFetch = fetch(ntPlayer).then( (ntResp) ->
-      if (ntResp.ok)
-        ntResp.text()
+      if (not ntResp.ok)
+        throw Error(ntResp)
+      ntResp.text()
     ).then( (text) ->
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
       @exportStandalone(title, exportDom, netTangoData)
+    ).catch((error) =>
+      @showError("Unexpected error:  Unable to generate the stand-alone NetTango page.")
     )
     return
 
@@ -238,3 +241,8 @@ class window.NetTangoController
       @runningIndices.forEach( (index) -> widgets[index].running = true )
     @runningIndices = []
     return
+
+  # (String) => Unit
+  showError: (message) ->
+    display = @ractive.findComponent('errorDisplay')
+    display.show(message)
