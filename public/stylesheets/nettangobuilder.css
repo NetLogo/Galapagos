@@ -117,6 +117,12 @@ body#ntp-body, html#ntp-body {
   background: #fff;
   border: 1px solid #000;
   user-select: none;
+  display: none;
+  z-index: 1000;
+}
+
+.ntb-popup-active {
+  display: block;
 }
 
 .ntb-block-defaults, .ntb-confirm-delete {
