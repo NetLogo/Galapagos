@@ -12,7 +12,7 @@ import
 import
   play.api.{ Environment, libs, Logger, mvc },
     libs.json.Json,
-    mvc._
+    mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
 import play.twirl.api.Html
 

@@ -7,7 +7,7 @@ import
 
 import
   play.api.{ Configuration, Environment, mvc },
-    mvc._ // necessary for an implicit auto-conversion to HttpRequest for relative paths in views
+    mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
 class Local @Inject() ( components: ControllerComponents
                       , configuration: Configuration
