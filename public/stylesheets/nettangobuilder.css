@@ -234,3 +234,25 @@ div.ntb-form-row > div {
   margin: 6px;
   padding: 2px;
 }
+
+.ntb-error-overlay {
+  position: absolute;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  left: 0;
+  top:  0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+.ntb-error-content {
+  text-align: center;
+  width: 30em;
+  top: 10px;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+}
