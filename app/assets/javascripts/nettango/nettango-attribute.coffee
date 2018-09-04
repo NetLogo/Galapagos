@@ -23,7 +23,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
 
   components: {
     labeledInput: RactiveTwoWayLabeledInput
-    dropdown:     RactiveDropdown
+    dropdown:     RactiveTwoWayDropdown
   }
 
   template:
@@ -32,8 +32,8 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     <div class="flex-row ntb-form-row">
       <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Name" divClass="ntb-flex-column" class="ntb-input" />
 
-      <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" value="{{ attribute.type }}" label="Type" style="flex-grow: 1;"
-        options="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
+      <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
+        choices="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
         />
 
       <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
