@@ -85,6 +85,22 @@ window.RactiveModelCodeComponent = Ractive.extend({
       .map(    (kw) -> kw.replace("\\", "") )
     Object.keys(@getProcedureNames()).concat(supportedKeywords)
 
+  toggleLineComments: (editor) ->
+    { start, end } = if (editor.somethingSelected())
+      { head, anchor } = editor.listSelections()[0]
+      if (head.line > anchor.line or (head.line is anchor.line and head.ch > anchor.ch))
+        { start: anchor, end: head }
+      else
+        { start: head, end: anchor }
+    else
+      cursor = editor.getCursor()
+      { start: cursor, end: cursor }
+
+    if (not editor.uncomment(start, end))
+      editor.lineComment(start, end)
+
+    return
+
   setupCodeUsagePopup: ->
     editor = @findComponent('codeEditor').getEditor()
     codeUsageMap = {
@@ -94,6 +110,12 @@ window.RactiveModelCodeComponent = Ractive.extend({
       ,'Cmd-U': =>
         if editor.somethingSelected()
           @setCodeUsage()
+      ,'Ctrl-;': =>
+        @toggleLineComments(editor)
+        return
+      ,'Cmd-;': =>
+        @toggleLineComments(editor)
+        return
     }
     editor.addKeyMap(codeUsageMap)
 

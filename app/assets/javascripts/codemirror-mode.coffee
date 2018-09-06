@@ -33,6 +33,7 @@ CodeMirror.defineSimpleMode('netlogo', {
     variable,
   ],
   meta: {
-    electricChars: "dD])\n" # The 'd's here are so that it reindents on `end`. BCH 1/9/2015
+      electricChars: "dD])\n" # The 'd's here are so that it reindents on `end`. BCH 1/9/2015,
+    , lineComment:   ";"
   }
 })
