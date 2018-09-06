@@ -72,12 +72,16 @@
       if (decodeURI(url) === url) {
         url = encodeURI(url);
       }
-      if (url === "NewModel") {
+      if (url === "Load") {
+        exports.selectModel("Select a model");
+      } else if (url === "NewModel") {
         exports.selectModel("Select a model");
         modelContainer.contentWindow.location.replace("./web");
+        modelFileInput.value = "";
       } else {
         exports.selectModelByURL(url);
         modelContainer.contentWindow.location.replace("./web?"+url);
+        modelFileInput.value = "";
       }
     }
 
@@ -111,7 +115,7 @@
     });
 
     function openNlogo(nlogoContents) {
-      window.location.hash = "";
+      window.location.hash = "Load";
       filePath = document.getElementById("model-file-input").value;
       modelContainer.contentWindow.postMessage({
         nlogo: nlogoContents,
