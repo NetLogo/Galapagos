@@ -13,7 +13,7 @@ window.CommonDrag = {
       # So we give them some bogus drag data and get on with our lives. --JAB (11/22/17)
       invisiGIF = document.createElement('img')
       invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-      dataTransfer.setDragImage(invisiGIF, 0, 0)
+      dataTransfer.setDragImage?(invisiGIF, 0, 0)
       dataTransfer.setData('text/plain', '')
 
       @view         = view
@@ -45,7 +45,7 @@ window.CommonDrag = {
         @lastUpdateMs = (new Date).getTime()
         callback(x, y)
 
-    false
+    true
 
   dragend: (callback) ->
 

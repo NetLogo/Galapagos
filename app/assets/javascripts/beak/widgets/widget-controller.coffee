@@ -11,8 +11,8 @@ class window.WidgetController
   createWidget: (widgetType, x, y) ->
 
     rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
-    adjustedX = Math.round(x - rect.x)
-    adjustedY = Math.round(y - rect.y)
+    adjustedX = Math.round(x - rect.left)
+    adjustedY = Math.round(y - rect.top)
     base      = { left: adjustedX, top: adjustedY, type: widgetType }
     mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY)
     widget    = Object.assign(base, mixin)

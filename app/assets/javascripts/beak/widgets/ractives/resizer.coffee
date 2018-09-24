@@ -62,9 +62,9 @@ window.RactiveResizer = Ractive.extend({
 
     'start-handle-drag': (event) ->
       CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
-        { x, y } = @find('.widget-resizer').getBoundingClientRect()
-        @_xAdjustment = x - @get('left')
-        @_yAdjustment = y - @get('top')
+        { left, top } = @find('.widget-resizer').getBoundingClientRect()
+        @_xAdjustment = left - @get('left')
+        @_yAdjustment = top  - @get('top')
       )
 
     'drag-handle': (event) ->
