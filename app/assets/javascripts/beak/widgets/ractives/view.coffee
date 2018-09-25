@@ -75,15 +75,15 @@ ViewEditForm = EditForm.extend({
 
   genProps: (form) ->
     {
-      'dimensions.maxPxcor'          : form.maxX.valueAsNumber
-    , 'dimensions.maxPycor'          : form.maxY.valueAsNumber
-    , 'dimensions.minPxcor'          : form.minX.valueAsNumber
-    , 'dimensions.minPycor'          : form.minY.valueAsNumber
-    , 'dimensions.patchSize'         : form.patchSize.valueAsNumber
+      'dimensions.maxPxcor'          : Number.parseInt(form.maxX.value)
+    , 'dimensions.maxPycor'          : Number.parseInt(form.maxY.value)
+    , 'dimensions.minPxcor'          : Number.parseInt(form.minX.value)
+    , 'dimensions.minPycor'          : Number.parseInt(form.minY.value)
+    , 'dimensions.patchSize'         : Number.parseInt(form.patchSize.value)
     , 'dimensions.wrappingAllowedInX': form.wrapsInX.checked
     , 'dimensions.wrappingAllowedInY': form.wrapsInY.checked
-    , fontSize                       : form.turtleLabelSize.valueAsNumber
-    , frameRate                      : form.framerate.valueAsNumber
+    , fontSize                       : Number.parseInt(form.turtleLabelSize.value)
+    , frameRate                      : Number.parseInt(form.framerate.value)
     , showTickCounter                : form.isShowingTicks.checked
     , tickCounterLabel               : form.tickLabel.value
     }

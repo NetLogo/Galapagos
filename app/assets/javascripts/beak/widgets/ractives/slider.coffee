@@ -39,7 +39,7 @@ SliderEditForm = EditForm.extend({
 
   genProps: (form) ->
 
-    value = form.value.valueAsNumber
+    value = Number.parseFloat(form.value.value)
 
     oldTop    = @get('top')
     oldRight  = @get('right')
