@@ -45,6 +45,9 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set(entry)
       @set('historyIndex', newIndex)
 
+    consoleErrorLog = (messages) =>
+      @set('output', "#{@get('output')}ERROR: #{messages.join('\n')}\n")
+
     run = =>
       input = @get('input')
       if input.trim().length > 0
@@ -59,7 +62,7 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set('historyIndex', history.length)
         if agentType isnt 'observer'
           input = "ask #{agentType} [ #{input} ]"
-        @fire('run', input)
+        @fire('run', {}, input, consoleErrorLog)
         @set('input', '')
         @set('workingEntry', {})
 

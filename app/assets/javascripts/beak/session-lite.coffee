@@ -55,12 +55,12 @@ class window.SessionLite
     @drawEveryFrame    = false
 
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter)
-    @widgetController.ractive.on('*.recompile'            , (_, callback)  => @recompile(callback))
-    @widgetController.ractive.on('*.recompile-lite'       , (_, callback)  => @recompileLite(callback))
-    @widgetController.ractive.on('export-nlogo'           , (_, event)     => @exportNlogo(event))
-    @widgetController.ractive.on('export-html'            , (_, event)     => @exportHtml(event))
-    @widgetController.ractive.on('open-new-file'          , (_, event)     => @openNewFile())
-    @widgetController.ractive.on('console.run'            , (_, code)      => @run(code))
+    @widgetController.ractive.on('*.recompile'     , (_, callback)       => @recompile(callback))
+    @widgetController.ractive.on('*.recompile-lite', (_, callback)       => @recompileLite(callback))
+    @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
+    @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
+    @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
+    @widgetController.ractive.on('console.run'     , (_, code, errorLog) => @run(code, errorLog))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -272,23 +272,29 @@ class window.SessionLite
 
     window.runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
 
-  run: (code) ->
+  # (String, (Array[String]) => Unit) => Unit
+  run: (code, errorLog) ->
+
+    compileErrorLog = (result) => @alertCompileError(result, errorLog)
+
     Tortoise.startLoading()
     codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
         if modelSuccess
           [{ result, success }] = commands
           if (success)
-            try window.handlingErrors(new Function(result))()
+            try window.handlingErrors(new Function(result))(errorLog)
             catch ex
               if not (ex instanceof Exception.HaltInterrupt)
                 throw ex
           else
-            @alertCompileError(result)
+            compileErrorLog(result)
         else
-          @alertCompileError(modelResult)
-    , @alertCompileError)
+          compileErrorLog(modelResult)
+    , compileErrorLog)
 
-  alertCompileError: (result) ->
-    alertText = result.map((err) -> err.message).join('\n')
-    @displayError(alertText)
+  alertCompileError: (result, errorLog = @alertErrors) ->
+    errorLog(result.map((err) -> err.message))
+
+  alertErrors: (messages) ->
+    @displayError(messages.join('\n'))

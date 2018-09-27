@@ -41,8 +41,8 @@ window.showErrors = (errors) ->
       alert(errors.join('\n'))
   return
 
-# [T] @ (() => T) => () => T
-window.handlingErrors = (f) -> ->
+# [T] @ (() => T) => ((Array[String]) => Unit) => T
+window.handlingErrors = (f) -> (errorLog = window.showErrors) ->
   try f()
   catch ex
     if not (ex instanceof Exception.HaltInterrupt)
@@ -56,7 +56,7 @@ window.handlingErrors = (f) -> ->
              Advanced users might find the generated error helpful, which is as follows:<br><br>
              <b>#{ex.message}</b><br><br>
              """
-      window.showErrors([message])
+      errorLog([message])
       throw new Exception.HaltInterrupt
     else
       throw ex
