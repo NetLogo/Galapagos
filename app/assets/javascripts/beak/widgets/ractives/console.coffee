@@ -18,6 +18,7 @@ window.RactiveConsoleWidget = Ractive.extend({
         index = @get('agentTypes').indexOf(val)
         if index >= 0
           @set('agentTypeIndex', index)
+          @focusCommandCenterEditor()
     }
   }
 
@@ -78,6 +79,8 @@ window.RactiveConsoleWidget = Ractive.extend({
         Tab:   => changeAgentType()
       }
     })
+
+    @focusCommandCenterEditor = () -> commandCenterEditor.focus()
 
     commandCenterEditor.on('beforeChange', (_, change) ->
       oneLineText = change.text.join('').replace(/\n/g, '')
