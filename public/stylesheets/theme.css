@@ -147,7 +147,7 @@ body.not_full_height {
 }
 
 .outer-content {
-  width: 83%;
+  width: fit-content;
   margin-left: auto;
   margin-right: auto;
 }
