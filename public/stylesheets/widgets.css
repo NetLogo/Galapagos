@@ -11,6 +11,16 @@
     outline: none;
 }
 
+.netlogo-display-vertical {
+  display: flex;
+  flex-flow: column;
+}
+
+.netlogo-display-horizontal {
+  display: flex;
+  flex-flow: row;
+}
+
 .netlogo-header {
     display: flex;
     flex-flow: row;
@@ -42,7 +52,7 @@
 }
 
 .netlogo-tab-area {
-  margin-top: 25px;
+  margin: 25px 10px;
 }
 
 .netlogo-tab {
@@ -215,7 +225,7 @@
 .netlogo-codeusage-popup {
   position:absolute;
   z-index: 10;
-  border:1px solid #B2B2B2;    
+  border:1px solid #B2B2B2;
   background: white;
   box-shadow: 3px 3px 2px #E9E9E9;
   border-radius:4px;

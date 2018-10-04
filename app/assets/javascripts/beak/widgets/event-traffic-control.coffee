@@ -168,11 +168,11 @@ window.controlEventTraffic = (controller) ->
     refreshDims()
     return
 
-  # () => Unit
-  toggleInterfaceLock = ->
-    if not @get('someDialogIsOpen')
-      isEditing = not ractive.get('isEditing')
-      ractive.set('isEditing', isEditing)
+  # (String) => Unit
+  toggleBooleanData = (dataName) ->
+    if not ractive.get('someDialogIsOpen')
+      newData = not ractive.get(dataName)
+      ractive.set(dataName, newData)
     return
 
   # (Node) => Unit
@@ -206,7 +206,8 @@ window.controlEventTraffic = (controller) ->
   ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)
 
   ractive.on('hail-satan'           , hailSatan)
-  ractive.on('toggle-interface-lock', toggleInterfaceLock)
+  ractive.on('toggle-interface-lock', () -> toggleBooleanData('isEditing'))
+  ractive.on('toggle-orientation'   , () -> toggleBooleanData('isVertical'))
   ractive.on('*.redraw-view'        , redrawView)
   ractive.on('*.resize-view'        , resizeView)
   ractive.on('*.unregister-widget'  , unregisterWidget)
