@@ -237,7 +237,6 @@ class window.SessionLite
   runBabyBehaviorSpace: ({ parameterSet, repetitionsPerCombo, metrics, setupCode, goCode
                          , stopConditionCode, iterationLimit }) ->
 
-    dumper                       = tortoise_require('engine/dump')
     { last, map, toObject, zip } = tortoise_require('brazier/array')
     { pipeline                 } = tortoise_require('brazier/function')
 
@@ -268,7 +267,7 @@ class window.SessionLite
       else if typeof(x) in ["boolean", "number", "string"]
         x
       else
-        dumper(x)
+        workspace.dump(x)
 
     window.runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
 
