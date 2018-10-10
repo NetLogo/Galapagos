@@ -13,6 +13,7 @@
 
   type BehaviorSpaceConfig =
     {
+      experimentName:      String
       parameterSet:        { type: "discreteCombos",   combos:    Array[Object[Any]]    }
                          | { type: "cartesianProduct", variables: Array[VariableConfig] }
       repetitionsPerCombo: Number
@@ -30,7 +31,7 @@
 # (BehaviorSpaceConfig, (String, Any) => Unit, (Any) => Any) => Results
 window.runBabyBehaviorSpace = (config, setGlobal, dump) ->
 
-  { parameterSet, repetitionsPerCombo, metrics, setup, go, stopCondition, iterationLimit } = config
+  { experimentName, parameterSet, repetitionsPerCombo, metrics, setup, go, stopCondition, iterationLimit } = config
 
   parameterSet =
     switch parameterSet.type
@@ -47,11 +48,19 @@ window.runBabyBehaviorSpace = (config, setGlobal, dump) ->
           combination
     )
 
-  for pSet in finalParameterSet
+  window.Meta.behaviorSpaceName = experimentName ? "BabyBehaviorSpace"
+  window.Meta.behaviorSpaceRun  = 0
+  finalResults = for pSet in finalParameterSet
     for key, value of pSet
       setGlobal(key, value)
     results = executeRun(setup, go, stopCondition, iterationLimit, metrics, dump)
+    window.Meta.behaviorSpaceRun = window.Meta.behaviorSpaceRun + 1
     { config: pSet, results }
+
+  window.Meta.behaviorSpaceName = ""
+  window.Meta.behaviorSpaceRun  = 0
+
+  finalResults
 
 # Code courtesy of Danny at https://stackoverflow.com/a/36234242/1116979
 # (Array[Array[Any]]) => Array[Array[Any]]

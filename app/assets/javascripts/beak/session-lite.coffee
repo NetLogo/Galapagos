@@ -234,7 +234,7 @@ class window.SessionLite
     )
 
   # (Object[Any]) => [{ config: Object[Any], results: Object[Array[Any]] }]
-  runBabyBehaviorSpace: ({ parameterSet, repetitionsPerCombo, metrics, setupCode, goCode
+  runBabyBehaviorSpace: ({ experimentName, parameterSet, repetitionsPerCombo, metrics, setupCode, goCode
                          , stopConditionCode, iterationLimit }) ->
 
     { last, map, toObject, zip } = tortoise_require('brazier/array')
@@ -257,7 +257,7 @@ class window.SessionLite
     convert = ([{ reporter, interval }, f]) -> [reporter, { reporter: f, interval }]
     compiledMetrics = pipeline(zip(metrics), map(convert), toObject)(metricFs)
 
-    massagedConfig = { parameterSet, repetitionsPerCombo, metrics: compiledMetrics
+    massagedConfig = { experimentName, parameterSet, repetitionsPerCombo, metrics: compiledMetrics
                      , setup, go, stopCondition, iterationLimit }
     setGlobal      = world.observer.setGlobal.bind(world.observer)
 
