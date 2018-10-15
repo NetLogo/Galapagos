@@ -100,30 +100,30 @@ scrapePublishCredential := (Def.settingDyn {
 
 scrapePublishBucketID := (Def.settingDyn {
   val branchDeploy = Map(
-    "master"  -> "netlogo-web-prod-content",
-    "staging" -> "netlogo-web-staging-content"
+    "production" -> "netlogo-web-prod-content",
+    "master"     -> "netlogo-web-staging-content"
   )
 
   if (isJenkins)
     Def.setting { branchDeploy.get(jenkinsBranch) }
   else
-    Def.setting { branchDeploy.get("master") }
+    Def.setting { branchDeploy.get("production") }
 }).value
 
 scrapePublishDistributionID := (Def.settingDyn {
   val branchPublish = Map(
-    "master"  -> "E3AIHWIXSMPCAI",
-    "staging" -> "E360I3EFLPUZR0"
+    "production" -> "E3AIHWIXSMPCAI",
+    "master"     -> "E360I3EFLPUZR0"
   )
 
   if (isJenkins)
     Def.setting { branchPublish.get(jenkinsBranch) }
   else
-    Def.setting { branchPublish.get("master") }
+    Def.setting { branchPublish.get("production") }
 }).value
 
 scrapeAbsoluteURL := (Def.settingDyn {
-  if (isJenkins && jenkinsBranch == "staging")
+  if (isJenkins && jenkinsBranch == "master")
     Def.setting { Some("staging.netlogoweb.org") }
   else
     Def.setting { Some("netlogoweb.org") }

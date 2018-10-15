@@ -23,7 +23,7 @@ pipeline {
 
     stage('Deploy-Staging') {
       when {
-        branch "staging"
+        branch "master"
       }
       steps {
         library 'netlogo-shared'
@@ -37,7 +37,7 @@ pipeline {
 
     stage('Deploy') {
       when {
-        branch "master"
+        branch "production"
       }
       steps {
         library 'netlogo-shared'
