@@ -17,6 +17,7 @@ window.EditForm = Ractive.extend({
   , visible:          undefined # Boolean
   , xLoc:             undefined # Number
   , yLoc:             undefined # Number
+  , draggable:        true      # Boolean
   }
 
   computed: {
@@ -73,6 +74,15 @@ window.EditForm = Ractive.extend({
       @set('yLoc', @get('verticalOffset')   ? (containerMidY - dialogHalfHeight))
 
       @resetPartial('widgetFields', @partials.widgetFields)
+
+      # This is awful, but it's the least invasive way I have come up with to workaround a 3 year old Firefox bug.
+      # https://bugzilla.mozilla.org/show_bug.cgi?id=1189486
+      # -JMB 10/18.
+      whatADrag = (el) =>
+        el.addEventListener('focus', (_) => @set('draggable', false); return)
+        el.addEventListener('blur',  (_) => @set('draggable', true); return)
+      @findAll('textarea').forEach( whatADrag )
+      @findAll('input').forEach( whatADrag )
 
       false
 
@@ -133,7 +143,7 @@ window.EditForm = Ractive.extend({
            class="widget-edit-popup widget-edit-text"
            style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}"
            on-keydown="handle-key"
-           draggable="true" on-drag="drag-edit-dialog" on-dragstart="start-edit-drag"
+           draggable="{{draggable}}" on-drag="drag-edit-dialog" on-dragstart="start-edit-drag"
            on-dragend="stop-edit-drag"
            tabindex="0">
         <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancel-edit">X</div>
