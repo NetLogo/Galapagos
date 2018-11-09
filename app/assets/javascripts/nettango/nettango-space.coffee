@@ -15,20 +15,23 @@ window.RactiveNetTangoSpace = Ractive.extend({
     'complete': (_) ->
       space = @get('space')
       @initNetTango(space)
-      ntId = space.spaceId + '-canvas'
-      space.netLogoCode = NetTango.exportCode(ntId, 'NetLogo')
-      NetTango.onProgramChanged(space.spaceId + "-canvas", (ntCanvasId) =>
+      canvasId = @getNetTangoCanvasId(space)
+      space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo')
+
+      NetTango.onProgramChanged(canvasId, (ntCanvasId) =>
         if (@get('space')?)
           # `space` can change after we're `complete`, so do not use the one we already got above -JMB 11/2018
           s = @get('space')
-          s.chains = NetTango.save(ntId).program.chains
+          s.chains = NetTango.save(canvasId).program.chains
           s.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
           @fire('ntb-code-change', {}, ntCanvasId, false)
         return
       )
-      @fire('ntb-code-change', {}, space.spaceId + "-canvas", true)
+
+      @fire('ntb-code-change', {}, canvasId, true)
+
       @observe('space', ->
-        @updateForNewSpace(@get('space'))
+        @updateNetTango(@get('space'), false)
         return
       , { defer: true, strict: true }
       )
@@ -158,48 +161,47 @@ window.RactiveNetTangoSpace = Ractive.extend({
     overlay.classList.add('ntb-block-edit-overlay')
     return
 
+  getNetTangoCanvasId: (space) ->
+    "#{space.spaceId}-canvas"
+
+  getNetTangoCanvas: (canvasId) ->
+    @find("##{canvasId}")
+
   # (NetTangoSpace) => Unit
   initNetTango: (space) ->
-    ntId = space.spaceId + "-canvas"
-    canvas = @find("##{ntId}")
+    canvasId      = @getNetTangoCanvasId(space)
+    canvas        = @getNetTangoCanvas(canvasId)
     canvas.height = space.height
-    canvas.width = space.width
-    NetTango.init(ntId, space.defs)
-    space.chains = NetTango.save(ntId).program.chains
+    canvas.width  = space.width
+
+    NetTango.init(canvasId, space.defs)
+
+    space.chains = NetTango.save(canvasId).program.chains
     return
 
   # (NetTangoSpace) => Unit
-  updateNetTango: (space) ->
-    ntId = space.spaceId + "-canvas"
-    canvas = @find("##{ntId}")
+  updateNetTango: (space, keepOldChains = true) ->
+    canvasId      = @getNetTangoCanvasId(space)
+    canvas        = @getNetTangoCanvas(canvasId)
     canvas.height = space.height
-    canvas.width = space.width
-    old = NetTango.save(ntId)
-    # NetTango includes "empty" procedures as code with the save, but those cause ghost blocks when we change things
-    # and reload, so we clear them out -JMB August 2018
-    newChains = old.program.chains.filter((ch) -> ch.length > 1)
-    NetTango.restore(ntId, {
+    canvas.width  = space.width
+
+    newChains = if (keepOldChains)
+      old = NetTango.save(canvasId)
+      # NetTango includes "empty" procedures as code with the save, but those cause ghost blocks when we change things
+      # and reload, so we clear them out -JMB August 2018
+      old.program.chains.filter((ch) -> ch.length > 1)
+    else
+      space.chains.filter((ch) -> ch.length > 1)
+
+    NetTango.restore(canvasId, {
       blocks:      space.defs.blocks,
       expressions: space.defs.expressions,
       program:     { chains: newChains }
     })
-    space.netLogoCode = NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')
-    @fire('ntb-code-change', {}, space.spaceId + "-canvas", false)
-    return
 
-  # (NetTangoSpace) => Unit
-  updateForNewSpace: (space) ->
-    ntId = space.spaceId + "-canvas"
-    canvas = @find("##{ntId}")
-    canvas.height = space.height
-    canvas.width = space.width
-    newChains = space.chains.filter((ch) -> ch.length > 1)
-    NetTango.restore(ntId, {
-      blocks:      space.defs.blocks,
-      expressions: space.defs.expressions,
-      program:     { chains: newChains }
-    })
-    space.netLogoCode = NetTango.exportCode(space.spaceId + '-canvas', 'NetLogo')
+    space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo')
+    @fire('ntb-code-change', {}, canvasId, false)
     return
 
   # (NetTangoSpace) => Content
