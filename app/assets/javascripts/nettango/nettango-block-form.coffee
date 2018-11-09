@@ -44,12 +44,12 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     # Copy so we drop any uncommitted changes - JMB August 2018
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
 
-    block.builderType = switch block.type
-      when "nlogo:procedure" or (block.start and not block.control)
+    block.builderType =
+      if      (block.type is "nlogo:procedure" or (block.start and not block.control))
         'Procedure'
-      when "nlogo:if"        or (not block.start and block.control and block.clauses?.length is 0)
+      else if (block.type is "nlogo:if"        or (not block.start and block.control and block.clauses?.length is 0))
         '1 Block Clause (if/ask/create)'
-      when "nlogo:ifelse"    or (not block.start and block.control and block.clauses?.length is 1)
+      else if (block.type is "nlogo:ifelse"    or (not block.start and block.control and block.clauses?.length is 1))
         '2 Block Clause (ifelse)'
       else
         'Command'
@@ -87,6 +87,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         block.type    = 'nlogo:procedure'
         block.start   = true
         block.control = false
+        block.clauses = null
       when '1 Block Clause (if/ask/create)'
         block.type    = 'nlogo:if'
         block.start   = false
@@ -101,6 +102,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         block.type    = 'nlogo:command'
         block.start   = false
         block.control = false
+        block.clauses = null
 
     block.params     = @processAttributes(blockValues.params)
     block.properties = @processAttributes(blockValues.properties)
