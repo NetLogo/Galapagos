@@ -2,7 +2,6 @@ window.RactiveNetTangoSpaces = Ractive.extend({
 
   data: () -> {
     playMode:         false, # Boolean
-    nextId:           0,     # Integer
     spaces:           [],    # Array[NetTangoSpace]
     lastCompiledCode: "",    # String
     codeIsDirty:      false, # Boolean
@@ -16,6 +15,12 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     'complete': (_) ->
       blockEditForm = @findComponent('blockEditForm')
       @set('blockEditForm', blockEditForm)
+      @observe('spaces', (spaces) ->
+        spaces.forEach( (space, i) ->
+          space.id      = i
+          space.spaceId = "ntb-defs-#{i}"
+        )
+      )
       return
 
     # (Context, String, Boolean) => Unit
@@ -26,7 +31,12 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     # (Context, Integer) => Unit
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       spaces = @get('spaces')
-      @set('spaces', spaces.filter( (s) -> s.id isnt spaceNumber ))
+      newSpaces = spaces.filter( (s) -> s.id isnt spaceNumber )
+      newSpaces.forEach( (s, i) ->
+        s.id      = i
+        s.spaceId = "ntb-defs-#{i}"
+      )
+      @set('spaces', newSpaces)
       @updateCode(false)
       return
 
@@ -85,27 +95,26 @@ window.RactiveNetTangoSpaces = Ractive.extend({
   # (NetTangoSpace) => NetTangoSpace
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
-    id      = @get('nextId')
+    id      = spaces.length
     spaceId = "ntb-defs-#{id}"
     defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [] }
     defs.expressions = defs.expressions ? @expressionDefaults()
     space = {
-        id:                id
-      , spaceId:           spaceId
-      , spaceNumber:       @get('nextId')
-      , name:              "Block Space #{id}"
-      , width:             430
-      , height:            500
-      , defs:              defs
-      , defsJson:          JSON.stringify(defs, null, '  ')
-      , defsJsonChanged:   false
+        id:              id
+      , spaceId:         spaceId
+      , name:            "Block Space #{id}"
+      , width:           430
+      , height:          500
+      , defs:            defs
+      , defsJson:        JSON.stringify(defs, null, '  ')
+      , defsJsonChanged: false
+      , chains:          []
     }
     for propName in [ 'name', 'width', 'height' ]
       if(spaceVals.hasOwnProperty(propName))
         space[propName] = spaceVals[propName]
 
     @push('spaces', space)
-    @set('nextId', id + 1)
     return space
 
   components: {
