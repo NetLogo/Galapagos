@@ -151,6 +151,16 @@ window.RactiveNetTangoSpace = Ractive.extend({
         @updateNetTango(space)
       return
 
+    # (Context, Integer) => Unit
+    '*.ntb-duplicate-block': (_, blockNumber) ->
+      space    = @get('space')
+      original = space.defs.blocks[blockNumber]
+      copy = NetTangoBlockDefaults.copyBlock(original)
+      @push("space.defs.blocks", copy)
+      @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+      @updateNetTango(space)
+      return
+
   }
 
   # (String, NetTangoBlock, Integer, String, String) => Unit
@@ -206,15 +216,17 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   # (NetTangoSpace) => Content
   createModifyMenuContent: (space) ->
-    dele = { eventName: 'ntb-delete-block', name: 'delete' }
+    dele = { eventName: 'ntb-delete-block',         name: 'delete' }
     edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
-    up = { eventName: 'ntb-block-up', name: 'move up' }
-    dn = { eventName: 'ntb-block-down', name: 'move down' }
+    up   = { eventName: 'ntb-block-up',             name: 'move up' }
+    dn   = { eventName: 'ntb-block-down',           name: 'move down' }
+    dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
     items = for def, num in space.defs.blocks
       {
         name:  def.action
-        items: [dele, edit, up, dn].map((x) -> Object.assign({ data: num }, x))
+        items: [dele, edit, up, dn, dup].map((x) -> Object.assign({ data: num }, x))
       }
+
     {
       name: "_",
       items: items
