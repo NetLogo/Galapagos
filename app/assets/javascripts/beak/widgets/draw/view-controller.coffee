@@ -303,10 +303,14 @@ Possible drawing events:
 ###
 
 class DrawingLayer extends Drawer
-  constructor: (@view, @turtleDrawer, @repaintView) ->
-    @canvas    = document.createElement('canvas')
-    @canvas.id = 'dlayer'
-    @ctx       = @canvas.getContext('2d')
+  constructor: (view, turtleDrawer, repaintView) ->
+    super()
+    @view         = view
+    @turtleDrawer = turtleDrawer
+    @repaintView  = repaintView
+    @canvas       = document.createElement('canvas')
+    @canvas.id    = 'dlayer'
+    @ctx          = @canvas.getContext('2d')
 
   resizeCanvas: ->
     @canvas.width  = @view.canvas.width
@@ -425,7 +429,9 @@ class DrawingLayer extends Drawer
     @view.ctx.drawImage(@canvas, 0, 0)
 
 class SpotlightDrawer extends Drawer
-  constructor: (@view) ->
+  constructor: (view) ->
+    super()
+    @view = view
 
   # Names and values taken from org.nlogo.render.SpotlightDrawer
   dimmed: "rgba(0, 0, 50, #{ 100 / 255 })"
@@ -486,7 +492,9 @@ class SpotlightDrawer extends Drawer
     )
 
 class TurtleDrawer extends Drawer
-  constructor: (@view) ->
+  constructor: (view) ->
+    super()
+    @view = view
     @turtleShapeDrawer = new ShapeDrawer({}, @view.onePixel)
     @linkDrawer = new LinkDrawer(@view, {})
 

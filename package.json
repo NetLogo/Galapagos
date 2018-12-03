@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "coffee-script": "^1.12.7",
-    "coffeelint": "^1.16.0"
+    "coffeelint": "^2.1.0",
+    "coffeescript": "^2.3.2"
   }
 }

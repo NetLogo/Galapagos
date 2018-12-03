@@ -4,8 +4,6 @@ logLevel := Level.Warn
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.18")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.2")
-
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.1.2")
@@ -21,6 +19,9 @@ scalacOptions ++= Seq(
 )
 
 resolvers += Resolver.bintrayIvyRepo("netlogo", "play-scraper")
+resolvers += Resolver.bintrayIvyRepo("netlogo", "TortoiseAux")
+
+addSbtPlugin("org.nlogo" % "sbt-coffeescript" % "1.0.3")
 
 addSbtPlugin("org.nlogo" % "play-scraper" % "0.8.1")
 

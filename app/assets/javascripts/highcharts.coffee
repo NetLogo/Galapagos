@@ -104,20 +104,24 @@ class window.HighchartsOps extends PlotOps
       @_penNameToSeriesNum[pen.name] = num
       return
 
+    # This is a workaround for a bug in CS2 `@` detection: https://github.com/jashkenas/coffeescript/issues/5111
+    # -JMB December 2018
+    thisOps = null
+
     resetPen = (pen) => () =>
-      @penToSeries(pen)?.setData([])
+      thisOps.penToSeries(pen)?.setData([])
       return
 
     addPoint = (pen) => (x, y) =>
       # Wrong, and disabled for performance reasons --JAB (10/19/14)
       # color = @colorToRGBString(pen.getColor())
       # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
-      @penToSeries(pen).addPoint([x, y], false)
+      thisOps.penToSeries(pen).addPoint([x, y], false)
       return
 
     updatePenMode = (pen) => (mode) =>
-      type = @modeToString(mode)
-      @penToSeries(pen)?.update({ type: type })
+      type = thisOps.modeToString(mode)
+      thisOps.penToSeries(pen)?.update({ type: type })
       return
 
     # Why doesn't the color change show up when I call `update` directly with a new color
@@ -125,13 +129,14 @@ class window.HighchartsOps extends PlotOps
     # Send me an e-mail if you know why I can't do that.
     # Leave a comment on this webzone if you know why I can't do that. --JAB (6/2/15)
     updatePenColor = (pen) => (color) =>
-      hcColor = @colorToRGBString(color)
-      series  = @penToSeries(pen)
+      hcColor = thisOps.colorToRGBString(color)
+      series  = thisOps.penToSeries(pen)
       series.options.color = hcColor
       series.update(series.options)
       return
 
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
+    thisOps              = this
     @_chart              = Highcharts.chart(elemID, {})
     @_penNameToSeriesNum = {}
     #These pops remove the two redundant functions from the export-csv plugin
