@@ -292,6 +292,42 @@ class window.SessionLite
           compileErrorLog(modelResult)
     , compileErrorLog)
 
+  # (String, (String, Array[{ message: String}]) => String) =>
+  #  { success: true, value: Any } | { success: false, error: String }
+  runReporter: (code, errorLog) ->
+    errorLog = errorLog ? (prefix, errs) ->
+      message = "#{prefix}: #{errs.map((err) -> err.message)}"
+      console.error(message)
+      message
+
+    compileParams = {
+      code:         @widgetController.code(),
+      widgets:      @widgetController.widgets(),
+      commands:     [],
+      reporters:    [code],
+      turtleShapes: turtleShapes ? [],
+      linkShapes:   linkShapes ? []
+    }
+    compileResult = (new BrowserCompiler()).fromModel(compileParams)
+
+    { reporters, model: { result: modelResult, success: modelSuccess } } = compileResult
+    if not modelSuccess
+      message = errorLog("Compiler error", modelResult)
+      return { success: false, error: message }
+
+    [{ result, success }] = reporters
+    if not success
+      message = errorLog("Reporter error", result)
+      return { success: false, error: message }
+
+    reporter = new Function("return ( #{result} );")
+    return try
+      reporterValue = reporter()
+      { success: true, value: reporterValue }
+    catch ex
+      message = errorLog("Runtime error", [ex])
+      { success: false, error: message }
+
   alertCompileError: (result, errorLog = @alertErrors) ->
     errorLog(result.map((err) -> err.message))
 
