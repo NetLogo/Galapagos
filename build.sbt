@@ -51,6 +51,8 @@ resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
 
 resolvers += Resolver.bintrayRepo("netlogo", "NetLogoHeadless")
 
+unmanagedResourceDirectories in Assets += baseDirectory.value / "node_modules"
+
 // Used in Prod
 pipelineStages ++= Seq(digest)
 

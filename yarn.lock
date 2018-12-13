@@ -84,6 +84,11 @@ minimist@~0.0.1:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.10.tgz#de3f98543dbf96082be48ad1a0c7cda836301dcf"
   integrity sha1-3j+YVD2/lggr5IrRoMfNqDYwHc8=
 
+nettango@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.8.0.tgz#4c32700672f8e4f4f9e59e5839f979611876d7e9"
+  integrity sha512-vI2O6YhriMnwGcuI4z+u8OCv9L6Zfb9FLlE9ur5JDPLJoXW6+5G8BGNj0JgO6OqgfOZubh6ZdH7lMyj4KV7LTQ==
+
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
