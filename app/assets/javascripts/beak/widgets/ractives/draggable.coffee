@@ -84,10 +84,10 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
 
   nudge: (direction) ->
     switch direction
-      when "up"    then @set('top' , @get('top' ) - 1); @set('bottom', @get('bottom') - 1)
-      when "down"  then @set('top' , @get('top' ) + 1); @set('bottom', @get('bottom') + 1)
-      when "left"  then @set('left', @get('left') - 1); @set('right' , @get('right' ) - 1)
-      when "right" then @set('left', @get('left') + 1); @set('right' , @get('right' ) + 1)
+      when "up"    then if @get('top')  > 0 then @set('top' , @get('top' ) - 1); @set('bottom', @get('bottom') - 1)
+      when "down"  then                          @set('top' , @get('top' ) + 1); @set('bottom', @get('bottom') + 1)
+      when "left"  then if @get('left') > 0 then @set('left', @get('left') - 1); @set('right' , @get('right' ) - 1)
+      when "right" then                          @set('left', @get('left') + 1); @set('right' , @get('right' ) + 1)
       else              console.log("'#{direction}' is an impossible direction for nudging...")
 
   on: {
