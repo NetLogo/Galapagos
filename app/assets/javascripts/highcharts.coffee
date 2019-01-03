@@ -90,17 +90,16 @@ class window.HighchartsOps extends PlotOps
       return
 
     registerPen = (pen) ->
-      num       = @_chart.series.length
-      mode      = @modeToString(pen.getDisplayMode())
-      isScatter = mode is 'scatter'
-      @_chart.addSeries({
+      num    = @_chart.series.length
+      series = @_chart.addSeries({
         color:      @colorToRGBString(pen.getColor()),
         data:       [],
         dataLabels: { enabled: false },
-        marker:     { enabled: isScatter, radius: if isScatter then 1 else 4 },
-        name:       pen.name,
-        type:       mode
+        name:       pen.name
       })
+      type    = @modeToString(pen.getDisplayMode())
+      options = thisOps.seriesTypeOptions(type)
+      series.update(options)
       @_penNameToSeriesNum[pen.name] = num
       return
 
@@ -120,8 +119,11 @@ class window.HighchartsOps extends PlotOps
       return
 
     updatePenMode = (pen) => (mode) =>
-      type = thisOps.modeToString(mode)
-      thisOps.penToSeries(pen)?.update({ type: type })
+      series = thisOps.penToSeries(pen)
+      if series?
+        type    = thisOps.modeToString(mode)
+        options = thisOps.seriesTypeOptions(type)
+        series.update(options)
       return
 
     # Why doesn't the color change show up when I call `update` directly with a new color
@@ -158,6 +160,16 @@ class window.HighchartsOps extends PlotOps
       when Line  then 'line'
       when Point then 'scatter'
       else 'line'
+
+  # (String) => Highcharts.Options
+  seriesTypeOptions: (type) ->
+    isScatter = type is 'scatter'
+    isLine    = type is 'line'
+    {
+      marker:     { enabled: isScatter, radius: if isScatter then 1 else 4 },
+      lineWidth:  if isLine then 2 else null,
+      type:       if isLine then 'scatter' else type
+    }
 
   # (PenBundle.Pen) => Highcharts.Series
   penToSeries: (pen) ->
