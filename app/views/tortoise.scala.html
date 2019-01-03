@@ -74,6 +74,10 @@
       }
       if (url === "Load") {
         exports.selectModel("Select a model");
+        if (modelContainer.contentWindow.location == "about:blank") {
+          modelContainer.contentWindow.location.replace("./web");
+          modelFileInput.value = "";
+        }
       } else if (url === "NewModel") {
         exports.selectModel("Select a model");
         modelContainer.contentWindow.location.replace("./web");
