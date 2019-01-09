@@ -91,6 +91,9 @@ class window.NetTangoController
       netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
       if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
         data = JSON.parse(netTangoCodeElement.textContent)
+        @storageId = data.storageId
+        if (@playMode and @storageId? and nt.playSpaces? and nt.playSpaces[data.storageId]?)
+          data.spaces = nt.playSpaces[@storageId]
         @builder.load(data)
       else
         @builder.refreshCss()
@@ -102,6 +105,7 @@ class window.NetTangoController
     widgetController = @theOutsideWorld.getWidgetController()
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
+    @spaceChangeListener()
     return
 
   # (String) => Unit
@@ -177,6 +181,10 @@ class window.NetTangoController
     )
     return
 
+  # () => String
+  @generateStorageId: () ->
+    "ntb-#{Math.random().toString().slice(2).slice(0, 10)}"
+
   # (String, Document, NetTangoBuilderData) => Unit
   exportStandalone: (title, exportDom, netTangoData) ->
     nlogoCodeElement = exportDom.getElementById('nlogo-code')
@@ -186,6 +194,7 @@ class window.NetTangoController
     netTangoCodeElement = exportDom.getElementById('ntango-code')
     # For standalone we don't want the code in the netTango data (it's in the nlogo-code element) - JMB August 2018
     delete netTangoData.code
+    netTangoData.storageId = NetTangoController.generateStorageId()
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
     styleElement = @theOutsideWorld.getElementById('ntb-injected-style')
@@ -212,6 +221,19 @@ class window.NetTangoController
   storeNetTangoData: (netTangoData) ->
     set = (prop) => @storage.set(prop, netTangoData[prop])
     [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions' ].forEach(set)
+    return
+
+  # () => Unit
+  storePlaySpaces: () ->
+    netTangoData = @builder.getNetTangoBuilderData()
+    playSpaces = @storage.get('playSpaces') ? { }
+    playSpaces[@storageId] = netTangoData.spaces
+    @storage.set('playSpaces', playSpaces)
+    return
+
+  # (() => Unit) => Unit
+  setSpaceChangeListener: (f) ->
+    @spaceChangeListener = f
     return
 
   # () => Unit
