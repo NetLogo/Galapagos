@@ -55,8 +55,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       authoring: {
         label: "Hide authoring unlock",
         checked: true,
-        checkedCssBuild:  '.netlogo-interface-unlocker-container { background: #eee; }',
-        checkedCssExport: '.netlogo-interface-unlocker-container { display: none; }'
+        checkedCssBuild:  '.netlogo-toggle-container { background: #eee; }',
+        checkedCssExport: '.netlogo-toggle-container { display: none; }'
       }
       poweredBy: {
         label: "Hide 'Powered by NetLogo' link",
