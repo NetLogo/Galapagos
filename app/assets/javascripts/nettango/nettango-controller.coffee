@@ -105,7 +105,7 @@ class window.NetTangoController
     widgetController = @theOutsideWorld.getWidgetController()
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
-    @spaceChangeListener()
+    @spaceChangeListener?()
     return
 
   # (String) => Unit
