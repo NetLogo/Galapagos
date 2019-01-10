@@ -84,9 +84,9 @@ class window.NetTangoController
   onModelLoad: () =>
     @builder = @ractive.findComponent('tangoBuilder')
     nt       = @storage.inProgress
+
     if (nt? and not @playMode and @firstLoad)
       @builder.load(nt)
-      @firstLoad = false
     else
       netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
       if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
@@ -97,6 +97,8 @@ class window.NetTangoController
         @builder.load(data)
       else
         @builder.refreshCss()
+
+    @firstLoad = false
     return
 
   # () => Unit
