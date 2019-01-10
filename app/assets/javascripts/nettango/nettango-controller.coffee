@@ -191,11 +191,8 @@ class window.NetTangoController
   exportStandalone: (title, exportDom, netTangoData) ->
     nlogoCodeElement = exportDom.getElementById('nlogo-code')
     nlogoCodeElement.dataset.filename = title
-    nlogoCodeElement.textContent = netTangoData.code
 
     netTangoCodeElement = exportDom.getElementById('ntango-code')
-    # For standalone we don't want the code in the netTango data (it's in the nlogo-code element) - JMB August 2018
-    delete netTangoData.code
     netTangoData.storageId = NetTangoController.generateStorageId()
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
