@@ -189,8 +189,6 @@
 
         Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
 
-      } else {
-        loadModel(exports.newModel, "NewModel");
       }
 
       window.addEventListener("message", function (e) {
@@ -251,10 +249,10 @@
         }
       });
 
-      function setModelCode(code) {
+      function setModelCode(filePath, code) {
         window.postMessage({
           nlogo: code,
-          path: "Testing",
+          path: filePath,
           type: "nlw-load-model"
         }, "*")
       }
