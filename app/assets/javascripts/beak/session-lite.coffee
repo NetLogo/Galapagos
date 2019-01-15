@@ -331,5 +331,5 @@ class window.SessionLite
   alertCompileError: (result, errorLog = @alertErrors) ->
     errorLog(result.map((err) -> err.message))
 
-  alertErrors: (messages) ->
+  alertErrors: (messages) =>
     @displayError(messages.join('\n'))
