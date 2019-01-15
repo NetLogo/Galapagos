@@ -158,6 +158,7 @@ class window.SessionLite
 
         else
           @widgetController.ractive.set('lastCompileFailed', true)
+          res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
           @alertCompileError(res.model.result)
 
     Tortoise.startLoading(=> codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
@@ -329,7 +330,7 @@ class window.SessionLite
       { success: false, error: message }
 
   alertCompileError: (result, errorLog = @alertErrors) ->
-    errorLog(result.map((err) -> err.message))
+    errorLog(result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message))
 
   alertErrors: (messages) =>
     @displayError(messages.join('\n'))
