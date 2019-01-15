@@ -50,11 +50,27 @@ window.RactiveColorInput = Ractive.extend({
               try netlogoColorToHexString(@get('value'))
               catch ex
                 "#000000"
-            @find('input').value = hexValue
+            input = @find('input')
+            input.value = hexValue
+            # See Safari workaround comment below.  -JMB January 2019
+            if (input.jsc?)
+              input.style.backgroundColor = input.value
+          return
 
       @observe('value', observeValue)
 
       return
+
+    # This is a workaround for Safari's lack of support for `color` input types: https://caniuse.com/#feat=input-color
+    # It relies on the `jscolor-picker` package to provide the functionality instead of the browser.
+    # Once Safari and iOS Safari support `color` types properly, we can remove this code and the dependency.
+    #   -JMB January 2019
+    complete: ->
+      input = @find('input')
+      if (input.type is "text")
+        input.style.color = "#00000000"
+        input.style.backgroundColor = input.value
+        input.jsc = new jscolor(input, { hash: true, styleElement: null })
 
   }
 

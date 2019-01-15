@@ -28,6 +28,8 @@
       </div>
     <div id="nettango-options" class="model-box ntb-container">
     </div>
+    <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
+    @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
     @tagBuilder.pathToHTML("lib/jquery/jquery.js")
     @tagBuilder.pathToHTML("lib/filesaver/FileSaver.js")
     @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")

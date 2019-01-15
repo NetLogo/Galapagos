@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
+  "org.webjars.npm" % "jscolor-picker" % "2.0.4",
   "org.webjars" % "chosen" % "1.8.7",
   "org.webjars.bower" % "filesaver" % "1.3.3",
   "org.webjars.npm" % "mousetrap" % "1.6.1",
