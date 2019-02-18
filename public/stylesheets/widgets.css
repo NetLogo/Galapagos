@@ -186,6 +186,10 @@
   border-color: rgb(238, 238, 238);
 }
 
+.netlogo-ugly-button:disabled {
+  color: rgb(150, 150, 150);
+}
+
 .netlogo-recompilation-button {
   width: 30%;
   margin: 12px auto;
@@ -351,6 +355,10 @@
     justify-content: space-around;
     align-items: center;
     padding: 0px;
+}
+
+.netlogo-button:disabled {
+  color: rgb(150, 150, 150);
 }
 
 .netlogo-disabled, .interface-unlocked {
