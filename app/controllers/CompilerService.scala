@@ -311,6 +311,7 @@ private[controllers] trait RequestResultGenerator {
         "highcharts/modules/exporting.js",
         "highcharts/modules/export-data.js",
         "ractive/ractive.js",
+        "synchrodecoder/synchrodecoder.min.js",
         "codemirror/lib/codemirror.js",
         "codemirror/addon/dialog/dialog.js",
         "codemirror/addon/mode/simple.js",

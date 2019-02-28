@@ -319,7 +319,7 @@ class DrawingLayer extends Drawer
   clearDrawing: ->
     @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
 
-  importDrawing: (sourcePath) =>
+  importDrawing: (base64) =>
     @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
     image = new Image()
     image.onload = () =>
@@ -336,7 +336,7 @@ class DrawingLayer extends Drawer
       @ctx.drawImage(image, (@canvas.width - width) / 2, (@canvas.height - height) / 2, width, height)
       @repaintView()
       return
-    image.src = sourcePath
+    image.src = base64
     return
 
   _rgbToCss: ([r, g, b]) ->
@@ -409,7 +409,7 @@ class DrawingLayer extends Drawer
         when 'clear-drawing'  then @clearDrawing()
         when 'line'           then @drawLine(event)
         when 'stamp-image'    then @drawStamp(event)
-        when 'import-drawing' then @importDrawing(event.sourcePath)
+        when 'import-drawing' then @importDrawing(event.imageBase64)
     )
 
   repaint: (model) ->

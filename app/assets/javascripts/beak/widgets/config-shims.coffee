@@ -1,3 +1,25 @@
+# (String, Ractive) => ((String) => Unit) => Unit
+importFile = (type, ractive) -> (callback) ->
+
+  listener =
+    (event) ->
+      reader = new FileReader
+      reader.onload = (e) -> callback(e.target.result)
+      if event.target.files.length > 0
+        file = event.target.files[0]
+        if type is "image" or (type is "any" and file.type.startsWith("image/"))
+          reader.readAsDataURL(file)
+        else
+          reader.readAsText(file)
+      elem.removeEventListener('change', listener)
+
+  elem = ractive.find('#general-file-input')
+  elem.addEventListener('change', listener)
+  elem.click()
+  elem.value = ""
+
+  return
+
 # (ViewController) => DialogConfig
 genDialogConfig = (viewController) ->
 
@@ -22,51 +44,14 @@ genImportExportConfig = (ractive, viewController) ->
       window.saveAs(new Blob([contents], {type: "text/plain:charset=utf-8"}), filename)
       return
 
-    exportOutput: (filename) ->
-      exportText = ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
-      exportBlob = new Blob([exportText], {type: "text/plain:charset=utf-8"})
-      window.saveAs(exportBlob, filename)
-      return
+    getOutput: ->
+      ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
 
-    exportView: (filename) ->
-      anchor = document.createElement("a")
-      anchor.setAttribute("href", viewController.view.visibleCanvas.toDataURL("img/png"))
-      anchor.setAttribute("download", filename)
-      anchor.click()
-      return
+    getViewBase64: ->
+      viewController.view.visibleCanvas.toDataURL("image/png")
 
-    importDrawing: (trueImport) -> (path) ->
-
-      listener =
-        (event) ->
-          reader = new FileReader
-          reader.onload = (e) -> trueImport(e.target.result)
-          if event.target.files.length > 0
-            reader.readAsDataURL(event.target.files[0])
-          elem.removeEventListener('change', listener)
-
-      elem = ractive.find('#import-drawing-input')
-      elem.addEventListener('change', listener)
-      elem.click()
-      elem.value = ""
-
-      return
-
-    importWorld: (trueImport) -> ->
-
-      listener =
-        (event) ->
-          reader = new FileReader
-          reader.onload = (e) -> trueImport(e.target.result)
-          if event.target.files.length > 0
-            reader.readAsText(event.target.files[0])
-          elem.removeEventListener('change', listener)
-
-      elem = ractive.find('#import-world-input')
-      elem.addEventListener('change', listener)
-      elem.click()
-      elem.value = ""
-
+    importFile: (path) -> (callback) ->
+      importFile("any", ractive)(callback)
       return
 
   }
@@ -77,6 +62,51 @@ genInspectionConfig = ->
   stopInspecting = ((agent) ->)
   clearDead      = (->)
   { inspect, stopInspecting, clearDead }
+
+# (Ractive) => IOConfig
+genIOConfig = (ractive) ->
+  {
+
+    slurpFilepathAsync: (filepath) -> (callback) ->
+      importFile("any", ractive)(callback)
+
+    slurpURL: (url) ->
+
+      req = new XMLHttpRequest()
+
+      # Setting the async option to `false` is deprecated and "bad" as far as HTML/JS is
+      # concerned.  But this is NetLogo and NetLogo model code doesn't have a concept of
+      # async execution, so this is the best we can do.  As long as it isn't used on a
+      # per-tick basis or in a loop, it should be okay.  -JMB August 2017, JAB (10/25/18)
+      req.open("GET", url, false)
+      req.overrideMimeType('text\/plain; charset=x-user-defined') # Get as binary string -- JAB (10/27/18)
+      req.send()
+
+      response    = req.response
+      contentType = req.getResponseHeader("content-type")
+
+      if contentType.startsWith("image/")
+        combine = (acc, i) -> acc + String.fromCharCode(response.charCodeAt(i) & 0xff)
+        uint8Str = [0...response.length].reduce(combine, "")
+        "data:#{contentType};base64,#{btoa(uint8Str)}"
+      else
+        response
+
+    slurpURLAsync: (url) -> (callback) ->
+      fetch(url).then(
+        (response) ->
+          if response.headers.get("content-type").startsWith("image/")
+            response.blob().then(
+              (blob) ->
+                reader = new FileReader
+                reader.onload = (e) -> callback(e.target.result)
+                reader.readAsDataURL(blob)
+            )
+          else
+            response.text().then(callback)
+      )
+
+  }
 
 # (ViewController) => MouseConfig
 genMouseConfig = (viewController) ->
@@ -127,14 +157,15 @@ window.genConfigs = (ractive, viewController, container) ->
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
-  {
-    dialog:       genDialogConfig(viewController)
-  , importExport: genImportExportConfig(ractive, viewController)
-  , inspection:   genInspectionConfig()
-  , mouse:        genMouseConfig(viewController)
-  , output:       genOutputConfig(ractive, appendToConsole)
-  , print:        { write: appendToConsole }
-  , plotOps:      genPlotOps(container, ractive)
-  , world:        genWorldConfig(ractive)
+  { base64ToImageData: window.synchroDecoder
+  , dialog:            genDialogConfig(viewController)
+  , importExport:      genImportExportConfig(ractive, viewController)
+  , inspection:        genInspectionConfig()
+  , io:                genIOConfig(ractive)
+  , mouse:             genMouseConfig(viewController)
+  , output:            genOutputConfig(ractive, appendToConsole)
+  , print:             { write: appendToConsole }
+  , plotOps:           genPlotOps(container, ractive)
+  , world:             genWorldConfig(ractive)
   }
 
