@@ -29,6 +29,9 @@ genDialogConfig = (viewController) ->
 
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
   # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
+  #
+  # Uhh, they probably never will.  Instead, we should favor the `dialog` extension,
+  # for which we provide "asyncDialog" shims above. --JAB (4/5/19)
   {
     confirm: (str) -> clearMouse(); window.confirm(str)
     input:   (str) -> clearMouse(); window.prompt(str, "")
