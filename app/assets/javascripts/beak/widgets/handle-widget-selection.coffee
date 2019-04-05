@@ -18,13 +18,14 @@ window.handleWidgetSelection =
 
     deleteSelected =
       ->
-        selected          = resizer().get('target')
-        widget            = selected.get('widget')
-        hasNoEditWindowUp = not document.querySelector('.widget-edit-popup')?
-        if ractive.get('isEditing') and selected? and widget? and (widget.type isnt "view") and hasNoEditWindowUp
-          unlockSelection()
-          deselectThoseWidgets()
-          ractive.fire('unregister-widget', widget.id)
+        selected = resizer().get('target')
+        if ractive.get('isEditing') and selected?
+          widget            = selected.get('widget')
+          hasNoEditWindowUp = not document.querySelector('.widget-edit-popup')?
+          if widget? and (widget.type isnt "view") and hasNoEditWindowUp
+            unlockSelection()
+            deselectThoseWidgets()
+            ractive.fire('unregister-widget', widget.id)
         return
 
     justSelectIt =
