@@ -44,6 +44,22 @@ genImportExportConfig = (ractive, viewController) ->
       window.saveAs(new Blob([contents], {type: "text/plain:charset=utf-8"}), filename)
       return
 
+    getNlogo: ->
+
+      { result, success } =
+        (new BrowserCompiler()).exportNlogo({
+          info:         Tortoise.toNetLogoMarkdown(ractive.get('info')),
+          code:         ractive.get('code'),
+          widgets:      (v for _, v of ractive.get('widgetObj')),
+          turtleShapes: turtleShapes,
+          linkShapes:   linkShapes
+        })
+
+      if success
+        result
+      else
+        throw new Error("The current model could not be converted to 'nlogo' format")
+
     getOutput: ->
       ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
 
@@ -52,6 +68,14 @@ genImportExportConfig = (ractive, viewController) ->
 
     importFile: (path) -> (callback) ->
       importFile("any", ractive)(callback)
+      return
+
+    importModel: (nlogoContents, modelName) ->
+      window.postMessage({
+        nlogo: nlogoContents
+      ,  path: modelName
+      ,  type: "nlw-load-model"
+      }, "*")
       return
 
   }
@@ -105,6 +129,7 @@ genIOConfig = (ractive) ->
           else
             response.text().then(callback)
       )
+      return
 
   }
 
