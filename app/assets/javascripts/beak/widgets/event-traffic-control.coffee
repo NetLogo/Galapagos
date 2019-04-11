@@ -42,7 +42,9 @@ window.controlEventTraffic = (controller) ->
   onCloseDialog = (dialog) ->
     openDialogs.delete(dialog)
     ractive.set('someDialogIsOpen', openDialogs.size > 0)
+    temp = document.scrollTop
     document.querySelector('.netlogo-model').focus()
+    document.scrollTop = temp
     return
 
   onCloseEditForm = (editForm) ->
