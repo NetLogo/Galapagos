@@ -65,7 +65,8 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
 
     components: {
 
-      console:       RactiveConsoleWidget
+      asyncDialog:   RactiveAsyncUserDialog
+    , console:       RactiveConsoleWidget
     , contextMenu:   RactiveContextMenu
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveModelCodeComponent
@@ -156,6 +157,7 @@ template =
 
       </div>
 
+      <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
 

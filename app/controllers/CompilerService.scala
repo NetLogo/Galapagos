@@ -339,6 +339,7 @@ private[controllers] trait RequestResultGenerator {
         "beak/widgets/ractives/subcomponent/spacer.js",
         "beak/widgets/ractives/subcomponent/tick-counter.js",
         "beak/widgets/ractives/subcomponent/variable.js",
+        "beak/widgets/ractives/async-user-dialog.js",
         "beak/widgets/ractives/context-menu.js",
         "beak/widgets/ractives/draggable.js",
         "beak/widgets/ractives/edit-form.js",
