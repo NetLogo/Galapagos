@@ -20,6 +20,40 @@ importFile = (type, ractive) -> (callback) ->
 
   return
 
+# (Ractive, ViewController) => AsyncDialogConfig
+genAsyncDialogConfig = (ractive, viewController) ->
+
+  clearMouse = ->
+    viewController.mouseDown = false
+    return
+
+  tellDialog = (eventName, args...) ->
+    ractive.findComponent('asyncDialog').fire(eventName, args...)
+
+  {
+
+    getChoice: (message, choices) -> (callback) ->
+      clearMouse()
+      tellDialog('show-chooser', message, choices, callback)
+      return
+
+    getText: (message) -> (callback) ->
+      clearMouse()
+      tellDialog('show-text-input', message, callback)
+      return
+
+    getYesOrNo: (message) -> (callback) ->
+      clearMouse()
+      tellDialog('show-yes-or-no', message, callback)
+      return
+
+    showMessage: (message) -> (callback) ->
+      clearMouse()
+      tellDialog('show-message', message, callback)
+      return
+
+  }
+
 # (ViewController) => DialogConfig
 genDialogConfig = (viewController) ->
 
@@ -94,8 +128,13 @@ genInspectionConfig = ->
 genIOConfig = (ractive) ->
   {
 
-    slurpFilepathAsync: (filepath) -> (callback) ->
+    importFile: (filepath) -> (callback) ->
+      console.warn("Unsupported operation: `importFile`")
+      return
+
+    slurpFileDialogAsync: (callback) ->
       importFile("any", ractive)(callback)
+      return
 
     slurpURL: (url) ->
 
@@ -185,7 +224,8 @@ window.genConfigs = (ractive, viewController, container) ->
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
-  { base64ToImageData: window.synchroDecoder
+  { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
+  , base64ToImageData: window.synchroDecoder
   , dialog:            genDialogConfig(viewController)
   , importExport:      genImportExportConfig(ractive, viewController)
   , inspection:        genInspectionConfig()
