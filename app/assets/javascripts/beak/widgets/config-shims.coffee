@@ -81,6 +81,9 @@ genImportExportConfig = (ractive, viewController) ->
       window.saveAs(new Blob([contents], {type: "text/plain:charset=utf-8"}), filename)
       return
 
+    exportBlob: (blob) -> (filename) ->
+      window.saveAs(blob, filename)
+
     getNlogo: ->
 
       { result, success } =
@@ -102,6 +105,9 @@ genImportExportConfig = (ractive, viewController) ->
 
     getViewBase64: ->
       viewController.view.visibleCanvas.toDataURL("image/png")
+
+    getViewBlob: (callback) ->
+      viewController.view.visibleCanvas.toBlob(callback, "image/png")
 
     importFile: (path) -> (callback) ->
       importFile("any", ractive)(callback)
@@ -236,4 +242,3 @@ window.genConfigs = (ractive, viewController, container) ->
   , plotOps:           genPlotOps(container, ractive)
   , world:             genWorldConfig(ractive)
   }
-
