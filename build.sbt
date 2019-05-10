@@ -22,7 +22,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-64ccbba"
+val tortoiseVersion = "1.0-6b88075"
 
 libraryDependencies ++= Seq(
   ehcache,
@@ -46,7 +46,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "markdown-js" % "0.5.0-1",
   "org.webjars.npm" % "ractive" % "0.9.9",
   "org.webjars.npm" % "codemirror" % "5.42.2",
-  "org.webjars.npm" % "synchrodecoder" % "1.0.2"
+  "org.webjars.npm" % "synchrodecoder" % "1.0.2",
+  "org.webjars.npm" % "localforage" % "1.7.3"
 )
 
 resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
