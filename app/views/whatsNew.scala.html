@@ -112,7 +112,7 @@
     <li>On a code recompile failure the line number will now display along with the error message.</li>
     <li>Put in a workaround so that color input widgets can work in the Safari browser.</li>
     <li>Put in a workaround for selecting input text in authoring mode popup windows in Firefox.</li>
-    <li>Allowed line plots to go in any direction with <code>plotxy</code>, matching NetLogo desktop&#8217;s behavior.</li>
+    <li>Allowed line plots to go in any direction with <code>plotxy</code>, matching NetLogo desktop's behavior.</li>
     <li>Fixed some bugs around using <code>run</code> and <code>runresult</code> with <code>let</code> variables in strings.</li>
     <li>Fixed a bug where widgets could be nudged outside the model area in authoring mode using the keyboard.</li>
     <li>Fixed a bug with the display when repeatedly loading models from the local system.</li>
@@ -125,23 +125,23 @@
   <p>As part of Google Summer of Code a trio of improvements were made to the coding experience of NetLogo Web:</p>
 
   <ul>
-    <li>A &#8220;Jump to Procedure&#8221; dropdown has been added in the NetLogo Code tab that makes it easy to go right to a procedure definition in the code.</li>
-    <li>A &#8220;Show Usage&#8221; hotkey has been added - simply highlight some text and hit <code>Ctrl-U</code> (Windows/Linux) or <code>Command-U</code> (macOS) and you&#8217;ll see a list of the lines of code the text is used. This is very useful for finding where variables and procedures are used.</li>
-    <li>An &#8220;Auto-Complete&#8221; feature has been added. When the checkbox is checked in the NetLogo Code tab, suggestions for keywords, primitives, and procedure names will popup as you type in code.</li>
+    <li>A "Jump to Procedure" dropdown has been added in the NetLogo Code tab that makes it easy to go right to a procedure definition in the code.</li>
+    <li>A "Show Usage" hotkey has been added - simply highlight some text and hit <code>Ctrl-U</code> (Windows/Linux) or <code>Command-U</code> (macOS) and you'll see a list of the lines of code the text is used. This is very useful for finding where variables and procedures are used.</li>
+    <li>An "Auto-Complete" feature has been added. When the checkbox is checked in the NetLogo Code tab, suggestions for keywords, primitives, and procedure names will popup as you type in code.</li>
   </ul>
 
   <p>Three more features were added that should also help the coding and model testing experience:</p>
 
   <ul>
-    <li>A &#8220;Comment Code&#8221; hotkey has been added that will toggle a line between commented or uncommented with the <code>;</code> character. Useful for quickly testing code with or without some line. It is available at <code>Ctrl-;</code> (Windows/Linux) or <code>Command-;</code> (macOS).</li>
-    <li>There is an option to move the &#8220;Commands and Code&#8221; tabs to the right side of the screen, instead of the bottom (the default). This allows viewing the Command Center or NetLogo Code tabs side-by-side with a model, which is much nicer on wide screens.</li>
+    <li>A "Comment Code" hotkey has been added that will toggle a line between commented or uncommented with the <code>;</code> character. Useful for quickly testing code with or without some line. It is available at <code>Ctrl-;</code> (Windows/Linux) or <code>Command-;</code> (macOS).</li>
+    <li>There is an option to move the "Commands and Code" tabs to the right side of the screen, instead of the bottom (the default). This allows viewing the Command Center or NetLogo Code tabs side-by-side with a model, which is much nicer on wide screens.</li>
     <li>Errors that occur as a result of code typed into the Command Center will now show in the Command Center display, instead of in a dialog box. The Command Center is also more consistent about retaining focus after commands are entered.</li>
   </ul>
 
   <h3>Improvements and Bug Fixes</h3>
 
   <ul>
-    <li>Wide models will now expand to take up more screen space by default, instead of getting &#8220;stuck&#8221; inside a small box on the screen.</li>
+    <li>Wide models will now expand to take up more screen space by default, instead of getting "stuck" inside a small box on the screen.</li>
     <li>Lots of improvements to navigating models in the models library dropdown - using browser back and forward buttons should work much more reliably.</li>
     <li>Workarounds were added to better support the Microsoft Edge web browser, especially around widget editing.</li>
     <li>The Baby BehaviorSpace experimental feature is now aware of the <code>behaviorspace-expiriment-name</code> and <code>behaviorspace-run-number</code> primitives.</li>
@@ -149,11 +149,11 @@
     <li>Turtle pen size choices are now better respected.</li>
     <li>The same <code>nlogo</code> file can now be uploaded multiple times in a row - before nothing would happen on the 2nd or further uploads.</li>
     <li>Monitor widgets allow non-numeric values, as in desktop.</li>
-    <li>Models that use <code>inspect</code> can now compile and run, but the command doesn&#8217;t do anything.</li>
+    <li>Models that use <code>inspect</code> can now compile and run, but the command doesn't do anything.</li>
     <li>More primitives have been added to the code highlighter.</li>
-    <li>Fix for using <code>turtle-set</code> with special agentsets, like <code>turtles</code> and <code>patches</code>. It wasn&#8217;t making a new agentset in these cases, so adjustments to the new agentset would affect all agents in the world.</li>
+    <li>Fix for using <code>turtle-set</code> with special agentsets, like <code>turtles</code> and <code>patches</code>. It wasn't making a new agentset in these cases, so adjustments to the new agentset would affect all agents in the world.</li>
     <li>Improved error messages for <code>n-of</code> to match desktop.</li>
-    <li>Fixed an issue where using <code>setxy</code> with <code>pen-down</code> and a wrapped world wouldn&#8217;t properly wrap the pen drawings.</li>
+    <li>Fixed an issue where using <code>setxy</code> with <code>pen-down</code> and a wrapped world wouldn't properly wrap the pen drawings.</li>
     <li>Exporting anonymous procedures works with <code>export-world</code> without errors. Note that importing is not supported (in desktop or web).</li>
     <li>Speed optimizations were added around breed checks for agents, the <code>patchat</code> primitive, and using commands or reporters with large agentsets, like <code>patches</code> in a big world.</li>
     <li>The <code>item</code> primitive now allows non-integer indexes when accessing a list, just like desktop.</li>
