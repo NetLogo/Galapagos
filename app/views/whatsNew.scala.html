@@ -4,6 +4,102 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="may24th2019-v2.6.0">May 24th, 2019 - v2.6.0</h2>
+
+  <h3>Input and Output Extensions</h3>
+
+  <p>The major new features for this release of NetLogo Web are new extensions that enable sending input to and pulling output from outside the browser session. Almost all of these extensions also have a matching NetLogo desktop version, which means you can write a single model that uses external files or data that runs nearly identically in both environments.</p>
+
+  <p>Here is a listing of each of the new extensions with links to their documentation, why you might want to use them, and the desktop primitive functionality they are meant to provide.</p>
+
+  <table>
+
+  <thead>
+  <tr>
+    <th> Extension </th>
+    <th> Enables You To </th>
+    <th> Provides Functionality Like </th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/Fetch-Extension"><strong>Fetch</strong></a> </td>
+    <td> Get some data into your model from a URL or a file. </td>
+    <td> <code>file-open</code>, <code>file-read</code>, <code>user-file</code>, the Web extension </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/Dialog-Extension"><strong>Dialog</strong></a> </td>
+    <td> Get some information from the user of your model. </td>
+    <td> <code>user-input</code>, <code>user-one-of</code>, <code>user-message</code>, <code>user-yes-or-no?</code> </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/ImportA-Extension"><strong>ImportA</strong></a> </td>
+    <td> Take the string form of an image or world that you have fetched or created and import it into your model. </td>
+    <td> <code>import-world</code>, <code>import-drawing</code>, <code>import-pcolors</code>, <code>import-pcolors-rgb</code> </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/ExportThe-Extension"><strong>ExportThe</strong></a> </td>
+    <td> Get the string form of some data from your model like the world info, the plots, or even the model code itself. </td>
+    <td> <code>export-world</code>, <code>export-plot</code>, <code>export-output</code>, <code>export-view</code> </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/SendTo-Extension"><strong>SendTo</strong></a> </td>
+    <td> Send some string data to a local file. </td>
+    <td> <code>file-open</code>, <code>file-write</code>, <code>file-show</code>, <code>file-print</code>, <code>file-type</code> </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/Store-Extension"><strong>Store</strong></a> </td>
+    <td> Store long-lived string data from the model in the user's browser, in a way that persists between recompiles and reloads, all without without user interaction (unlike <code>send-to:file</code> saving). </td>
+    <td> A very basic file system </td>
+  </tr>
+  <tr>
+    <td> <a href="https://github.com/NetLogo/Tortoise/wiki/Experimental:-Mini-CSV-Extension"><strong>MiniCSV</strong></a> </td>
+    <td> Turn CSV-structured string data into formats usable in NetLogo code, or turn NetLogo data into CSV-structured strings for saving to a file. </td>
+    <td> The CSV extension </td>
+  </tr>
+  </tbody>
+  </table>
+
+  <p>Why not just reproduce the same input and output primitives that NetLogo desktop uses in web? The reasons are technical, but NetLogo Web's design along with the limitations of the browser environment it runs in makes duplicating the exact functionality of the desktop primitives impossible. In the web environment we do not control when the browser will finish getting input we request from a file, a URL, or even from the user, so we usually need to provide <em>callback procedures</em> that can run once the browser complete.  Rather than making primitives whose behavior would differ between platforms, we decided to make extensions whose behavior would be identical between NetLogo desktop and NetLogo Web. The <a href="https://github.com/NetLogo/Dialog-Extension#what-problem-does-this-extension-solve"><strong>Dialog</strong> extension document has more details on the issue</a> if you are interested.</p>
+
+  <p>As part of these updates, the way to do <code>import-world</code> and <code>import-drawing</code> has changed! Instead of using those primitives, the new <strong>ImportA</strong> extension provides the <code>import-a:world</code> primitive that reads a world from a string.  Use <code>export-the:world</code> to get your model's world data as a string, or the <strong>Fetch</strong> extension to get it from outside of your model.  The <strong>Fetch</strong> provides a <code>fetch:user-file-async</code> primitive that will prompt the user to select a file, and then send that file's contents to the provided procedure to use with <code>import-a:world</code>.</p>
+
+  <p>You can see an example below, and would use a similar process for <code>import-a:drawing</code> or the new <code>import-a:pcolors</code> primitive that provides the <code>import-pcolors</code> functionality from desktop.  There are more examples in <a href="https://github.com/NetLogo/ImportA-Extension">the docs for the <strong>ImportA</strong> extension</a>.</p>
+
+  <pre><code>
+  extensions [ fetch import-a ]
+
+  to import-world-new
+    fetch:user-file-async [ world-file -&gt;
+      import-a:world world-file
+
+      ; if you have code that needs to run after
+      ; the world import, it should go here
+    ]
+  end
+  </code></pre>
+
+  <h3>Features and Improvements</h3>
+
+  <ul>
+  <li>The included models have been updated to match those in the NetLogo desktop 6.1 release. See <a href="http://ccl.northwestern.edu/netlogo/docs/versions.html#model-changes">the NetLogo desktop 6.1 release notes</a> for more information on those changes.</li>
+  <li>The new multiple-condition behavior for the <code>ifelse</code> and <code>ifelse-value</code> primitives is supported. See <a href="http://ccl.northwestern.edu/netlogo/docs/dictionary.html#ifelse">the NetLogo dictionary</a> for more information.</li>
+  <li>The new <code>up-to-n-of</code> primitive for selecting random elements from agentsets and lists without an error when the result is smaller than requested is now supported. See <a href="http://ccl.northwestern.edu/netlogo/docs/dictionary.html#up-to-n-of">the NetLogo dictionary</a> for more information.</li>
+  </ul>
+
+  <h3>Bug Fixes</h3>
+
+  <ul>
+  <li>Properly handle negative numbers when given to <code>back</code> and <code>left</code>.</li>
+  <li>Increase the max CSV file import length for <code>import-a:world</code> (formerly <code>import-world</code>).</li>
+  <li>Drawing data is now included in world exports (<code>export-world</code> and <code>export-the:world</code>).</li>
+  <li>Import and export functions properly handle inner quotes in strings.</li>
+  <li>Drawings rescale when the patch size of the view changes.</li>
+  <li>Color value calculations are better aligned with how NetLogo desktop calculates them.</li>
+  <li>Avoid an error when pressing the Delete button with nothing selected.</li>
+  </ul>
+
   <h2 id="v2.5.2">February 8th, 2019 - v2.5.2</h2>
 
   <p>This is a quick bugfix release to resolve an issue where authoring a model (resizing widgets) can cause file exports to fail.</p>
