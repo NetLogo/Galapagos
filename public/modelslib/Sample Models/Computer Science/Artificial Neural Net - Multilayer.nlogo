@@ -170,7 +170,7 @@ end
 
 ;; computes the step function given an input value and the weight on the link
 to-report step [input]
-  report ifelse-value (input > 0.5) [ 1 ] [ 0 ]
+  report ifelse-value input > 0.5 [ 1 ] [ 0 ]
 end
 
 ;;;
@@ -180,7 +180,7 @@ end
 ;; test runs one instance and computes the output
 to test
   let result result-for-inputs input-1 input-2
-  let correct? ifelse-value (result = target-answer) [ "correct" ] [ "incorrect" ]
+  let correct? ifelse-value result = target-answer [ "correct" ] [ "incorrect" ]
   user-message (word
     "The expected answer for " input-1 " " target-function " " input-2 " is " target-answer ".\n\n"
     "The network reported " result ", which is " correct? ".")
@@ -843,7 +843,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 resize-world -7 7 -7 7 ; for square aspect ratio
 setup repeat 100 [ train ]

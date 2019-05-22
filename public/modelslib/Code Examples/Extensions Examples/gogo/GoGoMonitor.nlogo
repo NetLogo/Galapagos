@@ -781,7 +781,7 @@ NIL
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model communicates with the sensors and output ports of a [GoGo Board](http://gogoboard.org), an open source, easy-to-build, low cost, general purpose circuit board designed for educational projects.
+This model communicates with the sensors and output ports of a [GoGo Board](https://gogoboard.org), an open source, easy-to-build, low cost, general purpose circuit board designed for educational projects.
 
 This model helps you test your connection to your GoGo Board, and serves as a starting point for building NetLogo activities that interact with the physical world. For a simpler version of this model, try the GoGoMonitorSimple.
 
@@ -818,7 +818,7 @@ Try connecting different sensors to the GoGo Board: temperature sensors, light s
 
 Connect various motors, lights, and other circuits to the GoGo Board's output ports.
 
-To find out where to buy sensors and motors, go to the [GoGo Board website](http://gogoboard.org).
+To find out where to buy sensors and motors, go to the [GoGo Board website](https://gogoboard.org).
 
 ## EXTENDING THE MODEL
 
@@ -833,7 +833,7 @@ This model uses the NetLogo GoGo Extension. For more information, see the GoGo E
 
 ## CREDITS AND REFERENCES
 
-To learn about GoGo Boards, see http://gogoboard.org.
+To learn about GoGo Boards, see https://gogoboard.org.
 
 This model was created by Paulo Blikstein at Stanford's [Transformative Learning Technologies Lab](https://tltl.stanford.edu/).
 
@@ -1121,7 +1121,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

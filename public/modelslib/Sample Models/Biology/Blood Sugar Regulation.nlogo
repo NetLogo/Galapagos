@@ -322,7 +322,7 @@ end
 ; Returns the outcome of a Bernoulli trial with success probability p.
 ; Successes are reported as 1 and failures are reported as 0.
 to-report random-bernoulli [ p ]
-  report ifelse-value (random-float 1 < p) [1] [0]
+  report ifelse-value random-float 1 < p [1] [0]
 end
 
 ; Returns a random number according to the binomial distribution with parameters n and p
@@ -1023,7 +1023,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

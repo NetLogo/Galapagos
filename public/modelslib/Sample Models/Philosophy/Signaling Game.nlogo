@@ -243,8 +243,8 @@ to-report format-list [ this-list ]
 end
 
 to-report format-value [ x width ]
-  let str (word ifelse-value (is-number? x) [ precision x 0 ] [ x ])
-  let padding ifelse-value (length str < width)
+  let str (word ifelse-value is-number? x [ precision x 0 ] [ x ])
+  let padding ifelse-value length str < width
     [ reduce word (n-values (width - length str) [ " " ]) ]
     [ "" ]
   report word padding str
@@ -257,7 +257,7 @@ end
 
 to-report instances [ x this-list ]
   ; report the number of instances of x in this-list
-  report reduce [ [a b] -> a + ifelse-value (b = x) [ 1 ] [ 0 ] ] fput 0 this-list
+  report reduce [ [a b] -> a + ifelse-value b = x [ 1 ] [ 0 ] ] fput 0 this-list
 end
 
 to-report normalize [ this-list ]
@@ -904,7 +904,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 resize-world -14 14 -14 14
 setup repeat 75 [ go ]

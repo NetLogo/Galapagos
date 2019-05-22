@@ -22,7 +22,7 @@ end
 
 ;; Reports the link set corresponding to the value of the links-to-use combo box
 to-report get-links-to-use
-  report ifelse-value (links-to-use = "directed")
+  report ifelse-value links-to-use = "directed"
     [ directed-edges ]
     [ undirected-edges ]
 end
@@ -1425,7 +1425,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 setup
 nw:generate-watts-strogatz

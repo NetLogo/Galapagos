@@ -652,7 +652,7 @@ http://ccl.northwestern.edu/papers/2009/Kornhauser,Wilensky&Rand_DesignGuideline
 
 This work is based on the visualization guidelines found in:
 Healey, C. (2006). Perception in Visualization.
-http://www.csc.ncsu.edu/faculty/healey/PP/index.html
+https://www.csc2.ncsu.edu/faculty/healey/PP/
 
 ## HOW TO CITE
 
@@ -1010,7 +1010,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 setup-full repeat 150 [ go ]
 @#$#@#$#@

@@ -10,7 +10,7 @@ turtles-own [
                       ;; that turtle's neighbors are the same color as the turtle
   similar-nearby      ;; how many neighboring patches have a turtle with my color?
   other-nearby        ;; how many have a turtle of another color?
-  total-nearby        ;; sum of previous two variables
+  total-nearby        ;; how many neighboring patches have a turtle?
   my-%-similar-wanted ;; the threshold for this particular turtle
 ]
 
@@ -650,7 +650,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

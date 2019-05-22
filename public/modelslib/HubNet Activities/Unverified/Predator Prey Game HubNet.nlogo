@@ -387,7 +387,7 @@ end
 to-report my-role
   if energy <= 0
     [ report "dead" ]
-  report ifelse-value (shape = "wolf") [ "predator" ][ "prey" ]
+  report ifelse-value shape = "wolf" [ "predator" ][ "prey" ]
 end
 
 ;; show the appropriate amount of energy
@@ -1036,7 +1036,7 @@ Rectangle -16777216 true false 189 260 210 270
 Line -16777216 false 263 127 281 155
 Line -16777216 false 281 155 281 192
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -1,15 +1,8 @@
-globals [
-  gini-index-reserve
-  lorenz-points
-]
-
 turtles-own [
   sugar           ;; the amount of sugar this turtle has
   metabolism      ;; the amount of sugar that each turtles loses each tick
   vision          ;; the distance that this turtle can see in the horizontal and vertical directions
   vision-points   ;; the points that this turtle can see in relative to it's current position (based on vision)
-  age             ;; the current age of this turtle (in ticks)
-  max-age         ;; the age at which this turtle will die of natural causes
 ]
 
 patches-own [
@@ -22,14 +15,9 @@ patches-own [
 ;;
 
 to setup
-  if maximum-sugar-endowment <= minimum-sugar-endowment [
-    user-message "Oops: the maximum-sugar-endowment must be larger than the minimum-sugar-endowment"
-    stop
-  ]
   clear-all
   create-turtles initial-population [ turtle-setup ]
   setup-patches
-  update-lorenz-and-gini
   reset-ticks
 end
 
@@ -37,10 +25,8 @@ to turtle-setup ;; turtle procedure
   set color red
   set shape "circle"
   move-to one-of patches with [not any? other turtles-here]
-  set sugar random-in-range minimum-sugar-endowment maximum-sugar-endowment
+  set sugar random-in-range 5 25
   set metabolism random-in-range 1 4
-  set max-age random-in-range 60 100
-  set age 0
   set vision random-in-range 1 6
   ;; turtles can look horizontally and vertically up to vision patches
   ;; but cannot look diagonally at all
@@ -78,14 +64,10 @@ to go
   ask turtles [
     turtle-move
     turtle-eat
-    set age (age + 1)
-    if sugar <= 0 or age > max-age [
-      hatch 1 [ turtle-setup ]
-      die
-    ]
+    if sugar <= 0
+      [ die ]
     run visualization
   ]
-  update-lorenz-and-gini
   tick
 end
 
@@ -111,27 +93,8 @@ to patch-recolor ;; patch procedure
 end
 
 to patch-growback ;; patch procedure
-  ;; gradually grow back all of the sugar for the patch
-  set psugar min (list max-psugar (psugar + 1))
-end
-
-to update-lorenz-and-gini
-  let num-people count turtles
-  let sorted-wealths sort [sugar] of turtles
-  let total-wealth sum sorted-wealths
-  let wealth-sum-so-far 0
-  let index 0
-  set gini-index-reserve 0
-  set lorenz-points []
-  repeat num-people [
-    set wealth-sum-so-far (wealth-sum-so-far + item index sorted-wealths)
-    set lorenz-points lput ((wealth-sum-so-far / total-wealth) * 100) lorenz-points
-    set index (index + 1)
-    set gini-index-reserve
-      gini-index-reserve +
-      (index / num-people) -
-      (wealth-sum-so-far / total-wealth)
-  ]
+  ;; immediately grow back all of the sugar for the patch
+  set psugar max-psugar
 end
 
 ;;
@@ -191,9 +154,9 @@ ticks
 
 BUTTON
 10
-135
+55
 90
-175
+95
 NIL
 setup
 NIL
@@ -208,9 +171,9 @@ NIL
 
 BUTTON
 100
-135
+55
 190
-175
+95
 NIL
 go
 T
@@ -225,9 +188,9 @@ NIL
 
 BUTTON
 200
-135
+55
 290
-175
+95
 go once
 go
 NIL
@@ -242,9 +205,9 @@ NIL
 
 CHOOSER
 10
-190
+105
 290
-235
+150
 visualization
 visualization
 "no-visualization" "color-agents-by-vision" "color-agents-by-metabolism"
@@ -253,8 +216,26 @@ visualization
 PLOT
 720
 10
-925
-140
+940
+165
+Population
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plotxy ticks count turtles"
+
+PLOT
+950
+10
+1170
+165
 Wealth distribution
 NIL
 NIL
@@ -270,9 +251,9 @@ PENS
 
 SLIDER
 10
-10
+15
 290
-43
+48
 initial-population
 initial-population
 10
@@ -283,118 +264,85 @@ initial-population
 NIL
 HORIZONTAL
 
-SLIDER
-10
-50
-290
-83
-minimum-sugar-endowment
-minimum-sugar-endowment
-0
-200
+PLOT
+720
+175
+940
+330
+Average vision
+NIL
+NIL
+0.0
+10.0
+0.0
+6.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plotxy ticks mean [vision] of turtles"
+
+PLOT
+950
+175
+1170
+330
+Average metabolism
+NIL
+NIL
+0.0
+10.0
+0.0
 5.0
-1
-1
-NIL
-HORIZONTAL
-
-PLOT
-720
-145
-925
-295
-Lorenz curve
-Pop %
-Wealth %
-0.0
-100.0
-0.0
-100.0
-false
-true
-"" ""
-PENS
-"equal" 100.0 0 -16777216 true ";; draw a straight line from lower left to upper right\nset-current-plot-pen \"equal\"\nplot 0\nplot 100" ""
-"lorenz" 1.0 0 -2674135 true "" "plot-pen-reset\nset-plot-pen-interval 100 / count turtles\nplot 0\nforeach lorenz-points plot"
-
-PLOT
-720
-300
-925
-440
-Gini index vs. time
-Time
-Gini
-0.0
-100.0
-0.0
-1.0
 true
 false
 "" ""
 PENS
-"default" 1.0 0 -13345367 true "" "plot (gini-index-reserve / count turtles) * 2"
+"default" 1.0 0 -16777216 true "" "plotxy ticks mean [metabolism] of turtles"
 
-SLIDER
-10
-90
-290
-123
-maximum-sugar-endowment
-maximum-sugar-endowment
-0
-200
-25.0
+MONITOR
+95
+160
+190
+209
+population
+count turtles
+17
 1
-1
-NIL
-HORIZONTAL
+12
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This third model in the NetLogo Sugarscape suite implements Epstein & Axtell's Sugarscape Wealth Distribution model, as described in chapter 2 of their book Growing Artificial Societies: Social Science from the Bottom Up. It provides a ground-up simulation of inequality in wealth. Only a minority of the population have above average wealth, while most agents have wealth near the same level as the initial endowment.
-
-The inequity of the resulting distribution can be described graphically by the Lorenz curve and quantitatively by the Gini coefficient.
+This first model in the NetLogo Sugarscape suite implements Epstein & Axtell's Sugarscape Immediate Growback model, as described in chapter 2 of their book Growing Artificial Societies: Social Science from the Bottom Up. It simulates a population with limited, spatially-distributed resources available.
 
 ## HOW IT WORKS
 
-Each patch contains some sugar, the maximum amount of which is predetermined. At each tick, each patch regains one unit of sugar, until it reaches the maximum amount.
-The amount of sugar a patch currently contains is indicated by its color; the darker the yellow, the more sugar.
+Each patch contains some sugar, the maximum amount of which is predetermined. At each tick, each patch grows back fully to have the maximum amount of sugar. The amount of sugar a patch currently contains is indicated by its color; the darker the yellow, the more sugar.
 
 At setup, agents are placed at random within the world. Each agent can only see a certain distance horizontally and vertically. At each tick, each agent will move to the nearest unoccupied location within their vision range with the most sugar, and collect all the sugar there.  If its current location has as much or more sugar than any unoccupied location it can see, it will stay put.
 
 Agents also use (and thus lose) a certain amount of sugar each tick, based on their metabolism rates. If an agent runs out of sugar, it dies.
 
-Each agent also has a maximum age, which is assigned randomly from the range 60 to 100 ticks.  When the agent reaches an age beyond its maximum age, it dies.
-
-Whenever an agent dies (either from starvation or old age), a new randomly initialized agent is created somewhere in the world; hence, in this model the global population count stays constant.
-
 ## HOW TO USE IT
 
-The INITIAL-POPULATION slider sets how many agents are in the world.
-
-The MINIMUM-SUGAR-ENDOWMENT and MAXIMUM-SUGAR-ENDOWMENT sliders set the initial amount of sugar ("wealth") each agent has when it hatches. The actual value is randomly chosen from the given range.
+Set the INITIAL-POPULATION slider before pressing SETUP. This determines the number of agents in the world.
 
 Press SETUP to populate the world with agents and import the sugar map data. GO will run the simulation continuously, while GO ONCE will run one tick.
 
 The VISUALIZATION chooser gives different visualization options and may be changed while the GO button is pressed. When NO-VISUALIZATION is selected all the agents will be red. When COLOR-AGENTS-BY-VISION is selected the agents with the longest vision will be darkest and, similarly, when COLOR-AGENTS-BY-METABOLISM is selected the agents with the lowest metabolism will be darkest.
 
-The WEALTH-DISTRIBUTION histogram on the right shows the distribution of wealth.
-
-The LORENZ CURVE plot shows what percent of the wealth is held by what percent of the population, and the the GINI-INDEX V. TIME plot shows a measure of the inequity of the distribution over time.  A GINI-INDEX of 0 equates to everyone having the exact same amount of wealth (collected sugar), and a GINI-INDEX of 1 equates to the most skewed wealth distribution possible, where a single person has all the sugar, and no one else has any.
+The four plots show the world population over time, the distribution of sugar among the agents, the mean vision of all surviving agents over time, and the mean metabolism of all surviving agents over time.
 
 ## THINGS TO NOTICE
 
-After running the model for a while, the wealth distribution histogram shows that there are many more agents with low wealth than agents with high wealth.
+After 20 ticks or so, many agents are no longer moving or are only moving a little. This is because the agents have reached places in the world where they can no longer see better unoccupied locations near them. Since all sugar grows back instantaneously each tick, agents tend to remain on the same patch.
 
-Some agents will have less than the minimum initial wealth (MINIMUM-SUGAR-ENDOWMENT), if the minimum initial wealth was greater than 0.
+Agents tend to congregate in "layers" around borders where sugar production levels change. This unintended behavior comes from the limitation of the agents' vision ranges. Agents that cannot see past the current sugar production grounds have no incentive to move, and so each agent only moves to the closest location with more sugar. This effect is more less apparent depending on the initial population.
 
 ## THINGS TO TRY
 
-How does the initial population affect the wealth distribution? How long does it take for the skewed distribution to emerge?
-
-How is the wealth distribution affected when you change the initial endowments of wealth?
+Try varying the initial POPULATION. What effect does the initial POPULATION have on the final stable population? Does it have an effect on the distribution of agent properties, such as vision and metabolism?
 
 ## NETLOGO FEATURES
 
@@ -406,10 +354,8 @@ Since agents cannot see diagonally we cannot use `in-radius` to find the patches
 
 Other models in the NetLogo Sugarscape suite include:
 
-* Sugarscape 1 Immediate Growback
 * Sugarscape 2 Constant Growback
-
-For more explanation of the Lorenz curve and the Gini index, see the Info tab of the Wealth Distribution model.  (That model is also based on Epstein and Axtell's Sugarscape model, but more loosely.)
+* Sugarscape 3 Wealth Distribution
 
 ## CREDITS AND REFERENCES
 
@@ -421,7 +367,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Li, J. and Wilensky, U. (2009).  NetLogo Sugarscape 3 Wealth Distribution model.  http://ccl.northwestern.edu/netlogo/models/Sugarscape3WealthDistribution.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Li, J. and Wilensky, U. (2009).  NetLogo Sugarscape 1 Immediate Growback model.  http://ccl.northwestern.edu/netlogo/models/Sugarscape1ImmediateGrowback.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -721,7 +667,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

@@ -44,7 +44,7 @@ RNAPs-own [
 ]
 
 lactoses-own [
-  partner     ; a partner is a LacI molecule with which an ONPG forms a complex
+  partner     ; a partner is a LacI molecule with which a lactose molecule forms a complex
   inside?     ; a boolean to track if a lactose molecule is inside the cell
 ]
 
@@ -239,7 +239,7 @@ end
 ; procedure for movement and molecular interactions of RNAPs
 to go-RNAPs
   ; In the presence of glucose, the probability of trancription is less.
-  let transcription-probability ifelse-value (glucose?) [ 0.1 ] [ 1 ]
+  let transcription-probability ifelse-value glucose? [ 0.1 ] [ 1 ]
 
   ; If any RNAPs are close to the promoter and the operator is not inhibited
   if (not inhibited?) [
@@ -1381,7 +1381,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

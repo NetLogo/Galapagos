@@ -84,7 +84,7 @@ end
 
 ;; reports a string of the agent's initial grammar
 to-report orig-grammar-string
-  report ifelse-value (orig-state = 1.0) ["1"] ["0"]
+  report ifelse-value orig-state = 1.0 ["1"] ["0"]
 end
 
 ;;;
@@ -901,7 +901,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

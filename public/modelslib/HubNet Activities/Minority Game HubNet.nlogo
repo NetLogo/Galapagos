@@ -436,7 +436,7 @@ to update-client  ;; player procedure
   hubnet-send user-id "current choice" choice
   hubnet-send user-id "history" full-history player-history player-memory
   hubnet-send user-id "score" score
-  hubnet-send user-id "success rate" precision ifelse-value (choices-made > 0) [ score / choices-made ] [ 0 ] 2
+  hubnet-send user-id "success rate" precision ifelse-value choices-made > 0 [ score / choices-made ] [ 0 ] 2
 end
 
 ;; the client chooses 0 or 1
@@ -1367,7 +1367,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

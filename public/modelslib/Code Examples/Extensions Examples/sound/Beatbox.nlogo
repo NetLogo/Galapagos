@@ -126,7 +126,7 @@ end
 to toggle  ;; patch procedure
   if pycor != max-pycor [
     ifelse pxcor = min-pxcor
-      [ set pcolor ifelse-value (pcolor = black) [white] [black] ]
+      [ set pcolor ifelse-value pcolor = black [white] [black] ]
       [ ifelse any? notes-here
           [ ask notes-here [ die ] ]
           [ sprout-notes 1 ] ] ]
@@ -669,7 +669,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

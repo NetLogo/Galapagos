@@ -165,7 +165,7 @@ end
 to-report target-answer ;; observer procedure
   let a [activation] of input-node-1 = 1
   let b [activation] of input-node-2 = 1
-  report ifelse-value (run-result (word "my-" target-function " a b")) [1][-1]
+  report ifelse-value run-result (word "my-" target-function " a b") [1][-1]
 end
 
 to-report my-or [a b];; output-node procedure
@@ -233,7 +233,7 @@ to resize-recolor-links
     ifelse show-weights?
     [ set label precision weight 4 ]
     [ set label "" ]
-    set thickness 0.1 + 20 * abs weight
+    set thickness 0.2 * abs weight
     ifelse weight > 0
       [ set color [ 255 0 0 196 ] ]   ; transparent red
       [ set color [ 0 0 255 196 ] ] ; transparent light blue
@@ -955,7 +955,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 resize-world -9 9 -9 9
 setup

@@ -137,7 +137,7 @@ to make-a-sample-organizer ; sample-dudes procedure
   hatch-sample-organizers 1 [
     hide-turtle
     set sample-values map [ the-sample-dude ->
-      ifelse-value ([ color ] of the-sample-dude = target-color) [ 1 ] [ 0 ]
+      ifelse-value [ color ] of the-sample-dude = target-color [ 1 ] [ 0 ]
     ] sorted-sample-dudes
     display-sample
   ]
@@ -1134,7 +1134,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 setup
 repeat 150 [ go ]

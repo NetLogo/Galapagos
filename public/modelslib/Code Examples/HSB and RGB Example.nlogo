@@ -20,8 +20,8 @@ to-report quadrant [x y]  ;; inputs are 1 or -1
 end
 
 to-report patch-quadrant  ;; patch procedure
-  report list ifelse-value (pxcor < world-width / 2) [-1] [1]
-              ifelse-value (pycor < world-width / 2) [-1] [1]
+  report list ifelse-value pxcor < world-width / 2 [-1] [1]
+              ifelse-value pycor < world-width / 2 [-1] [1]
 end
 
 
@@ -544,7 +544,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 go
 @#$#@#$#@

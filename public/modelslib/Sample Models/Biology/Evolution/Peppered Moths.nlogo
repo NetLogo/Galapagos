@@ -50,6 +50,7 @@ end
 to setup-moths
   create-moths num-moths
   [
+    set size 1.5
     set color random-color
     moths-pick-shape
     set age (random 3) ;; start out with random ages
@@ -867,7 +868,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 resize-world -16 16 -16 16
 setup repeat 75 [ go ]

@@ -37,7 +37,8 @@ to react-backward
   if (random-float 1000) < Ku
     [ set breed reactants    ;; change back to reactant
       set color green
-      hatch 1 ]         ;; then split into two reactants
+      ;; then split into two reactants
+      hatch 1 [ set heading random 360 ] ]
 end
 
 
@@ -657,7 +658,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

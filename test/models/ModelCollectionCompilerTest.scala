@@ -66,7 +66,7 @@ trait AkkaTestHelper extends Assertions {
     def contents: String = Source.fromFile(file).mkString
   }
 
-  val OilCartel    = new TestSource("public/modelslib/Sample Models/Social Science/Oil Cartel HubNet.nlogo")
+  val OilCartel    = new TestSource("public/modelslib/Sample Models/Social Science/Economics/Oil Cartel HubNet.nlogo")
   val TeamAssembly = new TestSource("public/modelslib/Sample Models/Networks/Team Assembly.nlogo")
   val Scatter      = new TestSource("public/modelslib/Sample Models/Social Science/Scatter.nlogo")
   val BirdBreeder  = new TestSource("public/modelslib/Curricular Models/BEAGLE Evolution/Bird Breeder.nlogo")

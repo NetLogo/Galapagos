@@ -1,138 +1,71 @@
-turtles-own [
-  sugar           ;; the amount of sugar this turtle has
-  metabolism      ;; the amount of sugar that each turtles loses each tick
-  vision          ;; the distance that this turtle can see in the horizontal and vertical directions
-  vision-points   ;; the points that this turtle can see in relative to it's current position (based on vision)
-]
+extensions [ py ]
 
-patches-own [
-  psugar           ;; the amount of sugar on this patch
-  max-psugar       ;; the maximum amount of sugar that can be on this patch
-]
-
-;;
-;; Setup Procedures
-;;
-
-to setup
-  clear-all
-  create-turtles initial-population [ turtle-setup ]
-  setup-patches
+to setup ; Here we setup the connection to python and import a few libraries
+  py:setup py:python
+  py:run "import math"
+  py:run "import sys"
+  py:run "import os"
   reset-ticks
 end
 
-to turtle-setup ;; turtle procedure
-  set color red
-  set shape "circle"
-  move-to one-of patches with [not any? other turtles-here]
-  set sugar random-in-range 5 25
-  set metabolism random-in-range 1 4
-  set vision random-in-range 1 6
-  ;; turtles can look horizontally and vertically up to vision patches
-  ;; but cannot look diagonally at all
-  set vision-points []
-  foreach (range 1 (vision + 1)) [ n ->
-    set vision-points sentence vision-points (list (list 0 n) (list n 0) (list 0 (- n)) (list (- n) 0))
-  ]
-  run visualization
+to go ; make sure everything is ready to go!
+  py:run "print('go!')"
 end
 
-to setup-patches
-  file-open "sugar-map.txt"
-  foreach sort patches [ p ->
-    ask p [
-      set max-psugar file-read
-      set psugar max-psugar
-      patch-recolor
-    ]
-  ]
-  file-close
+to get-sys-info ; Here we use the `sys` package in python to output some system info
+  output-print (word "Python directory: " (py:runresult "sys.prefix"))
+  output-print (word "Platform: " (py:runresult "sys.platform"))
+  output-print (word "Python copyright: " (py:runresult "sys.copyright"))
+  output-print ""
 end
 
-;;
-;; Runtime Procedures
-;;
-
-to go
-  if not any? turtles [
-    stop
-  ]
-  ask patches [
-    patch-growback
-    patch-recolor
-  ]
-  ask turtles [
-    turtle-move
-    turtle-eat
-    if sugar <= 0
-      [ die ]
-    run visualization
-  ]
-  tick
+to gcd ; Use the `math` package's built-in gcd method to calculate the gcd(a,b)
+  py:set "a" a
+  py:set "b" b
+  let result py:runresult "math.gcd(a, b)"
+  output-print (word "Greatest common divisor of " a " and " b " is: " result)
+  output-print ""
 end
 
-to turtle-move ;; turtle procedure
-  ;; consider moving to unoccupied patches in our vision, as well as staying at the current patch
-  let move-candidates (patch-set patch-here (patches at-points vision-points) with [not any? turtles-here])
-  let possible-winners move-candidates with-max [psugar]
-  if any? possible-winners [
-    ;; if there are any such patches move to one of the patches that is closest
-    move-to min-one-of possible-winners [distance myself]
-  ]
+to get-home-directory ; Use the `os` package to get the home directory of the system
+  let home-dir py:runresult "os.environ['HOME']"
+  output-print (word "Current home directory is: " home-dir)
+  output-print ""
 end
 
-to turtle-eat ;; turtle procedure
-  ;; metabolize some sugar, and eat all the sugar on the current patch
-  set sugar (sugar - metabolism + psugar)
-  set psugar 0
+to join-strings ; join some strings in python
+  let result joined-strings
+  output-print (word "Here they are joined: " result)
+  output-print ""
 end
 
-to patch-recolor ;; patch procedure
-  ;; color patches based on the amount of sugar they have
-  set pcolor (yellow + 4.9 - psugar)
+to-report joined-strings ; helper procedure to join strings using a delimiter
+  py:set "delim" delimiter
+  py:set "list" read-from-string string-list
+  report py:runresult "delim.join(list)"
 end
 
-to patch-growback ;; patch procedure
-  ;; immediately grow back all of the sugar for the patch
-  set psugar max-psugar
-end
-
-;;
-;; Utilities
-;;
-
-to-report random-in-range [low high]
-  report low + random (high - low + 1)
-end
-
-;;
-;; Visualization Procedures
-;;
-
-to no-visualization ;; turtle procedure
-  set color red
-end
-
-to color-agents-by-vision ;; turtle procedure
-  set color red - (vision - 3.5)
-end
-
-to color-agents-by-metabolism ;; turtle procedure
-  set color red + (metabolism - 2.5)
+to to-upper-case ; upper case some Strings in Python
+  let result joined-strings
+  py:set "result" result
+  set result py:runresult "result.upper()"
+  output-print (word "Here they are in upper case: " result)
+  output-print ""
 end
 
 
-; Copyright 2009 Uri Wilensky.
-; See Info tab for full copyright and license.
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-300
-10
-708
-419
+305
+280
+376
+352
 -1
 -1
-8.0
+21.0
 1
 10
 1
@@ -142,10 +75,10 @@ GRAPHICS-WINDOW
 1
 1
 1
-0
-49
-0
-49
+-1
+1
+-1
+1
 1
 1
 1
@@ -153,10 +86,10 @@ ticks
 30.0
 
 BUTTON
-10
-55
-90
-95
+25
+15
+91
+48
 NIL
 setup
 NIL
@@ -169,30 +102,35 @@ NIL
 NIL
 1
 
-BUTTON
-100
-55
-190
-95
-NIL
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-BUTTON
+INPUTBOX
 200
-55
-290
-95
-go once
-go
+10
+250
+70
+a
+231.0
+1
+0
+Number
+
+INPUTBOX
+253
+10
+303
+70
+b
+891.0
+1
+0
+Number
+
+BUTTON
+220
+75
+283
+108
+NIL
+gcd
 NIL
 1
 T
@@ -203,187 +141,161 @@ NIL
 NIL
 0
 
-CHOOSER
-10
-105
-290
-150
-visualization
-visualization
-"no-visualization" "color-agents-by-vision" "color-agents-by-metabolism"
+OUTPUT
+11
+159
+661
+454
+13
+
+BUTTON
+25
+95
+181
+128
+NIL
+get-home-directory
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 0
 
-PLOT
-720
+INPUTBOX
+335
 10
-940
-165
-Population
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plotxy ticks count turtles"
-
-PLOT
-950
-10
-1170
-165
-Wealth distribution
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-true
-false
-"" ""
-PENS
-"default" 1.0 1 -16777216 true "" "set-histogram-num-bars 10\nset-plot-x-range 0 (max [sugar] of turtles + 1)\nset-plot-pen-interval (max [sugar] of turtles + 1) / 10\nhistogram [sugar] of turtles"
-
-SLIDER
-10
-15
-290
-48
-initial-population
-initial-population
-10
-1000
-400.0
-10
+564
+70
+string-list
+[ \"hello\" \"how\" \"are\" \"you\" ]
 1
-NIL
-HORIZONTAL
+0
+String
 
-PLOT
-720
-175
-940
-330
-Average vision
+BUTTON
+385
+75
+487
+108
+NIL
+join-strings
+NIL
+1
+T
+OBSERVER
 NIL
 NIL
-0.0
-10.0
-0.0
-6.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plotxy ticks mean [vision] of turtles"
+NIL
+NIL
+0
 
-PLOT
-950
-175
-1170
-330
-Average metabolism
+BUTTON
+500
+75
+622
+108
+NIL
+to-upper-case
+NIL
+1
+T
+OBSERVER
 NIL
 NIL
-0.0
-10.0
-0.0
-5.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plotxy ticks mean [metabolism] of turtles"
+NIL
+NIL
+0
 
-MONITOR
+BUTTON
+25
+55
+132
+88
+NIL
+get-sys-info
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+INPUTBOX
+565
+10
+625
+70
+delimiter
+,
+1
+0
+String
+
+BUTTON
+265
+465
+372
+498
+NIL
+clear-output
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
 95
-160
-190
-209
-population
-count turtles
-17
+15
+158
+48
+NIL
+go
+NIL
 1
-12
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This first model in the NetLogo Sugarscape suite implements Epstein & Axtell's Sugarscape Immediate Growback model, as described in chapter 2 of their book Growing Artificial Societies: Social Science from the Bottom Up. It simulates a population with limited, spatially-distributed resources available.
-
-## HOW IT WORKS
-
-Each patch contains some sugar, the maximum amount of which is predetermined. At each tick, each patch grows back fully to have the maximum amount of sugar. The amount of sugar a patch currently contains is indicated by its color; the darker the yellow, the more sugar.
-
-At setup, agents are placed at random within the world. Each agent can only see a certain distance horizontally and vertically. At each tick, each agent will move to the nearest unoccupied location within their vision range with the most sugar, and collect all the sugar there.  If its current location has as much or more sugar than any unoccupied location it can see, it will stay put.
-
-Agents also use (and thus lose) a certain amount of sugar each tick, based on their metabolism rates. If an agent runs out of sugar, it dies.
-
-## HOW TO USE IT
-
-Set the INITIAL-POPULATION slider before pressing SETUP. This determines the number of agents in the world.
-
-Press SETUP to populate the world with agents and import the sugar map data. GO will run the simulation continuously, while GO ONCE will run one tick.
-
-The VISUALIZATION chooser gives different visualization options and may be changed while the GO button is pressed. When NO-VISUALIZATION is selected all the agents will be red. When COLOR-AGENTS-BY-VISION is selected the agents with the longest vision will be darkest and, similarly, when COLOR-AGENTS-BY-METABOLISM is selected the agents with the lowest metabolism will be darkest.
-
-The four plots show the world population over time, the distribution of sugar among the agents, the mean vision of all surviving agents over time, and the mean metabolism of all surviving agents over time.
+This model shows how to use NetLogo's `py` extension to interact with Python. This extension allows users with Python installed on their computer to write Python code in their NetLogo model and to share data back and forth between the Python and NetLogo.
 
 ## THINGS TO NOTICE
 
-After 20 ticks or so, many agents are no longer moving or are only moving a little. This is because the agents have reached places in the world where they can no longer see better unoccupied locations near them. Since all sugar grows back instantaneously each tick, agents tend to remain on the same patch.
+First, the model sets up Python with the `py:setup` and `py:python` primitives. The default `python` found on the system will be used. This step is required for models using the Python extension. If you do not have Python installed on your computer, you will need to install it on your computer outside of NetLogo. Once the Python environment is setup, it's available until the model is closed.
 
-Agents tend to congregate in "layers" around borders where sugar production levels change. This unintended behavior comes from the limitation of the agents' vision ranges. Agents that cannot see past the current sugar production grounds have no incentive to move, and so each agent only moves to the closest location with more sugar. This effect is more less apparent depending on the initial population.
+This model uses a few basic Python packages, `sys`, `math`, and `os`, to get information and do calculations that would be difficult or impossible in NetLogo. The packages are made available by using `py:run` to execute the Python `import` commands. The key to interacting with the packages is using `py:set` to set a variable value and pass data into the Python extension and `py:runresult` to get data back out of Python to use in NetLogo.
 
 ## THINGS TO TRY
 
-Try varying the initial POPULATION. What effect does the initial POPULATION have on the final stable population? Does it have an effect on the distribution of agent properties, such as vision and metabolism?
+Check out [the Python `math` package documentation](https://docs.python.org/3.6/library/math.html) and see if there are any other calculations it can do that NetLogo doesn't natively support and try to make them work.
 
-## NETLOGO FEATURES
+## EXTENDING THE MODEL
 
-All of the Sugarscape models create the world by using `file-read` to import data from an external file, `sugar-map.txt`. This file defines both the initial and the maximum sugar value for each patch in the world.
-
-Since agents cannot see diagonally we cannot use `in-radius` to find the patches in the agents' vision.  Instead, we use `at-points`.
+While the uses demonstrated are convenient when needed, the real power of Python is in its scientific packages, like `numpy`, `pandas`, and `sklearn` and more.
 
 ## RELATED MODELS
 
-Other models in the NetLogo Sugarscape suite include:
+There is a bundle of other Python extension demo models, `py-demo-models.zip`, available on [the Python extension site](https://github.com/NetLogo/Python-Extension/releases).
 
-* Sugarscape 2 Constant Growback
-* Sugarscape 3 Wealth Distribution
-
-## CREDITS AND REFERENCES
-
-Epstein, J. and Axtell, R. (1996). Growing Artificial Societies: Social Science from the Bottom Up.  Washington, D.C.: Brookings Institution Press.
-
-## HOW TO CITE
-
-If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
-
-For the model itself:
-
-* Li, J. and Wilensky, U. (2009).  NetLogo Sugarscape 1 Immediate Growback model.  http://ccl.northwestern.edu/netlogo/models/Sugarscape1ImmediateGrowback.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
-
-Please cite the NetLogo software as:
-
-* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
-
-## COPYRIGHT AND LICENSE
-
-Copyright 2009 Uri Wilensky.
-
-![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
-
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
-
-Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
-
-<!-- 2009 Cite: Li, J. -->
+<!-- 2019 -->
 @#$#@#$#@
 default
 true
@@ -577,6 +489,22 @@ Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 
+sheep
+false
+15
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
+
 square
 false
 0
@@ -661,14 +589,22 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 
+wolf
+false
+0
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
+
 x
 false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

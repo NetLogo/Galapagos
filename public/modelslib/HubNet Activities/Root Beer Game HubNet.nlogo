@@ -151,7 +151,7 @@ to end-week ;; team procedure
   [
     ;; the demand starts at 4 cases per week. In week 7 it rises to
     ;; 8 cases and remains there the rest of the time.
-    set orders-placed ifelse-value ([clock] of myself <= 5) [ 4 ][ 8 ]
+    set orders-placed ifelse-value [clock] of myself <= 5 [ 4 ][ 8 ]
   ]
 
   ;; produce the goods at the factory level
@@ -1049,7 +1049,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

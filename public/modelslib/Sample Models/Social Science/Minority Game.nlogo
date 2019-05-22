@@ -115,7 +115,7 @@ to increment-scores  ;; turtles procedure
   ;; the minority.  If it did, we increase its score by one,
   ;; otherwise we leave the score alone.
   set strategies-scores (map [ [the-strategy the-score] ->
-    ifelse-value (item history the-strategy = minority) [ the-score + 1] [ the-score ]
+    ifelse-value item history the-strategy = minority [ the-score + 1] [ the-score ]
   ] strategies strategies-scores)
 end
 
@@ -750,7 +750,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 setup
 repeat max-pxcor [ go ]

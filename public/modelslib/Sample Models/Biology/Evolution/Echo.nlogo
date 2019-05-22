@@ -172,7 +172,7 @@ end
 ;; Mutates a given string
 to-report mutate [tag]
   report map [ letter ->
-    ifelse-value (random-float 100 >= mutation-rate)
+    ifelse-value random-float 100 >= mutation-rate
       [ letter ]
       [ one-of remove letter ["a" "b" "c"] ]
   ] tag
@@ -216,7 +216,7 @@ to-report match-score [tag1 tag2]
   if length tag2 > length tag1
     [ report (length tag1 - length tag2) + match-score tag1 sublist tag2 0 length tag1 ]
   report sum (map [ [letter1 letter2] ->
-    ifelse-value (letter1 = letter2) [2] [-2]
+    ifelse-value letter1 = letter2 [2] [-2]
   ] tag1 tag2)
 end
 
@@ -913,7 +913,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

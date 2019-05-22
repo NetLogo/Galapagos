@@ -448,7 +448,7 @@ to visualize-bacteria
     ;; the bacterium appears to be filled with different amounts of "fuel", using different shapes, based on the bacterium's energy level
     set shape word "bacteria-" energy-level
     set label-color black
-    set label ifelse-value (visualize-variation = "# flagella as label") [ word variation "   " ] [ "" ]
+    set label ifelse-value visualize-variation = "# flagella as label" [ word variation "   " ] [ "" ]
   ]
 end
 
@@ -1328,7 +1328,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.0.4
+NetLogo 6.1.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
