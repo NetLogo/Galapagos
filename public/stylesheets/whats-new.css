@@ -1,0 +1,18 @@
+table {
+  border: solid thin;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: center;
+  padding: 6px;
+}
+
+table tr {
+  border: solid thin;
+}
+
+table td {
+  text-align: left;
+  padding: 6px;
+}
