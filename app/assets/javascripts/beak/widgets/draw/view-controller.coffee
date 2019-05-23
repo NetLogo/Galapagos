@@ -84,10 +84,12 @@ class window.ViewController
   applyUpdate: (modelUpdate) ->
     @model.update(modelUpdate)
 
+  # (Update|Array[Update]) => Unit
   update: (modelUpdate) ->
     updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
     @applyUpdate(u) for u in updates
     @repaint()
+    return
 
 
 # Perspective constants:
@@ -253,6 +255,7 @@ class View
       @centerY = @worldCenterY
       @visibleCtx.drawImage(@canvas, 0, 0)
     @_handleZoom()
+    return
 
   # A very naïve and unaesthetic implementation!
   # I'm just throwing this together for a janky `hubnet-send-follow`.
