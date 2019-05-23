@@ -112,7 +112,7 @@
     @tagBuilder.pathToHTML("javascripts/hubnet/kompressor.js")
     @tagBuilder.pathToHTML("javascripts/hubnet/server.js")
     @tagBuilder.pathToHTML("javascripts/hubnet/client.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/components/connectionManager.js")
+    @tagBuilder.pathToHTML("javascripts/hubnet/components/connection-manager.js")
     @tagBuilder.pathToHTML("javascripts/hubnet/hubnet-web.js")
 
     @helper.javascriptRouter("jsRoutes")(
@@ -144,7 +144,7 @@
         document.title = pageTitle(session.modelTitle());
         activeContainer = modelContainer;
         session.startLoop();
-        window.hubnet = new HubNetWeb('netlogo-extensions-container', window.workspace, session)
+        window.hubnet = new HubNetWeb('netlogo-extensions-container', session)
       };
 
       var isStandaloneHTML = false;

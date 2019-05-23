@@ -1,136 +1,141 @@
 class window.Client
+
+  # (String, (String) => Unit, (Array[Update]) => Unit, (ViewController, AgentModel) => Unit, () => Unit)
   constructor: (@ioSignalingUrl, @logger, @notifyClientView, @resetClientViewState, @notifyDisconnect) ->
-    @sendToServer = (message) ->
-      @logger('Received message from server while not connected as client?')
-      @logger(message)
+
+    @sendToServer =
+      (type, data = {}) =>
+        @logger('Received message from server while not connected as client?')
+        @logger(data)
+        return
+
     @state = "Disconnected"
 
-  connect: () ->
-    @signalingSocket = signalingSocket = io(@ioSignalingUrl)
+  # () => Unit
+  connect: ->
 
-    @sendToServer = (message) ->
-      message.clientId = signalingSocket.id
-      signalingSocket.emit('to-server', message)
+    @signalingSocket = io(@ioSignalingUrl)
+
+    @sendToServer =
+      (type, data = {}) =>
+        message = { clientID: @signalingSocket.id, data, type }
+        @signalingSocket.emit('to-server', message)
+        return
 
     @signalingSocket.on('to-client', @handleServerMessage)
 
     # RTC BEGIN
     @logger('Creating RTC data channel connection...')
-    connection = new RTCPeerConnection({ offerToReceiveAudio: false })
-    @connection = connection
+    @connection = new RTCPeerConnection({ offerToReceiveAudio: false })
     @logger('Created client connection.')
-    connection.onicecandidate = @iceCallback
 
-    @channel = connection.createDataChannel('sendDataChannel', null)
-    @channel.onopen = @onReceiveChannelStateChange
-    # @channel.onclose = @onReceiveChannelStateChange
-    @channel.onmessage = @onReceiveMessageCallback
+    @connection.onicecandidate =
+      ({ candidate }) =>
+        @logger('ICE callback on the client.')
+        if candidate?
+          @sendToServer('client-ice-candidate', { candidate })
+        return
 
-    sendToServer = @sendToServer
-    connection.createOffer()
-    .then(@gotDescription, @onCreateSessionDescriptionError)
-    .then(() ->
-      sendToServer({
-        type: 'client-offer',
-        desc:  connection.localDescription
-      })
-      return
-    )
+    @channel = @connection.createDataChannel('sendDataChannel', null)
+
+    @channel.onopen =
+      =>
+        readyState = @channel.readyState
+        @logger("Receive channel state is: #{readyState}")
+        if readyState is 'open'
+          @state = "Ready"
+        return
+
+    @channel.onmessage =
+      (event) =>
+        @logger('Message received on client.')
+        if @channel?.readyState is 'open'
+          switch @state
+            when 'Ready'   then @handleInitMessage(JSON.parse(event.data))
+            when 'Receive' then @handleReceive(event.data, @notifyClientView)
+            when 'Reset'   then @handleReceive(event.data, @resetClientViewState)
+        else
+          @logger('Received message while not open... weird.')
+        return
+
+    makeOffer =
+      =>
+        @sendToServer('client-offer', { desc: @connection.localDescription })
+        return
+
+    @connection.createOffer().then(@gotDescription, @onCreateSessionDescriptionError).then(makeOffer)
     # RTC END
 
     @logger('Signaling complete.')
+
     return
 
-  disconnect: () ->
-    if (@channel? and @channel.readyState is 'open')
+  # () => Unit
+  disconnect: ->
+
+    if @channel? and @channel.readyState is 'open'
       @messageStack = ''
       @logger('Closing data channels')
       @channel.close()
-      @logger('Closed data channel with label: ' + @channel.label)
+      @logger("Closed data channel with label: #{@channel.label}")
       @channel = null
 
-    if (@connection?)
+    if @connection?
       @connection.close()
       @logger('Closed connection')
       @connection = null
 
-    if (@signalingSocket?)
-      @signalingSocket.close()
-      @signalingSocket = null
-      @logger('Closed signalling socket')
+    @sendToServer('client-disconnect')
 
+    @signalingSocket.close()
+    @signalingSocket = null
+    @logger('Closed signalling socket')
     @logger('Completed disconnecting.')
-    @sendToServer({ type: 'client-disconnect' })
+
     return
 
-  handleServerMessage: (message) =>
-    if message.type is 'client-offer-response'
-      @logger('Setting client remote description from server')
-      @connection.setRemoteDescription(message.desc)
-    if message.type is 'server-ice-candidate'
-      @connection.addIceCandidate(message.candidate)
-    if message.type is 'server-close'
-      @logger('Apparently the server is rudely closing down; disconnecting.')
-      @disconnect()
-      @notifyDisconnect()
+  # (String) => Unit
+  handleServerMessage: ({ data, type }) =>
+    switch type
+      when 'client-offer-response'
+        @logger('Setting client remote description from server')
+        @connection.setRemoteDescription(data.desc)
+      when 'server-ice-candidate'
+        @connection.addIceCandidate(data.candidate)
+      when 'server-close'
+        @logger('Apparently the server is rudely closing down; disconnecting.')
+        @disconnect()
+        @notifyDisconnect()
     return
 
-  iceCallback: (event) =>
-    @logger('ICE callback on the client.')
-    if (event.candidate)
-      @sendToServer({ type: 'client-ice-candidate', candidate: event.candidate })
-    return
-
-  onAddIceCandidateSuccess: () ->
-    @logger('AddIceCandidate success.')
-    return
-
-  onAddIceCandidateError: (error) ->
-    @logger('Failed to add Ice Candidate: ' + error.toString())
-    return
-
-  onReceiveMessageCallback: (event) =>
-    @logger('Message received on client.')
-    if (not @channel? or not @channel.open is 'open')
-      @logger('Received message while not open... weird.')
-      return
-    switch @state
-      when 'Ready'   then @handleInitMessage(JSON.parse(event.data))
-      when 'Receive' then @handleReceive(event.data, @notifyClientView)
-      when 'Reset'   then @handleReceive(event.data, @resetClientViewState)
-    return
-
-  handleInitMessage: (event) =>
-    switch event.type
+  # (InitMessage) => Unit
+  handleInitMessage: ({ count, type }) ->
+    switch type
       when "DataSend"
         @messageStack = []
-        @messageCount = event.count
-        @state = "Receive"
+        @messageCount = count
+        @state        = "Receive"
       when "Reset"
         @messageStack = []
-        @messageCount = event.count
-        @state = "Reset"
+        @messageCount = count
+        @state        = "Reset"
+    return
 
-  handleReceive: (msg, onComplete) =>
+  # (String, (Object[Any]) => Unit) => Unit
+  handleReceive: (msg, onComplete) ->
     @messageStack.push(msg)
-    if(@messageStack.length == @messageCount)
-      deflated = @messageStack.join("")
-      data = Kompressor.decompress(deflated)
+    if @messageStack.length is @messageCount
       @state = "Ready"
-      onComplete(data)
-
-  onReceiveChannelStateChange: () =>
-    readyState = @channel.readyState
-    @logger('Receive channel state is: ' + readyState)
-    if(readyState is 'open')
-      @state = "Ready"
+      onComplete(Kompressor.decompress(@messageStack.join("")))
     return
 
-  onCreateSessionDescriptionError: (error) ->
-    @logger('Failed to create session description: ' + error.toString())
+  # (Error) => Unit
+  onCreateSessionDescriptionError: (error) =>
+    @logger("Failed to create session description: #{error.toString()}")
     return
 
+  # (RTCSessionDescription) => Unit
   gotDescription: (desc) =>
-    @logger('Setting client local description: ' + desc.sdp)
+    @logger("Setting client local description: #{desc.sdp}")
     @connection.setLocalDescription(desc)
     return

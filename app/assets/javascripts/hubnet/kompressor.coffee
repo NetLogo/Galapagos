@@ -1,21 +1,20 @@
-class window.Kompressor
-  # (POJO) -> String
-  @compress: (data) ->
-    inflated = JSON.stringify(data)
-    deflated = pako.deflate(inflated, { to: 'string' })
-    deflated
+window.Kompressor = {
 
-  # (String, int) -> Array[String]
-  @split: (string, length) ->
-    parts = []
-    index = 0
+  # (Any) => String
+  compress: (data) ->
+    pako.deflate(JSON.stringify(data), { to: 'string' })
+
+  # (String, Number) => Array[String]
+  chunk: (string, length) ->
+    chunks = []
+    index  = 0
     while index < string.length
-      parts.push(string.substring(index, index + length))
-      index = index + length
-    return parts
+      chunks.push(string.substring(index, index + length))
+      index += length
+    chunks
 
-  # (String) -> POJO
-  @decompress: (deflated) ->
-    inflated = pako.inflate(deflated, { to: 'string' })
-    data = JSON.parse(inflated)
-    data
+  # (String) => Any
+  decompress: (deflated) ->
+    JSON.parse(pako.inflate(deflated, { to: 'string' }))
+
+}

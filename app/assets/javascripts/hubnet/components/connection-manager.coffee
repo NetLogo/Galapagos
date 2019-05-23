@@ -1,28 +1,37 @@
 window.RactiveConnectionManager = RactiveView.extend({
+
   data: -> {
-    connected: undefined,
-    log:       ""
-    logEntries:  []
+    connected:  false, # Boolean
+    log:        ""     # String
+    logEntries: []     # Array[String]
   }
 
+  # (String) => Unit
   appendToLog: (text) ->
-    log = @get('log')
+
+    log        = @get('log')
     logEntries = @get('logEntries')
-    if(logEntries.length > 0 and logEntries[logEntries.length - 1] is text)
+
+    if logEntries.length > 0 and logEntries[logEntries.length - 1] is text
       @set('log', "#{log}+")
     else
       logEntries.push(text)
       @set('log', "#{log}\n#{text}")
-    logArea = document.getElementById('connection-log')
+
+    logArea           = document.getElementById('connection-log')
     logArea.scrollTop = logArea.scrollHeight
+
     return
 
-  clear: () ->
-    @set('log', '')
+  # () => Unit
+  clear: ->
+    @set('log'       , '')
     @set('logEntries', [])
+    return
 
   onrender: ->
-    @on('clientele-log-clear', -> @clear())
+    @on('clientele-log-clear', (=> @clear()))
+    return
 
   template:
     """
@@ -34,4 +43,5 @@ window.RactiveConnectionManager = RactiveView.extend({
       <textarea id="connection-log" value="{{log}}" disabled style="height:140px;"></textarea>
     </div>
     """
+
 })
