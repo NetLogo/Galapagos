@@ -164,19 +164,32 @@ genIOConfig = (ractive) ->
       else
         response
 
-    slurpURLAsync: (url) -> (callback) ->
+    slurpURLAsync: (url) -> (callback, reportErrors) ->
+      reportError = (ex) ->
+        # coffeelint: disable=max_line_length
+        reportErrors(["Extension exception: Could not fetch resource from the given URL. Make sure the URL is correct, that there are no network issues, and that CORS access is permitted. The exact error message is below.", "", ex.message])
+        # coffeelint: enable=max_line_length
+
       fetch(url).then(
         (response) ->
-          if response.headers.get("content-type").startsWith("image/")
+
+          if not response.ok
+            serverError   = "Extension exception: Server gave a failure response when trying to fetch URL."
+            serverMessage = "#{response.status}: #{response.statusText}"
+            reportErrors([serverError, "", serverMessage])
+
+          else if response.headers.get("content-type").startsWith("image/")
             response.blob().then(
               (blob) ->
                 reader = new FileReader
                 reader.onload = (e) -> callback(e.target.result)
                 reader.readAsDataURL(blob)
-            )
+            ).catch(reportError)
+
           else
-            response.text().then(callback)
-      )
+            response.text().then(callback).catch(reportError)
+
+      ).catch(reportError)
       return
 
   }
@@ -240,5 +253,6 @@ window.genConfigs = (ractive, viewController, container) ->
   , output:            genOutputConfig(ractive, appendToConsole)
   , print:             { write: appendToConsole }
   , plotOps:           genPlotOps(container, ractive)
+  , reportErrors:      window.showErrors
   , world:             genWorldConfig(ractive)
   }
