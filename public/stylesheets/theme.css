@@ -73,6 +73,7 @@ kbd {
   margin-left: 4%;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .topbar-quick-link:hover {
