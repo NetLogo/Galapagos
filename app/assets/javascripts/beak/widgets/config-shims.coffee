@@ -207,7 +207,7 @@ genMouseConfig = (viewController) ->
     peekY:           viewController.mouseYcor
   }
 
-# (Element, Ractive) => [HighchartsOps]
+# (Element, Ractive) => Object[HighchartsOps]
 genPlotOps = (container, ractive) ->
   widgets = Object.values(ractive.get('widgetObj'))
   plotOps = {}
