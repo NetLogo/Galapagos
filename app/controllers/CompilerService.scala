@@ -316,7 +316,8 @@ private[controllers] trait RequestResultGenerator {
         "codemirror/addon/dialog/dialog.js",
         "codemirror/addon/mode/simple.js",
         "codemirror/addon/search/searchcursor.js",
-        "codemirror/addon/search/search.js"
+        "codemirror/addon/search/search.js",
+        "pako/dist/pako.js"
       ).map(path => s"/public/lib/$path")
 
     val assetURLs =
@@ -373,7 +374,12 @@ private[controllers] trait RequestResultGenerator {
         "beak/widgets/widget-controller.js",
         "beak/babybehaviorspace.js",
         "beak/session-lite.js",
-        "beak/tortoise.js"
+        "beak/tortoise.js",
+        "hubnet/kompressor.js",
+        "hubnet/server.js",
+        "hubnet/client.js",
+        "hubnet/components/connection-manager.js",
+        "hubnet/hubnet-web.js"
       ).map(path => s"/public/javascripts/$path")
 
     val urls = (webjarURLs :+ engineJsPath) ++ assetURLs
