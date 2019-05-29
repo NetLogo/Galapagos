@@ -49,7 +49,8 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "ractive" % "0.9.9",
   "org.webjars.npm" % "codemirror" % "5.42.2",
   "org.webjars.npm" % "synchrodecoder" % "1.0.2",
-  "org.webjars.npm" % "localforage" % "1.7.3"
+  "org.webjars.npm" % "localforage" % "1.7.3",
+  "org.webjars.npm" % "webrtc-adapter" % "7.2.1"
 )
 
 resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")

@@ -317,7 +317,8 @@ private[controllers] trait RequestResultGenerator {
         "codemirror/addon/mode/simple.js",
         "codemirror/addon/search/searchcursor.js",
         "codemirror/addon/search/search.js",
-        "pako/dist/pako.js"
+        "pako/dist/pako.js",
+        "webrtc-adapter/adapter.js"
       ).map(path => s"/public/lib/$path")
 
     val assetURLs =
