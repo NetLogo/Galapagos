@@ -34,7 +34,7 @@ class Application @Inject() ( assets: Assets
 
   def model(modelName: String): Action[AnyContent] = {
     Logger.info("\"%s\" requested".format(modelName))
-    assets.versioned(path="/public/modelslib", modelName)
+    assets.versioned(path = "/public/modelslib", modelName)
   }
 
   def modelList: Action[AnyContent] = Action {
@@ -43,13 +43,13 @@ class Application @Inject() ( assets: Assets
   }
 
   def robots: Action[AnyContent] =
-    assets.versioned(path="/public/text", "robots.txt")
+    assets.versioned(path = "/public/text", "robots.txt")
 
   def humans: Action[AnyContent] =
-    assets.versioned(path="/public/text", "humans.txt")
+    assets.versioned(path = "/public/text", "humans.txt")
 
   def favicon: Action[AnyContent] =
-    assets.versioned(path="/public/images", file = "favicon.ico")
+    assets.versioned(path = "/public/images", file = "favicon.ico")
 
   private def themedPage( html: (Request[_]) => Html, title: String, relativizer: String = "", selectedTopLink: Option[String] = None
                         , extraHead: Html = Html("")): Action[AnyContent] =
