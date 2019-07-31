@@ -22,7 +22,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
         if (@get('space')?)
           # `space` can change after we're `complete`, so do not use the one we already got above -JMB 11/2018
           s = @get('space')
-          s.chains = NetTango.save(canvasId).program.chains
+          s.defs.program.chains = NetTango.save(canvasId).program.chains
           s.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
           @fire('ntb-code-change', {}, ntCanvasId, false)
         return
@@ -186,7 +186,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     NetTango.init(canvasId, space.defs)
 
-    space.chains = NetTango.save(canvasId).program.chains
+    netTangoData = NetTango.save(canvasId)
+    @set("space.defs",     netTangoData)
+    @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
     return
 
   # (NetTangoSpace) => Unit
@@ -202,13 +204,18 @@ window.RactiveNetTangoSpace = Ractive.extend({
       # and reload, so we clear them out -JMB August 2018
       old.program.chains.filter((ch) -> ch.length > 1)
     else
-      space.chains.filter((ch) -> ch.length > 1)
+      space.defs.program.chains.filter((ch) -> ch.length > 1)
 
     NetTango.restore(canvasId, {
+      version:     space.defs.version,
       blocks:      space.defs.blocks,
       expressions: space.defs.expressions,
       program:     { chains: newChains }
     })
+
+    netTangoData = NetTango.save(canvasId)
+    @set("space.defs",     netTangoData)
+    @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
 
     space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo')
     @fire('ntb-code-change', {}, canvasId, false)

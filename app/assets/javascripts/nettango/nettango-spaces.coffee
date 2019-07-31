@@ -97,7 +97,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
-    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [] }
+    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
     defs.expressions = defs.expressions ? @expressionDefaults()
     space = {
         id:              id
@@ -108,7 +108,6 @@ window.RactiveNetTangoSpaces = Ractive.extend({
       , defs:            defs
       , defsJson:        JSON.stringify(defs, null, '  ')
       , defsJsonChanged: false
-      , chains:          []
     }
     for propName in [ 'name', 'width', 'height' ]
       if(spaceVals.hasOwnProperty(propName))
