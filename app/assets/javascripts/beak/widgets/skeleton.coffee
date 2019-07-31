@@ -143,13 +143,13 @@ template =
 
       <div class="netlogo-display-horizontal">
 
-        <div class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
+        <div id="authoring-lock" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
           <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
         </div>
 
-        <div class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-orientation">
+        <div id="tabs-position" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-orientation">
           <div class="netlogo-model-orientation {{#isVertical}}vertical-display{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>

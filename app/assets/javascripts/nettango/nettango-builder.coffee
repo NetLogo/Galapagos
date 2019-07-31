@@ -53,11 +53,17 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         checkedCssExport: '.netlogo-export-wrapper { display: none; }'
       },
       authoring: {
-        label: "Hide authoring unlock",
+        label: "Hide authoring unlock toggle",
         checked: true,
-        checkedCssBuild:  '.netlogo-toggle-container { background: #eee; }',
-        checkedCssExport: '.netlogo-toggle-container { display: none; }'
-      }
+        checkedCssBuild:  '#authoring-lock { background: #eee; }',
+        checkedCssExport: '#authoring-lock { display: none; }'
+      },
+      tabsPosition: {
+        label: "Hide commands and code position toggle",
+        checked: true,
+        checkedCssBuild:  '#tabs-position { background: #eee; }',
+        checkedCssExport: '#tabs-position { display: none; }'
+      },
       poweredBy: {
         label: "Hide 'Powered by NetLogo' link",
         checked: false,
