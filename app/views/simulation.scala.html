@@ -15,11 +15,6 @@
     @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
-
-    <!-- HubNet Web -->
-    @tagBuilder.pathToHTML("stylesheets/extensions.css")
-    @tagBuilder.pathToHTML("javascripts/hubnet/stylesheets/hubnet-web.css")
-    @tagBuilder.pathToHTML("lib/socket.io-client/dist/socket.io.js")
   </head>
   <body style="margin: 0px;">
     <script>window.exports = {};</script>
@@ -106,15 +101,6 @@
     @tagBuilder.pathToHTML("javascripts/beak/session-lite.js")
     @tagBuilder.pathToHTML("javascripts/beak/tortoise.js")
 
-    <!-- HubNet Web -->
-    @tagBuilder.pathToHTML("lib/pako/dist/pako.js")
-    @tagBuilder.pathToHTML("lib/webrtc-adapter/adapter.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/kompressor.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/server.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/client.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/components/connection-manager.js")
-    @tagBuilder.pathToHTML("javascripts/hubnet/hubnet-web.js")
-
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
     )
@@ -144,7 +130,6 @@
         document.title = pageTitle(session.modelTitle());
         activeContainer = modelContainer;
         session.startLoop();
-        window.hubnet = new HubNetWeb('netlogo-extensions-container', session)
       };
 
       var isStandaloneHTML = false;

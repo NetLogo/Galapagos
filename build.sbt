@@ -44,13 +44,10 @@ libraryDependencies ++= Seq(
   "org.webjars" % "highcharts" % "7.0.1",
   "org.webjars" % "jquery" % "3.3.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars.bower" % "pako" % "1.0.6",
-  "org.webjars.bower" % "socket.io-client" % "2.0.3",
   "org.webjars.npm" % "ractive" % "0.9.9",
   "org.webjars.npm" % "codemirror" % "5.42.2",
   "org.webjars.npm" % "synchrodecoder" % "1.0.2",
-  "org.webjars.npm" % "localforage" % "1.7.3",
-  "org.webjars.npm" % "webrtc-adapter" % "7.2.1"
+  "org.webjars.npm" % "localforage" % "1.7.3"
 )
 
 resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
