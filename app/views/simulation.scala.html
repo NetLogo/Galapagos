@@ -183,19 +183,24 @@
       }
 
       window.addEventListener("message", function (e) {
-        if (e.data.type === "nlw-load-model") {
-          loadModel(e.data.nlogo, e.data.path);
-        } else if (e.data.type === "nlw-open-new") {
-          loadModel(exports.newModel, "NewModel");
-        } else if (e.data.type === "nlw-update-model-state") {
-          session.widgetController.setCode(e.data.codeTabContents);
-        } else if (e.data.type === "run-baby-behaviorspace") {
-          var reaction =
-            function(results) {
-              e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
-            };
-          session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
-       }
+        switch (e.data.type) {
+          case "nlw-load-model":
+            loadModel(e.data.nlogo, e.data.path);
+            break;
+          case "nlw-open-new":
+            loadModel(exports.newModel, "NewModel");
+            break;
+          case "nlw-update-model-state":
+            session.widgetController.setCode(e.data.codeTabContents);
+            break;
+          case "run-baby-behaviorspace":
+            var reaction =
+              function(results) {
+                e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
+              };
+            session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+            break;
+        }
       });
 
       if (parent !== window) {

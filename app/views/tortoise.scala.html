@@ -96,24 +96,30 @@
 
     window.addEventListener("message", function(e) {
 
-      if (e.data.type === "nlw-resize") {
+      switch (e.data.type) {
 
-        var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+        case "nlw-resize":
 
-        var height = e.data.height;
-        var width  = e.data.width;
-        var title  = e.data.title;
+          var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
 
-        // Quack, quack!
-        // Who doesn't love duck typing? --JAB (11/9/15)
-        if ([height, width, title].every(isValid)) {
-          modelContainer.width  = width;
-          modelContainer.height = height;
-          document.title        = title;
-        }
+          var height = e.data.height;
+          var width  = e.data.width;
+          var title  = e.data.title;
 
-      } else if (e.data.type === "nlw-set-hash") {
-        window.location.hash = e.data.hash;
+          // Quack, quack!
+          // Who doesn't love duck typing? --JAB (11/9/15)
+          if ([height, width, title].every(isValid)) {
+            modelContainer.width  = width;
+            modelContainer.height = height;
+            document.title        = title;
+          }
+
+          break;
+
+        case "nlw-set-hash":
+          window.location.hash = e.data.hash;
+          break;
+
       }
 
     });
