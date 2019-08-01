@@ -1,7 +1,7 @@
 class window.WidgetController
 
-  # (Ractive, ViewController, Configs)
-  constructor: (@ractive, @viewController, @configs) ->
+  # (Ractive, ViewController, Configs, () => Unit)
+  constructor: (@ractive, @viewController, @configs, @_performUpdate) ->
     for display, chartOps of @configs.plotOps
       component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
       component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
@@ -17,7 +17,7 @@ class window.WidgetController
     widget    = Object.assign(base, mixin)
 
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
-    window.setUpWidget(widget, id, (=> @redraw(); @updateWidgets()))
+    window.setUpWidget(widget, id, (=> @_performUpdate(); @updateWidgets()))
 
     if widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
@@ -81,7 +81,7 @@ class window.WidgetController
 
       [props, setterUpper] =
         switch newWidget.type
-          when "button"   then [  buttonProps, window.setUpButton(=> @redraw(); @updateWidgets())]
+          when "button"   then [  buttonProps, window.setUpButton(=> @_performUpdate(); @updateWidgets())]
           when "chooser"  then [ chooserProps, window.setUpChooser]
           when "inputBox" then [inputBoxProps, window.setUpInputBox]
           when "monitor"  then [ monitorProps, window.setUpMonitor]
@@ -124,11 +124,9 @@ class window.WidgetController
     @ractive.fire('controller.recompile', successCallback)
     return
 
-  # () => Unit
-  redraw: ->
-    if Updater.hasUpdates()
-      updates = Updater.collectUpdates()
-      @viewController.update(updates)
+  # (Array[Update]) => Unit
+  redraw: (updates) ->
+    @viewController.update(updates)
     return
 
   # () => Unit

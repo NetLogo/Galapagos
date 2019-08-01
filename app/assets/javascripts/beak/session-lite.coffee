@@ -54,7 +54,9 @@ class window.SessionLite
     @_lastUpdate       = 0
     @drawEveryFrame    = false
 
-    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter)
+    @widgetController =
+      initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter, (=> @_performUpdate()))
+
     @widgetController.ractive.on('*.recompile'     , (_, callback)       => @recompile(callback))
     @widgetController.ractive.on('*.recompile-lite', (_, callback)       => @recompileLite(callback))
     @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
@@ -72,7 +74,7 @@ class window.SessionLite
 
   startLoop: ->
     if procedures.startup? then window.handlingErrors(procedures.startup)()
-    @widgetController.redraw()
+    @_performUpdate()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
 
@@ -112,7 +114,7 @@ class window.SessionLite
       # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
       if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
         @_lastRedraw = now()
-        @widgetController.redraw()
+        @_performUpdate()
 
     # Widgets must always be updated, because global variables and plots can be
     # altered without triggering an "update".  That is to say that `Updater`
@@ -144,14 +146,14 @@ class window.SessionLite
 
           state = world.exportState()
           world.clearAll()
-          @widgetController.redraw() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
+          @_performUpdate() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
           globalEval(res.model.result)
           world.importState(state)
 
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
-          @widgetController.redraw()
+          @_performUpdate()
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
           successCallback()
@@ -334,3 +336,9 @@ class window.SessionLite
 
   alertErrors: (messages) =>
     @displayError(messages.join('\n'))
+
+  _performUpdate: ->
+    if Updater.hasUpdates()
+      updates = Updater.collectUpdates()
+      @widgetController.redraw(updates)
+    return

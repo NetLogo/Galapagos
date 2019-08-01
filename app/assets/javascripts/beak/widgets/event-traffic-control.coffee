@@ -1,5 +1,5 @@
-# (WidgetController) => Unit
-window.controlEventTraffic = (controller) ->
+# (WidgetController, () => Unit) => Unit
+window.controlEventTraffic = (controller, performUpdate) ->
 
   { ractive, viewController } = controller
 
@@ -117,7 +117,7 @@ window.controlEventTraffic = (controller) ->
 
   # () => Unit
   redrawView = ->
-    controller.redraw()
+    performUpdate()
     viewController.repaint()
     return
 

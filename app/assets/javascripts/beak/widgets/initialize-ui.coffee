@@ -1,5 +1,6 @@
-# (Element|String, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => WidgetController
-window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
+# ( Element|String, Array[Widget], String, String, Boolean
+# , String, String, (String) => Boolean, () => Unit) => WidgetController
+window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, checkIsReporter, performUpdate) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -11,7 +12,7 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
   # BCH 11/10/2014
   controller = null
   updateUI   = ->
-    controller.redraw()
+    performUpdate()
     controller.updateWidgets()
 
   window.setUpWidgets(widgets, updateUI)
@@ -29,9 +30,9 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
   entwine([[viewModel, "fontSize"], [viewController.view, "fontSize"]], viewModel.fontSize)
 
   configs    = window.genConfigs(ractive, viewController, container)
-  controller = new WidgetController(ractive, viewController, configs)
+  controller = new WidgetController(ractive, viewController, configs, performUpdate)
 
-  window.controlEventTraffic(controller)
+  window.controlEventTraffic(controller, performUpdate)
   window.handleWidgetSelection(ractive)
   window.handleContextMenu(ractive)
 
