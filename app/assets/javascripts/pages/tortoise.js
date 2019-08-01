@@ -59,28 +59,36 @@ window.addEventListener("hashchange", function(e) {
 
 window.addEventListener("message", function(e) {
 
-  if (e.data.type === "nlw-resize") {
+  switch (e.data.type) {
 
-    var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+    case "nlw-resize": {
 
-    var height = e.data.height;
-    var width  = e.data.width;
-    var title  = e.data.title;
+      var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
 
-    // Quack, quack!
-    // Who doesn't love duck typing? --Jason B. (11/9/15)
-    if ([height, width, title].every(isValid)) {
-      modelContainer.width               = width;
-      // When we reset the model height, we lose any scrolling that was in place,
-      // so we "copy" it back to the main document.  -Jeremy B March 2021
-      const modelScrollTop               = modelContainer.contentDocument.body.scrollTop
-      modelContainer.height              = height;
-      document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop
-      document.title                     = title;
+      var height = e.data.height;
+      var width  = e.data.width;
+      var title  = e.data.title;
+
+      // Quack, quack!
+      // Who doesn't love duck typing? --Jason B. (11/9/15)
+      if ([height, width, title].every(isValid)) {
+        modelContainer.width               = width;
+        // When we reset the model height, we lose any scrolling that was in place,
+        // so we "copy" it back to the main document.  -Jeremy B March 2021
+        const modelScrollTop               = modelContainer.contentDocument.body.scrollTop
+        modelContainer.height              = height;
+        document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop
+        document.title                     = title;
+      }
+
+      break;
     }
 
-  } else if (e.data.type === "nlw-set-hash") {
-    window.location.hash = e.data.hash;
+    case "nlw-set-hash": {
+      window.location.hash = e.data.hash;
+      break;
+    }
+
   }
 
 });

@@ -134,21 +134,32 @@ if (nlogoScript.textContent.length > 0) {
 }
 
 window.addEventListener("message", function (e) {
-  if (e.data.type === "nlw-load-model") {
-    loadModel(e.data.nlogo, e.data.path);
-  } else if (e.data.type === "nlw-open-new") {
-    loadModel(newModel, "NewModel");
-  } else if (e.data.type === "nlw-update-model-state") {
-    session.widgetController.setCode(e.data.codeTabContents);
-  } else if (e.data.type === "run-baby-behaviorspace") {
-    var reaction =
-      function(results) {
-        e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
-      };
-    session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
-  } else if (e.data.type === "nlw-export-model") {
-    var model = session.getNlogo();
-    e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
+  switch (e.data.type) {
+    case "nlw-load-model": {
+      loadModel(e.data.nlogo, e.data.path);
+      break;
+    }
+    case "nlw-open-new": {
+      loadModel(newModel, "NewModel");
+      break;
+    }
+    case "nlw-update-model-state": {
+      session.widgetController.setCode(e.data.codeTabContents);
+      break;
+    }
+    case "run-baby-behaviorspace": {
+      var reaction =
+        function(results) {
+          e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
+        };
+      session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+      break;
+    }
+    case "nlw-export-model": {
+      var model = session.getNlogo();
+      e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
+      break;
+    }
   }
 });
 
