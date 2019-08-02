@@ -32,15 +32,21 @@
         <a href="https://github.com/NetLogo/Tortoise/wiki/Experimental:-NetTango-Builder">About the NetTango Builder</a>
       </div>
     </div>
-    <div class="model-box" style="position: relative;">
-      <iframe id="model-container" class="model-container" src="about:blank"></iframe>
-      <div id="model-recompile-overlay">
-        <button class="ntb-button" onclick="window.recompile('ntb-recompile');">Recompile</button>
+
+    <div id="builder-content">
+
+      <div class="model-box" style="position: relative; flex: none;">
+        <iframe id="model-container" class="model-container" src="about:blank"></iframe>
+        <div id="model-recompile-overlay">
+          <button class="ntb-button" onclick="window.recompile('ntb-recompile');">Recompile</button>
+        </div>
       </div>
+
+      <div id="nettango-options" class="model-box">
+      </div>
+
     </div>
 
-    <div id="nettango-options" class="model-box">
-    </div>
     @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
     @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
     @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")

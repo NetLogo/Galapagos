@@ -21,6 +21,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     extraCss: "",         # String
     title: "Blank Model", # String
 
+    netTangoToggles: {
+      workspaceBelow: {
+        label: "Show NetTango spaces below the NetLogo model",
+        checked: true
+      }
+    },
+
     tabOptions: {
       commandCenterTab: {
         label: "Hide command center tab",
@@ -103,6 +110,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         , spaces:     []
         , extraCss:   ""
         , title:      "Blank Model"
+        , netTangoToggles: {
+          workspaceBelow: true
+        }
         , tabOptions: {
             commandCenterTab: true
           , codeTab:          true
@@ -124,6 +134,11 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   }
 
+  observe: {
+    "netTangoToggles.workspaceBelow.checked": (workspaceBelow) ->
+      @moveSpaces(workspaceBelow, @get('playMode'))
+  }
+
   # () => Unit
   checkForDirtyCss: () ->
     lastCss  = @get('lastCss')
@@ -134,6 +149,12 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
     spaces = @findComponent('tangoDefs').get('spaces')
+
+    netTangoToggles = { }
+    netTangoToggleValues = @get('netTangoToggles')
+    Object.getOwnPropertyNames(netTangoToggleValues)
+      .forEach((n) -> netTangoToggles[n] = netTangoToggleValues[n].checked)
+
     tabOptions = { }
     tabOptionValues = @get('tabOptions')
     Object.getOwnPropertyNames(tabOptionValues)
@@ -141,6 +162,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     {
         spaces,
+      , netTangoToggles
       , tabOptions
       , title:    @get('title')
       , extraCss: @get('extraCss')
@@ -152,6 +174,23 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     spaceProcs = for _, space of spaces
       space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
     spaceProcs.join("\n")
+
+  # (Boolean) => Unit
+  moveSpaces: (workspaceBelow, playMode) ->
+    # The main wrapper for the builder lives outside Ractive,
+    # so we imperatively update the CSS classes instead of
+    # using a template.  -Jeremy B July 2019
+    content = document.getElementById('builder-content')
+    options = document.getElementById('nettango-options')
+    if (workspaceBelow)
+      content.classList.remove('netlogo-display-horizontal')
+      content.classList.add('tortoise')
+      options.style.minWidth = ""
+    else
+      content.classList.remove('tortoise')
+      content.classList.add('netlogo-display-horizontal')
+      if (playMode)
+        options.style.minWidth = "auto"
 
   # () => Unit
   refreshCss: () ->
@@ -196,6 +235,11 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     for spaceVals in (ntData.spaces ? [])
       defsComponent.createSpace(spaceVals)
     defsComponent.updateCode(true)
+
+    netTangoToggles = @get('netTangoToggles')
+    for key, prop of (ntData.netTangoToggles ? { })
+      if netTangoToggles.hasOwnProperty(key)
+        @set("netTangoToggles.#{key}.checked", prop)
 
     tabOptions = @get('tabOptions')
     for key, prop of (ntData.tabOptions ? { })
@@ -244,13 +288,20 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} />
 
         {{# !playMode }}
+        <div class="netlogo-display-horizontal">
           <ul style-list-style="none">
           {{#tabOptions:key }}<li>
             <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}" on-change="@this.refreshCss()">
             <label for="ntb-{{ key }}">{{ label }}</label>
           </li>{{/tabOptions }}
           </ul>
-
+          <ul style-list-style="none">
+          {{#netTangoToggles:key }}<li>
+            <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
+            <label for="ntb-{{ key }}">{{ label }}</label>
+          </li>{{/netTangoToggles }}
+          </ul>
+        </div>
           <div class="ntb-block-defs-controls">
             <label for="ntb-extra-css">Extra CSS to include</label>
             <button class="ntb-button" type="button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
