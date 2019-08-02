@@ -40,6 +40,8 @@ window.RactiveNetTangoSpaces = Ractive.extend({
       @updateCode(false)
       return
 
+    '*.ntb-recompile-start': (_) ->
+      @recompile()
   }
 
   # (Boolean) => Unit
@@ -128,7 +130,13 @@ window.RactiveNetTangoSpaces = Ractive.extend({
 
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}
-        <tangoSpace space="{{ this }}" playMode="{{ playMode }}" popupMenu="{{ popupMenu }}" blockEditForm="{{ blockEditForm }}" />
+        <tangoSpace
+          space="{{ this }}"
+          playMode="{{ playMode }}"
+          popupMenu="{{ popupMenu }}"
+          blockEditForm="{{ blockEditForm }}"
+          codeIsDirty="{{ codeIsDirty }}"
+        />
       {{/spaces }}
     </div>
     <label for="ntb-code">NetLogo Code</label>
