@@ -52,9 +52,8 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     @set('codeIsDirty', codeIsDirty)
     @set('code', newCode)
     if codeIsDirty
-      if isInitialLoad
-        @set('lastCode', newCode)
-      else
+      @set('lastCode', newCode)
+      if not isInitialLoad
         @fire('ntb-code-dirty')
     return
 

@@ -17,7 +17,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
       canvasId = @getNetTangoCanvasId(space)
-      space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo')
+      space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo').trim()
 
       NetTango.onProgramChanged(canvasId, (ntCanvasId) =>
         if (@get('space')?)
