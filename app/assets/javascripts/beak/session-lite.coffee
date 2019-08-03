@@ -41,8 +41,12 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
+  _subscribers: undefined # Array[Window]
+
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
+
+    @_subscribers = []
 
     checkIsReporter =
       (str) =>
@@ -337,8 +341,21 @@ class window.SessionLite
   alertErrors: (messages) =>
     @displayError(messages.join('\n'))
 
+  # (Window) => Unit
+  subscribe: (subscriber) ->
+    @_subscribers.push(subscriber)
+    return
+
   _performUpdate: ->
     if Updater.hasUpdates()
-      updates = Updater.collectUpdates()
-      @widgetController.redraw(updates)
+
+      viewUpdates = Updater.collectUpdates()
+      @widgetController.redraw(viewUpdates)
+
+      if @_subscribers.length > 0
+        plotUpdates = []
+        ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
+        update      = { plotUpdates, ticks, viewUpdates }
+        @_subscribers.forEach((s) -> s.postMessage({ update, type: "nlw-state-update" }, "*"))
+
     return

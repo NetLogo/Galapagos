@@ -200,6 +200,22 @@
               };
             session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
             break;
+          case "nlw-subscribe-to-updates":
+            session.subscribe(e.source);
+            break;
+          case "nlw-apply-update":
+
+            const { plotUpdates, ticks, viewUpdates } = e.data.update;
+
+            world.ticker.reset();
+            world.ticker.importTicks(ticks);
+
+            const vc = session.widgetController.viewController;
+            viewUpdates.forEach((vu) => vc.applyUpdate(vu));
+            vc.repaint();
+
+            break;
+
         }
       });
 
