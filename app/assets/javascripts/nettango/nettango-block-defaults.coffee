@@ -6,7 +6,6 @@ copyAttributes = (b, attributeType) ->
       attrCopy = Object.assign({ }, attribute)
       if attribute.type is 'select'
         attrCopy.values = attribute.values.slice()
-        attrCopy.valuesString = attribute.values.join(';')
       attrCopy
     )
   else
@@ -242,18 +241,18 @@ blocks = {
               name: "color",
               unit: "",
               type: "select",
-              default: "",
+              default: "red",
               values: [
-                "red",
-                "violet",
-                "blue",
-                "green",
-                "yellow",
-                "orange",
-                "white",
-                "black",
-                "grey",
-                "brown"
+                { actual: "red" },
+                { actual: "violet" },
+                { actual: "blue" },
+                { actual: "green" },
+                { actual: "yellow" },
+                { actual: "orange" },
+                { actual: "white" },
+                { actual: "black" },
+                { actual: "grey" },
+                { actual: "brown" }
               ]
             } ]
           })

@@ -24,6 +24,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
   components: {
     labeledInput: RactiveTwoWayLabeledInput
     dropdown:     RactiveTwoWayDropdown
+    select:       RactiveNetTangoSelectAttribute
   }
 
   template:
@@ -53,12 +54,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     'param-int': ""
     'param-text': ""
 
-    'param-select':
-      """
-      <div class="flex-row">
-        <labeledInput id="param-{{ id }}-values" name="values" type="text" value="{{ attribute.valuesString }}" labelStr="Options (; separated)" divClass="ntb-flex-column" class="ntb-input" />
-      </div>
-      """
+    'param-select': """<select attribute="{{ attribute }}" />"""
 
     'param-range':
       """

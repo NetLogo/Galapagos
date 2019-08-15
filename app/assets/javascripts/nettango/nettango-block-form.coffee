@@ -121,7 +121,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       if attrValues.type is 'range'
         [ 'min', 'max', 'step' ].forEach((f) -> attribute[f] = attrValues[f])
       else if attrValues.type is 'select'
-        attribute.values = attrValues.valuesString.split(/\s*;\s*|\n/).filter((s) -> s isnt "")
+        attribute.values = attrValues.values
+
       attribute
 
     attributeCopies
