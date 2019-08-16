@@ -346,6 +346,15 @@ class window.SessionLite
     @_subscribers.push(subscriber)
     return
 
+  # () => { plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
+  getModelState: ->
+    { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
+    viewUpdates = [{ drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }]
+    plotUpdates = []
+    ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
+    { plotUpdates, ticks, viewUpdates }
+
+  # () => Unit
   _performUpdate: ->
     if Updater.hasUpdates()
 
