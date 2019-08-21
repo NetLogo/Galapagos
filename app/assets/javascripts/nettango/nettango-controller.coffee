@@ -6,6 +6,11 @@ class window.NetTangoController
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
     @ractive = @createRactive(element, @theOutsideWorld, @playMode)
+
+    # If you have custom components that will be needed inside partial templates loaded dynamically at runtime
+    # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
+    Ractive.components.attribute = RactiveNetTangoAttribute
+
     @ractive.on('*.ntb-save',         (_, code)        => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',    (_, code)        => @setNetTangoCode(code))
     @ractive.on('*.ntb-model-change', (_, title, code) => @theOutsideWorld.setModelCode(title, code))
