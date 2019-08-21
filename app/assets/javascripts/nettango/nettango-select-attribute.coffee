@@ -2,6 +2,15 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
 
   data: () -> {
     attribute: undefined, # NetTangoSelectAttribute
+    optionTemplate:
+      """
+      <div class="flex-row ntb-form-row">
+        <input class="widget-edit-text widget-edit-input" type="text" value="{{ actual }}" />
+        <input class="widget-edit-text widget-edit-input" type="text" value="{{ display }}" />
+      </div>
+      """
+    createOption:
+      () -> { actual: "10" }
   }
 
   on: {
@@ -9,40 +18,26 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
     'complete': (_) ->
       attribute = @get("attribute")
       if (not attribute.values?)
-        attribute.values = []
-      return
-
-    'ntb-add-select-option': (_) ->
-      @push("attribute.values", { actual: "10" })
-      return
-
-    'ntb-remove-select-option': (_, index) ->
-      @splice("attribute.values", index, 1)
+        @set("attribute.values", [])
       return
 
   }
 
   components: {
-    labeledInput: RactiveTwoWayLabeledInput
-    dropdown:     RactiveTwoWayDropdown
+    arrayView:    RactiveArrayView
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="flex-column" >
-      <div class="flex-row ntb-form-row">
-        <label>Options</label>
-        <button class="ntb-button" type="button" on-click="ntb-add-select-option">Add Option</button>
-      </div>
-      {{#attribute.values:number }}
-      <div class="flex-row ntb-form-row">
-        <button class="ntb-button" type="button" on-click="[ 'ntb-remove-select-option', number ]">Remove Option</button>
-        <input class="widget-edit-text widget-edit-input" type="text" value="{{ actual }}" />
-        <input class="widget-edit-text widget-edit-input" type="text" value="{{ display }}" />
-      </div>
-      {{/attribute.values }}
-    </div>
+    <arrayView
+      id="select-{{ id }}-options"
+      itemTemplate="{{ optionTemplate }}"
+      items="{{ attribute.values }}"
+      itemType="Option"
+      itemTypePlural="Options"
+      createItem="{{ createOption }}"
+      />
     """
     # coffeelint: enable=max_line_length
 
