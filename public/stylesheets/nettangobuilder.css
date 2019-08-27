@@ -156,26 +156,33 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-flex-column {
+  margin: 8px;
   display: flex;
   flex-direction: column;
   padding: 0px;
   align-items: stretch;
+  flex: 1;
 }
 
 .ntb-input {
-  margin: 0px 10px;
-  width: 90%;
+  width: 100%;
   min-width: 30px;
-  font-size: 20px;
-  height: 33px;
-  padding: 4px;
+  font-size: 16px;
+  height: 28px;
+  padding: 4px 8px;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .ntb-flex-column .widget-edit-input-label {
   align-items: flex-start;
-  text-align: center;
-  font-size: 16px;
+  text-align: left;
+  margin-left: 12px;
+  font-size: 12px;
+}
+
+.ntb-flex-column > .widget-edit-dropdown {
+  margin: 0px;
 }
 
 .nt-canvas {
@@ -197,12 +204,12 @@ body#ntp-body, html#ntp-body {
   border-radius: 0px;
 }
 
-.ntb-form-row {
-  align-items: center;
+.widget-edit-popup {
+  width: 650px;
 }
 
-div.ntb-form-row > div {
-  margin: 6px;
+.ntb-form-row {
+  align-items: center;
 }
 
 #nettango-options {

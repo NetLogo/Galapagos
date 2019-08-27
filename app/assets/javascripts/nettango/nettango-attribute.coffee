@@ -59,6 +59,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
         <labeledInput id="param-{{ id }}-min"  name="min"  type="number" value="{{ attribute.min }}"  labelStr="Min" divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="param-{{ id }}-max"  name="max"  type="number" value="{{ attribute.max }}"  labelStr="Max" divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="param-{{ id }}-step" name="step" type="number" value="{{ attribute.step }}" labelStr="Step size" divClass="ntb-flex-column" class="ntb-input" />
+        <div class="ntb-flex-column" />
       </div>
       """
     # coffeelint: enable=max_line_length
