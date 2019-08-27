@@ -121,6 +121,21 @@ body#ntp-body, html#ntp-body {
   z-index: 1000;
 }
 
+.ntb-attribute {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f6f6f6;
+  margin: 4px 0px;
+}
+
+.ntb-options {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  margin: 4px 8px;
+  font-size: 16px;
+}
+
 .ntb-popup-active {
   display: block;
 }

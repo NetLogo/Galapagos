@@ -5,8 +5,8 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
     optionTemplate:
       """
       <div class="flex-row ntb-form-row">
-        <input class="widget-edit-text widget-edit-input" type="text" value="{{ actual }}" />
-        <input class="widget-edit-text widget-edit-input" type="text" value="{{ display }}" />
+        <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
+        <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
       </div>
       """
     createOption:
@@ -37,6 +37,7 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
       itemType="Option"
       itemTypePlural="Options"
       createItem="{{ createOption }}"
+      viewClass="ntb-options"
       />
     """
     # coffeelint: enable=max_line_length
