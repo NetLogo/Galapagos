@@ -37,17 +37,17 @@ window.RactiveArrayView = Ractive.extend({
     """
     {{#partial item-template}}Unset{{/partial}}
 
-    <div id="{{ id }}" class="flex-column">
-      <div class="ntb-block-defs-controls">
-        <label>{{ itemTypePlural }}</label>
+    <fieldset id="{{ id }}" class="widget-edit-fieldset flex-column">
+      <legend class="widget-edit-legend">
+        {{ itemTypePlural }}
         <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>
-      </div>
+      </legend>
       {{# items:number }}
         {{> item-template }}
         <div>
           <button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete {{ itemType }} {{ number }}</button>
         </div>
       {{/items }}
-    </div>
+    </fieldset>
     """
 })
