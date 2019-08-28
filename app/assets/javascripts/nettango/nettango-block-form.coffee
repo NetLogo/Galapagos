@@ -6,7 +6,16 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     blockNumber: undefined # Integer
     submitEvent: undefined # String
     attributeTemplate:
-      """<attribute id="{{ number }}" attribute="{{ this }}" attributeType="{{ itemType }}" />"""
+      """
+      <fieldset class="ntb-attribute">
+        <legend class="widget-edit-legend">
+          {{ itemType }} {{ number }} {{> delete-button }}
+        </legend>
+        <div class="flex-column">
+          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="{{ itemType }}" />
+        </div>
+      </fieldset>
+      """
     createAttribute:
       (type) -> (number) -> { name: "#{type} #{number}", type: "num", unit: undefined, def:  "10" }
 
@@ -167,20 +176,20 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         id="block-{{ id }}-parameters"
         itemTemplate="{{ attributeTemplate }}"
         items="{{ params }}"
-        itemClass="ntb-attribute"
         itemType="Parameter"
         itemTypePlural="Parameters"
         createItem="{{ createAttribute('Parameter') }}"
+        viewClass="ntb-attributes"
         />
 
       <arrayView
         id="block-{{ id }}-properties"
         itemTemplate="{{ attributeTemplate }}"
         items="{{ properties }}"
-        itemClass="ntb-attribute"
         itemType="Property"
         itemTypePlural="Properties"
         createItem="{{ createAttribute('Property') }}"
+        viewClass="ntb-attributes"
         />
 
       <div class="flex-row ntb-form-row">

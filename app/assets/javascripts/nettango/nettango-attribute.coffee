@@ -40,6 +40,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
       <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
       <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
     </div>
+
     {{> `param-${attribute.type}` }}
     """
     # coffeelint: enable=max_line_length

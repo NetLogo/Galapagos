@@ -35,10 +35,14 @@ window.RactiveArrayView = Ractive.extend({
       return
   }
 
+  partials: {
+    'item-template': "Unset",
+    'delete-button': """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
+
+  }
+
   template:
     """
-    {{#partial item-template}}Unset{{/partial}}
-
     <fieldset id="{{ id }}" class="widget-edit-fieldset flex-column {{ viewClass }}">
       <legend class="widget-edit-legend">
         {{ itemTypePlural }}
@@ -47,9 +51,9 @@ window.RactiveArrayView = Ractive.extend({
       {{# items:number }}
         <div class="{{ itemClass }}">
           {{> item-template }}
-          <button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete {{ itemType }} {{ number }}</button>
         </div>
       {{/items }}
     </fieldset>
     """
+
 })

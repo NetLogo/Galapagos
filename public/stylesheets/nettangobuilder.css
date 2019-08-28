@@ -121,11 +121,16 @@ body#ntp-body, html#ntp-body {
   z-index: 1000;
 }
 
+.ntb-attributes {
+  border-width: 1px;
+}
+
 .ntb-attribute {
   border: 1px solid #ddd;
   border-radius: 4px;
   background: #f6f6f6;
   margin: 4px 0px;
+  font-size: 16px;
 }
 
 .ntb-options {

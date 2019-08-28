@@ -7,6 +7,7 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
       <div class="flex-row ntb-form-row">
         <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
         <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
+        {{> delete-button }}
       </div>
       """
     createOption:
