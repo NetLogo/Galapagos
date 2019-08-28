@@ -112,6 +112,11 @@ body#ntp-body, html#ntp-body {
   color: #fff;
 }
 
+#ntb-block-edit-window {
+  max-height: 800px;
+  overflow-y: scroll;
+}
+
 .ntb-popup {
   position: absolute;
   background: #fff;
