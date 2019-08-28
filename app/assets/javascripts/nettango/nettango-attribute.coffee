@@ -52,7 +52,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     'param-int': ""
     'param-text': ""
 
-    'param-select': """<select attribute="{{ attribute }}" />"""
+    'param-select': """<select id="{{ id }}" attribute="{{ attribute }}" />"""
 
     'param-range':
       """
