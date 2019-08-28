@@ -1,9 +1,10 @@
 window.RactiveNetTangoAttribute = Ractive.extend({
 
   data: () -> {
-    id:             undefined, # Integer
-    attribute:      undefined, # NetTangoAttribute
-    atttributeType: undefined  # String ("params" or "properties")
+    id:             undefined # Integer
+    codeFormat:     undefined # String
+    attribute:      undefined # NetTangoAttribute
+    atttributeType: undefined # String ("params" or "properties")
   }
 
   on: {
@@ -31,6 +32,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="flex-row ntb-form-row">
+
       <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Display name" divClass="ntb-flex-column" class="ntb-input" />
 
       <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
@@ -38,7 +40,16 @@ window.RactiveNetTangoAttribute = Ractive.extend({
         />
 
       <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
+
       <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
+
+      <div class="ntb-flex-column">
+        <label for="ntb-{{ id }}-code-format" class="widget-edit-input-label">Code format</label>
+        <div id="ntb-{{ id }}-code-format" class="ntb-code-format">
+          <span>{</span><span>{{ codeFormat }}{{ id }}</span><span>}</span>
+        </div>
+      </div>
+
     </div>
 
     {{> `param-${attribute.type}` }}

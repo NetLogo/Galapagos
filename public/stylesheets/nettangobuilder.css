@@ -161,6 +161,13 @@ body#ntp-body, html#ntp-body {
   margin: auto;
 }
 
+.ntb-code-format {
+  padding: 4px 10px;
+  border: 1px solid #eee;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .ntb-array-view-hidden {
   border: 0px;
   background: unset;

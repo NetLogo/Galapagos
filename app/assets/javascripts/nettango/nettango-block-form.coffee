@@ -12,7 +12,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
           {{ itemType }} {{ number }} {{> delete-button }}
         </legend>
         <div class="flex-column">
-          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="{{ itemType }}" />
+          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="{{ itemType }}" codeFormat="{{ codeFormat }}" />
         </div>
       </fieldset>
       """
@@ -162,7 +162,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       </div>
 
-      <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for param, {P#} for property)"
+      <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for parameter, {P#} for property)"
         divClass="ntb-flex-column" class="ntb-input" />
 
       <div class="flex-row ntb-form-row">
@@ -182,6 +182,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         itemTypePlural="Parameters"
         createItem="{{ createAttribute('Parameter') }}"
         viewClass="ntb-attributes"
+        codeFormat=""
         />
 
       <arrayView
@@ -192,6 +193,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         itemTypePlural="Properties"
         createItem="{{ createAttribute('Property') }}"
         viewClass="ntb-attributes"
+        codeFormat="P"
         />
 
       <div class="flex-row ntb-form-row">
