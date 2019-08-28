@@ -2,23 +2,27 @@ window.RactiveArrayView = Ractive.extend({
 
   data: () -> {
 
-    id:              undefined      # String
-    itemType:        undefined      # String
-    itemTypePlural:  undefined      # String
-    createItem:      undefined      # (Number) => Any
-    itemAddEvent:    "item-added"   # String
-    itemRemoveEvent: "item-removed" # String
-    items:           undefined      # Array[Any]
-    itemTemplate:    undefined      # String
-    itemClass:       undefined      # String
-    viewClass:       undefined      # String
-    showItems:       true           # Boolean
+    id:                undefined      # String
+    itemType:          undefined      # String
+    itemTypePlural:    undefined      # String
+    createItem:        undefined      # (Number) => Any
+    itemAddEvent:      "item-added"   # String
+    itemRemoveEvent:   "item-removed" # String
+    itemTemplate:      undefined      # String
+    items:             undefined      # Array[Any]
+    itemsWrapperClass: undefined      # Srting
+    viewClass:         undefined      # String
+    showItems:         true           # Boolean
+    headerTemplate:    undefined      # Sring
 
   }
 
   on: {
     'complete': (_) ->
       @resetPartial("item-template", @get('itemTemplate'))
+      headerTemplate = @get('headerTemplate')
+      if headerTemplate?
+        @resetPartial("header-template", headerTemplate)
       return
 
     'add-item': () ->
@@ -38,8 +42,9 @@ window.RactiveArrayView = Ractive.extend({
   }
 
   partials: {
-    'item-template': "Unset",
-    'delete-button': """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
+    'header-template': "",
+    'item-template':   "Unset",
+    'delete-button':   """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
 
   }
 
@@ -58,12 +63,19 @@ window.RactiveArrayView = Ractive.extend({
         </label>
 
       </legend>
+
       {{# showItems }}
-        {{# items:number }}
-          <div class="{{ itemClass }}">
+
+        <div class="{{ itemsWrapperClass }}">
+
+          {{> header-template }}
+
+          {{# items:number }}
             {{> item-template }}
-          </div>
-        {{/ items }}
+          {{/ items }}
+
+        </div>
+
       {{/ showItems }}
     </fieldset>
     """

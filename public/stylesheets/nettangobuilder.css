@@ -146,6 +146,20 @@ body#ntp-body, html#ntp-body {
   font-size: 16px;
 }
 
+
+.ntb-options-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+}
+
+.ntb-option-delete {
+  margin: auto;
+}
+
+.ntb-option-header {
+  margin: auto;
+}
+
 .ntb-array-view-hidden {
   border: 0px;
   background: unset;

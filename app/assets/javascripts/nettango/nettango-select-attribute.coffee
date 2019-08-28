@@ -2,13 +2,19 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
 
   data: () -> {
     attribute: undefined, # NetTangoSelectAttribute
+
     optionTemplate:
       """
-      <div class="flex-row ntb-form-row">
-        <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
-        <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
-        {{> delete-button }}
-      </div>
+      <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
+      <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
+      <div class="ntb-option-delete">{{> delete-button }}</div>
+      """
+
+    headerTemplate:
+      """
+      <div class="ntb-option-header">Actual Value</div>
+      <div class="ntb-option-header">Display Value</div>
+      <div />
       """
     createOption:
       () -> { actual: "10" }
@@ -39,6 +45,8 @@ window.RactiveNetTangoSelectAttribute = Ractive.extend({
       itemTypePlural="Options"
       createItem="{{ createOption }}"
       viewClass="ntb-options"
+      itemsWrapperClass="ntb-options-wrapper"
+      headerTemplate="{{ headerTemplate }}"
       />
     """
     # coffeelint: enable=max_line_length
