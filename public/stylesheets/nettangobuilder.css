@@ -146,6 +146,11 @@ body#ntp-body, html#ntp-body {
   font-size: 16px;
 }
 
+.ntb-array-view-hidden {
+  border: 0px;
+  background: unset;
+}
+
 .ntb-popup-active {
   display: block;
 }
@@ -258,7 +263,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-toggle-block {
-  display: block;
+  display: inline;
 }
 
 .ntb-toggle-block > input[type=checkbox] {

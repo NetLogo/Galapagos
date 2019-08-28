@@ -12,6 +12,7 @@ window.RactiveArrayView = Ractive.extend({
     itemTemplate:    undefined      # String
     itemClass:       undefined      # String
     viewClass:       undefined      # String
+    showItems:       true           # Boolean
 
   }
 
@@ -25,6 +26,7 @@ window.RactiveArrayView = Ractive.extend({
       creator  = @get("createItem")
       addEvent = @get("itemAddEvent")
       @push("items", creator(number))
+      @set("showItems", true)
       @fire(addEvent)
       return
 
@@ -43,16 +45,26 @@ window.RactiveArrayView = Ractive.extend({
 
   template:
     """
-    <fieldset id="{{ id }}" class="widget-edit-fieldset flex-column {{ viewClass }}">
+    <fieldset id="{{ id }}" class="widget-edit-fieldset flex-column {{ viewClass }} {{# !showItems }}ntb-array-view-hidden{{/ showItems }}">
       <legend class="widget-edit-legend">
+
         {{ itemTypePlural }}
+
         <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>
+
+        <label class="ntb-toggle-block">
+          <input id="{{ id }}-show-items" type="checkbox" checked="{{ showItems }}" />
+          {{# showItems }}▲{{else}}▼{{/}}
+        </label>
+
       </legend>
-      {{# items:number }}
-        <div class="{{ itemClass }}">
-          {{> item-template }}
-        </div>
-      {{/items }}
+      {{# showItems }}
+        {{# items:number }}
+          <div class="{{ itemClass }}">
+            {{> item-template }}
+          </div>
+        {{/ items }}
+      {{/ showItems }}
     </fieldset>
     """
 
