@@ -147,16 +147,19 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       """
       {{# block }}
 
-      <labeledInput id="{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
-        divClass="ntb-flex-column" class="ntb-input" />
-
       <div class="flex-row ntb-form-row">
+
+        <labeledInput id="{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
+          divClass="ntb-flex-column" class="ntb-input" />
+
         <dropdown id="{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
           choices="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
           divClass="ntb-flex-column"
           />
+
         <labeledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
           min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
+
       </div>
 
       <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for param, {P#} for property)"
@@ -169,7 +172,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
           divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" labelStr="Border color"
           divClass="ntb-flex-column" class="ntb-input" />
-        <div class="ntb-flex-column" />
       </div>
 
       <arrayView
@@ -199,7 +201,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
           divClass="ntb-flex-column" class="ntb-input" />
         <labeledInput id="{{ id }}-f-face"   name="font-face"   type="text"   value="{{ fontFace }}"   labelStr="Typeface"
           divClass="ntb-flex-column" class="ntb-input" />
-        <div class="ntb-flex-column" />
       </div>
 
       {{/block }}

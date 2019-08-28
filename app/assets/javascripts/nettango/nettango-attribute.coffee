@@ -31,7 +31,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="flex-row ntb-form-row">
-      <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Name" divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Display name" divClass="ntb-flex-column" class="ntb-input" />
 
       <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
         choices="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
