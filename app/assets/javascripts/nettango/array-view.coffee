@@ -44,13 +44,17 @@ window.RactiveArrayView = Ractive.extend({
   partials: {
     'header-template': "",
     'item-template':   "Unset",
-    'delete-button':   """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
+    'delete-button':
+      """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
 
   }
 
   template:
     """
-    <fieldset id="{{ id }}" class="widget-edit-fieldset flex-column {{ viewClass }} {{# !showItems }}ntb-array-view-hidden{{/ showItems }}">
+    <fieldset
+      id="{{ id }}"
+      class="widget-edit-fieldset flex-column {{ viewClass }} {{# !showItems }}ntb-array-view-hidden{{/ showItems }}">
+
       <legend class="widget-edit-legend">
 
         {{ itemTypePlural }}

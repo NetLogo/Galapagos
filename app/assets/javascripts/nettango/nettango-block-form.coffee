@@ -12,7 +12,12 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
           {{ itemType }} {{ number }} {{> delete-button }}
         </legend>
         <div class="flex-column">
-          <attribute id="{{ number }}" attribute="{{ this }}" attributeType="{{ itemType }}" codeFormat="{{ codeFormat }}" />
+          <attribute
+            id="{{ number }}"
+            attribute="{{ this }}"
+            attributeType="{{ itemType }}"
+            codeFormat="{{ codeFormat }}"
+            />
         </div>
       </fieldset>
       """
