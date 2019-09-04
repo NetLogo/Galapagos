@@ -42,12 +42,14 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
         onSuccess(req.responseText)
   req.send("")
 
-# newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
-newSession = (container, modelResult, readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
+# newSession: String|DomElement, Array[Rewriter], ModelResult,
+#   Boolean, String => SessionLite
+newSession = (container, rewriters, modelResult,
+  readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(container, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
+  new SessionLite(container, rewriters, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->
@@ -63,9 +65,9 @@ loadData = (container, pathOrURL, name, loader, onError) ->
     name
   }
 
-openSession = (load) -> (model, lastCompileFailed) ->
+openSession = (load, rewriters) -> (model, lastCompileFailed) ->
   name    = load.name ? normalizedFileName(load.modelPath)
-  session = newSession(load.container, model, false, name, lastCompileFailed, load.onError)
+  session = newSession(load.container, rewriters, model, false, name, lastCompileFailed, load.onError)
   load.loader.finish()
   session
 
@@ -107,35 +109,46 @@ startLoading = (process) ->
 finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
 
-fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container)) ->
+fromNlogo = (nlogo, container, path, callback, onError = defaultDisplayError(container), rewriters = []) ->
   loading((loader) ->
     segments  = path.split(/\/|\\/)
     name      = segments[segments.length - 1]
     load      = loadData(container, path, name, loader, onError)
 
-    handleCompilation(nlogo, callback, load)
+    handleCompilation(nlogo, callback, load, rewriters)
   )
 
-fromURL = (url, modelName, container, callback, onError = defaultDisplayError(container)) ->
+fromURL = (url, modelName, container, callback, onError = defaultDisplayError(container), rewriters = []) ->
   loading((loader) ->
     load    = loadData(container, url, modelName, loader, onError)
     compile = (nlogo) ->
-      handleCompilation(nlogo, callback, load)
+      handleCompilation(nlogo, callback, load, rewriters)
 
     handleAjaxLoad(url, compile, reportAjaxError(load))
   )
 
-handleCompilation = (nlogo, callback, load) ->
-  onSuccess = (input, lastCompileFailed) -> callback(openSession(load)(input, lastCompileFailed))
+handleCompilation = (nlogo, callback, load, rewriters) ->
+  onSuccess = (input, lastCompileFailed) -> callback(openSession(load, rewriters)(input, lastCompileFailed))
   onFailure = reportCompilerError(load)
-  compiler = (new BrowserCompiler())
-  result   = compiler.fromNlogo(nlogo, [])
+
+  compiler       = (new BrowserCompiler())
+  rewriter       = (newCode, rw) -> rw.rewriteNlogo(newCode)
+  rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
+  result         = compiler.fromNlogo(rewrittenNlogo, [])
+
   if result.model.success
+    result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0]
     onSuccess(result, false)
   else
     success = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
     onFailure(result, success)
     return
+
+nlogoToSections = (nlogo) ->
+  nlogo.split(/^\@#\$#\@#\$#\@$/gm)
+
+sectionsToNlogo = (sections) ->
+  sections.join("@#$#@#$#@")
 
 # If we have a compiler failure, maybe just the code section has errors.
 # We do a second chance compile to see if it'll work without code so we
@@ -144,18 +157,20 @@ handleCompilation = (nlogo, callback, load) ->
 
 # (String, BrowserCompiler, (Model) => Session?) => Boolean
 fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
-  first = nlogo.indexOf("@#$#@#$#@")
-  if first < 0
+  sections = nlogoToSections(nlogo)
+  if sections.length isnt 12
     false
   else
-    newNlogo = nlogo.substring(first)
-    result = compiler.fromNlogo(newNlogo, [])
+    oldCode     = sections[0]
+    sections[0] = ""
+    newNlogo    = sectionsToNlogo(sections)
+    result      = compiler.fromNlogo(newNlogo, [])
     if not result.model.success
       false
     else
       # It mutates state, but it's an easy way to get the code re-added
       # so it can be edited/fixed.
-      result.code = nlogo.substring(0, first)
+      result.code = oldCode
       onSuccess(result, true)
       result.model.success
 
@@ -165,7 +180,9 @@ Tortoise = {
   fromNlogo,
   fromURL,
   toNetLogoMarkdown,
-  toNetLogoWebMarkdown
+  toNetLogoWebMarkdown,
+  nlogoToSections,
+  sectionsToNlogo
 }
 
 if window?

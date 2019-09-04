@@ -41,12 +41,15 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
-  # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
-  constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
+  # (Element|String, Array[Rewriter], Array[Widget],
+  #   String, String, Boolean, String, String, Boolean, (String) => Unit)
+  constructor: (container, @rewriters, widgets,
+    code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
     checkIsReporter =
       (str) =>
-        compileRequest = { code: @widgetController.code(), widgets: @widgetController.widgets() }
+        rewritten      = @rewriteCode(@widgetController.code())
+        compileRequest = { code: rewritten, widgets: @widgetController.widgets() }
         (new BrowserCompiler()).isReporter(str, compileRequest)
 
     @_eventLoopTimeout = -1
@@ -131,11 +134,16 @@ class window.SessionLite
       @recompile(successCallback)
     return
 
+  rewriteCode: (code, widgets) ->
+    rewriter = (newCode, rw) -> rw.rewriteCode(newCode)
+    @rewriters.reduce(rewriter, code)
+
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
     code       = @widgetController.code()
     oldWidgets = @widgetController.widgets()
+    rewritten  = @rewriteCode(code)
 
     onCompile =
       (res) =>
@@ -158,10 +166,10 @@ class window.SessionLite
 
         else
           @widgetController.ractive.set('lastCompileFailed', true)
-          res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
+          res.model.result.forEach( (r) => r.lineNumber = rewritten.slice(0, r.start).split("\n").length )
           @alertCompileError(res.model.result)
 
-    Tortoise.startLoading(=> codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
+    Tortoise.startLoading(=> codeCompile(rewritten, [], [], oldWidgets, onCompile, (result) => @alertCompileError(result, @alertErrors)))
 
   getNlogo: ->
     (new BrowserCompiler()).exportNlogo({
@@ -241,7 +249,8 @@ class window.SessionLite
     { last, map, toObject, zip } = tortoise_require('brazier/array')
     { pipeline                 } = tortoise_require('brazier/function')
 
-    result = (new BrowserCompiler()).fromModel({ code: @widgetController.code(), widgets: @widgetController.widgets()
+    rewritten = @rewriteCode(@widgetController.code())
+    result    = (new BrowserCompiler()).fromModel({ code: rewritten, widgets: @widgetController.widgets()
                                                , commands: [setupCode, goCode]
                                                , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
                                                , turtleShapes: [], linkShapes: []
@@ -278,7 +287,8 @@ class window.SessionLite
     compileErrorLog = (result) => @alertCompileError(result, errorLog)
 
     Tortoise.startLoading()
-    codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
+    rewritten = @rewriteCode(@widgetController.code())
+    codeCompile(rewritten, [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
         if modelSuccess
           [{ result, success }] = commands
@@ -301,8 +311,9 @@ class window.SessionLite
       console.error(message)
       message
 
+    rewritten = @rewriteCode(@widgetController.code())
     compileParams = {
-      code:         @widgetController.code(),
+      code:         rewritten,
       widgets:      @widgetController.widgets(),
       commands:     [],
       reporters:    [code],
