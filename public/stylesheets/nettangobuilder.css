@@ -2,6 +2,29 @@ body#ntp-body, html#ntp-body {
   background: #fff;
 }
 
+#builder-body {
+  margin: 0px;
+}
+
+.ntb-model-container {
+  max-width: 100%;
+  overflow-x: auto;
+  width: min-content;
+}
+
+.ntb-inner-content {
+  width: min-content;
+}
+
+.ntb-model-wrapper {
+  position: relative;
+}
+
+.ntb-model-content {
+  display: flex;
+  width: 100%;
+}
+
 .ntb-block-def {
   display: flex;
   flex-direction: column;
@@ -93,6 +116,7 @@ body#ntp-body, html#ntp-body {
 .ntb-list-menu > li {
   color: #666;
   margin: 4px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 13px;
   padding: 8px;
   padding-top: 2px;
@@ -187,8 +211,8 @@ body#ntp-body, html#ntp-body {
 .ntb-controls {
   display: flex;
   flex-direction: column;
-  margin: 1em;
-  margin-top: 0;
+  padding: 1em;
+  padding-top: 0;
 }
 
 #ntb-code {

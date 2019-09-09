@@ -19,7 +19,8 @@ GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /ntango-build                       controllers.Local.ntangoBuild
-GET         /ntango-play                        controllers.Local.ntangoPlay
+GET         /ntango-play                        controllers.Local.ntangoPlay(standalone="false")
+GET         /ntango-play-standalone             controllers.Local.ntangoPlay(standalone="true")
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

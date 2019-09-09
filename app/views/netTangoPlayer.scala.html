@@ -1,4 +1,4 @@
-@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+@(standalone: String, tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
 
 <html>
   <head>
@@ -17,17 +17,18 @@
     @tagBuilder.pathToHTML("nettango/ntango.css")
     @tagBuilder.pathToHTML("stylesheets/nettangobuilder.css")
   </head>
-  <body style="margin: 0px;">
+  <body id="builder-body">
     @views.html.spinner()
     @views.html.errorAlert()
-    <div id="builder-content" class="tortoise inner-content">
+    <div id="builder-content" class="tortoise inner-content ntb-inner-content">
 
-      <div style="position: relative;">
-        <div id="netlogo-model-container" style="display: flex;">
-        </div>
+      <div class="ntb-model-wrapper">
+
+        <div id="netlogo-model-container" class="ntb-model-content"></div>
         <div id="model-recompile-overlay">
           <button class="ntb-button" onclick="window.recompile();">Recompile</button>
         </div>
+
       </div>
 
       <div id="nettango-options" class="model-box ntb-container"></div>
@@ -118,6 +119,7 @@
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-select-attribute.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-attribute.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-block-form.js")
+    @tagBuilder.pathToHTML("javascripts/nettango/test/nettango-testing-defaults.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-space.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-spaces.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-builder.js")
@@ -132,145 +134,132 @@
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
     <script type="text/json" id="ntango-code"></script>
 
-    <script>
+    <script type="text/javascript">
 
-      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod}
 
-      var loadingOverlay  = document.getElementById("loading-overlay");
-      var activeContainer = loadingOverlay;
-      var modelContainer  = document.querySelector("#netlogo-model-container");
-      var nlogoScript     = document.querySelector("#nlogo-code");
-      var standaloneURL   = "https:@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))";
-      var pageTitle       = function(modelTitle) {
-        if (modelTitle != null && modelTitle != "") {
-          return "NetLogo Web: " + modelTitle;
-        } else {
-          return "NetLogo Web";
-        }
-      };
-      var session;
-      var openSession = function(s) {
-        session = s;
-        document.title = pageTitle(session.modelTitle());
-        activeContainer = modelContainer;
-        session.startLoop();
-      };
+      const loadingOverlay = document.getElementById("loading-overlay")
+      var activeContainer  = loadingOverlay
+      const modelContainer = document.getElementById("netlogo-model-container")
+      const pageContainer  = document.getElementById("builder-content")
+      const nlogoScript    = document.getElementById("nlogo-code")
+      const standaloneURL  = "https:@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))"
 
-      var isStandaloneHTML = false;
-
-      if (nlogoScript.textContent.length > 0) {
-        isStandaloneHTML = true;
+      var session
+      function openSession(s) {
+        session         = s
+        document.title  = pageTitle(session.modelTitle())
+        activeContainer = modelContainer
+        session.startLoop()
       }
 
-      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML);
+      const isStandaloneHTML = @standalone
 
-      var displayError = function(error) {
+      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML)
+
+      function pageTitle(modelTitle) {
+        return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`
+      }
+
+      function displayError(error) {
         // in the case where we're still loading the model, we have to
         // post an error that cannot be dismissed, as well as ensuring that
         // the frame we're in matches the size of the error on display.
         if (activeContainer === loadingOverlay) {
-          window.nlwAlerter.displayError(error, false);
-          activeContainer = window.nlwAlerter.alertContainer;
+          window.nlwAlerter.displayError(error, false)
+          activeContainer = window.nlwAlerter.alertContainer
         } else {
-          window.nlwAlerter.displayError(error);
+          window.nlwAlerter.displayError(error)
         }
-      };
+      }
 
-      var loadModel = function(nlogo, path) {
+      function loadModel(nlogo, path) {
         if (session) {
-          session.teardown();
+          session.teardown()
         }
-        window.nlwAlerter.hide();
-        activeContainer = loadingOverlay;
-        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
-      };
+        window.nlwAlerter.hide()
+        activeContainer = loadingOverlay
+        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError)
+      }
+
+      function loadUrl(url, modelName) {
+        if (session) {
+          session.teardown()
+        }
+        window.nlwAlerter.hide()
+        activeContainer = loadingOverlay
+        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError)
+      }
 
       if (nlogoScript.textContent.length > 0) {
-        Tortoise.fromNlogo(nlogoScript.textContent,
-                           modelContainer,
-                           nlogoScript.dataset.filename,
-                           openSession,
-                           displayError);
-      } else if (window.location.search.length > 0) {
-
-        var query    = window.location.search.slice(1);
-        var pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
-        var paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
-
-        var url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
-        var modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
-
-        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
-
+        const nlogo    = nlogoScript.textContent
+        const fileName = nlogoScript.dataset.filename
+        Tortoise.fromNlogo(nlogo, modelContainer, fileName, openSession, displayError)
       }
 
       window.addEventListener("message", function (e) {
         if (e.data.type === "nlw-load-model") {
-          loadModel(e.data.nlogo, e.data.path);
+          loadModel(e.data.nlogo, e.data.path)
         } else if (e.data.type === "nlw-open-new") {
-          loadModel(exports.newModel, "NewModel");
+          loadModel(exports.newModel, "NewModel")
+        } else if (e.data.type === "nlw-load-url") {
+          loadUrl(e.data.url, e.data.name)
         } else if (e.data.type === "nlw-update-model-state") {
-          session.widgetController.setCode(e.data.codeTabContents);
+          session.widgetController.setCode(e.data.codeTabContents)
         } else if (e.data.type === "run-baby-behaviorspace") {
           var reaction =
             function(results) {
-              e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
-            };
-          session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+              e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
+            }
+          session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
        }
-      });
+      })
+
+      function resize(size) {
+        const newWidth  = pageContainer.offsetWidth
+        const newHeight = pageContainer.offsetHeight
+        const newTitle  = pageTitle(session !== undefined ? session.modelTitle() : null)
+
+        if (newWidth === size.width && newHeight === size.height && newTitle === document.title) {
+          return false
+        }
+
+        size.width     = newWidth
+        size.height    = newHeight
+        document.title = newTitle
+
+        return true
+      }
 
       if (parent !== window) {
-        var width = "", height = "";
-        window.setInterval(function() {
-          if (activeContainer.offsetWidth  !== width ||
-              activeContainer.offsetHeight !== height ||
-              (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
-            if (session !== undefined) {
-              document.title = pageTitle(session.modelTitle());
-            }
-            width = activeContainer.offsetWidth;
-            height = activeContainer.offsetHeight;
-            parent.postMessage({
-              width:  activeContainer.offsetWidth,
-              height: activeContainer.offsetHeight,
-              title:  document.title,
-              type:   "nlw-resize"
-            }, "*");
-          }
-        }, 200);
+        const size = {
+          width:  "",
+          height: ""
+        }
+        window.setInterval( () => {
+          if (!resize(size)) { return }
+
+          parent.postMessage({
+            width:  pageContainer.offsetWidth,
+            height: pageContainer.offsetHeight,
+            title:  document.title,
+            type:   "nlw-resize"
+          }, "*")
+        }, 200)
       }
 
       window.modelContainer = modelContainer
-      var ntangoCode        = document.getElementById('ntango-code')
-
-      window.addEventListener("message", function(e) {
-        if (e.data.type === "nlw-resize") {
-          var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
-
-          var height = e.data.height;
-          var width  = e.data.width;
-          var title  = e.data.title;
-
-          // Quack, quack!
-          // Who doesn't love duck typing? --JAB (11/9/15)
-          if ([height, width, title].every(isValid)) {
-            modelContainer.width  = width;
-            modelContainer.height = height;
-            // document.title        = title;
-          }
-        }
-      });
+      var ntangoCode        = document.getElementById("ntango-code")
 
       function setModelCode(filePath, code) {
         window.postMessage({
           nlogo: code,
-          path: filePath,
-          type: "nlw-load-model"
+          path:  filePath,
+          type:  "nlw-load-model"
         }, "*")
       }
 
-      var overlay = document.getElementById('model-recompile-overlay')
+      var overlay = document.getElementById("model-recompile-overlay")
       var theOutsideWorld = {
           setModelCode:        setModelCode
         , getModelCode:        ()                => window.session.getNlogo()
@@ -281,6 +270,7 @@
         , getWidgetController: ()                => window.session.widgetController
         , getModelTitle:       ()                => window.session.modelTitle()
         , saveAs:              window.saveAs
+        , newModel:            window.exports.newModel
       }
 
       var ls
@@ -290,7 +280,7 @@
         ls = NetTangoStorage.fakeStorage()
       }
 
-      var netTango = new NetTangoController('nettango-options', ls, overlay, true, theOutsideWorld)
+      var netTango = new NetTangoController("nettango-options", ls, overlay, @standalone, theOutsideWorld)
 
       exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
       window.ractive   = netTango.ractive

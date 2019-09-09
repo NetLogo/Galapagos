@@ -3,16 +3,8 @@
 @(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
 
 @extraHead = {
-  @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
-  @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
-  @tagBuilder.pathToHTML("stylesheets/widgets.css")
-  @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
-  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css").relative' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
-  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css").relative' />
-  @tagBuilder.pathToHTML("nettango/ntango.css")
-  @tagBuilder.pathToHTML("stylesheets/nettangobuilder.css")
+  @tagBuilder.pathToHTML("stylesheets/tortoise.css")
+  @tagBuilder.pathToHTML("lib/chosen/chosen.css")
 }
 
 @content = {
@@ -33,150 +25,71 @@
       </div>
     </div>
 
-    <div id="builder-content">
-
-      <div class="model-box" style="position: relative; flex: none;">
-        <iframe id="model-container" class="model-container" src="about:blank"></iframe>
-        <div id="model-recompile-overlay">
-          <button class="ntb-button" onclick="window.recompile();">Recompile</button>
-        </div>
-      </div>
-
-      <div id="nettango-options" class="model-box">
-      </div>
-
+    <div class="ntb-model-container">
+      <iframe id="model-container" class="model-container" src="about:blank"></iframe>
     </div>
-
-    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
-    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
-    @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
-    @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
-    @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
-    @tagBuilder.pathToHTML("lib/mousetrap/mousetrap.js")
-    @tagBuilder.pathToHTML("javascripts/keywords.js")
-    @tagBuilder.pathToHTML("javascripts/new-model.js")
-    @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
-
-    @tagBuilder.pathToHTML("lib/ractive/ractive.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/checkbox.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/code-container.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/color-input.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/dropdown.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/labeled-input.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/font-size.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/print-area.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/spacer.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/tick-counter.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/variable.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/context-menu.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/draggable.js")
-    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/edit-form.js")
-
-    @tagBuilder.pathToHTML("nettango/ntango.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/error-display.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/popup-menu.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/array-view.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-block-defaults.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-select-attribute.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-attribute.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-block-form.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/test/nettango-testing-defaults.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-space.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-spaces.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-builder.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-storage.js")
-    @tagBuilder.pathToHTML("javascripts/nettango/nettango-controller.js")
   </div>
 }
 
 @extraBody = {
-  <script src='@routes.Assets.versioned("lib/jquery/jquery.js").relative' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js").relative' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/file-saver/FileSaver.js").relative' type="text/javascript"></script>
-  <script type="text/javascript" src='@routes.Assets.versioned("javascripts/models.js").relative'></script>
-  <script>
-    var modelContainer    = document.getElementById('model-container')
+  @tagBuilder.pathToHTML("lib/jquery/jquery.js")
+  @tagBuilder.pathToHTML("lib/chosen/chosen.jquery.js")
+  @tagBuilder.pathToHTML("javascripts/models.js")
+  <script type="text/javascript">
+
+    const modelContainer  = document.getElementById("model-container")
     window.modelContainer = modelContainer
-    var hostPrefix        = location.protocol + '//' + location.host
-    var pathSplits = location.pathname.split("/")
-    if(pathSplits.length > 2) {
-      hostPrefix = hostPrefix + "/" + pathSplits[1]
-    }
 
-    window.addEventListener("message", function(e) {
+    window.addEventListener("message", (e) => {
       if (e.data.type === "nlw-resize") {
-        var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
 
-        var height = e.data.height;
-        var width  = e.data.width;
-        var title  = e.data.title;
+        const isValid = (x) =>
+          (typeof x !== "undefined" && x !== null)
 
-        // Quack, quack!
-        // Who doesn't love duck typing? --JAB (11/9/15)
-        if ([height, width, title].every(isValid)) {
-          modelContainer.width  = width;
-          modelContainer.height = height;
+        const height = e.data.height
+        const width  = e.data.width
+
+        if ([height, width].every(isValid)) {
+          modelContainer.width  = width
+          modelContainer.height = height
         }
-      }
-    });
 
-    function pickModel(url) {
-      var encoded = encodeURI(hostPrefix + '/assets/' + url);
-      exports.selectModelByURL(encoded);
-      modelContainer.src = "./web?"+encoded;
-    }
-
-    function initModel() {
-
-    }
-
-    function setModelCode(filePath, code) {
-      modelContainer.contentWindow.postMessage({
-        nlogo: code,
-        path:  filePath,
-        type:  "nlw-load-model"
-      }, "*")
-    }
-
-    exports.bindModelChooser(document.getElementById('tortoise-model-list'), initModel, pickModel, '@mode.toString.toLowerCase')
-
-    var fileInput = document.getElementById('model-file-input')
-    fileInput.addEventListener('change', function (event) {
-      var reader = new FileReader()
-      reader.onload = function (e) {
-        setModelCode(fileInput.value, e.target.result)
-      };
-      if (this.files.length > 0) {
-        reader.readAsText(this.files[0])
       }
     })
 
-    var overlay = document.getElementById('model-recompile-overlay')
-    var theOutsideWorld = {
-        setModelCode:        setModelCode
-      , getModelCode:        ()                => modelContainer.contentWindow.session.getNlogo()
-      , getElementById:      (id)              => modelContainer.contentWindow.document.getElementById(id)
-      , createElement:       (elementType)     => document.createElement(elementType)
-      , appendElement:       (element)         => modelContainer.contentWindow.document.body.appendChild(element)
-      , addEventListener:    (event, callback) => document.addEventListener(event, callback)
-      , getWidgetController: ()                => modelContainer.contentWindow.session.widgetController
-      , getModelTitle:       ()                => modelContainer.contentWindow.session.modelTitle()
-      , saveAs:              window.saveAs
-      , newModel:            window.exports.newModel
+    const fileInput = document.getElementById("model-file-input")
+    fileInput.addEventListener("change", (event) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        modelContainer.contentWindow.postMessage({
+          nlogo: e.target.result,
+          path:  fileInput.value,
+          type:  "nlw-load-model"
+        }, "*")
+      }
+
+      if (fileInput.files.length > 0) {
+        reader.readAsText(fileInput.files[0])
+      }
+    })
+
+    const pathSplits = location.pathname.split("/")
+    const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
+
+    function pickModel(path, name) {
+      const encoded = encodeURI(hostPrefix + '/assets/' + path)
+      exports.selectModelByURL(encoded)
+      modelContainer.contentWindow.postMessage({
+        url:  encoded,
+        name: name,
+        type: "nlw-load-url"
+      }, "*")
     }
 
-    var ls
-    try {
-      ls = window.localStorage
-    } catch (exception) {
-      ls = NetTangoStorage.fakeStorage()
-    }
+    const modelList = document.getElementById("tortoise-model-list")
+    exports.bindModelChooser(modelList, () => { }, pickModel, "@mode.toString.toLowerCase")
 
-    var netTango = new NetTangoController('nettango-options', ls, overlay, false, theOutsideWorld)
-
-    window.recompile      = netTango.recompile
-    modelContainer.onload = netTango.onModelLoad
-    modelContainer.src    = './web'
+    modelContainer.src = "./ntango-play"
 
   </script>
 }
