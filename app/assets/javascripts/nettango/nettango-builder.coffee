@@ -50,13 +50,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       speedBar: {
         label: "Hide model speed bar",
         checked: true,
-        checkedCssBuild:  '.netlogo-speed-slider { display: none; }',
+        checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }',
         checkedCssExport: '.netlogo-speed-slider { display: none; }'
       },
       fileButtons: {
         label: "Hide file and export buttons",
         checked: true,
-        checkedCssBuild:  '.netlogo-export-wrapper { display: none; }',
+        checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }',
         checkedCssExport: '.netlogo-export-wrapper { display: none; }'
       },
       authoring: {
@@ -74,7 +74,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       poweredBy: {
         label: "Hide 'Powered by NetLogo' link",
         checked: false,
-        checkedCssBuild:  '.netlogo-powered-by { display: none; }',
+        checkedCssBuild:  '.netlogo-powered-by { background: #eee; }',
         checkedCssExport: '.netlogo-powered-by { display: none; }'
       }
     }
