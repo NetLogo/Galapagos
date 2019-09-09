@@ -37,8 +37,11 @@ window.exports.bindModelChooser = (container, onComplete, selectionChanged, curr
       .addClass('chzn-select')
     select.on('change', (e) ->
       if modelSelect.get(0).selectedIndex > 0
-        modelURL = "#{modelSelect.get(0).value}.nlogo"
-        selectionChanged(modelURL)
+        modelPath   = modelSelect.get(0).value
+        modelURL    = "#{modelPath}.nlogo"
+        modelSplits = modelPath.split("/")
+        modelName   = modelSplits[modelSplits.length - 1]
+        selectionChanged(modelURL, modelName)
     )
     populateModelChoices(select, modelNames)
     select.appendTo(container)
