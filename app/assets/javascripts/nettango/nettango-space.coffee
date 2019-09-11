@@ -25,11 +25,11 @@ window.RactiveNetTangoSpace = Ractive.extend({
           s = @get('space')
           s.defs.program.chains = NetTango.save(canvasId).program.chains
           s.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
-          @fire('ntb-code-change', {}, ntCanvasId, false)
+          @fire('ntb-code-changed', {}, false)
         return
       )
 
-      @fire('ntb-code-change', {}, canvasId, true)
+      @fire('ntb-code-changed', {}, true)
 
       @observe('space', ->
         @updateNetTango(@get('space'), false)
@@ -56,12 +56,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @splice("space.defs.blocks", blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space)
-      return
-
-    # (Context, String) => Unit
-    'ntb-code-change': (_, ntCanvasId) ->
-      netTangoData = NetTango.save(ntCanvasId)
-      @set('space.defs.program', netTangoData.program)
       return
 
     # (Context, Integer) => Boolean
@@ -219,7 +213,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
 
     space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo')
-    @fire('ntb-code-change', {}, canvasId, false)
+    @fire('ntb-code-changed', {}, false)
     return
 
   # (NetTangoSpace) => Content
@@ -249,7 +243,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     """
     {{# space }}
     <div class="ntb-block-def">
-      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-code-change">
+      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="[ 'ntb-code-changed', false ]">
 
       <div class="ntb-block-defs-controls" >
         <button id="recompile-{{ spaceId }}" class="ntb-button" type="button" on-click="ntb-recompile-start"{{# !codeIsDirty }} disabled{{/}}>Recompile</button>

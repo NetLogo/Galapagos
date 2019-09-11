@@ -24,7 +24,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
       return
 
     # (Context, String, Boolean) => Unit
-    '*.ntb-code-change': (_, ntCanvasId, isInitialLoad) ->
+    '*.ntb-code-changed': (_, isInitialLoad) ->
       @updateCode(isInitialLoad)
       return
 
