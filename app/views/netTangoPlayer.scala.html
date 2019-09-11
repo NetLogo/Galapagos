@@ -252,17 +252,9 @@
       window.modelContainer = modelContainer
       var ntangoCode        = document.getElementById("ntango-code")
 
-      function setModelCode(filePath, code) {
-        window.postMessage({
-          nlogo: code,
-          path:  filePath,
-          type:  "nlw-load-model"
-        }, "*")
-      }
-
       var overlay = document.getElementById("model-recompile-overlay")
       var theOutsideWorld = {
-          setModelCode:        setModelCode
+          setModelCode:        loadModel
         , getModelCode:        ()                => window.session.getNlogo()
         , getElementById:      (id)              => document.getElementById(id)
         , createElement:       (elementType)     => document.createElement(elementType)

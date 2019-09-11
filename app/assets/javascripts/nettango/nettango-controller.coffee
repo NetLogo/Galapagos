@@ -13,7 +13,7 @@ class window.NetTangoController
 
     @ractive.on('*.ntb-save',         (_, code)        => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',    (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.ntb-model-change', (_, title, code) => @theOutsideWorld.setModelCode(title, code))
+    @ractive.on('*.ntb-model-change', (_, title, code) => @theOutsideWorld.setModelCode(code, title))
     @ractive.on('*.ntb-code-dirty',   (_)              => @markCodeDirty())
     @ractive.on('*.ntb-export-page',  (_)              => @exportNetTango('standalone'))
     @ractive.on('*.ntb-export-json',  (_)              => @exportNetTango('json'))
