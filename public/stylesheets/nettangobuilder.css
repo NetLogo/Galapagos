@@ -82,6 +82,10 @@ body#ntp-body, html#ntp-body {
   text-align: right;
 }
 
+.ntb-form-row input[readonly] {
+ background-color: #f6f6f6;
+}
+
 .ntb-button, .ntb-file-label {
   margin: 4px;
   font-size: 13px;

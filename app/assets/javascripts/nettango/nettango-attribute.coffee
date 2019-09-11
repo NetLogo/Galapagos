@@ -7,6 +7,11 @@ window.RactiveNetTangoAttribute = Ractive.extend({
     atttributeType: undefined # String ("params" or "properties")
   }
 
+  computed: {
+    codeFormatFull: () ->
+      "{#{@get('codeFormat') ? ''}#{@get('id')}}"
+  }
+
   on: {
     # (Context) => Unit
     '*.ntb-attribute-type-changed': (_) ->
@@ -39,16 +44,11 @@ window.RactiveNetTangoAttribute = Ractive.extend({
         choices="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
         />
 
-      <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label"  divClass="ntb-flex-column" class="ntb-input" />
 
-      <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
 
-      <div class="ntb-flex-column">
-        <label for="ntb-{{ id }}-code-format" class="widget-edit-input-label">Code format</label>
-        <div id="ntb-{{ id }}-code-format" class="ntb-code-format">
-          <span>{</span><span>{{ codeFormat }}{{ id }}</span><span>}</span>
-        </div>
-      </div>
+      <labeledInput id="param-{{ id }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input" twoway="false" attrs="readonly" />
 
     </div>
 
