@@ -184,10 +184,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     options = document.getElementById('nettango-options')
     if (workspaceBelow)
       content.classList.remove('netlogo-display-horizontal')
-      content.classList.add('tortoise')
       options.style.minWidth = ""
     else
-      content.classList.remove('tortoise')
       content.classList.add('netlogo-display-horizontal')
       if (playMode)
         options.style.minWidth = "auto"

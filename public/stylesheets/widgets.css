@@ -17,8 +17,10 @@
 }
 
 .netlogo-display-horizontal {
-  display: flex;
-  flex-flow: row;
+  display: flex !important;
+  flex-flow: row !important;
+  flex-direction: row !important;
+  align-items: unset !important;
 }
 
 .netlogo-header {
