@@ -174,13 +174,27 @@
         }
       }
 
+      const rewriters = [{
+        rewriteNlogo: (nlogo) => {
+          const sections     = Tortoise.nlogoToSections(nlogo)
+          const code         = sections[0]
+          const netTangoCode = netTango.getNetTangoCode()
+          sections[0]        = `${code}\n\n${netTangoCode}\n`
+          return Tortoise.sectionsToNlogo(sections)
+        },
+        rewriteCode: (code) => {
+          const netTangoCode = netTango.getNetTangoCode()
+          return `${code}\n\n${netTangoCode}\n`
+        }
+      }]
+
       function loadModel(nlogo, path) {
         if (session) {
           session.teardown()
         }
         window.nlwAlerter.hide()
         activeContainer = loadingOverlay
-        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError)
+        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError, rewriters)
       }
 
       function loadUrl(url, modelName) {
@@ -189,7 +203,7 @@
         }
         window.nlwAlerter.hide()
         activeContainer = loadingOverlay
-        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError)
+        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, rewriters)
       }
 
       if (nlogoScript.textContent.length > 0) {

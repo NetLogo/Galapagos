@@ -111,19 +111,6 @@ to go
   tick
 end
 
-
-; --- NETTANGO BEGIN ---
-to wolf-actions
-end
-
-to sheep-actions
-end
-
-to wolf-meets-sheep
-end
-; --- NETTANGO END ---
-
-
 ; Copyright 1997 Uri Wilensky.
 ; See Info tab for full copyright and license.
 @#$#@#$#@

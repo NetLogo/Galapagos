@@ -13,7 +13,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
   on: {
 
     # (Context) => Unit
-    'complete': (_) ->
+    'render': (_) ->
       space = @get('space')
       @initNetTango(space)
       canvasId = @getNetTangoCanvasId(space)

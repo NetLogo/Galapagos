@@ -95,6 +95,7 @@ class window.NetTangoController
     nt       = @storage.inProgress
 
     if (nt? and not @playMode and @firstLoad)
+      nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
       @builder.load(nt)
     else
       netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
@@ -104,8 +105,6 @@ class window.NetTangoController
         if (@playMode and @storageId? and nt.playProgress? and nt.playProgress[data.storageId]?)
           progress    = nt.playProgress[@storageId]
           data.spaces = progress.spaces
-          newCode     = NetTangoController.replaceNetTangoCode(data.code, progress.code)
-          data.code   = newCode
         @builder.load(data)
       else
         @builder.refreshCss()
@@ -123,27 +122,14 @@ class window.NetTangoController
     return
 
   # (String) => Unit
-  setNetTangoCode: (ntbCode) ->
+  setNetTangoCode: (_) ->
     widgetController = @theOutsideWorld.getWidgetController()
-    oldCode = widgetController.code()
-    newCode = NetTangoController.replaceNetTangoCode(oldCode, ntbCode)
     @hideRecompileOverlay()
-    widgetController.setCode(newCode, () =>
+    widgetController.ractive.fire('recompile', () =>
       widgets = widgetController.ractive.get('widgetObj')
       @rerunForevers(widgets)
     )
     return
-
-  # (String, String) => String
-  @replaceNetTangoCode: (oldCode, builderCode) ->
-    BEGIN = "; --- NETTANGO BEGIN ---"
-    END   = "; --- NETTANGO END ---"
-    builderCode = "\n#{BEGIN}\n\n#{builderCode}\n\n#{END}"
-    newCode = if (oldCode.indexOf(BEGIN) >= 0)
-       oldCode.replace(new RegExp("((?:^|\n)#{BEGIN}\n)([^]*)(\n#{END})"), builderCode)
-    else
-       oldCode + builderCode
-    newCode
 
   # (Array[File]) => Unit
   importNetTango: (files) ->
@@ -152,6 +138,7 @@ class window.NetTangoController
     reader = new FileReader()
     reader.onload = (e) =>
       ntData = JSON.parse(e.target.result)
+      ntData.code = NetTangoController.removeOldNetTangoCode(ntData.code)
       @builder.load(ntData)
       return
     reader.readAsText(files[0])
@@ -202,10 +189,6 @@ class window.NetTangoController
   # (String, Document, NetTangoBuilderData) => Unit
   exportStandalone: (title, exportDom, netTangoData) ->
     netTangoData.storageId = NetTangoController.generateStorageId()
-
-    ntbCode = @getNetTangoCode()
-    newCode = NetTangoController.replaceNetTangoCode(netTangoData.code, ntbCode)
-    netTangoData.code = newCode
 
     netTangoCodeElement = exportDom.getElementById('ntango-code')
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
@@ -283,3 +266,9 @@ class window.NetTangoController
   showError: (message) ->
     display = @ractive.findComponent('errorDisplay')
     display.show(message)
+
+  # (String) => String
+  @removeOldNetTangoCode: (code) ->
+    BEGIN = "; --- NETTANGO BEGIN ---"
+    END   = "; --- NETTANGO END ---"
+    code.replace(new RegExp("((?:^|\n)#{BEGIN}\n)([^]*)(\n#{END})"), "")

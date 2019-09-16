@@ -248,8 +248,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       if ntData.hasOwnProperty(propName)
         @set(propName, ntData[propName])
 
-    if(ntData.code?)
+    if (ntData.code?)
       @fire('ntb-model-change', ntData.title, ntData.code)
+    else
+      @fire('ntb-model-change', "New Model", @get('newModel'))
 
     @refreshCss()
 

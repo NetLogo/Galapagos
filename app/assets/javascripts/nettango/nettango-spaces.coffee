@@ -69,7 +69,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
   assembleCode: () ->
     spaces = @get('spaces')
     spaceCodes = for space, _ in spaces
-      "; Code for #{space.name}\n#{space.netLogoCode}".trim()
+      "; Code for #{space.name}\n#{space.netLogoCode ? ""}".trim()
     spaceCodes.join("\n\n")
 
   # () => Array[NetTangoExpressionOperator]
