@@ -137,7 +137,7 @@ handleCompilation = (nlogo, callback, load, rewriters) ->
   result         = compiler.fromNlogo(rewrittenNlogo, [])
 
   if result.model.success
-    result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0]
+    result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
     onSuccess(result, false)
   else
     success = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
