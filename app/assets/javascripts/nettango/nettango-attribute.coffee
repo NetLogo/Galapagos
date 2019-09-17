@@ -25,6 +25,12 @@ window.RactiveNetTangoAttribute = Ractive.extend({
         else null
       @set('attribute.def', newDefVal)
       return
+
+    '*.ntb-copy-attribute-format': (_) ->
+      # This only works in Firefox and Chrome (maybe Edge?) but not Safari.
+      # Better than nothing?  -Jeremy B September 2019
+      navigator.clipboard.writeText(@get('codeFormatFull'))
+      return
   }
 
   components: {
@@ -49,6 +55,8 @@ window.RactiveNetTangoAttribute = Ractive.extend({
       <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
 
       <labeledInput id="param-{{ id }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input" twoway="false" attrs="readonly" />
+
+      <div class="ntb-attribute-copy-format" on-click="ntb-copy-attribute-format"></div>
 
     </div>
 
