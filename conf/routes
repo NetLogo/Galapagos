@@ -20,6 +20,8 @@ GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /ntango-build                       controllers.Local.ntangoBuild
 GET         /ntango-play                        controllers.Local.ntangoPlay
+GET         /hnw-host                           controllers.Local.hnwHost
+GET         /hnw-join                           controllers.Local.hnwJoin
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

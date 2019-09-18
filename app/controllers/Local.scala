@@ -44,6 +44,16 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.simulation(OutsourceTagBuilder))
   }
 
+  def hnwHost: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwHost(OutsourceTagBuilder))
+  }
+
+  def hnwJoin: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwJoin(OutsourceTagBuilder))
+  }
+
   def engine: Action[AnyContent] = Action {
     implicit request => replyWithResource(environment)(enginePath)("text/javascript")
   }

@@ -159,11 +159,51 @@ fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
       onSuccess(result, true)
       result.model.success
 
+# (DOMElement, Array[HNWWidget], View, () => Unit) => Unit
+loadHubNetWeb = (container, widgets, view, callback) ->
+  loading(
+    (loader) ->
+
+      adaptedWidgets =
+        widgets.map(
+          (w) ->
+            if w.type is "hnwView"
+              pWidth    = view.maxPxcor - view.minPxcor
+              patchSize = w.width  / pWidth
+              Object.assign({}, view, { patchSize })
+            else
+              w
+        )
+
+      code = """var AgentModel = new (tortoise_require('agentmodel'))();
+var Updater = new (tortoise_require('engine/updater'))((x) => x);
+var world = { ticker: new (tortoise_require('engine/core/world/ticker'))() };
+"""
+
+      model =
+        { code:      "no code"
+        , commands:  []
+        , info:      "no info"
+        , model:     { success: true, result: code }
+        , reporters: []
+        , type:      "hnwModelCompilation"
+        , widgets:   JSON.stringify(adaptedWidgets)
+        }
+
+      window.procedures = {}
+      session = newSession(container, model, false, "test name - FIXME", false, (s) -> alert(s))
+      loader.finish()
+      callback(session)
+
+  )
+  return
+
 Tortoise = {
   startLoading,
   finishLoading,
   fromNlogo,
   fromURL,
+  loadHubNetWeb,
   toNetLogoMarkdown,
   toNetLogoWebMarkdown
 }
