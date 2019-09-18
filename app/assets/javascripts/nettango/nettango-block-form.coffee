@@ -167,8 +167,13 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       </div>
 
-      <labeledInput id="{{ id }}-format" name="format" type="text" value="{{ format }}" labelStr="Code Format ({#} for parameter, {P#} for property)"
-        divClass="ntb-flex-column" class="ntb-input" />
+      <div class="ntb-flex-column">
+        <label for="{{ id }}-format" class="widget-edit-input-label" style="">NetLogo code format ({#} for parameter, {P#} for property)</label>
+        <div style="flex-grow: 1;">
+          <textarea class="widget-edit-text widget-edit-input ntb-code-format" id="{{ id }}-format" name="format"
+            value="{{ format }}" twoway="true" ></textarea>
+        </div>
+      </div>
 
       <div class="flex-row ntb-form-row">
         <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
