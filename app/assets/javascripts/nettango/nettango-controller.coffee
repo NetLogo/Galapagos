@@ -95,7 +95,8 @@ class window.NetTangoController
     nt       = @storage.inProgress
 
     if (nt? and not @playMode and @firstLoad)
-      nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
+      if (nt.code?)
+        nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
       @builder.load(nt)
     else
       netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
