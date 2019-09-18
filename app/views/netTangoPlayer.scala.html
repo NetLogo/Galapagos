@@ -131,8 +131,6 @@
       routes.javascript.Local.standalone
     )
 
-    <!-- This can be used to insert NetLogo code into this page -->
-    <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
     <script type="text/json" id="ntango-code"></script>
 
     <script type="text/javascript">
@@ -143,7 +141,6 @@
       var activeContainer  = loadingOverlay
       const modelContainer = document.getElementById("netlogo-model-container")
       const pageContainer  = document.getElementById("builder-content")
-      const nlogoScript    = document.getElementById("nlogo-code")
       const standaloneURL  = "https:@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))"
 
       var session
@@ -204,12 +201,6 @@
         window.nlwAlerter.hide()
         activeContainer = loadingOverlay
         Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, rewriters)
-      }
-
-      if (nlogoScript.textContent.length > 0) {
-        const nlogo    = nlogoScript.textContent
-        const fileName = nlogoScript.dataset.filename
-        Tortoise.fromNlogo(nlogo, modelContainer, fileName, openSession, displayError)
       }
 
       window.addEventListener("message", function (e) {
