@@ -126,7 +126,14 @@ class window.NetTangoController
       ).catch( (error) =>
         netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
-        @showError("Error: Unable to load NetTango model from URL.\n#{error}")
+        @showErrors([
+          "Error: Unable to load NetTango model from the give URL."
+          "Make sure the URL is correct, that there are no network issues, and that CORS access is permitted.",
+          "",
+          "URL: #{modelUrl}",
+          "",
+          error
+        ])
       )
       return
 
@@ -204,7 +211,7 @@ class window.NetTangoController
     ).then( (exportDom) =>
       @exportStandalone(title, exportDom, netTangoData)
     ).catch((error) =>
-      @showError("Unexpected error:  Unable to generate the stand-alone NetTango page.")
+      @showErrors([ "Unexpected error:  Unable to generate the stand-alone NetTango page." ])
     )
     return
 
@@ -289,9 +296,9 @@ class window.NetTangoController
     return
 
   # (String) => Unit
-  showError: (message) ->
+  showErrors: (messages) ->
     display = @ractive.findComponent('errorDisplay')
-    display.show(message)
+    display.show(messages.join("<br/>"))
 
   # (String) => String
   @removeOldNetTangoCode: (code) ->
