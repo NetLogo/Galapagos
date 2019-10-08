@@ -278,7 +278,10 @@
         ls = NetTangoStorage.fakeStorage()
       }
 
-      var netTango = new NetTangoController("nettango-options", ls, overlay, @standalone, theOutsideWorld)
+      const urlParams = new URLSearchParams(window.location.search)
+      const netTangoModelUrl = urlParams.get("netTangoModel")
+
+      var netTango = new NetTangoController("nettango-options", ls, overlay, @standalone, theOutsideWorld, netTangoModelUrl)
 
       exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
       window.ractive   = netTango.ractive

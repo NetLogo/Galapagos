@@ -1,6 +1,6 @@
 class window.NetTangoController
 
-  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld) ->
+  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld, @modelUrl) ->
     @firstLoad = true
     @storage = new NetTangoStorage(localStorage)
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
@@ -94,13 +94,31 @@ class window.NetTangoController
     @builder = @ractive.findComponent('tangoBuilder')
     nt       = @storage.inProgress
 
-    if (nt? and not @playMode and @firstLoad)
-      if (nt.code?)
-        nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
-      @builder.load(nt)
+    if ((nt? or @modelUrl?) and not @playMode and @firstLoad)
+      if (@modelUrl?)
+        fetch(@modelUrl)
+        .then( (response) ->
+          if (!response.ok)
+            throw new Error("#{response.status} - #{response.statusText}")
+          response.json()
+        )
+        .then( (netTangoModel) =>
+          if (netTangoModel.code?)
+            netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
+          @builder.load(netTangoModel)
+        ).catch( (error) =>
+          # @hideRecompileOverlay()
+          netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
+          netLogoLoading.style.display = "none"
+          @showError("Error: Unable to load NetTango model from URL.\n#{error}")
+        )
+      else
+        if (nt.code?)
+          nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
+        @builder.load(nt)
     else
-      netTangoCodeElement = @theOutsideWorld.getElementById('ntango-code')
-      if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt '')
+      netTangoCodeElement = @theOutsideWorld.getElementById("ntango-code")
+      if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
         data = JSON.parse(netTangoCodeElement.textContent)
         @storageId = data.storageId
         if (@playMode and @storageId? and nt.playProgress? and nt.playProgress[data.storageId]?)
