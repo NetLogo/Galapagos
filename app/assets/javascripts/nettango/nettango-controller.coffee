@@ -117,7 +117,7 @@ class window.NetTangoController
     if (modelUrl?)
       fetch(modelUrl)
       .then( (response) ->
-        if (!response.ok)
+        if (not response.ok)
           throw new Error("#{response.status} - #{response.statusText}")
         response.json()
       )
