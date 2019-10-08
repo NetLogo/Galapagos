@@ -88,6 +88,15 @@ class window.NetTangoController
     defs.recompile()
     return
 
+  # Runs any updates needed for old versions, then loads the model normally.
+  # If this starts to get more complicated, it should be split out into
+  # separate version updates. -Jeremy B October 2019
+  loadExternalModel: (netTangoModel) =>
+    if (netTangoModel.code?)
+      netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
+    @builder.load(netTangoModel)
+    return
+
   # () => Unit
   onModelLoad: (modelUrl) =>
     @builder = @ractive.findComponent('tangoBuilder')
@@ -101,7 +110,7 @@ class window.NetTangoController
       if (@playMode and @storageId? and progress? and progress.playProgress? and progress.playProgress[@storageId]?)
         progress    = progress.playProgress[@storageId]
         data.spaces = progress.spaces
-      @builder.load(data)
+      @loadExternalModel(data)
       return
 
     # next check the URL parameter
@@ -113,9 +122,7 @@ class window.NetTangoController
         response.json()
       )
       .then( (netTangoModel) =>
-        if (netTangoModel.code?)
-          netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
-        @builder.load(netTangoModel)
+        @loadExternalModel(netTangoModel)
       ).catch( (error) =>
         netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
@@ -125,9 +132,7 @@ class window.NetTangoController
 
     # finally local storage
     if (progress?)
-      if (progress.code?)
-        progress.code = NetTangoController.removeOldNetTangoCode(progress.code)
-      @builder.load(progress)
+      @loadExternalModel(progress)
       return
 
     # nothing to load, so just refresh and be done
@@ -160,8 +165,7 @@ class window.NetTangoController
     reader = new FileReader()
     reader.onload = (e) =>
       ntData = JSON.parse(e.target.result)
-      ntData.code = NetTangoController.removeOldNetTangoCode(ntData.code)
-      @builder.load(ntData)
+      @loadExternalModel(ntData)
       return
     reader.readAsText(files[0])
     return
