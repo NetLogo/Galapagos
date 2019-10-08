@@ -1,7 +1,6 @@
 class window.NetTangoController
 
   constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld, @modelUrl) ->
-    @firstLoad = true
     @storage = new NetTangoStorage(localStorage)
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
@@ -94,7 +93,7 @@ class window.NetTangoController
     @builder = @ractive.findComponent('tangoBuilder')
     nt       = @storage.inProgress
 
-    if ((nt? or @modelUrl?) and not @playMode and @firstLoad)
+    if ((nt? or @modelUrl?) and not @playMode)
       if (@modelUrl?)
         fetch(@modelUrl)
         .then( (response) ->
@@ -128,7 +127,6 @@ class window.NetTangoController
       else
         @builder.refreshCss()
 
-    @firstLoad = false
     return
 
   # () => Unit
