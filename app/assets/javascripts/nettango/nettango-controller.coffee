@@ -1,6 +1,6 @@
 class window.NetTangoController
 
-  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld, @modelUrl) ->
+  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld) ->
     @storage = new NetTangoStorage(localStorage)
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
@@ -89,44 +89,49 @@ class window.NetTangoController
     return
 
   # () => Unit
-  onModelLoad: () =>
+  onModelLoad: (modelUrl) =>
     @builder = @ractive.findComponent('tangoBuilder')
-    nt       = @storage.inProgress
+    progress = @storage.inProgress
 
-    if ((nt? or @modelUrl?) and not @playMode)
-      if (@modelUrl?)
-        fetch(@modelUrl)
-        .then( (response) ->
-          if (!response.ok)
-            throw new Error("#{response.status} - #{response.statusText}")
-          response.json()
-        )
-        .then( (netTangoModel) =>
-          if (netTangoModel.code?)
-            netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
-          @builder.load(netTangoModel)
-        ).catch( (error) =>
-          # @hideRecompileOverlay()
-          netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
-          netLogoLoading.style.display = "none"
-          @showError("Error: Unable to load NetTango model from URL.\n#{error}")
-        )
-      else
-        if (nt.code?)
-          nt.code = NetTangoController.removeOldNetTangoCode(nt.code)
-        @builder.load(nt)
-    else
-      netTangoCodeElement = @theOutsideWorld.getElementById("ntango-code")
-      if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
-        data = JSON.parse(netTangoCodeElement.textContent)
-        @storageId = data.storageId
-        if (@playMode and @storageId? and nt.playProgress? and nt.playProgress[data.storageId]?)
-          progress    = nt.playProgress[@storageId]
-          data.spaces = progress.spaces
-        @builder.load(data)
-      else
-        @builder.refreshCss()
+    # first try to load from the inline code element
+    netTangoCodeElement = @theOutsideWorld.getElementById("ntango-code")
+    if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
+      data = JSON.parse(netTangoCodeElement.textContent)
+      @storageId = data.storageId
+      if (@playMode and @storageId? and progress? and progress.playProgress? and progress.playProgress[@storageId]?)
+        progress    = progress.playProgress[@storageId]
+        data.spaces = progress.spaces
+      @builder.load(data)
+      return
 
+    # next check the URL parameter
+    if (modelUrl?)
+      fetch(modelUrl)
+      .then( (response) ->
+        if (!response.ok)
+          throw new Error("#{response.status} - #{response.statusText}")
+        response.json()
+      )
+      .then( (netTangoModel) =>
+        if (netTangoModel.code?)
+          netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
+        @builder.load(netTangoModel)
+      ).catch( (error) =>
+        netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
+        netLogoLoading.style.display = "none"
+        @showError("Error: Unable to load NetTango model from URL.\n#{error}")
+      )
+      return
+
+    # finally local storage
+    if (progress?)
+      if (progress.code?)
+        progress.code = NetTangoController.removeOldNetTangoCode(progress.code)
+      @builder.load(progress)
+      return
+
+    # nothing to load, so just refresh and be done
+    @builder.refreshCss()
     return
 
   # () => Unit
