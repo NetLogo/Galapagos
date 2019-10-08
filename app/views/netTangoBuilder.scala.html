@@ -89,7 +89,11 @@
     const modelList = document.getElementById("tortoise-model-list")
     exports.bindModelChooser(modelList, () => { }, pickModel, "@mode.toString.toLowerCase")
 
-    modelContainer.src = "./ntango-play"
+    const urlParams = new URLSearchParams(window.location.search)
+    const netTangoModelUrl = urlParams.get("netTangoModel")
+    const netTangoModelQueryString = netTangoModelUrl ? `?netTangoModel=${netTangoModelUrl}` : ""
+
+    modelContainer.src = `./ntango-play${netTangoModelQueryString}`
 
   </script>
 }
