@@ -82,6 +82,20 @@ class window.NetTangoController
     defs = @ractive.findComponent('tangoDefs')
     defs.assembleCode()
 
+  getNetLogoRewriter: () ->
+    {
+      rewriteNlogo: (nlogo) =>
+        sections     = Tortoise.nlogoToSections(nlogo)
+        code         = sections[0]
+        netTangoCode = @getNetTangoCode()
+        sections[0]  = "#{code}\n\n#{netTangoCode}\n"
+        Tortoise.sectionsToNlogo(sections)
+      ,
+      rewriteCode: (code) =>
+        netTangoCode = @getNetTangoCode()
+        "#{code}\n\n#{netTangoCode}\n"
+    }
+
   # () => Unit
   recompile: () =>
     defs = @ractive.findComponent('tangoDefs')
