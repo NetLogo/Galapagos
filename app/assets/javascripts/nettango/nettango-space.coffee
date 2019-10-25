@@ -19,13 +19,18 @@ window.RactiveNetTangoSpace = Ractive.extend({
       canvasId = @getNetTangoCanvasId(space)
       space.netLogoCode = NetTango.exportCode(canvasId, 'NetLogo').trim()
 
-      NetTango.onProgramChanged(canvasId, (ntCanvasId) =>
+      NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
         if (@get('space')?)
           # `space` can change after we're `complete`, so do not use the one we already got above -JMB 11/2018
           s = @get('space')
-          s.defs.program.chains = NetTango.save(canvasId).program.chains
-          s.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
-          @fire('ntb-code-changed', {}, false)
+          switch event.type
+            when "block-changed"
+              s.defs.program.chains = NetTango.save(canvasId).program.chains
+              s.netLogoCode = NetTango.exportCode(ntCanvasId, 'NetLogo').trim()
+              @fire('ntb-code-changed', {}, false)
+            when "attribute-changed"
+              s.defs.program.chains = NetTango.save(canvasId).program.chains
+              @updateAttributeValue(canvasId, event.blockId, event.instanceId, event.attributeId, event.value)
         return
       )
 
@@ -233,6 +238,11 @@ window.RactiveNetTangoSpace = Ractive.extend({
       name: "_",
       items: items
     }
+
+  updateAttributeValue: (ntCanvasId, blockId, instanceId, attributeId, value) ->
+    setCode = "nt:set \"__#{ntCanvasId}_#{blockId}_#{instanceId}_#{attributeId}\" (#{value})"
+    @fire("ntb-run", setCode)
+    return
 
   components: {
     labeledInput: RactiveTwoWayLabeledInput

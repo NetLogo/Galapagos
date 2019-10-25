@@ -128,11 +128,13 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
   )
 
 handleCompilation = (nlogo, callback, load, rewriters) ->
-  onSuccess = (input, lastCompileFailed) -> callback(openSession(load, rewriters)(input, lastCompileFailed))
+  onSuccess = (input, lastCompileFailed) ->
+    callback(openSession(load, rewriters)(input, lastCompileFailed))
+    rewriters.forEach((rw) -> rw.compileComplete?())
   onFailure = reportCompilerError(load)
 
   compiler       = (new BrowserCompiler())
-  rewriter       = (newCode, rw) -> rw.rewriteNlogo(newCode)
+  rewriter       = (newCode, rw) -> rw.injectNlogo?(newCode)
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   result         = compiler.fromNlogo(rewrittenNlogo, [])
 

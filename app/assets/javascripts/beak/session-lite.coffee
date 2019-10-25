@@ -63,7 +63,7 @@ class window.SessionLite
     @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
     @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
-    @widgetController.ractive.on('console.run'     , (_, code, errorLog) => @run(code, errorLog))
+    @widgetController.ractive.on('*.run'           , (_, code, errorLog) => @run(code, errorLog))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -135,7 +135,7 @@ class window.SessionLite
     return
 
   rewriteCode: (code, widgets) ->
-    rewriter = (newCode, rw) -> rw.rewriteCode(newCode)
+    rewriter = (newCode, rw) -> rw.injectCode?(newCode)
     @rewriters.reduce(rewriter, code)
 
   # (() => Unit) => Unit
@@ -163,6 +163,7 @@ class window.SessionLite
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
           successCallback()
+          @rewriters.forEach((rw) -> rw.compileComplete?())
 
         else
           @widgetController.ractive.set('lastCompileFailed', true)
