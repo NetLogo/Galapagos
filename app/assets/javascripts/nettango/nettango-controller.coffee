@@ -129,6 +129,12 @@ class window.NetTangoController
         Tortoise.sectionsToNlogo(sections)
     }
 
+  # This is a debugging method to get a view of the altered code output that
+  # NetLogo will compile
+  getRewrittenCode: () ->
+    code = @theOutsideWorld.getWidgetController().code()
+    @rewriteNetLogoCode(code)
+
   # () => Unit
   recompile: () =>
     defs = @ractive.findComponent('tangoDefs')
