@@ -174,7 +174,7 @@ class window.NetTangoController
         netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
         @showErrors([
-          "Error: Unable to load NetTango model from the give URL."
+          "Error: Unable to load NetTango model from the given URL."
           "Make sure the URL is correct, that there are no network issues, and that CORS access is permitted.",
           "",
           "URL: #{modelUrl}",
