@@ -21,7 +21,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
       NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
         if (@get('space')?)
-          # `space` can change after we're `complete`, so do not use the one we already got above -JMB 11/2018
+          # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
           s = @get('space')
           @handleNetTangoEvent(s, ntCanvasId, event)
         return
