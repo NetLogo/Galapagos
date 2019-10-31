@@ -12,6 +12,8 @@
 # `./scripts/nettango-package.sh` and it will update the NetTango script in `target/` with your
 # NetTango repo work in progress.
 
+# `git diff -- . ':!package'`
+
 # Play copies all resources into the `target/` directory, so this is a workaround.  Other
 # workarounds would've affected how files were presented for production (as opposed to just
 # development work), so hey.
