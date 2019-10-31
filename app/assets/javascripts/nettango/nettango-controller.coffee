@@ -85,12 +85,21 @@ class window.NetTangoController
     defs = @ractive.findComponent('tangoDefs')
     defs.assembleCode()
 
+  @formatSetAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
+    "nt:set \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\" (#{value})"
+
+  @formatCodeAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
+    "(nt:get \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\")"
+
+  @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
+    "(#{value})"
+
   @createBlockVariables: (spaceId, block) ->
     childVariables     = (block.children ? []).flatMap( (child)  => NetTangoController.createBlockVariables(spaceId, child) )
     clauseVariables    = (block.clauses  ? []).flatMap( (clause) => NetTangoController.createBlockVariables(spaceId, clause) )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
       value = p.expressionValue ? p.value
-      "nt:set \"__#{spaceId}-canvas_#{block.id}_#{block.instanceId}_#{p.id}\" (#{value})"
+      NetTangoController.formatSetAttribute("#{spaceId}-canvas", block.id, block.instanceId, p.id, value)
     )
     attributeVariables.concat(childVariables).concat(clauseVariables)
 

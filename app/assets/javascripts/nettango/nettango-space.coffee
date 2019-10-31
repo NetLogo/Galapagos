@@ -17,22 +17,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
       canvasId = @getNetTangoCanvasId(space)
-      space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', @formatCodeAttribute).trim()
-      space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', @formatDisplayAttribute).trim()
+      @setSpaceNetLogo(space, canvasId)
 
       NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
         if (@get('space')?)
           # `space` can change after we're `complete`, so do not use the one we already got above -JMB 11/2018
           s = @get('space')
-          s.defs.program.chains = NetTango.save(canvasId).program.chains
-          s.netLogoCode         = NetTango.exportCode(ntCanvasId, 'NetLogo', @formatCodeAttribute).trim()
-          s.netLogoDisplay      = NetTango.exportCode(ntCanvasId, 'NetLogo', @formatDisplayAttribute).trim()
-          switch event.type
-            when "block-changed"
-              @fire('ntb-code-changed', {}, false)
-            when "attribute-changed"
-              @updateAttributeValue(canvasId, event.blockId, event.instanceId, event.attributeId, event.value)
-              @fire('ntb-code-changed', {}, false)
+          @handleNetTangoEvent(s, ntCanvasId, event)
         return
       )
 
@@ -179,12 +170,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
   getNetTangoCanvas: (canvasId) ->
     @find("##{canvasId}")
 
-  formatCodeAttribute: (canvasId, blockId, instanceId, attributeId, value) =>
-    "(nt:get \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\")"
-
-  formatDisplayAttribute: (_0, _1, _2, _3, value) ->
-    "(#{value})"
-
   # (NetTangoSpace) => Unit
   initNetTango: (space) ->
     canvasId      = @getNetTangoCanvasId(space)
@@ -198,6 +183,20 @@ window.RactiveNetTangoSpace = Ractive.extend({
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
     return
+
+  setSpaceNetLogo: (space, canvasId) ->
+    space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', NetTangoController.formatCodeAttribute).trim()
+    space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', NetTangoController.formatDisplayAttribute).trim()
+
+  handleNetTangoEvent: (space, canvasId, event) ->
+    space.defs.program.chains = NetTango.save(canvasId).program.chains
+    @setSpaceNetLogo(space, canvasId)
+    switch event.type
+      when "block-changed"
+        @fire('ntb-code-changed', {}, false)
+      when "attribute-changed"
+        @updateAttributeValue(canvasId, event.blockId, event.instanceId, event.attributeId, event.value)
+        @fire('ntb-code-changed', {}, false)
 
   # (NetTangoSpace) => Unit
   updateNetTango: (space, keepOldChains = true) ->
@@ -224,9 +223,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     netTangoData = NetTango.save(canvasId)
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+    @setSpaceNetLogo(space, canvasId)
 
-    space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', @formatCodeAttribute).trim()
-    space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', @formatDisplayAttribute).trim()
     @fire('ntb-code-changed', {}, false)
     @fire('ntb-run', {}, NetTangoController.createSpaceVariables(space).join(" "))
     return
