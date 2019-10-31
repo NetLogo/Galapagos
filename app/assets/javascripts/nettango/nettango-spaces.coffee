@@ -47,10 +47,10 @@ window.RactiveNetTangoSpaces = Ractive.extend({
   # (Boolean) => Unit
   updateCode: (isInitialLoad) ->
     lastCode    = @get('lastCode')
-    newCode     = @assembleCode(addSpaceNames = false)
+    newCode     = @assembleCode(displayOnly = false)
     codeIsDirty = lastCode isnt newCode
     @set('codeIsDirty', codeIsDirty)
-    @set('code', @assembleCode(addSpaceNames = true))
+    @set('code', @assembleCode(displayOnly = true))
     if codeIsDirty
       @set('lastCode', newCode)
       if not isInitialLoad
@@ -59,19 +59,19 @@ window.RactiveNetTangoSpaces = Ractive.extend({
 
   # () => Unit
   recompile: () ->
-    ntbCode = @assembleCode(addSpaceNames = false)
+    ntbCode = @assembleCode(displayOnly = false)
     @fire('ntb-recompile', ntbCode)
     @set('lastCode', ntbCode)
     @set('codeIsDirty', false)
     return
 
   # () => Unit
-  assembleCode: (addSpaceNames) ->
+  assembleCode: (displayOnly) ->
     spaces = @get('spaces')
     spaceCodes =
       spaces.map( (space) ->
-        if addSpaceNames
-          "; Code for #{space.name}\n#{space.netLogoCode ? ""}".trim()
+        if displayOnly
+          "; Code for #{space.name}\n#{space.netLogoDisplay ? ""}".trim()
         else
           (space.netLogoCode ? "").trim()
       )
