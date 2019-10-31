@@ -88,7 +88,8 @@ class window.NetTangoController
     childVariables     = (block.children ? []).flatMap( (child)  => @createBlockVariables(spaceId, child) )
     clauseVariables    = (block.clauses  ? []).flatMap( (clause) => @createBlockVariables(spaceId, clause) )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
-      "nt:set \"__#{spaceId}-canvas_#{block.id}_#{block.instanceId}_#{p.id}\" (#{p.value})"
+      value = p.expressionValue ? p.value
+      "nt:set \"__#{spaceId}-canvas_#{block.id}_#{block.instanceId}_#{p.id}\" (#{value})"
     )
     attributeVariables.concat(childVariables).concat(clauseVariables)
 
