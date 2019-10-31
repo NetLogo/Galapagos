@@ -22,12 +22,14 @@ class window.NetTangoController
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command))
 
+  # () => Ractive
   getTestingDefaults: () ->
     if (@playMode)
       Ractive.extend({ })
     else
       RactiveNetTangoTestingDefaults
 
+  # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode) ->
 
     new Ractive({
@@ -81,19 +83,24 @@ class window.NetTangoController
 
     })
 
+  # () => String
   getNetTangoCode: () ->
     defs = @ractive.findComponent('tangoDefs')
     defs.assembleCode()
 
+  # (String, Int, Int, Int, Any) => String
   @formatSetAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
     "nt:set \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\" (#{value})"
 
+  # (String, Int, Int, Int, Any) => String
   @formatCodeAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
     "(nt:get \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\")"
 
+  # (String, Int, Int, Int, Any) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
     "(#{value})"
 
+  # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
     childVariables     = (block.children ? []).flatMap( (child)  => NetTangoController.createBlockVariables(spaceId, child) )
     clauseVariables    = (block.clauses  ? []).flatMap( (clause) => NetTangoController.createBlockVariables(spaceId, clause) )
@@ -103,6 +110,7 @@ class window.NetTangoController
     )
     attributeVariables.concat(childVariables).concat(clauseVariables)
 
+  # (Space) => Array[String]
   @createSpaceVariables: (space) ->
     if (not space.defs.program? or not space.defs.program.chains?)
       return []
@@ -110,9 +118,11 @@ class window.NetTangoController
       chain.flatMap( (block) -> NetTangoController.createBlockVariables(space.spaceId, block) )
     )
 
+  # (Array[Space]) => Array[String]
   @createSpacesVariables: (spaces) ->
     spaces.flatMap( NetTangoController.createSpaceVariables )
 
+  # (String) => String
   addNetTangoExtension: (code) ->
     declarationCheck = /([\s\S]*^\s*extensions(?:\s|;.*\n)*\[)([\s\S]*)/mgi
     declaration = declarationCheck.exec(code)
@@ -126,11 +136,13 @@ class window.NetTangoController
 
     return "#{declaration[1]} nt #{declaration[2]}"
 
+  # (String) => String
   rewriteNetLogoCode: (code) ->
     alteredCode  = @addNetTangoExtension(code)
     netTangoCode = @getNetTangoCode()
     "#{alteredCode}\n\n#{netTangoCode}\n"
 
+  # () => NetLogoRewriter
   getNetLogoRewriter: () ->
     {
       compileComplete: ()      => @updateAttributeValues(),
@@ -143,6 +155,7 @@ class window.NetTangoController
 
   # This is a debugging method to get a view of the altered code output that
   # NetLogo will compile
+  # () => String
   getRewrittenCode: () ->
     code = @theOutsideWorld.getWidgetController().code()
     @rewriteNetLogoCode(code)
@@ -156,6 +169,7 @@ class window.NetTangoController
   # Runs any updates needed for old versions, then loads the model normally.
   # If this starts to get more complicated, it should be split out into
   # separate version updates. -Jeremy B October 2019
+  # (NetTangoBuilderData) => Unit
   loadExternalModel: (netTangoModel) =>
     if (netTangoModel.code?)
       netTangoModel.code = NetTangoController.removeOldNetTangoCode(netTangoModel.code)
@@ -230,6 +244,7 @@ class window.NetTangoController
     )
     return
 
+  # () => Unit
   updateAttributeValues: () ->
     widgetController  = @theOutsideWorld.getWidgetController()
     defs              = @ractive.findComponent('tangoDefs')
@@ -237,6 +252,7 @@ class window.NetTangoController
     widgetController.ractive.fire("run", attributeCommands)
     return
 
+  # (String, String) => Unit
   setNetLogoCode: (title, code) ->
     @theOutsideWorld.setModelCode(code, title)
     return
