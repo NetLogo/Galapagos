@@ -102,8 +102,12 @@ class window.NetTangoController
 
   # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
-    childVariables     = (block.children ? []).flatMap( (child)  => NetTangoController.createBlockVariables(spaceId, child) )
-    clauseVariables    = (block.clauses  ? []).flatMap( (clause) => NetTangoController.createBlockVariables(spaceId, clause) )
+    childVariables     = (block.children ? []).flatMap( (child)  =>
+      NetTangoController.createBlockVariables(spaceId, child)
+    )
+    clauseVariables    = (block.clauses  ? []).flatMap( (clause) =>
+      NetTangoController.createBlockVariables(spaceId, clause)
+    )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
       value = p.expressionValue ? p.value
       NetTangoController.formatSetAttribute("#{spaceId}-canvas", block.id, block.instanceId, p.id, value)
