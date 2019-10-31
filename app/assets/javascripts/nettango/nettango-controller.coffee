@@ -19,7 +19,8 @@ class window.NetTangoController
     @ractive.on('*.ntb-import-json',  (local)          => @importNetTango(local.node.files))
     @ractive.on('*.ntb-load-data',    (_, data)        => @builder.load(data))
     @ractive.on('*.ntb-run',          (_, command)     =>
-      @theOutsideWorld.getWidgetController().ractive.fire("run", command))
+      if (@theOutsideWorld.sessionReady())
+        @theOutsideWorld.getWidgetController().ractive.fire("run", command))
 
   getTestingDefaults: () ->
     if (@playMode)

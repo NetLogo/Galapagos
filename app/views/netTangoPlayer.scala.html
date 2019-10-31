@@ -246,6 +246,7 @@
       var overlay = document.getElementById("model-recompile-overlay")
       var theOutsideWorld = {
           setModelCode:        loadModel
+        , sessionReady:        ()                => window.session !== undefined
         , getModelCode:        ()                => window.session.getNlogo()
         , getElementById:      (id)              => document.getElementById(id)
         , createElement:       (elementType)     => document.createElement(elementType)

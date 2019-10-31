@@ -228,6 +228,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', @formatCodeAttribute).trim()
     space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', @formatDisplayAttribute).trim()
     @fire('ntb-code-changed', {}, false)
+    @fire('ntb-run', {}, NetTangoController.createSpaceVariables(space).join(" "))
     return
 
   # (NetTangoSpace) => Content
