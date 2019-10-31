@@ -84,23 +84,24 @@ class window.NetTangoController
     defs = @ractive.findComponent('tangoDefs')
     defs.assembleCode()
 
-  createBlockVariables: (spaceId, block) ->
-    childVariables     = (block.children ? []).flatMap( (child)  => @createBlockVariables(spaceId, child) )
-    clauseVariables    = (block.clauses  ? []).flatMap( (clause) => @createBlockVariables(spaceId, clause) )
+  @createBlockVariables: (spaceId, block) ->
+    childVariables     = (block.children ? []).flatMap( (child)  => NetTangoController.createBlockVariables(spaceId, child) )
+    clauseVariables    = (block.clauses  ? []).flatMap( (clause) => NetTangoController.createBlockVariables(spaceId, clause) )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
       value = p.expressionValue ? p.value
       "nt:set \"__#{spaceId}-canvas_#{block.id}_#{block.instanceId}_#{p.id}\" (#{value})"
     )
     attributeVariables.concat(childVariables).concat(clauseVariables)
 
-  createSpaceVariables: (spaces) ->
-    spaces.flatMap( (space) =>
-      if (not space.defs.program? or not space.defs.program.chains?)
-        return []
-      space.defs.program.chains.flatMap( (chain) =>
-        chain.flatMap( (block) => @createBlockVariables(space.spaceId, block) )
-      )
+  @createSpaceVariables: (space) ->
+    if (not space.defs.program? or not space.defs.program.chains?)
+      return []
+    space.defs.program.chains.flatMap( (chain) ->
+      chain.flatMap( (block) -> NetTangoController.createBlockVariables(space.spaceId, block) )
     )
+
+  @createSpacesVariables: (spaces) ->
+    spaces.flatMap( NetTangoController.createSpaceVariables )
 
   addNetTangoExtension: (code) ->
     declarationCheck = /([\s\S]*^\s*extensions(?:\s|;.*\n)*\[)([\s\S]*)/mgi
@@ -222,7 +223,7 @@ class window.NetTangoController
   updateAttributeValues: () ->
     widgetController  = @theOutsideWorld.getWidgetController()
     defs              = @ractive.findComponent('tangoDefs')
-    attributeCommands = @createSpaceVariables(defs.get("spaces")).join(" ")
+    attributeCommands = NetTangoController.createSpacesVariables(defs.get("spaces")).join(" ")
     widgetController.ractive.fire("run", attributeCommands)
     return
 
