@@ -125,6 +125,7 @@
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-spaces.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-builder.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-storage.js")
+    @tagBuilder.pathToHTML("javascripts/nettango/nettango-rewriter.js")
     @tagBuilder.pathToHTML("javascripts/nettango/nettango-controller.js")
 
     @helper.javascriptRouter("jsRoutes")(
@@ -177,7 +178,7 @@
         }
         window.nlwAlerter.hide()
         activeContainer = loadingOverlay
-        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError, [netTango.getNetLogoRewriter()])
+        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError, [netTango.rewriter])
       }
 
       function loadUrl(url, modelName) {
@@ -186,7 +187,7 @@
         }
         window.nlwAlerter.hide()
         activeContainer = loadingOverlay
-        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, [netTango.getNetLogoRewriter()])
+        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, [netTango.rewriter])
       }
 
       window.addEventListener("message", function (e) {

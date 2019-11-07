@@ -185,8 +185,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     return
 
   setSpaceNetLogo: (space, canvasId) ->
-    space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', NetTangoController.formatCodeAttribute).trim()
-    space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', NetTangoController.formatDisplayAttribute).trim()
+    space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', NetTangoRewriter.formatCodeAttribute).trim()
+    space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', NetTangoRewriter.formatDisplayAttribute).trim()
 
   handleNetTangoEvent: (space, canvasId, event) ->
     space.defs.program.chains = NetTango.save(canvasId).program.chains
@@ -226,7 +226,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     @setSpaceNetLogo(space, canvasId)
 
     @fire('ntb-code-changed', {}, false)
-    @fire('ntb-run', {}, NetTangoController.createSpaceVariables(space).join(" "))
+    @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
     return
 
   # (NetTangoSpace) => Content
