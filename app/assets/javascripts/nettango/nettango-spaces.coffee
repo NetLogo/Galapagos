@@ -46,12 +46,13 @@ window.RactiveNetTangoSpaces = Ractive.extend({
 
   # (Boolean) => Unit
   updateCode: (isInitialLoad) ->
-    lastCode    = @get('lastCode')
-    newCode     = @assembleCode(displayOnly = false)
-    codeIsDirty = lastCode isnt newCode
-    @set('codeIsDirty', codeIsDirty)
+    lastCode     = @get('lastCode')
+    codeWasDirty = @get('codeIsDirty')
+    newCode      = @assembleCode(displayOnly = false)
+    codeChanged  = lastCode isnt newCode
+    @set('codeIsDirty', codeWasDirty or codeChanged)
     @set('code', @assembleCode(displayOnly = true))
-    if codeIsDirty
+    if codeChanged
       @set('lastCode', newCode)
       if not isInitialLoad
         @fire('ntb-code-dirty')
