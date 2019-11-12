@@ -195,7 +195,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
       when "block-changed"
         @fire('ntb-code-changed', {}, false)
       when "attribute-changed"
-        @updateAttributeValue(canvasId, event.blockId, event.instanceId, event.attributeId, event.value)
+        setCode = NetTangoRewriter.formatSetAttribute(canvasId, event.blockId, event.instanceId,
+                                                      event.attributeId, event.value)
+        @fire('ntb-run', setCode)
         @fire('ntb-code-changed', {}, false)
 
   # (NetTangoSpace) => Unit
@@ -246,11 +248,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
       name: "_",
       items: items
     }
-
-  updateAttributeValue: (ntCanvasId, blockId, instanceId, attributeId, value) ->
-    setCode = "nt:set \"__#{ntCanvasId}_#{blockId}_#{instanceId}_#{attributeId}\" (#{value})"
-    @fire("ntb-run", setCode)
-    return
 
   components: {
     labeledInput: RactiveTwoWayLabeledInput

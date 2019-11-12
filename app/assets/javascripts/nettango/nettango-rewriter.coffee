@@ -17,13 +17,18 @@ class window.NetTangoRewriter
     netTangoCode = @getNetTangoCode()
     "#{alteredCode}\n\n#{netTangoCode}\n"
 
+  @formatAttributeVariable: (canvasId, blockId, instanceId, attributeId) ->
+    return "\"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\""
+
   # (String, Int, Int, Int, Any) => String
   @formatSetAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
-    "nt:set \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\" (#{value})"
+    variableName = NetTangoRewriter.formatAttributeVariable(canvasId, blockId, instanceId, attributeId)
+    "nt:set #{variableName} (#{value})"
 
   # (String, Int, Int, Int, Any) => String
   @formatCodeAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
-    "(nt:get \"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\")"
+    variableName = NetTangoRewriter.formatAttributeVariable(canvasId, blockId, instanceId, attributeId)
+    "(nt:get #{variableName})"
 
   # (String, Int, Int, Int, Any) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
