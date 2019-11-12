@@ -76,7 +76,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     'ntb-apply-json-to-space': (_, space) ->
       newDefs = JSON.parse(space.defsJson)
       @set("space.defs", newDefs)
-      @updateNetTango(space)
+      @updateNetTango(space, false)
       return
 
     # (Context, NetTangoSpace) => Unit
@@ -296,7 +296,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
       {{# showJson }}
       <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
-       this ]" lazy />
+       this ]" />
       {{/ showJson }}
       {{/ !playMode }}
     </div>
