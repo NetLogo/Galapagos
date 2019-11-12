@@ -20,6 +20,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-json',  (_)              => @exportNetTango('json'))
     @ractive.on('*.ntb-import-json',  (local)          => @importNetTango(local.node.files))
     @ractive.on('*.ntb-load-data',    (_, data)        => @builder.load(data))
+    @ractive.on('*.ntb-errors',       (_, errors)      => @showErrors(errors))
     @ractive.on('*.ntb-run',          (_, command)     =>
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command))
@@ -327,4 +328,5 @@ class window.NetTangoController
   # (String) => Unit
   showErrors: (messages) ->
     display = @ractive.findComponent('errorDisplay')
-    display.show(messages.join("<br/>"))
+    message = "#{messages.map( (m) -> m.replace(/\n/g, "<br/>") ).join("<br/><br/>")}"
+    display.show(message)

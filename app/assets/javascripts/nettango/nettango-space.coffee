@@ -215,12 +215,18 @@ window.RactiveNetTangoSpace = Ractive.extend({
     else
       space.defs.program.chains.filter((ch) -> ch.length > 1)
 
-    NetTango.restore(canvasId, {
-      version:     space.defs.version,
-      blocks:      space.defs.blocks,
-      expressions: space.defs.expressions,
-      program:     { chains: newChains }
-    })
+    try
+      NetTango.restore(canvasId, {
+        version:     space.defs.version,
+        blocks:      space.defs.blocks,
+        expressions: space.defs.expressions,
+        program:     { chains: newChains }
+      })
+    catch ex
+      messages = [ ex.message ]
+      if ex.dartException.source? then messages.push(ex.dartException.source.message)
+      @fire('ntb-errors', {}, messages)
+      return
 
     netTangoData = NetTango.save(canvasId)
     @set("space.defs",     netTangoData)

@@ -20,7 +20,7 @@ window.RactiveErrorDisplay = Ractive.extend({
   template: """
     <div class="ntb-error-overlay" {{# !active }}hidden{{/}}>
       <div class="widget-edit-popup widget-edit-text ntb-error-content">
-        <div>{{{ message }}}</div>
+        <div class="ntb-error-message">{{{ message }}}</div>
         <input class="widget-edit-text" type="button" on-click="hide-alert" value="Close">
       </div>
     </div>

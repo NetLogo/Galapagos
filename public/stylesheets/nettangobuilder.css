@@ -383,3 +383,8 @@ body#ntp-body, html#ntp-body {
   padding: 10px;
   position: relative;
 }
+
+.ntb-error-message {
+  text-align: left;
+  white-space: pre-wrap;
+}
