@@ -225,7 +225,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     catch ex
       messages = [ ex.message ]
       if ex.dartException.source? then messages.push(ex.dartException.source.message)
-      @fire('ntb-errors', {}, messages)
+      @fire('ntb-errors', {}, messages, ex.stack)
       return
 
     netTangoData = NetTango.save(canvasId)

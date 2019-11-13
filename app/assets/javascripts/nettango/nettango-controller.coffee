@@ -12,16 +12,16 @@ class window.NetTangoController
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
     Ractive.components.attribute = RactiveNetTangoAttribute
 
-    @ractive.on('*.ntb-save',         (_, code)        => @exportNetTango('storage'))
-    @ractive.on('*.ntb-recompile',    (_, code)        => @setNetTangoCode(code))
-    @ractive.on('*.ntb-model-change', (_, title, code) => @setNetLogoCode(title, code))
-    @ractive.on('*.ntb-code-dirty',   (_)              => @markCodeDirty())
-    @ractive.on('*.ntb-export-page',  (_)              => @exportNetTango('standalone'))
-    @ractive.on('*.ntb-export-json',  (_)              => @exportNetTango('json'))
-    @ractive.on('*.ntb-import-json',  (local)          => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-data',    (_, data)        => @builder.load(data))
-    @ractive.on('*.ntb-errors',       (_, errors)      => @showErrors(errors))
-    @ractive.on('*.ntb-run',          (_, command)     =>
+    @ractive.on('*.ntb-save',         (_, code)               => @exportNetTango('storage'))
+    @ractive.on('*.ntb-recompile',    (_, code)               => @setNetTangoCode(code))
+    @ractive.on('*.ntb-model-change', (_, title, code)        => @setNetLogoCode(title, code))
+    @ractive.on('*.ntb-code-dirty',   (_)                     => @markCodeDirty())
+    @ractive.on('*.ntb-export-page',  (_)                     => @exportNetTango('standalone'))
+    @ractive.on('*.ntb-export-json',  (_)                     => @exportNetTango('json'))
+    @ractive.on('*.ntb-import-json',  (local)                 => @importNetTango(local.node.files))
+    @ractive.on('*.ntb-load-data',    (_, data)               => @builder.load(data))
+    @ractive.on('*.ntb-errors',       (_, errors, stackTrace) => @showErrors(errors, stackTrace))
+    @ractive.on('*.ntb-run',          (_, command)            =>
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command))
 
@@ -326,7 +326,7 @@ class window.NetTangoController
     return
 
   # (String) => Unit
-  showErrors: (messages) ->
+  showErrors: (messages, stackTrace) ->
     display = @ractive.findComponent('errorDisplay')
     message = "#{messages.map( (m) -> m.replace(/\n/g, "<br/>") ).join("<br/><br/>")}"
-    display.show(message)
+    display.show(message, stackTrace)

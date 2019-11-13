@@ -388,3 +388,16 @@ body#ntp-body, html#ntp-body {
   text-align: left;
   white-space: pre-wrap;
 }
+
+.ntb-error-stack-label {
+  margin: 10px 0 2px 0;
+  text-align: left;
+  font-size: small;
+}
+
+.ntb-error-stack {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
