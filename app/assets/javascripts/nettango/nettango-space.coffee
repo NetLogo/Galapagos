@@ -74,7 +74,13 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
     # (Context, NetTangoSpace) => Unit
     'ntb-apply-json-to-space': (_, space) ->
-      newDefs = JSON.parse(space.defsJson)
+      try
+        newDefs = JSON.parse(space.defsJson)
+      catch ex
+        messages = [ "Failed to parse the given JSON for loading.", ex.message ]
+        @fire('ntb-errors', {}, messages, ex.stack)
+        return
+
       @set("space.defs", newDefs)
       @updateNetTango(space, false)
       return
