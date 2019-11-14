@@ -24,9 +24,7 @@ window.RactiveErrorDisplay = Ractive.extend({
     """
     <div class="ntb-error-overlay" {{# !active }}hidden{{/}}>
       <div class="widget-edit-popup widget-edit-text ntb-error-content">
-        <div class="ntb-error-message">
-          An error occurred. {{{ message }}}
-        </div>
+        <div class="ntb-error-message">{{{ message }}}</div>
         {{# stackTrace }}
           <p class="ntb-error-stack-label">Advanced users might find the generated error helpful, which is as follows:</p>
           <textarea class="ntb-error-stack" readonly value="{{ stackTrace }}" />
