@@ -3,10 +3,12 @@ class window.NetTangoRewriter
   constructor: (@compileComplete, @getNetTangoCode) ->
     return
 
-  injectCode:      (code)  =>
+  # (String) => String
+  injectCode: (code)  =>
     @rewriteNetLogoCode(code)
 
-  injectNlogo:     (nlogo) =>
+  # (String) => String
+  injectNlogo: (nlogo) =>
     sections    = Tortoise.nlogoToSections(nlogo)
     sections[0] = @rewriteNetLogoCode(sections[0])
     Tortoise.sectionsToNlogo(sections)
@@ -17,6 +19,7 @@ class window.NetTangoRewriter
     netTangoCode = @getNetTangoCode()
     "#{alteredCode}\n\n#{netTangoCode}\n"
 
+  # (Sring, Int, Int, Int) => String
   @formatAttributeVariable: (canvasId, blockId, instanceId, attributeId) ->
     return "\"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\""
 
