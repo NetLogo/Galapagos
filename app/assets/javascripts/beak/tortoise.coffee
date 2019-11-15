@@ -134,7 +134,7 @@ handleCompilation = (nlogo, callback, load, rewriters) ->
   onFailure = reportCompilerError(load)
 
   compiler       = (new BrowserCompiler())
-  rewriter       = (newCode, rw) -> rw.injectNlogo?(newCode)
+  rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   result         = compiler.fromNlogo(rewrittenNlogo, [])
 

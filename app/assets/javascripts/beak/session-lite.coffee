@@ -135,7 +135,7 @@ class window.SessionLite
     return
 
   rewriteCode: (code, widgets) ->
-    rewriter = (newCode, rw) -> rw.injectCode?(newCode)
+    rewriter = (newCode, rw) -> if rw.injectCode? then rw.injectCode(newCode) else newCode
     @rewriters.reduce(rewriter, code)
 
   rewriteErrors: (original, rewritten, errors) ->
