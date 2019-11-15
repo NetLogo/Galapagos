@@ -19,6 +19,23 @@ class window.NetTangoRewriter
     netTangoCode = @getNetTangoCode()
     "#{alteredCode}\n\n#{netTangoCode}\n"
 
+  # (String, String, Array[Error]) => Array[Error]
+  updateErrors: (original, rewritten, errors) ->
+    errors.map( (error) ->
+      declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(original)
+      if (not declaration?)
+        error.lineNumber = error.lineNumber - 1
+
+      if error.lineNumber > original.split("\n").length
+        # the line number is meaningless if it's NetTango injected code causing the error
+        delete error.lineNumber
+        # coffeelint: disable=max_line_length
+        error.message = "The blocks code contains an error and cannot be compiled.  You can try undoing the last block change or checking the error message to try to locate the problem.<br/><br/>The error message is: #{error.message}"
+        # coffeelint: enable=max_line_length
+
+      return error
+    )
+
   # (Sring, Int, Int, Int) => String
   @formatAttributeVariable: (canvasId, blockId, instanceId, attributeId) ->
     return "\"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\""
@@ -63,15 +80,16 @@ class window.NetTangoRewriter
   @createSpacesVariables: (spaces) ->
     spaces.flatMap( NetTangoRewriter.createSpaceVariables )
 
+  @extensionsDeclarationCheck: /([\s\S]*^\s*extensions(?:\s|;.*\n)*\[)([\s\S]*)/mgi
+  @netTangoExtensionCheck: /^\s*extensions(?:\s|;.*\n)*\[(?:\s|;.*\n|\w+)*\bnt\b/mgi
+
   # (String) => String
   @addNetTangoExtension: (code) ->
-    declarationCheck = /([\s\S]*^\s*extensions(?:\s|;.*\n)*\[)([\s\S]*)/mgi
-    declaration = declarationCheck.exec(code)
+    declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(code)
     if (not declaration?)
       return "extensions [ nt ]\n#{code}"
 
-    extensionCheck = /^\s*extensions(?:\s|;.*\n)*\[(?:\s|;.*\n|\w+)*\bnt\b/mgi
-    extension = extensionCheck.test(code)
+    extension = NetTangoRewriter.netTangoExtensionCheck.test(code)
     if (extension)
       return code
 
