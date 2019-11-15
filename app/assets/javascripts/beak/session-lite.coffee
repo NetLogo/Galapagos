@@ -138,6 +138,17 @@ class window.SessionLite
     rewriter = (newCode, rw) -> rw.injectCode?(newCode)
     @rewriters.reduce(rewriter, code)
 
+  rewriteErrors: (original, rewritten, errors) ->
+    errors = errors.map( (r) =>
+      r.lineNumber = rewritten.slice(0, r.start).split("\n").length
+      r
+    )
+    rewriter = (newErrors, rw) -> if rw.updateErrors?
+      rw.updateErrors(original, rewritten, newErrors)
+    else
+      newErrors
+    @rewriters.reduce(rewriter, errors)
+
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
@@ -167,8 +178,8 @@ class window.SessionLite
 
         else
           @widgetController.ractive.set('lastCompileFailed', true)
-          res.model.result.forEach( (r) => r.lineNumber = rewritten.slice(0, r.start).split("\n").length )
-          @alertCompileError(res.model.result)
+          errors = @rewriteErrors(code, rewritten, res.model.result)
+          @alertCompileError(errors)
 
     Tortoise.startLoading(=>
       codeCompile(
