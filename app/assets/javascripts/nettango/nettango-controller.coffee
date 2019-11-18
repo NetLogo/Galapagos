@@ -21,9 +21,9 @@ class window.NetTangoController
     @ractive.on('*.ntb-import-json',  (local)                 => @importNetTango(local.node.files))
     @ractive.on('*.ntb-load-data',    (_, data)               => @builder.load(data))
     @ractive.on('*.ntb-errors',       (_, errors, stackTrace) => @showErrors(errors, stackTrace))
-    @ractive.on('*.ntb-run',          (_, command)            =>
+    @ractive.on('*.ntb-run',          (_, command, errorLog)  =>
       if (@theOutsideWorld.sessionReady())
-        @theOutsideWorld.getWidgetController().ractive.fire("run", command))
+        @theOutsideWorld.getWidgetController().ractive.fire("run", command, errorLog))
 
   # () => Ractive
   getTestingDefaults: () ->

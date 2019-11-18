@@ -301,10 +301,12 @@ class window.SessionLite
   # (String, (Array[String]) => Unit) => Unit
   run: (code, errorLog) ->
 
-    compileErrorLog = (result) => @alertCompileError(result, errorLog)
-
     Tortoise.startLoading()
     rewritten = @rewriteCode(@widgetController.code())
+    compileErrorLog = (result) =>
+      errors = @rewriteErrors(code, rewritten, result)
+      @alertCompileError(errors, errorLog)
+
     codeCompile(rewritten, [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
         if modelSuccess

@@ -208,7 +208,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       when "attribute-changed"
         setCode = NetTangoRewriter.formatSetAttribute(canvasId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
-        @fire('ntb-run', setCode)
+        @fire('ntb-run', setCode, @squelch)
         @fire('ntb-code-changed', {}, false)
 
   # (NetTangoSpace) => Unit
@@ -270,6 +270,9 @@ window.RactiveNetTangoSpace = Ractive.extend({
       name: "_",
       items: items
     }
+
+  squelch: (error) ->
+    console.log(error)
 
   components: {
     labeledInput: RactiveTwoWayLabeledInput
