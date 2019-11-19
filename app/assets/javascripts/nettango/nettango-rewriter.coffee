@@ -86,10 +86,12 @@ class window.NetTangoRewriter
   # (String) => String
   @addNetTangoExtension: (code) ->
     declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(code)
+    NetTangoRewriter.extensionsDeclarationCheck.lastIndex = 0
     if (not declaration?)
       return "extensions [ nt ]\n#{code}"
 
     extension = NetTangoRewriter.netTangoExtensionCheck.test(code)
+    NetTangoRewriter.netTangoExtensionCheck.lastIndex = 0
     if (extension)
       return code
 
