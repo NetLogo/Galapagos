@@ -16,16 +16,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
     'render': (_) ->
       space = @get('space')
       @initNetTango(space)
-      canvasId = @getNetTangoCanvasId(space)
-      @setSpaceNetLogo(space, canvasId)
-
-      NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
-        if (@get('space')?)
-          # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
-          s = @get('space')
-          @handleNetTangoEvent(s, ntCanvasId, event)
-        return
-      )
 
       @fire('ntb-code-changed', {}, true)
 
@@ -188,11 +178,26 @@ window.RactiveNetTangoSpace = Ractive.extend({
     canvas.height = space.height
     canvas.width  = space.width
 
-    NetTango.init(canvasId, space.defs)
+    try
+      NetTango.init(canvasId, space.defs)
+    catch ex
+      @handleNetTangoError(ex)
+      return
 
     netTangoData = NetTango.save(canvasId)
     @set("space.defs",     netTangoData)
-    @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+    @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
+
+    canvasId = @getNetTangoCanvasId(space)
+    @setSpaceNetLogo(space, canvasId)
+
+    NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
+      if (@get('space')?)
+        # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
+        s = @get('space')
+        @handleNetTangoEvent(s, ntCanvasId, event)
+      return
+    )
     return
 
   setSpaceNetLogo: (space, canvasId) ->
@@ -234,23 +239,27 @@ window.RactiveNetTangoSpace = Ractive.extend({
         program:     { chains: newChains }
       })
     catch ex
-      # coffeelint: disable=max_line_length
-      messages = [
-          "An error occurred setting up a NetTango workspace.  If this happened during normal use, then this is a bug.  If this happened while trying to load workspaces, the workspace data may have been improperly modified in some way.  See the error message for more information."
-        , ex.message
-      ]
-      # coffeelint: enable=max_line_length
-      if ex.dartException.source? then messages.push(ex.dartException.source.message)
-      @fire('ntb-errors', {}, messages, ex.stack)
+      @handleNetTangoError(ex)
       return
 
     netTangoData = NetTango.save(canvasId)
     @set("space.defs",     netTangoData)
-    @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
+    @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
     @setSpaceNetLogo(space, canvasId)
 
     @fire('ntb-code-changed', {}, false)
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
+    return
+
+  handleNetTangoError: (ex) ->
+    # coffeelint: disable=max_line_length
+    messages = [
+        "An error occurred setting up a NetTango workspace.  If this happened during normal use, then this is a bug.  If this happened while trying to load workspaces, the workspace data may have been improperly modified in some way.  See the error message for more information."
+      , ex.message
+    ]
+    # coffeelint: enable=max_line_length
+    if ex.dartException.source? then messages.push(ex.dartException.source.message)
+    @fire('ntb-errors', {}, messages, ex.stack)
     return
 
   # (NetTangoSpace) => Content
