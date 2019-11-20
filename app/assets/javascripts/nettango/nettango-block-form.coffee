@@ -51,6 +51,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
   _setBlock: (sourceBlock) ->
     # Copy so we drop any uncommitted changes - JMB August 2018
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
+    block.id = sourceBlock.id
 
     block.builderType =
       if      (block.type is "nlogo:procedure" or (block.start and not block.control))
@@ -86,7 +87,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     block = { }
 
     [ 'action', 'format', 'required', 'limit', 'blockColor',
-      'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+      'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
 
