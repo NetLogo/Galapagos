@@ -14,6 +14,7 @@ copyAttributes = (b, attributeType) ->
 # (NetTangoBlock) => NetTangoBlock
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
+  delete copy.id
   copy.params     = copyAttributes(block, 'params')
   copy.properties = copyAttributes(block, 'properties')
 
