@@ -820,11 +820,15 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. (2002).  NetLogo HubNet Predator Prey Game HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetPredatorPreyGameHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Wilensky, U. (2002).  NetLogo Predator Prey Game HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetPredatorPreyGameHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
 * Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+
+Please cite the HubNet software as:
+
+* Wilensky, U. & Stroup, W. (1999). HubNet. http://ccl.northwestern.edu/netlogo/hubnet.html. Center for Connected Learning and Computer-Based Modeling, Northwestern University. Evanston, IL.
 
 ## COPYRIGHT AND LICENSE
 
@@ -1036,7 +1040,7 @@ Rectangle -16777216 true false 189 260 210 270
 Line -16777216 false 263 127 281 155
 Line -16777216 false 281 155 281 192
 @#$#@#$#@
-NetLogo 6.1.0
+NetLogo 6.1.1
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -872,10 +872,10 @@ NIL
 1
 
 TEXTBOX
-133
-390
-428
-423
+103
+391
+383
+425
 Press Play to Start |>
 24
 0.0
@@ -971,9 +971,9 @@ The model was originally built for use on a 52-inch touch pad in a museum. If yo
 
 ## RELATED MODELS
 
-This model extends the NetLogo Ants (Wilensky, 1997) and is based on Holldobler and Wilson's The Ants (1990).
+This model extends the NetLogo Ants (Wilensky, 1997) and is based on Hölldobler and Wilson's The Ants (1990).
 
-Holldobler, B., & Wilson, E. O. (1990). The Ants. Belknap (Harvard University Press), Cambridge, MA.
+Hölldobler, B., & Wilson, E. O. (1990). The Ants. Belknap (Harvard University Press), Cambridge, MA.
 
 ## ACKNOWLEDGMENTS
 
@@ -1853,7 +1853,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.0
+NetLogo 6.1.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
