@@ -114,9 +114,11 @@ window.RactiveInput = RactiveWidget.extend({
 
       # Scroll to bottom on value change --JAB (8/17/16)
       @observe('widget.currentValue'
-      , (newValue) =>
+      , (newValue, oldValue) =>
 
           @scrollToBottom(newValue)
+
+          @validateValue(newValue, oldValue)
 
           return
 
@@ -124,6 +126,7 @@ window.RactiveInput = RactiveWidget.extend({
 
   }
 
+  # (String) => Unit
   scrollToBottom: (newValue) ->
     elem = @find('.netlogo-multiline-input')
     if elem?
@@ -131,6 +134,39 @@ window.RactiveInput = RactiveWidget.extend({
       setTimeout(scrollToBottom, 0)
 
     @findComponent('editor')?.setCode(newValue)
+    return
+
+  # (String, String|Number, String|Number) => Unit
+  resetValue: (type, oldValue, defaultValue) ->
+    # Make sure the oldValue is of the right type to avoid infinite reset loops -JMB November 2019
+    newValue = if typeof(oldValue) isnt type then defaultValue else oldValue
+    @set("widget.currentValue", newValue)
+    @fire("set-global", @get("widget.variable"), newValue)
+
+  # Without this fix if you set a string input global to a number or vice versa then NLW will not let you make further
+  # code changes, as the compiler blows up when trying to parse the now-invalid input widget, which is very bad.
+
+  # This kind of type checking should probably not be handled here.  It would be better to catch this during the
+  # update of the global and to throw a simple runtime error there.  But at the moment there isn't a clean way to get
+  # the input widget types for checking in the engine.
+
+  # So this is a temporary workaround to avoid getting into the unfixable state. It should be removed once setting a
+  # global defined by an input widget can't be set to avalue of the wrong type. -Jeremy B November 2019
+
+  # (String|Number, String|Number) => Unit
+  validateValue: (newValue, oldValue) ->
+    inputType = @get("widget.boxedValue.type")
+    valueType = typeof(newValue)
+
+    if ([ "Color", "Number" ].includes(inputType) and valueType isnt "number")
+      @resetValue("number", oldValue, 0)
+      return
+
+    if (inputType.startsWith("String") and valueType isnt "string")
+      @resetValue("string", oldValue, "")
+      return
+
+    return
 
   minWidth:  70
   minHeight: 43

@@ -64,6 +64,7 @@ class window.SessionLite
     @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
     @widgetController.ractive.on('*.run'           , (_, code, errorLog) => @run(code, errorLog))
+    @widgetController.ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -297,6 +298,11 @@ class window.SessionLite
         workspace.dump(x)
 
     window.runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
+
+  # (String, Any) => Unit
+  setGlobal: (varName, value) ->
+    world.observer.setGlobal(varName, value)
+    return
 
   # (String, (Array[String]) => Unit) => Unit
   run: (code, errorLog) ->
