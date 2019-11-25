@@ -1,6 +1,6 @@
 class window.NetTangoRewriter
 
-  constructor: (@compileComplete, @getNetTangoCode) ->
+  constructor: (@getNetTangoCode, @getNetTangoSpaces) ->
     return
 
   # (String) => String
@@ -12,6 +12,11 @@ class window.NetTangoRewriter
     sections    = Tortoise.nlogoToSections(nlogo)
     sections[0] = @rewriteNetLogoCode(sections[0])
     Tortoise.sectionsToNlogo(sections)
+
+  # () => Array[String]
+  getExtraCommands: () =>
+    spaces = @getNetTangoSpaces()
+    NetTangoRewriter.createSpacesVariables(spaces)
 
   # (String) => String
   rewriteNetLogoCode: (code) ->

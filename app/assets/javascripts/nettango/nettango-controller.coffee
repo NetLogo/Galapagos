@@ -2,7 +2,8 @@ class window.NetTangoController
 
   constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld) ->
     @storage  = new NetTangoStorage(localStorage)
-    @rewriter = new NetTangoRewriter(@updateAttributeValues, @getNetTangoCode)
+    getSpaces = () => @ractive.findComponent('tangoDefs').get("spaces")
+    @rewriter = new NetTangoRewriter(@getNetTangoCode, getSpaces)
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
@@ -180,14 +181,6 @@ class window.NetTangoController
       widgets = widgetController.ractive.get('widgetObj')
       @rerunForevers(widgets)
     )
-    return
-
-  # () => Unit
-  updateAttributeValues: () =>
-    widgetController  = @theOutsideWorld.getWidgetController()
-    defs              = @ractive.findComponent('tangoDefs')
-    attributeCommands = NetTangoRewriter.createSpacesVariables(defs.get("spaces")).join(" ")
-    widgetController.ractive.fire("run", attributeCommands)
     return
 
   # (String, String) => Unit

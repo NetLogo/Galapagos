@@ -139,6 +139,10 @@ class window.SessionLite
     rewriter = (newCode, rw) -> if rw.injectCode? then rw.injectCode(newCode) else newCode
     @rewriters.reduce(rewriter, code)
 
+  rewriterCommands: () ->
+    extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
+    @rewriters.reduce(extrasReducer, [])
+
   rewriteErrors: (original, rewritten, errors) ->
     errors = errors.map( (r) =>
       r.lineNumber = rewritten.slice(0, r.start).split("\n").length
@@ -153,9 +157,10 @@ class window.SessionLite
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
-    code       = @widgetController.code()
-    oldWidgets = @widgetController.widgets()
-    rewritten  = @rewriteCode(code)
+    code          = @widgetController.code()
+    oldWidgets    = @widgetController.widgets()
+    rewritten     = @rewriteCode(code)
+    extraCommands = @rewriterCommands()
 
     onCompile =
       (res) =>
@@ -175,6 +180,7 @@ class window.SessionLite
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
           successCallback()
+          res.commands.forEach((c) -> if c.success then (new Function(c.result))())
           @rewriters.forEach((rw) -> rw.compileComplete?())
 
         else
@@ -184,7 +190,7 @@ class window.SessionLite
 
     Tortoise.startLoading(=>
       codeCompile(
-        rewritten, [], [], oldWidgets, onCompile,
+        rewritten, extraCommands, [], oldWidgets, onCompile,
         (result) => @alertCompileError(result, @alertErrors)
       )
     )

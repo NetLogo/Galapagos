@@ -130,13 +130,16 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
 handleCompilation = (nlogo, callback, load, rewriters) ->
   onSuccess = (input, lastCompileFailed) ->
     callback(openSession(load, rewriters)(input, lastCompileFailed))
+    input.commands.forEach((c) -> if c.success then (new Function(c.result))())
     rewriters.forEach((rw) -> rw.compileComplete?())
   onFailure = reportCompilerError(load)
 
   compiler       = (new BrowserCompiler())
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
-  result         = compiler.fromNlogo(rewrittenNlogo, [])
+  extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
+  extraCommands  = rewriters.reduce(extrasReducer, [])
+  result         = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
