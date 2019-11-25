@@ -135,14 +135,17 @@ class window.SessionLite
       @recompile(successCallback)
     return
 
-  rewriteCode: (code, widgets) ->
+  # (String) => String
+  rewriteCode: (code) ->
     rewriter = (newCode, rw) -> if rw.injectCode? then rw.injectCode(newCode) else newCode
     @rewriters.reduce(rewriter, code)
 
+  # () => Array[String]
   rewriterCommands: () ->
     extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
     @rewriters.reduce(extrasReducer, [])
 
+  # (String, String, Array[String])
   rewriteErrors: (original, rewritten, errors) ->
     errors = errors.map( (r) =>
       r.lineNumber = rewritten.slice(0, r.start).split("\n").length
