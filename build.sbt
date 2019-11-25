@@ -68,6 +68,7 @@ scrapeRoutes ++= Seq(
   "/docs/authoring",
   "/docs/differences",
   "/docs/faq",
+  "/docs/attributions",
   "/whats-new",
   "/model/list.json",
   "/model/statuses.json",

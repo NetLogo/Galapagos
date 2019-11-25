@@ -24,12 +24,13 @@ class Application @Inject() ( assets: Assets
   private implicit val mode = environment.mode
 
   // scalastyle:off public.methods.have.type
-  def authoring   = themedPage((_)   => views.html.authoring()    , "NetLogo Web Docs - Authoring", "../")
-  def differences = themedPage((_)   => views.html.differences()  , "NetLogo Web vs. NetLogo"     , "../", None            , codeMirrorHtml)
-  def faq         = themedPage((req) => views.html.faq()(req)     , "NetLogo Web FAQ"             , "../")
-  def index       = themedPage((req) => views.html.index()(req)   , "NetLogo Web")
-  def serverError = themedPage((_)   => views.html.serverError()  , "NetLogo Web - Error")
-  def whatsNew    = themedPage((req) => views.html.whatsNew()(req), "What's New in NetLogo Web"   , ""   , Option("updates"))
+  def authoring    = themedPage((_)   => views.html.authoring()    , "NetLogo Web Docs - Authoring", "../")
+  def differences  = themedPage((_)   => views.html.differences()  , "NetLogo Web vs. NetLogo"     , "../", None            , codeMirrorHtml)
+  def faq          = themedPage((req) => views.html.faq()(req)     , "NetLogo Web FAQ"             , "../")
+  def attributions = themedPage((_)   => views.html.attributions() , "NetLogo Web Attributions"    , "../")
+  def index        = themedPage((req) => views.html.index()(req)   , "NetLogo Web")
+  def serverError  = themedPage((_)   => views.html.serverError()  , "NetLogo Web - Error")
+  def whatsNew     = themedPage((req) => views.html.whatsNew()(req), "What's New in NetLogo Web"   , ""   , Option("updates"))
   // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {

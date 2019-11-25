@@ -1,7 +1,7 @@
-<div>"Cross", "checked", and "caution" icons made by <a href="http://RamiMcM.in" title="Rami McMin">Rami McMin</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>.  The full gallery is available <a href="http://www.flaticon.com/packs/justicons/">here</a>.
+"Cross", "checked", and "caution" icons made by [Rami McMin](http://RamiMcM.in) from [Flaticon](http://www.flaticon.com) is licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).  The full gallery is available [here](http://www.flaticon.com/packs/justicons/).
 
-<div>"Repeat" icon made by <a href="http://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>.  The full gallery is available <a href="http://www.flaticon.com/packs/font-awesome/">here</a>.
+"Repeat" icon made by [Dave Gandy](http://www.flaticon.com/authors/dave-gandy) from [Flaticon](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).  The full gallery is available [here](http://www.flaticon.com/packs/font-awesome/).
 
-<div>"Open lock" and "closed lock" icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+"Open lock" and "closed lock" icons made by [Freepik](http://www.freepik.com) from [Flaticon](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
 
-<div>"Copy" icon made by <a href="https://linhpham.me/miu/" title="Linh Pham">Linh Pham</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+"Copy" icon made by [Linh Pham](https://linhpham.me/miu/) from [Flaticon](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
