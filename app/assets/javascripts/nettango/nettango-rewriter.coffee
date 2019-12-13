@@ -42,17 +42,17 @@ class window.NetTangoRewriter
     )
 
   # (Sring, Int, Int, Int) => String
-  @formatAttributeVariable: (canvasId, blockId, instanceId, attributeId) ->
-    return "\"__#{canvasId}_#{blockId}_#{instanceId}_#{attributeId}\""
+  @formatAttributeVariable: (containerId, blockId, instanceId, attributeId) ->
+    return "\"__#{containerId}_#{blockId}_#{instanceId}_#{attributeId}\""
 
   # (String, Int, Int, Int, Any) => String
-  @formatSetAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(canvasId, blockId, instanceId, attributeId)
+  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value) ->
+    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
     "nt:set #{variableName} (#{value})"
 
   # (String, Int, Int, Int, Any) => String
-  @formatCodeAttribute: (canvasId, blockId, instanceId, attributeId, value) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(canvasId, blockId, instanceId, attributeId)
+  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value) ->
+    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
     "(nt:get #{variableName})"
 
   # (String, Int, Int, Int, Any) => String

@@ -165,66 +165,66 @@ window.RactiveNetTangoSpace = Ractive.extend({
     overlay.classList.add('ntb-block-edit-overlay')
     return
 
-  getNetTangoCanvasId: (space) ->
+  getNetTangoContainerId: (space) ->
     "#{space.spaceId}-canvas"
 
-  getNetTangoCanvas: (canvasId) ->
-    @find("##{canvasId}")
+  getNetTangoCanvas: (containerId) ->
+    @find("##{containerId}")
 
   # (NetTangoSpace) => Unit
   initNetTango: (space) ->
-    canvasId      = @getNetTangoCanvasId(space)
-    canvas        = @getNetTangoCanvas(canvasId)
+    containerId      = @getNetTangoContainerId(space)
+    canvas        = @getNetTangoCanvas(containerId)
     canvas.height = space.height
     canvas.width  = space.width
 
     try
-      NetTango.init(canvasId, space.defs)
+      NetTango.init(containerId, space.defs)
     catch ex
       @handleNetTangoError(ex)
       return
 
-    netTangoData = NetTango.save(canvasId)
+    netTangoData = NetTango.save(containerId)
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
 
-    canvasId = @getNetTangoCanvasId(space)
-    @setSpaceNetLogo(space, canvasId)
+    containerId = @getNetTangoContainerId(space)
+    @setSpaceNetLogo(space, containerId)
 
-    NetTango.onProgramChanged(canvasId, (ntCanvasId, event) =>
+    NetTango.onProgramChanged(containerId, (ntContainerId, event) =>
       if (@get('space')?)
         # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
         s = @get('space')
-        @handleNetTangoEvent(s, ntCanvasId, event)
+        @handleNetTangoEvent(s, ntContainerId, event)
       return
     )
     return
 
-  setSpaceNetLogo: (space, canvasId) ->
-    space.netLogoCode    = NetTango.exportCode(canvasId, 'NetLogo', NetTangoRewriter.formatCodeAttribute).trim()
-    space.netLogoDisplay = NetTango.exportCode(canvasId, 'NetLogo', NetTangoRewriter.formatDisplayAttribute).trim()
+  setSpaceNetLogo: (space, containerId) ->
+    space.netLogoCode    = NetTango.exportCode(containerId, 'NetLogo', NetTangoRewriter.formatCodeAttribute).trim()
+    space.netLogoDisplay = NetTango.exportCode(containerId, 'NetLogo', NetTangoRewriter.formatDisplayAttribute).trim()
 
-  handleNetTangoEvent: (space, canvasId, event) ->
-    space.defs.program.chains = NetTango.save(canvasId).program.chains
-    @setSpaceNetLogo(space, canvasId)
+  handleNetTangoEvent: (space, containerId, event) ->
+    space.defs.program.chains = NetTango.save(containerId).program.chains
+    @setSpaceNetLogo(space, containerId)
     switch event.type
       when "block-changed"
         @fire('ntb-code-changed', {}, false)
       when "attribute-changed"
-        setCode = NetTangoRewriter.formatSetAttribute(canvasId, event.blockId, event.instanceId,
+        setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
         @fire('ntb-run', setCode, @squelch)
         @fire('ntb-code-changed', {}, false)
 
   # (NetTangoSpace) => Unit
   updateNetTango: (space, keepOldChains = true) ->
-    canvasId      = @getNetTangoCanvasId(space)
-    canvas        = @getNetTangoCanvas(canvasId)
+    containerId      = @getNetTangoContainerId(space)
+    canvas        = @getNetTangoCanvas(containerId)
     canvas.height = space.height
     canvas.width  = space.width
 
     newChains = if (keepOldChains)
-      old = NetTango.save(canvasId)
+      old = NetTango.save(containerId)
       # NetTango includes "empty" procedures as code with the save, but those cause ghost blocks when we change things
       # and reload, so we clear them out -JMB August 2018
       old.program.chains.filter((ch) -> ch.length > 1)
@@ -232,7 +232,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space.defs.program.chains.filter((ch) -> ch.length > 1)
 
     try
-      NetTango.restore(canvasId, {
+      NetTango.restore(containerId, {
         version:     space.defs.version,
         blocks:      space.defs.blocks,
         expressions: space.defs.expressions,
@@ -242,10 +242,10 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @handleNetTangoError(ex)
       return
 
-    netTangoData = NetTango.save(canvasId)
+    netTangoData = NetTango.save(containerId)
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
-    @setSpaceNetLogo(space, canvasId)
+    @setSpaceNetLogo(space, containerId)
 
     @fire('ntb-code-changed', {}, false)
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
@@ -310,7 +310,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       </div>
 
       <div class="nt-container" id="{{ spaceId }}" >
-        <canvas id="{{ spaceId }}-canvas" class="nt-canvas" />
+        <div id="{{ spaceId }}-canvas" class="nt-canvas" />
       </div>
 
       {{# !playMode }}
