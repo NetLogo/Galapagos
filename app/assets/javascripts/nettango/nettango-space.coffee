@@ -168,15 +168,11 @@ window.RactiveNetTangoSpace = Ractive.extend({
   getNetTangoContainerId: (space) ->
     "#{space.spaceId}-canvas"
 
-  getNetTangoCanvas: (containerId) ->
-    @find("##{containerId}")
-
   # (NetTangoSpace) => Unit
   initNetTango: (space) ->
-    containerId      = @getNetTangoContainerId(space)
-    canvas        = @getNetTangoCanvas(containerId)
-    canvas.height = space.height
-    canvas.width  = space.width
+    containerId = @getNetTangoContainerId(space)
+    space.defs.height = space.height
+    space.defs.width  = space.width
 
     try
       NetTango.init(containerId, space.defs)
@@ -218,22 +214,18 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   # (NetTangoSpace) => Unit
   updateNetTango: (space, keepOldChains = true) ->
-    containerId      = @getNetTangoContainerId(space)
-    canvas        = @getNetTangoCanvas(containerId)
-    canvas.height = space.height
-    canvas.width  = space.width
+    containerId = @getNetTangoContainerId(space)
 
     newChains = if (keepOldChains)
-      old = NetTango.save(containerId)
-      # NetTango includes "empty" procedures as code with the save, but those cause ghost blocks when we change things
-      # and reload, so we clear them out -JMB August 2018
-      old.program.chains.filter((ch) -> ch.length > 1)
+      NetTango.save(containerId).program.chains
     else
-      space.defs.program.chains.filter((ch) -> ch.length > 1)
+      space.defs.program.chains
 
     try
       NetTango.restore(containerId, {
         version:     space.defs.version,
+        height:      space.height,
+        width:       space.width,
         blocks:      space.defs.blocks,
         expressions: space.defs.expressions,
         program:     { chains: newChains }
@@ -309,7 +301,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
       </div>
 
-      <div class="nt-container" id="{{ spaceId }}" >
+      <div id="{{ spaceId }}" >
         <div id="{{ spaceId }}-canvas" class="nt-canvas" />
       </div>
 
