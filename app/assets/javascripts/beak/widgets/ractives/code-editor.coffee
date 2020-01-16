@@ -131,10 +131,10 @@ window.RactiveModelCodeComponent = Ractive.extend({
     selectedCode = editor.getSelection().trim()
     @set('selectedCode', selectedCode)
     codeString = @get('code')
-    check = ///\b(#{selectedCode})\b///g
+    check = new RegExp(selectedCode, "gm")
     codeUsage = []
     while (match = check.exec(codeString))
-      pos        = editor.posFromIndex(match.index + match[1].length)
+      pos        = editor.posFromIndex(match.index)
       lineNumber = pos.line + 1
       line       = editor.getLine(pos.line)
       codeUsage.push( { pos, lineNumber, line } )
@@ -166,7 +166,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
       editor = @findComponent('codeEditor').getEditor()
       selectedCode = @get('selectedCode')
       end = usagePos
-      start = CodeMirror.Pos(end.line, end.ch - selectedCode.length)
+      start = CodeMirror.Pos(end.line, end.ch + selectedCode.length)
       editor.setSelection(start, end)
       @set('usageVisibility', false)
       return
