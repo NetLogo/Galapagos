@@ -19,9 +19,11 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
-GET         /ntango-build                       controllers.Local.ntangoBuild
-GET         /ntango-play                        controllers.Local.ntangoPlay(standalone="false")
-GET         /ntango-play-standalone             controllers.Local.ntangoPlay(standalone="true")
+
+# NetTango
+GET         /ntango-build                       controllers.Local.ntangoBuild(themed: Boolean = false, standalone: Boolean = false)
+GET         /ntango-play                        controllers.Local.ntangoBuild(themed: Boolean = true,  standalone: Boolean = false)
+GET         /ntango-play-standalone             controllers.Local.ntangoBuild(themed: Boolean = true,  standalone: Boolean = true)
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

@@ -131,7 +131,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <blockEditForm idBasis="ntb-block" parentClass="ntb-container" verticalOffset="10" />
+    <blockEditForm idBasis="ntb-block" verticalOffset="10" />
 
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}

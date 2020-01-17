@@ -1,14 +1,29 @@
 @import play.api.Mode
 
-@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
+@(themed: Boolean, standalone: Boolean, tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
 
 @extraHead = {
-  @tagBuilder.pathToHTML("stylesheets/tortoise.css")
+  @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+  @tagBuilder.pathToHTML("stylesheets/classes.css")
+  @tagBuilder.pathToHTML("stylesheets/widgets.css")
+  @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
   @tagBuilder.pathToHTML("lib/chosen/chosen.css")
+  @tagBuilder.pathToHTML("stylesheets/tortoise.css")
+  @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+  @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+  @tagBuilder.pathToHTML("stylesheets/spinner.css")
+  @tagBuilder.pathToHTML("stylesheets/alert.css")
+  @tagBuilder.pathToHTML("nettango/ntango.css")
+  @tagBuilder.pathToHTML("stylesheets/nettangobuilder.css")
 }
 
 @content = {
-  <div class="tortoise inner-content">
+  @views.html.spinner()
+  @views.html.errorAlert()
+  <div @if(!themed) { class="ntb-content" }>
+
+  @if(!themed) {
     <div class="model-selection-bar">
       <div>
         <label>Choose a base model:
@@ -24,78 +39,253 @@
         <a href="https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder">About the NetTango Builder</a>
       </div>
     </div>
+  }
 
-    <div class="ntb-model-container">
-      <iframe id="model-container" class="model-container" src="about:blank"></iframe>
+    <div id="ntb-container" @if(!themed) { class="ntb-container" }>
+
+      <div class="ntb-netlogo-model">
+        <div id="netlogo-model-container"></div>
+        <div id="model-recompile-overlay">
+          <button class="ntb-button" onclick="window.recompile();">Recompile</button>
+        </div>
+      </div>
+
+      <div id="ntb-components"></div>
+
     </div>
+
+
   </div>
 }
 
 @extraBody = {
+  <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
+  @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
   @tagBuilder.pathToHTML("lib/jquery/jquery.js")
   @tagBuilder.pathToHTML("lib/chosen/chosen.jquery.js")
+  @tagBuilder.pathToHTML("lib/file-saver/FileSaver.js")
+  @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+  @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+  @tagBuilder.pathToHTML("lib/mousetrap/mousetrap.js")
+  @tagBuilder.pathToHTML("lib/localforage/dist/localforage.min.js")
+  @tagBuilder.pathToHTML("lib/highcharts/highcharts.js")
+  @tagBuilder.pathToHTML("lib/highcharts/modules/exporting.js")
+  @tagBuilder.pathToHTML("lib/highcharts/modules/export-data.js")
+  @tagBuilder.pathToHTML("lib/ractive/ractive.js")
+  @tagBuilder.pathToHTML("lib/synchrodecoder/synchrodecoder.min.js")
+  @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
+  @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+
+  @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
+  @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
+
+  @tagBuilder.pathToHTML("javascripts/keywords.js")
+  @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
+  @tagBuilder.pathToHTML("javascripts/colors.js")
+  @tagBuilder.pathToHTML("javascripts/default-shapes.js")
+  @tagBuilder.pathToHTML("javascripts/global-noisy-things.js")
+  @tagBuilder.pathToHTML("javascripts/highcharts.js")
+  @tagBuilder.pathToHTML("javascripts/new-model.js")
   @tagBuilder.pathToHTML("javascripts/models.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/checkbox.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/code-container.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/color-input.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/dropdown.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/labeled-input.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/font-size.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/print-area.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/spacer.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/tick-counter.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/variable.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/async-user-dialog.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/context-menu.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/draggable.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/edit-form.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/widget.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/button.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/chooser.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/code-editor.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/console.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/help-dialog.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/info.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/input.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/label.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/monitor.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/output.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/plot.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/resizer.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/slider.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/switch.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/title.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/view.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/draw-shape.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/link-drawer.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/view-controller.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/config-shims.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/event-traffic-control.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-context-menu.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-widget-selection.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/initialize-ui.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/set-up-widgets.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/skeleton.js")
+  @tagBuilder.pathToHTML("javascripts/beak/widgets/widget-controller.js")
+  @tagBuilder.pathToHTML("javascripts/beak/babybehaviorspace.js")
+  @tagBuilder.pathToHTML("javascripts/beak/session-lite.js")
+  @tagBuilder.pathToHTML("javascripts/beak/tortoise.js")
+
+  @tagBuilder.pathToHTML("nettango/ntango.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/error-display.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/popup-menu.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/array-view.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-block-defaults.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-select-attribute.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-attribute.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-block-form.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/test/nettango-testing-defaults.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-space.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-spaces.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-builder.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-storage.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-rewriter.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-controller.js")
+
+  @helper.javascriptRouter("jsRoutes")(
+    routes.javascript.Local.standalone
+  )
+
+  <script type="text/json" id="ntango-code"></script>
+
   <script type="text/javascript">
 
-    const modelContainer  = document.getElementById("model-container")
-    window.modelContainer = modelContainer
-
-    window.addEventListener("message", (e) => {
-      if (e.data.type === "nlw-resize") {
-
-        const isValid = (x) =>
-          (typeof x !== "undefined" && x !== null)
-
-        const height = e.data.height
-        const width  = e.data.width
-
-        if ([height, width].every(isValid)) {
-          modelContainer.width  = width
-          modelContainer.height = height
-        }
-
-      }
-    })
-
-    const fileInput = document.getElementById("model-file-input")
-    fileInput.addEventListener("change", (event) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        modelContainer.contentWindow.postMessage({
-          nlogo: e.target.result,
-          path:  fileInput.value,
-          type:  "nlw-load-model"
-        }, "*")
-      }
-
-      if (fileInput.files.length > 0) {
-        reader.readAsText(fileInput.files[0])
-      }
-    })
+    Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod}
 
     const pathSplits = location.pathname.split("/")
     const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
 
+    const loadingOverlay = document.getElementById("loading-overlay")
+    var activeContainer  = loadingOverlay
+    const modelContainer = document.getElementById("netlogo-model-container")
+
+  @if(!themed) {
     function pickModel(path, name) {
       const encoded = encodeURI(hostPrefix + '/assets/' + path)
       exports.selectModelByURL(encoded)
-      modelContainer.contentWindow.postMessage({
-        url:  encoded,
-        name: name,
-        type: "nlw-load-url"
-      }, "*")
+      loadUrl(encoded, name)
     }
 
     const modelList = document.getElementById("tortoise-model-list")
     exports.bindModelChooser(modelList, () => { }, pickModel, "@mode.toString.toLowerCase")
+  }
 
-    const urlParams = new URLSearchParams(window.location.search)
+    var session
+    function openSession(s) {
+      session         = s
+      document.title  = pageTitle(session.modelTitle())
+      activeContainer = modelContainer
+      session.startLoop()
+    }
+
+    const isStandaloneHTML = @standalone
+
+    window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML)
+
+    function pageTitle(modelTitle) {
+      return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`
+    }
+
+    function displayError(error) {
+      // in the case where we're still loading the model, we have to
+      // post an error that cannot be dismissed, as well as ensuring that
+      // the frame we're in matches the size of the error on display.
+      if (activeContainer === loadingOverlay) {
+        window.nlwAlerter.displayError(error, false)
+        activeContainer = window.nlwAlerter.alertContainer
+      } else {
+        window.nlwAlerter.displayError(error)
+      }
+    }
+
+    function loadModel(nlogo, path) {
+      if (session) {
+        session.teardown()
+      }
+      window.nlwAlerter.hide()
+      activeContainer = loadingOverlay
+      Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError, [netTango.rewriter])
+    }
+
+    function loadUrl(url, modelName) {
+      if (session) {
+        session.teardown()
+      }
+      window.nlwAlerter.hide()
+      activeContainer = loadingOverlay
+      Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, [netTango.rewriter])
+    }
+
+    window.addEventListener("message", function (e) {
+      if (e.data.type === "nlw-load-model") {
+        loadModel(e.data.nlogo, e.data.path)
+      } else if (e.data.type === "nlw-open-new") {
+        loadModel(exports.newModel, "NewModel")
+      } else if (e.data.type === "nlw-load-url") {
+        loadUrl(e.data.url, e.data.name)
+      } else if (e.data.type === "nlw-update-model-state") {
+        session.widgetController.setCode(e.data.codeTabContents)
+      } else if (e.data.type === "run-baby-behaviorspace") {
+        var reaction =
+          function(results) {
+            e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
+          }
+        session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
+     }
+    })
+
+    window.modelContainer = modelContainer
+    var ntangoCode        = document.getElementById("ntango-code")
+
+    var overlay = document.getElementById("model-recompile-overlay")
+    var theOutsideWorld = {
+        setModelCode:        loadModel
+      , sessionReady:        ()                => window.session !== undefined
+      , getModelCode:        ()                => window.session.getNlogo()
+      , getElementById:      (id)              => document.getElementById(id)
+      , createElement:       (elementType)     => document.createElement(elementType)
+      , appendElement:       (element)         => document.body.appendChild(element)
+      , addEventListener:    (event, callback) => document.addEventListener(event, callback)
+      , getWidgetController: ()                => window.session.widgetController
+      , getModelTitle:       ()                => window.session.modelTitle()
+      , saveAs:              window.saveAs
+      , newModel:            window.exports.newModel
+    }
+
+    var ls
+    try {
+      ls = window.localStorage
+    } catch (exception) {
+      ls = NetTangoStorage.fakeStorage()
+    }
+
+    const urlParams        = new URLSearchParams(window.location.search)
     const netTangoModelUrl = urlParams.get("netTangoModel")
-    const netTangoModelQueryString = netTangoModelUrl ? `?netTangoModel=${netTangoModelUrl}` : ""
+    const playModeParam    = urlParams.get("playMode")
+    const playMode         = (playModeParam && playModeParam === "true")
 
-    modelContainer.src = `./ntango-play${netTangoModelQueryString}`
+    window.netTango = new NetTangoController("ntb-components", ls, overlay, playMode || @standalone, theOutsideWorld)
+
+    exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
+    window.ractive   = netTango.ractive
+    window.recompile = netTango.recompile
+    window.onload    = () => netTango.onModelLoad( netTangoModelUrl )
 
   </script>
 }
 
-@views.html.mainTheme(content, "NetTango Web Builder", Option("ntango-build"), extraHead, extraBody)
+@if(themed) {
+  @views.html.themeless(content, "NetTango Web Player", Option("ntango-play"), extraHead, extraBody)
+} else {
+  @views.html.mainTheme(content, "NetTango Web Builder", Option("ntango-build"), extraHead, extraBody)
+}

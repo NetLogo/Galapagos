@@ -24,14 +24,9 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.tortoise())
   }
 
-  def ntangoBuild: Action[AnyContent] = Action {
+  def ntangoBuild(themed: Boolean, standalone: Boolean): Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.netTangoBuilder(OutsourceTagBuilder))
-  }
-
-  def ntangoPlay(standalone: String): Action[AnyContent] = Action {
-    implicit request =>
-      Ok(views.html.netTangoPlayer(standalone, if (standalone == "true") InlineTagBuilder else OutsourceTagBuilder))
+      Ok(views.html.netTangoBuilder(themed, standalone, if (standalone) InlineTagBuilder else OutsourceTagBuilder))
   }
 
   def standalone: Action[AnyContent] = Action {

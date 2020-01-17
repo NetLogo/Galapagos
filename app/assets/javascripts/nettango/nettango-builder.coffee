@@ -180,8 +180,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     # The main wrapper for the builder lives outside Ractive,
     # so we imperatively update the CSS classes instead of
     # using a template.  -Jeremy B July 2019
-    content = document.getElementById('builder-content')
-    options = document.getElementById('nettango-options')
+    content = document.getElementById('ntb-container')
+    options = document.getElementById('ntb-components')
     if (workspaceBelow)
       content.classList.remove('netlogo-display-horizontal')
       options.style.minWidth = ""
@@ -270,7 +270,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="ntb-container" style="position: relative;">
+    <div style="position: relative;">
       <errorDisplay></errorDisplay>
 
       <div class="ntb-controls">

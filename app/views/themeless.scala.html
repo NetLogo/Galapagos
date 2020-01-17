@@ -1,0 +1,25 @@
+@import play.api.Mode
+
+@(content: Html, title: String = "NetLogo Web", selectedTopLink: Option[String] = None, extraHead: Html = Html(""), extraBody: Html = Html(""), relativizer: String = "")(implicit mode: Mode, request: RequestHeader)
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>@title</title>
+
+  @extraHead
+
+</head>
+
+<body>
+
+  @content
+
+  @extraBody
+
+</body>
+
+</html>

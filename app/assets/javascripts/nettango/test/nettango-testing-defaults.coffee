@@ -23,7 +23,7 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
   }
 
   template: """
-    <div class="ntb-container" style="position: relative;">
+    <div style="position: relative;">
       <div class="ntb-controls">
         <div class="ntb-block-defs-controls">
           <button class="ntb-button" type="button" on-click="ntb-testing-defaults" >Load WSP Testing Defaults</button>
