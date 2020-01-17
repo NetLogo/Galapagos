@@ -130,8 +130,8 @@ class View
     @centerY = @worldHeight / 2
     canvas.width =  @worldWidth * @patchsize * @quality
     canvas.height = @worldHeight * @patchsize * @quality
-    canvas.style.width = @worldWidth * @patchsize
-    canvas.style.height = @worldHeight * @patchsize
+    canvas.style.width = "#{@worldWidth * @patchsize}px"
+    canvas.style.height = "#{@worldHeight * @patchsize}px"
     ctx.font = @fontSize + 'px "Lucida Grande", sans-serif'
     ctx.imageSmoothingEnabled = false
     ctx.webkitImageSmoothingEnabled = false
