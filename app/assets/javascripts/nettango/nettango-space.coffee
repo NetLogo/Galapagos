@@ -175,7 +175,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     space.defs.width  = space.width
 
     try
-      NetTango.init(containerId, space.defs)
+      NetTango.init("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       @handleNetTangoError(ex)
       return
@@ -197,8 +197,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     return
 
   setSpaceNetLogo: (space, containerId) ->
-    space.netLogoCode    = NetTango.exportCode(containerId, 'NetLogo', NetTangoRewriter.formatCodeAttribute).trim()
-    space.netLogoDisplay = NetTango.exportCode(containerId, 'NetLogo', NetTangoRewriter.formatDisplayAttribute).trim()
+    space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatCodeAttribute).trim()
+    space.netLogoDisplay = NetTango.exportCode(containerId).trim()
 
   handleNetTangoEvent: (space, containerId, event) ->
     space.defs.program.chains = NetTango.save(containerId).program.chains
@@ -222,14 +222,14 @@ window.RactiveNetTangoSpace = Ractive.extend({
       space.defs.program.chains
 
     try
-      NetTango.restore(containerId, {
+      NetTango.restore("NetLogo", containerId, {
         version:     space.defs.version,
         height:      space.height,
         width:       space.width,
         blocks:      space.defs.blocks,
         expressions: space.defs.expressions,
         program:     { chains: newChains }
-      })
+      }, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       @handleNetTangoError(ex)
       return
