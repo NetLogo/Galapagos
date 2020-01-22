@@ -19,6 +19,10 @@ body#ntp-body, html#ntp-body {
   border-radius: 20px;
 }
 
+.ntb-builder {
+  position: relative;
+}
+
 .ntb-netlogo-model {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;

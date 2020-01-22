@@ -270,7 +270,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div style="position: relative;">
+    <div class="ntb-builder">
       <errorDisplay></errorDisplay>
 
       <div class="ntb-controls">
