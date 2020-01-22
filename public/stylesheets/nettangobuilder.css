@@ -24,6 +24,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-netlogo-model {
+  position: relative;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;
   margin-left: auto;
