@@ -204,13 +204,24 @@ window.RactiveNetTangoSpace = Ractive.extend({
     space.defs.program.chains = NetTango.save(containerId).program.chains
     @setSpaceNetLogo(space, containerId)
     switch event.type
+
       when "block-changed"
         @fire('ntb-code-changed', {}, false)
+
       when "attribute-changed"
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
         @fire('ntb-run', setCode, @squelch)
         @fire('ntb-code-changed', {}, false)
+
+      when "menu-item-clicked"
+        playMode = @get("playMode")
+        if (not playMode)
+          space = @get("space")
+          block = space.defs.blocks[event.blockId]
+          @showBlockForm(space.name, block, event.blockId, "Update Block", "ntb-block-updated")
+
+    return
 
   # (NetTangoSpace) => Unit
   updateNetTango: (space, keepOldChains = true) ->
