@@ -13,6 +13,10 @@ body#ntp-body, html#ntp-body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.ntb-content-unthemed {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .ntb-container {
   border: 2px solid black;
   background-color: white;
