@@ -68,13 +68,44 @@ body#ntp-body, html#ntp-body {
   align-items: top;
 }
 
-.ntb-block-edit-overlay {
+.ntb-dialog-overlay {
   height: 100%;
   width: 100%;
   top: 0;
   left: 0;
   position: absolute;
-  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 95;
+}
+
+.ntb-confirm-dialog {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: max-content;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding: 10px 10px 0 10px;
+  outline: none;
+  z-index: 100;
+  margin: 50px auto;
+}
+
+.ntb-confirm-header {
+  grid-column: 1 / 3;
+  margin: 0 auto;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ntb-confirm-text {
+  grid-column: 1 / 3;
+  margin: 30px 15px;
+}
+
+.ntb-confirm-button {
+  margin: 10px;
 }
 
 .ntb-block-defs-controls {

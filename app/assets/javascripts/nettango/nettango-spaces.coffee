@@ -6,7 +6,8 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     lastCompiledCode: "",    # String
     codeIsDirty:      false, # Boolean
     popupMenu:        null,  # RactivePopupMenu
-    blockEditForm:    null   # RactiveNetTangoBlockForm
+    blockEditForm:    null,  # RactiveNetTangoBlockForm
+    confirmDialog:    null   # RactiveConfirmDialog
   }
 
   on: {
@@ -27,6 +28,17 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     '*.ntb-code-changed': (_, isInitialLoad) ->
       @updateCode(isInitialLoad)
       return
+
+    # (Context, Integer) => Boolean
+    '*.ntb-confirm-delete': (_, spaceNumber) ->
+      @get('confirmDialog').show({
+        text:    "Do you want to delete this workspace?",
+        approve: { text: "Yes, delete the workspace", event: "ntb-delete-blockspace" },
+        deny:    { text: "No, keep workspace" },
+        eventArguments: [ spaceNumber ],
+        eventTarget:    this
+      })
+      return false
 
     # (Context, Integer) => Unit
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
@@ -139,6 +151,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
           space="{{ this }}"
           playMode="{{ playMode }}"
           popupMenu="{{ popupMenu }}"
+          confirmDialog="{{ confirmDialog }}"
           blockEditForm="{{ blockEditForm }}"
           codeIsDirty="{{ codeIsDirty }}"
         />

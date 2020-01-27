@@ -6,6 +6,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     space:         null,  # NetTangoSpace
     netLogoCode:   "",    # String
     blockEditForm: null,  # RactiveNetTangoBlockForm
+    confirmDialog: null,  # RactiveConfirmDialog
     showJson:      false, # Boolean
     popupMenu:     null   # RactivePopupMenu
   }
@@ -45,22 +46,6 @@ window.RactiveNetTangoSpace = Ractive.extend({
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space)
       return
-
-    # (Context, Integer) => Boolean
-    'ntb-confirm-delete': ({ event: { pageX, pageY } }, spaceNumber) ->
-      delMenu = {
-        name: "_"
-        items: [
-          {
-            name: 'Are you sure?'
-            , items: [
-              { name: 'Yes, delete block space', eventName: 'ntb-delete-blockspace' }
-            ]
-          }
-        ]
-      }
-      @get('popupMenu').popup(this, pageX, pageY, delMenu, spaceNumber)
-      return false
 
     # (Context, NetTangoSpace) => Unit
     'ntb-apply-json-to-space': (_, space) ->
@@ -162,7 +147,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     form = @get('blockEditForm')
     form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
     overlay = @root.find('.widget-edit-form-overlay')
-    overlay.classList.add('ntb-block-edit-overlay')
+    overlay.classList.add('ntb-dialog-overlay')
     return
 
   getNetTangoContainerId: (space) ->

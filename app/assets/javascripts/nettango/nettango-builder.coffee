@@ -6,6 +6,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     lastCss:         "",           # String
     extraCssIsDirty: false,        # Boolean
     popupMenu:       undefined,    # RactivePopupMenu
+    confirmDialog:   undefined,    # RactiveConfirmDialog
     blockEditor: {
       show:        false,          # Boolean
       spaceNumber: undefined,      # Integer
@@ -83,24 +84,23 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   on: {
 
     # (Context) => Unit
+    'complete': (_) ->
+      confirmDialog = @findComponent('confirmDialog')
+      @set('confirmDialog', confirmDialog)
+      return
+
+    # (Context) => Unit
     'ntb-refresh-css': (_) ->
       @refreshCss()
       return
 
-    # (Context) => Boolean
-    'ntb-clear-all-check': ({ event: { pageX, pageY } }) ->
-      clearMenu = {
-        name: "_",
-        items: [
-          {
-            name: 'Are you sure?',
-            items: [
-              { name: 'Yes, clear all data', eventName: 'ntb-clear-all' }
-            ]
-          }
-        ]
-      }
-      @get('popupMenu').popup(this, pageX, pageY, clearMenu)
+    # () => Boolean
+    'ntb-clear-all-check': () ->
+      @get('confirmDialog').show({
+        text:    "Do you want to clear your model and workspaces?",
+        approve: { text: "Yes, clear all data", event: "ntb-clear-all" },
+        deny:    { text: "No, leave workspaces unchanged" }
+      })
       return false
 
     # (Context) => Unit
@@ -263,8 +263,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     return
 
   components: {
-      tangoDefs:    RactiveNetTangoSpaces
-    , errorDisplay: RactiveErrorDisplay
+      tangoDefs:     RactiveNetTangoSpaces
+    , errorDisplay:  RactiveErrorDisplay
+    , confirmDialog: RactiveConfirmDialog
   }
 
   template:
@@ -272,6 +273,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     """
     <div class="ntb-builder">
       <errorDisplay></errorDisplay>
+      <confirmDialog></confirmDialog>
 
       <div class="ntb-controls">
         {{# !playMode }}
@@ -285,7 +287,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         </div>
         {{/}}
 
-        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} />
+        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} confirmDialog={{ confirmDialog }} />
 
         {{# !playMode }}
         <div class="netlogo-display-horizontal">
