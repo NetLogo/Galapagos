@@ -28,11 +28,11 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-netlogo-model {
-  position: relative;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;
   margin-left: auto;
   margin-right: auto;
+  display: grid;
 }
 
 .ntb-netlogo-model .netlogo-widget input[type=range] {
@@ -377,14 +377,17 @@ body#ntp-body, html#ntp-body {
 
 #model-recompile-overlay {
   display: none;
-  position: absolute;
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
-  left: 0;
-  top: 0;
+  grid-area: 1 / 1;
   width: 100%;
   height: 100%;
+  z-index: 95;
+}
+
+#netlogo-model-container {
+  grid-area: 1 / 1;
 }
 
 .ntb-toggle-block {
