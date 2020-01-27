@@ -246,7 +246,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
       , ex.message
     ]
     # coffeelint: enable=max_line_length
-    if ex.dartException.source? then messages.push(ex.dartException.source.message)
+    if ex.dartException?.source? then messages.push(ex.dartException.source.message)
     @fire('ntb-errors', {}, messages, ex.stack)
     return
 
