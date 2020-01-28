@@ -413,6 +413,10 @@ body#ntp-body, html#ntp-body {
   padding: 2px;
 }
 
+.ntb-toggle-text {
+  font-size: 20px;
+}
+
 .ntb-error-overlay {
   position: absolute;
   align-items: center;

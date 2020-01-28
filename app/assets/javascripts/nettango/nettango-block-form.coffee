@@ -5,6 +5,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     block:       undefined # NetTangoBlock
     blockNumber: undefined # Integer
     submitEvent: undefined # String
+    showStyles:  false     # Boolean
     attributeTemplate:
       """
       <fieldset class="ntb-attribute">
@@ -176,15 +177,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         </div>
       </div>
 
-      <div class="flex-row ntb-form-row">
-        <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   labelStr="Text color"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" labelStr="Border color"
-          divClass="ntb-flex-column" class="ntb-input" />
-      </div>
-
       <arrayView
         id="block-{{ id }}-parameters"
         itemTemplate="{{ attributeTemplate }}"
@@ -207,6 +199,22 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         codeFormat="P"
         />
 
+      <label class="ntb-toggle-block" >
+        <input type="checkbox" checked="{{ showStyles }}" twoway="true" />
+        <div class="ntb-toggle-text">Block Styles {{# showStyles }}▲{{else}}▼{{/}}</div>
+      </label>
+
+      {{# showStyles }}
+
+      <div class="flex-row ntb-form-row">
+        <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   labelStr="Text color"
+          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" labelStr="Border color"
+          divClass="ntb-flex-column" class="ntb-input" />
+      </div>
+
       <div class="flex-row ntb-form-row">
         <labeledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" labelStr="Font weight"
           divClass="ntb-flex-column" class="ntb-input" />
@@ -215,6 +223,8 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
         <labeledInput id="{{ id }}-f-face"   name="font-face"   type="text"   value="{{ fontFace }}"   labelStr="Typeface"
           divClass="ntb-flex-column" class="ntb-input" />
       </div>
+
+      {{/ showStyles }}
 
       {{/block }}
       """
