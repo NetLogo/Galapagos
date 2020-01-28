@@ -125,6 +125,25 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
+    'ntb-show-file-operations': ({ event: { pageX, pageY } }) ->
+      popupMenu = @get("popupMenu")
+      fileOperations = {
+        name: "File Operations"
+        items: [
+          { eventName: 'ntb-clear-all-check',    name: 'Clear model and spaces' }
+          { eventName: 'ntb-import-json-prompt', name: 'Import NetTango JSON file' }
+          { eventName: 'ntb-export-json',        name: 'Export NetTango JSON file' }
+          { eventName: 'ntb-export-page',        name: 'Export standalone HTML file' }
+        ]
+      }
+      popupMenu.popup(this, pageX, pageY, fileOperations)
+      return false
+
+    '*.ntb-import-json-prompt': (_) ->
+      importInput = @find('#ntb-import-json')
+      importInput.click()
+      return false
+
     'ntb-show-options': (_) ->
       optionsForm = @findComponent("optionsForm")
       tabOptions  = JSON.parse(JSON.stringify(@get('tabOptions')))
@@ -279,17 +298,15 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       <errorDisplay></errorDisplay>
       <confirmDialog></confirmDialog>
       <optionsForm parentClass="ntb-builder" verticalOffset="10"></optionsForm>
+      <input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" hidden>
 
       <div class="ntb-controls">
         {{# !playMode }}
         <div class="ntb-block-defs-controls">
+          <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
+          <button class="ntb-button" type="button" on-click="ntb-show-options">Options...</button>
           <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-          <button class="ntb-button" type="button" on-click="ntb-show-options">Options</button>
           <button class="ntb-button" type="button" on-click="ntb-save" >Save Progress</button>
-          <button class="ntb-button" type="button" on-click="ntb-export-page" >Export Standalone Page</button>
-          <button id="clear-all-button" class="ntb-button" type="button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
-          <button class="ntb-button" on-click="ntb-export-json" type="button">Export NetTango JSON</button>
-          <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" ></label>
         </div>
         {{/}}
 
