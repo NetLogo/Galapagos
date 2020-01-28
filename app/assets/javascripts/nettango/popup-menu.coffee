@@ -2,7 +2,7 @@ window.RactivePopupMenu = Ractive.extend({
 
   data: () -> {
     visible:   false,     # Boolean
-    target:    undefined, # String
+    target:    undefined, # Ractive
     content:   undefined, # Content
     menuData:  undefined, # Any
     left:      0,         # Number
@@ -47,7 +47,7 @@ window.RactivePopupMenu = Ractive.extend({
 
   }
 
-  # (String, Number, Number, Content, Any) => Unit
+  # (Ractive, Number, Number, Content, Any) => Unit
   popup: (target, left, top, content, menuData) ->
     maxLevel = @_markContent(content)
     submenus = for num in [1..maxLevel]
