@@ -188,6 +188,11 @@ body#ntp-body, html#ntp-body {
   background: #06a;
   color: #fff;
 }
+.ntb-list-menu > li.ntb-list-spacer {
+  color: #666;
+  text-align: center;
+  line-height: 0.5em;
+}
 
 #ntb-block-edit-window {
   max-height: 800px;

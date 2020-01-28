@@ -131,7 +131,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         name: "File Operations"
         items: [
           { eventName: 'ntb-clear-all-check',    name: 'Clear model and spaces' }
+          { spacerText: '-' }
           { eventName: 'ntb-import-json-prompt', name: 'Import NetTango JSON file' }
+          { spacerText: '-' }
           { eventName: 'ntb-export-json',        name: 'Export NetTango JSON file' }
           { eventName: 'ntb-export-page',        name: 'Export standalone HTML file' }
         ]

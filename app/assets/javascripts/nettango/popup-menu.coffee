@@ -12,9 +12,10 @@ window.RactivePopupMenu = Ractive.extend({
   }
 
   # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
-  # Content = Item | Items
-  # Item    = { name: String, eventName: String, data: Any  }
-  # Items   = { name: String, eventName: String, items: Array[Content] }
+  # Content = Spacer | Item | Items
+  # Spacer = { spacerText: String }
+  # Item   = { name: String, eventName: String, data: Any  }
+  # Items  = { name: String, eventName: String, items: Array[Content] }
   # The `eventName` string is optional for an Item - if not given the event on the root `content` will be used
   # The `menuData` (if sent via the `popup()` method) and the `data` for each item will be passed to the fired event
   # -JMB August 2018
@@ -108,6 +109,8 @@ window.RactivePopupMenu = Ractive.extend({
     {{#partial item }}
       {{# items !== undefined }}
         {{> group }}
+      {{ elseif spacerText !== undefined }}
+        <li class="ntb-list-spacer">{{ spacerText }}</li>
       {{ else }}
         <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">{{ name }}</li>
       {{/}}
