@@ -6,6 +6,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     blockNumber: undefined # Integer
     submitEvent: undefined # String
     showStyles:  false     # Boolean
+
     attributeTemplate:
       """
       <fieldset class="ntb-attribute">
@@ -33,6 +34,17 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     'submit': (_) ->
       target = @get('target')
       target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
+      return
+
+    'ntb-clear-styles': (_) ->
+      block = @get("block")
+      [ 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+        .forEach( (prop) -> block[prop] = "" )
+      @set("block", block)
+      return
+
+    '*.ntb-color-changed': ({ node: { name } }, value) ->
+      @set("block.#{name}", value)
       return
 
   }
@@ -75,6 +87,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     @set('blockNumber', blockNumber)
     @set('submitLabel', submitLabel)
     @set('submitEvent', submitEvent)
+
     @fire('show-yourself')
     return
 
@@ -201,18 +214,29 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <label class="ntb-toggle-block" >
         <input type="checkbox" checked="{{ showStyles }}" twoway="true" />
-        <div class="ntb-toggle-text">Block Styles {{# showStyles }}▲{{else}}▼{{/}}</div>
+        <div class="ntb-toggle-text">Block Styles
+          {{# showStyles }}
+            <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>▲
+          {{else}}
+            ▼
+          {{/}}
+        </div>
       </label>
 
       {{# showStyles }}
 
       <div class="flex-row ntb-form-row">
-        <labeledInput id="{{ id }}-block-color"  name="block-color"  type="color" value="{{ blockColor }}"  labelStr="Block color"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-text-color"   name="text-color"   type="color" value="{{ textColor }}"   labelStr="Text color"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-border-color" name="border-color" type="color" value="{{ borderColor }}" labelStr="Border color"
-          divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ id }}-block-color"  name="blockColor"  type="color"
+          value="{{ blockColor ? blockColor : "#000000" }}"  labelStr="Block color"
+          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
+
+        <labeledInput id="{{ id }}-text-color"   name="textColor"   type="color"
+          value="{{ textColor ? textColor : "#000000" }}"   labelStr="Text color"
+          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
+
+        <labeledInput id="{{ id }}-border-color" name="borderColor" type="color"
+          value="{{ borderColor ? borderColor : "#000000" }}" labelStr="Border color"
+          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
       </div>
 
       <div class="flex-row ntb-form-row">
