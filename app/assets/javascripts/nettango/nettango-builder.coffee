@@ -3,8 +3,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   data: () -> {
     playMode:        false,        # Boolean
     newModel:        undefined,    # String
-    lastCss:         "",           # String
-    extraCssIsDirty: false,        # Boolean
     popupMenu:       undefined,    # RactivePopupMenu
     confirmDialog:   undefined,    # RactiveConfirmDialog
     blockEditor: {
@@ -89,11 +87,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       @set('confirmDialog', confirmDialog)
       return
 
-    # (Context) => Unit
-    'ntb-refresh-css': (_) ->
-      @refreshCss()
-      return
-
     # () => Boolean
     'ntb-clear-all-check': () ->
       @get('confirmDialog').show({
@@ -132,19 +125,31 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
-  }
+    'ntb-show-options': (_) ->
+      optionsForm = @findComponent("optionsForm")
+      tabOptions  = JSON.parse(JSON.stringify(@get('tabOptions')))
+      toggles     = JSON.parse(JSON.stringify(@get('netTangoToggles')))
+      optionsForm.show(tabOptions, toggles, @get('extraCss'))
+      overlay = @root.find('.widget-edit-form-overlay')
+      overlay.classList.add('ntb-dialog-overlay')
+      return
 
-  observe: {
-    "netTangoToggles.workspaceBelow.checked": (workspaceBelow) ->
-      @moveSpaces(workspaceBelow, @get('playMode'))
-  }
+    '*.ntb-options-updated': (_, newOptions, newToggles, extraCss) ->
+      tabOptions = @get("tabOptions")
+      Object.getOwnPropertyNames(newOptions)
+        .forEach( (n) -> if tabOptions.hasOwnProperty(n) then tabOptions[n].checked = newOptions[n].checked)
 
-  # () => Unit
-  checkForDirtyCss: () ->
-    lastCss  = @get('lastCss')
-    extraCss = @get('extraCss')
-    @set('extraCssIsDirty', lastCss isnt extraCss)
-    return
+      netTangoToggles = @get("netTangoToggles")
+      Object.getOwnPropertyNames(newToggles)
+        .forEach( (n) -> if netTangoToggles.hasOwnProperty(n) then netTangoToggles[n].checked = newToggles[n].checked)
+
+      @set("extraCss", extraCss)
+
+      @refreshCss()
+      @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
+      return
+
+  }
 
   # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
@@ -201,8 +206,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       @get('appendElement')(styleElement)
 
     extraCss = @get('extraCss')
-    @set('lastCss', extraCss)
-    @set('extraCssIsDirty', false)
 
     styleElement.innerHTML = @compileCss(@get('playMode'), extraCss)
     return
@@ -266,6 +269,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       tangoDefs:     RactiveNetTangoSpaces
     , errorDisplay:  RactiveErrorDisplay
     , confirmDialog: RactiveConfirmDialog
+    , optionsForm:   RactiveNetTangoOptionsForm
   }
 
   template:
@@ -274,13 +278,15 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     <div class="ntb-builder">
       <errorDisplay></errorDisplay>
       <confirmDialog></confirmDialog>
+      <optionsForm parentClass="ntb-builder" verticalOffset="10"></optionsForm>
 
       <div class="ntb-controls">
         {{# !playMode }}
         <div class="ntb-block-defs-controls">
           <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-          <button class="ntb-button" type="button" on-click="ntb-save" >Save NetTango Progress</button>
-          <button class="ntb-button" type="button" on-click="ntb-export-page" >Export NetTango Page</button>
+          <button class="ntb-button" type="button" on-click="ntb-show-options">Options</button>
+          <button class="ntb-button" type="button" on-click="ntb-save" >Save Progress</button>
+          <button class="ntb-button" type="button" on-click="ntb-export-page" >Export Standalone Page</button>
           <button id="clear-all-button" class="ntb-button" type="button" on-click="ntb-clear-all-check" >Clear Model and Spaces</button>
           <button class="ntb-button" on-click="ntb-export-json" type="button">Export NetTango JSON</button>
           <label class="ntb-file-label">Import NetTango JSON<input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" ></label>
@@ -290,25 +296,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} confirmDialog={{ confirmDialog }} />
 
         {{# !playMode }}
-        <div class="netlogo-display-horizontal">
-          <ul style-list-style="none">
-          {{#tabOptions:key }}<li>
-            <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}" on-change="@this.refreshCss()">
-            <label for="ntb-{{ key }}">{{ label }}</label>
-          </li>{{/tabOptions }}
-          </ul>
-          <ul style-list-style="none">
-          {{#netTangoToggles:key }}<li>
-            <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
-            <label for="ntb-{{ key }}">{{ label }}</label>
-          </li>{{/netTangoToggles }}
-          </ul>
-        </div>
-          <div class="ntb-block-defs-controls">
-            <label for="ntb-extra-css">Extra CSS to include</label>
-            <button class="ntb-button" type="button" on-click="ntb-refresh-css"{{# !extraCssIsDirty }} disabled{{/}}>Refresh Model Styles</button>
-          </div>
-          <textarea id="ntb-extra-css" type="text" on-change-keyup-paste="@this.checkForDirtyCss()" value="{{ extraCss }}" ></textarea>
           <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
         {{/}}
       </div>

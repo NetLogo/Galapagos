@@ -301,6 +301,10 @@ body#ntp-body, html#ntp-body {
   min-height: 8em;
   background: #fcfcfc;
   padding: 0.7em;
+  width: 90%;
+  margin: 0 auto;
+  display: block;
+  resize: vertical;
 }
 
 .ntb-block-space-name {
