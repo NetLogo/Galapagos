@@ -25,7 +25,7 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
       if (event)
         if (@get('type') is 'number')
           @set('value', @clampNumber(@get('value'), @get('min'), @get('max')))
-        @fire(event, context)
+        @fire(event, context, @get('value'))
       return
   }
 
