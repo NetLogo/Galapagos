@@ -43,10 +43,6 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       @set("block", block)
       return
 
-    '*.ntb-color-changed': ({ node: { name } }, value) ->
-      @set("block.#{name}", value)
-      return
-
   }
 
   oninit: ->
@@ -151,11 +147,12 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     attributeCopies
 
   components: {
-    , spacer:       RactiveEditFormSpacer
-    , labeledInput: RactiveTwoWayLabeledInput
-    , dropdown:     RactiveTwoWayDropdown
-    , attribute:    RactiveNetTangoAttribute
     , arrayView:    RactiveArrayView
+    , attribute:    RactiveNetTangoAttribute
+    , blockStyle:   RactiveBlockStyleSettings
+    , dropdown:     RactiveTwoWayDropdown
+    , labeledInput: RactiveTwoWayLabeledInput
+    , spacer:       RactiveEditFormSpacer
   }
 
   partials: {
@@ -225,28 +222,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       {{# showStyles }}
 
-      <div class="flex-row ntb-form-row">
-        <labeledInput id="{{ id }}-block-color"  name="blockColor"  type="color"
-          value="{{ blockColor ? blockColor : "#000000" }}"  labelStr="Block color"
-          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
-
-        <labeledInput id="{{ id }}-text-color"   name="textColor"   type="color"
-          value="{{ textColor ? textColor : "#000000" }}"   labelStr="Text color"
-          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
-
-        <labeledInput id="{{ id }}-border-color" name="borderColor" type="color"
-          value="{{ borderColor ? borderColor : "#000000" }}" labelStr="Border color"
-          divClass="ntb-flex-column" class="ntb-input" onChange="ntb-color-changed" />
-      </div>
-
-      <div class="flex-row ntb-form-row">
-        <labeledInput id="{{ id }}-f-weight" name="font-weight" type="number" value="{{ fontWeight }}" labelStr="Font weight"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-f-size"   name="font-size"   type="number" value="{{ fontSize }}"   labelStr="Font size"
-          divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="{{ id }}-f-face"   name="font-face"   type="text"   value="{{ fontFace }}"   labelStr="Typeface"
-          divClass="ntb-flex-column" class="ntb-input" />
-      </div>
+      <blockStyle styleId="{{ id }}" styleSettings="{{ this }}"></blockStyle>
 
       {{/ showStyles }}
 
