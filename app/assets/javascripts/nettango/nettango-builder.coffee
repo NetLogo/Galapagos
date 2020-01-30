@@ -215,11 +215,17 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     '*.ntb-options-updated': (_, options) ->
       tabOptions = @get("tabOptions")
       Object.getOwnPropertyNames(options.tabOptions)
-        .forEach( (n) -> if tabOptions.hasOwnProperty(n) then tabOptions[n].checked = options.tabOptions[n].checked)
+        .forEach( (n) ->
+          if tabOptions.hasOwnProperty(n)
+            tabOptions[n].checked = options.tabOptions[n].checked
+        )
 
       netTangoToggles = @get("netTangoToggles")
       Object.getOwnPropertyNames(options.netTangoToggles)
-        .forEach( (n) -> if netTangoToggles.hasOwnProperty(n) then netTangoToggles[n].checked = options.netTangoToggles[n].checked)
+        .forEach( (n) ->
+          if netTangoToggles.hasOwnProperty(n)
+            netTangoToggles[n].checked = options.netTangoToggles[n].checked
+        )
 
       [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
         .forEach( (prop) => if options.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options[prop]) )
