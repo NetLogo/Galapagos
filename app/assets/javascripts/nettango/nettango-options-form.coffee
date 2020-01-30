@@ -75,13 +75,13 @@ window.RactiveNetTangoOptionsForm = EditForm.extend({
       </div>
 
       <div class="ntb-toggle-text">Procedure Block Styles</div>
-      <blockStyle styleId="procedure-blocks" styleSettings="{{ blockStyles.starterBlockStyles }}"></blockStyle>
+      <blockStyle styleId="procedure-blocks" styleSettings="{{ blockStyles.starterBlockStyle }}"></blockStyle>
 
       <div class="ntb-toggle-text">Control Block Styles</div>
-      <blockStyle styleId="control-blocks" styleSettings="{{ blockStyles.containerBlockStyles }}"></blockStyle>
+      <blockStyle styleId="control-blocks" styleSettings="{{ blockStyles.containerBlockStyle }}"></blockStyle>
 
       <div class="ntb-toggle-text">Command Block Styles</div>
-      <blockStyle styleId="command-blocks" styleSettings="{{ blockStyles.commandBlockStyles }}"></blockStyle>
+      <blockStyle styleId="command-blocks" styleSettings="{{ blockStyles.commandBlockStyle }}"></blockStyle>
 
       <button class="ntb-button" type="button" on-click="ntb-confirm-clear-all-block-styles">Remove existing styles from all blocks</button>
 

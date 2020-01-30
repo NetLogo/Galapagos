@@ -1,5 +1,5 @@
 blockStyleDefaults = {
-  starterBlockStyles: {
+  starterBlockStyle: {
     blockColor:  "#bb5555"
     textColor:   "#ffffff"
     borderColor: "#ffffff"
@@ -8,7 +8,7 @@ blockStyleDefaults = {
     fontFace:    ""
   }
 
-  containerBlockStyles: {
+  containerBlockStyle: {
     blockColor:  "#8899aa"
     textColor:   "#ffffff"
     borderColor: "#ffffff"
@@ -17,7 +17,7 @@ blockStyleDefaults = {
     fontFace:    ""
   }
 
-  commandBlockStyles: {
+  commandBlockStyle: {
     blockColor:  "#9977aa"
     textColor:   "#ffffff"
     borderColor: "#ffffff"
@@ -110,9 +110,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     }
 
     blockStyles: {
-      starterBlockStyles:   getBlockStyleDefaults("starterBlockStyles")
-      containerBlockStyles: getBlockStyleDefaults("containerBlockStyles")
-      commandBlockStyles:   getBlockStyleDefaults("commandBlockStyles")
+      starterBlockStyle:   getBlockStyleDefaults("starterBlockStyle")
+      containerBlockStyle: getBlockStyleDefaults("containerBlockStyle")
+      commandBlockStyle:   getBlockStyleDefaults("commandBlockStyle")
     }
 
     extraCss: "" # String
@@ -154,9 +154,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           workspaceBelow: true
         }
         blockStyles: {
-          starterBlockStyles:   getBlockStyleDefaults("starterBlockStyles")
-          containerBlockStyles: getBlockStyleDefaults("containerBlockStyles")
-          commandBlockStyles:   getBlockStyleDefaults("commandBlockStyles")
+          starterBlockStyle:   getBlockStyleDefaults("starterBlockStyle")
+          containerBlockStyle: getBlockStyleDefaults("containerBlockStyle")
+          commandBlockStyle:   getBlockStyleDefaults("commandBlockStyle")
         }
         extraCss: ""
       }
@@ -227,7 +227,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
             netTangoToggles[n].checked = options.netTangoToggles[n].checked
         )
 
-      [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
+      [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
         .forEach( (prop) => if options.blockStyles.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options.blockStyles[prop]) )
 
       @set("extraCss", options.extraCss)
@@ -337,7 +337,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
     @set("extraCss", if ntData.hasOwnProperty("extraCss") then ntData.extraCss else "")
 
-    for propName in [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
+    for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
       if (ntData.hasOwnProperty("blockStyles") and ntData.blockStyles.hasOwnProperty(propName))
         @set("blockStyles.#{propName}", ntData[propName])
       else
