@@ -272,7 +272,7 @@ class window.NetTangoController
   # (NetTangoBuilderData) => Unit
   storeNetTangoData: (netTangoData) ->
     set = (prop) => @storage.set(prop, netTangoData[prop])
-    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions', 'netTangoToggles' ].forEach(set)
+    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions', 'netTangoToggles', 'blockStyles' ].forEach(set)
     return
 
   # () => Unit
