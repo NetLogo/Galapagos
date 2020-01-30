@@ -9,6 +9,7 @@ window.RactiveNetTangoSpace = Ractive.extend({
     confirmDialog: null,  # RactiveConfirmDialog
     showJson:      false, # Boolean
     popupMenu:     null   # RactivePopupMenu
+    blockStyles:   null   # Object
   }
 
   on: {
@@ -155,9 +156,10 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
   # (NetTangoSpace) => Unit
   initNetTango: (space) ->
-    containerId = @getNetTangoContainerId(space)
-    space.defs.height = space.height
-    space.defs.width  = space.width
+    containerId            = @getNetTangoContainerId(space)
+    space.defs.height      = space.height
+    space.defs.width       = space.width
+    space.defs.blockStyles = @get("blockStyles")
 
     try
       NetTango.init("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
@@ -217,6 +219,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
     else
       space.defs.program.chains
 
+    space.defs.blockStyles = @get("blockStyles")
+
     try
       NetTango.restore("NetLogo", containerId, {
         version:     space.defs.version,
@@ -267,6 +271,16 @@ window.RactiveNetTangoSpace = Ractive.extend({
       name: "_",
       items: items
     }
+
+  clearBlockStyles: () ->
+    space = @get('space')
+    for block in space.defs.blocks
+      for prop in [ 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
+        if block.hasOwnProperty(prop)
+          delete block[prop]
+    @set('space', space)
+    @updateNetTango(space)
+    return
 
   squelch: (error) ->
     console.log(error)

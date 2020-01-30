@@ -1,29 +1,41 @@
 window.RactiveNetTangoOptionsForm = EditForm.extend({
 
   data: () -> {
-    submitLabel: "Apply Options"   # String
-    cancelLabel: "Discard Changes" # String
-    tabOptions:  {}   # Map[String, TabOption]
-    toggles:     {}   # Map[String, NetTangoToggle]
-    extraCss:    null # String
+    submitLabel:   "Apply Options"   # String
+    cancelLabel:   "Discard Changes" # String
+    confirmDialog: undefined         # RactiveConfirmDialog
+    options:       undefined         # Object
   }
 
   on: {
 
     # (Context) => Unit
     'submit': (_) ->
-      @fire("ntb-options-updated", {}, @get("tabOptions"), @get("toggles"), @get("extraCss"))
+      @fire("ntb-options-updated", {}, @get("options"))
       return
+
+    'ntb-confirm-clear-all-block-styles': (_) ->
+      @get('confirmDialog').show({
+        text:    "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone.",
+        approve: { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" },
+        deny:    { text: "No, leave block styles in place" }
+      })
+      return false
 
   }
 
   oninit: ->
     @_super()
 
-  show: (tabOptions, toggles, extraCss) ->
-    @set("tabOptions", tabOptions)
-    @set("toggles", toggles)
-    @set("extraCss", extraCss)
+  show: (options) ->
+    clonedOptions = {}
+    [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
+      .forEach( (prop) ->
+        if options.hasOwnProperty(prop)
+          clonedOptions[prop] = JSON.parse(JSON.stringify(options[prop]))
+      )
+    @set("options", clonedOptions)
+
     @fire("show-yourself")
     return
 
@@ -32,6 +44,8 @@ window.RactiveNetTangoOptionsForm = EditForm.extend({
 
   twoway: true
 
+  components: { blockStyle:  RactiveBlockStyleSettings }
+
   partials: {
 
     title: "NetTango Model Options"
@@ -39,30 +53,45 @@ window.RactiveNetTangoOptionsForm = EditForm.extend({
     widgetFields:
       # coffeelint: disable=max_line_length
       """
+      {{# options }}
+
       <div class="netlogo-display-horizontal">
 
         <ul style-list-style="none">
-        {{#tabOptions:key }}<li>
+        {{# tabOptions:key }}<li>
           <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
           <label for="ntb-{{ key }}">{{ label }}</label>
-        </li>{{/tabOptions }}
+        </li>{{/ tabOptions }}
         </ul>
 
         <ul style-list-style="none">
 
-        {{#toggles:key }}<li>
+        {{# netTangoToggles:key }}<li>
           <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
           <label for="ntb-{{ key }}">{{ label }}</label>
-        </li>{{/toggles }}
+        </li>{{/ netTangoToggles }}
         </ul>
 
       </div>
+
+      <div class="ntb-toggle-text">Procedure Block Styles</div>
+      <blockStyle styleId="procedure-blocks" styleSettings="{{ blockStyles.starterBlockStyles }}"></blockStyle>
+
+      <div class="ntb-toggle-text">Control Block Styles</div>
+      <blockStyle styleId="control-blocks" styleSettings="{{ blockStyles.containerBlockStyles }}"></blockStyle>
+
+      <div class="ntb-toggle-text">Command Block Styles</div>
+      <blockStyle styleId="command-blocks" styleSettings="{{ blockStyles.commandBlockStyles }}"></blockStyle>
+
+      <button class="ntb-button" type="button" on-click="ntb-confirm-clear-all-block-styles">Remove existing styles from all blocks</button>
 
       <div class="ntb-block-defs-controls">
         <label for="ntb-extra-css">Extra CSS to include</label>
       </div>
 
       <textarea id="ntb-extra-css" type="text" value="{{ extraCss }}" ></textarea>
+
+      {{/ options }}
       """
       # coffeelint: enable=max_line_length
   }

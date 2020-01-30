@@ -1,6 +1,6 @@
 window.RactiveBlockStyleSettings = Ractive.extend({
   data: () -> {
-    styleId:      undefined # String
+    styleId:       undefined # String
     styleSettings: undefined # { blockColor, textColor, borderColor, fontWeight, fontSize, fontFace }
   }
 

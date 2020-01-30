@@ -135,6 +135,11 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     @push('spaces', space)
     return space
 
+  clearBlockStyles: () ->
+    spaceComponents = @findAllComponents("tangoSpace")
+    spaceComponents.forEach( (spaceComponent) -> spaceComponent.clearBlockStyles() )
+    return
+
   components: {
     tangoSpace:    RactiveNetTangoSpace
     blockEditForm: RactiveNetTangoBlockForm
@@ -154,6 +159,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
           confirmDialog="{{ confirmDialog }}"
           blockEditForm="{{ blockEditForm }}"
           codeIsDirty="{{ codeIsDirty }}"
+          blockStyles="{{ blockStyles }}"
         />
       {{/spaces }}
     </div>

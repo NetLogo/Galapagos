@@ -1,82 +1,121 @@
+blockStyleDefaults = {
+  starterBlockStyles: {
+    blockColor:  "#bb5555"
+    textColor:   "#ffffff"
+    borderColor: "#ffffff"
+    fontWeight:  ""
+    fontSize:    ""
+    fontFace:    ""
+  }
+
+  containerBlockStyles: {
+    blockColor:  "#8899aa"
+    textColor:   "#ffffff"
+    borderColor: "#ffffff"
+    fontWeight:  ""
+    fontSize:    ""
+    fontFace:    ""
+  }
+
+  commandBlockStyles: {
+    blockColor:  "#9977aa"
+    textColor:   "#ffffff"
+    borderColor: "#ffffff"
+    fontWeight:  ""
+    fontSize:    ""
+    fontFace:    ""
+  }
+}
+
+getBlockStyleDefaults = (style) ->
+  JSON.parse(JSON.stringify(blockStyleDefaults[style]))
+
 window.RactiveNetTangoBuilder = Ractive.extend({
 
   data: () -> {
-    playMode:        false,        # Boolean
-    newModel:        undefined,    # String
-    popupMenu:       undefined,    # RactivePopupMenu
-    confirmDialog:   undefined,    # RactiveConfirmDialog
+    playMode:        false         # Boolean
+    newModel:        undefined     # String
+    popupMenu:       undefined     # RactivePopupMenu
+    confirmDialog:   undefined     # RactiveConfirmDialog
     blockEditor: {
-      show:        false,          # Boolean
-      spaceNumber: undefined,      # Integer
-      blockNumber: undefined,      # Integer
-      submitEvent: undefined,      # String
+      show:        false           # Boolean
+      spaceNumber: undefined       # Integer
+      blockNumber: undefined       # Integer
+      submitEvent: undefined       # String
       submitLabel: "Add New Block" # String
-    },
+    }
 
     findElement:   () ->, # (String)  => Element
     createElement: () ->, # (String)  => Element
     appendElement: () ->, # (Element) => Unit
 
-    extraCss: "",         # String
-    title: "Blank Model", # String
-
-    netTangoToggles: {
-      workspaceBelow: {
-        label: "Show NetTango spaces below the NetLogo model",
-        checked: true
-      }
-    },
+    title: "Blank Model" # String
 
     tabOptions: {
       commandCenterTab: {
-        label: "Hide command center tab",
-        checked: true,
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(1) { background: #eee; }',
+        label: "Hide command center tab"
+        checked: true
+        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(1) { background: #eee; }'
         checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(1) { display: none; }'
-      },
+      }
       codeTab: {
-        label: "Hide code tab",
-        checked: true,
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(2) { background: #eee; }',
+        label: "Hide code tab"
+        checked: true
+        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(2) { background: #eee; }'
         checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(2) { display: none; }'
-      },
+      }
       infoTab: {
-        label: "Hide info tab",
-        checked: true,
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }',
+        label: "Hide info tab"
+        checked: true
+        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }'
         checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(3) { display: none; }'
-      },
+      }
       speedBar: {
-        label: "Hide model speed bar",
-        checked: true,
-        checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }',
+        label: "Hide model speed bar"
+        checked: true
+        checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }'
         checkedCssExport: '.netlogo-speed-slider { display: none; }'
-      },
+      }
       fileButtons: {
-        label: "Hide file and export buttons",
-        checked: true,
-        checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }',
+        label: "Hide file and export buttons"
+        checked: true
+        checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }'
         checkedCssExport: '.netlogo-export-wrapper { display: none; }'
-      },
+      }
       authoring: {
-        label: "Hide authoring unlock toggle",
-        checked: true,
-        checkedCssBuild:  '#authoring-lock { background: #eee; }',
+        label: "Hide authoring unlock toggle"
+        checked: true
+        checkedCssBuild:  '#authoring-lock { background: #eee; }'
         checkedCssExport: '#authoring-lock { display: none; }'
-      },
+      }
       tabsPosition: {
-        label: "Hide commands and code position toggle",
-        checked: true,
-        checkedCssBuild:  '#tabs-position { background: #eee; }',
+        label: "Hide commands and code position toggle"
+        checked: true
+        checkedCssBuild:  '#tabs-position { background: #eee; }'
         checkedCssExport: '#tabs-position { display: none; }'
-      },
+      }
       poweredBy: {
-        label: "Hide 'Powered by NetLogo' link",
-        checked: false,
-        checkedCssBuild:  '.netlogo-powered-by { background: #eee; }',
+        label: "Hide 'Powered by NetLogo' link"
+        checked: false
+        checkedCssBuild:  '.netlogo-powered-by { background: #eee; }'
         checkedCssExport: '.netlogo-powered-by { display: none; }'
       }
     }
+
+    netTangoToggles: {
+      workspaceBelow: {
+        label: "Show NetTango spaces below the NetLogo model"
+        checked: true
+      }
+    }
+
+    blockStyles: {
+      starterBlockStyles:   getBlockStyleDefaults("starterBlockStyles")
+      containerBlockStyles: getBlockStyleDefaults("containerBlockStyles")
+      commandBlockStyles:   getBlockStyleDefaults("commandBlockStyles")
+    }
+
+    extraCss: "" # String
   }
 
   on: {
@@ -99,24 +138,34 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-clear-all': (_) ->
       blankData = {
-          code:       @get('newModel')
-        , spaces:     []
-        , extraCss:   ""
-        , title:      "Blank Model"
-        , netTangoToggles: {
+        code:       @get('newModel')
+        spaces:     []
+        title:      "Blank Model"
+        tabOptions: {
+          commandCenterTab: true
+          codeTab:          true
+          infoTab:          true
+          speedBar:         true
+          fileButtons:      true
+          authoring:        true
+          poweredBy:        false
+        }
+        netTangoToggles: {
           workspaceBelow: true
         }
-        , tabOptions: {
-            commandCenterTab: true
-          , codeTab:          true
-          , infoTab:          true
-          , speedBar:         true
-          , fileButtons:      true
-          , authoring:        true
-          , poweredBy:        false
+        blockStyles: {
+          starterBlockStyles:   getBlockStyleDefaults("starterBlockStyles")
+          containerBlockStyles: getBlockStyleDefaults("containerBlockStyles")
+          commandBlockStyles:   getBlockStyleDefaults("commandBlockStyles")
         }
+        extraCss: ""
       }
       @load(blankData)
+      return
+
+    '*.ntb-clear-all-block-styles': (_) ->
+      spacesComponent = @findComponent('tangoDefs')
+      spacesComponent.clearBlockStyles()
       return
 
     # (Context) => Unit
@@ -147,24 +196,35 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       return false
 
     'ntb-show-options': (_) ->
-      optionsForm = @findComponent("optionsForm")
-      tabOptions  = JSON.parse(JSON.stringify(@get('tabOptions')))
-      toggles     = JSON.parse(JSON.stringify(@get('netTangoToggles')))
-      optionsForm.show(tabOptions, toggles, @get('extraCss'))
-      overlay = @root.find('.widget-edit-form-overlay')
-      overlay.classList.add('ntb-dialog-overlay')
+      optionsForm     = @findComponent("optionsForm")
+      tabOptions      = @get("tabOptions")
+      netTangoToggles = @get("netTangoToggles")
+      blockStyles     = @get("blockStyles")
+
+      extraCss = @get("extraCss")
+      optionsForm.show({
+        tabOptions,
+        netTangoToggles,
+        blockStyles,
+        extraCss
+      })
+      overlay = @root.find(".widget-edit-form-overlay")
+      overlay.classList.add("ntb-dialog-overlay")
       return
 
-    '*.ntb-options-updated': (_, newOptions, newToggles, extraCss) ->
+    '*.ntb-options-updated': (_, options) ->
       tabOptions = @get("tabOptions")
-      Object.getOwnPropertyNames(newOptions)
-        .forEach( (n) -> if tabOptions.hasOwnProperty(n) then tabOptions[n].checked = newOptions[n].checked)
+      Object.getOwnPropertyNames(options.tabOptions)
+        .forEach( (n) -> if tabOptions.hasOwnProperty(n) then tabOptions[n].checked = options.tabOptions[n].checked)
 
       netTangoToggles = @get("netTangoToggles")
-      Object.getOwnPropertyNames(newToggles)
-        .forEach( (n) -> if netTangoToggles.hasOwnProperty(n) then netTangoToggles[n].checked = newToggles[n].checked)
+      Object.getOwnPropertyNames(options.netTangoToggles)
+        .forEach( (n) -> if netTangoToggles.hasOwnProperty(n) then netTangoToggles[n].checked = options.netTangoToggles[n].checked)
 
-      @set("extraCss", extraCss)
+      [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
+        .forEach( (prop) => if options.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options[prop]) )
+
+      @set("extraCss", options.extraCss)
 
       @refreshCss()
       @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
@@ -258,19 +318,23 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       defsComponent.createSpace(spaceVals)
     defsComponent.updateCode(true)
 
-    netTangoToggles = @get('netTangoToggles')
-    for key, prop of (ntData.netTangoToggles ? { })
-      if netTangoToggles.hasOwnProperty(key)
-        @set("netTangoToggles.#{key}.checked", prop)
-
     tabOptions = @get('tabOptions')
     for key, prop of (ntData.tabOptions ? { })
       if tabOptions.hasOwnProperty(key)
         @set("tabOptions.#{key}.checked", prop)
 
-    for propName in [ 'extraCss' ]
-      if ntData.hasOwnProperty(propName)
-        @set(propName, ntData[propName])
+    netTangoToggles = @get('netTangoToggles')
+    for key, prop of (ntData.netTangoToggles ? { })
+      if netTangoToggles.hasOwnProperty(key)
+        @set("netTangoToggles.#{key}.checked", prop)
+
+    @set("extraCss", if ntData.hasOwnProperty("extraCss") then ntData.extraCss else "")
+
+    for propName in [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
+      if (ntData.hasOwnProperty("blockStyles") and ntData.blockStyles.hasOwnProperty(propName))
+        @set("blockStyles.#{propName}", ntData[propName])
+      else
+        @set("blockStyles.#{propName}", getBlockStyleDefaults(propName))
 
     if (ntData.code?)
       @fire('ntb-model-change', ntData.title, ntData.code)
@@ -297,9 +361,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-builder">
-      <errorDisplay></errorDisplay>
+      <optionsForm parentClass="ntb-builder" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
-      <optionsForm parentClass="ntb-builder" verticalOffset="10"></optionsForm>
+      <errorDisplay></errorDisplay>
       <input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" hidden>
 
       <div class="ntb-controls">
@@ -312,7 +376,13 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         </div>
         {{/}}
 
-        <tangoDefs id="ntb-defs" playMode={{ playMode }} popupMenu={{ popupMenu }} confirmDialog={{ confirmDialog }} />
+        <tangoDefs
+          id="ntb-defs"
+          playMode={{ playMode }}
+          popupMenu={{ popupMenu }}
+          confirmDialog={{ confirmDialog }}
+          blockStyles={{ blockStyles }}
+          />
 
         {{# !playMode }}
           <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
