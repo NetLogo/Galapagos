@@ -228,7 +228,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         )
 
       [ "starterBlockStyles", "containerBlockStyles", "commandBlockStyles" ]
-        .forEach( (prop) => if options.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options[prop]) )
+        .forEach( (prop) => if options.blockStyles.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options.blockStyles[prop]) )
 
       @set("extraCss", options.extraCss)
 
