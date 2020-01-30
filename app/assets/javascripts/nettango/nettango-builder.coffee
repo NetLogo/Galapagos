@@ -250,8 +250,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         spaces,
       , netTangoToggles
       , tabOptions
-      , title:    @get('title')
-      , extraCss: @get('extraCss')
+      , blockStyles: @get('blockStyles')
+      , title:       @get('title')
+      , extraCss:    @get('extraCss')
     }
 
   # () => String
