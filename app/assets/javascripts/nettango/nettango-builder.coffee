@@ -319,6 +319,14 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   # (NetTangoBuilderData) => Unit
   load: (ntData) ->
+    # Make sure styles are loaded first, as when spaces are added
+    # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
+    for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
+      if (ntData.hasOwnProperty("blockStyles") and ntData.blockStyles.hasOwnProperty(propName))
+        @set("blockStyles.#{propName}", ntData.blockStyles[propName])
+      else
+        @set("blockStyles.#{propName}", getBlockStyleDefaults(propName))
+
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
     for spaceVals in (ntData.spaces ? [])
@@ -336,12 +344,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         @set("netTangoToggles.#{key}.checked", prop)
 
     @set("extraCss", if ntData.hasOwnProperty("extraCss") then ntData.extraCss else "")
-
-    for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-      if (ntData.hasOwnProperty("blockStyles") and ntData.blockStyles.hasOwnProperty(propName))
-        @set("blockStyles.#{propName}", ntData[propName])
-      else
-        @set("blockStyles.#{propName}", getBlockStyleDefaults(propName))
 
     if (ntData.code?)
       @fire('ntb-model-change', ntData.title, ntData.code)

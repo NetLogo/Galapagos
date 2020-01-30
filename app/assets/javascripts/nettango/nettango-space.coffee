@@ -219,13 +219,12 @@ window.RactiveNetTangoSpace = Ractive.extend({
     else
       space.defs.program.chains
 
-    space.defs.blockStyles = @get("blockStyles")
-
     try
       NetTango.restore("NetLogo", containerId, {
         version:     space.defs.version,
         height:      space.height,
         width:       space.width,
+        blockStyles: @get("blockStyles"),
         blocks:      space.defs.blocks,
         expressions: space.defs.expressions,
         program:     { chains: newChains }
