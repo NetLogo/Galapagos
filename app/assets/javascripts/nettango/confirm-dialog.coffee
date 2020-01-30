@@ -1,19 +1,21 @@
 window.RactiveConfirmDialog = Ractive.extend({
 
   data: () -> {
-      active:         false # Boolean
-    , text:           null  # String
-    , approveText:    null  # String
-    , approveEvent:   null  # String
-    , denyText:       null  # String
-    , denyEvent:      null  # String
-    , eventArguments: null  # Array[Any]
-    , eventTarget:    null  # Ractive
+      active:         false  # Boolean
+    , top:            "50px" # String
+    , text:           null   # String
+    , approveText:    null   # String
+    , approveEvent:   null   # String
+    , denyText:       null   # String
+    , denyEvent:      null   # String
+    , eventArguments: null   # Array[Any]
+    , eventTarget:    null   # Ractive
   }
 
   # (ShowOptions) => Unit
-  show: (options) ->
+  show: (options, top = "50px") ->
     @set("active",         true)
+    @set("top",            top)
     @set("text",           options?.text ? "Are you sure?")
     @set("approveText",    options?.approve?.text ? "Yes")
     @set("approveEvent",   options?.approve?.event)
@@ -39,7 +41,7 @@ window.RactiveConfirmDialog = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-dialog-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-confirm-dialog">
+      <div class="ntb-confirm-dialog" style="margin-top: {{ top }}">
         <div class="ntb-confirm-header">Confirm</div>
         <div class="ntb-confirm-text">{{ text }}</div>
         <input class="widget-edit-text ntb-confirm-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">

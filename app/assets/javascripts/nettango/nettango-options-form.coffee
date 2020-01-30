@@ -19,7 +19,7 @@ window.RactiveNetTangoOptionsForm = EditForm.extend({
         text:    "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone.",
         approve: { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" },
         deny:    { text: "No, leave block styles in place" }
-      })
+      }, "250px")
       return false
 
   }
@@ -83,7 +83,9 @@ window.RactiveNetTangoOptionsForm = EditForm.extend({
       <div class="ntb-toggle-text">Command Block Styles</div>
       <blockStyle styleId="command-blocks" styleSettings="{{ blockStyles.commandBlockStyle }}"></blockStyle>
 
-      <button class="ntb-button" type="button" on-click="ntb-confirm-clear-all-block-styles">Remove existing styles from all blocks</button>
+      <div class="ntb-block-defs-controls">
+        <button class="ntb-button" type="button" on-click="ntb-confirm-clear-all-block-styles">Remove existing styles from all blocks</button>
+      </div>
 
       <div class="ntb-block-defs-controls">
         <label for="ntb-extra-css">Extra CSS to include</label>
