@@ -229,7 +229,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
       oldStyles = JSON.parse(JSON.stringify(@get("blockStyles")))
       [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-        .forEach( (prop) => if options.blockStyles.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options.blockStyles[prop]) )
+        .forEach( (prop) =>
+          if options.blockStyles.hasOwnProperty(prop)
+            @set("blockStyles.#{prop}", options.blockStyles[prop])
+        )
       newStyles = @get("blockStyles")
       blockStylesChanged = [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
         .some( (prop) ->
