@@ -38,24 +38,24 @@ window.RactiveNetTangoTestingDefaults = Ractive.extend({
     height: 550,
     # coffeelint: disable=max_line_length
     defs: { blocks: [
-      { "action": "\uD83D\uDC3A wolf actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-actions", "blockColor": "#bb5555", "required": true },
-      { "action": "wolf meets sheep ", "start": false, "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-meets-sheep", "blockColor": "#bb5555", "required": true },
+      { "action": "\uD83D\uDC3A wolf actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-actions", "required": true },
+      { "action": "wolf meets sheep ", "start": false, "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to wolf-meets-sheep", "required": true },
       { "action": "forward", "start": false, "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
       { "action": "wiggle", "start": false, "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
-      { "action": "hatch", "start": false, "format": "hatch 1 [ rt random-float 360 fd 1 ]", "blockColor": "#916da0" }, { "action": "die", "blockColor": "#916da0", },
-      { "action": "\uD83D\uDC11 ask nearby sheep", "blockColor": "#8899aa", "format": "ask sheep in-radius 3", "clauses": [ ], "control": true },
-      { "action": "chance", "start": false, "blockColor": "#8899aa", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+      { "action": "hatch", "start": false, "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
+      { "action": "\uD83D\uDC11 ask nearby sheep", "format": "ask sheep in-radius 3", "clauses": [ ], "control": true },
+      { "action": "chance", "start": false, "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
     # coffeelint: enable=max_line_length
   }
 
   sheepSpaceDefault: {
     name: "Sheep",
     # coffeelint: disable=max_line_length
-    defs: { blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to sheep-actions", "blockColor": "#bb5555", "required": true },
+    defs: { blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "type": "nlogo:procedure", "start": true, "limit": 1, "format": "to sheep-actions", "required": true },
     { "action": "forward", "start": false, "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
     { "action": "wiggle", "start": false, "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
-    { "action": "hatch", "start": false, "format": "hatch 1 [ rt random-float 360 fd 1 ]", "blockColor": "#916da0" }, { "action": "die", "blockColor": "#916da0", },
-    { "action": "chance", "start": false, "blockColor": "#8899aa", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+    { "action": "hatch", "start": false, "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
+    { "action": "chance", "start": false, "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
     # coffeelint: enable=max_line_length
   }
 

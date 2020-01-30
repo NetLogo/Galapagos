@@ -30,12 +30,6 @@ createCommand = (overrides) ->
     , control:     false
     , required:    false
     , limit:       undefined
-    , blockColor:  '#9977aa'
-    , textColor:   '#ffffff'
-    , borderColor: '#000000'
-    , fontWeight:  400
-    , fontSize:    12
-    , fontFace:    "'Poppins', sans-serif"
     , params:      []
     , properties:  []
   }
@@ -63,12 +57,6 @@ blocks = {
             , control:     false
             , required:    true
             , limit:       1
-            , blockColor:  '#bb5555'
-            , textColor:   '#ffffff'
-            , borderColor: '#000000'
-            , fontWeight:  400
-            , fontSize:    12
-            , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
           }
@@ -83,12 +71,6 @@ blocks = {
             , control:     true
             , required:    false
             , limit:       undefined
-            , blockColor:  '#8899aa'
-            , textColor:   '#ffffff'
-            , borderColor: '#000000'
-            , fontWeight:  400
-            , fontSize:    12
-            , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
             , clauses:     []
@@ -104,12 +86,6 @@ blocks = {
             , control:     true
             , required:    false
             , limit:       undefined
-            , blockColor:  '#8899aa'
-            , textColor:   '#ffffff'
-            , borderColor: '#000000'
-            , fontWeight:  400
-            , fontSize:    12
-            , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
             , clauses:     [{ name: "else", action: "else", format: "" }]
@@ -130,12 +106,6 @@ blocks = {
             , control:     true
             , required:    false
             , limit:       undefined
-            , blockColor:  '#8899aa'
-            , textColor:   '#ffffff'
-            , borderColor: '#000000'
-            , fontWeight:  400
-            , fontSize:    12
-            , fontFace:    "'Poppins', sans-serif"
             , params:      []
             , properties:  []
             , clauses:     []
@@ -148,7 +118,6 @@ blocks = {
             , type:    "nlogo:if"
             , format:  "if random 100 < {0}"
             , control: true
-            , blockColor: '#8899aa'
             , params: [ {
                 type: "range",
                 min:     0,
