@@ -227,8 +227,21 @@ window.RactiveNetTangoBuilder = Ractive.extend({
             netTangoToggles[n].checked = options.netTangoToggles[n].checked
         )
 
+      oldStyles = JSON.parse(JSON.stringify(@get("blockStyles")))
       [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
         .forEach( (prop) => if options.blockStyles.hasOwnProperty(prop) then @set("blockStyles.#{prop}", options.blockStyles[prop]) )
+      newStyles = @get("blockStyles")
+      blockStylesChanged = [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
+        .some( (prop) ->
+          [ "blockColor", "textColor", "borderColor", "fontWeight", "fontSize", "fontFace" ]
+           .some( (styleProp) ->
+             oldStyles[prop]?[styleProp] isnt newStyles[prop]?[styleProp]
+           )
+        )
+
+      if blockStylesChanged
+        spacesComponent = @findComponent('tangoDefs')
+        spacesComponent.updateNetTango()
 
       @set("extraCss", options.extraCss)
 
