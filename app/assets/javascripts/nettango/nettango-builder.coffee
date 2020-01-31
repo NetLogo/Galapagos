@@ -45,10 +45,6 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       submitLabel: "Add New Block" # String
     }
 
-    findElement:   () ->, # (String)  => Element
-    createElement: () ->, # (String)  => Element
-    appendElement: () ->, # (Element) => Unit
-
     title: "Blank Model" # String
 
     tabOptions: {
@@ -301,17 +297,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   # () => Unit
   refreshCss: () ->
-    # We use a fancy "CSS Injection" technique to get styles applied to the model iFrame - JMB August 2018
-    styleElement = @get('findElement')('ntb-injected-style')
-
-    if (not styleElement)
-      styleElement    = @get('createElement')('style')
-      styleElement.id = 'ntb-injected-style'
-      @get('appendElement')(styleElement)
-
-    extraCss = @get('extraCss')
-
-    styleElement.innerHTML = @compileCss(@get('playMode'), extraCss)
+    styleElement           = @find('#ntb-injected-style')
+    styleElement.innerHTML = @compileCss(@get('playMode'), @get('extraCss'))
     return
 
   # (Boolean, String) => String
@@ -385,6 +372,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
+    <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
       <optionsForm parentClass="ntb-builder" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>

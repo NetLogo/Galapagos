@@ -255,9 +255,6 @@
         setModelCode:        loadModel
       , sessionReady:        ()                => window.session !== undefined
       , getModelCode:        ()                => window.session.getNlogo()
-      , getElementById:      (id)              => document.getElementById(id)
-      , createElement:       (elementType)     => document.createElement(elementType)
-      , appendElement:       (element)         => document.body.appendChild(element)
       , addEventListener:    (event, callback) => document.addEventListener(event, callback)
       , getWidgetController: ()                => window.session.widgetController
       , getModelTitle:       ()                => window.session.modelTitle()

@@ -41,9 +41,6 @@ class window.NetTangoController
       el: element,
 
       data: () -> {
-        findElement:   theOutsideWorld.getElementById, # (String) => Element
-        createElement: theOutsideWorld.createElement,  # (String) => Element
-        appendElement: theOutsideWorld.appendElement,  # (Element) => Unit
         newModel:      theOutsideWorld.newModel,       # () => String
         playMode:      playMode,                       # Boolean
         popupMenu:     undefined                       # RactivePopupMenu
@@ -74,9 +71,6 @@ class window.NetTangoController
         <popupmenu></popupmenu>
         <tangoBuilder
           playMode='{{ playMode }}'
-          findElement='{{ findElement }}'
-          createElement='{{ createElement }}'
-          appendElement='{{ appendElement }}'
           newModel='{{ newModel }}'
           popupMenu='{{ popupMenu }}'
           />
@@ -121,7 +115,7 @@ class window.NetTangoController
     progress = @storage.inProgress
 
     # first try to load from the inline code element
-    netTangoCodeElement = @theOutsideWorld.getElementById("ntango-code")
+    netTangoCodeElement = document.getElementById("ntango-code")
     if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
       data = JSON.parse(netTangoCodeElement.textContent)
       @storageId = data.storageId
@@ -142,7 +136,7 @@ class window.NetTangoController
       .then( (netTangoModel) =>
         @loadExternalModel(netTangoModel)
       ).catch( (error) =>
-        netLogoLoading = @theOutsideWorld.getElementById("loading-overlay")
+        netLogoLoading = document.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
         @showErrors([
           "Error: Unable to load NetTango model from the given URL."
@@ -249,14 +243,7 @@ class window.NetTangoController
     netTangoCodeElement = exportDom.getElementById('ntango-code')
     netTangoCodeElement.textContent = JSON.stringify(netTangoData)
 
-    styleElement = @theOutsideWorld.getElementById('ntb-injected-style')
-    if (styleElement?)
-      newElement = exportDom.createElement('style')
-      newElement.id = 'ntb-injected-style'
-      newElement.innerHTML = @builder.compileCss(true, @builder.get('extraCss'))
-      exportDom.head.appendChild(newElement)
-
-    exportWrapper = @theOutsideWorld.createElement('div')
+    exportWrapper = document.createElement('div')
     exportWrapper.appendChild(exportDom.documentElement)
     exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
     @theOutsideWorld.saveAs(exportBlob, "#{title}.html")
