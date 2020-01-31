@@ -354,6 +354,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       @fire('ntb-model-change', "New Model", @get('newModel'))
 
     @refreshCss()
+    @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
 
     # If this was an import, clear the value so we can re-import the same file in Chrome and Safari - JMB August 2018
     importInput = @find('#ntb-import-json')
