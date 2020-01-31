@@ -1,3 +1,11 @@
+dele = { eventName: 'ntb-delete-block',         name: 'delete' }
+edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
+up   = { eventName: 'ntb-block-up',             name: 'move up' }
+dn   = { eventName: 'ntb-block-down',           name: 'move down' }
+dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
+
+modifyBlockMenuItems = [dele, edit, up, dn, dup]
+
 window.RactiveNetTangoSpace = Ractive.extend({
 
   data: () -> {
@@ -204,9 +212,19 @@ window.RactiveNetTangoSpace = Ractive.extend({
       when "menu-item-clicked"
         playMode = @get("playMode")
         if (not playMode)
-          space = @get("space")
-          block = space.defs.blocks[event.blockId]
-          @showBlockForm(space.name, block, event.blockId, "Update Block", "ntb-block-updated")
+          space      = @get("space")
+          blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
+          block      = space.defs.blocks[blockIndex]
+          @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated")
+
+      when "menu-item-context-menu"
+        playMode = @get("playMode")
+        if (not playMode)
+          space      = @get("space")
+          blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
+          block      = space.defs.blocks[blockIndex]
+          modifyMenu = @createModifyMenu(block, blockIndex)
+          @get('popupMenu').popup(this, event.x, event.y, modifyMenu)
 
     return
 
@@ -253,18 +271,17 @@ window.RactiveNetTangoSpace = Ractive.extend({
     @fire('ntb-errors', {}, messages, ex.stack)
     return
 
+  # (NetTangoBlock) => Content
+  createModifyMenu: (block, blockIndex) ->
+    {
+      name:  block.action
+      items: modifyBlockMenuItems.map((x) -> Object.assign({ data: blockIndex }, x))
+    }
+
   # (NetTangoSpace) => Content
   createModifyMenuContent: (space) ->
-    dele = { eventName: 'ntb-delete-block',         name: 'delete' }
-    edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
-    up   = { eventName: 'ntb-block-up',             name: 'move up' }
-    dn   = { eventName: 'ntb-block-down',           name: 'move down' }
-    dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
-    items = for def, num in space.defs.blocks
-      {
-        name:  def.action
-        items: [dele, edit, up, dn, dup].map((x) -> Object.assign({ data: num }, x))
-      }
+    items = for block, blockIndex in space.defs.blocks
+      @createModifyMenu(block, blockIndex)
 
     {
       name: "_",
