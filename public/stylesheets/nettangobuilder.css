@@ -175,6 +175,10 @@ body#ntp-body, html#ntp-body {
   padding-top: 2px;
   padding-bottom: 3px;
 }
+.ntb-list-menu > li > a, .ntb-list-menu > li > a:visited {
+  text-decoration: none;
+  color: #06a;
+}
 .ntb-list-menu > li.ntb-list-menu-item, .ntb-list-menu > li.ntb-list-submenu {
   color: #06a;
 }
@@ -184,7 +188,7 @@ body#ntp-body, html#ntp-body {
 .ntb-list-menu > li.ntb-list-menu-title {
   border-bottom: 1px solid #666;
 }
-.ntb-list-menu > li.ntb-list-menu-item:hover, .ntb-list-menu > li.ntb-list-submenu:hover {
+.ntb-list-menu > li.ntb-list-menu-item:hover, .ntb-list-menu > li.ntb-list-submenu:hover, .ntb-list-menu > li > a:hover {
   background: #06a;
   color: #fff;
 }

@@ -181,6 +181,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           { spacerText: '-' }
           { eventName: 'ntb-export-json',        name: 'Export NetTango JSON file' }
           { eventName: 'ntb-export-page',        name: 'Export standalone HTML file' }
+          { eventName: 'ntb-save', name: 'Preview standalone HTML page', url: '/ntango-play?playMode=true' }
         ]
       }
       popupMenu.popup(this, pageX, pageY, fileOperations)

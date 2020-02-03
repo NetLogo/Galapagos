@@ -14,7 +14,8 @@ window.RactivePopupMenu = Ractive.extend({
   # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
   # Content = Spacer | Item | Items
   # Spacer = { spacerText: String }
-  # Item   = { name: String, eventName: String, data: Any  }
+  # Item   = { name: String, eventName: String, data: Any }
+  # Link   = { name: String, url: String }
   # Items  = { name: String, eventName: String, items: Array[Content] }
   # The `eventName` string is optional for an Item - if not given the event on the root `content` will be used
   # The `menuData` (if sent via the `popup()` method) and the `data` for each item will be passed to the fired event
@@ -88,7 +89,9 @@ window.RactivePopupMenu = Ractive.extend({
     @set("#{prefix}class", 'ntb-popup-active')
     return
 
-  template: """
+  template:
+    # coffeelint: disable=max_line_length
+    """
     <div id="ntb-popup-root" class="ntb-popup {{ class }}" style="left: {{ left }}px; top: {{ top }}px;">
       <ul class="ntb-list-menu">{{# content.items:itemNum }}
         {{> item }}
@@ -111,6 +114,8 @@ window.RactivePopupMenu = Ractive.extend({
         {{> group }}
       {{ elseif spacerText !== undefined }}
         <li class="ntb-list-spacer">{{ spacerText }}</li>
+      {{ elseif url !== undefined }}
+        <li class="ntb-list-menu-item"><a href="{{ url }}" target="_blank" on-click="[ 'exec', eventName, data ]">{{ name }}</a></li>
       {{ else }}
         <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">{{ name }}</li>
       {{/}}
@@ -120,5 +125,6 @@ window.RactivePopupMenu = Ractive.extend({
       <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-submenu"
         on-mouseover="[ 'popup-submenu', this, level, itemNum ]">{{ name }} ▶</li>
     {{/partial}}
-  """
+    """
+    # coffeelint: enable=max_line_length
 })
