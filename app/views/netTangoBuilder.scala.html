@@ -21,9 +21,9 @@
 @content = {
   @views.html.spinner()
   @views.html.errorAlert()
-  <div @if(!themed) { class="ntb-content" } else { class="ntb-content-unthemed" }>
+  <div @if(themed) { class="ntb-content" } else { class="ntb-content-unthemed" }>
 
-  @if(!themed) {
+  @if(themed) {
     <div class="model-selection-bar">
       <div>
         <label>Choose a base model:
@@ -41,7 +41,7 @@
     </div>
   }
 
-    <div id="ntb-container" @if(!themed) { class="ntb-container" }>
+    <div id="ntb-container" @if(themed) { class="ntb-container" }>
 
       <div class="ntb-netlogo-model">
         <div id="netlogo-model-container"></div>
@@ -172,7 +172,7 @@
     var activeContainer  = loadingOverlay
     const modelContainer = document.getElementById("netlogo-model-container")
 
-  @if(!themed) {
+  @if(themed) {
     function pickModel(path, name) {
       const encoded = encodeURI(hostPrefix + '/assets/' + path)
       exports.selectModelByURL(encoded)
@@ -285,7 +285,7 @@
 }
 
 @if(themed) {
-  @views.html.themeless(content, "NetTango Web Player", Option("ntango-play"), extraHead, extraBody)
-} else {
   @views.html.mainTheme(content, "NetTango Web Builder", Option("ntango-build"), extraHead, extraBody)
+} else {
+  @views.html.themeless(content, "NetTango Web Player", Option("ntango-play"), extraHead, extraBody)
 }
