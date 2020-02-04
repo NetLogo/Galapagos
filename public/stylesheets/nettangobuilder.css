@@ -365,9 +365,9 @@ body#ntp-body, html#ntp-body {
   margin: 0px;
 }
 
-.nt-canvas {
+.ntb-canvas {
   border: 1px solid #000;
-  width: 100%;
+  width: min-content;
   margin-left: auto;
   margin-right: auto;
 }

@@ -327,8 +327,8 @@ window.RactiveNetTangoSpace = Ractive.extend({
 
       </div>
 
-      <div id="{{ spaceId }}" >
-        <div id="{{ spaceId }}-canvas" class="nt-canvas" />
+      <div id="{{ spaceId }}" class="ntb-canvas" >
+        <div id="{{ spaceId }}-canvas" />
       </div>
 
       {{# !playMode }}
