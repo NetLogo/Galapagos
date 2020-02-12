@@ -173,6 +173,16 @@
     const modelContainer = document.getElementById("netlogo-model-container")
 
   @if(themed) {
+    const fileInput = document.getElementById("model-file-input")
+    fileInput.addEventListener("change", (event) => {
+      const reader = new FileReader()
+      reader.onload = (e) => loadModel(e.target.result, fileInput.value)
+
+      if (fileInput.files.length > 0) {
+        reader.readAsText(fileInput.files[0])
+      }
+    })
+
     function pickModel(path, name) {
       const encoded = encodeURI(hostPrefix + '/assets/' + path)
       exports.selectModelByURL(encoded)
