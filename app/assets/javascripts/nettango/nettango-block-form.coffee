@@ -36,6 +36,9 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
       target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
       return
 
+    '*.code-changed': (_, code) ->
+      @set("block.format", code)
+
     'ntb-clear-styles': (_) ->
       block = @get("block")
       [ 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
@@ -151,6 +154,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     , attribute:    RactiveNetTangoAttribute
     , blockStyle:   RactiveBlockStyleSettings
     , dropdown:     RactiveTwoWayDropdown
+    , formCode:     RactiveEditFormMultilineCode
     , labeledInput: RactiveTwoWayLabeledInput
     , spacer:       RactiveEditFormSpacer
   }
@@ -166,25 +170,21 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <div class="flex-row ntb-form-row">
 
-        <labeledInput id="{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
+        <labeledInput id="block-{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
           divClass="ntb-flex-column" class="ntb-input" />
 
-        <dropdown id="{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
+        <dropdown id="block-{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
           choices="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
           divClass="ntb-flex-column"
           />
 
-        <labeledInput id="{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
+        <labeledInput id="block-{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
           min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
 
       </div>
 
-      <div class="ntb-flex-column">
-        <label for="{{ id }}-format" class="widget-edit-input-label" style="">NetLogo code format ({#} for parameter, {P#} for property)</label>
-        <div style="flex-grow: 1;">
-          <textarea class="widget-edit-text widget-edit-input ntb-code-format" id="{{ id }}-format" name="format"
-            value="{{ format }}" twoway="true" ></textarea>
-        </div>
+      <div class="ntb-flex-column-code">
+        <formCode id="block-{{ id }}-format" name="source" value="{{ format }}" label="NetLogo code format (use {#} for parameter, {P#} for property)" />
       </div>
 
       <arrayView

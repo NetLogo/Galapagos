@@ -269,13 +269,6 @@ body#ntp-body, html#ntp-body {
   margin: auto;
 }
 
-.ntb-code-format {
-  padding: 4px 10px;
-  border: 1px solid #eee;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .ntb-array-view-hidden {
   border: 0px;
   background: unset;
@@ -342,23 +335,18 @@ body#ntp-body, html#ntp-body {
   box-sizing: border-box;
 }
 
-.ntb-code-format {
-  width: 100%;
-  min-width: 30px;
-  font-size: 16px;
-  height: 5em;
-  padding: 4px 8px;
-  background: #fcfcfc;
-  text-align: left;
-  box-sizing: border-box;
-  resize: vertical;
-}
-
+.ntb-flex-column-code > label,
 .ntb-flex-column .widget-edit-input-label {
   align-items: flex-start;
   text-align: left;
   margin-left: 12px;
   font-size: 12px;
+}
+
+.ntb-flex-column-code .CodeMirror {
+  resize: vertical;
+  overflow: auto !important;
+  min-height: 4em;
 }
 
 .ntb-flex-column > .widget-edit-dropdown {
