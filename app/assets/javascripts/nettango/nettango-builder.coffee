@@ -193,12 +193,12 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       return false
 
     'ntb-show-options': (_) ->
-      optionsForm     = @findComponent("optionsForm")
       tabOptions      = @get("tabOptions")
       netTangoToggles = @get("netTangoToggles")
       blockStyles     = @get("blockStyles")
+      extraCss        = @get("extraCss")
 
-      extraCss = @get("extraCss")
+      optionsForm = @findComponent("optionsForm")
       optionsForm.show({
         tabOptions,
         netTangoToggles,
