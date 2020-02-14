@@ -5,6 +5,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     spaces:           [],    # Array[NetTangoSpace]
     lastCompiledCode: "",    # String
     codeIsDirty:      false, # Boolean
+    showCode:         true,  # Boolean
     popupMenu:        null,  # RactivePopupMenu
     blockEditForm:    null,  # RactiveNetTangoBlockForm
     confirmDialog:    null   # RactiveConfirmDialog
@@ -168,8 +169,10 @@ window.RactiveNetTangoSpaces = Ractive.extend({
         />
       {{/spaces }}
     </div>
+    {{#if showCode }}
     <label for="ntb-code">NetLogo Code</label>
     <textarea id="ntb-code" readOnly>{{ code }}</textarea>
+    {{/if showCode }}
     """
     # coffeelint: enable=max_line_length
 })

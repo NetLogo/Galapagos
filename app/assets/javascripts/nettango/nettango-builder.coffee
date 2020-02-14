@@ -102,6 +102,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       workspaceBelow: {
         label: "Show NetTango spaces below the NetLogo model"
         checked: true
+      },
+      showCode: {
+        label: "Show the generated NetLogo Code below the NetTango spaces"
+        checked: true
       }
     }
 
@@ -148,6 +152,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
         }
         netTangoToggles: {
           workspaceBelow: true
+          showCode:       true
         }
         blockStyles: {
           starterBlockStyle:   getBlockStyleDefaults("starterBlockStyle")
@@ -219,9 +224,9 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
       netTangoToggles = @get("netTangoToggles")
       Object.getOwnPropertyNames(options.netTangoToggles)
-        .forEach( (n) ->
+        .forEach( (n) =>
           if netTangoToggles.hasOwnProperty(n)
-            netTangoToggles[n].checked = options.netTangoToggles[n].checked
+            @set("netTangoToggles.#{n}.checked", options.netTangoToggles[n].checked)
         )
 
       oldStyles = JSON.parse(JSON.stringify(@get("blockStyles")))
@@ -397,6 +402,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           popupMenu={{ popupMenu }}
           confirmDialog={{ confirmDialog }}
           blockStyles={{ blockStyles }}
+          showCode={{ netTangoToggles.showCode.checked }}
           />
 
         {{# !playMode }}
