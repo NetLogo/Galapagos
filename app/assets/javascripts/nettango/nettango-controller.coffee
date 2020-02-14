@@ -107,6 +107,8 @@ class window.NetTangoController
     if (netTangoModel.code?)
       netTangoModel.code = NetTangoRewriter.removeOldNetTangoCode(netTangoModel.code)
     @builder.load(netTangoModel)
+    if (netTangoModel.netLogoSettings?.isVertical?)
+      window.session.widgetController.ractive.set("isVertical", netTangoModel.netLogoSettings.isVertical)
     return
 
   # () => Unit
@@ -205,6 +207,8 @@ class window.NetTangoController
     netTangoData       = @builder.getNetTangoBuilderData()
     netTangoData.code  = modelCodeMaybe.result
     netTangoData.title = title
+    isVertical         = window.session.widgetController.ractive.get("isVertical") ? false
+    netTangoData.netLogoSettings = { isVertical }
 
     # Always store for 'storage' target - JMB August 2018
     @storeNetTangoData(netTangoData)
@@ -259,7 +263,8 @@ class window.NetTangoController
   # (NetTangoBuilderData) => Unit
   storeNetTangoData: (netTangoData) ->
     set = (prop) => @storage.set(prop, netTangoData[prop])
-    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions', 'netTangoToggles', 'blockStyles' ].forEach(set)
+    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions',
+      'netTangoToggles', 'blockStyles', 'netLogoSettings' ].forEach(set)
     return
 
   # () => Unit
