@@ -44,7 +44,6 @@ libraryDependencies ++= Seq(
   "org.webjars" % "highcharts" % "7.0.1",
   "org.webjars" % "jquery" % "3.3.1",
   "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars.npm" % "ractive" % "0.9.9",
   "org.webjars.npm" % "codemirror" % "5.42.2",
   "org.webjars.npm" % "synchrodecoder" % "1.0.2",
   "org.webjars.npm" % "localforage" % "1.7.3"

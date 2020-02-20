@@ -2,6 +2,7 @@
   "dependencies": {
     "coffeelint": "^2.1.0",
     "coffeescript": "^2.3.2",
-    "nettango": "^0.10.3"
+    "nettango": "^0.10.3",
+    "ractive": "0.9.14"
   }
 }
