@@ -19,7 +19,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
   }
 
   computed: {
-    isStale: '(${code} !== ${lastCompiledCode}) || ${lastCompileFailed}'
+    isStale: '(code !== lastCompiledCode) || lastCompileFailed'
   }
 
   # (String) => Unit

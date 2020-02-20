@@ -109,10 +109,10 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-ractive@0.9.14:
-  version "0.9.14"
-  resolved "https://registry.yarnpkg.com/ractive/-/ractive-0.9.14.tgz#aa0834185bfaa57bfeb12ab9f842c1904fe25a6d"
-  integrity sha1-qgg0GFv6pXv+sSq5+ELBkE/iWm0=
+ractive@0.10.14:
+  version "0.10.14"
+  resolved "https://registry.yarnpkg.com/ractive/-/ractive-0.10.14.tgz#0d3c2d2c8e4c686970f94127f29c2fef6f9de37c"
+  integrity sha512-56mYF41urs/v0SUBpLIa1GyZrnugRBB3rkZlKHnPxcbPDK7mFIPSaA2fKn+4DKsjmMkSbmmXqaHrzZdx9keZsA==
 
 resolve@^0.6.3:
   version "0.6.3"

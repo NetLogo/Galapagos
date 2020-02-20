@@ -31,6 +31,11 @@ window.RactiveInfoTabWidget = Ractive.extend({
     infoeditor: RactiveInfoTabEditor
   },
 
+  computed: {
+    sanitizedText: ->
+      @mdToHTML(@get("rawText"))
+  }
+
   mdToHTML: (md) ->
     # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
     # RG 8/18/15
@@ -44,11 +49,10 @@ window.RactiveInfoTabWidget = Ractive.extend({
     <div class='netlogo-tab-content netlogo-info'
          grow-in='{disable:"info-toggle"}' shrink-out='{disable:"info-toggle"}'>
       {{# !isEditing }}
-        <div class='netlogo-info-markdown'>{{{mdToHTML(rawText)}}}</div>
+        <div class='netlogo-info-markdown'>{{{sanitizedText}}}</div>
       {{ else }}
         <infoeditor rawText='{{rawText}}' />
       {{ / }}
     </div>
     """
 })
-
