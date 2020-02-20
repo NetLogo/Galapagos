@@ -3,6 +3,6 @@
     "coffeelint": "^2.1.0",
     "coffeescript": "^2.3.2",
     "nettango": "^0.10.3",
-    "ractive": "0.10.14"
+    "ractive": "1.3.10"
   }
 }
