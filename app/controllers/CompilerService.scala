@@ -303,20 +303,8 @@ private[controllers] trait RequestResultGenerator {
 
     val webjarURLs =
       Seq(
-        "file-saver/FileSaver.js",
         "google-caja/html-sanitizer-minified.js",
-        "markdown-js/markdown.js",
-        "mousetrap/mousetrap.js",
-        "highcharts/highcharts.js",
-        "highcharts/modules/exporting.js",
-        "highcharts/modules/export-data.js",
-        "ractive/ractive.js",
-        "synchrodecoder/synchrodecoder.min.js",
-        "codemirror/lib/codemirror.js",
-        "codemirror/addon/dialog/dialog.js",
-        "codemirror/addon/mode/simple.js",
-        "codemirror/addon/search/searchcursor.js",
-        "codemirror/addon/search/search.js"
+        "markdown-js/markdown.js"
       ).map(path => s"/public/lib/$path")
 
     val assetURLs =

@@ -3,7 +3,7 @@
 @()(implicit mode: Mode, request: Request[_])
 
 @extraHead = {
-  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css").relative' />
@@ -30,9 +30,9 @@
 }
 
 @extraBody = {
-  <script src='@routes.Assets.versioned("lib/jquery/jquery.js").relative' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/chosen/chosen.jquery.js").relative' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("lib/file-saver/FileSaver.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("jquery/dist/jquery.min.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("chosen-js/chosen.jquery.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("file-saver/dist/FileSaver.min.js").relative' type="text/javascript"></script>
   <script>
     var exports = {};
   </script>
