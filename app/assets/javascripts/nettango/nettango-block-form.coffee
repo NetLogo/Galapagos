@@ -99,7 +99,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    [ 'action', 'format', 'required', 'limit', 'blockColor',
+    [ 'action', 'format', 'note', 'required', 'limit', 'blockColor',
       'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
@@ -185,6 +185,12 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
       <div class="ntb-flex-column-code">
         <formCode id="block-{{ id }}-format" name="source" value="{{ format }}" label="NetLogo code format (use {#} for parameter, {P#} for property)" />
+      </div>
+
+      <div class="flex-row ntb-form-row">
+        <labeledInput id="block-{{ id }}-note" name="note" type="text" value="{{ note }}"
+          labelStr="Note - extra information for the code tip"
+          divClass="ntb-flex-column" class="ntb-input" />
       </div>
 
       <arrayView
