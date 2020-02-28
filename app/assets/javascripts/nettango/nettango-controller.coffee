@@ -1,28 +1,30 @@
 class window.NetTangoController
 
-  constructor: (element, localStorage, @overlay, @playMode, @theOutsideWorld) ->
+  constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
     @storage  = new NetTangoStorage(localStorage)
     getSpaces = () => @ractive.findComponent('tangoDefs').get("spaces")
     @rewriter = new NetTangoRewriter(@getNetTangoCode, getSpaces)
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
 
-    @ractive = @createRactive(element, @theOutsideWorld, @playMode)
+    @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode)
 
     # If you have custom components that will be needed inside partial templates loaded dynamically at runtime
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
     Ractive.components.attribute = RactiveNetTangoAttribute
 
-    @ractive.on('*.ntb-save',         (_, code)               => @exportNetTango('storage'))
-    @ractive.on('*.ntb-recompile',    (_, code)               => @setNetTangoCode(code))
-    @ractive.on('*.ntb-model-change', (_, title, code)        => @setNetLogoCode(title, code))
-    @ractive.on('*.ntb-code-dirty',   (_)                     => @markCodeDirty())
-    @ractive.on('*.ntb-export-page',  (_)                     => @exportNetTango('standalone'))
-    @ractive.on('*.ntb-export-json',  (_)                     => @exportNetTango('json'))
-    @ractive.on('*.ntb-import-json',  (local)                 => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-data',    (_, data)               => @builder.load(data))
-    @ractive.on('*.ntb-errors',       (_, errors, stackTrace) => @showErrors(errors, stackTrace))
-    @ractive.on('*.ntb-run',          (_, command, errorLog)  =>
+    @ractive.on('*.ntb-save',           (_, code)               => @exportNetTango('storage'))
+    @ractive.on('*.ntb-recompile',      (_, code)               => @setNetTangoCode(code))
+    @ractive.on('*.ntb-model-change',   (_, title, code)        => @setNetLogoCode(title, code))
+    @ractive.on('*.ntb-code-dirty',     (_)                     => @markCodeDirty())
+    @ractive.on('*.ntb-export-page',    (_)                     => @exportNetTango('standalone'))
+    @ractive.on('*.ntb-export-json',    (_)                     => @exportNetTango('json'))
+    @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
+    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
+    @ractive.on('*.ntb-import-json',    (local)                 => @importNetTango(local.node.files))
+    @ractive.on('*.ntb-load-data',      (_, data)               => @builder.load(data))
+    @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
+    @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command, errorLog))
 
@@ -34,16 +36,17 @@ class window.NetTangoController
       RactiveNetTangoTestingDefaults
 
   # (HTMLElement, Environment, Bool) => Ractive
-  createRactive: (element, theOutsideWorld, playMode) ->
+  createRactive: (element, theOutsideWorld, playMode, runtimeMode) ->
 
     new Ractive({
 
       el: element,
 
       data: () -> {
-        newModel:      theOutsideWorld.newModel,       # () => String
-        playMode:      playMode,                       # Boolean
-        popupMenu:     undefined                       # RactivePopupMenu
+          newModel:    theOutsideWorld.newModel # () => String
+        , playMode:    playMode                 # Boolean
+        , runtimeMode: runtimeMode              # String
+        , popupMenu:   undefined                # RactivePopupMenu
       }
 
       on: {
@@ -71,6 +74,7 @@ class window.NetTangoController
         <popupmenu></popupmenu>
         <tangoBuilder
           playMode='{{ playMode }}'
+          runtimeMode='{{ runtimeMode }}'
           newModel='{{ newModel }}'
           popupMenu='{{ popupMenu }}'
           />
@@ -182,6 +186,19 @@ class window.NetTangoController
   # (String, String) => Unit
   setNetLogoCode: (title, code) ->
     @theOutsideWorld.setModelCode(code, title)
+    return
+
+  # (Array[File]) => Unit
+  importNetLogo: (files) ->
+    if (not files? or files.length is 0)
+      return
+    file   = files[0]
+    reader = new FileReader()
+    reader.onload = (e) =>
+      code = e.target.result
+      @theOutsideWorld.setModelCode(code, file.name)
+      return
+    reader.readAsText(file)
     return
 
   # (Array[File]) => Unit

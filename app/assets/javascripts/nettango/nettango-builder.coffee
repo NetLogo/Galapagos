@@ -34,6 +34,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
 
   data: () -> {
     playMode:        false         # Boolean
+    runtimeMode:     "dev"         # String
     newModel:        undefined     # String
     popupMenu:       undefined     # RactivePopupMenu
     confirmDialog:   undefined     # RactiveConfirmDialog
@@ -180,16 +181,28 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       fileOperations = {
         name: "File Operations"
         items: [
-          { eventName: 'ntb-clear-all-check',    name: 'Clear model and spaces' }
+          { eventName: 'ntb-clear-all-check',       name: 'Clear model and spaces' }
           { spacerText: '-' }
-          { eventName: 'ntb-import-json-prompt', name: 'Import NetTango JSON file' }
+          { eventName: 'ntb-import-json-prompt',    name: 'Import NetTango project' }
           { spacerText: '-' }
-          { eventName: 'ntb-export-json',        name: 'Export NetTango JSON file' }
-          { eventName: 'ntb-export-page',        name: 'Export standalone HTML file' }
+          { eventName: 'ntb-import-netlogo-prompt', name: 'Import NetLogo model' }
+          { eventName: 'ntb-choose-netlogo-prompt', name: 'Choose NetLogo library model' }
+          { spacerText: '-' }
+          { eventName: 'ntb-export-json',           name: 'Export NetTango project' }
+          { eventName: 'ntb-export-page',           name: 'Export standalone HTML file' }
           { eventName: 'ntb-save', name: 'Preview standalone HTML page', url: '/ntango-play?playMode=true' }
         ]
       }
       popupMenu.popup(this, pageX, pageY, fileOperations)
+      return false
+
+    '*.ntb-import-netlogo-prompt': (_) ->
+      importInput = @find('#ntb-import-netlogo')
+      importInput.click()
+      return false
+
+    '*.ntb-choose-netlogo-prompt': (_) ->
+      @findComponent('modelChooser').show()
       return false
 
     '*.ntb-import-json-prompt': (_) ->
@@ -370,10 +383,11 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     return
 
   components: {
-      tangoDefs:     RactiveNetTangoSpaces
+      confirmDialog: RactiveConfirmDialog
     , errorDisplay:  RactiveErrorDisplay
-    , confirmDialog: RactiveConfirmDialog
+    , modelChooser:  RactiveModelChooser
     , optionsForm:   RactiveNetTangoOptionsForm
+    , tangoDefs:     RactiveNetTangoSpaces
   }
 
   template:
@@ -383,8 +397,10 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     <div class="ntb-builder">
       <optionsForm parentClass="ntb-builder" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
+      <modelChooser runtimeMode="{{runtimeMode}}"></modelChooser>
       <errorDisplay></errorDisplay>
-      <input id="ntb-import-json" class="ntb-file-button" type="file" on-change="ntb-import-json" hidden>
+      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-json"    hidden>
+      <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
       <div class="ntb-controls">
         {{# !playMode }}

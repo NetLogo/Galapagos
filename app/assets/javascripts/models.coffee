@@ -45,7 +45,7 @@ window.exports.bindModelChooser = (container, onComplete, selectionChanged, curr
     )
     populateModelChoices(select, modelNames)
     select.appendTo(container)
-    select.chosen({search_contains: true})
+    select.chosen({search_contains: true, width: "inherit"})
     select
 
   $.ajax('./model/list.json', {

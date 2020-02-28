@@ -108,6 +108,15 @@ body#ntp-body, html#ntp-body {
   margin: 10px;
 }
 
+.ntb-netlogo-model-chooser {
+  margin: 10px;
+  margin-bottom: 0px;
+}
+
+.ntb-netlogo-model-chooser > span.model-list {
+  width: 100%;
+}
+
 .ntb-block-defs-controls {
   display: flex;
   flex-direction: row;
