@@ -30,7 +30,7 @@ blockStyleDefaults = {
 getBlockStyleDefaults = (style) ->
   JSON.parse(JSON.stringify(blockStyleDefaults[style]))
 
-window.RactiveNetTangoBuilder = Ractive.extend({
+window.RactiveBuilder = Ractive.extend({
 
   data: () -> {
     playMode:        false         # Boolean
@@ -128,7 +128,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       return
 
     # () => Boolean
-    'ntb-clear-all-check': () ->
+    '*.ntb-clear-all-check': () ->
       @get('confirmDialog').show({
         text:    "Do you want to clear your model and workspaces?",
         approve: { text: "Yes, clear all data", event: "ntb-clear-all" },
@@ -367,8 +367,8 @@ window.RactiveNetTangoBuilder = Ractive.extend({
     , confirmDialog: RactiveConfirmDialog
     , errorDisplay:  RactiveErrorDisplay
     , modelChooser:  RactiveModelChooser
-    , optionsForm:   RactiveNetTangoOptionsForm
-    , tangoDefs:     RactiveNetTangoSpaces
+    , optionsForm:   RactiveOptionsForm
+    , tangoDefs:     RactiveSpaces
   }
 
   template:

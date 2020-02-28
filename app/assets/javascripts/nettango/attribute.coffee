@@ -1,4 +1,4 @@
-window.RactiveNetTangoAttribute = Ractive.extend({
+window.RactiveAttribute = Ractive.extend({
 
   data: () -> {
     id:             undefined # Integer
@@ -36,7 +36,7 @@ window.RactiveNetTangoAttribute = Ractive.extend({
   components: {
     labeledInput: RactiveTwoWayLabeledInput
     dropdown:     RactiveTwoWayDropdown
-    select:       RactiveNetTangoSelectAttribute
+    select:       RactiveSelectAttribute
   }
 
   template:

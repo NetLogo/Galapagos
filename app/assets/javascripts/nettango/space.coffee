@@ -6,14 +6,14 @@ dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
 
 modifyBlockMenuItems = [dele, edit, up, dn, dup]
 
-window.RactiveNetTangoSpace = Ractive.extend({
+window.RactiveSpace = Ractive.extend({
 
   data: () -> {
     playMode:      false, # Boolean
     codeIsDirty:   false, # Boolean
     space:         null,  # NetTangoSpace
     netLogoCode:   "",    # String
-    blockEditForm: null,  # RactiveNetTangoBlockForm
+    blockEditForm: null,  # RactiveBlockForm
     confirmDialog: null,  # RactiveConfirmDialog
     showJson:      false, # Boolean
     popupMenu:     null   # RactivePopupMenu

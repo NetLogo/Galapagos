@@ -1,4 +1,4 @@
-window.RactiveNetTangoSelectAttribute = Ractive.extend({
+window.RactiveSelectAttribute = Ractive.extend({
 
   data: () -> {
     attribute: undefined, # NetTangoSelectAttribute

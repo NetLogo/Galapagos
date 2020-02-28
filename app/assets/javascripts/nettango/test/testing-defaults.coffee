@@ -1,4 +1,4 @@
-window.RactiveNetTangoTestingDefaults = Ractive.extend({
+window.RactiveTestingDefaults = Ractive.extend({
 
   on: {
     # (Context) => Unit

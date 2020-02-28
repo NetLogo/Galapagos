@@ -11,7 +11,7 @@ class window.NetTangoController
 
     # If you have custom components that will be needed inside partial templates loaded dynamically at runtime
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
-    Ractive.components.attribute = RactiveNetTangoAttribute
+    Ractive.components.attribute = RactiveAttribute
 
     @ractive.on('*.ntb-save',           (_, code)               => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',      (_, code)               => @setNetTangoCode(code))
@@ -33,7 +33,7 @@ class window.NetTangoController
     if (@playMode)
       Ractive.extend({ })
     else
-      RactiveNetTangoTestingDefaults
+      RactiveTestingDefaults
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode) ->
@@ -65,7 +65,7 @@ class window.NetTangoController
 
       components: {
           popupmenu:       RactivePopupMenu
-        , tangoBuilder:    RactiveNetTangoBuilder
+        , tangoBuilder:    RactiveBuilder
         , testingDefaults: @getTestingDefaults()
       },
 

@@ -1,4 +1,4 @@
-window.RactiveNetTangoOptionsForm = EditForm.extend({
+window.RactiveOptionsForm = EditForm.extend({
 
   data: () -> {
     submitLabel:   "Apply Options"   # String

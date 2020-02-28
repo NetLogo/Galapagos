@@ -1,4 +1,4 @@
-window.RactiveNetTangoBlockForm = EditForm.extend({
+window.RactiveBlockForm = EditForm.extend({
 
   data: () -> {
     spaceName:   undefined # String
@@ -151,7 +151,7 @@ window.RactiveNetTangoBlockForm = EditForm.extend({
 
   components: {
     , arrayView:    RactiveArrayView
-    , attribute:    RactiveNetTangoAttribute
+    , attribute:    RactiveAttribute
     , blockStyle:   RactiveBlockStyleSettings
     , dropdown:     RactiveTwoWayDropdown
     , formCode:     RactiveEditFormMultilineCode

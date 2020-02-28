@@ -1,4 +1,4 @@
-window.RactiveNetTangoSpaces = Ractive.extend({
+window.RactiveSpaces = Ractive.extend({
 
   data: () -> {
     playMode:         false, # Boolean
@@ -7,7 +7,7 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     codeIsDirty:      false, # Boolean
     showCode:         true,  # Boolean
     popupMenu:        null,  # RactivePopupMenu
-    blockEditForm:    null,  # RactiveNetTangoBlockForm
+    blockEditForm:    null,  # RactiveBlockForm
     confirmDialog:    null   # RactiveConfirmDialog
   }
 
@@ -147,8 +147,8 @@ window.RactiveNetTangoSpaces = Ractive.extend({
     return
 
   components: {
-    tangoSpace:    RactiveNetTangoSpace
-    blockEditForm: RactiveNetTangoBlockForm
+    tangoSpace:    RactiveSpace
+    blockEditForm: RactiveBlockForm
   }
 
   template:
