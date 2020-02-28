@@ -210,6 +210,26 @@ window.RactiveNetTangoBuilder = Ractive.extend({
       importInput.click()
       return false
 
+    'ntb-show-help': ({ event: { pageX, pageY } }) ->
+      popupMenu = @get("popupMenu")
+      helpOptions = {
+        name: "Help"
+        items: [
+          {
+              eventName: 'ntb-save'
+            , name: 'About the NetTango Builder'
+            , url: 'https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder'
+          }
+          {
+              eventName: 'ntb-save'
+            , name: 'NetTango Builder tutorial'
+            , url: 'https://nt-tutorial.netlify.com'
+          }
+        ]
+      }
+      popupMenu.popup(this, pageX, pageY, helpOptions)
+      return false
+
     'ntb-show-options': (_) ->
       tabOptions      = @get("tabOptions")
       netTangoToggles = @get("netTangoToggles")
@@ -409,6 +429,7 @@ window.RactiveNetTangoBuilder = Ractive.extend({
           <button class="ntb-button" type="button" on-click="ntb-show-options">Options...</button>
           <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
           <button class="ntb-button" type="button" on-click="ntb-save" >Save Progress</button>
+          <button class="ntb-button" type="button" on-click="ntb-show-help">Help ▼</button>
         </div>
         {{/}}
 
