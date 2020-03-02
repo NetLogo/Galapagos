@@ -77,7 +77,7 @@ window.RactiveSpace = Ractive.extend({
     # (Context, NetTangoSpace) => Unit
     'ntb-space-json-change': (_, space) ->
       oldDefsJson = JSON.stringify(space.defs, null, '  ')
-      if(oldDefsJson isnt space.defsJson)
+      if (oldDefsJson isnt space.defsJson)
         @set("space.defsJsonChanged", true)
       return
 
@@ -258,6 +258,7 @@ window.RactiveSpace = Ractive.extend({
 
     @fire('ntb-block-code-changed', {}, false)
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
+    if keepOldChains then @fire('ntb-space-changed')
     return
 
   handleNetTangoError: (ex) ->

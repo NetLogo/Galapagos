@@ -4,8 +4,11 @@ class window.NetTangoController
     @storage  = new NetTangoStorage(localStorage)
     getSpaces = () => @ractive.findComponent('tangoDefs').get("spaces")
     @rewriter = new NetTangoRewriter(@getNetTangoCode, getSpaces)
+    @undoRedo = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportNetTango('json'))
+    Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
+    Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
     @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode)
 
@@ -16,6 +19,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-save',           (_, code)               => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',      (_, code)               => @setNetTangoCode(code))
     @ractive.on('*.ntb-model-change',   (_, title, code)        => @setNetLogoCode(title, code))
+    @ractive.on('*.ntb-space-changed',  (_)                     => @updateUndoStack())
     @ractive.on('*.ntb-code-dirty',     (_)                     => @markCodeDirty())
     @ractive.on('*.ntb-export-page',    (_)                     => @exportNetTango('standalone'))
     @ractive.on('*.ntb-export-json',    (_)                     => @exportNetTango('json'))
@@ -129,6 +133,7 @@ class window.NetTangoController
         progress    = progress.playProgress[@storageId]
         data.spaces = progress.spaces
       @loadExternalModel(data)
+      @resetUndoStack()
       return
 
     # next check the URL parameter
@@ -141,6 +146,7 @@ class window.NetTangoController
       )
       .then( (netTangoModel) =>
         @loadExternalModel(netTangoModel)
+        @resetUndoStack()
       ).catch( (error) =>
         netLogoLoading = document.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
@@ -158,6 +164,7 @@ class window.NetTangoController
     # finally local storage
     if (progress?)
       @loadExternalModel(progress)
+      @resetUndoStack()
       return
 
     # nothing to load, so just refresh and be done
@@ -197,6 +204,7 @@ class window.NetTangoController
     reader.onload = (e) =>
       code = e.target.result
       @theOutsideWorld.setModelCode(code, file.name)
+      @updateUndoStack()
       return
     reader.readAsText(file)
     return
@@ -209,32 +217,58 @@ class window.NetTangoController
     reader.onload = (e) =>
       ntData = JSON.parse(e.target.result)
       @loadExternalModel(ntData)
+      @resetUndoStack()
       return
     reader.readAsText(files[0])
     return
 
-  # (String) => Unit
-  exportNetTango: (target) ->
+  getNetTangoProject: () ->
     title = @theOutsideWorld.getModelTitle()
 
     modelCodeMaybe = @theOutsideWorld.getModelCode()
     if(not modelCodeMaybe.success)
       throw new Error("Unable to get existing NetLogo code for export")
 
-    netTangoData       = @builder.getNetTangoBuilderData()
-    netTangoData.code  = modelCodeMaybe.result
-    netTangoData.title = title
-    isVertical         = window.session.widgetController.ractive.get("isVertical") ? false
-    netTangoData.netLogoSettings = { isVertical }
+    netTangoProject       = @builder.getNetTangoBuilderData()
+    netTangoProject.code  = modelCodeMaybe.result
+    netTangoProject.title = title
+    isVertical            = window.session.widgetController.ractive.get("isVertical") ? false
+    netTangoProject.netLogoSettings = { isVertical }
+    return netTangoProject
+
+  updateUndoStack: () ->
+    netTangoProject = @getNetTangoProject()
+    @undoRedo.pushCurrent(netTangoProject)
+    return
+
+  resetUndoStack: () ->
+    @undoRedo = new UndoRedo()
+    @updateUndoStack()
+
+  undo: () ->
+    if (not @undoRedo.canUndo())
+      return
+    netTangoProject = @undoRedo.popUndo()
+    @loadExternalModel(netTangoProject)
+
+  redo: () ->
+    if (not @undoRedo.canRedo())
+      return
+    netTangoProject = @undoRedo.popRedo()
+    @loadExternalModel(netTangoProject)
+
+  # (String) => Unit
+  exportNetTango: (target) ->
+    netTangoProject = @getNetTangoProject()
 
     # Always store for 'storage' target - JMB August 2018
-    @storeNetTangoData(netTangoData)
+    @storeNetTangoData(netTangoProject)
 
     if (target is 'storage')
       return
 
     if (target is 'json')
-      @exportJSON(title, netTangoData)
+      @exportJSON(title, netTangoProject)
       return
 
     # Else target is 'standalone' - JMB August 2018
@@ -247,7 +281,7 @@ class window.NetTangoController
     ).then( (text) ->
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
-      @exportStandalone(title, exportDom, netTangoData)
+      @exportStandalone(title, exportDom, netTangoProject)
     ).catch((error) =>
       @showErrors([ "Unexpected error:  Unable to generate the stand-alone NetTango page." ])
     )
