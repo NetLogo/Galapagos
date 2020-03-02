@@ -26,7 +26,7 @@ window.RactiveSpaces = Ractive.extend({
       return
 
     # (Context, String, Boolean) => Unit
-    '*.ntb-code-changed': (_, isInitialLoad) ->
+    '*.ntb-block-code-changed': (_, isInitialLoad) ->
       @updateCode(isInitialLoad)
       return
 

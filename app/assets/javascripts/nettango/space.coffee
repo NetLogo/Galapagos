@@ -27,7 +27,7 @@ window.RactiveSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
 
-      @fire('ntb-code-changed', {}, true)
+      @fire('ntb-block-code-changed', {}, true)
 
       @observe('space', ->
         @updateNetTango(@get('space'), false)
@@ -201,13 +201,13 @@ window.RactiveSpace = Ractive.extend({
     switch event.type
 
       when "block-changed"
-        @fire('ntb-code-changed', {}, false)
+        @fire('ntb-block-code-changed', {}, false)
 
       when "attribute-changed"
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
         @fire('ntb-run', setCode, @squelch)
-        @fire('ntb-code-changed', {}, false)
+        @fire('ntb-block-code-changed', {}, false)
 
       when "menu-item-clicked"
         playMode = @get("playMode")
@@ -256,7 +256,7 @@ window.RactiveSpace = Ractive.extend({
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
     @setSpaceNetLogo(space, containerId)
 
-    @fire('ntb-code-changed', {}, false)
+    @fire('ntb-block-code-changed', {}, false)
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
     return
 
@@ -310,7 +310,7 @@ window.RactiveSpace = Ractive.extend({
     """
     {{# space }}
     <div class="ntb-block-def">
-      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="[ 'ntb-code-changed', false ]">
+      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="[ 'ntb-block-code-changed', false ]">
 
       <div class="ntb-block-defs-controls" >
         <button id="recompile-{{ spaceId }}" class="ntb-button" type="button" on-click="ntb-recompile-start"{{# !codeIsDirty }} disabled{{/}}>Recompile</button>
