@@ -165,6 +165,7 @@ window.RactiveSpace = Ractive.extend({
     overlay.classList.add('ntb-dialog-overlay')
     return
 
+  # (NetTangoSpace) => String
   getNetTangoContainerId: (space) ->
     "#{space.spaceId}-canvas"
 
@@ -197,10 +198,13 @@ window.RactiveSpace = Ractive.extend({
     )
     return
 
+  # (NetTangoSpace, String) => Unit
   setSpaceNetLogo: (space, containerId) ->
     space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatCodeAttribute).trim()
     space.netLogoDisplay = NetTango.exportCode(containerId).trim()
+    return
 
+  # (NetTangoSpace, Sring, Event) => Unit
   handleNetTangoEvent: (space, containerId, event) ->
     space.defs.program.chains = NetTango.save(containerId).program.chains
     @setSpaceNetLogo(space, containerId)
@@ -269,6 +273,7 @@ window.RactiveSpace = Ractive.extend({
     if keepOldChains then @fire('ntb-space-changed')
     return
 
+  # (Exception) => Unit
   handleNetTangoError: (ex) ->
     # coffeelint: disable=max_line_length
     messages = [
@@ -297,6 +302,7 @@ window.RactiveSpace = Ractive.extend({
       items: items
     }
 
+  # () => Unit
   clearBlockStyles: () ->
     space = @get('space')
     for block in space.defs.blocks
@@ -307,8 +313,10 @@ window.RactiveSpace = Ractive.extend({
     @updateNetTango(space, true)
     return
 
+  # (Exception) => Unit
   squelch: (error) ->
     console.log(error)
+    return
 
   components: {
     labeledInput: RactiveTwoWayLabeledInput

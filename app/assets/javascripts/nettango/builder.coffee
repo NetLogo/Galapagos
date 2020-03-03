@@ -321,36 +321,36 @@ window.RactiveBuilder = Ractive.extend({
 
     newCss.join('\n')
 
-  # (NetTangoBuilderData) => Unit
-  load: (ntData) ->
+  # (NetTangoProject) => Unit
+  load: (project) ->
     # Make sure styles are loaded first, as when spaces are added
     # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
     for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-      if (ntData.hasOwnProperty("blockStyles") and ntData.blockStyles.hasOwnProperty(propName))
-        @set("blockStyles.#{propName}", ntData.blockStyles[propName])
+      if (project.hasOwnProperty("blockStyles") and project.blockStyles.hasOwnProperty(propName))
+        @set("blockStyles.#{propName}", project.blockStyles[propName])
       else
         @set("blockStyles.#{propName}", getBlockStyleDefaults(propName))
 
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
-    for spaceVals in (ntData.spaces ? [])
+    for spaceVals in (project.spaces ? [])
       defsComponent.createSpace(spaceVals)
     defsComponent.updateCode()
 
     tabOptions = @get('tabOptions')
-    for key, prop of (ntData.tabOptions ? { })
+    for key, prop of (project.tabOptions ? { })
       if tabOptions.hasOwnProperty(key)
         @set("tabOptions.#{key}.checked", prop)
 
     netTangoToggles = @get('netTangoToggles')
-    for key, prop of (ntData.netTangoToggles ? { })
+    for key, prop of (project.netTangoToggles ? { })
       if netTangoToggles.hasOwnProperty(key)
         @set("netTangoToggles.#{key}.checked", prop)
 
-    @set("extraCss", if ntData.hasOwnProperty("extraCss") then ntData.extraCss else "")
+    @set("extraCss", if project.hasOwnProperty("extraCss") then project.extraCss else "")
 
-    if (ntData.code?)
-      @fire('ntb-model-change', ntData.title, ntData.code)
+    if (project.code?)
+      @fire('ntb-model-change', project.title, project.code)
     else
       @fire('ntb-model-change', "New Model", @get('newModel'))
 

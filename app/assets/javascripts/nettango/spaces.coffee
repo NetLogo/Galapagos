@@ -137,11 +137,13 @@ window.RactiveSpaces = Ractive.extend({
     @fire('ntb-space-changed')
     return space
 
+  # () => Unit
   clearBlockStyles: () ->
     spaceComponents = @findAllComponents("tangoSpace")
     spaceComponents.forEach( (spaceComponent) -> spaceComponent.clearBlockStyles() )
     return
 
+  # () => Unit
   updateNetTango: () ->
     spaceComponents = @findAllComponents("tangoSpace")
     spaceComponents.forEach( (spaceComponent) -> spaceComponent.updateNetTango(spaceComponent.get("space"), true) )
