@@ -2,6 +2,8 @@ window.RactiveBuilderMenu = Ractive.extend({
 
   data: () -> {
     popupMenu: undefined # RactivePopupMenu
+    canUndo:   false     # Boolean
+    canRedo:   false     # Boolean
   }
 
   on: {
@@ -50,6 +52,8 @@ window.RactiveBuilderMenu = Ractive.extend({
     """
     <div class="ntb-block-defs-controls">
       <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
+      <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
+      <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
       <button class="ntb-button" type="button" on-click="ntb-show-options">Options...</button>
       <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
       <button class="ntb-button" type="button" on-click="ntb-save" >Save Progress</button>

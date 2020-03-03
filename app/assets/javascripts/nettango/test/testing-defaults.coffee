@@ -18,7 +18,7 @@ window.RactiveTestingDefaults = Ractive.extend({
         ]
         , code: @codeDefault
       }
-      @fire('ntb-load-data', { }, wspDefaults)
+      @fire('ntb-load-project', { }, wspDefaults)
       return
   }
 

@@ -1,5 +1,7 @@
 class window.UndoRedo
 
+  @UNDO_REDO_LIMIT: 100
+
   _undoStack:     []        # Array[String]
   _redoStack:     []        # Array[String]
   _currentString: undefined # POJO
@@ -8,6 +10,7 @@ class window.UndoRedo
   pushCurrent: (state) ->
     if (@_currentString?)
       @_undoStack.push(@_currentString)
+      @resizeUndoStack()
 
     @_currentString = JSON.stringify(state)
 
@@ -35,6 +38,18 @@ class window.UndoRedo
     @_currentString = @_redoStack.pop()
 
     return JSON.parse(@_currentString)
+
+  # () => Unit
+  reset: () ->
+    @_undoStack     = []
+    @_redoStack     = []
+    @_currentString = null
+
+  resizeUndoStack: () ->
+    if (@_undoStack.length < UndoRedo.UNDO_REDO_LIMIT)
+      return
+
+    @_undoStack = @_undoStack.slice(1)
 
   canUndo: () ->
     @_undoStack.length isnt 0

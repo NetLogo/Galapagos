@@ -38,6 +38,8 @@ window.RactiveBuilder = Ractive.extend({
     newModel:        undefined     # String
     popupMenu:       undefined     # RactivePopupMenu
     confirmDialog:   undefined     # RactiveConfirmDialog
+    canUndo:         false         # Boolean
+    canRedo:         false         # Boolean
     blockEditor: {
       show:        false           # Boolean
       spaceNumber: undefined       # Integer
@@ -162,7 +164,7 @@ window.RactiveBuilder = Ractive.extend({
         }
         extraCss: ""
       }
-      @load(blankData)
+      @fire("ntb-load-project", {}, blankData)
       return
 
     '*.ntb-clear-all-block-styles': (_) ->
@@ -173,7 +175,7 @@ window.RactiveBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-create-blockspace': (_) ->
       defsComponent = @findComponent('tangoDefs')
-      defsComponent.createSpace({ defs: { blocks: [] } })
+      defsComponent.createSpace({ defs: { blocks: [] } }, false)
       return
 
     '*.ntb-import-netlogo-prompt': (_) ->
@@ -332,7 +334,7 @@ window.RactiveBuilder = Ractive.extend({
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
     for spaceVals in (ntData.spaces ? [])
-      defsComponent.createSpace(spaceVals)
+      defsComponent.createSpace(spaceVals, true)
     defsComponent.updateCode(true)
 
     tabOptions = @get('tabOptions')
@@ -385,7 +387,11 @@ window.RactiveBuilder = Ractive.extend({
 
       <div class="ntb-controls">
         {{# !playMode }}
-          <builderMenu popupMenu={{ popupMenu }}></builderMenu>
+          <builderMenu
+            popupMenu={{ popupMenu }}
+            canUndo={{ canUndo }}
+            canRedo={{ canRedo }}>
+          </builderMenu>
         {{/}}
 
         <tangoDefs

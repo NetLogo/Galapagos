@@ -51,6 +51,7 @@ window.RactiveSpaces = Ractive.extend({
       )
       @set('spaces', newSpaces)
       @updateCode(false)
+      @fire('ntb-space-changed')
       return
 
     '*.ntb-recompile-start': (_) ->
@@ -113,7 +114,7 @@ window.RactiveSpaces = Ractive.extend({
     ]
 
   # (NetTangoSpace) => NetTangoSpace
-  createSpace: (spaceVals) ->
+  createSpace: (spaceVals, isLoad) ->
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
@@ -134,6 +135,7 @@ window.RactiveSpaces = Ractive.extend({
         space[propName] = spaceVals[propName]
 
     @push('spaces', space)
+    if not isLoad then @fire('ntb-space-changed')
     return space
 
   clearBlockStyles: () ->

@@ -82,6 +82,12 @@ window.RactiveSpace = Ractive.extend({
       return
 
     # (Context) => Unit
+    'ntb-space-title-changed': (_) ->
+      @fire("ntb-block-code-changed", {}, false)
+      @fire("ntb-space-changed")
+      return
+
+    # (Context) => Unit
     '*.ntb-size-change': (_) ->
       space = @get('space')
       @updateNetTango(space)
@@ -311,7 +317,7 @@ window.RactiveSpace = Ractive.extend({
     """
     {{# space }}
     <div class="ntb-block-def">
-      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="[ 'ntb-block-code-changed', false ]">
+      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-space-title-changed">
 
       <div class="ntb-block-defs-controls" >
         <button id="recompile-{{ spaceId }}" class="ntb-button" type="button" on-click="ntb-recompile-start"{{# !codeIsDirty }} disabled{{/}}>Recompile</button>

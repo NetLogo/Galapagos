@@ -19,14 +19,17 @@ class window.NetTangoController
     @ractive.on('*.ntb-save',           (_, code)               => @exportNetTango('storage'))
     @ractive.on('*.ntb-recompile',      (_, code)               => @setNetTangoCode(code))
     @ractive.on('*.ntb-model-change',   (_, title, code)        => @setNetLogoCode(title, code))
+    @ractive.on('*.ntb-clear-all',      (_)                     => @resetUndoStack())
     @ractive.on('*.ntb-space-changed',  (_)                     => @updateUndoStack())
+    @ractive.on('*.ntb-undo',           (_)                     => @undo())
+    @ractive.on('*.ntb-redo',           (_)                     => @redo())
     @ractive.on('*.ntb-code-dirty',     (_)                     => @markCodeDirty())
     @ractive.on('*.ntb-export-page',    (_)                     => @exportNetTango('standalone'))
     @ractive.on('*.ntb-export-json',    (_)                     => @exportNetTango('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
     @ractive.on('*.ntb-import-json',    (local)                 => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-data',      (_, data)               => @builder.load(data))
+    @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data))
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
       if (@theOutsideWorld.sessionReady())
@@ -51,6 +54,8 @@ class window.NetTangoController
         , playMode:    playMode                 # Boolean
         , runtimeMode: runtimeMode              # String
         , popupMenu:   undefined                # RactivePopupMenu
+        , canUndo:     false                    # Boolean
+        , canRedo:     false                    # Boolean
       }
 
       on: {
@@ -81,6 +86,8 @@ class window.NetTangoController
           runtimeMode='{{ runtimeMode }}'
           newModel='{{ newModel }}'
           popupMenu='{{ popupMenu }}'
+          canUndo='{{ canUndo }}'
+          canRedo='{{ canRedo }}'
           />
           {{# !playMode }}
             <testingDefaults />
@@ -222,6 +229,12 @@ class window.NetTangoController
     reader.readAsText(files[0])
     return
 
+  # (NetTangoProject) => Unit
+  loadProject: (project) ->
+    @builder.load(project)
+    @resetUndoStack()
+    return
+
   getNetTangoProject: () ->
     title = @theOutsideWorld.getModelTitle()
 
@@ -236,26 +249,37 @@ class window.NetTangoController
     netTangoProject.netLogoSettings = { isVertical }
     return netTangoProject
 
+  updateCanUndoRedo: () ->
+    @ractive.set("canUndo", @undoRedo.canUndo())
+    @ractive.set("canRedo", @undoRedo.canRedo())
+    return
+
   updateUndoStack: () ->
     netTangoProject = @getNetTangoProject()
     @undoRedo.pushCurrent(netTangoProject)
+    @updateCanUndoRedo()
     return
 
   resetUndoStack: () ->
-    @undoRedo = new UndoRedo()
+    @undoRedo.reset()
     @updateUndoStack()
+    return
 
   undo: () ->
     if (not @undoRedo.canUndo())
       return
     netTangoProject = @undoRedo.popUndo()
+    @updateCanUndoRedo()
     @loadExternalModel(netTangoProject)
+    return
 
   redo: () ->
     if (not @undoRedo.canRedo())
       return
     netTangoProject = @undoRedo.popRedo()
+    @updateCanUndoRedo()
     @loadExternalModel(netTangoProject)
+    return
 
   # (String) => Unit
   exportNetTango: (target) ->
