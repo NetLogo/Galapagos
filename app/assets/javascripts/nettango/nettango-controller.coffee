@@ -1,5 +1,9 @@
 class window.NetTangoController
 
+  actionSource: "user"    # "user" | "project-load" | "undo-redo"
+  netLogoCode:  undefined # String
+  netLogoTitle: undefined # String
+
   constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
     @storage  = new NetTangoStorage(localStorage)
     getSpaces = () => @ractive.findComponent('tangoDefs').get("spaces")
@@ -28,8 +32,8 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-json',    (_)                     => @exportNetTango('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
-    @ractive.on('*.ntb-import-json',    (local)                 => @importNetTango(local.node.files))
-    @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data))
+    @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
+    @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
       if (@theOutsideWorld.sessionReady())
@@ -117,13 +121,16 @@ class window.NetTangoController
   # Runs any updates needed for old versions, then loads the model normally.
   # If this starts to get more complicated, it should be split out into
   # separate version updates. -Jeremy B October 2019
-  # (NetTangoBuilderData) => Unit
-  loadExternalModel: (netTangoModel) =>
+  # (NetTangoBuilderData, "user" | "project-load" | "undo-redo") => Unit
+  loadProject: (netTangoModel, source) =>
+    @actionSource = source
     if (netTangoModel.code?)
       netTangoModel.code = NetTangoRewriter.removeOldNetTangoCode(netTangoModel.code)
     @builder.load(netTangoModel)
     if (netTangoModel.netLogoSettings?.isVertical?)
       window.session.widgetController.ractive.set("isVertical", netTangoModel.netLogoSettings.isVertical)
+    @resetUndoStack()
+    @actionSource = "user"
     return
 
   # () => Unit
@@ -134,13 +141,12 @@ class window.NetTangoController
     # first try to load from the inline code element
     netTangoCodeElement = document.getElementById("ntango-code")
     if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
-      data = JSON.parse(netTangoCodeElement.textContent)
-      @storageId = data.storageId
+      project = JSON.parse(netTangoCodeElement.textContent)
+      @storageId = project.storageId
       if (@playMode and @storageId? and progress? and progress.playProgress? and progress.playProgress[@storageId]?)
-        progress    = progress.playProgress[@storageId]
-        data.spaces = progress.spaces
-      @loadExternalModel(data)
-      @resetUndoStack()
+        progress = progress.playProgress[@storageId]
+        project.spaces = progress.spaces
+      @loadProject(project, "project-load")
       return
 
     # next check the URL parameter
@@ -151,9 +157,8 @@ class window.NetTangoController
           throw new Error("#{response.status} - #{response.statusText}")
         response.json()
       )
-      .then( (netTangoModel) =>
-        @loadExternalModel(netTangoModel)
-        @resetUndoStack()
+      .then( (project) =>
+        @loadProject(project, "project-load")
       ).catch( (error) =>
         netLogoLoading = document.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
@@ -170,8 +175,7 @@ class window.NetTangoController
 
     # finally local storage
     if (progress?)
-      @loadExternalModel(progress)
-      @resetUndoStack()
+      @loadProject(progress, "project-load")
       return
 
     # nothing to load, so just refresh and be done
@@ -180,6 +184,9 @@ class window.NetTangoController
 
   # () => Unit
   markCodeDirty: () ->
+    if @actionSource is "project-load"
+      return
+
     @enableRecompileOverlay()
     widgetController = @theOutsideWorld.getWidgetController()
     widgets = widgetController.ractive.get('widgetObj')
@@ -199,6 +206,11 @@ class window.NetTangoController
 
   # (String, String) => Unit
   setNetLogoCode: (title, code) ->
+    if (code is @netLogoCode and title is @netLogoTitle)
+      return
+
+    @netLogoCode  = code
+    @netLogoTitle = title
     @theOutsideWorld.setModelCode(code, title)
     return
 
@@ -217,37 +229,30 @@ class window.NetTangoController
     return
 
   # (Array[File]) => Unit
-  importNetTango: (files) ->
+  importProject: (files) ->
     if (not files? or files.length is 0)
       return
     reader = new FileReader()
     reader.onload = (e) =>
-      ntData = JSON.parse(e.target.result)
-      @loadExternalModel(ntData)
-      @resetUndoStack()
+      project = JSON.parse(e.target.result)
+      @loadProject(project, "project-load")
       return
     reader.readAsText(files[0])
     return
 
-  # (NetTangoProject) => Unit
-  loadProject: (project) ->
-    @builder.load(project)
-    @resetUndoStack()
-    return
-
-  getNetTangoProject: () ->
+  getProject: () ->
     title = @theOutsideWorld.getModelTitle()
 
     modelCodeMaybe = @theOutsideWorld.getModelCode()
     if(not modelCodeMaybe.success)
       throw new Error("Unable to get existing NetLogo code for export")
 
-    netTangoProject       = @builder.getNetTangoBuilderData()
-    netTangoProject.code  = modelCodeMaybe.result
-    netTangoProject.title = title
+    project       = @builder.getNetTangoBuilderData()
+    project.code  = modelCodeMaybe.result
+    project.title = title
     isVertical            = window.session.widgetController.ractive.get("isVertical") ? false
-    netTangoProject.netLogoSettings = { isVertical }
-    return netTangoProject
+    project.netLogoSettings = { isVertical }
+    return project
 
   updateCanUndoRedo: () ->
     @ractive.set("canUndo", @undoRedo.canUndo())
@@ -255,44 +260,54 @@ class window.NetTangoController
     return
 
   updateUndoStack: () ->
-    netTangoProject = @getNetTangoProject()
-    @undoRedo.pushCurrent(netTangoProject)
+    if @actionSource isnt "user"
+      return
+
+    project = @getProject()
+    @undoRedo.pushCurrent(project)
     @updateCanUndoRedo()
     return
 
   resetUndoStack: () ->
+    if @actionSource is "undo-redo"
+      return
+
     @undoRedo.reset()
-    @updateUndoStack()
+    project = @getProject()
+    @undoRedo.pushCurrent(project)
+    @updateCanUndoRedo()
     return
 
   undo: () ->
     if (not @undoRedo.canUndo())
       return
-    netTangoProject = @undoRedo.popUndo()
+
+    project = @undoRedo.popUndo()
     @updateCanUndoRedo()
-    @loadExternalModel(netTangoProject)
+    @loadProject(project, "undo-redo")
     return
 
   redo: () ->
     if (not @undoRedo.canRedo())
       return
-    netTangoProject = @undoRedo.popRedo()
+
+    project = @undoRedo.popRedo()
     @updateCanUndoRedo()
-    @loadExternalModel(netTangoProject)
+    @loadProject(project, "undo-redo")
     return
 
   # (String) => Unit
   exportNetTango: (target) ->
-    netTangoProject = @getNetTangoProject()
+    project = @getProject()
 
     # Always store for 'storage' target - JMB August 2018
-    @storeNetTangoData(netTangoProject)
+    @storeNetTangoData(project)
 
     if (target is 'storage')
       return
 
     if (target is 'json')
-      @exportJSON(title, netTangoProject)
+      @exportJSON(title, project)
       return
 
     # Else target is 'standalone' - JMB August 2018
@@ -305,7 +320,7 @@ class window.NetTangoController
     ).then( (text) ->
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
-      @exportStandalone(title, exportDom, netTangoProject)
+      @exportStandalone(title, exportDom, project)
     ).catch((error) =>
       @showErrors([ "Unexpected error:  Unable to generate the stand-alone NetTango page." ])
     )

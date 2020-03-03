@@ -27,7 +27,7 @@ window.RactiveSpace = Ractive.extend({
       space = @get('space')
       @initNetTango(space)
 
-      @fire('ntb-block-code-changed', {}, true)
+      @fire('ntb-block-code-changed')
 
       @observe('space', ->
         @updateNetTango(@get('space'), false)
@@ -53,7 +53,7 @@ window.RactiveSpace = Ractive.extend({
       space = @get('space')
       @splice("space.defs.blocks", blockNumber, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @updateNetTango(space)
+      @updateNetTango(space, true)
       return
 
     # (Context, NetTangoSpace) => Unit
@@ -83,14 +83,14 @@ window.RactiveSpace = Ractive.extend({
 
     # (Context) => Unit
     'ntb-space-title-changed': (_) ->
-      @fire("ntb-block-code-changed", {}, false)
+      @fire("ntb-block-code-changed")
       @fire("ntb-space-changed")
       return
 
     # (Context) => Unit
     '*.ntb-size-change': (_) ->
       space = @get('space')
-      @updateNetTango(space)
+      @updateNetTango(space, true)
       return
 
     # (Context, NetTangoBlock) => Unit
@@ -105,7 +105,7 @@ window.RactiveSpace = Ractive.extend({
       space = @get('space')
       @push("space.defs.blocks", block)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @updateNetTango(space)
+      @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
@@ -120,7 +120,7 @@ window.RactiveSpace = Ractive.extend({
       space = @get('space')
       space.defs.blocks[blockNumber] = block
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @updateNetTango(space)
+      @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
@@ -131,7 +131,7 @@ window.RactiveSpace = Ractive.extend({
         space.defs.blocks[blockNumber - 1] = space.defs.blocks[blockNumber]
         space.defs.blocks[blockNumber] = swap
         @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-        @updateNetTango(space)
+        @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
@@ -142,7 +142,7 @@ window.RactiveSpace = Ractive.extend({
         space.defs.blocks[blockNumber + 1] = space.defs.blocks[blockNumber]
         space.defs.blocks[blockNumber] = swap
         @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-        @updateNetTango(space)
+        @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
@@ -152,7 +152,7 @@ window.RactiveSpace = Ractive.extend({
       copy = NetTangoBlockDefaults.copyBlock(original)
       @push("space.defs.blocks", copy)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
-      @updateNetTango(space)
+      @updateNetTango(space, true)
       return
 
   }
@@ -207,13 +207,15 @@ window.RactiveSpace = Ractive.extend({
     switch event.type
 
       when "block-changed"
-        @fire('ntb-block-code-changed', {}, false)
+        @fire('ntb-block-code-changed')
+        @fire('ntb-space-changed')
 
       when "attribute-changed"
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
         @fire('ntb-run', setCode, @squelch)
-        @fire('ntb-block-code-changed', {}, false)
+        @fire('ntb-block-code-changed')
+        @fire('ntb-space-changed')
 
       when "menu-item-clicked"
         playMode = @get("playMode")
@@ -235,7 +237,7 @@ window.RactiveSpace = Ractive.extend({
     return
 
   # (NetTangoSpace) => Unit
-  updateNetTango: (space, keepOldChains = true) ->
+  updateNetTango: (space, keepOldChains) ->
     containerId = @getNetTangoContainerId(space)
 
     newChains = if (keepOldChains)
@@ -262,7 +264,7 @@ window.RactiveSpace = Ractive.extend({
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
     @setSpaceNetLogo(space, containerId)
 
-    @fire('ntb-block-code-changed', {}, false)
+    @fire('ntb-block-code-changed')
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
     if keepOldChains then @fire('ntb-space-changed')
     return
@@ -302,7 +304,7 @@ window.RactiveSpace = Ractive.extend({
         if block.hasOwnProperty(prop)
           delete block[prop]
     @set('space', space)
-    @updateNetTango(space)
+    @updateNetTango(space, true)
     return
 
   squelch: (error) ->

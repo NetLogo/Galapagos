@@ -175,7 +175,7 @@ window.RactiveBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-create-blockspace': (_) ->
       defsComponent = @findComponent('tangoDefs')
-      defsComponent.createSpace({ defs: { blocks: [] } }, false)
+      defsComponent.createSpace({ defs: { blocks: [] } })
       return
 
     '*.ntb-import-netlogo-prompt': (_) ->
@@ -334,8 +334,8 @@ window.RactiveBuilder = Ractive.extend({
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
     for spaceVals in (ntData.spaces ? [])
-      defsComponent.createSpace(spaceVals, true)
-    defsComponent.updateCode(true)
+      defsComponent.createSpace(spaceVals)
+    defsComponent.updateCode()
 
     tabOptions = @get('tabOptions')
     for key, prop of (ntData.tabOptions ? { })
@@ -382,7 +382,7 @@ window.RactiveBuilder = Ractive.extend({
       <confirmDialog></confirmDialog>
       <modelChooser runtimeMode="{{runtimeMode}}"></modelChooser>
       <errorDisplay></errorDisplay>
-      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-json"    hidden>
+      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
       <div class="ntb-controls">

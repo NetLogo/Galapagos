@@ -26,8 +26,8 @@ window.RactiveSpaces = Ractive.extend({
       return
 
     # (Context, String, Boolean) => Unit
-    '*.ntb-block-code-changed': (_, isInitialLoad) ->
-      @updateCode(isInitialLoad)
+    '*.ntb-block-code-changed': (_) ->
+      @updateCode()
       return
 
     # (Context, Integer) => Boolean
@@ -50,7 +50,7 @@ window.RactiveSpaces = Ractive.extend({
         s.spaceId = "ntb-defs-#{i}"
       )
       @set('spaces', newSpaces)
-      @updateCode(false)
+      @updateCode()
       @fire('ntb-space-changed')
       return
 
@@ -59,7 +59,7 @@ window.RactiveSpaces = Ractive.extend({
   }
 
   # (Boolean) => Unit
-  updateCode: (isInitialLoad) ->
+  updateCode: () ->
     lastCode     = @get('lastCode')
     codeWasDirty = @get('codeIsDirty')
     newCode      = @assembleCode(displayOnly = false)
@@ -68,8 +68,7 @@ window.RactiveSpaces = Ractive.extend({
     @set('code', @assembleCode(displayOnly = true))
     if codeChanged
       @set('lastCode', newCode)
-      if not isInitialLoad
-        @fire('ntb-code-dirty')
+      @fire('ntb-code-dirty')
     return
 
   # () => Unit
@@ -114,7 +113,7 @@ window.RactiveSpaces = Ractive.extend({
     ]
 
   # (NetTangoSpace) => NetTangoSpace
-  createSpace: (spaceVals, isLoad) ->
+  createSpace: (spaceVals) ->
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
@@ -135,7 +134,7 @@ window.RactiveSpaces = Ractive.extend({
         space[propName] = spaceVals[propName]
 
     @push('spaces', space)
-    if not isLoad then @fire('ntb-space-changed')
+    @fire('ntb-space-changed')
     return space
 
   clearBlockStyles: () ->
@@ -145,7 +144,7 @@ window.RactiveSpaces = Ractive.extend({
 
   updateNetTango: () ->
     spaceComponents = @findAllComponents("tangoSpace")
-    spaceComponents.forEach( (spaceComponent) -> spaceComponent.updateNetTango(spaceComponent.get("space")) )
+    spaceComponents.forEach( (spaceComponent) -> spaceComponent.updateNetTango(spaceComponent.get("space"), true) )
     return
 
   components: {
