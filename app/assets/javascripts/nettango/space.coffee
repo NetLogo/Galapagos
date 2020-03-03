@@ -32,7 +32,7 @@ window.RactiveSpace = Ractive.extend({
       @observe('space', ->
         @updateNetTango(@get('space'), false)
         return
-      , { defer: true, strict: true }
+      , { defer: true, strict: true, init: false }
       )
       return
 
