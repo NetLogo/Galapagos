@@ -21,7 +21,7 @@ window.RactiveBuilderMenu = Ractive.extend({
           { spacerText: '-' }
           { eventName: 'ntb-export-json',           name: 'Export NetTango project' }
           { eventName: 'ntb-export-page',           name: 'Export standalone HTML file' }
-          { eventName: 'ntb-save', name: 'Preview standalone HTML page', url: '/ntango-play?playMode=true' }
+          { name: 'Preview standalone HTML page', url: '/ntango-play?playMode=true' }
         ]
       }
       popupMenu.popup(this, pageX, pageY, fileOperations)
@@ -56,7 +56,6 @@ window.RactiveBuilderMenu = Ractive.extend({
       <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
       <button class="ntb-button" type="button" on-click="ntb-show-options">Options...</button>
       <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-      <button class="ntb-button" type="button" on-click="ntb-save" >Save Progress</button>
       <button class="ntb-button" type="button" on-click="ntb-show-help">Help ▼</button>
     </div>
     """

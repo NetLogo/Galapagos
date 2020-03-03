@@ -247,6 +247,7 @@ window.RactiveBuilder = Ractive.extend({
 
       @refreshCss()
       @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
+      @fire("ntb-options-changed")
       return
 
   }

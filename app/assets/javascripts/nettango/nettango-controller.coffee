@@ -20,11 +20,11 @@ class window.NetTangoController
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
     Ractive.components.attribute = RactiveAttribute
 
-    @ractive.on('*.ntb-save',           (_, code)               => @exportProject('storage'))
     @ractive.on('*.ntb-recompile',      (_, code)               => @recompileNetLogo(code))
     @ractive.on('*.ntb-model-change',   (_, title, code)        => @setNetLogoCode(title, code))
     @ractive.on('*.ntb-clear-all',      (_)                     => @resetUndoStack())
-    @ractive.on('*.ntb-space-changed',  (_)                     => @updateUndoStack())
+    @ractive.on('*.ntb-space-changed',  (_)                     => @handleProjectChange())
+    @ractive.on('*.ntb-options-changed',(_)                     => @handleProjectChange())
     @ractive.on('*.ntb-undo',           (_)                     => @undo())
     @ractive.on('*.ntb-redo',           (_)                     => @redo())
     @ractive.on('*.ntb-code-dirty',     (_)                     => @markCodeDirty())
@@ -223,7 +223,7 @@ class window.NetTangoController
     reader.onload = (e) =>
       code = e.target.result
       @theOutsideWorld.setModelCode(code, file.name)
-      @updateUndoStack()
+      @handleProjectChange()
       return
     reader.readAsText(file)
     return
@@ -255,6 +255,14 @@ class window.NetTangoController
     project.netLogoSettings = { isVertical }
     return project
 
+  handleProjectChange: () ->
+    if @actionSource is "project-load"
+      return
+
+    project = @getProject()
+    @updateUndoStack(project)
+    @storeProject(project)
+
   # () => Unit
   updateCanUndoRedo: () ->
     @ractive.set("canUndo", @undoRedo.canUndo())
@@ -262,11 +270,10 @@ class window.NetTangoController
     return
 
   # () => Unit
-  updateUndoStack: () ->
+  updateUndoStack: (project) ->
     if @actionSource isnt "user"
       return
 
-    project = @getProject()
     @undoRedo.pushCurrent(project)
     @updateCanUndoRedo()
     return
@@ -280,6 +287,7 @@ class window.NetTangoController
     project = @getProject()
     @undoRedo.pushCurrent(project)
     @updateCanUndoRedo()
+    @storeProject(project)
     return
 
   # () => Unit
@@ -307,7 +315,7 @@ class window.NetTangoController
     project = @getProject()
 
     # Always store for 'storage' target - JMB August 2018
-    @storeNetTangoData(project)
+    @storeProject(project)
 
     if (target is 'storage')
       return
@@ -357,7 +365,7 @@ class window.NetTangoController
     return
 
   # (NetTangoProject) => Unit
-  storeNetTangoData: (project) ->
+  storeProject: (project) ->
     set = (prop) => @storage.set(prop, project[prop])
     [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions',
       'netTangoToggles', 'blockStyles', 'netLogoSettings' ].forEach(set)
