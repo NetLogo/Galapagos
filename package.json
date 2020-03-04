@@ -10,7 +10,7 @@
     , "jquery": "3.4.1"
     , "localforage": "1.7.3"
     , "mousetrap": "1.6.5"
-    , "nettango": "0.10.3"
+    , "nettango": "0.10.4"
     , "ractive": "1.3.10"
     , "synchrodecoder": "1.0.2"
   }
