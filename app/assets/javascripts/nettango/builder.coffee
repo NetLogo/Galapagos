@@ -326,11 +326,12 @@ window.RactiveBuilder = Ractive.extend({
   load: (project) ->
     # Make sure styles are loaded first, as when spaces are added
     # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
+    blockStyles = @get("blockStyles")
     for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
       if (project.hasOwnProperty("blockStyles") and project.blockStyles.hasOwnProperty(propName))
-        @set("blockStyles.#{propName}", project.blockStyles[propName])
+        blockStyles[propName] = project.blockStyles[propName]
       else
-        @set("blockStyles.#{propName}", getBlockStyleDefaults(propName))
+        blockStyles[propName] = getBlockStyleDefaults(propName)
 
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])
@@ -341,12 +342,12 @@ window.RactiveBuilder = Ractive.extend({
     tabOptions = @get('tabOptions')
     for key, prop of (project.tabOptions ? { })
       if tabOptions.hasOwnProperty(key)
-        @set("tabOptions.#{key}.checked", prop)
+        tabOptions[key].checked = prop
 
     netTangoToggles = @get('netTangoToggles')
     for key, prop of (project.netTangoToggles ? { })
       if netTangoToggles.hasOwnProperty(key)
-        @set("netTangoToggles.#{key}.checked", prop)
+        netTangoToggles[key].checked = prop
 
     @set("extraCss", if project.hasOwnProperty("extraCss") then project.extraCss else "")
 

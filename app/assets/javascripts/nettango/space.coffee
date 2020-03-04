@@ -240,8 +240,8 @@ window.RactiveSpace = Ractive.extend({
 
     return
 
-  # (NetTangoSpace) => Unit
-  updateNetTango: (space, keepOldChains) ->
+  # (NetTangoSpace, Boolean) => Unit
+  refreshNetTango: (space, keepOldChains) ->
     containerId = @getNetTangoContainerId(space)
 
     newChains = if (keepOldChains)
@@ -267,6 +267,11 @@ window.RactiveSpace = Ractive.extend({
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
     @setSpaceNetLogo(space, containerId)
+    return
+
+  # (NetTangoSpace, Boolean) => Unit
+  updateNetTango: (space, keepOldChains) ->
+    @refreshNetTango(space, keepOldChains)
 
     @fire('ntb-block-code-changed')
     @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))

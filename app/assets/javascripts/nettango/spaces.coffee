@@ -146,7 +146,7 @@ window.RactiveSpaces = Ractive.extend({
   # () => Unit
   updateNetTango: () ->
     spaceComponents = @findAllComponents("tangoSpace")
-    spaceComponents.forEach( (spaceComponent) -> spaceComponent.updateNetTango(spaceComponent.get("space"), true) )
+    spaceComponents.forEach( (spaceComponent) -> spaceComponent.refreshNetTango(spaceComponent.get("space"), true) )
     return
 
   components: {
