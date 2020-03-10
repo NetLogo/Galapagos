@@ -321,7 +321,7 @@ class window.NetTangoController
       return
 
     if (target is 'json')
-      @exportJSON(title, project)
+      @exportJSON(project.title, project)
       return
 
     # Else target is 'standalone' - JMB August 2018
@@ -334,7 +334,7 @@ class window.NetTangoController
     ).then( (text) ->
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
-      @exportStandalone(title, exportDom, project)
+      @exportStandalone(project.title, exportDom, project)
     ).catch((error) =>
       @showErrors([ "Unexpected error:  Unable to generate the stand-alone NetTango page." ])
     )
