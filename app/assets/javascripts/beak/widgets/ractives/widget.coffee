@@ -134,7 +134,7 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
 
         widget = @get('widget')
 
-        widgets       = Object.values(this.parent.get('widgetObj'))
+        widgets       = Object.values(@parent.get('widgetObj'))
         isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
 
         if values.variable? and widgets.some(isTroublesome)

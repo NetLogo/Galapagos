@@ -197,3 +197,5 @@ window.RactiveSlider = RactiveWidget.extend({
 
 })
 # coffeelint: enable=max_line_length
+
+window.RactiveHNWSlider = RactiveSlider.extend({})

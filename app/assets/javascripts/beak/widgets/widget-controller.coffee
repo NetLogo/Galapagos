@@ -3,7 +3,9 @@ class window.WidgetController
   # (Ractive, ViewController, Configs, () => Unit)
   constructor: (@ractive, @viewController, @configs, @_performUpdate) ->
     for display, chartOps of @configs.plotOps
-      component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
+      normies   = @ractive.findAllComponents("plotWidget")
+      hnws      = @ractive.findAllComponents("hnwPlotWidget")
+      component = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
       component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
 
   # (String, Number, Number) => Unit
@@ -31,7 +33,7 @@ class window.WidgetController
   # () => Unit
   runForevers: ->
     for widget in @widgets()
-      if widget.type is 'button' and widget.forever and widget.running
+      if widget.type in ['button', 'hnwButton'] and widget.forever and widget.running
         widget.run()
     return
 
@@ -81,17 +83,30 @@ class window.WidgetController
 
       [props, setterUpper] =
         switch newWidget.type
-          when "button"   then [  buttonProps, window.setUpButton(=> @_performUpdate(); @updateWidgets())]
-          when "chooser"  then [ chooserProps, window.setUpChooser]
-          when "inputBox" then [inputBoxProps, window.setUpInputBox]
-          when "monitor"  then [ monitorProps, window.setUpMonitor]
-          when "output"   then [  outputProps, (->)]
-          when "plot"     then [    plotProps, (->)]
-          when "slider"   then [  sliderProps, window.setUpSlider]
-          when "switch"   then [  switchProps, window.setUpSwitch]
-          when "textBox"  then [ textBoxProps, (->)]
-          when "view"     then [    viewProps, (->)]
-          else                 throw new Error("Unknown widget type: #{newWidget.type}")
+
+          when "button"      then [  buttonProps, window.setUpButton(=> @_performUpdate(); @updateWidgets())]
+          when "chooser"     then [ chooserProps, window.setUpChooser]
+          when "inputBox"    then [inputBoxProps, window.setUpInputBox]
+          when "monitor"     then [ monitorProps, window.setUpMonitor]
+          when "output"      then [  outputProps, (->)]
+          when "plot"        then [    plotProps, (->)]
+          when "slider"      then [  sliderProps, window.setUpSlider]
+          when "switch"      then [  switchProps, window.setUpSwitch]
+          when "textBox"     then [ textBoxProps, (->)]
+          when "view"        then [    viewProps, (->)]
+
+          when "hnwButton"   then [  buttonProps, window.setUpHNWButton(=> @_performUpdate(); @updateWidgets())]
+          when "hnwChooser"  then [ chooserProps, window.setUpHNWChooser]
+          when "hnwInputBox" then [inputBoxProps, window.setUpHNWInputBox]
+          when "hnwMonitor"  then [ monitorProps, window.setUpHNWMonitor]
+          when "hnwOutput"   then [  outputProps, (->)]
+          when "hnwPlot"     then [    plotProps, (->)]
+          when "hnwSlider"   then [  sliderProps, window.setUpHNWSlider]
+          when "hnwSwitch"   then [  switchProps, window.setUpHNWSwitch]
+          when "hnwTextBox"  then [ textBoxProps, (->)]
+          when "hnwView"     then [    viewProps, (->)]
+
+          else                    throw new Error("Unknown widget type: #{newWidget.type}")
 
       realWidget = realWidgets.find(widgetEqualsBy(props)(newWidget))
 
@@ -106,7 +121,7 @@ class window.WidgetController
 
         # This can go away when `res.model.result` stops blowing away all of the globals
         # on recompile/when the world state is preserved across recompiles.  --JAB (6/9/16)
-        if newWidget.type in ["chooser", "inputBox", "slider", "switch"]
+        if newWidget.type in ["chooser", "inputBox", "slider", "switch", "hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"]
           world.observer.setGlobal(newWidget.variable, realWidget.currentValue)
 
     @updateWidgets()
@@ -138,6 +153,63 @@ class window.WidgetController
   code: ->
     @ractive.get('code')
 
+  # () => Object[PlotEvent]
+  getPlotUpdates: ->
+    out = {}
+    for display, chartOps of @configs.plotOps
+      out[display] = chartOps.pullPlotEvents()
+    out
+
+  # (Array[WidgetUpdate]) => Unit
+  applyWidgetUpdates: (updates) ->
+    updates.forEach(({ varName, value }) -> world.observer.setGlobal(varName, value))
+    return
+
+  # (Object[String]) => Unit
+  applyMonitorUpdates: (update) ->
+    for k, v of update
+      widget              = @widgets().find((w) -> w.display.toLowerCase() is k.toLowerCase())
+      widget.reporter     = do (v) -> (-> v)
+      widget.currentValue = v
+    return
+
+  # (Object[Array[PlotEvent]]) => Unit
+  applyPlotUpdates: (updates) ->
+    for plotDisplay, plotUpdates of updates
+      for update in plotUpdates
+        if @configs.plotOps?
+          ops = @configs.plotOps[plotDisplay]
+          if ops?
+            switch update.type
+              when "reset"
+                ops.reset(update.plot)
+              when "register-pen"
+                ops.registerPen(update.pen)
+              when "update-pen"
+                ops.resetPen(update.penName)
+              when "add-point"
+                ops.addPoint(update.penName)(update.x, update.y)
+              when "update-pen-mode"
+                #{ Bar, Line, Point } = PenBundle.DisplayMode
+                #mode =
+                #  switch update.mode
+                #    when 'column'  then Bar
+                #    when 'line'    then Line
+                #    when 'scatter' then Point
+                #ops.updatePenMode(update.pen)(mode)
+                return
+              when "update-pen-color"
+                ops.updatePenColor(update.penName)(update.color)
+
+# (Number, Number) => Number
+withPrecision = (n, places) ->
+  multiplier = Math.pow(10, places)
+  result = Math.floor(n * multiplier + .5) / multiplier
+  if places > 0
+    result
+  else
+    Math.round(result)
+
 # (Widget) => Unit
 updateWidget = (widget) ->
 
@@ -154,7 +226,7 @@ updateWidget = (widget) ->
             'N/A'
           else
             if widget.precision? and isNum
-              NLMath.precision(value, widget.precision)
+              withPrecision(value, widget.precision)
             else
               value
         catch err
@@ -167,7 +239,7 @@ updateWidget = (widget) ->
     when 'inputBox'
       widget.boxedValue.value = widget.currentValue
 
-    when 'slider'
+    when 'slider', 'hnwSlider'
       # Soooooo apparently range inputs don't visually update when you set
       # their max, but they DO update when you set their min (and will take
       # new max values into account)... Ractive ignores sets when you give it
@@ -197,15 +269,15 @@ updateWidget = (widget) ->
 # (String, Number, Number) => Unit
 defaultWidgetMixinFor = (widgetType, x, y) ->
   switch widgetType
-    when "output"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
-    when "switch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
-    when "slider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
-    when "plot"     then { bottom: y + 60, right: x + 180 }
-    when "textBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "output"   or "hnwOutput"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
+    when "switch"   or "hnwSwitch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
+    when "slider"   or "hnwSlider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox" or "hnwInputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"   or "hnwButton"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser"  or "hnwChooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor"  or "hnwMonitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
+    when "plot"     or "hnwPlot"     then { bottom: y + 60, right: x + 180 }
+    when "textBox"  or "hnwTextBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 
 # [T <: Widget] @ Array[String] => T => T => Boolean

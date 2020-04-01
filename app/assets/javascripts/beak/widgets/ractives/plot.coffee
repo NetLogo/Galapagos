@@ -56,3 +56,6 @@ window.RactivePlot = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWPlot = RactivePlot.extend({
+})

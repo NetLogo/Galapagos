@@ -9,7 +9,7 @@ window.controlEventTraffic = (controller, performUpdate) ->
   checkActionKeys = (e) ->
     if ractive.get('hasFocus')
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
-      for _, w of ractive.get('widgetObj') when w.type is 'button' and
+      for _, w of ractive.get('widgetObj') when w.type in ['button', 'hnwButton'] and
                                          w.actionKey is char and
                                          ractive.findAllComponents('buttonWidget').
                                            find((b) -> b.get('widget') is w).get('isEnabled')
@@ -104,8 +104,8 @@ window.controlEventTraffic = (controller, performUpdate) ->
       (widget, value) ->
         value? and
           switch widget.type
-            when 'slider'   then not isNaN(value)
-            when 'inputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
+            when 'slider'   or 'hnwSlider'   then not isNaN(value)
+            when 'inputBox' or 'hnwInputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
             else  true
 
     widget = ractive.get('widgetObj')[widgetNum]

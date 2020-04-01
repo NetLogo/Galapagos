@@ -81,3 +81,5 @@ window.RactiveSwitch = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWSwitch = RactiveSwitch.extend({})

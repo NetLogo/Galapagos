@@ -159,32 +159,46 @@ fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
       onSuccess(result, true)
       result.model.success
 
-# (DOMElement, Array[HNWWidget], View, () => Unit) => Unit
-loadHubNetWeb = (container, widgets, view, callback) ->
+# (DOMElement, Role, View, () => Unit) => Unit
+loadHubNetWeb = (container, role, view, callback) ->
   loading(
     (loader) ->
 
       adaptedWidgets =
-        widgets.map(
+        role.widgets.map(
           (w) ->
             if w.type is "hnwView"
               pWidth    = view.maxPxcor - view.minPxcor
               patchSize = w.width  / pWidth
-              Object.assign({}, view, { patchSize })
+              Object.assign({}, view, { patchSize, left: w.left, right: w.right, top: w.top, bottom: w.bottom })
             else
               w
         )
 
       code = """var AgentModel = new (tortoise_require('agentmodel'))();
 var Updater = new (tortoise_require('engine/updater'))((x) => x);
-var world = { ticker: new (tortoise_require('engine/core/world/ticker'))() };
+var world = {};
+world.observer = {}
+var __hnwGlobals = {};
+world.observer.getGlobal = function(varName) { return __hnwGlobals[varName.toLocaleLowerCase()]; };
+world.observer.setGlobal = function(varName, value) { __hnwGlobals[varName.toLocaleLowerCase()] = value; };
+world.ticker = new (tortoise_require('engine/core/world/ticker'))();
+world.ticker._onReset    = function() {};
+world.ticker._onTick     = function() {};
+world.ticker._updateFunc = function() {};
 """
+
+      varInit =
+        adaptedWidgets.
+          filter((w) -> w.type in ["hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"]).
+          map((w) -> "world.observer.setGlobal('#{w.variable}', #{w.default ? w.on});").
+          reduce(((acc, x) -> "#{acc}\n#{x}"), "")
 
       model =
         { code:      "no code"
         , commands:  []
         , info:      "no info"
-        , model:     { success: true, result: code }
+        , model:     { success: true, result: code + varInit }
         , reporters: []
         , type:      "hnwModelCompilation"
         , widgets:   JSON.stringify(adaptedWidgets)

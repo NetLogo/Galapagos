@@ -48,6 +48,7 @@
     @tagBuilder.pathToHTML("javascripts/colors.js")
     @tagBuilder.pathToHTML("javascripts/default-shapes.js")
     @tagBuilder.pathToHTML("javascripts/global-noisy-things.js")
+    @tagBuilder.pathToHTML("javascripts/plotrecorder.js")
     @tagBuilder.pathToHTML("javascripts/highcharts.js")
     @tagBuilder.pathToHTML("javascripts/models.js")
     @tagBuilder.pathToHTML("javascripts/new-model.js")
@@ -104,125 +105,10 @@
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
     <script>
-
       Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
-
-      var loadingOverlay  = document.getElementById("loading-overlay");
-      var activeContainer = loadingOverlay;
-      var modelContainer  = document.querySelector("#netlogo-model-container");
-      var nlogoScript     = document.querySelector("#nlogo-code");
-      var standaloneURL   = "https:@TagBuilder.protocolRelativeURL(new java.net.URL(routes.Local.standalone.absoluteURL))";
-      var pageTitle       = function(modelTitle) {
-        if (modelTitle != null && modelTitle != "") {
-          return "NetLogo Web: " + modelTitle;
-        } else {
-          return "NetLogo Web";
-        }
-      };
-      var session;
-      var openSession = function(s) {
-        session = s;
-        document.title = pageTitle(session.modelTitle());
-        activeContainer = modelContainer;
-        session.startLoop();
-      };
-
-      var isStandaloneHTML = false;
-
-      if (nlogoScript.textContent.length > 0) {
-        isStandaloneHTML = true;
-      }
-
-      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML);
-
-      var displayError = function(error) {
-        // in the case where we're still loading the model, we have to
-        // post an error that cannot be dismissed, as well as ensuring that
-        // the frame we're in matches the size of the error on display.
-        if (activeContainer === loadingOverlay) {
-          window.nlwAlerter.displayError(error, false);
-          activeContainer = window.nlwAlerter.alertContainer;
-        } else {
-          window.nlwAlerter.displayError(error);
-        }
-      };
-
-      var loadHNWModel = function(widgets , view) {
-        if (session) {
-          session.teardown();
-        }
-        window.nlwAlerter.hide();
-        activeContainer = loadingOverlay;
-        Tortoise.loadHubNetWeb(modelContainer, widgets, view, openSession)
-      };
-
-      window.addEventListener("message", function (e) {
-        switch (e.data.type) {
-          case "hnw-load-interface":
-
-            loadHNWModel(e.data.widgets, e.data.view);
-
-            let exiles =
-              [ document.querySelector('.netlogo-header')
-              , document.querySelector('.netlogo-display-horizontal')
-              , document.querySelector('.netlogo-speed-slider')
-              , document.querySelector('.netlogo-tab-area')
-              ];
-
-            exiles.forEach((n) => n.style.display = "none");
-
-            break;
-
-          case "nlw-update-model-state":
-            session.widgetController.setCode(e.data.codeTabContents);
-            break;
-          case "nlw-request-model-state":
-            const update = session.getModelState();
-            e.source.postMessage({ update, type: "nlw-state-update" }, "*");
-            break;
-          case "nlw-request-view":
-            const base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png");
-            e.source.postMessage({ base64, type: "nlw-view" }, "*");
-            break;
-          case "nlw-subscribe-to-updates":
-            session.subscribe(e.source);
-            break;
-          case "nlw-apply-update":
-
-            const { plotUpdates, ticks, viewUpdates } = e.data.update;
-
-            world.ticker.reset();
-            world.ticker.importTicks(ticks);
-
-            const vc = session.widgetController.viewController;
-            viewUpdates.forEach((vu) => vc.applyUpdate(vu));
-            vc.repaint();
-
-            break;
-
-        }
-      });
-
-      if (parent !== window) {
-        var width = "", height = "";
-        window.setInterval(function() {
-          if (activeContainer.offsetWidth  !== width ||
-              activeContainer.offsetHeight !== height ||
-              (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
-            if (session !== undefined) {
-              document.title = pageTitle(session.modelTitle());
-            }
-            width = activeContainer.offsetWidth;
-            height = activeContainer.offsetHeight;
-            parent.postMessage({
-              width:  activeContainer.offsetWidth,
-              height: activeContainer.offsetHeight,
-              title:  document.title,
-              type:   "hnw-resize"
-            }, "*");
-          }
-        }, 200);
-      }
     </script>
+
+    @tagBuilder.pathToHTML("javascripts/beak/init-join.js")
+
   </body>
 </html>

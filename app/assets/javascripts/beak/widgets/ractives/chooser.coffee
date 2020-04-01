@@ -113,3 +113,5 @@ window.RactiveChooser = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWChooser = RactiveChooser.extend({})

@@ -41,12 +41,14 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
-  _subscribers: undefined # Array[Window]
+  _monitorFuncs:  undefined # Object[Object[(Number) => String]]
+  _subscriberObj: undefined # Object[Window]
 
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
-    @_subscribers = []
+    @_monitorFuncs  = {}
+    @_subscriberObj = {}
 
     checkIsReporter =
       (str) =>
@@ -110,6 +112,8 @@ class window.SessionLite
       for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
         @_lastUpdate = now()
         @widgetController.runForevers()
+        if document.getElementById('hnw-go')?.checked
+          procedures.GO()
         if now() >= updatesDeadline
           break
 
@@ -118,7 +122,12 @@ class window.SessionLite
       # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
       if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
         @_lastRedraw = now()
-        @_performUpdate()
+        @_performUpdate(true)
+      else
+        @_performUpdate(false)
+    else
+      @_performUpdate(false)
+
 
     # Widgets must always be updated, because global variables and plots can be
     # altered without triggering an "update".  That is to say that `Updater`
@@ -150,14 +159,14 @@ class window.SessionLite
 
           state = world.exportState()
           world.clearAll()
-          @_performUpdate() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
+          @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
           globalEval(res.model.result)
           world.importState(state)
 
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
-          @_performUpdate()
+          @_performUpdate(true)
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
           successCallback()
@@ -342,29 +351,132 @@ class window.SessionLite
     @displayError(messages.join('\n'))
 
   # (Window) => Unit
-  subscribe: (subscriber) ->
-    @_subscribers.push(subscriber)
+  subscribe: (window) ->
+
+    genUUID = ->
+
+      replacer =
+        (c) ->
+          r = Math.random() * 16 | 0
+          v = if c == 'x' then r else (r & 0x3 | 0x8)
+          v.toString(16)
+
+      'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
+
+    @_subscriberObj[genUUID()] = window
+
     return
 
-  # () => { plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
-  getModelState: ->
+  # (Window, String) => Unit
+  subscribeWithID: (window, id) ->
+    @_subscriberObj[id] = window
+    return
+
+  # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
+  getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
-    viewUpdates = [{ drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }]
-    plotUpdates = []
-    ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
-    { plotUpdates, ticks, viewUpdates }
+    viewUpdates   = [{ drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }]
+    widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates() }
+    plotUpdates   = @widgetController.getPlotUpdates()
+    ticks         = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
+    { widgetUpdates, plotUpdates, ticks, viewUpdates }
 
-  # () => Unit
-  _performUpdate: ->
-    if Updater.hasUpdates()
+  # () => Array[Object[WidgetUpdate]]
+  _genWidgetUpdates: ->
 
-      viewUpdates = Updater.collectUpdates()
-      @widgetController.redraw(viewUpdates)
+    #hnwVars = world.observer.varNames().filter((x) -> x.startsWith("__hnw_"))
 
-      if @_subscribers.length > 0
-        plotUpdates = []
+    #objects =
+    #  hnwVars.map(
+    #    (x) ->
+    #      matches = /__hnw_([^_]*)_(.*)/.exec(x)
+    #      { fullName: matches[0], roleName: matches[1], shortName: matches[2] }
+    #  )
+
+    #objects.reduce(
+    #  (acc, { fullName, roleName, shortName }) ->
+    #    newMapping = { varName: shortName, value: world.observer.getGlobal(fullName) }
+    #    Object.assign(acc, { [roleName]: (acc[roleName] ? []).concat(newMapping) })
+    #, {})
+
+    []
+
+  # (Array[Widget]) => Array[WidgetUpdate]
+  _getWidgetUpdates: (widgets) ->
+    widgets.map(
+      (w) ->
+        switch w.type
+          when "chooser"
+            console.log("Hey, nl chooser", w)
+          when "inputBox"
+            console.log("Hey, nl input", w)
+          when "monitor"
+            console.log("Hey, nl monitor", w)
+          when "output"
+            console.log("Hey, nl output", w)
+          when "slider"
+            console.log("Hey, nl slider", w)
+          when "switch"
+            console.log("Hey, nl switch", w)
+          when "hnwChooser"
+            console.log("Hey, chooser", w)
+          when "hnwInputBox"
+            console.log("Hey, input", w)
+          when "hnwMonitor"
+            { id: w.display, type: "monitor", value: w.currentValue }
+          when "hnwOutput"
+            console.log("Hey, output", w)
+          when "hnwSlider"
+            { type: "slider", varName: w.variable, value: w.currentValue }
+          when "hnwSwitch"
+            { type: "switch", varName: w.variable, value: w.currentValue }
+    ).filter((x) -> x?)
+
+  # (String, String, (Number) => String) => Unit
+  registerMonitorFunc: (roleName, displayStr, func) ->
+    @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [displayStr.toLowerCase()]: func })
+    return
+
+  # (UUID) => Array[Object[String]]
+  monitorsFor: (uuid) ->
+
+    { roleName, who } = window.clients[uuid]
+
+    out = {}
+
+    for k, v of @_monitorFuncs[roleName]
+      out[k] = v(who)
+
+    out
+
+  # (Boolean) => Unit
+  _performUpdate: (isFullUpdate) ->
+
+    viewUpdates =
+      if isFullUpdate and Updater.hasUpdates()
+        Updater.collectUpdates()
+      else
+        []
+
+    @widgetController.redraw(viewUpdates)
+
+    if Object.keys(@_subscriberObj).length > 0
+
+      if window.isHNWHost is true
+
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
-        update      = { plotUpdates, ticks, viewUpdates }
-        @_subscribers.forEach((s) -> s.postMessage({ update, type: "nlw-state-update" }, "*"))
+        plotUpdates = @widgetController.getPlotUpdates()
+
+        for uuid, wind of @_subscriberObj
+          monitorUpdates = @monitorsFor(uuid)
+          if monitorUpdates.length > 0 or plotUpdates.length > 0 or viewUpdates.length > 0 or ticks?
+            update = { widgetUpdates: [], monitorUpdates, plotUpdates, ticks, viewUpdates }
+            wind.postMessage({ update, type: "nlw-state-update" }, "*")
+
+      else if window.isHNWJoiner is true
+        goodWTypes    = ["slider", "switch", "input", "chooser"]
+        widgetUpdates = @_getWidgetUpdates(@widgetController.widgets()).filter((wup) -> wup.type in goodWTypes)
+        for _, _ of @_subscriberObj
+          widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup)))
 
     return

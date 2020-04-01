@@ -10,8 +10,8 @@ window.setUpWidgets = (widgets, updateUI) ->
 
 reporterOf = (str) -> new Function("return #{str}")
 
-# Destructive - Adds everything for maintaining state to the widget models,
-# such `currentValue`s and actual functions for buttons instead of just code.
+# Destructive; adds everything for maintaining state to the widget models, such as
+# `currentValue`s and actual functions for buttons instead of just code.
 window.setUpWidget = (widget, id, updateUI) ->
   widget.id = id
   if widget.variable?
@@ -31,6 +31,21 @@ window.setUpWidget = (widget, id, updateUI) ->
       setUpChooser(widget, widget)
     when "monitor"
       setUpMonitor(widget, widget)
+    when "hnwSwitch"
+      setUpHNWSwitch(widget, widget)
+    when "hnwSlider"
+      widget.currentValue = widget.default
+      setUpHNWSlider(widget, widget)
+    when "hnwInputBox"
+      setUpHNWInputBox(widget, widget)
+    when "hnwButton"
+      setUpHNWButton(updateUI)(widget, widget)
+    when "hnwChooser"
+      setUpHNWChooser(widget, widget)
+    when "hnwMonitor"
+      setUpHNWMonitor(widget, widget)
+    when "hnwView"
+      setUpHNWView(widget, widget)
   return
 
 # (InputBox, InputBox) => Unit
@@ -114,4 +129,64 @@ window.setUpSlider = (source, destination) ->
   destination.minValue  = destination.currentValue
   destination.maxValue  = destination.currentValue + 1
   destination.stepValue = 0.001
+  return
+
+# (HNWInputBox, HNWInputBox) => Unit
+window.setUpHNWInputBox = (source, destination) ->
+  destination.boxedValue   = source.boxedValue
+  destination.currentValue = destination.boxedValue.value
+  destination.variable     = source.variable
+  destination.display      = destination.variable
+  return
+
+# (HNWSwitch, HNWSwitch) => Unit
+window.setUpHNWSwitch = (source, destination) ->
+  destination.on           = source.on
+  destination.currentValue = destination.on
+  return
+
+# (HNWChooser, HNWChooser) => Unit
+window.setUpHNWChooser = (source, destination) ->
+  destination.choices       = source.choices
+  destination.currentChoice = source.currentChoice
+  destination.currentValue  = destination.choices[destination.currentChoice]
+  return
+
+# (() => Unit) => (HNWButton, HNWButton) => Unit
+window.setUpHNWButton = (updateUI) -> (source, destination) ->
+  if source.forever then destination.running = false
+  destination.run = source.hnwSource
+  return
+
+# (HNWMonitor, HNWMonitor) => Unit
+window.setUpHNWMonitor = (source, destination) ->
+  if source.compilation?.success
+    destination.compiledSource = source.compiledSource
+    destination.reporter       = reporterOf(destination.compiledSource)
+    destination.currentValue   = ""
+  else
+    destination.reporter     = () -> "N/A"
+    destination.currentValue = "N/A"
+  return
+
+# (HNWSlider, HNWSlider) => Unit
+window.setUpHNWSlider = (source, destination) ->
+
+  destination.default = source.default
+  destination.min     = source.min
+  destination.max     = source.max
+  destination.step    = source.step
+
+  destination.getMin  = reporterOf(destination.min)
+  destination.getMax  = reporterOf(destination.max)
+  destination.getStep = reporterOf(destination.step)
+
+  destination.minValue  = destination.currentValue
+  destination.maxValue  = destination.currentValue + 1
+  destination.stepValue = 0.001
+
+  return
+
+# (HNWView, HNWView) => Unit
+window.setUpHNWView = (source, destination) ->
   return

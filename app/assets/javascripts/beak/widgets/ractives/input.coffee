@@ -169,3 +169,5 @@ window.RactiveInput = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWInput = RactiveInput.extend({})

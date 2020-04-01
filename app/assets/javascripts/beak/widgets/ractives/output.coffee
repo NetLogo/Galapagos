@@ -74,3 +74,5 @@ window.RactiveOutputArea = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWOutputArea = RactiveOutputArea.extend({})

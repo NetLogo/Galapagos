@@ -109,3 +109,5 @@ window.RactiveMonitor = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+window.RactiveHNWMonitor = RactiveMonitor.extend({})

@@ -100,9 +100,14 @@ window.RactiveButton = RactiveWidget.extend({
     }
   }
 
+  clickHandler: (_, ractive) ->
+    if ractive.get('isEnabled')
+      ractive.get('widget.run')()
+    return
+
   oninit: ->
     @_super()
-    @on('activate-button', (_, run) -> if @get('isEnabled') then run())
+    @on('activate-button', (_, run) -> @clickHandler(_, this))
 
   components: {
     editForm: ButtonEditForm
@@ -142,7 +147,7 @@ window.RactiveButton = RactiveWidget.extend({
       """
       <button id="{{id}}" type="button" style="{{dims}}"
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}"
-              on-click="@this.fire('activate-button', @this.get('widget.run'))">
+              on-click="@this.fire('activate-button')">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
@@ -191,4 +196,11 @@ window.RactiveButton = RactiveWidget.extend({
   }
   # coffeelint: enable=max_line_length
 
+})
+
+window.RactiveHNWButton = RactiveButton.extend({
+  clickHandler: (_, ractive) ->
+    if ractive.get('isEnabled')
+      sendHNWWidgetMessage('button', ractive.get('widget.hnwProcName'))
+    return
 })
