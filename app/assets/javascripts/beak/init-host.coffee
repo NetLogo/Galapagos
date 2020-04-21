@@ -78,9 +78,8 @@ loadInitialModel = ->
 
 # (Sting, Object[Any]) => Unit
 broadcastHNWPayload = (type, payload) ->
-  postTarget  = document.getElementById("hnw-join-frame").contentWindow
   truePayload = Object.assign({}, payload, { type })
-  postTarget.postMessage(truePayload, "*")
+  parent.postMessage({ type: "relay", payload: truePayload }, "*")
   return
 
 # () -> Unit
@@ -110,8 +109,10 @@ setUpEventListeners = ->
         base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
       when "nlw-subscribe-to-updates"
+        if not window.clients[e.data.uuid]?
+          window.clients[e.data.uuid] = {}
         window.clients[e.data.uuid].window = e.source
-        session.subscribe(e.data.uuid)
+        session.subscribeWithID(e.source, e.data.uuid)
       when "nlw-state-update", "nlw-apply-update"
 
         { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdates } = e.data.update
@@ -125,6 +126,30 @@ setUpEventListeners = ->
         vc = session.widgetController.viewController
         viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
         vc.repaint()
+
+
+      when "relay"
+        window.postMessage(e.data.payload, "*")
+
+      when "hnw-request-initial-state"
+
+        viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
+        role      = roles.find((r) -> r.name is e.data.roleName)
+
+        window.clients[e.data.token] =
+          { roleName: role.name
+          , who:      world.turtleManager.peekNextID()
+          , window:   undefined
+          }
+
+        # NOTE
+        procedures[role.onConnect.toUpperCase()]()
+
+        # NOTE
+        monitorUpdates = session.monitorsFor(e.data.token)
+        state          = Object.assign({}, session.getModelState(""), { monitorUpdates })
+
+        e.source.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" }, "*")
 
       when "hnw-resize"
 
@@ -190,24 +215,7 @@ setUpEventListeners = ->
 
         parent.replaceChild(flexbox, wContainer)
 
-        supervisorFrame     = document.createElement("iframe")
-        supervisorFrame.id  = "hnw-join-frame"
-        supervisorFrame.src = "/hnw-join"
-
-        supervisorFrame.style.border = "3px solid red"
-        supervisorFrame.style.height = "648px"
-        supervisorFrame.style.width  = "842px"
-
-        flexbox.appendChild(supervisorFrame)
-
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
-
-        session.widgetController.ractive.observe(
-          'ticksStarted'
-        , (newValue, oldValue) ->
-            if (newValue isnt oldValue)
-              broadcastHNWPayload("hnw-widget-update", { event: { type: "ticksStarted", value: newValue } })
-        )
 
         tabAreaElem = document.querySelector(".netlogo-tab-area")
         taeParent   = tabAreaElem.parentNode
@@ -259,6 +267,23 @@ setUpEventListeners = ->
                     console.log("We got '#{monitor.reporterStyle}'?")
               session.registerMonitorFunc(role.name, monitor.display, func)
 
+        supervisorFrame     = document.createElement("iframe")
+        supervisorFrame.id  = "hnw-join-frame"
+        supervisorFrame.src = "/hnw-join"
+
+        supervisorFrame.style.border = "3px solid red"
+        supervisorFrame.style.height = "648px"
+        supervisorFrame.style.width  = "842px"
+
+        flexbox.appendChild(supervisorFrame)
+
+        session.widgetController.ractive.observe(
+          'ticksStarted'
+        , (newValue, oldValue) ->
+            if (newValue isnt oldValue)
+              broadcastHNWPayload("hnw-widget-update", { event: { type: "ticksStarted", value: newValue } })
+        )
+
         modelState = session.getModelState("")
 
         supervisorFrame.addEventListener('load', ->
@@ -303,20 +328,34 @@ setUpEventListeners = ->
 
         studentFrame.addEventListener('load', ->
 
+          genUUID = ->
+
+            replacer =
+              (c) ->
+                r = Math.random() * 16 | 0
+                v = if c == 'x' then r else (r & 0x3 | 0x8)
+                v.toString(16)
+
+            'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
+
           uuid = genUUID()
-          role = roles[0]
+          role = e.data.roles[0]
+          # NOTE
 
           wind = studentFrame.contentWindow
 
           # TODO: This logic is wrong.  What if the `onConnect` makes multiple turtles?  Which `who` is owned by the client?
+          # NOTE
           window.clients[uuid] =
             { roleName: role.name
             , who:      world.turtleManager.peekNextID()
             , window:   wind
             }
 
+          # NOTE
           procedures[role.onConnect.toUpperCase()]()
 
+          # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
           studentFrame.contentWindow.postMessage({
@@ -331,50 +370,7 @@ setUpEventListeners = ->
           , update: Object.assign({}, modelState, { monitorUpdates })
           }, "*")
 
-          session.subscribeWithID(wind, uuid)
-
-        )
-
-        leechFrame     = document.createElement("iframe")
-        leechFrame.id  = "hnw-join-frame"
-        leechFrame.src = "/hnw-join"
-
-        leechFrame.style.border = "3px solid red"
-        leechFrame.style.height = "471px"
-        leechFrame.style.width  = "776px"
-
-        flexbox.appendChild(leechFrame)
-
-        leechFrame.addEventListener('load', ->
-
-          uuid = genUUID()
-          role = roles[0]
-
-          wind = leechFrame.contentWindow
-
-          # TODO: This logic is wrong.  What if the `onConnect` makes multiple turtles?  Which `who` is owned by the client?
-          window.clients[uuid] =
-            { roleName: role.name
-            , who:      world.turtleManager.peekNextID()
-            , window:   wind
-            }
-
-          procedures[role.onConnect.toUpperCase()]()
-
-          monitorUpdates = session.monitorsFor(uuid)
-
-          leechFrame.contentWindow.postMessage({
-            type:  "hnw-load-interface"
-          , role:  role
-          , token: uuid
-          , view:  baseView
-          }, "*")
-
-          leechFrame.contentWindow.postMessage({
-            type:   "nlw-state-update"
-          , update: Object.assign({}, modelState, { monitorUpdates })
-          }, "*")
-
+          # NOTE
           session.subscribeWithID(wind, uuid)
 
         )

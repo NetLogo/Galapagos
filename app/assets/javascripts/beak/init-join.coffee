@@ -51,7 +51,7 @@ loadHNWModel = (role, view) ->
 
 # (Sting, Object[Any]) => Unit
 sendHNWPayload = (type, payload) ->
-  parent.postMessage(Object.assign({}, payload, { token, type }), "*")
+  parent.postMessage({ type: "relay", payload: Object.assign({}, payload, { token, type }) }, "*")
   return
 
 # (String, Any) => Unit
@@ -107,18 +107,20 @@ setUpEventListeners = ->
         session.subscribe(e.source)
       when "nlw-state-update", "nlw-apply-update"
 
-        { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdates } = e.data.update
+        if session?
 
-        world.ticker.reset()
-        world.ticker.importTicks(ticks)
+          { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdates } = e.data.update
 
-        session.widgetController.applyWidgetUpdates(widgetUpdates)
-        session.widgetController.applyPlotUpdates(plotUpdates)
-        session.widgetController.applyMonitorUpdates(monitorUpdates)
+          world.ticker.reset()
+          world.ticker.importTicks(ticks)
 
-        vc = session.widgetController.viewController
-        viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
-        vc.repaint()
+          session.widgetController.applyWidgetUpdates(widgetUpdates)
+          session.widgetController.applyPlotUpdates(plotUpdates)
+          session.widgetController.applyMonitorUpdates(monitorUpdates)
+
+          vc = session.widgetController.viewController
+          viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
+          vc.repaint()
 
       when "hnw-widget-update"
         if (e.data.event.type is "ticksStarted")

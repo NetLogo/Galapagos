@@ -351,7 +351,7 @@ class window.SessionLite
     @displayError(messages.join('\n'))
 
   # (Window) => Unit
-  subscribe: (window) ->
+  subscribe: (wind) ->
 
     genUUID = ->
 
@@ -363,20 +363,20 @@ class window.SessionLite
 
       'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
 
-    @_subscriberObj[genUUID()] = window
+    @_subscriberObj[genUUID()] = wind
 
     return
 
   # (Window, String) => Unit
-  subscribeWithID: (window, id) ->
-    @_subscriberObj[id] = window
+  subscribeWithID: (wind, id) ->
+    @_subscriberObj[id] = wind
     return
 
   # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
   getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
     viewUpdates   = [{ drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }]
-    widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates() }
+    widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates(@widgetController.widgets()) }
     plotUpdates   = @widgetController.getPlotUpdates()
     ticks         = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
     { widgetUpdates, plotUpdates, ticks, viewUpdates }
@@ -437,15 +437,16 @@ class window.SessionLite
     @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [displayStr.toLowerCase()]: func })
     return
 
-  # (UUID) => Array[Object[String]]
+  # (UUID) => Object[String]
   monitorsFor: (uuid) ->
 
     { roleName, who } = window.clients[uuid]
 
     out = {}
 
-    for k, v of @_monitorFuncs[roleName]
-      out[k] = v(who)
+    if roleName? and who?
+      for k, v of @_monitorFuncs[roleName]
+        out[k] = v(who)
 
     out
 
