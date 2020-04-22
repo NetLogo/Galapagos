@@ -3,6 +3,7 @@ window.RactiveModelChooser = Ractive.extend({
   data: () -> {
       active:      false # Boolean
     , runtimeMode: "dev" # String
+    , playMode:    false # Boolean
     , top:         "50px" # String
     , encodedUrl:  undefined # String
     , name:        undefined # String
@@ -31,7 +32,9 @@ window.RactiveModelChooser = Ractive.extend({
       onComplete = () ->
         return
 
-      exports.bindModelChooser(modelList, onComplete, pickModel, @get("runtimeMode"))
+      if (not @get("playMode"))
+        exports.bindModelChooser(modelList, onComplete, pickModel, @get("runtimeMode"))
+
       return
 
     # (Event, String) => Unit
