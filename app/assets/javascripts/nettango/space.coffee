@@ -165,8 +165,9 @@ window.RactiveSpace = Ractive.extend({
     overlay.classList.add('ntb-dialog-overlay')
     return
 
-  # (NetTangoSpace) => String
+  # (NetTangoSpace|null) => String
   getNetTangoContainerId: (space) ->
+    if not space then space = @get("space")
     "#{space.spaceId}-canvas"
 
   # (NetTangoSpace) => Unit
@@ -211,10 +212,12 @@ window.RactiveSpace = Ractive.extend({
     switch event.type
 
       when "block-changed"
+        @saveNetTango()
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
 
       when "attribute-changed"
+        @saveNetTango()
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                                                       event.attributeId, event.value)
         @fire('ntb-run', setCode, @squelch)
@@ -263,10 +266,16 @@ window.RactiveSpace = Ractive.extend({
       @handleNetTangoError(ex)
       return
 
+    @saveNetTango(containerId)
+    @setSpaceNetLogo(space, containerId)
+    return
+
+  # (String|null) => Unit
+  saveNetTango: (containerId) ->
+    if not containerId then containerId = @getNetTangoContainerId()
     netTangoData = NetTango.save(containerId)
     @set("space.defs",     netTangoData)
     @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
-    @setSpaceNetLogo(space, containerId)
     return
 
   # (NetTangoSpace, Boolean) => Unit
