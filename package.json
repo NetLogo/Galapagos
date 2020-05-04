@@ -2,7 +2,6 @@
   "dependencies": {
     "chosen-js": "1.8.7",
     "codemirror": "5.53.2",
-    "coffeescript": "2.5.1",
     "file-saver": "2.0.2",
     "highcharts": "8.0.4",
     "jquery": "3.5.0",
@@ -14,6 +13,7 @@
     "synchrodecoder": "1.0.2"
   },
   "devDependencies": {
-    "coffeelint": "^2.1.0"
+    "coffeelint": "^2.1.0",
+    "coffeescript": "2.5.1"
   }
 }
