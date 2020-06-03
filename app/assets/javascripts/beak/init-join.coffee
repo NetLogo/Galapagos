@@ -95,6 +95,8 @@ setUpEventListeners = ->
 
         exiles.forEach((n) -> n.style.display = "none")
 
+        sendHNWMessage("interface-loaded", null);
+
       when "nlw-update-model-state"
         session.widgetController.setCode(e.data.codeTabContents)
       when "nlw-request-model-state"
