@@ -82,6 +82,12 @@ broadcastHNWPayload = (type, payload) ->
   parent.postMessage({ type: "relay", payload: truePayload }, "*")
   return
 
+# (String, Sting, Object[Any]) => Unit
+window.narrowcastHNWPayload = (uuid, type, payload) ->
+  truePayload = Object.assign({}, payload, { type })
+  parent.postMessage({ type: "relay", recipient: uuid, payload: truePayload }, "*")
+  return
+
 # () -> Unit
 setUpEventListeners = ->
 
@@ -136,10 +142,12 @@ setUpEventListeners = ->
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
         role      = roles.find((r) -> r.name is e.data.roleName)
 
+        session.subscribeWithID(null, e.data.token)
+
         window.clients[e.data.token] =
           { roleName: role.name
           , who:      world.turtleManager.peekNextID()
-          , window:   undefined
+          , window:   null
           }
 
         # NOTE

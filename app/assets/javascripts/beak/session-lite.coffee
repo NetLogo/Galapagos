@@ -471,13 +471,16 @@ class window.SessionLite
         for uuid, wind of @_subscriberObj
           monitorUpdates = @monitorsFor(uuid)
           if monitorUpdates.length > 0 or plotUpdates.length > 0 or viewUpdates.length > 0 or ticks?
-            update = { widgetUpdates: [], monitorUpdates, plotUpdates, ticks, viewUpdates }
-            wind.postMessage({ update, type: "nlw-state-update" }, "*")
+            update  = { widgetUpdates: [], monitorUpdates, plotUpdates, ticks, viewUpdates }
+            if wind isnt null
+              wind.postMessage({ update, type: "nlw-state-update" }, "*")
+            else
+              narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
       else if window.isHNWJoiner is true
         goodWTypes    = ["slider", "switch", "input", "chooser"]
         widgetUpdates = @_getWidgetUpdates(@widgetController.widgets()).filter((wup) -> wup.type in goodWTypes)
-        for _, _ of @_subscriberObj
+        for _, _ of @_subscriberObj # Huh?! ???
           widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup)))
 
     return
