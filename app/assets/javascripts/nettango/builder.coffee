@@ -349,6 +349,7 @@ window.RactiveBuilder = Ractive.extend({
     for key, prop of (project.netTangoToggles ? { })
       if netTangoToggles.hasOwnProperty(key)
         netTangoToggles[key].checked = prop
+    @set("netTangoToggles", netTangoToggles)
 
     @set("extraCss", if project.hasOwnProperty("extraCss") then project.extraCss else "")
 
