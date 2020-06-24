@@ -180,6 +180,7 @@ window.RactiveBuilder = Ractive.extend({
 
     '*.ntb-import-netlogo-prompt': (_) ->
       importInput = @find('#ntb-import-netlogo')
+      importInput.value = ""
       importInput.click()
       return false
 
