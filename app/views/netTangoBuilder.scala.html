@@ -230,6 +230,7 @@
       , loadUrl:             loadUrl
       , sessionReady:        ()                => window.session !== undefined
       , getModelCode:        ()                => window.session.getNlogo()
+      , exportModel:         ()                => window.session.exportNlogo()
       , addEventListener:    (event, callback) => document.addEventListener(event, callback)
       , getWidgetController: ()                => window.session.widgetController
       , getModelTitle:       ()                => window.session.modelTitle()

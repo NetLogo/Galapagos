@@ -31,6 +31,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-page',    (_)                     => @exportProject('standalone'))
     @ractive.on('*.ntb-export-json',    (_)                     => @exportProject('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
+    @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.exportModel())
     @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
     @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
     @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
