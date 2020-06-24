@@ -101,9 +101,9 @@ class window.NetTangoController
     })
 
   # () => String
-  getBlocksCode: () =>
+  getBlocksCode: (displayOnly = false) =>
     defs = @ractive.findComponent('tangoDefs')
-    defs.assembleCode()
+    defs.assembleCode(displayOnly)
 
   # This is a debugging method to get a view of the altered code output that
   # NetLogo will compile
@@ -221,8 +221,9 @@ class window.NetTangoController
     file   = files[0]
     reader = new FileReader()
     reader.onload = (e) =>
-      code = e.target.result
-      @theOutsideWorld.setModelCode(code, file.name)
+      nlogo = e.target.result
+      nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
+      @theOutsideWorld.setModelCode(nlogo, file.name)
       @handleProjectChange()
       return
     reader.readAsText(file)
@@ -251,7 +252,7 @@ class window.NetTangoController
     project       = @builder.getNetTangoBuilderData()
     project.code  = modelCodeMaybe.result
     project.title = title
-    isVertical            = window.session.widgetController.ractive.get("isVertical") ? false
+    isVertical    = window.session.widgetController.ractive.get("isVertical") ? false
     project.netLogoSettings = { isVertical }
     return project
 

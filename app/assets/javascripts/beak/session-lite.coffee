@@ -140,6 +140,10 @@ class window.SessionLite
     rewriter = (newCode, rw) -> if rw.injectCode? then rw.injectCode(newCode) else newCode
     @rewriters.reduce(rewriter, code)
 
+  rewriteExport: (code) ->
+    rewriter = (newCode, rw) -> if rw.exportCode? then rw.exportCode(newCode) else newCode
+    @rewriters.reduce(rewriter, code)
+
   # () => Array[String]
   rewriterCommands: () ->
     extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
@@ -201,7 +205,7 @@ class window.SessionLite
   getNlogo: ->
     (new BrowserCompiler()).exportNlogo({
       info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
-      code:         @widgetController.ractive.get('code'),
+      code:         @rewriteExport(@widgetController.code()),
       widgets:      @widgetController.widgets(),
       turtleShapes: turtleShapes,
       linkShapes:   linkShapes
