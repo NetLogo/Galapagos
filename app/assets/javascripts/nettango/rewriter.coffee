@@ -94,7 +94,7 @@ class window.NetTangoRewriter
     if (not space.defs.program? or not space.defs.program.chains?)
       return []
     space.defs.program.chains.flatMap( (chain) ->
-      chain.flatMap( (block) -> NetTangoRewriter.createBlockVariables(space.spaceId, block) )
+      chain.blocks.flatMap( (block) -> NetTangoRewriter.createBlockVariables(space.spaceId, block) )
     )
 
   # (Array[Space]) => Array[String]

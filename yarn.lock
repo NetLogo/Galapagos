@@ -20,10 +20,10 @@ chosen-js@1.8.7:
   resolved "https://registry.yarnpkg.com/chosen-js/-/chosen-js-1.8.7.tgz#9bfa5597f5081d602ff4ae904af9aef33265bb1d"
   integrity sha512-eVdrZJ2U5ISdObkgsi0od5vIJdLwq1P1Xa/Vj/mgxkMZf14DlgobfB6nrlFi3kW4kkvKLsKk4NDqZj1MU1DCpw==
 
-codemirror@5.53.2:
-  version "5.53.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.53.2.tgz#9799121cf8c50809cca487304e9de3a74d33f428"
-  integrity sha512-wvSQKS4E+P8Fxn/AQ+tQtJnF1qH5UOlxtugFLpubEZ5jcdH2iXTVinb+Xc/4QjshuOxRm4fUsU2QPF1JJKiyXA==
+codemirror@5.55.0:
+  version "5.55.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.55.0.tgz#23731f641288f202a6858fdc878f3149e0e04363"
+  integrity sha512-TumikSANlwiGkdF/Blnu/rqovZ0Y3Jh8yy9TqrPbSM0xxSucq3RgnpVDQ+mD9q6JERJEIT2FMuF/fBGfkhIR/g==
 
 coffeelint@^2.1.0:
   version "2.1.0"
@@ -77,10 +77,10 @@ glob@^7.0.6:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-highcharts@8.0.4:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-8.0.4.tgz#a717434012bd5f9b82b94b737d62acec501d360c"
-  integrity sha512-RD86/w7VNwuY96c2Pv16dtZujJ4vg5viiVjbFF/TCrvFpmtQRzBIECG90ww0JtiK6+6TKlwCYf0an+kgQshnRw==
+highcharts@8.1.2:
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-8.1.2.tgz#a4e7d74a6140028e676a3a54f5fd0ea6ccbcc90e"
+  integrity sha512-Q124Lj+2+bVY2MKMd7d8uSVAmhZVzWgknUUzUBEC27S94dCyK6PBgahuwiMP/ET4w7qSFBBi4OC77ZUb0Vnuyg==
 
 ignore@^3.0.9:
   version "3.3.10"
@@ -117,10 +117,10 @@ jpeg-js@0.3.4:
   resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.3.4.tgz#dc2ba501ee3d58b7bb893c5d1fab47294917e7e7"
   integrity sha512-6IzjQxvnlT8UlklNmDXIJMWxijULjqGrzgqc0OG7YadZdvm7KPQ1j0ehmQQHckgEWOfgpptzcnWgESovxudpTA==
 
-jquery@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
-  integrity sha512-Xb7SVYMvygPxbFMpTFQiHh1J7HClEaThguL15N/Gg37Lri/qKyhRGZYzHRyLH8Stq3Aow0LsHO2O2ci86fCrNQ==
+jquery@3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.1.tgz#d7b4d08e1bfdb86ad2f1a3d039ea17304717abb5"
+  integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
 
 jscolor-picker@2.0.4:
   version "2.0.4"
@@ -134,10 +134,10 @@ lie@3.1.1:
   dependencies:
     immediate "~3.0.5"
 
-localforage@1.7.3:
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.7.3.tgz#0082b3ca9734679e1bd534995bdd3b24cf10f204"
-  integrity sha512-1TulyYfc4udS7ECSBT2vwJksWbkwwTX8BzeUIiq8Y07Riy7bDAAnxDaPU/tWyOVmQAcWJIEIFP9lPfBGqVoPgQ==
+localforage@1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.7.4.tgz#88b59cc9b25ae54c76bb2c080b21ec832c22d3f6"
+  integrity sha512-3EmVZatmNVeCo/t6Te7P06h2alGwbq8wXlSkcSXMvDE2/edPmsVqTPlzGnZaqwZZDBs6v+kxWpqjVsqsNJT8jA==
   dependencies:
     lie "3.1.1"
 
@@ -158,10 +158,10 @@ mousetrap@1.6.5:
   resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.5.tgz#8a766d8c272b08393d5f56074e0b5ec183485bf9"
   integrity sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==
 
-nettango@0.10.6:
-  version "0.10.6"
-  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.10.6.tgz#ea03954d9a9f6c7bbe1504b54e80553d70b0cebf"
-  integrity sha512-XvIKbdkTxNXii7zdzfUcSxseLIOW0wG4seqQp8bkc/WokGcNChxCZxfHOtTKiPv+vWlYgDZI+mafluLKC4BKqw==
+nettango@0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.11.0.tgz#868cb0343f6e18c1c966a6ba7991a12f81b4d1ef"
+  integrity sha512-Oy/a6MyL2TtevbwrF2tPsL5pMnvFjLeQ+UlaI7VEgLcsSYU0g9odoRAScewlsJYscrfg+RGIo9JHoydAh7iUAw==
 
 once@^1.3.0:
   version "1.4.0"
@@ -188,10 +188,10 @@ path-is-absolute@^1.0.0:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-ractive@1.3.11:
-  version "1.3.11"
-  resolved "https://registry.yarnpkg.com/ractive/-/ractive-1.3.11.tgz#8f34ecbbb3164a5e635f3fd06a9fbdfc6fc30e43"
-  integrity sha512-oJiBBglrd8JQ0mjz1r4cAvPSDC7olfFkHVDaNkgBUw6oCitRtL+D4rR/7JYluYKUVOjHaav373vKdAOErNBUcA==
+ractive@1.3.12:
+  version "1.3.12"
+  resolved "https://registry.yarnpkg.com/ractive/-/ractive-1.3.12.tgz#3a9a787c83a5d482ce8e11af170f54c1a853bd76"
+  integrity sha512-fjJrZM5p4R6FMpvn9THAdvysqlL+fAw1OhE7yYivBdPp4cdD2c3xaFultvhqjJjmStqkYl/tXVmK5kdcbmMQ5g==
 
 resolve@^0.6.3:
   version "0.6.3"
