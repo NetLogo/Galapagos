@@ -190,6 +190,7 @@ window.RactiveBuilder = Ractive.extend({
 
     '*.ntb-import-json-prompt': (_) ->
       importInput = @find('#ntb-import-json')
+      importInput.value = ""
       importInput.click()
       return false
 

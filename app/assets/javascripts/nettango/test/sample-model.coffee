@@ -1,67 +1,33 @@
-window.RactiveTestingDefaults = Ractive.extend({
-
-  on: {
-    # (Context) => Unit
-    'ntb-testing-defaults': (_) ->
-      wspDefaults = {
-        extraCss: "/* test of extraCss load */"
-        title: "Wolves and Sheep"
-        tabOptions: {
-            commandCenterTab: true
-          , codeTab:          true
-          , infoTab:          false
-          , poweredBy:        true
-        }
-        , spaces: [
-          @wolfSpaceDefault,
-          @sheepSpaceDefault,
-        ]
-        , code: @codeDefault
-      }
-      @fire('ntb-load-project', { }, wspDefaults)
-      return
-  }
-
-  template: """
-    <div style="position: relative;">
-      <div class="ntb-controls">
-        <div class="ntb-block-defs-controls">
-          <button class="ntb-button" type="button" on-click="ntb-testing-defaults" >Load WSP Testing Defaults</button>
-        </div>
-      </div>
-    </div>
-  """
-
-  wolfSpaceDefault: {
-    name: "Wolves",
-    width: 450,
-    height: 550,
-    # coffeelint: disable=max_line_length
-    defs: { blocks: [
-      { "action": "\uD83D\uDC3A wolf actions ", "type": "nlogo:procedure", "limit": 1, "format": "to wolf-actions", "required": true },
-      { "action": "wolf meets sheep ", "type": "nlogo:procedure", "limit": 1, "format": "to wolf-meets-sheep", "required": true },
-      { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
-      { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
-      { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
-      { "action": "\uD83D\uDC11 ask nearby sheep", "format": "ask sheep in-radius 3", "clauses": [ ], "control": true },
-      { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
-    # coffeelint: enable=max_line_length
-  }
-
-  sheepSpaceDefault: {
-    name: "Sheep",
-    # coffeelint: disable=max_line_length
-    defs: { blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "type": "nlogo:procedure", "limit": 1, "format": "to sheep-actions", "required": true },
+wolfSpaceDefault = {
+  name: "Wolves",
+  width: 450,
+  height: 550,
+  # coffeelint: disable=max_line_length
+  defs: { blocks: [
+    { "action": "\uD83D\uDC3A wolf actions ", "type": "nlogo:procedure", "limit": 1, "format": "to wolf-actions", "required": true },
+    { "action": "wolf meets sheep ", "type": "nlogo:procedure", "limit": 1, "format": "to wolf-meets-sheep", "required": true },
     { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
     { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
     { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
+    { "action": "\uD83D\uDC11 ask nearby sheep", "format": "ask sheep in-radius 3", "clauses": [ ], "control": true },
     { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
-    # coffeelint: enable=max_line_length
-  }
+  # coffeelint: enable=max_line_length
+}
 
-  codeDefault:
-    # coffeelint: disable=max_line_length
-    """
+sheepSpaceDefault = {
+  name: "Sheep",
+  # coffeelint: disable=max_line_length
+  defs: { blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "type": "nlogo:procedure", "limit": 1, "format": "to sheep-actions", "required": true },
+  { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
+  { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
+  { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
+  { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+  # coffeelint: enable=max_line_length
+}
+
+codeDefault =
+# coffeelint: disable=max_line_length
+"""
 globals [ max-sheep ]  ; don't let sheep population grow too large
 
 breed [ sheep a-sheep ]  ; sheep is its own plural, so we use "a-sheep" as the singular.
@@ -672,7 +638,21 @@ Line -7500403 true 150 150 210 180
 @#$#@#$#@
 1
 @#$#@#$#@
-    """
-    # coffeelint: enable=max_line_length
+"""
+# coffeelint: enable=max_line_length
 
-})
+window.netTangoSampleModel = {
+  extraCss: "/* test of extraCss load */"
+  title: "Wolves and Sheep"
+  tabOptions: {
+      commandCenterTab: true
+    , codeTab:          true
+    , infoTab:          false
+    , poweredBy:        true
+  }
+  , spaces: [
+    wolfSpaceDefault,
+    sheepSpaceDefault,
+  ]
+  , code: codeDefault
+}

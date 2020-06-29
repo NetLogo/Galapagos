@@ -15,6 +15,7 @@ window.RactiveBuilderMenu = Ractive.extend({
           { eventName: 'ntb-clear-all-check',       name: 'Clear model and spaces' }
           { spacerText: '-' }
           { eventName: 'ntb-import-json-prompt',    name: 'Import NetTango project' }
+          { eventName: 'ntb-load-sample-project',   name: 'Load Wolves and Sheep sample project' }
           { spacerText: '-' }
           { eventName: 'ntb-import-netlogo-prompt', name: 'Import NetLogo model' }
           { eventName: 'ntb-choose-netlogo-prompt', name: 'Choose NetLogo library model' }

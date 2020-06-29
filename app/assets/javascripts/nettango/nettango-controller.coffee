@@ -34,18 +34,13 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.exportModel())
     @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
     @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
+    @ractive.on('*.ntb-load-sample-project', () =>
+      @loadProject(netTangoSampleModel, "project-load"))
     @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command, errorLog))
-
-  # () => Ractive
-  getTestingDefaults: () ->
-    if (@playMode)
-      Ractive.extend({ })
-    else
-      RactiveTestingDefaults
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode) ->
@@ -80,7 +75,6 @@ class window.NetTangoController
       components: {
           popupmenu:       RactivePopupMenu
         , tangoBuilder:    RactiveBuilder
-        , testingDefaults: @getTestingDefaults()
       },
 
       template:
