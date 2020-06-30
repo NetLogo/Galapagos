@@ -54,8 +54,24 @@ window.RactiveSpaces = Ractive.extend({
       @fire('ntb-space-changed')
       return
 
+    # (Context) => Unit
     '*.ntb-recompile-start': (_) ->
       @recompile()
+      return
+
+    # (Context, DuplicateBlockData) => Unit
+    '*.ntb-duplicate-block-to': (_, { fromSpaceId, fromBlockIndex, toSpaceIndex }) ->
+      spaces    = @get('spaces')
+      fromSpace = spaces.filter( (s) -> s.spaceId is fromSpaceId )[0]
+      toSpace   = spaces[toSpaceIndex]
+      original  = fromSpace.defs.blocks[fromBlockIndex]
+      copy      = NetTangoBlockDefaults.copyBlock(original)
+
+      toSpace.defs.blocks.push(copy)
+      toSpace.defsJson = JSON.stringify(toSpace.defs, null, '  ')
+
+      @updateNetTango()
+      return
   }
 
   # (Boolean) => Unit

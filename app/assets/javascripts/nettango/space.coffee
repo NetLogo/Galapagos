@@ -44,7 +44,8 @@ window.RactiveSpace = Ractive.extend({
 
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
-      modifyMenu = @createModifyMenuContent(space)
+      spaces     = @parent.get("spaces")
+      modifyMenu = @createModifyMenuContent(space, spaces)
       @get('popupMenu').popup(this, pageX, pageY, modifyMenu)
       return false
 
@@ -238,7 +239,8 @@ window.RactiveSpace = Ractive.extend({
           space      = @get("space")
           blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
           block      = space.defs.blocks[blockIndex]
-          modifyMenu = @createModifyMenu(block, blockIndex)
+          spaces     = @parent.get("spaces")
+          modifyMenu = @createModifyMenu(block, blockIndex, space, spaces)
           @get('popupMenu').popup(this, event.x, event.y, modifyMenu)
 
     return
@@ -299,17 +301,45 @@ window.RactiveSpace = Ractive.extend({
     @fire('ntb-errors', {}, messages, ex.stack)
     return
 
-  # (NetTangoBlock) => Content
-  createModifyMenu: (block, blockIndex) ->
+  # (NetTangoBlock, Int, NetTangoSpace, Array[NetTangoSpace]) => Content
+  createModifyMenu: (block, blockIndex, space, spaces) ->
+    items          = modifyBlockMenuItems.map( (x) -> Object.assign({ data: blockIndex }, x) )
+    dupToSpaceItem = @createDuplicateToSpaceMenuItem(blockIndex, space, spaces)
+    if (dupToSpaceItem isnt null)
+      items.push(dupToSpaceItem)
+
     {
       name:  block.action
-      items: modifyBlockMenuItems.map((x) -> Object.assign({ data: blockIndex }, x))
+      items
     }
 
-  # (NetTangoSpace) => Content
-  createModifyMenuContent: (space) ->
+  # (Int, NetTangoSpace, Array[NetTangoSpace]) => MenuItem | null
+  createDuplicateToSpaceMenuItem: (blockIndex, space, spaces) ->
+    otherSpaces = spaces.map( (s, index) -> return { space: s, index } ).filter( (s) -> space.spaceId != s.space.spaceId )
+
+    if otherSpaces.length is 0
+      return null
+
+    if otherSpaces.length is 1
+      return {
+        name: "duplicate to #{otherSpaces[0].space.name}"
+        eventName: "ntb-duplicate-block-to"
+        data: { fromSpaceId: space.spaceId, fromBlockIndex: blockIndex, toSpaceIndex: otherSpaces[0].index }
+      }
+
+    return {
+      name: "duplicate to",
+      items: otherSpaces.map( (s) -> {
+        name: s.space.name
+        eventName: "ntb-duplicate-block-to"
+        data: { fromSpaceId: space.spaceId, fromBlockIndex: blockIndex, toSpaceIndex: s.index }
+      })
+    }
+
+  # (NetTangoSpace, Array[NetTangoSpace]) => Content
+  createModifyMenuContent: (space, spaces) ->
     items = for block, blockIndex in space.defs.blocks
-      @createModifyMenu(block, blockIndex)
+      @createModifyMenu(block, blockIndex, space, spaces)
 
     {
       name: "_",
