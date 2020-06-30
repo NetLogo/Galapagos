@@ -383,7 +383,7 @@ window.RactiveBuilder = Ractive.extend({
     """
     <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
-      <optionsForm parentClass="ntb-builder" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
+      <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
       <modelChooser runtimeMode="{{runtimeMode}}" playMode="{{playMode}}"></modelChooser>
       <errorDisplay></errorDisplay>

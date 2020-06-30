@@ -74,7 +74,7 @@ body#ntp-body, html#ntp-body {
   top: 0;
   left: 0;
   position: absolute;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.0);
   z-index: 95;
 }
 
@@ -210,6 +210,11 @@ body#ntp-body, html#ntp-body {
 #ntb-block-edit-window {
   max-height: 800px;
   overflow-y: scroll;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
+}
+
+#ntb-options-edit-window {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
 }
 
 .ntb-popup {
