@@ -315,7 +315,9 @@ window.RactiveSpace = Ractive.extend({
 
   # (Int, NetTangoSpace, Array[NetTangoSpace]) => MenuItem | null
   createDuplicateToSpaceMenuItem: (blockIndex, space, spaces) ->
-    otherSpaces = spaces.map( (s, index) -> return { space: s, index } ).filter( (s) -> space.spaceId != s.space.spaceId )
+    otherSpaces = spaces
+      .map( (s, index) -> return { space: s, index } )
+      .filter( (s) -> space.spaceId isnt s.space.spaceId )
 
     if otherSpaces.length is 0
       return null

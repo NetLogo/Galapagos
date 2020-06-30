@@ -73,7 +73,10 @@ class window.NetTangoRewriter
 
   # (String, Int, Int, Int, Any) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
-    "(#{value})"
+    if typeof(value) is "string"
+      "(\"#{value}\")"
+    else
+      "(#{value})"
 
   # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
