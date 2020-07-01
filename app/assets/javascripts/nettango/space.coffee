@@ -50,9 +50,9 @@ window.RactiveSpace = Ractive.extend({
       return false
 
     # (Context, Integer) => Unit
-    '*.ntb-delete-block': (_, blockNumber) ->
+    '*.ntb-delete-block': (_, blockIndex) ->
       space = @get('space')
-      @splice("space.defs.blocks", blockNumber, 1)
+      @splice("space.defs.blocks", blockIndex, 1)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
@@ -110,46 +110,46 @@ window.RactiveSpace = Ractive.extend({
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-show-edit-block-form': (_, blockNumber) ->
+    '*.ntb-show-edit-block-form': (_, blockIndex) ->
       space = @get('space')
-      block = space.defs.blocks[blockNumber]
-      @showBlockForm(space.name, block, blockNumber, "Update Block", "ntb-block-updated")
+      block = space.defs.blocks[blockIndex]
+      @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated")
       return
 
     # (Context, NetTangoBlock, Integer) => Unit
-    '*.ntb-block-updated': (_, block, blockNumber) ->
+    '*.ntb-block-updated': (_, block, blockIndex) ->
       space = @get('space')
-      space.defs.blocks[blockNumber] = block
+      space.defs.blocks[blockIndex] = block
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-block-up': (_, blockNumber) ->
+    '*.ntb-block-up': (_, blockIndex) ->
       space = @get('space')
-      if (blockNumber > 0)
-        swap = space.defs.blocks[blockNumber - 1]
-        space.defs.blocks[blockNumber - 1] = space.defs.blocks[blockNumber]
-        space.defs.blocks[blockNumber] = swap
+      if (blockIndex > 0)
+        swap = space.defs.blocks[blockIndex - 1]
+        space.defs.blocks[blockIndex - 1] = space.defs.blocks[blockIndex]
+        space.defs.blocks[blockIndex] = swap
         @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
         @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-block-down': (_, blockNumber) ->
+    '*.ntb-block-down': (_, blockIndex) ->
       space = @get('space')
-      if (blockNumber < (space.defs.blocks.length - 1))
-        swap = space.defs.blocks[blockNumber + 1]
-        space.defs.blocks[blockNumber + 1] = space.defs.blocks[blockNumber]
-        space.defs.blocks[blockNumber] = swap
+      if (blockIndex < (space.defs.blocks.length - 1))
+        swap = space.defs.blocks[blockIndex + 1]
+        space.defs.blocks[blockIndex + 1] = space.defs.blocks[blockIndex]
+        space.defs.blocks[blockIndex] = swap
         @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
         @updateNetTango(space, true)
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-duplicate-block': (_, blockNumber) ->
+    '*.ntb-duplicate-block': (_, blockIndex) ->
       space    = @get('space')
-      original = space.defs.blocks[blockNumber]
+      original = space.defs.blocks[blockIndex]
       copy = NetTangoBlockDefaults.copyBlock(original)
       @push("space.defs.blocks", copy)
       @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
@@ -159,14 +159,14 @@ window.RactiveSpace = Ractive.extend({
   }
 
   # (String, NetTangoBlock, Integer, String, String) => Unit
-  showBlockForm: (spaceName, block, blockNumber, submitLabel, submitEvent) ->
+  showBlockForm: (spaceName, block, blockIndex, submitLabel, submitEvent) ->
     form = @get('blockEditForm')
-    form.show(this, spaceName, block, blockNumber, submitLabel, submitEvent)
+    form.show(this, spaceName, block, blockIndex, submitLabel, submitEvent)
     overlay = @root.find('.widget-edit-form-overlay')
     overlay.classList.add('ntb-dialog-overlay')
     return
 
-  # (NetTangoSpace|null) => String
+  # (NetTangoSpace | null) => String
   getNetTangoContainerId: (space) ->
     if not space then space = @get("space")
     "#{space.spaceId}-canvas"
@@ -301,7 +301,7 @@ window.RactiveSpace = Ractive.extend({
     @fire('ntb-errors', {}, messages, ex.stack)
     return
 
-  # (NetTangoBlock, Int, NetTangoSpace, Array[NetTangoSpace]) => Content
+  # (NetTangoBlock, Integer, NetTangoSpace, Array[NetTangoSpace]) => Content
   createModifyMenu: (block, blockIndex, space, spaces) ->
     items          = modifyBlockMenuItems.map( (x) -> Object.assign({ data: blockIndex }, x) )
     dupToSpaceItem = @createDuplicateToSpaceMenuItem(blockIndex, space, spaces)
@@ -313,7 +313,7 @@ window.RactiveSpace = Ractive.extend({
       items
     }
 
-  # (Int, NetTangoSpace, Array[NetTangoSpace]) => MenuItem | null
+  # (Integer, NetTangoSpace, Array[NetTangoSpace]) => MenuItem | null
   createDuplicateToSpaceMenuItem: (blockIndex, space, spaces) ->
     otherSpaces = spaces
       .map( (s, index) -> return { space: s, index } )

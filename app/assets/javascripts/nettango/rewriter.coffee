@@ -57,21 +57,21 @@ class window.NetTangoRewriter
       return error
     )
 
-  # (Sring, Int, Int, Int) => String
+  # (String, Integer, Integer, Integer) => String
   @formatAttributeVariable: (containerId, blockId, instanceId, attributeId) ->
     return "\"__#{containerId}_#{blockId}_#{instanceId}_#{attributeId}\""
 
-  # (String, Int, Int, Int, Any) => String
+  # (String, Integer, Integer, Integer, Any) => String
   @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value) ->
     variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
     "nt:set #{variableName} (#{value})"
 
-  # (String, Int, Int, Int, Any) => String
+  # (String, Integer, Integer, Integer, Any) => String
   @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value) ->
     variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
     "(nt:get #{variableName})"
 
-  # (String, Int, Int, Int, Any) => String
+  # (String, Integer, Integer, Integer, Any) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
     if typeof(value) is "string"
       "(\"#{value}\")"

@@ -3,7 +3,7 @@ window.RactiveBlockForm = EditForm.extend({
   data: () -> {
     spaceName:   undefined # String
     block:       undefined # NetTangoBlock
-    blockNumber: undefined # Integer
+    blockIndex:  undefined # Integer
     submitEvent: undefined # String
     showStyles:  false     # Boolean
 
@@ -33,7 +33,7 @@ window.RactiveBlockForm = EditForm.extend({
     # (Context) => Unit
     'submit': (_) ->
       target = @get('target')
-      target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockNumber'))
+      target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockIndex'))
       return
 
     '*.code-changed': (_, code) ->
@@ -79,11 +79,11 @@ window.RactiveBlockForm = EditForm.extend({
     return
 
   # (String, String, NetTangoBlock, Integer, String, String) => Unit
-  show: (target, spaceName, block, blockNumber, submitLabel, submitEvent) ->
+  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent) ->
     @_setBlock(block)
     @set(     'target', target)
     @set(  'spaceName', spaceName)
-    @set('blockNumber', blockNumber)
+    @set( 'blockIndex', blockIndex)
     @set('submitLabel', submitLabel)
     @set('submitEvent', submitEvent)
 

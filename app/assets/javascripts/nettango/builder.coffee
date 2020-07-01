@@ -43,7 +43,7 @@ window.RactiveBuilder = Ractive.extend({
     blockEditor: {
       show:        false           # Boolean
       spaceNumber: undefined       # Integer
-      blockNumber: undefined       # Integer
+      blockIndex:  undefined       # Integer
       submitEvent: undefined       # String
       submitLabel: "Add New Block" # String
     }
