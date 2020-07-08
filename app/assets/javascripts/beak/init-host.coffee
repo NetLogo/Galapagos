@@ -187,7 +187,7 @@ setUpEventListeners = ->
               procedure()
             else
               world.turtleManager.getTurtle(who).ask(procedure, false)
-          when "slider", "switch"
+          when "slider", "switch", "chooser"
             { varName, value } = JSON.parse(e.data.data.message)
             if role.isSpectator
               mangledName = "__hnw_#{role.name}_#{varName}"

@@ -419,7 +419,7 @@ class window.SessionLite
           when "switch"
             console.log("Hey, nl switch", w)
           when "hnwChooser"
-            console.log("Hey, chooser", w)
+            { type: "chooser", varName: w.variable, value: w.currentValue }
           when "hnwInputBox"
             console.log("Hey, input", w)
           when "hnwMonitor"
