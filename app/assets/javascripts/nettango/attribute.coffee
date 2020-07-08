@@ -1,15 +1,18 @@
 window.RactiveAttribute = Ractive.extend({
 
   data: () -> {
-    id:             undefined # Integer
-    codeFormat:     undefined # String
-    attribute:      undefined # NetTangoAttribute
-    atttributeType: undefined # String ("params" or "properties")
+    id:            undefined # Integer
+    codeFormat:    undefined # String
+    attribute:     undefined # NetTangoAttribute
+    attributeType: undefined # String ("params" or "properties")
   }
 
   computed: {
     codeFormatFull: () ->
       "{#{@get('codeFormat') ? ''}#{@get('id')}}"
+
+    elementId: () ->
+      "#{@get("attributeType").toLowerCase()}-#{@get("id")}"
   }
 
   on: {
@@ -44,17 +47,17 @@ window.RactiveAttribute = Ractive.extend({
     """
     <div class="flex-row ntb-form-row">
 
-      <labeledInput id="param-{{ id }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Display name" divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="{{ elementId }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Display name" divClass="ntb-flex-column" class="ntb-input" />
 
-      <dropdown id="param-{{ id }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
+      <dropdown id="{{ elementId }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
         choices="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
         />
 
-      <labeledInput id="param-{{ id }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label"  divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="{{ elementId }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label"  divClass="ntb-flex-column" class="ntb-input" />
 
-      <labeledInput id="param-{{ id }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="{{ elementId }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
 
-      <labeledInput id="param-{{ id }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input" twoway="false" attrs="readonly" />
+      <labeledInput id="{{ elementId }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input" twoway="false" attrs="readonly" />
 
       <div class="ntb-attribute-copy-format" on-click="ntb-copy-attribute-format"></div>
 
@@ -76,9 +79,9 @@ window.RactiveAttribute = Ractive.extend({
     'param-range':
       """
       <div class="flex-row">
-        <labeledInput id="param-{{ id }}-min"  name="min"  type="number" value="{{ attribute.min }}"  labelStr="Min" divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="param-{{ id }}-max"  name="max"  type="number" value="{{ attribute.max }}"  labelStr="Max" divClass="ntb-flex-column" class="ntb-input" />
-        <labeledInput id="param-{{ id }}-step" name="step" type="number" value="{{ attribute.step }}" labelStr="Step size" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ elementId }}-min"  name="min"  type="number" value="{{ attribute.min }}"  labelStr="Min" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ elementId }}-max"  name="max"  type="number" value="{{ attribute.max }}"  labelStr="Max" divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ elementId }}-step" name="step" type="number" value="{{ attribute.step }}" labelStr="Step size" divClass="ntb-flex-column" class="ntb-input" />
         <div class="ntb-flex-column" />
       </div>
       """
