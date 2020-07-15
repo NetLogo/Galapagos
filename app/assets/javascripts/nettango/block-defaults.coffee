@@ -27,7 +27,6 @@ createCommand = (overrides) ->
     , type:        "nlogo:command"
     , format:      "command1"
     , required:    false
-    , control:     false
     , limit:       undefined
     , params:      []
     , properties:  []
@@ -53,7 +52,6 @@ blocks = {
             , type:        "nlogo:procedure"
             , format:      "to proc1"
             , required:    true
-            , control:     false
             , limit:       1
             , params:      []
             , properties:  []
@@ -66,7 +64,6 @@ blocks = {
             , type:        "nlogo:if"
             , format:      "if random 10 < 5"
             , required:    false
-            , control:     true
             , limit:       undefined
             , params:      []
             , properties:  []
@@ -80,7 +77,6 @@ blocks = {
             , type:        "nlogo:ifelse"
             , format:      "ifelse (random 10 < count turtles)"
             , required:    false
-            , control:     true
             , limit:       undefined
             , params:      []
             , properties:  []
@@ -99,7 +95,6 @@ blocks = {
             , type:        "nlogo:if"
             , format:      "ask turtles"
             , required:    false
-            , control:     true
             , limit:       undefined
             , params:      []
             , properties:  []
@@ -112,7 +107,6 @@ blocks = {
             , action:  "chance"
             , type:    "nlogo:if"
             , format:  "if random 100 < {0}"
-            , control: true
             , params: [ {
                 type: "range",
                 min:     0,

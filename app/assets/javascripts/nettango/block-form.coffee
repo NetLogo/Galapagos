@@ -66,11 +66,11 @@ window.RactiveBlockForm = EditForm.extend({
     block.id = sourceBlock.id
 
     block.builderType =
-      if      (block.type is "nlogo:procedure" or (block.required and not block.control))
+      if      (block.type is "nlogo:procedure" or block.required)
         'Procedure'
-      else if (block.type is "nlogo:if"        or (not block.required and block.control and block.clauses?.length is 0))
+      else if (block.type is "nlogo:if"        or (not block.required and block.clauses?.length is 0))
         '1 Block Clause (if/ask/create)'
-      else if (block.type is "nlogo:ifelse"    or (not block.required and block.control and block.clauses?.length is 1))
+      else if (block.type is "nlogo:ifelse"    or (not block.required and block.clauses?.length is 1))
         '2 Block Clause (ifelse)'
       else
         'Command'
@@ -108,22 +108,18 @@ window.RactiveBlockForm = EditForm.extend({
       when 'Procedure'
         block.type     = 'nlogo:procedure'
         block.required = true
-        block.control  = false
         delete block.clauses
       when '1 Block Clause (if/ask/create)'
         block.type     = 'nlogo:if'
         block.required = false
-        block.control  = true
         block.clauses  = []
       when '2 Block Clause (ifelse)'
         block.type     = 'nlogo:ifelse'
         block.required = false
-        block.control  = true
         block.clauses  = [{ name: "else", action: "else", format: "" }]
       else
         block.type     = 'nlogo:command'
         block.required = false
-        block.control  = false
         delete block.clauses
 
     block.params     = @processAttributes(blockValues.params)

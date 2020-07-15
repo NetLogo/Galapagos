@@ -9,8 +9,8 @@ wolfSpaceDefault = {
     { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
     { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
     { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
-    { "action": "\uD83D\uDC11 ask nearby sheep", "format": "ask sheep in-radius 3", "clauses": [ ], "control": true },
-    { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+    { "action": "\uD83D\uDC11 ask nearby sheep", "format": "ask sheep in-radius 3", "clauses": [ ] },
+    { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
   # coffeelint: enable=max_line_length
 }
 
@@ -21,7 +21,7 @@ sheepSpaceDefault = {
   { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
   { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
   { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
-  { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "control": true, "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
+  { "action": "chance", "format": "if random 100 < {0}", "clauses": [ ], "params": [ { "type": "range", "min": 0, "max": 100, "step": 0.5, "default": 20, "unit": "%", "name": "percent" } ] } ] }
   # coffeelint: enable=max_line_length
 }
 
