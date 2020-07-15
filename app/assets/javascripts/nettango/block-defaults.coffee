@@ -3,7 +3,7 @@ copyAttributes = (b, attributeType) ->
   if b[attributeType]?
     b[attributeType].map( (attribute) ->
       attribute['def'] = attribute['default']
-      attrCopy = Object.assign({ }, attribute)
+      attrCopy = Object.assign({}, attribute)
       if attribute.type is 'select'
         attrCopy.values = attribute.values.slice()
       attrCopy
@@ -23,13 +23,13 @@ copyBlock = (block) ->
 # (NetTangoBlock) => NetTangoBlock
 createCommand = (overrides) ->
   command = {
-    , action:      "command"
-    , type:        "nlogo:command"
-    , format:      "command1"
-    , required:    false
-    , limit:       undefined
-    , params:      []
-    , properties:  []
+    , action:     "command"
+    , format:     "command1"
+    , required:   false
+    , placement:  NetTango.blockPlacementOptions.child
+    , limit:      undefined
+    , params:     []
+    , properties: []
   }
   if overrides?
     Object.assign(command, overrides)
@@ -48,39 +48,37 @@ blocks = {
         {
           name: 'procedure'
           data: {
-            , action:      "procedure"
-            , type:        "nlogo:procedure"
-            , format:      "to proc1"
-            , required:    true
-            , limit:       1
-            , params:      []
-            , properties:  []
+            , action:     "procedure"
+            , format:     "to proc1"
+            , required:   true
+            , placement:  NetTango.blockPlacementOptions.starter
+            , limit:      1
+            , params:     []
+            , properties: []
           }
         },
         {
           name: 'if',
           data: {
             , action:      "if"
-            , type:        "nlogo:if"
             , format:      "if random 10 < 5"
             , required:    false
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     []
+            , clauses:     [{ children: [] }]
           }
         },
         {
           name: 'ifelse',
           data: {
             , action:      "ifelse"
-            , type:        "nlogo:ifelse"
             , format:      "ifelse (random 10 < count turtles)"
             , required:    false
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ name: "else", action: "else", format: "" }]
+            , clauses:     [{ children: [] }, { children: [] }]
           }
         }
       ]
@@ -92,7 +90,6 @@ blocks = {
           name: 'ask turtles',
           data: {
             , action:      "ask turtles"
-            , type:        "nlogo:if"
             , format:      "ask turtles"
             , required:    false
             , limit:       undefined
@@ -105,7 +102,6 @@ blocks = {
           name: "chance",
           data: createCommand({
             , action:  "chance"
-            , type:    "nlogo:if"
             , format:  "if random 100 < {0}"
             , params: [ {
                 type: "range",
@@ -116,7 +112,7 @@ blocks = {
                 unit:    "%",
                 name:    "percent"
             } ]
-            , clauses: []
+            , clauses: [{ children: [] }]
           })
         }
       ]

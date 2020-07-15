@@ -66,11 +66,11 @@ window.RactiveBlockForm = EditForm.extend({
     block.id = sourceBlock.id
 
     block.builderType =
-      if      (block.type is "nlogo:procedure" or block.required)
+      if      (block.required and block.placement is NetTango.blockPlacementOptions.starter)
         'Procedure'
-      else if (block.type is "nlogo:if"        or (not block.required and block.clauses?.length is 0))
+      else if (not block.required and block.clauses?.length is 1)
         '1 Block Clause (if/ask/create)'
-      else if (block.type is "nlogo:ifelse"    or (not block.required and block.clauses?.length is 1))
+      else if (not block.required and block.clauses?.length is 2)
         '2 Block Clause (ifelse)'
       else
         'Command'
@@ -99,27 +99,28 @@ window.RactiveBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    [ 'action', 'format', 'note', 'required', 'limit', 'blockColor',
+    [ 'action', 'format', 'note', 'required', 'placement', 'limit', 'blockColor',
       'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
       .forEach((f) -> block[f] = blockValues[f])
 
     switch blockValues.builderType
       when 'Procedure'
-        block.type     = 'nlogo:procedure'
-        block.required = true
+        block.required  = true
+        block.placement = NetTango.blockPlacementOptions.starter
         delete block.clauses
       when '1 Block Clause (if/ask/create)'
-        block.type     = 'nlogo:if'
-        block.required = false
-        block.clauses  = []
+        block.required  = false
+        block.placement = NetTango.blockPlacementOptions.child
+        block.clauses   = [{ children: [] }]
       when '2 Block Clause (ifelse)'
-        block.type     = 'nlogo:ifelse'
-        block.required = false
-        block.clauses  = [{ name: "else", action: "else", format: "" }]
+        block.required  = false
+        block.placement = NetTango.blockPlacementOptions.child
+        block.clauses   = [{ children: [] }, { children: [] }]
       else
-        block.type     = 'nlogo:command'
-        block.required = false
+        block.type      = 'nlogo:command'
+        block.required  = false
+        block.placement = NetTango.blockPlacementOptions.child
         delete block.clauses
 
     block.params     = @processAttributes(blockValues.params)
