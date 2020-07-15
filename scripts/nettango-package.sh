@@ -14,12 +14,12 @@
 
 # `git diff -- . ':!package'`
 
-# Play copies all resources into the `target/` directory, so this is a workaround.  Other
+# Play copies all resources into the `target/` directory on `run`, so this is a workaround.  Other
 # workarounds would've affected how files were presented for production (as opposed to just
 # development work), so hey.
 
-cat ../NetTango/build/dart/ntango.dart.js ../NetTango/web/js/ntango.js > ../NetTango/package/ntango.js
-cp ../NetTango/web/css/ntango.css ../NetTango/package/ntango.css
+cat ../NetTango/build/ntango.dart.js ../NetTango/build/ntango-shim.js > ../NetTango/package/ntango.js
+cp ../NetTango/build/ntango.css ../NetTango/package/ntango.css
 
 cp ../NetTango/package/ntango.js ./target/web/public/main/nettango/ntango.js
 cp ../NetTango/package/ntango.css ./target/web/public/main/nettango/ntango.css
