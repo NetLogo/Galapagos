@@ -81,10 +81,11 @@ setUpEventListeners = ->
         loadHNWModel(e.data.role, e.data.view)
 
         for widget in e.data.role.widgets
-          if widget.type in ["hnwChooser", "hnwInputBox", "hnwSlider"]
-            world.observer.setGlobal(widget.variable, widget.default)
-          else if widget.type is "hnwSwitch"
-            world.observer.setGlobal(widget.variable, widget.on)
+          switch widget.type
+            when "hnwInputBox", "hnwSlider"
+              world.observer.setGlobal(widget.variable, widget.default)
+            when "hnwSwitch"
+              world.observer.setGlobal(widget.variable, widget.on)
 
         exiles =
           [ document.querySelector('.netlogo-header')
