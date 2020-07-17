@@ -133,7 +133,6 @@ setUpEventListeners = ->
         viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
         vc.repaint()
 
-
       when "relay"
         window.postMessage(e.data.payload, "*")
 
@@ -306,8 +305,6 @@ setUpEventListeners = ->
               broadcastHNWPayload("hnw-widget-update", { event: { type: "ticksStarted", value: newValue } })
         )
 
-        modelState = session.getModelState("")
-
         supervisorFrame.addEventListener('load', ->
 
           uuid = genUUID()
@@ -328,6 +325,8 @@ setUpEventListeners = ->
           , token: uuid
           , view:  baseView
           }, "*")
+
+          modelState = session.getModelState("")
 
           supervisorFrame.contentWindow.postMessage({
             type:   "nlw-state-update"
@@ -391,6 +390,8 @@ setUpEventListeners = ->
           , token: uuid
           , view:  baseView
           }, "*")
+
+          modelState = session.getModelState("")
 
           studentFrame.contentWindow.postMessage({
             type:   "nlw-state-update"

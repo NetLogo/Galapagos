@@ -79,10 +79,10 @@ class window.SessionLite
     @widgetController.ractive.get('modelTitle')
 
   startLoop: ->
-    if procedures.startup? then window.handlingErrors(procedures.startup)()
     @_performUpdate()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
+    if procedures.startup? then setTimeout((-> window.handlingErrors(procedures.startup)()), 0)
 
   updateDelay: ->
     viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
