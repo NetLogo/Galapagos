@@ -98,6 +98,15 @@ setUpEventListeners = ->
 
         exiles.forEach((n) -> n.style.display = "none")
 
+        vc = session.widgetController.viewController
+
+        onClick =
+          ->
+            obj = { subtype: "click", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+            sendHNWWidgetMessage('view', obj)
+
+        vc.view.visibleCanvas.addEventListener('click', onClick)
+
         sendHNWMessage("interface-loaded", null)
 
       when "nlw-update-model-state"

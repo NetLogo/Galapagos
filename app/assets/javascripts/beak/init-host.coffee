@@ -194,6 +194,15 @@ setUpEventListeners = ->
               world.observer.setGlobal(mangledName, value)
             else
               world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable(varName, value)), false)
+          when "view"
+            message = e.data.data.message
+            switch message.subtype
+              when "click"
+                if role.onCursorClick?
+                  thunk = (-> procedures[role.onCursorClick.toUpperCase()](message.xcor, message.ycor))
+                  world.turtleManager.getTurtle(who).ask(thunk, false)
+              else
+                console.warn("Unknown HNW View event subtype")
           else
             console.warn("Unknown HNW widget event type")
 
