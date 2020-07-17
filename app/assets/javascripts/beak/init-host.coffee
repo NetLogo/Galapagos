@@ -144,16 +144,19 @@ setUpEventListeners = ->
 
         session.subscribeWithID(null, e.data.token)
 
+        username = e.data.username
         who      = world.turtleManager.peekNextID()
 
         window.clients[e.data.token] =
           { roleName: role.name
+          , username
           , who
           , window: null
           }
 
         # NOTE
         procedures[role.onConnect.toUpperCase()]()
+        world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
 
         # NOTE
         monitorUpdates = session.monitorsFor(e.data.token)
@@ -363,18 +366,21 @@ setUpEventListeners = ->
 
           wind = studentFrame.contentWindow
 
+          username = "Fake Client"
           who      = world.turtleManager.peekNextID()
 
           # TODO: This logic is wrong.  What if the `onConnect` makes multiple turtles?  Which `who` is owned by the client?
           # NOTE
           window.clients[uuid] =
             { roleName: role.name
+            , username
             , who
             , window:   wind
             }
 
           # NOTE
           procedures[role.onConnect.toUpperCase()]()
+          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
 
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)

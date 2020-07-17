@@ -67,7 +67,8 @@ window.sendHNWWidgetMessage = (type, message) ->
 # () -> Unit
 setUpEventListeners = ->
 
-  myRole = undefined
+  myRole     = undefined
+  myUsername = undefined
 
   window.addEventListener("message", (e) ->
 
@@ -76,7 +77,8 @@ setUpEventListeners = ->
 
         token = e.data.token
 
-        myRole = e.data.role.name
+        myRole     = e.data.role.name
+        myUsername = e.data.username
 
         loadHNWModel(e.data.role, e.data.view)
 
