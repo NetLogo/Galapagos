@@ -84,6 +84,8 @@ setUpEventListeners = ->
           switch widget.type
             when "hnwInputBox", "hnwSlider"
               world.observer.setGlobal(widget.variable, widget.default)
+            when "hnwChooser"
+              world.observer.setGlobal(widget.variable, widget.choices[widget.currentChoice])
             when "hnwSwitch"
               world.observer.setGlobal(widget.variable, widget.on)
 
