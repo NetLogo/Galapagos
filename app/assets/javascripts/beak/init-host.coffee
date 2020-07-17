@@ -144,10 +144,12 @@ setUpEventListeners = ->
 
         session.subscribeWithID(null, e.data.token)
 
+        who      = world.turtleManager.peekNextID()
+
         window.clients[e.data.token] =
           { roleName: role.name
-          , who:      world.turtleManager.peekNextID()
-          , window:   null
+          , who
+          , window: null
           }
 
         # NOTE
@@ -361,11 +363,13 @@ setUpEventListeners = ->
 
           wind = studentFrame.contentWindow
 
+          who      = world.turtleManager.peekNextID()
+
           # TODO: This logic is wrong.  What if the `onConnect` makes multiple turtles?  Which `who` is owned by the client?
           # NOTE
           window.clients[uuid] =
             { roleName: role.name
-            , who:      world.turtleManager.peekNextID()
+            , who
             , window:   wind
             }
 
