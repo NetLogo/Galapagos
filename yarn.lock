@@ -158,10 +158,10 @@ mousetrap@1.6.5:
   resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.5.tgz#8a766d8c272b08393d5f56074e0b5ec183485bf9"
   integrity sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==
 
-nettango@0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.11.1.tgz#c9ac6305768673cb12bdcbaa8e71c4336e93619c"
-  integrity sha512-usjAd1csm8dlClCp9GfMaNESgvNsLLwNFKlahv9xFSvT54B01bgSUE2RiwZfThGELvRsxpE1e3KbVtSLG3Iu6g==
+nettango@0.11.2:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.11.2.tgz#9a3d1c4813bafc030b9a657f1a8a8b54c18f0abe"
+  integrity sha512-87cgyMMqcgvkmyvJM0pjaOwwMA+nRnBLxJCzN01Ku6VFP7yRhx/3y/XWdHE2xzUhzX+M0FfG8NSMDYkJ8rbShw==
 
 once@^1.3.0:
   version "1.4.0"
