@@ -74,7 +74,7 @@ window.RactiveAttribute = Ractive.extend({
     'param-int': ""
     'param-text': ""
 
-    'param-select': """<select id="{{ id }}" attribute="{{ attribute }}" />"""
+    'param-select': """<select attribute="{{ attribute }}" elementId="{{ elementId }}" />"""
 
     'param-range':
       """
