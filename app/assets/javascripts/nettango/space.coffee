@@ -220,7 +220,7 @@ window.RactiveSpace = Ractive.extend({
       when "attribute-changed"
         @saveNetTango()
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
-                                                      event.attributeId, event.value)
+                      event.attributeId, event.formattedValue)
         @fire('ntb-run', setCode, @squelch)
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')

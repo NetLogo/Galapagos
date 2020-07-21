@@ -31,12 +31,22 @@ window.RactiveSelectAttribute = Ractive.extend({
   }
 
   components: {
-    arrayView:    RactiveArrayView
+    arrayView: RactiveArrayView
+    dropdown:  RactiveTwoWayDropdown
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
+    <div class="flex-row ntb-form-row">
+
+      <dropdown id="{{ id }}-quoted" name="{{ attribute.quoteValues }}" selected="{{ attribute.quoteValues }}" label="Quote values in code" divClass="ntb-flex-column"
+      choices="{{ [ "smart-quote", "always-quote", "never-quote" ] }}" />
+
+      <div class="ntb-flex-column" />
+
+    </div>
+
     <arrayView
       id="select-{{ id }}-options"
       itemTemplate="{{ optionTemplate }}"

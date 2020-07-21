@@ -7,7 +7,8 @@ class window.NetTangoController
   constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
     @storage  = new NetTangoStorage(localStorage)
     getSpaces = () => @ractive.findComponent("tangoDefs").get("spaces")
-    @rewriter = new NetTangoRewriter(@getBlocksCode, getSpaces)
+    @isDebugMode = @runtimeMode is "dev"
+    @rewriter = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
     @undoRedo = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportProject('json'))
@@ -39,6 +40,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
+      if (@isDebugMode) then console.log("Running:", command)
       if (@theOutsideWorld.sessionReady())
         @theOutsideWorld.getWidgetController().ractive.fire("run", command, errorLog))
 
@@ -94,6 +96,10 @@ class window.NetTangoController
         """
 
     })
+
+  setDebugMode: (isDebugMode) ->
+    @isDebugMode = isDebugMode
+    @rewriter.isDebugMode = isDebugMode
 
   # () => String
   getBlocksCode: (displayOnly = false) =>

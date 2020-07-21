@@ -8,7 +8,7 @@ class window.NetTangoRewriter
     "\n\n; If you do not plan to re-import the model into the NetTango builder then you" +
     "\n; can safely edit this code however you want, just like a normal NetLogo model."
 
-  constructor: (@getNetTangoCode, @getNetTangoSpaces) ->
+  constructor: (@getNetTangoCode, @getNetTangoSpaces, @isDebugMode) ->
     return
 
   # (String) => String
@@ -32,12 +32,17 @@ class window.NetTangoRewriter
   # () => Array[String]
   getExtraCommands: () =>
     spaces = @getNetTangoSpaces()
-    NetTangoRewriter.createSpacesVariables(spaces)
+    extras = NetTangoRewriter.createSpacesVariables(spaces)
+    if @isDebugMode then console.log("Getting space variables: ", extras)
+    extras
 
   # (String) => String
   rewriteNetLogoCode: (code) ->
+    if @isDebugMode then console.log("Rewriting NetLogo code...")
     alteredCode  = NetTangoRewriter.addNetTangoExtension(code)
+    if @isDebugMode then console.log("  Altered code:", alteredCode)
     netTangoCode = @getNetTangoCode()
+    if @isDebugMode then console.log("  NetTango code:", netTangoCode)
     "#{alteredCode}\n\n#{netTangoCode}\n"
 
   # (String, String, Array[Error]) => Array[Error]
@@ -61,36 +66,34 @@ class window.NetTangoRewriter
   @formatAttributeVariable: (containerId, blockId, instanceId, attributeId) ->
     return "\"__#{containerId}_#{blockId}_#{instanceId}_#{attributeId}\""
 
-  # (String, Integer, Integer, Integer, Any) => String
-  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value) ->
+  # (String, Integer, Integer, Integer, Integer, String, String | null) => String
+  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value = null) ->
     variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
-    "nt:set #{variableName} (#{value})"
+    setValue = if value isnt null then value else NetTango.formatAttributeValue(containerId, instanceId, attributeId)
+    "nt:set #{variableName} #{setValue}"
 
-  # (String, Integer, Integer, Integer, Any) => String
-  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value) ->
+  # (String, Integer, Integer, Integer, String, String) => String
+  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value, _0) ->
     variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
     "(nt:get #{variableName})"
 
-  # (String, Integer, Integer, Integer, Any) => String
-  @formatDisplayAttribute: (_0, _1, _2, _3, value) ->
-    if typeof(value) is "string"
-      "(\"#{value}\")"
-    else
+  # (String, Integer, Integer, Integer, String, String) => String
+  @formatDisplayAttribute: (_0, _1, _2, _3, value, attributeType) ->
+    if (attributeType is "select" and value.length > 0 and value.charAt(0) isnt "\"")
       "(#{value})"
+    else
+      value
 
   # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
-    childVariables     = (block.children ? []).flatMap( (child)  =>
-      NetTangoRewriter.createBlockVariables(spaceId, child)
-    )
     clauseVariables    = (block.clauses  ? []).flatMap( (clause) =>
       NetTangoRewriter.createBlockVariables(spaceId, clause)
     )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
       value = p.expressionValue ? p.value
-      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.id, block.instanceId, p.id, value)
+      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.id, block.instanceId, p.id)
     )
-    attributeVariables.concat(childVariables).concat(clauseVariables)
+    attributeVariables.concat(clauseVariables)
 
   # (Space) => Array[String]
   @createSpaceVariables: (space) ->

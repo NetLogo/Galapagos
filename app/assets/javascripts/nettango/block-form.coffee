@@ -118,7 +118,6 @@ window.RactiveBlockForm = EditForm.extend({
         block.placement = NetTango.blockPlacementOptions.child
         block.clauses   = [{ children: [] }, { children: [] }]
       else
-        block.type      = 'nlogo:command'
         block.required  = false
         block.placement = NetTango.blockPlacementOptions.child
         delete block.clauses
@@ -140,6 +139,7 @@ window.RactiveBlockForm = EditForm.extend({
       if attrValues.type is 'range'
         [ 'min', 'max', 'step' ].forEach((f) -> attribute[f] = attrValues[f])
       else if attrValues.type is 'select'
+        [ 'quoteValues' ].forEach((f) -> attribute[f] = attrValues[f])
         attribute.values = attrValues.values
 
       attribute
