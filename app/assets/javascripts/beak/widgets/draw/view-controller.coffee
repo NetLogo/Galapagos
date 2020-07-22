@@ -309,14 +309,18 @@ Possible drawing events:
 ###
 
 class DrawingLayer extends Drawer
+
+  _lastAppliedIndex: undefined # Number
+
   constructor: (view, turtleDrawer, repaintView) ->
     super()
-    @view         = view
-    @turtleDrawer = turtleDrawer
-    @repaintView  = repaintView
-    @canvas       = document.createElement('canvas')
-    @canvas.id    = 'dlayer'
-    @ctx          = @canvas.getContext('2d')
+    @view              = view
+    @turtleDrawer      = turtleDrawer
+    @repaintView       = repaintView
+    @canvas            = document.createElement('canvas')
+    @canvas.id         = 'dlayer'
+    @ctx               = @canvas.getContext('2d')
+    @_lastAppliedIndex = -1
 
   resizeCanvas: ->
     @canvas.width  = @view.canvas.width
@@ -409,30 +413,54 @@ class DrawingLayer extends Drawer
         @ctx.restore()
       )
 
-  draw: ->
-    @events.forEach((event) =>
-      switch event.type
-        when 'clear-drawing'  then @clearDrawing()
-        when 'line'           then @drawLine(event)
-        when 'stamp-image'    then @drawStamp(event)
-        when 'import-drawing' then @importDrawing(event.imageBase64)
-    )
-
   repaint: (model) ->
     # Potato --JTT 5/29/15
     # I think Jordan makes a really good point here. --JAB (8/6/15)
     world  = model.world
     @wrapX = world.wrappingallowedinx
     @wrapY = world.wrappingallowediny
+    @handleDrawingEvents(model)
+    return
 
-    @events = model.drawingEvents
-    model.drawingEvents = []
+  # (AgentModel) => Unit
+  handleDrawingEvents: (model) ->
 
-    if @canvas.width isnt @view.canvas.width or @canvas.height isnt @view.canvas.height
-      @resizeCanvas()
+    if model.drawingEvents.length > @_lastAppliedIndex
 
-    @draw()
+      obIndex = @_findLastObliteratorIndex(model.drawingEvents)
+      if obIndex > @_lastAppliedIndex
+        obliterator         = model.drawingEvents[obIndex]
+        model.drawingEvents = model.drawingEvents.slice(obIndex)
+        switch obliterator.type
+          when 'clear-drawing'  then @clearDrawing()
+          when 'import-drawing' then @importDrawing(obliterator.imageBase64)
+        @_lastAppliedIndex = 0
+
+      if @canvas.width isnt @view.canvas.width or @canvas.height isnt @view.canvas.height
+        @resizeCanvas()
+
+      model.drawingEvents.slice(@_lastAppliedIndex + 1).forEach((event) =>
+        switch event.type
+          when 'line'        then @drawLine(event)
+          when 'stamp-image' then @drawStamp(event)
+      )
+
+      @_lastAppliedIndex = model.drawingEvents.length - 1
+
     @view.ctx.drawImage(@canvas, 0, 0)
+
+    return
+
+  # (Array[DrawingEvent]) => Number
+  _findLastObliteratorIndex: (events) ->
+    helper = (events, i) ->
+      if i < 0
+        -1
+      else if events[i].type in ["clear-drawing", "import-drawing"]
+        i
+      else
+        helper(events, i - 1)
+    helper(events, events.length - 1)
 
 class SpotlightDrawer extends Drawer
   constructor: (view) ->
