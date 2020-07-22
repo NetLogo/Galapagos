@@ -292,6 +292,9 @@ class Drawer
   constructor: (@view) ->
 
 ###
+
+type DrawingEvent = { type: "clear-drawing" | "line" | "stamp-image" | "import-drawing" }
+
 Possible drawing events:
 
 { type: "clear-drawing" }
@@ -305,7 +308,7 @@ Possible drawing events:
   }
 }
 
-{ type: "import-drawing", sourcePath }
+{ type: "import-drawing", imageBase64 }
 
 ###
 
@@ -421,8 +424,8 @@ class DrawingLayer extends Drawer
 
   repaint: (model) ->
     # Potato --JTT 5/29/15
-    # I think Jordan makes a good point here. --JAB (8/6/15)
-    world = model.world
+    # I think Jordan makes a really good point here. --JAB (8/6/15)
+    world  = model.world
     @wrapX = world.wrappingallowedinx
     @wrapY = world.wrappingallowediny
 
