@@ -3,6 +3,7 @@ window.RactiveSelectAttribute = Ractive.extend({
   data: () -> {
     attribute: undefined, # NetTangoSelectAttribute
     elementId: undefined, # String
+    quoteOptions: undefined # Array[String]
 
     optionTemplate:
       """
@@ -23,6 +24,10 @@ window.RactiveSelectAttribute = Ractive.extend({
 
   on: {
 
+    'init': (_) ->
+      quoteOptions = Object.keys(NetTango.selectQuoteOptions).map( (key) -> NetTango.selectQuoteOptions[key] )
+      @set("quoteOptions", quoteOptions)
+
     'complete': (_) ->
       attribute = @get("attribute")
       if (not attribute.values?)
@@ -42,7 +47,7 @@ window.RactiveSelectAttribute = Ractive.extend({
     <div class="flex-row ntb-form-row">
 
       <dropdown id="{{ elementId }}-quoted" name="{{ attribute.quoteValues }}" selected="{{ attribute.quoteValues }}" label="Quote values in code" divClass="ntb-flex-column"
-      choices="{{ [ "smart-quote", "always-quote", "never-quote" ] }}" />
+      choices="{{ quoteOptions }}" />
 
       <div class="ntb-flex-column" />
 

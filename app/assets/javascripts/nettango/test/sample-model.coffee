@@ -4,8 +4,8 @@ wolfSpaceDefault = {
   height: 550,
   # coffeelint: disable=max_line_length
   defs: { version: 5, blocks: [
-    { "action": "\uD83D\uDC3A wolf actions ", "limit": 1, "format": "to wolf-actions", "required": true, "placement": 0 },
-    { "action": "wolf meets sheep ", "limit": 1, "format": "to wolf-meets-sheep", "required": true, "placement": 0 },
+    { "action": "\uD83D\uDC3A wolf actions ", "limit": 1, "format": "to wolf-actions", "required": true, "placement": NetTango.blockPlacementOptions.starter },
+    { "action": "wolf meets sheep ", "limit": 1, "format": "to wolf-meets-sheep", "required": true, "placement": NetTango.blockPlacementOptions.starter },
     { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
     { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
     { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
@@ -17,7 +17,7 @@ wolfSpaceDefault = {
 sheepSpaceDefault = {
   name: "Sheep",
   # coffeelint: disable=max_line_length
-  defs: { version: 5, blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "limit": 1, "format": "to sheep-actions", "required": true, "placement": 0 },
+  defs: { version: 5, blocks: [ { "action": "\uD83D\uDC11 sheep actions ", "limit": 1, "format": "to sheep-actions", "required": true, "placement": NetTango.blockPlacementOptions.starter },
   { "action": "forward", "format": "forward {0}", "params": [ { "type": "range", "min": 0, "max": 3, "step": 0.1, "default": 1, "name": "steps" } ] },
   { "action": "wiggle", "format": "left ({0} - random (2 * {0}))", "params": [ { "type": "range", "min": 0, "max": 90, "step": 1, "default": 50, "random": true, "name": "amount", "unit": "\u00B0" } ] },
   { "action": "hatch", "format": "hatch 1 [ rt random-float 360 fd 1 ]" }, { "action": "die" },
