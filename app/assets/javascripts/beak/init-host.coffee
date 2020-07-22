@@ -76,15 +76,17 @@ loadInitialModel = ->
 
   return
 
+protocolObj = { protocolVersion: "0.0.1" }
+
 # (Sting, Object[Any]) => Unit
 broadcastHNWPayload = (type, payload) ->
-  truePayload = Object.assign({}, payload, { type })
+  truePayload = Object.assign({}, payload, { type }, protocolObj)
   parent.postMessage({ type: "relay", payload: truePayload }, "*")
   return
 
 # (String, Sting, Object[Any]) => Unit
 window.narrowcastHNWPayload = (uuid, type, payload) ->
-  truePayload = Object.assign({}, payload, { type })
+  truePayload = Object.assign({}, payload, { type }, protocolObj)
   parent.postMessage({ type: "relay", recipient: uuid, payload: truePayload }, "*")
   return
 

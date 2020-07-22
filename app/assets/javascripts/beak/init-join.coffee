@@ -49,9 +49,11 @@ loadHNWModel = (role, view) ->
   session.subscribe(parent)
   return
 
+protocolObj = { protocolVersion: "0.0.1" }
+
 # (Sting, Object[Any]) => Unit
 sendHNWPayload = (type, payload) ->
-  parent.postMessage({ type: "relay", payload: Object.assign({}, payload, { token, type }) }, "*")
+  parent.postMessage({ type: "relay", payload: Object.assign({}, payload, { token, type }, protocolObj) }, "*")
   return
 
 # (String, Any) => Unit
