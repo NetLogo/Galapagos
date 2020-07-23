@@ -42,11 +42,11 @@ blocks = {
       name: "Basics"
       , items: [
         {
-          name: 'command'
+          name: 'empty command'
           data: createCommand()
         },
         {
-          name: 'procedure'
+          name: 'new procedure'
           data: {
             , action:     "procedure"
             , format:     "to proc1"
@@ -56,6 +56,40 @@ blocks = {
             , params:     []
             , properties: []
           }
+        }
+      ]
+    },
+    {
+      name: "Control Blocks"
+      , items: [
+        {
+          name: 'ask turtles',
+          data: {
+            , action:      "ask turtles"
+            , format:      "ask turtles"
+            , required:    false
+            , limit:       undefined
+            , params:      []
+            , properties:  []
+            , clauses:     [{ children: [] }]
+          }
+        },
+        {
+          name: "chance",
+          data: createCommand({
+            , action:  "chance"
+            , format:  "if random 100 < {0}"
+            , params: [ {
+                type: "range",
+                min:     0,
+                max:     100,
+                step:    0.5,
+                default: 20,
+                unit:    "%",
+                name:    "percent"
+            } ]
+            , clauses: [{ children: [] }]
+          })
         },
         {
           name: 'if',
@@ -80,40 +114,6 @@ blocks = {
             , properties:  []
             , clauses:     [{ children: [] }, { children: [] }]
           }
-        }
-      ]
-    },
-    {
-      name: "Control Blocks"
-      , items: [
-        {
-          name: 'ask turtles',
-          data: {
-            , action:      "ask turtles"
-            , format:      "ask turtles"
-            , required:    false
-            , limit:       undefined
-            , params:      []
-            , properties:  []
-            , clauses:     []
-          }
-        },
-        {
-          name: "chance",
-          data: createCommand({
-            , action:  "chance"
-            , format:  "if random 100 < {0}"
-            , params: [ {
-                type: "range",
-                min:     0,
-                max:     100,
-                step:    0.5,
-                default: 20,
-                unit:    "%",
-                name:    "percent"
-            } ]
-            , clauses: [{ children: [] }]
-          })
         }
       ]
     },
