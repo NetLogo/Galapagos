@@ -86,8 +86,8 @@ class window.NetTangoRewriter
 
   # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
-    clauseVariables    = (block.clauses  ? []).flatMap( (clause) =>
-      NetTangoRewriter.createBlockVariables(spaceId, clause)
+    clauseVariables    = (block.clauses  ? []).flatMap( (clause) ->
+      clause.children.flatMap( (clauseBlock) -> NetTangoRewriter.createBlockVariables(spaceId, clauseBlock) )
     )
     attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
       value = p.expressionValue ? p.value
