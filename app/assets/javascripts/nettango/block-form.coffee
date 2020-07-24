@@ -52,7 +52,8 @@ window.RactiveBlockForm = EditForm.extend({
       <div class="flex-column">
         <div class="flex-row ntb-form-row">
 
-          <labeledInput name="closeClauses" type="text" value="{{ closeClauses }}" labelStr="Code format to insert after all clauses"
+          <labeledInput name="closeClauses" type="text" value="{{ closeClauses }}"
+            labelStr="Code format to insert after all clauses"
             divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
 
         </div>
