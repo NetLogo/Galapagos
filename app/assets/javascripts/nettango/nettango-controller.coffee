@@ -98,9 +98,11 @@ class window.NetTangoController
 
     })
 
+  # (Boolean) => Unit
   setDebugMode: (isDebugMode) ->
     @isDebugMode = isDebugMode
     @rewriter.isDebugMode = isDebugMode
+    return
 
   # () => String
   getBlocksCode: (displayOnly = false) =>
