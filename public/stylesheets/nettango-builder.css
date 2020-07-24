@@ -226,7 +226,7 @@ body#ntp-body, html#ntp-body {
   z-index: 1000;
 }
 
-.ntb-attributes {
+.ntb-block-array {
   border-width: 1px;
   margin: 8px 0px;
 }
@@ -347,6 +347,10 @@ body#ntp-body, html#ntp-body {
   padding: 4px 8px;
   text-align: left;
   box-sizing: border-box;
+}
+
+.ntb-code-input {
+  font-family: monospace;
 }
 
 .ntb-flex-column-code > label,

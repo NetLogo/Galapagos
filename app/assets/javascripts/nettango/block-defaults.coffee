@@ -36,17 +36,17 @@ createCommand = (overrides) ->
   command
 
 blocks = {
-  name: 'nettango-block-defaults',
+  name: "nettango-block-defaults",
   items: [
     {
       name: "Basics"
       , items: [
         {
-          name: 'empty command'
+          name: "empty command"
           data: createCommand()
         },
         {
-          name: 'new procedure'
+          name: "new procedure"
           data: {
             , action:     "procedure"
             , format:     "to proc1"
@@ -63,7 +63,7 @@ blocks = {
       name: "Control Blocks"
       , items: [
         {
-          name: 'ask turtles',
+          name: "ask turtles",
           data: {
             , action:      "ask turtles"
             , format:      "ask turtles"
@@ -92,7 +92,7 @@ blocks = {
           })
         },
         {
-          name: 'if',
+          name: "if",
           data: {
             , action:      "if"
             , format:      "if random 10 < 5"
@@ -104,7 +104,7 @@ blocks = {
           }
         },
         {
-          name: 'ifelse',
+          name: "ifelse",
           data: {
             , action:      "ifelse"
             , format:      "ifelse (random 10 < count turtles)"
@@ -114,6 +114,20 @@ blocks = {
             , properties:  []
             , clauses:     [{ children: [] }, { children: [] }]
           }
+        },
+        {
+          name: "ifelse-else (3 clause)"
+          data: {
+            action:       "ifelse-else (3 clause)",
+            required:     false,
+            format:       "(ifelse",
+            closeClauses: ")"
+            clauses: [
+              { children: [], open: "random 10 < 5 [" },
+              { children: [], action: "else maybe", open: "random 10 < 5 [" },
+              { children: [], action: "otherwise" }
+            ]
+          }
         }
       ]
     },
@@ -121,7 +135,7 @@ blocks = {
       name: "Global Commands"
       , items: [
         {
-          name: 'create turtles',
+          name: "create turtles",
           data: createCommand({
             , action: "create turtles"
             , format: "crt {0} [ fd 1 ]"

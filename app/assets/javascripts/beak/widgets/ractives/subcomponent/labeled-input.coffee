@@ -43,7 +43,7 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
     <div class="{{ divClass }}">
       <label for="{{ id }}" class="widget-edit-input-label" style="{{ labelStyle }}">{{ labelStr }}</label>
       <div style="flex-grow: 1;">
-        <input class="widget-edit-text widget-edit-input {{ class }}" id="{{ id }}" name="{{ name }}"
+        <input class="widget-edit-text widget-edit-input {{ class }}" {{#if id }}id="{{ id }}"{{/if}} name="{{ name }}"
           min="{{ min }}" max="{{ max }}" on-change="exec"
           type="{{ type }}" value="{{ value }}" style="{{ style }}" {{ attrs }} />
       </div>

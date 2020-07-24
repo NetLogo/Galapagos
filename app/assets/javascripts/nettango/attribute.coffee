@@ -57,7 +57,7 @@ window.RactiveAttribute = Ractive.extend({
 
       <labeledInput id="{{ elementId }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
 
-      <labeledInput id="{{ elementId }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input" twoway="false" attrs="readonly" />
+      <labeledInput id="{{ elementId }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input ntb-code-input" twoway="false" attrs="readonly" />
 
       <div class="ntb-attribute-copy-format" on-click="ntb-copy-attribute-format"></div>
 

@@ -23,8 +23,47 @@ window.RactiveBlockForm = EditForm.extend({
         </div>
       </fieldset>
       """
+
+    clauseTemplate:
+      """
+      <fieldset class="ntb-attribute">
+        <legend class="widget-edit-legend">
+          {{ itemType }} {{ number }} {{> delete-button }}
+        </legend>
+        <div class="flex-column">
+          <div class="flex-row ntb-form-row">
+
+            <labeledInput name="action" type="text" value="{{ action }}" labelStr="Display name"
+              divClass="ntb-flex-column" class="ntb-input" />
+
+            <labeledInput name="open" type="text" value="{{ open }}" labelStr="Start code format (blank for default)"
+              divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+
+            <labeledInput name="close" type="text" value="{{ close }}" labelStr="End code format (blank for default)"
+              divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+
+          </div>
+        </div>
+      </fieldset>
+      """
+
+    clauseHeaderTemplate:
+      """
+      <div class="flex-column">
+        <div class="flex-row ntb-form-row">
+
+          <labeledInput name="closeClauses" type="text" value="{{ closeClauses }}" labelStr="Code format to insert after all clauses"
+            divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+
+        </div>
+      </div>
+      """
+
     createAttribute:
-      (type) -> (number) -> { name: "#{type} #{number}", type: "num", unit: undefined, def:  "10" }
+      (type) -> (number) -> { name: "#{type} #{number}", type: 'int', unit: undefined, def: '10' }
+
+    createClause:
+      (number) -> { open: undefined, close: undefined, children: [] }
 
   }
 
@@ -37,13 +76,13 @@ window.RactiveBlockForm = EditForm.extend({
       return
 
     '*.code-changed': (_, code) ->
-      @set("block.format", code)
+      @set('block.format', code)
 
     'ntb-clear-styles': (_) ->
-      block = @get("block")
+      block = @get('block')
       [ 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
-        .forEach( (prop) -> block[prop] = "" )
-      @set("block", block)
+        .forEach( (prop) -> block[prop] = '' )
+      @set('block', block)
       return
 
   }
@@ -54,9 +93,9 @@ window.RactiveBlockForm = EditForm.extend({
   # (String, Integer) => NetTangoAttribute
   defaultAttribute: (attributeType, num) -> {
       name: "#{attributeType}#{num}"
-    , type: "num"
+    , type: 'num'
     , unit: undefined
-    , def:  "10"
+    , def:  '10'
   }
 
   # (NetTangoBlock) => Unit
@@ -66,14 +105,12 @@ window.RactiveBlockForm = EditForm.extend({
     block.id = sourceBlock.id
 
     block.builderType =
-      if      (block.required and block.placement is NetTango.blockPlacementOptions.starter)
+      if (block.required and block.placement is NetTango.blockPlacementOptions.starter)
         'Procedure'
-      else if (not block.required and block.clauses?.length is 1)
-        '1 Block Clause (if/ask/create)'
-      else if (not block.required and block.clauses?.length is 2)
-        '2 Block Clause (ifelse)'
+      else if (not block.required and (not block.placement? or block.placement is NetTango.blockPlacementOptions.child))
+        'Command or Control'
       else
-        'Command'
+        'Custom'
 
     @set('block', block)
     return
@@ -99,33 +136,39 @@ window.RactiveBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    [ 'action', 'format', 'note', 'required', 'placement', 'limit', 'blockColor',
-      'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
-      .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt "")
+    [ 'action', 'format', 'closeClauses', 'note', 'required', 'placement', 'limit',
+      'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
+      .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt '')
       .forEach((f) -> block[f] = blockValues[f])
 
     switch blockValues.builderType
       when 'Procedure'
         block.required  = true
         block.placement = NetTango.blockPlacementOptions.starter
-        delete block.clauses
-      when '1 Block Clause (if/ask/create)'
-        block.required  = false
-        block.placement = NetTango.blockPlacementOptions.child
-        block.clauses   = [{ children: [] }]
-      when '2 Block Clause (ifelse)'
-        block.required  = false
-        block.placement = NetTango.blockPlacementOptions.child
-        block.clauses   = [{ children: [] }, { children: [] }]
-      else
-        block.required  = false
-        block.placement = NetTango.blockPlacementOptions.child
-        delete block.clauses
 
+      when 'Command or Control'
+        block.required  = false
+        block.placement = NetTango.blockPlacementOptions.child
+
+      else
+        block.required  = blockValues.required  ? false
+        block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.child
+
+    block.clauses    = @processClauses(blockValues.clauses)
     block.params     = @processAttributes(blockValues.params)
     block.properties = @processAttributes(blockValues.properties)
 
     block
+
+  processClauses: (clauses) ->
+    clauses.map( (clause) ->
+      [ 'action', 'open', 'close' ].forEach( (f) ->
+        if clause.hasOwnProperty(f) and clause[f] is ''
+          delete clause[f]
+      )
+
+      clause
+    )
 
   # (Array[NetTangoAttribute]) => Array[NetTangoAttribute]
   processAttributes: (attributes) ->
@@ -171,7 +214,7 @@ window.RactiveBlockForm = EditForm.extend({
           divClass="ntb-flex-column" class="ntb-input" />
 
         <dropdown id="block-{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
-          choices="{{ [ 'Procedure', 'Command', '1 Block Clause (if/ask/create)', '2 Block Clause (ifelse)' ] }}"
+          choices="{{ [ 'Procedure', 'Command or Control' ] }}"
           divClass="ntb-flex-column"
           />
 
@@ -191,13 +234,26 @@ window.RactiveBlockForm = EditForm.extend({
       </div>
 
       <arrayView
+        id="block-{{ id }}-clauses"
+        itemTemplate="{{ clauseTemplate }}"
+        items="{{ clauses }}"
+        itemType="Clause"
+        itemTypePlural="Control Clauses"
+        createItem="{{ createClause }}"
+        viewClass="ntb-block-array"
+        headerItem="{{ block }}"
+        headerTemplate="{{ clauseHeaderTemplate }}"
+        showItems="false"
+        />
+
+      <arrayView
         id="block-{{ id }}-parameters"
         itemTemplate="{{ attributeTemplate }}"
         items="{{ params }}"
         itemType="Parameter"
         itemTypePlural="Parameters"
         createItem="{{ createAttribute('Parameter') }}"
-        viewClass="ntb-attributes"
+        viewClass="ntb-block-array"
         codeFormat=""
         />
 
@@ -208,7 +264,7 @@ window.RactiveBlockForm = EditForm.extend({
         itemType="Property"
         itemTypePlural="Properties"
         createItem="{{ createAttribute('Property') }}"
-        viewClass="ntb-attributes"
+        viewClass="ntb-block-array"
         codeFormat="P"
         />
 

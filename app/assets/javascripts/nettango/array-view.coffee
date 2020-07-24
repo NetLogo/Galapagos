@@ -10,10 +10,11 @@ window.RactiveArrayView = Ractive.extend({
     itemRemoveEvent:   "item-removed" # String
     itemTemplate:      undefined      # String
     items:             undefined      # Array[Any]
-    itemsWrapperClass: undefined      # Srting
+    itemsWrapperClass: undefined      # String
     viewClass:         undefined      # String
     showItems:         true           # Boolean
-    headerTemplate:    undefined      # Sring
+    headerItem:        {}             # Any
+    headerTemplate:    undefined      # String
 
   }
 
@@ -72,7 +73,9 @@ window.RactiveArrayView = Ractive.extend({
 
         <div class="{{ itemsWrapperClass }}">
 
-          {{> header-template }}
+          {{# headerItem }}
+            {{> header-template }}
+          {{/ headerItem }}
 
           {{# items:number }}
             {{> item-template }}
