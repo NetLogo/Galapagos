@@ -98,7 +98,7 @@ class window.HighchartsOps extends PlotOps
         name:       pen.name
       })
       type    = @modeToString(pen.getDisplayMode())
-      options = thisOps.seriesTypeOptions(type)
+      options = thisOps.seriesTypeOptions(type, pen.getInterval())
       series.update(options)
       @_penNameToSeriesNum[pen.name] = num
       return
@@ -122,7 +122,7 @@ class window.HighchartsOps extends PlotOps
       series = thisOps.penToSeries(pen)
       if series?
         type    = thisOps.modeToString(mode)
-        options = thisOps.seriesTypeOptions(type)
+        options = thisOps.seriesTypeOptions(type, pen.getInterval())
         series.update(options)
       return
 
@@ -161,14 +161,17 @@ class window.HighchartsOps extends PlotOps
       when Point then 'scatter'
       else 'line'
 
-  # (String) => Highcharts.Options
-  seriesTypeOptions: (type) ->
+  # (String, Number) => Highcharts.Options
+  seriesTypeOptions: (type, interval) ->
     isScatter = type is 'scatter'
     isLine    = type is 'line'
+    isColumn  = type is 'column'
     {
       marker:     { enabled: isScatter, radius: if isScatter then 1 else 4 },
       lineWidth:  if isLine then 2 else null,
       type:       if isLine then 'scatter' else type
+      pointRange: if isColumn then interval else null
+      animation:  not isColumn
     }
 
   # (PenBundle.Pen) => Highcharts.Series
