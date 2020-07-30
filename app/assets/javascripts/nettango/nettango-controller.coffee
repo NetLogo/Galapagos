@@ -91,9 +91,6 @@ class window.NetTangoController
           canUndo='{{ canUndo }}'
           canRedo='{{ canRedo }}'
           />
-          {{# !playMode }}
-            <testingDefaults />
-          {{/}}
         """
 
     })
