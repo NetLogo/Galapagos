@@ -29,6 +29,10 @@
   background-color: #8FE585;
 }
 
+.netlogo-tab-area {
+  border-color: #242479;
+}
+
 .netlogo-tab {
   background-color: #BCBCE5;
   border-color: #242479;
@@ -41,6 +45,14 @@
 
 .netlogo-tab:active {
   background-color: #7C76fD;
+}
+
+.netlogo-tab:hover  {
+  background-color: #D3D3EE;
+}
+
+.netlogo-tab.netlogo-active:hover  {
+  background-color: #9E99FD;
 }
 
 .netlogo-view-container {
