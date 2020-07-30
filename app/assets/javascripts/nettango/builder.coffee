@@ -313,14 +313,26 @@ window.RactiveBuilder = Ractive.extend({
       .filter( (prop) -> tabOptions[prop].checked and tabOptions[prop].checkedCssBuild isnt '' )
       .map( (prop) -> if (forExport) then tabOptions[prop].checkedCssExport else tabOptions[prop].checkedCssBuild )
 
-    newCss = newCss.concat([
-      extraCss,
-      # Override the rounded corners of tabs to make them easier to hide with CSS and without JS - JMB August 2018
-      '.netlogo-tab:first-child { border-radius: 0px; }',
-      '.netlogo-tab:last-child, .netlogo-tab-content:last-child { border-radius: 0px; border-bottom-width: 1px; }',
-      '.netlogo-tab { border: 1px solid rgb(36, 36, 121); }',
-      '.netlogo-tab-area { margin: 0px; }'
-    ])
+    # This is hack to get the bottom borders in the tab area correct, since I cannot conjure
+    # any CSS-only solution to handle it.  At some point it might be better to move this
+    # to a pure JS solution to hide tabs directly in code, but that would require model
+    # updates.  -Jeremy B July 2020
+    tabAreaCss = if not forExport then [] else
+      commandBorder = if (not tabOptions.commandCenterTab?.checked and (
+        not tabOptions.codeTab?.checked or not tabOptions.infoTab?.checked
+      ))
+        'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 1px solid; }'
+      else
+        'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 0px; }'
+
+      codeBorder = if (not tabOptions.codeTab?.checked and not tabOptions.infoTab?.checked)
+        'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 1px solid; }'
+      else
+        'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 0px; }'
+
+      [commandBorder, codeBorder]
+
+    newCss = newCss.concat([extraCss, '.netlogo-tab-area { margin: 0px; }'], tabAreaCss)
 
     newCss.join('\n')
 

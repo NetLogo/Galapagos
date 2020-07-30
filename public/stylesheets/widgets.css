@@ -77,6 +77,7 @@
 
 .netlogo-tab:not(:last-child) {
   border-bottom: 1px solid;
+  border-bottom-color: inherit;
 }
 
 .netlogo-tab input[type=checkbox] {
@@ -259,6 +260,8 @@
   flex-direction: column;
   height: 175px;
   padding: 6px 8px;
+  border-bottom: 1px solid;
+  border-bottom-color: inherit;
 }
 
 /* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
