@@ -155,7 +155,7 @@ window.RactiveBlockForm = EditForm.extend({
         block.required  = blockValues.required  ? false
         block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.child
 
-    block.clauses    = @processClauses(blockValues.clauses)
+    block.clauses    = @processClauses(blockValues.clauses ? [])
     block.params     = @processAttributes(blockValues.params)
     block.properties = @processAttributes(blockValues.properties)
 
