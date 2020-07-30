@@ -57,6 +57,7 @@ body#ntp-body, html#ntp-body {
   margin: 0.5em;
   background: #fcfcfc;
   padding: 0.7em;
+  border-radius: 3px;
 }
 
 .ntb-block-defs-list {
@@ -306,6 +307,10 @@ body#ntp-body, html#ntp-body {
   padding-top: 0;
 }
 
+.ntb-code {
+  border-radius: 3px;
+}
+
 #ntb-code {
   resize: vertical;
   min-height: 16em;
@@ -325,6 +330,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-block-space-name {
   border: 0px;
+  border-radius: 3px;
   background: #eee;
   font-size: 20px;
   text-align: center;
@@ -339,6 +345,11 @@ body#ntp-body, html#ntp-body {
   flex: 1;
 }
 
+.ntb-flex-column-code > .netlogo-code,
+.ntb-flex-column-code > .netlogo-code > .CodeMirror {
+  border-radius: 3px;
+}
+
 .ntb-input {
   width: 100%;
   min-width: 30px;
@@ -351,6 +362,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-code-input {
   font-family: monospace;
+  border-radius: 3px;
 }
 
 .ntb-flex-column-code > label,
@@ -373,9 +385,16 @@ body#ntp-body, html#ntp-body {
 
 .ntb-canvas {
   border: 1px solid #000;
+  border-radius: 10px;
   width: min-content;
   margin-left: auto;
   margin-right: auto;
+}
+
+.nt-workspace,
+.nt-workspace-wrapper,
+.nt-container {
+  border-radius: 10px;
 }
 
 .widget-edit-popup {

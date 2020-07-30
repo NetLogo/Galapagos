@@ -91,7 +91,7 @@ window.RactiveOptionsForm = EditForm.extend({
         <label for="ntb-extra-css">Extra CSS to include</label>
       </div>
 
-      <textarea id="ntb-extra-css" type="text" value="{{ extraCss }}" ></textarea>
+      <textarea id="ntb-extra-css" class="ntb-code" type="text" value="{{ extraCss }}" ></textarea>
 
       {{/ options }}
       """

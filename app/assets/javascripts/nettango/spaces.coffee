@@ -190,7 +190,7 @@ window.RactiveSpaces = Ractive.extend({
     </div>
     {{#if showCode }}
     <label for="ntb-code">NetLogo Code</label>
-    <textarea id="ntb-code" readOnly>{{ code }}</textarea>
+    <textarea id="ntb-code" class="ntb-code" readOnly>{{ code }}</textarea>
     {{/if showCode }}
     """
     # coffeelint: enable=max_line_length
