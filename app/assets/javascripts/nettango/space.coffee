@@ -373,42 +373,63 @@ window.RactiveSpace = Ractive.extend({
     """
     {{# space }}
     <div class="ntb-block-def">
-      <input type="text" class="ntb-block-space-name" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-space-title-changed">
 
-      <div class="ntb-block-defs-controls" >
+      <div class="ntb-space-title-bar" >
+
+        <input type="text" class="ntb-space-title" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-space-title-changed">
+
         <button id="recompile-{{ spaceId }}" class="ntb-button" type="button" on-click="ntb-recompile-start"{{# !codeIsDirty }} disabled{{/}}>Recompile</button>
 
-        {{# !playMode }}
+      </div>
+
+      {{# !playMode }}
+
+      <div class="ntb-block-defs-controls" >
+
           <button id="add-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-defaults', this ]">Add Block ▼</button>
+
           <button id="modify-block-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-show-block-modify', this ]" {{# defs.blocks.length === 0 }}disabled{{/}}>Modify Block ▼</button>
+
           <button id="delete-space-button-{{ spaceId }}" class="ntb-button" type="button" on-click="[ 'ntb-confirm-delete', id ]" >Delete Block Space</button>
+
           <labeledInput id="width-{{ spaceId }}" name="width" type="number" value="{{ width }}" labelStr="Width"
             onChange="ntb-size-change" min="50" max="9000" divClass="ntb-flex-column" class="ntb-input" />
+
           <labeledInput id="height-{{ spaceId }}" name="height" type="number" value="{{ height }}" labelStr="Height"
             onChange="ntb-size-change" min="50" max="9000" divClass="ntb-flex-column" class="ntb-input" />
-        {{/ !playMode }}
 
       </div>
+
+      {{/ !playMode }}
 
       <div id="{{ spaceId }}" class="ntb-canvas" >
         <div id="{{ spaceId }}-canvas" />
       </div>
 
       {{# !playMode }}
+
       <div class="ntb-block-defs-controls">
+
         <label class="ntb-toggle-block" >
           <input id="info-toggle" type="checkbox" checked="{{ showJson }}" />
           <div>{{# showJson }}▲{{else}}▼{{/}} Block Definition JSON</div>
         </label>
+
         {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>{{/ showJson }}
+
       </div>
 
       {{# showJson }}
+
       <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
        this ]" />
+
       {{/ showJson }}
+
       {{/ !playMode }}
+
     </div>
+
     {{/ space }}
     """
     # coffeelint: enable=max_line_length

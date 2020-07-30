@@ -328,12 +328,20 @@ body#ntp-body, html#ntp-body {
   resize: vertical;
 }
 
-.ntb-block-space-name {
+.ntb-space-title-bar {
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  align-items: center;
+}
+
+.ntb-space-title {
   border: 0px;
   border-radius: 3px;
   background: #eee;
   font-size: 20px;
   text-align: center;
+  flex-grow: 1;
 }
 
 .ntb-flex-column {
