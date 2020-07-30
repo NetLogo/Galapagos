@@ -15,79 +15,102 @@ window.RactiveBlockStyleSettings = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    {{# styleSettings }}
+    <fieldset
+      id="{{ id }}"
+      class="widget-edit-fieldset flex-column ntb-block-array {{# !showStyles }}ntb-array-view-hidden{{/ showStyles }}">
 
-    <div class="flex-row ntb-form-row">
+      <legend class="widget-edit-legend">
 
-      <labeledInput
-        id="{{ styleId }}-block-color"
-        name="blockColor"
-        type="color"
-        value="{{ blockColor ? blockColor : "#000000" }}"
-        labelStr="Block color"
-        divClass="ntb-flex-column"
-        class="ntb-input"
-        onChange="ntb-color-changed"
-        />
+        Block Styles
 
-      <labeledInput
-        id="{{ styleId }}-text-color"
-        name="textColor"
-        type="color"
-        value="{{ textColor ? textColor : "#000000" }}"
-        labelStr="Text color"
-        divClass="ntb-flex-column"
-        class="ntb-input"
-        onChange="ntb-color-changed"
-        />
+        <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>
 
-      <labeledInput
-        id="{{ styleId }}-border-color"
-        name="borderColor"
-        type="color"
-        value="{{ borderColor ? borderColor : "#000000" }}"
-        labelStr="Border color"
-        divClass="ntb-flex-column"
-        class="ntb-input"
-        onChange="ntb-color-changed"
-        />
+        <label class="ntb-toggle-block">
+          <input id="{{ styleId }}-show-items" type="checkbox" checked="{{ showStyles }}" />
+          {{# showStyles }}▲{{else}}▼{{/}}
+        </label>
 
-    </div>
+      </legend>
 
-    <div class="flex-row ntb-form-row">
+      {{# showStyles }}
 
-      <labeledInput
-        id="{{ styleId }}-f-weight"
-        name="font-weight"
-        type="number"
-        value="{{ fontWeight }}"
-        labelStr="Font weight"
-        divClass="ntb-flex-column"
-        class="ntb-input" />
+      {{# styleSettings }}
 
-      <labeledInput
-        id="{{ styleId }}-f-size"
-        name="font-size"
-        type="number"
-        value="{{ fontSize }}"
-        labelStr="Font size"
-        divClass="ntb-flex-column"
-        class="ntb-input"
-        />
+      <div class="flex-row ntb-form-row">
 
-      <labeledInput
-        id="{{ styleId }}-f-face"
-        name="font-face"
-        type="text"
-        value="{{ fontFace }}"
-        labelStr="Typeface"
-        divClass="ntb-flex-column"
-        class="ntb-input"
-        />
+        <labeledInput
+          id="{{ styleId }}-block-color"
+          name="blockColor"
+          type="color"
+          value="{{ blockColor ? blockColor : "#000000" }}"
+          labelStr="Block color"
+          divClass="ntb-flex-column"
+          class="ntb-input"
+          onChange="ntb-color-changed"
+          />
 
-    </div>
+        <labeledInput
+          id="{{ styleId }}-text-color"
+          name="textColor"
+          type="color"
+          value="{{ textColor ? textColor : "#000000" }}"
+          labelStr="Text color"
+          divClass="ntb-flex-column"
+          class="ntb-input"
+          onChange="ntb-color-changed"
+          />
 
-    {{/ styleSettings }}
+        <labeledInput
+          id="{{ styleId }}-border-color"
+          name="borderColor"
+          type="color"
+          value="{{ borderColor ? borderColor : "#000000" }}"
+          labelStr="Border color"
+          divClass="ntb-flex-column"
+          class="ntb-input"
+          onChange="ntb-color-changed"
+          />
+
+      </div>
+
+      <div class="flex-row ntb-form-row">
+
+        <labeledInput
+          id="{{ styleId }}-f-weight"
+          name="font-weight"
+          type="number"
+          value="{{ fontWeight }}"
+          labelStr="Font weight"
+          divClass="ntb-flex-column"
+          class="ntb-input" />
+
+        <labeledInput
+          id="{{ styleId }}-f-size"
+          name="font-size"
+          type="number"
+          value="{{ fontSize }}"
+          labelStr="Font size"
+          divClass="ntb-flex-column"
+          class="ntb-input"
+          />
+
+        <labeledInput
+          id="{{ styleId }}-f-face"
+          name="font-face"
+          type="text"
+          value="{{ fontFace }}"
+          labelStr="Typeface"
+          divClass="ntb-flex-column"
+          class="ntb-input"
+          />
+
+      </div>
+
+      {{/ styleSettings }}
+
+      {{/ showStyles }}
+
+    </fieldset>
     """
     # coffeelint: enable=max_line_length
 })

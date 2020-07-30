@@ -79,7 +79,7 @@ window.RactiveBlockForm = EditForm.extend({
     '*.code-changed': (_, code) ->
       @set('block.format', code)
 
-    'ntb-clear-styles': (_) ->
+    '*.ntb-clear-styles': (_) ->
       block = @get('block')
       [ 'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace' ]
         .forEach( (prop) -> block[prop] = '' )
@@ -269,22 +269,7 @@ window.RactiveBlockForm = EditForm.extend({
         codeFormat="P"
         />
 
-      <label class="ntb-toggle-block" >
-        <input type="checkbox" checked="{{ showStyles }}" twoway="true" />
-        <div class="ntb-toggle-text">Block Styles
-          {{# showStyles }}
-            <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>▲
-          {{else}}
-            ▼
-          {{/}}
-        </div>
-      </label>
-
-      {{# showStyles }}
-
-      <blockStyle styleId="{{ id }}" styleSettings="{{ this }}"></blockStyle>
-
-      {{/ showStyles }}
+      <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
 
       {{/block }}
       """
