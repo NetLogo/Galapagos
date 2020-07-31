@@ -74,18 +74,36 @@ window.RactiveOptionsForm = EditForm.extend({
 
       </div>
 
-      <div class="ntb-toggle-text">Procedure Block Styles</div>
-      <blockStyle styleId="procedure-blocks" styleSettings="{{ blockStyles.starterBlockStyle }}"></blockStyle>
-
-      <div class="ntb-toggle-text">Control Block Styles</div>
-      <blockStyle styleId="control-blocks" styleSettings="{{ blockStyles.containerBlockStyle }}"></blockStyle>
-
-      <div class="ntb-toggle-text">Command Block Styles</div>
-      <blockStyle styleId="command-blocks" styleSettings="{{ blockStyles.commandBlockStyle }}"></blockStyle>
-
       <div class="ntb-block-defs-controls">
         <button class="ntb-button" type="button" on-click="ntb-confirm-clear-all-block-styles">Remove existing styles from all blocks</button>
       </div>
+
+      <blockStyle
+        title="Procedure Block Styles"
+        styleId="procedure-blocks"
+        styleSettings="{{ blockStyles.starterBlockStyle }}"
+        showClear="false"
+        showStyles="true"
+        >
+      </blockStyle>
+
+      <blockStyle
+        title="Control Block Styles"
+        styleId="control-blocks"
+        styleSettings="{{ blockStyles.containerBlockStyle }}"
+        showClear="false"
+        showStyles="true"
+        >
+      </blockStyle>
+
+      <blockStyle
+        title="Command Block Styles"
+        styleId="command-blocks"
+        styleSettings="{{ blockStyles.commandBlockStyle }}"
+        showClear="false"
+        showStyles="true"
+        >
+      </blockStyle>
 
       <div class="ntb-block-defs-controls">
         <label for="ntb-extra-css">Extra CSS to include</label>

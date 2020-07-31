@@ -1,7 +1,10 @@
 window.RactiveBlockStyleSettings = Ractive.extend({
   data: () -> {
-    styleId:       undefined # String
-    styleSettings: undefined # { blockColor, textColor, borderColor, fontWeight, fontSize, fontFace }
+    title:         "Block Styles" # String
+    styleId:       undefined      # String
+    styleSettings: undefined      # { blockColor, textColor, borderColor, fontWeight, fontSize, fontFace }
+    showClear:     true           # Boolean
+    showStyles:    false          # Boolean
   }
 
   on: {
@@ -16,14 +19,18 @@ window.RactiveBlockStyleSettings = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <fieldset
-      id="{{ id }}"
+      id="{{ styleId }}"
       class="widget-edit-fieldset flex-column ntb-block-array {{# !showStyles }}ntb-array-view-hidden{{/ showStyles }}">
 
       <legend class="widget-edit-legend">
 
-        Block Styles
+        {{ title }}
+
+        {{# showClear }}
 
         <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>
+
+        {{/ showClear }}
 
         <label class="ntb-toggle-block">
           <input id="{{ styleId }}-show-items" type="checkbox" checked="{{ showStyles }}" />
