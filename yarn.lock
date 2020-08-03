@@ -20,10 +20,10 @@ chosen-js@1.8.7:
   resolved "https://registry.yarnpkg.com/chosen-js/-/chosen-js-1.8.7.tgz#9bfa5597f5081d602ff4ae904af9aef33265bb1d"
   integrity sha512-eVdrZJ2U5ISdObkgsi0od5vIJdLwq1P1Xa/Vj/mgxkMZf14DlgobfB6nrlFi3kW4kkvKLsKk4NDqZj1MU1DCpw==
 
-codemirror@5.55.0:
-  version "5.55.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.55.0.tgz#23731f641288f202a6858fdc878f3149e0e04363"
-  integrity sha512-TumikSANlwiGkdF/Blnu/rqovZ0Y3Jh8yy9TqrPbSM0xxSucq3RgnpVDQ+mD9q6JERJEIT2FMuF/fBGfkhIR/g==
+codemirror@5.56.0:
+  version "5.56.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.56.0.tgz#675640fcc780105cd22d3faa738b5d7ea6426f61"
+  integrity sha512-MfKVmYgifXjQpLSgpETuih7A7WTTIsxvKfSLGseTY5+qt0E1UD1wblZGM6WLenORo8sgmf+3X+WTe2WF7mufyw==
 
 coffeelint@^2.1.0:
   version "2.1.0"
@@ -112,10 +112,10 @@ iobuffer@^3.2.0:
   dependencies:
     utf8 "^2.1.2"
 
-jpeg-js@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.3.4.tgz#dc2ba501ee3d58b7bb893c5d1fab47294917e7e7"
-  integrity sha512-6IzjQxvnlT8UlklNmDXIJMWxijULjqGrzgqc0OG7YadZdvm7KPQ1j0ehmQQHckgEWOfgpptzcnWgESovxudpTA==
+jpeg-js@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/jpeg-js/-/jpeg-js-0.4.1.tgz#937a3ae911eb6427f151760f8123f04c8bfe6ef7"
+  integrity sha512-jA55yJiB5tCXEddos8JBbvW+IMrqY0y1tjjx9KNVtA+QPmu7ND5j0zkKopClpUTsaETL135uOM2XfcYG4XRjmw==
 
 jquery@3.5.1:
   version "3.5.1"
@@ -134,10 +134,10 @@ lie@3.1.1:
   dependencies:
     immediate "~3.0.5"
 
-localforage@1.7.4:
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.7.4.tgz#88b59cc9b25ae54c76bb2c080b21ec832c22d3f6"
-  integrity sha512-3EmVZatmNVeCo/t6Te7P06h2alGwbq8wXlSkcSXMvDE2/edPmsVqTPlzGnZaqwZZDBs6v+kxWpqjVsqsNJT8jA==
+localforage@1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.9.0.tgz#f3e4d32a8300b362b4634cc4e066d9d00d2f09d1"
+  integrity sha512-rR1oyNrKulpe+VM9cYmcFn6tsHuokyVHFaCM3+osEmxaHTbEk8oQu6eGDfS6DQLWi/N67XRmB8ECG37OES368g==
   dependencies:
     lie "3.1.1"
 
@@ -203,13 +203,13 @@ strip-json-comments@^1.0.2:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
   integrity sha1-HhX7ysl9Pumb8tc7TGVrCCu6+5E=
 
-synchrodecoder@1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/synchrodecoder/-/synchrodecoder-1.0.2.tgz#b742872edf11155a0b62eba94f048d070f69518a"
-  integrity sha512-ir4EvzwsT1sKEwWecF9M9JLjDrFKC+JalaPpDhUkDYvwExv+826iuDbcnFz/wNKV8DjUidBqZ2uvahVuJxNhqw==
+synchrodecoder@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/synchrodecoder/-/synchrodecoder-1.0.3.tgz#5cab35fd32525117b8e53020b37b30dc03158e9a"
+  integrity sha512-/QUrEAs6wVTov1Dh8MVVHP/SiiJlNnkWWGM0TaTs1A2Bf4qNuqmk65yrZBFiL2Q1qfRQPCbWNwMnLSmkH4Oktg==
   dependencies:
     fast-png "3.1.0"
-    jpeg-js "0.3.4"
+    jpeg-js "0.4.1"
 
 utf8@^2.1.2:
   version "2.1.2"
