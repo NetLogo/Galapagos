@@ -284,7 +284,7 @@ window.RactiveBlockForm = EditForm.extend({
         viewClass="ntb-block-array"
         headerItem="{{ block }}"
         headerTemplate="{{ clauseHeaderTemplate }}"
-        showItems="false"
+        showItems="{{ clauses.length > 0 }}"
         />
 
       <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
