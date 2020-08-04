@@ -272,6 +272,7 @@ window.RactiveBlockForm = EditForm.extend({
         createItem="{{ createAttribute('Parameter') }}"
         viewClass="ntb-block-array"
         codeFormat=""
+        showItems="{{ params.length > 0 }}"
         />
 
       <arrayView
@@ -283,6 +284,7 @@ window.RactiveBlockForm = EditForm.extend({
         createItem="{{ createAttribute('Property') }}"
         viewClass="ntb-block-array"
         codeFormat="P"
+        showItems="{{ properties.length > 0 }}"
         />
 
       <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
