@@ -137,8 +137,10 @@ window.RactiveBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    [ 'action', 'format', 'closeClauses', 'note', 'required', 'placement', 'limit',
-      'blockColor', 'textColor', 'borderColor', 'fontWeight', 'fontSize', 'fontFace', 'id' ]
+    [ 'id', 'action', 'format', 'closeClauses', 'closeStarter', 'note',
+      'required', 'isTerminal', 'placement', 'limit',
+      'blockColor', 'textColor', 'borderColor',
+      'fontWeight', 'fontSize', 'fontFace' ]
       .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt '')
       .forEach((f) -> block[f] = blockValues[f])
 
@@ -233,6 +235,20 @@ window.RactiveBlockForm = EditForm.extend({
           labelStr="Note - extra information for the code tip"
           divClass="ntb-flex-column" class="ntb-input" />
       </div>
+
+      {{# builderType !== 'Command or Control' }}
+      <div class="flex-row ntb-form-row">
+
+        <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
+          labelStr="Make this the final block in a chain"
+          divClass="ntb-flex-column" class="ntb-input" />
+
+        <labeledInput id="block-{{ id }}-close" name="close" type="text" value="{{ closeStarter }}"
+          labelStr="Code format to insert after all attached blocks (default is `end`)"
+          divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+
+      </div>
+      {{/}}
 
       <arrayView
         id="block-{{ id }}-clauses"
