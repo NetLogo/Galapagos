@@ -2,6 +2,7 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
 
   data: -> {
     attrs:      undefined # String
+  , checked:    undefined # Boolean
   , class:      undefined # String
   , divClass:  "flex-row" # String
   , id:         undefined # String
@@ -45,7 +46,7 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
       <div style="flex-grow: 1;">
         <input class="widget-edit-text widget-edit-input {{ class }}" {{#if id }}id="{{ id }}"{{/if}} name="{{ name }}"
           min="{{ min }}" max="{{ max }}" on-change="exec"
-          type="{{ type }}" value="{{ value }}" style="{{ style }}" {{ attrs }} />
+          type="{{ type }}" checked="{{ checked }}" value="{{ value }}" style="{{ style }}" {{ attrs }} />
       </div>
     </div>
     """
