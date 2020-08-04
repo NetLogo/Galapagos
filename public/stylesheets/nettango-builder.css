@@ -58,6 +58,7 @@ body#ntp-body, html#ntp-body {
   background: #fcfcfc;
   padding: 0.7em;
   border-radius: 3px;
+  border-color: #bbb;
 }
 
 .ntb-block-defs-list {
@@ -316,6 +317,7 @@ body#ntp-body, html#ntp-body {
   min-height: 16em;
   background: #eee;
   padding: 0.7em;
+  border-color: #bbb;
 }
 
 #ntb-extra-css {
@@ -392,7 +394,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-canvas {
-  border: 1px solid #000;
+  border: 1px solid #bbb;
   border-radius: 10px;
   width: min-content;
   margin-left: auto;
