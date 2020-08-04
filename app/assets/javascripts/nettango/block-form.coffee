@@ -251,19 +251,6 @@ window.RactiveBlockForm = EditForm.extend({
       {{/}}
 
       <arrayView
-        id="block-{{ id }}-clauses"
-        itemTemplate="{{ clauseTemplate }}"
-        items="{{ clauses }}"
-        itemType="Clause"
-        itemTypePlural="Control Clauses"
-        createItem="{{ createClause }}"
-        viewClass="ntb-block-array"
-        headerItem="{{ block }}"
-        headerTemplate="{{ clauseHeaderTemplate }}"
-        showItems="false"
-        />
-
-      <arrayView
         id="block-{{ id }}-parameters"
         itemTemplate="{{ attributeTemplate }}"
         items="{{ params }}"
@@ -285,6 +272,19 @@ window.RactiveBlockForm = EditForm.extend({
         viewClass="ntb-block-array"
         codeFormat="P"
         showItems="{{ properties.length > 0 }}"
+        />
+
+      <arrayView
+        id="block-{{ id }}-clauses"
+        itemTemplate="{{ clauseTemplate }}"
+        items="{{ clauses }}"
+        itemType="Clause"
+        itemTypePlural="Control Clauses"
+        createItem="{{ createClause }}"
+        viewClass="ntb-block-array"
+        headerItem="{{ block }}"
+        headerTemplate="{{ clauseHeaderTemplate }}"
+        showItems="false"
         />
 
       <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
