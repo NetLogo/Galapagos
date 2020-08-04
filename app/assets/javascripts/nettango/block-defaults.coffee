@@ -1,3 +1,9 @@
+copyClauses = (block) ->
+  if not block.clauses?
+    return []
+
+  block.clauses.map( (clause) -> Object.assign({}, clause) )
+
 # (NetTangoBlock, String) => Array[NetTangoAttribute]
 copyAttributes = (b, attributeType) ->
   if b[attributeType]?
@@ -15,6 +21,7 @@ copyAttributes = (b, attributeType) ->
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
   delete copy.id
+  copy.clauses    = copyClauses(block)
   copy.params     = copyAttributes(block, 'params')
   copy.properties = copyAttributes(block, 'properties')
 
