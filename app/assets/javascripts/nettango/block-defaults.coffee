@@ -254,4 +254,23 @@ blocks = {
   ]
 }
 
-window.NetTangoBlockDefaults = { blocks, copyBlock }
+expressions = [
+  { name: "true",  type: "bool" },
+  { name: "false", type: "bool" },
+  { name: "AND",   type: "bool", arguments: [ "bool", "bool"],  format: "({0} and {1})" },
+  { name: "OR",    type: "bool", arguments: [ "bool", "bool" ], format: "({0} or {1})" },
+  { name: "NOT",   type: "bool", arguments: [ "bool"],          format: "(not {0})" },
+  { name: ">",     type: "bool", arguments: [ "num", "num" ] },
+  { name: ">=",    type: "bool", arguments: [ "num", "num" ] },
+  { name: "<",     type: "bool", arguments: [ "num", "num" ] },
+  { name: "<=",    type: "bool", arguments: [ "num", "num" ] },
+  { name: "!=",    type: "bool", arguments: [ "num", "num" ] },
+  { name: "=",     type: "bool", arguments: [ "num", "num" ] },
+  { name: "+",     type: "num",  arguments: [ "num", "num"] },
+  { name: "-",     type: "num",  arguments: [ "num", "num"] },
+  { name: "×",     type: "num",  arguments: [ "num", "num"], format: "({0} * {1})" },
+  { name: "/",     type: "num",  arguments: [ "num", "num"] },
+  { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
+]
+
+window.NetTangoBlockDefaults = { blocks, copyBlock, expressions }

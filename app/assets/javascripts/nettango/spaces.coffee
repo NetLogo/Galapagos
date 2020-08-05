@@ -107,34 +107,13 @@ window.RactiveSpaces = Ractive.extend({
       )
     spaceCodes.join("\n\n")
 
-  # () => Array[NetTangoExpressionOperator]
-  expressionDefaults: () ->
-    return [
-      { name: "true",  type: "bool" },
-      { name: "false", type: "bool" },
-      { name: "AND",   type: "bool", arguments: [ "bool", "bool"],  format: "({0} and {1})" },
-      { name: "OR",    type: "bool", arguments: [ "bool", "bool" ], format: "({0} or {1})" },
-      { name: "NOT",   type: "bool", arguments: [ "bool"],          format: "(not {0})" },
-      { name: ">",     type: "bool", arguments: [ "num", "num" ] },
-      { name: ">=",    type: "bool", arguments: [ "num", "num" ] },
-      { name: "<",     type: "bool", arguments: [ "num", "num" ] },
-      { name: "<=",    type: "bool", arguments: [ "num", "num" ] },
-      { name: "!=",    type: "bool", arguments: [ "num", "num" ] },
-      { name: "=",     type: "bool", arguments: [ "num", "num" ] },
-      { name: "+",     type: "num",  arguments: [ "num", "num"] },
-      { name: "-",     type: "num",  arguments: [ "num", "num"] },
-      { name: "×",     type: "num",  arguments: [ "num", "num"], format: "({0} * {1})" },
-      { name: "/",     type: "num",  arguments: [ "num", "num"] },
-      { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
-    ]
-
   # (NetTangoSpace) => NetTangoSpace
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
     defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
-    defs.expressions = defs.expressions ? @expressionDefaults()
+    defs.expressions = defs.expressions ? NetTangoBlockDefaults.expressions
     space = {
         id:              id
       , spaceId:         spaceId
