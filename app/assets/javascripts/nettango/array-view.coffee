@@ -19,6 +19,7 @@ window.RactiveArrayView = Ractive.extend({
   }
 
   on: {
+
     'complete': (_) ->
       @resetPartial("item-template", @get('itemTemplate'))
       headerTemplate = @get('headerTemplate')
@@ -40,6 +41,7 @@ window.RactiveArrayView = Ractive.extend({
       @splice("items", number, 1)
       @fire(removeEvent, number)
       return
+
   }
 
   partials: {
