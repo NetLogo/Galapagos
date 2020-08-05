@@ -206,7 +206,7 @@ window.RactiveSpace = Ractive.extend({
     space.netLogoDisplay = NetTango.exportCode(containerId).trim()
     return
 
-  # (NetTangoSpace, Sring, Event) => Unit
+  # (NetTangoSpace, String, Event) => Unit
   handleNetTangoEvent: (space, containerId, event) ->
     space.defs.program.chains = NetTango.save(containerId).program.chains
     @setSpaceNetLogo(space, containerId)

@@ -91,6 +91,18 @@ window.RactiveBlockForm = EditForm.extend({
   oninit: ->
     @_super()
 
+  observe: {
+    'block.*': () ->
+      preview = @findComponent('preview')
+      if not preview?
+        return
+
+      previewBlock = @getBlock()
+      @set('previewBlock', previewBlock)
+      preview.resetNetTango()
+      return
+  }
+
   # (String, Integer) => NetTangoAttribute
   defaultAttribute: (attributeType, num) -> {
       name: "#{attributeType}#{num}"
@@ -114,6 +126,7 @@ window.RactiveBlockForm = EditForm.extend({
         'Custom'
 
     @set('block', block)
+    @set('previewBlock', block)
     return
 
   # (String, String, NetTangoBlock, Integer, String, String) => Unit
@@ -200,6 +213,7 @@ window.RactiveBlockForm = EditForm.extend({
     , formCode:     RactiveEditFormMultilineCode
     , labeledInput: RactiveTwoWayLabeledInput
     , spacer:       RactiveEditFormSpacer
+    , preview:      RactiveBlockPreview
   }
 
   partials: {
@@ -209,87 +223,95 @@ window.RactiveBlockForm = EditForm.extend({
     widgetFields:
       # coffeelint: disable=max_line_length
       """
+      <div class="flex-row ntb-block-form">
+
+      <div class="ntb-block-form-fields">
       {{# block }}
 
-      <div class="flex-row ntb-form-row">
+        <div class="flex-row ntb-form-row">
 
-        <labeledInput id="block-{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
-          divClass="ntb-flex-column" class="ntb-input" />
+          <labeledInput id="block-{{ id }}-name" name="name" type="text" value="{{ action }}" labelStr="Display name"
+            divClass="ntb-flex-column" class="ntb-input" />
 
-        <dropdown id="block-{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
-          choices="{{ [ 'Procedure', 'Command or Control' ] }}"
-          divClass="ntb-flex-column"
+          <dropdown id="block-{{ id }}-type" name="{{ builderType }}" selected="{{ builderType }}" label="Type"
+            choices="{{ [ 'Procedure', 'Command or Control' ] }}"
+            divClass="ntb-flex-column"
+            />
+
+          <labeledInput id="block-{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
+            min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
+
+        </div>
+
+        <div class="ntb-flex-column-code">
+          <formCode id="block-{{ id }}-format" name="source" value="{{ format }}" label="NetLogo code format (use {#} for parameter, {P#} for property)" />
+        </div>
+
+        <div class="flex-row ntb-form-row">
+          <labeledInput id="block-{{ id }}-note" name="note" type="text" value="{{ note }}"
+            labelStr="Note - extra information for the code tip"
+            divClass="ntb-flex-column" class="ntb-input" />
+        </div>
+
+        {{# builderType !== 'Command or Control' }}
+        <div class="flex-row ntb-form-row">
+
+          <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
+            labelStr="Make this the final block in a chain"
+            divClass="ntb-flex-column" class="ntb-input" />
+
+          <labeledInput id="block-{{ id }}-close" name="close" type="text" value="{{ closeStarter }}"
+            labelStr="Code format to insert after all attached blocks (default is `end`)"
+            divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+
+        </div>
+        {{/}}
+
+        <arrayView
+          id="block-{{ id }}-parameters"
+          itemTemplate="{{ attributeTemplate }}"
+          items="{{ params }}"
+          itemType="Parameter"
+          itemTypePlural="Parameters"
+          createItem="{{ createAttribute('Parameter') }}"
+          viewClass="ntb-block-array"
+          codeFormat=""
+          showItems="{{ params.length > 0 }}"
           />
 
-        <labeledInput id="block-{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
-          min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
+        <arrayView
+          id="block-{{ id }}-properties"
+          itemTemplate="{{ attributeTemplate }}"
+          items="{{ properties }}"
+          itemType="Property"
+          itemTypePlural="Properties"
+          createItem="{{ createAttribute('Property') }}"
+          viewClass="ntb-block-array"
+          codeFormat="P"
+          showItems="{{ properties.length > 0 }}"
+          />
 
-      </div>
+        <arrayView
+          id="block-{{ id }}-clauses"
+          itemTemplate="{{ clauseTemplate }}"
+          items="{{ clauses }}"
+          itemType="Clause"
+          itemTypePlural="Control Clauses"
+          createItem="{{ createClause }}"
+          viewClass="ntb-block-array"
+          headerItem="{{ block }}"
+          headerTemplate="{{ clauseHeaderTemplate }}"
+          showItems="{{ clauses.length > 0 }}"
+          />
 
-      <div class="ntb-flex-column-code">
-        <formCode id="block-{{ id }}-format" name="source" value="{{ format }}" label="NetLogo code format (use {#} for parameter, {P#} for property)" />
-      </div>
-
-      <div class="flex-row ntb-form-row">
-        <labeledInput id="block-{{ id }}-note" name="note" type="text" value="{{ note }}"
-          labelStr="Note - extra information for the code tip"
-          divClass="ntb-flex-column" class="ntb-input" />
-      </div>
-
-      {{# builderType !== 'Command or Control' }}
-      <div class="flex-row ntb-form-row">
-
-        <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
-          labelStr="Make this the final block in a chain"
-          divClass="ntb-flex-column" class="ntb-input" />
-
-        <labeledInput id="block-{{ id }}-close" name="close" type="text" value="{{ closeStarter }}"
-          labelStr="Code format to insert after all attached blocks (default is `end`)"
-          divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
-
-      </div>
-      {{/}}
-
-      <arrayView
-        id="block-{{ id }}-parameters"
-        itemTemplate="{{ attributeTemplate }}"
-        items="{{ params }}"
-        itemType="Parameter"
-        itemTypePlural="Parameters"
-        createItem="{{ createAttribute('Parameter') }}"
-        viewClass="ntb-block-array"
-        codeFormat=""
-        showItems="{{ params.length > 0 }}"
-        />
-
-      <arrayView
-        id="block-{{ id }}-properties"
-        itemTemplate="{{ attributeTemplate }}"
-        items="{{ properties }}"
-        itemType="Property"
-        itemTypePlural="Properties"
-        createItem="{{ createAttribute('Property') }}"
-        viewClass="ntb-block-array"
-        codeFormat="P"
-        showItems="{{ properties.length > 0 }}"
-        />
-
-      <arrayView
-        id="block-{{ id }}-clauses"
-        itemTemplate="{{ clauseTemplate }}"
-        items="{{ clauses }}"
-        itemType="Clause"
-        itemTypePlural="Control Clauses"
-        createItem="{{ createClause }}"
-        viewClass="ntb-block-array"
-        headerItem="{{ block }}"
-        headerTemplate="{{ clauseHeaderTemplate }}"
-        showItems="{{ clauses.length > 0 }}"
-        />
-
-      <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
+        <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
 
       {{/block }}
+      </div>
+
+      <preview block={{ previewBlock }} />
+
+      </div>
       """
       # coffeelint: enable=max_line_length
   }
