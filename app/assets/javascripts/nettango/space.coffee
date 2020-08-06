@@ -98,7 +98,7 @@ window.RactiveSpace = Ractive.extend({
     '*.ntb-show-create-block-form': (_, blockBase) ->
       space = @get('space')
       block = NetTangoBlockDefaults.copyBlock(blockBase)
-      @showBlockForm(space.name, block, null, "Add New Block", "ntb-block-added")
+      @showBlockForm(space.name, block, null, "Add New Block", "ntb-block-added", "Discard New Block")
       return
 
     # (Context, NetTangoBlock) => Unit
@@ -113,7 +113,7 @@ window.RactiveSpace = Ractive.extend({
     '*.ntb-show-edit-block-form': (_, blockIndex) ->
       space = @get('space')
       block = space.defs.blocks[blockIndex]
-      @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated")
+      @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
       return
 
     # (Context, NetTangoBlock, Integer) => Unit
@@ -158,10 +158,10 @@ window.RactiveSpace = Ractive.extend({
 
   }
 
-  # (String, NetTangoBlock, Integer, String, String) => Unit
-  showBlockForm: (spaceName, block, blockIndex, submitLabel, submitEvent) ->
+  # (String, NetTangoBlock, Integer, String, String, String) => Unit
+  showBlockForm: (spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
     form = @get('blockEditForm')
-    form.show(this, spaceName, block, blockIndex, submitLabel, submitEvent)
+    form.show(this, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
     overlay = @root.find('.widget-edit-form-overlay')
     overlay.classList.add('ntb-dialog-overlay')
     return
@@ -231,7 +231,7 @@ window.RactiveSpace = Ractive.extend({
           space      = @get("space")
           blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
           block      = space.defs.blocks[blockIndex]
-          @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated")
+          @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
 
       when "menu-item-context-menu"
         playMode = @get("playMode")

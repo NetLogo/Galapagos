@@ -129,13 +129,14 @@ window.RactiveBlockForm = EditForm.extend({
     @set('previewBlock', block)
     return
 
-  # (String, String, NetTangoBlock, Integer, String, String) => Unit
-  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent) ->
+  # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
+  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
     @_setBlock(block)
     @set(     'target', target)
     @set(  'spaceName', spaceName)
     @set( 'blockIndex', blockIndex)
     @set('submitLabel', submitLabel)
+    @set('cancelLabel', cancelLabel)
     @set('submitEvent', submitEvent)
 
     @fire('show-yourself')
