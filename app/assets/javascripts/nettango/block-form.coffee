@@ -309,7 +309,7 @@ window.RactiveBlockForm = EditForm.extend({
       {{/block }}
       </div>
 
-      <preview block={{ previewBlock }} />
+      <preview block={{ previewBlock }} blockStyles={{ blockStyles }} />
 
       </div>
       """

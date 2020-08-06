@@ -17,7 +17,7 @@ window.RactiveSpace = Ractive.extend({
     confirmDialog: null,  # RactiveConfirmDialog
     showJson:      false, # Boolean
     popupMenu:     null   # RactivePopupMenu
-    blockStyles:   null   # Object
+    blockStyles:   null   # NetTangoBlockStyles
   }
 
   on: {

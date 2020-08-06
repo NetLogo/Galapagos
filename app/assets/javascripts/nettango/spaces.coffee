@@ -1,14 +1,15 @@
 window.RactiveSpaces = Ractive.extend({
 
   data: () -> {
-    playMode:         false, # Boolean
-    spaces:           [],    # Array[NetTangoSpace]
-    lastCompiledCode: "",    # String
-    codeIsDirty:      false, # Boolean
-    showCode:         true,  # Boolean
-    popupMenu:        null,  # RactivePopupMenu
-    blockEditForm:    null,  # RactiveBlockForm
-    confirmDialog:    null   # RactiveConfirmDialog
+    playMode:         false,    # Boolean
+    spaces:           [],       # Array[NetTangoSpace]
+    lastCompiledCode: "",       # String
+    codeIsDirty:      false,    # Boolean
+    showCode:         true,     # Boolean
+    popupMenu:        null,     # RactivePopupMenu
+    blockEditForm:    null,     # RactiveBlockForm
+    confirmDialog:    null,     # RactiveConfirmDialog
+    blockStyles:      undefined # NetTangoBlockStyles
   }
 
   on: {
@@ -152,7 +153,7 @@ window.RactiveSpaces = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <blockEditForm idBasis="ntb-block" parentClass="ntb-builder" verticalOffset="10" />
+    <blockEditForm idBasis="ntb-block" parentClass="ntb-builder" verticalOffset="10" blockStyles={{ blockStyles }} />
 
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}

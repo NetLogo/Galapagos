@@ -1,8 +1,9 @@
 window.RactiveBlockPreview = EditForm.extend({
 
   data: () -> {
-    block:     undefined # NetTangoBlock
-    code:      undefined # String
+    block:       undefined # NetTangoBlock
+    code:        undefined # String
+    blockStyles: undefined # NetTangoBlockStyles
   }
 
   on: {
@@ -15,11 +16,14 @@ window.RactiveBlockPreview = EditForm.extend({
       if not block.id?
         block.id = 0
 
+      blockStyles = @get("blockStyles")
+
       defs = {
         version: 5
         height: 300
         width: 400
         expressions: NetTangoBlockDefaults.expressions
+        blockStyles: blockStyles
       }
 
       sample = {
