@@ -63,6 +63,18 @@ blocks = {
             , params:     []
             , properties: []
           }
+        },
+        {
+          name: "wrapping procedure"
+          data: {
+            , action:     "procedure"
+            , format:     "to proc1"
+            , required:   true
+            , isTerminal: true
+            , placement:  NetTango.blockPlacementOptions.starter
+            , limit:      1
+            , clauses:    [{ children: [], open: " ", close: " " }]
+          }
         }
       ]
     },
