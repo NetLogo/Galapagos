@@ -230,6 +230,7 @@ blocks = {
               unit: "",
               type: "select",
               default: "red",
+              quoteValues: "never-quote",
               values: [
                 { actual: "red" },
                 { actual: "violet" },
