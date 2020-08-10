@@ -7,7 +7,7 @@ DEFAULT_REDRAW_DELAY = 1000 / 30
 MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
-NETLOGO_VERSION      = '2.7.2'
+NETLOGO_VERSION      = '2.7.3'
 
 codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
   compileParams = {
