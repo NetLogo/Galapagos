@@ -318,6 +318,13 @@ window.RactiveBuilder = Ractive.extend({
     # to a pure JS solution to hide tabs directly in code, but that would require model
     # updates.  -Jeremy B July 2020
     tabAreaCss = if not forExport then [] else
+      tabAreaBorder = if (tabOptions.commandCenterTab?.checked and
+        tabOptions.codeTab?.checked and tabOptions.infoTab?.checked
+      )
+        'div.netlogo-tab-area { border: 0px; }'
+      else
+        ''
+
       commandBorder = if (not tabOptions.commandCenterTab?.checked and (
         not tabOptions.codeTab?.checked or not tabOptions.infoTab?.checked
       ))
@@ -330,7 +337,7 @@ window.RactiveBuilder = Ractive.extend({
       else
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 0px; }'
 
-      [commandBorder, codeBorder]
+      [tabAreaBorder, commandBorder, codeBorder]
 
     newCss = newCss.concat([extraCss, '.netlogo-tab-area { margin: 0px; }'], tabAreaCss)
 
