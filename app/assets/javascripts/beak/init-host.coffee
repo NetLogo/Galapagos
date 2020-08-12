@@ -112,7 +112,7 @@ setUpEventListeners = ->
         session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
       when "nlw-request-model-state"
         update = session.getModelState("")
-        e.source.postMessage({ update, type: "nlw-state-update" }, "*")
+        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
       when "nlw-request-view"
         base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
@@ -331,8 +331,9 @@ setUpEventListeners = ->
           modelState = session.getModelState("")
 
           supervisorFrame.contentWindow.postMessage({
-            type:   "nlw-state-update"
-          , update: Object.assign({}, modelState, { monitorUpdates })
+            type:        "nlw-state-update"
+          , update:      Object.assign({}, modelState, { monitorUpdates })
+          , sequenceNum: -1
           }, "*")
 
           session.subscribeWithID(wind, uuid)
@@ -396,8 +397,9 @@ setUpEventListeners = ->
           modelState = session.getModelState("")
 
           studentFrame.contentWindow.postMessage({
-            type:   "nlw-state-update"
-          , update: Object.assign({}, modelState, { monitorUpdates })
+            type:        "nlw-state-update"
+          , update:      Object.assign({}, modelState, { monitorUpdates })
+          , sequenceNum: -1
           }, "*")
 
           # NOTE

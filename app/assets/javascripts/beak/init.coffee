@@ -92,7 +92,7 @@ setUpEventListeners = ->
         session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
       when "nlw-request-model-state"
         update = session.getModelState("observer")
-        e.source.postMessage({ update, type: "nlw-state-update" }, "*")
+        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
       when "nlw-request-view"
         base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
