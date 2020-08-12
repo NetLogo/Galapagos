@@ -129,16 +129,23 @@ setUpEventListeners = ->
 
           { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdates } = e.data.update
 
-          world.ticker.reset()
-          world.ticker.importTicks(ticks)
+          if ticks?
+            world.ticker.reset()
+            world.ticker.importTicks(ticks)
 
-          session.widgetController.applyWidgetUpdates(widgetUpdates)
-          session.widgetController.applyPlotUpdates(plotUpdates)
-          session.widgetController.applyMonitorUpdates(monitorUpdates)
+          if widgetUpdates?
+            session.widgetController.applyWidgetUpdates(widgetUpdates)
 
-          vc = session.widgetController.viewController
-          viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
-          vc.repaint()
+          if plotUpdates?
+            session.widgetController.applyPlotUpdates(plotUpdates)
+
+          if monitorUpdates?
+            session.widgetController.applyMonitorUpdates(monitorUpdates)
+
+          if viewUpdates?
+            vc = session.widgetController.viewController
+            viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
+            vc.repaint()
 
       when "hnw-widget-update"
         if (e.data.event.type is "ticksStarted")

@@ -39,16 +39,23 @@ window.AgentModel = tortoise_require('agentmodel')
 
 class window.SessionLite
 
+  # type HNWUpdate       = { widgetUpdates : Array[WidgetUpdate], monitorUpdates : Object[String], plotUpdates : Object[Array[Object[Any]]], ticks : Number, viewUpdates : Array[ViewUpdate] }
+  # type SparseHNWUpdate = { widgetUpdates?: Array[WidgetUpdate], monitorUpdates?: Object[String], plotUpdates?: Object[Array[Object[Any]]], ticks?: Number, viewUpdates?: Array[ViewUpdate] }
+  # type PlotsUpdate     = Object[Array[Object[Any]]]
+
   widgetController: undefined # WidgetController
 
-  _monitorFuncs:  undefined # Object[Object[(Number) => String]]
-  _subscriberObj: undefined # Object[Window]
+  _hnwWidgetGlobalCache: undefined # Object[Any]
+  _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
+  _subscriberObj:        undefined # Object[Window]
+  _lastBCastTicks:       undefined # Number
 
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
-    @_monitorFuncs  = {}
-    @_subscriberObj = {}
+    @_hnwWidgetGlobalCache = {}
+    @_monitorFuncs         = {}
+    @_subscriberObj        = {}
 
     checkIsReporter =
       (str) =>
@@ -404,37 +411,41 @@ class window.SessionLite
   # (Array[Widget]) => Array[WidgetUpdate]
   _getWidgetUpdates: (widgets) ->
     widgets.map(
-      (w) ->
-        switch w.type
-          when "chooser"
-            console.log("Hey, nl chooser", w)
-          when "inputBox"
-            console.log("Hey, nl input", w)
-          when "monitor"
-            console.log("Hey, nl monitor", w)
-          when "output"
-            console.log("Hey, nl output", w)
-          when "slider"
-            console.log("Hey, nl slider", w)
-          when "switch"
-            console.log("Hey, nl switch", w)
-          when "hnwChooser"
-            { type: "chooser", varName: w.variable, value: w.currentValue }
-          when "hnwInputBox"
-            { type: "inputBox", varName: w.variable, value: w.currentValue }
-          when "hnwMonitor"
-            { id: w.display, type: "monitor", value: w.currentValue }
-          when "hnwOutput"
-            console.log("Hey, output", w)
-          when "hnwSlider"
-            { type: "slider", varName: w.variable, value: w.currentValue }
-          when "hnwSwitch"
-            { type: "switch", varName: w.variable, value: w.currentValue }
+      (w) =>
+        if @_hnwWidgetGlobalCache[w.variable] isnt w.currentValue
+          @_hnwWidgetGlobalCache[w.variable] = w.currentValue
+          switch w.type
+            when "chooser"
+              console.log("Hey, nl chooser", w)
+            when "inputBox"
+              console.log("Hey, nl input", w)
+            when "monitor"
+              console.log("Hey, nl monitor", w)
+            when "output"
+              console.log("Hey, nl output", w)
+            when "slider"
+              console.log("Hey, nl slider", w)
+            when "switch"
+              console.log("Hey, nl switch", w)
+            when "hnwChooser"
+              { type: "chooser", varName: w.variable, value: w.currentValue }
+            when "hnwInputBox"
+              { type: "inputBox", varName: w.variable, value: w.currentValue }
+            when "hnwMonitor"
+              { id: w.display, type: "monitor", value: w.currentValue }
+            when "hnwOutput"
+              console.log("Hey, output", w)
+            when "hnwSlider"
+              { type: "slider", varName: w.variable, value: w.currentValue }
+            when "hnwSwitch"
+              { type: "switch", varName: w.variable, value: w.currentValue }
+        else
+          { type: "no-update" }
     ).filter((x) -> x?)
 
   # (String, String, (Number) => String) => Unit
   registerMonitorFunc: (roleName, displayStr, func) ->
-    @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [displayStr.toLowerCase()]: func })
+    @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [displayStr.toLowerCase()]: [func, {}] })
     return
 
   # (UUID) => Object[String]
@@ -445,8 +456,11 @@ class window.SessionLite
     out = {}
 
     if roleName? and who?
-      for k, v of @_monitorFuncs[roleName]
-        out[k] = v(who)
+      for k, [func, lastValues] of @_monitorFuncs[roleName]
+        newValue = func(who)
+        if lastValues[who] isnt newValue
+          lastValues[who] = newValue
+          out[k] = newValue
 
     out
 
@@ -466,21 +480,49 @@ class window.SessionLite
       if window.isHNWHost is true
 
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
-        plotUpdates = @widgetController.getPlotUpdates()
+        plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? ???
+
+        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdates }, @_lastBCastTicks)
+        if Object.keys(broadUpdate).length > 0
+          for _, wind of @_subscriberObj
+            if wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
+              wind.postMessage({ update: broadUpdate, type: "nlw-state-update" }, "*")
 
         for uuid, wind of @_subscriberObj
           monitorUpdates = @monitorsFor(uuid)
-          if monitorUpdates.length > 0 or plotUpdates.length > 0 or viewUpdates.length > 0 or ticks?
-            update  = { widgetUpdates: [], monitorUpdates, plotUpdates, ticks, viewUpdates }
+          update = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
+          if Object.keys(update).length > 0
             if wind isnt null
               wind.postMessage({ update, type: "nlw-state-update" }, "*")
             else
               narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
+        @_lastBCastTicks = ticks
+
       else if window.isHNWJoiner is true
         goodWTypes    = ["slider", "switch", "input", "chooser"]
         widgetUpdates = @_getWidgetUpdates(@widgetController.widgets()).filter((wup) -> wup.type in goodWTypes)
-        for _, _ of @_subscriberObj # Huh?! ???
-          widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup)))
+        widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup))) # Scope this better to individual clients
 
     return
+
+  # (PlotsUpdate) => PlotsUpdate
+  _prunePlotsUpdate: (plotsUpdate) ->
+    out = {}
+    Object.entries(plotsUpdate).forEach(([plotName, updates]) -> if updates.length > 0 then out[plotName] = updates)
+    out
+
+  # (HNWUpdate, Number) => SparseHNWUpdate
+  _pruneUpdate: ({ widgetUpdates = {}, monitorUpdates = {}, plotUpdates = {}, ticks, viewUpdates = {} }, lastTicks) ->
+
+    retainIff = (cond, key, value) -> if cond then { [key]: value } else {}
+
+    prunedPlots = @_prunePlotsUpdate(plotUpdates)
+
+    widgetObj  = retainIff((widgetUpdates).length > 0, "widgetUpdates" , widgetUpdates)
+    monitorObj = retainIff(Object.keys(monitorUpdates).length > 0, "monitorUpdates", monitorUpdates)
+    plotObj    = retainIff(Object.keys(prunedPlots).length > 0, "plotUpdates"   , prunedPlots)
+    ticksObj   = retainIff(ticks? and ticks isnt lastTicks            , "ticks"         , ticks)
+    viewObj    = retainIff((viewUpdates).length > 0, "viewUpdates"   , viewUpdates)
+
+    Object.assign({}, widgetObj, monitorObj, plotObj, ticksObj, viewObj)
