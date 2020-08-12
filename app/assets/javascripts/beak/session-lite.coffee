@@ -421,7 +421,7 @@ class window.SessionLite
           when "hnwChooser"
             { type: "chooser", varName: w.variable, value: w.currentValue }
           when "hnwInputBox"
-            console.log("Hey, input", w)
+            { type: "inputBox", varName: w.variable, value: w.currentValue }
           when "hnwMonitor"
             { id: w.display, type: "monitor", value: w.currentValue }
           when "hnwOutput"

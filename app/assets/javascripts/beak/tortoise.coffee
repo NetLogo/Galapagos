@@ -190,7 +190,7 @@ world.ticker._updateFunc = function() {};
       varInit =
         adaptedWidgets.
           filter((w) -> w.type in ["hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"]).
-          map((w) -> "world.observer.setGlobal('#{w.variable}', #{w.default ? w.on ? ("'" + w.choices[w.currentChoice] + "'")});").
+          map((w) -> "world.observer.setGlobal('#{w.variable}', #{w.default ? w.on ? w.boxedValue?.value ? ("'" + w.choices[w.currentChoice] + "'")});").
           reduce(((acc, x) -> "#{acc}\n#{x}"), "")
 
       model =
