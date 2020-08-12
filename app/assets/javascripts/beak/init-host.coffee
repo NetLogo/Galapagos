@@ -143,6 +143,9 @@ setUpEventListeners = ->
       when "relay"
         window.postMessage(e.data.payload, "*")
 
+      when "hnw-fatal-error"
+        window.parent.postMessage(e.data, "*")
+
       when "hnw-request-initial-state"
 
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')

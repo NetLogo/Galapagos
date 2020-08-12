@@ -143,9 +143,22 @@ setUpEventListeners = ->
             session.widgetController.applyMonitorUpdates(monitorUpdates)
 
           if viewUpdates?
+
             vc = session.widgetController.viewController
-            viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
-            vc.repaint()
+
+            allAgentsAreKnown =
+              viewUpdates.every(
+                ({ turtles, patches, links }) ->
+                  Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?) and
+                  Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?) and
+                  Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
+              )
+
+            if allAgentsAreKnown
+              viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
+              vc.repaint()
+            else
+              parent.postMessage({ type: "hnw-fatal-error", subtype: "unknown-agent" }, "*")
 
       when "hnw-widget-update"
         if (e.data.event.type is "ticksStarted")
