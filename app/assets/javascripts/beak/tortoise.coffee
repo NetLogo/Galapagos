@@ -175,8 +175,7 @@ loadHubNetWeb = (container, role, view, callback) ->
               w
         )
 
-      code = """var AgentModel = new (tortoise_require('agentmodel'))();
-var Updater = new (tortoise_require('engine/updater'))((x) => x);
+      code = """var Updater = new (tortoise_require('engine/updater'))((x) => x);
 var world = {};
 world.observer = {}
 var __hnwGlobals = {};
