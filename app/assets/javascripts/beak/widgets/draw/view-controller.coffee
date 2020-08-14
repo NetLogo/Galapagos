@@ -81,13 +81,15 @@ class window.ViewController
     @spotlightDrawer.repaint(@model)
     @view.repaint(@model)
 
+  # (Update|Array[Update]) => Unit
   applyUpdate: (modelUpdate) ->
-    @model.update(modelUpdate)
+    updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
+    @model.update(u) for u in updates
+    return
 
   # (Update|Array[Update]) => Unit
   update: (modelUpdate) ->
-    updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
-    @applyUpdate(u) for u in updates
+    @applyUpdate(modelUpdate)
     @repaint()
     return
 
