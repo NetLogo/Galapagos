@@ -88,13 +88,17 @@ class ViewController
     @spotlightDrawer.repaint(@model)
     @view.repaint(@model)
 
+  # (Update|Array[Update]) => Unit
   applyUpdate: (modelUpdate) ->
-    @model.update(modelUpdate)
-
-  update: (modelUpdate) ->
     updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
-    @applyUpdate(u) for u in updates
+    @model.update(u) for u in updates
+    return
+
+  # (Update|Array[Update]) => Unit
+  update: (modelUpdate) ->
+    @applyUpdate(modelUpdate)
     @repaint()
+    return
 
 
 # Perspective constants:
@@ -260,6 +264,7 @@ class View
       @centerY = @worldCenterY
       @visibleCtx.drawImage(@canvas, 0, 0)
     @_handleZoom()
+    return
 
   # A very naïve and unaesthetic implementation!
   # I'm just throwing this together for a janky `hubnet-send-follow`.
