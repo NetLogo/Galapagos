@@ -167,8 +167,8 @@ setUpEventListeners = ->
         # NOTE
         if role.onConnect?
           procedures[role.onConnect.toUpperCase()]()
-        world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
-        session.updateWithoutRendering()
+          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
+          session.updateWithoutRendering(e.data.token)
 
         # NOTE
         monitorUpdates = session.monitorsFor(e.data.token)
@@ -333,8 +333,8 @@ setUpEventListeners = ->
           # NOTE
           if role.onConnect?
             procedures[role.onConnect.toUpperCase()]()
-          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", "the supervisor")), false)
-          session.updateWithoutRendering()
+            world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", "the supervisor")), false)
+            session.updateWithoutRendering(uuid)
 
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
@@ -401,8 +401,8 @@ setUpEventListeners = ->
           # NOTE
           if role.onConnect?
             procedures[role.onConnect.toUpperCase()]()
-          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
-          session.updateWithoutRendering()
+            world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
+            session.updateWithoutRendering(uuid)
 
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)

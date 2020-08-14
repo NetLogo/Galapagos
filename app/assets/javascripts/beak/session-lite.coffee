@@ -464,13 +464,13 @@ class window.SessionLite
 
     out
 
-  # () => Unit
-  updateWithoutRendering: ->
-    @_performUpdate(true, false)
+  # (String) => Unit
+  updateWithoutRendering: (uuidToIgnore) ->
+    @_performUpdate(true, false, uuidToIgnore)
     return
 
-  # (Boolean, Boolean) => Unit
-  _performUpdate: (isFullUpdate, shouldRepaint) ->
+  # (Boolean, Boolean, String) => Unit
+  _performUpdate: (isFullUpdate, shouldRepaint, uuidToIgnore) ->
 
     viewUpdates =
       if isFullUpdate and Updater.hasUpdates()
@@ -492,18 +492,19 @@ class window.SessionLite
 
         broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdates }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0
-          for _, wind of @_subscriberObj
-            if wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
+          for uuid, wind of @_subscriberObj
+            if uuid isnt uuidToIgnore and wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
               wind.postMessage({ update: broadUpdate, type: "nlw-state-update" }, "*")
 
         for uuid, wind of @_subscriberObj
-          monitorUpdates = @monitorsFor(uuid)
-          update = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
-          if Object.keys(update).length > 0
-            if wind isnt null
-              wind.postMessage({ update, type: "nlw-state-update" }, "*")
-            else
-              narrowcastHNWPayload(uuid, "nlw-state-update", { update })
+          if uuid isnt uuidToIgnore
+            monitorUpdates = @monitorsFor(uuid)
+            update = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
+            if Object.keys(update).length > 0
+              if wind isnt null
+                wind.postMessage({ update, type: "nlw-state-update" }, "*")
+              else
+                narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
         @_lastBCastTicks = ticks
 
