@@ -123,6 +123,10 @@ setUpEventListeners = ->
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
       when "nlw-subscribe-to-updates"
         session.subscribe(e.source)
+
+      when "hnw-are-you-ready-for-interface"
+        e.source.postMessage({ type: "yes-i-am-ready-for-interface" }, "*")
+
       when "nlw-state-update", "nlw-apply-update"
 
         if session?
