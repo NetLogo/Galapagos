@@ -164,7 +164,8 @@ setUpEventListeners = ->
           }
 
         # NOTE
-        procedures[role.onConnect.toUpperCase()]()
+        if role.onConnect?
+          procedures[role.onConnect.toUpperCase()]()
         world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
 
         # NOTE
@@ -389,7 +390,8 @@ setUpEventListeners = ->
             }
 
           # NOTE
-          procedures[role.onConnect.toUpperCase()]()
+          if role.onConnect?
+            procedures[role.onConnect.toUpperCase()]()
           world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
 
           # NOTE
