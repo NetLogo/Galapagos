@@ -119,6 +119,7 @@ setUpEventListeners = ->
         update = session.getModelState(myRole)
         e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
       when "nlw-request-view"
+        base64 = session.widgetController.viewController.repaint()
         base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
       when "nlw-subscribe-to-updates"
