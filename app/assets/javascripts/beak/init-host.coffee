@@ -328,6 +328,12 @@ setUpEventListeners = ->
             , window:   wind
             }
 
+          # NOTE
+          if role.onConnect?
+            procedures[role.onConnect.toUpperCase()]()
+          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", "the supervisor")), false)
+
+          # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
           supervisorFrame.contentWindow.postMessage({
