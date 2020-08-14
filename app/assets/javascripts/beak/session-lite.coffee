@@ -464,8 +464,13 @@ class window.SessionLite
 
     out
 
-  # (Boolean) => Unit
-  _performUpdate: (isFullUpdate) ->
+  # () => Unit
+  updateWithoutRendering: ->
+    @_performUpdate(true, false)
+    return
+
+  # (Boolean, Boolean) => Unit
+  _performUpdate: (isFullUpdate, shouldRepaint) ->
 
     viewUpdates =
       if isFullUpdate and Updater.hasUpdates()
@@ -473,7 +478,10 @@ class window.SessionLite
       else
         []
 
-    @widgetController.redraw(viewUpdates)
+    @widgetController.viewController.applyUpdate(viewUpdates)
+
+    if shouldRepaint
+      @widgetController.viewController.repaint()
 
     if Object.keys(@_subscriberObj).length > 0
 
