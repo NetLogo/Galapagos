@@ -8,7 +8,7 @@ class window.NLWAlerter
   display: (title, dismissable, content) ->
 
     @_alertWindow.querySelector("#alert-title").innerHTML = title
-    @_alertWindow.querySelector("#alert-message").innerHTML = content
+    @_alertWindow.querySelector("#alert-message").innerHTML = content.replace(/(?:\n)/g, "<br>")
 
     if @_isStandalone
       @_alertWindow.querySelector(".standalone-text").style.display = ''
