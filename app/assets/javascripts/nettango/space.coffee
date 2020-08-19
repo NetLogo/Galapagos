@@ -9,15 +9,16 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 window.RactiveSpace = Ractive.extend({
 
   data: () -> {
-    playMode:      false, # Boolean
-    codeIsDirty:   false, # Boolean
-    space:         null,  # NetTangoSpace
-    netLogoCode:   "",    # String
-    blockEditForm: null,  # RactiveBlockForm
-    confirmDialog: null,  # RactiveConfirmDialog
-    showJson:      false, # Boolean
-    popupMenu:     null   # RactivePopupMenu
-    blockStyles:   null   # NetTangoBlockStyles
+    playMode:       false, # Boolean
+    codeIsDirty:    false, # Boolean
+    space:          null,  # NetTangoSpace
+    netLogoCode:    "",    # String
+    blockEditForm:  null,  # RactiveBlockForm
+    confirmDialog:  null,  # RactiveConfirmDialog
+    showJson:       false, # Boolean
+    manualDefsJson: '',    # String
+    popupMenu:      null,  # RactivePopupMenu
+    blockStyles:    null   # NetTangoBlockStyles
   }
 
   on: {
@@ -34,6 +35,40 @@ window.RactiveSpace = Ractive.extend({
         return
       , { defer: true, strict: true, init: false }
       )
+
+      config = {
+        mode: { name: 'javascript', json: true },
+        theme: 'netlogo-default',
+        lineNumbers: true,
+        value: @get('space.defsJson'),
+        fixedGutter: true
+      }
+      element = @find("##{@get('space.spaceId')}-json")
+      editor = new CodeMirror(element, config)
+
+      editor.on('change', () =>
+        manualDefsJson = editor.getValue()
+        @set('manualDefsJson', manualDefsJson)
+        currentDefsJson = @get('space.defsJson')
+        @set("space.defsJsonChanged", currentDefsJson isnt manualDefsJson)
+        return
+      )
+
+      showHandler = (newValue) =>
+        if (newValue)
+          editor.refresh()
+          editor.focus()
+        return
+      @observe('showJson', showHandler, { defer: true })
+
+      setHandler = (newValue) =>
+        if (newValue is undefined or newValue is null) then return
+        manualDefsJson = editor.getValue()
+        if (manualDefsJson isnt newValue)
+          editor.setValue(newValue)
+        return
+      @observe('space.defsJson', setHandler)
+
       return
 
     # (Context, NetTangoSpace) => Boolean
@@ -53,14 +88,14 @@ window.RactiveSpace = Ractive.extend({
     '*.ntb-delete-block': (_, blockIndex) ->
       space = @get('space')
       @splice("space.defs.blocks", blockIndex, 1)
-      @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
 
     # (Context, NetTangoSpace) => Unit
     'ntb-apply-json-to-space': (_, space) ->
       try
-        newDefs = JSON.parse(space.defsJson)
+        manualDefsJson = @get('manualDefsJson')
+        newDefs = JSON.parse(manualDefsJson)
       catch ex
         # coffeelint: disable=max_line_length
         messages = [
@@ -72,14 +107,8 @@ window.RactiveSpace = Ractive.extend({
         return
 
       @set("space.defs", newDefs)
+      @set("space.defsJsonChanged", false)
       @updateNetTango(space, false)
-      return
-
-    # (Context, NetTangoSpace) => Unit
-    'ntb-space-json-change': (_, space) ->
-      oldDefsJson = JSON.stringify(space.defs, null, '  ')
-      if (oldDefsJson isnt space.defsJson)
-        @set("space.defsJsonChanged", true)
       return
 
     # (Context) => Unit
@@ -105,7 +134,6 @@ window.RactiveSpace = Ractive.extend({
     '*.ntb-block-added': (_, block) ->
       space = @get('space')
       @push("space.defs.blocks", block)
-      @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
 
@@ -120,7 +148,6 @@ window.RactiveSpace = Ractive.extend({
     '*.ntb-block-updated': (_, block, blockIndex) ->
       space = @get('space')
       space.defs.blocks[blockIndex] = block
-      @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
 
@@ -131,7 +158,6 @@ window.RactiveSpace = Ractive.extend({
         swap = space.defs.blocks[blockIndex - 1]
         space.defs.blocks[blockIndex - 1] = space.defs.blocks[blockIndex]
         space.defs.blocks[blockIndex] = swap
-        @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
         @updateNetTango(space, true)
       return
 
@@ -142,7 +168,6 @@ window.RactiveSpace = Ractive.extend({
         swap = space.defs.blocks[blockIndex + 1]
         space.defs.blocks[blockIndex + 1] = space.defs.blocks[blockIndex]
         space.defs.blocks[blockIndex] = swap
-        @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
         @updateNetTango(space, true)
       return
 
@@ -152,7 +177,6 @@ window.RactiveSpace = Ractive.extend({
       original = space.defs.blocks[blockIndex]
       copy = NetTangoBlockDefaults.copyBlock(original)
       @push("space.defs.blocks", copy)
-      @set("space.defsJson", JSON.stringify(space.defs, null, '  '))
       @updateNetTango(space, true)
       return
 
@@ -412,19 +436,14 @@ window.RactiveSpace = Ractive.extend({
 
         <label class="ntb-toggle-block" >
           <input id="info-toggle" type="checkbox" checked="{{ showJson }}" />
-          <div>{{# showJson }}▲{{else}}▼{{/}} Block Definition JSON</div>
+          <div>{{# showJson }}▲{{else}}▼{{/}} Block Space Definition</div>
         </label>
 
-        {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply JSON to Space</button>{{/ showJson }}
+        {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply Definition to Space</button>{{/ showJson }}
 
       </div>
 
-      {{# showJson }}
-
-      <textarea id="{{ spaceId }}-json" class="ntb-block-def-json" value="{{ defsJson }}" on-change-keyup-paste="[ 'ntb-space-json-change',
-       this ]" />
-
-      {{/ showJson }}
+      <div id="{{ spaceId }}-json" {{# !showJson }}style="display: none;"{{/ !showJson }} class="ntb-block-def-json" />
 
       {{/ !playMode }}
 

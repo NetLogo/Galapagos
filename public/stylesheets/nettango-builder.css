@@ -56,9 +56,13 @@ body#ntp-body, html#ntp-body {
   min-height: 16em;
   margin: 0.5em;
   background: #fcfcfc;
-  padding: 0.7em;
-  border-radius: 3px;
-  border-color: #bbb;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  overflow: hidden;
+}
+
+.ntb-block-def-json > .CodeMirror > .CodeMirror-scroll {
+  max-height: 24em;
 }
 
 .ntb-block-defs-list {
@@ -331,7 +335,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-code {
-  border-radius: 3px;
+  border-radius: 6px;
   background: #fcfcfc;
   padding: 0.7em;
   border-color: #bbb;
