@@ -10,7 +10,6 @@ window.RactiveBlockPreview = EditForm.extend({
 
     # (Context) => Unit
     'render': (_) ->
-      console.log("block-preview render")
       block = @get("block")
 
       if not block.id?
