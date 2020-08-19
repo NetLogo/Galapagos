@@ -51,7 +51,7 @@ body#ntp-body, html#ntp-body {
   background: #fff;
 }
 
-.ntb-block-def-json {
+.ntb-json {
   resize: vertical;
   min-height: 16em;
   margin: 0.5em;
@@ -61,7 +61,7 @@ body#ntp-body, html#ntp-body {
   overflow: hidden;
 }
 
-.ntb-block-def-json > .CodeMirror > .CodeMirror-scroll {
+.ntb-json > .CodeMirror > .CodeMirror-scroll {
   max-height: 24em;
 }
 

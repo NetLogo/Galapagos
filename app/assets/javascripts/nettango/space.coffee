@@ -9,16 +9,15 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 window.RactiveSpace = Ractive.extend({
 
   data: () -> {
-    playMode:       false, # Boolean
-    codeIsDirty:    false, # Boolean
-    space:          null,  # NetTangoSpace
-    netLogoCode:    "",    # String
-    blockEditForm:  null,  # RactiveBlockForm
-    confirmDialog:  null,  # RactiveConfirmDialog
-    showJson:       false, # Boolean
-    manualDefsJson: '',    # String
-    popupMenu:      null,  # RactivePopupMenu
-    blockStyles:    null   # NetTangoBlockStyles
+    playMode:      false, # Boolean
+    codeIsDirty:   false, # Boolean
+    space:         null,  # NetTangoSpace
+    netLogoCode:   "",    # String
+    defsJson:      "",    # String
+    blockEditForm: null,  # RactiveBlockForm
+    confirmDialog: null,  # RactiveConfirmDialog
+    popupMenu:     null,  # RactivePopupMenu
+    blockStyles:   null   # NetTangoBlockStyles
   }
 
   on: {
@@ -35,39 +34,6 @@ window.RactiveSpace = Ractive.extend({
         return
       , { defer: true, strict: true, init: false }
       )
-
-      config = {
-        mode: { name: 'javascript', json: true },
-        theme: 'netlogo-default',
-        lineNumbers: true,
-        value: @get('space.defsJson'),
-        fixedGutter: true
-      }
-      element = @find("##{@get('space.spaceId')}-json")
-      editor = new CodeMirror(element, config)
-
-      editor.on('change', () =>
-        manualDefsJson = editor.getValue()
-        @set('manualDefsJson', manualDefsJson)
-        currentDefsJson = @get('space.defsJson')
-        @set("space.defsJsonChanged", currentDefsJson isnt manualDefsJson)
-        return
-      )
-
-      showHandler = (newValue) =>
-        if (newValue)
-          editor.refresh()
-          editor.focus()
-        return
-      @observe('showJson', showHandler, { defer: true })
-
-      setHandler = (newValue) =>
-        if (newValue is undefined or newValue is null) then return
-        manualDefsJson = editor.getValue()
-        if (manualDefsJson isnt newValue)
-          editor.setValue(newValue)
-        return
-      @observe('space.defsJson', setHandler)
 
       return
 
@@ -92,10 +58,9 @@ window.RactiveSpace = Ractive.extend({
       return
 
     # (Context, NetTangoSpace) => Unit
-    'ntb-apply-json-to-space': (_, space) ->
+    '*.ntb-apply-json-to-space': (_, newJson) ->
       try
-        manualDefsJson = @get('manualDefsJson')
-        newDefs = JSON.parse(manualDefsJson)
+        newDefs = JSON.parse(newJson)
       catch ex
         # coffeelint: disable=max_line_length
         messages = [
@@ -107,7 +72,7 @@ window.RactiveSpace = Ractive.extend({
         return
 
       @set("space.defs", newDefs)
-      @set("space.defsJsonChanged", false)
+      space = @get('space')
       @updateNetTango(space, false)
       return
 
@@ -209,8 +174,8 @@ window.RactiveSpace = Ractive.extend({
       return
 
     netTangoData = NetTango.save(containerId)
-    @set("space.defs",     netTangoData)
-    @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
+    @set("space.defs", netTangoData)
+    @set("defsJson",   JSON.stringify(netTangoData, null, '  '))
 
     containerId = @getNetTangoContainerId(space)
     @setSpaceNetLogo(space, containerId)
@@ -300,8 +265,8 @@ window.RactiveSpace = Ractive.extend({
   saveNetTango: (containerId) ->
     if not containerId then containerId = @getNetTangoContainerId()
     netTangoData = NetTango.save(containerId)
-    @set("space.defs",     netTangoData)
-    @set("space.defsJson", JSON.stringify(netTangoData, null, '  '))
+    @set("space.defs", netTangoData)
+    @set("defsJson",   JSON.stringify(netTangoData, null, '  '))
     return
 
   # (NetTangoSpace, Boolean) => Unit
@@ -389,6 +354,7 @@ window.RactiveSpace = Ractive.extend({
     return
 
   components: {
+    jsonEditor: RactiveJsonEditor
     labeledInput: RactiveTwoWayLabeledInput
   }
 
@@ -396,6 +362,7 @@ window.RactiveSpace = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     {{# space }}
+
     <div class="ntb-block-def">
 
       <div class="ntb-space-title-bar" >
@@ -432,18 +399,7 @@ window.RactiveSpace = Ractive.extend({
 
       {{# !playMode }}
 
-      <div class="ntb-block-defs-controls">
-
-        <label class="ntb-toggle-block" >
-          <input id="info-toggle" type="checkbox" checked="{{ showJson }}" />
-          <div>{{# showJson }}▲{{else}}▼{{/}} Block Space Definition</div>
-        </label>
-
-        {{# showJson }}<button class="ntb-button" type="button" on-click="[ 'ntb-apply-json-to-space', this ]"{{# !defsJsonChanged }} disabled{{/}}>Apply Definition to Space</button>{{/ showJson }}
-
-      </div>
-
-      <div id="{{ spaceId }}-json" {{# !showJson }}style="display: none;"{{/ !showJson }} class="ntb-block-def-json" />
+      <jsonEditor id="{{ spaceId }}-json" json={{ defsJson }} />
 
       {{/ !playMode }}
 

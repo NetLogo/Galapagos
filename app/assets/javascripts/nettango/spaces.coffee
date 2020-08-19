@@ -69,7 +69,6 @@ window.RactiveSpaces = Ractive.extend({
       copy      = NetTangoBlockDefaults.copyBlock(original)
 
       toSpace.defs.blocks.push(copy)
-      toSpace.defsJson = JSON.stringify(toSpace.defs, null, '  ')
 
       @updateNetTango()
       return
@@ -122,8 +121,6 @@ window.RactiveSpaces = Ractive.extend({
       , width:           430
       , height:          500
       , defs:            defs
-      , defsJson:        JSON.stringify(defs, null, '  ')
-      , defsJsonChanged: false
     }
     for propName in [ 'name', 'width', 'height' ]
       if(spaceVals.hasOwnProperty(propName))
