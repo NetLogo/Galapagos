@@ -385,9 +385,16 @@ body#ntp-body, html#ntp-body {
   flex: 1;
 }
 
-.ntb-flex-column-code > .netlogo-code,
-.ntb-flex-column-code > .netlogo-code > .CodeMirror {
+.ntb-code-mirror {
+  border: 1px solid black;
   border-radius: 3px;
+  overflow: hidden;
+}
+
+.ntb-code-mirror > .CodeMirror {
+  resize: vertical;
+  min-height: 1.5em;
+  font-size: 16px;
 }
 
 .ntb-input {
@@ -400,23 +407,21 @@ body#ntp-body, html#ntp-body {
   box-sizing: border-box;
 }
 
-.ntb-code-input {
-  font-family: monospace;
-  border-radius: 3px;
+.ntb-code-input-big > .CodeMirror {
+  height: 4em;
 }
 
-.ntb-flex-column-code > label,
+.ntb-code-input > .CodeMirror {
+  height: 1.5em;
+}
+
+.ntb-flex-column > label,
 .ntb-flex-column .widget-edit-input-label {
   align-items: flex-start;
   text-align: left;
   margin-left: 12px;
   font-size: 12px;
-}
-
-.ntb-flex-column-code .CodeMirror {
-  resize: vertical;
-  overflow: auto !important;
-  min-height: 4em;
+  white-space: nowrap;
 }
 
 .ntb-flex-column > .widget-edit-dropdown {
@@ -439,6 +444,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-form-row {
   align-items: center;
+  align-content: stretch;
 }
 
 #ntb-components {

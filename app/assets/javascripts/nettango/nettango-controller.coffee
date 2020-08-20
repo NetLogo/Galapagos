@@ -20,6 +20,7 @@ class window.NetTangoController
     # If you have custom components that will be needed inside partial templates loaded dynamically at runtime
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
     Ractive.components.attribute    = RactiveAttribute
+    Ractive.components.codeMirror   = RactiveCodeMirror
     Ractive.components.labeledInput = RactiveTwoWayLabeledInput
 
     @ractive.on('*.ntb-recompile',      (_, code)               => @recompileNetLogo(code))

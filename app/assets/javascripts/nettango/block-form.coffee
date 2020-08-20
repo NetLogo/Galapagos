@@ -36,11 +36,25 @@ window.RactiveBlockForm = EditForm.extend({
             <labeledInput name="action" type="text" value="{{ action }}" labelStr="Display name"
               divClass="ntb-flex-column" class="ntb-input" />
 
-            <labeledInput name="open" type="text" value="{{ open }}" labelStr="Start code format (blank for default)"
-              divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+            <div class="ntb-flex-column">
+              <label for="block-{{ id }}-clause-{{ number }}-open">Start code format (default is `[`)</label>
+              <codeMirror
+                id="block-{{ id }}-clause-{{ number }}-open"
+                mode="netlogo"
+                code={{ open }}
+                extraClasses="['ntb-code-input']"
+              />
+            </div>
 
-            <labeledInput name="close" type="text" value="{{ close }}" labelStr="End code format (blank for default)"
-              divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+            <div class="ntb-flex-column">
+              <label for="block-{{ id }}-clause-{{ number }}-close">End code format (default is `]`)</label>
+              <codeMirror
+                id="block-{{ id }}-clause-{{ number }}-close"
+                mode="netlogo"
+                code={{ close }}
+                extraClasses="['ntb-code-input']"
+              />
+            </div>
 
           </div>
         </div>
@@ -52,9 +66,15 @@ window.RactiveBlockForm = EditForm.extend({
       <div class="flex-column">
         <div class="flex-row ntb-form-row">
 
-          <labeledInput name="closeClauses" type="text" value="{{ closeClauses }}"
-            labelStr="Code format to insert after all clauses"
-            divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+          <div class="ntb-flex-column">
+            <label for="block-{{ id }}-close-clauses">Code format to insert after all clauses</label>
+            <codeMirror
+              id="block-{{ id }}-close-clauses"
+              mode="netlogo"
+              code={{ closeClauses }}
+              extraClasses="['ntb-code-input']"
+            />
+          </div>
 
         </div>
       </div>
@@ -210,8 +230,8 @@ window.RactiveBlockForm = EditForm.extend({
     , arrayView:    RactiveArrayView
     , attribute:    RactiveAttribute
     , blockStyle:   RactiveBlockStyleSettings
+    , codeMirror:   RactiveCodeMirror
     , dropdown:     RactiveTwoWayDropdown
-    , formCode:     RactiveEditFormMultilineCode
     , labeledInput: RactiveTwoWayLabeledInput
     , spacer:       RactiveEditFormSpacer
     , preview:      RactiveBlockPreview
@@ -244,8 +264,14 @@ window.RactiveBlockForm = EditForm.extend({
 
         </div>
 
-        <div class="ntb-flex-column-code">
-          <formCode id="block-{{ id }}-format" name="source" value="{{ format }}" label="NetLogo code format (use {#} for parameter, {P#} for property)" />
+        <div class="ntb-flex-column">
+          <label for="block-{{ id }}-format">NetLogo code format (use {#} for parameter, {P#} for property)</label>
+          <codeMirror
+            id="block-{{ id }}-format"
+            mode="netlogo"
+            code={{ format }}
+            extraClasses="['ntb-code-input-big']"
+          />
         </div>
 
         <div class="flex-row ntb-form-row">
@@ -261,9 +287,15 @@ window.RactiveBlockForm = EditForm.extend({
             labelStr="Make this the final block in a chain"
             divClass="ntb-flex-column" class="ntb-input" />
 
-          <labeledInput id="block-{{ id }}-close" name="close" type="text" value="{{ closeStarter }}"
-            labelStr="Code format to insert after all attached blocks (default is `end`)"
-            divClass="ntb-flex-column" class="ntb-input ntb-code-input" />
+          <div class="ntb-flex-column">
+            <label for="block-{{ id }}-close">Code format to insert after all attached blocks (default is `end`)</label>
+            <codeMirror
+              id="block-{{ id }}-close"
+              mode="netlogo"
+              code={{ closeStarter }}
+              extraClasses="['ntb-code-input']"
+            />
+          </div>
 
         </div>
         {{/}}
