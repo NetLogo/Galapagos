@@ -74,6 +74,7 @@ window.RactiveSpace = Ractive.extend({
       @set("space.defs", newDefs)
       space = @get('space')
       @updateNetTango(space, false)
+      @fire('ntb-space-changed')
       return
 
     # (Context) => Unit
