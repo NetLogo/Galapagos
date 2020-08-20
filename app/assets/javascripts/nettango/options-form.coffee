@@ -44,7 +44,10 @@ window.RactiveOptionsForm = EditForm.extend({
 
   twoway: true
 
-  components: { blockStyle:  RactiveBlockStyleSettings }
+  components: {
+    blockStyle: RactiveBlockStyleSettings
+    codeMirror: RactiveCodeMirror
+  }
 
   partials: {
 
@@ -109,7 +112,12 @@ window.RactiveOptionsForm = EditForm.extend({
         <label for="ntb-extra-css">Extra CSS to include</label>
       </div>
 
-      <textarea id="ntb-extra-css" class="ntb-code" type="text" value="{{ extraCss }}" ></textarea>
+      <codeMirror
+        id="ntb-extra-css"
+        mode="css"
+        code="{{ extraCss }}"
+        extraClasses="['ntb-code']"
+      />
 
       {{/ options }}
       """

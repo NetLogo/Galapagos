@@ -145,6 +145,7 @@ window.RactiveSpaces = Ractive.extend({
   components: {
     tangoSpace:    RactiveSpace
     blockEditForm: RactiveBlockForm
+    codeMirror:    RactiveCodeMirror
   }
 
   template:
@@ -165,9 +166,16 @@ window.RactiveSpaces = Ractive.extend({
         />
       {{/spaces }}
     </div>
+
     {{#if showCode }}
     <label for="ntb-code">NetLogo Code</label>
-    <textarea id="ntb-code" class="ntb-code ntb-code-large" readOnly>{{ code }}</textarea>
+    <codeMirror
+      id="ntb-code"
+      mode="netlogo"
+      code="{{ code }}"
+      config="{ readOnly: 'nocursor' }"
+      extraClasses="[ 'ntb-code', 'ntb-code-large', 'ntb-code-readonly' ]"
+    />
     {{/if showCode }}
     """
     # coffeelint: enable=max_line_length

@@ -337,13 +337,17 @@ body#ntp-body, html#ntp-body {
 .ntb-code {
   border-radius: 6px;
   background: #fcfcfc;
-  padding: 0.7em;
-  border-color: #bbb;
+  border: 1px solid #bbb;
   min-height: 8em;
   width: 90%;
   margin: 0 auto;
   display: block;
   resize: vertical;
+  overflow: hidden;
+}
+
+.ntb-code > .CodeMirror {
+  background: #fcfcfc;
 }
 
 .ntb-code-large {
@@ -351,7 +355,8 @@ body#ntp-body, html#ntp-body {
   width: 98%;
 }
 
-.ntb-code:read-only {
+.ntb-code-readonly,
+.ntb-code-readonly > .CodeMirror {
   background: #eee;
 }
 

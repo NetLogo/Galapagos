@@ -88,7 +88,7 @@ window.RactiveBlockPreview = EditForm.extend({
     return
 
   components: {
-
+    codeMirror: RactiveCodeMirror
   }
 
   template:
@@ -97,7 +97,13 @@ window.RactiveBlockPreview = EditForm.extend({
 
     <div>Preview</div>
 
-    <textarea id="ntb-block-preview-code" class="ntb-code" readOnly>{{ code }}</textarea>
+    <codeMirror
+      id="ntb-block-preview-code"
+      mode="netlogo"
+      code="{{ code }}"
+      config="{ readOnly: 'nocursor' }"
+      extraClasses="[ 'ntb-code', 'ntb-code-readonly' ]"
+    />
 
     <div id="ntb-block-preview" class="ntb-canvas">
       <div id="ntb-block-preview-canvas" />

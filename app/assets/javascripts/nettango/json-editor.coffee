@@ -1,51 +1,13 @@
 window.RactiveJsonEditor = Ractive.extend({
   data: () -> {
     id:      ""    # String
-    show:    false # Boolean
     json:    ""    # String
-    newJson: ""    # String
+    show:    false # Boolean
     isDirty: false # Boolean
   }
 
-  on: {
-
-    # (Context) => Unit
-    'render': (_) ->
-      config = {
-        mode: { name: 'javascript', json: true },
-        theme: 'netlogo-default',
-        lineNumbers: true,
-        value: @get('json'),
-        fixedGutter: true
-      }
-      element = @find("##{@get('id')}")
-      editor = new CodeMirror(element, config)
-
-      editor.on('change', () =>
-        newJson = editor.getValue()
-        @set('newJson', newJson)
-        json = @get('json')
-        @set('isDirty', json isnt newJson)
-        return
-      )
-
-      showHandler = (newValue) =>
-        if (newValue)
-          editor.refresh()
-          editor.focus()
-        return
-      @observe('show', showHandler, { defer: true })
-
-      setHandler = (newValue) =>
-        if (newValue is undefined or newValue is null) then return
-        @set('isDirty', false)
-        newJson = editor.getValue()
-        if (newJson isnt newValue)
-          editor.setValue(newValue)
-        return
-      @observe('json', setHandler)
-
-      return
+  components: {
+    codeMirror: RactiveCodeMirror
   }
 
   template:
@@ -59,7 +21,7 @@ window.RactiveJsonEditor = Ractive.extend({
 
       {{# show }}
       <button class="ntb-button" type="button"
-        on-click="[ 'ntb-apply-json-to-space', newJson ]"
+        on-click="[ 'ntb-apply-json-to-space', json ]"
         {{# !isDirty }} disabled{{/}}>
         Apply Definition to Space
       </button>
@@ -67,7 +29,16 @@ window.RactiveJsonEditor = Ractive.extend({
 
     </div>
 
-    <div id={{ id }} class="ntb-json" {{# !show }}style="display: none;"{{/ !show }} />
+    {{# show }}
+    <codeMirror
+      id={{ id }}
+      mode="json"
+      code={{ json }}
+      config="{ lineNumbers: true, fixedGutter: true }"
+      extraClasses="[ 'ntb-json' ]"
+      isDirty={{ isDirty }}
+    />
+    {{/ show }}
     """
 
 })
