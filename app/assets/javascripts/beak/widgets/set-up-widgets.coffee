@@ -73,7 +73,10 @@ window.setUpButton = (updateUI) -> (source, destination) ->
               updateUI()
         else
           () ->
-            task()
+            try task()
+            catch ex
+              if not ex instanceof Exception.HaltInterrupt
+                throw ex
             updateUI()
       do (wrappedTask) ->
         destination.run = wrappedTask
