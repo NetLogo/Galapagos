@@ -97,10 +97,12 @@ scrapeRoutes ++= Seq(
   "/robots.txt",
   "/standalone",
   "/launch",
+  "/web",
+  "/nettango-builder",
+  "/nettango-player",
+  "/nettango-player-standalone",
   "/ntango-build",
-  "/ntango-play",
-  "/ntango-play-standalone",
-  "/web"
+  "/ntango-play"
   )
 
 scrapeDelay := 120

@@ -329,7 +329,7 @@ class window.NetTangoController
 
     # Else target is 'standalone' - JMB August 2018
     parser      = new DOMParser()
-    ntPlayer    = new Request('./ntango-play-standalone')
+    ntPlayer    = new Request('./nettango-player-standalone')
     playerFetch = fetch(ntPlayer).then( (ntResp) ->
       if (not ntResp.ok)
         throw Error(ntResp)

@@ -20,10 +20,17 @@ GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 
+# NetTango redirects
+GET         /ntango-build                       controllers.Assets.at(path="/public", file="/pages/ntango-build-redirect.html")
+# Leaving this route in place for now in case anyone has hot-linked to the player page.  An HTML redirect would break things for them.
+# Maybe monitor the AWS stats and remove it if we don't see acitivity here for a bit?
+# -Jeremy B August 2020
+GET         /ntango-play                        controllers.Local.netTangoBuilder(themed: Boolean = false, standalone: Boolean = false)
+
 # NetTango
-GET         /ntango-build                       controllers.Local.ntangoBuild(themed: Boolean = true,  standalone: Boolean = false)
-GET         /ntango-play                        controllers.Local.ntangoBuild(themed: Boolean = false, standalone: Boolean = false)
-GET         /ntango-play-standalone             controllers.Local.ntangoBuild(themed: Boolean = false, standalone: Boolean = true)
+GET         /nettango-builder                   controllers.Local.netTangoBuilder(themed: Boolean = true,  standalone: Boolean = false)
+GET         /nettango-player                    controllers.Local.netTangoBuilder(themed: Boolean = false, standalone: Boolean = false)
+GET         /nettango-player-standalone         controllers.Local.netTangoBuilder(themed: Boolean = false, standalone: Boolean = true)
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL
