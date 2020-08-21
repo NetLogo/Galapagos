@@ -111,6 +111,7 @@ window.RactiveButton = RactiveWidget.extend({
   eventTriggers: ->
     {
       buttonKind: [@_weg.recompile]
+    ,    forever: [@_weg.recompile]
     ,     source: [@_weg.recompile]
     }
 
