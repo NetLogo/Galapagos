@@ -150,7 +150,7 @@ setUpEventListeners = ->
       when "hnw-request-initial-state"
 
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
-        role      = roles.find((r) -> r.name is e.data.roleName)
+        role      = roles[e.data.roleName]
 
         session.subscribeWithID(null, e.data.token)
 
@@ -194,7 +194,7 @@ setUpEventListeners = ->
 
         token  = e.data.token
         client = window.clients[token]
-        role   = roles.find((r) -> r.name is client.roleName)
+        role   = roles[client.roleName]
         who    = client.who
 
         switch e.data.data.type
@@ -275,7 +275,8 @@ setUpEventListeners = ->
 
           'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
 
-        roles = e.data.roles
+        roles = {}
+        e.data.roles.forEach((role) -> roles[role.name] = role)
 
         for role in roles
           for widget in role.widgets
@@ -321,7 +322,7 @@ setUpEventListeners = ->
         supervisorFrame.addEventListener('load', ->
 
           uuid = genUUID()
-          role = roles[1]
+          role = Object.values(roles)[1]
 
           wind = supervisorFrame.contentWindow
 
@@ -381,7 +382,7 @@ setUpEventListeners = ->
             'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
 
           uuid = genUUID()
-          role = e.data.roles[0]
+          role = Object.values(roles)[0]
           # NOTE
 
           wind = studentFrame.contentWindow
