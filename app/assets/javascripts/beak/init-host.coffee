@@ -223,6 +223,25 @@ setUpEventListeners = ->
           else
             console.warn("Unknown HNW widget event type")
 
+      when "hnw-notify-disconnect"
+
+        id                = e.data.joinerID
+        { roleName, who } = window.clients[id]
+        onDC              = roles[roleName].onDisconnect
+
+        delete window.clients[id]
+        session.unsubscribe(id)
+
+        turtle = world.turtleManager.getTurtle(who)
+
+        if onDC?
+          turtle.ask((-> procedures[onDC.toUpperCase()]()), false)
+
+        if not turtle.isDead()
+          turtle.ask((-> SelfManager.self().die()), false)
+
+        session.updateWithoutRendering("")
+
       when "hnw-become-oracle"
 
         loadModel(e.data.nlogo, "Jason's Experimental Funland")

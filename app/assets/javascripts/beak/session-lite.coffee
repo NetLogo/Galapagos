@@ -379,6 +379,11 @@ class window.SessionLite
     @_subscriberObj[id] = wind
     return
 
+  # (String) => Unit
+  unsubscribe: (id) ->
+    delete @_subscriberObj[id]
+    return
+
   # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
   getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
