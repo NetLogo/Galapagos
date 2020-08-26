@@ -312,14 +312,14 @@ setUpEventListeners = ->
                   when "procedure"
                     do (monitor) -> safely(-> procedures[monitor.source.toUpperCase()]())
                   when "turtle-var"
-                    plural = world.breedManager.getSingular(role.name).name
+                    plural = world.breedManager.getSingular(roleName).name
                     do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).getVariable(monitor.source))
                   when "turtle-procedure"
-                    plural = world.breedManager.getSingular(role.name).name
+                    plural = world.breedManager.getSingular(roleName).name
                     do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(procedures[monitor.source.toUpperCase()]))
                   else
                     console.log("We got '#{monitor.reporterStyle}'?")
-              session.registerMonitorFunc(role.name, monitor.display, func)
+              session.registerMonitorFunc(roleName, monitor.display, func)
 
         supervisorFrame     = document.createElement("iframe")
         supervisorFrame.id  = "hnw-join-frame"
