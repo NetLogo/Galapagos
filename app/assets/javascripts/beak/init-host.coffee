@@ -297,7 +297,7 @@ setUpEventListeners = ->
         roles = {}
         e.data.roles.forEach((role) -> roles[role.name] = role)
 
-        for role in roles
+        for roleName, role of roles
           for widget in role.widgets
             if widget.type is "hnwMonitor"
               monitor = widget
