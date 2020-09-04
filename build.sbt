@@ -1,4 +1,5 @@
 import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
+import scala.sys.process.Process
 
 name := "Galapagos"
 
@@ -45,6 +46,31 @@ resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
 resolvers += Resolver.bintrayRepo("netlogo", "NetLogoHeadless")
 
 unmanagedResourceDirectories in Assets += baseDirectory.value / "node_modules"
+
+lazy val nodeModules = Def.task[File] {
+  baseDirectory.value / "node_modules"
+}
+
+lazy val yarnIntegrity = Def.task[File] {
+  baseDirectory.value / "node_modules" / ".yarn-integrity"
+}
+
+lazy val packageJson = Def.task[File] {
+  baseDirectory.value / "package.json"
+}
+
+lazy val yarnInstall = taskKey[Unit]("Runs `yarn install` from within SBT")
+yarnInstall := {
+  val log = streams.value.log
+  val nodeDirectory = nodeModules.value
+  val nodeExists = nodeDirectory.exists && nodeDirectory.isDirectory && nodeDirectory.list.length > 0
+  val integrityFile = yarnIntegrity.value
+  if (!nodeExists || !integrityFile.exists || integrityFile.olderThan(packageJson.value))
+    Process(Seq("yarn", "install", "--ignore-optional"), baseDirectory.value).!(log)
+  ()
+}
+
+(compile in Compile) := ((compile in Compile).dependsOn(yarnInstall)).value
 
 // Used in Prod
 pipelineStages ++= Seq(digest)
