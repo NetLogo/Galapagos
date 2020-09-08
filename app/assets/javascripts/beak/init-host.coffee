@@ -225,22 +225,25 @@ setUpEventListeners = ->
 
       when "hnw-notify-disconnect"
 
-        id                = e.data.joinerID
-        { roleName, who } = window.clients[id]
-        onDC              = roles[roleName].onDisconnect
+        id = e.data.joinerID
 
-        delete window.clients[id]
-        session.unsubscribe(id)
+        if window.clients[id]?
 
-        turtle = world.turtleManager.getTurtle(who)
+          { roleName, who } = window.clients[id]
+          onDC              = roles[roleName].onDisconnect
 
-        if onDC?
-          turtle.ask((-> procedures[onDC.toUpperCase()]()), false)
+          delete window.clients[id]
+          session.unsubscribe(id)
 
-        if not turtle.isDead()
-          turtle.ask((-> SelfManager.self().die()), false)
+          turtle = world.turtleManager.getTurtle(who)
 
-        session.updateWithoutRendering("")
+          if onDC?
+            turtle.ask((-> procedures[onDC.toUpperCase()]()), false)
+
+          if not turtle.isDead()
+            turtle.ask((-> SelfManager.self().die()), false)
+
+          session.updateWithoutRendering("")
 
       when "hnw-become-oracle"
 
