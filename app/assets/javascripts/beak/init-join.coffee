@@ -113,11 +113,6 @@ setUpEventListeners = ->
 
         sendHNWMessage("interface-loaded", null)
 
-      when "nlw-open-new"
-        session?.teardown()
-        window.nlwAlerter.hide()
-        activeContainer = loadingOverlay
-        Tortoise.fromNlogo(exports.newModel, modelContainer, "NewModel", openSession, displayError)
       when "nlw-update-model-state"
         session.widgetController.setCode(e.data.codeTabContents)
       when "nlw-request-model-state"
