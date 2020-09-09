@@ -114,9 +114,15 @@ setUpEventListeners = ->
         update = session.getModelState("")
         e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
       when "nlw-request-view"
-        base64 = session.widgetController.viewController.repaint()
-        base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
-        e.source.postMessage({ base64, type: "nlw-view" }, "*")
+
+        respondWithView =
+          ->
+            base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
+            e.source.postMessage({ base64, type: "nlw-view" }, "*")
+
+        session.widgetController.viewController.repaint()
+        setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
+
       when "nlw-subscribe-to-updates"
         if not window.clients[e.data.uuid]?
           window.clients[e.data.uuid] = {}
