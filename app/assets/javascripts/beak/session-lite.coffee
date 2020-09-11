@@ -9,22 +9,6 @@ REDRAW_EXP           = 2
 
 NETLOGO_VERSION      = '2.7.3'
 
-codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
-  compileParams = {
-    code:         code,
-    widgets:      widgets,
-    commands:     commands,
-    reporters:    reporters,
-    turtleShapes: turtleShapes ? [],
-    linkShapes:   linkShapes ? []
-  }
-  try
-    onFulfilled((new BrowserCompiler()).fromModel(compileParams))
-  catch ex
-    onErrors([ex])
-  finally
-    Tortoise.finishLoading()
-
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari
 # doesn't support it. BCH 10/3/2014
@@ -41,23 +25,17 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
-  # (Element|String, Array[Rewriter], Array[Widget],
+  # (Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
   #   String, String, Boolean, String, String, Boolean, (String) => Unit)
-  constructor: (container, @rewriters, widgets,
+  constructor: (container, @compiler, @rewriters, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
-
-    checkIsReporter =
-      (str) =>
-        rewritten      = @rewriteCode(@widgetController.code())
-        compileRequest = { code: rewritten, widgets: @widgetController.widgets() }
-        (new BrowserCompiler()).isReporter(str, compileRequest)
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
     @_lastUpdate       = 0
     @drawEveryFrame    = false
 
-    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter)
+    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
     @widgetController.ractive.on('*.recompile'     , (_, callback)       => @recompile(callback))
     @widgetController.ractive.on('*.recompile-lite', (_, callback)       => @recompileLite(callback))
     @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
@@ -161,6 +139,22 @@ class window.SessionLite
       newErrors
     @rewriters.reduce(rewriter, errors)
 
+  codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors) ->
+    compileParams = {
+      code:         code,
+      widgets:      widgets,
+      commands:     commands,
+      reporters:    reporters,
+      turtleShapes: turtleShapes ? [],
+      linkShapes:   linkShapes ? []
+    }
+    try
+      onFulfilled(@compiler.fromModel(compileParams))
+    catch ex
+      onErrors([ex])
+    finally
+      Tortoise.finishLoading()
+
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
@@ -196,14 +190,14 @@ class window.SessionLite
           @alertCompileError(errors)
 
     Tortoise.startLoading(=>
-      codeCompile(
+      @codeCompile(
         rewritten, extraCommands, [], oldWidgets, onCompile,
         (result) => @alertCompileError(result, @alertErrors)
       )
     )
 
   getNlogo: ->
-    (new BrowserCompiler()).exportNlogo({
+    @compiler.exportNlogo({
       info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
       code:         @rewriteExport(@widgetController.code()),
       widgets:      @widgetController.widgets(),
@@ -281,7 +275,7 @@ class window.SessionLite
     { pipeline                 } = tortoise_require('brazier/function')
 
     rewritten = @rewriteCode(@widgetController.code())
-    result    = (new BrowserCompiler()).fromModel({ code: rewritten, widgets: @widgetController.widgets()
+    result    = @compiler.fromModel({ code: rewritten, widgets: @widgetController.widgets()
                                                , commands: [setupCode, goCode]
                                                , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
                                                , turtleShapes: [], linkShapes: []
@@ -326,7 +320,7 @@ class window.SessionLite
       errors = @rewriteErrors(code, rewritten, result)
       @alertCompileError(errors, errorLog)
 
-    codeCompile(rewritten, [code], [], @widgetController.widgets(),
+    @codeCompile(rewritten, [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
         if modelSuccess
           [{ result, success }] = commands
@@ -358,7 +352,7 @@ class window.SessionLite
       turtleShapes: turtleShapes ? [],
       linkShapes:   linkShapes ? []
     }
-    compileResult = (new BrowserCompiler()).fromModel(compileParams)
+    compileResult = @compiler.fromModel(compileParams)
 
     { reporters, model: { result: modelResult, success: modelSuccess } } = compileResult
     if not modelSuccess

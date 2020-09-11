@@ -73,8 +73,8 @@ genDialogConfig = (viewController) ->
     yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
 
-# (Ractive, ViewController) => ImportExportConfig
-genImportExportConfig = (ractive, viewController) ->
+# (Ractive, ViewController, BrowserCompiler) => ImportExportConfig
+genImportExportConfig = (ractive, viewController, compiler) ->
   {
 
     exportFile: (contents) -> (filename) ->
@@ -87,7 +87,7 @@ genImportExportConfig = (ractive, viewController) ->
     getNlogo: ->
 
       { result, success } =
-        (new BrowserCompiler()).exportNlogo({
+        compiler.exportNlogo({
           info:         Tortoise.toNetLogoMarkdown(ractive.get('info')),
           code:         ractive.get('code'),
           widgets:      (v for _, v of ractive.get('widgetObj')),
@@ -237,8 +237,8 @@ genWorldConfig = (ractive) ->
       return
   }
 
-# (Ractive, ViewController, Element) => Configs
-window.genConfigs = (ractive, viewController, container) ->
+# (Ractive, ViewController, Element, BrowserCompiler) => Configs
+window.genConfigs = (ractive, viewController, container, compiler) ->
 
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
@@ -246,7 +246,7 @@ window.genConfigs = (ractive, viewController, container) ->
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
   , base64ToImageData: window.synchroDecoder
   , dialog:            genDialogConfig(viewController)
-  , importExport:      genImportExportConfig(ractive, viewController)
+  , importExport:      genImportExportConfig(ractive, viewController, compiler)
   , inspection:        genInspectionConfig()
   , io:                genIOConfig(ractive)
   , mouse:             genMouseConfig(viewController)

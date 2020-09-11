@@ -1,5 +1,5 @@
-# (Element|String, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => WidgetController
-window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
+# (Element|String, Array[Widget], String, String, Boolean, String, String, BrowserCompiler) => WidgetController
+window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compiler) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -16,7 +16,7 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
 
   window.setUpWidgets(widgets, updateUI)
 
-  ractive = window.generateRactiveSkeleton(container, widgets, code, info, isReadOnly, filename, checkIsReporter)
+  ractive = window.generateRactiveSkeleton(container, widgets, code, info, isReadOnly, filename, (code) -> compiler.isReporter(code))
 
   container.querySelector('.netlogo-model').focus()
 
@@ -28,7 +28,7 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
   entwineDimensions(viewModel, viewController.model.world)
   entwine([[viewModel, "fontSize"], [viewController.view, "fontSize"]], viewModel.fontSize)
 
-  configs    = window.genConfigs(ractive, viewController, container)
+  configs    = window.genConfigs(ractive, viewController, container, compiler)
   controller = new WidgetController(ractive, viewController, configs)
 
   window.controlEventTraffic(controller)

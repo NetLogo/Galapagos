@@ -42,14 +42,14 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
         onSuccess(req.responseText)
   req.send("")
 
-# newSession: String|DomElement, Array[Rewriter], ModelResult,
+# newSession: String|DomElement, BrowserCompiler, Array[Rewriter], ModelResult,
 #   Boolean, String => SessionLite
-newSession = (container, rewriters, modelResult,
+newSession = (container, compiler, rewriters, modelResult,
   readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(container, rewriters, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
+  new SessionLite(container, compiler, rewriters, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->
@@ -65,9 +65,9 @@ loadData = (container, pathOrURL, name, loader, onError) ->
     name
   }
 
-openSession = (load, rewriters) -> (model, lastCompileFailed) ->
+openSession = (load, compiler, rewriters) -> (model, lastCompileFailed) ->
   name    = load.name ? normalizedFileName(load.modelPath)
-  session = newSession(load.container, rewriters, model, false, name, lastCompileFailed, load.onError)
+  session = newSession(load.container, compiler, rewriters, model, false, name, lastCompileFailed, load.onError)
   load.loader.finish()
   session
 
@@ -128,13 +128,15 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
   )
 
 handleCompilation = (nlogo, callback, load, rewriters) ->
+  compiler = new BrowserCompiler()
+
   onSuccess = (input, lastCompileFailed) ->
-    callback(openSession(load, rewriters)(input, lastCompileFailed))
+    callback(openSession(load, compiler, rewriters)(input, lastCompileFailed))
     input.commands.forEach((c) -> if c.success then (new Function(c.result))())
     rewriters.forEach((rw) -> rw.compileComplete?())
+
   onFailure = reportCompilerError(load)
 
-  compiler       = (new BrowserCompiler())
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
