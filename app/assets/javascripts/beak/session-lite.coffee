@@ -315,25 +315,28 @@ class window.SessionLite
   run: (code, errorLog) ->
 
     Tortoise.startLoading()
-    rewritten = @rewriteCode(@widgetController.code())
-    compileErrorLog = (result) =>
-      errors = @rewriteErrors(code, rewritten, result)
-      @alertCompileError(errors, errorLog)
 
-    @codeCompile(rewritten, [code], [], @widgetController.widgets(),
-      ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
-        if modelSuccess
-          [{ result, success }] = commands
-          if (success)
-            try window.handlingErrors(new Function(result))(errorLog)
-            catch ex
-              if not (ex instanceof Exception.HaltInterrupt)
-                throw ex
-          else
-            compileErrorLog(result)
-        else
-          compileErrorLog(modelResult)
-    , compileErrorLog)
+    compileErrorLog = (result) =>
+      @alertCompileError(result, errorLog)
+
+    commandResult = @compiler.compileCommand(code)
+
+    { result, success } = commandResult
+    if not success
+      compileErrorLog(result)
+      Tortoise.finishLoading()
+      return
+
+    command = new Function(result)
+    try
+      window.handlingErrors(command)(errorLog)
+    catch ex
+      if not (ex instanceof Exception.HaltInterrupt)
+        throw ex
+    finally
+      Tortoise.finishLoading()
+
+    return
 
   # (String, (String, Array[{ message: String}]) => String) =>
   #  { success: true, value: Any } | { success: false, error: String }
@@ -343,23 +346,9 @@ class window.SessionLite
       console.error(message)
       message
 
-    rewritten = @rewriteCode(@widgetController.code())
-    compileParams = {
-      code:         rewritten,
-      widgets:      @widgetController.widgets(),
-      commands:     [],
-      reporters:    [code],
-      turtleShapes: turtleShapes ? [],
-      linkShapes:   linkShapes ? []
-    }
-    compileResult = @compiler.fromModel(compileParams)
+    result = @compiler.compileReporter(code)
 
-    { reporters, model: { result: modelResult, success: modelSuccess } } = compileResult
-    if not modelSuccess
-      message = errorLog("Compiler error", modelResult)
-      return { success: false, error: message }
-
-    [{ result, success }] = reporters
+    { result, success } = reporterResult
     if not success
       message = errorLog("Reporter error", result)
       return { success: false, error: message }
