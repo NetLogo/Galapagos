@@ -139,22 +139,6 @@ class window.SessionLite
       newErrors
     @rewriters.reduce(rewriter, errors)
 
-  codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors) ->
-    compileParams = {
-      code:         code,
-      widgets:      widgets,
-      commands:     commands,
-      reporters:    reporters,
-      turtleShapes: turtleShapes ? [],
-      linkShapes:   linkShapes ? []
-    }
-    try
-      onFulfilled(@compiler.fromModel(compileParams))
-    catch ex
-      onErrors([ex])
-    finally
-      Tortoise.finishLoading()
-
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
@@ -163,9 +147,19 @@ class window.SessionLite
     rewritten     = @rewriteCode(code)
     extraCommands = @rewriterCommands()
 
-    onCompile =
-      (res) =>
+    compileParams = {
+      code:         rewritten,
+      widgets:      oldWidgets,
+      commands:     extraCommands,
+      reporters:    [],
+      turtleShapes: turtleShapes ? [],
+      linkShapes:   linkShapes ? []
+    }
 
+    Tortoise.startLoading(=>
+
+      try
+        res = @compiler.fromModel(compileParams)
         if res.model.success
 
           state = world.exportState()
@@ -189,12 +183,16 @@ class window.SessionLite
           errors = @rewriteErrors(code, rewritten, res.model.result)
           @alertCompileError(errors)
 
-    Tortoise.startLoading(=>
-      @codeCompile(
-        rewritten, extraCommands, [], oldWidgets, onCompile,
-        (result) => @alertCompileError(result, @alertErrors)
-      )
+      catch ex
+        @alertCompileError([ex], @alertErrors)
+
+      finally
+        Tortoise.finishLoading()
+
+      return
     )
+
+    return
 
   getNlogo: ->
     @compiler.exportNlogo({
