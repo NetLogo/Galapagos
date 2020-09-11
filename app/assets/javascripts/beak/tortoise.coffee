@@ -49,7 +49,19 @@ newSession = (container, compiler, rewriters, modelResult,
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(container, compiler, rewriters, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
+  new SessionLite(
+      container
+    , compiler
+    , rewriters
+    , widgets
+    , code
+    , info
+    , readOnly
+    , filename
+    , result
+    , lastCompileFailed
+    , onError
+  )
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->

@@ -16,7 +16,15 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
 
   window.setUpWidgets(widgets, updateUI)
 
-  ractive = window.generateRactiveSkeleton(container, widgets, code, info, isReadOnly, filename, (code) -> compiler.isReporter(code))
+  ractive = window.generateRactiveSkeleton(
+      container
+    , widgets
+    , code
+    , info
+    , isReadOnly
+    , filename
+    , (code) -> compiler.isReporter(code)
+  )
 
   container.querySelector('.netlogo-model').focus()
 
