@@ -312,8 +312,6 @@ class window.SessionLite
   # (String, (Array[String]) => Unit) => Unit
   run: (code, errorLog) ->
 
-    Tortoise.startLoading()
-
     compileErrorLog = (result) =>
       @alertCompileError(result, errorLog)
 
@@ -322,7 +320,6 @@ class window.SessionLite
     { result, success } = commandResult
     if not success
       compileErrorLog(result)
-      Tortoise.finishLoading()
       return
 
     command = new Function(result)
@@ -331,8 +328,6 @@ class window.SessionLite
     catch ex
       if not (ex instanceof Exception.HaltInterrupt)
         throw ex
-    finally
-      Tortoise.finishLoading()
 
     return
 
