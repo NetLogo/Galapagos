@@ -4,8 +4,9 @@ window.RactiveBlockForm = EditForm.extend({
     spaceName:   undefined # String
     block:       undefined # NetTangoBlock
     blockIndex:  undefined # Integer
-    submitEvent: undefined # String
+    knownTags:   []        # Array[String]
     showStyles:  false     # Boolean
+    submitEvent: undefined # String
 
     attributeTemplate:
       """
@@ -186,10 +187,12 @@ window.RactiveBlockForm = EditForm.extend({
       when 'Command or Control'
         block.required  = false
         block.placement = NetTango.blockPlacementOptions.child
+        block.tags      = blockValues.tags ? []
 
       else
         block.required  = blockValues.required  ? false
         block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.child
+        block.tags      = blockValues.tags ? []
 
     block.clauses    = @processClauses(blockValues.clauses ? [])
     block.params     = @processAttributes(blockValues.params)
@@ -233,8 +236,9 @@ window.RactiveBlockForm = EditForm.extend({
     , codeMirror:   RactiveCodeMirror
     , dropdown:     RactiveTwoWayDropdown
     , labeledInput: RactiveTwoWayLabeledInput
-    , spacer:       RactiveEditFormSpacer
     , preview:      RactiveBlockPreview
+    , spacer:       RactiveEditFormSpacer
+    , tagsControl:  RactiveTags
   }
 
   partials: {
@@ -280,25 +284,27 @@ window.RactiveBlockForm = EditForm.extend({
             divClass="ntb-flex-column" class="ntb-input" />
         </div>
 
-        {{# builderType !== 'Command or Control' }}
-        <div class="flex-row ntb-form-row">
+        {{# builderType === 'Command or Control' }}
+          <tagsControl tags={{ tags }} knownTags={{ knownTags }} />
+        {{else}}
+          <div class="flex-row ntb-form-row">
 
-          <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
-            labelStr="Make this the final block in a chain"
-            divClass="ntb-flex-column" class="ntb-input" />
+            <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
+              labelStr="Make this the final block in a chain"
+              divClass="ntb-flex-column" class="ntb-input" />
 
-          <div class="ntb-flex-column">
-            <label for="block-{{ id }}-close">Code format to insert after all attached blocks (default is `end`)</label>
-            <codeMirror
-              id="block-{{ id }}-close"
-              mode="netlogo"
-              code={{ closeStarter }}
-              extraClasses="['ntb-code-input']"
-            />
+            <div class="ntb-flex-column">
+              <label for="block-{{ id }}-close">Code format to insert after all attached blocks (default is `end`)</label>
+              <codeMirror
+                id="block-{{ id }}-close"
+                mode="netlogo"
+                code={{ closeStarter }}
+                extraClasses="['ntb-code-input']"
+              />
+            </div>
+
           </div>
-
-        </div>
-        {{/}}
+        {{/if}}
 
         <arrayView
           id="block-{{ id }}-parameters"
