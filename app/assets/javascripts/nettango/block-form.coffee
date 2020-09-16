@@ -1,12 +1,13 @@
 window.RactiveBlockForm = EditForm.extend({
 
   data: () -> {
-    spaceName:   undefined # String
-    block:       undefined # NetTangoBlock
-    blockIndex:  undefined # Integer
-    knownTags:   []        # Array[String]
-    showStyles:  false     # Boolean
-    submitEvent: undefined # String
+    spaceName:      undefined # String
+    block:          undefined # NetTangoBlock
+    blockIndex:     undefined # Integer
+    blockKnownTags: []        # Array[String]
+    knownTags:      []        # Array[String]
+    showStyles:     false     # Boolean
+    submitEvent:    undefined # String
 
     attributeTemplate:
       """
@@ -94,7 +95,14 @@ window.RactiveBlockForm = EditForm.extend({
     # (Context) => Unit
     'submit': (_) ->
       target = @get('target')
-      target.fire(@get('submitEvent'), {}, @getBlock(), @get('blockIndex'))
+      # the user could've added a bunch of new known tags, but not wound up using them,
+      # so ignore any that were not actually applied to the block - Jeremy B September 2020
+      block          = @getBlock()
+      blockKnownTags = @get('blockKnownTags')
+      knownTags      = @get('knownTags')
+      newKnownTags   = blockKnownTags.filter( (t) -> block.tags.includes(t) and not knownTags.includes(t) )
+      @push('knownTags', ...newKnownTags)
+      target.fire(@get('submitEvent'), {}, block, @get('blockIndex'))
       return
 
     '*.code-changed': (_, code) ->
@@ -153,12 +161,13 @@ window.RactiveBlockForm = EditForm.extend({
   # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
   show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
     @_setBlock(block)
-    @set(     'target', target)
-    @set(  'spaceName', spaceName)
-    @set( 'blockIndex', blockIndex)
-    @set('submitLabel', submitLabel)
-    @set('cancelLabel', cancelLabel)
-    @set('submitEvent', submitEvent)
+    @set('blockKnownTags', @get('knownTags').slice(0))
+    @set(        'target', target)
+    @set(     'spaceName', spaceName)
+    @set(    'blockIndex', blockIndex)
+    @set(   'submitLabel', submitLabel)
+    @set(   'cancelLabel', cancelLabel)
+    @set(   'submitEvent', submitEvent)
 
     @fire('show-yourself')
     return
@@ -285,7 +294,7 @@ window.RactiveBlockForm = EditForm.extend({
         </div>
 
         {{# builderType === 'Command or Control' }}
-          <tagsControl tags={{ tags }} knownTags={{ knownTags }} />
+          <tagsControl tags={{ tags }} knownTags={{ blockKnownTags }} />
         {{else}}
           <div class="flex-row ntb-form-row">
 
