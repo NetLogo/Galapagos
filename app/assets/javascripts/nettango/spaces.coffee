@@ -5,6 +5,7 @@ window.RactiveSpaces = Ractive.extend({
     blockStyles:      undefined # NetTangoBlockStyles
     codeIsDirty:      false     # Boolean
     confirmDialog:    null      # RactiveConfirmDialog
+    knownTags:        []        # Array[String]
     lastCompiledCode: ""        # String
     playMode:         false     # Boolean
     popupMenu:        null      # RactivePopupMenu
@@ -151,7 +152,13 @@ window.RactiveSpaces = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <blockEditForm idBasis="ntb-block" parentClass="ntb-builder" verticalOffset="10" blockStyles={{ blockStyles }} />
+    <blockEditForm
+      idBasis="ntb-block"
+      parentClass="ntb-builder"
+      verticalOffset="10"
+      blockStyles={{ blockStyles }}
+      knownTags={{ knownTags }}
+    />
 
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}

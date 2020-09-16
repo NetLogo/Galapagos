@@ -36,6 +36,7 @@ window.RactiveBuilder = Ractive.extend({
     canRedo:       false     # Boolean
     canUndo:       false     # Boolean
     confirmDialog: undefined # RactiveConfirmDialog
+    knownTags:     []        # Array[String]
     newModel:      undefined # String
     playMode:      false     # Boolean
     popupMenu:     undefined # RactivePopupMenu
@@ -344,6 +345,49 @@ window.RactiveBuilder = Ractive.extend({
 
     newCss.join('\n')
 
+  # (Array[String], Array[String]) -> Unit
+  pushUnique: (values, newValues) ->
+    newValues.forEach( (v) ->
+      if not values.includes(v)
+        values.push(v)
+      return
+    )
+    return
+
+  # (Array[NetTangoClause]) -> Array[String]
+  getTagsFromClauses: (clauses) ->
+    clauses.flatMap( (c) ->
+      if (c.allowedTags? and c.allowedTags.type is 'any-of') then c.allowedTags.tags else []
+    )
+
+  # (Array[NetTangoBlock]) -> Array[String]
+  getTagsFromBlocks: (blocks) ->
+    blocks.flatMap( (b) =>
+      blockTags   = b.tags ? []
+      allowedTags = if (b.allowedTags? and b.allowedTags.type is 'any-of') then b.allowedTags.tags else []
+      clauseTags  = @getTagsFromClauses(b.clauses ? [])
+      blockTags.concat(allowedTags).concat(clauseTags)
+    )
+
+  # () -> Array[String]
+  getTagsForBreeds: () ->
+    return []
+
+  # (NetTangoProject, Array[NetTangoSpace]) -> Array[String]
+  initializeKnownTags: (project, spaces) ->
+    # The project can have its own tags, even some that may not be used on blocks...
+    knownTags = project["knownTags"] ? []
+
+    # but it's possible there are tags on the blocks that somehow weren't included (manual edits?)
+    blockTags = spaces.flatMap( (s) => @getTagsFromBlocks(s.defs.blocks) )
+    @pushUnique(knownTags, blockTags)
+
+    # and maybe the breeds weren't properly included (old version or manual edits?)
+    breedTags = @getTagsForBreeds()
+    @pushUnique(knownTags, breedTags)
+
+    knownTags
+
   # (NetTangoProject) => Unit
   load: (project) ->
     # Make sure styles are loaded first, as when spaces are added
@@ -360,6 +404,9 @@ window.RactiveBuilder = Ractive.extend({
     for spaceVals in (project.spaces ? [])
       defsComponent.createSpace(spaceVals)
     defsComponent.updateCode()
+
+    knownTags = @initializeKnownTags(project, defsComponent.get('spaces'))
+    @set('knownTags', knownTags)
 
     tabOptions = @get('tabOptions')
     for key, prop of (project.tabOptions ? { })
@@ -425,6 +472,7 @@ window.RactiveBuilder = Ractive.extend({
           popupMenu={{ popupMenu }}
           confirmDialog={{ confirmDialog }}
           blockStyles={{ blockStyles }}
+          knownTags={{ knownTags }}
           showCode={{ netTangoToggles.showCode.checked }}
           />
 
