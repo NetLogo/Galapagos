@@ -1,4 +1,4 @@
-window.RactiveBlockPreview = EditForm.extend({
+window.RactiveBlockPreview = Ractive.extend({
 
   data: () -> {
     block:       undefined # NetTangoBlock
