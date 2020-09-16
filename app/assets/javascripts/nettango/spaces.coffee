@@ -1,15 +1,15 @@
 window.RactiveSpaces = Ractive.extend({
 
   data: () -> {
-    playMode:         false,    # Boolean
-    spaces:           [],       # Array[NetTangoSpace]
-    lastCompiledCode: "",       # String
-    codeIsDirty:      false,    # Boolean
-    showCode:         true,     # Boolean
-    popupMenu:        null,     # RactivePopupMenu
-    blockEditForm:    null,     # RactiveBlockForm
-    confirmDialog:    null,     # RactiveConfirmDialog
+    blockEditForm:    null      # RactiveBlockForm
     blockStyles:      undefined # NetTangoBlockStyles
+    codeIsDirty:      false     # Boolean
+    confirmDialog:    null      # RactiveConfirmDialog
+    lastCompiledCode: ""        # String
+    playMode:         false     # Boolean
+    popupMenu:        null      # RactivePopupMenu
+    showCode:         true      # Boolean
+    spaces:           []        # Array[NetTangoSpace]
   }
 
   on: {

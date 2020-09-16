@@ -9,15 +9,15 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 window.RactiveSpace = Ractive.extend({
 
   data: () -> {
-    playMode:      false, # Boolean
-    codeIsDirty:   false, # Boolean
-    space:         null,  # NetTangoSpace
-    netLogoCode:   "",    # String
-    defsJson:      "",    # String
-    blockEditForm: null,  # RactiveBlockForm
-    confirmDialog: null,  # RactiveConfirmDialog
-    popupMenu:     null,  # RactivePopupMenu
-    blockStyles:   null   # NetTangoBlockStyles
+    blockEditForm: null  # RactiveBlockForm
+    blockStyles:   null  # NetTangoBlockStyles
+    codeIsDirty:   false # Boolean
+    confirmDialog: null  # RactiveConfirmDialog
+    defsJson:      ""    # String
+    netLogoCode:   ""    # String
+    playMode:      false # Boolean
+    popupMenu:     null  # RactivePopupMenu
+    space:         null  # NetTangoSpace
   }
 
   on: {

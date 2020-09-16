@@ -33,13 +33,14 @@ getBlockStyleDefaults = (style) ->
 window.RactiveBuilder = Ractive.extend({
 
   data: () -> {
-    playMode:        false         # Boolean
-    runtimeMode:     "dev"         # String
-    newModel:        undefined     # String
-    popupMenu:       undefined     # RactivePopupMenu
-    confirmDialog:   undefined     # RactiveConfirmDialog
-    canUndo:         false         # Boolean
-    canRedo:         false         # Boolean
+    canRedo:       false     # Boolean
+    canUndo:       false     # Boolean
+    confirmDialog: undefined # RactiveConfirmDialog
+    newModel:      undefined # String
+    playMode:      false     # Boolean
+    popupMenu:     undefined # RactivePopupMenu
+    runtimeMode:   "dev"     # String
+
     blockEditor: {
       show:        false           # Boolean
       spaceNumber: undefined       # Integer
