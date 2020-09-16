@@ -34,7 +34,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-page',    (_)                     => @exportProject('standalone'))
     @ractive.on('*.ntb-export-json',    (_)                     => @exportProject('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.exportModel())
+    @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.getSession().exportNlogo())
     @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
     @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
     @ractive.on('*.ntb-load-sample-project', () =>
@@ -43,8 +43,9 @@ class window.NetTangoController
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
       if (@isDebugMode) then console.log("Running:", command)
-      if (@theOutsideWorld.sessionReady())
-        @theOutsideWorld.getWidgetController().ractive.fire("run", command, errorLog))
+      session = @theOutsideWorld.getSession()
+      if (session?)
+        session.widgetController.ractive.fire("run", command, errorLog))
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode) ->
@@ -111,7 +112,7 @@ class window.NetTangoController
   # NetLogo will compile
   # () => String
   getRewrittenCode: () ->
-    code = @theOutsideWorld.getWidgetController().code()
+    code = @theOutsideWorld.getSession().widgetController.code()
     @rewriter.rewriteNetLogoCode(code)
 
   # () => Unit
@@ -130,13 +131,14 @@ class window.NetTangoController
       project.code = NetTangoRewriter.removeOldNetTangoCode(project.code)
     @builder.load(project)
     if (project.netLogoSettings?.isVertical?)
-      window.session.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
+      session = @theOutsideWorld.getSession()
+      session.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
     @resetUndoStack()
     @actionSource = "user"
     return
 
   # () => Unit
-  onModelLoad: (projectUrl) =>
+  start: (projectUrl) =>
     @builder = @ractive.findComponent('tangoBuilder')
     progress = @storage.inProgress
 
@@ -190,7 +192,7 @@ class window.NetTangoController
       return
 
     @enableRecompileOverlay()
-    widgetController = @theOutsideWorld.getWidgetController()
+    widgetController = @theOutsideWorld.getSession().widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
     @spaceChangeListener?()
@@ -198,7 +200,7 @@ class window.NetTangoController
 
   # () => Unit
   recompileNetLogo: () ->
-    widgetController = @theOutsideWorld.getWidgetController()
+    widgetController = @theOutsideWorld.getSession().widgetController
     @hideRecompileOverlay()
     widgetController.ractive.fire('recompile', () =>
       widgets = widgetController.ractive.get('widgetObj')
@@ -245,16 +247,16 @@ class window.NetTangoController
 
   # () => NetTangoProject
   getProject: () ->
-    title = @theOutsideWorld.getModelTitle()
-
-    modelCodeMaybe = @theOutsideWorld.getModelCode()
+    session        = @theOutsideWorld.getSession()
+    title          = session.modelTitle()
+    modelCodeMaybe = session.getNlogo()
     if(not modelCodeMaybe.success)
       throw new Error("Unable to get existing NetLogo code for export")
 
     project       = @builder.getNetTangoBuilderData()
     project.code  = modelCodeMaybe.result
     project.title = title
-    isVertical    = window.session.widgetController.ractive.get("isVertical") ? false
+    isVertical    = session.widgetController.ractive.get("isVertical") ? false
     project.netLogoSettings = { isVertical }
     return project
 

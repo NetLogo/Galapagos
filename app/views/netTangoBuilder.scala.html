@@ -234,12 +234,8 @@
     var theOutsideWorld = {
         setModelCode:        loadModel
       , loadUrl:             loadUrl
-      , sessionReady:        ()                => window.session !== undefined
-      , getModelCode:        ()                => window.session.getNlogo()
-      , exportModel:         ()                => window.session.exportNlogo()
+      , getSession:          ()                => window.session
       , addEventListener:    (event, callback) => document.addEventListener(event, callback)
-      , getWidgetController: ()                => window.session.widgetController
-      , getModelTitle:       ()                => window.session.modelTitle()
       , saveAs:              window.saveAs
       , newModel:            window.exports.newModel
     }
@@ -268,7 +264,7 @@
     exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
     window.ractive   = netTango.ractive
     window.recompile = netTango.recompile
-    window.onload    = () => netTango.onModelLoad( netTangoModelUrl )
+    window.onload    = () => netTango.start(netTangoModelUrl)
 
   </script>
 }
