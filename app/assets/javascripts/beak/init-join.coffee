@@ -111,7 +111,8 @@ setUpEventListeners = ->
 
         vc.view.visibleCanvas.addEventListener('click', onClick)
 
-        sendHNWMessage("interface-loaded", null)
+        if token isnt "invalid token"
+          sendHNWMessage("interface-loaded", null)
 
       when "nlw-update-model-state"
         session.widgetController.setCode(e.data.codeTabContents)
