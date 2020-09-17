@@ -4,6 +4,29 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.8.0">September 17th, 2020 - v2.8.0</h2>
+
+  <h3>Improvements and Bug Fixes</h3>
+
+  <ul>
+    <li>Optimization: NetLogo Web now implements an optimized algorithm for <code>in-radius</code> and <code>in-cone</code>.  This should speed up models that use those primitives, especially with a radius argument great than 2.  Additionally, these optimizations mean the order agents from agentsets are returned will exactly match desktop's output.</li>
+    <li>Optimization: The <code>random</code> and <code>count</code> primitives had small optimizations added for certain common use cases.</li>
+    <li>Optimization: Commands run through the command center will be compiled much more quickly, so they should finish faster.</li>
+    <li>Bugfix: The <code>layout-spring</code> primitive should work exactly like desktop in wrapped worlds.</li>
+    <li>Bugfix: The <code>resize-world</code> primitive handles fractional arguments correctly.</li>
+    <li>Bugfix: The <code>precision</code> primitive handles a fractional places argument correctly.</li>
+    <li>Bugfix: A model will correctly recompile when a button is changed to a Forever type.</li>
+    <li>Bugfix: Prevent runtime model exceptions from leaking out into the browser console.</li>
+  </ul>
+
+  <h3>CSV Extension</h3>
+
+  <p>The CSV extension is now officially supported in NetLogo Web.  Most of the primitives work the same as in <a href="https://ccl.northwestern.edu/netlogo/docs/csv.html">the desktop version</a>, with the exception of the file-based primitives.  For getting CSV data from a file, see <a href="https://github.com/NetLogo/Fetch-Extension">the Fetch extension</a>.  For sending CSV data to a file, try out <a href="https://github.com/NetLogo/SendTo-Extension">the SendTo extension</a>.</p>
+
+  <h3>NetTango Builder</h3>
+
+  <p>In addition to the above updates, there are also <a href="https://github.com/NetTango/NetTango/wiki/Release-notes">numerous bugfixes and improvements for the beta release of the NetTango Builder</a>, an application for creating block-based programming models with NetLogo Web. See <a href="https://anttango.netlify.app/">the NetTango Builder tutorial</a> for more information on using the NetTango Builder.</p>
+
   <h2 id="august10th2020-v2.7.3">August 10th, 2020 - v2.7.3</h2>
 
   <h3>Improvements and Bug Fixes</h3>
