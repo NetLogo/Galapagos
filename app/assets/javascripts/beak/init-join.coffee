@@ -164,7 +164,33 @@ setUpEventListeners = ->
               viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
               vc.repaint()
             else
-              parent.postMessage({ type: "hnw-fatal-error", subtype: "unknown-agent" }, "*")
+              baddie =
+                viewUpdates.map(
+                  ({ turtles, patches, links }) ->
+                    badTurtle    = Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
+                    if badTurtle?
+                      ["turtle", badTurtle]
+                    else
+                      badLink    = Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?))
+                      if badLink?
+                        ["link", badLink]
+                      else
+                        badPatch = Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
+                        if badPatch?
+                          ["patch", badPatch]
+                        else
+                          undefined
+                ).find((x) -> x?)
+
+              if baddie?
+                parent.postMessage({
+                  type:      "hnw-fatal-error"
+                , subtype:   "unknown-agent"
+                , agentType: baddie[0]
+                , agentID:   baddie[1].id
+                }, "*")
+              else
+                console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
 
       when "hnw-widget-update"
         if (e.data.event.type is "ticksStarted")
