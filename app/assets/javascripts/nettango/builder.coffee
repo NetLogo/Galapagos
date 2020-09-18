@@ -256,6 +256,16 @@ window.RactiveBuilder = Ractive.extend({
 
   }
 
+  observe: {
+
+    'breeds': () ->
+      breeds       = @get('breeds')
+      knownTags    = @get('knownTags')
+      newKnownTags = breeds.filter( (t) -> not knownTags.includes(t) )
+      @push('knownTags', ...newKnownTags)
+
+  }
+
   # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
     spaces = @findComponent('tangoDefs').get('spaces')

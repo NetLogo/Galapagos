@@ -35,7 +35,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-json',    (_)                     => @exportProject('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.getSession().exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
+    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name, @netLogoReady))
     @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
     @ractive.on('*.ntb-load-sample-project', () =>
       @loadProject(netTangoSampleModel, "project-load"))
@@ -55,12 +55,13 @@ class window.NetTangoController
       el: element,
 
       data: () -> {
-          newModel:    theOutsideWorld.newModel # () => String
-        , playMode:    playMode                 # Boolean
-        , runtimeMode: runtimeMode              # String
-        , popupMenu:   undefined                # RactivePopupMenu
-        , canUndo:     false                    # Boolean
-        , canRedo:     false                    # Boolean
+        breeds:      []                       # Array[String]
+        canRedo:     false                    # Boolean
+        canUndo:     false                    # Boolean
+        newModel:    theOutsideWorld.newModel # () => String
+        playMode:    playMode                 # Boolean
+        popupMenu:   undefined                # RactivePopupMenu
+        runtimeMode: runtimeMode              # String
       }
 
       on: {
@@ -92,6 +93,7 @@ class window.NetTangoController
           popupMenu='{{ popupMenu }}'
           canUndo='{{ canUndo }}'
           canRedo='{{ canRedo }}'
+          breeds={{ breeds }}
           />
         """
 
@@ -205,7 +207,16 @@ class window.NetTangoController
     widgetController.ractive.fire('recompile', () =>
       widgets = widgetController.ractive.get('widgetObj')
       @rerunForevers(widgets)
+      @netLogoReady()
     )
+    return
+
+  # () => Unit
+  netLogoReady: () =>
+    workspace  = @theOutsideWorld.getWorkspace()
+    breeds     = workspace.breedManager.breeds()
+    breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
+    ractive.set('breeds', breedNames)
     return
 
   # (String, String) => Unit
@@ -215,7 +226,7 @@ class window.NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @theOutsideWorld.setModelCode(code, title)
+    @theOutsideWorld.setModelCode(code, title, @netLogoReady)
     return
 
   # (Array[File]) => Unit
@@ -227,7 +238,7 @@ class window.NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @theOutsideWorld.setModelCode(nlogo, file.name)
+      @theOutsideWorld.setModelCode(nlogo, file.name, @netLogoReady)
       @handleProjectChange()
       return
     reader.readAsText(file)

@@ -164,11 +164,14 @@
     const modelContainer = document.getElementById("netlogo-model-container")
 
     var session
-    function openSession(s) {
+    function openSession(s, callback) {
       session         = s
       document.title  = pageTitle(session.modelTitle())
       activeContainer = modelContainer
       session.startLoop()
+      if (callback !== undefined) {
+        callback()
+      }
     }
 
     const isStandaloneHTML = @standalone
@@ -191,22 +194,22 @@
       }
     }
 
-    function loadModel(nlogo, path) {
+    function loadModel(nlogo, path, callback) {
       if (session) {
         session.teardown()
       }
       window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError, [netTango.rewriter])
+      Tortoise.fromNlogo(nlogo, modelContainer, path, (s) => openSession(s, callback), displayError, [netTango.rewriter])
     }
 
-    function loadUrl(url, modelName) {
+    function loadUrl(url, modelName, callback) {
       if (session) {
         session.teardown()
       }
       window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError, [netTango.rewriter])
+      Tortoise.fromURL(url, modelName, modelContainer, (s) => openSession(s, callback), displayError, [netTango.rewriter])
     }
 
     window.addEventListener("message", function (e) {
@@ -235,6 +238,7 @@
         setModelCode:        loadModel
       , loadUrl:             loadUrl
       , getSession:          ()                => window.session
+      , getWorkspace:        ()                => window.workspace
       , addEventListener:    (event, callback) => document.addEventListener(event, callback)
       , saveAs:              window.saveAs
       , newModel:            window.exports.newModel
