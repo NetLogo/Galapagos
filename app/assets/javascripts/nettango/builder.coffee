@@ -37,6 +37,7 @@ window.RactiveBuilder = Ractive.extend({
     canUndo:       false     # Boolean
     confirmDialog: undefined # RactiveConfirmDialog
     knownTags:     []        # Array[String]
+    isDebugMode:   false     # Boolean
     newModel:      undefined # String
     playMode:      false     # Boolean
     popupMenu:     undefined # RactivePopupMenu
@@ -472,7 +473,9 @@ window.RactiveBuilder = Ractive.extend({
           <builderMenu
             popupMenu={{ popupMenu }}
             canUndo={{ canUndo }}
-            canRedo={{ canRedo }}>
+            canRedo={{ canRedo }}
+            isDebugMode={{ isDebugMode }}
+            runtimeMode={{ runtimeMode }}>
           </builderMenu>
         {{/}}
 

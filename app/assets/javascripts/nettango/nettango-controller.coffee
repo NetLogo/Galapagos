@@ -5,17 +5,17 @@ class window.NetTangoController
   netLogoTitle: undefined # String
 
   constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
-    @storage  = new NetTangoStorage(localStorage)
-    getSpaces = () => @ractive.findComponent("tangoDefs").get("spaces")
-    @isDebugMode = @runtimeMode is "dev"
-    @rewriter = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
-    @undoRedo = new UndoRedo()
+    @storage     = new NetTangoStorage(localStorage)
+    getSpaces    = () => @ractive.findComponent("tangoDefs").get("spaces")
+    @isDebugMode = false
+    @rewriter    = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
+    @undoRedo    = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportProject('json'))
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
-    @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode)
+    @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
 
     # If you have custom components that will be needed inside partial templates loaded dynamically at runtime
     # such as with the `RactiveArrayView`, you can specify them here.  -Jeremy B August 2019
@@ -48,7 +48,7 @@ class window.NetTangoController
         session.widgetController.ractive.fire("run", command, errorLog))
 
   # (HTMLElement, Environment, Bool) => Ractive
-  createRactive: (element, theOutsideWorld, playMode, runtimeMode) ->
+  createRactive: (element, theOutsideWorld, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
     new Ractive({
 
@@ -58,10 +58,19 @@ class window.NetTangoController
         breeds:      []                       # Array[String]
         canRedo:     false                    # Boolean
         canUndo:     false                    # Boolean
+        isDebugMode: isDebugMode              # Boolean
         newModel:    theOutsideWorld.newModel # () => String
         playMode:    playMode                 # Boolean
         popupMenu:   undefined                # RactivePopupMenu
         runtimeMode: runtimeMode              # String
+      }
+
+      observe: {
+
+        'isDebugMode': () ->
+          setDebugMode(@get('isDebugMode'))
+          return
+
       }
 
       on: {
@@ -94,13 +103,14 @@ class window.NetTangoController
           canUndo='{{ canUndo }}'
           canRedo='{{ canRedo }}'
           breeds={{ breeds }}
+          isDebugMode={{ isDebugMode }}
           />
         """
 
     })
 
   # (Boolean) => Unit
-  setDebugMode: (isDebugMode) ->
+  setDebugMode: (isDebugMode) =>
     @isDebugMode = isDebugMode
     @rewriter.isDebugMode = isDebugMode
     return

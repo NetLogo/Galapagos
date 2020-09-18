@@ -1,12 +1,15 @@
 window.RactiveBuilderMenu = Ractive.extend({
 
   data: () -> {
-    popupMenu: undefined # RactivePopupMenu
-    canUndo:   false     # Boolean
-    canRedo:   false     # Boolean
+    canUndo:     false     # Boolean
+    canRedo:     false     # Boolean
+    isDebugMode: false     # Boolean
+    popupMenu:   undefined # RactivePopupMenu
+    runtimeMode: "dev"     # String
   }
 
   on: {
+
     'ntb-show-file-operations': ({ event: { pageX, pageY } }) ->
       popupMenu = @get("popupMenu")
       fileOperations = {
@@ -45,8 +48,19 @@ window.RactiveBuilderMenu = Ractive.extend({
           }
         ]
       }
+
+      if @get('runtimeMode') is 'dev'
+        helpOptions.items.push({
+            name: 'Toggle web console debug'
+          , eventName: 'ntb-toggle-debug'
+        })
+
       popupMenu.popup(this, pageX, pageY, helpOptions)
       return false
+
+    'ntb-toggle-debug': () ->
+      @set('isDebugMode', not @get('isDebugMode'))
+      return
 
   }
 
