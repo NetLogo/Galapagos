@@ -163,7 +163,6 @@ class window.SessionLite
         if res.model.success
 
           state = world.exportState()
-          world.clearAll()
           @widgetController.redraw() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
           globalEval(res.model.result)
           world.importState(state)
