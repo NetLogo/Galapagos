@@ -65,6 +65,13 @@ window.RactiveChooser = RactiveWidget.extend({
   , resizeDirs:         ['left', 'right']
   }
 
+  observe: {
+    'widget.currentValue': () ->
+      widget        = @get('widget')
+      currentChoice = widget.choices.findIndex( (c) -> c is widget.currentValue )
+      @set('widget.currentChoice', if currentChoice >= 0 then currentChoice else 0)
+  }
+
   components: {
     editForm: ChooserEditForm
   }
