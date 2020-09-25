@@ -7,7 +7,7 @@ import
     core.{ CompilerException, model, Model },
       model.ModelReader,
     parse.CompilerUtilities,
-    tortoise.compiler.CompiledModel
+    tortoise.compiler.{ CompiledModel, Compiler }
 
 import
   org.scalatestplus.play.PlaySpec
@@ -145,16 +145,18 @@ object CompilerServiceHelpers {
   private def modelText(modelName: String): String =
     usingSource(_.fromFile(s"public/modelslib/$modelName"))(_.mkString)
 
+  val compiler = new Compiler()
+
   val breedProcedures = modelText("Code Examples/Breed Procedures Example.nlogo")
 
   val linkBreeds = modelText("Code Examples/Link Breeds Example.nlogo")
 
   val wolfSheep = modelText("Sample Models/Biology/Wolf Sheep Predation.nlogo")
 
-  val wsModelV = CompiledModel.fromModel(openModel(wolfSheep))
+  val wsModelV = CompiledModel.fromModel(openModel(wolfSheep), compiler)
 
   def openModel(model: String): Model =
     ModelReader.parseModel(model, CompilerUtilities, Map())
 
-  val widgetModel = CompiledModel.fromModel(openModel(modelText("../demomodels/All Widgets.nlogo")))
+  val widgetModel = CompiledModel.fromModel(openModel(modelText("../demomodels/All Widgets.nlogo")), compiler)
 }
