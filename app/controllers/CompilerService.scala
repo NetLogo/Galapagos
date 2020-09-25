@@ -145,13 +145,15 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
   import
     org.nlogo.{ core, tortoise },
       core.CompilerException,
-      tortoise.compiler.CompiledModel
+      tortoise.compiler.{ CompiledModel, Compiler }
 
   import
     play.api.mvc.{ Action => ActionType, AnyContent, Result }
 
   import
     CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }
+
+  val compiler = new Compiler()
 
   private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment)
 
@@ -169,8 +171,8 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
     Action { implicit request =>
       val argMap = toStringMap(request.extractBundle)
       val model = generateModel(argMap, request.host).flatMap {
-        case ModelObject(m)  => CompiledModel.fromModel(m).successNel[String]
-        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text))
+        case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
+        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
       }
       generateResult(argMap, model)
     }

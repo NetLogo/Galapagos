@@ -9,12 +9,14 @@ import
   akka.actor.{ Actor, ActorRef }
 
 import
-  org.nlogo.tortoise.compiler.CompiledModel
+  org.nlogo.tortoise.compiler.{ CompiledModel, Compiler }
 
 import
   models.Util.usingSource
 
 class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) extends Actor {
+
+  val compiler = new Compiler()
 
   import models.ModelCollectionCompiler.{ CheckBuiltInModels, compileModel }
   import models.StatusCacher.AllBuiltInModels
@@ -26,7 +28,7 @@ class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) exte
       allModels.map { // `map` before parallelizing, so we don't thrash the hard disk by reading files in parallel --JAB (11/11/14)
         file => (file, usingSource(_.fromFile(file))(_.mkString))
       }.par.foreach {
-        case (file, contents) => cacher ! compileModel(file, contents)
+        case (file, contents) => cacher ! compileModel(compiler, file, contents)
       }
   }
 
@@ -34,8 +36,8 @@ class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) exte
 
 object ModelCollectionCompiler {
   case object CheckBuiltInModels
-  protected[models] def compileModel(file: File, contents: String): ModelCompilationStatus =
-    CompiledModel.fromNlogoContents(contents).map(ModelSaver(_)).fold(
+  protected[models] def compileModel(compiler: Compiler, file: File, contents: String): ModelCompilationStatus =
+    CompiledModel.fromNlogoContents(contents, compiler).map(ModelSaver(_)).fold(
       nel => CompilationFailure(file, nel.list.toList),
       _   => CompilationSuccess(file)
     )
