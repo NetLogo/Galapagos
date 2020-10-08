@@ -187,7 +187,7 @@ setUpEventListeners = ->
                   type:      "hnw-fatal-error"
                 , subtype:   "unknown-agent"
                 , agentType: baddie[0]
-                , agentID:   baddie[1].id
+                , agentID:   baddie[1][0]
                 }, "*")
               else
                 console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
