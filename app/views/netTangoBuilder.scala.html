@@ -200,7 +200,7 @@
       }
       window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromNlogo(nlogo, modelContainer, path, (s) => openSession(s, callback), displayError, [netTango.rewriter])
+      Tortoise.fromNlogo(nlogo, modelContainer, path, (s) => openSession(s, callback), displayError, [netTango.rewriter, netTango.compileAlert])
     }
 
     function loadUrl(url, modelName, callback) {
@@ -209,7 +209,7 @@
       }
       window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromURL(url, modelName, modelContainer, (s) => openSession(s, callback), displayError, [netTango.rewriter])
+      Tortoise.fromURL(url, modelName, modelContainer, (s) => openSession(s, callback), displayError, [netTango.rewriter, netTango.compileAlert])
     }
 
     window.addEventListener("message", function (e) {

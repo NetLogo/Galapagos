@@ -5,10 +5,12 @@ class window.NetTangoController
   netLogoTitle: undefined # String
 
   constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
-    @storage     = new NetTangoStorage(localStorage)
-    getSpaces    = () => @ractive.findComponent("tangoDefs").get("spaces")
-    @isDebugMode = false
-    @rewriter    = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
+    @storage      = new NetTangoStorage(localStorage)
+    getSpaces     = () => @ractive.findComponent("tangoDefs").get("spaces")
+    @isDebugMode  = false
+    @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
+    @compileAlert = { compileComplete: @netLogoCompileComplete }
+
     @undoRedo    = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportProject('json'))
@@ -35,7 +37,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-export-json',    (_)                     => @exportProject('json'))
     @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.getSession().exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name, @netLogoReady))
+    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
     @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
     @ractive.on('*.ntb-load-sample-project', () =>
       @loadProject(netTangoSampleModel, "project-load"))
@@ -212,17 +214,20 @@ class window.NetTangoController
 
   # () => Unit
   recompileNetLogo: () ->
-    widgetController = @theOutsideWorld.getSession().widgetController
     @hideRecompileOverlay()
-    widgetController.ractive.fire('recompile', () =>
-      widgets = widgetController.ractive.get('widgetObj')
-      @rerunForevers(widgets)
-      @netLogoReady()
-    )
+    widgetController = @theOutsideWorld.getSession().widgetController
+    widgetController.ractive.fire('recompile')
     return
 
-  # () => Unit
-  netLogoReady: () =>
+  netLogoCompileComplete: () =>
+    console.log("compile complete!")
+
+    # if we had any forever buttons running, re-run them
+    widgetController = @theOutsideWorld.getSession().widgetController
+    widgets = widgetController.ractive.get('widgetObj')
+    @rerunForevers(widgets)
+
+    # breeds may have changed in code, so update for context tags
     workspace  = @theOutsideWorld.getWorkspace()
     breeds     = workspace.breedManager.breeds()
     breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
@@ -236,7 +241,7 @@ class window.NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @theOutsideWorld.setModelCode(code, title, @netLogoReady)
+    @theOutsideWorld.setModelCode(code, title)
     return
 
   # (Array[File]) => Unit
@@ -248,7 +253,7 @@ class window.NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @theOutsideWorld.setModelCode(nlogo, file.name, @netLogoReady)
+      @theOutsideWorld.setModelCode(nlogo, file.name)
       @handleProjectChange()
       return
     reader.readAsText(file)
