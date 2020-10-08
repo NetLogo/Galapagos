@@ -220,11 +220,9 @@ class window.NetTangoController
     return
 
   netLogoCompileComplete: () =>
-    console.log("compile complete!")
-
     # if we had any forever buttons running, re-run them
     widgetController = @theOutsideWorld.getSession().widgetController
-    widgets = widgetController.ractive.get('widgetObj')
+    widgets          = widgetController.ractive.get('widgetObj')
     @rerunForevers(widgets)
 
     # breeds may have changed in code, so update for context tags

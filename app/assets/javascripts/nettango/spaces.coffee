@@ -5,7 +5,7 @@ window.RactiveSpaces = Ractive.extend({
     blockStyles:      undefined # NetTangoBlockStyles
     codeIsDirty:      false     # Boolean
     confirmDialog:    null      # RactiveConfirmDialog
-    knownTags:        []        # Array[String]
+    allTags:          []        # Array[String]
     lastCompiledCode: ""        # String
     playMode:         false     # Boolean
     popupMenu:        null      # RactivePopupMenu
@@ -157,7 +157,7 @@ window.RactiveSpaces = Ractive.extend({
       parentClass="ntb-builder"
       verticalOffset="10"
       blockStyles={{ blockStyles }}
-      knownTags={{ knownTags }}
+      allTags={{ allTags }}
     />
 
     <div class="ntb-block-defs-list">

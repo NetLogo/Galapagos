@@ -36,7 +36,9 @@ window.RactiveBuilder = Ractive.extend({
     canRedo:       false     # Boolean
     canUndo:       false     # Boolean
     confirmDialog: undefined # RactiveConfirmDialog
+    allTags:       []        # Array[String]
     knownTags:     []        # Array[String]
+    breeds:        []        # Array[String]
     isDebugMode:   false     # Boolean
     newModel:      undefined # String
     playMode:      false     # Boolean
@@ -260,10 +262,7 @@ window.RactiveBuilder = Ractive.extend({
   observe: {
 
     'breeds': () ->
-      breeds       = @get('breeds')
-      knownTags    = @get('knownTags')
-      newKnownTags = breeds.filter( (t) -> not knownTags.includes(t) )
-      @push('knownTags', ...newKnownTags)
+      @initializeTags(@get('knownTags'), @findComponent('tangoDefs').get('spaces'))
 
   }
 
@@ -380,24 +379,20 @@ window.RactiveBuilder = Ractive.extend({
       blockTags.concat(allowedTags).concat(clauseTags)
     )
 
-  # () -> Array[String]
-  getTagsForBreeds: () ->
-    return []
-
-  # (NetTangoProject, Array[NetTangoSpace]) -> Array[String]
-  initializeKnownTags: (project, spaces) ->
-    # The project can have its own tags, even some that may not be used on blocks...
-    knownTags = project["knownTags"] ? []
-
-    # but it's possible there are tags on the blocks that somehow weren't included (manual edits?)
+  # (Array[String], Array[NetTangoSpace]) -> Unit
+  initializeTags: (knownTags, spaces) ->
+    # It's possible there are tags on the blocks that somehow weren't included (manual JSON edits?), so always
+    # do a check through them.  -Jeremy B October 2020
     blockTags = spaces.flatMap( (s) => @getTagsFromBlocks(s.defs.blocks) )
     @pushUnique(knownTags, blockTags)
+    @set('knownTags', knownTags)
 
-    # and maybe the breeds weren't properly included (old version or manual edits?)
-    breedTags = @getTagsForBreeds()
-    @pushUnique(knownTags, breedTags)
+    allTags   = knownTags.slice(0)
+    breedTags = @get('breeds')
+    @pushUnique(allTags, breedTags)
+    @set('allTags', allTags)
 
-    knownTags
+    return
 
   # (NetTangoProject) => Unit
   load: (project) ->
@@ -416,8 +411,7 @@ window.RactiveBuilder = Ractive.extend({
       defsComponent.createSpace(spaceVals)
     defsComponent.updateCode()
 
-    knownTags = @initializeKnownTags(project, defsComponent.get('spaces'))
-    @set('knownTags', knownTags)
+    @initializeTags(project["knownTags"] ? [], defsComponent.get('spaces'))
 
     tabOptions = @get('tabOptions')
     for key, prop of (project.tabOptions ? { })
@@ -485,7 +479,7 @@ window.RactiveBuilder = Ractive.extend({
           popupMenu={{ popupMenu }}
           confirmDialog={{ confirmDialog }}
           blockStyles={{ blockStyles }}
-          knownTags={{ knownTags }}
+          allTags={{ allTags }}
           showCode={{ netTangoToggles.showCode.checked }}
           />
 

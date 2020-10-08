@@ -5,7 +5,7 @@ window.RactiveBlockForm = EditForm.extend({
     block:          undefined # NetTangoBlock
     blockIndex:     undefined # Integer
     blockKnownTags: []        # Array[String]
-    knownTags:      []        # Array[String]
+    allTags:        []        # Array[String]
     showStyles:     false     # Boolean
     submitEvent:    undefined # String
 
@@ -99,9 +99,9 @@ window.RactiveBlockForm = EditForm.extend({
       # so ignore any that were not actually applied to the block - Jeremy B September 2020
       block          = @getBlock()
       blockKnownTags = @get('blockKnownTags')
-      knownTags      = @get('knownTags')
-      newKnownTags   = blockKnownTags.filter( (t) -> block.tags.includes(t) and not knownTags.includes(t) )
-      @push('knownTags', ...newKnownTags)
+      allTags        = @get('allTags')
+      newKnownTags   = blockKnownTags.filter( (t) -> block.tags.includes(t) and not allTags.includes(t) )
+      @push('allTags', ...newKnownTags)
       target.fire(@get('submitEvent'), {}, block, @get('blockIndex'))
       return
 
@@ -161,7 +161,7 @@ window.RactiveBlockForm = EditForm.extend({
   # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
   show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
     @_setBlock(block)
-    @set('blockKnownTags', @get('knownTags').slice(0))
+    @set('blockKnownTags', @get('allTags').slice(0))
     @set(        'target', target)
     @set(     'spaceName', spaceName)
     @set(    'blockIndex', blockIndex)
