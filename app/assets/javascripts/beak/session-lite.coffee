@@ -92,12 +92,40 @@ class window.SessionLite
     if procedures.startup? then setTimeout((-> window.handlingErrors(procedures.startup)()), 0)
 
   updateDelay: ->
+
+    twoThirdsian = (xs) ->
+      sorted = xs.sort()
+      if sorted.length is 0
+        undefined
+      else if sorted.length is 1
+        sorted[0]
+      else if sorted.length is 2
+        (2 * (sorted[0] + sorted[1])) / 3
+      else if sorted.length is 3
+        (sorted[1] + sorted[2]) / 2
+      else
+        twoThirsdian(sorted.slice(2, sorted.length - 1))
+
     viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
     speed      = @widgetController.speed()
     delay      = 1000 / viewWidget.frameRate
+
     if speed > 0
-      speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
+
+      speedCoefficient =
+        if window.isHNWHost is true
+          pings              = Object.values(window.clients).map((c) -> c.ping).filter((p) -> p?)
+          representativePing = twoThirdsian(pings)
+          if representativePing > 200
+            1 / (representativePing / 200)
+          else
+            1
+        else
+          1
+
+      speedFactor = Math.pow(Math.abs(speed * speedCoefficient), FAST_UPDATE_EXP)
       delay * (1 - speedFactor)
+
     else
       speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
       MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
