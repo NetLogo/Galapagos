@@ -16,9 +16,10 @@ window.RactiveTags = Ractive.extend({
       knownTags.filter( (tag) -> not tags.includes(tag) )
 
     filteredTags: () ->
-      tags   = @get('unselectedTags')
-      filter = @get('filter').toLowerCase()
-      tags.filter( (t) -> t.toLowerCase().includes(filter) )
+      tags     = @get('unselectedTags')
+      filter   = @get('filter').toLowerCase()
+      filtered = tags.filter( (t) -> t.toLowerCase().includes(filter) )
+      filtered.sort( @compareStrings )
 
     isExistingTag: () ->
       knownTags = @get('knownTags')
@@ -119,6 +120,9 @@ window.RactiveTags = Ractive.extend({
 
   }
 
+  compareStrings: (t1, t2) ->
+    t1.localeCompare(t2)
+
   addTag: (tag) ->
     @push('tags', tag)
     @set('selectedTags', [])
@@ -174,7 +178,7 @@ window.RactiveTags = Ractive.extend({
       {{# showTags }}
 
       <div class="ntb-tag-cloud flex-row">
-        {{#each tags }}
+        {{#each tags.sort( compareStrings ) }}
           <div class="ntb-tag">{{this}} <button class="ntb-button" on-click='[ 'remove-tag', this ]'>x</button></div>
         {{else}}
           <div class="ntb-tag-cloud-empty">No tags applied</div>
