@@ -1,3 +1,21 @@
+partials = {
+
+  'item-template':
+    """
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
+    <div class="ntb-option-delete">{{> delete-button }}</div>
+    """
+
+  'header-template':
+    """
+    <div class="ntb-option-header">Actual Value</div>
+    <div class="ntb-option-header">Display Value</div>
+    <div />
+    """
+
+}
+
 window.RactiveSelectAttribute = Ractive.extend({
 
   data: () -> {
@@ -5,19 +23,6 @@ window.RactiveSelectAttribute = Ractive.extend({
     elementId: undefined, # String
     quoteOptions: undefined # Array[String]
 
-    optionTemplate:
-      """
-      <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
-      <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
-      <div class="ntb-option-delete">{{> delete-button }}</div>
-      """
-
-    headerTemplate:
-      """
-      <div class="ntb-option-header">Actual Value</div>
-      <div class="ntb-option-header">Display Value</div>
-      <div />
-      """
     createOption:
       () -> { actual: "10" }
   }
@@ -37,7 +42,7 @@ window.RactiveSelectAttribute = Ractive.extend({
   }
 
   components: {
-    arrayView: RactiveArrayView
+    arrayView: RactiveArrayView(partials)
     dropdown:  RactiveTwoWayDropdown
   }
 
@@ -62,7 +67,6 @@ window.RactiveSelectAttribute = Ractive.extend({
       createItem="{{ createOption }}"
       viewClass="ntb-options"
       itemsWrapperClass="ntb-options-wrapper"
-      headerTemplate="{{ headerTemplate }}"
       />
     """
     # coffeelint: enable=max_line_length

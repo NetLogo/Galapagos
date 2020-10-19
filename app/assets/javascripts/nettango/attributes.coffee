@@ -1,3 +1,24 @@
+partials = {
+
+  'item-template':
+    """
+    <fieldset class="ntb-attribute">
+      <legend class="widget-edit-legend">
+        {{ itemType }} {{ number }} {{> delete-button }}
+      </legend>
+      <div class="flex-column">
+        <attribute
+          id="{{ number }}"
+          attribute="{{ this }}"
+          attributeType="{{ itemType }}"
+          codeFormat="{{ codeFormat }}"
+          />
+      </div>
+    </fieldset>
+    """
+
+}
+
 window.RactiveAttributes = Ractive.extend({
 
   data: () -> {
@@ -6,23 +27,6 @@ window.RactiveAttributes = Ractive.extend({
     blockId:    undefined # Int
     attributes: []        # Array[NetTangoAttribute]
     codeFormat: ""        # String
-
-    attributeTemplate:
-      """
-      <fieldset class="ntb-attribute">
-        <legend class="widget-edit-legend">
-          {{ itemType }} {{ number }} {{> delete-button }}
-        </legend>
-        <div class="flex-column">
-          <attribute
-            id="{{ number }}"
-            attribute="{{ this }}"
-            attributeType="{{ itemType }}"
-            codeFormat="{{ codeFormat }}"
-            />
-        </div>
-      </fieldset>
-      """
 
     createAttribute:
       (type) -> (number) -> { name: "#{type} #{number}", type: 'int', unit: undefined, def: '10' }
@@ -47,8 +51,7 @@ window.RactiveAttributes = Ractive.extend({
   }
 
   components: {
-    arrayView: RactiveArrayView
-  , attribute: RactiveAttribute
+    arrayView: RactiveArrayView(partials, { attribute: RactiveAttribute })
   }
 
   template:
@@ -56,7 +59,6 @@ window.RactiveAttributes = Ractive.extend({
     """
     <arrayView
       id="{{ attributesId }}"
-      itemTemplate="{{ attributeTemplate }}"
       items="{{ attributes }}"
       itemType="{{ singular }}"
       itemTypePlural="{{ plural }}"

@@ -1,4 +1,4 @@
-window.RactiveArrayView = Ractive.extend({
+window.RactiveArrayView = (partials, components) -> Ractive.extend({
 
   data: () -> {
 
@@ -8,24 +8,15 @@ window.RactiveArrayView = Ractive.extend({
     createItem:        undefined      # (Number) => Any
     itemAddEvent:      "item-added"   # String
     itemRemoveEvent:   "item-removed" # String
-    itemTemplate:      undefined      # String
     items:             undefined      # Array[Any]
     itemsWrapperClass: undefined      # String
     viewClass:         undefined      # String
     showItems:         true           # Boolean
     headerItem:        {}             # Any
-    headerTemplate:    undefined      # String
 
   }
 
   on: {
-
-    'complete': (_) ->
-      @resetPartial("item-template", @get('itemTemplate'))
-      headerTemplate = @get('headerTemplate')
-      if headerTemplate?
-        @resetPartial("header-template", headerTemplate)
-      return
 
     'add-item': () ->
       number   = @get("items.length")
@@ -44,13 +35,14 @@ window.RactiveArrayView = Ractive.extend({
 
   }
 
-  partials: {
+  components: components
+
+  partials: Object.assign({
     'header-template': "",
     'item-template':   "Unset",
     'delete-button':
       """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
-
-  }
+  }, partials)
 
   template:
     """
