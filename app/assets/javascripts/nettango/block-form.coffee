@@ -8,66 +8,6 @@ window.RactiveBlockForm = EditForm.extend({
     allTags:        []        # Array[String]
     showStyles:     false     # Boolean
     submitEvent:    undefined # String
-
-    clauseTemplate:
-      """
-      <fieldset class="ntb-attribute">
-        <legend class="widget-edit-legend">
-          {{ itemType }} {{ number }} {{> delete-button }}
-        </legend>
-        <div class="flex-column">
-          <div class="flex-row ntb-form-row">
-
-            <labeledInput name="action" type="text" value="{{ action }}" labelStr="Display name"
-              divClass="ntb-flex-column" class="ntb-input" />
-
-            <div class="ntb-flex-column">
-              <label for="block-{{ id }}-clause-{{ number }}-open">Start code format (default is `[`)</label>
-              <codeMirror
-                id="block-{{ id }}-clause-{{ number }}-open"
-                mode="netlogo"
-                code={{ open }}
-                extraClasses="['ntb-code-input']"
-              />
-            </div>
-
-            <div class="ntb-flex-column">
-              <label for="block-{{ id }}-clause-{{ number }}-close">End code format (default is `]`)</label>
-              <codeMirror
-                id="block-{{ id }}-clause-{{ number }}-close"
-                mode="netlogo"
-                code={{ close }}
-                extraClasses="['ntb-code-input']"
-              />
-            </div>
-
-          </div>
-        </div>
-      </fieldset>
-      """
-
-    clauseHeaderTemplate:
-      """
-      <div class="flex-column">
-        <div class="flex-row ntb-form-row">
-
-          <div class="ntb-flex-column">
-            <label for="block-{{ id }}-close-clauses">Code format to insert after all clauses</label>
-            <codeMirror
-              id="block-{{ id }}-close-clauses"
-              mode="netlogo"
-              code={{ closeClauses }}
-              extraClasses="['ntb-code-input']"
-            />
-          </div>
-
-        </div>
-      </div>
-      """
-
-    createClause:
-      (number) -> { open: undefined, close: undefined, children: [] }
-
   }
 
   on: {
@@ -211,15 +151,15 @@ window.RactiveBlockForm = EditForm.extend({
     attributeCopies
 
   components: {
-    , arrayView:    RactiveArrayView
-    , attributes:   RactiveAttributes
-    , blockStyle:   RactiveBlockStyleSettings
-    , codeMirror:   RactiveCodeMirror
-    , dropdown:     RactiveTwoWayDropdown
-    , labeledInput: RactiveTwoWayLabeledInput
-    , preview:      RactiveBlockPreview
-    , spacer:       RactiveEditFormSpacer
-    , tagsControl:  RactiveTags
+    attributes:   RactiveAttributes
+  , blockStyle:   RactiveBlockStyleSettings
+  , clauses:      RactiveClauses
+  , codeMirror:   RactiveCodeMirror
+  , dropdown:     RactiveTwoWayDropdown
+  , labeledInput: RactiveTwoWayLabeledInput
+  , preview:      RactiveBlockPreview
+  , spacer:       RactiveEditFormSpacer
+  , tagsControl:  RactiveTags
   }
 
   partials: {
@@ -302,17 +242,10 @@ window.RactiveBlockForm = EditForm.extend({
           codeFormat="P"
           />
 
-        <arrayView
-          id="block-{{ id }}-clauses"
-          itemTemplate="{{ clauseTemplate }}"
-          items="{{ clauses }}"
-          itemType="Clause"
-          itemTypePlural="Control Clauses"
-          createItem="{{ createClause }}"
-          viewClass="ntb-block-array"
-          headerItem="{{ block }}"
-          headerTemplate="{{ clauseHeaderTemplate }}"
-          showItems="{{ clauses.length > 0 }}"
+        <clauses
+          blockId={{ id }}
+          clauses={{ clauses }}
+          closeClauses={{ closeClauses }}
           />
 
         <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
