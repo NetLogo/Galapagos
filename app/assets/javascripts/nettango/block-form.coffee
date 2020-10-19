@@ -9,23 +9,6 @@ window.RactiveBlockForm = EditForm.extend({
     showStyles:     false     # Boolean
     submitEvent:    undefined # String
 
-    attributeTemplate:
-      """
-      <fieldset class="ntb-attribute">
-        <legend class="widget-edit-legend">
-          {{ itemType }} {{ number }} {{> delete-button }}
-        </legend>
-        <div class="flex-column">
-          <attribute
-            id="{{ number }}"
-            attribute="{{ this }}"
-            attributeType="{{ itemType }}"
-            codeFormat="{{ codeFormat }}"
-            />
-        </div>
-      </fieldset>
-      """
-
     clauseTemplate:
       """
       <fieldset class="ntb-attribute">
@@ -82,9 +65,6 @@ window.RactiveBlockForm = EditForm.extend({
       </div>
       """
 
-    createAttribute:
-      (type) -> (number) -> { name: "#{type} #{number}", type: 'int', unit: undefined, def: '10' }
-
     createClause:
       (number) -> { open: undefined, close: undefined, children: [] }
 
@@ -130,14 +110,6 @@ window.RactiveBlockForm = EditForm.extend({
       @set('previewBlock', previewBlock)
       preview.resetNetTango()
       return
-  }
-
-  # (String, Integer) => NetTangoAttribute
-  defaultAttribute: (attributeType, num) -> {
-      name: "#{attributeType}#{num}"
-    , type: 'num'
-    , unit: undefined
-    , def:  '10'
   }
 
   # (NetTangoBlock) => Unit
@@ -240,7 +212,7 @@ window.RactiveBlockForm = EditForm.extend({
 
   components: {
     , arrayView:    RactiveArrayView
-    , attribute:    RactiveAttribute
+    , attributes:   RactiveAttributes
     , blockStyle:   RactiveBlockStyleSettings
     , codeMirror:   RactiveCodeMirror
     , dropdown:     RactiveTwoWayDropdown
@@ -315,28 +287,19 @@ window.RactiveBlockForm = EditForm.extend({
           </div>
         {{/if}}
 
-        <arrayView
-          id="block-{{ id }}-parameters"
-          itemTemplate="{{ attributeTemplate }}"
-          items="{{ params }}"
-          itemType="Parameter"
-          itemTypePlural="Parameters"
-          createItem="{{ createAttribute('Parameter') }}"
-          viewClass="ntb-block-array"
-          codeFormat=""
-          showItems="{{ params.length > 0 }}"
+        <attributes
+          singular="Parameter"
+          plural="Parameters"
+          blockId={{ id }}
+          attributes={{ params }}
           />
 
-        <arrayView
-          id="block-{{ id }}-properties"
-          itemTemplate="{{ attributeTemplate }}"
-          items="{{ properties }}"
-          itemType="Property"
-          itemTypePlural="Properties"
-          createItem="{{ createAttribute('Property') }}"
-          viewClass="ntb-block-array"
+        <attributes
+          singular="Property"
+          plural="Properties"
+          blockId={{ id }}
+          attributes={{ properties }}
           codeFormat="P"
-          showItems="{{ properties.length > 0 }}"
           />
 
         <arrayView
