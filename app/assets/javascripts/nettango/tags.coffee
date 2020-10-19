@@ -161,7 +161,7 @@ window.RactiveTags = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <fieldset class="widget-edit-fieldset flex-row ntb-block-array {{# !showTags }}ntb-array-view-hidden{{/ showTags }}">
+    <fieldset class="widget-edit-fieldset flex-column ntb-block-array {{# !showTags }}ntb-array-view-hidden{{/ showTags }}">
       <legend class="widget-edit-legend">
 
         Tags
