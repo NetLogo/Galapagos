@@ -2,14 +2,22 @@ window.RactiveEditFormDropdown = Ractive.extend({
 
   data: -> {
     changeEvent: undefined # String
-  , choices:     undefined # Array[String]
+  , choices:     undefined # Array[String | { value: String, text: String }]
   , disableds:   undefined # Array[String]
   , name:        undefined # String
   , id:          undefined # String
   , label:       undefined # String
   , selected:    undefined # String
 
-  , checkIsDisabled: (item) -> (@get('disableds') ? []).indexOf(item) isnt -1
+  , checkIsDisabled: (item) ->
+    disableds = @get('disableds') ? []
+    disableds.some( (d) -> d is item or item.value? and item.value is d )
+
+  , valOf: (item) ->
+    if item.value? then item.value else item
+
+  , textOf: (item) ->
+    if item.text? then item.text else item
 
   }
 
@@ -30,7 +38,7 @@ window.RactiveEditFormDropdown = Ractive.extend({
       <label for="{{ id }}" class="widget-edit-input-label">{{ label }}</label>
       <select id="{{ id }}" name="{{ name }}" class="widget-edit-dropdown" value="{{ selected }}">
         {{#choices }}
-          <option value="{{ this }}" {{# checkIsDisabled(this) }} disabled {{/}}>{{ this }}</option>
+          <option value="{{ valOf(this) }}" {{# checkIsDisabled(this) }} disabled {{/}}>{{ textOf(this) }}</option>
         {{/}}
       </select>
     </div>

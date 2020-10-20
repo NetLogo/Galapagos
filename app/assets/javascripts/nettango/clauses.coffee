@@ -7,6 +7,7 @@ partials = {
         {{ itemType }} {{ number }} {{> delete-button }}
       </legend>
       <div class="flex-column">
+
         <div class="flex-row ntb-form-row">
 
           <labeledInput name="action" type="text" value="{{ action }}" labelStr="Display name"
@@ -33,6 +34,15 @@ partials = {
           </div>
 
         </div>
+
+        <div class="flex-row ntb-form-row">
+          <allowedTags
+            id="block-{{ blockId }}-clause-allowed-tags"
+            allowedTags={{ allowedTags }}
+            knownTags={{ knownTags }}
+            />
+        </div>
+
       </div>
     </fieldset>
     """
@@ -63,7 +73,8 @@ window.RactiveClauses = Ractive.extend({
   data: () -> {
     blockId:      undefined # Int
     clauses:      []        # Array[NetTangoAttribute]
-    closeClauses: "" # String
+    closeClauses: ""        # String
+    knownTags:    []        # Array[String]
 
     createClause:
       (number) -> { open: undefined, close: undefined, children: [] }
@@ -71,7 +82,11 @@ window.RactiveClauses = Ractive.extend({
   }
 
   components: {
-    arrayView: RactiveArrayView(partials, { codeMirror: RactiveCodeMirror, labeledInput: RactiveTwoWayLabeledInput })
+    arrayView: RactiveArrayView(partials, {
+      allowedTags:  RactiveAllowedTags
+    , codeMirror:   RactiveCodeMirror
+    , labeledInput: RactiveTwoWayLabeledInput
+    })
   }
 
   template:
@@ -86,6 +101,7 @@ window.RactiveClauses = Ractive.extend({
       viewClass="ntb-block-array"
       headerItem={{ this }}
       showItems="{{ clauses.length > 0 }}"
+      knownTags={{ knownTags }}
       />
     """
     # coffeelint: enable=max_line_length

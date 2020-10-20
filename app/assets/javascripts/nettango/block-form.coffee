@@ -93,12 +93,25 @@ window.RactiveBlockForm = EditForm.extend({
     blockValues = @get('block')
     block = { }
 
-    [ 'id', 'action', 'format', 'closeClauses', 'closeStarter', 'note',
-      'required', 'isTerminal', 'placement', 'limit',
-      'blockColor', 'textColor', 'borderColor',
-      'fontWeight', 'fontSize', 'fontFace' ]
-      .filter((f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt '')
-      .forEach((f) -> block[f] = blockValues[f])
+    [
+      'id'
+    , 'action'
+    , 'format'
+    , 'closeClauses'
+    , 'closeStarter'
+    , 'note'
+    , 'required'
+    , 'isTerminal'
+    , 'placement'
+    , 'limit'
+    , 'blockColor'
+    , 'textColor'
+    , 'borderColor'
+    , 'fontWeight'
+    , 'fontSize'
+    , 'fontFace'
+    ].filter( (f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt '' )
+      .forEach( (f) -> block[f] = blockValues[f] )
 
     switch blockValues.builderType
       when 'Procedure'
@@ -122,11 +135,15 @@ window.RactiveBlockForm = EditForm.extend({
     block
 
   processClauses: (clauses) ->
+    pat = @processAllowedTags
+
     clauses.map( (clause) ->
       [ 'action', 'open', 'close' ].forEach( (f) ->
         if clause.hasOwnProperty(f) and clause[f] is ''
           delete clause[f]
       )
+
+      clause.allowedTags = pat(clause.allowedTags)
 
       clause
     )
@@ -150,6 +167,15 @@ window.RactiveBlockForm = EditForm.extend({
 
     attributeCopies
 
+  processAllowedTags: (allowedTags) ->
+    if not allowedTags?
+      return undefined
+
+    if allowedTags.type isnt 'any-of'
+      delete allowedTags.tags
+
+    allowedTags
+
   components: {
     attributes:   RactiveAttributes
   , blockStyle:   RactiveBlockStyleSettings
@@ -158,8 +184,7 @@ window.RactiveBlockForm = EditForm.extend({
   , dropdown:     RactiveTwoWayDropdown
   , labeledInput: RactiveTwoWayLabeledInput
   , preview:      RactiveBlockPreview
-  , spacer:       RactiveEditFormSpacer
-  , tagsControl:  RactiveTags
+  , tagsControl:  RactiveWrappedTags
   }
 
   partials: {
@@ -246,6 +271,7 @@ window.RactiveBlockForm = EditForm.extend({
           blockId={{ id }}
           clauses={{ clauses }}
           closeClauses={{ closeClauses }}
+          knownTags={{ blockKnownTags }}
           />
 
         <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>

@@ -2,7 +2,11 @@ copyClauses = (block) ->
   if not block.clauses?
     return []
 
-  block.clauses.map( (clause) -> Object.assign({}, clause) )
+  block.clauses.map( (clause) ->
+    copy             = Object.assign({}, clause)
+    copy.allowedTags = copyAllowedTags(copy)
+    copy
+  )
 
 # (NetTangoBlock, String) => Array[NetTangoAttribute]
 copyAttributes = (b, attributeType) ->
@@ -17,6 +21,21 @@ copyAttributes = (b, attributeType) ->
   else
     []
 
+# ({ allowedTags: NetTangoAllowedTags }) => NetTangoAllowedTags
+copyAllowedTags = (o) ->
+  if o['allowedTags']?
+    allowedTags = {
+      type: o.allowedTags.type
+    }
+
+    if allowedTags.type is 'any-of' and o.allowedTags['tags']?
+      allowedTags.tags = o.allowedTags.tags.slice()
+
+    allowedTags
+
+  else
+    undefined
+
 # (NetTangoBlock) => NetTangoBlock
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
@@ -24,7 +43,6 @@ copyBlock = (block) ->
   copy.clauses    = copyClauses(block)
   copy.params     = copyAttributes(block, 'params')
   copy.properties = copyAttributes(block, 'properties')
-
   copy
 
 # (NetTangoBlock) => NetTangoBlock

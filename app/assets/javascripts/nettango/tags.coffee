@@ -1,10 +1,9 @@
-window.RactiveTags = Ractive.extend({
+ractiveTags = Ractive.extend({
 
   data: () -> {
       tags:         []    # Array[String]
     , knownTags:    []    # Array[String]
     , filter:       ''    # String
-    , showTags:     false # Boolean
     , selectedTags: []    # Array[String]
   }
 
@@ -56,11 +55,6 @@ window.RactiveTags = Ractive.extend({
   }
 
   on: {
-
-    'init': () ->
-      tags = @get('tags')
-      @set('showTags', tags.length > 0)
-      return
 
     '*.check-for-enter-press': (context) ->
       if context.event.keyCode isnt 13
@@ -161,6 +155,74 @@ window.RactiveTags = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
+    <div class="ntb-tag-cloud flex-row">
+      {{#each tags.sort( compareStrings ) }}
+        <div class="ntb-tag">{{this}} <button class="ntb-button" on-click='[ 'remove-tag', this ]'>x</button></div>
+      {{else}}
+        <div class="ntb-tag-cloud-empty">No tags applied</div>
+      {{/each}}
+    </div>
+
+    <div class="ntb-tag-controls flex-row">
+
+      <input class="ntb-tag-filter" type="text"
+        value={{ filter }}
+        on-keydown="check-for-enter-press"
+        on-keyup="check-for-up-or-down-press"
+        placeholder="Filter available tags or enter new tag name"
+      />
+
+      <button class="ntb-button ntb-tag-button" type="button"
+        disabled={{ selectedTags.length === 0 }}
+        on-click="add-selected-tags">
+        Add Selected Tags
+      </button>
+
+      <button class="ntb-button ntb-tag-button" type="button"
+        disabled={{ isExistingTag || filter === '' }}
+        on-click="add-new-tag">
+        Add New Tag
+      </button>
+
+    </div>
+
+    <label class="ntb-tag-options-label" for="workspace-tags">Available Tags</label>
+
+    <select class="ntb-tag-options" multiple size={{ workspaceSize }} value={{ selectedTags }}>
+
+      {{#each filteredTags }}
+        <option value="{{this}}" on-dblclick='[ 'add-clicked-tag', this ]'>{{this}}</option>
+      {{else}}
+        <option disabled value>All available tags are applied</option>
+      {{/each}}
+
+    </select>
+    """
+    # coffeelint: enable=max_line_length
+
+})
+
+window.RactiveWrappedTags = Ractive.extend({
+
+  data: () -> {
+      tags:         []    # Array[String]
+    , knownTags:    []    # Array[String]
+    , showTags:     false # Boolean
+  }
+
+  on: {
+    'init': () ->
+      tags = @get('tags')
+      @set('showTags', tags.length > 0)
+      return
+  }
+
+  components: {
+    tags: ractiveTags
+  }
+
+  template:
+    """
     <fieldset class="widget-edit-fieldset flex-column ntb-block-array {{# !showTags }}ntb-array-view-hidden{{/ showTags }}">
       <legend class="widget-edit-legend">
 
@@ -169,7 +231,7 @@ window.RactiveTags = Ractive.extend({
         <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>
 
         <label class="ntb-toggle-block">
-          <input id="{{ id }}-show-items" type="checkbox" checked="{{ showTags }}" />
+          <input type="checkbox" checked="{{ showTags }}" />
           {{# showTags }}▲{{else}}▼{{/}}
         </label>
 
@@ -177,53 +239,15 @@ window.RactiveTags = Ractive.extend({
 
       {{# showTags }}
 
-      <div class="ntb-tag-cloud flex-row">
-        {{#each tags.sort( compareStrings ) }}
-          <div class="ntb-tag">{{this}} <button class="ntb-button" on-click='[ 'remove-tag', this ]'>x</button></div>
-        {{else}}
-          <div class="ntb-tag-cloud-empty">No tags applied</div>
-        {{/each}}
-      </div>
-
-      <div class="ntb-tag-controls flex-row">
-
-        <input class="ntb-tag-filter" type="text"
-          value={{ filter }}
-          on-keydown="check-for-enter-press"
-          on-keyup="check-for-up-or-down-press"
-          placeholder="Filter available tags or enter new tag name"
+      <tags
+        tags={{ tags }}
+        knownTags={{ knownTags }}
         />
-
-        <button class="ntb-button ntb-tag-button" type="button"
-          disabled={{ selectedTags.length === 0 }}
-          on-click="add-selected-tags">
-          Add Selected Tags
-        </button>
-
-        <button class="ntb-button ntb-tag-button" type="button"
-          disabled={{ isExistingTag || filter === '' }}
-          on-click="add-new-tag">
-          Add New Tag
-        </button>
-
-      </div>
-
-      <label class="ntb-tag-options-label" for="workspace-tags">Available Tags</label>
-
-      <select class="ntb-tag-options" id="workspace-tags" multiple size={{ workspaceSize }} value={{ selectedTags }}>
-
-        {{#each filteredTags }}
-          <option value="{{this}}" on-dblclick='[ 'add-clicked-tag', this ]'>{{this}}</option>
-        {{else}}
-          <option disabled value>All available tags are applied</option>
-        {{/each}}
-
-      </select>
 
       {{/ showTags }}
 
     </fieldset>
     """
-    # coffeelint: enable=max_line_length
-
 })
+
+window.RactiveTags = ractiveTags
