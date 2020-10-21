@@ -20,7 +20,7 @@ window.RactiveToggle = Ractive.extend({
 
         <label class="ntb-toggle-block">
           <input type="checkbox" checked="{{ show }}" />
-          {{# showTags }}▲{{else}}▼{{/}}
+          {{# show }}▲{{else}}▼{{/}}
         </label>
 
       </legend>

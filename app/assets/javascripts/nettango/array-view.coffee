@@ -1,4 +1,4 @@
-window.RactiveArrayView = (partials, components) -> Ractive.extend({
+window.RactiveArrayView = (partials, components) -> RactiveToggle.extend({
 
   data: () -> {
 
@@ -11,7 +11,6 @@ window.RactiveArrayView = (partials, components) -> Ractive.extend({
     items:             undefined      # Array[Any]
     itemsWrapperClass: undefined      # String
     viewClass:         undefined      # String
-    showItems:         true           # Boolean
     headerItem:        {}             # Any
 
   }
@@ -23,7 +22,7 @@ window.RactiveArrayView = (partials, components) -> Ractive.extend({
       creator  = @get("createItem")
       addEvent = @get("itemAddEvent")
       @push("items", creator(number))
-      @set("showItems", true)
+      @set("show", true)
       @fire(addEvent)
       return
 
@@ -37,48 +36,35 @@ window.RactiveArrayView = (partials, components) -> Ractive.extend({
 
   components: components
 
+  # coffeelint: disable=max_line_length
   partials: Object.assign({
-    'header-template': "",
-    'item-template':   "Unset",
-    'delete-button':
+
+    deleteButton:
       """<button class="ntb-button" type="button" on-click="[ 'remove-item', number ]">Delete</button>"""
+
+  , headerTemplate: ""
+
+  , itemTemplate:   "Item template unset, probably a mistake, yeah?"
+
+  , titleTemplate:
+    """{{ itemTypePlural }} <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>"""
+
+  , contentTemplate:
+    """
+    <div class="{{ itemsWrapperClass }}">
+
+      {{# headerItem }}
+        {{> headerTemplate }}
+      {{/ headerItem }}
+
+      {{# items:number }}
+        {{> itemTemplate }}
+      {{/ items }}
+
+    </div>
+    """
+
   }, partials)
-
-  template:
-    """
-    <fieldset
-      id="{{ id }}"
-      class="widget-edit-fieldset flex-column {{ viewClass }} {{# !showItems }}ntb-array-view-hidden{{/ showItems }}">
-
-      <legend class="widget-edit-legend">
-
-        {{ itemTypePlural }}
-
-        <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>
-
-        <label class="ntb-toggle-block">
-          <input id="{{ id }}-show-items" type="checkbox" checked="{{ showItems }}" />
-          {{# showItems }}▲{{else}}▼{{/}}
-        </label>
-
-      </legend>
-
-      {{# showItems }}
-
-        <div class="{{ itemsWrapperClass }}">
-
-          {{# headerItem }}
-            {{> header-template }}
-          {{/ headerItem }}
-
-          {{# items:number }}
-            {{> item-template }}
-          {{/ items }}
-
-        </div>
-
-      {{/ showItems }}
-    </fieldset>
-    """
+  # coffeelint: enable=max_line_length
 
 })

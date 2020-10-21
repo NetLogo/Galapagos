@@ -1,10 +1,29 @@
 partials = {
 
-  'item-template':
+  headerTemplate:
+    """
+    <div class="flex-column">
+      <div class="flex-row ntb-form-row">
+
+        <div class="ntb-flex-column">
+          <label for="{{ id }}-close">Code format to insert after all clauses</label>
+          <codeMirror
+            id="{{ id }}-close"
+            mode="netlogo"
+            code={{ closeClauses }}
+            extraClasses="['ntb-code-input']"
+          />
+        </div>
+
+      </div>
+    </div>
+    """
+
+  itemTemplate:
     """
     <fieldset class="ntb-attribute">
       <legend class="widget-edit-legend">
-        {{ itemType }} {{ number }} {{> delete-button }}
+        {{ itemType }} {{ number }} {{> deleteButton }}
       </legend>
       <div class="flex-column">
 
@@ -49,25 +68,6 @@ partials = {
     </fieldset>
     """
 
-  'header-template':
-    """
-    <div class="flex-column">
-      <div class="flex-row ntb-form-row">
-
-        <div class="ntb-flex-column">
-          <label for="{{ id }}-close">Code format to insert after all clauses</label>
-          <codeMirror
-            id="{{ id }}-close"
-            mode="netlogo"
-            code={{ closeClauses }}
-            extraClasses="['ntb-code-input']"
-          />
-        </div>
-
-      </div>
-    </div>
-    """
-
 }
 
 window.RactiveClauses = Ractive.extend({
@@ -98,7 +98,6 @@ window.RactiveClauses = Ractive.extend({
   }
 
   template:
-    # coffeelint: disable=max_line_length
     """
     <arrayView
       id="block-{{ blockId }}-clauses"
@@ -108,11 +107,10 @@ window.RactiveClauses = Ractive.extend({
       createItem="{{ createClause }}"
       viewClass="ntb-block-array"
       headerItem={{ this }}
-      showItems="{{ clauses.length > 0 }}"
+      showAtStart="{{ clauses.length > 0 }}"
       knownTags={{ knownTags }}
       blockType="clause"
       canInheritTags={{ canInheritTags }}
       />
     """
-    # coffeelint: enable=max_line_length
 })

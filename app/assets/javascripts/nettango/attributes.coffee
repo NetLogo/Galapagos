@@ -1,10 +1,10 @@
 partials = {
 
-  'item-template':
+  itemTemplate:
     """
     <fieldset class="ntb-attribute">
       <legend class="widget-edit-legend">
-        {{ itemType }} {{ number }} {{> delete-button }}
+        {{ itemType }} {{ number }} {{> deleteButton }}
       </legend>
       <div class="flex-column">
         <attribute
@@ -65,7 +65,7 @@ window.RactiveAttributes = Ractive.extend({
       createItem="{{ createAttribute(singular) }}"
       viewClass="ntb-block-array"
       codeFormat="{{ codeFormat }}"
-      showItems="{{ attributes.length > 0 }}"
+      showAtStart="{{ attributes.length > 0 }}"
       />
     """
     # coffeelint: enable=max_line_length

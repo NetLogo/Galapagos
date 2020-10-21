@@ -86,7 +86,7 @@ window.RactiveOptionsForm = EditForm.extend({
         styleId="procedure-blocks"
         styleSettings="{{ blockStyles.starterBlockStyle }}"
         showClear="false"
-        showStyles="true"
+        showAtStart="true"
         >
       </blockStyle>
 
@@ -95,7 +95,7 @@ window.RactiveOptionsForm = EditForm.extend({
         styleId="control-blocks"
         styleSettings="{{ blockStyles.containerBlockStyle }}"
         showClear="false"
-        showStyles="true"
+        showAtStart="true"
         >
       </blockStyle>
 
@@ -104,7 +104,7 @@ window.RactiveOptionsForm = EditForm.extend({
         styleId="command-blocks"
         styleSettings="{{ blockStyles.commandBlockStyle }}"
         showClear="false"
-        showStyles="true"
+        showAtStart="true"
         >
       </blockStyle>
 

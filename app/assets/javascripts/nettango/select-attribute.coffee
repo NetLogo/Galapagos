@@ -1,17 +1,17 @@
 partials = {
 
-  'item-template':
-    """
-    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
-    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
-    <div class="ntb-option-delete">{{> delete-button }}</div>
-    """
-
-  'header-template':
+  headerTemplate:
     """
     <div class="ntb-option-header">Actual Value</div>
     <div class="ntb-option-header">Display Value</div>
     <div />
+    """
+
+  itemTemplate:
+    """
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
+    <div class="ntb-option-delete">{{> deleteButton }}</div>
     """
 
 }
@@ -67,6 +67,7 @@ window.RactiveSelectAttribute = Ractive.extend({
       createItem="{{ createOption }}"
       viewClass="ntb-options"
       itemsWrapperClass="ntb-options-wrapper"
+      showAtStart={{ attribute.values.length > 0 }}
       />
     """
     # coffeelint: enable=max_line_length

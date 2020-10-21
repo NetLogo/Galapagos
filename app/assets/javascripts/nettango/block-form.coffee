@@ -6,7 +6,6 @@ window.RactiveBlockForm = EditForm.extend({
     blockIndex:     undefined # Integer
     blockKnownTags: []        # Array[String]
     allTags:        []        # Array[String]
-    showStyles:     false     # Boolean
     submitEvent:    undefined # String
   }
 
@@ -302,7 +301,7 @@ window.RactiveBlockForm = EditForm.extend({
           canInheritTags={{ canInheritTags }}
           />
 
-        <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
+        <blockStyle styleId="{{ id }}" showAtStart=false styleSettings="{{ this }}"></blockStyle>
 
       {{/block }}
       </div>

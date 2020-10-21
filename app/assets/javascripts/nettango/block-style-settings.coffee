@@ -1,10 +1,10 @@
-window.RactiveBlockStyleSettings = Ractive.extend({
+window.RactiveBlockStyleSettings = RactiveToggle.extend({
+
   data: () -> {
     title:         "Block Styles" # String
     styleId:       undefined      # String
     styleSettings: undefined      # { blockColor, textColor, borderColor, fontWeight, fontSize, fontFace }
     showClear:     true           # Boolean
-    showStyles:    false          # Boolean
   }
 
   on: {
@@ -15,32 +15,19 @@ window.RactiveBlockStyleSettings = Ractive.extend({
 
   components: { labeledInput: RactiveTwoWayLabeledInput }
 
-  template:
-    # coffeelint: disable=max_line_length
-    """
-    <fieldset
-      id="{{ styleId }}"
-      class="widget-edit-fieldset flex-column ntb-block-array {{# !showStyles }}ntb-array-view-hidden{{/ showStyles }}">
+  partials: {
 
-      <legend class="widget-edit-legend">
+    titleTemplate:
+      """
+      {{ title }}
 
-        {{ title }}
+      {{# showClear }}
+      <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>
+      {{/ showClear }}
+      """
 
-        {{# showClear }}
-
-        <button class="ntb-button" type="button" on-click="ntb-clear-styles">Clear Styles</button>
-
-        {{/ showClear }}
-
-        <label class="ntb-toggle-block">
-          <input id="{{ styleId }}-show-items" type="checkbox" checked="{{ showStyles }}" />
-          {{# showStyles }}▲{{else}}▼{{/}}
-        </label>
-
-      </legend>
-
-      {{# showStyles }}
-
+    contentTemplate:
+      """
       {{# styleSettings }}
 
       <div class="flex-row ntb-form-row">
@@ -114,10 +101,8 @@ window.RactiveBlockStyleSettings = Ractive.extend({
       </div>
 
       {{/ styleSettings }}
+      """
 
-      {{/ showStyles }}
+  }
 
-    </fieldset>
-    """
-    # coffeelint: enable=max_line_length
 })
