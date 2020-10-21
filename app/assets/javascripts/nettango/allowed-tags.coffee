@@ -42,7 +42,7 @@ window.RactiveAllowedTags = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="flex-column">
+    <div class="ntb-flex-column">
       {{# allowedTags }}
 
       <dropdown
