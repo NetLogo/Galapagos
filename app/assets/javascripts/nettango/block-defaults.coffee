@@ -38,12 +38,13 @@ copyAllowedTags = (o) ->
 
 # (NetTangoBlock) => NetTangoBlock
 copyBlock = (block) ->
-  copy = Object.assign({ }, block)
+  copy = Object.assign({}, block)
   delete copy.id
   copy.clauses     = copyClauses(block)
   copy.params      = copyAttributes(block, 'params')
   copy.properties  = copyAttributes(block, 'properties')
   copy.allowedTags = copyAllowedTags(block)
+  copy.tags        = if block.tags? then block.tags.slice() else undefined
   copy
 
 # (NetTangoBlock) => NetTangoBlock
