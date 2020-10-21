@@ -222,6 +222,7 @@ window.RactiveWrappedTags = Ractive.extend({
   }
 
   template:
+    # coffeelint: disable=max_line_length
     """
     <fieldset class="widget-edit-fieldset flex-column ntb-block-array {{# !showTags }}ntb-array-view-hidden{{/ showTags }}">
       <legend class="widget-edit-legend">
@@ -248,6 +249,7 @@ window.RactiveWrappedTags = Ractive.extend({
 
     </fieldset>
     """
+    # coffeelint: enable=max_line_length
 })
 
 window.RactiveTags = ractiveTags

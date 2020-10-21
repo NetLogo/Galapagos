@@ -4,27 +4,30 @@ defaultChoices = [
 ]
 
 clauseChoice = {
-  value: 'inherit', text: 'Allow the same blocks the container would allow when this block is added to another'
+  value: 'inherit', text: 'Allow the same blocks the container would allow when this block is added to a chain'
 }
 
-getChoices = (blockType) ->
+getChoices = (canInheritTags) ->
   choices = defaultChoices.slice()
-  if blockType is 'clause'
+  if canInheritTags
     choices.push(clauseChoice)
   choices
 
 window.RactiveAllowedTags = Ractive.extend({
 
   data: () -> {
-    allowedTags: { type: 'unrestricted' } # NetTangoAllowedTags
-    knownTags:   []                       # Array[String]
+    id:             undefined                # String
+    allowedTags:    { type: 'unrestricted' } # NetTangoAllowedTags
+    knownTags:      []                       # Array[String]
+    blockType:      'clause'                 # "starter" | "clause"
+    canInheritTags: false                    # Boolean
   }
 
   computed: {
 
     choices: () ->
-      blockType = @get('blockType')
-      getChoices(blockType)
+      canInheritTags = @get('canInheritTags')
+      getChoices(canInheritTags)
 
     blockTypeText: () ->
       blockType = @get('blockType')
@@ -46,6 +49,7 @@ window.RactiveAllowedTags = Ractive.extend({
       {{# allowedTags }}
 
       <dropdown
+        id="{{ id }}-dropdown"
         label="Which blocks are allowed to be added to this {{ blockTypeText }}?"
         divClass="ntb-flex-column"
         selected="{{ type }}"

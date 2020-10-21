@@ -14,9 +14,9 @@ partials = {
             divClass="ntb-flex-column" class="ntb-input" />
 
           <div class="ntb-flex-column">
-            <label for="block-{{ blockId }}-clause-{{ number }}-open">Start code format (default is `[`)</label>
+            <label for="{{ id }}-{{ number }}-open">Start code format (default is `[`)</label>
             <codeMirror
-              id="block-{{ blockId }}-clause-{{ number }}-open"
+              id="{{ id }}-{{ number }}-open"
               mode="netlogo"
               code={{ open }}
               extraClasses="['ntb-code-input']"
@@ -24,9 +24,9 @@ partials = {
           </div>
 
           <div class="ntb-flex-column">
-            <label for="block-{{ blockId }}-clause-{{ number }}-close">End code format (default is `]`)</label>
+            <label for="{{ id }}-{{ number }}-close">End code format (default is `]`)</label>
             <codeMirror
-              id="block-{{ blockId }}-clause-{{ number }}-close"
+              id="{{ id }}-{{ number }}-close"
               mode="netlogo"
               code={{ close }}
               extraClasses="['ntb-code-input']"
@@ -37,10 +37,11 @@ partials = {
 
         <div class="flex-row ntb-form-row">
           <allowedTags
-            id="block-{{ blockId }}-clause-allowed-tags"
+            id="{{ id }}-{{ number }}-allowed-tags"
             allowedTags={{ allowedTags }}
             knownTags={{ knownTags }}
-            blockType={{ blockType }}
+            blockType="clause"
+            canInheritTags={{ canInheritTags }}
             />
         </div>
 
@@ -54,9 +55,9 @@ partials = {
       <div class="flex-row ntb-form-row">
 
         <div class="ntb-flex-column">
-          <label for="block-{{ blockId }}-close-clauses">Code format to insert after all clauses</label>
+          <label for="{{ id }}-close">Code format to insert after all clauses</label>
           <codeMirror
-            id="block-{{ blockId }}-close-clauses"
+            id="{{ id }}-close"
             mode="netlogo"
             code={{ closeClauses }}
             extraClasses="['ntb-code-input']"
@@ -72,11 +73,11 @@ partials = {
 window.RactiveClauses = Ractive.extend({
 
   data: () -> {
-    blockId:      undefined # Int
-    clauses:      []        # Array[NetTangoAttribute]
-    closeClauses: ""        # String
-    knownTags:    []        # Array[String]
-    blockType:    "clause"  # "clause" | "starter"
+    blockId:        undefined # Int
+    clauses:        []        # Array[NetTangoAttribute]
+    closeClauses:   ""        # String
+    knownTags:      []        # Array[String]
+    canInheritTags: false     # Boolean
 
     createClause:
       (number) -> {
@@ -109,7 +110,8 @@ window.RactiveClauses = Ractive.extend({
       headerItem={{ this }}
       showItems="{{ clauses.length > 0 }}"
       knownTags={{ knownTags }}
-      blockType={{ blockType }}
+      blockType="clause"
+      canInheritTags={{ canInheritTags }}
       />
     """
     # coffeelint: enable=max_line_length

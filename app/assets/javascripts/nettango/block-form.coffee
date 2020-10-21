@@ -11,12 +11,9 @@ window.RactiveBlockForm = EditForm.extend({
   }
 
   computed: {
-    blockType: () ->
+    canInheritTags: () ->
       block = @get('block')
-      if block.builderType is 'Procedure'
-        'starter'
-      else
-        'clause'
+      block.builderType isnt 'Procedure'
   }
 
   on: {
@@ -271,10 +268,11 @@ window.RactiveBlockForm = EditForm.extend({
           {{# !isTerminal }}
           <div class="flex-row ntb-form-row">
             <allowedTags
-              id="block-{{ blockId }}-starter-allowed-tags"
+              id="block-{{ id }}-allowed-tags"
               allowedTags={{ allowedTags }}
               knownTags={{ blockKnownTags }}
               blockType="starter"
+              canInheritTags=false
               />
           </div>
           {{/ isTerminal}}
@@ -301,7 +299,7 @@ window.RactiveBlockForm = EditForm.extend({
           clauses={{ clauses }}
           closeClauses={{ closeClauses }}
           knownTags={{ blockKnownTags }}
-          blockType={{ blockType }}
+          canInheritTags={{ canInheritTags }}
           />
 
         <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
