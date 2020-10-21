@@ -1,4 +1,4 @@
-ractiveTags = Ractive.extend({
+window.RactiveTags = Ractive.extend({
 
   data: () -> {
       tags:         []    # Array[String]
@@ -102,11 +102,6 @@ ractiveTags = Ractive.extend({
       @addSelectedTags(@get('selectedTags'))
       return
 
-    '*.clear-tags': () ->
-      tags = @get('tags')
-      @splice('tags', 0, tags.length)
-      return
-
     '*.remove-tag': (_, tag) ->
       tags = @get('tags').filter( (t) -> t isnt tag )
       @set('tags', tags)
@@ -202,54 +197,25 @@ ractiveTags = Ractive.extend({
 
 })
 
-window.RactiveWrappedTags = Ractive.extend({
-
-  data: () -> {
-      tags:         []    # Array[String]
-    , knownTags:    []    # Array[String]
-    , showTags:     false # Boolean
-  }
+window.RactiveToggleTags = RactiveToggle.extend({
 
   on: {
-    'init': () ->
+    '*.clear-tags': () ->
       tags = @get('tags')
-      @set('showTags', tags.length > 0)
+      @splice('tags', 0, tags.length)
       return
   }
 
-  components: {
-    tags: ractiveTags
+  partials: {
+
+    contentTemplate:
+      """<tags tags={{ tags }} knownTags={{ knownTags }} />"""
+
+  , titleTemplate:
+      """Tags <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""
+
   }
 
-  template:
-    # coffeelint: disable=max_line_length
-    """
-    <fieldset class="widget-edit-fieldset flex-column ntb-block-array {{# !showTags }}ntb-array-view-hidden{{/ showTags }}">
-      <legend class="widget-edit-legend">
+  components: { tags: RactiveTags }
 
-        Tags
-
-        <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>
-
-        <label class="ntb-toggle-block">
-          <input type="checkbox" checked="{{ showTags }}" />
-          {{# showTags }}▲{{else}}▼{{/}}
-        </label>
-
-      </legend>
-
-      {{# showTags }}
-
-      <tags
-        tags={{ tags }}
-        knownTags={{ knownTags }}
-        />
-
-      {{/ showTags }}
-
-    </fieldset>
-    """
-    # coffeelint: enable=max_line_length
 })
-
-window.RactiveTags = ractiveTags

@@ -28,8 +28,8 @@ window.RactiveBlockForm = EditForm.extend({
       allTags        = @get('allTags')
       newKnownTags   = blockKnownTags.filter( (t) ->
         ( (block.tags? and block.tags.includes(t)) or
-          (block.allowedTags.tags? and block.allowedTags.tags.includes(t)) or
-          (block.clauses.some( (c) -> c.allowedTags.tags? and c.allowedTags.tags.includes(t) ))
+          (block.allowedTags?.tags? and block.allowedTags.tags.includes(t)) or
+          (block.clauses.some( (c) -> c.allowedTags?.tags? and c.allowedTags.tags.includes(t) ))
         ) and
         not allTags.includes(t)
       )
@@ -198,7 +198,7 @@ window.RactiveBlockForm = EditForm.extend({
   , dropdown:     RactiveTwoWayDropdown
   , labeledInput: RactiveTwoWayLabeledInput
   , preview:      RactiveBlockPreview
-  , tagsControl:  RactiveWrappedTags
+  , tagsControl:  RactiveToggleTags
   }
 
   partials: {
@@ -245,7 +245,7 @@ window.RactiveBlockForm = EditForm.extend({
         </div>
 
         {{# builderType === 'Command or Control' }}
-          <tagsControl tags={{ tags }} knownTags={{ blockKnownTags }} />
+          <tagsControl tags={{ tags }} knownTags={{ blockKnownTags }} showAtStart={{ tags.length > 0 }} />
         {{else}}
           <div class="flex-row ntb-form-row">
 
