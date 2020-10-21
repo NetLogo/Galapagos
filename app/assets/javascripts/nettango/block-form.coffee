@@ -1,18 +1,25 @@
 window.RactiveBlockForm = EditForm.extend({
 
   data: () -> {
-    spaceName:      undefined # String
-    block:          undefined # NetTangoBlock
-    blockIndex:     undefined # Integer
-    blockKnownTags: []        # Array[String]
-    allTags:        []        # Array[String]
-    submitEvent:    undefined # String
+    spaceName:      undefined    # String
+    block:          undefined    # NetTangoBlock
+    blockIndex:     undefined    # Integer
+    blockKnownTags: []           # Array[String]
+    allTags:        []           # Array[String]
+    submitEvent:    undefined    # String
+    terminalType:   "attachable" # "attachable" | "terminal"
   }
 
   computed: {
     canInheritTags: () ->
       block = @get('block')
       block.builderType isnt 'Procedure'
+
+    terminalChoices: () ->
+      [
+        { value: "terminal",   text: "This will be the last block in its chain, no more blocks can attach" }
+      , { value: "attachable", text: "Blocks can be attached to this block in a chain" }
+      ]
   }
 
   on: {
@@ -52,6 +59,7 @@ window.RactiveBlockForm = EditForm.extend({
     @_super()
 
   observe: {
+
     'block.*': () ->
       preview = @findComponent('preview')
       if not preview?
@@ -61,6 +69,12 @@ window.RactiveBlockForm = EditForm.extend({
       @set('previewBlock', previewBlock)
       preview.resetNetTango()
       return
+
+    'terminalType': () ->
+      terminalType = @get('terminalType')
+      @set('block.isTerminal', terminalType is 'terminal')
+      return
+
   }
 
   # (NetTangoBlock) => Unit
@@ -91,6 +105,7 @@ window.RactiveBlockForm = EditForm.extend({
     @set(   'submitLabel', submitLabel)
     @set(   'cancelLabel', cancelLabel)
     @set(   'submitEvent', submitEvent)
+    @set(  'terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
 
     @fire('show-yourself')
     return
@@ -243,15 +258,18 @@ window.RactiveBlockForm = EditForm.extend({
             divClass="ntb-flex-column" class="ntb-input" />
         </div>
 
+        <div class="flex-row ntb-form-row">
+          <dropdown id="block-{{ id }}-terminal" name="terminal" selected="{{ terminalType }}" label="Can blocks follow this one in a chain?"
+            choices={{ terminalChoices }}
+            divClass="ntb-flex-column"
+            />
+        </div>
+
         {{# builderType === 'Command or Control' }}
           <tagsControl tags={{ tags }} knownTags={{ blockKnownTags }} showAtStart={{ tags.length > 0 }} />
+
         {{else}}
           <div class="flex-row ntb-form-row">
-
-            <labeledInput id="block-{{ id }}-terminal" name="terminal" type="checkbox" checked="{{ isTerminal }}"
-              labelStr="Make this the final block in a chain"
-              divClass="ntb-flex-column" class="ntb-input" />
-
             <div class="ntb-flex-column">
               <label for="block-{{ id }}-close">Code format to insert after all attached blocks (default is `end`)</label>
               <codeMirror
@@ -261,7 +279,6 @@ window.RactiveBlockForm = EditForm.extend({
                 extraClasses="['ntb-code-input']"
               />
             </div>
-
           </div>
 
           {{# !isTerminal }}
