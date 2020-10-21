@@ -40,9 +40,10 @@ copyAllowedTags = (o) ->
 copyBlock = (block) ->
   copy = Object.assign({ }, block)
   delete copy.id
-  copy.clauses    = copyClauses(block)
-  copy.params     = copyAttributes(block, 'params')
-  copy.properties = copyAttributes(block, 'properties')
+  copy.clauses     = copyClauses(block)
+  copy.params      = copyAttributes(block, 'params')
+  copy.properties  = copyAttributes(block, 'properties')
+  copy.allowedTags = copyAllowedTags(block)
   copy
 
 # (NetTangoBlock) => NetTangoBlock

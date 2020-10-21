@@ -40,6 +40,7 @@ partials = {
             id="block-{{ blockId }}-clause-allowed-tags"
             allowedTags={{ allowedTags }}
             knownTags={{ knownTags }}
+            blockType={{ blockType }}
             />
         </div>
 
@@ -75,9 +76,15 @@ window.RactiveClauses = Ractive.extend({
     clauses:      []        # Array[NetTangoAttribute]
     closeClauses: ""        # String
     knownTags:    []        # Array[String]
+    blockType:    "clause"  # "clause" | "starter"
 
     createClause:
-      (number) -> { open: undefined, close: undefined, children: [] }
+      (number) -> {
+        open:        undefined
+      , close:       undefined
+      , children:    []
+      , allowedTags: { type: 'unrestricted' }
+      }
 
   }
 
@@ -102,6 +109,7 @@ window.RactiveClauses = Ractive.extend({
       headerItem={{ this }}
       showItems="{{ clauses.length > 0 }}"
       knownTags={{ knownTags }}
+      blockType={{ blockType }}
       />
     """
     # coffeelint: enable=max_line_length

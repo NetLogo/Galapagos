@@ -10,6 +10,15 @@ window.RactiveBlockForm = EditForm.extend({
     submitEvent:    undefined # String
   }
 
+  computed: {
+    blockType: () ->
+      block = @get('block')
+      if block.builderType is 'Procedure'
+        'starter'
+      else
+        'clause'
+  }
+
   on: {
 
     # (Context) => Unit
@@ -20,7 +29,13 @@ window.RactiveBlockForm = EditForm.extend({
       block          = @getBlock()
       blockKnownTags = @get('blockKnownTags')
       allTags        = @get('allTags')
-      newKnownTags   = blockKnownTags.filter( (t) -> block.tags.includes(t) and not allTags.includes(t) )
+      newKnownTags   = blockKnownTags.filter( (t) ->
+        ( (block.tags? and block.tags.includes(t)) or
+          (block.allowedTags.tags? and block.allowedTags.tags.includes(t)) or
+          (block.clauses.some( (c) -> c.allowedTags.tags? and c.allowedTags.tags.includes(t) ))
+        ) and
+        not allTags.includes(t)
+      )
       @push('allTags', ...newKnownTags)
       target.fire(@get('submitEvent'), {}, block, @get('blockIndex'))
       return
@@ -128,9 +143,10 @@ window.RactiveBlockForm = EditForm.extend({
         block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.child
         block.tags      = blockValues.tags ? []
 
-    block.clauses    = @processClauses(blockValues.clauses ? [])
-    block.params     = @processAttributes(blockValues.params)
-    block.properties = @processAttributes(blockValues.properties)
+    block.clauses     = @processClauses(blockValues.clauses ? [])
+    block.params      = @processAttributes(blockValues.params)
+    block.properties  = @processAttributes(blockValues.properties)
+    block.allowedTags = @processAllowedTags(blockValues.allowedTags)
 
     block
 
@@ -177,7 +193,8 @@ window.RactiveBlockForm = EditForm.extend({
     allowedTags
 
   components: {
-    attributes:   RactiveAttributes
+    allowedTags:  RactiveAllowedTags
+  , attributes:   RactiveAttributes
   , blockStyle:   RactiveBlockStyleSettings
   , clauses:      RactiveClauses
   , codeMirror:   RactiveCodeMirror
@@ -250,6 +267,18 @@ window.RactiveBlockForm = EditForm.extend({
             </div>
 
           </div>
+
+          {{# !isTerminal }}
+          <div class="flex-row ntb-form-row">
+            <allowedTags
+              id="block-{{ blockId }}-starter-allowed-tags"
+              allowedTags={{ allowedTags }}
+              knownTags={{ blockKnownTags }}
+              blockType="starter"
+              />
+          </div>
+          {{/ isTerminal}}
+
         {{/if}}
 
         <attributes
@@ -272,6 +301,7 @@ window.RactiveBlockForm = EditForm.extend({
           clauses={{ clauses }}
           closeClauses={{ closeClauses }}
           knownTags={{ blockKnownTags }}
+          blockType={{ blockType }}
           />
 
         <blockStyle styleId="{{ id }}" showStyles="{{ showStyles }}" styleSettings="{{ this }}"></blockStyle>
