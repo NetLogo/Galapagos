@@ -1,10 +1,10 @@
 window.RactiveTags = Ractive.extend({
 
   data: () -> {
-      tags:         []    # Array[String]
-    , knownTags:    []    # Array[String]
-    , filter:       ''    # String
-    , selectedTags: []    # Array[String]
+      tags:         [] # Array[String]
+    , knownTags:    [] # Array[String]
+    , filter:       '' # String
+    , selectedTags: [] # Array[String]
   }
 
   computed: {
