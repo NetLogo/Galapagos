@@ -152,35 +152,34 @@ setUpEventListeners = ->
 
             vc = session.widgetController.viewController
 
+            { turtles, patches, links } = viewUpdates
+            goodTurtles = -> Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?)
+            goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?)
+            goodPatches = -> Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
+
             allAgentsAreKnown =
-              viewUpdates.every(
-                ({ turtles, patches, links }) ->
-                  Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?) and
-                  Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?) and
-                  Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
-              )
+              ((not turtles?) or goodTurtles()) and
+              ((not   links?) or goodLinks()  ) and
+              ((not patches?) or goodPatches())
 
             if allAgentsAreKnown
-              viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
+              vc.applyUpdate(viewUpdates)
               vc.repaint()
             else
-              baddie =
-                viewUpdates.map(
-                  ({ turtles, patches, links }) ->
-                    badTurtle    = Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
-                    if badTurtle?
-                      ["turtle", badTurtle]
-                    else
-                      badLink    = Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?))
-                      if badLink?
-                        ["link", badLink]
-                      else
-                        badPatch = Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
-                        if badPatch?
-                          ["patch", badPatch]
-                        else
-                          undefined
-                ).find((x) -> x?)
+
+              baddie = undefined
+
+              badTurtle    = -> Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
+              if turtles? and badTurtle()?
+                baddie = ["turtle", badTurtle]
+              else
+                badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?))
+                if links? and badLink()?
+                  baddie = ["link", badLink]
+                else
+                  badPatch = -> Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
+                  if patches? and badPatch()?
+                    baddie = ["patch", badPatch]
 
               if baddie?
                 parent.postMessage({

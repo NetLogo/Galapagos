@@ -505,13 +505,80 @@ class window.SessionLite
   # (Boolean, Boolean, String) => Unit
   _performUpdate: (isFullUpdate, shouldRepaint, uuidToIgnore) ->
 
+    deepClone = (x) ->
+      if (not x?) or (typeof(x) in ["number", "string", "boolean"])
+        x
+      else if Array.isArray(x)
+        x.map(deepClone)
+      else
+        out = {}
+        for key, value of x
+          out[key] = deepClone(value)
+        out
+
+    mergeObjects = (obj1, obj2) ->
+
+      helper = (x, y) ->
+        for key, value of y
+          x[key] =
+            if x[key]? and (typeof value) is "object" and not Array.isArray(value)
+              helper(x[key], value)
+            else
+              value
+        x
+
+      clone1 = deepClone(obj1)
+      clone2 = deepClone(obj2)
+
+      helper(clone1, clone2, {})
+
+    # [T] @ (Object[T], Object[T]) => Object[T]
+    objectDiff = (x, y) ->
+
+      helper = (obj1, obj2) ->
+
+        { eq } = tortoise_require('brazier/equals')
+
+        out = {}
+
+        for key, value of obj1
+          key2 = key.toLowerCase()
+          if not obj2[key2]?
+            out[key] = value
+          else if not eq(obj2[key2])(value)
+            result =
+              if (typeof value) is "object" and not Array.isArray(value)
+                helper(value, obj2[key2])
+              else
+                value
+            if result?
+              out[key] = result
+
+        if Object.keys(out).length > 0
+          out
+        else
+          undefined
+
+      helper(x, y) ? {}
+
     viewUpdates =
       if isFullUpdate and Updater.hasUpdates()
         Updater.collectUpdates()
       else
         []
 
-    @widgetController.viewController.applyUpdate(viewUpdates)
+    drawingUpdate = viewUpdates.map((vu) -> vu.drawingEvents).reduce(((acc, x) -> (acc ? []).concat(x ? [])), [])
+    viewUpdates.forEach((vu) -> delete vu.drawingEvents)
+
+    mergedUpdate = viewUpdates.reduce(mergeObjects, {})
+    if drawingUpdate.length > 0
+      mergedUpdate.drawingEvents = drawingUpdate
+
+    # NOTE: I need to test this to see its performance implications
+    diffedUpdate = objectDiff(mergedUpdate, @widgetController.viewController.model)
+    trueUpdate = diffedUpdate
+
+    @widgetController.viewController.applyUpdate(trueUpdate)
 
     if shouldRepaint
       @widgetController.viewController.repaint()
@@ -523,7 +590,7 @@ class window.SessionLite
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
         plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? ???
 
-        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdates }, @_lastBCastTicks)
+        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdates: trueUpdate }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0
           for uuid, wind of @_subscriberObj
             if uuid isnt uuidToIgnore and wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
@@ -561,10 +628,10 @@ class window.SessionLite
 
     prunedPlots = @_prunePlotsUpdate(plotUpdates)
 
-    widgetObj  = retainIff((widgetUpdates).length > 0, "widgetUpdates" , widgetUpdates)
+    widgetObj  = retainIff(            (widgetUpdates).length > 0, "widgetUpdates" , widgetUpdates)
     monitorObj = retainIff(Object.keys(monitorUpdates).length > 0, "monitorUpdates", monitorUpdates)
-    plotObj    = retainIff(Object.keys(prunedPlots).length > 0, "plotUpdates"   , prunedPlots)
-    ticksObj   = retainIff(ticks? and ticks isnt lastTicks            , "ticks"         , ticks)
-    viewObj    = retainIff((viewUpdates).length > 0, "viewUpdates"   , viewUpdates)
+    plotObj    = retainIff(Object.keys(prunedPlots   ).length > 0, "plotUpdates"   , prunedPlots)
+    ticksObj   = retainIff(ticks? and ticks isnt lastTicks       , "ticks"         , ticks)
+    viewObj    = retainIff(Object.keys(viewUpdates   ).length > 0, "viewUpdates"   , viewUpdates)
 
     Object.assign({}, widgetObj, monitorObj, plotObj, ticksObj, viewObj)
