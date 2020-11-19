@@ -87,7 +87,7 @@ broadcastHNWPayload = (type, payload) ->
 # (String, Sting, Object[Any]) => Unit
 window.narrowcastHNWPayload = (uuid, type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  parent.postMessage({ type: "relay", recipient: uuid, payload: truePayload }, "*")
+  parent.postMessage({ type: "relay", isNarrowcast: true, recipient: uuid, payload: truePayload }, "*")
   return
 
 # () -> Unit
