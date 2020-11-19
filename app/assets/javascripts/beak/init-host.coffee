@@ -459,6 +459,8 @@ setUpEventListeners = ->
 
         )
 
+    return
+
   )
 
   return
