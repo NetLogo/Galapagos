@@ -45,6 +45,7 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
+  _hnwImageCache:        undefined # Object[Object[String]]
   _hnwWidgetGlobalCache: undefined # Object[Any]
   _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
   _subscriberObj:        undefined # Object[Window]
@@ -53,6 +54,7 @@ class window.SessionLite
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
+    @_hnwImageCache        = {}
     @_hnwWidgetGlobalCache = {}
     @_monitorFuncs         = {}
     @_subscriberObj        = {}
@@ -415,7 +417,8 @@ class window.SessionLite
   # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdate: Update }
   getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
-    viewUpdate    = { drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }
+    devs          = @_handleImageCache(drawingEvents, true)
+    viewUpdate    = { drawingEvents: devs, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }
     widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates(@widgetController.widgets()) }
     plotUpdates   = @widgetController.getPlotUpdates()
     ticks         = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
@@ -567,18 +570,24 @@ class window.SessionLite
       else
         []
 
-    drawingUpdate = viewUpdates.map((vu) -> vu.drawingEvents).reduce(((acc, x) -> (acc ? []).concat(x ? [])), [])
+    drawingUpdates = viewUpdates.map((vu) -> vu.drawingEvents).reduce(((acc, x) -> (acc ? []).concat(x ? [])), [])
     viewUpdates.forEach((vu) -> delete vu.drawingEvents)
 
     mergedUpdate = viewUpdates.reduce(mergeObjects, {})
-    if drawingUpdate.length > 0
-      mergedUpdate.drawingEvents = drawingUpdate
+    if drawingUpdates.length > 0
+      mergedUpdate.drawingEvents = drawingUpdates
 
     # NOTE: I need to test this to see its performance implications
     diffedUpdate = objectDiff(mergedUpdate, @widgetController.viewController.model)
-    trueUpdate = diffedUpdate
+    @widgetController.viewController.applyUpdate(diffedUpdate)
 
-    @widgetController.viewController.applyUpdate(trueUpdate)
+    joinerDrawings =
+      if (diffedUpdate.drawingEvents ? []).length > 0
+        { drawingEvents: @_handleImageCache(diffedUpdate.drawingEvents, false) }
+      else
+        {}
+
+    joinerUpdate = Object.assign({}, diffedUpdate, joinerDrawings)
 
     if shouldRepaint
       @widgetController.viewController.repaint()
@@ -590,7 +599,7 @@ class window.SessionLite
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
         plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? ???
 
-        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdate: trueUpdate }, @_lastBCastTicks)
+        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdate: joinerUpdate }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0
           for uuid, wind of @_subscriberObj
             if uuid isnt uuidToIgnore and wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
@@ -635,3 +644,41 @@ class window.SessionLite
     viewObj    = retainIff(Object.keys(viewUpdate    ).length > 0, "viewUpdate"    , viewUpdate)
 
     Object.assign({}, widgetObj, monitorObj, plotObj, ticksObj, viewObj)
+
+  # (Object[Object[Any]], Boolean) => Object[Object[Any]]
+  _handleImageCache: (drawingUpdates, isFullUpdate) ->
+
+    hashStr = (str) ->
+      hash = 0
+      for i in [0...str.length]
+        char  = str.charCodeAt(i)
+        hash  = ((hash << 5) - hash) + char
+        hash |= 0 # toInt
+      hash
+
+    drawingUpdates.map(
+      (du) =>
+        if du.type is "import-drawing"
+          hash = hashStr(du.imageBase64)
+          @_hnwImageCache[hash] = du.imageBase64
+          if isFullUpdate
+            Object.assign(du, { hash })
+          else
+            { type: "import-drawing-raincheck", hash }
+        else
+          du
+    )
+
+  # (String) => String
+  cashRainCheckFor: (id) ->
+    @_hnwImageCache[id]
+
+  # (String) => Unit
+  narrowcast: (uuid, type, update) ->
+    wind = @_subscriberObj[uuid]
+    if Object.keys(update).length > 0
+      if wind isnt null
+        wind.postMessage({ update, type }, "*")
+      else
+        narrowcastHNWPayload(uuid, type, { update })
+    return

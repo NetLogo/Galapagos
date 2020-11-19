@@ -69,8 +69,9 @@ window.sendHNWWidgetMessage = (type, message) ->
 # () -> Unit
 setUpEventListeners = ->
 
-  myRole     = undefined
-  myUsername = undefined
+  myRole         = undefined
+  myUsername     = undefined
+  cachedDrawings = {}
 
   window.addEventListener("message", (e) ->
 
@@ -152,7 +153,7 @@ setUpEventListeners = ->
 
             vc = session.widgetController.viewController
 
-            { turtles, patches, links } = viewUpdate
+            { turtles = {}, patches = {}, links = {}, drawingEvents = [] } = viewUpdate
             goodTurtles = -> Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?)
             goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?)
             goodPatches = -> Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
@@ -163,7 +164,42 @@ setUpEventListeners = ->
               ((not patches?) or goodPatches())
 
             if allAgentsAreKnown
-              vc.applyUpdate(viewUpdate)
+
+              checkIsMajorDrawingEvent =
+                (x) ->
+                  x.type in ["import-drawing-raincheck", "import-drawing", "clear-drawing"]
+
+              desWithIndices = drawingEvents.map((de, i) -> [de, i])
+
+              lastDrawingIndex =
+                desWithIndices.reduce(((acc, [de, i]) -> if checkIsMajorDrawingEvent(de) then i else acc), -1)
+
+              realDrawings =
+                drawingEvents.filter(
+                  (de) ->
+                    (not checkIsMajorDrawingEvent(de)) or (de is drawingEvents[lastDrawingIndex])
+                )
+
+              # Side-effectful munging to avoid blasting the host with 10 image requests on startup --JAB (11/19/20)
+              trueDrawings =
+                realDrawings.reduce(
+                  (acc, x) ->
+                    switch x.type
+                      when "import-drawing"
+                        cachedDrawings[x.hash] = x.imageBase64
+                        acc.concat([x])
+                      when "import-drawing-raincheck"
+                        if cachedDrawings[x.hash]?
+                          acc.concat({ type: "import-drawing", imageBase64: cachedDrawings[x.hash] })
+                        else
+                          sendHNWPayload("hnw-cash-raincheck", { id: x.hash })
+                          acc
+                      else
+                        acc.concat([x])
+                , [])
+
+              trueUpdate = Object.assign(viewUpdate, { drawingEvents: trueDrawings })
+              vc.applyUpdate(trueUpdate)
               vc.repaint()
 
             else

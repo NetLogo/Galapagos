@@ -156,6 +156,12 @@ setUpEventListeners = ->
       when "hnw-latest-ping"
         window.clients[e.data.joinerID].ping = e.data.ping
 
+      when "hnw-cash-raincheck"
+        imageBase64 = session.cashRainCheckFor(e.data.id)
+        imageUpdate = { type: "import-drawing", imageBase64, hash: e.data.id }
+        viewUpdate  = { drawingEvents: [imageUpdate] }
+        session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
+
       when "hnw-request-initial-state"
 
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
