@@ -130,7 +130,7 @@ setUpEventListeners = ->
         session.subscribeWithID(e.source, e.data.uuid)
       when "nlw-state-update", "nlw-apply-update"
 
-        { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdates } = e.data.update
+        { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdate } = e.data.update
 
         if ticks?
           world.ticker.reset()
@@ -142,9 +142,9 @@ setUpEventListeners = ->
         if plotUpdates?
           session.widgetController.applyPlotUpdates(plotUpdates)
 
-        if viewUpdates?
+        if viewUpdate?
           vc = session.widgetController.viewController
-          viewUpdates.forEach((vu) -> vc.applyUpdate(vu))
+          vc.applyUpdate(viewUpdate)
           vc.repaint()
 
       when "relay"

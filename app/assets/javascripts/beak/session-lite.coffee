@@ -39,8 +39,8 @@ window.AgentModel = tortoise_require('agentmodel')
 
 class window.SessionLite
 
-  # type HNWUpdate       = { widgetUpdates : Array[WidgetUpdate], monitorUpdates : Object[String], plotUpdates : Object[Array[Object[Any]]], ticks : Number, viewUpdates : Array[ViewUpdate] }
-  # type SparseHNWUpdate = { widgetUpdates?: Array[WidgetUpdate], monitorUpdates?: Object[String], plotUpdates?: Object[Array[Object[Any]]], ticks?: Number, viewUpdates?: Array[ViewUpdate] }
+  # type HNWUpdate       = { widgetUpdates : Array[WidgetUpdate], monitorUpdates : Object[String], plotUpdates : Object[Array[Object[Any]]], ticks : Number, viewUpdate : Array[ViewUpdate] }
+  # type SparseHNWUpdate = { widgetUpdates?: Array[WidgetUpdate], monitorUpdates?: Object[String], plotUpdates?: Object[Array[Object[Any]]], ticks?: Number, viewUpdate?: Array[ViewUpdate] }
   # type PlotsUpdate     = Object[Array[Object[Any]]]
 
   widgetController: undefined # WidgetController
@@ -412,14 +412,14 @@ class window.SessionLite
     delete @_subscriberObj[id]
     return
 
-  # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdates: Update }
+  # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], ticks: Number, viewUpdate: Update }
   getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
-    viewUpdates   = [{ drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }]
+    viewUpdate    = { drawingEvents, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }
     widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates(@widgetController.widgets()) }
     plotUpdates   = @widgetController.getPlotUpdates()
     ticks         = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
-    { widgetUpdates, plotUpdates, ticks, viewUpdates }
+    { widgetUpdates, plotUpdates, ticks, viewUpdate }
 
   # () => Array[Object[WidgetUpdate]]
   _genWidgetUpdates: ->
@@ -590,7 +590,7 @@ class window.SessionLite
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
         plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? ???
 
-        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdates: trueUpdate }, @_lastBCastTicks)
+        broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdate: trueUpdate }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0
           for uuid, wind of @_subscriberObj
             if uuid isnt uuidToIgnore and wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
@@ -622,7 +622,7 @@ class window.SessionLite
     out
 
   # (HNWUpdate, Number) => SparseHNWUpdate
-  _pruneUpdate: ({ widgetUpdates = {}, monitorUpdates = {}, plotUpdates = {}, ticks, viewUpdates = {} }, lastTicks) ->
+  _pruneUpdate: ({ widgetUpdates = {}, monitorUpdates = {}, plotUpdates = {}, ticks, viewUpdate = {} }, lastTicks) ->
 
     retainIff = (cond, key, value) -> if cond then { [key]: value } else {}
 
@@ -632,6 +632,6 @@ class window.SessionLite
     monitorObj = retainIff(Object.keys(monitorUpdates).length > 0, "monitorUpdates", monitorUpdates)
     plotObj    = retainIff(Object.keys(prunedPlots   ).length > 0, "plotUpdates"   , prunedPlots)
     ticksObj   = retainIff(ticks? and ticks isnt lastTicks       , "ticks"         , ticks)
-    viewObj    = retainIff(Object.keys(viewUpdates   ).length > 0, "viewUpdates"   , viewUpdates)
+    viewObj    = retainIff(Object.keys(viewUpdate    ).length > 0, "viewUpdate"    , viewUpdate)
 
     Object.assign({}, widgetObj, monitorObj, plotObj, ticksObj, viewObj)
