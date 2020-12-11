@@ -194,7 +194,10 @@
               e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
             };
           session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
-       }
+        } else if (e.data.type === "nlw-export-model") {
+          model = session.getNlogo();
+          e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
+        }
       });
 
       if (parent !== window) {
