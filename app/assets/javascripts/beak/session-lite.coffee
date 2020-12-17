@@ -150,7 +150,7 @@ class window.SessionLite
         @_lastUpdate = now()
         @widgetController.runForevers()
         if document.getElementById('hnw-go')?.checked
-          procedures.GO()
+          window.hnwGoProc()
         if now() >= updatesDeadline
           break
 

@@ -94,6 +94,7 @@ window.narrowcastHNWPayload = (uuid, type, payload) ->
 setUpEventListeners = ->
 
   window.clients = {}
+  window.hnwGoProc = (->)
 
   roles = {}
 
@@ -172,6 +173,12 @@ setUpEventListeners = ->
         username = e.data.username
         who      = world.turtleManager.peekNextID()
 
+        # NOTE
+        if role.onConnect?
+          result = procedures[role.onConnect.toUpperCase()](username)
+          if typeof result is 'number'
+            who = result
+
         window.clients[e.data.token] =
           { roleName: role.name
           , username
@@ -179,11 +186,7 @@ setUpEventListeners = ->
           , window: null
           }
 
-        # NOTE
-        if role.onConnect?
-          procedures[role.onConnect.toUpperCase()]()
-          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
-          session.updateWithoutRendering(e.data.token)
+        session.updateWithoutRendering(e.data.token)
 
         # NOTE
         monitorUpdates = session.monitorsFor(e.data.token)
@@ -291,16 +294,18 @@ setUpEventListeners = ->
         tabAreaElem = document.querySelector(".netlogo-tab-area")
         taeParent   = tabAreaElem.parentNode
 
-        setupButton           = document.createElement("button")
-        setupButton.innerHTML = "setup"
-        setupButton.id        = "hnw-setup-button"
-        setupButton.addEventListener('click', -> procedures.SETUP())
+        if e.data.onStart?
+          setupButton           = document.createElement("button")
+          setupButton.innerHTML = "setup"
+          setupButton.id        = "hnw-setup-button"
+          setupButton.addEventListener('click', -> procedures[e.data.onStart.toUpperCase()]())
+          taeParent.insertBefore(setupButton, tabAreaElem)
 
-        goCheckbox           = document.createElement("label")
-        goCheckbox.innerHTML = "go<input id='hnw-go' type='checkbox'>"
-
-        taeParent.insertBefore(setupButton, tabAreaElem)
-        taeParent.insertBefore(goCheckbox , tabAreaElem)
+        if e.data.onIterate?
+          goCheckbox           = document.createElement("label")
+          goCheckbox.innerHTML = "go<input id='hnw-go' type='checkbox'>"
+          window.hnwGoProc     = procedures[e.data.onIterate.toUpperCase()]
+          taeParent.insertBefore(goCheckbox , tabAreaElem)
 
         genUUID = ->
 
@@ -370,8 +375,7 @@ setUpEventListeners = ->
 
           # NOTE
           if role.onConnect?
-            procedures[role.onConnect.toUpperCase()]()
-            world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", "the supervisor")), false)
+            procedures[role.onConnect.toUpperCase()]("the supervisor")
             session.updateWithoutRendering(uuid)
 
           # NOTE
@@ -427,7 +431,12 @@ setUpEventListeners = ->
           username = "Fake Client"
           who      = world.turtleManager.peekNextID()
 
-          # TODO: This logic is wrong.  What if the `onConnect` makes multiple turtles?  Which `who` is owned by the client?
+          # NOTE
+          if role.onConnect?
+            result = procedures[role.onConnect.toUpperCase()](username)
+            if typeof result is 'number'
+              who = result
+
           # NOTE
           window.clients[uuid] =
             { roleName: role.name
@@ -436,11 +445,7 @@ setUpEventListeners = ->
             , window:   wind
             }
 
-          # NOTE
-          if role.onConnect?
-            procedures[role.onConnect.toUpperCase()]()
-            world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable("__hnw-username", username)), false)
-            session.updateWithoutRendering(uuid)
+          session.updateWithoutRendering(e.data.token)
 
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
