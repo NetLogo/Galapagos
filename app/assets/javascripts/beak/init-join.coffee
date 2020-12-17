@@ -155,7 +155,7 @@ setUpEventListeners = ->
 
             { turtles = {}, patches = {}, links = {}, drawingEvents = [] } = viewUpdate
             goodTurtles = -> Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?)
-            goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?)
+            goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.  links[key]?)
             goodPatches = -> Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
 
             allAgentsAreKnown =
@@ -210,7 +210,7 @@ setUpEventListeners = ->
               if turtles? and badTurtle()?
                 baddie = ["turtle", badTurtle]
               else
-                badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links  [key]?))
+                badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links[key]?))
                 if links? and badLink()?
                   baddie = ["link", badLink]
                 else
