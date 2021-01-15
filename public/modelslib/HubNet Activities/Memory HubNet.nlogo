@@ -441,7 +441,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. (2009).  NetLogo Memory HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetMemoryHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Wilensky, U. (2009).  NetLogo Memory HubNet model.  http://ccl.northwestern.edu/netlogo/models/MemoryHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -1029,7 +1029,7 @@ Circle -16777216 true false 113 68 74
 Polygon -10899396 true false 189 233 219 188 249 173 279 188 234 218
 Polygon -10899396 true false 180 255 150 210 105 210 75 240 135 240
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

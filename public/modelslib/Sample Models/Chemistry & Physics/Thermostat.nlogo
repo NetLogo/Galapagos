@@ -1,88 +1,111 @@
 globals [
-  blues      ;; agentset of all blue turtles
-  oranges    ;; agentset of all orange turtles
+  temperature  ; to track the current temperature
+  temperatures ; a list of old temperatures
 ]
 
 to setup
   clear-all
   set-default-shape turtles "circle"
-  ;; create the chain
-  ask patches with [pycor = round (max-pycor / 2) and
-                    pxcor < max-pxcor and
-                    pxcor > min-pxcor]
-    [ ;; turtles on even x coordinates are blue, odd are orange
-      sprout 1 [
-        set color item (pxcor mod 2) [blue orange]
-      ]
-    ]
-  ;; compute and store these agentsets since they won't change
-  ;; during the run
-  set blues turtles with [color = blue]
-  set oranges turtles with [color = orange]
+  set temperature initial-temp
+  set temperatures n-values 10 [initial-temp]
+  ask patches [
+
+    ; create the thermometer
+    if (((abs pxcor) < 5) and
+        (pycor < (max-pxcor - 15)) and
+        (pycor > (max-pxcor - 25)))
+      [ set pcolor green ]
+
+    ; create the sides of room
+    if (((abs pycor) <= (max-pxcor - 7)) and
+        ((abs pxcor) =  (max-pxcor - 7)))
+      [ set pcolor yellow ]
+
+    ; create the front and back of room
+    if (((abs pycor) =  (max-pxcor - 7)) and
+        ((abs pxcor) <= (max-pxcor - 7)))
+      [ set pcolor yellow ]
+  ]
+
+  ; create enough turtles to fill room to the init-temp
+  create-turtles (round (initial-temp * (((world-width - 16) * (world-width - 16)) / 81))) [
+    set color red
+    fd (random-float (max-pxcor - 8))
+  ]
   reset-ticks
 end
 
 to go
-  ask blues   [ move ]
-  ask oranges [ move ]
+  ; move turtles to model "heat circulation"
+  ask turtles [ circulate-heat ]
+  take-temperature ; measure the temperature
+  thermo-control  ; have the thermostat "respond"
   tick
 end
 
-to move  ;; turtle procedure
-  ;; choose a heading, and before moving the monomer,
-  ;; checks if the move would break or cross the chain
-  face one-of neighbors4
-  if not breaking-chain? and not crossing-chain?
-    [ fd 1 ]
+to thermo-control
+  ifelse temperature < goal-temp [
+    run-heater
+    ; show the heater
+    ask patches [
+      if (distancexy 0 0) <= 2 [ set pcolor  white ]
+    ]
+  ][ ; if we're at the goal temp
+    ask patches [
+      ; hide the heater
+      if (distancexy 0 0) <= 2 [ set pcolor black ]
+    ]
+  ]
 end
 
-to-report breaking-chain?  ;; turtle procedure
-  ;; checks if moving the turtle would break the chain
-  report (heading = 0 and any? turtles at-points [[-1 -1] [0 -1] [1 -1]])
-           or
-         (heading = 90 and any? turtles at-points [[-1 -1] [-1 0] [-1 1]])
-           or
-         (heading = 180 and any? turtles at-points [[-1 1] [0 1] [1 1]])
-           or
-         (heading = 270 and any? turtles at-points [[1 -1] [1 0] [1 1]])
+to run-heater
+  create-turtles heater-strength [ set color red ]
 end
 
-to-report crossing-chain?  ;; turtle procedure
-  ;; checks if moving the turtle would cross the chain
-  report (heading = 0 and any? turtles at-points [[-1 2] [0 2] [1 2]])
-           or
-         (heading = 90 and any? turtles at-points [[2 -1] [2 0] [2 1]])
-           or
-         (heading = 180 and any? turtles at-points [[-1 -2] [0 -2] [1 -2]])
-           or
-         (heading = 270 and any? turtles at-points [[-2 -1] [-2 0] [-2 1]])
+to circulate-heat  ; turtle procedure
+  if (pcolor = yellow) [
+    ; to be reflected back into the room, turtles choose a random point
+    ; inside and set their heading in that direction. This diffuses the
+    ; heat evenly around the room.
+    if ((random-float insulation) > 1) [
+      facexy ((random-float (world-width - 13)) - (max-pxcor - 6))
+                            ((random-float (world-width - 14)) - (max-pxcor - 6))
+    ]
+  ]
+  fd 1
+  if not can-move? 1 [ die ]
+end
+
+to take-temperature
+  set temperatures but-last fput count turtles with [ pcolor = green ] temperatures
+  set temperature mean temperatures
 end
 
 
-; Copyright 2005 Uri Wilensky.
+; Copyright 1998 Uri Wilensky.
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-121
-10
-769
-339
+309
+11
+814
+517
 -1
 -1
-4.0
+7.0
 1
 10
 1
 1
 1
 0
-1
-1
-1
 0
-159
 0
-79
+1
+-35
+35
+-35
+35
 1
 1
 1
@@ -90,10 +113,27 @@ ticks
 30.0
 
 BUTTON
-20
-35
-95
-68
+150
+60
+213
+93
+go
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+BUTTON
+85
+60
+145
+93
 NIL
 setup
 NIL
@@ -106,102 +146,143 @@ NIL
 NIL
 1
 
-BUTTON
-20
-125
-95
-158
-NIL
-go
-T
+SLIDER
+7
+10
+143
+43
+initial-temp
+initial-temp
+0.0
+99.0
+53.0
+1.0
 1
-T
-OBSERVER
 NIL
-NIL
-NIL
-NIL
-0
+HORIZONTAL
 
-BUTTON
-20
-80
-95
-113
-go once
-go
-NIL
+SLIDER
+152
+10
+288
+43
+goal-temp
+goal-temp
+0.0
+99.0
+67.0
+1.0
 1
-T
-OBSERVER
 NIL
+HORIZONTAL
+
+SLIDER
+8
+122
+144
+155
+heater-strength
+heater-strength
+1
+10
+4.0
+1
+1
 NIL
+HORIZONTAL
+
+SLIDER
+152
+122
+288
+155
+insulation
+insulation
+0.0
+100.0
+50.0
+1.0
+1
 NIL
-NIL
-0
+HORIZONTAL
+
+MONITOR
+107
+168
+188
+213
+temperature
+temperature
+1
+1
+11
+
+PLOT
+10
+228
+301
+468
+Temperature
+Time
+Temp
+0.0
+300.0
+0.0
+134.0
+true
+false
+"set-plot-y-range 0 (goal-temp * 2)" ""
+PENS
+"temperature" 1.0 0 -2674135 true "" "plot temperature"
+"goal-temp" 1.0 0 -10899396 true "" "plot goal-temp"
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model simulates the motion of a simple polymer.  Polymers are simply long chains of identical, smaller molecules called monomers, which often have some mobility, causing many polymers to be flexible.  Many common materials and chemical substances are polymers, for example plastics and proteins.
+A thermostat is a device that responds to the temperature of a room in order to maintain the temperature at some desired level.  This is often used as an example of feedback control, where a system adjusts its behavior in response the effects of its prior behavior. Generally speaking, heating systems have only two settings - on and off - and it is the job of the thermostat to turn the heater on and off at the appropriate times. A simple thermostat does this by switching the heater on when the temperature of the room has fallen below the set desired temperature, and switching the heater off once the desired temperature has been reached or exceeded.
 
 ## HOW IT WORKS
 
-The polymer is modeled using a cellular automaton approach involving only local interactions.
+In this model, the red turtles represent heat, and the yellow border demarcates the room whose temperature is being regulated. The yellow border is semi-permeable, allowing some of the heat that hits it to escape from the room. This heat disappears from the model once it reaches the edge of the world. A thermometer, indicated by the green square, measures the approximate temperature of the room (effectively, the density of red turtles). The heater is located in the center of the room, represented by a white patch.
 
-Initially the monomers are colored alternating orange and blue.  Blue monomers interact only with their two neighboring orange monomers, and vice versa.
-
-Movement occurs in two alternating phases, one for the orange monomers, one for the blue.  For each monomer (of the appropriate color) a random direction to move in is chosen.  Before making the actual move we check if the move would cause the chain to either break or cross itself.  If not, the monomer moves one step in that direction.
-
-To check if a move will break the chain, we see if the moving monomer will leave a blank patch behind it.  To check if it will cross the chain, we see if the movement will cause the monomer to be next to another piece of the chain in front of it.
+It should be noted that use of turtles in this model to represent heat **is not intended to be physically realistic**. Instead, it is an example where a model is simplified in such a way so as to make another feature of the model more salient. In this case, it is the regulating function of the thermostat that we are primarily concerned with.
 
 ## HOW TO USE IT
 
-SETUP: initializes the simulation
+SETUP: Resets the simulation, and sets the initial temperature according to init-temp.
+GO: Starts and stops the simulation.
 
-GO: starts the simulation
+INITIAL-TEMP: The initial temperature of the room. This takes effect only when the SETUP button is pressed.
+GOAL-TEMP: The thermostat aims to maintain the room at this temperature. It may be adjusted in the middle of a simulation.
+TEMPERATURE: Monitors the temperature in the room, as detected by the green box near the top.
 
-GO ONCE: advances the simulation one step only
+HEATER-STRENGTH: The number of red turtles created by the heater in a tick (if the heater is 'on').
+
+INSULATION: The efficiency of the room's insulation, or the rate at which heat escapes from the room. Higher numbers allow less heat to escape; lower number numbers allow more. This may be adjusted during a simulation.
+
+There is also a plot, which tracks the temperature over time (in red) and the desired temperature (in green).
 
 ## THINGS TO NOTICE
 
-One interesting thing to notice is that, despite all the interactions being local, the polymer has a very realistic macroscopic movement.
+With some settings, the room cannot be heated to the desired temperature (for example, the room attains a maximum temperature that is lower than the desired temperature). Under what circumstances does this happen?
 
-## THINGS TO TRY
+Look at the plot: does the thermostat do a good job of keeping the temperature at the desired level? If we hold the variables constant, to what factors can we attribute fluctuations of the temperature (in red) over the desired temperature (in green)?
 
-Try a much longer polymer.  This is done by making the world size bigger.  (You'll probably want to reduce the patch size.)
+Try adjusting the insulation of the room and the strength of the heater. Do these factors affect the efficiency of the thermostat (i.e. cause the temperature to stay closer or further from the desired temperature)?
 
-Slow down the simulation, and observe the local interaction closely.
-
-Activate the 3D view, and try to follow a turtle.
+Notice that there is a delay from the time the heater is turned on to the time when this added heat reached the thermometer. What are the consequences of this delay?
 
 ## EXTENDING THE MODEL
 
-Measure the distance between the two ends of the polymer and plot how it changes over time.
+The thermostat in this model uses a very simple rule to control the heater based on the temperature. It might be possible to improve the performance of this system by making it 'smarter'. One suggestion is to write a control program that turns the heater on and off before the temperature hits the desired temperature --- this would compensate for the delay mentioned above. Try rewriting the function THERMO-CONTROL. Keep in mind that the only inputs your control function should have are GOAL-TEMP and TEMPERATURE, and the only action should be to either call RUN-HEATER or not. Notice this leaves open the possibility of creating variables to store past information.
 
-Are other movement rules possible, without causing the chain to break or cross?
+Much of observed instability in the temperature might simply be attributed to the thermometer that we are using. The current thermometer takes an average of the number of turtles occupying the green patches over the past ten ticks. Why do you suppose we are measuring the temperature in such a way, instead of simply counting the number of turtles inside the room? Can you design a better thermometer?
 
-Try having different mobility for different kinds of monomers.
+This model doesn't account for how the outside temperature (outside the yellow box) could effect the inside temperature.  Alter the model so that this now becomes a factor.
 
-Make a preferential direction for movement, determined by a slider.
+The heater in this model puts out heat at a fixed rate, regardless of how long it has been on. Real heaters generally have a warm up period during which time they slowly increase their output, until they reach their maximum rate. Try adjusting the heater in this model to act more like a real heater. How does this affect the behavior or efficiency of the thermostat? How might we alter THERMO-CONTROL to account for this?
 
-Allow monomers to break apart from the polymer, in some particular situations.  Why might this happen?
-
-## NETLOGO FEATURES
-
-In order for the model to operate correctly on a torus, the dimensions of the world must be even, so we put the world origin in the corner.
-
-## RELATED MODELS
-
-CA 1D Elementary - an introduction to cellular automata
-Life Turtle-Based - a cellular automaton implemented, like this one, using turtles
-Radical Polymerization - another model about polymers
-
-## CREDITS AND REFERENCES
-
-For a detailed treatment of this model, see Yaneer Bar-Yam, Dynamics of Complex Systems (2003), pages 496-502.  Westview Press, Boulder, CO.  The book is available online at https://necsi.edu/dynamics-of-complex-systems.
-
-See also Y. Bar-Yam, Y. Rabin, M. A. Smith, Macromolecules Rep. 25 (1992) 2985.
+Begin a simulation with INITIAL-TEMP set to zero, and notice how long it takes to heat up the room. This means that if we wanted to warm the room up at a certain time it might make sense to turn the heater on beforehand. Introduce time into this model, and try adjusting the thermostat so that it heats the room according to some schedule.
 
 ## HOW TO CITE
 
@@ -209,7 +290,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. (2005).  NetLogo Polymer Dynamics model.  http://ccl.northwestern.edu/netlogo/models/PolymerDynamics.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Wilensky, U. (1998).  NetLogo Thermostat model.  http://ccl.northwestern.edu/netlogo/models/Thermostat.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -217,7 +298,7 @@ Please cite the NetLogo software as:
 
 ## COPYRIGHT AND LICENSE
 
-Copyright 2005 Uri Wilensky.
+Copyright 1998 Uri Wilensky.
 
 ![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
 
@@ -225,7 +306,11 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 
 Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
 
-<!-- 2005 -->
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+
+This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
+
+<!-- 1998 2001 -->
 @#$#@#$#@
 default
 true
@@ -509,7 +594,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -526,5 +611,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

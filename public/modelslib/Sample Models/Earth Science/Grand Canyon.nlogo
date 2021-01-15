@@ -325,9 +325,9 @@ Erosion
 
 ## CREDITS AND REFERENCES
 
-National Elevation Dataset: https://lta.cr.usgs.gov/NED
-ArcGIS: http://www.esri.com/software/arcgis
-My World GIS: http://www.myworldgis.org/
+National Elevation Dataset: https://catalog.data.gov/dataset/usgs-national-elevation-dataset-ned
+ArcGIS: https://www.esri.com/en-us/arcgis/about-arcgis/overview
+My World GIS (archival): https://serc.carleton.edu/resources/19436.html
 
 Thanks to Eric Russell for his work on this model.
 
@@ -637,7 +637,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 startup
 set draw? true

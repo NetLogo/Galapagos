@@ -6,8 +6,8 @@ globals [ goal operators inputs ]
 
 to setup
   clear-all
-  set operators ["+ " "- " "* "]  ;; set up the usable operators
-  set inputs ["heading " "xcor " "1 " "2 " "10 "]  ;; set up the usable inputs
+  set operators [ "+ " "- " "* " ]  ;; set up the usable operators
+  set inputs [ "heading " "xcor " "1 " "2 " "10 " ]  ;; set up the usable inputs
 
   ;; create the first generation of turtles and have them put their pens down
   ;;   so we can see them when they draw
@@ -551,7 +551,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

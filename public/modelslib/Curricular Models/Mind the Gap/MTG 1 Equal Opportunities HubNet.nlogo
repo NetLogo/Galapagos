@@ -577,6 +577,10 @@ Please cite the NetLogo software as:
 
 * Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
+Please cite the HubNet software as:
+
+* Wilensky, U. & Stroup, W. (1999). HubNet. http://ccl.northwestern.edu/netlogo/hubnet.html. Center for Connected Learning and Computer-Based Modeling, Northwestern University. Evanston, IL.
+
 To cite the Mind the Gap curriculum as a whole, please use:
 
 * Guo, Y. & Wilensky, U. (2018). Mind the Gap curriculum. http://ccl.northwestern.edu/MindtheGap/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
@@ -1017,7 +1021,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

@@ -1,65 +1,121 @@
-patches-own [heat]
+extensions [time csv]
+__includes ["time-series.nls"]
+
+globals [
+  start-time    ; the time at which the first trap is triggered
+  finish-time   ; the time when the last trap is triggered
+  current-time  ; the current simulation time
+  snap-log      ; a log of times at which traps snap
+]
+
+patches-own [ trigger-time ] ; The non-integer time at which trap triggers
 
 to setup
   clear-all
-  ask patches [
-    set heat random 212
-    set pcolor scale-color red heat 0 212
-  ]
   reset-ticks
-end
-
-to go
-  diffuse heat 1
   ask patches [
-    ;; warm up patches till they reach 212
-    set heat (heat + 5) mod 212
-    set pcolor scale-color red heat 0 212
+    set pcolor yellow   ; Yellow means the trap has not triggered
   ]
-  tick
+
+  ; Initialize the simulation time
+  set start-time time:create "2010-01-01 12:00:00"
+  set current-time time:anchor-to-ticks start-time 1.0 "second"
+  time:anchor-schedule start-time 1.0 "second"
+
+  ; Create a log of times at which traps snap
+  set snap-log (ts-create ["trap-xcor" "trap-ycor"])
 end
 
-to-report average-heat
-  report mean [heat] of patches
+to start  ; Starts a simulation -- which then runs until no more balls are
+          ; in the air.
+  ; Set off one trap to start the action
+  time:schedule-event (one-of patches) [ -> snap ] current-time
+
+  ; Execute the schedule
+  time:go
+
+  ; Finally, histogram the trap snap times
+  ; We can only histogram numbers, but the snap-log records times in logotime format.
+  ; So we create a temporary list of snap times in seconds using "map".
+  ; Use time:difference-between instead of time:get because time:get reports only integer values.
+  set-current-plot "Snap time distribution"
+  ; print (ts-get-range snap-log start-time current-time "logotime")
+  histogram map [ a-time -> time:difference-between start-time a-time "second" ]
+    (ts-get-range snap-log start-time current-time "logotime")
+end
+
+to snap  ; Executed by a trap when a ball lands on it
+  ; Stop if trap has already snapped
+  if pcolor != black [
+    set pcolor red   ; Show the snap
+    display          ; So we can see things happen on the View
+    set pcolor black ; Black means the trap has triggered
+
+    ; Send 2 balls in air, determine where and when they land
+    repeat 2
+    [
+      let trap-ball-lands-on one-of (patches in-radius 5)
+      let ball-travel-time random-float (mean-flight-time * 2)
+      let ball-arrival-time time:plus current-time ball-travel-time "seconds"
+      time:schedule-event trap-ball-lands-on [ -> snap ] ball-arrival-time
+    ]
+
+    ; Finally, update outputs
+    update-output
+  ]
+end
+
+to update-output
+  ; Plot the number of balls in the air = "snaps" scheduled but not executed
+  set-current-plot "Balls in air"
+  plotxy ticks time:size-of-schedule
+
+  ; Plot number of traps remaining untriggered
+  set-current-plot "Untriggered traps"
+  plotxy ticks count patches with [pcolor = yellow]
+
+  ; Record the snap time, converted to seconds because we don't need the date, hour, etc.
+  set snap-log ts-add-row snap-log (sentence current-time pxcor pycor)
 end
 
 
-; Copyright 1998 Uri Wilensky.
-; See Info tab for full copyright and license.
+; Public Domain:
+; To the extent possible under law, Uri Wilensky has waived all
+; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-262
+436
 10
-675
-424
+939
+514
 -1
 -1
-5.0
+15.0
 1
 10
 1
 1
 1
 0
+0
+0
 1
-1
-1
--40
-40
--40
-40
-1
-1
+-16
+16
+-16
+16
+0
+0
 1
 ticks
 30.0
 
 BUTTON
-57
-50
-124
-83
-setup
+10
+10
+81
+43
+NIL
 setup
 NIL
 1
@@ -72,13 +128,13 @@ NIL
 1
 
 BUTTON
-135
-50
-202
-83
+94
+10
+157
+43
 NIL
-go
-T
+start
+NIL
 1
 T
 OBSERVER
@@ -89,87 +145,96 @@ NIL
 0
 
 PLOT
-9
-98
-252
-294
-Average Heat
-Time
-Avg Heat
+4
+118
+204
+268
+Balls in air
+Ticks
+Balls in air
 0.0
-50.0
+10.0
 0.0
-212.0
+10.0
 true
 false
 "" ""
 PENS
-"ave-heat" 1.0 0 -2674135 true "" "plot average-heat"
+"default" 1.0 0 -2674135 true "" ""
+
+PLOT
+4
+276
+204
+426
+Untriggered traps
+Ticks
+Untriggered traps
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -1184463 true "" ""
+
+INPUTBOX
+7
+54
+102
+114
+mean-flight-time
+1.0
+1
+0
+Number
+
+PLOT
+215
+118
+415
+268
+Snap time distribution
+Snap time, seconds
+Number of traps
+0.0
+5.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 0.2 1 -16777216 true "" ""
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This project depicts a simple cellular automata model that resembles a pot of boiling water. Heat is applied evenly to the entire pot, but when the temperature of a patch reaches the boiling temperature, the bubble pops and that patch's temperature drops to zero.
+This NetLogo code implements the version of the Mousetrap model described in Section 14.2.5 of _Agent-Based and Individual-Based Modeling_, Railsback & Grimm (2012). This model is completely independent of the Mousetrap model in NetLogo's Models library. The code is provided as a demonstration of continuous time, or discrete event, scheduling as an alternative to the discrete ticks used in the book's other models using the `time` extension.
 
-This process is analogous to the way in which a hot enough region of water gives up some heat by forming a bubble of steam. The water right around the steam bubble cools off for a moment.
+## HOW IT WORKS?
 
-## HOW IT WORKS
+This model makes use of several Time extension primitives to demonstrate discrete event scheduling:
 
-If all of a cell's neighbors are at the maximum value of 212, then that cell's new value will be 213 which gets wrapped down to zero. At the next tick, the presence of this zero-valued cell will lower the values of the cell's nearest neighbors.
+`time:create`
+`time:anchor-to-ticks`
+`time:anchor-schedule`
+`time:schedule-event`
+`time:go`
+`time:difference-between`
+`time:plus`
+`time:schedule-event`
+`time:size-of-schedule`
 
-## HOW TO USE IT
+See the `time` extension documentation for more details on each of these primitives.
 
-Click the SETUP button to set up a random field of heat.
+## CREDITS
 
-Click the BOIL button to start adding heat to the pot and watch it boil. The redder the color, the hotter the patch (Black is very cool and white is very hot).
+Prepared by Colin Sheppard and Steve Railsback, 7 Nov 2013.
 
-## THINGS TO NOTICE
-
-Watch how the added heat diffuses through the pot. When bubbles pop, the resulting drop in heat affects nearby patches too by taking away their heat.
-
-What happens to the average heat in the pot?
-
-## EXTENDING THE MODEL
-
-Try diffusing the heat more slowly through the system.
-
-Change the diffuse parameter from 1 to a smaller fraction.
-
-Add "ice cubes".
-
-Add a heat sink, such as edges that constantly cool the liquid.
-
-## CREDITS AND REFERENCES
-
-This model is described on page 79 in "Artificial Life Lab", by Rudy Rucker, published in 1993 by Waite Group Press.
-
-## HOW TO CITE
-
-If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
-
-For the model itself:
-
-* Wilensky, U. (1998).  NetLogo Boiling model.  http://ccl.northwestern.edu/netlogo/models/Boiling.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
-
-Please cite the NetLogo software as:
-
-* Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
-
-## COPYRIGHT AND LICENSE
-
-Copyright 1998 Uri Wilensky.
-
-![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
-
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
-
-Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
-
-This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
-
-This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227. Converted from StarLogoT to NetLogo, 2001.
-
-<!-- 1998 2001 -->
+<!-- 2020 -->
 @#$#@#$#@
 default
 true
@@ -453,10 +518,9 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
-setup
-repeat 110 [ go ]
+need-to-manually-make-preview-for-this-model
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -472,5 +536,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

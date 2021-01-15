@@ -505,7 +505,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Unterman, J. and Wilensky, U. (2007).  NetLogo PANDA BEAR HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetPANDABEARHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Unterman, J. and Wilensky, U. (2007).  NetLogo PANDA BEAR HubNet model.  http://ccl.northwestern.edu/netlogo/models/PANDABEARHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -732,7 +732,7 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

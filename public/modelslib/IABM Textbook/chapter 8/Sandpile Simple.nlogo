@@ -7,7 +7,7 @@ globals [
 ]
 
 ;; n is how many grains of sand are on this patch
-patches-own [n]
+patches-own [ n ]
 
 ;; The input task says what each patch should do at setup time
 ;; to compute its initial value for n.  (See the Tasks section
@@ -415,7 +415,7 @@ true
 0
 Polygon -7500403 true true 150 5 40 250 150 205 260 250
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 setup-random repeat 50 [ go ]
 @#$#@#$#@

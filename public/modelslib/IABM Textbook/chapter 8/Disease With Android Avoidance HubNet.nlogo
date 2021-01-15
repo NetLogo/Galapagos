@@ -893,6 +893,10 @@ Please cite the NetLogo software as:
 
 * Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
+Please cite the HubNet software as:
+
+* Wilensky, U. & Stroup, W. (1999). HubNet. http://ccl.northwestern.edu/netlogo/hubnet.html. Center for Connected Learning and Computer-Based Modeling, Northwestern University. Evanston, IL.
+
 Please cite the textbook as:
 
 * Wilensky, U. & Rand, W. (2015). Introduction to Agent-Based Modeling: Modeling Natural, Social and Engineered Complex Systems with NetLogo. Cambridge, MA. MIT Press.
@@ -1334,7 +1338,7 @@ Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 Circle -2674135 true false 156 156 108
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

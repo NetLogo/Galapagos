@@ -1056,6 +1056,10 @@ Please cite the NetLogo software as:
 
 * Wilensky, U. (1999). NetLogo. http://ccl.northwestern.edu/netlogo/. Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
+Please cite the HubNet software as:
+
+* Wilensky, U. & Stroup, W. (1999). HubNet. http://ccl.northwestern.edu/netlogo/hubnet.html. Center for Connected Learning and Computer-Based Modeling, Northwestern University. Evanston, IL.
+
 ## COPYRIGHT AND LICENSE
 
 Copyright 2011 Uri Wilensky.
@@ -1275,7 +1279,7 @@ Line -7500403 true 40 216 255 90
 Line -7500403 true 84 40 210 255
 Circle -7500403 true true 120 0 60
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

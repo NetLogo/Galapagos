@@ -888,7 +888,7 @@ CRISPR Bacterium
 
 ## CREDITS AND REFERENCES
 
-The image of a CRISPR locus was adapted by Merry Youle of the Small Things Considered blog for their article [Six Questions About CRISPRs](http://schaechter.asmblog.org/schaechter/2011/04/six-questions-about-crisprs.html) from Sorek, R., Kunin, V. & Hugenholz, P. CRISPR - a widespread system that provides acquired resistance against phages in bacteria and archaea. _Nature Reviews Microbiology_ **6**, 181-186 (2008).
+The image of a CRISPR locus was adapted by Merry Youle of the Small Things Considered blog for their article [Six Questions About CRISPRs](https://schaechter.asmblog.org/schaechter/2011/04/six-questions-about-crisprs.html) from Sorek, R., Kunin, V. & Hugenholz, P. CRISPR - a widespread system that provides acquired resistance against phages in bacteria and archaea. _Nature Reviews Microbiology_ **6**, 181-186 (2008).
 
 For general information about CRISPR, visit https://sites.tufts.edu/crispr/ or see the review below:
 
@@ -1268,7 +1268,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 setup n-values initial-array-size [random max-virus-types] guide-unbind-chance processivity crispr-function
 repeat 50 [ go ]

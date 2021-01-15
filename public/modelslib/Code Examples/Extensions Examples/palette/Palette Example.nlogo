@@ -125,7 +125,7 @@ See [the documentation for the extension](https://github.com/NetLogo/Palette-Ext
 
 ## CREDITS AND REFERENCES
 
-ColorBrewer: http://colorbrewer2.org/
+ColorBrewer: https://colorbrewer2.org/
 
 <!-- 2014 -->
 @#$#@#$#@
@@ -434,7 +434,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 scheme-color-scale-gradient
 @#$#@#$#@

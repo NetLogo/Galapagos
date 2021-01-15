@@ -680,9 +680,6 @@ https://en.wikipedia.org/wiki/Lightning
 How Stuff Works on Lightning:
 https://science.howstuffworks.com/nature/natural-disasters/lightning.htm
 
-National Geographic on Lightning:
-http://environment.nationalgeographic.com/environment/natural-disasters/lightning-profile.html
-
 ## HOW TO CITE
 
 If you mention this model or the NetLogo software in a publication, we ask that you include the citations below.
@@ -1038,7 +1035,7 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 setup
 repeat 50 [ go ]

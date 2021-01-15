@@ -1032,7 +1032,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Novak, M. and Wilensky, U. (2006).  NetLogo Bug Hunters Adaptations HubNet model.  http://ccl.northwestern.edu/netlogo/models/HubNetBugHuntersAdaptationsHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Novak, M. and Wilensky, U. (2006).  NetLogo Bug Hunters Adaptations HubNet model.  http://ccl.northwestern.edu/netlogo/models/BugHuntersAdaptationsHubNet.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -1413,7 +1413,7 @@ false
 Polygon -7500403 true true 75 30 30 75 105 150 30 225 75 270 150 195 225 270 270 225 195 150 270 75 225 30 150 105
 Polygon -16777216 false false 30 75 105 150 30 225 75 270 150 195 225 270 270 225 195 150 270 75 225 30 150 105 75 30
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

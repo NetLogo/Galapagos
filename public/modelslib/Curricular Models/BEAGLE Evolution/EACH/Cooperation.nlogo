@@ -389,9 +389,9 @@ count cooperative-cows
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model (and Altruism and Divide the Cake) are part of the EACH unit ("Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution").  See http://ccl.northwestern.edu/rp/each/index.shtml for more information on the EACH unit. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/rp/beagle/index.shtml.
-
 This is an evolutionary biology model.  In it, agents (cows) compete for natural resources (grass).  Cows that are more successful in getting grass reproduce more often, and will thus be more evolutionarily successful.  This model includes two kinds of cows, greedy and cooperative.  It shows how these two different strategies do when competing against each other within a population that evolves over time.
+
+This model (and Altruism and Divide the Cake) are part of the EACH unit ("Evolution of Altruistic and Cooperative Habits: Learning About Complexity in Evolution").  See http://ccl.northwestern.edu/rp/each/index.shtml for more information on the EACH unit. The EACH unit is embedded within the BEAGLE (Biological Experiments in Adaptation, Genetics, Learning and Evolution) evolution curriculum. See http://ccl.northwestern.edu/rp/beagle/index.shtml.
 
 ## HOW IT WORKS
 
@@ -457,7 +457,8 @@ Breeds are used to represent the two different kinds of agents.  The `turtles` p
 
 ## RELATED MODELS
 
-Altruism
+* Altruism
+* Divide the Cake
 
 ## CREDITS AND REFERENCES
 
@@ -775,7 +776,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

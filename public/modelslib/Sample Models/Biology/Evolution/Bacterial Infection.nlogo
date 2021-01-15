@@ -846,7 +846,7 @@ Bacteria Hunt Speeds and Bacteria Food Hunt.
 
 ## CREDITS AND REFERENCES
 
-This model is part of a high school unit on evolution, "Why Don't Antibiotics Work Like They Used To?"  The unit is freely available on http://www.nextgenstorylines.org
+This model is part of a high school unit on evolution, "Why Don't Antibiotics Work Like They Used To?"  The unit is freely available on https://www.nextgenstorylines.org
 
 This model and related curricular materials were developed with funding through a grant from the Gordon and Betty Moore Foundation to Northwestern University and the University of Colorado Boulder.
 
@@ -1446,7 +1446,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

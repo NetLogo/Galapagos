@@ -390,7 +390,7 @@ This model uses the NetLogo GoGo Extension. For more information, see the GoGo E
 
 To learn about GoGo Boards, see https://gogoboard.org.
 
-This model was created by Paulo Blikstein at Stanford's [Transformative Learning Technologies Lab](https://tltl.stanford.edu/).
+This model was created by Paulo Blikstein at Stanford's [Transformative Learning Technologies Lab](https://tltlab.org).
 
 <!-- 2012 -->
 @#$#@#$#@
@@ -676,7 +676,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@

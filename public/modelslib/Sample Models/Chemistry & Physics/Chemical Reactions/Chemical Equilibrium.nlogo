@@ -211,10 +211,10 @@ count turtles with [color = green]
 MONITOR
 83
 137
-163
+160
 182
-browns
-count turtles with [color = brown]
+pinks
+count turtles with [color = pink]
 3
 1
 11
@@ -238,7 +238,7 @@ PENS
 "yellows" 1.0 0 -1184463 true "" "plot count turtles with [color = yellow]"
 "blues" 1.0 0 -13345367 true "" "plot count turtles with [color = blue]"
 "greens" 1.0 0 -12087248 true "" "plot count turtles with [color = green]"
-"browns" 1.0 0 -2064490 true "" "plot count turtles with [color = pink]"
+"pinks" 1.0 0 -2064490 true "" "plot count turtles with [color = pink]"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -618,7 +618,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

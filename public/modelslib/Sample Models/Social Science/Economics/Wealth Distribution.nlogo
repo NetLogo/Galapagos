@@ -68,19 +68,18 @@ to setup-turtles
   create-turtles num-people
     [ move-to one-of patches  ;; put turtles on patch centers
       set size 1.5  ;; easier to see
-      set-initial-turtle-vars
-      set age random life-expectancy ]
+      set-initial-turtle-vars ]
   recolor-turtles
 end
 
 to set-initial-turtle-vars
-  set age 0
   face one-of neighbors4
   set life-expectancy life-expectancy-min +
                         random (life-expectancy-max - life-expectancy-min + 1)
   set metabolism 1 + random metabolism-max
   set wealth metabolism + random 50
   set vision 1 + random max-vision
+  set age random life-expectancy
 end
 
 ;; Set the class of the turtles -- if a turtle has less than a third
@@ -876,7 +875,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

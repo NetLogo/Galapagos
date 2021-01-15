@@ -1,15 +1,14 @@
-turtles-own
-[
-  temp               ;; specific turtle's temperature
-  turtle-neighbors   ;; set of surrounding turtles
+turtles-own [
+  temp                 ;; this turtle's temperature
+  neighboring-turtles  ;; agentset of surrounding turtles
+  sides-exposed        ;; number of sides exposed to cooling walls  (between 0 and 4)
 ]
 
-globals
-[
+globals [
   ave-metal-temp   ;; shows average temperature of all metal
   num-frozen       ;; keeps track of how many atoms are frozen
   temp-range       ;; for histogram
-  colors           ;; used both to color turtles, and for histogra
+  colors           ;; used both to color turtles, and for histogram
   pens             ;; keeps track of all the histogram's pen names
 ]
 
@@ -18,24 +17,36 @@ to setup
   set colors sentence (white - 1) [cyan sky blue violet magenta red]
   set pens []
   set temp-range (init-metal-temp - melting-temp) / (length colors - 1)
-
-  ask patches with [(abs pycor >= box-width / 2) or
-                    (abs pxcor >= box-width / 2)]
-  [ set pcolor white ]
-
-  ;; fill room to desired percentage
-  ask patches
-  [
-    if ((fill-percentage > random-float 100) and (pcolor != white))
+  let ymax (height + 1) / 2
+  let xmax (width + 1) / 2
+  ;; create turtles everywhere inside the given box range
+  ask patches [
+    if ((abs pycor) < ymax) and ((abs pxcor) < xmax)
     [
       sprout 1
       [
         set shape "T"
         set temp init-metal-temp
-        set turtle-neighbors (turtles at-points [[1 0] [0 1] [-1 0] [0 -1]])
         set-color
       ]
     ]
+  ]
+  ;; set sides of box for cooling
+  ask patches [
+    if      (heat-top? and (pycor = ymax) and (abs pxcor <= xmax)) or
+      (heat-left? and (pxcor = (- xmax)) and (abs pycor <= ymax)) or
+          (heat-right? and (pxcor = xmax) and (abs pycor <= ymax)) or
+    (heat-bottom? and (pycor = (- ymax)) and (abs pxcor <= xmax))
+    [ set pcolor 16 ]
+  ]
+  ask turtles [
+    set neighboring-turtles (turtles at-points [[-1  1] [ 0  1] [1  1]
+                                                [-1  0] [ 0  0] [1  0]
+                                                [-1 -1] [ 0 -1] [1 -1]])
+    set sides-exposed (count patches at-points [[-1  1] [ 0  1] [1  1]
+                                                [-1  0] [ 0  0] [1  0]
+                                                [-1 -1] [ 0 -1] [1 -1]]
+                       with [(not any? turtles-here) and (pcolor = black)])
   ]
   set ave-metal-temp init-metal-temp
   reset-ticks
@@ -44,29 +55,14 @@ end
 
 to go
   ;; stop if all turtles are below melting temp
-  if (max ([temp] of turtles) < melting-temp)[ stop ]
+  if (max ([temp] of turtles) < melting-temp) [ stop ]
   ;; otherwise...
   set num-frozen 0
-  ask turtles [ move ]
-  ask turtles [ rotate ]
   ask turtles [ cool-turtles ]
   ask turtles [ set-color ]
+  ask turtles [ rotate ]
   set ave-metal-temp (mean [temp] of turtles)
   tick
-end
-
-
-;; turtles procedure -- if metal is liquid, move to a randomly
-;; selected neighboring patch that is not already occupied
-to move
-  if (temp > melting-temp)
-  [
-    let move-choices neighbors4 with [(pcolor != white) and (not any? turtles-here)]
-    if any? move-choices
-    [
-      move-to one-of move-choices
-    ]
-  ]
 end
 
 
@@ -74,10 +70,8 @@ end
 ;; change its heading to that of the solid; otherwise, just rotate
 ;; randomly
 to rotate
-  set turtle-neighbors turtles at-points [[1 0] [0 1] [-1 0] [0 -1]]
-  if (temp > melting-temp)
-  [
-    let frozen-neighbors (turtle-neighbors with [temp <= melting-temp])
+  if (temp >= melting-temp) [
+    let frozen-neighbors (neighboring-turtles with [temp <= melting-temp])
     ifelse (any? frozen-neighbors)
       [ set heading ([heading] of (one-of frozen-neighbors)) ]
       [ rt random-float 360 ]
@@ -89,26 +83,22 @@ end
 ;; neighboring turtles and patches added turtle's own temp in twice so
 ;; it changes more slowly
 to cool-turtles
-  let walled-sides neighbors4 with [pcolor = white]
-  let total-temp ((sum [temp] of turtle-neighbors) +
-                  (room-temp * (count walled-sides) + temp))
-  let total-num ((count turtle-neighbors) + (count walled-sides) + 1)
-  set temp (total-temp / total-num)
+  let total-temp ((sum [temp] of neighboring-turtles) +
+                  (room-temp * sides-exposed) + temp)
+  set temp (total-temp / (count neighboring-turtles + sides-exposed + 1))
 end
-
 
 ;; turtle procedure
 to set-color
   ; create index ranging from 1 to 8 for all melting colors
   let index (floor ((temp - melting-temp) / temp-range)) + 1
-  ifelse (index < 0 )
-  [
+  ifelse (index < 1 ) [
     set color white - 1
     set num-frozen (num-frozen + 1)
   ]
   [
     if index >= length colors
-    [ set index (length colors) - 1 ]
+      [ set index (length colors) - 1 ]
     set color item index colors
   ]
 end
@@ -118,10 +108,10 @@ end
 ; See Info tab for full copyright and license.
 @#$#@#$#@
 GRAPHICS-WINDOW
-339
+383
 10
-767
-439
+787
+415
 -1
 -1
 12.0
@@ -134,10 +124,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--17
-17
--17
-17
+-16
+16
+-16
+16
 1
 1
 1
@@ -145,10 +135,10 @@ ticks
 30.0
 
 BUTTON
-241
-85
-304
-118
+263
+72
+331
+108
 go
 go
 T
@@ -162,10 +152,10 @@ NIL
 0
 
 BUTTON
-208
-42
-267
-75
+221
+24
+287
+61
 NIL
 setup
 NIL
@@ -180,9 +170,9 @@ NIL
 
 SLIDER
 9
-42
-161
-75
+27
+172
+60
 room-temp
 room-temp
 -20
@@ -195,9 +185,9 @@ HORIZONTAL
 
 SLIDER
 9
-85
-161
-118
+66
+172
+99
 init-metal-temp
 init-metal-temp
 1550
@@ -210,24 +200,24 @@ HORIZONTAL
 
 SLIDER
 9
-128
-161
-161
+104
+172
+137
 melting-temp
 melting-temp
 500
 1500
-551.0
+500.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-33
-235
-135
-280
+180
+401
+282
+446
 ave-metal-temp
 ave-metal-temp
 3
@@ -235,68 +225,40 @@ ave-metal-temp
 11
 
 SLIDER
-151
-187
-303
-220
-fill-percentage
-fill-percentage
+13
+152
+126
+185
+width
+width
 1
-100
-85.0
-1
-1
-%
-HORIZONTAL
-
-SLIDER
-170
-128
-304
-161
-box-width
-box-width
-3
-33
-33.0
+31
+31.0
 2
 1
 atoms
 HORIZONTAL
 
-BUTTON
-170
-85
-232
-118
-go once
-go
-NIL
+SLIDER
+13
+189
+126
+222
+height
+height
 1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-SWITCH
-17
-187
-141
-220
-histogram?
-histogram?
-0
+31
+31.0
+2
 1
--1000
+atoms
+HORIZONTAL
 
 PLOT
-8
-469
-283
-670
+4
+443
+279
+644
 Average Metal Temperature
 time
 ave-metal-temp
@@ -306,15 +268,15 @@ ave-metal-temp
 1550.0
 true
 true
-"set-plot-y-range room-temp init-metal-temp" "if not histogram? [ stop ]"
+"set-plot-y-range room-temp init-metal-temp" ""
 PENS
 "ave-metal-temp" 1.0 0 -2674135 false "" "plot ave-metal-temp"
 
 PLOT
-288
-469
-501
-670
+282
+443
+495
+644
 Number Solidified
 time
 crystal quant.
@@ -329,10 +291,10 @@ PENS
 "amount" 1.0 0 -16777216 false "" "plot num-frozen"
 
 PLOT
-507
-469
-755
-670
+501
+441
+749
+642
 Temperatures
 colors
 quantity
@@ -342,72 +304,152 @@ quantity
 625.0
 false
 true
-"set-plot-y-range 0 count turtles\nset-histogram-num-bars 1 + (length colors)\n\nlet bottom (round room-temp)\nlet top (round melting-temp)\nlet index 0\nforeach colors [ c ->\n  create-temporary-plot-pen (word bottom \" - \" top)\n  set-plot-pen-mode 1\n  set-plot-pen-color c\n  set pens lput (word bottom \" - \" top) pens\n\n  set index index + 1\n  set bottom top\n  set top (round ((index * temp-range) + melting-temp))\n]" ""
+"set-plot-y-range 0 count turtles\nset-histogram-num-bars 1 + (length colors)\n\nlet bottom (round room-temp)\nlet top (round melting-temp)\nlet index 0\nforeach colors [ c ->\n  create-temporary-plot-pen (word bottom \" - \" top)\n  set-plot-pen-mode 1\n  set-plot-pen-color c\n  set pens lput (word bottom \" - \" top) pens\n\n  set index index + 1\n  set bottom top\n  set top (round ((index * temp-range) + melting-temp))\n]" "if histogram? [\n  let index 0\n  foreach colors [ c ->\n    set-current-plot-pen (item index pens)\n    plot-pen-reset\n    if any? turtles with [ color = c ] [\n      plotxy index count turtles with [ color = c ]\n    ]\n    set index index + 1\n  ]\n]"
 PENS
-"quantity" 1.0 1 -2674135 false "" "if not histogram? [ stop ]\nlet index 0\nforeach colors [ c ->\n  set-current-plot-pen (item index pens)\n  plot-pen-reset\n  if any? turtles with [ color = c ] [\n    plotxy index count turtles with [ color = c ]\n  ]\n  set index index + 1\n]"
+"quantity" 1.0 1 -2674135 false "" ""
+
+SWITCH
+208
+248
+340
+281
+histogram?
+histogram?
+0
+1
+-1000
+
+BUTTON
+183
+72
+250
+107
+go once
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+SWITCH
+183
+123
+325
+156
+heat-top?
+heat-top?
+1
+1
+-1000
+
+SWITCH
+180
+191
+322
+224
+heat-bottom?
+heat-bottom?
+1
+1
+-1000
+
+SWITCH
+248
+157
+372
+190
+heat-right?
+heat-right?
+1
+1
+-1000
+
+SWITCH
+133
+157
+247
+190
+heat-left?
+heat-left?
+1
+1
+-1000
 
 @#$#@#$#@
 ## WHAT IS IT?
 
-This model simulates the movement of metal atoms as a system crystallizes.  It is very similar to the Crystallization Basic model, except here the atoms are free to move about.  They randomly move in any direction that is not already occupied by something else, such as another atom or a wall.  Therefore, in order to allow movement, there must be empty spaces between atoms.  Initially these empty spaces, or voids, are randomly distributed, as they would be in a liquid metal.
+Some metal applications require that a metal's grains form specific patterns. To achieve this, the metal is only cooled from certain sides.  This can be done in several ways.  For example, when molds are made of metal, wires are used to heat up the mold where they want the metal to crystallize last.  For molds made of sand, pieces of metal are put where the liquid metal should crystallize first.  The inserted metal (known as a heat sink), works to quickly suck the heat out of the liquid metal.
 
-The first atoms to crystallize have a random orientation.  However, when a liquid atom about to crystallize is next to an already crystallized atom, the liquid atom orients itself with the solid atom, thus creating a crystal.  As more and more atoms solidify, the crystals grow.  Within each crystal, all the atoms are oriented with one another, but within the entire metal, all the crystals have random orientations.  Each individual crystal is called a grain.   When two crystals grow up next to each other, they form what is called a grain boundary.
+## HOW IT WORKS
 
-When a metal is stressed, such as when it is pulled from both ends, deformations occur in the crystal structure.  As more stress is applied, these deformations pass through the crystal structure, allowing the metal to bend.  Grain boundaries prevent deformations from flowing through the metal.  Therefore, pieces of metal with fewer grain boundaries tend to be ductile, while pieces of metal with more grain boundaries tend to be brittle.
+This model represents the cross-section of a block of liquid metal cooling in a metal mold.  The surrounding mold quickly sucks the heat out of the liquid metal.  However, you can select some of the sides to be heated, which prevents heat from escaping out of those sides.   By selecting which sides of the metal are heated, you can control the shapes of the resulting grains.  (Note that the actual number of atoms is small compared to a real metal sample and the metal is only two-dimensional.)
 
-(Note that the actual number of atoms is small compared to a real metal sample and the metal is only two-dimensional.  In addition, the movement of the atoms is limited to discrete patch sizes.)
+The information below assumes you have already read and understood the original Crystallization Basic model.
 
 ## HOW TO USE IT
 
-Buttons:
+### Buttons
+
 SETUP: Resets the simulation, and sets the metal to the correct size.
 GO-ONCE: Runs the simulation for one time step.
 GO: Runs the simulation continuously until either the GO button is pressed again, or all of the atoms are frozen.
 
-Sliders:
-BOX-WIDTH: How many atoms wide the metal is.
-FILL-PERCENTAGE: What percentage of the box contains atoms.  Smaller values allow for more movement.
+### Sliders
+
+WIDTH: How many atoms wide the metal is.
+HEIGHT: How many atoms high the metal is.
 ROOM-TEMP: Varies the temperature of the room.
 INIT-METAL-TEMP: Varies the initial temperature of the metal.
 MELTING-TEMP: Varies the temperature at which the metal solidifies.
 
-Monitors:
-AVE-METAL-TEMP: Monitors the average temperature of all the atoms.
+### Monitors
 
-Switches:
+AVE-METAL-TEMP: Monitors the average temperature of all the atoms.
+TIME: Keeps track of the time that has elapsed during each run.
+
+### Switches
+
+HEAT-TOP?: Prevents the top side of the metal from starting to cool.
+HEAT-LEFT?: Prevents the left side of the metal from starting to cool.
+HEAT-RIGHT?: Prevents the right side of the metal from starting to cool.
+HEAT-BOTTOM?: Prevents the bottom side of the metal from starting to cool.
 HISTOGRAM?: Turns the histogram plotting on and off.  Turning off the histogram speeds up the model.
 
-Graphs:
+### Graphs
+
 AVERAGE METAL TEMPERATURE: Plots the average temperature of all the metal over time.
 NUMBER SOLIDIFIED: Plots how many metal atoms are below the melting temperature over time.
 TEMPERATURES:  Histograms how many atoms are in each temperature range.  (Note that the colors of the histogram match the actual colors of the atoms.)
 
 ## THINGS TO TRY
 
-Set BOX-WIDTH to 15, FILL-PERCENTAGE to 85, and leave the rest of the sliders at their initial values (ROOM-TEMP at 20, INIT-METAL-TEMP at 1550, and MELTING-TEMP at 500).  Run the entire simulation by clicking on SETUP and GO, and then waiting for the metal to completely crystallize.  Repeat this several times.  What happens to the empty spaces between the atoms?  How do you think this would affect the properties of the overall metal?
+Set HEAT-TOP? and HEAT-RIGHT? to On and HEAT-BOTTOM? and HEAT-LEFT? to Off. Predict which atom will be the last to solidify.  Now run the model and see if your prediction was correct.
 
-Now set BOX-WIDTH to 29 and leave the rest of the settings how they were in the previous paragraph.  As before, run the entire simulation by clicking on SETUP and GO, and then waiting for the metal to completely crystallize.  What are some things that are different this time?  What stayed the same?
+A contractor asks you to create a piece of metal for her that only has horizontal grain boundaries, and no vertical ones.  Find settings for HEAT-TOP?, HEAT-RIGHT?, HEAT-BOTTOM?, and HEAT-LEFT? that result in approximately these sorts of grain boundaries.
 
-Set ROOM-TEMP to -20, INIT-METAL-TEMP to 1550, and MELTING-TEMP to 1500.  Leave BOX-WIDTH at 29 and FILL-PERCENTAGE at 85.  Now run the entire simulation.  What happens to the empty spaces between the atoms?  Why is this different from the previous simulations?  How do you think this would affect the properties of the overall metal?
+Set HEAT-TOP? and HEAT-BOTTOM? to Off and HEAT-LEFT? and HEAT-RIGHT to On. Run the model to completion.  How do these settings affect the grain boundaries? How would these grain boundaries affect the properties of the metal?
 
 ## EXTENDING THE MODEL
 
-This model prevents more than one atom from occupying the same space.  However, in three dimensions, atoms are able to move over one another.  Change the code so turtles can move to any space inside the boundaries.  What does the resulting crystal look like?  Can you imagine what this would look like in three dimensions?
+In this model, heating a side simply results in the room temperature having no affect on that side.  However, in real applications, heated sides still cool the metal, but at a slower rate.  Change the cool-turtles procedure so heated sides factor into how atoms are cooled.
 
-Some metal applications require that the metal's grains form long strips across the metal.  To achieve this, only one side of the metal is cooled.  This causes all of the crystals to begin on one side of the metal, and consequently grow across its length.  This is called directional solidification.  In the Procedures window, change the code so one side of the room is much cooler than the rest.
+As mentioned in the above, molds made of sand use inserted pieces of metal to control which side of the metal should crystallize first.  The inserted metal (known as a heat sink), works to quickly suck the heat out of the liquid metal.  Change the model so instead of just having heated sides, there are also cooled sides that cause a faster cooling rate.
 
 ## NETLOGO FEATURES
 
-In NetLogo, a turtle's heading specifies which direction the turtle's shape appears.  However, in this model, turtles must move in a direction unrelated to their shape direction.  To circumvent this, SETXY was used to move the turtles instead of FD.
+In the setup procedure, a turtle is created on every patch within the requested dimensions.  This is achieved by asking every patch satisfying certain conditions to `sprout 1`.
 
-Note how we can draw a multi-colored histogram.  The HISTOGRAM primitive can only draw in one color at a time, but we work around this by calling it over and over again, plotting only one bar each time, and changing the pen color each time.
-
-With every time step, each atom's temperature changes to the average of everything around it.  To do this, each turtle has an agent set of all of its neighboring turtles that is updated each time the turtles move.  In addition, each turtle has an agent set of all the patches surrounding it that is also updated.  Any white patches in the set are on the outside wall.  Therefore, the new temperature is taken as the average of the temperatures of the neighbor list, plus the room temperature multiplied by the number of white patches in the set.  Therefore, turtles on the edge of the metal will average in the room temperature to their temperature, but other turtles will not.
+Note how we can draw a multi-colored histogram.  The `histogram` primitive can only draw in one color at a time, but we work around this by calling it over and over again, plotting only one bar each time, changing the pen color each time.
 
 ## RELATED MODELS
 
 Crystallization Basic
-Crystallization Directed
+Crystallization Moving
 
 ## CREDITS AND REFERENCES
 
@@ -419,7 +461,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. (2002).  NetLogo Crystallization Moving model.  http://ccl.northwestern.edu/netlogo/models/CrystallizationMoving.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Wilensky, U. (2002).  NetLogo Crystallization Directed model.  http://ccl.northwestern.edu/netlogo/models/CrystallizationDirected.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -727,8 +769,10 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
+setup
+repeat 37 [ go ]
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

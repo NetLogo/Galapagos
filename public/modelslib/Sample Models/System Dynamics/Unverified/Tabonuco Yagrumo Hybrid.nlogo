@@ -437,7 +437,7 @@ Tabonuco Yagrumo
 
 ## CREDITS AND REFERENCES
 
-The following model is based on the work of The Learning Partnership in the Journey to El Yunque project (PI's include Steven McGee, Jess Zimmerman, and Steven Croft). To view the original materials or to learn more about that project, visit http://elyunque.net/journey.html.
+The following model is based on the work of The Learning Partnership in the Journey to El Yunque project (PI's include Steven McGee, Jess Zimmerman, and Steven Croft). To view the original materials or to learn more about that project, visit http://elyunque.net/.
 
 ## HOW TO CITE
 
@@ -745,7 +745,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 1.0

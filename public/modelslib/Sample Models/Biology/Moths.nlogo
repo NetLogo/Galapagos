@@ -348,7 +348,7 @@ Ants, Ant Lines, Fireflies, Flocking
 
 ## CREDITS AND REFERENCES
 
-Adams, C.  (1989).  Why are moths attracted to bright lights?  Retrieved May 1, 2005, from http://www.straightdope.com/columns/read/1071/why-are-moths-attracted-to-bright-lights/
+Adams, C.  (1989).  Why are moths attracted to bright lights?  Retrieved May 1, 2005, from https://www.straightdope.com/21342222/why-are-moths-attracted-to-bright-lights
 
 ## HOW TO CITE
 
@@ -656,7 +656,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.1.1
+NetLogo 6.2.0
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
