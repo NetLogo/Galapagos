@@ -232,7 +232,7 @@ setUpEventListeners = ->
           when "view"
             message = e.data.data.message
             switch message.subtype
-              when "click"
+              when "mouse-down"
                 if role.onCursorClick?
                   thunk = (-> procedures[role.onCursorClick.toUpperCase()](message.xcor, message.ycor))
                   world.turtleManager.getTurtle(who).ask(thunk, false)
