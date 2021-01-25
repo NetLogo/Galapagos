@@ -36,6 +36,7 @@ now = performance?.now.bind(performance) ? Date.now.bind(Date)
 globalEval = eval
 
 window.AgentModel = tortoise_require('agentmodel')
+agentToInt        = tortoise_require('engine/core/agenttoint')
 
 class window.SessionLite
 
@@ -607,8 +608,12 @@ class window.SessionLite
 
         for uuid, wind of @_subscriberObj
           if uuid isnt uuidToIgnore
-            monitorUpdates = @monitorsFor(uuid)
-            update = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
+
+            monitorUpdates             = @monitorsFor(uuid)
+            update                     = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
+            update.viewUpdate          = update.viewUpdate ? {} # TODO: No!  We shouldn't be adding this unconditionally, and shouldn't be spamming perspective updates.
+            update.viewUpdate.observer = @_genPerspUpdate(uuid)
+
             if Object.keys(update).length > 0
               if wind isnt null
                 wind.postMessage({ update, type: "nlw-state-update" }, "*")
@@ -644,6 +649,33 @@ class window.SessionLite
     viewObj    = retainIff(Object.keys(viewUpdate    ).length > 0, "viewUpdate"    , viewUpdate)
 
     Object.assign({}, widgetObj, monitorObj, plotObj, ticksObj, viewObj)
+
+  # (String) => ViewUpdate.Observer
+  _genPerspUpdate: (uuid) ->
+
+    { perspVar, roleName, who } = window.clients[uuid]
+
+    if perspVar?
+
+      plural     = world.breedManager.getSingular(roleName).name
+      projection = -> SelfManager.self().getVariable(perspVar)
+      persp      = world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(projection)
+
+      if Array.isArray(persp) and (persp[0] is "follow" or persp[0] is "watch")
+
+        [type, target, radius] = persp
+
+        [{
+          followRadius: radius
+          perspective:  if type is "follow" then 2 else 3
+          targetAgent:  [agentToInt(target), target.id]
+        }]
+
+      else
+        {}
+
+    else
+      {}
 
   # (Object[Object[Any]], Boolean) => Object[Object[Any]]
   _handleImageCache: (drawingUpdates, isFullUpdate) ->

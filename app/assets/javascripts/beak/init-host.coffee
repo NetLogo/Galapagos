@@ -181,6 +181,7 @@ setUpEventListeners = ->
 
         window.clients[e.data.token] =
           { roleName: role.name
+          , perspVar: role.perspectiveVar
           , username
           , who
           , window: null
@@ -374,6 +375,7 @@ setUpEventListeners = ->
 
           window.clients[uuid] =
             { roleName: role.name
+            , perspVar: role.perspectiveVar
             , window:   wind
             }
 
@@ -444,6 +446,7 @@ setUpEventListeners = ->
           # NOTE
           window.clients[uuid] =
             { roleName: role.name
+            , perspVar: role.perspectiveVar
             , username
             , who
             , window:   wind

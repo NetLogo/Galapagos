@@ -223,7 +223,12 @@ class View
   # Returns the agent being followed, or null.
   follow: (model) ->
     persp = model.observer.perspective
-    if persp is FOLLOW or persp is RIDE then @watch(model) else null
+    if persp is FOLLOW or persp is RIDE
+      if model.observer.followradius?
+        @setZoom(model.observer.followradius)
+      @watch(model)
+    else
+      null
 
   # (Number) => Unit
   setZoom: (zoomLevel) ->
