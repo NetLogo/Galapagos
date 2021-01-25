@@ -168,7 +168,7 @@ class window.WidgetController
   # (Object[String]) => Unit
   applyMonitorUpdates: (update) ->
     for k, v of update
-      widget              = @widgets().find((w) -> w.type is "hnwMonitor" and w.display.toLowerCase() is k.toLowerCase())
+      widget              = @widgets().find((w) -> w.type is "hnwMonitor" and w.source.toLowerCase() is k.toLowerCase())
       widget.reporter     = do (v) -> (-> v)
       widget.currentValue = v
     return

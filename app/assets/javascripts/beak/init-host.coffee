@@ -346,7 +346,7 @@ setUpEventListeners = ->
                     do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(procedures[monitor.source.toUpperCase()]))
                   else
                     console.log("We got '#{monitor.reporterStyle}'?")
-              session.registerMonitorFunc(roleName, monitor.display, func)
+              session.registerMonitorFunc(roleName, monitor.source, func)
 
         supervisorFrame     = document.createElement("iframe")
         supervisorFrame.id  = "hnw-join-frame"
