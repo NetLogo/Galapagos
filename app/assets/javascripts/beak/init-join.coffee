@@ -110,7 +110,13 @@ setUpEventListeners = ->
             obj = { subtype: "mouse-down", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
             sendHNWWidgetMessage('view', obj)
 
+        onMouseUp =
+          ->
+            obj = { subtype: "mouse-up", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+            sendHNWWidgetMessage('view', obj)
+
         vc.view.visibleCanvas.addEventListener('mousedown', onMouseDown)
+        vc.view.visibleCanvas.addEventListener('mouseup'  , onMouseUp  )
 
         if token isnt "invalid token"
           sendHNWMessage("interface-loaded", null)

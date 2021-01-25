@@ -236,6 +236,10 @@ setUpEventListeners = ->
                 if role.onCursorClick?
                   thunk = (-> procedures[role.onCursorClick.toUpperCase()](message.xcor, message.ycor))
                   world.turtleManager.getTurtle(who).ask(thunk, false)
+              when "mouse-up"
+                if role.onCursorRelease?
+                  thunk = (-> procedures[role.onCursorRelease.toUpperCase()](message.xcor, message.ycor))
+                  world.turtleManager.getTurtle(who).ask(thunk, false)
               else
                 console.warn("Unknown HNW View event subtype")
           else
