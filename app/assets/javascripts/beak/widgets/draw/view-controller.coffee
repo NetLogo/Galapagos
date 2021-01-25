@@ -261,7 +261,7 @@ class View
 
   # A very naïve and unaesthetic implementation!
   # I'm just throwing this together for a janky `hubnet-send-follow`.
-  # Do better! --JAB (10/21/17)
+  # Do better! --JAB (10/21/17) TODO
   #
   # () => Unit
   _handleZoom: ->

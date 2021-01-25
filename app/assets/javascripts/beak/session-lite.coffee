@@ -597,7 +597,7 @@ class window.SessionLite
       if window.isHNWHost is true
 
         ticks       = if world.ticker.ticksAreStarted() then world.ticker.tickCount() else null
-        plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? ???
+        plotUpdates = @widgetController.getPlotUpdates() # What the heck?  Why are these not scoped to the UUID? TODO ???
 
         broadUpdate = @_pruneUpdate({ plotUpdates, ticks, viewUpdate: joinerUpdate }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0

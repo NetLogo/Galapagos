@@ -465,7 +465,7 @@ setUpEventListeners = ->
           , sequenceNum: -1
           }, "*")
 
-          # NOTE
+          # NOTE TODO
           session.subscribeWithID(wind, uuid)
 
         )
