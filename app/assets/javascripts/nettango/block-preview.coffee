@@ -42,7 +42,7 @@ window.RactiveBlockPreview = Ractive.extend({
           id: block.id + 1,
           action: "Preview Proc",
           required: true,
-          placement: NetTango.blockPlacementOptions.starter,
+          placement: NetTango.blockPlacementOptions.STARTER,
           format: "to preview",
           limit: 1
         }

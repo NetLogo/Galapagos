@@ -84,9 +84,9 @@ window.RactiveBlockForm = EditForm.extend({
     block.id = sourceBlock.id
 
     block.builderType =
-      if (block.required and block.placement is NetTango.blockPlacementOptions.starter)
+      if (block.required and block.placement is NetTango.blockPlacementOptions.STARTER)
         'Procedure'
-      else if (not block.required and (not block.placement? or block.placement is NetTango.blockPlacementOptions.child))
+      else if (not block.required and (not block.placement? or block.placement is NetTango.blockPlacementOptions.CHILD))
         'Command or Control'
       else
         'Custom'
@@ -142,16 +142,16 @@ window.RactiveBlockForm = EditForm.extend({
     switch blockValues.builderType
       when 'Procedure'
         block.required  = true
-        block.placement = NetTango.blockPlacementOptions.starter
+        block.placement = NetTango.blockPlacementOptions.STARTER
 
       when 'Command or Control'
         block.required  = false
-        block.placement = NetTango.blockPlacementOptions.child
+        block.placement = NetTango.blockPlacementOptions.CHILD
         block.tags      = blockValues.tags ? []
 
       else
         block.required  = blockValues.required  ? false
-        block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.child
+        block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.CHILD
         block.tags      = blockValues.tags ? []
 
     block.clauses     = @processClauses(blockValues.clauses ? [])

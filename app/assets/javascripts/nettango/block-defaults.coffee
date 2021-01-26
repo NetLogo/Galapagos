@@ -53,7 +53,7 @@ createCommand = (overrides) ->
     , action:     "command"
     , format:     "command1"
     , required:   false
-    , placement:  NetTango.blockPlacementOptions.child
+    , placement:  NetTango.blockPlacementOptions.CHILD
     , limit:      undefined
     , params:     []
     , properties: []
@@ -78,7 +78,7 @@ blocks = {
             , action:     "procedure"
             , format:     "to proc1"
             , required:   true
-            , placement:  NetTango.blockPlacementOptions.starter
+            , placement:  NetTango.blockPlacementOptions.STARTER
             , limit:      1
             , params:     []
             , properties: []
@@ -91,7 +91,7 @@ blocks = {
             , format:     "to proc1"
             , required:   true
             , isTerminal: true
-            , placement:  NetTango.blockPlacementOptions.starter
+            , placement:  NetTango.blockPlacementOptions.STARTER
             , limit:      1
             , clauses:    [{ children: [], open: " ", close: " " }]
           }
@@ -250,7 +250,7 @@ blocks = {
               unit: "",
               type: "select",
               default: "red",
-              quoteValues: "never-quote",
+              quoteValues: NetTango.selectQuoteOptions.NEVER_QUOTE,
               values: [
                 { actual: "red" },
                 { actual: "violet" },
