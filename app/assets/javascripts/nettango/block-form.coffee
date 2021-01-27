@@ -1,6 +1,7 @@
 window.RactiveBlockForm = EditForm.extend({
 
   data: () -> {
+    ready:          false        # Boolean
     spaceName:      undefined    # String
     block:          undefined    # NetTangoBlock
     blockIndex:     undefined    # Integer
@@ -61,6 +62,10 @@ window.RactiveBlockForm = EditForm.extend({
   observe: {
 
     'block.*': () ->
+      ready = @get('ready')
+      if not ready
+        return
+
       preview = @findComponent('preview')
       if not preview?
         return
@@ -97,6 +102,7 @@ window.RactiveBlockForm = EditForm.extend({
 
   # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
   show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+    @set('ready', false)
     @_setBlock(block)
     @set('blockKnownTags', @get('allTags').slice(0))
     @set(        'target', target)
@@ -108,6 +114,7 @@ window.RactiveBlockForm = EditForm.extend({
     @set(  'terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
 
     @fire('show-yourself')
+    @set('ready', true)
     return
 
   # This does something useful for widgets in `EditForm`, but we don't need it - JMB August 2018
