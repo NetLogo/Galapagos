@@ -169,7 +169,7 @@ window.RactiveSpace = Ractive.extend({
     space.defs.blockStyles = @get("blockStyles")
 
     try
-      NetTango.init("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
+      NetTango.restore("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       @handleNetTangoError(ex)
       return

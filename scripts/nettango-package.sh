@@ -17,8 +17,8 @@ cd ../NetTango
 yarn build # shoud generate the "development" version with un-minified file modules via `eval()` for easy debugging
 cd ../Galapagos
 
-cp ../NetTango/ntango.js ./target/web/public/main/nettango/ntango.js
-cp ../NetTango/ntango.css ./target/web/public/main/nettango/ntango.css
+cp ../NetTango/nettango.js ./target/web/public/main/nettango/nettango.js
+cp ../NetTango/nettango.css ./target/web/public/main/nettango/nettango.css
 
 # Once this is all setup, the workflow becomes:
 

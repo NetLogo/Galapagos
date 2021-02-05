@@ -51,7 +51,7 @@ window.RactiveBlockPreview = Ractive.extend({
         defs.program = { chains: [ chain ] }
 
       try
-        NetTango.init("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
+        NetTango.restore("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
       catch ex
         # hmm, what to do with an error, here?
         console.log(ex)
@@ -72,7 +72,7 @@ window.RactiveBlockPreview = Ractive.extend({
     defs.blocks = defs.blocks.map( (b) -> if b.id is block.id then block else b )
 
     try
-      NetTango.init("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
+      NetTango.restore("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       # hmm, what to do with an error, here?
       console.log(ex)
