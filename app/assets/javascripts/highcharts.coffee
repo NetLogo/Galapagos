@@ -111,12 +111,27 @@ class window.HighchartsOps extends PlotOps
       thisOps.penToSeries(pen)?.setData([])
       return
 
-    addPoint = (pen) => (x, y) =>
-      # Wrong, and disabled for performance reasons --JAB (10/19/14)
-      # color = @colorToRGBString(pen.getColor())
-      # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
-      thisOps.penToSeries(pen).addPoint([x, y], false)
-      return
+    addPoint = (pen) =>
+      # This is a little hack to get Highcharts to handle `plot-pen-up`.  We put null values in the data
+      # when it's up, but if we do that it will not "re-start" properly when `plot-pen-down` is called.
+      # So we store the last up point so we can re-add it as needed to make the graph look right.
+      # -Jeremy B February 2021
+      maybeLastUpPoint = null
+      (x, y) =>
+        # Wrong, and disabled for performance reasons --JAB (10/19/14)
+        # color = @colorToRGBString(pen.getColor())
+        # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
+        series = thisOps.penToSeries(pen)
+        pointY = if (pen.getPenMode() is PenBundle.PenMode.Down)
+          if maybeLastUpPoint isnt null
+            series.addPoint(maybeLastUpPoint)
+            maybeLastUpPoint = null
+          y
+        else
+          maybeLastUpPoint = [x, y]
+          null
+        series.addPoint([x, pointY], false)
+        return
 
     updatePenMode = (pen) => (mode) =>
       series = thisOps.penToSeries(pen)
@@ -167,11 +182,12 @@ class window.HighchartsOps extends PlotOps
     isLine    = type is 'line'
     isColumn  = type is 'column'
     {
-      marker:     { enabled: isScatter, radius: if isScatter then 1 else 4 },
-      lineWidth:  if isLine then 2 else null,
-      type:       if isLine then 'scatter' else type
-      pointRange: if isColumn then interval else null
-      animation:  not isColumn
+      marker:       { enabled: isScatter, radius: if isScatter then 1 else 4 },
+      lineWidth:    if isLine then 2 else null,
+      type:         if isLine then 'scatter' else type
+      pointRange:   if isColumn then interval else null
+      animation:    not isColumn
+      connectNulls: false
     }
 
   # (PenBundle.Pen) => Highcharts.Series
