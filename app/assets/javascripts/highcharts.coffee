@@ -124,7 +124,7 @@ class window.HighchartsOps extends PlotOps
         series = thisOps.penToSeries(pen)
         pointY = if (pen.getPenMode() is PenBundle.PenMode.Down)
           if maybeLastUpPoint isnt null
-            series.addPoint(maybeLastUpPoint)
+            series.addPoint(maybeLastUpPoint, false)
             maybeLastUpPoint = null
           y
         else
