@@ -46,6 +46,7 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
+  _hnwLastPersp:         undefined # Object[(String, Agent, Number)]
   _hnwImageCache:        undefined # Object[Object[String]]
   _hnwWidgetGlobalCache: undefined # Object[Any]
   _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
@@ -55,6 +56,7 @@ class window.SessionLite
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
   constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
 
+    @_hnwLastPersp         = {}
     @_hnwImageCache        = {}
     @_hnwWidgetGlobalCache = {}
     @_monitorFuncs         = {}
@@ -609,10 +611,13 @@ class window.SessionLite
         for uuid, wind of @_subscriberObj
           if uuid isnt uuidToIgnore
 
-            monitorUpdates             = @monitorsFor(uuid)
-            update                     = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
-            update.viewUpdate          = update.viewUpdate ? {} # TODO: No!  We shouldn't be adding this unconditionally, and shouldn't be spamming perspective updates.
-            update.viewUpdate.observer = @_genPerspUpdate(uuid)
+            monitorUpdates = @monitorsFor(uuid)
+            update         = @_pruneUpdate({ monitorUpdates }, @_lastBCastTicks)
+            perspUpdate    = @_genPerspUpdate(uuid)
+
+            if Object.keys(perspUpdate).length > 0
+              update.viewUpdate          = update.viewUpdate ? {}
+              update.viewUpdate.observer = perspUpdate
 
             if Object.keys(update).length > 0
               if wind isnt null
@@ -661,8 +666,12 @@ class window.SessionLite
       projection = -> SelfManager.self().getVariable(perspVar)
       persp      = world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(projection)
 
-      if Array.isArray(persp) and (persp[0] is "follow" or persp[0] is "watch")
+      lastPersp  = @_hnwLastPersp[uuid]
+      isStale    = (lastPersp? and persp[0] is lastPersp[0] and persp[1] is lastPersp[1] and persp[2] is lastPersp[2])
 
+      if Array.isArray(persp) and (persp[0] is "follow" or persp[0] is "watch") and (not isStale)
+
+        @_hnwLastPersp[uuid]   = persp
         [type, target, radius] = persp
 
         [{
