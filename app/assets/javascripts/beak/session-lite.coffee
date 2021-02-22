@@ -96,7 +96,7 @@ class window.SessionLite
     requestAnimationFrame(@eventLoop)
     if procedures.startup? then setTimeout((-> window.handlingErrors(procedures.startup)()), 0)
 
-  updateDelay: ->
+  calcNumUpdates: ->
 
     twoThirdsian = (xs) ->
       sorted = xs.sort()
@@ -111,26 +111,33 @@ class window.SessionLite
       else
         twoThirsdian(sorted.slice(2, sorted.length - 1))
 
-    viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
+    standardCalc = =>
+      if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
+
+    if window.isHNWHost is true
+
+      pings              = Object.values(window.clients).map((c) -> c.ping).filter((p) -> p?)
+      representativePing = twoThirdsian(pings)
+
+      document.getElementById("hnw-typical-ping").innerText = Math.round(representativePing ? 0)
+      maxTypicalPing = document.getElementById("hnw-max-typical-ping").value
+
+      if representativePing > maxTypicalPing
+        0
+      else
+        standardCalc()
+    else
+      standardCalc()
+
+  updateDelay: ->
+
+    viewWidget = @widgetController.widgets().find((w) -> w.type is 'view')
     speed      = @widgetController.speed()
     delay      = 1000 / viewWidget.frameRate
 
     if speed > 0
-
-      speedCoefficient =
-        if window.isHNWHost is true
-          pings              = Object.values(window.clients).map((c) -> c.ping).filter((p) -> p?)
-          representativePing = twoThirdsian(pings)
-          if representativePing > 200
-            1 / (representativePing / 200)
-          else
-            1
-        else
-          1
-
-      speedFactor = Math.pow(Math.abs(speed * speedCoefficient), FAST_UPDATE_EXP)
+      speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
       delay * (1 - speedFactor)
-
     else
       speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
       MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
@@ -146,7 +153,7 @@ class window.SessionLite
   eventLoop: (timestamp) =>
     @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
     updatesDeadline = Math.min(@_lastRedraw + @redrawDelay(), now() + MAX_UPDATE_TIME)
-    maxNumUpdates   = if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
+    maxNumUpdates   = @calcNumUpdates()
 
     if not @widgetController.ractive.get('isEditing')
       for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.

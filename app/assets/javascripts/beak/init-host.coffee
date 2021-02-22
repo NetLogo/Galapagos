@@ -272,6 +272,8 @@ setUpEventListeners = ->
 
         loadModel(e.data.nlogo, "Jason's Experimental Funland")
 
+        session.widgetController.ractive.set("isHNWHost", true)
+
         header = document.querySelector('.netlogo-header')
 
         exiles =
