@@ -1,4 +1,4 @@
-window.RactivePopupMenu = Ractive.extend({
+RactivePopupMenu = Ractive.extend({
 
   data: () -> {
     visible:   false,     # Boolean
@@ -128,3 +128,5 @@ window.RactivePopupMenu = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactivePopupMenu

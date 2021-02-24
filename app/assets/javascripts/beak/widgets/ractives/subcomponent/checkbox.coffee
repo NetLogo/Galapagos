@@ -1,4 +1,4 @@
-window.RactiveEditFormCheckbox = Ractive.extend({
+RactiveEditFormCheckbox = Ractive.extend({
 
   data: -> {
     disabled:  undefined # Boolean
@@ -21,3 +21,5 @@ window.RactiveEditFormCheckbox = Ractive.extend({
     """
 
 })
+
+export default RactiveEditFormCheckbox

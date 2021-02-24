@@ -1,4 +1,4 @@
-window.RactivePrintArea = Ractive.extend({
+RactivePrintArea = Ractive.extend({
 
   data: -> {
     fontSize: undefined # Number
@@ -21,3 +21,5 @@ window.RactivePrintArea = Ractive.extend({
     """
 
 })
+
+export default RactivePrintArea

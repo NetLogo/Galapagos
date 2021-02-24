@@ -25,7 +25,7 @@ class Application @Inject() ( assets: Assets
 
   // scalastyle:off public.methods.have.type
   def authoring    = themedPage((_)   => views.html.authoring()    , "NetLogo Web Docs - Authoring", "../")
-  def differences  = themedPage((_)   => views.html.differences()  , "NetLogo Web vs. NetLogo"     , "../", None            , codeMirrorHtml)
+  def differences  = themedPage((_)   => views.html.differences()  , "NetLogo Web vs. NetLogo"     , "../", None            , differencesExtraHead)
   def faq          = themedPage((req) => views.html.faq()(req)     , "NetLogo Web FAQ"             , "../")
   def attributions = themedPage((_)   => views.html.attributions() , "NetLogo Web Attributions"    , "../")
   def index        = themedPage((req) => views.html.index()(req)   , "NetLogo Web")
@@ -56,11 +56,12 @@ class Application @Inject() ( assets: Assets
                         , extraHead: Html = Html("")): Action[AnyContent] =
     Action { implicit request => Ok(views.html.mainTheme(html(request), title, selectedTopLink, extraHead, Html(""), relativizer)) }
 
-  private lazy val codeMirrorHtml: Html = {
+  private lazy val differencesExtraHead: Html = {
 
     def resolve(p: String)   = routes.Assets.versioned(p)
     def linkTag(x: String)   = s"""<link rel="stylesheet" media="screen" href="$x">"""
     def scriptTag(x: String) = s"""<script src="$x"></script>"""
+    def moduleTag(x: String) = s"""<script type="module" src="$x"></script>"""
 
     val cssURLs = Seq( "codemirror/lib/codemirror"
                      , "stylesheets/netlogo-syntax"
@@ -75,12 +76,11 @@ class Application @Inject() ( assets: Assets
                     ).map((x) => resolve(s"codemirror/$x.js").toString)
     val jsTags = jsURLs.map(scriptTag)
 
-    val modeJSURLs = Seq( "keywords"
-                        , "codemirror-mode"
-                        ).map((x) => resolve(s"javascripts/$x.js").toString)
-    val modeJSTags = modeJSURLs.map(scriptTag)
+    val moduleURLs = Seq("pages/differences")
+      .map((x) => resolve(s"javascripts/$x.js").toString)
+    val moduleTags = moduleURLs.map(moduleTag)
 
-    Html((cssTags ++ jsTags ++ modeJSTags).mkString("\n"))
+    Html((cssTags ++ jsTags ++ moduleTags).mkString("\n"))
 
   }
 

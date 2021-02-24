@@ -1,4 +1,6 @@
-window.RactiveConsoleWidget = Ractive.extend({
+import RactivePrintArea from "./subcomponent/print-area.js"
+
+RactiveConsoleWidget = Ractive.extend({
   data: -> {
     input: '',
     isEditing: undefined # Boolean (for widget editing)
@@ -133,3 +135,5 @@ window.RactiveConsoleWidget = Ractive.extend({
     </div>
     """
 })
+
+export default RactiveConsoleWidget

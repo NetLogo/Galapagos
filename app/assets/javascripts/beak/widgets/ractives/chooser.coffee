@@ -1,3 +1,8 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
+import RactiveEditFormVariable from "./subcomponent/variable.js"
+
 ChooserEditForm = EditForm.extend({
 
   data: -> {
@@ -58,7 +63,7 @@ ChooserEditForm = EditForm.extend({
 
 })
 
-window.RactiveChooser = RactiveWidget.extend({
+RactiveChooser = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -120,3 +125,5 @@ window.RactiveChooser = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveChooser

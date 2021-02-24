@@ -1,3 +1,5 @@
+import RactiveWidget from "./widget.js"
+
 genWidgetCreator = (name, widgetType, isEnabled = true, enabler = (-> false)) ->
   { text: "Create #{name}", enabler, isEnabled
   , action: (context, mouseX, mouseY) -> context.fire('create-widget', widgetType, mouseX, mouseY)
@@ -20,28 +22,7 @@ defaultOptions = [ ["Button",  "button"]
                  , ["Switch",  "switch"]
                  ].map((args) -> genWidgetCreator(args...))
 
-window.RactiveContextable = Ractive.extend({
-
-  # type ContextMenuOptions = [{ text: String, isEnabled: Boolean, action: () => Unit }]
-
-  data: -> {
-    contextMenuOptions: undefined # ContextMenuOptions
-  }
-
-  standardOptions: (component) -> {
-    delete: {
-      text: "Delete"
-    , isEnabled: true
-    , action: ->
-        component.fire('hide-context-menu')
-        component.fire('unregister-widget', component.get('widget').id)
-    }
-  , edit: { text: "Edit", isEnabled: true, action: -> component.fire('edit-widget') }
-  }
-
-})
-
-window.RactiveContextMenu = Ractive.extend({
+RactiveContextMenu = Ractive.extend({
 
   data: -> {
     options: undefined # ContextMenuOptions
@@ -96,3 +77,5 @@ window.RactiveContextMenu = Ractive.extend({
     """
 
 })
+
+export default RactiveContextMenu

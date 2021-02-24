@@ -68,7 +68,7 @@ RactiveCodeContainerBase = Ractive.extend({
 
 })
 
-window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
+RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
 
   data: -> {
     extraConfig: {
@@ -110,7 +110,7 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
 
 })
 
-window.RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
+RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
 
   oncomplete: ->
     @._super()
@@ -153,5 +153,12 @@ editFormCodeContainerFactory =
 
     })
 
-window.RactiveEditFormOneLineCode   = editFormCodeContainerFactory(RactiveCodeContainerOneLine)
-window.RactiveEditFormMultilineCode = editFormCodeContainerFactory(RactiveCodeContainerMultiline)
+RactiveEditFormOneLineCode   = editFormCodeContainerFactory(RactiveCodeContainerOneLine)
+RactiveEditFormMultilineCode = editFormCodeContainerFactory(RactiveCodeContainerMultiline)
+
+export {
+  RactiveCodeContainerMultiline,
+  RactiveCodeContainerOneLine,
+  RactiveEditFormOneLineCode,
+  RactiveEditFormMultilineCode,
+}

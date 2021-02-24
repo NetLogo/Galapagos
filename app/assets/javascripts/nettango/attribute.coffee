@@ -1,4 +1,8 @@
-window.RactiveAttribute = Ractive.extend({
+import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
+import { RactiveTwoWayDropdown } from "../beak/widgets/ractives/subcomponent/dropdown.js"
+import RactiveSelectAttribute from "./select-attribute.js"
+
+RactiveAttribute = Ractive.extend({
 
   data: () -> {
     id:            undefined # Integer
@@ -98,3 +102,5 @@ window.RactiveAttribute = Ractive.extend({
     # coffeelint: enable=max_line_length
   }
 })
+
+export default RactiveAttribute

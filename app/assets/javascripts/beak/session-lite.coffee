@@ -1,3 +1,8 @@
+import { runWithErrorHandling } from "../beak/widgets/set-up-widgets.js"
+import initializeUI from "./widgets/initialize-ui.js"
+import runBabyBehaviorSpace from "./babybehaviorspace.js"
+import { toNetLogoMarkdown } from "./tortoise-utils.js"
+
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
 SLOW_UPDATE_EXP      = 4
@@ -19,15 +24,13 @@ now = performance?.now.bind(performance) ? Date.now.bind(Date)
 # object instead of global namespace. - BCH 11/3/2014
 globalEval = eval
 
-window.AgentModel = tortoise_require('agentmodel')
-
-class window.SessionLite
+class SessionLite
 
   widgetController: undefined # WidgetController
 
   # (Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
   #   String, String, Boolean, String, String, Boolean)
-  constructor: (container, @compiler, @rewriters, widgets,
+  constructor: (@Tortoise, container, @compiler, @rewriters, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
@@ -50,6 +53,7 @@ class window.SessionLite
 
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
+    # NOTE: the global 'modelConfig' variable is used by the Tortoise runtime
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
@@ -59,7 +63,7 @@ class window.SessionLite
 
   startLoop: ->
     if ProcedurePrims.hasCommand('startup')
-      window.runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
+      runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
     @widgetController.redraw()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
@@ -193,12 +197,12 @@ class window.SessionLite
         @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
       finally
-        Tortoise.finishLoading()
+        @Tortoise.finishLoading()
 
       return
 
     if useOverlay
-      Tortoise.startLoading(recompileProcess)
+      @Tortoise.startLoading(recompileProcess)
     else
       recompileProcess()
 
@@ -217,13 +221,13 @@ class window.SessionLite
       @widgetController.reportError('compiler', 'recompile-procedures', [ex.toString()])
 
     finally
-      Tortoise.finishLoading()
+      @Tortoise.finishLoading()
 
     return
 
   getNlogo: ->
     @compiler.exportNlogo({
-      info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
+      info:         toNetLogoMarkdown(@widgetController.ractive.get('info')),
       code:         @rewriteExport(@widgetController.code()),
       widgets:      @widgetController.widgets(),
       turtleShapes: turtleShapes,
@@ -247,8 +251,8 @@ class window.SessionLite
   exportHtml: ->
     exportName = @promptFilename('.html')
     if exportName?
-      window.req = new XMLHttpRequest()
-      req.open('GET', standaloneURL)
+      req = new XMLHttpRequest()
+      req.open('GET', window.standaloneURL)
       req.onreadystatechange = =>
         if req.readyState is req.DONE
           if req.status is 200
@@ -288,9 +292,9 @@ class window.SessionLite
 
   # (Object[Any], ([{ config: Object[Any], results: Object[Array[Any]] }]) => Unit) => Unit
   asyncRunBabyBehaviorSpace: (config, reaction) ->
-    Tortoise.startLoading(=>
+    @Tortoise.startLoading(=>
       reaction(@runBabyBehaviorSpace(config))
-      Tortoise.finishLoading()
+      @Tortoise.finishLoading()
     )
 
   # (Object[Any]) => [{ config: Object[Any], results: Object[Array[Any]] }]
@@ -330,7 +334,7 @@ class window.SessionLite
       else
         workspace.dump(x)
 
-    window.runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
+    runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
 
   # (String, Any) => Unit
   setGlobal: (varName, value) ->
@@ -348,7 +352,7 @@ class window.SessionLite
       return
 
     command = new Function(result)
-    window.runWithErrorHandling(source, @widgetController.reportError, command)
+    runWithErrorHandling(source, @widgetController.reportError, command)
     return
 
   # (String) => { success: true, value: Any } | { success: false, error: String }
@@ -365,3 +369,5 @@ class window.SessionLite
       { success: true, value: reporterValue }
     catch ex
       { success: false, error: "Runtime error: #{ex.toString()}" }
+
+export default SessionLite

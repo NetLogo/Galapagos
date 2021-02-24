@@ -23,38 +23,45 @@ import
  * sure that you understand Galapagos#326 before you do!)  --JAB (1/26/16)
  */
 trait TagBuilder {
-  def pathToHTML(path: String)(implicit request: Request[_], environment: Environment):                     Html
-  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html
+  def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html
+  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment):            Html
 }
 
 object TagBuilder {
   def protocolRelativeURL(url: URL): String =
     s"//${url.getAuthority}${url.getFile}"
+
+  def makeTag(tagName: String, content: String, attributes: Map[String, String]): Html = {
+    val attributesString = " " + attributes.map({ case (name, value) => s"""$name="$value"""" }).mkString(" ")
+    Html(s"""<$tagName $attributesString>$content</$tagName>""")
+  }
 }
 
 object InlineTagBuilder extends TagBuilder {
 
-  override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
-    pathToTag(s"public/$path")
+  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html =
+    pathToTag(s"public/$path", attributes)
 
   override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
     pathToTag(resourcePath)
 
-  private def pathToTag(path: String)(implicit environment: Environment): Html =
-    (genTag _).tupled(pathToPair(path))
+  private def pathToTag(path: String, attributes: Seq[(String, String)] = Seq.empty)(implicit environment: Environment): Html = {
+    val (source, url) = pathToSource(path)
+    genTag(source, url, attributes)
+  }
 
-  private def pathToPair(path: String)(implicit environment: Environment): (String, URL) = {
+  private def pathToSource(path: String)(implicit environment: Environment): (String, URL) = {
     val url    = environment.resource(path).getOrElse(throw new Exception(s"Unknown resource: $path"))
     val source = usingSource(_.fromURL(url))(_.mkString)
     (source, url)
   }
 
-  private def genTag(source: String, url: URL): Html = {
+  private def genTag(source: String, url: URL, attributes: Seq[(String, String)] = Seq.empty): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
     val FileExtensionRegex(ext) = url.toString
     ext match {
-      case "js"  => Html(s"""<script>$source</script>""")
-      case "css" => Html(s"""<style>$source</style>""")
+      case "js"  => TagBuilder.makeTag("script", source, attributes.toMap)
+      case "css" => TagBuilder.makeTag("style",  source, attributes.toMap)
       case x     => throw new Exception(s"We don't know how to build a tag for '.$x' files")
     }
   }
@@ -63,18 +70,18 @@ object InlineTagBuilder extends TagBuilder {
 
 object OutsourceTagBuilder extends TagBuilder {
 
-  override def pathToHTML(path: String)(implicit request: Request[_], environment: Environment): Html =
-    genTag(routes.Assets.versioned(path).relative)
+  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html =
+    genTag(routes.Assets.versioned(path).relative, attributes)
 
   override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
     genTag(call.relative)
 
-  private def genTag(protoRelativeURL: String): Html = {
+  private def genTag(protoRelativeURL: String, attributes: Seq[(String, String)] = Seq.empty): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
     val FileExtensionRegex(ext) = protoRelativeURL
     ext match {
-      case "js"  => Html(s"""<script src="$protoRelativeURL"></script>""")
-      case "css" => Html(s"""<link rel="stylesheet" href="$protoRelativeURL"></link>""")
+      case "js"  => TagBuilder.makeTag("script", "", attributes.toMap + ("src" -> protoRelativeURL) )
+      case "css" => TagBuilder.makeTag("link",   "", attributes.toMap + ("rel" -> "stylesheet") + ("href" -> protoRelativeURL))
       case x     => throw new Exception(s"We don't know how to build a tag for '.$x' files")
     }
   }

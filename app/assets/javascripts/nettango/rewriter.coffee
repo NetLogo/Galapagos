@@ -1,4 +1,6 @@
-class window.NetTangoRewriter
+import { nlogoToSections, sectionsToNlogo } from "../beak/tortoise-utils.js"
+
+class NetTangoRewriter
   @BEGIN = "; --- NETTANGO BEGIN ---"
   @END   = "; --- NETTANGO END ---"
   @MODIFY_WARNING =
@@ -17,9 +19,9 @@ class window.NetTangoRewriter
 
   # (String) => String
   injectNlogo: (nlogo) =>
-    sections    = Tortoise.nlogoToSections(nlogo)
+    sections    = nlogoToSections(nlogo)
     sections[0] = @rewriteNetLogoCode(sections[0])
-    Tortoise.sectionsToNlogo(sections)
+    sectionsToNlogo(sections)
 
   exportCode: (code) =>
     netTangoCode = @getNetTangoCode(displayOnly = true)
@@ -45,3 +47,5 @@ class window.NetTangoRewriter
   # (String) => String
   @removeOldNetTangoCode: (code) ->
     code.replace(new RegExp("((?:^|\n)#{NetTangoRewriter.BEGIN}\n)([^]*)(\n#{NetTangoRewriter.END})"), "")
+
+export default NetTangoRewriter

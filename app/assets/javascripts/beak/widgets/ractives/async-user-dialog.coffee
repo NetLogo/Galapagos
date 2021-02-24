@@ -1,6 +1,8 @@
+import { CommonDrag } from "./draggable.js"
+
 { maybe, None } = tortoise_require('brazier/maybe')
 
-window.RactiveAsyncUserDialog = Ractive.extend({
+RactiveAsyncUserDialog = Ractive.extend({
 
   lastUpdateMs: undefined # Number
   startX:       undefined # Number
@@ -114,19 +116,19 @@ window.RactiveAsyncUserDialog = Ractive.extend({
           when "textarea" then false
           else                 true
 
-      CommonDrag.dragstart.call(this, event, checkIsValid, (x, y) =>
+      CommonDrag.dragstart(this, event, checkIsValid, (x, y) =>
         @startX = @get('xLoc') - x
         @startY = @get('yLoc') - y
       )
 
     'drag-dialog': (event) ->
-      CommonDrag.drag.call(this, event, (x, y) =>
+      CommonDrag.drag(this, event, (x, y) =>
         @set('xLoc', @startX + x)
         @set('yLoc', @startY + y)
       )
 
     'stop-drag': ->
-      CommonDrag.dragend.call(this, (->))
+      CommonDrag.dragend(this, (->))
 
   }
 
@@ -186,3 +188,5 @@ window.RactiveAsyncUserDialog = Ractive.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveAsyncUserDialog

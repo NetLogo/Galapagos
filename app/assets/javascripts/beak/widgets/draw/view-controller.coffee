@@ -1,4 +1,11 @@
-class window.ViewController
+import { netlogoColorToCSS, netlogoColorToRGB } from "../../../colors.js"
+import defaultShapes from "../../../default-shapes.js"
+import { ShapeDrawer, defaultShape } from "./draw-shape.js"
+import { LinkDrawer } from "./link-drawer.js"
+
+AgentModel = tortoise_require('agentmodel')
+
+class ViewController
   constructor: (@container, fontSize) ->
     @view = new View(fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
@@ -625,3 +632,5 @@ class PatchDrawer
       @colorPatches(patches)
     if world.patcheswithlabels
       @labelPatches(patches)
+
+export default ViewController

@@ -1,4 +1,7 @@
-class window.WidgetController
+import { setUpWidget, setUpButton, setUpChooser, setUpInputBox, setUpMonitor, setUpSlider, setUpSwitch
+} from "./set-up-widgets.js"
+
+class WidgetController
 
   # (Ractive, ViewController, Configs)
   constructor: (@ractive, @viewController, @configs) ->
@@ -18,7 +21,7 @@ class window.WidgetController
     widget    = Object.assign(base, mixin)
 
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
-    window.setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()))
+    setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()))
 
     if widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
@@ -88,14 +91,14 @@ class window.WidgetController
 
       [props, setterUpper] =
         switch newWidget.type
-          when "button"   then [  buttonProps, window.setUpButton(@reportError, () => @redraw(); @updateWidgets() )]
-          when "chooser"  then [ chooserProps, window.setUpChooser]
-          when "inputBox" then [inputBoxProps, window.setUpInputBox]
-          when "monitor"  then [ monitorProps, window.setUpMonitor]
+          when "button"   then [  buttonProps, setUpButton(@reportError, () => @redraw(); @updateWidgets())]
+          when "chooser"  then [ chooserProps, setUpChooser]
+          when "inputBox" then [inputBoxProps, setUpInputBox]
+          when "monitor"  then [ monitorProps, setUpMonitor]
           when "output"   then [  outputProps, (->)]
           when "plot"     then [    plotProps, (->)]
-          when "slider"   then [  sliderProps, window.setUpSlider]
-          when "switch"   then [  switchProps, window.setUpSwitch]
+          when "slider"   then [  sliderProps, setUpSlider]
+          when "switch"   then [  switchProps, setUpSwitch]
           when "textBox"  then [ textBoxProps, (->)]
           when "view"     then [    viewProps, (->)]
           else                 throw new Error("Unknown widget type: #{newWidget.type}")
@@ -245,3 +248,5 @@ switchProps   = ['display', 'on', 'variable']
 textBoxProps  = ['color', 'display', 'fontSize', 'transparent']
 viewProps     = ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']
 # coffeelint: enable=max_line_length
+
+export default WidgetController

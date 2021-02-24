@@ -14,7 +14,7 @@
     @extraHead
     <link rel="shortcut icon" type="image/x-icon" href='@routes.Assets.versioned("images/favicon.ico").relative'>
     <script src='@routes.Assets.versioned("jquery/dist/jquery.min.js").relative' type="text/javascript"></script>
-    <script src='@routes.Assets.versioned("javascripts/topbar.js").relative' type="text/javascript"></script>
+    <script type="module" src='@routes.Assets.versioned("javascripts/pages/mainTheme.js").relative'></script>
     @views.html.analytics()
   </head>
   <body class="not_full_height">

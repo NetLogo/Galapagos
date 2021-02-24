@@ -1,4 +1,4 @@
-window.RactiveTickCounter = Ractive.extend({
+RactiveTickCounter = Ractive.extend({
 
   data: -> {
     isVisible: undefined # Boolean
@@ -20,3 +20,5 @@ window.RactiveTickCounter = Ractive.extend({
     """
 
 })
+
+export default RactiveTickCounter

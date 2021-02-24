@@ -1,3 +1,8 @@
+import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
+import RactiveAllowedTags from "./allowed-tags.js"
+import RactiveArrayView from "./array-view.js"
+import RactiveCodeMirror from "./code-mirror.js"
+
 partials = {
 
   headerTemplate:
@@ -70,7 +75,7 @@ partials = {
 
 }
 
-window.RactiveClauses = Ractive.extend({
+RactiveClauses = Ractive.extend({
 
   data: () -> {
     blockId:        undefined # Int
@@ -114,3 +119,5 @@ window.RactiveClauses = Ractive.extend({
       />
     """
 })
+
+export default RactiveClauses

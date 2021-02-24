@@ -1,4 +1,8 @@
-window.RactiveModelCodeComponent = Ractive.extend({
+import keywords from "../../../keywords.js"
+import CodeUtils from "../code-utils.js"
+import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
+
+RactiveModelCodeComponent = Ractive.extend({
 
   data: -> {
     code:              undefined # String
@@ -72,9 +76,9 @@ window.RactiveModelCodeComponent = Ractive.extend({
       return { list: found, from: from, to: to }
 
   autoCompleteWords: ->
-    allKeywords       = new Set(window.keywords.all)
+    allKeywords       = new Set(keywords.all)
     supportedKeywords = Array.from(allKeywords)
-      .filter( (kw) -> (not window.keywords.unsupported.includes(kw)) )
+      .filter( (kw) -> (not keywords.unsupported.includes(kw)) )
       .map(    (kw) -> kw.replace("\\", "") )
     Object.keys(CodeUtils.findProcedureNames(@get('code'), 'lower')).concat(supportedKeywords)
 
@@ -226,3 +230,5 @@ window.RactiveModelCodeComponent = Ractive.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveModelCodeComponent

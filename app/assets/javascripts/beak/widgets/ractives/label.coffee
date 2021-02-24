@@ -1,3 +1,12 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import { netlogoColorToCSS } from "../../../colors.js"
+import RactiveColorInput from "./subcomponent/color-input.js"
+import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
+import RactiveEditFormFontSize from "./subcomponent/font-size.js"
+import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+
 LabelEditForm = EditForm.extend({
 
   data: -> {
@@ -72,7 +81,7 @@ LabelEditForm = EditForm.extend({
 
 })
 
-window.RactiveLabel = RactiveWidget.extend({
+RactiveLabel = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -121,3 +130,5 @@ window.RactiveLabel = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveLabel

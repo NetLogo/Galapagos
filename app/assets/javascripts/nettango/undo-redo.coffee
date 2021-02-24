@@ -1,4 +1,4 @@
-class window.UndoRedo
+class UndoRedo
 
   @UNDO_REDO_LIMIT: 100
 
@@ -56,3 +56,5 @@ class window.UndoRedo
 
   canRedo: () ->
     @_redoStack.length isnt 0
+
+export default UndoRedo

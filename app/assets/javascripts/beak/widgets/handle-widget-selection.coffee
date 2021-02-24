@@ -1,5 +1,5 @@
 # (Ractive) => Unit
-window.handleWidgetSelection =
+handleWidgetSelection =
   (ractive) ->
 
     resizer =
@@ -77,3 +77,5 @@ window.handleWidgetSelection =
     ractive.on('nudge-widget'      , nudgeWidget)
     ractive.on('*.lock-selection'  , lockSelection)
     ractive.on('*.unlock-selection', unlockSelection)
+
+export default handleWidgetSelection

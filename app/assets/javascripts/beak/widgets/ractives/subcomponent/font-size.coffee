@@ -1,4 +1,6 @@
-window.RactiveEditFormFontSize = RactiveEditFormLabeledInput.extend({
+import { RactiveEditFormLabeledInput } from "./labeled-input.js"
+
+RactiveEditFormFontSize = RactiveEditFormLabeledInput.extend({
 
   data: -> {
     attrs:    "min=0 step=1 required"
@@ -10,3 +12,5 @@ window.RactiveEditFormFontSize = RactiveEditFormLabeledInput.extend({
   twoway: false
 
 })
+
+export default RactiveEditFormFontSize

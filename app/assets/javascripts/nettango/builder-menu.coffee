@@ -1,7 +1,7 @@
 sampleProjectUrl =
   "#{window.location.protocol}//#{window.location.host}/assets/nt-modelslib/Biology/Wolves and Sheep.ntjson"
 
-window.RactiveBuilderMenu = Ractive.extend({
+RactiveBuilderMenu = Ractive.extend({
 
   data: () -> {
     canUndo:     false     # Boolean
@@ -86,3 +86,5 @@ window.RactiveBuilderMenu = Ractive.extend({
     </div>
     """
 })
+
+export default RactiveBuilderMenu

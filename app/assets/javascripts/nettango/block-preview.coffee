@@ -1,4 +1,8 @@
-window.RactiveBlockPreview = Ractive.extend({
+import NetTangoRewriter from "./rewriter.js"
+import RactiveCodeMirror from "./code-mirror.js"
+import NetTangoBlockDefaults from "./block-defaults.js"
+
+RactiveBlockPreview = Ractive.extend({
 
   data: () -> {
     block:       undefined # NetTangoBlock
@@ -131,3 +135,5 @@ window.RactiveBlockPreview = Ractive.extend({
     </div>
     """
 })
+
+export default RactiveBlockPreview

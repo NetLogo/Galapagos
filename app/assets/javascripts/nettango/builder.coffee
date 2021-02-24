@@ -1,3 +1,10 @@
+import RactiveSpaces from "./spaces.js"
+import RactiveOptionsForm from "./options-form.js"
+import RactiveBuilderMenu from "./builder-menu.js"
+import RactiveConfirmDialog from "./confirm-dialog.js"
+import RactiveModelChooser from "./model-chooser.js"
+import RactiveProjectChooser from "./project-chooser.js"
+
 blockStyleDefaults = {
   starterBlockStyle: {
     blockColor:  "#bb5555"
@@ -30,7 +37,7 @@ blockStyleDefaults = {
 getBlockStyleDefaults = (style) ->
   JSON.parse(JSON.stringify(blockStyleDefaults[style]))
 
-window.RactiveBuilder = Ractive.extend({
+RactiveBuilder = Ractive.extend({
 
   data: () -> {
     canRedo:       false     # Boolean
@@ -285,7 +292,7 @@ window.RactiveBuilder = Ractive.extend({
       .forEach((n) -> tabOptions[n] = tabOptionValues[n].checked)
 
     {
-        spaces,
+        spaces
       , netTangoToggles
       , tabOptions
       , blockStyles: @get('blockStyles')
@@ -503,3 +510,5 @@ window.RactiveBuilder = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveBuilder

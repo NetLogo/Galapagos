@@ -1,4 +1,4 @@
-window.defaultShapes = {
+const defaultShapes = {
   "default": {
     "rotate": true,
     "elements": [
@@ -2937,3 +2937,5 @@ window.defaultShapes = {
     ]
   }
 }
+
+export default defaultShapes

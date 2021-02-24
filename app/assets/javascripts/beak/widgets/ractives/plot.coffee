@@ -1,4 +1,6 @@
-window.RactivePlot = RactiveWidget.extend({
+import RactiveWidget from "./widget.js"
+
+RactivePlot = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).delete]
@@ -56,3 +58,5 @@ window.RactivePlot = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactivePlot

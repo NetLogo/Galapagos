@@ -1,6 +1,6 @@
-window.exports = window.exports ? {}
+modelSelect = null
 
-window.exports.bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
+bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
 
   PUBLIC_PATH_SEGMENT_LENGTH = "public/".length
 
@@ -51,7 +51,7 @@ window.exports.bindModelChooser = (container, onComplete, selectionChanged, curr
   $.ajax('./model/list.json', {
     complete: (req, status) ->
       allModelNames = JSON.parse(req.responseText)
-      window.modelSelect = createModelSelection(container, allModelNames)
+      modelSelect = createModelSelection(container, allModelNames)
 
       if container.classList.contains('tortoise-model-list')
         $.ajax('./model/statuses.json', {
@@ -60,18 +60,18 @@ window.exports.bindModelChooser = (container, onComplete, selectionChanged, curr
             for modelName in allModelNames
               modelStatus = allModelStatuses[modelName]?.status ? 'unknown'
               setModelCompilationStatus(modelName, modelStatus)
-            window.modelSelect.trigger('chosen:updated')
+            modelSelect.trigger('chosen:updated')
         })
       onComplete()
     }
   )
 
-exports.selectModel = (model) ->
+selectModel = (model) ->
   modelSelect.val(model)
   modelSelect.trigger("chosen:updated")
 
 # (String) => Unit
-exports.selectModelByURL = (modelURL) ->
+selectModelByURL = (modelURL) ->
 
   extractNMatches =
     (regex) -> (n) -> (str) ->
@@ -96,11 +96,11 @@ exports.selectModelByURL = (modelURL) ->
     choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerText is truePath then x else acc), null)
 
     if choiceElem?
-      exports.selectModel(modelPath)
+      selectModel(modelPath)
 
   return
 
-exports.handPickedModels = [
+handPickedModels = [
   "Curricular Models/BEAGLE Evolution/DNA Replication Fork",
   "Curricular Models/BEAGLE Evolution/EACH/Cooperation.nlogo",
   "Curricular Models/Connected Chemistry/Connected Chemistry Gas Combustion",
@@ -133,3 +133,10 @@ exports.handPickedModels = [
   "Sample Models/Social Science/Traffic Basic",
   "Sample Models/Social Science/Voting"
 ].map((p) -> "modelslib/#{p}")
+
+export {
+  bindModelChooser,
+  selectModel,
+  selectModelByURL,
+  handPickedModels,
+}

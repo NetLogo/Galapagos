@@ -1,3 +1,9 @@
+import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
+import CodeUtils from "../beak/widgets/code-utils.js"
+import RactiveJsonEditor from "./json-editor.js"
+import NetTangoRewriter from "./rewriter.js"
+import NetTangoBlockDefaults from "./block-defaults.js"
+
 dele = { eventName: 'ntb-delete-block',         name: 'delete' }
 edit = { eventName: 'ntb-show-edit-block-form', name: 'edit' }
 up   = { eventName: 'ntb-block-up',             name: 'move up' }
@@ -6,7 +12,7 @@ dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
 
 modifyBlockMenuItems = [dele, edit, up, dn, dup]
 
-window.RactiveSpace = Ractive.extend({
+RactiveSpace = Ractive.extend({
 
   data: () -> {
     blockEditForm: null  # RactiveBlockForm
@@ -384,3 +390,5 @@ window.RactiveSpace = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveSpace

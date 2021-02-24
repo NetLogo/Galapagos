@@ -1,3 +1,6 @@
+import { RactiveTwoWayDropdown } from "../beak/widgets/ractives/subcomponent/dropdown.js"
+import { RactiveTags } from "./tags.js"
+
 defaultChoices = [
   { value: 'unrestricted', text: 'Allow all blocks' }
 , { value: 'any-of',       text: 'Allow blocks with at least one of the chosen tags' }
@@ -14,7 +17,7 @@ getChoices = (canInheritTags) ->
     choices.push(clauseChoice)
   choices
 
-window.RactiveAllowedTags = Ractive.extend({
+RactiveAllowedTags = Ractive.extend({
 
   data: () -> {
     id:             undefined                # String
@@ -74,3 +77,5 @@ window.RactiveAllowedTags = Ractive.extend({
     # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveAllowedTags

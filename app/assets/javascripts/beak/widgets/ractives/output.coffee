@@ -1,3 +1,8 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import RactivePrintArea from "./subcomponent/print-area.js"
+import RactiveEditFormFontSize from "./subcomponent/font-size.js"
+
 OutputEditForm = EditForm.extend({
 
   data: -> {
@@ -26,7 +31,7 @@ OutputEditForm = EditForm.extend({
 
 })
 
-window.RactiveOutputArea = RactiveWidget.extend({
+RactiveOutputArea = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -74,3 +79,5 @@ window.RactiveOutputArea = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveOutputArea

@@ -1,3 +1,10 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
+import RactiveEditFormFontSize from "./subcomponent/font-size.js"
+import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+
 RactiveEditFormCoordBoundInput = Ractive.extend({
 
   data: -> {
@@ -189,7 +196,7 @@ ViewEditForm = EditForm.extend({
 
 })
 
-window.RactiveView = RactiveWidget.extend({
+RactiveView = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit]
@@ -291,3 +298,5 @@ window.RactiveView = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveView

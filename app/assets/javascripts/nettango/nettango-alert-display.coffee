@@ -1,3 +1,5 @@
+import AlertDisplay from "../alert-display.js"
+
 # coffeelint: disable=max_line_length
 # () => String
 workspaceError = () ->
@@ -113,4 +115,4 @@ class NetTangoAlertDisplay extends AlertDisplay
     tabOptions = @netTango.builder.get('tabOptions')
     not @netTango.playMode or not tabOptions.codeTab?.checked
 
-window.NetTangoAlertDisplay = NetTangoAlertDisplay
+export default NetTangoAlertDisplay

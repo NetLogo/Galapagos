@@ -1,6 +1,6 @@
 hostPrefix = "#{window.location.protocol}//#{window.location.host}/assets/nt-modelslib/"
 
-window.RactiveProjectChooser = Ractive.extend({
+RactiveProjectChooser = Ractive.extend({
 
   data: () -> {
     isActive: false # Boolean
@@ -91,3 +91,5 @@ window.RactiveProjectChooser = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveProjectChooser

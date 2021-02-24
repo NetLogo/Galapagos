@@ -1,10 +1,10 @@
 assert   = require("assert")
-Tortoise = require("./tortoise").Tortoise
+TortoiseUtils = require("./tortoise-utils.js")
 
-describe('Tortoise', () ->
+describe('TortoiseUtils', () ->
   describe('#toNetLogoWebMarkdown()', () ->
     assertConverts = (source, target) ->
-      assert.equal(Tortoise.toNetLogoWebMarkdown(source), target)
+      assert.equal(TortoiseUtils.toNetLogoWebMarkdown(source), target)
 
     it("doesn't mess with markdown without comments", () ->
       assertConverts("", "")
@@ -31,7 +31,7 @@ describe('Tortoise', () ->
 
   describe('#toNetLogoMarkdown()', () ->
     assertConverts = (source, target) ->
-      assert.equal(Tortoise.toNetLogoMarkdown(source), target)
+      assert.equal(TortoiseUtils.toNetLogoMarkdown(source), target)
 
     it("doesn't mess with markdown without comments", () ->
       assertConverts("", "")

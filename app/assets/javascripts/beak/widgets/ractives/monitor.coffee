@@ -1,3 +1,10 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
+import RactiveEditFormFontSize from "./subcomponent/font-size.js"
+import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+
 MonitorEditForm = EditForm.extend({
 
   data: -> {
@@ -67,7 +74,7 @@ MonitorEditForm = EditForm.extend({
 
 })
 
-window.RactiveMonitor = RactiveWidget.extend({
+RactiveMonitor = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -111,3 +118,5 @@ window.RactiveMonitor = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveMonitor

@@ -1,4 +1,4 @@
-window.RactiveEditFormLabeledInput = Ractive.extend({
+RactiveEditFormLabeledInput = Ractive.extend({
 
   data: -> {
     attrs:      undefined # String
@@ -53,7 +53,7 @@ window.RactiveEditFormLabeledInput = Ractive.extend({
 
 })
 
-window.RactiveTwoWayLabeledInput = RactiveEditFormLabeledInput.extend({
+RactiveTwoWayLabeledInput = RactiveEditFormLabeledInput.extend({
 
   data: -> {
     attrs: 'lazy step="any"'
@@ -62,3 +62,8 @@ window.RactiveTwoWayLabeledInput = RactiveEditFormLabeledInput.extend({
   twoway: true
 
 })
+
+export {
+  RactiveEditFormLabeledInput,
+  RactiveTwoWayLabeledInput,
+}

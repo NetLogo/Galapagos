@@ -20,7 +20,7 @@
 #
 # --JAB (4/111/18)
 
-window.RactiveColorInput = Ractive.extend({
+RactiveColorInput = Ractive.extend({
 
   data: -> {
     class:      undefined # String
@@ -82,3 +82,5 @@ window.RactiveColorInput = Ractive.extend({
     """
 
 })
+
+export default RactiveColorInput
