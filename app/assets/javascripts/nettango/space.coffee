@@ -142,7 +142,7 @@ window.RactiveSpace = Ractive.extend({
       space    = @get('space')
       original = space.defs.blocks[blockIndex]
       copy = NetTangoBlockDefaults.copyBlock(original)
-      @push("space.defs.blocks", copy)
+      @splice("space.defs.blocks", blockIndex + 1, 0, copy)
       @updateNetTango(space, true)
       return
 
