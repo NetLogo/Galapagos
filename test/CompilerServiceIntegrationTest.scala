@@ -64,7 +64,11 @@ class CompilerServiceIntegrationTest extends PlaySpec with GuiceOneAppPerSuite {
     val JsString(modelJs) = (jobject \ "model" \ "result").get
 
     val fields = jsonFields.toMap.map {
-      case ("widgets", JsString(s)) => ("widgets", Json.prettyPrint(Json.parse(s.replaceAll(":function\\(\\) \\{.*\\},\"", ":null,\""))))
+      case ("widgets", JsString(s)) => {
+        val functionReplacer = """:function\(\) \{[\s\S]*?\},""""
+        val replaced = s.replaceAll(functionReplacer, """:null,"""")
+        ("widgets", Json.prettyPrint(Json.parse(replaced)))
+      }
       case (k,         JsString(s)) => (k,         s)
       case (k,         j)           => (k,         Json.prettyPrint(j))
     }
