@@ -62,7 +62,7 @@ class Application @Inject() ( assets: Assets
     def linkTag(x: String)   = s"""<link rel="stylesheet" media="screen" href="$x">"""
     def scriptTag(x: String) = s"""<script src="$x"></script>"""
 
-    val cssURLs = Seq( "lib/codemirror/lib/codemirror"
+    val cssURLs = Seq( "codemirror/lib/codemirror"
                      , "stylesheets/netlogo-syntax"
                      ).map((x) => resolve(s"$x.css").toString)
     val cssTags = cssURLs.map(linkTag)
@@ -72,7 +72,7 @@ class Application @Inject() ( assets: Assets
                     , "addon/mode/simple"
                     , "addon/search/searchcursor"
                     , "addon/search/search"
-                    ).map((x) => resolve(s"lib/codemirror/$x.js").toString)
+                    ).map((x) => resolve(s"codemirror/$x.js").toString)
     val jsTags = jsURLs.map(scriptTag)
 
     val modeJSURLs = Seq( "keywords"

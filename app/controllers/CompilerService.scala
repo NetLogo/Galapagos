@@ -292,8 +292,8 @@ private[controllers] trait RequestResultGenerator {
         "/public/stylesheets/ui-editor.css",
         "/public/stylesheets/netlogoweb.css",
         "/public/stylesheets/netlogo-syntax.css",
-        "/public/lib/codemirror/lib/codemirror.css",
-        "/public/lib/codemirror/addon/dialog/dialog.css"
+        "/public/codemirror/lib/codemirror.css",
+        "/public/codemirror/addon/dialog/dialog.css"
       )
 
     stylesheets map slurpURL mkString "\n"
