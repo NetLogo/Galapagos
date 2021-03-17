@@ -78,14 +78,33 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
         "Cmd-F":  "findPersistent"
       }
     }
+    , jumpToProcedure: undefined # String
   }
 
+  oncomplete: ->
+    @_super()
+    @applySourceHighlight()
+
+  observe: {
+    'jumpToProcedure': ->
+      @jumpToProcedure()
+  }
+
+  # (String, Int) => Unit
   highlightProcedure: (procedureName, index) ->
     end   = @_editor.posFromIndex(index)
     start = CodeMirror.Pos(end.line, end.ch - procedureName.length)
     @_editor.setSelection(start, end)
     return
 
+  # () => Unit
+  jumpToProcedure: () ->
+    procInfo = @get('jumpToProcedure')
+    if procInfo? and @_editor?
+      @highlightProcedure(procInfo.procName, procInfo.index)
+    return
+
+  # () => CodeMirror
   getEditor: ->
     @_editor
 

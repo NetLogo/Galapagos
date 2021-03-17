@@ -107,9 +107,13 @@
         // Quack, quack!
         // Who doesn't love duck typing? --JAB (11/9/15)
         if ([height, width, title].every(isValid)) {
-          modelContainer.width  = width;
-          modelContainer.height = height;
-          document.title        = title;
+          modelContainer.width               = width;
+          // When we reset the model height, we lose any scrolling that was in place,
+          // so we "copy" it back to the main document.  -Jeremy B March 2021
+          const modelScrollTop               = modelContainer.contentDocument.body.scrollTop
+          modelContainer.height              = height;
+          document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop
+          document.title                     = title;
         }
 
       } else if (e.data.type === "nlw-set-hash") {

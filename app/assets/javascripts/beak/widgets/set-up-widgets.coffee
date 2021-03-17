@@ -65,7 +65,7 @@ window.setUpButton = (updateUI) -> (source, destination) ->
         if source.forever
           () ->
             mustStop =
-              try task() instanceof Exception.StopInterrupt
+              try task() is StopInterrupt
               catch ex
                 ex instanceof Exception.HaltInterrupt
             if mustStop

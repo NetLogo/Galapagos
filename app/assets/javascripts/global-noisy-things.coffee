@@ -41,13 +41,47 @@ window.showErrors = (errors) ->
       alert(errors.join('\n'))
   return
 
+# You might be thinking... don't we have the source location in the `RuntimeException`?  Why not just use that?
+# Well, if the user has modified the code but not hit *Recompile* then the source location could be wrong.
+# So just pass the name and use the existing code to update the location.  -Jeremy B March 2021
+
+# (String) => false
+window.jumpToProcedure = (procName) ->
+  window.nlwAlerter.hide()
+  window.session.widgetController.ractive.fire('jump-to-procedure', procName)
+  codeTab = document.getElementById('netlogo-code-tab')
+  if codeTab?
+    # Something during the widget updates resets the scroll position if we do it directly.
+    # So just wait a split sec and then scroll.  -Jeremy B March 2021
+    scrollMe = () -> codeTab.scrollIntoView()
+    window.setTimeout(scrollMe, 50)
+  false
+
+# (String, String, Array[{ name: String, location: { start: Int, end: Int } }]) => String
+makeRuntimeErrorMessage = (message, primitive, frames) ->
+  primError = if primitive is "" then "a primitive" else primitive.toUpperCase()
+  start     = "#{message}\nerror while running #{primError}"
+
+  messages = frames.map( (frame) ->
+    switch frame.type
+      when "command"  then "called by command <a href='#' onclick='return window.jumpToProcedure(\"#{frame.name}\")'>#{frame.name.toUpperCase()}</a>"
+      when "reporter" then "called by reporter <a href='#' onclick='return window.jumpToProcedure(\"#{frame.name}\")'>#{frame.name.toUpperCase()}</a>"
+      when "plot"     then "called by plot #{frame.name}"
+      else                 "called by unknown"
+  )
+  stack = messages.join("\n")
+
+  if stack isnt "" then "#{start}\n#{stack}" else start
+
 # [T] @ (() => T) => ((Array[String]) => Unit) => T
 window.handlingErrors = (f) -> (errorLog = window.showErrors) ->
   try f()
   catch ex
     if not (ex instanceof Exception.HaltInterrupt)
       message =
-        if not (ex instanceof TypeError)
+        if ex instanceof Exception.RuntimeException or ex instanceof Exception.ExtensionException
+          makeRuntimeErrorMessage(ex.message, ex.primitive, ex.stackTrace)
+        else if not (ex instanceof TypeError)
           ex.message
         else
           """A type error has occurred in the simulation engine.

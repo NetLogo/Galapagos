@@ -3,6 +3,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
   data: -> {
     code:              undefined # String
   , isReadOnly:        undefined # Boolean
+  , jumpToProcedure:   undefined # String
   , lastCompiledCode:  undefined # String
   , lastCompileFailed:     false # Boolean
   , procedureNames:           {} # Object[String, Number]
@@ -32,7 +33,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     $('#procedurenames-dropdown').on('change', =>
       procedureNames = @get('procedureNames')
       selectedProcedure = $('#procedurenames-dropdown').val()
-      index = procedureNames[selectedProcedure]
+      index = procedureNames[selectedProcedure.toUpperCase()]
       @findComponent('codeEditor').highlightProcedure(selectedProcedure, index)
     )
 
@@ -46,7 +47,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     procedureNames = {}
     procedureCheck = /^\s*(?:to|to-report)\s(?:\s*;.*\n)*\s*(\w\S*)/gm
     while (procedureMatch = procedureCheck.exec(codeString))
-      procedureNames[procedureMatch[1]] = procedureMatch.index + procedureMatch[0].length
+      procedureNames[procedureMatch[1].toUpperCase()] = procedureMatch.index + procedureMatch[0].length
     procedureNames
 
   setProcedureNames: ->
@@ -150,12 +151,25 @@ window.RactiveModelCodeComponent = Ractive.extend({
     @set('usageVisibility', true)
     return
 
+  # () => Unit
+  jumpToProcedure: ->
+    procName = @get('jumpToProcedure')
+    if procName?
+      procedureNames = @getProcedureNames()
+      index          = procedureNames[procName.toUpperCase()]
+      # if the procedure is not found that probably means the user erased it from the code
+      # but has not yet recompiled, so we'll just ignore this request.  -Jeremy B March 2021
+      if index?
+        @findComponent('codeEditor').set('jumpToProcedure', { procName, index })
+    return
+
   on: {
     'complete': (_) ->
       @setupProceduresDropdown()
       CodeMirror.registerHelper('hint', 'fromList', @netLogoHintHelper)
       @setupAutoComplete(@autoCompleteWords())
       @setupCodeUsagePopup()
+      @jumpToProcedure()
       return
 
     'recompile': (_) ->
@@ -172,11 +186,16 @@ window.RactiveModelCodeComponent = Ractive.extend({
       return
   }
 
+  observe: {
+    jumpToProcedure: ->
+      @jumpToProcedure()
+  }
+
   # coffeelint: disable=max_line_length
   template:
     """
-    <div class="netlogo-tab-content netlogo-code-container"
-         grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
+    <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container"
+      grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
           <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="2">
