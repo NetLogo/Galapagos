@@ -105,6 +105,9 @@ setUpEventListeners = ->
 
         vc = session.widgetController.viewController
 
+        mouseXCache = 0
+        mouseYCache = 0
+
         onMouseDown =
           ->
             obj = { subtype: "mouse-down", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
@@ -115,8 +118,14 @@ setUpEventListeners = ->
             obj = { subtype: "mouse-up", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
             sendHNWWidgetMessage('view', obj)
 
+        onMouseOver =
+          ->
+            mouseXCache = vc.mouseXcor()
+            mouseYCache = vc.mouseYcor()
+
         vc.view.visibleCanvas.addEventListener('mousedown', onMouseDown)
         vc.view.visibleCanvas.addEventListener('mouseup'  , onMouseUp  )
+        vc.view.visibleCanvas.addEventListener('mouseover', onMouseOver)
 
         if token isnt "invalid token"
           sendHNWMessage("interface-loaded", null)
