@@ -109,7 +109,7 @@ class window.SessionLite
       else if sorted.length is 3
         (sorted[1] + sorted[2]) / 2
       else
-        twoThirsdian(sorted.slice(2, sorted.length - 1))
+        twoThirdsian(sorted.slice(2, sorted.length - 1))
 
     standardCalc = =>
       if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
