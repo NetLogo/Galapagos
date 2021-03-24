@@ -38,9 +38,12 @@ window.controlEventTraffic = (controller) ->
 
   # Thanks, Firefox.  Maybe just put the proper values in the `drag` event, in the
   # future, instead of sending us `0` for them every time? --JAB (11/23/17)
+  # For anyone interested in seeing how a major browser can avoid fixing a simple bug
+  # for over 12 years:  https://bugzilla.mozilla.org/show_bug.cgi?id=505521
+  # -Jeremy B March 2021
   #
   # (RactiveEvent) => Unit
-  hailSatan = ({ event: { clientX, clientY } }) ->
+  mosaicKillerKiller = ({ event: { clientX, clientY } }) ->
     ractive.set("lastDragX", clientX)
     ractive.set("lastDragY", clientY)
     return
@@ -213,7 +216,7 @@ window.controlEventTraffic = (controller) ->
   ractive.observe('widgetObj.*.right'       , onWidgetRightChange)
   ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)
 
-  ractive.on('hail-satan'           , hailSatan)
+  ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBooleanData('isEditing'))
   ractive.on('toggle-orientation'   , () -> toggleBooleanData('isVertical'))
   ractive.on('*.redraw-view'        , redrawView)

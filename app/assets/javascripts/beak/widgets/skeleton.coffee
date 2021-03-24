@@ -171,7 +171,7 @@ template =
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
-           on-click="@this.fire('deselect-widgets', @event)" on-dragover="hail-satan">
+           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#widgetObj:key}}
           {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} ticks="{{ticks}}" /> {{/}}
