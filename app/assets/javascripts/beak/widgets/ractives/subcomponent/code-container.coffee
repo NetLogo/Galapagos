@@ -78,12 +78,12 @@ window.RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
         "Cmd-F":  "findPersistent"
       }
     }
-    , jumpToProcedure: undefined # String
+    , jumpToProcedure: undefined # { procName: String, index: Int }
   }
 
   oncomplete: ->
     @_super()
-    @applySourceHighlight()
+    @jumpToProcedure()
 
   observe: {
     'jumpToProcedure': ->
