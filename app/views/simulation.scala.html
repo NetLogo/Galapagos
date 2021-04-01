@@ -19,7 +19,7 @@
   <body style="margin: 0px;">
     <script>window.exports = {};</script>
     @views.html.spinner()
-    @views.html.errorAlert()
+    <div id="alert-container"></div>
     <div id="netlogo-model-container" style="display: inline-block;"></div>
     <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
     @tagBuilder.pathToHTML("jscolor-picker/jscolor.min.js")
@@ -50,7 +50,7 @@
     @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
     @tagBuilder.pathToHTML("javascripts/colors.js")
     @tagBuilder.pathToHTML("javascripts/default-shapes.js")
-    @tagBuilder.pathToHTML("javascripts/global-noisy-things.js")
+    @tagBuilder.pathToHTML("javascripts/alert-display.js")
     @tagBuilder.pathToHTML("javascripts/highcharts.js")
     @tagBuilder.pathToHTML("javascripts/models.js")
     @tagBuilder.pathToHTML("javascripts/new-model.js")
@@ -129,53 +129,44 @@
         document.title = pageTitle(session.modelTitle());
         activeContainer = modelContainer;
         session.startLoop();
+        alerter.listenForErrors(session.widgetController)
       };
 
-      var isStandaloneHTML = false;
+      const isStandaloneHTML = (nlogoScript.textContent.length > 0);
+      const alerter          = new AlertDisplay(document.getElementById('alert-container'), isStandaloneHTML);
+      const alertDialog      = document.getElementById('alert-dialog')
 
-      if (nlogoScript.textContent.length > 0) {
-        isStandaloneHTML = true;
-      }
-
-      window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML);
-
-      var displayError = function(error) {
-        // in the case where we're still loading the model, we have to
-        // post an error that cannot be dismissed, as well as ensuring that
-        // the frame we're in matches the size of the error on display.
-        if (activeContainer === loadingOverlay) {
-          window.nlwAlerter.displayError(error, false);
-          activeContainer = window.nlwAlerter.alertContainer;
+      function handleCompileResult(result) {
+        if (result.type === 'success') {
+          openSession(result.session)
         } else {
-          window.nlwAlerter.displayError(error);
+          activeContainer = alertDialog
+          alerter.reportCompilerErrors(result.source, result.errors)
         }
-      };
+      }
 
       var loadModel = function(nlogo, path) {
         if (session) {
           session.teardown();
         }
-        window.nlwAlerter.hide();
         activeContainer = loadingOverlay;
-        Tortoise.fromNlogo(nlogo, modelContainer, path, openSession, displayError);
+        Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
       };
 
       if (nlogoScript.textContent.length > 0) {
-        Tortoise.fromNlogo(nlogoScript.textContent,
-                           modelContainer,
-                           nlogoScript.dataset.filename,
-                           openSession,
-                           displayError);
+        const nlogo = nlogoScript.textContent;
+        const path  = nlogoScript.dataset.filename;
+        Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
+
       } else if (window.location.search.length > 0) {
+        const query    = window.location.search.slice(1);
+        const pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
+        const paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
 
-        var query    = window.location.search.slice(1);
-        var pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
-        var paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
+        const url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
+        const modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
 
-        var url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
-        var modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
-
-        Tortoise.fromURL(url, modelName, modelContainer, openSession, displayError);
+        Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult);
 
       } else {
         loadModel(exports.newModel, "NewModel");

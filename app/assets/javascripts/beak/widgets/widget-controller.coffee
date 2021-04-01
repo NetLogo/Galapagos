@@ -75,6 +75,12 @@ class window.WidgetController
   widgets: ->
     v for _, v of @ractive.get('widgetObj')
 
+  # ("runtime" | "compiler", String, Exception | Array[String])
+  reportError: (time, source, details) =>
+    if !["runtime", "compiler"].includes(time)
+      throw new Error('Only valid values for `time` are "runtime" or "compiler"')
+    @ractive.fire("nlw-#{time}-error", {}, source, details)
+
   # (Array[Widget], Array[Widget]) => Unit
   freshenUpWidgets: (realWidgets, newWidgets) ->
 
@@ -82,7 +88,7 @@ class window.WidgetController
 
       [props, setterUpper] =
         switch newWidget.type
-          when "button"   then [  buttonProps, window.setUpButton(=> @redraw(); @updateWidgets())]
+          when "button"   then [  buttonProps, window.setUpButton(@reportError, () => @redraw(); @updateWidgets() )]
           when "chooser"  then [ chooserProps, window.setUpChooser]
           when "inputBox" then [inputBoxProps, window.setUpInputBox]
           when "monitor"  then [ monitorProps, window.setUpMonitor]
@@ -123,6 +129,18 @@ class window.WidgetController
     @ractive.set('code', code)
     @ractive.findComponent('codePane')?.setCode(code)
     @ractive.fire('controller.recompile', successCallback)
+    return
+
+  # (String) => Unit
+  jumpToProcedure: (procName) ->
+    @ractive.set('showCode', true)
+    @ractive.findComponent('codePane').set('jumpToProcedure', procName)
+    codeTab = @ractive.find('#netlogo-code-tab')
+    if codeTab?
+      # Something during the widget updates resets the scroll position if we do it directly.
+      # So just wait a split sec and then scroll.  -Jeremy B March 2021
+      scrollMe = () -> codeTab.scrollIntoView()
+      window.setTimeout(scrollMe, 50)
     return
 
   # () => Unit

@@ -30,12 +30,6 @@ window.controlEventTraffic = (controller) ->
     ractive.set('isOverlayUp',   false)
     return
 
-  # (String) => Unit
-  jumpToProcedure = (procName) ->
-    ractive.set('showCode', true)
-    ractive.findComponent('codePane').set('jumpToProcedure', procName)
-    return
-
   # Thanks, Firefox.  Maybe just put the proper values in the `drag` event, in the
   # future, instead of sending us `0` for them every time? --JAB (11/23/17)
   # For anyone interested in seeing how a major browser can avoid fixing a simple bug
@@ -227,7 +221,6 @@ window.controlEventTraffic = (controller) ->
   ractive.on('check-action-keys'        , (_, event)         -> checkActionKeys(event))
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
   ractive.on('drop-overlay'             , (_, event)         -> dropOverlay())
-  ractive.on('jump-to-procedure'        , (_, procName)      -> jumpToProcedure(procName))
   ractive.on('show-errors'              , (_, event)         -> window.showErrors(event.context.compilation.messages))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
   ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))

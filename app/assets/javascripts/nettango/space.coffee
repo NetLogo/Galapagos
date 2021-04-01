@@ -211,7 +211,7 @@ window.RactiveSpace = Ractive.extend({
         @saveNetTango()
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
                       event.attributeId, event.formattedValue)
-        @fire('ntb-run', setCode, @squelch)
+        @fire('ntb-run', {}, 'nettango-attribute-change', setCode)
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
 
@@ -275,7 +275,7 @@ window.RactiveSpace = Ractive.extend({
     @refreshNetTango(space, keepOldChains)
 
     @fire('ntb-block-code-changed')
-    @fire('ntb-run', {}, NetTangoRewriter.createSpaceVariables(space).join(" "))
+    @fire('ntb-run', {}, 'nettango-space-change', NetTangoRewriter.createSpaceVariables(space).join(" "))
     if keepOldChains then @fire('ntb-space-changed')
     return
 
@@ -347,11 +347,6 @@ window.RactiveSpace = Ractive.extend({
           delete block[prop]
     @set('space', space)
     @updateNetTango(space, true)
-    return
-
-  # (Exception) => Unit
-  squelch: (error) ->
-    console.log(error)
     return
 
   components: {

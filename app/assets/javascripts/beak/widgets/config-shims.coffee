@@ -54,8 +54,8 @@ genAsyncDialogConfig = (ractive, viewController) ->
 
   }
 
-# (ViewController) => DialogConfig
-genDialogConfig = (viewController) ->
+# (ViewController, (String) => Unit) => DialogConfig
+genDialogConfig = (viewController, notify) ->
 
   clearMouse = ->
     viewController.mouseDown = false
@@ -69,7 +69,7 @@ genDialogConfig = (viewController) ->
   {
     confirm: (str) -> clearMouse(); window.confirm(str)
     input:   (str) -> clearMouse(); window.prompt(str, "")
-    notify:  (str) -> clearMouse(); window.nlwAlerter.display("NetLogo Notification", true, str)
+    notify:  (str) -> clearMouse(); notify(str)
     yesOrNo: (str) -> clearMouse(); window.confirm(str)
   }
 
@@ -240,12 +240,15 @@ genWorldConfig = (ractive) ->
 # (Ractive, ViewController, Element, BrowserCompiler) => Configs
 window.genConfigs = (ractive, viewController, container, compiler) ->
 
+  notify = (message) ->
+    ractive.fire('nlw-notify', message)
+
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
   , base64ToImageData: window.synchroDecoder
-  , dialog:            genDialogConfig(viewController)
+  , dialog:            genDialogConfig(viewController, notify)
   , importExport:      genImportExportConfig(ractive, viewController, compiler)
   , inspection:        genInspectionConfig()
   , io:                genIOConfig(ractive)

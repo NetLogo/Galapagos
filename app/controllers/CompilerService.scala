@@ -315,7 +315,7 @@ private[controllers] trait RequestResultGenerator {
         "codemirror-mode.js",
         "colors.js",
         "default-shapes.js",
-        "global-noisy-things.js",
+        "alert-display.js",
         "highcharts.js",
         "models.js",
         "new-model.js",

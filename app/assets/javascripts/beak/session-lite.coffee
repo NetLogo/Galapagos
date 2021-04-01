@@ -26,9 +26,9 @@ class window.SessionLite
   widgetController: undefined # WidgetController
 
   # (Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
-  #   String, String, Boolean, String, String, Boolean, (String) => Unit)
+  #   String, String, Boolean, String, String, Boolean)
   constructor: (container, @compiler, @rewriters, widgets,
-    code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
+    code, info, readOnly, filename, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
@@ -41,7 +41,7 @@ class window.SessionLite
     @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
     @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
-    @widgetController.ractive.on('*.run'           , (_, code, errorLog) => @run(code, errorLog))
+    @widgetController.ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     @widgetController.ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
@@ -53,7 +53,8 @@ class window.SessionLite
     @widgetController.ractive.get('modelTitle')
 
   startLoop: ->
-    if ProcedurePrims.hasCommand("startup") then window.handlingErrors( () -> ProcedurePrims.callCommand("startup") )()
+    if ProcedurePrims.hasCommand('startup')
+      window.runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
     @widgetController.redraw()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
@@ -133,10 +134,12 @@ class window.SessionLite
       r.lineNumber = rewritten.slice(0, r.start).split("\n").length
       r
     )
+
     rewriter = (newErrors, rw) -> if rw.updateErrors?
       rw.updateErrors(original, rewritten, newErrors)
     else
       newErrors
+
     @rewriters.reduce(rewriter, errors)
 
   # (() => Unit) => Unit
@@ -180,10 +183,10 @@ class window.SessionLite
         else
           @widgetController.ractive.set('lastCompileFailed', true)
           errors = @rewriteErrors(code, rewritten, res.model.result)
-          @alertCompileError(errors)
+          @widgetController.reportError('compiler', 'recompile', errors)
 
       catch ex
-        @alertCompileError([ex], @alertErrors)
+        @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
       finally
         Tortoise.finishLoading()
@@ -203,21 +206,21 @@ class window.SessionLite
     })
 
   exportNlogo: ->
-    exportName = @promptFilename(".nlogo")
+    exportName = @promptFilename('.nlogo')
     if exportName?
       exportedNLogo = @getNlogo()
       if (exportedNLogo.success)
-        exportBlob = new Blob([exportedNLogo.result], {type: "text/plain:charset=utf-8"})
+        exportBlob = new Blob([exportedNLogo.result], {type: 'text/plain:charset=utf-8'})
         saveAs(exportBlob, exportName)
       else
-        @alertCompileError(exportedNLogo.result)
+        @widgetController.reportError('compiler', 'export-nlogo', exportedNLogo.result)
 
   promptFilename: (extension) =>
     suggestion = @modelTitle() + extension
     window.prompt('Filename:', suggestion)
 
   exportHtml: ->
-    exportName = @promptFilename(".html")
+    exportName = @promptFilename('.html')
     if exportName?
       window.req = new XMLHttpRequest()
       req.open('GET', standaloneURL)
@@ -227,16 +230,16 @@ class window.SessionLite
             nlogo = @getNlogo()
             if nlogo.success
               parser = new DOMParser()
-              dom = parser.parseFromString(req.responseText, "text/html")
-              nlogoScript = dom.querySelector("#nlogo-code")
+              dom = parser.parseFromString(req.responseText, 'text/html')
+              nlogoScript = dom.querySelector('#nlogo-code')
               nlogoScript.textContent = nlogo.result
-              nlogoScript.dataset.filename = exportName.replace(/\.html$/, ".nlogo")
-              wrapper = document.createElement("div")
+              nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogo')
+              wrapper = document.createElement('div')
               wrapper.appendChild(dom.documentElement)
-              exportBlob = new Blob([wrapper.innerHTML], {type: "text/html:charset=utf-8"})
+              exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
               saveAs(exportBlob, exportName)
             else
-              @alertCompileError(nlogo.result)
+              @widgetController.reportError('compiler', 'export-html', nlogo.result)
           else
             alert("Couldn't get standalone page")
       req.send("")
@@ -247,12 +250,12 @@ class window.SessionLite
     if confirm('Are you sure you want to open a new model?  You will lose any changes that you have not exported.')
 
       parent.postMessage({
-        hash: "NewModel",
-        type: "nlw-set-hash"
+        hash: 'NewModel',
+        type: 'nlw-set-hash'
       }, "*")
 
       window.postMessage({
-        type: "nlw-open-new"
+        type: 'nlw-open-new'
       }, "*")
 
     return
@@ -308,53 +311,31 @@ class window.SessionLite
     world.observer.setGlobal(varName, value)
     return
 
-  # (String, (Array[String]) => Unit) => Unit
-  run: (code, errorLog) ->
-
-    compileErrorLog = (result) =>
-      @alertCompileError(result, errorLog)
+  # (String, String) => Unit
+  run: (source, code) ->
 
     commandResult = @compiler.compileCommand(code)
 
     { result, success } = commandResult
     if not success
-      compileErrorLog(result)
+      @widgetController.reportError("compiler", source, result)
       return
 
     command = new Function(result)
-    try
-      window.handlingErrors(command)(errorLog)
-    catch ex
-      if not (ex instanceof Exception.HaltInterrupt)
-        throw ex
-
+    window.runWithErrorHandling(source, @widgetController.reportError, command)
     return
 
-  # (String, (String, Array[{ message: String}]) => String) =>
-  #  { success: true, value: Any } | { success: false, error: String }
-  runReporter: (code, errorLog) ->
-    errorLog = errorLog ? (prefix, errs) ->
-      message = "#{prefix}: #{errs.map((err) -> err.message)}"
-      console.error(message)
-      message
-
+  # (String) => { success: true, value: Any } | { success: false, error: String }
+  runReporter: (code) ->
     result = @compiler.compileReporter(code)
 
     { result, success } = reporterResult
     if not success
-      message = errorLog("Reporter error", result)
-      return { success: false, error: message }
+      return { success: false, error: "Reporter error: #{result}" }
 
     reporter = new Function("return ( #{result} );")
     return try
       reporterValue = reporter()
       { success: true, value: reporterValue }
     catch ex
-      message = errorLog("Runtime error", [ex])
-      { success: false, error: message }
-
-  alertCompileError: (result, errorLog = @alertErrors) ->
-    errorLog(result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message))
-
-  alertErrors: (messages) =>
-    @displayError(messages.join('\n'))
+      { success: false, error: "Runtime error: #{ex.toString()}" }

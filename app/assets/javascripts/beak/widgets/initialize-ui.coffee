@@ -14,7 +14,11 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
     controller.redraw()
     controller.updateWidgets()
 
-  window.setUpWidgets(widgets, updateUI)
+  # Same as above, need a way to report errors, but we don't have the controller
+  # instance yet, so just make the closure.  -Jeremy B March 2021
+  reportError = (time, source, exception) ->
+    controller.reportError(time, source, exception)
+  window.setUpWidgets(reportError, widgets, updateUI)
 
   ractive = window.generateRactiveSkeleton(
       container

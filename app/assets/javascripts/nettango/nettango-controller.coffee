@@ -37,11 +37,11 @@ class window.NetTangoController
       @loadProject(netTangoSampleModel, "project-load"))
     @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
     @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
-    @ractive.on('*.ntb-run',            (_, command, errorLog)  =>
+    @ractive.on('*.ntb-run',            (_, source, command)    =>
       if (@isDebugMode) then console.log("Running:", command)
       session = @theOutsideWorld.getSession()
       if (session?)
-        session.widgetController.ractive.fire("run", command, errorLog))
+        session.widgetController.ractive.fire('run', {}, source, command))
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode, isDebugMode, setDebugMode) ->

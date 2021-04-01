@@ -20,7 +20,9 @@
 
 @content = {
   @views.html.spinner()
-  @views.html.errorAlert()
+
+  <div id="alert-container"></div>
+
   <div @if(themed) { class="ntb-content" } else { class="ntb-content-unthemed" }>
 
     <div id="ntb-container" @if(themed) { class="ntb-container" }>
@@ -70,7 +72,7 @@
   @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
   @tagBuilder.pathToHTML("javascripts/colors.js")
   @tagBuilder.pathToHTML("javascripts/default-shapes.js")
-  @tagBuilder.pathToHTML("javascripts/global-noisy-things.js")
+  @tagBuilder.pathToHTML("javascripts/alert-display.js")
   @tagBuilder.pathToHTML("javascripts/highcharts.js")
   @tagBuilder.pathToHTML("javascripts/new-model.js")
   @tagBuilder.pathToHTML("javascripts/models.js")
@@ -158,7 +160,7 @@
 
   <script type="text/javascript">
 
-    Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod}
+    Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
 
     const pathSplits = location.pathname.split("/")
     const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
@@ -169,33 +171,31 @@
     const builderContainer = document.getElementById("ntb-container")
 
     var session
-    function openSession(s, callback) {
+    function openSession(s) {
       session         = s
       document.title  = pageTitle(session.modelTitle())
       activeContainer = modelContainer
       session.startLoop()
-      if (callback !== undefined) {
-        callback()
-      }
+      alerter.listenForErrors(session.widgetController)
     }
 
-    const isStandaloneHTML = @standalone
-
-    window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML)
+    const isStandaloneHtml = @standalone;
+    const alerter          = new AlertDisplay(document.getElementById("alert-container"), isStandaloneHtml)
 
     function pageTitle(modelTitle) {
       return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`
     }
 
-    function displayError(error) {
-      // in the case where we're still loading the model, we have to
-      // post an error that cannot be dismissed, as well as ensuring that
-      // the frame we're in matches the size of the error on display.
-      if (activeContainer === loadingOverlay) {
-        window.nlwAlerter.displayError(error, false)
-        activeContainer = window.nlwAlerter.alertContainer
-      } else {
-        window.nlwAlerter.displayError(error)
+    function handleCompileResult(callback) {
+      return (result) => {
+        if (result.type === 'success') {
+          openSession(result.session)
+          if (callback !== undefined) {
+            callback()
+          }
+        } else {
+          alerter.reportCompilerErrors(result.source, result.errors)
+        }
       }
     }
 
@@ -203,18 +203,16 @@
       if (session) {
         session.teardown()
       }
-      window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromNlogo(nlogo, modelContainer, path, (s) => openSession(s, callback), displayError, [netTango.rewriter, netTango.compileAlert])
+      Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
     }
 
     function loadUrl(url, modelName, callback) {
       if (session) {
         session.teardown()
       }
-      window.nlwAlerter.hide()
       activeContainer = loadingOverlay
-      Tortoise.fromURL(url, modelName, modelContainer, (s) => openSession(s, callback), displayError, [netTango.rewriter, netTango.compileAlert])
+      Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
     }
 
     function enableFrameSizeUpdates() {
@@ -286,7 +284,7 @@
       "ntb-components",
       ls,
       overlay,
-      playMode || @standalone,
+      playMode || isStandaloneHtml,
       "@mode.toString.toLowerCase",
       theOutsideWorld
     )
