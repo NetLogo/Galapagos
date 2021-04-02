@@ -1,0 +1,46 @@
+@import play.api.Mode
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("lib/chosen/chosen.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
+  </head>
+  <body style="margin: 0px;">
+    <script>window.exports = {};</script>
+
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.js")
+
+    @tagBuilder.pathToHTML("lib/jquery/jquery.js")
+    @tagBuilder.pathToHTML("lib/chosen/chosen.jquery.js")
+    @tagBuilder.pathToHTML("javascripts/keywords.js")
+    @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
+    @tagBuilder.pathToHTML("lib/ractive/ractive.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/code-container.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/code-editor.js")
+
+    <script>
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+    </script>
+
+    @tagBuilder.pathToHTML("javascripts/beak/hnw-config-code.js")
+
+  </body>
+</html>

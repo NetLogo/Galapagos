@@ -190,3 +190,13 @@ img.link-img {
   flex-direction: row;
   align-items: center;
 }
+
+.invis {
+  visibility: hidden;
+  height: 0;
+  width:  0;
+}
+
+.vis {
+  flex-grow: 1;
+}

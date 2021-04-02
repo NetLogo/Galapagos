@@ -292,4 +292,9 @@ window.RactiveView = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWView = RactiveView.extend({})
+window.RactiveHNWView = RactiveView.extend({
+  data: -> {
+    contextMenuOptions: []
+  , isNotEditable:      true
+  }
+})

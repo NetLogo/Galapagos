@@ -1,3 +1,13 @@
+dump = (x, y) ->
+  if Array.isArray(x)
+    "[#{x.map(dump).join(' ')}]"
+  else if typeof(x) is "string"
+    "\"#{x}\""
+  else if typeof(x) in ["boolean", "number"]
+    x
+  else
+    workspace.dump(x, y)
+
 ChooserEditForm = EditForm.extend({
 
   data: -> {
@@ -22,11 +32,12 @@ ChooserEditForm = EditForm.extend({
   components: {
     formCode:     RactiveEditFormMultilineCode
   , formVariable: RactiveEditFormVariable
+  , spacer:       RactiveEditFormSpacer
   }
 
   computed: {
     chooserChoices: {
-      get: -> @get('choices').map((x) -> workspace.dump(x, true)).join('\n')
+      get: -> @get('choices').map((x) -> dump(x, true)).join('\n')
     }
   }
 
@@ -44,14 +55,33 @@ ChooserEditForm = EditForm.extend({
 
     title: "Chooser"
 
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="varName" label="Global variable" value="{{display}}" />
+      """
+
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" value="{{display}}"        name="varName" />
-      <formCode     id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
-                    label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      {{>variableForm}}
+      <spacer height="15px" />
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
+                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
       <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
              style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
+      """
+
+  }
+
+})
+
+HNWChooserEditForm = ChooserEditForm.extend({
+
+  partials: {
+
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="varName" label="Turtle variable" value="{{display}}" />
       """
 
   }
@@ -114,4 +144,8 @@ window.RactiveChooser = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWChooser = RactiveChooser.extend({})
+window.RactiveHNWChooser = RactiveChooser.extend({
+  components: {
+    editForm: HNWChooserEditForm
+  }
+})

@@ -86,6 +86,47 @@ ButtonEditForm = EditForm.extend({
 
 })
 
+HNWButtonEditForm = ButtonEditForm.extend({
+
+  data: -> {
+    actionKey:      undefined # String
+  , display:        undefined # String
+  , isForever:      false     # Boolean
+  , procName:       undefined # String
+  , startsDisabled: false     # Boolean
+  , type:           undefined # String
+  }
+
+  partials: {
+
+    title: "Button"
+
+    # coffeelint: disable=max_line_length
+    widgetFields:
+      """
+      <formCode id="{{id}}-proc-name" name="procName" value="{{procName}}" label="Procedure" />
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center;">
+        <labeledInput id="{{id}}-display" labelStr="Display name:" name="display" class="widget-edit-inputbox" type="text" value="{{display}}" />
+      </div>
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center;">
+        <label for="{{id}}-action-key">Action key:</label>
+        <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
+                class="widget-edit-inputbox" style="text-transform: uppercase; width: 33px;"
+                on-keypress="handle-action-key-press" />
+      </div>
+      """
+    # coffeelint: enable=max_line_length
+
+  }
+
+})
+
 window.RactiveButton = RactiveWidget.extend({
 
   data: -> {
@@ -127,9 +168,7 @@ window.RactiveButton = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>button}}
-    <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
-              idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
-              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+    {{>editForm}}
     """
 
   partials: {
@@ -141,6 +180,13 @@ window.RactiveButton = RactiveWidget.extend({
       {{ else }}
         {{>standardButton}}
       {{/}}
+      """
+
+    editForm:
+      """
+      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+                idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
       """
 
     standardButton:
@@ -199,8 +245,23 @@ window.RactiveButton = RactiveWidget.extend({
 })
 
 window.RactiveHNWButton = RactiveButton.extend({
+
+  components: {
+    editForm: HNWButtonEditForm
+  }
+
   clickHandler: (_, ractive) ->
     if ractive.get('isEnabled')
       sendHNWWidgetMessage('button', ractive.get('widget.hnwProcName'))
     return
+
+  partials: {
+    editForm:
+      """
+      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+                idBasis="{{id}}" isForever="{{widget.forever}}" procName="{{widget.hnwProcName}}"
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+      """
+  }
+
 })

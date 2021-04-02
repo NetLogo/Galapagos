@@ -44,6 +44,21 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.simulation(OutsourceTagBuilder))
   }
 
+  def hnwConfig: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwConfig())
+  }
+
+  def hnwConfigCode: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwConfigCode(OutsourceTagBuilder))
+  }
+
+  def hnwConfigInner: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwConfigInner(OutsourceTagBuilder))
+  }
+
   def hnwHost: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.hnwHost(OutsourceTagBuilder))

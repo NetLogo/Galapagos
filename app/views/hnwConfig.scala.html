@@ -1,0 +1,72 @@
+@import play.api.Mode
+
+@()(implicit mode: Mode, request: Request[_])
+
+@extraHead = {
+  <link rel="stylesheet" href='@routes.Assets.versioned("lib/chosen/chosen.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/spinner.css").relative' />
+}
+
+@content = {
+  <script src='@routes.Assets.versioned("lib/file-saver/FileSaver.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("javascripts/beak/hnw-config.js").relative' type="text/javascript"></script>
+  <div class="tortoise inner-content">
+    <div class="model-selection-bar">
+      <form id="fresh-form" action="javascript:void(0);" onsubmit="return submitFreshForm(this)">
+        <div class="flex-column" style="margin-right: 25px;">
+          <label>Start Fresh:
+            <input id="fresh-model-input" type="file" name="fresh-model" />
+          </label>
+          <input type="submit" value="Load Fresh"/>
+        </div>
+      </form>
+      <form id="config-form" action="javascript:void(0);" onsubmit="return submitConfigForm(this)">
+        <div class="flex-column">
+          <label>Base Model:
+            <input id="base-model-input" type="file" name="base-model" />
+          </label>
+          <label>Config File:
+            <input id="config-input" type="file" name="config" />
+          </label>
+          <input type="submit" value="Load with Config"/>
+        </div>
+      </div>
+      <div id="config-content" class="model-box invis" style="width: 100%;">
+        <div class="flex-column">
+          <div class="flex-row">
+            <label>On Setup:
+              <select id="on-setup-dropdown" name="on-setup">
+                <option value="setup">setup</option>
+              </select>
+            </label>
+            <label>On Go:
+              <select id="on-go-dropdown" name="on-go">
+                <option value="go">go</option>
+              </select>
+            </label>
+          </div>
+
+          <template id="config-template">
+            <iframe class="model-container config-container invis" src="/hnw-config-inner" height="600"></iframe>
+          </template>
+          <div id="config-frames" class="flex-row">
+            <iframe id="code-frame" class="model-container vis" src="/hnw-config-code" height="600"></iframe>
+          </div>
+
+          <template id="tab-button-template">
+            <input class="hnw-config-tab-button" type="button" onclick="selectConfigTab(this)" value="">
+          </template>
+          <div id="config-tab-buttons" class="flex-row">
+            <input id="code-tab-button" class="hnw-config-tab-button selected" type="button" onclick="selectConfigTab(this)" value="Code">
+          </div>
+
+        </div>
+      </div>
+      <input type="button" onclick="downloadNlogoAndJSON()" value="Download">
+    </div>
+  </div>
+}
+
+@views.html.mainTheme(content, "HubNet Web Builder", Option("hnw-config"), extraHead)

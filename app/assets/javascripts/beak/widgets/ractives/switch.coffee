@@ -23,7 +23,20 @@ SwitchEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" value="{{display}}"/>
+      <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}"/>
+      """
+
+  }
+
+})
+
+HNWSwitchEditForm = SwitchEditForm.extend({
+
+  partials: {
+
+    widgetFields:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}"/>
       """
 
   }
@@ -82,4 +95,8 @@ window.RactiveSwitch = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWSwitch = RactiveSwitch.extend({})
+window.RactiveHNWSwitch = RactiveSwitch.extend({
+  components: {
+    editForm: HNWSwitchEditForm
+  }
+})

@@ -47,10 +47,15 @@ InputEditForm = EditForm.extend({
 
     title: "Input"
 
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}" />
+      """
+
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" value="{{display}}" />
+      {{>variableForm}}
       <spacer height="15px" />
       <div class="flex-row" style="align-items: center;">
         <formDropdown id="{{id}}-boxtype" name="boxtype" label="Type" selected="{{boxtype}}"
@@ -61,6 +66,19 @@ InputEditForm = EditForm.extend({
       <spacer height="10px" />
       """
     # coffeelint: enable=max_line_length
+
+  }
+
+})
+
+HNWInputEditForm = InputEditForm.extend({
+
+  partials: {
+
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}" />
+      """
 
   }
 
@@ -170,4 +188,8 @@ window.RactiveInput = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWInput = RactiveInput.extend({})
+window.RactiveHNWInput = RactiveInput.extend({
+  components: {
+    editForm: HNWInputEditForm
+  }
+})

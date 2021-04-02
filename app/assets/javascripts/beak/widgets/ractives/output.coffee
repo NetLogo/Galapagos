@@ -26,6 +26,8 @@ OutputEditForm = EditForm.extend({
 
 })
 
+HNWOutputEditForm = OutputEditForm
+
 window.RactiveOutputArea = RactiveWidget.extend({
 
   data: -> {
@@ -75,4 +77,8 @@ window.RactiveOutputArea = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWOutputArea = RactiveOutputArea.extend({})
+window.RactiveHNWOutputArea = RactiveOutputArea.extend({
+  components: {
+    editForm: HNWOutputEditForm
+  }
+})

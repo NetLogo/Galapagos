@@ -1,3 +1,7 @@
+PlotEditForm = {}
+
+HNWPlotEditForm = PlotEditForm
+
 window.RactivePlot = RactiveWidget.extend({
 
   data: -> {
@@ -58,4 +62,7 @@ window.RactivePlot = RactiveWidget.extend({
 })
 
 window.RactiveHNWPlot = RactivePlot.extend({
+  components: {
+    editForm: HNWPlotEditForm
+  }
 })

@@ -21,7 +21,7 @@ window.initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, 
 
   container.querySelector('.netlogo-model').focus()
 
-  viewModel = widgets.find(({ type }) -> type is 'view')
+  viewModel = widgets.find(({ type }) -> type is 'view' or type is 'hnwView')
 
   ractive.set('primaryView', viewModel)
   viewController = new ViewController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)

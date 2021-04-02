@@ -98,3 +98,8 @@ li.compiling.dev {
 li.unknown.dev {
   background-image: url('/assets/images/caution.png') !important;
 }
+
+.hnw-config-tab-button.selected {
+  color:       green;
+  font-weight: bold;
+}

@@ -168,9 +168,9 @@ loadHubNetWeb = (container, role, view, callback) ->
         role.widgets.map(
           (w) ->
             if w.type is "hnwView"
-              pWidth    = view.maxPxcor - view.minPxcor
-              patchSize = w.width  / pWidth
-              Object.assign({}, view, { patchSize, left: w.left, right: w.right, top: w.top, bottom: w.bottom })
+              pWidth    = view.dimensions.maxPxcor - view.dimensions.minPxcor
+              patchSize = w.width / pWidth
+              Object.assign({}, view, w, { patchSize })
             else
               w
         )
@@ -181,6 +181,7 @@ world.observer = {}
 var __hnwGlobals = {};
 world.observer.getGlobal = function(varName) { return __hnwGlobals[varName.toLocaleLowerCase()]; };
 world.observer.setGlobal = function(varName, value) { __hnwGlobals[varName.toLocaleLowerCase()] = value; };
+world.setPatchSize       = function() {};
 world.ticker = new (tortoise_require('engine/core/world/ticker'))();
 world.ticker._onReset    = function() {};
 world.ticker._onTick     = function() {};

@@ -72,6 +72,8 @@ LabelEditForm = EditForm.extend({
 
 })
 
+HNWLabelEditForm = LabelEditForm
+
 window.RactiveLabel = RactiveWidget.extend({
 
   data: -> {
@@ -120,4 +122,10 @@ window.RactiveLabel = RactiveWidget.extend({
   }
   # coffeelint: enable=max_line_length
 
+})
+
+window.RactiveHNWLabel = RactiveLabel.extend({
+  components: {
+    editForm: HNWLabelEditForm
+  }
 })

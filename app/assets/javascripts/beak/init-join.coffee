@@ -85,6 +85,8 @@ setUpEventListeners = ->
 
         loadHNWModel(e.data.role, e.data.view)
 
+        session.widgetController.ractive.set("isHNW", true)
+
         for widget in e.data.role.widgets
           switch widget.type
             when "hnwInputBox", "hnwSlider"

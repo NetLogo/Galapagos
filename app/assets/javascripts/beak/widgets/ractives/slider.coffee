@@ -71,9 +71,14 @@ SliderEditForm = EditForm.extend({
 
     title: "Slider"
 
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{variable}}"/>
+      """
+
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" value="{{variable}}"/>
+      {{>variableForm}}
 
       <spacer height="15px" />
 
@@ -105,6 +110,19 @@ SliderEditForm = EditForm.extend({
 
       <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?"
                     name="vertical" />
+      """
+
+  }
+
+})
+
+HNWSliderEditForm = SliderEditForm.extend({
+
+  partials: {
+
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}"/>
       """
 
   }
@@ -198,4 +216,8 @@ window.RactiveSlider = RactiveWidget.extend({
 })
 # coffeelint: enable=max_line_length
 
-window.RactiveHNWSlider = RactiveSlider.extend({})
+window.RactiveHNWSlider = RactiveSlider.extend({
+  components: {
+    editForm: HNWSliderEditForm
+  }
+})

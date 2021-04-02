@@ -67,6 +67,8 @@ MonitorEditForm = EditForm.extend({
 
 })
 
+HNWMonitorEditForm = MonitorEditForm
+
 window.RactiveMonitor = RactiveWidget.extend({
 
   data: -> {
@@ -110,4 +112,8 @@ window.RactiveMonitor = RactiveWidget.extend({
 
 })
 
-window.RactiveHNWMonitor = RactiveMonitor.extend({})
+window.RactiveHNWMonitor = RactiveMonitor.extend({
+  components: {
+    editForm: HNWMonitorEditForm
+  }
+})

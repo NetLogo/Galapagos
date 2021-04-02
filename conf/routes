@@ -20,6 +20,9 @@ GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /ntango-build                       controllers.Local.ntangoBuild
 GET         /ntango-play                        controllers.Local.ntangoPlay
+GET         /hnw-config                         controllers.Local.hnwConfig
+GET         /hnw-config-code                    controllers.Local.hnwConfigCode
+GET         /hnw-config-inner                   controllers.Local.hnwConfigInner
 GET         /hnw-host                           controllers.Local.hnwHost
 GET         /hnw-join                           controllers.Local.hnwJoin
 
