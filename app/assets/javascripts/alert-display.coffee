@@ -2,6 +2,9 @@ class AlertDisplay
   constructor: (container, isStandalone) ->
     @findConsole = (-> null)
 
+    isLinkableProcedure = (type, name) => @isLinkableProcedure(type, name)
+    isKnownProcedure    = (type, name) => @isKnownProcedure(type, name)
+
     @_ractive = new Ractive({
       el:       container
       template: template
@@ -32,7 +35,9 @@ class AlertDisplay
           false
       }
 
-      jumpToProcedure: (->)
+      jumpToProcedure:     (->)
+      isLinkableProcedure: isLinkableProcedure
+      isKnownProcedure:    isKnownProcedure
 
     })
 
@@ -93,6 +98,7 @@ class AlertDisplay
     # we have to fetch the console as needed because it can show/hide
     @findConsole              = ()         -> widgetController.ractive.findComponent('console')
     @_ractive.jumpToProcedure = (procName) -> widgetController.jumpToProcedure(procName)
+
     widgetController.ractive.on('*.nlw-notify',         (_, message)           => @reportNotification(message))
     widgetController.ractive.on('*.nlw-runtime-error',  (_, source, exception) => @reportRuntimeError(source, exception))
     widgetController.ractive.on('*.nlw-compiler-error', (_, source, errors)    => @reportCompilerErrors(source, errors))
@@ -173,6 +179,14 @@ class AlertDisplay
     @_ractive.fire('show')
     return
 
+  # (String, String) => Boolean
+  isLinkableProcedure: (type, name) ->
+    ['command', 'reporter'].includes(type)
+
+  # (String, String) => Boolean
+  isKnownProcedure: (type, name) ->
+    ['command', 'reporter', 'plot'].includes(type)
+
 template = """
 <div class="dark-overlay" id="alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
   <div id="alert-dialog">
@@ -183,16 +197,16 @@ template = """
       {{{message}}}<br/>
       {{#each frames }}
 
-        {{#if ['command', 'reporter'].includes(type) }}
+        {{#if @.isLinkableProcedure(type, name) }}
           called by {{type}} <a href="/ignore" on-click=['jump-to-procedure', name]>{{ name.toUpperCase() }}</a><br/>
 
-        {{elseif type === 'plot' }}
-          called by plot {{name}}<br/>
+        {{elseif @.isKnownProcedure(type, name) }}
+          called by {{type}} {{name}}<br/>
 
         {{else}}
           called by unknown<br/>
-        {{/if}}
 
+        {{/if}}
       {{/each}}
     </div>
 

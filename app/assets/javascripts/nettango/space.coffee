@@ -331,6 +331,18 @@ window.RactiveSpace = Ractive.extend({
     @updateNetTango(space, true)
     return
 
+  # () => Array[String]
+  getProcedures: () ->
+    procedureNameRegEx = /^\s*(?:to|to-report)\s(?:\s*;.*\n)*\s*(\w\S*)/gm
+    findNames = (snippet) ->
+      names = []
+      while (match = procedureNameRegEx.exec(snippet))
+        names.push(match[1].toLowerCase())
+      names
+    space = @get('space')
+    starters = space.defs.blocks.filter( (b) -> b.required and b.placement is NetTango.blockPlacementOptions.STARTER )
+    starters.flatMap( (b) -> findNames(b.format ? b.action) )
+
   components: {
     jsonEditor: RactiveJsonEditor
     labeledInput: RactiveTwoWayLabeledInput

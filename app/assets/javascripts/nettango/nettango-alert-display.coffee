@@ -23,6 +23,7 @@ class NetTangoAlertDisplay extends AlertDisplay
 
   # (NetTangoController) => Unit
   listenForNetTangoErrors: (netTango) ->
+    @netTango = netTango
     netTango.ractive.on('*.ntb-error', (_, source, exception) => @reportNetTangoError(source, exception))
     return
 
@@ -31,5 +32,19 @@ class NetTangoAlertDisplay extends AlertDisplay
     message = [netTangoErrors.get(source)(exception), '', exception.message].join('<br/>')
     @reportError(message)
     return
+
+  # (String, String) => Boolean
+  isLinkableProcedure: (type, name) ->
+    super.isLinkableProcedure(type, name) and not @isNetTangoProcedure(name) and @isCodeTabAvailable()
+
+  # (String) => Boolean
+  isNetTangoProcedure: (name) ->
+    procedures = @netTango.getProcedures()
+    procedures.includes(name.toLowerCase())
+
+  # () => Boolean
+  isCodeTabAvailable: () ->
+    tabOptions = @netTango.builder.get('tabOptions')
+    not @netTango.playMode or not tabOptions.codeTab?.checked
 
 window.NetTangoAlertDisplay = NetTangoAlertDisplay

@@ -143,6 +143,11 @@ window.RactiveSpaces = Ractive.extend({
     spaceComponents.forEach( (spaceComponent) -> spaceComponent.refreshNetTango(spaceComponent.get("space"), true) )
     return
 
+  # () => Array[String]
+  getProcedures: () ->
+    spaceComponents = @findAllComponents("tangoSpace")
+    spaceComponents.flatMap( (spaceComponent) -> spaceComponent.getProcedures() )
+
   components: {
     tangoSpace:    RactiveSpace
     blockEditForm: RactiveBlockForm

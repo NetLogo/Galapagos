@@ -110,6 +110,11 @@ class window.NetTangoController
     @rewriter.isDebugMode = isDebugMode
     return
 
+  # () => Array[String]
+  getProcedures: () ->
+    defs = @ractive.findComponent('tangoDefs')
+    defs.getProcedures()
+
   # () => String
   getBlocksCode: (displayOnly = false) =>
     defs = @ractive.findComponent('tangoDefs')
