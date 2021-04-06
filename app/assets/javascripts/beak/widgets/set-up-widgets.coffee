@@ -81,7 +81,7 @@ makeRunOnceTask = (reportError, updateUI, f) -> () ->
 # ((String, String, Exception) => Unit, Button, Array[String]) => () => Unit
 makeCompilerErrorTask = (reportError, button, errors) -> () ->
   button.running = false
-  reportError("compiler", "button", ["Button failed to compile with:"].concat(errors))
+  reportError('compiler', 'button', ['Button failed to compile with:'].concat(errors))
   return
 
 # ((String, String, Exception) => Unit, () => Unit) => (Button, Button) => Unit

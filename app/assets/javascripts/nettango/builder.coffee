@@ -444,7 +444,6 @@ window.RactiveBuilder = Ractive.extend({
   components: {
       builderMenu:   RactiveBuilderMenu
     , confirmDialog: RactiveConfirmDialog
-    , errorDisplay:  RactiveErrorDisplay
     , modelChooser:  RactiveModelChooser
     , optionsForm:   RactiveOptionsForm
     , tangoDefs:     RactiveSpaces
@@ -458,7 +457,6 @@ window.RactiveBuilder = Ractive.extend({
       <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
       <modelChooser runtimeMode="{{runtimeMode}}" playMode="{{playMode}}"></modelChooser>
-      <errorDisplay></errorDisplay>
       <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 

@@ -77,7 +77,7 @@ class window.WidgetController
 
   # ("runtime" | "compiler", String, Exception | Array[String])
   reportError: (time, source, details) =>
-    if !["runtime", "compiler"].includes(time)
+    if not ['runtime', 'compiler'].includes(time)
       throw new Error('Only valid values for `time` are "runtime" or "compiler"')
     @ractive.fire("nlw-#{time}-error", {}, source, details)
 

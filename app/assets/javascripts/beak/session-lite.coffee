@@ -318,7 +318,7 @@ class window.SessionLite
 
     { result, success } = commandResult
     if not success
-      @widgetController.reportError("compiler", source, result)
+      @widgetController.reportError('compiler', source, result)
       return
 
     command = new Function(result)

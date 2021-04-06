@@ -123,9 +123,9 @@
   @tagBuilder.pathToHTML("javascripts/beak/tortoise.js")
 
   @tagBuilder.pathToHTML("nettango/nettango.js")
+  @tagBuilder.pathToHTML("javascripts/nettango/nettango-alert-display.js")
   @tagBuilder.pathToHTML("javascripts/nettango/code-mirror.js")
   @tagBuilder.pathToHTML("javascripts/nettango/confirm-dialog.js")
-  @tagBuilder.pathToHTML("javascripts/nettango/error-display.js")
   @tagBuilder.pathToHTML("javascripts/nettango/popup-menu.js")
   @tagBuilder.pathToHTML("javascripts/nettango/toggle.js")
   @tagBuilder.pathToHTML("javascripts/nettango/array-view.js")
@@ -180,7 +180,7 @@
     }
 
     const isStandaloneHtml = @standalone;
-    const alerter          = new AlertDisplay(document.getElementById("alert-container"), isStandaloneHtml)
+    const alerter          = new NetTangoAlertDisplay(document.getElementById("alert-container"), isStandaloneHtml)
 
     function pageTitle(modelTitle) {
       return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`
@@ -204,7 +204,8 @@
         session.teardown()
       }
       activeContainer = loadingOverlay
-      Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
+      Tortoise.fromNlogoSync(nlogo, modelContainer, path, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
+      Tortoise.finishLoading()
     }
 
     function loadUrl(url, modelName, callback) {
@@ -288,6 +289,7 @@
       "@mode.toString.toLowerCase",
       theOutsideWorld
     )
+    alerter.listenForNetTangoErrors(window.netTango)
 
     exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
     window.ractive   = netTango.ractive

@@ -55,12 +55,16 @@ finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
   return
 
+fromNlogoSync = (nlogo, container, path, callback, rewriters = []) ->
+  segments = path.split(/\/|\\/)
+  name     = segments[segments.length - 1]
+  compile(container, path, name, nlogo, callback, rewriters)
+  return
+
 # (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
 fromNlogo = (nlogo, container, path, callback, rewriters = []) ->
   startLoading(->
-    segments = path.split(/\/|\\/)
-    name     = segments[segments.length - 1]
-    compile(container, path, name, nlogo, callback, rewriters)
+    fromNlogoSync(nlogo, container, path, callback, rewriters)
     finishLoading()
   )
   return
@@ -149,6 +153,7 @@ Tortoise = {
   startLoading,
   finishLoading,
   fromNlogo,
+  fromNlogoSync,
   fromURL,
   toNetLogoMarkdown,
   toNetLogoWebMarkdown,

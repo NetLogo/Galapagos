@@ -36,7 +36,6 @@ class window.NetTangoController
     @ractive.on('*.ntb-load-sample-project', () =>
       @loadProject(netTangoSampleModel, "project-load"))
     @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
-    @ractive.on('*.ntb-errors',         (_, errors, stackTrace) => @showErrors(errors, stackTrace))
     @ractive.on('*.ntb-run',            (_, source, command)    =>
       if (@isDebugMode) then console.log("Running:", command)
       session = @theOutsideWorld.getSession()
@@ -174,14 +173,9 @@ class window.NetTangoController
       ).catch( (error) =>
         netLogoLoading = document.getElementById("loading-overlay")
         netLogoLoading.style.display = "none"
-        @showErrors([
-          "Error: Unable to load NetTango model from the given URL."
-          "Make sure the URL is correct, that there are no network issues, and that CORS access is permitted.",
-          "",
-          "URL: #{projectUrl}",
-          "",
-          error
-        ])
+        error.url = projectUrl
+        @ractive.fire('ntb-error', {}, 'load-from-url', error)
+        return
       )
       return
 
@@ -268,7 +262,7 @@ class window.NetTangoController
     session        = @theOutsideWorld.getSession()
     title          = session.modelTitle()
     modelCodeMaybe = session.getNlogo()
-    if(not modelCodeMaybe.success)
+    if (not modelCodeMaybe.success)
       throw new Error("Unable to get existing NetLogo code for export")
 
     project       = @builder.getNetTangoBuilderData()
@@ -358,8 +352,9 @@ class window.NetTangoController
       parser.parseFromString(text, 'text/html')
     ).then( (exportDom) =>
       @exportStandalone(project.title, exportDom, project)
-    ).catch((error) =>
-      @showErrors([ "Unexpected error:  Unable to generate the stand-alone NetTango page." ])
+    ).catch( (error) =>
+      @fire('ntb-error', {}, 'export-html', error)
+      return
     )
     return
 
@@ -436,9 +431,3 @@ class window.NetTangoController
       @runningIndices.forEach( (index) -> widgets[index].running = true )
     @runningIndices = []
     return
-
-  # (String) => Unit
-  showErrors: (messages, stackTrace) ->
-    display = @ractive.findComponent('errorDisplay')
-    message = "#{messages.map( (m) -> m.replace(/\n/g, "<br/>") ).join("<br/><br/>")}"
-    display.show(message, stackTrace)

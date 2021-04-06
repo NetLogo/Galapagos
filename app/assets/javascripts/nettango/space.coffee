@@ -62,14 +62,8 @@ window.RactiveSpace = Ractive.extend({
       try
         newDefs = JSON.parse(newJson)
       catch ex
-        # coffeelint: disable=max_line_length
-        messages = [
-            "An error occurred when trying to read the given JSON for loading.  You can try to review the error and the data, fix any issues with it, and load again."
-          , ex.message
-        ]
-        # coffeelint: enable=max_line_length
-        @fire('ntb-errors', {}, messages, ex.stack)
-        return
+        @fire('ntb-error', {}, 'json-apply', ex)
+      return
 
       @set("space.defs", newDefs)
       space = @get('space')
@@ -171,7 +165,7 @@ window.RactiveSpace = Ractive.extend({
     try
       NetTango.restore("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
     catch ex
-      @handleNetTangoError(ex)
+      @fire('ntb-error', {}, 'workspace-init', ex)
       return
 
     netTangoData = NetTango.save(containerId)
@@ -255,7 +249,7 @@ window.RactiveSpace = Ractive.extend({
         program:     { chains: newChains }
       }, NetTangoRewriter.formatDisplayAttribute)
     catch ex
-      @handleNetTangoError(ex)
+      @fire('ntb-error', {}, 'workspace-refresh', ex)
       return
 
     @saveNetTango(containerId)
@@ -277,18 +271,6 @@ window.RactiveSpace = Ractive.extend({
     @fire('ntb-block-code-changed')
     @fire('ntb-run', {}, 'nettango-space-change', NetTangoRewriter.createSpaceVariables(space).join(" "))
     if keepOldChains then @fire('ntb-space-changed')
-    return
-
-  # (Exception) => Unit
-  handleNetTangoError: (ex) ->
-    # coffeelint: disable=max_line_length
-    messages = [
-        "An error occurred setting up a NetTango workspace.  If this happened during normal use, then this is a bug.  If this happened while trying to load workspaces, the workspace data may have been improperly modified in some way.  See the error message for more information."
-      , ex.message
-    ]
-    # coffeelint: enable=max_line_length
-    if ex.dartException?.source? then messages.push(ex.dartException.source.message)
-    @fire('ntb-errors', {}, messages, ex.stack)
     return
 
   # (NetTangoBlock, Integer, NetTangoSpace, Array[NetTangoSpace]) => Content
