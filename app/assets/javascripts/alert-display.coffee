@@ -25,17 +25,8 @@ class AlertDisplay
           @set('isActive', false)
           return
 
-        # You might be thinking... don't we have the source location in the `RuntimeException`?  Why not just use that
-        # instead of jumping to the procedure by name?  Well, if the user has modified the code but not hit *Recompile*
-        # then the source location could be wrong.  So just pass the name and find the current location.
-        # -Jeremy B March 2021
-        'jump-to-procedure': (_, procName) ->
-          @set('isActive', false)
-          @jumpToProcedure(procName)
-          false
       }
 
-      jumpToProcedure:     (->)
       isLinkableProcedure: isLinkableProcedure
       isKnownProcedure:    isKnownProcedure
 
@@ -96,8 +87,17 @@ class AlertDisplay
   # (WidgetController) => Unit
   listenForErrors: (widgetController) ->
     # we have to fetch the console as needed because it can show/hide
-    @findConsole              = ()         -> widgetController.ractive.findComponent('console')
-    @_ractive.jumpToProcedure = (procName) -> widgetController.jumpToProcedure(procName)
+    @findConsole = () -> widgetController.ractive.findComponent('console')
+
+    # You might be thinking... don't we have the source location in the `RuntimeException`?  Why not just use that
+    # instead of jumping to the procedure by name?  Well, if the user has modified the code but not hit *Recompile*
+    # then the source location could be wrong.  So just pass the name and find the current location.
+    # -Jeremy B March 2021
+    @_ractive.on('jump-to-procedure', (_, procName) ->
+      @set('isActive', false)
+      widgetController.jumpToProcedure(procName)
+      false
+    )
 
     widgetController.ractive.on('*.nlw-notify',         (_, message)           => @reportNotification(message))
     widgetController.ractive.on('*.nlw-runtime-error',  (_, source, exception) => @reportRuntimeError(source, exception))
