@@ -269,7 +269,7 @@ window.RactiveSpace = Ractive.extend({
     @refreshNetTango(space, keepOldChains)
 
     @fire('ntb-block-code-changed')
-    @fire('ntb-run', {}, 'nettango-space-change', NetTangoRewriter.createSpaceVariables(space).join(" "))
+    @fire('ntb-run', {}, 'workspace-refresh', NetTangoRewriter.createSpaceVariables(space).join(" "))
     if keepOldChains then @fire('ntb-space-changed')
     return
 
