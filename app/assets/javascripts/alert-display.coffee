@@ -9,11 +9,12 @@ class AlertDisplay
       el:       container
       template: template
       data: {
-        isActive:      false
-        isDismissable: true
-        isStandalone:  isStandalone
-        message:       undefined
-        title:         undefined
+        isActive:      false        # Boolean
+        isDismissable: true         # Boolean
+        isStandalone:  isStandalone # Boolean
+        message:       undefined    # String
+        title:         undefined    # String
+        frames:        undefined    # Array[StackFrame]
       }
 
       on: {
@@ -96,7 +97,7 @@ class AlertDisplay
     # then the source location could be wrong.  So just pass the name and find the current location.
     # -Jeremy B March 2021
     @_ractive.on('jump-to-procedure', (_, procName) ->
-      @set('isActive', false)
+      @fire('hide')
       widgetController.jumpToProcedure(procName)
       false
     )
