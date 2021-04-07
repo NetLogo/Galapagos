@@ -42,7 +42,7 @@ class NetTangoAlertDisplay extends AlertDisplay
   # (String) => Boolean
   isNetTangoProcedure: (name) ->
     procedures = @netTango.getProcedures()
-    procedures.includes(name.toLowerCase())
+    procedures.includes(name.toUpperCase())
 
   # () => Boolean
   isCodeTabAvailable: () ->

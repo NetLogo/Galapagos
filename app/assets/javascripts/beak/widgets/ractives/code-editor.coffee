@@ -43,12 +43,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     return
 
   getProcedureNames: ->
-    codeString = @get('code')
-    procedureNames = {}
-    procedureCheck = /^\s*(?:to|to-report)\s(?:\s*;.*\n)*\s*(\w\S*)/gm
-    while (procedureMatch = procedureCheck.exec(codeString))
-      procedureNames[procedureMatch[1].toUpperCase()] = procedureMatch.index + procedureMatch[0].length
-    procedureNames
+    CodeUtils.findProcedureNames(@get('code'))
 
   setProcedureNames: ->
     procedureNames = @getProcedureNames()
