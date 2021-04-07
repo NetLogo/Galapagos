@@ -1,3 +1,4 @@
+# coffeelint: disable=max_line_length
 # () => String
 workspaceError = () ->
   'An error occurred setting up a NetTango workspace.  If this happened during normal use, then this is a bug.  If this happened while trying to load workspaces, the workspace data may have been improperly modified in some way.  See the error message for more information.'
@@ -18,6 +19,7 @@ netTangoErrors = new Map([
 , ['workspace-init',    workspaceError]
 , ['workspace-refresh', workspaceError]
 ])
+# coffeelint: enable=max_line_length
 
 class NetTangoAlertDisplay extends AlertDisplay
 

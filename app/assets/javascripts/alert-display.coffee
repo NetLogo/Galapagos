@@ -24,7 +24,6 @@ class AlertDisplay
         hide: () ->
           @set('isActive', false)
           return
-
       }
 
       isLinkableProcedure: isLinkableProcedure
@@ -57,8 +56,11 @@ class AlertDisplay
     errors.map( (error) ->
       if typeof(error) is 'string'
         error
-      else if error.message? and (contains(error.message, "Couldn't find corresponding reader") or contains(error.message, "Models must have 12 sections"))
-        "#{error.message} (see <a href='https://netlogoweb.org/docs/faq#model-format-error'>here</a> for more information)"
+      else if error.message? and
+        (contains(error.message, "Couldn't find corresponding reader") or
+          contains(error.message, "Models must have 12 sections"))
+        errorLink = 'https://netlogoweb.org/docs/faq#model-format-error'
+        "#{error.message} (see <a href='#{errorLink}'>here</a> for more information)"
       else
         if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
     )
@@ -99,9 +101,11 @@ class AlertDisplay
       false
     )
 
+    # coffeelint: disable=max_line_length
     widgetController.ractive.on('*.nlw-notify',         (_, message)           => @reportNotification(message))
     widgetController.ractive.on('*.nlw-runtime-error',  (_, source, exception) => @reportRuntimeError(source, exception))
     widgetController.ractive.on('*.nlw-compiler-error', (_, source, errors)    => @reportCompilerErrors(source, errors))
+    # coffeelint: enable=max_line_length
     return
 
   # (String, Exception) => Unit
