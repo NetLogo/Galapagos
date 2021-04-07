@@ -63,7 +63,7 @@ window.RactiveSpace = Ractive.extend({
         newDefs = JSON.parse(newJson)
       catch ex
         @fire('ntb-error', {}, 'json-apply', ex)
-      return
+        return
 
       @set("space.defs", newDefs)
       space = @get('space')
