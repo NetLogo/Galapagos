@@ -92,12 +92,15 @@ class AlertDisplay
     # we have to fetch the console as needed because it can show/hide
     @findConsole = () -> widgetController.ractive.findComponent('console')
 
-    # You might be thinking... don't we have the source location in the `RuntimeException`?  Why not just use that
-    # instead of jumping to the procedure by name?  Well, if the user has modified the code but not hit *Recompile*
-    # then the source location could be wrong.  So just pass the name and find the current location.
-    # -Jeremy B March 2021
+    # If the session (and so the widgetController) are re-loaded, we need to clear the existing event binding first.
+    # -Jeremy B April 2021
+    @_ractive.off('jump-to-procedure')
     @_ractive.on('jump-to-procedure', (_, procName) ->
       @fire('hide')
+      # You might be thinking... don't we have the source location in the `RuntimeException`?  Why not just use that
+      # instead of jumping to the procedure by name?  Well, if the user has modified the code but not hit *Recompile*
+      # then the source location could be wrong.  So just pass the name and find the current location.
+      # -Jeremy B March 2021
       widgetController.jumpToProcedure(procName)
       false
     )
