@@ -13,12 +13,13 @@ loadFromUrlError = ({ url }) ->
 
 # Map[String, (Exception) => String]
 netTangoErrors = new Map([
-  ['export-html',       () -> 'Unable to generate the stand-alone NetTango page.']
-, ['json-apply',        () -> 'An error occurred when trying to read the given JSON for loading.  You can try to review the error and the data, fix any issues with it, and load again.']
-, ['load-from-url',     loadFromUrlError]
-, ['attribute-change',  () -> 'An error occured when trying to update a block attribute value.  Check the error below and the generated NetLogo Code for your model to see if anything looks strange, but this probably indicates a bug in NetTango Web.']
-, ['workspace-init',    workspaceError]
-, ['workspace-refresh', workspaceError]
+  ['export-html',        () -> 'Unable to generate the stand-alone NetTango page.']
+, ['json-apply',         () -> 'An error occurred when trying to read the given JSON for loading.  You can try to review the error and the data, fix any issues with it, and load again.']
+, ['parse-project-json', () -> 'The JSON data in the project file could not be parsed.  Review the error below and make sure it is a valid NetTango Web project file.']
+, ['load-from-url',      loadFromUrlError]
+, ['attribute-change',   () -> 'An error occured when trying to update a block attribute value.  Check the error below and the generated NetLogo Code for your model to see if anything looks strange, but this probably indicates a bug in NetTango Web.']
+, ['workspace-init',     workspaceError]
+, ['workspace-refresh',  workspaceError]
 ])
 # coffeelint: enable=max_line_length
 

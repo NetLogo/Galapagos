@@ -256,8 +256,14 @@ class window.NetTangoController
       return
     reader = new FileReader()
     reader.onload = (e) =>
-      project = JSON.parse(e.target.result)
-      @loadProject(project, "project-load")
+      project = null
+      try
+        project = JSON.parse(e.target.result)
+      catch error
+        @ractive.fire('ntb-error', {}, 'parse-project-json', error)
+        return
+
+      @loadProject(project, 'project-load')
       return
     reader.readAsText(files[0])
     return
@@ -358,7 +364,7 @@ class window.NetTangoController
     ).then( (exportDom) =>
       @exportStandalone(project.title, exportDom, project)
     ).catch( (error) =>
-      @fire('ntb-error', {}, 'export-html', error)
+      @ractive.fire('ntb-error', {}, 'export-html', error)
       return
     )
     return
