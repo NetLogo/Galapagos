@@ -193,6 +193,9 @@
             callback()
           }
         } else {
+          if (result.source === 'compile-recoverable') {
+            openSession(result.session)
+          }
           alerter.reportCompilerErrors(result.source, result.errors)
         }
       }
