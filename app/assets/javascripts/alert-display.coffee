@@ -164,6 +164,9 @@ class AlertDisplay
 
     return
 
+  hide: () ->
+    @_ractive.fire('hide')
+
   # (String, Array[StackFrame]) => Unit
   reportError: (message, frames = []) ->
     @_ractive.set('title', 'Error')
