@@ -150,7 +150,8 @@ class window.WidgetController
 
   # () => Unit
   teardown: ->
-    @ractive.teardown()
+    if not @ractive.torndown
+      @ractive.teardown()
     return
 
   # () => String
