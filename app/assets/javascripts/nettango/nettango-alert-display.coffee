@@ -36,6 +36,16 @@ class NetTangoAlertDisplay extends AlertDisplay
     @reportError(message)
     return
 
+  # (String, Array[CompilerError]) => Unit
+  reportCompilerErrors: (source, errors) ->
+    if source is 'compile-fatal'
+      message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+      @reportError(message)
+    else
+      super.reportCompilerErrors(source, errors)
+
+    return
+
   # (String, String) => Boolean
   isLinkableProcedure: (type, name) ->
     super.isLinkableProcedure(type, name) and not @isNetTangoProcedure(name) and @isCodeTabAvailable()
