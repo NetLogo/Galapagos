@@ -141,7 +141,11 @@
         if (result.type === 'success') {
           openSession(result.session)
         } else {
-          activeContainer = alertDialog
+          if (result.source === 'compile-recoverable') {
+            openSession(result.session)
+          } else {
+            activeContainer = alertDialog
+          }
           alerter.reportCompilerErrors(result.source, result.errors)
         }
       }

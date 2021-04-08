@@ -23,6 +23,7 @@ class AlertDisplay
           return
 
         hide: () ->
+          @set('isDismissable', true)
           @set('isActive', false)
           return
       }
@@ -160,6 +161,8 @@ class AlertDisplay
 
       else
         message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+        if source is 'compile-fatal'
+          @_ractive.set('isDismissable', false)
         @reportError(message)
 
     return

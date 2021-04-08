@@ -110,10 +110,31 @@ compile = (container, modelPath, name, nlogo, callback, rewriters) ->
 
   if result.model.success
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
-    onSuccess(result, false)
+    callback({
+      type:    'success'
+    , session: openSession(container, modelPath, name, compiler, rewriters, result, false)
+    })
+    result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
+    rewriters.forEach( (rw) -> rw.compileComplete?() )
+
   else
-    fromNlogoWithoutCode(nlogo, compiler, onSuccess)
-    callback({ type: 'failure', source: 'compile', errors: result.model.result })
+    secondChanceResult = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
+    if secondChanceResult?
+      callback({
+        type:        'failure'
+      , source:      'compile-recoverable'
+      , session:     openSession(container, modelPath, name, compiler, rewriters, secondChanceResult, true)
+      , errors:      result.model.result
+      })
+      result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
+      rewriters.forEach( (rw) -> rw.compileComplete?() )
+
+    else
+      callback({
+        type:        'failure'
+      , source:      'compile-fatal'
+      , errors:      result.model.result
+      })
 
   return
 
@@ -130,24 +151,23 @@ sectionsToNlogo = (sections) ->
 # can get some widgets/plots on the screen and let the user fix those
 # errors up.  -JMB August 2017
 
-# (String, BrowserCompiler, (ModelCompilation, Boolean) => Unit) => Unit
-fromNlogoWithoutCode = (nlogo, compiler, onSuccess) ->
+# (String, BrowserCompiler) => null | ModelCompilation
+fromNlogoWithoutCode = (nlogo, compiler) ->
   sections = nlogoToSections(nlogo)
   if sections.length isnt 12
-    return
+    return null
 
   oldCode     = sections[0]
   sections[0] = ''
   newNlogo    = sectionsToNlogo(sections)
   result      = compiler.fromNlogo(newNlogo, [])
   if not result.model.success
-    return
+    return null
 
   # It mutates state, but it's an easy way to get the code re-added
   # so it can be edited/fixed.
   result.code = oldCode
-  onSuccess(result, true)
-  return
+  return result
 
 Tortoise = {
   startLoading,
