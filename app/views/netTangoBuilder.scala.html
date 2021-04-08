@@ -167,7 +167,6 @@
     const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
 
     const loadingOverlay   = document.getElementById("loading-overlay")
-    var activeContainer    = loadingOverlay
     const modelContainer   = document.getElementById("netlogo-model-container")
     const builderContainer = document.getElementById("ntb-container")
 
@@ -175,7 +174,6 @@
     function openSession(s) {
       session         = s
       document.title  = pageTitle(session.modelTitle())
-      activeContainer = modelContainer
       session.startLoop()
       alerter.listenForErrors(session.widgetController)
     }
@@ -204,7 +202,6 @@
       if (session) {
         session.teardown()
       }
-      activeContainer = loadingOverlay
       Tortoise.fromNlogoSync(nlogo, modelContainer, path, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
       Tortoise.finishLoading()
     }
@@ -213,7 +210,6 @@
       if (session) {
         session.teardown()
       }
-      activeContainer = loadingOverlay
       Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
     }
 
