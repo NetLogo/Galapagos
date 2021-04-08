@@ -14,6 +14,7 @@ loadFromUrlError = ({ url }) ->
 # Map[String, (Exception) => String]
 netTangoErrors = new Map([
   ['export-html',        () -> 'Unable to generate the stand-alone NetTango page.']
+, ['export-nlogo',       () -> 'Unable to get NetLogo model code for NetTango project export.']
 , ['json-apply',         () -> 'An error occurred when trying to read the given JSON for loading.  You can try to review the error and the data, fix any issues with it, and load again.']
 , ['parse-project-json', () -> 'The JSON data in the project file could not be parsed.  Review the error below and make sure it is a valid NetTango Web project file.']
 , ['load-from-url',      loadFromUrlError]

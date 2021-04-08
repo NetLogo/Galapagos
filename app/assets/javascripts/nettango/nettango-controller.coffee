@@ -274,7 +274,7 @@ class window.NetTangoController
     title          = session.modelTitle()
     modelCodeMaybe = session.getNlogo()
     if (not modelCodeMaybe.success)
-      throw new Error("Unable to get existing NetLogo code for export")
+      @ractive.fire('ntb-error', {}, 'export-nlogo', modelCodeMaybe)
 
     project       = @builder.getNetTangoBuilderData()
     project.code  = modelCodeMaybe.result
