@@ -1,6 +1,7 @@
 class CodeUtils
   @procedureNameFinder = /^\s*(?:to|to-report)\s(?:\s*;.*\n)*\s*(\w\S*)/gm
 
+  # (String) => ObjectMap[String, Int]
   @findProcedureNames: (code) ->
     procedureNames = {}
     CodeUtils.procedureNameFinder.lastIndex = 0

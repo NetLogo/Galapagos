@@ -55,6 +55,7 @@ finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
   return
 
+# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
 fromNlogoSync = (nlogo, container, path, callback, rewriters = []) ->
   segments = path.split(/\/|\\/)
   name     = segments[segments.length - 1]
@@ -92,16 +93,6 @@ fromURL = (url, modelName, container, callback, rewriters = []) ->
 compile = (container, modelPath, name, nlogo, callback, rewriters) ->
   compiler = new BrowserCompiler()
 
-  # (ModelCompilation, Boolean) => Unit
-  onSuccess = (input, lastCompileFailed) ->
-    callback({
-      type:    'success'
-      session: openSession(container, modelPath, name, compiler, rewriters, input, lastCompileFailed)
-    })
-    input.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
-    rewriters.forEach( (rw) -> rw.compileComplete?() )
-    return
-
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
@@ -118,7 +109,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters) ->
     rewriters.forEach( (rw) -> rw.compileComplete?() )
 
   else
-    secondChanceResult = fromNlogoWithoutCode(nlogo, compiler, onSuccess)
+    secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
     if secondChanceResult?
       callback({
         type:        'failure'
