@@ -84,7 +84,8 @@
         modelFileInput.value = "";
       } else {
         exports.selectModelByURL(url);
-        modelContainer.contentWindow.location.replace("./web?"+url);
+        query = (window.location.search === "") ? url : `url=${url}&${window.location.search.slice(1)}`;
+        modelContainer.contentWindow.location.replace(`./web?${query}`);
         modelFileInput.value = "";
       }
     }

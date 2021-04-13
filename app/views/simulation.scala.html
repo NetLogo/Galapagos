@@ -125,8 +125,10 @@
         }
       };
       var session;
+      var speed = 0.0;
       var openSession = function(s) {
         session = s;
+        session.widgetController.ractive.set('speed', speed)
         document.title = pageTitle(session.modelTitle());
         activeContainer = modelContainer;
         session.startLoop();
@@ -159,19 +161,31 @@
         Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
       };
 
+      const parseFloatOrElse = function(str, def) {
+        const f = Number.parseFloat(str)
+        return (f !== NaN ? f : def)
+      }
+
+      const clamp = function(min, max, val) {
+        return Math.max(min, Math.min(max, val))
+      }
+
+      const readSpeed = function(params) {
+        return params.has('speed') ? clamp(-1, 1, parseFloatOrElse(params.get('speed'), 0.0)) : 0.0;
+      }
+
       if (nlogoScript.textContent.length > 0) {
-        const nlogo = nlogoScript.textContent;
-        const path  = nlogoScript.dataset.filename;
+        const nlogo  = nlogoScript.textContent;
+        const path   = nlogoScript.dataset.filename;
+        const params = new URLSearchParams(window.location.search)
+        speed        = readSpeed(params)
         Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
 
       } else if (window.location.search.length > 0) {
-        const query    = window.location.search.slice(1);
-        const pairs    = query.split(/&(?=\w+=)/).map(function(x) { return x.split('='); });
-        const paramObj = pairs.reduce(function(acc, pair) { acc[pair[0]] = pair[1]; return acc; }, {})
-
-        const url       = (paramObj.url  !== undefined) ?           paramObj.url   : query;
-        const modelName = (paramObj.name !== undefined) ? decodeURI(paramObj.name) : undefined;
-
+        const params    = new URLSearchParams(window.location.search)
+        const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1);
+        const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined;
+        speed           = readSpeed(params)
         Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult);
 
       } else {
