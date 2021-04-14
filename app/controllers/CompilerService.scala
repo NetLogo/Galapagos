@@ -163,10 +163,6 @@ private[controllers] trait CompilationRequestHandler extends RequestResultGenera
 
   def exportCode: ActionType[AnyContent] = genCompileAction(generateFromCode, exportResult)
 
-  def saveURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   saveResult)
-  def saveCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  saveResult)
-  def saveNlogo: ActionType[AnyContent] = genCompileAction(generateFromNlogo, saveResult)
-
   def tortoiseCompilerJs:    ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
 
   def tortoiseCompilerJsMap: ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
@@ -258,22 +254,6 @@ private[controllers] trait RequestResultGenerator {
       res => Ok(res).withHeaders(
         CONTENT_TYPE        -> TEXT,
         CONTENT_DISPOSITION -> s"""attachment; filename="$filename""""))
-
-  }
-
-  protected def saveResult(argMap: ArgMap, modelV: ModelResultV): Result = {
-
-    val jsUrls = tortoiseLiteJsUrls.map(u => environment.resource(u.toString).getOrElse(u))
-
-    val bundleV =
-      modelV
-        .flatMap(_.leftMap(_.map(_.toString())))
-        .map(model => ModelSaver(model, jsUrls))
-
-    bundleV.fold(
-      nelResult(InternalServerError),
-      bundle => Ok(views.html.standaloneTortoise(bundle.modelJs, bundle.libsJs, genCSS, bundle.widgets, bundle.nlogoCode, bundle.info))
-    )
 
   }
 

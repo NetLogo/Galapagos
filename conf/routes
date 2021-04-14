@@ -44,12 +44,6 @@ POST        /compile-nlogo                      controllers.CompilerService.comp
 GET         /compile-nlogo                      controllers.CompilerService.compileNlogo
 POST        /export-code                        controllers.CompilerService.exportCode
 GET         /export-code                        controllers.CompilerService.exportCode
-POST        /save-url                           controllers.CompilerService.saveURL
-GET         /save-url                           controllers.CompilerService.saveURL
-POST        /save-code                          controllers.CompilerService.saveCode
-GET         /save-code                          controllers.CompilerService.saveCode
-POST        /save-nlogo                         controllers.CompilerService.saveNlogo
-GET         /save-nlogo                         controllers.CompilerService.saveNlogo
 GET         /tortoise-compiler.js               controllers.CompilerService.tortoiseCompilerJs
 GET         /tortoise-compiler.js.map           controllers.CompilerService.tortoiseCompilerJsMap
 
