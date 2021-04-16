@@ -228,6 +228,23 @@
      to work, unlike normal standalone NetLogo Web pages, which can be
      hosted entirely on your own server.</p>
 
+  @linkableHeader("speed-parameter", "Can I set the speed slider to a differnt value than the default when my model loads?")
+
+  <p>NetLogo does not store the speed slider setting with the model file, but NetLogo Web
+     provides a way to set the slider value on load using a URL query parameter.  If
+     you are linking your model all you need to do is add <code>?speed=#.#</code>.  If
+     you are linking to the <code>//netlogoweb.org/web</code> page you also will need
+     to use <code>&amp;url=modelURL</code> instead of the plain <code>?modelURL</code>.
+     You can set the <code>speed</code> value to any number between -1 (slowest) and 1
+     (fastest), and 0 is the default.  Here are some examples, setting the speed to 0.5:</p>
+
+   <ul>
+      <li>If you're linking to <code>//netlogoweb.org/launch#modelURL</code>, use <code>//netlogoweb.org/launch?speed=0.5#modelURL</code>.</li>
+      <li>If you're linking to <code>//netlogoweb.org/web?modelURL</code>, use <code>//netlogoweb.org/web?speed=0.5&amp;url=modelURL</code>
+         (note the <code>url=</code> change for the <code>modelURL</code> and the <code>&amp;</code> between the parameters.</li>
+      <li>If you're linking to an exported model HTML page, <code>//myhost.com/path/to/myModel.html</code>, use <code>//myhost.com/path/to/myModel.html?speed=0.5</code></li>
+   </ul>
+
   @linkableHeader("error-messages", "I got an error, but most things in the model seem to be working just fine.  What was the error message about?")
 
   <p>If you enter code into the Command Center and that code is invalid in NetLogo Web,
