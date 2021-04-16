@@ -4,6 +4,16 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.9.0">April 16th, 2021 - v2.9.0</h2>
+
+  <ul>
+    <li>Runtime errors will now generate stack traces, and the alert for the error will show the procedure call sequence that generated the error.</li>
+    <li>The behavior of <code>run</code> and <code>runresult</code> with string values will more closely match desktop NetLogo.</li>
+    <li>Turtle and link forever buttons will stop if there are no turtles or links in the model, as they do in desktop NetLogo.</li>
+    <li>Models created new in NetLogo Web will have their view updates set to be on ticks, so when exported their behavior in desktop will be the same as what is seen in NetLogo Web.</li>
+    <li>The model speed slider can now be set with <a href="docs/faq#speed-parameter">a URL query parameter, <code>speed</code></a>.  This is useful when hot-linking or embedding models.</li>
+  </ul>
+
   <h2 id="v2.8.4">March 3rd, 2021 - v2.8.4</h2>
 
   <p>This release adds support for the <code>plot-pen-up</code> primitive, adds better runtime error checks for agentset primitives and a few more math primitives, and fixes a small difference in model behavior from NetLogo desktop when using <code>n-of</code> with a list when <code>n</code> is the size of the list.</p>
