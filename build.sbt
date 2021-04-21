@@ -22,7 +22,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-6b88075"
+val tortoiseVersion = "1.0-280f3c7"
 
 libraryDependencies ++= Seq(
   ehcache,
@@ -50,9 +50,11 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "localforage" % "1.7.3"
 )
 
-resolvers += Resolver.bintrayRepo("netlogo", "TortoiseAux")
-
-resolvers += Resolver.bintrayRepo("netlogo", "NetLogoHeadless")
+resolvers ++= Seq(
+  "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
+, "netlogowebjs"    at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
+, "netlogoheadless" at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
+)
 
 unmanagedResourceDirectories in Assets += baseDirectory.value / "node_modules"
 
