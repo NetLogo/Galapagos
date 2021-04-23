@@ -23,8 +23,6 @@ class window.HighchartsOps extends PlotOps
       @_chart.yAxis[0].setExtremes(yMin, yMax)
       return
 
-    resetLite = (plot) =>
-
     reset = (plot) ->
       @_chart.destroy()
       @_chart = new Highcharts.Chart({
@@ -205,6 +203,11 @@ class window.HighchartsOps extends PlotOps
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.popped = true
+
+  # () => Unit
+  dispose: ->
+    @_chart.destroy()
+    return
 
   # (PenBundle.DisplayMode) => String
   modeToString: (mode) ->

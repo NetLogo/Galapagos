@@ -15,7 +15,7 @@ defaultOptions = [ ["Button",  "button"]
                  , ["Label",   "textBox"]
                  , ["Monitor", "monitor"]
                  , ["Output",  "output", false, alreadyHasA('outputWidget')]
-                 , ["Plot",    "plot", false]
+                 , ["Plot",    "plot"]
                  , ["Slider",  "slider"]
                  , ["Switch",  "switch"]
                  ].map((args) -> genWidgetCreator(args...))

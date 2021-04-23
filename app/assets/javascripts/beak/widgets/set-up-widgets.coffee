@@ -56,6 +56,21 @@ window.setUpInputBox = (source, destination) ->
   destination.display      = destination.variable
   return
 
+window.setUpPlot = (source, destination) ->
+
+  # (String, Widget.Plot) => Unit
+  updatePlotConfig = (oldName, plot) ->
+
+      hops = new HighchartsOps(container.querySelector("#netlogo-#{plot.type}-#{plot.id}"))
+      delete controller.configs.plotOps[oldName]
+      controller.configs.plotOps[plot.display] = hops
+
+      for display, chartOps of @configs.plotOps
+        normies   = @ractive.findAllComponents("plotWidget")
+        hnws      = @ractive.findAllComponents("hnwPlotWidget")
+        component = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
+        component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
+
 # (Switch, Switch) => Unit
 window.setUpSwitch = (source, destination) ->
   destination.on           = source.on

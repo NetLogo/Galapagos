@@ -12,12 +12,6 @@ WidgetEventGenerators = {
       type: "recompile-lite"
     }
 
-  redrawView: ->
-    {
-      run:  (ractive, widget) -> ractive.fire('redraw-view')
-      type: "redrawView"
-    }
-
   refreshChooser: ->
     {
       # For whatever reason, if Ractive finds second argument of `fire` to be an object (in this case, our `widget`),
@@ -26,10 +20,28 @@ WidgetEventGenerators = {
       type: "refreshChooser"
     }
 
+  refreshPlot: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('refresh-plot', "ignore", widget)
+      type: "refreshPlot"
+    }
+
+  redrawView: ->
+    {
+      run:  (ractive, widget) -> ractive.fire('redraw-view')
+      type: "redrawView"
+    }
+
   rename: (oldName, newName) ->
     {
       run:  (ractive, widget) -> ractive.fire('rename-interface-global', oldName, newName, widget.currentValue)
       type: "rename:#{oldName},#{newName}"
+    }
+
+  renamePlot: (oldName, newName) ->
+    {
+      run:  (ractive, widget) -> ractive.fire('rename-plot', oldName, newName)
+      type: "renamePlot:#{oldName},#{newName}"
     }
 
   resizePatches: ->
@@ -179,7 +191,8 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   partials: {
     editorOverlay: """
                    {{ #isEditing }}
-                     <div draggable="true" style="{{dims}}" class="editor-overlay{{#isSelected}} selected{{/}}"
+                     <div draggable="true" style="{{dims}}"
+                          class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot' || widget.type === 'hnwPlot'}} plot-overlay{{/}}"
                           on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
                           on-contextmenu="@this.fire('show-context-menu', @event)"
                           on-dblclick="@this.fire('edit-widget')"

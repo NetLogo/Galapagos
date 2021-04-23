@@ -39,6 +39,20 @@ window.controlEventTraffic = (controller, performUpdate) ->
     ractive.set("lastDragY", clientY)
     return
 
+  # (String) => HighchartsOps
+  makeNewPlotOps = (name) ->
+
+    isThisPlot = (w) -> (w.type is 'hnwPlot' or w.type is 'plot') and w.display is name
+    plot       = controller.widgets().find(isThisPlot)
+    hops       = new HighchartsOps(ractive.find("#netlogo-#{plot.type}-#{plot.id}"))
+
+    normies   = controller.ractive.findAllComponents("plotWidget")
+    hnws      = controller.ractive.findAllComponents("hnwPlotWidget")
+    component = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is name)
+    component.set('resizeCallback', hops.resizeElem.bind(hops))
+
+    hops
+
   onCloseDialog = (dialog) ->
     openDialogs.delete(dialog)
     ractive.set('someDialogIsOpen', openDialogs.size > 0)
@@ -89,12 +103,24 @@ window.controlEventTraffic = (controller, performUpdate) ->
 
   # () => Unit
   onWidgetBottomChange = ->
-    ractive.set('height', Math.max.apply(Math, w.bottom for own i, w of ractive.get('widgetObj') when w.bottom?))
+    getBottom =
+      (w) ->
+        if w.type is 'plot' or w.type is 'hnwPlot'
+          w.bottom + 3
+        else
+          w.bottom
+    ractive.set('height', Math.max.apply(Math, getBottom(w) for own i, w of ractive.get('widgetObj') when w.bottom?))
     return
 
   # () => Unit
   onWidgetRightChange = ->
-    ractive.set('width' , Math.max.apply(Math, w.right  for own i, w of ractive.get('widgetObj') when w.right? ))
+    getRight =
+      (w) ->
+        if w.type is 'plot' or w.type is 'hnwPlot'
+          w.right + 3
+        else
+          w.right
+    ractive.set('width' , Math.max.apply(Math, getRight(w) for own i, w of ractive.get('widgetObj') when w.right? ))
     return
 
   # (Any, Any, String, Number) => Unit
@@ -129,6 +155,32 @@ window.controlEventTraffic = (controller, performUpdate) ->
     world.observer.setGlobal(chooser.variable, chooser.currentValue)
     false
 
+  # (Widget.Plot, String) => Boolean
+  refreshPlot = (plot, oldName) ->
+    #controller.updatePlotConfig(oldName, plot)
+
+#    # Recompile setup => setupCode, update => updateCode
+#    # Recompile plot pen: setup, update
+#
+#  * autoPlotOn
+#  * display
+#  * legendOn
+#  * pens
+#  * xAxis
+#  * yAxis
+#  * xmin
+#  * xmax
+#  * ymin
+#  * ymax
+#
+#  * Pen list (legend)
+#    * Pen mode
+#    * Pen in legend
+#    * Pen color
+#    * Pen name
+
+    false
+
   # () => Unit
   refreshDims = ->
     onWidgetRightChange()
@@ -155,6 +207,13 @@ window.controlEventTraffic = (controller, performUpdate) ->
     world.observer.setGlobal(newName, value)
 
     false
+
+  # (String, String) => Unit
+  renamePlot = (oldName, newName) ->
+    pops          = controller.configs.plotOps
+    pops[newName] = pops[oldName] ? makeNewPlotOps(newName)
+    delete pops[oldName]
+    return
 
   # () => Unit
   resizeView = ->
@@ -221,8 +280,10 @@ window.controlEventTraffic = (controller, performUpdate) ->
   ractive.on('show-errors'              , (_, event)         -> window.showErrors(event.context.compilation.messages))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
   ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))
+  ractive.on('*.refresh-plot'           , (_, nada, plot)    -> refreshPlot(plot))
   ractive.on('*.reject-duplicate-var'   , (_, varName)       -> rejectDupe(varName))
   ractive.on('*.rename-interface-global', (_, oldN, newN, x) -> renameGlobal(oldN, newN, x))
+  ractive.on('*.rename-plot'            , (_, oldN, newN)    -> renamePlot(oldN, newN))
   ractive.on('*.set-patch-size'         , (_, patchSize)     -> setPatchSize(patchSize))
   ractive.on('*.update-widgets'         ,                    -> controller.updateWidgets())
 

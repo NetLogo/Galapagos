@@ -207,6 +207,20 @@ class window.SessionLite
           state = world.exportState()
           world.clearAll()
           @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
+
+          widgets = Object.values(@widgetController.ractive.get('widgetObj'))
+          pops    = @widgetController.configs.plotOps
+          ractive = @widgetController.ractive
+          for { display, id, type } in widgets when type in ["plot", "hnwPlot"]
+            pops[display]?.dispose()
+            hops          = new HighchartsOps(ractive.find("#netlogo-#{type}-#{id}"))
+            pops[display] = hops
+            normies       = ractive.findAllComponents("plotWidget")
+            hnws          = ractive.findAllComponents("hnwPlotWidget")
+            component     = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
+            component.set('resizeCallback', hops.resizeElem.bind(hops))
+            hops._chart.chartBackground.css({ color: '#efefef' })
+
           globalEval(res.model.result)
           world.importState(state)
 
@@ -215,6 +229,9 @@ class window.SessionLite
           @widgetController.ractive.set('lastCompileFailed', false)
           @_performUpdate(true)
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+
+          for pop in pops
+            pop._chart.chartBackground.css({ color: '#efefef' })
 
           successCallback()
 

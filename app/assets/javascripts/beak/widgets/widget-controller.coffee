@@ -2,11 +2,17 @@ class window.WidgetController
 
   # (Ractive, ViewController, Configs, () => Unit)
   constructor: (@ractive, @viewController, @configs, @_performUpdate) ->
+
     for display, chartOps of @configs.plotOps
       normies   = @ractive.findAllComponents("plotWidget")
       hnws      = @ractive.findAllComponents("hnwPlotWidget")
       component = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
       component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
+
+    @ractive.observe('isEditing', (isEditing) =>
+      color = if isEditing then '#efefef' else '#ffffff'
+      Object.values(@configs.plotOps).forEach((pops) -> pops._chart.chartBackground.css({ color }))
+    )
 
   # (String, Number, Number) => Unit
   createWidget: (widgetType, x, y) ->
@@ -89,7 +95,7 @@ class window.WidgetController
           when "inputBox"    then [inputBoxProps, window.setUpInputBox]
           when "monitor"     then [ monitorProps, window.setUpMonitor]
           when "output"      then [  outputProps, (->)]
-          when "plot"        then [    plotProps, (->)]
+          when "plot"        then [    plotProps, window.setUpPlot]
           when "slider"      then [  sliderProps, window.setUpSlider]
           when "switch"      then [  switchProps, window.setUpSwitch]
           when "textBox"     then [ textBoxProps, (->)]
@@ -100,7 +106,7 @@ class window.WidgetController
           when "hnwInputBox" then [inputBoxProps, window.setUpHNWInputBox]
           when "hnwMonitor"  then [ monitorProps, window.setUpHNWMonitor]
           when "hnwOutput"   then [  outputProps, (->)]
-          when "hnwPlot"     then [    plotProps, (->)]
+          when "hnwPlot"     then [    plotProps, window.setUpHNWPlot]
           when "hnwSlider"   then [  sliderProps, window.setUpHNWSlider]
           when "hnwSwitch"   then [  switchProps, window.setUpHNWSwitch]
           when "hnwTextBox"  then [ textBoxProps, (->)]
