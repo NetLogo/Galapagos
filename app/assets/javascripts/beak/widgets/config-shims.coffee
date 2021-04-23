@@ -198,8 +198,10 @@ genMouseConfig = (viewController) ->
 genPlotOps = (container, ractive) ->
   widgets = Object.values(ractive.get('widgetObj'))
   plotOps = {}
-  for { display, id, type } in widgets when type in ["plot", "hnwPlot"]
+  for widget in widgets when widget.type in ["plot", "hnwPlot"]
+    { display, id, type } = widget
     plotOps[display] = new HighchartsOps(container.querySelector("#netlogo-#{type}-#{id}"))
+    plotOps[display].reset(widget)
   plotOps
 
 # (Ractive, (String) => Unit) => OutputConfig

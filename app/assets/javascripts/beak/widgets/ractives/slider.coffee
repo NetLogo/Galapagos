@@ -122,7 +122,7 @@ HNWSliderEditForm = SliderEditForm.extend({
 
     variableForm:
       """
-      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}"/>
+      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{variable}}"/>
       """
 
   }
