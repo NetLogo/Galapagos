@@ -147,6 +147,10 @@ window.controlEventTraffic = (controller) ->
     )
     return
 
+  showWidgetErrors = (widget) ->
+    if not widget.compilation.success
+      controller.reportError('compiler', widget.type, widget.compilation.messages)
+
   # (String, String, Any) => Boolean
   renameGlobal = (oldName, newName, value) ->
 
@@ -225,6 +229,7 @@ window.controlEventTraffic = (controller) ->
   ractive.on('check-action-keys'        , (_, event)         -> checkActionKeys(event))
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
   ractive.on('drop-overlay'             , (_, event)         -> dropOverlay())
+  ractive.on('*.show-widget-errors'     , (_, widget)        -> showWidgetErrors(widget))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
   ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))
   ractive.on('*.reject-duplicate-var'   , (_, varName)       -> rejectDupe(varName))

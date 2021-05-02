@@ -100,7 +100,9 @@ window.RactiveMonitor = RactiveWidget.extend({
       """
       <div id="{{id}}" class="netlogo-widget netlogo-monitor netlogo-output {{classes}}"
            style="{{dims}} font-size: {{widget.fontSize}}px;">
-        <label class="netlogo-label {{errorClass}}">{{widget.display || widget.source}}</label>
+        <label class="netlogo-label {{errorClass}}" on-click="['show-widget-errors', widget]">
+          {{widget.display || widget.source}}
+        </label>
         <output class="netlogo-value">{{widget.currentValue}}</output>
       </div>
       """
