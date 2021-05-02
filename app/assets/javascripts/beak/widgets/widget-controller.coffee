@@ -18,7 +18,7 @@ class window.WidgetController
     widget    = Object.assign(base, mixin)
 
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
-    window.setUpWidget(widget, id, (=> @redraw(); @updateWidgets()))
+    window.setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()))
 
     if widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
