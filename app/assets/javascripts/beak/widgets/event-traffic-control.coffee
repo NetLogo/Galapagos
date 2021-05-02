@@ -140,7 +140,11 @@ window.controlEventTraffic = (controller) ->
 
   # (String) => Unit
   rejectDupe = (varName) ->
-    showErrors(["There is already a widget of a different type with a variable named '#{varName}'"])
+    controller.reportError(
+      'compiler',
+      'update-widget-value',
+      ["There is already a widget of a different type with a variable named '#{varName}'"]
+    )
     return
 
   # (String, String, Any) => Boolean
@@ -221,7 +225,6 @@ window.controlEventTraffic = (controller) ->
   ractive.on('check-action-keys'        , (_, event)         -> checkActionKeys(event))
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
   ractive.on('drop-overlay'             , (_, event)         -> dropOverlay())
-  ractive.on('show-errors'              , (_, event)         -> window.showErrors(event.context.compilation.messages))
   ractive.on('track-focus'              , (_, node)          -> trackFocus(node))
   ractive.on('*.refresh-chooser'        , (_, nada, chooser) -> refreshChooser(chooser))
   ractive.on('*.reject-duplicate-var'   , (_, varName)       -> rejectDupe(varName))
