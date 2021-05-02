@@ -171,7 +171,7 @@ window.RactiveSlider = RactiveWidget.extend({
                step="{{widget.stepValue}}" value="{{widget.currentValue}}"
                {{# isEditing }}disabled{{/}} />
         <div class="netlogo-slider-label">
-          <span class="netlogo-label">{{widget.display}}</span>
+          <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
             <input type="number" on-change="reset-if-invalid"
                    style="width: {{widget.currentValue.toString().length + 3.0}}ch"
