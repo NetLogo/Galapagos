@@ -49,6 +49,7 @@ class window.NetTangoRewriter
   updateErrors: (original, rewritten, errors) ->
     errors.map( (error) ->
       declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(original)
+      NetTangoRewriter.extensionsDeclarationCheck.lastIndex = 0
       if (not declaration?)
         error.lineNumber = error.lineNumber - 1
 
