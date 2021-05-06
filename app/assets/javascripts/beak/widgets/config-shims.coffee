@@ -243,6 +243,9 @@ window.genConfigs = (ractive, viewController, container, compiler) ->
   notify = (message) ->
     ractive.fire('nlw-notify', message)
 
+  reportErrors = (messages) ->
+    ractive.fire('nlw-extension-error', messages)
+
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
@@ -256,6 +259,6 @@ window.genConfigs = (ractive, viewController, container, compiler) ->
   , output:            genOutputConfig(ractive, appendToConsole)
   , print:             { write: appendToConsole }
   , plotOps:           genPlotOps(container, ractive)
-  , reportErrors:      window.showErrors
+  , reportErrors:      reportErrors
   , world:             genWorldConfig(ractive)
   }

@@ -107,9 +107,10 @@ class AlertDisplay
     )
 
     # coffeelint: disable=max_line_length
-    widgetController.ractive.on('*.nlw-notify',         (_, message)           => @reportNotification(message))
-    widgetController.ractive.on('*.nlw-runtime-error',  (_, source, exception) => @reportRuntimeError(source, exception))
-    widgetController.ractive.on('*.nlw-compiler-error', (_, source, errors)    => @reportCompilerErrors(source, errors))
+    widgetController.ractive.on('*.nlw-notify',          (_, message)           => @reportNotification(message))
+    widgetController.ractive.on('*.nlw-runtime-error',   (_, source, exception) => @reportRuntimeError(source, exception))
+    widgetController.ractive.on('*.nlw-compiler-error',  (_, source, errors)    => @reportCompilerErrors(source, errors))
+    widgetController.ractive.on('*.nlw-extension-error', (_, messages)          => @reportError(messages.join('<br/>')))
     # coffeelint: enable=max_line_length
     return
 
