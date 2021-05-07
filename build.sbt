@@ -23,7 +23,7 @@ scalacOptions ++= Seq(
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
 
-val tortoiseVersion = "1.0-280f3c7"
+val tortoiseVersion = "1.0-48c920f"
 
 libraryDependencies ++= Seq(
   ehcache,
