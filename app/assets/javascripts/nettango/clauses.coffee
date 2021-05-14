@@ -81,9 +81,9 @@ window.RactiveClauses = Ractive.extend({
 
     createClause:
       (number) -> {
-        open:        undefined
-      , close:       undefined
-      , children:    []
+        open:   undefined
+      , close:  undefined
+      , blocks: []
       , allowedTags: { type: 'unrestricted' }
       }
 

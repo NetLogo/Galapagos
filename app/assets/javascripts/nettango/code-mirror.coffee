@@ -21,7 +21,7 @@ window.RactiveCodeMirror = Ractive.extend({
         when 'css' then 'css'
         else 'netlogo'
 
-      baseConfig = { mode: mode, theme: 'netlogo-default', value: @get('code') }
+      baseConfig = { mode: mode, theme: 'netlogo-default', value: @get('code') ? '' }
       config     = Object.assign({}, baseConfig, @get('config') ? {})
       element    = @find("##{@get('id')}")
       editor     = new CodeMirror(element, config)

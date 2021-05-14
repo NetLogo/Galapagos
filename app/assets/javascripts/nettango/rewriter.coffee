@@ -64,18 +64,19 @@ class window.NetTangoRewriter
     )
 
   # (String, Integer, Integer, Integer) => String
-  @formatAttributeVariable: (containerId, blockId, instanceId, attributeId) ->
-    return "\"__#{containerId}_#{blockId}_#{instanceId}_#{attributeId}\""
+  @formatAttributeVariable: (containerId, blockId, instanceId, attributeId, isProperty) ->
+    propPrefix = if isProperty then "P" else ""
+    return "\"__#{containerId}_#{blockId}_#{instanceId}_#{propPrefix}#{attributeId}\""
 
   # (String, Integer, Integer, Integer, Integer, String, String | null) => String
-  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value = null) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
-    setValue = if value isnt null then value else NetTango.formatAttributeValue(containerId, instanceId, attributeId)
+  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value = null, isProperty = false) ->
+    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId, isProperty)
+    setValue = if value isnt null then value else NetTango.formatAttributeValue(containerId, blockId, instanceId, attributeId, isProperty)
     "nt:set #{variableName} #{setValue}"
 
   # (String, Integer, Integer, Integer, String, String) => String
-  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value, _0) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId)
+  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value, type, isProperty) ->
+    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId, isProperty)
     "(nt:get #{variableName})"
 
   # (String, Integer, Integer, Integer, String, String) => String
@@ -88,17 +89,21 @@ class window.NetTangoRewriter
   # (String, NetTangoBlock) => Array[String]
   @createBlockVariables: (spaceId, block) ->
     clauseVariables    = (block.clauses  ? []).flatMap( (clause) ->
-      clause.children.flatMap( (clauseBlock) -> NetTangoRewriter.createBlockVariables(spaceId, clauseBlock) )
+      clause.blocks.flatMap( (clauseBlock) -> NetTangoRewriter.createBlockVariables(spaceId, clauseBlock) )
     )
-    attributeVariables = (block.params   ? []).concat(block.properties ? []).map( (p) ->
-      value = p.expressionValue ? p.value
-      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.id, block.instanceId, p.id)
+    paramVariables = block.params.map( (p, i) ->
+      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.definitionId, block.instanceId, i, null, false)
     )
-    attributeVariables.concat(clauseVariables)
+
+    propertyVariables = block.properties.map( (p, i) ->
+      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.definitionId, block.instanceId, i, null, true)
+    )
+
+    [].concat(clauseVariables).concat(paramVariables).concat(propertyVariables)
 
   # (Space) => Array[String]
   @createSpaceVariables: (space) ->
-    if (not space.defs.program? or not space.defs.program.chains?)
+    if (not space.defs.program? or not space.defs.program.chains? or not NetTango.hasWorkspace("#{space.spaceId}-canvas"))
       return []
     space.defs.program.chains.flatMap( (chain) ->
       chain.blocks.flatMap( (block) -> NetTangoRewriter.createBlockVariables(space.spaceId, block) )

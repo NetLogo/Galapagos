@@ -11,6 +11,12 @@ window.RactiveAttribute = Ractive.extend({
     codeFormatFull: () ->
       "{#{@get('codeFormat') ? ''}#{@get('id')}}"
 
+    defaultType: () ->
+      type = @get("attribute.type")
+      switch type
+        when 'int', 'range'    then 'number'
+        else                        'text'
+
     elementId: () ->
       "#{@get("attributeType").toLowerCase()}-#{@get("id")}"
   }
@@ -21,10 +27,10 @@ window.RactiveAttribute = Ractive.extend({
       # Reset our default to the appropriate value  - JMB August 2018
       attribute = @get('attribute')
       newDefVal = switch attribute.type
-        when 'bool'            then false
-        when 'num',   'int'    then 10
-        when 'text'            then ""
-        when 'range', 'select' then null
+        when 'int', 'range'    then 10
+        when 'text', 'select'  then ''
+        when 'num'             then "0"
+        when 'bool'            then "false"
         else null
       @set('attribute.def', newDefVal)
       return
@@ -55,7 +61,11 @@ window.RactiveAttribute = Ractive.extend({
 
       <labeledInput id="{{ elementId }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label"  divClass="ntb-flex-column" class="ntb-input" />
 
-      <labeledInput id="{{ elementId }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+      {{# defaultType === 'number' }}
+        <labeledInput id="{{ elementId }}-def"  name="def"  type="number" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+      {{else}}
+        <labeledInput id="{{ elementId }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+      {{/if}}
 
       <labeledInput id="{{ elementId }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input ntb-code-input" twoway="false" attrs="readonly" />
 

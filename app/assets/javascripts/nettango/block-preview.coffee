@@ -29,7 +29,7 @@ window.RactiveBlockPreview = Ractive.extend({
         id: block.id + 1,
         action: "Preview Command",
         format: 'show "hello!"',
-        required: false
+        isRequired: false
       }
 
       if block.builderType? and block.builderType is "Procedure"
@@ -41,7 +41,7 @@ window.RactiveBlockPreview = Ractive.extend({
         proc = {
           id: block.id + 1,
           action: "Preview Proc",
-          required: true,
+          isRequired: true,
           placement: NetTango.blockPlacementOptions.STARTER,
           format: "to preview",
           limit: 1

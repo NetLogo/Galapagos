@@ -52,7 +52,7 @@ createCommand = (overrides) ->
   command = {
     , action:     "command"
     , format:     "command1"
-    , required:   false
+    , isRequired: false
     , placement:  NetTango.blockPlacementOptions.CHILD
     , limit:      undefined
     , params:     []
@@ -77,7 +77,7 @@ blocks = {
           data: {
             , action:     "procedure"
             , format:     "to proc1"
-            , required:   true
+            , isRequired: true
             , placement:  NetTango.blockPlacementOptions.STARTER
             , limit:      1
             , params:     []
@@ -89,11 +89,11 @@ blocks = {
           data: {
             , action:     "procedure"
             , format:     "to proc1"
-            , required:   true
+            , isRequired: true
             , isTerminal: true
             , placement:  NetTango.blockPlacementOptions.STARTER
             , limit:      1
-            , clauses:    [{ children: [], open: " ", close: " " }]
+            , clauses:    [{ blocks: [], open: " ", close: " " }]
           }
         }
       ]
@@ -106,11 +106,11 @@ blocks = {
           data: {
             , action:      "ask turtles"
             , format:      "ask turtles"
-            , required:    false
+            , isRequired:  false
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ children: [] }]
+            , clauses:     [{ blocks: [] }]
           }
         },
         {
@@ -119,7 +119,7 @@ blocks = {
             , action:  "chance"
             , format:  "if random 100 < {0}"
             , params: [ {
-                type: "range",
+                type:    "range",
                 min:     0,
                 max:     100,
                 step:    0.5,
@@ -127,7 +127,7 @@ blocks = {
                 unit:    "%",
                 name:    "percent"
             } ]
-            , clauses: [{ children: [] }]
+            , clauses: [{ blocks: [] }]
           })
         },
         {
@@ -135,11 +135,11 @@ blocks = {
           data: {
             , action:      "if"
             , format:      "if random 10 < 5"
-            , required:    false
+            , isRequired:  false
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ children: [] }]
+            , clauses:     [{ blocks: [] }]
           }
         },
         {
@@ -147,24 +147,24 @@ blocks = {
           data: {
             , action:      "ifelse"
             , format:      "ifelse (random 10 < count turtles)"
-            , required:    false
+            , isRequired:  false
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ children: [] }, { children: [] }]
+            , clauses:     [{ blocks: [] }, { blocks: [] }]
           }
         },
         {
           name: "ifelse-else (3 clause)"
           data: {
             action:       "ifelse-else (3 clause)",
-            required:     false,
+            isRequired:   false,
             format:       "(ifelse",
             closeClauses: ")"
             clauses: [
-              { children: [], open: "random 10 < 5 [" },
-              { children: [], action: "else maybe", open: "random 10 < 5 [" },
-              { children: [], action: "otherwise" }
+              { blocks: [], open: "random 10 < 5 [" },
+              { blocks: [], action: "else maybe", open: "random 10 < 5 [" },
+              { blocks: [], action: "otherwise" }
             ]
           }
         }
@@ -246,9 +246,9 @@ blocks = {
             , action: "change color"
             , format: "set color {0}"
             , params: [ {
-              name: "color",
-              unit: "",
-              type: "select",
+              name:    "color",
+              unit:    "",
+              type:    "select",
               default: "red",
               quoteValues: NetTango.selectQuoteOptions.NEVER_QUOTE,
               values: [

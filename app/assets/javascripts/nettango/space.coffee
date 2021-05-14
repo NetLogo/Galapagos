@@ -162,6 +162,8 @@ window.RactiveSpace = Ractive.extend({
     space.defs.width       = space.width
     space.defs.blockStyles = @get("blockStyles")
 
+    # If the load fails, this lets us have something to look at in the UI
+    @set("defsJson", JSON.stringify(space.defs, null, '  '))
     try
       NetTango.restore("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
     catch ex
@@ -174,20 +176,20 @@ window.RactiveSpace = Ractive.extend({
 
     containerId = @getNetTangoContainerId(space)
     @setSpaceNetLogo(space, containerId)
-
-    NetTango.onProgramChanged(containerId, (ntContainerId, event) =>
-      if (@get('space')?)
-        # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
-        s = @get('space')
-        @handleNetTangoEvent(s, ntContainerId, event)
-      return
-    )
+    NetTango.onProgramChanged(containerId, (args...) => @dispatchNetTangoEvent(args...))
     return
 
   # (NetTangoSpace, String) => Unit
   setSpaceNetLogo: (space, containerId) ->
     space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatCodeAttribute).trim()
     space.netLogoDisplay = NetTango.exportCode(containerId).trim()
+    return
+
+  dispatchNetTangoEvent: (ntContainerId, event) ->
+    if (@get('space')?)
+      # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
+      s = @get('space')
+      @handleNetTangoEvent(s, ntContainerId, event)
     return
 
   # (NetTangoSpace, String, Event) => Unit
@@ -204,7 +206,7 @@ window.RactiveSpace = Ractive.extend({
       when "attribute-changed"
         @saveNetTango()
         setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
-                      event.attributeId, event.formattedValue)
+                      event.attributeId, event.formattedValue, event.isProperty)
         @fire('ntb-run', {}, 'attribute-change', setCode)
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
@@ -254,6 +256,7 @@ window.RactiveSpace = Ractive.extend({
 
     @saveNetTango(containerId)
     @setSpaceNetLogo(space, containerId)
+    NetTango.onProgramChanged(containerId, (args...) => @dispatchNetTangoEvent(args...))
     return
 
   # (String|null) => Unit
@@ -334,7 +337,7 @@ window.RactiveSpace = Ractive.extend({
   # () => Array[String]
   getProcedures: () ->
     space = @get('space')
-    starters = space.defs.blocks.filter( (b) -> b.required and b.placement is NetTango.blockPlacementOptions.STARTER )
+    starters = space.defs.blocks.filter( (b) -> b.isRequired and b.placement is NetTango.blockPlacementOptions.STARTER )
     starters.flatMap( (b) -> Object.keys(CodeUtils.findProcedureNames(b.format ? b.action)) )
 
   components: {

@@ -89,9 +89,9 @@ window.RactiveBlockForm = EditForm.extend({
     block.id = sourceBlock.id
 
     block.builderType =
-      if (block.required and block.placement is NetTango.blockPlacementOptions.STARTER)
+      if (block.isRequired and block.placement is NetTango.blockPlacementOptions.STARTER)
         'Procedure'
-      else if (not block.required and (not block.placement? or block.placement is NetTango.blockPlacementOptions.CHILD))
+      else if (not block.isRequired and (not block.placement? or block.placement is NetTango.blockPlacementOptions.CHILD))
         'Command or Control'
       else
         'Custom'
@@ -133,7 +133,7 @@ window.RactiveBlockForm = EditForm.extend({
     , 'closeClauses'
     , 'closeStarter'
     , 'note'
-    , 'required'
+    , 'isRequired'
     , 'isTerminal'
     , 'placement'
     , 'limit'
@@ -148,18 +148,18 @@ window.RactiveBlockForm = EditForm.extend({
 
     switch blockValues.builderType
       when 'Procedure'
-        block.required  = true
-        block.placement = NetTango.blockPlacementOptions.STARTER
+        block.isRequired = true
+        block.placement  = NetTango.blockPlacementOptions.STARTER
 
       when 'Command or Control'
-        block.required  = false
-        block.placement = NetTango.blockPlacementOptions.CHILD
-        block.tags      = blockValues.tags ? []
+        block.isRequired = false
+        block.placement  = NetTango.blockPlacementOptions.CHILD
+        block.tags       = blockValues.tags ? []
 
       else
-        block.required  = blockValues.required  ? false
-        block.placement = blockValues.placement ? falseNetTango.blockPlacementOptions.CHILD
-        block.tags      = blockValues.tags ? []
+        block.isRequired = blockValues.isRequired ? false
+        block.placement  = blockValues.placement ? falseNetTango.blockPlacementOptions.CHILD
+        block.tags       = blockValues.tags ? []
 
     block.clauses     = @processClauses(blockValues.clauses ? [])
     block.params      = @processAttributes(blockValues.params)
@@ -245,7 +245,7 @@ window.RactiveBlockForm = EditForm.extend({
             />
 
           <labeledInput id="block-{{ id }}-limit" name="limit" type="number" value="{{ limit }}" labelStr="Limit"
-            min="1" max="100" divClass="ntb-flex-column" class="ntb-input" />
+            min="0" max="100" divClass="ntb-flex-column" class="ntb-input" />
 
         </div>
 
