@@ -71,7 +71,10 @@ class window.NetTangoRewriter
   # (String, Integer, Integer, Integer, Integer, String, String | null) => String
   @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value = null, isProperty = false) ->
     variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId, isProperty)
-    setValue = if value isnt null then value else NetTango.formatAttributeValue(containerId, blockId, instanceId, attributeId, isProperty)
+    setValue = if value is null
+      NetTango.formatAttributeValue(containerId, blockId, instanceId, attributeId, isProperty)
+    else
+      value
     "nt:set #{variableName} #{setValue}"
 
   # (String, Integer, Integer, Integer, String, String) => String
@@ -103,7 +106,9 @@ class window.NetTangoRewriter
 
   # (Space) => Array[String]
   @createSpaceVariables: (space) ->
-    if (not space.defs.program? or not space.defs.program.chains? or not NetTango.hasWorkspace("#{space.spaceId}-canvas"))
+    if not space.defs.program? or
+    not space.defs.program.chains? or
+    not NetTango.hasWorkspace("#{space.spaceId}-canvas")
       return []
     space.defs.program.chains.flatMap( (chain) ->
       chain.blocks.flatMap( (block) -> NetTangoRewriter.createBlockVariables(space.spaceId, block) )

@@ -91,7 +91,8 @@ window.RactiveBlockForm = EditForm.extend({
     block.builderType =
       if (block.isRequired and block.placement is NetTango.blockPlacementOptions.STARTER)
         'Procedure'
-      else if (not block.isRequired and (not block.placement? or block.placement is NetTango.blockPlacementOptions.CHILD))
+      else if not block.isRequired and
+      (not block.placement? or block.placement is NetTango.blockPlacementOptions.CHILD)
         'Command or Control'
       else
         'Custom'
