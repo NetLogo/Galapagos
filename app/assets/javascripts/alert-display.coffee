@@ -18,8 +18,15 @@ class AlertDisplay
       }
 
       on: {
-        show: () ->
-          @set('isActive', true)
+        show: (_, title, message, frames) ->
+          if @get('isActive')
+            @set('title', "#{@get('title')} / #{title}")
+            @set('message', "#{@get('message')}<br/><br/>Next message: #{message}")
+          else
+            @set('title', title)
+            @set('message', message)
+            @set('frames', frames)
+            @set('isActive', true)
           return
 
         hide: () ->
@@ -173,10 +180,7 @@ class AlertDisplay
 
   # (String, Array[StackFrame]) => Unit
   reportError: (message, frames = []) ->
-    @_ractive.set('title', 'Error')
-    @_ractive.set('message', message)
-    @_ractive.set('frames', frames)
-    @_ractive.fire('show')
+    @show('Error', message, frames)
     return
 
   # (String) => Unit
@@ -189,9 +193,11 @@ class AlertDisplay
 
   # (String) => Unit
   reportNotification: (message) ->
-    @_ractive.set('title', 'NetLogo Notification')
-    @_ractive.set('message', message)
-    @_ractive.fire('show')
+    @show('NetLogo Notification', message, [])
+    return
+
+  show: (title, message, frames) ->
+    @_ractive.fire('show', title, message, frames)
     return
 
   # (String, String) => Boolean
