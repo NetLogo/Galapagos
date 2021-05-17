@@ -72,6 +72,14 @@ yarnInstall := {
   ()
 }
 
+lazy val coffeelint = taskKey[Unit]("lint coffeescript files in Galapagos")
+coffeelint := {
+  yarnInstall.value
+  val log = streams.value.log
+  Process(Seq("yarn", "coffeelint"), baseDirectory.value).!(log)
+  ()
+}
+
 (compile in Compile) := ((compile in Compile).dependsOn(yarnInstall)).value
 
 // Used in Prod

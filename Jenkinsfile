@@ -16,7 +16,8 @@ pipeline {
       steps {
         library 'netlogo-shared'
         sbt('scalastyle', 'sbt-1.1.1')
-        sbt('coffeelint', 'sbt-1.1.1')
+        sh 'yarn install'
+        sh 'yarn coffeelint'
         sbt('test', 'sbt-1.1.1')
       }
     }
