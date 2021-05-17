@@ -29,11 +29,11 @@ window.RactiveModelCodeComponent = Ractive.extend({
     return
 
   setupProceduresDropdown: ->
-    $('#procedurenames-dropdown').chosen({search_contains: true})
+    $('#procedurenames-dropdown').chosen({ search_contains: true })
     $('#procedurenames-dropdown').on('change', =>
       procedureNames = @get('procedureNames')
       selectedProcedure = $('#procedurenames-dropdown').val()
-      index = procedureNames[selectedProcedure.toUpperCase()]
+      index = procedureNames[selectedProcedure]
       @findComponent('codeEditor').highlightProcedure(selectedProcedure, index)
     )
 
@@ -42,11 +42,8 @@ window.RactiveModelCodeComponent = Ractive.extend({
     )
     return
 
-  getProcedureNames: ->
-    CodeUtils.findProcedureNames(@get('code'))
-
   setProcedureNames: ->
-    procedureNames = @getProcedureNames()
+    procedureNames = CodeUtils.findProcedureNames(@get('code'), 'as-written')
     @set('procedureNames', procedureNames)
     $('#procedurenames-dropdown').trigger('chosen:updated')
     return
@@ -79,7 +76,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
     supportedKeywords = Array.from(allKeywords)
       .filter( (kw) -> (not window.keywords.unsupported.includes(kw)) )
       .map(    (kw) -> kw.replace("\\", "") )
-    Object.keys(@getProcedureNames()).concat(supportedKeywords)
+    Object.keys(CodeUtils.findProcedureNames(@get('code'), 'lower')).concat(supportedKeywords)
 
   toggleLineComments: (editor) ->
     { start, end } = if (editor.somethingSelected())
@@ -150,7 +147,7 @@ window.RactiveModelCodeComponent = Ractive.extend({
   jumpToProcedure: ->
     procName = @get('jumpToProcedure')
     if procName?
-      procedureNames = @getProcedureNames()
+      procedureNames = CodeUtils.findProcedureNames(@get('code'), 'upper')
       index          = procedureNames[procName.toUpperCase()]
       # if the procedure is not found that probably means the user erased it from the code
       # but has not yet recompiled, so we'll just ignore this request.  -Jeremy B March 2021
