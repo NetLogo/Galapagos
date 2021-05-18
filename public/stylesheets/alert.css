@@ -12,45 +12,40 @@
   position: fixed;
 }
 
-#alert-overlay {
+.alert-overlay {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  align-items: center;
+  justify-content: center;
 }
 
-#alert-dialog {
-  align-items: center;
+.alert-dialog {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: whitesmoke;
   border: 2px black solid;
-  border-radius: 10px;
-  display:flex;
-  flex-direction: column;
-  margin: 0 50px;
-  min-width: 550px;
+  border-radius: 20px;
   opacity: 1;
-  z-index: 1010;
+  overflow: hidden;
+  min-width: 450px;
+  width: fit-content;
 }
 
 #alert-title {
+  text-align: center;
   margin-bottom: 5px;
 }
 
 .alert-text {
-  text-align: center;
-  min-width: 500px;
+  text-align: left;
   padding: 10px;
   font-size: 16px;
-  max-height: 800px;
-  overflow-y: scroll;
+  overflow: scroll;
 }
 
 .standalone-text {
   color: #555555;
   display: none;
   text-align: center;
-  max-width: 600px;
 }
 
 #alert-dismiss-container {

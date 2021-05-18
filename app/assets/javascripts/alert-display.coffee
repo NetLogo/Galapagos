@@ -95,6 +95,20 @@ class AlertDisplay
     <b>#{message}</b><br><br>
     """
 
+  # () => String
+  @makeProtocolErrorMessage: (badHref, newModelUrl, newHref) ->
+    newLink = if not newHref? then newModelUrl else
+      """<a href="#{newHref}">#{newModelUrl}</a>"""
+
+    """<p>The linked model protocol is insecure (HTTP) but the NetLogo Web page is secure (HTTPS),
+    so the model cannot be loaded as specified.</p>
+    <p>You can try to load the model securely by changing to the below link, but it assumes the default
+    secure port for the model's host, which may not be correct.</p>
+    <p>Original model link: #{badHref}</p>
+    <p>New model link to try: #{newLink}</p>
+    <ul>
+    """
+
   # (WidgetController) => Unit
   listenForErrors: (widgetController) ->
     # we have to fetch the console as needed because it can show/hide
@@ -175,6 +189,12 @@ class AlertDisplay
 
     return
 
+  # (URL, String) => Unit
+  reportProtocolError: (badUrl, newModelUrl, newHref) ->
+    message = AlertDisplay.makeProtocolErrorMessage(badUrl, newModelUrl, newHref)
+    @_ractive.set('isDismissable', false)
+    @reportError(message)
+
   hide: () ->
     @_ractive.fire('hide')
 
@@ -209,8 +229,8 @@ class AlertDisplay
     ['command', 'reporter', 'plot'].includes(type)
 
 template = """
-<div class="dark-overlay" id="alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
-  <div id="alert-dialog">
+<div class="dark-overlay alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
+  <div class="alert-dialog" id="alert-dialog">
 
     <h3 id="alert-title">{{ title }}</h3>
 

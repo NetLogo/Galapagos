@@ -110,7 +110,8 @@
 
     <script>
 
-      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+      const debugMode = @{environment.mode != play.api.Mode.Prod};
+      Ractive.DEBUG   = debugMode
 
       var loadingOverlay  = document.getElementById("loading-overlay");
       var activeContainer = loadingOverlay;
@@ -136,6 +137,7 @@
       };
 
       const isStandaloneHTML = (nlogoScript.textContent.length > 0);
+      const isInFrame        = parent !== window
       const alerter          = new AlertDisplay(document.getElementById('alert-container'), isStandaloneHTML);
       const alertDialog      = document.getElementById('alert-dialog')
 
@@ -147,6 +149,7 @@
             openSession(result.session)
           } else {
             activeContainer = alertDialog
+            loadingOverlay.style.display = "none";
           }
           alerter.reportCompilerErrors(result.source, result.errors)
         }
@@ -174,6 +177,51 @@
         return params.has('speed') ? clamp(-1, 1, parseFloatOrElse(params.get('speed'), 0.0)) : 0.0;
       }
 
+      const redirectOnProtocolMismatch = function(url) {
+        const uri = new URL(url)
+        if ("https:" === uri.protocol || "http:" === window.location.protocol) {
+          // we only care if the model is HTTP and the page is HTTPS. -Jeremy B May 2021
+          return true
+        }
+
+        const loc         = window.location
+        const isSameHost  = uri.hostname === loc.hostname
+        const port        = isSameHost && debugMode ? "9443" : "443"
+        const newModelUrl = `https://${uri.hostname}:${port}${uri.pathname}`
+
+        // if we're in an iframe we can't even reliably make a link to use
+        // so just alert the user.
+        if (!isSameHost && isInFrame) {
+          alerter.reportProtocolError(uri, newModelUrl)
+          activeContainer = alertDialog
+          loadingOverlay.style.display = "none";
+          return false
+        }
+
+        const params  = new URLSearchParams(window.location.search)
+        var newSearch = ""
+        if (params.has("url")) {
+          params.set("url", newModelUrl)
+          newSearch = params.toString()
+        } else {
+          newSearch = newModelUrl
+        }
+
+        const newHref = `https://${loc.host}${loc.pathname}?${newSearch}`
+
+        // if we're not on the same host the link might work, but let
+        // the user know and let them click it.
+        if (!isSameHost) {
+          alerter.reportProtocolError(uri, newModelUrl, newHref)
+          activeContainer = alertDialog
+          loadingOverlay.style.display = "none";
+          return false
+        }
+
+        window.location.href = newHref
+        return false
+      }
+
       if (nlogoScript.textContent.length > 0) {
         const nlogo  = nlogoScript.textContent;
         const path   = nlogoScript.dataset.filename;
@@ -186,7 +234,10 @@
         const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1);
         const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined;
         speed           = readSpeed(params)
-        Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult);
+
+        if (redirectOnProtocolMismatch(url)) {
+          Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult);
+        }
 
       } else {
         loadModel(exports.newModel, "NewModel");
@@ -211,7 +262,7 @@
         }
       });
 
-      if (parent !== window) {
+      if (isInFrame) {
         var width = "", height = "";
         window.setInterval(function() {
           if (activeContainer.offsetWidth  !== width ||
