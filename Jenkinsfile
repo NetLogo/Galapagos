@@ -31,6 +31,7 @@ pipeline {
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
           sbt('scrapePlay', 'sbt-1.1.1')
           sh 'cp -Rv public/modelslib/ target/play-scrape/assets/'
+          sh 'cp -Rv public/nt-modelslib/ target/play-scrape/assets/'
           sbt('scrapeUpload', 'sbt-1.1.1')
         }
       }
@@ -45,6 +46,7 @@ pipeline {
         withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
           sbt('scrapePlay', 'sbt-1.1.1')
           sh 'cp -Rv public/modelslib/ target/play-scrape/assets/'
+          sh 'cp -Rv public/nt-modelslib/ target/play-scrape/assets/'
           sbt('scrapeUpload', 'sbt-1.1.1')
         }
       }

@@ -1,0 +1,3 @@
+[submodule "public/nt-modelslib"]
+	path = public/nt-modelslib
+	url = git@github.com:NetLogo/nt-models.git

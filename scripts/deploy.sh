@@ -7,6 +7,7 @@
 
 sbt "set scrapeAbsoluteURL := Some(\"$3\")" clean scrapePlay
 cp -Rv public/modelslib/ target/play-scrape/assets/modelslib
+cp -Rv public/nt-modelslib/ target/play-scrape/assets/nt-modelslib
 cp target/web/web-modules/main/webjars/lib/chosen/chosen-sprite*.png target/play-scrape/assets/lib/chosen/
 aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*.*" --exclude "*.html"
 aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*[!.]*" --include "*.html" --content-type "text/html; charset=utf-8"
