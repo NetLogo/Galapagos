@@ -33,7 +33,6 @@ class window.NetTangoController
     @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @theOutsideWorld.loadUrl(url, name))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
-    @ractive.on('*.ntb-load-sample-project', ()              => @loadProject(netTangoSampleModel, "project-load"))
     @ractive.on('*.ntb-load-project',        (_, data)       => @loadProject(data, "project-load"))
     @ractive.on('*.ntb-load-remote-project', (_, projectUrl) => @importRemoteProject(projectUrl))
 
