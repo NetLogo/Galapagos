@@ -35,8 +35,12 @@ class NetTangoAlertDisplay extends AlertDisplay
 
   # (String, Exception) => Unit
   reportNetTangoError: (source, exception) ->
-    message = [netTangoErrors.get(source)(exception), '', exception.message].join('<br/>')
-    @reportError(message)
+    message = if not netTangoErrors.has(source)
+      'Generic NetTango error occured.'
+    else
+      netTangoErrors.get(source)(exception)
+
+    @reportError([message, '', exception.message].join('<br/>'))
     return
 
   # (String, Array[CompilerError]) => Unit
