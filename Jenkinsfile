@@ -15,6 +15,9 @@ pipeline {
     stage('Build and Test') {
       steps {
         library 'netlogo-shared'
+        sh 'git submodule foreach git reset --hard'
+        sh 'git submodule foreach git clean -xdf'
+        sh 'git submodule update --init'
         sbt('scalastyle', 'sbt-1.1.1')
         sh 'yarn install'
         sh 'yarn coffeelint'
