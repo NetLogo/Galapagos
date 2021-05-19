@@ -19,28 +19,34 @@ class window.NetTangoController
 
     @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
 
-    @ractive.on('*.ntb-recompile',      (_, code)               => @recompileNetLogo(code))
-    @ractive.on('*.ntb-model-change',   (_, title, code)        => @setNetLogoCode(title, code))
-    @ractive.on('*.ntb-clear-all',      (_)                     => @resetUndoStack())
-    @ractive.on('*.ntb-space-changed',  (_)                     => @handleProjectChange())
-    @ractive.on('*.ntb-options-changed',(_)                     => @handleProjectChange())
-    @ractive.on('*.ntb-undo',           (_)                     => @undo())
-    @ractive.on('*.ntb-redo',           (_)                     => @redo())
-    @ractive.on('*.ntb-code-dirty',     (_)                     => @markCodeDirty())
-    @ractive.on('*.ntb-export-page',    (_)                     => @exportProject('standalone'))
-    @ractive.on('*.ntb-export-json',    (_)                     => @exportProject('json'))
-    @ractive.on('*.ntb-import-netlogo', (local)                 => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)                     => @theOutsideWorld.getSession().exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name)          => @theOutsideWorld.loadUrl(url, name))
-    @ractive.on('*.ntb-import-project', (local)                 => @importProject(local.node.files))
-    @ractive.on('*.ntb-load-sample-project', () =>
-      @loadProject(netTangoSampleModel, "project-load"))
-    @ractive.on('*.ntb-load-project',   (_, data)               => @loadProject(data, "project-load"))
-    @ractive.on('*.ntb-run',            (_, source, command)    =>
+    @ractive.on('*.ntb-recompile',       (_, code)        => @recompileNetLogo(code))
+    @ractive.on('*.ntb-model-change',    (_, title, code) => @setNetLogoCode(title, code))
+    @ractive.on('*.ntb-clear-all',       (_)              => @resetUndoStack())
+    @ractive.on('*.ntb-space-changed',   (_)              => @handleProjectChange())
+    @ractive.on('*.ntb-options-changed', (_)              => @handleProjectChange())
+    @ractive.on('*.ntb-undo',            (_)              => @undo())
+    @ractive.on('*.ntb-redo',            (_)              => @redo())
+    @ractive.on('*.ntb-code-dirty',      (_)              => @markCodeDirty())
+
+    @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
+    @ractive.on('*.ntb-export-netlogo', (_)            => @theOutsideWorld.getSession().exportNlogo())
+    @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @theOutsideWorld.loadUrl(url, name))
+
+    @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
+    @ractive.on('*.ntb-load-sample-project', ()              => @loadProject(netTangoSampleModel, "project-load"))
+    @ractive.on('*.ntb-load-project',        (_, data)       => @loadProject(data, "project-load"))
+    @ractive.on('*.ntb-load-remote-project', (_, projectUrl) => @importRemoteProject(projectUrl))
+
+    @ractive.on('*.ntb-export-page', (_) => @exportProject('standalone'))
+    @ractive.on('*.ntb-export-json', (_) => @exportProject('json'))
+
+    @ractive.on('*.ntb-run', (_, source, command) =>
       if (@isDebugMode) then console.log("Running:", command)
       session = @theOutsideWorld.getSession()
       if (session?)
-        session.widgetController.ractive.fire('run', {}, source, command))
+        session.widgetController.ractive.fire('run', {}, source, command)
+      return
+    )
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode, isDebugMode, setDebugMode) ->
@@ -167,21 +173,7 @@ class window.NetTangoController
 
     # next check the URL parameter
     if (projectUrl?)
-      fetch(projectUrl)
-      .then( (response) ->
-        if (not response.ok)
-          throw new Error("#{response.status} - #{response.statusText}")
-        response.json()
-      )
-      .then( (project) =>
-        @loadProject(project, "project-load")
-      ).catch( (error) =>
-        netLogoLoading = document.getElementById("loading-overlay")
-        netLogoLoading.style.display = "none"
-        error.url = projectUrl
-        @ractive.fire('ntb-error', {}, 'load-from-url', error)
-        return
-      )
+      @importRemoteProject(projectUrl)
       return
 
     # finally local storage
@@ -266,6 +258,25 @@ class window.NetTangoController
       @loadProject(project, 'project-load')
       return
     reader.readAsText(files[0])
+    return
+
+  importRemoteProject: (projectUrl) ->
+    netLogoLoading = document.getElementById("loading-overlay")
+    netLogoLoading.style.display = ""
+    fetch(projectUrl)
+    .then( (response) ->
+      if (not response.ok)
+        throw new Error("#{response.status} - #{response.statusText}")
+      response.json()
+    )
+    .then( (project) =>
+      @loadProject(project, "project-load")
+    ).catch( (error) =>
+      netLogoLoading.style.display = "none"
+      error.url = projectUrl
+      @ractive.fire('ntb-error', {}, 'load-from-url', error)
+      return
+    )
     return
 
   # () => NetTangoProject

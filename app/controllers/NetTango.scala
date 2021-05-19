@@ -11,7 +11,7 @@ class NetTango @Inject() (
   components: ControllerComponents
 , configuration: Configuration
 , environ: Environment
-)  extends AbstractController(components) with ResourceSender {
+) extends AbstractController(components) with ResourceSender {
 
   implicit val environment = environ
   implicit val mode        = environment.mode

@@ -193,6 +193,10 @@ window.RactiveBuilder = Ractive.extend({
       @findComponent('modelChooser').show()
       return false
 
+    '*.ntb-choose-ntjson-prompt': (_) ->
+      @findComponent('projectChooser').show()
+      return false
+
     '*.ntb-import-json-prompt': (_) ->
       importInput = @find('#ntb-import-json')
       importInput.value = ""
@@ -442,11 +446,12 @@ window.RactiveBuilder = Ractive.extend({
     return
 
   components: {
-      builderMenu:   RactiveBuilderMenu
-    , confirmDialog: RactiveConfirmDialog
-    , modelChooser:  RactiveModelChooser
-    , optionsForm:   RactiveOptionsForm
-    , tangoDefs:     RactiveSpaces
+      builderMenu:    RactiveBuilderMenu
+    , confirmDialog:  RactiveConfirmDialog
+    , modelChooser:   RactiveModelChooser
+    , projectChooser: RactiveProjectChooser
+    , optionsForm:    RactiveOptionsForm
+    , tangoDefs:      RactiveSpaces
   }
 
   template:
@@ -457,6 +462,7 @@ window.RactiveBuilder = Ractive.extend({
       <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
       <modelChooser runtimeMode="{{runtimeMode}}" playMode="{{playMode}}"></modelChooser>
+      <projectChooser></projectChooser>
       <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
