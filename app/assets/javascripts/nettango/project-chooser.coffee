@@ -75,7 +75,7 @@ window.RactiveProjectChooser = Ractive.extend({
       <div class="ntb-confirm-dialog" style="margin-top: {{ top }}">
         <div class="ntb-confirm-header">Choose a Library Model</div>
         <div class="ntb-confirm-text">
-          <span>Pick a NetTango project from the NetTango project library.</span>
+          <span>Pick a NetTango project from the NetTango project library.  Note that the NetTango project library is still a work in progress, so you may encounter issues with some projects.</span>
           <div class="ntb-netlogo-model-chooser">
             <select id="ntb-ntjson-chooser">
               {{# projects }}
