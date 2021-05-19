@@ -26,8 +26,9 @@
   border-radius: 20px;
   opacity: 1;
   overflow: hidden;
-  min-width: 450px;
   width: fit-content;
+  min-width: 450px;
+  max-width: 1000px;
 }
 
 #alert-title {
