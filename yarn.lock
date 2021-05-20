@@ -170,10 +170,10 @@ mousetrap@1.6.5:
   resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.6.5.tgz#8a766d8c272b08393d5f56074e0b5ec183485bf9"
   integrity sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==
 
-nettango@0.14.0:
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.14.0.tgz#14062dc258b99de873c8f70246a87ae88da17dd6"
-  integrity sha512-WGUnDPBAhzv7k0FCLih9WKeL8MFfIW8bdTPO6UXQNuTriKrcd9Qi/Y+3GpfHFxm2lRKC5A24drnbjrl/7pPONQ==
+nettango@0.14.2:
+  version "0.14.2"
+  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.14.2.tgz#60d5f13dea673f976e0839b6f25434ea35f15e72"
+  integrity sha512-Vh81Xdtoecna0gNC6158zCUco+Azg5zmHHXU1gvq6vwqcoC8wv8PsVTPUyW+Fp5c6oRkAZtUIrZQSBZI5Ac8Iw==
   dependencies:
     interactjs "^1.10.2"
     zod "^3.0.0-beta.1"
@@ -242,6 +242,6 @@ wrappy@1:
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
 zod@^3.0.0-beta.1:
-  version "3.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.0.0-beta.4.tgz#aef17364b169e0b236640b10d2d121ec250c04bc"
-  integrity sha512-QpgPbIh3987OC4brzgwA2BQYE48dX1pK+l+y6rDuRTsV1IJIuKoh0eWOGnKMEK5j3uGMTDPRGbMJ0SfzawgIbg==
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.0.0.tgz#f64304fc24c836e9cc1608d7fc2352784e18f2a5"
+  integrity sha512-4DBG6siN02ooPB1yvEEqoe32maHzKEdGgtQ2HEz6FnFtgTjwZtzJ3ScuiDgtssWfDyLnQ3MvtSj6ff5ANL4STw==
