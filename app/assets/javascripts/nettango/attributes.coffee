@@ -29,7 +29,7 @@ window.RactiveAttributes = Ractive.extend({
     codeFormat: ""        # String
 
     createAttribute:
-      (type) -> (number) -> { name: "#{type} #{number}", type: 'int', unit: undefined, def: '10' }
+      (type) -> (number) -> { name: "#{type} #{number}", type: 'int', unit: undefined, def: 10 }
 
   }
 
@@ -40,14 +40,6 @@ window.RactiveAttributes = Ractive.extend({
       plural  = @get("plural").toLowerCase()
       "block-#{blockId}-#{plural}"
 
-  }
-
-  # (String, Integer) => NetTangoAttribute
-  defaultAttribute: (attributeType, num) -> {
-    name: "#{attributeType}#{num}"
-  , type: 'num'
-  , unit: undefined
-  , def:  '10'
   }
 
   components: {
