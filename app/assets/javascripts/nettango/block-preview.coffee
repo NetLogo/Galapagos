@@ -18,36 +18,50 @@ window.RactiveBlockPreview = Ractive.extend({
       blockStyles = @get("blockStyles")
 
       defs = {
-        version: 5
-        height: 300
-        width: 400
+        version:     6
+        height:      300
+        width:       400
         expressions: NetTangoBlockDefaults.expressions
         blockStyles: blockStyles
       }
 
-      sample = {
-        id: block.id + 1,
-        action: "Preview Command",
-        format: 'show "hello!"',
+      sampleDef = {
+        id:         block.id + 1
+        action:     "Preview Command"
+        format:     'show "hello!"'
         isRequired: false
       }
 
+      sampleIns = {
+        definitionId: block.id + 1
+        instanceId:   0
+      }
+
+      blockIns = {
+        definitionId: block.id
+        instanceId:   0
+      }
+
       if block.builderType? and block.builderType is "Procedure"
-        chain        = { x: 5, y: 5, blocks: [ block ] }
-        defs.blocks  = [ block, sample ]
+        chain        = { x: 5, y: 5, blocks: [ blockIns, sampleIns ] }
+        defs.blocks  = [ block, sampleDef ]
         defs.program = { chains: [ chain ] }
 
       else
-        proc = {
-          id: block.id + 1,
-          action: "Preview Proc",
-          isRequired: true,
-          placement: NetTango.blockPlacementOptions.STARTER,
-          format: "to preview",
-          limit: 1
+        procDef = {
+          id:         block.id + 1
+          action:     "Preview Proc"
+          isRequired: true
+          placement:  NetTango.blockPlacementOptions.STARTER
+          format:     "to preview"
+          limit:      1
         }
-        chain = { x: 5, y: 5, blocks: [ proc, block ] }
-        defs.blocks = [ proc, sample, block ]
+        procIns = {
+          definitionId: block.id + 1
+          instanceId:   0
+        }
+        chain = { x: 5, y: 5, blocks: [ procIns, blockIns ] }
+        defs.blocks = [ procDef, sampleDef, block ]
         defs.program = { chains: [ chain ] }
 
       try
