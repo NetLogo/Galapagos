@@ -394,6 +394,11 @@ window.RactiveBuilder = Ractive.extend({
     allTags   = knownTags.slice(0)
     breedTags = @get('breeds')
     @pushUnique(allTags, breedTags)
+
+    # Manaully include the observer, since it's not really a breed.  -Jeremy B May 2021
+    if not allTags.includes('observer')
+      allTags.push('observer')
+
     @set('allTags', allTags)
 
     return
