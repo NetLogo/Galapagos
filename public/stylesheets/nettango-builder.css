@@ -445,6 +445,7 @@ body#ntp-body, html#ntp-body {
 .nt-workspace-wrapper,
 .nt-container {
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .ntb-form-row {
