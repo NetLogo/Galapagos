@@ -371,14 +371,14 @@ window.RactiveBuilder = Ractive.extend({
   # (Array[NetTangoClause]) -> Array[String]
   getTagsFromClauses: (clauses) ->
     clauses.flatMap( (c) ->
-      if (c.allowedTags? and c.allowedTags.type is 'any-of') then c.allowedTags.tags else []
+      if (c.allowedTags? and ['any-of', 'none-of'].includes(c.allowedTags.type)) then c.allowedTags.tags else []
     )
 
   # (Array[NetTangoBlock]) -> Array[String]
   getTagsFromBlocks: (blocks) ->
     blocks.flatMap( (b) =>
       blockTags   = b.tags ? []
-      allowedTags = if (b.allowedTags? and b.allowedTags.type is 'any-of') then b.allowedTags.tags else []
+      allowedTags = if (b.allowedTags? and ['any-of', 'none-of'].includes(b.allowedTags.type)) then b.allowedTags.tags else []
       clauseTags  = @getTagsFromClauses(b.clauses ? [])
       blockTags.concat(allowedTags).concat(clauseTags)
     )

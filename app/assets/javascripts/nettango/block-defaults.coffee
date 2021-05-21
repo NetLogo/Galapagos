@@ -28,7 +28,7 @@ copyAllowedTags = (o) ->
       type: o.allowedTags.type
     }
 
-    if allowedTags.type is 'any-of' and o.allowedTags['tags']?
+    if ['any-of', 'none-of'].includes(o.allowedTags.type) and o.allowedTags['tags']?
       allowedTags.tags = o.allowedTags.tags.slice()
 
     allowedTags

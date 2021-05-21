@@ -1,6 +1,7 @@
 defaultChoices = [
   { value: 'unrestricted', text: 'Allow all blocks' }
 , { value: 'any-of',       text: 'Allow blocks with at least one of the chosen tags' }
+, { value: 'none-of',      text: 'Disallow blocks that have any of the chosen tags' }
 ]
 
 clauseChoice = {
@@ -57,7 +58,7 @@ window.RactiveAllowedTags = Ractive.extend({
         changeEvent="ntb-allowed-tags-changed"
         />
 
-      {{# type === 'any-of' }}
+      {{# ['any-of', 'none-of'].includes(type) }}
 
       <tags
         tags={{ tags }}
