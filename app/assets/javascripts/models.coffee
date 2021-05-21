@@ -102,6 +102,7 @@ exports.selectModelByURL = (modelURL) ->
 
 exports.handPickedModels = [
   "Curricular Models/BEAGLE Evolution/DNA Replication Fork",
+  "Curricular Models/BEAGLE Evolution/EACH/Cooperation.nlogo",
   "Curricular Models/Connected Chemistry/Connected Chemistry Gas Combustion",
   "IABM Textbook/chapter 2/Simple Economy",
   "IABM Textbook/chapter 8/Sandpile Simple",
@@ -110,14 +111,13 @@ exports.handPickedModels = [
   "Sample Models/Biology/Ants",
   "Sample Models/Biology/BeeSmart Hive Finding",
   "Sample Models/Biology/Daisyworld",
-  "Sample Models/Biology/Evolution/Cooperation",
   "Sample Models/Biology/Flocking",
   "Sample Models/Biology/Slime",
   "Sample Models/Biology/Virus",
   "Sample Models/Biology/Wolf Sheep Predation",
   "Sample Models/Chemistry & Physics/Diffusion Limited Aggregation/DLA",
   "Sample Models/Chemistry & Physics/GasLab/GasLab Gas in a Box",
-  "Sample Models/Chemistry & Physics/Heat/Boiling",
+  "Sample Models/Chemistry & Physics/Boiling",
   "Sample Models/Chemistry & Physics/Ising",
   "Sample Models/Chemistry & Physics/Waves/Wave Machine",
   "Sample Models/Computer Science/Cellular Automata/CA 1D Elementary",
