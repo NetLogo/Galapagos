@@ -76,6 +76,11 @@ window.RactiveBlockPreview = Ractive.extend({
 
       return
 
+    'end-drag': (context) ->
+      context.event.preventDefault()
+      context.event.stopPropagation()
+      return false
+
   }
 
   containerId: "ntb-block-preview-canvas"
@@ -119,7 +124,7 @@ window.RactiveBlockPreview = Ractive.extend({
       extraClasses="[ 'ntb-code', 'ntb-code-readonly' ]"
     />
 
-    <div id="ntb-block-preview" class="ntb-canvas">
+    <div id="ntb-block-preview" class="ntb-canvas" draggable="true" on-dragstart="end-drag">
       <div id="ntb-block-preview-canvas" />
     </div>
 
