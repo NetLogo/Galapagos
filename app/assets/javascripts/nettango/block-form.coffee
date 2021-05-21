@@ -206,7 +206,7 @@ window.RactiveBlockForm = EditForm.extend({
     if not allowedTags?
       return undefined
 
-    if !['any-of', 'none-of'].includes(allowedTags.type)
+    if not ['any-of', 'none-of'].includes(allowedTags.type)
       delete allowedTags.tags
 
     allowedTags
