@@ -4,7 +4,7 @@ class window.NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @overlay, @playMode, @runtimeMode, @theOutsideWorld) ->
+  constructor: (element, localStorage, @playMode, @runtimeMode, @theOutsideWorld) ->
     @storage      = new NetTangoStorage(localStorage)
     getSpaces     = () => @ractive.findComponent("tangoDefs").get("spaces")
     @isDebugMode  = false
@@ -189,16 +189,15 @@ class window.NetTangoController
     if @actionSource is "project-load"
       return
 
-    @enableRecompileOverlay()
     widgetController = @theOutsideWorld.getSession().widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
+    widgetController.ractive.fire('recompile', (->), false)
     @spaceChangeListener?()
     return
 
   # () => Unit
   recompileNetLogo: () ->
-    @hideRecompileOverlay()
     widgetController = @theOutsideWorld.getSession().widgetController
     widgetController.ractive.fire('recompile')
     return
@@ -423,16 +422,6 @@ class window.NetTangoController
   # (() => Unit) => Unit
   setSpaceChangeListener: (f) ->
     @spaceChangeListener = f
-    return
-
-  # () => Unit
-  enableRecompileOverlay: () ->
-    @overlay.style.display = "flex"
-    return
-
-  # () => Unit
-  hideRecompileOverlay: () ->
-    @overlay.style.display = ""
     return
 
   # (Array[Widget]) => Unit

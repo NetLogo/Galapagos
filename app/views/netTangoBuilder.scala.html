@@ -29,9 +29,6 @@
 
       <div class="ntb-netlogo-model">
         <div id="netlogo-model-container"></div>
-        <div id="model-recompile-overlay" onclick="window.recompile();">
-          <button class="ntb-button" onclick="window.recompile();">Recompile</button>
-        </div>
       </div>
 
       <div id="ntb-components"></div>
@@ -166,7 +163,6 @@
     const pathSplits = location.pathname.split("/")
     const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
 
-    const loadingOverlay   = document.getElementById("loading-overlay")
     const modelContainer   = document.getElementById("netlogo-model-container")
     const builderContainer = document.getElementById("ntb-container")
 
@@ -258,7 +254,6 @@
     window.modelContainer = modelContainer
     var ntangoCode        = document.getElementById("ntango-code")
 
-    var overlay = document.getElementById("model-recompile-overlay")
     var theOutsideWorld = {
         setModelCode:        loadModel
       , loadUrl:             loadUrl
@@ -284,7 +279,6 @@
     window.netTango = new NetTangoController(
       "ntb-components",
       ls,
-      overlay,
       playMode || isStandaloneHtml,
       "@mode.toString.toLowerCase",
       theOutsideWorld

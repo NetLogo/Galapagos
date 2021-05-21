@@ -36,13 +36,13 @@ class window.SessionLite
     @drawEveryFrame    = false
 
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
-    @widgetController.ractive.on('*.recompile'     , (_, callback)       => @recompile(callback))
-    @widgetController.ractive.on('*.recompile-lite', (_, callback)       => @recompileLite(callback))
-    @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
-    @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
-    @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
-    @widgetController.ractive.on('*.run'           , (_, source, code)   => @run(source, code))
-    @widgetController.ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
+    @widgetController.ractive.on('*.recompile'     , (_, callback, useOverlay) => @recompile(callback, useOverlay))
+    @widgetController.ractive.on('*.recompile-lite', (_, callback)             => @recompileLite(callback))
+    @widgetController.ractive.on('export-nlogo'    , (_, event)                => @exportNlogo(event))
+    @widgetController.ractive.on('export-html'     , (_, event)                => @exportHtml(event))
+    @widgetController.ractive.on('open-new-file'   , (_, event)                => @openNewFile())
+    @widgetController.ractive.on('*.run'           , (_, source, code)         => @run(source, code))
+    @widgetController.ractive.on('*.set-global'    , (_, varName, value)       => @setGlobal(varName, value))
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -143,7 +143,7 @@ class window.SessionLite
     @rewriters.reduce(rewriter, errors)
 
   # (() => Unit) => Unit
-  recompile: (successCallback = (->)) ->
+  recompile: (successCallback = (->), useOverlay = true) ->
 
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
@@ -159,8 +159,7 @@ class window.SessionLite
       linkShapes:   linkShapes ? []
     }
 
-    Tortoise.startLoading(=>
-
+    recompileProcess = () =>
       try
         res = @compiler.fromModel(compileParams)
         if res.model.success
@@ -192,7 +191,11 @@ class window.SessionLite
         Tortoise.finishLoading()
 
       return
-    )
+
+    if useOverlay
+      Tortoise.startLoading(recompileProcess)
+    else
+      recompileProcess()
 
     return
 
