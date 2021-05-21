@@ -36,7 +36,7 @@ window.RactiveEditFormDropdown = Ractive.extend({
     """
     <div class="{{ divClass }}">
       <label for="{{ id }}" class="widget-edit-input-label">{{ label }}</label>
-      <select id="{{ id }}" name="{{ name }}" class="widget-edit-dropdown" value="{{ selected }}">
+      <select id="{{ id }}" name="{{ name }}" class="widget-edit-dropdown" value="{{ selected }}" on-change="changed">
         {{#choices }}
           <option value="{{ valOf(this) }}" {{# checkIsDisabled(this) }} disabled {{/}}>{{ textOf(this) }}</option>
         {{/}}

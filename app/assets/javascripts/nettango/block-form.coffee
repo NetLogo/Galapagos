@@ -62,17 +62,7 @@ window.RactiveBlockForm = EditForm.extend({
   observe: {
 
     'block.*': () ->
-      ready = @get('ready')
-      if not ready
-        return
-
-      preview = @findComponent('preview')
-      if not preview?
-        return
-
-      previewBlock = @getBlock()
-      @set('previewBlock', previewBlock)
-      preview.resetNetTango()
+      @resetPreview()
       return
 
     'terminalType': () ->
@@ -81,6 +71,21 @@ window.RactiveBlockForm = EditForm.extend({
       return
 
   }
+
+  resetPreview: () ->
+    ready = @get('ready')
+    if not ready
+      return
+
+    preview = @findComponent('preview')
+    if not preview?
+      return
+
+    previewBlock = @getBlock()
+    @set('previewBlock', previewBlock)
+    preview.resetNetTango()
+    return
+
 
   # (NetTangoBlock) => Unit
   _setBlock: (sourceBlock) ->
