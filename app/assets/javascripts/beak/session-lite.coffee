@@ -211,10 +211,10 @@ class window.SessionLite
         globalEval(res.result)
         successCallback()
       else
-        @widgetController.reportError('compiler', 'recompile', res.result)
+        @widgetController.reportError('compiler', 'recompile-procedures', res.result)
 
     catch ex
-      @widgetController.reportError('compiler', 'recompile', [ex.toString()])
+      @widgetController.reportError('compiler', 'recompile-procedures', [ex.toString()])
 
     finally
       Tortoise.finishLoading()

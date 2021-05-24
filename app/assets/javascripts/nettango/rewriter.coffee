@@ -35,19 +35,6 @@ class window.NetTangoRewriter
     if @isDebugMode then console.log("  NetTango code:", netTangoCode)
     "#{code}\n\n#{netTangoCode}\n"
 
-  # (String, String, Array[Error]) => Array[Error]
-  updateErrors: (original, rewritten, errors) ->
-    errors.map( (error) ->
-      if error.lineNumber > original.split("\n").length
-        # the line number is meaningless if it's NetTango injected code causing the error
-        delete error.lineNumber
-        # coffeelint: disable=max_line_length
-        error.message = "The blocks code contains an error and cannot be compiled.  You can try undoing the last block change or checking the error message to try to locate the problem.<br/><br/>The error message is: #{error.message}"
-        # coffeelint: enable=max_line_length
-
-      return error
-    )
-
   # (String, Integer, Integer, Integer, String, String) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value, attributeType) ->
     if (attributeType is 'select' and value.length > 0 and value.charAt(0) isnt '"')
