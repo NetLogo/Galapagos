@@ -181,7 +181,7 @@ window.RactiveSpace = Ractive.extend({
 
   # (NetTangoSpace, String) => Unit
   setSpaceNetLogo: (space, containerId) ->
-    space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatCodeAttribute).trim()
+    space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatDisplayAttribute).trim()
     space.netLogoDisplay = NetTango.exportCode(containerId).trim()
     return
 
@@ -198,16 +198,8 @@ window.RactiveSpace = Ractive.extend({
     @setSpaceNetLogo(space, containerId)
     switch event.type
 
-      when "block-changed"
+      when "block-changed", "attribute-changed"
         @saveNetTango()
-        @fire('ntb-block-code-changed')
-        @fire('ntb-space-changed')
-
-      when "attribute-changed"
-        @saveNetTango()
-        setCode = NetTangoRewriter.formatSetAttribute(containerId, event.blockId, event.instanceId,
-                      event.attributeId, event.formattedValue, event.isProperty)
-        @fire('ntb-run', {}, 'attribute-change', setCode)
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
 
@@ -272,7 +264,6 @@ window.RactiveSpace = Ractive.extend({
     @refreshNetTango(space, keepOldChains)
 
     @fire('ntb-block-code-changed')
-    @fire('ntb-run', {}, 'workspace-refresh', NetTangoRewriter.createSpaceVariables(space).join(" "))
     if keepOldChains then @fire('ntb-space-changed')
     return
 

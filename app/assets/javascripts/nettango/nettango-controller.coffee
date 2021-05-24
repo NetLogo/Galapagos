@@ -26,7 +26,7 @@ class window.NetTangoController
     @ractive.on('*.ntb-options-changed', (_)              => @handleProjectChange())
     @ractive.on('*.ntb-undo',            (_)              => @undo())
     @ractive.on('*.ntb-redo',            (_)              => @redo())
-    @ractive.on('*.ntb-code-dirty',      (_)              => @markCodeDirty())
+    @ractive.on('*.ntb-code-dirty',      (_)              => @recompileProcedures())
 
     @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)            => @theOutsideWorld.getSession().exportNlogo())
@@ -185,14 +185,17 @@ class window.NetTangoController
     return
 
   # () => Unit
-  markCodeDirty: () ->
+  recompileProcedures: () ->
     if @actionSource is "project-load"
       return
+
+    proceduresCode = @getBlocksCode()
+    procedureNames = @getProcedures()
 
     widgetController = @theOutsideWorld.getSession().widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
-    widgetController.ractive.fire('recompile', (->), false)
+    widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
     @spaceChangeListener?()
     return
 

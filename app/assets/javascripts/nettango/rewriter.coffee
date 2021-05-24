@@ -29,30 +29,15 @@ class window.NetTangoRewriter
       "\n\n#{netTangoCode}" +
       "\n#{NetTangoRewriter.END}"
 
-  # () => Array[String]
-  getExtraCommands: () =>
-    spaces = @getNetTangoSpaces()
-    extras = NetTangoRewriter.createSpacesVariables(spaces)
-    if @isDebugMode then console.log("Getting space variables: ", extras)
-    extras
-
   # (String) => String
   rewriteNetLogoCode: (code) ->
-    if @isDebugMode then console.log("Rewriting NetLogo code...")
-    alteredCode  = NetTangoRewriter.addNetTangoExtension(code)
-    if @isDebugMode then console.log("  Altered code:", alteredCode)
     netTangoCode = @getNetTangoCode()
     if @isDebugMode then console.log("  NetTango code:", netTangoCode)
-    "#{alteredCode}\n\n#{netTangoCode}\n"
+    "#{code}\n\n#{netTangoCode}\n"
 
   # (String, String, Array[Error]) => Array[Error]
   updateErrors: (original, rewritten, errors) ->
     errors.map( (error) ->
-      declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(original)
-      NetTangoRewriter.extensionsDeclarationCheck.lastIndex = 0
-      if (not declaration?)
-        error.lineNumber = error.lineNumber - 1
-
       if error.lineNumber > original.split("\n").length
         # the line number is meaningless if it's NetTango injected code causing the error
         delete error.lineNumber
@@ -63,77 +48,12 @@ class window.NetTangoRewriter
       return error
     )
 
-  # (String, Integer, Integer, Integer) => String
-  @formatAttributeVariable: (containerId, blockId, instanceId, attributeId, isProperty) ->
-    propPrefix = if isProperty then "P" else ""
-    return "\"__#{containerId}_#{blockId}_#{instanceId}_#{propPrefix}#{attributeId}\""
-
-  # (String, Integer, Integer, Integer, Integer, String, String | null) => String
-  @formatSetAttribute: (containerId, blockId, instanceId, attributeId, value = null, isProperty = false) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId, isProperty)
-    setValue = if value is null
-      NetTango.formatAttributeValue(containerId, blockId, instanceId, attributeId, isProperty)
-    else
-      value
-    "nt:set #{variableName} #{setValue}"
-
-  # (String, Integer, Integer, Integer, String, String) => String
-  @formatCodeAttribute: (containerId, blockId, instanceId, attributeId, value, type, isProperty) ->
-    variableName = NetTangoRewriter.formatAttributeVariable(containerId, blockId, instanceId, attributeId, isProperty)
-    "(nt:get #{variableName})"
-
   # (String, Integer, Integer, Integer, String, String) => String
   @formatDisplayAttribute: (_0, _1, _2, _3, value, attributeType) ->
-    if (attributeType is "select" and value.length > 0 and value.charAt(0) isnt "\"")
+    if (attributeType is 'select' and value.length > 0 and value.charAt(0) isnt '"')
       "(#{value})"
     else
       value
-
-  # (String, NetTangoBlock) => Array[String]
-  @createBlockVariables: (spaceId, block) ->
-    clauseVariables    = (block.clauses  ? []).flatMap( (clause) ->
-      clause.blocks.flatMap( (clauseBlock) -> NetTangoRewriter.createBlockVariables(spaceId, clauseBlock) )
-    )
-    paramVariables = block.params.map( (p, i) ->
-      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.definitionId, block.instanceId, i, null, false)
-    )
-
-    propertyVariables = block.properties.map( (p, i) ->
-      NetTangoRewriter.formatSetAttribute("#{spaceId}-canvas", block.definitionId, block.instanceId, i, null, true)
-    )
-
-    [].concat(clauseVariables).concat(paramVariables).concat(propertyVariables)
-
-  # (Space) => Array[String]
-  @createSpaceVariables: (space) ->
-    if not space.defs.program? or
-    not space.defs.program.chains? or
-    not NetTango.hasWorkspace("#{space.spaceId}-canvas")
-      return []
-    space.defs.program.chains.flatMap( (chain) ->
-      chain.blocks.flatMap( (block) -> NetTangoRewriter.createBlockVariables(space.spaceId, block) )
-    )
-
-  # (Array[Space]) => Array[String]
-  @createSpacesVariables: (spaces) ->
-    spaces.flatMap( NetTangoRewriter.createSpaceVariables )
-
-  @extensionsDeclarationCheck: /([\s\S]*^\s*extensions(?:\s|;.*\n)*\[)([\s\S]*)/mgi
-  @netTangoExtensionCheck: /^\s*extensions(?:\s|;.*\n)*\[(?:\s|;.*\n|\w+)*\bnt\b/mgi
-
-  # (String) => String
-  @addNetTangoExtension: (code) ->
-    declaration = NetTangoRewriter.extensionsDeclarationCheck.exec(code)
-    NetTangoRewriter.extensionsDeclarationCheck.lastIndex = 0
-    if (not declaration?)
-      return "extensions [ nt ]\n#{code}"
-
-    extension = NetTangoRewriter.netTangoExtensionCheck.test(code)
-    NetTangoRewriter.netTangoExtensionCheck.lastIndex = 0
-    if (extension)
-      return code
-
-    return "#{declaration[1]} nt #{declaration[2]}"
 
   # (String) => String
   @removeOldNetTangoCode: (code) ->
