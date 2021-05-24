@@ -43,6 +43,11 @@ class window.SessionLite
     @widgetController.ractive.on('open-new-file'   , (_, event)                => @openNewFile())
     @widgetController.ractive.on('*.run'           , (_, source, code)         => @run(source, code))
     @widgetController.ractive.on('*.set-global'    , (_, varName, value)       => @setGlobal(varName, value))
+
+    @widgetController.ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
+      @recompileProcedures(proceduresCode, procedureNames, successCallback)
+    )
+
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -199,6 +204,23 @@ class window.SessionLite
 
     return
 
+  recompileProcedures: (proceduresCode, procedureNames, successCallback) ->
+    try
+      res = @compiler.compileProceduresIncremental(proceduresCode, procedureNames)
+      if res.success
+        globalEval(res.result)
+        successCallback()
+      else
+        @widgetController.reportError('compiler', 'recompile', res.result)
+
+    catch ex
+      @widgetController.reportError('compiler', 'recompile', [ex.toString()])
+
+    finally
+      Tortoise.finishLoading()
+
+    return
+
   getNlogo: ->
     @compiler.exportNlogo({
       info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
@@ -243,6 +265,7 @@ class window.SessionLite
               saveAs(exportBlob, exportName)
             else
               @widgetController.reportError('compiler', 'export-html', nlogo.result)
+
           else
             alert("Couldn't get standalone page")
       req.send("")
