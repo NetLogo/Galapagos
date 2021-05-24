@@ -19,7 +19,6 @@ class window.NetTangoController
 
     @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
 
-    @ractive.on('*.ntb-recompile',       (_, code)        => @recompileNetLogo(code))
     @ractive.on('*.ntb-model-change',    (_, title, code) => @setNetLogoCode(title, code))
     @ractive.on('*.ntb-clear-all',       (_)              => @resetUndoStack())
     @ractive.on('*.ntb-space-changed',   (_)              => @handleProjectChange())
@@ -38,14 +37,6 @@ class window.NetTangoController
 
     @ractive.on('*.ntb-export-page', (_) => @exportProject('standalone'))
     @ractive.on('*.ntb-export-json', (_) => @exportProject('json'))
-
-    @ractive.on('*.ntb-run', (_, source, command) =>
-      if (@isDebugMode) then console.log("Running:", command)
-      session = @theOutsideWorld.getSession()
-      if (session?)
-        session.widgetController.ractive.fire('run', {}, source, command)
-      return
-    )
 
   # (HTMLElement, Environment, Bool) => Ractive
   createRactive: (element, theOutsideWorld, playMode, runtimeMode, isDebugMode, setDebugMode) ->
@@ -132,12 +123,6 @@ class window.NetTangoController
     code = @theOutsideWorld.getSession().widgetController.code()
     @rewriter.rewriteNetLogoCode(code)
 
-  # () => Unit
-  recompile: () =>
-    defs = @ractive.findComponent('tangoDefs')
-    defs.recompile()
-    return
-
   # Runs any updates needed for old versions, then loads the model normally.
   # If this starts to get more complicated, it should be split out into
   # separate version updates. -Jeremy B October 2019
@@ -197,12 +182,6 @@ class window.NetTangoController
     @pauseForevers(widgets)
     widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
     @spaceChangeListener?()
-    return
-
-  # () => Unit
-  recompileNetLogo: () ->
-    widgetController = @theOutsideWorld.getSession().widgetController
-    widgetController.ractive.fire('recompile')
     return
 
   netLogoCompileComplete: () =>

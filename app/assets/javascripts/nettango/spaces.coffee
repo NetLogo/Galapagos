@@ -3,7 +3,6 @@ window.RactiveSpaces = Ractive.extend({
   data: () -> {
     blockEditForm:    null      # RactiveBlockForm
     blockStyles:      undefined # NetTangoBlockStyles
-    codeIsDirty:      false     # Boolean
     confirmDialog:    null      # RactiveConfirmDialog
     allTags:          []        # Array[String]
     lastCompiledCode: ""        # String
@@ -56,11 +55,6 @@ window.RactiveSpaces = Ractive.extend({
       @fire('ntb-space-changed')
       return
 
-    # (Context) => Unit
-    '*.ntb-recompile-start': (_) ->
-      @recompile()
-      return
-
     # (Context, DuplicateBlockData) => Unit
     '*.ntb-duplicate-block-to': (_, { fromSpaceId, fromBlockIndex, toSpaceIndex }) ->
       spaces    = @get('spaces')
@@ -78,22 +72,12 @@ window.RactiveSpaces = Ractive.extend({
   # (Boolean) => Unit
   updateCode: () ->
     lastCode     = @get('lastCode')
-    codeWasDirty = @get('codeIsDirty')
     newCode      = @assembleCode(displayOnly = false)
     codeChanged  = lastCode isnt newCode
-    @set('codeIsDirty', codeWasDirty or codeChanged)
     @set('code', @assembleCode(displayOnly = true))
     if codeChanged
       @set('lastCode', newCode)
       @fire('ntb-code-dirty')
-    return
-
-  # () => Unit
-  recompile: () ->
-    ntbCode = @assembleCode(displayOnly = false)
-    @fire('ntb-recompile', ntbCode)
-    @set('lastCode', ntbCode)
-    @set('codeIsDirty', false)
     return
 
   # () => Unit
@@ -173,7 +157,6 @@ window.RactiveSpaces = Ractive.extend({
           popupMenu="{{ popupMenu }}"
           confirmDialog="{{ confirmDialog }}"
           blockEditForm="{{ blockEditForm }}"
-          codeIsDirty="{{ codeIsDirty }}"
           blockStyles="{{ blockStyles }}"
         />
       {{/spaces }}

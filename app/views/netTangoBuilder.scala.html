@@ -287,7 +287,6 @@
 
     exports.toHTML   = markdown.toHTML // This should not be necessary, but `exports` doesn't exist when we import `markdown-js`
     window.ractive   = netTango.ractive
-    window.recompile = netTango.recompile
     window.onload    = () => netTango.start(netTangoModelUrl)
 
   </script>

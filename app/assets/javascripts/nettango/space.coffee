@@ -11,7 +11,6 @@ window.RactiveSpace = Ractive.extend({
   data: () -> {
     blockEditForm: null  # RactiveBlockForm
     blockStyles:   null  # NetTangoBlockStyles
-    codeIsDirty:   false # Boolean
     confirmDialog: null  # RactiveConfirmDialog
     defsJson:      ""    # String
     netLogoCode:   ""    # String
@@ -346,8 +345,6 @@ window.RactiveSpace = Ractive.extend({
       <div class="ntb-space-title-bar" >
 
         <input type="text" class="ntb-space-title" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-space-title-changed">
-
-        <button id="recompile-{{ spaceId }}" class="ntb-button" type="button" on-click="ntb-recompile-start"{{# !codeIsDirty }} disabled{{/}}>Recompile</button>
 
       </div>
 
