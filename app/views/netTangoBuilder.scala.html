@@ -29,6 +29,7 @@
 
       <div class="ntb-netlogo-model">
         <div id="netlogo-model-container"></div>
+        <div id="model-recompile-overlay"></div>
       </div>
 
       <div id="ntb-components"></div>
@@ -174,8 +175,9 @@
       alerter.listenForErrors(session.widgetController)
     }
 
-    const isStandaloneHtml = @standalone;
-    const alerter          = new NetTangoAlertDisplay(document.getElementById("alert-container"), isStandaloneHtml)
+    const isStandaloneHtml   = @standalone;
+    const recompileContainer = document.getElementById("model-recompile-overlay")
+    const alerter            = new NetTangoAlertDisplay(document.getElementById("alert-container"), isStandaloneHtml, recompileContainer)
 
     function pageTitle(modelTitle) {
       return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`

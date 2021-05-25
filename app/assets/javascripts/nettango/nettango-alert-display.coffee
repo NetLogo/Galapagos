@@ -26,7 +26,29 @@ netTangoErrors = new Map([
 ])
 # coffeelint: enable=max_line_length
 
+makeRecompileOverlay = (container) ->
+  ractive = new Ractive({
+    el:       container
+    template: '<button class="ntb-button" on-click="recompile">Recompile</button>'
+    show:     () -> container.style.display = 'flex'
+    hide:     () -> container.style.display = 'none'
+  })
+  container.addEventListener('click', () -> ractive.fire('recompile') )
+  ractive
+
 class NetTangoAlertDisplay extends AlertDisplay
+
+  constructor: (container, isStandalone, @recompileContainer) ->
+    super(container, isStandalone)
+    @recompileOverlay = makeRecompileOverlay(@recompileContainer)
+
+  # (WidgetController) => Unit
+  listenForErrors: (widgetController) ->
+    super(widgetController)
+    @recompileOverlay.on('*.recompile', (_) ->
+      widgetController.ractive.fire('recompile', () => @hide())
+      return
+    )
 
   # (NetTangoController) => Unit
   listenForNetTangoErrors: (netTango) ->
@@ -44,15 +66,36 @@ class NetTangoAlertDisplay extends AlertDisplay
     @reportError([message, '', exception.message].join('<br/>'))
     return
 
+  # (String, CompilerError) => Boolean
+  isNetTangoError: (netLogoCode, error) ->
+    if error.start? and error.start > netLogoCode.length
+      true
+    else if error.lineNumber? and error.lineNumber > netLogoCode.split('\n').length
+      true
+    else
+      false
+
   # (String, Array[CompilerError]) => Unit
   reportCompilerErrors: (source, errors) ->
-    if source is 'compile-fatal'
-      message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
-      @reportError(message)
-    else if source is 'recompile-procedures'
-      @reportNetTangoError('recompile-procedures', errors[0])
-    else
-      super.reportCompilerErrors(source, errors)
+    switch source
+      when 'compile-fatal'
+        message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+        @reportError(message)
+
+      when 'compile-recoverable'
+        netLogoCode = @netTango.getNetLogoCode()
+        if @isNetTangoError(netLogoCode, errors[0])
+          @recompileOverlay.show()
+          @reportNetTangoError('recompile-procedures', errors[0])
+        else
+          message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+          @reportError(message)
+
+      when 'recompile-procedures'
+        @reportNetTangoError('recompile-procedures', errors[0])
+
+      else
+        super.reportCompilerErrors(source, errors)
 
     return
 

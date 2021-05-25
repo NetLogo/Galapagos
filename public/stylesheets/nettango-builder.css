@@ -461,6 +461,17 @@ body#ntp-body, html#ntp-body {
   font-family: Poppins, sans-serif;
 }
 
+#model-recompile-overlay {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  z-index: 95;
+}
+
 #netlogo-model-container {
   grid-area: 1 / 1;
 }

@@ -116,12 +116,16 @@ class window.NetTangoController
     defs = @ractive.findComponent('tangoDefs')
     defs.assembleCode(displayOnly)
 
+  # () => String
+  getNetLogoCode: () ->
+    @theOutsideWorld.getSession().widgetController.code()
+
   # This is a debugging method to get a view of the altered code output that
   # NetLogo will compile
   # () => String
   getRewrittenCode: () ->
-    code = @theOutsideWorld.getSession().widgetController.code()
-    @rewriter.rewriteNetLogoCode(code)
+    netLogoCode = @getNetLogoCode()
+    @rewriter.rewriteNetLogoCode(netLogoCode)
 
   # Runs any updates needed for old versions, then loads the model normally.
   # If this starts to get more complicated, it should be split out into
