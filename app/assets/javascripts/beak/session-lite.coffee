@@ -339,7 +339,6 @@ class window.SessionLite
 
   # (String, String) => Unit
   run: (source, code) ->
-
     commandResult = @compiler.compileCommand(code)
 
     { result, success } = commandResult
@@ -353,11 +352,11 @@ class window.SessionLite
 
   # (String) => { success: true, value: Any } | { success: false, error: String }
   runReporter: (code) ->
-    result = @compiler.compileReporter(code)
+    reporterResult = @compiler.compileReporter(code)
 
     { result, success } = reporterResult
     if not success
-      return { success: false, error: "Reporter error: #{result}" }
+      return { success: false, error: "Reporter compile error: #{result}" }
 
     reporter = new Function("return ( #{result} );")
     return try
