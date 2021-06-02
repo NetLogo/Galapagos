@@ -4,35 +4,46 @@ window.RactiveAttribute = Ractive.extend({
     id:            undefined # Integer
     codeFormat:    undefined # String
     attribute:     undefined # NetTangoAttribute
-    attributeType: undefined # String ("params" or "properties")
+    attributeType: undefined # String ('params' | 'properties')
+    valueType:     undefined # String ('bool' | 'num' | 'int' | 'range' | 'text' | 'select')
   }
 
   computed: {
+
     codeFormatFull: () ->
       "{#{@get('codeFormat') ? ''}#{@get('id')}}"
 
     defaultType: () ->
       type = @get("attribute.type")
       switch type
-        when 'int', 'range'    then 'number'
-        else                        'text'
+        when 'int', 'range' then 'number'
+        else                     'text'
 
     elementId: () ->
       "#{@get("attributeType").toLowerCase()}-#{@get("id")}"
+
   }
 
   on: {
+
+    # (Context) => Unit
+    'init': (_) ->
+      valueType = @get('attribute.type')
+      @set('valueType', valueType)
+      return
+
     # (Context) => Unit
     '*.ntb-attribute-type-changed': (_) ->
       # Reset our default to the appropriate value  - JMB August 2018
-      attribute = @get('attribute')
-      newDefVal = switch attribute.type
+      attribute      = @get('attribute')
+      attribute.type = @get('valueType')
+      attribute.def  = switch attribute.type
         when 'int', 'range'    then 10
         when 'text', 'select'  then ''
-        when 'num'             then "0"
-        when 'bool'            then "false"
+        when 'num'             then '0'
+        when 'bool'            then 'false'
         else null
-      @set('attribute.def', newDefVal)
+      @set('attribute', attribute)
       return
 
     '*.ntb-copy-attribute-format': (_) ->
@@ -40,6 +51,7 @@ window.RactiveAttribute = Ractive.extend({
       # Better than nothing?  -Jeremy B September 2019
       navigator.clipboard.writeText(@get('codeFormatFull'))
       return
+
   }
 
   components: {
@@ -55,19 +67,19 @@ window.RactiveAttribute = Ractive.extend({
 
       <labeledInput id="{{ elementId }}-name" name="name" type="text" value="{{ attribute.name }}" labelStr="Display name" divClass="ntb-flex-column" class="ntb-input" />
 
-      <dropdown id="{{ elementId }}-type" name="{{ attribute.type }}" selected="{{ attribute.type }}" label="Type" divClass="ntb-flex-column"
+      <dropdown id="{{ elementId }}-type" name="{{ valueType }}" selected="{{ valueType }}" label="Type" divClass="ntb-flex-column"
         choices="{{ [ 'bool', 'num', 'int', 'range', 'text', 'select' ] }}" changeEvent="ntb-attribute-type-changed"
         />
 
-      <labeledInput id="{{ elementId }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label"  divClass="ntb-flex-column" class="ntb-input" />
+      <labeledInput id="{{ elementId }}-unit" name="unit" type="text" value="{{ attribute.unit }}" labelStr="Unit label" divClass="ntb-flex-column" class="ntb-input" />
 
       {{# defaultType === 'number' }}
-        <labeledInput id="{{ elementId }}-def"  name="def"  type="number" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ elementId }}-def" name="def" type="number" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
       {{else}}
-        <labeledInput id="{{ elementId }}-def"  name="def"  type="text" value="{{ attribute.def }}"  labelStr="Default"     divClass="ntb-flex-column" class="ntb-input" />
+        <labeledInput id="{{ elementId }}-def" name="def" type="text" value="{{ attribute.def }}" labelStr="Default" divClass="ntb-flex-column" class="ntb-input" />
       {{/if}}
 
-      <labeledInput id="{{ elementId }}-code" name="def"  type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input ntb-code-input" twoway="false" attrs="readonly" />
+      <labeledInput id="{{ elementId }}-code" type="text" value="{{ codeFormatFull }}" labelStr="Code format" divClass="ntb-flex-column" class="ntb-input ntb-code-input" twoway="false" attrs="readonly" />
 
       <div class="ntb-attribute-copy-format" on-click="ntb-copy-attribute-format"></div>
 
