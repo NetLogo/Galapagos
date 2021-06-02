@@ -36,11 +36,8 @@ class window.NetTangoRewriter
     "#{code}\n\n#{netTangoCode}\n"
 
   # (String, Integer, Integer, Integer, String, String) => String
-  @formatDisplayAttribute: (_0, _1, _2, _3, value, attributeType) ->
-    if (attributeType is 'select' and value.length > 0 and value.charAt(0) isnt '"')
-      "(#{value})"
-    else
-      value
+  @formatDisplayAttribute: (_0, _1, _2, _3, value, _4) ->
+    value
 
   # (String) => String
   @removeOldNetTangoCode: (code) ->
