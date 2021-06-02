@@ -148,7 +148,7 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   if sections.length isnt 12
     return null
 
-  oldCode     = sections[0]
+  oldCode     = sections[0].slice(0, -1) # drop the trailing '\n' from the regex
   sections[0] = ''
   newNlogo    = sectionsToNlogo(sections)
   result      = compiler.fromNlogo(newNlogo, [])
