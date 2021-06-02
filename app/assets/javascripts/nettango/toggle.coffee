@@ -13,7 +13,7 @@ window.RactiveToggle = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <fieldset class="widget-edit-fieldset flex-column ntb-block-array {{# !show }}ntb-array-view-hidden{{/ show }}">
+    <fieldset class="widget-edit-fieldset ntb-block-array {{# !show }}ntb-array-view-hidden{{/ show }}">
       <legend class="widget-edit-legend">
 
         {{> titleTemplate }}
