@@ -102,7 +102,7 @@ exports.selectModelByURL = (modelURL) ->
 
 exports.handPickedModels = [
   "Curricular Models/BEAGLE Evolution/DNA Replication Fork",
-  "Curricular Models/BEAGLE Evolution/EACH/Cooperation.nlogo",
+  "Curricular Models/BEAGLE Evolution/EACH/Cooperation",
   "Curricular Models/Connected Chemistry/Connected Chemistry Gas Combustion",
   "IABM Textbook/chapter 2/Simple Economy",
   "IABM Textbook/chapter 8/Sandpile Simple",
