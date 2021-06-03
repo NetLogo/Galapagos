@@ -141,7 +141,7 @@ class AlertDisplay
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
     if source is 'console'
-      message = if exception instanceof Exception.RuntimeException or exception instanceof Exception.ExtensionException
+      message = if exception instanceof Exception.RuntimeException
         start = AlertDisplay.makeRuntimeErrorMessage(exception.message, exception.primitive)
         stack = exception.stackTrace.map(AlertDisplay.makeBareFrameError).join('\n')
         if stack is '' then start else "#{start}\n#{stack}"
@@ -155,7 +155,7 @@ class AlertDisplay
       @reportConsoleError(message)
 
     else
-      message = if exception instanceof Exception.RuntimeException or exception instanceof Exception.ExtensionException
+      message = if exception instanceof Exception.RuntimeException
         AlertDisplay.makeRuntimeErrorMessage(exception.message, exception.primitive)
 
       else if exception instanceof TypeError
