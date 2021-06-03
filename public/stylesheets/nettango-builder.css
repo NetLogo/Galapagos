@@ -445,7 +445,10 @@ body#ntp-body, html#ntp-body {
 .nt-workspace-wrapper,
 .nt-container {
   border-radius: 10px;
-  overflow: hidden;
+  /* it fixes some small visual glitches with rounded borders to set this to `hidden`, but that causes
+    param/property pop-ups to be cut off at the bottom of the workspace.  So leave it visible until a
+    proper fix for the glitches can be done.  -Jeremy B June 2021 */
+  overflow: visible;
 }
 
 .ntb-form-row {
