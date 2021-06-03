@@ -1,4 +1,4 @@
-import { nlogoToSections, sectionsToNlogo } from "../beak/tortoise-utils.js"
+import { nlogoToSections, sectionsToNlogo } from "/beak/tortoise-utils.js"
 
 class NetTangoRewriter
   @BEGIN = "; --- NETTANGO BEGIN ---"

@@ -74,13 +74,30 @@
 
   <script type="text/json" id="ntango-code"></script>
 
+  @*
+  These globals depend on variables from the Play view, such as `@standalone` etc, therefore they cannot be defined in a
+  separate script file.
+
+  (Also, we cannot just export these variables from an inline `<script type="module">`, because currently there is no way
+  to assign a filename (or more precisely, module specifier) to an inline `script` tag. And if it has no filename, from
+  which location would we `import` it?)
+
+  - David D. 7/2021
+  *@
   <script>
     Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
     window.isStandaloneHTML = @standalone;
     window.environmentMode = "@mode.toString.toLowerCase";
+    window.standaloneURL = `${window.location.protocol}@TagBuilder.protocolRelativeURL(
+      new java.net.URL(routes.Local.standalone.absoluteURL)
+    )`;
   </script>
 
-  <script type="module" src='@routes.Assets.versioned("javascripts/pages/netTangoBuilder.js").relative'></script>
+  @if(standalone) {
+    @tagBuilder.pathToHTML("javascripts/pages/netTangoBuilder.bundle.js", "type" -> "module")
+  } else {
+    @tagBuilder.pathToHTML("javascripts/pages/netTangoBuilder.js", "type" -> "module")
+  }
 }
 
 @if(themed) {

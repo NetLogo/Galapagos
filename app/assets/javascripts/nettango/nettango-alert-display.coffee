@@ -1,4 +1,4 @@
-import AlertDisplay from "../alert-display.js"
+import AlertDisplay from "/alert-display.js"
 
 # coffeelint: disable=max_line_length
 # () => String

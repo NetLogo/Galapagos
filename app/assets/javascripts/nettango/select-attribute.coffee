@@ -1,4 +1,4 @@
-import { RactiveTwoWayDropdown } from "../beak/widgets/ractives/subcomponent/dropdown.js"
+import { RactiveTwoWayDropdown } from "/beak/widgets/ractives/subcomponent/dropdown.js"
 import RactiveArrayView from "./array-view.js"
 
 partials = {

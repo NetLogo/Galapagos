@@ -1,7 +1,7 @@
 import RactiveContextable from "./contextable.js"
 
-# The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`,
-# and these functions should be called with `call(<Ractive>, <args...>)` --JAB (11/23/17)
+# The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`.
+# --JAB (11/23/17), David D. 7/2021
 CommonDrag = {
 
   dragstart: (ractive, { original }, checkIsValid, callback) ->

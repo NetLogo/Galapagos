@@ -1,4 +1,4 @@
-import keywords from "../../../../keywords.js"
+import keywords from "/keywords.js"
 
 RactiveEditFormVariable = Ractive.extend({
 

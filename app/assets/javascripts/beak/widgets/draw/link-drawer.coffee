@@ -1,4 +1,4 @@
-import { netlogoColorToCSS } from "../../../colors.js"
+import { netlogoColorToCSS } from "/colors.js"
 import { ShapeDrawer } from "./draw-shape.js"
 
 class Line

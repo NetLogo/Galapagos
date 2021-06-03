@@ -1,5 +1,5 @@
-import HighchartsOps from "../../highcharts.js"
-import { toNetLogoMarkdown } from "../tortoise-utils.js"
+import HighchartsOps from "/highcharts.js"
+import { toNetLogoMarkdown } from "/beak/tortoise-utils.js"
 
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->

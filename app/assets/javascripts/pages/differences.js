@@ -1,4 +1,4 @@
-import "../codemirror-mode.js";
+import "/codemirror-mode.js";
 
 window.addEventListener('load', function() {
   var elem    = document.getElementById('wait-example-code');

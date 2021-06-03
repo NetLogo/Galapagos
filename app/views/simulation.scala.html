@@ -52,6 +52,16 @@
     <!-- This can be used to insert NetLogo code into this page -->
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
+    @*
+    These globals depend on variables from the Play view, such as `@standalone` etc, therefore they cannot be defined in a
+    separate script file.
+
+    (Also, we cannot just export these variables from an inline `<script type="module">`, because currently there is no way
+    to assign a filename (or more precisely, module specifier) to an inline `script` tag. And if it has no filename, from
+    which location would we `import` it?)
+
+    - David D. 7/2021
+    *@
     <script>
       window.debugMode = @{environment.mode != play.api.Mode.Prod};
       Ractive.DEBUG = window.debugMode

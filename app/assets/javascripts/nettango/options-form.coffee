@@ -1,4 +1,4 @@
-import EditForm from "../beak/widgets/ractives/edit-form.js"
+import EditForm from "/beak/widgets/ractives/edit-form.js"
 import RactiveBlockStyleSettings from "./block-style-settings.js"
 import RactiveCodeMirror from "./code-mirror.js"
 

@@ -1,6 +1,6 @@
+import { netlogoColorToCSS } from "/colors.js"
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
-import { netlogoColorToCSS } from "../../../colors.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
 import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"

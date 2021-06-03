@@ -1,4 +1,4 @@
-import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
+import { RactiveTwoWayLabeledInput } from "/beak/widgets/ractives/subcomponent/labeled-input.js"
 import RactiveToggle from "./toggle.js"
 
 RactiveBlockStyleSettings = RactiveToggle.extend({

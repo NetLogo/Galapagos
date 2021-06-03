@@ -1,5 +1,5 @@
-import { netlogoColorToCSS, netlogoColorToRGB } from "../../../colors.js"
-import defaultShapes from "../../../default-shapes.js"
+import { netlogoColorToCSS, netlogoColorToRGB } from "/colors.js"
+import defaultShapes from "/default-shapes.js"
 import { ShapeDrawer, defaultShape } from "./draw-shape.js"
 import { LinkDrawer } from "./link-drawer.js"
 

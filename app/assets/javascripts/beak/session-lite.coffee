@@ -1,7 +1,7 @@
-import { runWithErrorHandling } from "../beak/widgets/set-up-widgets.js"
-import initializeUI from "./widgets/initialize-ui.js"
 import runBabyBehaviorSpace from "./babybehaviorspace.js"
 import { toNetLogoMarkdown } from "./tortoise-utils.js"
+import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
+import initializeUI from "./widgets/initialize-ui.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -30,7 +30,7 @@ class SessionLite
 
   # (Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
   #   String, String, Boolean, String, String, Boolean)
-  constructor: (@Tortoise, container, @compiler, @rewriters, widgets,
+  constructor: (@tortoise, container, @compiler, @rewriters, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
@@ -53,7 +53,7 @@ class SessionLite
 
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
-    # NOTE: the global 'modelConfig' variable is used by the Tortoise runtime
+    # The global 'modelConfig' variable is used by the Tortoise runtime - David D. 7/2021
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
@@ -197,12 +197,12 @@ class SessionLite
         @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
       finally
-        @Tortoise.finishLoading()
+        @tortoise.finishLoading()
 
       return
 
     if useOverlay
-      @Tortoise.startLoading(recompileProcess)
+      @tortoise.startLoading(recompileProcess)
     else
       recompileProcess()
 
@@ -221,7 +221,7 @@ class SessionLite
       @widgetController.reportError('compiler', 'recompile-procedures', [ex.toString()])
 
     finally
-      @Tortoise.finishLoading()
+      @tortoise.finishLoading()
 
     return
 
@@ -292,9 +292,9 @@ class SessionLite
 
   # (Object[Any], ([{ config: Object[Any], results: Object[Array[Any]] }]) => Unit) => Unit
   asyncRunBabyBehaviorSpace: (config, reaction) ->
-    @Tortoise.startLoading(=>
+    @tortoise.startLoading(=>
       reaction(@runBabyBehaviorSpace(config))
-      @Tortoise.finishLoading()
+      @tortoise.finishLoading()
     )
 
   # (Object[Any]) => [{ config: Object[Any], results: Object[Array[Any]] }]

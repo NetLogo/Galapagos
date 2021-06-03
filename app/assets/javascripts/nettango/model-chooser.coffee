@@ -1,4 +1,4 @@
-import { bindModelChooser } from "../models.js"
+import { bindModelChooser } from "/models.js"
 
 RactiveModelChooser = Ractive.extend({
 

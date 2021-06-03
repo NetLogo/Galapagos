@@ -1,4 +1,4 @@
-import { netlogoColorToOpaqueCSS } from "../../../colors.js"
+import { netlogoColorToOpaqueCSS } from "/colors.js"
 
 IMAGE_SIZE = 300 # Images are 300x300, in line with netlogo shapes.
 

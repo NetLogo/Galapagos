@@ -1,5 +1,5 @@
-import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
-import CodeUtils from "../beak/widgets/code-utils.js"
+import CodeUtils from "/beak/widgets/code-utils.js"
+import { RactiveTwoWayLabeledInput } from "/beak/widgets/ractives/subcomponent/labeled-input.js"
 import RactiveJsonEditor from "./json-editor.js"
 import NetTangoRewriter from "./rewriter.js"
 import NetTangoBlockDefaults from "./block-defaults.js"

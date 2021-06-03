@@ -1,5 +1,5 @@
-import { RactiveTwoWayLabeledInput } from "../beak/widgets/ractives/subcomponent/labeled-input.js"
-import { RactiveTwoWayDropdown } from "../beak/widgets/ractives/subcomponent/dropdown.js"
+import { RactiveTwoWayLabeledInput } from "/beak/widgets/ractives/subcomponent/labeled-input.js"
+import { RactiveTwoWayDropdown } from "/beak/widgets/ractives/subcomponent/dropdown.js"
 import RactiveSelectAttribute from "./select-attribute.js"
 
 RactiveAttribute = Ractive.extend({

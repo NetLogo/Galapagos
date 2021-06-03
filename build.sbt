@@ -101,20 +101,20 @@ bundle := Def.task {
   val include = (includeFilter in bundle).value
   val exclude = (excludeFilter in bundle).value
 
-  (inputMappings: Seq[PathMapping]) =>
+  (inputMappings: Seq[PathMapping]) => {
 
     // Partition input mappings into files we want to bundle and files we just want to ignore and pass through to the
-    // next pipeline stage.
+    // next pipeline stage. - David D. 7/2021
     val (filesToBundle, ignoredFiles) = inputMappings.partition({
       case (file, relativePath) =>
         relativePath.startsWith(scriptsDir) && !file.isDirectory && !exclude.accept(file) && include.accept(file)
     })
 
-    // Run the function only if files have changed since the last run
+    // Run the function only if files have changed since the last run - David D. 7/2021
     val runBundler = FileFunction.cached(streamsValue.cacheDirectory / "rollup", FilesInfo.hash) { _ =>
 
       // Rollup needs its inputs in a folder, not a list of random files, so we sync the input files of this pipeline
-      // stage into a temporary folder, where Rollup can easily access them.
+      // stage into a temporary folder, where Rollup can easily access them. - David D. 7/2021
       SbtWeb.syncMappings(
         Compat.cacheStore(streamsValue, "sync-rollup"),
         filesToBundle,
@@ -133,6 +133,7 @@ bundle := Def.task {
 
     val bundledFiles = runBundler(filesToBundle.map(_._1).toSet) pair relativeTo(outputDir)
     bundledFiles ++ ignoredFiles
+  }
 
 }.dependsOn(yarnInstall).value
 
@@ -140,11 +141,12 @@ def runRollup(baseDirectory: File, inputDir: File, outputDir: File, streams: Tas
   Process(
     Seq("./node_modules/.bin/rollup",
       "--config", "rollup.config.js",
-      // Custom arguments with the 'config-' prefix are passed through to rollup.config.js.
+      // Custom arguments with the 'config-' prefix are passed through to rollup.config.js. - David D. 7/2021
       "--config-sourceDir", inputDir.getPath,
       "--config-targetDir", outputDir.relativeTo(baseDirectory).get.getPath,
       // Rollup prints all messages, including info to STDERR, but SBT would then display everything as errors and
       // clutter the output. The --silent flag causes Rollup to output only errors, which we still want to see.
+      // - David D. 7/2021
       "--silent"
     ),
     baseDirectory,
@@ -156,11 +158,12 @@ def runRollup(baseDirectory: File, inputDir: File, outputDir: File, streams: Tas
 
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
+// - David D. 7/2021
 excludeFilter in digest := "*.chunk.js"
 
 // We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
 // provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to
-// use a playRunHook to detect if we're in development mode (`sbt run`).
+// use a playRunHook to detect if we're in development mode (`sbt run`). - David D. 7/2021
 PlayKeys.playRunHooks += PlayDevMode()
 
 // Used in Dev and Prod
