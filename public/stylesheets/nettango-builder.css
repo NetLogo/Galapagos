@@ -539,6 +539,11 @@ body#ntp-body, html#ntp-body {
   margin-bottom: 10px;
 }
 
+.ntb-explanatory {
+  font-size: small;
+  margin-bottom: 4px;
+}
+
 .ntb-tag-cloud {
   flex-wrap: wrap;
 }

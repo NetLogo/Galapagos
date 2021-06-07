@@ -3,10 +3,11 @@ import RactiveToggle from "./toggle.js"
 RactiveTags = Ractive.extend({
 
   data: () -> {
-      tags:         [] # Array[String]
-    , knownTags:    [] # Array[String]
-    , filter:       '' # String
-    , selectedTags: [] # Array[String]
+    tags:             []    # Array[String]
+  , knownTags:        []    # Array[String]
+  , filter:           ''    # String
+  , selectedTags:     []    # Array[String]
+  , areProcedureTags: false # Boolean
   }
 
   computed: {
@@ -152,6 +153,14 @@ RactiveTags = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
+    {{#if areProcedureTags }}
+      <div class="ntb-explanatory flex-row">
+        Tags applied to a Procedure block will not affect how the block functions, they are only for
+        categorization.  To change which blocks are allowed to be placed in this Procedure block,
+        see the "Which blocks are allowed..." section above.
+      </div>
+    {{/if }}
+
     <div class="ntb-tag-cloud flex-row">
       {{#each tags.sort( compareStrings ) }}
         <div class="ntb-tag">{{this}} <button class="ntb-button" on-click='[ 'remove-tag', this ]'>x</button></div>
@@ -211,7 +220,7 @@ RactiveToggleTags = RactiveToggle.extend({
   partials: {
 
     contentTemplate:
-      """<tags tags={{ tags }} knownTags={{ knownTags }} />"""
+      """<tags tags={{ tags }} knownTags={{ knownTags }} areProcedureTags={{ areProcedureTags }} />"""
 
   , titleTemplate:
       """Tags <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""

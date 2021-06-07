@@ -24,15 +24,17 @@ RactiveBlockForm = EditForm.extend({
   }
 
   computed: {
-    canInheritTags: () ->
-      block = @get('block')
-      block.builderType isnt 'Procedure'
 
     terminalChoices: () ->
       [
         { value: "terminal",   text: "This will be the last block in its chain, no more blocks can attach" }
       , { value: "attachable", text: "Blocks can be attached to this block in a chain" }
       ]
+
+    isProcedureBlock: () ->
+      block = @get('block')
+      block.builderType is 'Procedure'
+
   }
 
   on: {
@@ -172,13 +174,12 @@ RactiveBlockForm = EditForm.extend({
       when 'Command or Control'
         block.isRequired = false
         block.placement  = NetTango.blockPlacementOptions.CHILD
-        block.tags       = blockValues.tags ? []
 
       else
         block.isRequired = blockValues.isRequired ? false
         block.placement  = blockValues.placement ? falseNetTango.blockPlacementOptions.CHILD
-        block.tags       = blockValues.tags ? []
 
+    block.tags        = blockValues.tags ? []
     block.clauses     = @processClauses(blockValues.clauses ? [])
     block.params      = @processAttributes(blockValues.params)
     block.properties  = @processAttributes(blockValues.properties)
@@ -290,10 +291,7 @@ RactiveBlockForm = EditForm.extend({
             />
         </div>
 
-        {{# builderType === 'Command or Control' }}
-          <tagsControl tags={{ tags }} knownTags={{ blockKnownTags }} showAtStart={{ tags.length > 0 }} />
-
-        {{else}}
+        {{# isProcedureBlock }}
           <div class="flex-row ntb-form-row">
             <div class="ntb-flex-column">
               <label for="block-{{ id }}-close">Code format to insert after all attached blocks (default is `end`)</label>
@@ -313,12 +311,19 @@ RactiveBlockForm = EditForm.extend({
               allowedTags={{ allowedTags }}
               knownTags={{ blockKnownTags }}
               blockType="starter"
-              canInheritTags=false
+              canInheritTags={{ !isProcedureBlock }}
               />
           </div>
           {{/ isTerminal}}
 
-        {{/if}}
+        {{/isProcedureBlock }}
+
+        <tagsControl
+          tags={{ tags }}
+          knownTags={{ blockKnownTags }}
+          showAtStart={{ tags.length > 0 }}
+          areProcedureTags={{ isProcedureBlock }}
+          />
 
         <attributes
           singular="Parameter"
@@ -340,7 +345,7 @@ RactiveBlockForm = EditForm.extend({
           clauses={{ clauses }}
           closeClauses={{ closeClauses }}
           knownTags={{ blockKnownTags }}
-          canInheritTags={{ canInheritTags }}
+          canInheritTags={{ !isProcedureBlock }}
           />
 
         <blockStyle styleId="{{ id }}" showAtStart=false styleSettings="{{ this }}"></blockStyle>
