@@ -103,7 +103,6 @@ RactiveSpaces = Ractive.extend({
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
     defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
-    defs.expressions = defs.expressions ? NetTangoBlockDefaults.expressions
     space = {
         id:              id
       , spaceId:         spaceId

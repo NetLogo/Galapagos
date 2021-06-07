@@ -25,7 +25,6 @@ RactiveBlockPreview = Ractive.extend({
         version:     6
         height:      300
         width:       400
-        expressions: NetTangoBlockDefaults.expressions
         blockStyles: blockStyles
       }
 
