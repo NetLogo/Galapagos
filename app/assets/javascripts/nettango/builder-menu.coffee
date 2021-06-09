@@ -1,5 +1,5 @@
 sampleProjectUrl =
-  "#{window.location.protocol}//#{window.location.host}/assets/nt-modelslib/Biology/Wolves and Sheep.ntjson"
+  "assets/nt-modelslib/Biology/Wolves and Sheep.ntjson"
 
 window.RactiveBuilderMenu = Ractive.extend({
 

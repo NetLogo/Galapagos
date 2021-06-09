@@ -1,4 +1,4 @@
-hostPrefix = "#{window.location.protocol}//#{window.location.host}/assets/nt-modelslib/"
+hostPrefix = "assets/nt-modelslib/"
 
 window.RactiveProjectChooser = Ractive.extend({
 
@@ -33,8 +33,7 @@ window.RactiveProjectChooser = Ractive.extend({
   on: {
 
     'complete': (_) ->
-      # Load the library.json file
-      fetch('/assets/nt-modelslib/library.json')
+      fetch('assets/nt-modelslib/library.json')
       .then( (response) ->
         if (not response.ok)
           throw new Error("#{response.status} - #{response.statusText}")
@@ -47,10 +46,6 @@ window.RactiveProjectChooser = Ractive.extend({
         @fire('ntb-error', {}, 'load-library-json', error)
         return
       )
-
-      # Parse it
-      # Transform to chooser-compatible format
-      # Apply chooser.js
       return
 
     'load-project': (_) ->
