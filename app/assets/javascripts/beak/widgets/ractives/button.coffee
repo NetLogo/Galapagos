@@ -92,9 +92,26 @@ HNWButtonEditForm = ButtonEditForm.extend({
     actionKey:      undefined # String
   , display:        undefined # String
   , isForever:      false     # Boolean
+  , procedures:     undefined # Array[Procedure]
   , procName:       undefined # String
   , startsDisabled: false     # Boolean
   , type:           undefined # String
+  }
+
+  computed: {
+    procChoices: {
+      get: ->
+        @get('procedures').filter(
+          (p) ->
+            (not p.isReporter) and
+            p.argCount is 0 and
+            (p.isUseableByObserver or p.isUseableByTurtles)
+        ).map(
+          (p) ->
+            p.name
+        ).sort()
+      set: ((->))
+    }
   }
 
   partials: {
@@ -104,7 +121,7 @@ HNWButtonEditForm = ButtonEditForm.extend({
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formCode id="{{id}}-proc-name" name="procName" value="{{procName}}" label="Procedure" />
+      <formDropdown id="{{id}}-proc-name" name="procName" selected="{{procName}}" choices="{{procChoices}}" label="Procedure" />
 
       <spacer height="15px" />
 
@@ -260,7 +277,8 @@ window.RactiveHNWButton = RactiveButton.extend({
       """
       <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
                 idBasis="{{id}}" isForever="{{widget.forever}}" procName="{{widget.hnwProcName}}"
-                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}"
+                procedures="{{procedures}}" />
       """
   }
 

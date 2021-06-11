@@ -18,6 +18,18 @@
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
   <body style="margin: 0px;">
+
+    <div class="flex-row">
+      <label>On Setup:
+        <select id="on-setup-dropdown" name="on-setup"></select>
+      </label>
+      <label>On Go:
+        <select id="on-go-dropdown" name="on-go"></select>
+      </label>
+    </div>
+
+    <div id="code-pane"></div>
+
     <script>window.exports = {};</script>
 
     @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")

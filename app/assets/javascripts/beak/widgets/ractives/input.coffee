@@ -73,11 +73,36 @@ InputEditForm = EditForm.extend({
 
 HNWInputEditForm = InputEditForm.extend({
 
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display', varName)
+      return
+  }
+
   partials: {
 
     variableForm:
       """
-      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}" />
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -158,7 +183,7 @@ window.RactiveInput = RactiveWidget.extend({
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
-              />
+              breedVars="{{breedVars}}" />
     """
 
   # coffeelint: disable=max_line_length

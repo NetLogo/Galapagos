@@ -111,12 +111,13 @@ editFormCodeContainerFactory =
     Ractive.extend({
 
       data: -> {
-        config:   undefined # Object
-      , id:       undefined # String
-      , label:    undefined # String
-      , onchange: (->)      # (String) => Unit
-      , style:    undefined # String
-      , value:    undefined # String
+        config:     undefined # Object
+      , id:         undefined # String
+      , isDisabled: false     # Boolean
+      , label:      undefined # String
+      , onchange:   (->)      # (String) => Unit
+      , style:      undefined # String
+      , value:      undefined # String
       }
 
       twoway: false
@@ -129,7 +130,7 @@ editFormCodeContainerFactory =
         """
         <label for="{{id}}">{{label}}</label>
         <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"
-                       onchange="{{onchange}}" style="{{style}}" />
+                       isDisabled="{{isDisabled}}" onchange="{{onchange}}" style="{{style}}" />
         """
 
     })

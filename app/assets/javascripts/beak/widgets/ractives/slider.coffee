@@ -118,11 +118,36 @@ SliderEditForm = EditForm.extend({
 
 HNWSliderEditForm = SliderEditForm.extend({
 
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('variable', varName)
+      return
+  }
+
   partials: {
 
     variableForm:
       """
-      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{variable}}"/>
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{variable}}" />
+        <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -133,6 +158,7 @@ window.RactiveSlider = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+  , breedVars:          undefined # Array[String]
   , errorClass:         undefined # String
   }
 
@@ -175,7 +201,8 @@ window.RactiveSlider = RactiveWidget.extend({
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               top="{{widget.top}}" right="{{widget.right}}" bottom="{{widget.bottom}}"
-              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}" />
+              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}"
+              breedVars="{{breedVars}}" />
     """
 
   partials: {

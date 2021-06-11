@@ -9,6 +9,7 @@ MonitorEditForm = EditForm.extend({
 
   components: {
     formCode:     RactiveEditFormMultilineCode
+  , formDropdown: RactiveEditFormDropdown
   , formFontSize: RactiveEditFormFontSize
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
@@ -37,10 +38,15 @@ MonitorEditForm = EditForm.extend({
 
     title: "Monitor"
 
+    sourceForm:
+      """
+      <formCode id="{{id}}-source" name="source" value="{{source}}" label="Reporter" />
+      """
+
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formCode id="{{id}}-source" name="source" value="{{source}}" label="Reporter" />
+      {{>sourceForm}}
 
       <spacer height="15px" />
 
@@ -67,7 +73,43 @@ MonitorEditForm = EditForm.extend({
 
 })
 
-HNWMonitorEditForm = MonitorEditForm
+HNWMonitorEditForm = MonitorEditForm.extend({
+
+  computed: {
+    reporterChoices: {
+      get: ->
+
+        { globalVars, myVars, procedures } = @get('metadata')
+
+        globalsNames = globalVars.map((g) -> g.name)
+
+        reporterNames =
+          procedures.filter(
+            (p) ->
+              p.isReporter and
+              p.argCount is 0 and
+              (p.isUseableByObserver or p.isUseableByTurtles)
+          ).map(
+            (p) -> p.name
+          )
+
+        [].concat(globalsNames, myVars, reporterNames).sort()
+
+      set: ((->))
+    }
+  }
+
+  partials: {
+
+    sourceForm:
+      """
+      <formDropdown id="{{id}}-source" name="source" selected="{{source}}"
+                    choices="{{reporterChoices}}" label="Reporter" />
+      """
+
+  }
+
+})
 
 window.RactiveMonitor = RactiveWidget.extend({
 
@@ -92,7 +134,7 @@ window.RactiveMonitor = RactiveWidget.extend({
     {{>editorOverlay}}
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
-              precision="{{widget.precision}}" source="{{widget.source}}" />
+              precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}" />
     """
 
   # coffeelint: disable=max_line_length

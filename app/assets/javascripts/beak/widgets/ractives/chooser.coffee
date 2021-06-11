@@ -55,6 +55,12 @@ ChooserEditForm = EditForm.extend({
 
     title: "Chooser"
 
+    codeInput:
+      """
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
+                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      """
+
     variableForm:
       """
       <formVariable id="{{id}}-varname" name="varName" label="Global variable" value="{{display}}" />
@@ -64,8 +70,7 @@ ChooserEditForm = EditForm.extend({
       """
       {{>variableForm}}
       <spacer height="15px" />
-      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
-                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      {{>codeInput}}
       <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
              style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
@@ -77,11 +82,54 @@ ChooserEditForm = EditForm.extend({
 
 HNWChooserEditForm = ChooserEditForm.extend({
 
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  genProps: (form) ->
+    varName    = form.varName.value
+    choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
+    # choicesArr = Converter.stringToJSValue("[#{choices}]")
+    # TODO: This requires access to the compiler, which lives in the parent frame....
+    # Jason B. (5/24/21)
+    {
+       display: varName
+    , variable: varName.toLowerCase()
+    }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display',  varName)
+      @set('variable', varName.toLowerCase())
+      return
+  }
+
   partials: {
+
+    codeInput:
+      """
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices" isDisabled="true"
+                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      """
 
     variableForm:
       """
-      <formVariable id="{{id}}-varname" name="varName" label="Turtle variable" value="{{display}}" />
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="varName" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -122,7 +170,7 @@ window.RactiveChooser = RactiveWidget.extend({
       {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
     """
 
   partials: {

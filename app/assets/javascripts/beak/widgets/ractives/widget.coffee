@@ -112,6 +112,42 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   handleResizeEnd: ->
     return
 
+  # (Ractive, (String, Ractive) => Unit) => Boolean
+  _addNewTerm: (sender, finalizer) ->
+    varName = prompt("New name:", "")
+    if varName?
+      if @_isValidIdentifier(varName)
+
+        { globalVars, myVars, procedures } = @parent.get('metadata')
+        globalNames      = globalVars.map((g) -> g.name)
+        procNames        = procedures.map((p) -> p.name)
+        takenIdentifiers = window.keywords.all.concat(globalNames, myVars, procNames)
+        loweredTakens    = takenIdentifiers.map((ident) -> ident.toLowerCase())
+
+        loweredName = varName.toLowerCase()
+
+        if not loweredTakens.includes(loweredName)
+          finalizer(varName, sender)
+        else
+          nlwAlerter.displayError("Name already in use!")
+
+      else
+        nlwAlerter.displayError("Not a valid NetLogo identifier!")
+    false
+
+  # (String, Ractive) => Unit
+  _defineNewBreedVar: (varName, sender) ->
+    @set('breedVars', [varName].concat(@get('breedVars')))
+    sender.fire('use-new-var', varName)
+    notifyNewBreedVar(varName)
+
+  # (String) => Boolean
+  _isValidIdentifier: (ident) ->
+    letters = "a-z"
+    digits  = "0-9"
+    symbols = "_\\-!#\\$%\\^&\\*<>/\\.\\?=\\+:'"
+    (new RegExp("^[#{letters}#{symbols}][#{letters}#{digits}#{symbols}]*$")).test(ident)
+
   on: {
 
     'edit-widget': ->
@@ -128,6 +164,9 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
     'initialize-widget': ->
       @findComponent('editForm').fire("prove-your-worth")
       false
+
+    "*.add-breed-var": ({ component: sender }) ->
+      @_addNewTerm(sender, (v, s) => @_defineNewBreedVar(v, s))
 
     "*.has-been-proven-unworthy": ->
       @fire('unregister-widget', @get('widget').id, true) # Original event name: "cutMyLifeIntoPieces" --JAB (11/8/17)

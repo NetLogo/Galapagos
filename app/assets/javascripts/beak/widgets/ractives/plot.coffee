@@ -16,7 +16,6 @@ PenForm = Ractive.extend({
     colorInput:   RactiveColorInput
   , formCheckbox: RactiveEditFormCheckbox
   , formCode:     RactiveEditFormMultilineCode
-  , formDropdown: RactiveEditFormDropdown
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
   }

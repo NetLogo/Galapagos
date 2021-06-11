@@ -47,7 +47,7 @@ scrapeWidgets = ->
           when 'hnwTextBox'  then pluck("color", "display", "fontSize", "transparent")
           when 'hnwView'     then pluck("height", "width")
           when 'hnwSwitch'   then pluck("display", "on", "variable")
-          when 'hnwButton'   then pluck("buttonKind", "disableUntilTicksStart", "forever", "hnwProcName", "source")
+          when 'hnwButton'   then pluck("buttonKind", "disableUntilTicksStart", "display", "forever", "hnwProcName", "source")
           when 'hnwSlider'   then pluck("default", "direction", "display", "max", "min", "step", "variable")
           when 'hnwChooser'  then pluck("choices", "currentChoice", "display", "variable")
           when 'hnwMonitor'  then pluck("display", "fontSize", "precision", "reporterStyle", "source")
@@ -63,11 +63,18 @@ scrapeWidgets = ->
 
   )
 
+window.notifyNewBreedVar = (varName) ->
+  msg = { type: "new-breed-var", breed: cachedConfig.namePlural, var: varName }
+  parent.postMessage(msg, "*")
+  return
+
 window.addEventListener("message", (e) ->
   switch e.data.type
     when "config-with-json"
 
-      cachedConfig = e.data.role
+      { globalVars, myVars, procedures } = e.data
+      cachedConfig                       = e.data.role
+      window.hnwRoleName                 = cachedConfig.name
 
       hnwView  = cachedConfig.widgets.find((w) -> w.type is "hnwView")
       viewShim = { dimensions: { maxPxcor: 1, maxPycor: 1, minPxcor: -1, minPycor: -1, patchSize: 1, wrappingAllowedInX: true, wrappingAllowedInY: true }, fontSize: 12, type: "view" }
@@ -79,6 +86,7 @@ window.addEventListener("message", (e) ->
       Tortoise.loadHubNetWeb(modelContainer, cachedConfig, view, openSession)
       session.widgetController.ractive.set("isEditing", true)
       session.widgetController.ractive.set("isHNW"    , true)
+      session.widgetController.ractive.set("metadata" , { globalVars, myVars, procedures })
       #session.subscribe(parent)
 
       #Object.values(session.widgetController.configs.plotOps).forEach(
@@ -91,6 +99,7 @@ window.addEventListener("message", (e) ->
                   , isSpectator:   cachedConfig.isSpectator
                   , limit:         cachedConfig.limit
                   , name:          cachedConfig.name
+                  , namePlural:    cachedConfig.namePlural
                   , onConnect:     cachedConfig.onConnect
                   , onCursorMove:  cachedConfig.onCursorMove
                   , onCursorClick: cachedConfig.onCursorClick
@@ -98,8 +107,12 @@ window.addEventListener("message", (e) ->
                   , widgets:       scrapeWidgets()
                   }
         , identifier: e.data.identifier
+        , type:       "role-save-response"
         }
       , e.origin)
+
+    when "update-metadata"
+      session.widgetController.ractive.set("metadata", e.data.metadata)
     else
       console.warn("Unknown config event type: #{e.data.type}")
 )

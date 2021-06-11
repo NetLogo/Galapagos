@@ -32,11 +32,36 @@ SwitchEditForm = EditForm.extend({
 
 HNWSwitchEditForm = SwitchEditForm.extend({
 
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display', varName)
+      return
+  }
+
   partials: {
 
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" label="Turtle variable" value="{{display}}"/>
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -76,7 +101,7 @@ window.RactiveSwitch = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>switch}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" />
+    <editForm idBasis="{{id}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
     """
 
   # coffeelint: disable=max_line_length

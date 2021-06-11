@@ -89,7 +89,9 @@ setUpEventListeners = ->
 
         for widget in e.data.role.widgets
           switch widget.type
-            when "hnwInputBox", "hnwSlider"
+            when "hnwInputBox"
+              world.observer.setGlobal(widget.variable, widget.boxedValue.value)
+            when "hnwSlider"
               world.observer.setGlobal(widget.variable, widget.default)
             when "hnwChooser"
               world.observer.setGlobal(widget.variable, widget.choices[widget.currentChoice])
@@ -107,9 +109,6 @@ setUpEventListeners = ->
 
         vc = session.widgetController.viewController
 
-        mouseXCache = 0
-        mouseYCache = 0
-
         onMouseDown =
           ->
             obj = { subtype: "mouse-down", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
@@ -120,14 +119,15 @@ setUpEventListeners = ->
             obj = { subtype: "mouse-up", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
             sendHNWWidgetMessage('view', obj)
 
-        onMouseOver =
+        onMouseMove =
           ->
-            mouseXCache = vc.mouseXcor()
-            mouseYCache = vc.mouseYcor()
+            if e.data.role.cursorXVar? or e.data.role.cursorYVar?
+              obj = { subtype: "mouse-move", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+              sendHNWWidgetMessage('view', obj)
 
         vc.view.visibleCanvas.addEventListener('mousedown', onMouseDown)
         vc.view.visibleCanvas.addEventListener('mouseup'  , onMouseUp  )
-        vc.view.visibleCanvas.addEventListener('mouseover', onMouseOver)
+        vc.view.visibleCanvas.addEventListener('mousemove', onMouseMove)
 
         if token isnt "invalid token"
           sendHNWMessage("interface-loaded", null)

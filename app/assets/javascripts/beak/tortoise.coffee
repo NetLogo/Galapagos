@@ -42,12 +42,12 @@ handleAjaxLoad = (url, onSuccess, onFailure) =>
         onSuccess(req.responseText)
   req.send("")
 
-# newSession: String|DomElement, ModelResult, Boolean, String => SessionLite
-newSession = (container, modelResult, readOnly = false, filename = "export", lastCompileFailed, onError = undefined) ->
+# (String|DomElement, ModelResult, Boolean, BrowserCompiler, String => SessionLite) => SessionLite
+newSession = (container, modelResult, readOnly = false, filename = "export", lastCompileFailed, compiler, onError = undefined) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(container, widgets, code, info, readOnly, filename, result, lastCompileFailed, onError)
+  new SessionLite(container, widgets, code, info, readOnly, filename, result, lastCompileFailed, compiler, onError)
 
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
 normalizedFileName = (path) ->
@@ -63,9 +63,9 @@ loadData = (container, pathOrURL, name, loader, onError) ->
     name
   }
 
-openSession = (load) -> (model, lastCompileFailed) ->
+openSession = (load) -> (compiler, model, lastCompileFailed) ->
   name    = load.name ? normalizedFileName(load.modelPath)
-  session = newSession(load.container, model, false, name, lastCompileFailed, load.onError)
+  session = newSession(load.container, model, false, name, lastCompileFailed, compiler, load.onError)
   load.loader.finish()
   session
 
@@ -126,10 +126,10 @@ fromURL = (url, modelName, container, callback, onError = defaultDisplayError(co
   )
 
 handleCompilation = (nlogo, callback, load) ->
-  onSuccess = (input, lastCompileFailed) -> callback(openSession(load)(input, lastCompileFailed))
+  compiler  = new BrowserCompiler()
+  onSuccess = (input, lastCompileFailed) -> callback(openSession(load)(compiler, input, lastCompileFailed))
   onFailure = reportCompilerError(load)
-  compiler = (new BrowserCompiler())
-  result   = compiler.fromNlogo(nlogo, [])
+  result    = compiler.fromNlogo(nlogo, [])
   if result.model.success
     onSuccess(result, false)
   else
@@ -204,8 +204,14 @@ world.ticker._updateFunc = function() {};
         , widgets:   JSON.stringify(adaptedWidgets)
         }
 
+      compiler =
+        { exportNlogo: (-> throw new Error("exportNlogo: This compiler is a stub."))
+        , fromModel  : (-> throw new Error("fromModel:   This compiler is a stub."))
+        , isReporter : (-> throw new Error("isReporter:  This compiler is a stub."))
+        }
+
       window.procedures = {}
-      session = newSession(container, model, false, "test name - FIXME", false, (s) -> alert(s))
+      session = newSession(container, model, false, "test name - FIXME", false, compiler, (s) -> alert(s))
       loader.finish()
       callback(session)
 

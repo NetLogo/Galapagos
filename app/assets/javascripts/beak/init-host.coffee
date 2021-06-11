@@ -27,6 +27,26 @@ openSession = (s) ->
   session.startLoop()
   return
 
+runAmbiguous = (name, args...) ->
+  pp = workspace.procedurePrims
+  n  = name.toLowerCase()
+  if pp.hasCommand(n)
+    pp.callCommand(n, args...)
+    return
+  else
+    pp.callReporter(n, args...)
+
+runCommand = (name, args...) ->
+  workspace.procedurePrims.callCommand(name.toLowerCase(), args...)
+  return
+
+runReporter = (name, args...) ->
+  workspace.procedurePrims.callReporter(name.toLowerCase(), args...)
+
+# TODO: Temporary shim
+window.runWithErrorHandling = (ignored, alsoIgnored, thunk) ->
+  thunk()
+
 # (String) => Unit
 displayError = (error) ->
   # in the case where we're still loading the model, we have to
@@ -175,7 +195,7 @@ setUpEventListeners = ->
 
         # NOTE
         if role.onConnect?
-          result = procedures[role.onConnect.toUpperCase()](username)
+          result = runAmbiguous(role.onConnect, username)
           if typeof result is 'number'
             who = result
 
@@ -218,7 +238,7 @@ setUpEventListeners = ->
 
         switch e.data.data.type
           when "button"
-            procedure = procedures[e.data.data.message.toUpperCase()]
+            procedure = (-> runCommand(e.data.data.message))
             if role.isSpectator
               procedure()
             else
@@ -235,12 +255,32 @@ setUpEventListeners = ->
             switch message.subtype
               when "mouse-down"
                 if role.onCursorClick?
-                  thunk = (-> procedures[role.onCursorClick.toUpperCase()](message.xcor, message.ycor))
-                  world.turtleManager.getTurtle(who).ask(thunk, false)
+                  thunk = (-> runAmbiguous(role.onCursorClick, message.xcor, message.ycor))
+                  if role.isSpectator
+                    thunk()
+                  else
+                    world.turtleManager.getTurtle(who).ask(thunk, false)
               when "mouse-up"
                 if role.onCursorRelease?
-                  thunk = (-> procedures[role.onCursorRelease.toUpperCase()](message.xcor, message.ycor))
-                  world.turtleManager.getTurtle(who).ask(thunk, false)
+                  thunk = (-> runAmbiguous(role.onCursorRelease, message.xcor, message.ycor))
+                  if role.isSpectator
+                    thunk()
+                  else
+                    world.turtleManager.getTurtle(who).ask(thunk, false)
+              when "mouse-move"
+                if role.isSpectator
+                  if role.cursorXVar?
+                    mangledName = "__hnw_#{role.name}_#{role.cursorXVar}"
+                    world.observer.setGlobal(mangledName, message.xcor)
+                  if role.cursorYVar?
+                    mangledName = "__hnw_#{role.name}_#{role.cursorYVar}"
+                    world.observer.setGlobal(mangledName, message.ycor)
+                else
+                  turtle = world.turtleManager.getTurtle(who)
+                  if role.cursorXVar?
+                    turtle.ask((-> SelfManager.self().setVariable(role.cursorXVar, message.xcor)), false)
+                  if role.cursorYVar?
+                    turtle.ask((-> SelfManager.self().setVariable(role.cursorYVar, message.ycor)), false)
               else
                 console.warn("Unknown HNW View event subtype")
           else
@@ -261,7 +301,7 @@ setUpEventListeners = ->
           turtle = world.turtleManager.getTurtle(who)
 
           if onDC?
-            turtle.ask((-> procedures[onDC.toUpperCase()]()), false)
+            turtle.ask((-> runAmbiguous(onDC)), false)
 
           if not turtle.isDead()
             turtle.ask((-> SelfManager.self().die()), false)
@@ -306,13 +346,13 @@ setUpEventListeners = ->
           setupButton           = document.createElement("button")
           setupButton.innerHTML = "setup"
           setupButton.id        = "hnw-setup-button"
-          setupButton.addEventListener('click', -> procedures[e.data.onStart.toUpperCase()]())
+          setupButton.addEventListener('click', -> runCommand(e.data.onStart))
           taeParent.insertBefore(setupButton, tabAreaElem)
 
         if e.data.onIterate?
           goCheckbox           = document.createElement("label")
           goCheckbox.innerHTML = "go<input id='hnw-go' type='checkbox'>"
-          window.hnwGoProc     = procedures[e.data.onIterate.toUpperCase()]
+          window.hnwGoProc     = (-> runCommand(e.data.onIterate))
           taeParent.insertBefore(goCheckbox , tabAreaElem)
 
         genUUID = ->
@@ -333,7 +373,7 @@ setUpEventListeners = ->
             if widget.type is "hnwMonitor"
               monitor = widget
               safely = (f) -> (x) ->
-                try f(x)
+                try workspace.dump(f(x))
                 catch ex
                   "N/A"
               func =
@@ -341,13 +381,13 @@ setUpEventListeners = ->
                   when "global-var"
                     do (monitor) -> safely(-> world.observer.getGlobal(monitor.source))
                   when "procedure"
-                    do (monitor) -> safely(-> procedures[monitor.source.toUpperCase()]())
+                    do (monitor) -> safely(-> runReporter(monitor.source))
                   when "turtle-var"
                     plural = world.breedManager.getSingular(roleName).name
                     do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).getVariable(monitor.source))
                   when "turtle-procedure"
                     plural = world.breedManager.getSingular(roleName).name
-                    do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(procedures[monitor.source.toUpperCase()]))
+                    do (monitor) -> safely((who) -> world.turtleManager.getTurtleOfBreed(plural, who).projectionBy(-> runReporter(monitor.source)))
                   else
                     console.log("We got '#{monitor.reporterStyle}'?")
               session.registerMonitorFunc(roleName, monitor.source, func)
@@ -384,7 +424,7 @@ setUpEventListeners = ->
 
           # NOTE
           if role.onConnect?
-            procedures[role.onConnect.toUpperCase()]("the supervisor")
+            runAmbiguous(role.onConnect, "the supervisor")
             session.updateWithoutRendering(uuid)
 
           # NOTE
@@ -442,7 +482,7 @@ setUpEventListeners = ->
 
           # NOTE
           if role.onConnect?
-            result = procedures[role.onConnect.toUpperCase()](username)
+            result = runAmbiguous(role.onConnect, username)
             if typeof result is 'number'
               who = result
 

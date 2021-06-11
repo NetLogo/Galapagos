@@ -9,22 +9,6 @@ REDRAW_EXP           = 2
 
 NETLOGO_VERSION      = '2.5.2'
 
-codeCompile = (code, commands, reporters, widgets, onFulfilled, onErrors) ->
-  compileParams = {
-    code:         code,
-    widgets:      widgets,
-    commands:     commands,
-    reporters:    reporters,
-    turtleShapes: turtleShapes ? [],
-    linkShapes:   linkShapes ? []
-  }
-  try
-    onFulfilled((new BrowserCompiler()).fromModel(compileParams))
-  catch ex
-    onErrors([ex])
-  finally
-    Tortoise.finishLoading()
-
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari
 # doesn't support it. BCH 10/3/2014
@@ -49,12 +33,13 @@ class window.SessionLite
   _hnwLastPersp:         undefined # Object[(String, Agent, Number)]
   _hnwImageCache:        undefined # Object[Object[String]]
   _hnwWidgetGlobalCache: undefined # Object[Any]
+  _metadata:             undefined # Object[Any]
   _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
   _subscriberObj:        undefined # Object[Window]
   _lastBCastTicks:       undefined # Number
 
-  # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, (String) => Unit)
-  constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @displayError) ->
+  # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, BrowserCompiler, (String) => Unit)
+  constructor: (container, widgets, code, info, readOnly, filename, modelJS, lastCompileFailed, @compiler, @displayError) ->
 
     @_hnwLastPersp         = {}
     @_hnwImageCache        = {}
@@ -62,10 +47,13 @@ class window.SessionLite
     @_monitorFuncs         = {}
     @_subscriberObj        = {}
 
-    checkIsReporter =
-      (str) =>
-        compileRequest = { code: @widgetController.code(), widgets: @widgetController.widgets() }
-        (new BrowserCompiler()).isReporter(str, compileRequest)
+    @_metadata =
+      { globalVars: []
+      , myVars:     []
+      , procedures: []
+      }
+
+    checkIsReporter = (str) => @compiler.isReporter(str)
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
@@ -94,7 +82,17 @@ class window.SessionLite
     @_performUpdate()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
-    if procedures.startup? then setTimeout((-> window.handlingErrors(procedures.startup)()), 0)
+
+    thunk =
+      =>
+        if workspace?
+          pp = workspace.procedurePrims
+          if pp.hasCommand('startup')
+            window.runWithErrorHandling('startup', @widgetController.reportError, () -> pp.callCommand('startup'))
+        else
+          setTimeout(thunk, 5)
+
+    thunk()
 
   calcNumUpdates: ->
 
@@ -131,7 +129,7 @@ class window.SessionLite
 
   updateDelay: ->
 
-    viewWidget = @widgetController.widgets().find((w) -> w.type is 'view')
+    viewWidget = @widgetController.widgets().find((w) -> w.type is 'view' or w.type is 'hnwView')
     speed      = @widgetController.speed()
     delay      = 1000 / viewWidget.frameRate
 
@@ -196,54 +194,58 @@ class window.SessionLite
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
 
-    code       = @widgetController.code()
-    oldWidgets = @widgetController.widgets()
+    if @widgetController.ractive.get('isEditing') and @widgetController.ractive.get('isHNW')
+      parent.postMessage({ type: "recompile" }, "*")
+    else
 
-    onCompile =
-      (res) =>
+      code       = @widgetController.code()
+      oldWidgets = @widgetController.widgets()
 
-        if res.model.success
+      onCompile =
+        (res) =>
 
-          state = world.exportState()
-          world.clearAll()
-          @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
+          if res.model.success
 
-          widgets = Object.values(@widgetController.ractive.get('widgetObj'))
-          pops    = @widgetController.configs.plotOps
-          ractive = @widgetController.ractive
-          for { display, id, type } in widgets when type in ["plot", "hnwPlot"]
-            pops[display]?.dispose()
-            hops          = new HighchartsOps(ractive.find("#netlogo-#{type}-#{id}"))
-            pops[display] = hops
-            normies       = ractive.findAllComponents("plotWidget")
-            hnws          = ractive.findAllComponents("hnwPlotWidget")
-            component     = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
-            component.set('resizeCallback', hops.resizeElem.bind(hops))
-            hops._chart.chartBackground.css({ color: '#efefef' })
+            state = world.exportState()
+            world.clearAll()
+            @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
 
-          globalEval(res.model.result)
-          world.importState(state)
+            widgets = Object.values(@widgetController.ractive.get('widgetObj'))
+            pops    = @widgetController.configs.plotOps
+            ractive = @widgetController.ractive
+            for { display, id, type } in widgets when type in ["plot", "hnwPlot"]
+              pops[display]?.dispose()
+              hops          = new HighchartsOps(ractive.find("#netlogo-#{type}-#{id}"))
+              pops[display] = hops
+              normies       = ractive.findAllComponents("plotWidget")
+              hnws          = ractive.findAllComponents("hnwPlotWidget")
+              component     = [].concat(normies, hnws).find((plot) -> plot.get("widget").display is display)
+              component.set('resizeCallback', hops.resizeElem.bind(hops))
+              hops._chart.chartBackground.css({ color: '#efefef' })
 
-          @widgetController.ractive.set('isStale',           false)
-          @widgetController.ractive.set('lastCompiledCode',  code)
-          @widgetController.ractive.set('lastCompileFailed', false)
-          @_performUpdate(true)
-          @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+            globalEval(res.model.result)
+            world.importState(state)
 
-          for pop in pops
-            pop._chart.chartBackground.css({ color: '#efefef' })
+            @widgetController.ractive.set('isStale',           false)
+            @widgetController.ractive.set('lastCompiledCode',  code)
+            @widgetController.ractive.set('lastCompileFailed', false)
+            @_performUpdate(true)
+            @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
-          successCallback()
+            for pop in pops
+              pop._chart.chartBackground.css({ color: '#efefef' })
 
-        else
-          @widgetController.ractive.set('lastCompileFailed', true)
-          res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
-          @alertCompileError(res.model.result)
+            successCallback()
 
-    Tortoise.startLoading(=> codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
+          else
+            @widgetController.ractive.set('lastCompileFailed', true)
+            res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
+            @alertCompileError(res.model.result)
+
+      Tortoise.startLoading(=> @_codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
 
   getNlogo: ->
-    (new BrowserCompiler()).exportNlogo({
+    @compiler.exportNlogo({
       info:         Tortoise.toNetLogoMarkdown(@widgetController.ractive.get('info')),
       code:         @widgetController.ractive.get('code'),
       widgets:      @widgetController.widgets(),
@@ -320,11 +322,11 @@ class window.SessionLite
     { last, map, toObject, zip } = tortoise_require('brazier/array')
     { pipeline                 } = tortoise_require('brazier/function')
 
-    result = (new BrowserCompiler()).fromModel({ code: @widgetController.code(), widgets: @widgetController.widgets()
-                                               , commands: [setupCode, goCode]
-                                               , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
-                                               , turtleShapes: [], linkShapes: []
-                                               })
+    result = @compiler.fromModel({ code: @widgetController.code(), widgets: @widgetController.widgets()
+                                 , commands: [setupCode, goCode]
+                                 , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
+                                 , turtleShapes: [], linkShapes: []
+                                 })
 
     unwrapCompilation =
       (prefix, defaultCode) -> ({ result: compiledCode, success }) ->
@@ -357,7 +359,7 @@ class window.SessionLite
     compileErrorLog = (result) => @alertCompileError(result, errorLog)
 
     Tortoise.startLoading()
-    codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
+    @_codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
         if modelSuccess
           [{ result, success }] = commands
@@ -388,7 +390,7 @@ class window.SessionLite
       turtleShapes: turtleShapes ? [],
       linkShapes:   linkShapes ? []
     }
-    compileResult = (new BrowserCompiler()).fromModel(compileParams)
+    compileResult = @compiler.fromModel(compileParams)
 
     { reporters, model: { result: modelResult, success: modelSuccess } } = compileResult
     if not modelSuccess
@@ -413,6 +415,24 @@ class window.SessionLite
 
   alertErrors: (messages) =>
     @displayError(messages.join('\n'))
+
+  _codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors) ->
+    compileParams = {
+      code:         code,
+      widgets:      widgets,
+      commands:     commands,
+      reporters:    reporters,
+      turtleShapes: turtleShapes ? [],
+      linkShapes:   linkShapes ? []
+    }
+    try
+      res = @compiler.fromModel(compileParams)
+      @_updateMetadata(code, globalEval(res.widgets))
+      onFulfilled(res)
+    catch ex
+      onErrors([ex])
+    finally
+      Tortoise.finishLoading()
 
   # (Window) => Unit
   subscribe: (wind) ->
@@ -518,12 +538,20 @@ class window.SessionLite
 
     out = {}
 
-    if roleName? and who?
-      for k, [func, lastValues] of @_monitorFuncs[roleName]
-        newValue = func(who)
-        if lastValues[who] isnt newValue
-          lastValues[who] = newValue
-          out[k] = newValue
+    if roleName?
+      if who?
+        for k, [func, lastValues] of @_monitorFuncs[roleName]
+          newValue = func(who)
+          if lastValues[who] isnt newValue
+            lastValues[who] = newValue
+            out[k] = newValue
+      else
+        for k, [func, lastValues] of @_monitorFuncs[roleName]
+          newValue = func()
+          if lastValues[roleName] isnt newValue
+            lastValues[roleName] = newValue
+            out[k] = newValue
+
 
     out
 
@@ -652,7 +680,7 @@ class window.SessionLite
         @_lastBCastTicks = ticks
 
       else if window.isHNWJoiner is true
-        goodWTypes    = ["slider", "switch", "input", "chooser"]
+        goodWTypes    = ["slider", "switch", "inputBox", "chooser"]
         widgetUpdates = @_getWidgetUpdates(@widgetController.widgets()).filter((wup) -> wup.type in goodWTypes)
         widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup))) # Scope this better to individual clients
 
@@ -746,4 +774,33 @@ class window.SessionLite
         wind.postMessage({ update, type }, "*")
       else
         narrowcastHNWPayload(uuid, type, { update })
+    return
+
+  # (String, Array[Widget]) => Unit
+  _updateMetadata: (code, widgets) ->
+
+    r = @widgetController.ractive
+
+    if r.get('isHNW') and r.get('isEditing')
+
+      compileParams =
+        { code:         code
+        , widgets:      widgets
+        , turtleShapes: turtleShapes ? []
+        , linkShapes:   linkShapes   ? []
+        }
+
+      @compiler.fromModel(compileParams)
+
+      @widgetController.ractive.set('metadata.globalVars', @compiler.listGlobalVars())
+      @widgetController.ractive.set('metadata.procedures', @compiler.listProcedures())
+
+      baseMetadata = @widgetController.ractive.get('metadata')
+
+      for frame in Array.from(document.getElementById('config-frames').children) when frame.dataset.roleName?
+        roleName = frame.dataset.roleName
+        itsVars  = @compiler.listVarsForBreed(roleName)
+        metadata = Object.assign({}, baseMetadata, { myVars: itsVars })
+        frame.contentWindow.postMessage({ metadata, type: "update-metadata" }, "*")
+
     return

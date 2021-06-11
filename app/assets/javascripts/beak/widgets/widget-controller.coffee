@@ -242,7 +242,7 @@ updateWidget = (widget) ->
 
   switch widget.type
 
-    when 'inputBox'
+    when 'inputBox', 'hnwInputBox'
       widget.boxedValue.value = widget.currentValue
 
     when 'slider', 'hnwSlider'
