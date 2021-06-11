@@ -28,7 +28,7 @@ class SessionLite
 
   widgetController: undefined # WidgetController
 
-  # (Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
+  # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
   #   String, String, Boolean, String, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed) ->

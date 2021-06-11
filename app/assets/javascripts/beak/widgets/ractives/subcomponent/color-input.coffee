@@ -1,3 +1,5 @@
+import { netlogoColorToHexString, hexStringToNetlogoColor } from "/colors.js"
+
 # This exists to address some trickiness.  Here are the relevant constraints:
 #
 #   1. HTML color pickers have higher color space resolution than the NetLogo color system
