@@ -15,12 +15,12 @@
   <script src='@routes.Assets.versioned("javascripts/beak/hnw-config.js").relative' type="text/javascript"></script>
   <div class="tortoise inner-content">
     <div class="model-selection-bar">
-      <form id="fresh-form" action="javascript:void(0);" onsubmit="return submitFreshForm(this)">
+      <form id="without-config-form" action="javascript:void(0);" onsubmit="return submitWithoutConfigForm(this)">
         <div class="flex-column" style="margin-right: 25px;">
-          <label>Start Fresh:
-            <input id="fresh-model-input" type="file" name="fresh-model" />
+          <label>Start Without Config:
+            <input id="without-config-model-input" type="file" name="without-config-model" />
           </label>
-          <input type="submit" value="Load Fresh"/>
+          <input type="submit" value="Load Without Config"/>
         </div>
       </form>
       <form id="config-form" action="javascript:void(0);" onsubmit="return submitConfigForm(this)">
@@ -31,7 +31,7 @@
           <label>Config File:
             <input id="config-input" type="file" name="config" />
           </label>
-          <input type="submit" value="Load with Config"/>
+          <input type="submit" value="Load With Config"/>
         </div>
       </div>
       <div id="config-content" class="model-box invis" style="width: 100%;">

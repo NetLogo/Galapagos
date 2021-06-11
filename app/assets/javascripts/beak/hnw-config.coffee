@@ -34,10 +34,9 @@ postWhenReady = (frame, message) ->
 
 
 # (Form) => Unit
-window.submitFreshForm = (form) ->
+window.submitWithoutConfigForm = (form) ->
   formData = new FormData(form)
   console.log(form)
-  alert("You submitted fresh.")
   return
 
 # (Form) => Unit
