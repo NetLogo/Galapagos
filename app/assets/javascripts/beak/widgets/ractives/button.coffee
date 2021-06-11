@@ -114,6 +114,30 @@ HNWButtonEditForm = ButtonEditForm.extend({
     }
   }
 
+  genProps: (form) ->
+
+    hnwProcName = form.procName.value
+
+    buttonKind =
+      if hnwProcName is ""
+        "turtle-procedure"
+      else
+        if @get('procedures').find((p) -> p.name is hnwProcName).isUseableByTurtles
+          "turtle-procedure"
+        else
+          "procedure"
+
+    key = form.actionKey.value
+
+    {              actionKey: (if key.length is 1 then key.toUpperCase() else null)
+    ,             buttonKind
+    , disableUntilTicksStart: false
+    ,                display: (if form.display.value isnt "" then form.display.value else hnwProcName)
+    ,                forever: false
+    ,            hnwProcName
+    ,                 source: undefined
+    }
+
   partials: {
 
     title: "Button"

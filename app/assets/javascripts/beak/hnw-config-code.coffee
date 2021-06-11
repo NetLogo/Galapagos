@@ -53,13 +53,13 @@ window.addEventListener("message", (e) ->
 
     when "request-save"
 
-      onSetup = document.getElementById('on-setup-dropdown').value
-      onGo    = document.getElementById('on-go-dropdown').value
+      onSetupBase = document.getElementById('on-setup-dropdown').value
+      onGoBase    = document.getElementById('on-go-dropdown').value
 
       parcel =
-        { code: ractive.get('code')
-        , onGo
-        , onSetup
+        { code:    ractive.get('code')
+        , onGo:    (if onGoBase    isnt "" then onGoBase    else null)
+        , onSetup: (if onSetupBase isnt "" then onSetupBase else null)
         }
 
       e.source.postMessage({ parcel, identifier: e.data.identifier, type: "code-save-response" }, e.origin)

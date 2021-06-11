@@ -99,6 +99,39 @@ HNWMonitorEditForm = MonitorEditForm.extend({
     }
   }
 
+  genProps: (form) ->
+
+    source = form.source.value
+
+    reporterStyle =
+      if source is ""
+        "turtle-procedure"
+      else
+        { globalVars, myVars, procedures } = @get('metadata')
+        proc = procedures.find((p) -> p.name is source)
+        if proc?
+          if proc.isUseableByTurtles
+            "turtle-procedure"
+          else
+            "procedure"
+        else if myVars.includes(source)
+          "turtle-var"
+        else if globalVars.includes(source)
+          "global-var"
+        else
+          throw Error("Wat?")
+
+    fontSize = 10
+
+    {
+            display: (if form.display.value isnt "" then form.display.value else source)
+    ,      fontSize
+    ,        bottom: @parent.get('widget.top') + (2 * fontSize) + 23
+    ,     precision: parseInt(form.precision.value)
+    , reporterStyle
+    ,        source
+    }
+
   partials: {
 
     sourceForm:

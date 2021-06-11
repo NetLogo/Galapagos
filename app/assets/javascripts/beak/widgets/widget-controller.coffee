@@ -27,7 +27,7 @@ class window.WidgetController
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
     window.setUpWidget(widget, id, (=> @_performUpdate(); @updateWidgets()))
 
-    if widget.currentValue?
+    if widget.variable? and widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
     @ractive.get('widgetObj')[id] = widget
@@ -275,15 +275,15 @@ updateWidget = (widget) ->
 # (String, Number, Number) => Unit
 defaultWidgetMixinFor = (widgetType, x, y) ->
   switch widgetType
-    when "output"   or "hnwOutput"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
-    when "switch"   or "hnwSwitch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
-    when "slider"   or "hnwSlider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox" or "hnwInputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"   or "hnwButton"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser"  or "hnwChooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor"  or "hnwMonitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
-    when "plot"     or "hnwPlot"     then { bottom: y + 60, right: x + 180 }
-    when "textBox"  or "hnwTextBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "output"  , "hnwOutput"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
+    when "switch"  , "hnwSwitch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
+    when "slider"  , "hnwSlider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox", "hnwInputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"  , "hnwButton"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser" , "hnwChooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor" , "hnwMonitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
+    when "plot"    , "hnwPlot"     then { bottom: y + 60, right: x + 180 }
+    when "textBox" , "hnwTextBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 
 # [T <: Widget] @ Array[String] => T => T => Boolean

@@ -76,6 +76,63 @@ window.addEventListener("message", (e) ->
       cachedConfig                       = e.data.role
       window.hnwRoleName                 = cachedConfig.name
 
+      possibleMetaProcedures = (argsNum) ->
+        procedures.filter(
+          ({ argCount, isReporter, isUseableByTurtles }) ->
+            argCount is argsNum and (not isReporter) and isUseableByTurtles
+        )
+
+      onConnectDD = document.getElementById('on-connect-dropdown')
+      onConnectDD.innerHTML = ""
+
+      onDisconnectDD = document.getElementById('on-disconnect-dropdown')
+      onDisconnectDD.innerHTML = ""
+
+      onClickDD = document.getElementById('on-click-dropdown')
+      onClickDD.innerHTML = ""
+
+      possibleMetaProcedures(0).forEach(
+
+        ({ name }) ->
+
+          option = document.createElement("option")
+          option.innerHTML = name
+          option.value     = name
+
+          onDisconnectDD.appendChild(option.cloneNode(true))
+          onDisconnectDD.value = cachedConfig.onDisconnect
+
+      )
+
+      procedures.filter(
+        ({ argCount, isUseableByObserver }) ->
+          argCount is 1 and isUseableByObserver
+      ).forEach(
+
+        ({ name }) ->
+
+          option = document.createElement("option")
+          option.innerHTML = name
+          option.value     = name
+
+          onConnectDD.appendChild(option)
+          onConnectDD.value = cachedConfig.onConnect
+
+      )
+
+      possibleMetaProcedures(2).forEach(
+
+        ({ name }) ->
+
+          option = document.createElement("option")
+          option.innerHTML = name
+          option.value     = name
+
+          onClickDD.appendChild(option.cloneNode(true))
+          onClickDD.value = cachedConfig.onCursorClick
+
+      )
+
       hnwView  = cachedConfig.widgets.find((w) -> w.type is "hnwView")
       viewShim = { dimensions: { maxPxcor: 1, maxPycor: 1, minPxcor: -1, minPycor: -1, patchSize: 1, wrappingAllowedInX: true, wrappingAllowedInY: true }, fontSize: 12, type: "view" }
       view     = Object.assign({}, hnwView, viewShim)
@@ -93,6 +150,9 @@ window.addEventListener("message", (e) ->
       #  (pops) -> pops.reset())
 
     when "request-save"
+      onConnectBase = document.getElementById('on-connect-dropdown').value
+      onClickBase   = document.getElementById('on-click-dropdown').value
+      onDCBase      = document.getElementById('on-disconnect-dropdown').value
       e.source.postMessage(
         {
           parcel: { canJoinMidRun: cachedConfig.canJoinMidRun
@@ -100,10 +160,10 @@ window.addEventListener("message", (e) ->
                   , limit:         cachedConfig.limit
                   , name:          cachedConfig.name
                   , namePlural:    cachedConfig.namePlural
-                  , onConnect:     cachedConfig.onConnect
+                  , onConnect:     (if onConnectBase isnt "" then onConnectBase else null)
                   , onCursorMove:  cachedConfig.onCursorMove
-                  , onCursorClick: cachedConfig.onCursorClick
-                  , onDisconnect:  cachedConfig.onDisconnect
+                  , onCursorClick: (if onClickBase isnt "" then onClickBase else null)
+                  , onDisconnect:  (if onDCBase isnt "" then onDCBase else null)
                   , widgets:       scrapeWidgets()
                   }
         , identifier: e.data.identifier

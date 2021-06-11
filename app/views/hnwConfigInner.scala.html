@@ -16,6 +16,17 @@
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
   <body style="margin: 0px;">
+    <div class="flex-row">
+      <label>On Connect:
+        <select id="on-connect-dropdown" name="on-connect"></select>
+      </label>
+      <label>On Disconnect:
+        <select id="on-disconnect-dropdown" name="on-disconnect"></select>
+      </label>
+      <label>On Click:
+        <select id="on-click-dropdown" name="on-click"></select>
+      </label>
+    </div>
     <script>window.exports = {};</script>
     @views.html.spinner()
     @views.html.errorAlert()

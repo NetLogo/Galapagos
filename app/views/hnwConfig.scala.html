@@ -12,13 +12,14 @@
 @content = {
   <script src='/tortoise-compiler.js' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("lib/file-saver/FileSaver.js").relative' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("javascripts/beak/hnw-config-file-generator.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("javascripts/beak/hnw-config.js").relative' type="text/javascript"></script>
   <div class="tortoise inner-content">
     <div class="model-selection-bar">
       <form id="without-config-form" action="javascript:void(0);" onsubmit="return submitWithoutConfigForm(this)">
         <div class="flex-column" style="margin-right: 25px;">
           <label>Start Without Config:
-            <input id="without-config-model-input" type="file" name="without-config-model" />
+            <input id="without-config-model-input" type="file" name="model-without-config" />
           </label>
           <input type="submit" value="Load Without Config"/>
         </div>

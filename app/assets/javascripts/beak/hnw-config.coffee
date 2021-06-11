@@ -36,7 +36,12 @@ postWhenReady = (frame, message) ->
 # (Form) => Unit
 window.submitWithoutConfigForm = (form) ->
   formData = new FormData(form)
-  console.log(form)
+  model    = formData.get('model-without-config')
+  readFile(model).then(
+    (modelText) ->
+      config = window.generateHNWConfig(modelText)
+      initialize(modelText, config)
+  )
   return
 
 # (Form) => Unit
@@ -205,17 +210,24 @@ download = (filename) -> (content) ->
 # () => Promise[Config]
 genConfigP = ->
 
+  codeFrame  = document.getElementById('code-frame')
   frames     = [codeFrame].concat(Array.from(document.querySelectorAll(".config-container")))
   promises   = frames.map((frame) -> postPromise(frame)({ type: "request-save" }))
 
   Promise.all(promises).then(
     ([codeFrame, roles...]) ->
+
+      rolesPrime    = []
+      rolesPrime[0] = roles.find((r) -> r.name isnt "supervisor")
+      rolesPrime[1] = roles.find((r) -> r.name is   "supervisor")
+
       { onIterate: codeFrame.onIterate
       , onStart:   codeFrame.onStart
-      , roles
+      , roles:     rolesPrime
       , type:      "hubnet-web"
       , version:   "hnw-alpha-1"
       }
+
   )
 
 
