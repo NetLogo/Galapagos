@@ -1,3 +1,11 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
+import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+
 ButtonEditForm = EditForm.extend({
 
   data: -> {
@@ -86,7 +94,7 @@ ButtonEditForm = EditForm.extend({
 
 })
 
-window.RactiveButton = RactiveWidget.extend({
+RactiveButton = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -198,3 +206,5 @@ window.RactiveButton = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveButton

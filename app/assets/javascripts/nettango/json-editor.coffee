@@ -1,4 +1,6 @@
-window.RactiveJsonEditor = Ractive.extend({
+import RactiveCodeMirror from "./code-mirror.js"
+
+RactiveJsonEditor = Ractive.extend({
   data: () -> {
     id:      ""    # String
     json:    ""    # String
@@ -42,3 +44,5 @@ window.RactiveJsonEditor = Ractive.extend({
     """
 
 })
+
+export default RactiveJsonEditor

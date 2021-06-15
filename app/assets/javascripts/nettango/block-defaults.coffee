@@ -306,4 +306,6 @@ expressions = [
   { name: "random", type: "num", arguments: [ "num" ], format: "random-float {0}" }
 ]
 
-window.NetTangoBlockDefaults = { blocks, copyBlock, expressions }
+NetTangoBlockDefaults = { blocks, copyBlock, expressions }
+
+export default NetTangoBlockDefaults

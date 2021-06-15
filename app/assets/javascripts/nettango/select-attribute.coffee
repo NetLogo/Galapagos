@@ -1,3 +1,6 @@
+import { RactiveTwoWayDropdown } from "/beak/widgets/ractives/subcomponent/dropdown.js"
+import RactiveArrayView from "./array-view.js"
+
 partials = {
 
   headerTemplate:
@@ -16,7 +19,7 @@ partials = {
 
 }
 
-window.RactiveSelectAttribute = Ractive.extend({
+RactiveSelectAttribute = Ractive.extend({
 
   data: () -> {
     attribute: undefined, # NetTangoSelectAttribute
@@ -73,3 +76,5 @@ window.RactiveSelectAttribute = Ractive.extend({
     # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveSelectAttribute

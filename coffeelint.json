@@ -22,7 +22,7 @@
     "level": "warn"
   },
   "eol_last": {
-    "level": "ignore"
+    "level": "error"
   },
   "indentation": {
     "level": "ignore"

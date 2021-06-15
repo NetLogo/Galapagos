@@ -1,3 +1,6 @@
+import RactiveAttribute from "./attribute.js"
+import RactiveArrayView from "./array-view.js"
+
 partials = {
 
   itemTemplate:
@@ -19,7 +22,7 @@ partials = {
 
 }
 
-window.RactiveAttributes = Ractive.extend({
+RactiveAttributes = Ractive.extend({
 
   data: () -> {
     singular:   undefined # String
@@ -62,3 +65,5 @@ window.RactiveAttributes = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveAttributes

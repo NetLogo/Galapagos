@@ -1,4 +1,7 @@
-class window.Line
+import { netlogoColorToCSS } from "/colors.js"
+import { ShapeDrawer } from "./draw-shape.js"
+
+class Line
   constructor: (@x1, @y1, @x2, @y2) ->
 
   midpoint: ->
@@ -6,7 +9,7 @@ class window.Line
     midpointY = (@y1 + @y2) / 2
     [midpointX, midpointY]
 
-class window.LinkDrawer
+class LinkDrawer
   constructor: (@view, @shapes) ->
     directionIndicators = {}
     for name, shape of @shapes
@@ -216,3 +219,8 @@ class window.LinkDrawer
         ]
     else
       [ new Line(x1, y1, x2, y2) ]
+
+export {
+  Line,
+  LinkDrawer,
+}

@@ -1,4 +1,9 @@
-window.RactiveSpaces = Ractive.extend({
+import RactiveSpace from "./space.js"
+import RactiveCodeMirror from "./code-mirror.js"
+import RactiveBlockForm from "./block-form.js"
+import NetTangoBlockDefaults from "./block-defaults.js"
+
+RactiveSpaces = Ractive.extend({
 
   data: () -> {
     blockEditForm:    null      # RactiveBlockForm
@@ -175,3 +180,5 @@ window.RactiveSpaces = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveSpaces

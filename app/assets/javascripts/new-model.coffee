@@ -1,7 +1,5 @@
-window.exports = window.exports ? {}
-
 # coffeelint: disable=max_line_length
-window.exports.newModel =
+newModel =
   """
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -394,3 +392,5 @@ Line -7500403 true 150 150 210 180
 @#$#@#$#@
   """
 # coffeelint: enable=max_line_length
+
+export default newModel

@@ -1,4 +1,6 @@
-window.RactiveTags = Ractive.extend({
+import RactiveToggle from "./toggle.js"
+
+RactiveTags = Ractive.extend({
 
   data: () -> {
       tags:         [] # Array[String]
@@ -197,7 +199,7 @@ window.RactiveTags = Ractive.extend({
 
 })
 
-window.RactiveToggleTags = RactiveToggle.extend({
+RactiveToggleTags = RactiveToggle.extend({
 
   on: {
     '*.clear-tags': () ->
@@ -219,3 +221,9 @@ window.RactiveToggleTags = RactiveToggle.extend({
   components: { tags: RactiveTags }
 
 })
+
+
+export {
+  RactiveTags,
+  RactiveToggleTags,
+}

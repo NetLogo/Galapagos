@@ -1,16 +1,5 @@
-# (String) => String
-toNetLogoWebMarkdown = (md) ->
-  md.replace(
-    new RegExp('<!---*\\s*((?:[^-]|-+[^->])*)\\s*-*-->', 'g')
-    (match, commentText) ->
-      "[nlw-comment]: <> (#{commentText.trim()})")
-
-# (String) => String
-toNetLogoMarkdown = (md) ->
-  md.replace(
-    new RegExp('\\[nlw-comment\\]: <> \\(([^\\)]*)\\)', 'g'),
-    (match, commentText) ->
-      "<!-- #{commentText} -->")
+import SessionLite from "./session-lite.js"
+import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], ModelResult, Boolean, String, Boolean) => SessionLite
 newSession = (container, compiler, rewriters, modelResult, readOnly, filename, lastCompileFailed) ->
@@ -18,7 +7,8 @@ newSession = (container, compiler, rewriters, modelResult, readOnly, filename, l
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
   new SessionLite(
-    container
+    Tortoise
+  , container
   , compiler
   , rewriters
   , widgets
@@ -29,12 +19,6 @@ newSession = (container, compiler, rewriters, modelResult, readOnly, filename, l
   , result
   , lastCompileFailed
   )
-
-# (String) => String
-normalizedFileName = (path) ->
-  # We separate on both / and \ because we get URLs and Windows-esque filepaths
-  pathComponents = path.split(/\/|\\/)
-  decodeURI(pathComponents[pathComponents.length - 1])
 
 # (Element, String, String, BrowserCompiler, Array[Rewriter], Model, Boolean) => SessionLite
 openSession = (container, modelPath, name, compiler, rewriters, model, lastCompileFailed) ->
@@ -129,14 +113,6 @@ compile = (container, modelPath, name, nlogo, callback, rewriters) ->
 
   return
 
-# (String) => Array[String]
-nlogoToSections = (nlogo) ->
-  nlogo.split(/^\@#\$#\@#\$#\@$/gm)
-
-# (Array[String]) => String
-sectionsToNlogo = (sections) ->
-  sections.join('@#$#@#$#@')
-
 # If we have a compiler failure, maybe just the code section has errors.
 # We do a second chance compile to see if it'll work without code so we
 # can get some widgets/plots on the screen and let the user fix those
@@ -166,18 +142,11 @@ Tortoise = {
   fromNlogo,
   fromNlogoSync,
   fromURL,
-  toNetLogoMarkdown,
-  toNetLogoWebMarkdown,
-  nlogoToSections,
-  sectionsToNlogo
 }
-
-if window?
-  window.Tortoise  = Tortoise
-else
-  exports.Tortoise = Tortoise
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what
 # this is doing. This is a holdover till we get the model attaching to an
 # object instead of global namespace. - BCH 11/3/2014
 globalEval = eval
+
+export default Tortoise

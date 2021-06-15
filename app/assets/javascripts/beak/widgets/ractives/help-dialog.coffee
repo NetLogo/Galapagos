@@ -16,7 +16,7 @@ keyTable =
          #{entries.map(([keys, explanation]) -> keyRow(keys, explanation)).join('\n')}
        </table>"""
 
-window.RactiveHelpDialog = Ractive.extend({
+RactiveHelpDialog = Ractive.extend({
 
   data: -> {
     isOverlayUp: undefined # Boolean
@@ -104,3 +104,5 @@ window.RactiveHelpDialog = Ractive.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveHelpDialog

@@ -29,7 +29,7 @@
 ###
 
 # (BehaviorSpaceConfig, (String, Any) => Unit, (Any) => Any) => Results
-window.runBabyBehaviorSpace = (config, setGlobal, dump) ->
+runBabyBehaviorSpace = (config, setGlobal, dump) ->
 
   { experimentName, parameterSet, repetitionsPerCombo, metrics, setup, go, stopCondition, iterationLimit } = config
 
@@ -120,3 +120,5 @@ executeRun = (setup, go, stopCondition, iterationLimit, metrics, dump) ->
   measure(iters)
 
   measurements
+
+export default runBabyBehaviorSpace

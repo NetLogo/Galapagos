@@ -1,4 +1,4 @@
-window.RactiveCodeMirror = Ractive.extend({
+RactiveCodeMirror = Ractive.extend({
   data: () -> {
     id:          ""        # String
     mode:        "netlogo" # "netlogo" | "json" | "css"
@@ -51,3 +51,5 @@ window.RactiveCodeMirror = Ractive.extend({
   template: """<div id={{ id }} class="ntb-code-mirror {{(extraClasses || []).join(' ')}}" />"""
 
 })
+
+export default RactiveCodeMirror

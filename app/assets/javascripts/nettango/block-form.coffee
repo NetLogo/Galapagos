@@ -1,4 +1,16 @@
-window.RactiveBlockForm = EditForm.extend({
+import EditForm from "/beak/widgets/ractives/edit-form.js"
+import { RactiveTwoWayLabeledInput } from "/beak/widgets/ractives/subcomponent/labeled-input.js"
+import { RactiveTwoWayDropdown } from "/beak/widgets/ractives/subcomponent/dropdown.js"
+import RactiveBlockPreview from "./block-preview.js"
+import RactiveAttributes from "./attributes.js"
+import RactiveClauses from "./clauses.js"
+import RactiveAllowedTags from "./allowed-tags.js"
+import { RactiveToggleTags } from "./tags.js"
+import RactiveBlockStyleSettings from "./block-style-settings.js"
+import RactiveCodeMirror from "./code-mirror.js"
+import NetTangoBlockDefaults from "./block-defaults.js"
+
+RactiveBlockForm = EditForm.extend({
 
   data: () -> {
     ready:          false        # Boolean
@@ -343,3 +355,5 @@ window.RactiveBlockForm = EditForm.extend({
       # coffeelint: enable=max_line_length
   }
 })
+
+export default RactiveBlockForm

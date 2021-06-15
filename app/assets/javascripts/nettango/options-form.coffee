@@ -1,4 +1,8 @@
-window.RactiveOptionsForm = EditForm.extend({
+import EditForm from "/beak/widgets/ractives/edit-form.js"
+import RactiveBlockStyleSettings from "./block-style-settings.js"
+import RactiveCodeMirror from "./code-mirror.js"
+
+RactiveOptionsForm = EditForm.extend({
 
   data: () -> {
     submitLabel:   "Apply Options"   # String
@@ -124,3 +128,5 @@ window.RactiveOptionsForm = EditForm.extend({
       # coffeelint: enable=max_line_length
   }
 })
+
+export default RactiveOptionsForm

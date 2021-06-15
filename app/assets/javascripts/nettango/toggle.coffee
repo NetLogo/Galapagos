@@ -1,4 +1,4 @@
-window.RactiveToggle = Ractive.extend({
+RactiveToggle = Ractive.extend({
 
   data: () -> {
     show:        false # Boolean
@@ -35,3 +35,5 @@ window.RactiveToggle = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveToggle

@@ -1,4 +1,10 @@
-class window.NetTangoController
+import RactiveBuilder from "./builder.js"
+import UndoRedo from "./undo-redo.js"
+import RactivePopupMenu from "./popup-menu.js"
+import NetTangoStorage from "./storage.js"
+import NetTangoRewriter from "./rewriter.js"
+
+class NetTangoController
 
   actionSource: "user"    # "user" | "project-load" | "undo-redo"
   netLogoCode:  undefined # String
@@ -427,3 +433,5 @@ class window.NetTangoController
       @runningIndices.forEach( (index) -> widgets[index].running = true )
     @runningIndices = []
     return
+
+export default NetTangoController

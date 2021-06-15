@@ -1,4 +1,6 @@
-window.RactiveResizer = Ractive.extend({
+import { CommonDrag } from "./draggable.js"
+
+RactiveResizer = Ractive.extend({
 
   _isLocked:    false     # Boolean
   _xAdjustment: undefined # Number
@@ -61,7 +63,7 @@ window.RactiveResizer = Ractive.extend({
   on: {
 
     'start-handle-drag': (event) ->
-      CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
+      CommonDrag.dragstart(this, event, (-> true), (x, y) =>
         { left, top } = @find('.widget-resizer').getBoundingClientRect()
         @_xAdjustment = left - @get('left')
         @_yAdjustment = top  - @get('top')
@@ -69,7 +71,7 @@ window.RactiveResizer = Ractive.extend({
 
     'drag-handle': (event) ->
 
-      CommonDrag.drag.call(this, event, (x, y) =>
+      CommonDrag.drag(this, event, (x, y) =>
 
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
         isMac      = window.navigator.platform.startsWith('Mac')
@@ -141,7 +143,7 @@ window.RactiveResizer = Ractive.extend({
       )
 
     'stop-handle-drag': ->
-      CommonDrag.dragend.call(this, =>
+      CommonDrag.dragend(this, =>
         @_xAdjustment = undefined
         @_yAdjustment = undefined
         @get('target').handleResizeEnd()
@@ -169,3 +171,5 @@ window.RactiveResizer = Ractive.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveResizer

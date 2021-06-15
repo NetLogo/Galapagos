@@ -1,8 +1,10 @@
-# All callers of this should have the properties `view: Element` and `lastUpdateMs: Number`,
-# and these functions should be called with `call(<Ractive>, <args...>)` --JAB (11/23/17)
-window.CommonDrag = {
+import RactiveContextable from "./contextable.js"
 
-  dragstart: ({ original }, checkIsValid, callback) ->
+# The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`.
+# --JAB (11/23/17), David D. 7/2021
+CommonDrag = {
+
+  dragstart: (ractive, { original }, checkIsValid, callback) ->
 
     { clientX, clientY, dataTransfer, view } = original
 
@@ -16,8 +18,8 @@ window.CommonDrag = {
       dataTransfer.setDragImage?(invisiGIF, 0, 0)
       dataTransfer.setData('text/plain', '')
 
-      @view         = view
-      @lastUpdateMs = (new Date).getTime()
+      ractive.view         = view
+      ractive.lastUpdateMs = (new Date).getTime()
       callback(clientX, clientY)
 
     else
@@ -27,12 +29,11 @@ window.CommonDrag = {
 
     return
 
-  drag: ({ original: { clientX, clientY, view } }, callback) ->
-
-    if @view?
+  drag: (ractive, { original: { clientX, clientY, view } }, callback) ->
+    if ractive.view?
 
       # Thanks, Firefox! --JAB (11/23/17)
-      root = ((r) -> if r.parent? then arguments.callee(r.parent) else r)(this)
+      root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
       x    = if clientX isnt 0 then clientX else (root.get('lastDragX') ? -1)
       y    = if clientY isnt 0 then clientY else (root.get('lastDragY') ? -1)
 
@@ -41,22 +42,22 @@ window.CommonDrag = {
 
       # Only update drag coords 60 times per second.  If we don't throttle,
       # all of this `set`ing murders the CPU --JAB (10/29/17)
-      if @view is view and x > 0 and y > 0 and ((new Date).getTime() - @lastUpdateMs) >= (1000 / 60)
-        @lastUpdateMs = (new Date).getTime()
+      if ractive.view is view and x > 0 and y > 0 and ((new Date).getTime() - ractive.lastUpdateMs) >= (1000 / 60)
+        ractive.lastUpdateMs = (new Date).getTime()
         callback(x, y)
 
     true
 
-  dragend: (callback) ->
+  dragend: (ractive, callback) ->
 
-    if @view?
+    if ractive.view?
 
-      root = ((r) -> if r.parent? then arguments.callee(r.parent) else r)(this)
+      root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
       root.set('lastDragX', undefined)
       root.set('lastDragY', undefined)
 
-      @view         = undefined
-      @lastUpdateMs = undefined
+      ractive.view         = undefined
+      ractive.lastUpdateMs = undefined
 
       callback()
 
@@ -66,7 +67,7 @@ window.CommonDrag = {
 }
 
 # Ugh.  Single inheritance is a pox.  --JAB (10/29/17)
-window.RactiveDraggableAndContextable = RactiveContextable.extend({
+RactiveDraggableAndContextable = RactiveContextable.extend({
 
   lastUpdateMs: undefined # Number
   startLeft:    undefined # Number
@@ -93,7 +94,7 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
   on: {
 
     'start-widget-drag': (event) ->
-      CommonDrag.dragstart.call(this, event, (-> true), (x, y) =>
+      CommonDrag.dragstart(this, event, (-> true), (x, y) =>
         @fire('select-component', event.component)
         @startLeft    = @get(  'left') - x
         @startRight   = @get( 'right') - x
@@ -106,7 +107,7 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
       isMac      = window.navigator.platform.startsWith('Mac')
       isSnapping = ((not isMac and not event.original.ctrlKey) or (isMac and not event.original.metaKey))
 
-      CommonDrag.drag.call(this, event, (x, y) =>
+      CommonDrag.drag(this, event, (x, y) =>
 
         findAdjustment = (n) -> n - (Math.round(n / 5) * 5)
 
@@ -133,7 +134,7 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
       )
 
     'stop-widget-drag': ->
-      CommonDrag.dragend.call(this, =>
+      CommonDrag.dragend(this, =>
         @startLeft    = undefined
         @startRight   = undefined
         @startTop     = undefined
@@ -143,3 +144,8 @@ window.RactiveDraggableAndContextable = RactiveContextable.extend({
   }
 
 })
+
+export {
+  CommonDrag,
+  RactiveDraggableAndContextable,
+}

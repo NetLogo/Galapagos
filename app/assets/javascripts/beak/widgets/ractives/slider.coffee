@@ -1,3 +1,11 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import { RactiveEditFormOneLineCode } from "./subcomponent/code-container.js"
+import RactiveEditFormVariable from "./subcomponent/variable.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
+import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+
 # coffeelint: disable=max_line_length
 FlexColumn = Ractive.extend({
   template:
@@ -111,7 +119,7 @@ SliderEditForm = EditForm.extend({
 
 })
 
-window.RactiveSlider = RactiveWidget.extend({
+RactiveSlider = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -197,3 +205,5 @@ window.RactiveSlider = RactiveWidget.extend({
 
 })
 # coffeelint: enable=max_line_length
+
+export default RactiveSlider

@@ -26,7 +26,7 @@ class Local @Inject() ( components: ControllerComponents
 
   def standalone: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(InlineTagBuilder))
+      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true))
   }
 
   def web: Action[AnyContent] = Action {

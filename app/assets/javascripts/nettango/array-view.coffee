@@ -1,4 +1,6 @@
-window.RactiveArrayView = (partials, components) -> RactiveToggle.extend({
+import RactiveToggle from "./toggle.js"
+
+RactiveArrayView = (partials, components) -> RactiveToggle.extend({
 
   data: () -> {
 
@@ -68,3 +70,5 @@ window.RactiveArrayView = (partials, components) -> RactiveToggle.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveArrayView

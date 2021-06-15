@@ -1,4 +1,6 @@
-window.RactiveModelChooser = Ractive.extend({
+import { bindModelChooser } from "/models.js"
+
+RactiveModelChooser = Ractive.extend({
 
   data: () -> {
       active:      false # Boolean
@@ -33,7 +35,7 @@ window.RactiveModelChooser = Ractive.extend({
         return
 
       if (not @get("playMode"))
-        exports.bindModelChooser(modelList, onComplete, pickModel, @get("runtimeMode"))
+        bindModelChooser(modelList, onComplete, pickModel, @get("runtimeMode"))
 
       return
 
@@ -68,3 +70,5 @@ window.RactiveModelChooser = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveModelChooser

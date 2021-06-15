@@ -1,4 +1,6 @@
-window.RactiveModelTitle = RactiveContextable.extend({
+import RactiveContextable from "./contextable.js"
+
+RactiveModelTitle = RactiveContextable.extend({
 
   data: -> {
     contextMenuOptions: [{ text: "Edit", isEnabled: true, action: => @fire('edit-title') }]
@@ -36,3 +38,5 @@ window.RactiveModelTitle = RactiveContextable.extend({
     """
 
 })
+
+export default RactiveModelTitle

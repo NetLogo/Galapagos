@@ -1,4 +1,4 @@
-window.RactiveEditFormDropdown = Ractive.extend({
+RactiveEditFormDropdown = Ractive.extend({
 
   data: -> {
     changeEvent: undefined # String
@@ -46,4 +46,9 @@ window.RactiveEditFormDropdown = Ractive.extend({
 
 })
 
-window.RactiveTwoWayDropdown = window.RactiveEditFormDropdown.extend({ twoway: true })
+RactiveTwoWayDropdown = RactiveEditFormDropdown.extend({ twoway: true })
+
+export {
+  RactiveEditFormDropdown,
+  RactiveTwoWayDropdown,
+}

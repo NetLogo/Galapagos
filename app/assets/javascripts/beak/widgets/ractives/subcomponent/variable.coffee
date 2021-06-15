@@ -1,4 +1,6 @@
-window.RactiveEditFormVariable = Ractive.extend({
+import keywords from "/keywords.js"
+
+RactiveEditFormVariable = Ractive.extend({
 
   data: -> {
     id:    undefined # String
@@ -12,7 +14,7 @@ window.RactiveEditFormVariable = Ractive.extend({
     validate: ({ node }) ->
       varName     = node.value.toLowerCase()
       validityStr =
-        if window.keywords.all.some((kw) -> kw.toLowerCase() is varName)
+        if keywords.all.some((kw) -> kw.toLowerCase() is varName)
           "'#{node.value}' is a reserved name"
         else
           ""
@@ -34,3 +36,5 @@ window.RactiveEditFormVariable = Ractive.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveEditFormVariable

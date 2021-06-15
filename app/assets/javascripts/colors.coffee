@@ -1,6 +1,6 @@
 # input: number in [0, 140) range
 # result: CSS color string
-window.netlogoColorToCSS = (netlogoColor) ->
+netlogoColorToCSS = (netlogoColor) ->
   [r,g,b] = array = netlogoColorToRGB(netlogoColor)
   a = if array.length > 3 then array[3] else 255
   if a < 255
@@ -11,24 +11,24 @@ window.netlogoColorToCSS = (netlogoColor) ->
 # Since a turtle's color's transparency applies to its whole shape,  and not
 # just the parts that use its default color, often we want to use the opaque
 # version of its color so we can use global transparency on it. BCH 12/10/2014
-window.netlogoColorToOpaqueCSS = (netlogoColor) ->
+netlogoColorToOpaqueCSS = (netlogoColor) ->
   [r,g,b] = array = netlogoColorToRGB(netlogoColor)
   "rgb(#{r}, #{g}, #{b})"
 
 # (Number) => String
-window.netlogoColorToHexString = (netlogoColor) ->
+netlogoColorToHexString = (netlogoColor) ->
   rgb   = netlogoColorToRGB(netlogoColor)
   hexes = rgb.map((x) -> hex = x.toString(16); if hex.length is 1 then "0#{hex}" else hex)
   "##{hexes.join('')}"
 
 # (String) => Number
-window.hexStringToNetlogoColor = (hex) ->
+hexStringToNetlogoColor = (hex) ->
   hexPair   = "([0-9a-f]{2})"
   rgbHexes  = hex.toLowerCase().match(new RegExp("##{hexPair}#{hexPair}#{hexPair}")).slice(1)
   [r, g, b] = rgbHexes.map((x) -> parseInt(x, 16))
   ColorModel.nearestColorNumberOfRGB(r, g, b)
 
-window.netlogoColorToRGB = (netlogoColor) ->
+netlogoColorToRGB = (netlogoColor) ->
   switch typeof(netlogoColor)
     when "number" then cachedNetlogoColors[Math.floor(netlogoColor*10)]
     when "object" then netlogoColor.map(Math.round)
@@ -88,3 +88,11 @@ cachedNetlogoColors = for colorTimesTen in [0..1400]
     g += Math.floor((0xFF - g)*step)
     b += Math.floor((0xFF - b)*step)
   [r, g, b]
+
+export {
+  netlogoColorToCSS,
+  netlogoColorToOpaqueCSS,
+  netlogoColorToHexString,
+  hexStringToNetlogoColor,
+  netlogoColorToRGB,
+}

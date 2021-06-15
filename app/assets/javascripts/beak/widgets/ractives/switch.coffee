@@ -1,3 +1,7 @@
+import RactiveWidget from "./widget.js"
+import EditForm from "./edit-form.js"
+import RactiveEditFormVariable from "./subcomponent/variable.js"
+
 SwitchEditForm = EditForm.extend({
 
   data: -> {
@@ -30,7 +34,7 @@ SwitchEditForm = EditForm.extend({
 
 })
 
-window.RactiveSwitch = RactiveWidget.extend({
+RactiveSwitch = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -81,3 +85,5 @@ window.RactiveSwitch = RactiveWidget.extend({
   # coffeelint: enable=max_line_length
 
 })
+
+export default RactiveSwitch

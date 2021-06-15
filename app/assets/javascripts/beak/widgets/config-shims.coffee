@@ -1,3 +1,6 @@
+import HighchartsOps from "/highcharts.js"
+import { toNetLogoMarkdown } from "/beak/tortoise-utils.js"
+
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->
 
@@ -88,7 +91,7 @@ genImportExportConfig = (ractive, viewController, compiler) ->
 
       { result, success } =
         compiler.exportNlogo({
-          info:         Tortoise.toNetLogoMarkdown(ractive.get('info')),
+          info:         toNetLogoMarkdown(ractive.get('info')),
           code:         ractive.get('code'),
           widgets:      (v for _, v of ractive.get('widgetObj')),
           turtleShapes: turtleShapes,
@@ -238,7 +241,7 @@ genWorldConfig = (ractive) ->
   }
 
 # (Ractive, ViewController, Element, BrowserCompiler) => Configs
-window.genConfigs = (ractive, viewController, container, compiler) ->
+genConfigs = (ractive, viewController, container, compiler) ->
 
   notify = (message) ->
     ractive.fire('nlw-notify', message)
@@ -262,3 +265,5 @@ window.genConfigs = (ractive, viewController, container, compiler) ->
   , reportErrors:      reportErrors
   , world:             genWorldConfig(ractive)
   }
+
+export default genConfigs

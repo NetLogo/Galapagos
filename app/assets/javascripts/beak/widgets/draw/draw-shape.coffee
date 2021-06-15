@@ -1,6 +1,8 @@
+import { netlogoColorToOpaqueCSS } from "/colors.js"
+
 IMAGE_SIZE = 300 # Images are 300x300, in line with netlogo shapes.
 
-class window.ShapeDrawer
+class ShapeDrawer
   constructor: (@shapes, @onePixel) ->
 
   setTransparency: (ctx, color) ->
@@ -29,7 +31,7 @@ class window.ShapeDrawer
       draw[elem.type](ctx, color, elem)
     return
 
-class window.CachingShapeDrawer extends ShapeDrawer
+class CachingShapeDrawer extends ShapeDrawer
   constructor: (shapes, onePixel) ->
     # Maps (shape name, color) -> canvas
     # Shape/color combinations are pre-rendered to these canvases so they can be
@@ -86,7 +88,7 @@ drawPath = (ctx, color, element) ->
     ctx.stroke()
   return
 
-window.draw = {
+draw = {
   circle: (ctx, color, circle) ->
     r = circle.diam/2
     ctx.beginPath()
@@ -134,7 +136,7 @@ window.draw = {
     return
 }
 
-window.defaultShape = {
+defaultShape = {
   rotate: true
   elements: [
     {
@@ -146,4 +148,11 @@ window.defaultShape = {
       ycors: [5, 250, 205, 250]
     }
   ]
+}
+
+export {
+  ShapeDrawer,
+  CachingShapeDrawer,
+  draw,
+  defaultShape
 }

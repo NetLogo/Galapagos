@@ -1,4 +1,6 @@
-{ commands, constants, directives, linkVars, patchVars, reporters, turtleVars } = window.keywords
+import keywords from "./keywords.js"
+
+{ commands, constants, directives, linkVars, patchVars, reporters, turtleVars } = keywords
 
 notWordCh = /[\s\[\(\]\)]/.source
 wordCh    = /[^\s\[\(\]\)]/.source

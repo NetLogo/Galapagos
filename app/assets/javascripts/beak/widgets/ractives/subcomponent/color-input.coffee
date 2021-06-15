@@ -1,3 +1,5 @@
+import { netlogoColorToHexString, hexStringToNetlogoColor } from "/colors.js"
+
 # This exists to address some trickiness.  Here are the relevant constraints:
 #
 #   1. HTML color pickers have higher color space resolution than the NetLogo color system
@@ -20,7 +22,7 @@
 #
 # --JAB (4/111/18)
 
-window.RactiveColorInput = Ractive.extend({
+RactiveColorInput = Ractive.extend({
 
   data: -> {
     class:      undefined # String
@@ -82,3 +84,5 @@ window.RactiveColorInput = Ractive.extend({
     """
 
 })
+
+export default RactiveColorInput

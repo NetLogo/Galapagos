@@ -1,4 +1,4 @@
-window.RactiveInfoTabEditor = Ractive.extend({
+RactiveInfoTabEditor = Ractive.extend({
 
   data: -> {
     isEditing: false
@@ -25,7 +25,7 @@ window.RactiveInfoTabEditor = Ractive.extend({
     """
 })
 
-window.RactiveInfoTabWidget = Ractive.extend({
+RactiveInfoTabWidget = Ractive.extend({
 
   components: {
     infoeditor: RactiveInfoTabEditor
@@ -40,7 +40,7 @@ window.RactiveInfoTabWidget = Ractive.extend({
     # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
     # RG 8/18/15
     window.html_sanitize(
-      exports.toHTML(md),
+      window.markdown.toHTML(md),
       (url) -> if /^https?:\/\//.test(url) then url else undefined, # URL Sanitizer
       (id) -> id)                                                   # ID Sanitizer
 
@@ -56,3 +56,5 @@ window.RactiveInfoTabWidget = Ractive.extend({
     </div>
     """
 })
+
+export default RactiveInfoTabWidget

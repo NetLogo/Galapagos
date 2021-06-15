@@ -1,4 +1,4 @@
-class window.NetTangoStorage
+class NetTangoStorage
 
   constructor: (@localStorage) ->
     inProgressJson = @localStorage.getItem('ntInProgress')
@@ -27,3 +27,5 @@ class window.NetTangoStorage
       removeItem: (key)        -> delete _ls[key],
       clear:      ()           -> Object.getOwnPropertyNames(_ls).forEach( (key) => delete _ls[key] )
     }
+
+export default NetTangoStorage

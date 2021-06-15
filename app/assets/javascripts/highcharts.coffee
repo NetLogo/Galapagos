@@ -1,7 +1,7 @@
 PenBundle  = tortoise_require('engine/plot/pen')
 PlotOps    = tortoise_require('engine/plot/plotops')
 
-class window.HighchartsOps extends PlotOps
+class HighchartsOps extends PlotOps
 
   _chart:              undefined # Highcharts.Chart
   _penNameToSeriesNum: undefined # Object[String, Number]
@@ -199,3 +199,5 @@ class window.HighchartsOps extends PlotOps
 
   resizeElem: (x, y) ->
     @_chart.setSize(x, y, false)
+
+export default HighchartsOps

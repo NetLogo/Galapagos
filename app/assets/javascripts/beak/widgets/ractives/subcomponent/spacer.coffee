@@ -1,4 +1,4 @@
-window.RactiveEditFormSpacer = Ractive.extend({
+RactiveEditFormSpacer = Ractive.extend({
 
   data: -> {
     height: undefined # String
@@ -16,3 +16,5 @@ window.RactiveEditFormSpacer = Ractive.extend({
   }
 
 })
+
+export default RactiveEditFormSpacer

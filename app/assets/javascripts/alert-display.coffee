@@ -273,4 +273,4 @@ template = """
 </div>
 """
 
-window.AlertDisplay = AlertDisplay
+export default AlertDisplay

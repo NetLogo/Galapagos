@@ -1,3 +1,24 @@
+import RactiveLabel from "./ractives/label.js"
+import RactiveInput from "./ractives/input.js"
+import RactiveButton from "./ractives/button.js"
+import RactiveView from "./ractives/view.js"
+import RactiveSlider from "./ractives/slider.js"
+import RactiveChooser from "./ractives/chooser.js"
+import RactiveMonitor from "./ractives/monitor.js"
+import RactiveModelCodeComponent from "./ractives/code-editor.js"
+import RactiveSwitch from "./ractives/switch.js"
+import RactiveHelpDialog from "./ractives/help-dialog.js"
+import RactiveConsoleWidget from "./ractives/console.js"
+import RactiveOutputArea from "./ractives/output.js"
+import RactiveInfoTabWidget from "./ractives/info.js"
+import RactiveModelTitle from "./ractives/title.js"
+import RactivePlot from "./ractives/plot.js"
+import RactiveResizer from "./ractives/resizer.js"
+import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
+import RactiveContextMenu from "./ractives/context-menu.js"
+import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
+import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
+
 dropNLogoExtension = (s) ->
   if s.match(/.*\.nlogo/)?
     s.slice(0, -6)
@@ -5,7 +26,7 @@ dropNLogoExtension = (s) ->
     s
 
 # (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
-window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
+generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
 
   model = {
     checkIsReporter
@@ -234,3 +255,5 @@ partials = {
 
 }
 # coffeelint: enable=max_line_length
+
+export default generateRactiveSkeleton

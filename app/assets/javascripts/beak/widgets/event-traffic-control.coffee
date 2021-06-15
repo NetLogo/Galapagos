@@ -1,5 +1,5 @@
 # (WidgetController) => Unit
-window.controlEventTraffic = (controller) ->
+controlEventTraffic = (controller) ->
 
   { ractive, viewController } = controller
 
@@ -243,3 +243,5 @@ window.controlEventTraffic = (controller) ->
   ractive.on('*.edit-form-opened', (_, editForm) ->  onOpenEditForm(editForm))
 
   return
+
+export default controlEventTraffic

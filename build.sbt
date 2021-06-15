@@ -1,4 +1,9 @@
 import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
+import com.typesafe.sbt.web.Import.WebKeys.webTarget
+import com.typesafe.sbt.web.{ Compat, PathMapping }
+import com.typesafe.sbt.web.pipeline.Pipeline
+import sbt.io.Path.relativeTo
+
 import scala.sys.process.Process
 
 name := "Galapagos"
@@ -82,8 +87,91 @@ coffeelint := {
 
 (compile in Compile) := ((compile in Compile).dependsOn(yarnInstall)).value
 
+
+lazy val bundle = taskKey[Pipeline.Stage]("Bundle script files using Rollup")
+
+includeFilter in bundle := "*.js" || "*.js.map"
+excludeFilter in bundle := HiddenFileFilter
+
+bundle := Def.task {
+  val streamsValue = streams.value
+  val inputDir = webTarget.value / "rollup" / "sync-rollup" / "main"
+  val outputDir = webTarget.value / "rollup" / "main"
+  val scriptsDir = "javascripts" + java.io.File.separator
+  val include = (includeFilter in bundle).value
+  val exclude = (excludeFilter in bundle).value
+
+  (inputMappings: Seq[PathMapping]) => {
+
+    // Partition input mappings into files we want to bundle and files we just want to ignore and pass through to the
+    // next pipeline stage. - David D. 7/2021
+    val (filesToBundle, ignoredFiles) = inputMappings.partition({
+      case (file, relativePath) =>
+        relativePath.startsWith(scriptsDir) && !file.isDirectory && !exclude.accept(file) && include.accept(file)
+    })
+
+    // Run the function only if files have changed since the last run - David D. 7/2021
+    val runBundler = FileFunction.cached(streamsValue.cacheDirectory / "rollup", FilesInfo.hash) { _ =>
+
+      // Rollup needs its inputs in a folder, not a list of random files, so we sync the input files of this pipeline
+      // stage into a temporary folder, where Rollup can easily access them. - David D. 7/2021
+      SbtWeb.syncMappings(
+        Compat.cacheStore(streamsValue, "sync-rollup"),
+        filesToBundle,
+        inputDir
+      )
+
+      val nodeEnv = if (PlayDevMode.isDevMode) "development" else "production"
+      val inputsCount = filesToBundle.count(f => !"*.js.map".accept(f._1))
+
+      streamsValue.log.info(s"Rollup: Bundling ${inputsCount} script file(s) in ${nodeEnv} mode ...")
+      val bundlerOutput = runRollup(baseDirectory.value, inputDir, outputDir, streamsValue, nodeEnv)
+      streamsValue.log.info(s"Rollup: Done bundling.")
+
+      bundlerOutput.toSet
+    }
+
+    val bundledFiles = runBundler(filesToBundle.map(_._1).toSet) pair relativeTo(outputDir)
+    bundledFiles ++ ignoredFiles
+  }
+
+}.dependsOn(yarnInstall).value
+
+def runRollup(baseDirectory: File, inputDir: File, outputDir: File, streams: TaskStreams, nodeEnv: String): Seq[File] = {
+  Process(
+    Seq("./node_modules/.bin/rollup",
+      "--config", "rollup.config.js",
+      // Custom arguments with the 'config-' prefix are passed through to rollup.config.js. - David D. 7/2021
+      "--config-sourceDir", inputDir.getPath,
+      "--config-targetDir", outputDir.relativeTo(baseDirectory).get.getPath,
+      // Rollup prints all messages, including info to STDERR, but SBT would then display everything as errors and
+      // clutter the output. The --silent flag causes Rollup to output only errors, which we still want to see.
+      // - David D. 7/2021
+      "--silent"
+    ),
+    baseDirectory,
+    "NODE_ENV" -> nodeEnv
+  ).!(streams.log)
+
+  (outputDir ** ("*.js" || "*.js.map")).get
+}
+
+// Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
+// a digest in their filename anyway, so there is no need to do it twice.
+// - David D. 7/2021
+excludeFilter in digest := "*.chunk.js"
+
+// We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
+// provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to
+// use a playRunHook to detect if we're in development mode (`sbt run`). - David D. 7/2021
+PlayKeys.playRunHooks += PlayDevMode()
+
+// Used in Dev and Prod
+pipelineStages in Assets ++= Seq(bundle)
+
 // Used in Prod
 pipelineStages ++= Seq(digest)
+
 
 fork in Test := false
 

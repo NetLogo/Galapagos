@@ -14,4 +14,4 @@ class CodeUtils
       procedureNames[name] = match.index + match[0].length
     procedureNames
 
-window.CodeUtils = CodeUtils
+export default CodeUtils

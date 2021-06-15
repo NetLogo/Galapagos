@@ -598,7 +598,7 @@ unsupported = [
 allMixedCase = [].concat(commands, constants, directives, linkVars, patchVars, reporters, turtleVars)
 all          = allMixedCase.map((x) -> x.toLowerCase())
 
-window.keywords =
+keywords =
   {
     all
   , commands
@@ -610,3 +610,5 @@ window.keywords =
   , turtleVars
   , unsupported
   }
+
+export default keywords

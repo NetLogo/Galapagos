@@ -1,4 +1,6 @@
-window.EditForm = Ractive.extend({
+import { CommonDrag } from "./draggable.js"
+
+EditForm = Ractive.extend({
 
   lastUpdateMs: undefined # Number
   startX:       undefined # Number
@@ -106,19 +108,19 @@ window.EditForm = Ractive.extend({
           when "input"    then elem.type.toLowerCase() isnt "number" and elem.type.toLowerCase() isnt "text"
           when "textarea" then false
           else                 true
-      CommonDrag.dragstart.call(this, event, checkIsValid, (x, y) =>
+      CommonDrag.dragstart(this, event, checkIsValid, (x, y) =>
         @startX = @get('xLoc') - x
         @startY = @get('yLoc') - y
       )
 
     'drag-edit-dialog': (event) ->
-      CommonDrag.drag.call(this, event, (x, y) =>
+      CommonDrag.drag(this, event, (x, y) =>
         @set('xLoc', @startX + x)
         @set('yLoc', @startY + y)
       )
 
     'stop-edit-drag': ->
-      CommonDrag.dragend.call(this, (->))
+      CommonDrag.dragend(this, (->))
 
     'cancel-edit': ->
       @fire('activate-cloaking-device')
@@ -165,3 +167,5 @@ window.EditForm = Ractive.extend({
   }
 
 })
+
+export default EditForm

@@ -1,5 +1,5 @@
 # (Ractive) => Unit
-window.handleContextMenu =
+handleContextMenu =
   (ractive) ->
 
     hideContextMenu =
@@ -66,3 +66,5 @@ window.handleContextMenu =
     ractive.on('*.hide-context-menu', hideContextMenu)
 
     return
+
+export default handleContextMenu

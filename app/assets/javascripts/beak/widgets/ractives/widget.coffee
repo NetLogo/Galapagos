@@ -1,3 +1,5 @@
+import { RactiveDraggableAndContextable } from "./draggable.js"
+
 WidgetEventGenerators = {
 
   recompile: ->
@@ -58,7 +60,7 @@ WidgetEventGenerators = {
 
 }
 
-window.RactiveWidget = RactiveDraggableAndContextable.extend({
+RactiveWidget = RactiveDraggableAndContextable.extend({
 
   _weg: WidgetEventGenerators
 
@@ -191,3 +193,5 @@ window.RactiveWidget = RactiveDraggableAndContextable.extend({
   }
 
 })
+
+export default RactiveWidget

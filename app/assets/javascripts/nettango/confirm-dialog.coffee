@@ -1,4 +1,4 @@
-window.RactiveConfirmDialog = Ractive.extend({
+RactiveConfirmDialog = Ractive.extend({
 
   data: () -> {
       active:         false  # Boolean
@@ -51,3 +51,5 @@ window.RactiveConfirmDialog = Ractive.extend({
     """
     # coffeelint: enable=max_line_length
 })
+
+export default RactiveConfirmDialog
