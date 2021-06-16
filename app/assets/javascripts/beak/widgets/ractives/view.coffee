@@ -203,6 +203,12 @@ RactiveView = RactiveWidget.extend({
   , resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
   , ticks:              undefined # String
   }
+  
+  computed: {
+    viewDims: ->
+      { top, right, bottom, left } = VIEW_INNER_SPACING
+      "padding: #{top} #{right} #{bottom} #{left};"
+  }
 
   components: {
     editForm: ViewEditForm
@@ -230,23 +236,23 @@ RactiveView = RactiveWidget.extend({
       oldTop    = @get('top'   )
       oldBottom = @get('bottom')
 
-      oldWidth  = oldRight  - oldLeft
-      oldHeight = oldBottom - oldTop
+      oldCanvasWidth  = oldRight  - oldLeft - VIEW_INNER_SPACING.horizontal
+      oldCanvasHeight = oldBottom - oldTop - VIEW_INNER_SPACING.vertical
 
-      newWidth  = newRight  - newLeft
-      newHeight = newBottom - newTop
+      newCanvasWidth  = newRight  - newLeft - VIEW_INNER_SPACING.horizontal
+      newCanvasHeight = newBottom - newTop - VIEW_INNER_SPACING.vertical
 
-      dWidth  = Math.abs(oldWidth  - newWidth )
-      dHeight = Math.abs(oldHeight - newHeight)
+      dWidth  = Math.abs(oldCanvasWidth  - newCanvasWidth )
+      dHeight = Math.abs(oldCanvasHeight - newCanvasHeight)
 
-      ratio     = if dWidth > dHeight then newHeight / oldHeight else newWidth / oldWidth
+      ratio     = if dWidth > dHeight then newCanvasHeight / oldCanvasHeight else newCanvasWidth / oldCanvasWidth
       patchSize = parseFloat((@get('widget.dimensions.patchSize') * ratio).toFixed(2))
 
       scaledWidth  = patchSize * (@get('widget.dimensions.maxPxcor') - @get('widget.dimensions.minPxcor') + 1)
       scaledHeight = patchSize * (@get('widget.dimensions.maxPycor') - @get('widget.dimensions.minPycor') + 1)
 
-      dx = scaledWidth  - oldWidth
-      dy = scaledHeight - oldHeight
+      dx = scaledWidth  - oldCanvasWidth
+      dy = scaledHeight - oldCanvasHeight
 
       movedLeft = newLeft isnt oldLeft
       movedUp   = newTop  isnt oldTop
@@ -291,7 +297,7 @@ RactiveView = RactiveWidget.extend({
 
     view:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}"></div>
+      <div id="{{id}}" class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}{{viewDims}}"></div>
       """
 
   }
@@ -299,4 +305,13 @@ RactiveView = RactiveWidget.extend({
 
 })
 
+# The spacing between the outer edge of the "view" widget and the inner drawing area/canvas. The dimensions match the
+# size of the "border" around the drawing area in the desktop NetLogo app. - David D. 8/2021
+VIEW_INNER_SPACING = { top: 5, right: 4, bottom: 4, left: 4 }
+VIEW_INNER_SPACING.horizontal = VIEW_INNER_SPACING.left + VIEW_INNER_SPACING.right
+VIEW_INNER_SPACING.vertical = VIEW_INNER_SPACING.top + VIEW_INNER_SPACING.bottom
+
 export default RactiveView
+export {
+  VIEW_INNER_SPACING
+}

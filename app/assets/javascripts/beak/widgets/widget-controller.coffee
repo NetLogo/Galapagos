@@ -1,5 +1,6 @@
 import { setUpWidget, setUpButton, setUpChooser, setUpInputBox, setUpMonitor, setUpSlider, setUpSwitch
 } from "./set-up-widgets.js"
+import { VIEW_INNER_SPACING } from "./ractives/view.js"
 
 class WidgetController
 
@@ -209,10 +210,10 @@ updateWidget = (widget) ->
 
     when 'view'
       { maxPxcor, maxPycor, minPxcor, minPycor, patchSize } = widget.dimensions
-      desiredWidth  = Math.round(patchSize * (maxPxcor - minPxcor + 1))
-      desiredHeight = Math.round(patchSize * (maxPycor - minPycor + 1))
-      widget.right  = widget.left + desiredWidth
-      widget.bottom = widget.top  + desiredHeight
+      canvasWidth  = Math.round(patchSize * (maxPxcor - minPxcor + 1))
+      canvasHeight = Math.round(patchSize * (maxPycor - minPycor + 1))
+      widget.right  = widget.left + canvasWidth + VIEW_INNER_SPACING.horizontal
+      widget.bottom = widget.top  + canvasHeight + VIEW_INNER_SPACING.vertical
 
   return
 
