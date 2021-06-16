@@ -57,5 +57,6 @@
 
 .netlogo-view-container {
   background-color: #F4F4F4;
-  border: 1px solid #CCCCCC;
+  outline: 1px solid #CCCCCC;
+  outline-offset: -1px;
 }
