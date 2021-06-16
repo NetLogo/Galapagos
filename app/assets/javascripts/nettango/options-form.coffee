@@ -1,6 +1,7 @@
 import EditForm from "/beak/widgets/ractives/edit-form.js"
 import RactiveBlockStyleSettings from "./block-style-settings.js"
 import RactiveCodeMirror from "./code-mirror.js"
+import ObjectUtils from "./object-utils.js"
 
 RactiveOptionsForm = EditForm.extend({
 
@@ -35,8 +36,8 @@ RactiveOptionsForm = EditForm.extend({
     clonedOptions = {}
     [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
       .forEach( (prop) ->
-        if options.hasOwnProperty(prop)
-          clonedOptions[prop] = JSON.parse(JSON.stringify(options[prop]))
+        if options.hasOwnProperty(prop) and options[prop]?
+          clonedOptions[prop] = ObjectUtils.clone(options[prop])
       )
     @set("options", clonedOptions)
 

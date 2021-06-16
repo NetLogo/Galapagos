@@ -4,38 +4,18 @@ import RactiveBuilderMenu from "./builder-menu.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveProjectChooser from "./project-chooser.js"
-
-blockStyleDefaults = {
-  starterBlockStyle: {
-    blockColor:  "#bb5555"
-    textColor:   "#ffffff"
-    borderColor: "#ffffff"
-    fontWeight:  ""
-    fontSize:    ""
-    fontFace:    ""
-  }
-
-  containerBlockStyle: {
-    blockColor:  "#8899aa"
-    textColor:   "#ffffff"
-    borderColor: "#ffffff"
-    fontWeight:  ""
-    fontSize:    ""
-    fontFace:    ""
-  }
-
-  commandBlockStyle: {
-    blockColor:  "#9977aa"
-    textColor:   "#ffffff"
-    borderColor: "#ffffff"
-    fontWeight:  ""
-    fontSize:    ""
-    fontFace:    ""
-  }
-}
+import ObjectUtils from "./object-utils.js"
 
 getBlockStyleDefaults = (style) ->
-  JSON.parse(JSON.stringify(blockStyleDefaults[style]))
+  ObjectUtils.clone(NetTango.defaultBlockStyles[style])
+
+isStyleDifferent = (style1, style2) ->
+  ["blockColor", "textColor", "borderColor", "fontWeight", "fontSize", "fontFace"]
+    .some( (styleProp) -> style1[styleProp] isnt style2[styleProp] )
+
+areStylesDifferent = (bs1, bs2) ->
+  ["starterBlockStyle", "containerBlockStyle", "commandBlockStyle"]
+    .some( (type) -> isStyleDifferent(bs1[type], bs2[type]) )
 
 RactiveBuilder = Ractive.extend({
 
@@ -124,12 +104,6 @@ RactiveBuilder = Ractive.extend({
       }
     }
 
-    blockStyles: {
-      starterBlockStyle:   getBlockStyleDefaults("starterBlockStyle")
-      containerBlockStyle: getBlockStyleDefaults("containerBlockStyle")
-      commandBlockStyle:   getBlockStyleDefaults("commandBlockStyle")
-    }
-
     extraCss: "" # String
   }
 
@@ -169,11 +143,6 @@ RactiveBuilder = Ractive.extend({
           workspaceBelow: true
           showCode:       true
         }
-        blockStyles: {
-          starterBlockStyle:   getBlockStyleDefaults("starterBlockStyle")
-          containerBlockStyle: getBlockStyleDefaults("containerBlockStyle")
-          commandBlockStyle:   getBlockStyleDefaults("commandBlockStyle")
-        }
         extraCss: ""
       }
       @fire("ntb-load-project", {}, blankData)
@@ -187,7 +156,7 @@ RactiveBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-create-blockspace': (_) ->
       defsComponent = @findComponent('tangoDefs')
-      defsComponent.createSpace({ defs: { blocks: [] } })
+      defsComponent.createSpace({ defs: { blocks: [], program: { chains: [] }}})
       return
 
     '*.ntb-import-netlogo-prompt': (_) ->
@@ -213,7 +182,7 @@ RactiveBuilder = Ractive.extend({
     '*.ntb-show-options': (_) ->
       tabOptions      = @get("tabOptions")
       netTangoToggles = @get("netTangoToggles")
-      blockStyles     = @get("blockStyles")
+      blockStyles     = @get("blockStyles") ? ObjectUtils.clone(NetTango.defaultBlockStyles)
       extraCss        = @get("extraCss")
 
       optionsForm = @findComponent("optionsForm")
@@ -242,24 +211,14 @@ RactiveBuilder = Ractive.extend({
             @set("netTangoToggles.#{n}.checked", options.netTangoToggles[n].checked)
         )
 
-      oldStyles = JSON.parse(JSON.stringify(@get("blockStyles")))
-      [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-        .forEach( (prop) =>
-          if options.blockStyles.hasOwnProperty(prop)
-            @set("blockStyles.#{prop}", options.blockStyles[prop])
-        )
-      newStyles = @get("blockStyles")
-      blockStylesChanged = [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-        .some( (prop) ->
-          [ "blockColor", "textColor", "borderColor", "fontWeight", "fontSize", "fontFace" ]
-           .some( (styleProp) ->
-             oldStyles[prop]?[styleProp] isnt newStyles[prop]?[styleProp]
-           )
-        )
-
-      if blockStylesChanged
-        spacesComponent = @findComponent('tangoDefs')
-        spacesComponent.updateNetTango()
+      if (areStylesDifferent(NetTango.defaultBlockStyles, options.blockStyles))
+        oldStyles = @get("blockStyles")
+        if (not oldStyles?) or areStylesDifferent(oldStyles, options.blockStyles)
+          @set("blockStyles", options.blockStyles)
+          spacesComponent = @findComponent('tangoDefs')
+          spacesComponent.updateNetTango()
+      else
+        @set("blockStyles", null)
 
       @set("extraCss", options.extraCss)
 
@@ -417,12 +376,16 @@ RactiveBuilder = Ractive.extend({
   load: (project) ->
     # Make sure styles are loaded first, as when spaces are added
     # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
-    blockStyles = @get("blockStyles")
-    for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
-      if (project.hasOwnProperty("blockStyles") and project.blockStyles.hasOwnProperty(propName))
-        blockStyles[propName] = project.blockStyles[propName]
-      else
-        blockStyles[propName] = getBlockStyleDefaults(propName)
+    if project.blockStyles? and areStylesDifferent(NetTango.defaultBlockStyles, project.blockStyles)
+      blockStyles = {}
+      for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
+        if project.blockStyles.hasOwnProperty(propName)
+          blockStyles[propName] = project.blockStyles[propName]
+        else
+          blockStyles[propName] = getBlockStyleDefaults(propName)
+      @set('blockStyles', blockStyles)
+    else
+      @set('blockStyles', null)
 
     defsComponent = @findComponent('tangoDefs')
     defsComponent.set('spaces', [])

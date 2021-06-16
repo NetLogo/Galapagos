@@ -30,7 +30,7 @@ RactiveSpace = Ractive.extend({
     # (Context) => Unit
     'render': (_) ->
       space = @get('space')
-      @initNetTango(space)
+      @refreshNetTango(space, false)
 
       @fire('ntb-block-code-changed')
 
@@ -160,30 +160,6 @@ RactiveSpace = Ractive.extend({
     if not space then space = @get("space")
     "#{space.spaceId}-canvas"
 
-  # (NetTangoSpace) => Unit
-  initNetTango: (space) ->
-    containerId            = @getNetTangoContainerId(space)
-    space.defs.height      = space.height
-    space.defs.width       = space.width
-    space.defs.blockStyles = @get("blockStyles")
-
-    # If the load fails, this lets us have something to look at in the UI
-    @set("defsJson", JSON.stringify(space.defs, null, '  '))
-    try
-      NetTango.restore("NetLogo", containerId, space.defs, NetTangoRewriter.formatDisplayAttribute)
-    catch ex
-      @fire('ntb-error', {}, 'workspace-init', ex)
-      return
-
-    netTangoData = NetTango.save(containerId)
-    @set("space.defs", netTangoData)
-    @set("defsJson",   JSON.stringify(netTangoData, null, '  '))
-
-    containerId = @getNetTangoContainerId(space)
-    @setSpaceNetLogo(space, containerId)
-    NetTango.onProgramChanged(containerId, (args...) => @dispatchNetTangoEvent(args...))
-    return
-
   # (NetTangoSpace, String) => Unit
   setSpaceNetLogo: (space, containerId) ->
     space.netLogoCode    = NetTango.exportCode(containerId, NetTangoRewriter.formatDisplayAttribute).trim()
@@ -260,6 +236,9 @@ RactiveSpace = Ractive.extend({
   saveNetTango: (containerId) ->
     if not containerId then containerId = @getNetTangoContainerId()
     netTangoData = NetTango.save(containerId)
+    # We only use project-wide default styles, so delete the workspace ones when we save
+    # off the data -Jeremy B June 2021
+    delete netTangoData.blockStyles
     @set("space.defs", netTangoData)
     @set("defsJson",   JSON.stringify(netTangoData, null, '  '))
     return
