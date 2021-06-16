@@ -261,11 +261,6 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-jscolor-picker@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/jscolor-picker/-/jscolor-picker-2.0.4.tgz#4feac9297f44442c89a5688de4ccf685f19a06b4"
-  integrity sha1-T+rJKX9ERCyJpWiN5Mz2hfGaBrQ=
-
 lie@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"

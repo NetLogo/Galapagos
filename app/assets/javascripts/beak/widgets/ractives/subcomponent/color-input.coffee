@@ -63,17 +63,6 @@ RactiveColorInput = Ractive.extend({
 
       return
 
-    # This is a workaround for Safari's lack of support for `color` input types: https://caniuse.com/#feat=input-color
-    # It relies on the `jscolor-picker` package to provide the functionality instead of the browser.
-    # Once Safari and iOS Safari support `color` types properly, we can remove this code and the dependency.
-    #   -JMB January 2019
-    complete: ->
-      input = @find('input')
-      if (input.type is "text")
-        input.style.color = "#00000000"
-        input.style.backgroundColor = input.value
-        input.jsc = new jscolor(input, { hash: true, styleElement: null })
-
   }
 
   template:
