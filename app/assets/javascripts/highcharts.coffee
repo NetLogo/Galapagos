@@ -9,8 +9,8 @@ class HighchartsOps extends PlotOps
   constructor: (elemID) ->
 
     resize = (xMin, xMax, yMin, yMax) ->
-      @_chart.xAxis[0].setExtremes(xMin, xMax)
-      @_chart.yAxis[0].setExtremes(yMin, yMax)
+      @_chart.xAxis[0].setExtremes(xMin, xMax, false)
+      @_chart.yAxis[0].setExtremes(yMin, yMax, false)
       return
 
     reset = (plot) ->
@@ -99,7 +99,7 @@ class HighchartsOps extends PlotOps
       })
       type    = @modeToString(pen.getDisplayMode())
       options = thisOps.seriesTypeOptions(type, pen.getInterval())
-      series.update(options)
+      series.update(options, false)
       @_penNameToSeriesNum[pen.name] = num
       return
 
@@ -108,7 +108,7 @@ class HighchartsOps extends PlotOps
     thisOps = null
 
     resetPen = (pen) => () =>
-      thisOps.penToSeries(pen)?.setData([])
+      thisOps.penToSeries(pen)?.setData([], false)
       return
 
     addPoint = (pen) =>
@@ -138,7 +138,7 @@ class HighchartsOps extends PlotOps
       if series?
         type    = thisOps.modeToString(mode)
         options = thisOps.seriesTypeOptions(type, pen.getInterval())
-        series.update(options)
+        series.update(options, false)
       return
 
     # Why doesn't the color change show up when I call `update` directly with a new color
@@ -149,7 +149,7 @@ class HighchartsOps extends PlotOps
       hcColor = thisOps.colorToRGBString(color)
       series  = thisOps.penToSeries(pen)
       series.options.color = hcColor
-      series.update(series.options)
+      series.update(series.options, false)
       return
 
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
