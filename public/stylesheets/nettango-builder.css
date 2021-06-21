@@ -583,3 +583,7 @@ body#ntp-body, html#ntp-body {
 .ntb-tag-options-label {
   font-size: small;
 }
+
+.ntb-hide-in-play {
+  background: #eee;
+}

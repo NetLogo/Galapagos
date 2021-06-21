@@ -166,8 +166,8 @@ RactiveSpaces = Ractive.extend({
       {{/spaces }}
     </div>
 
-    {{#if showCode }}
-    <label for="ntb-code">NetLogo Code</label>
+    {{#if !playMode || showCode }}
+    <label for="ntb-code"{{# !showCode}} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
     <codeMirror
       id="ntb-code"
       mode="netlogo"
@@ -175,7 +175,7 @@ RactiveSpaces = Ractive.extend({
       config="{ readOnly: 'nocursor' }"
       extraClasses="[ 'ntb-code', 'ntb-code-large', 'ntb-code-readonly' ]"
     />
-    {{/if showCode }}
+    {{/if !playMode || showCode }}
     """
     # coffeelint: enable=max_line_length
 })
