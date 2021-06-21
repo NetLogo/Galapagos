@@ -312,8 +312,7 @@ RactiveSpace = Ractive.extend({
   # () => Array[String]
   getProcedures: () ->
     space = @get('space')
-    starters = space.defs.blocks.filter( (b) -> b.isRequired and b.placement is NetTango.blockPlacementOptions.STARTER )
-    starters.flatMap( (b) -> Object.keys(CodeUtils.findProcedureNames(b.format ? b.action, 'upper')) )
+    Object.keys(CodeUtils.findProcedureNames(space.netLogoCode, "upper"))
 
   components: {
     jsonEditor: RactiveJsonEditor
