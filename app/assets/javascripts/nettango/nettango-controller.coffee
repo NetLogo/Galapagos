@@ -204,6 +204,7 @@ class NetTangoController
     workspace  = @theOutsideWorld.getWorkspace()
     breeds     = workspace.breedManager.breeds()
     breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
+    breedNames.push('patches')
     ractive.set('breeds', breedNames)
     return
 
