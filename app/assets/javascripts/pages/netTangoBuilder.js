@@ -27,6 +27,9 @@ function handleCompileResult(callback) {
   return (result) => {
     if (result.type === 'success') {
       openSession(result.session)
+      // if this compile came from a new model load, the recompile overlay could still
+      // be up from a fail on the previous model.  -Jeremy B June 2021
+      alerter.recompileOverlay.hide()
       if (callback !== undefined) {
         callback()
       }
