@@ -32,6 +32,7 @@ class NetTangoController
     @ractive.on('*.ntb-undo',            (_)              => @undo())
     @ractive.on('*.ntb-redo',            (_)              => @redo())
     @ractive.on('*.ntb-code-dirty',      (_)              => @recompileProcedures())
+    @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
 
     @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)            => @theOutsideWorld.getSession().exportNlogo())
@@ -191,6 +192,15 @@ class NetTangoController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
     widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
+    @spaceChangeListener?()
+    return
+
+  # () => Unit
+  recompile: () ->
+    widgetController = @theOutsideWorld.getSession().widgetController
+    widgets = widgetController.ractive.get('widgetObj')
+    @pauseForevers(widgets)
+    widgetController.ractive.fire('recompile', (->), false)
     @spaceChangeListener?()
     return
 

@@ -58,8 +58,9 @@ RactiveSpace = Ractive.extend({
     # (Context, Integer) => Unit
     '*.ntb-delete-block': (_, blockIndex) ->
       space = @get('space')
-      @splice("space.defs.blocks", blockIndex, 1)
+      @splice('space.defs.blocks', blockIndex, 1)
       @updateNetTango(space, true)
+      @fire('ntb-recompile-all')
       return
 
     # (Context, NetTangoSpace) => Unit
