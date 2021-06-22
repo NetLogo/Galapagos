@@ -51,6 +51,7 @@ class NetTangoAlertDisplay extends AlertDisplay
       widgetController.ractive.fire('recompile', () => @hide())
       return
     )
+    return
 
   # (NetTangoController) => Unit
   listenForNetTangoErrors: (netTango) ->
@@ -94,6 +95,7 @@ class NetTangoAlertDisplay extends AlertDisplay
           @reportError(message)
 
       when 'recompile-procedures'
+        @recompileOverlay.show()
         @reportNetTangoError('recompile-procedures', errors[0])
 
       else
