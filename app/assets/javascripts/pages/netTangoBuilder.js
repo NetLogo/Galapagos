@@ -5,9 +5,6 @@ import NetTangoController from "/nettango/nettango-controller.js";
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js";
 import NetTangoStorage from "/nettango/storage.js";
 
-const pathSplits = location.pathname.split("/")
-const hostPrefix = `${location.protocol}//${location.host}${pathSplits.length > 2 ? "/" + pathSplits[1] : ""}`
-
 const modelContainer   = document.getElementById("netlogo-model-container")
 const builderContainer = document.getElementById("ntb-container")
 
@@ -97,7 +94,6 @@ if (parent !== window) {
 }
 
 window.modelContainer = modelContainer
-var ntangoCode        = document.getElementById("ntango-code")
 
 var theOutsideWorld = {
     setModelCode:        loadModel
