@@ -1,3 +1,4 @@
+import RactiveNetLogoModel from "./netlogo-model.js"
 import RactiveBuilder from "./builder.js"
 import UndoRedo from "./undo-redo.js"
 import RactivePopupMenu from "./popup-menu.js"
@@ -10,20 +11,21 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @playMode, @runtimeMode, @theOutsideWorld) ->
+  constructor: (element, localStorage, @playMode, @runtimeMode) ->
     @storage      = new NetTangoStorage(localStorage)
     getSpaces     = () => @ractive.findComponent("tangoDefs").get("spaces")
     @isDebugMode  = false
     @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
     @compileAlert = { compileComplete: @netLogoCompileComplete }
-
-    @undoRedo    = new UndoRedo()
+    @rewriters    = [@rewriter, @compileAlert]
+    @undoRedo     = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportProject('json'))
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
-    @ractive = @createRactive(element, @theOutsideWorld, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
+    @ractive      = @createRactive(element, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
+    @netLogoModel = @ractive.findComponent('netLogoModel')
 
     @ractive.on('*.ntb-model-change',    (_, title, code) => @setNetLogoCode(title, code))
     @ractive.on('*.ntb-clear-all',       (_)              => @resetUndoStack())
@@ -35,8 +37,8 @@ class NetTangoController
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
 
     @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)            => @theOutsideWorld.getSession().exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @theOutsideWorld.loadUrl(url, name))
+    @ractive.on('*.ntb-export-netlogo', (_)            => @netLogoModel.session.exportNlogo())
+    @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @netLogoModel.loadUrl(url, name, @rewriters))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
     @ractive.on('*.ntb-load-project',        (_, data)       => @loadProject(data, "project-load"))
@@ -46,21 +48,21 @@ class NetTangoController
     @ractive.on('*.ntb-export-json', (_) => @exportProject('json'))
 
   # (HTMLElement, Environment, Bool) => Ractive
-  createRactive: (element, theOutsideWorld, playMode, runtimeMode, isDebugMode, setDebugMode) ->
+  createRactive: (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
     new Ractive({
 
       el: element,
 
       data: () -> {
-        breeds:      []                       # Array[String]
-        canRedo:     false                    # Boolean
-        canUndo:     false                    # Boolean
-        isDebugMode: isDebugMode              # Boolean
-        newModel:    theOutsideWorld.newModel # () => String
-        playMode:    playMode                 # Boolean
-        popupMenu:   undefined                # RactivePopupMenu
-        runtimeMode: runtimeMode              # String
+        breeds:       []          # Array[String]
+        canRedo:      false       # Boolean
+        canUndo:      false       # Boolean
+        isDebugMode:  isDebugMode # Boolean
+        isSideBySide: false       # Boolean
+        playMode:     playMode    # Boolean
+        popupMenu:    undefined   # RactivePopupMenu
+        runtimeMode:  runtimeMode # String
       }
 
       observe: {
@@ -77,7 +79,7 @@ class NetTangoController
           popupMenu = @findComponent('popupmenu')
           @set('popupMenu', popupMenu)
 
-          theOutsideWorld.addEventListener('click', (event) ->
+          document.addEventListener('click', (event) ->
             if event?.button isnt 2
               popupMenu.unpop()
           )
@@ -86,23 +88,27 @@ class NetTangoController
       }
 
       components: {
-          popupmenu:       RactivePopupMenu
-        , tangoBuilder:    RactiveBuilder
+        netLogoModel: RactiveNetLogoModel
+      , popupmenu:    RactivePopupMenu
+      , tangoBuilder: RactiveBuilder
       },
 
       template:
         """
-        <popupmenu></popupmenu>
-        <tangoBuilder
-          playMode='{{ playMode }}'
-          runtimeMode='{{ runtimeMode }}'
-          newModel='{{ newModel }}'
-          popupMenu='{{ popupMenu }}'
-          canUndo='{{ canUndo }}'
-          canRedo='{{ canRedo }}'
-          breeds={{ breeds }}
-          isDebugMode={{ isDebugMode }}
-          />
+        <div class="ntb-components{{# isSideBySide }} netlogo-display-horizontal{{/}}">
+          <popupmenu />
+          <netLogoModel />
+          <tangoBuilder
+            playMode={{ playMode }}
+            runtimeMode={{ runtimeMode }}
+            popupMenu={{ popupMenu }}
+            canUndo={{ canUndo }}
+            canRedo={{ canRedo }}
+            breeds={{ breeds }}
+            isDebugMode={{ isDebugMode }}
+            isSideBySide={{ isSideBySide }}
+            />
+        </div>
         """
 
     })
@@ -125,7 +131,7 @@ class NetTangoController
 
   # () => String
   getNetLogoCode: () ->
-    @theOutsideWorld.getSession().widgetController.code()
+    @netLogoModel.widgetController.code()
 
   # This is a debugging method to get a view of the altered code output that
   # NetLogo will compile
@@ -144,7 +150,7 @@ class NetTangoController
       project.code = NetTangoRewriter.removeOldNetTangoCode(project.code)
     @builder.load(project)
     if (project.netLogoSettings?.isVertical?)
-      session = @theOutsideWorld.getSession()
+      session = @netLogoModel.session
       session.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
     @resetUndoStack()
     @actionSource = "user"
@@ -188,7 +194,7 @@ class NetTangoController
     proceduresCode = @getBlocksCode()
     procedureNames = @getProcedures()
 
-    widgetController = @theOutsideWorld.getSession().widgetController
+    widgetController = @netLogoModel.widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
     widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
@@ -197,7 +203,7 @@ class NetTangoController
 
   # () => Unit
   recompile: () ->
-    widgetController = @theOutsideWorld.getSession().widgetController
+    widgetController = @netLogoModel.widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
     widgetController.ractive.fire('recompile', (->), false)
@@ -206,12 +212,12 @@ class NetTangoController
 
   netLogoCompileComplete: () =>
     # if we had any forever buttons running, re-run them
-    widgetController = @theOutsideWorld.getSession().widgetController
+    widgetController = @netLogoModel.widgetController
     widgets          = widgetController.ractive.get('widgetObj')
     @rerunForevers(widgets)
 
     # breeds may have changed in code, so update for context tags
-    workspace  = @theOutsideWorld.getWorkspace()
+    workspace  = @netLogoModel.workspace
     breeds     = workspace.breedManager.breeds()
     breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
     breedNames.push('patches')
@@ -225,7 +231,7 @@ class NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @theOutsideWorld.setModelCode(code, title)
+    @netLogoModel.loadModel(code, title, @rewriters)
     return
 
   # (Array[File]) => Unit
@@ -237,7 +243,7 @@ class NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @theOutsideWorld.setModelCode(nlogo, file.name)
+      @netLogoModel.loadModel(nlogo, file.name, @rewriters)
       @handleProjectChange()
       return
     reader.readAsText(file)
@@ -282,7 +288,7 @@ class NetTangoController
 
   # () => NetTangoProject
   getProject: () ->
-    session        = @theOutsideWorld.getSession()
+    session        = @netLogoModel.session
     title          = session.modelTitle()
     modelCodeMaybe = session.getNlogo()
     if (not modelCodeMaybe.success)
@@ -395,14 +401,14 @@ class NetTangoController
     exportWrapper = document.createElement('div')
     exportWrapper.appendChild(exportDom.documentElement)
     exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
-    @theOutsideWorld.saveAs(exportBlob, "#{title}.html")
+    window.saveAs(exportBlob, "#{title}.html")
     return
 
   # (String, NetTangoProject) => Unit
   exportJSON: (title, project) ->
     filter = (k, v) -> if (k is 'defsJson') then undefined else v
     jsonBlob = new Blob([JSON.stringify(project, filter)], { type: 'text/json:charset=utf-8' })
-    @theOutsideWorld.saveAs(jsonBlob, "#{title}.ntjson")
+    window.saveAs(jsonBlob, "#{title}.ntjson")
     return
 
   # (NetTangoProject) => Unit

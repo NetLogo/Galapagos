@@ -56,7 +56,7 @@ class NetTangoAlertDisplay extends AlertDisplay
   # (NetTangoController) => Unit
   listenForNetTangoErrors: (netTango) ->
     @netTango = netTango
-    netTango.ractive.on('*.ntb-error', (_, source, exception) => @reportNetTangoError(source, exception))
+    @netTango.ractive.on('*.ntb-error', (_, source, exception) => @reportNetTangoError(source, exception))
     return
 
   # (String, Exception) => Unit

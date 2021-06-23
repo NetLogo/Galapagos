@@ -6,25 +6,20 @@ body#ntp-body, html#ntp-body {
   margin: 0px;
 }
 
-.ntb-content {
-  background-color: #CDE4EB;
-  border-radius: 10px;
-  padding: 30px;
+.ntb-container-unthemed {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.ntb-content-unthemed {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-#ntb-container {
-  min-width: max-content;
 }
 
 .ntb-container {
+  min-width: 800px;
   border: 2px solid black;
   background-color: white;
   border-radius: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.ntb-container label, .ntb-container-unthemed label {
+  font-family: Poppins, sans-serif;
 }
 
 .ntb-builder {
@@ -34,6 +29,7 @@ body#ntp-body, html#ntp-body {
 .ntb-netlogo-model {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;
+  height: min-content;
   margin-left: auto;
   margin-right: auto;
   display: grid;
@@ -63,6 +59,10 @@ body#ntp-body, html#ntp-body {
   border-radius: 6px;
   border: 1px solid #bbb;
   overflow: hidden;
+}
+
+.ntb-json > .CodeMirror {
+  max-width: 600px;
 }
 
 .ntb-json > .CodeMirror > .CodeMirror-scroll {
@@ -453,15 +453,7 @@ body#ntp-body, html#ntp-body {
   align-content: stretch;
 }
 
-#ntb-components {
-  min-width: 800px;
-}
-
-#ntb-components label {
-  font-family: Poppins, sans-serif;
-}
-
-#model-recompile-overlay {
+#netlogo-recompile-overlay {
   display: none;
   align-items: center;
   justify-content: center;

@@ -1,61 +1,9 @@
 import "/codemirror-mode.js";
-import newModel from "/new-model.js";
-import Tortoise from "/beak/tortoise.js";
-import NetTangoController from "/nettango/nettango-controller.js";
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js";
+import NetTangoController from "/nettango/nettango-controller.js";
 import NetTangoStorage from "/nettango/storage.js";
 
-const modelContainer   = document.getElementById("netlogo-model-container")
 const builderContainer = document.getElementById("ntb-container")
-
-var session
-function openSession(s) {
-  session         = s
-  document.title  = pageTitle(session.modelTitle())
-  session.startLoop()
-  alerter.listenForErrors(session.widgetController)
-}
-
-const recompileContainer = document.getElementById("model-recompile-overlay")
-const alerter            = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml, recompileContainer)
-
-function pageTitle(modelTitle) {
-  return `NetLogo Web ${(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}`
-}
-
-function handleCompileResult(callback) {
-  return (result) => {
-    if (result.type === 'success') {
-      openSession(result.session)
-      // if this compile came from a new model load, the recompile overlay could still
-      // be up from a fail on the previous model.  -Jeremy B June 2021
-      alerter.recompileOverlay.hide()
-      if (callback !== undefined) {
-        callback()
-      }
-    } else {
-      if (result.source === 'compile-recoverable') {
-        openSession(result.session)
-      }
-      alerter.reportCompilerErrors(result.source, result.errors)
-    }
-  }
-}
-
-function loadModel(nlogo, path, callback) {
-  if (session) {
-    session.teardown()
-  }
-  Tortoise.fromNlogoSync(nlogo, modelContainer, path, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
-  Tortoise.finishLoading()
-}
-
-function loadUrl(url, modelName, callback) {
-  if (session) {
-    session.teardown()
-  }
-  Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult(callback), [netTango.rewriter, netTango.compileAlert])
-}
 
 function enableFrameSizeUpdates() {
   var width = 0
@@ -74,38 +22,8 @@ function enableFrameSizeUpdates() {
   window.setInterval(update, 300)
 }
 
-window.addEventListener("message", function (e) {
-  if (e.data.type === "nlw-load-model") {
-    loadModel(e.data.nlogo, e.data.path)
-  } else if (e.data.type === "nlw-open-new") {
-    loadModel(newModel, "NewModel")
-  } else if (e.data.type === "nlw-load-url") {
-    loadUrl(e.data.url, e.data.name)
-  } else if (e.data.type === "nlw-update-model-state") {
-    session.widgetController.setCode(e.data.codeTabContents)
-  } else if (e.data.type === "run-baby-behaviorspace") {
-    var reaction =
-      function(results) {
-        e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
-      }
-    session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
-  }
-})
-
 if (parent !== window) {
   enableFrameSizeUpdates()
-}
-
-window.modelContainer = modelContainer
-
-var theOutsideWorld = {
-    setModelCode:        loadModel
-  , loadUrl:             loadUrl
-  , getSession:          ()                => session
-  , getWorkspace:        ()                => window.workspace
-  , addEventListener:    (event, callback) => document.addEventListener(event, callback)
-  , saveAs:              window.saveAs
-  , newModel:            newModel
 }
 
 var ls
@@ -120,14 +38,18 @@ const netTangoModelUrl = urlParams.get("netTangoModel")
 const playModeParam    = urlParams.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
 
-var netTango = new NetTangoController(
-  "ntb-components",
-  ls,
-  playMode || window.isStandaloneHTML,
-  window.environmentMode,
-  theOutsideWorld
+const netTango = new NetTangoController(
+  "ntb-container"
+, ls
+, playMode || window.isStandaloneHTML
+, window.environmentMode
 )
+// note that this relies on the `netTango` Ractive instance having rendered its
+// NetLogo model, so the element can exist to grab.  -Jeremy B June 2021
+const recompileContainer = document.getElementById("netlogo-recompile-overlay")
+const alerter            = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml, recompileContainer)
+netTango.netLogoModel.alerter = alerter
 alerter.listenForNetTangoErrors(netTango)
 
-window.ractive   = netTango.ractive
-window.onload    = () => netTango.start(netTangoModelUrl)
+window.ractive = netTango.ractive
+window.onload  = () => netTango.start(netTangoModelUrl)

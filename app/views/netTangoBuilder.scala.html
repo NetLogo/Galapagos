@@ -20,24 +20,8 @@
 
 @content = {
   @views.html.spinner()
-
   <div id="alert-container"></div>
-
-  <div @if(themed) { class="ntb-content" } else { class="ntb-content-unthemed" }>
-
-    <div id="ntb-container" @if(themed) { class="ntb-container" }>
-
-      <div class="ntb-netlogo-model">
-        <div id="netlogo-model-container"></div>
-        <div id="model-recompile-overlay"></div>
-      </div>
-
-      <div id="ntb-components"></div>
-
-    </div>
-
-
-  </div>
+  <div id="ntb-container" @if(themed) { class="ntb-container" } else { class="ntb-container-unthemed" }></div>
 }
 
 @extraBody = {
@@ -73,7 +57,7 @@
 
   <script type="text/json" id="ntango-code"></script>
 
-  @*
+  @* <!--
   These globals depend on variables from the Play view, such as `@standalone` etc, therefore they cannot be defined in a
   separate script file.
 
@@ -82,7 +66,7 @@
   which location would we `import` it?)
 
   - David D. 7/2021
-  *@
+  --> *@
   <script>
     Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
     window.isStandaloneHTML = @standalone;

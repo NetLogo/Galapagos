@@ -5,6 +5,7 @@ import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveProjectChooser from "./project-chooser.js"
 import ObjectUtils from "./object-utils.js"
+import newModel from "/new-model.js";
 
 getBlockStyleDefaults = (style) ->
   ObjectUtils.clone(NetTango.defaultBlockStyles[style])
@@ -27,7 +28,7 @@ RactiveBuilder = Ractive.extend({
     knownTags:     []        # Array[String]
     breeds:        []        # Array[String]
     isDebugMode:   false     # Boolean
-    newModel:      undefined # String
+    isSideBySide:  false     # Boolean
     playMode:      false     # Boolean
     popupMenu:     undefined # RactivePopupMenu
     runtimeMode:   "dev"     # String
@@ -127,7 +128,7 @@ RactiveBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-clear-all': (_) ->
       blankData = {
-        code:       @get('newModel')
+        code:       newModel
         spaces:     []
         title:      "Blank Model"
         tabOptions: {
@@ -223,7 +224,7 @@ RactiveBuilder = Ractive.extend({
       @set("extraCss", options.extraCss)
 
       @refreshCss()
-      @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
+      @set('isSideBySide', not netTangoToggles.workspaceBelow.checked)
       @fire("ntb-options-changed")
       return
 
@@ -265,21 +266,6 @@ RactiveBuilder = Ractive.extend({
     spaceProcs = for _, space of spaces
       space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
     spaceProcs.join("\n")
-
-  # (Boolean) => Unit
-  moveSpaces: (workspaceBelow, playMode) ->
-    # The main wrapper for the builder lives outside Ractive,
-    # so we imperatively update the CSS classes instead of
-    # using a template.  -Jeremy B July 2019
-    content = document.getElementById('ntb-container')
-    options = document.getElementById('ntb-components')
-    if (workspaceBelow)
-      content.classList.remove('netlogo-display-horizontal')
-      options.style.minWidth = ""
-    else
-      content.classList.add('netlogo-display-horizontal')
-      if (playMode)
-        options.style.minWidth = "auto"
 
   # () => Unit
   refreshCss: () ->
@@ -411,10 +397,10 @@ RactiveBuilder = Ractive.extend({
     if (project.code?)
       @fire('ntb-model-change', project.title, project.code)
     else
-      @fire('ntb-model-change', "New Model", @get('newModel'))
+      @fire('ntb-model-change', "New Model", newModel)
 
     @refreshCss()
-    @moveSpaces(netTangoToggles.workspaceBelow.checked, @get('playMode'))
+    @set('isSideBySide', not netTangoToggles.workspaceBelow.checked)
 
     # If this was an import, clear the value so we can re-import the same file in Chrome and Safari - JMB August 2018
     importInput = @find('#ntb-import-json')
