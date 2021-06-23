@@ -223,7 +223,7 @@ RactiveToggleTags = RactiveToggle.extend({
       """<tags tags={{ tags }} knownTags={{ knownTags }} areProcedureTags={{ areProcedureTags }} />"""
 
   , titleTemplate:
-      """Tags <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""
+      """Tags ({{ tags.length }}) <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""
 
   }
 

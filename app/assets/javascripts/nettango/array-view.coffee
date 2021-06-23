@@ -49,7 +49,7 @@ RactiveArrayView = (partials, components) -> RactiveToggle.extend({
   , itemTemplate:   "Item template unset, probably a mistake, yeah?"
 
   , titleTemplate:
-    """{{ itemTypePlural }} <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>"""
+    """{{ itemTypePlural }} ({{ items.length }}) <button class="ntb-button" type="button" on-click="[ 'add-item' ]">Add {{ itemType }}</button>"""
 
   , contentTemplate:
     """
