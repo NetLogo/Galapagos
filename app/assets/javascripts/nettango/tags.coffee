@@ -157,7 +157,7 @@ RactiveTags = Ractive.extend({
       <div class="ntb-explanatory flex-row">
         Tags applied to a Procedure block will not affect how the block functions, they are only for
         categorization.  To change which blocks are allowed to be placed in this Procedure block,
-        see the "Which blocks are allowed..." section above.
+        see the "Which blocks are allowed..." section above or in the Control Clauses below.
       </div>
     {{/if }}
 
