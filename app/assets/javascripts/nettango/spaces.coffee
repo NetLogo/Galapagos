@@ -91,7 +91,8 @@ RactiveSpaces = Ractive.extend({
     spaceCodes =
       spaces.map( (space) ->
         if displayOnly
-          "; Code for #{space.name}\n#{space.netLogoDisplay ? ""}".trim()
+          prefix = if spaces.length <= 1 then "" else "; Code for #{space.name}\n"
+          "#{prefix}#{space.netLogoDisplay ? ""}".trim()
         else
           (space.netLogoCode ? "").trim()
       )
