@@ -257,6 +257,7 @@ body#ntp-body, html#ntp-body {
   user-select: none;
   display: none;
   z-index: 1000;
+  min-width: fit-content;
 }
 
 .ntb-block-array {
