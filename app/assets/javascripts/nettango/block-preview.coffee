@@ -46,7 +46,8 @@ RactiveBlockPreview = Ractive.extend({
       }
 
       if block.builderType? and block.builderType is "Procedure"
-        chain        = { x: 5, y: 5, blocks: [ blockIns, sampleIns ] }
+        blocks       = if block.isTerminal then [blockIns] else [blockIns, sampleIns]
+        chain        = { x: 5, y: 5, blocks: blocks }
         defs.blocks  = [ block, sampleDef ]
         defs.program = { chains: [ chain ] }
 
