@@ -44,6 +44,7 @@ partials = {
               mode="netlogo"
               code={{ open }}
               extraClasses="['ntb-code-input']"
+              multilineClass="ntb-code-input-big"
             />
           </div>
 
@@ -54,6 +55,7 @@ partials = {
               mode="netlogo"
               code={{ close }}
               extraClasses="['ntb-code-input']"
+              multilineClass="ntb-code-input-big"
             />
           </div>
 

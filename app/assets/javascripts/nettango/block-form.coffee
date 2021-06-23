@@ -300,6 +300,7 @@ RactiveBlockForm = EditForm.extend({
                 mode="netlogo"
                 code={{ closeStarter }}
                 extraClasses="['ntb-code-input']"
+                multilineClass="ntb-code-input-big"
               />
             </div>
           </div>

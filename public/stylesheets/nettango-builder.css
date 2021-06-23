@@ -412,12 +412,12 @@ body#ntp-body, html#ntp-body {
   box-sizing: border-box;
 }
 
-.ntb-code-input-big > .CodeMirror {
-  height: 4em;
-}
-
 .ntb-code-input > .CodeMirror {
   height: 1.5em;
+}
+
+.ntb-code-input-big > .CodeMirror {
+  height: 6em;
 }
 
 .ntb-flex-column > label,

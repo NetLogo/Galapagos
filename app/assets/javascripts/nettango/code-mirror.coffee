@@ -1,12 +1,25 @@
 RactiveCodeMirror = Ractive.extend({
   data: () -> {
-    id:          ""        # String
-    mode:        "netlogo" # "netlogo" | "json" | "css"
-    code:        ""        # String
-    initialCode: ""        # String
-    config:      undefined # CodeMirrorConfig
-    newCode:     ""        # String
-    isDirty:     false     # Boolean
+    id:             ""        # String
+    mode:           "netlogo" # "netlogo" | "json" | "css"
+    code:           ""        # String
+    initialCode:    ""        # String
+    config:         undefined # CodeMirrorConfig
+    extraClasses:   []        # Array[String]
+    multilineClass: undefined # String
+    newCode:        ""        # String
+    isDirty:        false     # Boolean
+  }
+
+  computed: {
+    classes: () ->
+      extraClasses = @get('extraClasses')
+      multilineClass = @get('multilineClass')
+      if multilineClass? and multilineClass != ''
+        code = @get('code')
+        if code? and code.includes('\n')
+          extraClasses.push(multilineClass)
+      extraClasses.join(' ')
   }
 
   on: {
@@ -16,9 +29,9 @@ RactiveCodeMirror = Ractive.extend({
       @set('initialCode', @get('code'))
 
       mode = switch @get('mode')
-        when 'json' then { name: 'javascript', json: true }
+        when 'json'    then { name: 'javascript', json: true }
         when 'netlogo' then 'netlogo'
-        when 'css' then 'css'
+        when 'css'     then 'css'
         else 'netlogo'
 
       baseConfig = { mode: mode, theme: 'netlogo-default', value: @get('code') ? '' }
@@ -48,7 +61,7 @@ RactiveCodeMirror = Ractive.extend({
       return
   }
 
-  template: """<div id={{ id }} class="ntb-code-mirror {{(extraClasses || []).join(' ')}}" />"""
+  template: """<div id={{ id }} class="ntb-code-mirror {{classes}}" />"""
 
 })
 
