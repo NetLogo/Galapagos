@@ -87,6 +87,8 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
           breeds={{ breeds }}
           isDebugMode={{ isDebugMode }}
           isSideBySide={{ isSideBySide }}
+          blockStyles={{ blockStyles }}
+          allTags={{ allTags }}
         />
       </div>
       """
