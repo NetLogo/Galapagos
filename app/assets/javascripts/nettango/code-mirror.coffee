@@ -15,7 +15,7 @@ RactiveCodeMirror = Ractive.extend({
     classes: () ->
       extraClasses = @get('extraClasses')
       multilineClass = @get('multilineClass')
-      if multilineClass? and multilineClass != ''
+      if multilineClass? and multilineClass isnt ''
         code = @get('code')
         if code? and code.includes('\n')
           extraClasses.push(multilineClass)

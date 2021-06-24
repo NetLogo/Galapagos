@@ -4,7 +4,7 @@ import RactiveBuilderMenu from "./builder-menu.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveProjectChooser from "./project-chooser.js"
 import ObjectUtils from "./object-utils.js"
-import newModel from "/new-model.js";
+import newModel from "/new-model.js"
 
 getBlockStyleDefaults = (style) ->
   ObjectUtils.clone(NetTango.defaultBlockStyles[style])

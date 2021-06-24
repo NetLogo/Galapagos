@@ -1,5 +1,5 @@
-import newModel from "/new-model.js";
-import Tortoise from "/beak/tortoise.js";
+import newModel from "/new-model.js"
+import Tortoise from "/beak/tortoise.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
 # into a Ractive component.  With more work it could encapsulate a lot more
@@ -41,7 +41,8 @@ RactiveNetLogoModel = Ractive.extend({
   }
 
   pageTitle: (modelTitle) ->
-    "NetLogo Web #{(modelTitle != null && modelTitle != "") ? ": " + modelTitle : ""}"
+    title = if modelTitle? and modelTitle.trim() isnt "" then ": #{modelTitle}" else ""
+    "NetLogo Web#{title}"
 
   openSession: (session) ->
     @session          = session
