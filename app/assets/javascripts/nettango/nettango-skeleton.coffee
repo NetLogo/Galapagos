@@ -1,8 +1,10 @@
 import RactiveBlockForm from "./block-form.js"
 import RactiveBuilder from "./builder.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
+import RactiveModelChooser from "./model-chooser.js"
 import RactiveNetLogoModel from "./netlogo-model.js"
 import RactivePopupMenu from "./popup-menu.js"
+import RactiveProjectChooser from "./project-chooser.js"
 
 # (HTMLElement, Environment, Boolean, Boolean, (Boolean) => Unit) => Ractive
 create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
@@ -47,6 +49,16 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         confirmDialog.show(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
         return
 
+      '*.ntb-choose-ntjson-prompt': (context) ->
+        projectChooser = @findComponent('projectChooser')
+        projectChooser.show(context)
+        return
+
+      '*.ntb-choose-netlogo-prompt': (context) ->
+        modelChooser = @findComponent('modelChooser')
+        modelChooser.show(context)
+        return
+
       # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit
       '*.show-block-edit-form': (_, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
         form = @findComponent('blockEditForm')
@@ -58,17 +70,23 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
     }
 
     components: {
-      blockEditForm: RactiveBlockForm
-    , confirmDialog: RactiveConfirmDialog
-    , netLogoModel:  RactiveNetLogoModel
-    , popupMenu:     RactivePopupMenu
-    , tangoBuilder:  RactiveBuilder
+      blockEditForm:  RactiveBlockForm
+    , confirmDialog:  RactiveConfirmDialog
+    , modelChooser:   RactiveModelChooser
+    , netLogoModel:   RactiveNetLogoModel
+    , popupMenu:      RactivePopupMenu
+    , projectChooser: RactiveProjectChooser
+    , tangoBuilder:   RactiveBuilder
     },
 
     template:
       """
       <div class="ntb-components{{# isSideBySide }} netlogo-display-horizontal{{/}}">
         <confirmDialog />
+        {{# !playMode }}
+        <modelChooser runtimeMode="{{runtimeMode}}" />
+        <projectChooser />
+        {{/}}
         <popupMenu />
         <blockEditForm
           idBasis="ntb-block"

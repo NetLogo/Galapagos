@@ -1,8 +1,6 @@
 import RactiveSpaces from "./spaces.js"
 import RactiveOptionsForm from "./options-form.js"
 import RactiveBuilderMenu from "./builder-menu.js"
-import RactiveModelChooser from "./model-chooser.js"
-import RactiveProjectChooser from "./project-chooser.js"
 import ObjectUtils from "./object-utils.js"
 import newModel from "/new-model.js"
 
@@ -131,14 +129,6 @@ RactiveBuilder = Ractive.extend({
       importInput = @find('#ntb-import-netlogo')
       importInput.value = ""
       importInput.click()
-      return
-
-    '*.ntb-choose-netlogo-prompt': (_) ->
-      @findComponent('modelChooser').show()
-      return
-
-    '*.ntb-choose-ntjson-prompt': (_) ->
-      @findComponent('projectChooser').show()
       return
 
     '*.ntb-import-json-prompt': (_) ->
@@ -401,8 +391,6 @@ RactiveBuilder = Ractive.extend({
 
   components: {
     builderMenu:    RactiveBuilderMenu
-  , modelChooser:   RactiveModelChooser
-  , projectChooser: RactiveProjectChooser
   , optionsForm:    RactiveOptionsForm
   , tangoDefs:      RactiveSpaces
   }
@@ -413,12 +401,6 @@ RactiveBuilder = Ractive.extend({
     <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
       <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10"></optionsForm>
-
-      {{# !playMode }}
-      <modelChooser runtimeMode="{{runtimeMode}}"></modelChooser>
-      <projectChooser></projectChooser>
-      {{/}}
-
       <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 

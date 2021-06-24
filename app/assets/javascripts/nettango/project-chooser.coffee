@@ -1,15 +1,15 @@
+import RactiveModelDialog from "./modal-dialog.js"
+
 hostPrefix = "assets/nt-modelslib/"
 
-RactiveProjectChooser = Ractive.extend({
+RactiveProjectChooser = RactiveModelDialog.extend({
 
-  data: () -> {
-    isActive: false # Boolean
-  , top:      "50px" # String
-  }
-
-  show: (top = "50px") ->
-    @set("isActive", true)
-    @set("top",      top)
+  show: ({ event: { pageX, pageY } }) ->
+    options = {
+      approve: { text: "Load the project", event: "load-project" }
+    , deny:    { text: "Cancel" }
+    }
+    @_super(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
     return
 
   loadLibrary: (libraryJson) ->
@@ -49,7 +49,6 @@ RactiveProjectChooser = Ractive.extend({
       return
 
     'load-project': (_) ->
-      @set("isActive", false)
       # We can't use normal Ractive data binding for the `value` of the select, as Chosen doesn't
       # cause updates when it sets it. -Jeremy B May 2021
       select     = @find("#ntb-ntjson-chooser")
@@ -57,34 +56,25 @@ RactiveProjectChooser = Ractive.extend({
       @fire('ntb-load-remote-project', projectUrl)
       return
 
-    'cancel': () ->
-      @set("isActive", false)
-      return
-
   }
 
-  template:
-    # coffeelint: disable=max_line_length
-    """
-    <div class="ntb-dialog-overlay" {{# !isActive }}hidden{{/}}>
-      <div class="ntb-dialog" style="margin-top: {{ top }}">
-        <div class="ntb-dialog-header">Choose a Library Model</div>
-        <div class="ntb-dialog-text">
-          <span>Pick a NetTango project from the NetTango project library.  Note that the NetTango project library is still a work in progress, so you may encounter issues with some projects.</span>
-          <div class="ntb-netlogo-model-chooser">
-            <select id="ntb-ntjson-chooser">
-              {{# projects }}
-                <option value="{{path}}">{{folder}} / {{name}}</option>
-              {{/projects}}
-            </select>
-          </div>
+  partials:
+
+    dialogContent:
+      # coffeelint: disable=max_line_length
+      """
+      <div class="ntb-dialog-text">
+        <span>Pick a NetTango project from the NetTango project library.  Note that the NetTango project library is still a work in progress, so you may encounter issues with some projects.</span>
+        <div class="ntb-netlogo-model-chooser">
+          <select id="ntb-ntjson-chooser">
+            {{# projects }}
+              <option value="{{path}}">{{folder}} / {{name}}</option>
+            {{/projects}}
+          </select>
         </div>
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="load-project" value="Load the project">
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="cancel" value="Cancel">
       </div>
-    </div>
-    """
-    # coffeelint: enable=max_line_length
+      """
+      # coffeelint: enable=max_line_length
 })
 
 export default RactiveProjectChooser

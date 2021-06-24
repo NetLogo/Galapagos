@@ -1,27 +1,30 @@
+import RactiveModelDialog from "./modal-dialog.js"
 import { bindModelChooser } from "/models.js"
 
-RactiveModelChooser = Ractive.extend({
+RactiveModelChooser = RactiveModelDialog.extend({
 
   data: () -> {
-      active:      false # Boolean
-    , runtimeMode: "dev" # String
-    , top:         "50px" # String
-    , encodedUrl:  undefined # String
-    , name:        undefined # String
+    runtimeMode: "dev" # String
+  , encodedUrl:  undefined # String
+  , name:        undefined # String
   }
 
-  # (ShowOptions) => Unit
-  show: (top = "50px") ->
-    @set("active",     true)
-    @set("top",        top)
+  # (Context) => Unit
+  show: ({ event: { pageX, pageY } }) ->
     @set("encodedUrl", null)
     @set("name",       null)
+    options = {
+      approve: { text: "Load the model", event: "load-model" }
+    , deny:    { text: "Cancel" }
+    }
+    @_super(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+    return
+
     return
 
   on: {
     'complete': (_) ->
       modelList  = @find("#tortoise-model-list")
-
       hostPrefix = "#{window.location.protocol}//#{window.location.host}"
 
       pickModel = (path, name) =>
@@ -39,34 +42,24 @@ RactiveModelChooser = Ractive.extend({
 
     # (Event, String) => Unit
     'load-model': (_, eventId) ->
-      @set("active", false)
       @fire("ntb-load-nl-url", @get("encodedUrl"), @get("name"))
-      return
-
-    'cancel': () ->
-      @set("active", false)
       return
 
   }
 
-  template:
-    # coffeelint: disable=max_line_length
-    """
-    <div class="ntb-dialog-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-dialog" style="margin-top: {{ top }}">
-        <div class="ntb-dialog-header">Choose a Library Model</div>
-        <div class="ntb-dialog-text">
-          <span>Pick a NetLogo model from the NetLogo models library to use with your NetTango project.</span>
-          <div class="ntb-netlogo-model-chooser">
-            <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
-          </div>
+  partials: {
+    dialogContent:
+      # coffeelint: disable=max_line_length
+      """
+      <div class="ntb-dialog-text">
+        <span>Pick a NetLogo model from the NetLogo models library to use with your NetTango project.</span>
+        <div class="ntb-netlogo-model-chooser">
+          <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
         </div>
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="load-model" value="Load the model">
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="cancel" value="Cancel">
       </div>
-    </div>
-    """
-    # coffeelint: enable=max_line_length
+      """
+      # coffeelint: enable=max_line_length
+  }
 })
 
 export default RactiveModelChooser

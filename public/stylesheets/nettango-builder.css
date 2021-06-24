@@ -393,6 +393,7 @@ body#ntp-body, html#ntp-body {
 .ntb-code-mirror > .CodeMirror {
   resize: vertical;
   min-height: 1.5em;
+  max-width: 600px;
   font-size: 16px;
 }
 
