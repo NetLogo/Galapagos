@@ -60,8 +60,7 @@ RactiveProjectChooser = RactiveModelDialog.extend({
 
   }
 
-  partials:
-
+  partials: {
     dialogContent:
       # coffeelint: disable=max_line_length
       """
@@ -77,6 +76,7 @@ RactiveProjectChooser = RactiveModelDialog.extend({
       </div>
       """
       # coffeelint: enable=max_line_length
+  }
 })
 
 export default RactiveProjectChooser
