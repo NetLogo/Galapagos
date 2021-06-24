@@ -8,7 +8,6 @@ RactiveSpaces = Ractive.extend({
   data: () -> {
     blockEditForm:    null      # RactiveBlockForm
     blockStyles:      undefined # NetTangoBlockStyles
-    confirmDialog:    null      # RactiveConfirmDialog
     allTags:          []        # Array[String]
     lastCompiledCode: ""        # String
     playMode:         false     # Boolean
@@ -38,7 +37,7 @@ RactiveSpaces = Ractive.extend({
 
     # (Context, Integer) => Boolean
     '*.ntb-confirm-delete': (_, spaceNumber) ->
-      @get('confirmDialog').show({
+      @fire('show-confirm-dialog', {
         text:    "Do you want to delete this workspace?",
         approve: { text: "Yes, delete the workspace", event: "ntb-delete-blockspace" },
         deny:    { text: "No, keep workspace" },
@@ -46,19 +45,6 @@ RactiveSpaces = Ractive.extend({
         eventTarget:    this
       })
       return false
-
-    # (Context, Integer) => Unit
-    '*.ntb-delete-blockspace': (_, spaceNumber) ->
-      spaces = @get('spaces')
-      newSpaces = spaces.filter( (s) -> s.id isnt spaceNumber )
-      newSpaces.forEach( (s, i) ->
-        s.id      = i
-        s.spaceId = "ntb-defs-#{i}"
-      )
-      @set('spaces', newSpaces)
-      @updateCode()
-      @fire('ntb-space-changed')
-      return
 
     # (Context, DuplicateBlockData) => Unit
     '*.ntb-duplicate-block-to': (_, { fromSpaceId, fromBlockIndex, toSpaceIndex }) ->
@@ -160,7 +146,6 @@ RactiveSpaces = Ractive.extend({
           space="{{ this }}"
           playMode="{{ playMode }}"
           popupMenu="{{ popupMenu }}"
-          confirmDialog="{{ confirmDialog }}"
           blockEditForm="{{ blockEditForm }}"
           blockStyles="{{ blockStyles }}"
         />

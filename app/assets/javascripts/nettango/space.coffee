@@ -17,7 +17,6 @@ RactiveSpace = Ractive.extend({
   data: () -> {
     blockEditForm: null  # RactiveBlockForm
     blockStyles:   null  # NetTangoBlockStyles
-    confirmDialog: null  # RactiveConfirmDialog
     defsJson:      ""    # String
     netLogoCode:   ""    # String
     playMode:      false # Boolean

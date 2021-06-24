@@ -1,7 +1,6 @@
 import RactiveSpaces from "./spaces.js"
 import RactiveOptionsForm from "./options-form.js"
 import RactiveBuilderMenu from "./builder-menu.js"
-import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveProjectChooser from "./project-chooser.js"
 import ObjectUtils from "./object-utils.js"
@@ -23,7 +22,6 @@ RactiveBuilder = Ractive.extend({
   data: () -> {
     canRedo:       false     # Boolean
     canUndo:       false     # Boolean
-    confirmDialog: undefined # RactiveConfirmDialog
     allTags:       []        # Array[String]
     knownTags:     []        # Array[String]
     breeds:        []        # Array[String]
@@ -110,49 +108,14 @@ RactiveBuilder = Ractive.extend({
 
   on: {
 
-    # (Context) => Unit
-    'complete': (_) ->
-      confirmDialog = @findComponent('confirmDialog')
-      @set('confirmDialog', confirmDialog)
-      return
-
     # () => Boolean
     '*.ntb-clear-all-check': () ->
-      @get('confirmDialog').show({
+      @fire('show-confirm-dialog', {
         text:    "Do you want to clear your model and workspaces?",
         approve: { text: "Yes, clear all data", event: "ntb-clear-all" },
         deny:    { text: "No, leave workspaces unchanged" }
       })
       return false
-
-    # (Context) => Unit
-    '*.ntb-clear-all': (_) ->
-      blankData = {
-        code:       newModel
-        spaces:     []
-        title:      "Blank Model"
-        tabOptions: {
-          commandCenterTab: true
-          codeTab:          true
-          infoTab:          true
-          speedBar:         true
-          fileButtons:      true
-          authoring:        true
-          poweredBy:        false
-        }
-        netTangoToggles: {
-          workspaceBelow: true
-          showCode:       true
-        }
-        extraCss: ""
-      }
-      @fire("ntb-load-project", {}, blankData)
-      return
-
-    '*.ntb-clear-all-block-styles': (_) ->
-      spacesComponent = @findComponent('tangoDefs')
-      spacesComponent.clearBlockStyles()
-      return
 
     # (Context) => Unit
     '*.ntb-create-blockspace': (_) ->
@@ -252,12 +215,12 @@ RactiveBuilder = Ractive.extend({
       .forEach((n) -> tabOptions[n] = tabOptionValues[n].checked)
 
     {
-        spaces
-      , netTangoToggles
-      , tabOptions
-      , blockStyles: @get('blockStyles')
-      , title:       @get('title')
-      , extraCss:    @get('extraCss')
+      spaces
+    , netTangoToggles
+    , tabOptions
+    , blockStyles: @get('blockStyles')
+    , title:       @get('title')
+    , extraCss:    @get('extraCss')
     }
 
   # () => String
@@ -409,13 +372,54 @@ RactiveBuilder = Ractive.extend({
 
     return
 
+  deleteSpace: (spaceNumber) ->
+    defsComponent = @findComponent('tangoDefs')
+    spaces        = defsComponent.get('spaces')
+    newSpaces     = spaces.filter( (s) -> s.id isnt spaceNumber )
+    newSpaces.forEach( (s, i) ->
+      s.id      = i
+      s.spaceId = "ntb-defs-#{i}"
+    )
+    defsComponent.set('spaces', newSpaces)
+    defsComponent.updateCode()
+    @fire('ntb-space-changed')
+    @fire('ntb-recompile-all')
+    return
+
+  clearBlockStyles: () ->
+    spacesComponent = @findComponent('tangoDefs')
+    spacesComponent.clearBlockStyles()
+    return
+
+  clearAll: () ->
+    blankData = {
+      code:       newModel
+      spaces:     []
+      title:      "Blank Model"
+      tabOptions: {
+        commandCenterTab: true
+        codeTab:          true
+        infoTab:          true
+        speedBar:         true
+        fileButtons:      true
+        authoring:        true
+        poweredBy:        false
+      }
+      netTangoToggles: {
+        workspaceBelow: true
+        showCode:       true
+      }
+      extraCss: ""
+    }
+    @fire("ntb-load-project", {}, blankData)
+    return
+
   components: {
-      builderMenu:    RactiveBuilderMenu
-    , confirmDialog:  RactiveConfirmDialog
-    , modelChooser:   RactiveModelChooser
-    , projectChooser: RactiveProjectChooser
-    , optionsForm:    RactiveOptionsForm
-    , tangoDefs:      RactiveSpaces
+    builderMenu:    RactiveBuilderMenu
+  , modelChooser:   RactiveModelChooser
+  , projectChooser: RactiveProjectChooser
+  , optionsForm:    RactiveOptionsForm
+  , tangoDefs:      RactiveSpaces
   }
 
   template:
@@ -423,8 +427,7 @@ RactiveBuilder = Ractive.extend({
     """
     <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
-      <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
-      <confirmDialog></confirmDialog>
+      <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10"></optionsForm>
 
       {{# !playMode }}
       <modelChooser runtimeMode="{{runtimeMode}}"></modelChooser>
@@ -449,7 +452,6 @@ RactiveBuilder = Ractive.extend({
           id="ntb-defs"
           playMode={{ playMode }}
           popupMenu={{ popupMenu }}
-          confirmDialog={{ confirmDialog }}
           blockStyles={{ blockStyles }}
           allTags={{ allTags }}
           showCode={{ netTangoToggles.showCode.checked }}

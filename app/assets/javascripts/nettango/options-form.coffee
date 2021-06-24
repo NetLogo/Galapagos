@@ -6,10 +6,9 @@ import ObjectUtils from "./object-utils.js"
 RactiveOptionsForm = EditForm.extend({
 
   data: () -> {
-    submitLabel:   "Apply Options"   # String
-    cancelLabel:   "Discard Changes" # String
-    confirmDialog: undefined         # RactiveConfirmDialog
-    options:       undefined         # Object
+    submitLabel: "Apply Options"   # String
+    cancelLabel: "Discard Changes" # String
+    options:     undefined         # Object
   }
 
   on: {
@@ -20,7 +19,7 @@ RactiveOptionsForm = EditForm.extend({
       return
 
     'ntb-confirm-clear-all-block-styles': (_) ->
-      @get('confirmDialog').show({
+      @fire('show-confirm-dialog', {
         text:    "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone.",
         approve: { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" },
         deny:    { text: "No, leave block styles in place" }

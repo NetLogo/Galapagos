@@ -1,9 +1,10 @@
-import RactiveNetLogoModel from "./netlogo-model.js"
-import RactiveBuilder from "./builder.js"
-import UndoRedo from "./undo-redo.js"
-import RactivePopupMenu from "./popup-menu.js"
-import NetTangoStorage from "./storage.js"
 import NetTangoRewriter from "./rewriter.js"
+import NetTangoStorage from "./storage.js"
+import RactiveBuilder from "./builder.js"
+import RactiveConfirmDialog from "./confirm-dialog.js"
+import RactiveNetLogoModel from "./netlogo-model.js"
+import RactivePopupMenu from "./popup-menu.js"
+import UndoRedo from "./undo-redo.js"
 
 class NetTangoController
 
@@ -76,7 +77,7 @@ class NetTangoController
       on: {
 
         'complete': (_) ->
-          popupMenu = @findComponent('popupmenu')
+          popupMenu = @findComponent('popupMenu')
           @set('popupMenu', popupMenu)
 
           document.addEventListener('click', (event) ->
@@ -85,18 +86,38 @@ class NetTangoController
           )
 
           return
+
+        '*.show-confirm-dialog': (options, top) ->
+          confirmDialog = @findComponent('confirmDialog')
+          confirmDialog.show(options, top)
+
+        '*.ntb-delete-blockspace': (_, spaceNumber) ->
+          builder = @findComponent('tangoBuilder')
+          builder.deleteSpace(spaceNumber)
+          return
+
+        '*.ntb-clear-all-block-styles': (_) ->
+          builder = @findComponent('tangoBuilder')
+          builder.clearBlockStyles()
+
+        '*.ntb-clear-all': (_) ->
+          builder = @findComponent('tangoBuilder')
+          builder.clearAll()
+
       }
 
       components: {
-        netLogoModel: RactiveNetLogoModel
-      , popupmenu:    RactivePopupMenu
-      , tangoBuilder: RactiveBuilder
+        confirmDialog: RactiveConfirmDialog
+      , netLogoModel:  RactiveNetLogoModel
+      , popupMenu:     RactivePopupMenu
+      , tangoBuilder:  RactiveBuilder
       },
 
       template:
         """
         <div class="ntb-components{{# isSideBySide }} netlogo-display-horizontal{{/}}">
-          <popupmenu />
+          <confirmDialog />
+          <popupMenu />
           <netLogoModel />
           <tangoBuilder
             playMode={{ playMode }}
