@@ -131,21 +131,21 @@ RactiveBuilder = Ractive.extend({
       importInput = @find('#ntb-import-netlogo')
       importInput.value = ""
       importInput.click()
-      return false
+      return
 
     '*.ntb-choose-netlogo-prompt': (_) ->
       @findComponent('modelChooser').show()
-      return false
+      return
 
     '*.ntb-choose-ntjson-prompt': (_) ->
       @findComponent('projectChooser').show()
-      return false
+      return
 
     '*.ntb-import-json-prompt': (_) ->
       importInput = @find('#ntb-import-json')
       importInput.value = ""
       importInput.click()
-      return false
+      return
 
     '*.ntb-show-options': (_) ->
       tabOptions      = @get("tabOptions")
