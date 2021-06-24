@@ -21,11 +21,11 @@ RactiveBuilderMenu = Ractive.extend({
 
         { eventName: 'ntb-import-json-prompt',   name: 'Import NetTango project' }
         { eventName: 'ntb-load-remote-project',  name: 'Load Wolves and Sheep sample project', data: sampleProjectUrl }
-        { eventName: 'ntb-choose-ntjson-prompt', name: 'Choose NetTango library project' }
+        { eventName: 'show-project-chooser', name: 'Choose NetTango library project' }
         { spacerText: '-' }
 
         { eventName: 'ntb-import-netlogo-prompt', name: 'Import NetLogo model' }
-        { eventName: 'ntb-choose-netlogo-prompt', name: 'Choose NetLogo library model' }
+        { eventName: 'show-model-chooser', name: 'Choose NetLogo library model' }
         { spacerText: '-' }
 
         { eventName: 'ntb-export-json', name: 'Export NetTango project' }

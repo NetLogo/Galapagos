@@ -51,12 +51,12 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         confirmDialog.show(options)
         return
 
-      '*.ntb-choose-ntjson-prompt': ({ event: { pageX, pageY } }) ->
+      '*.show-project-chooser': ({ event: { pageX, pageY } }) ->
         projectChooser = @findComponent('projectChooser')
         projectChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
         return
 
-      '*.ntb-choose-netlogo-prompt': ({ event: { pageX, pageY } }) ->
+      '*.show-model-chooser': ({ event: { pageX, pageY } }) ->
         modelChooser = @findComponent('modelChooser')
         modelChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
         return
