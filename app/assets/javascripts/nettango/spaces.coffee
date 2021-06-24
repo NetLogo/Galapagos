@@ -1,12 +1,10 @@
 import RactiveSpace from "./space.js"
 import RactiveCodeMirror from "./code-mirror.js"
-import RactiveBlockForm from "./block-form.js"
 import NetTangoBlockDefaults from "./block-defaults.js"
 
 RactiveSpaces = Ractive.extend({
 
   data: () -> {
-    blockEditForm:    null      # RactiveBlockForm
     blockStyles:      undefined # NetTangoBlockStyles
     allTags:          []        # Array[String]
     lastCompiledCode: ""        # String
@@ -20,8 +18,6 @@ RactiveSpaces = Ractive.extend({
 
     # (Context) => Unit
     'complete': (_) ->
-      blockEditForm = @findComponent('blockEditForm')
-      @set('blockEditForm', blockEditForm)
       @observe('spaces', (spaces) ->
         spaces.forEach( (space, i) ->
           space.id      = i
@@ -146,28 +142,18 @@ RactiveSpaces = Ractive.extend({
 
   components: {
     tangoSpace:    RactiveSpace
-    blockEditForm: RactiveBlockForm
     codeMirror:    RactiveCodeMirror
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
-    <blockEditForm
-      idBasis="ntb-block"
-      parentClass="ntb-builder"
-      verticalOffset="10"
-      blockStyles={{ blockStyles }}
-      allTags={{ allTags }}
-    />
-
     <div class="ntb-block-defs-list">
       {{#spaces:spaceNum }}
         <tangoSpace
           space="{{ this }}"
           playMode="{{ playMode }}"
           popupMenu="{{ popupMenu }}"
-          blockEditForm="{{ blockEditForm }}"
           blockStyles="{{ blockStyles }}"
         />
       {{/spaces }}

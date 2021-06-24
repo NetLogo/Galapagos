@@ -1,5 +1,6 @@
 import NetTangoRewriter from "./rewriter.js"
 import NetTangoStorage from "./storage.js"
+import RactiveBlockForm from "./block-form.js"
 import RactiveBuilder from "./builder.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveNetLogoModel from "./netlogo-model.js"
@@ -92,10 +93,19 @@ class NetTangoController
           confirmDialog.show(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
           return
 
+        # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit
+        '*.show-block-edit-form': (_, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+          form = @findComponent('blockEditForm')
+          form.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
+          overlay = @root.find('.widget-edit-form-overlay')
+          overlay.classList.add('ntb-dialog-overlay')
+          return
+
       }
 
       components: {
-        confirmDialog: RactiveConfirmDialog
+        blockEditForm: RactiveBlockForm
+      , confirmDialog: RactiveConfirmDialog
       , netLogoModel:  RactiveNetLogoModel
       , popupMenu:     RactivePopupMenu
       , tangoBuilder:  RactiveBuilder
@@ -106,6 +116,13 @@ class NetTangoController
         <div class="ntb-components{{# isSideBySide }} netlogo-display-horizontal{{/}}">
           <confirmDialog />
           <popupMenu />
+          <blockEditForm
+            idBasis="ntb-block"
+            parentClass="ntb-components"
+            verticalOffset="110"
+            blockStyles={{ blockStyles }}
+            allTags={{ allTags }}
+          />
           <netLogoModel />
           <tangoBuilder
             playMode={{ playMode }}
@@ -116,7 +133,7 @@ class NetTangoController
             breeds={{ breeds }}
             isDebugMode={{ isDebugMode }}
             isSideBySide={{ isSideBySide }}
-            />
+          />
         </div>
         """
 

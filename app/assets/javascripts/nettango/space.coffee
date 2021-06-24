@@ -15,7 +15,6 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 RactiveSpace = Ractive.extend({
 
   data: () -> {
-    blockEditForm: null  # RactiveBlockForm
     blockStyles:   null  # NetTangoBlockStyles
     defsJson:      ""    # String
     netLogoCode:   ""    # String
@@ -92,7 +91,7 @@ RactiveSpace = Ractive.extend({
     '*.ntb-show-create-block-form': (_, blockBase) ->
       space = @get('space')
       block = NetTangoBlockDefaults.copyBlock(blockBase)
-      @showBlockForm(space.name, block, null, "Add New Block", "ntb-block-added", "Discard New Block")
+      @fire('show-block-edit-form', this, space.name, block, null, "Add New Block", "ntb-block-added", "Discard New Block")
       return
 
     # (Context, NetTangoBlock) => Unit
@@ -106,7 +105,7 @@ RactiveSpace = Ractive.extend({
     '*.ntb-show-edit-block-form': (_, blockIndex) ->
       space = @get('space')
       block = space.defs.blocks[blockIndex]
-      @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
+      @fire('show-block-edit-form', this, space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
       return
 
     # (Context, NetTangoBlock, Integer) => Unit
@@ -147,14 +146,6 @@ RactiveSpace = Ractive.extend({
 
   }
 
-  # (String, NetTangoBlock, Integer, String, String, String) => Unit
-  showBlockForm: (spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
-    form = @get('blockEditForm')
-    form.show(this, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
-    overlay = @root.find('.widget-edit-form-overlay')
-    overlay.classList.add('ntb-dialog-overlay')
-    return
-
   # (NetTangoSpace | null) => String
   getNetTangoContainerId: (space) ->
     if not space then space = @get("space")
@@ -190,7 +181,7 @@ RactiveSpace = Ractive.extend({
           space      = @get("space")
           blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
           block      = space.defs.blocks[blockIndex]
-          @showBlockForm(space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
+          @fire('show-block-edit-form', this, space.name, block, blockIndex, "Update Block", "ntb-block-updated", "Discard Changes")
 
       when "menu-item-context-menu"
         playMode = @get("playMode")
