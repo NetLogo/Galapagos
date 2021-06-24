@@ -108,14 +108,18 @@ RactiveBuilder = Ractive.extend({
 
   on: {
 
-    # () => Boolean
-    '*.ntb-clear-all-check': () ->
-      @fire('show-confirm-dialog', {
-        text:    "Do you want to clear your model and workspaces?",
-        approve: { text: "Yes, clear all data", event: "ntb-clear-all" },
-        deny:    { text: "No, leave workspaces unchanged" }
+    # (Context) => Unit
+    '*.ntb-clear-all-check': (context) ->
+      @fire('show-confirm-dialog', context, {
+        text:        "Do you want to clear your model and workspaces?"
+      , approve:     { text: "Yes, clear all data", event: "ntb-clear-all" }
+      , deny:        { text: "No, leave workspaces unchanged" }
+      , eventTarget: this
       })
-      return false
+      return
+
+    '*.ntb-clear-all': (_) ->
+      @clearAll()
 
     # (Context) => Unit
     '*.ntb-create-blockspace': (_) ->
@@ -155,7 +159,7 @@ RactiveBuilder = Ractive.extend({
         netTangoToggles,
         blockStyles,
         extraCss
-      })
+      }, @findComponent('tangoDefs'))
       overlay = @root.find(".widget-edit-form-overlay")
       overlay.classList.add("ntb-dialog-overlay")
       return
@@ -370,25 +374,6 @@ RactiveBuilder = Ractive.extend({
     if importInput?
       importInput.value = ''
 
-    return
-
-  deleteSpace: (spaceNumber) ->
-    defsComponent = @findComponent('tangoDefs')
-    spaces        = defsComponent.get('spaces')
-    newSpaces     = spaces.filter( (s) -> s.id isnt spaceNumber )
-    newSpaces.forEach( (s, i) ->
-      s.id      = i
-      s.spaceId = "ntb-defs-#{i}"
-    )
-    defsComponent.set('spaces', newSpaces)
-    defsComponent.updateCode()
-    @fire('ntb-space-changed')
-    @fire('ntb-recompile-all')
-    return
-
-  clearBlockStyles: () ->
-    spacesComponent = @findComponent('tangoDefs')
-    spacesComponent.clearBlockStyles()
     return
 
   clearAll: () ->

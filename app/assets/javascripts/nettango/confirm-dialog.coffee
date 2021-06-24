@@ -1,25 +1,26 @@
 RactiveConfirmDialog = Ractive.extend({
 
   data: () -> {
-      active:         false  # Boolean
-    , top:            "50px" # String
-    , text:           null   # String
-    , approveText:    null   # String
-    , approveEvent:   null   # String
-    , denyText:       null   # String
-    , denyEvent:      null   # String
-    , eventArguments: null   # Array[Any]
-    , eventTarget:    null   # Ractive
+    active:         false # Boolean
+  , top:            50    # Int
+  , text:           null  # String
+  , approveText:    null  # String
+  , approveEvent:   null  # String
+  , denyText:       null  # String
+  , denyEvent:      null  # String
+  , eventArguments: null  # Array[Any]
+  , eventTarget:    null  # Ractive
   }
 
-  # (ShowOptions) => Unit
-  show: (options, top = "50px") ->
+  # (ShowOptions, Int, Int) => Unit
+  show: (options, left = 300, top = 50) ->
     @set("active",         true)
+    @set("left",           left)
     @set("top",            top)
-    @set("text",           options?.text ? "Are you sure?")
-    @set("approveText",    options?.approve?.text ? "Yes")
+    @set("text",           options?.text           ? "Are you sure?")
+    @set("approveText",    options?.approve?.text  ? "Yes")
     @set("approveEvent",   options?.approve?.event)
-    @set("denyText",       options?.deny?.text ? "No")
+    @set("denyText",       options?.deny?.text     ? "No")
     @set("denyEvent",      options?.deny?.event)
     @set("eventArguments", options?.eventArguments)
     @set("eventTarget",    options?.eventTarget)
@@ -40,8 +41,8 @@ RactiveConfirmDialog = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="ntb-dialog-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-confirm-dialog" style="margin-top: {{ top }}">
+    <div class="ntb-dialog-overlay ntb-confirm-overlay" {{# !active }}hidden{{/}}>
+      <div class="ntb-confirm-dialog" style="left: {{left}}px; top: {{top}}px;">
         <div class="ntb-confirm-header">Confirm</div>
         <div class="ntb-confirm-text">{{ text }}</div>
         <input class="widget-edit-text ntb-confirm-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">

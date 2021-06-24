@@ -5,6 +5,8 @@ import ObjectUtils from "./object-utils.js"
 
 RactiveOptionsForm = EditForm.extend({
 
+  clearAllTarget: null
+
   data: () -> {
     submitLabel: "Apply Options"   # String
     cancelLabel: "Discard Changes" # String
@@ -18,12 +20,13 @@ RactiveOptionsForm = EditForm.extend({
       @fire("ntb-options-updated", {}, @get("options"))
       return
 
-    'ntb-confirm-clear-all-block-styles': (_) ->
-      @fire('show-confirm-dialog', {
-        text:    "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone.",
-        approve: { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" },
-        deny:    { text: "No, leave block styles in place" }
-      }, "250px")
+    'ntb-confirm-clear-all-block-styles': (context) ->
+      @fire('show-confirm-dialog', context, {
+        text:        "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone."
+      , approve:     { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" }
+      , deny:        { text: "No, leave block styles in place" }
+      , eventTarget: @clearAllTarget
+      })
       return false
 
   }
@@ -31,7 +34,8 @@ RactiveOptionsForm = EditForm.extend({
   oninit: ->
     @_super()
 
-  show: (options) ->
+  show: (options, clearAllTarget) ->
+    @clearAllTarget = clearAllTarget
     clonedOptions = {}
     [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
       .forEach( (prop) ->

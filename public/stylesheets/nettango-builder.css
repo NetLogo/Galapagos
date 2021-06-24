@@ -88,6 +88,10 @@ body#ntp-body, html#ntp-body {
   z-index: 95;
 }
 
+.ntb-confirm-overlay {
+  z-index: 105;
+}
+
 .ntb-confirm-dialog {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -98,8 +102,8 @@ body#ntp-body, html#ntp-body {
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   padding: 10px 10px 0 10px;
   outline: none;
-  z-index: 100;
   margin: 50px auto;
+  position: absolute;
 }
 
 .ntb-confirm-header {

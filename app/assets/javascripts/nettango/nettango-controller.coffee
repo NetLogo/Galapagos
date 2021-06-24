@@ -87,22 +87,10 @@ class NetTangoController
 
           return
 
-        '*.show-confirm-dialog': (options, top) ->
+        '*.show-confirm-dialog': ({ event: { pageX, pageY } }, options) ->
           confirmDialog = @findComponent('confirmDialog')
-          confirmDialog.show(options, top)
-
-        '*.ntb-delete-blockspace': (_, spaceNumber) ->
-          builder = @findComponent('tangoBuilder')
-          builder.deleteSpace(spaceNumber)
+          confirmDialog.show(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
           return
-
-        '*.ntb-clear-all-block-styles': (_) ->
-          builder = @findComponent('tangoBuilder')
-          builder.clearBlockStyles()
-
-        '*.ntb-clear-all': (_) ->
-          builder = @findComponent('tangoBuilder')
-          builder.clearAll()
 
       }
 

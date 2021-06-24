@@ -36,8 +36,8 @@ RactiveSpaces = Ractive.extend({
       return
 
     # (Context, Integer) => Boolean
-    '*.ntb-confirm-delete': (_, spaceNumber) ->
-      @fire('show-confirm-dialog', {
+    '*.ntb-confirm-delete': (context, spaceNumber) ->
+      @fire('show-confirm-dialog', context, {
         text:    "Do you want to delete this workspace?",
         approve: { text: "Yes, delete the workspace", event: "ntb-delete-blockspace" },
         deny:    { text: "No, keep workspace" },
@@ -45,6 +45,14 @@ RactiveSpaces = Ractive.extend({
         eventTarget:    this
       })
       return false
+
+    '*.ntb-delete-blockspace': (_, spaceNumber) ->
+      @deleteSpace(spaceNumber)
+      return
+
+    '*.ntb-clear-all-block-styles': (_) ->
+      @clearBlockStyles()
+      return
 
     # (Context, DuplicateBlockData) => Unit
     '*.ntb-duplicate-block-to': (_, { fromSpaceId, fromBlockIndex, toSpaceIndex }) ->
@@ -105,6 +113,19 @@ RactiveSpaces = Ractive.extend({
     @push('spaces', space)
     @fire('ntb-space-changed')
     return space
+
+  deleteSpace: (spaceNumber) ->
+    spaces    = @get('spaces')
+    newSpaces = spaces.filter( (s) -> s.id isnt spaceNumber )
+    newSpaces.forEach( (s, i) ->
+      s.id      = i
+      s.spaceId = "ntb-defs-#{i}"
+    )
+    @set('spaces', newSpaces)
+    @updateCode()
+    @fire('ntb-space-changed')
+    @fire('ntb-recompile-all')
+    return
 
   # () => Unit
   clearBlockStyles: () ->

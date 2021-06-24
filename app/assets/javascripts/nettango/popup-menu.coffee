@@ -24,14 +24,14 @@ RactivePopupMenu = Ractive.extend({
   on: {
 
     # (Context, String, Any) => Unit
-    'exec': (_, eventName, itemData) ->
+    'exec': (context, eventName, itemData) ->
       target   = @get('target')
       event    = eventName ? @get('content').eventName
       menuData = @get('menuData')
       if (menuData?)
-        target.fire(event, {}, menuData, itemData)
+        target.fire(event, context, menuData, itemData)
       else
-        target.fire(event, {}, itemData)
+        target.fire(event, context, itemData)
       return
 
     # (Context, Content, Integer, Integer) => Unit
