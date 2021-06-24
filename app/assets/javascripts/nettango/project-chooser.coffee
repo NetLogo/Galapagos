@@ -67,9 +67,9 @@ RactiveProjectChooser = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-dialog-overlay" {{# !isActive }}hidden{{/}}>
-      <div class="ntb-confirm-dialog" style="margin-top: {{ top }}">
-        <div class="ntb-confirm-header">Choose a Library Model</div>
-        <div class="ntb-confirm-text">
+      <div class="ntb-dialog" style="margin-top: {{ top }}">
+        <div class="ntb-dialog-header">Choose a Library Model</div>
+        <div class="ntb-dialog-text">
           <span>Pick a NetTango project from the NetTango project library.  Note that the NetTango project library is still a work in progress, so you may encounter issues with some projects.</span>
           <div class="ntb-netlogo-model-chooser">
             <select id="ntb-ntjson-chooser">
@@ -79,8 +79,8 @@ RactiveProjectChooser = Ractive.extend({
             </select>
           </div>
         </div>
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="load-project" value="Load the project">
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="cancel" value="Cancel">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="load-project" value="Load the project">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="cancel" value="Cancel">
       </div>
     </div>
     """

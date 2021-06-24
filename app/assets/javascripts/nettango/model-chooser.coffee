@@ -53,16 +53,16 @@ RactiveModelChooser = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-dialog-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-confirm-dialog" style="margin-top: {{ top }}">
-        <div class="ntb-confirm-header">Choose a Library Model</div>
-        <div class="ntb-confirm-text">
+      <div class="ntb-dialog" style="margin-top: {{ top }}">
+        <div class="ntb-dialog-header">Choose a Library Model</div>
+        <div class="ntb-dialog-text">
           <span>Pick a NetLogo model from the NetLogo models library to use with your NetTango project.</span>
           <div class="ntb-netlogo-model-chooser">
             <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
           </div>
         </div>
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="load-model" value="Load the model">
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="cancel" value="Cancel">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="load-model" value="Load the model">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="cancel" value="Cancel">
       </div>
     </div>
     """

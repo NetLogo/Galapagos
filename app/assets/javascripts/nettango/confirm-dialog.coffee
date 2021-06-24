@@ -42,11 +42,11 @@ RactiveConfirmDialog = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-dialog-overlay ntb-confirm-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-confirm-dialog" style="left: {{left}}px; top: {{top}}px;">
-        <div class="ntb-confirm-header">Confirm</div>
-        <div class="ntb-confirm-text">{{ text }}</div>
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">
-        <input class="widget-edit-text ntb-confirm-button" type="button" on-click="[ 'fire-event', 'denyEvent' ]" value="{{ denyText }}">
+      <div class="ntb-dialog" style="left: {{left}}px; top: {{top}}px;">
+        <div class="ntb-dialog-header">Confirm</div>
+        <div class="ntb-dialog-text">{{ text }}</div>
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'denyEvent' ]" value="{{ denyText }}">
       </div>
     </div>
     """
