@@ -6,9 +6,9 @@ RactiveConfirmDialog = RactiveModelDialog.extend({
     text: null  # String
   }
 
-  # (ShowOptions, Int, Int) => Unit
-  show: (options, left = 300, top = 50) ->
-    @_super(options, left, top)
+  # (ShowOptions) => Unit
+  show: (options) ->
+    @_super(options)
     @set("text", options?.text ? "Are you sure?")
     return
 

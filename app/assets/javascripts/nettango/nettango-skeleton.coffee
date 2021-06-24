@@ -46,17 +46,19 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
       '*.show-confirm-dialog': ({ event: { pageX, pageY } }, options) ->
         confirmDialog = @findComponent('confirmDialog')
-        confirmDialog.show(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+        options.left  = options?.left ? Math.max(pageX - 200, 0)
+        options.top   = options?.top  ? Math.max(pageY - 150, 0)
+        confirmDialog.show(options)
         return
 
-      '*.ntb-choose-ntjson-prompt': (context) ->
+      '*.ntb-choose-ntjson-prompt': ({ event: { pageX, pageY } }) ->
         projectChooser = @findComponent('projectChooser')
-        projectChooser.show(context)
+        projectChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
         return
 
-      '*.ntb-choose-netlogo-prompt': (context) ->
+      '*.ntb-choose-netlogo-prompt': ({ event: { pageX, pageY } }) ->
         modelChooser = @findComponent('modelChooser')
-        modelChooser.show(context)
+        modelChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
         return
 
       # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit

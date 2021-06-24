@@ -4,12 +4,14 @@ hostPrefix = "assets/nt-modelslib/"
 
 RactiveProjectChooser = RactiveModelDialog.extend({
 
-  show: ({ event: { pageX, pageY } }) ->
+  show: (left, top) ->
     options = {
       approve: { text: "Load the project", event: "load-project" }
     , deny:    { text: "Cancel" }
+    , left:    left
+    , top:     top
     }
-    @_super(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+    @_super(options)
     return
 
   loadLibrary: (libraryJson) ->

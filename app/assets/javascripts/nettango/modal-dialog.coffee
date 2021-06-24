@@ -13,11 +13,11 @@ RactiveModelDialog = Ractive.extend({
   , eventTarget:    null  # Ractive
   }
 
-  # (ShowOptions, Int, Int) => Unit
-  show: (options, left = 300, top = 50) ->
+  # (ShowOptions) => Unit
+  show: (options) ->
     @set("active",         true)
-    @set("left",           left)
-    @set("top",            top)
+    @set("left",           options?.left ? 300)
+    @set("top",            options?.top ? 50)
     @set("text",           options?.text           ? "Are you sure?")
     @set("approveText",    options?.approve?.text  ? "Yes")
     @set("approveEvent",   options?.approve?.event)

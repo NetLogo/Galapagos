@@ -9,15 +9,17 @@ RactiveModelChooser = RactiveModelDialog.extend({
   , name:        undefined # String
   }
 
-  # (Context) => Unit
-  show: ({ event: { pageX, pageY } }) ->
+  # (Int, Int) => Unit
+  show: (left, top) ->
     @set("encodedUrl", null)
     @set("name",       null)
     options = {
       approve: { text: "Load the model", event: "load-model" }
     , deny:    { text: "Cancel" }
+    , left:    left
+    , top:     top
     }
-    @_super(options, Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+    @_super(options)
     return
 
     return
