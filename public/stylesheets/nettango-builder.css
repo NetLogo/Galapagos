@@ -184,11 +184,9 @@ body#ntp-body, html#ntp-body {
   text-align: center;
   border-radius: 4px;
   background-color: #fff;
-}
-
-.ntb-button, .ntb-file-label {
   cursor: pointer;
   user-select: none;
+  white-space: nowrap;
 }
 
 .ntb-file-button {
