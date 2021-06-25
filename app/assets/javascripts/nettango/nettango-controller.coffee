@@ -94,7 +94,7 @@ class NetTangoController
     progress = @storage.inProgress
 
     # first try to load from the inline code element
-    netTangoCodeElement = document.getElementById("ntango-code")
+    netTangoCodeElement = document.getElementById("nettango-code")
     if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
       project = JSON.parse(netTangoCodeElement.textContent)
       @storageId = project.storageId
@@ -327,7 +327,7 @@ class NetTangoController
   exportStandalone: (title, exportDom, project) ->
     project.storageId = NetTangoController.generateStorageId()
 
-    netTangoCodeElement = exportDom.getElementById('ntango-code')
+    netTangoCodeElement = exportDom.getElementById('nettango-code')
     netTangoCodeElement.textContent = JSON.stringify(project)
 
     exportWrapper = document.createElement('div')
