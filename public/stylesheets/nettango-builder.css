@@ -111,6 +111,7 @@ body#ntp-body, html#ntp-body {
   margin: 0 auto;
   font-size: 20px;
   font-weight: 600;
+  user-select: none;
 }
 
 .ntb-dialog-content {
