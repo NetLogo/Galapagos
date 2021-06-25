@@ -8,8 +8,12 @@ RactiveConfirmDialog = RactiveModelDialog.extend({
 
   # (ShowOptions) => Unit
   show: (options) ->
-    @_super(options)
     @set("text", options?.text ? "Are you sure?")
+    propNames = ['active', 'left', 'top', 'approve', 'deny']
+    propNames.forEach( (propName) =>
+      if options[propName]? then @set(propName, options[propName])
+    )
+    @_super()
     return
 
   partials: {

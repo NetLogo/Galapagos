@@ -8,19 +8,20 @@ RactiveModelChooser = RactiveModelDialog.extend({
   , name:             undefined # String
   , encodedUrl:       undefined # String
   , preRenderContent: true      # Boolean
+  , approve:          { text: "Load the model", event: "ntb-load-nl-url", argsMaker: () => @getModelInfo() }
+  , deny:             { text: "Cancel" }
   }
+
+  getModelInfo: () ->
+    [@get("encodedUrl"), @get("name")]
 
   # (Int, Int) => Unit
   show: (left, top) ->
     @set("encodedUrl", null)
     @set("name",       null)
-    options = {
-      approve: { text: "Load the model", event: "load-model" }
-    , deny:    { text: "Cancel" }
-    , left:    left
-    , top:     top
-    }
-    @_super(options)
+    @set("left",       left)
+    @set("top",        top)
+    @_super()
     return
 
     return
@@ -41,11 +42,6 @@ RactiveModelChooser = RactiveModelDialog.extend({
 
       bindModelChooser(modelList, onComplete, pickModel, @get("runtimeMode"))
 
-      return
-
-    # (Event, String) => Unit
-    'load-model': (_, eventId) ->
-      @fire("ntb-load-nl-url", @get("encodedUrl"), @get("name"))
       return
 
   }

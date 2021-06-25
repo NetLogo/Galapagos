@@ -34,11 +34,14 @@ RactiveSpaces = Ractive.extend({
     # (Context, Integer) => Boolean
     '*.ntb-confirm-delete': (context, spaceNumber) ->
       @fire('show-confirm-dialog', context, {
-        text:    "Do you want to delete this workspace?",
-        approve: { text: "Yes, delete the workspace", event: "ntb-delete-blockspace" },
-        deny:    { text: "No, keep workspace" },
-        eventArguments: [ spaceNumber ],
-        eventTarget:    this
+        text: "Do you want to delete this workspace?"
+      , approve: {
+          text: "Yes, delete the workspace"
+        , event: "ntb-delete-blockspace"
+        , arguments: [spaceNumber]
+        , target: this
+        }
+      , deny: { text: "No, keep workspace" }
       })
       return false
 

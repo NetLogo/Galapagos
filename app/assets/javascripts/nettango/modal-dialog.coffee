@@ -1,41 +1,36 @@
 RactiveModelDialog = Ractive.extend({
 
+  # type EventOptions = {
+  #     text: String
+  #   , event: String | null
+  #   , target: Ractive | null
+  #   , arguments: Any[] | null
+  #   , argsMaker: () => Any[] | null
+  # }
+
   data: () -> {
-    active:           false # Boolean
-  , preRenderContent: false # Boolean
-  , left:             300   # Int
-  , top:              50    # Int
-  , approveText:      null  # String
-  , approveEvent:     null  # String
-  , denyText:         null  # String
-  , denyEvent:        null  # String
-  , eventArguments:   null  # Array[Any]
-  , eventTarget:      null  # Ractive
+    active:           false           # Boolean
+  , preRenderContent: false           # Boolean
+  , left:             300             # Int
+  , top:              50              # Int
+  , approve:          { text: "Yes" } # EventOptions
+  , deny:             { text: "No"  } # EventOptions
   }
 
   # (ShowOptions) => Unit
   show: (options) ->
-    @set("active",           true)
-    @set("left",             options?.left             ? 300)
-    @set("top",              options?.top              ? 50)
-    @set("approveText",      options?.approve?.text    ? "Yes")
-    @set("approveEvent",     options?.approve?.event)
-    @set("denyText",         options?.deny?.text       ? "No")
-    @set("denyEvent",        options?.deny?.event)
-    @set("eventArguments",   options?.eventArguments)
-    @set("eventArgsMaker",   options?.eventArgsMaker)
-    @set("eventTarget",      options?.eventTarget)
+    @set("active", true)
     return
 
   on: {
     # (Event, String) => Unit
     'fire-event': (_, eventId) ->
       @set("active", false)
-      eventName = @get(eventId)
-      if (eventName)
-        args        = @get("eventArguments") ? @get("eventArgsMaker")?() ? []
-        eventTarget = @get("eventTarget") ? this
-        eventTarget.fire(eventName, ...args)
+      eventOptions = @get(eventId)
+      if eventOptions? and eventOptions.event?
+        args   = eventOptions.arguments ? eventOptions.argsMaker?() ? []
+        target = eventOptions.target ? this
+        target.fire(eventOptions.event, ...args)
       return
   }
 
@@ -52,8 +47,8 @@ RactiveModelDialog = Ractive.extend({
           {{> dialogContent }}
         </div>
         {{/}}
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'denyEvent' ]" value="{{ denyText }}">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approve' ]" value="{{ approve.text }}">
+        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'deny' ]" value="{{ deny.text }}">
       </div>
     </div>
     """

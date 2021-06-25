@@ -6,16 +6,21 @@ RactiveProjectChooser = RactiveModelDialog.extend({
 
   data: () -> {
     preRenderContent: true # Boolean
+  , approve:          { text: "Load the project", event: "ntb-load-remote-project", argsMaker: () => @getProjectInfo() }
+  , deny:             { text: "Cancel" }
   }
 
+  getProjectInfo: () ->
+    # We can't use normal Ractive data binding for the `value` of the select, as Chosen doesn't
+    # cause updates when it sets it. -Jeremy B May 2021
+    select     = @find("#ntb-ntjson-chooser")
+    projectUrl = hostPrefix + select.value
+    [projectUrl]
+
   show: (left, top) ->
-    options = {
-      approve:          { text: "Load the project", event: "load-project" }
-    , deny:             { text: "Cancel" }
-    , left:             left
-    , top:              top
-    }
-    @_super(options)
+    @set('left', left)
+    @set('top',  top)
+    @_super()
     return
 
   loadLibrary: (libraryJson) ->
@@ -52,14 +57,6 @@ RactiveProjectChooser = RactiveModelDialog.extend({
         @fire('ntb-error', {}, 'load-library-json', error)
         return
       )
-      return
-
-    'load-project': (_) ->
-      # We can't use normal Ractive data binding for the `value` of the select, as Chosen doesn't
-      # cause updates when it sets it. -Jeremy B May 2021
-      select     = @find("#ntb-ntjson-chooser")
-      projectUrl = hostPrefix + select.value
-      @fire('ntb-load-remote-project', projectUrl)
       return
 
   }

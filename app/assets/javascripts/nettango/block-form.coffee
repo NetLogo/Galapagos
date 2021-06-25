@@ -209,13 +209,14 @@ RactiveBlockForm = RactiveModalDialog.extend({
     @set('terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
     @_setBlock(block)
     @set('blockKnownTags', @get('allTags').slice(0))
-    options = {
-      approve: { text: submitLabel, event: submitEvent }
-    , deny:    { text: cancelLabel }
-    , eventTarget:  target
-    , eventArgsMaker: (() => @makeSubmitEventArgs())
-    }
-    @_super(options)
+    @set('approve', {
+      text: submitLabel
+    , event: submitEvent
+    , target: target
+    , argsMaker: () => @makeSubmitEventArgs()
+    })
+    @set('deny', { text: cancelLabel })
+    @_super()
     @set('ready', true)
     return
 

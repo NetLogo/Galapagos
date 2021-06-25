@@ -22,10 +22,13 @@ RactiveOptionsForm = EditForm.extend({
 
     'ntb-confirm-clear-all-block-styles': (context) ->
       @fire('show-confirm-dialog', context, {
-        text:        "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone."
-      , approve:     { text: "Yes, clear all block styles", event: "ntb-clear-all-block-styles" }
-      , deny:        { text: "No, leave block styles in place" }
-      , eventTarget: @clearAllTarget
+        text: "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone."
+      , approve: {
+          text: "Yes, clear all block styles"
+        , event: "ntb-clear-all-block-styles"
+        , target: @clearAllTarget
+        }
+      , deny: { text: "No, leave block styles in place" }
       })
       return false
 

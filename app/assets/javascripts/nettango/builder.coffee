@@ -109,10 +109,9 @@ RactiveBuilder = Ractive.extend({
     # (Context) => Unit
     '*.ntb-clear-all-check': (context) ->
       @fire('show-confirm-dialog', context, {
-        text:        "Do you want to clear your model and workspaces?"
-      , approve:     { text: "Yes, clear all data", event: "ntb-clear-all" }
-      , deny:        { text: "No, leave workspaces unchanged" }
-      , eventTarget: this
+        text:    "Do you want to clear your model and workspaces?"
+      , approve: { text: "Yes, clear all data", event: "ntb-clear-all", target: this }
+      , deny:    { text: "No, leave workspaces unchanged" }
       })
       return
 
