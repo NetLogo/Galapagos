@@ -22,8 +22,13 @@ class NetTangoController
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
-    @ractive      = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode, @setDebugMode)
+    @ractive      = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode)
     @netLogoModel = @ractive.findComponent('netLogoModel')
+
+    @ractive.observe('isDebugMode', (value) =>
+      @setDebugMode(value)
+      return
+    )
 
     @ractive.on('*.ntb-model-change',    (_, title, code) => @setNetLogoCode(title, code))
     @ractive.on('*.ntb-clear-all',       (_)              => @resetUndoStack())

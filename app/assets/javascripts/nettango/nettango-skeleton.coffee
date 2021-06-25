@@ -7,8 +7,8 @@ import RactiveOptionsForm from "./options-form.js"
 import RactivePopupMenu from "./popup-menu.js"
 import RactiveProjectChooser from "./project-chooser.js"
 
-# (HTMLElement, Environment, Boolean, Boolean, (Boolean) => Unit) => Ractive
-create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
+# (HTMLElement, Environment, Boolean, Boolean) => Ractive
+create = (element, playMode, runtimeMode, isDebugMode) ->
   new Ractive({
 
     el: element,
@@ -21,14 +21,6 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
       isSideBySide: false       # Boolean
       playMode:     playMode    # Boolean
       runtimeMode:  runtimeMode # String
-    }
-
-    observe: {
-
-      'isDebugMode': () ->
-        setDebugMode(@get('isDebugMode'))
-        return
-
     }
 
     on: {
