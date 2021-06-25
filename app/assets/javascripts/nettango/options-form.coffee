@@ -1,25 +1,19 @@
-import EditForm from "/beak/widgets/ractives/edit-form.js"
 import RactiveBlockStyleSettings from "./block-style-settings.js"
 import RactiveCodeMirror from "./code-mirror.js"
+import RactiveModalDialog from "./modal-dialog.js"
 import ObjectUtils from "./object-utils.js"
 
-RactiveOptionsForm = EditForm.extend({
+RactiveOptionsForm = RactiveModalDialog.extend({
 
   clearAllTarget: null
 
   data: () -> {
-    submitLabel: "Apply Options"   # String
-    cancelLabel: "Discard Changes" # String
-    options:     undefined         # Object
+    deny:    { text: "Discard Changes" }
+    options: undefined
+    top:     250
   }
 
   on: {
-
-    # (Context) => Unit
-    'submit': (_) ->
-      @fire("ntb-options-updated", {}, @get("options"))
-      return
-
     'ntb-confirm-clear-all-block-styles': (context) ->
       @fire('show-confirm-dialog', context, {
         text: "Do you want to clear existing styles from all blocks in all workspaces?  This cannot be undone."
@@ -30,14 +24,10 @@ RactiveOptionsForm = EditForm.extend({
         }
       , deny: { text: "No, leave block styles in place" }
       })
-      return false
-
+      return
   }
 
-  oninit: ->
-    @_super()
-
-  show: (options, clearAllTarget) ->
+  show: (target, options, clearAllTarget) ->
     @clearAllTarget = clearAllTarget
     clonedOptions = {}
     [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
@@ -45,15 +35,15 @@ RactiveOptionsForm = EditForm.extend({
         if options.hasOwnProperty(prop) and options[prop]?
           clonedOptions[prop] = ObjectUtils.clone(options[prop])
       )
-    @set("options", clonedOptions)
-
-    @fire("show-yourself")
+    @set('options', clonedOptions)
+    @set('approve', {
+      text: "Apply Options"
+    , event: "ntb-options-updated"
+    , argsMaker: (() => [@get('options')])
+    , target: target
+    })
+    @_super()
     return
-
-  genProps: (_) ->
-    null
-
-  twoway: true
 
   components: {
     blockStyle: RactiveBlockStyleSettings
@@ -62,9 +52,8 @@ RactiveOptionsForm = EditForm.extend({
 
   partials: {
 
-    title: "NetTango Model Options"
-
-    widgetFields:
+    headerContent: "NetTango Model Options"
+    dialogContent:
       # coffeelint: disable=max_line_length
       """
       {{# options }}

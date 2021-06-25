@@ -1,8 +1,8 @@
-import RactiveModelDialog from "./modal-dialog.js"
+import RactiveModalDialog from "./modal-dialog.js"
 
 hostPrefix = "assets/nt-modelslib/"
 
-RactiveProjectChooser = RactiveModelDialog.extend({
+RactiveProjectChooser = RactiveModalDialog.extend({
 
   data: () -> {
     preRenderContent: true # Boolean

@@ -1,9 +1,10 @@
-import RactiveModelDialog from "./modal-dialog.js"
+import RactiveModalDialog from "./modal-dialog.js"
 
-RactiveConfirmDialog = RactiveModelDialog.extend({
+RactiveConfirmDialog = RactiveModalDialog.extend({
 
   data: () -> {
-    text: null  # String
+    text:         null                  # String
+    extraClasses: 'ntb-confirm-overlay' # String
   }
 
   # (ShowOptions) => Unit

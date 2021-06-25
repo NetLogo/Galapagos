@@ -1,7 +1,7 @@
-import RactiveModelDialog from "./modal-dialog.js"
+import RactiveModalDialog from "./modal-dialog.js"
 import { bindModelChooser } from "/models.js"
 
-RactiveModelChooser = RactiveModelDialog.extend({
+RactiveModelChooser = RactiveModalDialog.extend({
 
   data: () -> {
     runtimeMode:      "dev"     # String

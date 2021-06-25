@@ -1,5 +1,4 @@
 import RactiveSpaces from "./spaces.js"
-import RactiveOptionsForm from "./options-form.js"
 import RactiveBuilderMenu from "./builder-menu.js"
 import ObjectUtils from "./object-utils.js"
 import newModel from "/new-model.js"
@@ -136,24 +135,22 @@ RactiveBuilder = Ractive.extend({
       importInput.click()
       return
 
-    '*.ntb-show-options': (_) ->
+    '*.ntb-show-options': () ->
       tabOptions      = @get("tabOptions")
       netTangoToggles = @get("netTangoToggles")
       blockStyles     = @get("blockStyles") ? ObjectUtils.clone(NetTango.defaultBlockStyles)
       extraCss        = @get("extraCss")
-
-      optionsForm = @findComponent("optionsForm")
-      optionsForm.show({
-        tabOptions,
-        netTangoToggles,
-        blockStyles,
-        extraCss
-      }, @findComponent('tangoDefs'))
-      overlay = @root.find(".widget-edit-form-overlay")
-      overlay.classList.add("ntb-dialog-overlay")
+      options         = {
+        tabOptions
+      , netTangoToggles
+      , blockStyles
+      , extraCss
+      }
+      clearAllTarget = @findComponent('tangoDefs')
+      @fire('show-options-form', {}, this, options, clearAllTarget)
       return
 
-    '*.ntb-options-updated': (_, options) ->
+    '*.ntb-options-updated': (options) ->
       tabOptions = @get("tabOptions")
       Object.getOwnPropertyNames(options.tabOptions)
         .forEach( (n) ->
@@ -390,7 +387,6 @@ RactiveBuilder = Ractive.extend({
 
   components: {
     builderMenu:    RactiveBuilderMenu
-  , optionsForm:    RactiveOptionsForm
   , tangoDefs:      RactiveSpaces
   }
 
@@ -399,7 +395,6 @@ RactiveBuilder = Ractive.extend({
     """
     <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
-      <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10"></optionsForm>
       <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 

@@ -1,4 +1,4 @@
-RactiveModelDialog = Ractive.extend({
+RactiveModalDialog = Ractive.extend({
 
   # type EventOptions = {
   #     text: String
@@ -36,7 +36,7 @@ RactiveModelDialog = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="ntb-dialog-overlay ntb-confirm-overlay" {{# !active }}hidden{{/}}>
+    <div class="ntb-dialog-overlay {{extraClasses}}" {{# !active }}hidden{{/}}>
       <div class="ntb-dialog" style="top: {{top}}px;">
         {{# active || preRenderContent }}
         <div class="ntb-dialog-header">
@@ -54,4 +54,4 @@ RactiveModelDialog = Ractive.extend({
     # coffeelint: enable=max_line_length
 })
 
-export default RactiveModelDialog
+export default RactiveModalDialog

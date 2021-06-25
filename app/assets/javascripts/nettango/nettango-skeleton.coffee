@@ -3,6 +3,7 @@ import RactiveBuilder from "./builder.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveNetLogoModel from "./netlogo-model.js"
+import RactiveOptionsForm from "./options-form.js"
 import RactivePopupMenu from "./popup-menu.js"
 import RactiveProjectChooser from "./project-chooser.js"
 
@@ -60,10 +61,14 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         modelChooser.show(Math.max(pageY - 100, 50))
         return
 
-      # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit
       '*.show-block-edit-form': (_, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
         blockForm = @findComponent('blockEditForm')
         blockForm.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
+        return
+
+      '*.show-options-form': (_, target, options, clearAllTarget) ->
+        optionsForm = @findComponent("optionsForm")
+        optionsForm.show(target, options, clearAllTarget)
         return
 
     }
@@ -73,6 +78,7 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
     , confirmDialog:  RactiveConfirmDialog
     , modelChooser:   RactiveModelChooser
     , netLogoModel:   RactiveNetLogoModel
+    , optionsForm:    RactiveOptionsForm
     , popupMenu:      RactivePopupMenu
     , projectChooser: RactiveProjectChooser
     , tangoBuilder:   RactiveBuilder
@@ -87,13 +93,8 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         <projectChooser />
         {{/}}
         <popupMenu />
-        <blockEditForm
-          idBasis="ntb-block"
-          parentClass="ntb-components"
-          verticalOffset="110"
-          blockStyles={{ blockStyles }}
-          allTags={{ allTags }}
-        />
+        <blockEditForm blockStyles={{ blockStyles }} allTags={{ allTags }} />
+        <optionsForm />
         <netLogoModel />
         <tangoBuilder
           playMode={{ playMode }}
