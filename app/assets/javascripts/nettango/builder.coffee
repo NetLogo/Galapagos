@@ -25,7 +25,6 @@ RactiveBuilder = Ractive.extend({
     isDebugMode:   false     # Boolean
     isSideBySide:  false     # Boolean
     playMode:      false     # Boolean
-    popupMenu:     undefined # RactivePopupMenu
     runtimeMode:   "dev"     # String
 
     blockEditor: {
@@ -401,7 +400,6 @@ RactiveBuilder = Ractive.extend({
       <div class="ntb-controls">
         {{# !playMode }}
           <builderMenu
-            popupMenu={{ popupMenu }}
             canUndo={{ canUndo }}
             canRedo={{ canRedo }}
             isDebugMode={{ isDebugMode }}
@@ -412,7 +410,6 @@ RactiveBuilder = Ractive.extend({
         <tangoDefs
           id="ntb-defs"
           playMode={{ playMode }}
-          popupMenu={{ popupMenu }}
           blockStyles={{ blockStyles }}
           allTags={{ allTags }}
           showCode={{ netTangoToggles.showCode.checked }}

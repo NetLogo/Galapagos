@@ -19,7 +19,6 @@ RactiveSpace = Ractive.extend({
     defsJson:      ""    # String
     netLogoCode:   ""    # String
     playMode:      false # Boolean
-    popupMenu:     null  # RactivePopupMenu
     space:         null  # NetTangoSpace
   }
 
@@ -43,14 +42,14 @@ RactiveSpace = Ractive.extend({
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
-      @get('popupMenu').popup(this, pageX, pageY, NetTangoBlockDefaults.blocks)
+      @fire('show-popup-menu', {}, this, pageX, pageY, NetTangoBlockDefaults.blocks)
       return false
 
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       spaces     = @parent.get("spaces")
       modifyMenu = @createModifyMenuContent(space, spaces)
-      @get('popupMenu').popup(this, pageX, pageY, modifyMenu)
+      @fire('show-popup-menu', {}, this, pageX, pageY, modifyMenu)
       return false
 
     # (Context, Integer) => Unit
@@ -218,7 +217,7 @@ RactiveSpace = Ractive.extend({
           block      = space.defs.blocks[blockIndex]
           spaces     = @parent.get("spaces")
           modifyMenu = @createModifyMenu(block, blockIndex, space, spaces)
-          @get('popupMenu').popup(this, event.x, event.y, modifyMenu)
+          @fire('show-popup-menu', {}, this, event.x, event.y, modifyMenu)
 
     return
 

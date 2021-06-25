@@ -9,7 +9,6 @@ RactiveSpaces = Ractive.extend({
     allTags:          []        # Array[String]
     lastCompiledCode: ""        # String
     playMode:         false     # Boolean
-    popupMenu:        null      # RactivePopupMenu
     showCode:         true      # Boolean
     spaces:           []        # Array[NetTangoSpace]
   }
@@ -156,7 +155,6 @@ RactiveSpaces = Ractive.extend({
         <tangoSpace
           space="{{ this }}"
           playMode="{{ playMode }}"
-          popupMenu="{{ popupMenu }}"
           blockStyles="{{ blockStyles }}"
         />
       {{/spaces }}

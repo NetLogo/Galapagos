@@ -32,6 +32,7 @@ RactivePopupMenu = Ractive.extend({
         target.fire(event, context, menuData, itemData)
       else
         target.fire(event, context, itemData)
+      @unpop()
       return
 
     # (Context, Content, Integer, Integer) => Unit

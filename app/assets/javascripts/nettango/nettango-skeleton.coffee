@@ -20,7 +20,6 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
       isDebugMode:  isDebugMode # Boolean
       isSideBySide: false       # Boolean
       playMode:     playMode    # Boolean
-      popupMenu:    undefined   # RactivePopupMenu
       runtimeMode:  runtimeMode # String
     }
 
@@ -36,8 +35,6 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
       'complete': (_) ->
         popupMenu = @findComponent('popupMenu')
-        @set('popupMenu', popupMenu)
-
         document.addEventListener('click', (event) ->
           if event?.button isnt 2
             popupMenu.unpop()
@@ -71,6 +68,11 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         optionsForm.show(target, options, clearAllTarget)
         return
 
+      '*.show-popup-menu': (_, target, top, left, options) ->
+        popupMenu = @findComponent('popupMenu')
+        popupMenu.popup(target, top, left, options)
+        return
+
     }
 
     components: {
@@ -99,7 +101,6 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
         <tangoBuilder
           playMode={{ playMode }}
           runtimeMode={{ runtimeMode }}
-          popupMenu={{ popupMenu }}
           canUndo={{ canUndo }}
           canRedo={{ canRedo }}
           breeds={{ breeds }}

@@ -7,14 +7,12 @@ RactiveBuilderMenu = Ractive.extend({
     canUndo:     false     # Boolean
     canRedo:     false     # Boolean
     isDebugMode: false     # Boolean
-    popupMenu:   undefined # RactivePopupMenu
     runtimeMode: "dev"     # String
   }
 
   on: {
 
     'ntb-show-file-operations': ({ event: { pageX, pageY } }) ->
-      popupMenu = @get("popupMenu")
       items = [
         { eventName: 'ntb-clear-all-check', name: 'Clear model and spaces' }
         { spacerText: '-' }
@@ -39,11 +37,10 @@ RactiveBuilderMenu = Ractive.extend({
         name: "File Operations"
         items: items
       }
-      popupMenu.popup(this, pageX, pageY, fileOperations)
+      @fire('show-popup-menu', {}, this, pageX, pageY, fileOperations)
       return false
 
     'ntb-show-help': ({ event: { pageX, pageY } }) ->
-      popupMenu = @get("popupMenu")
       helpOptions = {
         name: "Help"
         items: [
@@ -64,7 +61,7 @@ RactiveBuilderMenu = Ractive.extend({
           , eventName: 'ntb-toggle-debug'
         })
 
-      popupMenu.popup(this, pageX, pageY, helpOptions)
+      @fire('show-popup-menu', {}, this, pageX, pageY, helpOptions)
       return false
 
     'ntb-toggle-debug': () ->
