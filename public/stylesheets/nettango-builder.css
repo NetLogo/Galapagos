@@ -102,8 +102,8 @@ body#ntp-body, html#ntp-body {
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   padding: 10px 10px 0 10px;
   outline: none;
-  margin: 50px auto;
-  position: absolute;
+  margin: 0 auto;
+  position: relative;
 }
 
 .ntb-dialog-header {

@@ -15,11 +15,10 @@ RactiveModelChooser = RactiveModelDialog.extend({
   getModelInfo: () ->
     [@get("encodedUrl"), @get("name")]
 
-  # (Int, Int) => Unit
-  show: (left, top) ->
+  # (Int) => Unit
+  show: (top) ->
     @set("encodedUrl", null)
     @set("name",       null)
-    @set("left",       left)
     @set("top",        top)
     @_super()
     return

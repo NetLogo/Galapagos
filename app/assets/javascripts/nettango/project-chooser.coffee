@@ -17,9 +17,8 @@ RactiveProjectChooser = RactiveModelDialog.extend({
     projectUrl = hostPrefix + select.value
     [projectUrl]
 
-  show: (left, top) ->
-    @set('left', left)
-    @set('top',  top)
+  show: (top) ->
+    @set('top', top)
     @_super()
     return
 

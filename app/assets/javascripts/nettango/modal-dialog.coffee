@@ -11,14 +11,13 @@ RactiveModelDialog = Ractive.extend({
   data: () -> {
     active:           false           # Boolean
   , preRenderContent: false           # Boolean
-  , left:             300             # Int
   , top:              50              # Int
   , approve:          { text: "Yes" } # EventOptions
   , deny:             { text: "No"  } # EventOptions
   }
 
-  # (ShowOptions) => Unit
-  show: (options) ->
+  # () => Unit
+  show: () ->
     @set("active", true)
     return
 
@@ -38,7 +37,7 @@ RactiveModelDialog = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div class="ntb-dialog-overlay ntb-confirm-overlay" {{# !active }}hidden{{/}}>
-      <div class="ntb-dialog" style="left: {{left}}px; top: {{top}}px;">
+      <div class="ntb-dialog" style="top: {{top}}px;">
         {{# active || preRenderContent }}
         <div class="ntb-dialog-header">
           {{> headerContent }}

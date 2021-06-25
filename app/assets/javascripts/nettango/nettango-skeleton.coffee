@@ -44,21 +44,20 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
         return
 
-      '*.show-confirm-dialog': ({ event: { pageX, pageY } }, options) ->
+      '*.show-confirm-dialog': ({ event: { pageY } }, options) ->
         confirmDialog = @findComponent('confirmDialog')
-        options.left  = options?.left ? Math.max(pageX - 200, 0)
-        options.top   = options?.top  ? Math.max(pageY - 150, 0)
+        options.top   = options?.top ? Math.max(pageY - 100, 50)
         confirmDialog.show(options)
         return
 
-      '*.show-project-chooser': ({ event: { pageX, pageY } }) ->
+      '*.show-project-chooser': ({ event: { pageY } }) ->
         projectChooser = @findComponent('projectChooser')
-        projectChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+        projectChooser.show(Math.max(pageY - 100, 50))
         return
 
-      '*.show-model-chooser': ({ event: { pageX, pageY } }) ->
+      '*.show-model-chooser': ({ event: { pageY } }) ->
         modelChooser = @findComponent('modelChooser')
-        modelChooser.show(Math.max(pageX - 200, 0), Math.max(pageY - 150, 0))
+        modelChooser.show(Math.max(pageY - 100, 50))
         return
 
       # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit

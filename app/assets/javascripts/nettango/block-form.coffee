@@ -20,6 +20,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
     blockKnownTags: []           # Array[String]
     allTags:        []           # Array[String]
     terminalType:   "attachable" # "attachable" | "terminal"
+    top:            250
   }
 
   computed: {
