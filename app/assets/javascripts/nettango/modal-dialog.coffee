@@ -46,8 +46,10 @@ RactiveModalDialog = Ractive.extend({
           {{> dialogContent }}
         </div>
         {{/}}
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approve' ]" value="{{ approve.text }}">
-        <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'deny' ]" value="{{ deny.text }}">
+        <div class="ntb-dialog-buttons">
+          <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approve' ]" value="{{ approve.text }}">
+          <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'deny' ]" value="{{ deny.text }}">
+        </div>
       </div>
     </div>
     """

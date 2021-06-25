@@ -10,7 +10,7 @@ RactiveOptionsForm = RactiveModalDialog.extend({
   data: () -> {
     deny:    { text: "Discard Changes" }
     options: undefined
-    top:     250
+    top:     150
   }
 
   on: {
