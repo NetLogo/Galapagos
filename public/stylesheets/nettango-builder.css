@@ -113,8 +113,11 @@ body#ntp-body, html#ntp-body {
   font-weight: 600;
 }
 
-.ntb-dialog-text {
+.ntb-dialog-content {
   grid-column: 1 / 3;
+}
+
+.ntb-dialog-text {
   margin: 30px 15px;
   max-width: 800px;
 }
@@ -229,7 +232,6 @@ body#ntp-body, html#ntp-body {
 
 .ntb-block-form {
   align-items: start;
-  grid-column: 1 / 3;
 }
 
 .ntb-block-form-fields {

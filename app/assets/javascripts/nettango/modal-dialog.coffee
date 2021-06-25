@@ -45,8 +45,12 @@ RactiveModelDialog = Ractive.extend({
     <div class="ntb-dialog-overlay ntb-confirm-overlay" {{# !active }}hidden{{/}}>
       <div class="ntb-dialog" style="left: {{left}}px; top: {{top}}px;">
         {{# active || preRenderContent }}
-          <div class="ntb-dialog-header">{{> headerContent }}</div>
+        <div class="ntb-dialog-header">
+          {{> headerContent }}
+        </div>
+        <div class="ntb-dialog-content">
           {{> dialogContent }}
+        </div>
         {{/}}
         <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'approveEvent' ]" value="{{ approveText }}">
         <input class="widget-edit-text ntb-dialog-button" type="button" on-click="[ 'fire-event', 'denyEvent' ]" value="{{ denyText }}">
