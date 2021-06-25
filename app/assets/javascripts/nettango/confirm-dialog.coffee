@@ -13,6 +13,7 @@ RactiveConfirmDialog = RactiveModelDialog.extend({
     return
 
   partials: {
+    headerContent: "Confirm"
     dialogContent: """<div class="ntb-dialog-text">{{ text }}</div>"""
   }
 })

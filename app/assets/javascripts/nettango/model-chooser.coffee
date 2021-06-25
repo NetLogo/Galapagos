@@ -4,9 +4,10 @@ import { bindModelChooser } from "/models.js"
 RactiveModelChooser = RactiveModelDialog.extend({
 
   data: () -> {
-    runtimeMode: "dev" # String
-  , encodedUrl:  undefined # String
-  , name:        undefined # String
+    runtimeMode:      "dev"     # String
+  , name:             undefined # String
+  , encodedUrl:       undefined # String
+  , preRenderContent: true      # Boolean
   }
 
   # (Int, Int) => Unit
@@ -50,6 +51,7 @@ RactiveModelChooser = RactiveModelDialog.extend({
   }
 
   partials: {
+    headerContent: "Choose a Library Model"
     dialogContent:
       # coffeelint: disable=max_line_length
       """

@@ -63,10 +63,8 @@ create = (element, playMode, runtimeMode, isDebugMode, setDebugMode) ->
 
       # (Context, Ractive, String, NetTangoBlock, Integer, String, String, String) => Unit
       '*.show-block-edit-form': (_, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
-        form = @findComponent('blockEditForm')
-        form.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
-        overlay = @root.find('.widget-edit-form-overlay')
-        overlay.classList.add('ntb-dialog-overlay')
+        blockForm = @findComponent('blockEditForm')
+        blockForm.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
         return
 
     }

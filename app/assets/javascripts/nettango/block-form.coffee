@@ -1,4 +1,3 @@
-import EditForm from "/beak/widgets/ractives/edit-form.js"
 import { RactiveTwoWayLabeledInput } from "/beak/widgets/ractives/subcomponent/labeled-input.js"
 import { RactiveTwoWayDropdown } from "/beak/widgets/ractives/subcomponent/dropdown.js"
 import RactiveBlockPreview from "./block-preview.js"
@@ -9,8 +8,9 @@ import { RactiveToggleTags } from "./tags.js"
 import RactiveBlockStyleSettings from "./block-style-settings.js"
 import RactiveCodeMirror from "./code-mirror.js"
 import NetTangoBlockDefaults from "./block-defaults.js"
+import RactiveModalDialog from "./modal-dialog.js"
 
-RactiveBlockForm = EditForm.extend({
+RactiveBlockForm = RactiveModalDialog.extend({
 
   data: () -> {
     ready:          false        # Boolean
@@ -19,7 +19,6 @@ RactiveBlockForm = EditForm.extend({
     blockIndex:     undefined    # Integer
     blockKnownTags: []           # Array[String]
     allTags:        []           # Array[String]
-    submitEvent:    undefined    # String
     terminalType:   "attachable" # "attachable" | "terminal"
   }
 
@@ -39,25 +38,6 @@ RactiveBlockForm = EditForm.extend({
 
   on: {
 
-    # (Context) => Unit
-    'submit': (_) ->
-      target = @get('target')
-      # the user could've added a bunch of new known tags, but not wound up using them,
-      # so ignore any that were not actually applied to the block - Jeremy B September 2020
-      block          = @getBlock()
-      blockKnownTags = @get('blockKnownTags')
-      allTags        = @get('allTags')
-      newKnownTags   = blockKnownTags.filter( (t) ->
-        ( (block.tags? and block.tags.includes(t)) or
-          (block.allowedTags?.tags? and block.allowedTags.tags.includes(t)) or
-          (block.clauses.some( (c) -> c.allowedTags?.tags? and c.allowedTags.tags.includes(t) ))
-        ) and
-        not allTags.includes(t)
-      )
-      @push('allTags', ...newKnownTags)
-      target.fire(@get('submitEvent'), {}, block, @get('blockIndex'))
-      return
-
     '*.code-changed': (_, code) ->
       @set('block.format', code)
 
@@ -69,9 +49,6 @@ RactiveBlockForm = EditForm.extend({
       return
 
   }
-
-  oninit: ->
-    @_super()
 
   observe: {
 
@@ -119,27 +96,6 @@ RactiveBlockForm = EditForm.extend({
     @set('block', block)
     @set('previewBlock', block)
     return
-
-  # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
-  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
-    @set('ready', false)
-    @_setBlock(block)
-    @set('blockKnownTags', @get('allTags').slice(0))
-    @set(        'target', target)
-    @set(     'spaceName', spaceName)
-    @set(    'blockIndex', blockIndex)
-    @set(   'submitLabel', submitLabel)
-    @set(   'cancelLabel', cancelLabel)
-    @set(   'submitEvent', submitEvent)
-    @set(  'terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
-
-    @fire('show-yourself')
-    @set('ready', true)
-    return
-
-  # This does something useful for widgets in `EditForm`, but we don't need it - JMB August 2018
-  genProps: (_) ->
-    null
 
   # () => NetTangoBlock
   getBlock: () ->
@@ -229,6 +185,40 @@ RactiveBlockForm = EditForm.extend({
 
     allowedTags
 
+  makeSubmitEventArgs: () ->
+    # the user could've added a bunch of new known tags, but not wound up using them,
+    # so ignore any that were not actually applied to the block - Jeremy B September 2020
+    block          = @getBlock()
+    blockKnownTags = @get('blockKnownTags')
+    allTags        = @get('allTags')
+    newKnownTags   = blockKnownTags.filter( (t) ->
+      ( (block.tags? and block.tags.includes(t)) or
+        (block.allowedTags?.tags? and block.allowedTags.tags.includes(t)) or
+        (block.clauses.some( (c) -> c.allowedTags?.tags? and c.allowedTags.tags.includes(t) ))
+      ) and
+      not allTags.includes(t)
+    )
+    @push('allTags', ...newKnownTags)
+    [block, @get('blockIndex')]
+
+  # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
+  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+    @set('ready', false)
+    @set('spaceName', spaceName)
+    @set('blockIndex', blockIndex)
+    @set('terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
+    @_setBlock(block)
+    @set('blockKnownTags', @get('allTags').slice(0))
+    options = {
+      approve: { text: submitLabel, event: submitEvent }
+    , deny:    { text: cancelLabel }
+    , eventTarget:  target
+    , eventArgsMaker: (() => @makeSubmitEventArgs())
+    }
+    @_super(options)
+    @set('ready', true)
+    return
+
   components: {
     allowedTags:  RactiveAllowedTags
   , attributes:   RactiveAttributes
@@ -242,10 +232,8 @@ RactiveBlockForm = EditForm.extend({
   }
 
   partials: {
-
-    title: "{{ spaceName }} Block"
-
-    widgetFields:
+    headerContent: "{{ spaceName }} Block"
+    dialogContent:
       # coffeelint: disable=max_line_length
       """
       <div class="flex-row ntb-block-form">

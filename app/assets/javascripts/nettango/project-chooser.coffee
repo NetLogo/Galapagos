@@ -4,12 +4,16 @@ hostPrefix = "assets/nt-modelslib/"
 
 RactiveProjectChooser = RactiveModelDialog.extend({
 
+  data: () -> {
+    preRenderContent: true # Boolean
+  }
+
   show: (left, top) ->
     options = {
-      approve: { text: "Load the project", event: "load-project" }
-    , deny:    { text: "Cancel" }
-    , left:    left
-    , top:     top
+      approve:          { text: "Load the project", event: "load-project" }
+    , deny:             { text: "Cancel" }
+    , left:             left
+    , top:              top
     }
     @_super(options)
     return
@@ -61,6 +65,7 @@ RactiveProjectChooser = RactiveModelDialog.extend({
   }
 
   partials: {
+    headerContent: "Choose a Library Project"
     dialogContent:
       # coffeelint: disable=max_line_length
       """

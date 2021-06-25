@@ -229,6 +229,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-block-form {
   align-items: start;
+  grid-column: 1 / 3;
 }
 
 .ntb-block-form-fields {
