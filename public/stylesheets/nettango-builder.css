@@ -99,7 +99,7 @@ body#ntp-body, html#ntp-body {
   background-color: white;
   border: 1px solid black;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
   padding: 10px 10px 0 10px;
   outline: none;
   margin: 0 auto;
@@ -246,11 +246,6 @@ body#ntp-body, html#ntp-body {
   flex-direction: column;
   align-items: center;
   margin: 8px;
-}
-
-#ntb-options-edit-window {
-  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
-  width: 650px;
 }
 
 .ntb-popup {
