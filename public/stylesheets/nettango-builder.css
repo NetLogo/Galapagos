@@ -52,21 +52,17 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-json {
-  resize: vertical;
-  min-height: 16em;
   margin: 0.5em;
   background: #fcfcfc;
   border-radius: 6px;
   border: 1px solid #bbb;
-  overflow: hidden;
+  width: fit-content;
 }
 
 .ntb-json > .CodeMirror {
   max-width: 600px;
-}
-
-.ntb-json > .CodeMirror > .CodeMirror-scroll {
-  max-height: 24em;
+  height: 16em;
+  width: 600px;
 }
 
 .ntb-block-defs-list {
