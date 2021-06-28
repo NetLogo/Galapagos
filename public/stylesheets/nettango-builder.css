@@ -581,3 +581,14 @@ body#ntp-body, html#ntp-body {
 .nt-menu-wrapper {
   top: 40px;
 }
+
+/* these "overrides" let us have a small as possible NetLogo model
+  to give more space for the NetTango Web spaces when side-by-side. */
+
+.netlogo-model-title {
+  margin: 0 10px !important;
+}
+
+.netlogo-model-masthead {
+  width: unset !important;
+}
