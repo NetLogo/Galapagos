@@ -20,15 +20,15 @@ RactiveOptionsForm = RactiveModalDialog.extend({
       , approve: {
           text: "Yes, clear all block styles"
         , event: "ntb-clear-all-block-styles"
-        , target: @clearAllTarget
+        , target: @target
         }
       , deny: { text: "No, leave block styles in place" }
       })
       return
   }
 
-  show: (target, options, clearAllTarget) ->
-    @clearAllTarget = clearAllTarget
+  show: (target, options) ->
+    @target = target
     clonedOptions = {}
     [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
       .forEach( (prop) ->

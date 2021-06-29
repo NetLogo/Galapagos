@@ -11,7 +11,7 @@ class NetTangoController
 
   constructor: (element, localStorage, @playMode, @runtimeMode) ->
     @storage      = new NetTangoStorage(localStorage)
-    getSpaces     = () => @ractive.findComponent("tangoDefs").get("spaces")
+    getSpaces     = () => @ractive.findComponent("builder").get("spaces")
     @isDebugMode  = false
     @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
     @compileAlert = { compileComplete: @netLogoCompileComplete }
@@ -58,13 +58,13 @@ class NetTangoController
 
   # () => Array[String]
   getProcedures: () ->
-    defs = @ractive.findComponent('tangoDefs')
-    defs.getProcedures()
+    builder = @ractive.findComponent('builder')
+    builder.getProcedures()
 
   # () => String
   getBlocksCode: (displayOnly = false) =>
-    defs = @ractive.findComponent('tangoDefs')
-    defs.assembleCode(displayOnly)
+    builder = @ractive.findComponent('builder')
+    builder.assembleCode(displayOnly)
 
   # () => String
   getNetLogoCode: () ->
@@ -95,7 +95,7 @@ class NetTangoController
 
   # () => Unit
   start: (projectUrl) =>
-    @builder = @ractive.findComponent('tangoBuilder')
+    @builder = @ractive.findComponent('builder')
     progress = @storage.inProgress
 
     # first try to load from the inline code element

@@ -68,16 +68,40 @@ RactiveBuilderMenu = Ractive.extend({
       @set('isDebugMode', not @get('isDebugMode'))
       return
 
+    # (Context) => Unit
+    '*.ntb-clear-all-check': (context) ->
+      @fire('show-confirm-dialog', context, {
+        text:    "Do you want to clear your model and workspaces?"
+      , approve: { text: "Yes, clear all data", event: "ntb-clear-all" }
+      , deny:    { text: "No, leave workspaces unchanged" }
+      })
+      return
+
+    '*.ntb-import-netlogo-prompt': (_) ->
+      importInput = @find('#ntb-import-netlogo')
+      importInput.value = ""
+      importInput.click()
+      return
+
+    '*.ntb-import-json-prompt': (_) ->
+      importInput = @find('#ntb-import-json')
+      importInput.value = ""
+      importInput.click()
+      return
   }
 
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="ntb-block-defs-controls">
+    <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
+    <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
+
+    <div class="ntb-menu-controls ntb-block-defs-controls">
+      <div class="ntb-title">NetTango Builder</div>
       <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
       <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
       <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
-      <button class="ntb-button" type="button" on-click="ntb-show-options">Options...</button>
+      <button class="ntb-button" type="button" on-click="show-options-form">Options...</button>
       <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
       <button class="ntb-button" type="button" on-click="ntb-show-help">Help ▼</button>
     </div>

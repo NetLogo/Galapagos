@@ -1,5 +1,6 @@
 import RactiveBlockForm from "./block-form.js"
 import RactiveBuilder from "./builder.js"
+import RactiveBuilderMenu from "./builder-menu.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveNetLogoModel from "./netlogo-model.js"
@@ -31,7 +32,6 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
           if event?.button isnt 2
             popupMenu.unpop()
         )
-
         return
 
       '*.show-confirm-dialog': ({ event: { pageY } }, options) ->
@@ -55,9 +55,11 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         blockForm.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
         return
 
-      '*.show-options-form': (_, target, options, clearAllTarget) ->
+      '*.show-options-form': () ->
+        builder = @findComponent('builder')
+        options = builder.assembleOptions()
         optionsForm = @findComponent("optionsForm")
-        optionsForm.show(target, options, clearAllTarget)
+        optionsForm.show(builder, options)
         return
 
       '*.show-popup-menu': (_, target, top, left, options) ->
@@ -65,22 +67,33 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         popupMenu.popup(target, top, left, options)
         return
 
+      '*.ntb-clear-all': (_) ->
+        builder = @findComponent('builder')
+        builder.clearAll()
+        return
+
+      '*.ntb-create-blockspace': (_) ->
+        builder = @findComponent('builder')
+        builder.createSpace({ defs: { blocks: [], program: { chains: [] }}})
+        return
+
     }
 
     components: {
       blockEditForm:  RactiveBlockForm
+    , builder:        RactiveBuilder
+    , builderMenu:    RactiveBuilderMenu
     , confirmDialog:  RactiveConfirmDialog
     , modelChooser:   RactiveModelChooser
     , netLogoModel:   RactiveNetLogoModel
     , optionsForm:    RactiveOptionsForm
     , popupMenu:      RactivePopupMenu
     , projectChooser: RactiveProjectChooser
-    , tangoBuilder:   RactiveBuilder
     },
 
     template:
       """
-      <div class="ntb-components{{# isSideBySide }} netlogo-display-horizontal{{/}}">
+      <div class="ntb-components">
         <confirmDialog />
         {{# !playMode }}
         <modelChooser runtimeMode="{{runtimeMode}}" />
@@ -89,18 +102,30 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         <popupMenu />
         <blockEditForm blockStyles={{ blockStyles }} allTags={{ allTags }} />
         <optionsForm />
-        <netLogoModel />
-        <tangoBuilder
-          playMode={{ playMode }}
-          runtimeMode={{ runtimeMode }}
+
+        {{# !playMode }}
+        <builderMenu
           canUndo={{ canUndo }}
           canRedo={{ canRedo }}
-          breeds={{ breeds }}
           isDebugMode={{ isDebugMode }}
-          isSideBySide={{ isSideBySide }}
-          blockStyles={{ blockStyles }}
-          allTags={{ allTags }}
+          runtimeMode={{ runtimeMode }}>
         />
+        {{/}}
+
+        <div class="ntb-models{{# isSideBySide }} netlogo-display-horizontal{{/}}">
+
+          <netLogoModel />
+
+          <builder
+            playMode={{ playMode }}
+            breeds={{ breeds }}
+            isSideBySide={{ isSideBySide }}
+            blockStyles={{ blockStyles }}
+            allTags={{ allTags }}
+          />
+
+        </div>
+
       </div>
       """
 

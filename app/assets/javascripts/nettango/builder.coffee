@@ -1,5 +1,6 @@
-import RactiveSpaces from "./spaces.js"
-import RactiveBuilderMenu from "./builder-menu.js"
+import NetTangoBlockDefaults from "./block-defaults.js"
+import RactiveCodeMirror from "./code-mirror.js"
+import RactiveSpace from "./space.js"
 import ObjectUtils from "./object-utils.js"
 import newModel from "/new-model.js"
 
@@ -17,15 +18,14 @@ areStylesDifferent = (bs1, bs2) ->
 RactiveBuilder = Ractive.extend({
 
   data: () -> {
-    canRedo:       false     # Boolean
-    canUndo:       false     # Boolean
-    allTags:       []        # Array[String]
-    knownTags:     []        # Array[String]
-    breeds:        []        # Array[String]
-    isDebugMode:   false     # Boolean
-    isSideBySide:  false     # Boolean
-    playMode:      false     # Boolean
-    runtimeMode:   "dev"     # String
+    allTags:          []        # Array[String]
+    knownTags:        []        # Array[String]
+    breeds:           []        # Array[String]
+    playMode:         false     # Boolean
+    blockStyles:      undefined # NetTangoBlockStyles
+    lastCompiledCode: ""        # String
+    showCode:         true      # Boolean
+    spaces:           []        # Array[NetTangoSpace]
 
     blockEditor: {
       show:        false           # Boolean
@@ -104,49 +104,53 @@ RactiveBuilder = Ractive.extend({
 
   on: {
 
-    # (Context) => Unit
-    '*.ntb-clear-all-check': (context) ->
+    'complete': (_) ->
+      @observe('spaces', (spaces) ->
+        spaces.forEach( (space, i) ->
+          space.id      = i
+          space.spaceId = "ntb-defs-#{i}"
+        )
+      )
+      return
+
+    # (Context, String, Boolean) => Unit
+    '*.ntb-block-code-changed': (_) ->
+      @updateCode()
+      return
+
+    # (Context, Integer) => Boolean
+    '*.ntb-confirm-delete': (context, spaceNumber) ->
       @fire('show-confirm-dialog', context, {
-        text:    "Do you want to clear your model and workspaces?"
-      , approve: { text: "Yes, clear all data", event: "ntb-clear-all", target: this }
-      , deny:    { text: "No, leave workspaces unchanged" }
+        text: "Do you want to delete this workspace?"
+      , approve: {
+          text: "Yes, delete the workspace"
+        , event: "ntb-delete-blockspace"
+        , arguments: [spaceNumber]
+        , target: this
+        }
+      , deny: { text: "No, keep workspace" }
       })
+      return false
+
+    '*.ntb-delete-blockspace': (_, spaceNumber) ->
+      @deleteSpace(spaceNumber)
       return
 
-    '*.ntb-clear-all': (_) ->
-      @clearAll()
-
-    # (Context) => Unit
-    '*.ntb-create-blockspace': (_) ->
-      defsComponent = @findComponent('tangoDefs')
-      defsComponent.createSpace({ defs: { blocks: [], program: { chains: [] }}})
+    '*.ntb-clear-all-block-styles': (_) ->
+      @clearBlockStyles()
       return
 
-    '*.ntb-import-netlogo-prompt': (_) ->
-      importInput = @find('#ntb-import-netlogo')
-      importInput.value = ""
-      importInput.click()
-      return
+    # (Context, DuplicateBlockData) => Unit
+    '*.ntb-duplicate-block-to': (_, { fromSpaceId, fromBlockIndex, toSpaceIndex }) ->
+      spaces    = @get('spaces')
+      fromSpace = spaces.filter( (s) -> s.spaceId is fromSpaceId )[0]
+      toSpace   = spaces[toSpaceIndex]
+      original  = fromSpace.defs.blocks[fromBlockIndex]
+      copy      = NetTangoBlockDefaults.copyBlock(original)
 
-    '*.ntb-import-json-prompt': (_) ->
-      importInput = @find('#ntb-import-json')
-      importInput.value = ""
-      importInput.click()
-      return
+      toSpace.defs.blocks.push(copy)
 
-    '*.ntb-show-options': () ->
-      tabOptions      = @get("tabOptions")
-      netTangoToggles = @get("netTangoToggles")
-      blockStyles     = @get("blockStyles") ? ObjectUtils.clone(NetTango.defaultBlockStyles)
-      extraCss        = @get("extraCss")
-      options         = {
-        tabOptions
-      , netTangoToggles
-      , blockStyles
-      , extraCss
-      }
-      clearAllTarget = @findComponent('tangoDefs')
-      @fire('show-options-form', {}, this, options, clearAllTarget)
+      @updateNetTango()
       return
 
     '*.ntb-options-updated': (options) ->
@@ -168,8 +172,7 @@ RactiveBuilder = Ractive.extend({
         oldStyles = @get("blockStyles")
         if (not oldStyles?) or areStylesDifferent(oldStyles, options.blockStyles)
           @set("blockStyles", options.blockStyles)
-          spacesComponent = @findComponent('tangoDefs')
-          spacesComponent.updateNetTango()
+          @updateNetTango()
       else
         @set("blockStyles", null)
 
@@ -185,13 +188,13 @@ RactiveBuilder = Ractive.extend({
   observe: {
 
     'breeds': () ->
-      @initializeTags(@get('knownTags'), @findComponent('tangoDefs').get('spaces'))
+      @initializeTags(@get('knownTags'), @get('spaces'))
 
   }
 
   # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
-    spaces = @findComponent('tangoDefs').get('spaces')
+    spaces = @get('spaces')
 
     netTangoToggles = { }
     netTangoToggleValues = @get('netTangoToggles')
@@ -214,7 +217,7 @@ RactiveBuilder = Ractive.extend({
 
   # () => String
   getEmptyNetTangoProcedures: () ->
-    spaces = @findComponent('tangoDefs').get('spaces')
+    spaces = @get('spaces')
     spaceProcs = for _, space of spaces
       space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
     spaceProcs.join("\n")
@@ -325,13 +328,12 @@ RactiveBuilder = Ractive.extend({
     else
       @set('blockStyles', null)
 
-    defsComponent = @findComponent('tangoDefs')
-    defsComponent.set('spaces', [])
+    @set('spaces', [])
     for spaceVals in (project.spaces ? [])
-      defsComponent.createSpace(spaceVals)
-    defsComponent.updateCode()
+      @createSpace(spaceVals)
+    @updateCode()
 
-    @initializeTags(project["knownTags"] ? [], defsComponent.get('spaces'))
+    @initializeTags(project["knownTags"] ? [], @get('spaces'))
 
     tabOptions = @get('tabOptions')
     for key, prop of (project.tabOptions ? { })
@@ -384,9 +386,99 @@ RactiveBuilder = Ractive.extend({
     @fire("ntb-load-project", {}, blankData)
     return
 
+  # (Boolean) => Unit
+  updateCode: () ->
+    lastCode    = @get('lastCode')
+    newCode     = @assembleCode(displayOnly = false)
+    codeChanged = lastCode isnt newCode
+    @set('code', @assembleCode(displayOnly = true))
+    if codeChanged
+      @set('lastCode', newCode)
+      @fire('ntb-code-dirty')
+    return
+
+  # (Boolean) => String
+  assembleCode: (displayOnly) ->
+    spaces = @get('spaces')
+    spaceCodes =
+      spaces.map( (space) ->
+        if displayOnly
+          prefix = if spaces.length <= 1 then "" else "; Code for #{space.name}\n"
+          "#{prefix}#{space.netLogoDisplay ? ""}".trim()
+        else
+          (space.netLogoCode ? "").trim()
+      )
+    spaceCodes.join("\n\n")
+
+  # () => NetTangoOptions
+  assembleOptions: () ->
+    tabOptions      = @get("tabOptions")
+    netTangoToggles = @get("netTangoToggles")
+    blockStyles     = @get("blockStyles") ? ObjectUtils.clone(NetTango.defaultBlockStyles)
+    extraCss        = @get("extraCss")
+    options         = {
+      tabOptions
+    , netTangoToggles
+    , blockStyles
+    , extraCss
+    }
+    options
+
+  # (NetTangoSpace) => NetTangoSpace
+  createSpace: (spaceVals) ->
+    spaces  = @get('spaces')
+    id      = spaces.length
+    spaceId = "ntb-defs-#{id}"
+    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
+    space = {
+        id:              id
+      , spaceId:         spaceId
+      , name:            "Block Space #{id}"
+      , width:           430
+      , height:          500
+      , defs:            defs
+    }
+    for propName in [ 'name', 'width', 'height' ]
+      if(spaceVals.hasOwnProperty(propName))
+        space[propName] = spaceVals[propName]
+
+    @push('spaces', space)
+    @fire('ntb-space-changed')
+    return space
+
+  deleteSpace: (spaceNumber) ->
+    spaces    = @get('spaces')
+    newSpaces = spaces.filter( (s) -> s.id isnt spaceNumber )
+    newSpaces.forEach( (s, i) ->
+      s.id      = i
+      s.spaceId = "ntb-defs-#{i}"
+    )
+    @set('spaces', newSpaces)
+    @updateCode()
+    @fire('ntb-space-changed')
+    @fire('ntb-recompile-all')
+    return
+
+  # () => Unit
+  clearBlockStyles: () ->
+    spaces = @findAllComponents("space")
+    spaces.forEach( (space) -> space.clearBlockStyles() )
+    return
+
+  # () => Unit
+  updateNetTango: () ->
+    spaces = @findAllComponents("space")
+    spaces.forEach( (space) -> space.refreshNetTango(space.get("space"), true) )
+    return
+
+  # () => Array[String]
+  getProcedures: () ->
+    spaces = @findAllComponents("space")
+    spaces.flatMap( (space) -> space.getProcedures() )
+
   components: {
-    builderMenu:    RactiveBuilderMenu
-  , tangoDefs:      RactiveSpaces
+    codeMirror: RactiveCodeMirror
+  , space:      RactiveSpace
   }
 
   template:
@@ -394,29 +486,31 @@ RactiveBuilder = Ractive.extend({
     """
     <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
-      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
-      <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
       <div class="ntb-controls">
-        {{# !playMode }}
-          <builderMenu
-            canUndo={{ canUndo }}
-            canRedo={{ canRedo }}
-            isDebugMode={{ isDebugMode }}
-            runtimeMode={{ runtimeMode }}>
-          </builderMenu>
-        {{/}}
+        <div class="ntb-block-defs-list">
+          {{#spaces:spaceNum }}
+            <space
+              space="{{ this }}"
+              playMode="{{ playMode }}"
+              blockStyles="{{ blockStyles }}"
+            />
+          {{/spaces }}
+        </div>
 
-        <tangoDefs
-          id="ntb-defs"
-          playMode={{ playMode }}
-          blockStyles={{ blockStyles }}
-          allTags={{ allTags }}
-          showCode={{ netTangoToggles.showCode.checked }}
-          />
+        {{#if !playMode || showCode }}
+        <label for="ntb-code"{{# !showCode}} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
+        <codeMirror
+          id="ntb-code"
+          mode="netlogo"
+          code="{{ code }}"
+          config="{ readOnly: 'nocursor' }"
+          extraClasses="[ 'ntb-code', 'ntb-code-large', 'ntb-code-readonly' ]"
+        />
+        {{/if !playMode || showCode }}
 
         {{# !playMode }}
-          <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
+        <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
         {{/}}
       </div>
     </div>

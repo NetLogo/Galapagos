@@ -22,6 +22,29 @@ body#ntp-body, html#ntp-body {
   font-family: Poppins, sans-serif;
 }
 
+.ntb-components {
+  display: flex;
+  flex-direction: column;
+}
+
+.ntb-title {
+  margin: 10px 30px 10px 30px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: large;
+  font-weight: bold;
+}
+
+.ntb-menu-controls {
+  position: sticky;
+  top: 40px;
+  z-index: 90;
+  background: #FFF;
+  border-radius: 20px;
+  width: 100%;
+}
+
 .ntb-builder {
   position: relative;
 }
