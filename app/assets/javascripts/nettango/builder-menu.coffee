@@ -97,7 +97,7 @@ RactiveBuilderMenu = Ractive.extend({
     <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
     <div class="ntb-menu-controls ntb-block-defs-controls">
-      <div class="ntb-title">NetTango Builder</div>
+      <div class="ntb-title">NetTango Web Builder</div>
       <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
       <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
       <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>

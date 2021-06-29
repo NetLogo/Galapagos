@@ -34,6 +34,7 @@ body#ntp-body, html#ntp-body {
   white-space: nowrap;
   font-size: large;
   font-weight: bold;
+  user-select: none;
 }
 
 .ntb-menu-controls {
