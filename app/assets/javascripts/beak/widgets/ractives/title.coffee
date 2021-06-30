@@ -26,7 +26,7 @@ RactiveModelTitle = RactiveContextable.extend({
   template:
     """
     <div class="netlogo-model-masthead">
-      <div class="flex-row" style="justify-content: center; height: 30px; line-height: 30px;">
+      <div class="flex-row netlogo-model-title-wrapper">
         <h2 id="netlogo-title"
             on-contextmenu="@this.fire('show-context-menu', @event)"
             class="netlogo-widget netlogo-model-title {{classes}}{{# isEditing }} interface-unlocked initial-color{{/}}"
