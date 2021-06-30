@@ -171,6 +171,11 @@ body#ntp-body, html#ntp-body {
   margin-right: auto;
   align-content: center;
   align-items: center;
+  width: min-content;
+}
+
+.ntb-block-defs-controls > label {
+  white-space: nowrap;
 }
 
 .ntb-block-defs-controls > div > label {
@@ -504,6 +509,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-toggle-block {
   display: inline;
+  white-space: nowrap;
 }
 
 .ntb-toggle-block > input[type=checkbox] {
