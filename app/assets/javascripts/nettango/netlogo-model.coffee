@@ -1,4 +1,4 @@
-import newModel from "/new-model.js"
+import newModelNetTango from "./new-model-nettango.js"
 import Tortoise from "/beak/tortoise.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
@@ -23,7 +23,7 @@ RactiveNetLogoModel = Ractive.extend({
             @loadModel(e.data.nlogo, e.data.path)
 
           when "nlw-open-new"
-            @loadModel(newModel, "NewModel")
+            @loadModel(newModelNetTango, "NewModel")
 
           when "nlw-load-url"
             @loadUrl(e.data.url, e.data.name)

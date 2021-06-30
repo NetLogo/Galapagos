@@ -2,7 +2,7 @@ import NetTangoBlockDefaults from "./block-defaults.js"
 import RactiveCodeMirror from "./code-mirror.js"
 import RactiveSpace from "./space.js"
 import ObjectUtils from "./object-utils.js"
-import newModel from "/new-model.js"
+import newModelNetTango from "./new-model-nettango.js"
 
 getBlockStyleDefaults = (style) ->
   ObjectUtils.clone(NetTango.defaultBlockStyles[style])
@@ -351,7 +351,7 @@ RactiveBuilder = Ractive.extend({
     if (project.code?)
       @fire('ntb-model-change', project.title, project.code)
     else
-      @fire('ntb-model-change', "New Model", newModel)
+      @fire('ntb-model-change', "New Model", newModelNetTango)
 
     @refreshCss()
     @set('isSideBySide', not netTangoToggles.workspaceBelow.checked)
@@ -365,7 +365,7 @@ RactiveBuilder = Ractive.extend({
 
   clearAll: () ->
     blankData = {
-      code:       newModel
+      code:       newModelNetTango
       spaces:     []
       title:      "Blank Model"
       tabOptions: {
