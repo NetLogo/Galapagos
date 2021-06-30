@@ -28,7 +28,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-title {
-  margin: 10px 30px 10px 30px;
+  margin: 0 25px 0 0;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -38,12 +38,12 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-menu-controls {
+  padding: 10px 30px 10px 30px;
   position: sticky;
   top: 40px;
   z-index: 90;
   background: #FFF;
   border-radius: 20px;
-  width: 100%;
 }
 
 .ntb-builder {
