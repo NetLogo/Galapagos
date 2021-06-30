@@ -4,10 +4,10 @@ class NetTangoRewriter
   @BEGIN = "; --- NETTANGO BEGIN ---"
   @END   = "; --- NETTANGO END ---"
   @MODIFY_WARNING =
-    "; This block of code was added by the NetTango builder.  If you modify this code" +
-    "\n; and re-import it into the NetTango builder you may lose your changes or need" +
+    "; This block of code was added by the NetTango Web Builder.  If you modify this code" +
+    "\n; and re-import it into the NetTango Web Builder you may lose your changes or need" +
     "\n; to resolve some errors manually." +
-    "\n\n; If you do not plan to re-import the model into the NetTango builder then you" +
+    "\n\n; If you do not plan to re-import the model into the NetTango Web Builder then you" +
     "\n; can safely edit this code however you want, just like a normal NetLogo model."
 
   constructor: (@getNetTangoCode, @getNetTangoSpaces, @isDebugMode) ->

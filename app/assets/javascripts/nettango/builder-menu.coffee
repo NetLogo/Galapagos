@@ -45,11 +45,11 @@ RactiveBuilderMenu = Ractive.extend({
         name: "Help"
         items: [
           {
-              name: 'About the NetTango Builder'
+              name: 'About the NetTango Web Builder'
             , url: 'https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder'
           }
           {
-              name: 'NetTango Builder tutorial'
+              name: 'NetTango Web Builder tutorial'
             , url: 'https://anttango.netlify.com'
           }
         ]
