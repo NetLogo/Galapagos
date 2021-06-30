@@ -364,9 +364,18 @@ RactiveBuilder = Ractive.extend({
     return
 
   clearAll: () ->
+    space = {
+        id:      0
+      , spaceId: "ntb-defs-0"
+      , name:    "Block Space 0"
+      , width:   430
+      , height:  500
+      , defs:    { blocks: [], program: { chains: [] } }
+    }
+
     blankData = {
       code:       newModelNetTango
-      spaces:     []
+      spaces:     [space]
       title:      "Blank Model"
       tabOptions: {
         commandCenterTab: true
@@ -378,7 +387,7 @@ RactiveBuilder = Ractive.extend({
         poweredBy:        false
       }
       netTangoToggles: {
-        workspaceBelow: true
+        workspaceBelow: false
         showCode:       true
       }
       extraCss: ""
