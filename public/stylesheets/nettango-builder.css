@@ -234,9 +234,6 @@ body#ntp-body, html#ntp-body {
   color: #666;
   margin: 4px;
   font-size: 13px;
-  padding: 8px;
-  padding-top: 2px;
-  padding-bottom: 3px;
 }
 .ntb-list-menu > li > a, .ntb-list-menu > li > a:visited {
   text-decoration: none;
@@ -259,6 +256,13 @@ body#ntp-body, html#ntp-body {
   color: #666;
   text-align: center;
   line-height: 0.5em;
+}
+
+.ntb-menu-text {
+  display: block;
+  padding: 8px;
+  padding-top: 2px;
+  padding-bottom: 3px;
 }
 
 #ntb-block-edit-window {

@@ -114,11 +114,15 @@ RactivePopupMenu = Ractive.extend({
       {{# items !== undefined }}
         {{> group }}
       {{ elseif spacerText !== undefined }}
-        <li class="ntb-list-spacer">{{ spacerText }}</li>
+        <li class="ntb-list-spacer"><div class="ntb-menu-text">{{ spacerText }}</div></li>
       {{ elseif url !== undefined }}
-        <li class="ntb-list-menu-item"><a href="{{ url }}" target="_blank" on-click="[ 'exec', eventName, data ]">{{ name }}</a></li>
+        <li class="ntb-list-menu-item">
+          <a class="ntb-menu-text" href="{{ url }}" target="_blank" on-click="[ 'exec', eventName, data ]">{{ name }}</a>
+        </li>
       {{ else }}
-        <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">{{ name }}</li>
+        <li class="ntb-list-menu-item" on-click="[ 'exec', eventName, data ]">
+          <div class="ntb-menu-text">{{ name }}</div>
+        </li>
       {{/}}
     {{/partial}}
 
