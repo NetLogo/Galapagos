@@ -48,6 +48,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-builder {
   position: relative;
+  margin: 0 0 10px 0;
 }
 
 .ntb-models {
@@ -60,6 +61,7 @@ body#ntp-body, html#ntp-body {
   width: min-content;
   height: min-content;
   display: grid;
+  margin: 0 5px 10px 10px;
 }
 
 .ntb-netlogo-model .netlogo-widget input[type=range] {
@@ -73,9 +75,8 @@ body#ntp-body, html#ntp-body {
 .ntb-block-def {
   display: flex;
   flex-direction: column;
-  padding: 0.5em 0.2em;
-  margin: 0.5em 0.2em;
   background: #fff;
+  margin: 0 5px 4px 5px;
 }
 
 .ntb-json {
@@ -362,8 +363,6 @@ body#ntp-body, html#ntp-body {
 .ntb-controls {
   display: flex;
   flex-direction: column;
-  padding: 1em;
-  padding-top: 0;
 }
 
 .ntb-code {
@@ -417,6 +416,7 @@ body#ntp-body, html#ntp-body {
   font-size: large;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
+  margin: 4px 0;
 }
 
 .ntb-flex-column {
@@ -626,14 +626,23 @@ body#ntp-body, html#ntp-body {
   top: 40px;
 }
 
+.netlogo-model {
+  padding: 0 !important;
+}
+
 /* these "overrides" let us have a small as possible NetLogo model
   to give more space for the NetTango Web spaces when side-by-side. */
 
 .netlogo-model-title {
-  margin: 0 10px !important;
+  margin: 4px 10px !important;
   user-select: none;
 }
 
 .netlogo-model-masthead {
   width: unset !important;
+}
+
+.netlogo-model-title-wrapper {
+  height: unset !important;
+  line-height: unset !important;
 }

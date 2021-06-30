@@ -493,7 +493,6 @@ RactiveBuilder = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <style id="ntb-injected-style"></style>
     <div class="ntb-builder">
 
       <div class="ntb-controls">
@@ -523,6 +522,7 @@ RactiveBuilder = Ractive.extend({
         {{/}}
       </div>
     </div>
+    <style id="ntb-injected-style"></style>
     """
     # coffeelint: enable=max_line_length
 })
