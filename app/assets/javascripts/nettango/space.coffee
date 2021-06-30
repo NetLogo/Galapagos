@@ -343,9 +343,15 @@ RactiveSpace = Ractive.extend({
 
     <div class="ntb-block-def">
 
-      <div class="ntb-space-title-bar" >
+      <div class="ntb-space-title-bar">
 
-        <input type="text" class="ntb-space-title" value="{{ name }}"{{# playMode }} readOnly{{/}} on-change="ntb-space-title-changed">
+        {{# playMode }}
+          <div class="ntb-space-title-play">{{ name }}</div>
+
+        {{else}}
+          <input type="text" class="ntb-space-title" value="{{ name }}" on-change="ntb-space-title-changed">
+
+        {{/playMode}}
 
       </div>
 

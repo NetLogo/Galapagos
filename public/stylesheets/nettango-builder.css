@@ -395,9 +395,20 @@ body#ntp-body, html#ntp-body {
   border: 0px;
   border-radius: 3px;
   background: #eee;
-  font-size: 20px;
   text-align: center;
   flex-grow: 1;
+  font-size: large;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
+}
+
+.ntb-space-title-play {
+  flex-grow: 1;
+  text-align: center;
+  user-select: none;
+  font-size: large;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: bold;
 }
 
 .ntb-flex-column {
@@ -611,6 +622,7 @@ body#ntp-body, html#ntp-body {
 
 .netlogo-model-title {
   margin: 0 10px !important;
+  user-select: none;
 }
 
 .netlogo-model-masthead {
