@@ -50,12 +50,15 @@ body#ntp-body, html#ntp-body {
   position: relative;
 }
 
+.ntb-models {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .ntb-netlogo-model {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;
   height: min-content;
-  margin-left: auto;
-  margin-right: auto;
   display: grid;
 }
 
