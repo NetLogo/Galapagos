@@ -14,26 +14,28 @@
   <script src='@routes.Assets.versioned("lib/file-saver/FileSaver.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("javascripts/beak/hnw-config-file-generator.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("javascripts/beak/hnw-config.js").relative' type="text/javascript"></script>
-  <div class="tortoise inner-content">
-    <div class="model-selection-bar">
-      <form id="without-config-form" action="javascript:void(0);" onsubmit="return submitWithoutConfigForm(this)">
-        <div class="flex-column" style="margin-right: 25px;">
-          <label>Start Without Config:
-            <input id="without-config-model-input" type="file" name="model-without-config" />
-          </label>
-          <input type="submit" value="Load Without Config"/>
-        </div>
-      </form>
-      <form id="config-form" action="javascript:void(0);" onsubmit="return submitConfigForm(this)">
-        <div class="flex-column">
-          <label>Base Model:
-            <input id="base-model-input" type="file" name="base-model" />
-          </label>
-          <label>Config File:
-            <input id="config-input" type="file" name="config" />
-          </label>
-          <input type="submit" value="Load With Config"/>
-        </div>
+  <div id="config-content-frame">
+    <div class="tortoise inner-content">
+      <div class="model-selection-bar">
+        <form id="without-config-form" action="javascript:void(0);" onsubmit="return submitWithoutConfigForm(this)">
+          <div class="flex-column" style="margin-right: 25px;">
+            <label>Start Without Config:
+              <input id="without-config-model-input" type="file" name="model-without-config" />
+            </label>
+            <input type="submit" value="Load Without Config"/>
+          </div>
+        </form>
+        <form id="config-form" action="javascript:void(0);" onsubmit="return submitConfigForm(this)">
+          <div class="flex-column">
+            <label>Base Model:
+              <input id="base-model-input" type="file" name="base-model" />
+            </label>
+            <label>Config File:
+              <input id="config-input" type="file" name="config" />
+            </label>
+            <input type="submit" value="Load With Config"/>
+          </div>
+        </form>
       </div>
       <div id="config-content" class="model-box invis" style="width: 100%;">
         <div class="flex-column">
@@ -42,7 +44,7 @@
             <iframe class="model-container config-container invis" src="/hnw-config-inner" height="600"></iframe>
           </template>
           <div id="config-frames" class="flex-row">
-            <iframe id="code-frame" class="model-container vis" src="/hnw-config-code"  height="600"></iframe>
+            <iframe id="code-frame" class="model-container vis" src="/hnw-config-code" height="600"></iframe>
           </div>
 
           <template id="tab-button-template">
@@ -50,11 +52,19 @@
           </template>
           <div id="config-tab-buttons" class="flex-row">
             <input id="code-tab-button"  class="hnw-config-tab-button selected" type="button" onclick="selectConfigTab(this)" value="Code">
+            <input id="add-role-button"  class="hnw-config-tab-button"          type="button" onclick="addRole()"             value="+">
           </div>
 
         </div>
       </div>
-      <input type="button" onclick="downloadNlogoAndJSON()" value="Download">
+      <input id="download-button"   type="button" onclick="downloadNlogoAndJSON()" value="Download" disabled>
+      <input id="test-model-button" type="button" onclick="testModel()"            value="Test"     disabled>
+    </div>
+  </div>
+  <div id="outer-test-frame" class="invis">
+    <div class="flex-column">
+      <iframe id="inner-test-frame" style="height: 550px; width: 1000px;"></iframe>
+      <input id="edit-model-button" type="button" onclick="resumeEditingModel()" value="Edit Model">
     </div>
   </div>
 }

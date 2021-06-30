@@ -527,8 +527,8 @@ class window.SessionLite
     ).filter((x) -> x?)
 
   # (String, String, (Number) => String) => Unit
-  registerMonitorFunc: (roleName, displayStr, func) ->
-    @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [displayStr.toLowerCase()]: [func, {}] })
+  registerMonitorFunc: (roleName, src, func) ->
+    @_monitorFuncs[roleName] = Object.assign({}, @_monitorFuncs[roleName] ? {}, { [src.toLowerCase()]: [func, {}] })
     return
 
   # (UUID) => Object[String]

@@ -11,6 +11,8 @@ session      = undefined
 
 activeContainer = loadingOverlay
 
+nullChoiceText = '<no selection>'
+
 window.isHNWJoiner = true
 
 # (String) => String
@@ -63,9 +65,61 @@ scrapeWidgets = ->
 
   )
 
+# () => Unit
+window.deleteMe = ->
+  if confirm("Are you sure you want to delete this role?")
+    parent.postMessage({ type: "delete-me" }, "*")
+  return
+
+# (String) => Unit
 window.notifyNewBreedVar = (varName) ->
   msg = { type: "new-breed-var", breed: cachedConfig.namePlural, var: varName }
   parent.postMessage(msg, "*")
+  return
+
+# (Event) => String
+window.validateNumberInput = (event) ->
+  s = event.target.value
+  if s is "."
+    "."
+  else if s is "-"
+    "-"
+  else
+    x = parseFloat(s)
+    event.target.value =
+      if x < 0
+        -1
+      else if x > 999
+        999
+      else if x isnt Math.floor(x)
+        Math.floor(x)
+      else
+        x
+
+# (String, Array[String], String) => Unit
+populateOptions = (elemID, choices, dfault) ->
+
+  elem           = document.getElementById(elemID)
+  elem.innerHTML = ""
+
+  choices.concat([nullChoiceText]).forEach(
+    (str) ->
+      option           = document.createElement("option")
+      option.innerText = str
+      option.value     = str
+      elem.appendChild(option)
+      return
+  )
+
+  elem.value = dfault
+
+  # Fixing value when item isn't in choice list --Jason B. (6/28/21)
+  elem.value =
+    if elem.value isnt ''
+      elem.value
+    else
+      nullChoiceText
+
   return
 
 window.addEventListener("message", (e) ->
@@ -82,56 +136,25 @@ window.addEventListener("message", (e) ->
             argCount is argsNum and (not isReporter) and isUseableByTurtles
         )
 
-      onConnectDD = document.getElementById('on-connect-dropdown')
-      onConnectDD.innerHTML = ""
+      onConnectChoices =
+        procedures.filter(
+          ({ argCount, isUseableByObserver }) ->
+            argCount is 1 and isUseableByObserver
+        )
 
-      onDisconnectDD = document.getElementById('on-disconnect-dropdown')
-      onDisconnectDD.innerHTML = ""
+      toNames = (arr) -> arr.map((x) -> x.name)
 
-      onClickDD = document.getElementById('on-click-dropdown')
-      onClickDD.innerHTML = ""
+      populateOptions('on-connect-dropdown'   , toNames(onConnectChoices         ), cachedConfig.onConnect     )
+      populateOptions('on-disconnect-dropdown', toNames(possibleMetaProcedures(0)), cachedConfig.onDisconnect  )
+      populateOptions('on-click-dropdown'     , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorClick )
+      populateOptions('on-move-dropdown'      , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorMove  )
+      populateOptions('perspective-dropdown'  , myVars                            , cachedConfig.perspectiveVar)
 
-      possibleMetaProcedures(0).forEach(
-
-        ({ name }) ->
-
-          option = document.createElement("option")
-          option.innerHTML = name
-          option.value     = name
-
-          onDisconnectDD.appendChild(option.cloneNode(true))
-          onDisconnectDD.value = cachedConfig.onDisconnect
-
-      )
-
-      procedures.filter(
-        ({ argCount, isUseableByObserver }) ->
-          argCount is 1 and isUseableByObserver
-      ).forEach(
-
-        ({ name }) ->
-
-          option = document.createElement("option")
-          option.innerHTML = name
-          option.value     = name
-
-          onConnectDD.appendChild(option)
-          onConnectDD.value = cachedConfig.onConnect
-
-      )
-
-      possibleMetaProcedures(2).forEach(
-
-        ({ name }) ->
-
-          option = document.createElement("option")
-          option.innerHTML = name
-          option.value     = name
-
-          onClickDD.appendChild(option.cloneNode(true))
-          onClickDD.value = cachedConfig.onCursorClick
-
-      )
+      document.getElementById('can-join-midrun-checkbox'  ).checked = cachedConfig.canJoinMidRun
+      document.getElementById('is-spectator-role-checkbox').checked = cachedConfig.isSpectator
+      document.getElementById('role-singular-input'       ).value   = cachedConfig.name
+      document.getElementById('role-plural-input'         ).value   = cachedConfig.namePlural
+      document.getElementById('max-count-picker'          ).value   = cachedConfig.limit
 
       hnwView  = cachedConfig.widgets.find((w) -> w.type is "hnwView")
       viewShim = { dimensions: { maxPxcor: 1, maxPycor: 1, minPxcor: -1, minPycor: -1, patchSize: 1, wrappingAllowedInX: true, wrappingAllowedInY: true }, fontSize: 12, type: "view" }
@@ -150,20 +173,37 @@ window.addEventListener("message", (e) ->
       #  (pops) -> pops.reset())
 
     when "request-save"
-      onConnectBase = document.getElementById('on-connect-dropdown').value
-      onClickBase   = document.getElementById('on-click-dropdown').value
-      onDCBase      = document.getElementById('on-disconnect-dropdown').value
+
+      orNull =
+        (x) ->
+          if x isnt nullChoiceText
+            x
+          else
+            null
+
+      canJoinMidRun  =        document.getElementById('can-join-midrun-checkbox'  ).checked
+      isSpectator    =        document.getElementById('is-spectator-role-checkbox').checked
+      limit          = orNull(document.getElementById('max-count-picker'          ).value)
+      name           = orNull(document.getElementById('role-singular-input'       ).value)
+      namePlural     = orNull(document.getElementById('role-plural-input'         ).value)
+      onConnect      = orNull(document.getElementById('on-connect-dropdown'       ).value)
+      onCursorClick  = orNull(document.getElementById('on-click-dropdown'         ).value)
+      onCursorMove   = orNull(document.getElementById('on-move-dropdown'          ).value)
+      onDisconnect   = orNull(document.getElementById('on-disconnect-dropdown'    ).value)
+      perspectiveVar = orNull(document.getElementById('perspective-dropdown'      ).value)
+
       e.source.postMessage(
         {
-          parcel: { canJoinMidRun: cachedConfig.canJoinMidRun
-                  , isSpectator:   cachedConfig.isSpectator
-                  , limit:         cachedConfig.limit
-                  , name:          cachedConfig.name
-                  , namePlural:    cachedConfig.namePlural
-                  , onConnect:     (if onConnectBase isnt "" then onConnectBase else null)
-                  , onCursorMove:  cachedConfig.onCursorMove
-                  , onCursorClick: (if onClickBase isnt "" then onClickBase else null)
-                  , onDisconnect:  (if onDCBase isnt "" then onDCBase else null)
+          parcel: { canJoinMidRun
+                  , isSpectator
+                  , limit
+                  , name
+                  , namePlural
+                  , onConnect
+                  , onCursorClick
+                  , onCursorMove
+                  , onDisconnect
+                  , perspectiveVar
                   , widgets:       scrapeWidgets()
                   }
         , identifier: e.data.identifier

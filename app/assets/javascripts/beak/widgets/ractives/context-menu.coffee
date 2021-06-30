@@ -1,6 +1,5 @@
 genWidgetCreator = (ractive, name, widgetType, isEnabled = true, enabler = (-> false)) ->
   type = if ractive.get('isHNW') then "hnw" + widgetType.charAt(0).toUpperCase() + widgetType.slice(1) else widgetType
-  debugger
   { text: "Create #{name}", enabler, isEnabled
   , action: (context, mouseX, mouseY) -> context.fire('create-widget', type, mouseX, mouseY)
   }

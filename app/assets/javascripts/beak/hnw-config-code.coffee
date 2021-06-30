@@ -1,5 +1,33 @@
 ractive = null
 
+nullChoiceText = '<no selection>'
+
+# (String, Array[String], String) => Unit
+populateOptions = (elemID, choices, dfault) ->
+
+  elem           = document.getElementById(elemID)
+  elem.innerHTML = ""
+
+  choices.concat([nullChoiceText]).forEach(
+    (str) ->
+      option           = document.createElement("option")
+      option.innerText = str
+      option.value     = str
+      elem.appendChild(option)
+      return
+  )
+
+  elem.value = dfault
+
+  # Fixing value when item isn't in choice list --Jason B. (6/28/21)
+  elem.value =
+    if elem.value isnt ''
+      elem.value
+    else
+      nullChoiceText
+
+  return
+
 window.addEventListener("message", (e) ->
   switch e.data.type
 
@@ -19,6 +47,8 @@ window.addEventListener("message", (e) ->
         }
       })
 
+      ractive.on('*.recompile', -> parent.postMessage({ code: ractive.get('code'), type: 'compile-with' }, "*"))
+
     when "import-procedures"
 
       { onGo, onSetup, procedures } = e.data
@@ -29,37 +59,24 @@ window.addEventListener("message", (e) ->
             argCount is 0 and (not isReporter) and isUseableByObserver
         )
 
-      onSetupDD = document.getElementById('on-setup-dropdown')
-      onSetupDD.innerHTML = ""
+      toNames = (arr) -> arr.map((x) -> x.name)
 
-      onGoDD = document.getElementById('on-go-dropdown')
-      onGoDD.innerHTML = ""
-
-      possibleMetaProcedures.forEach(
-
-        ({ name }) ->
-
-          option = document.createElement("option")
-          option.innerHTML = name
-          option.value     = name
-
-          onSetupDD.appendChild(option)
-          onSetupDD.value = onSetup
-
-          onGoDD.appendChild(option.cloneNode(true))
-          onGoDD.value = onGo
-
-      )
+      populateOptions('on-setup-dropdown', toNames(possibleMetaProcedures), onSetup)
+      populateOptions('on-go-dropdown'   , toNames(possibleMetaProcedures), onGo   )
 
     when "request-save"
 
-      onSetupBase = document.getElementById('on-setup-dropdown').value
-      onGoBase    = document.getElementById('on-go-dropdown').value
+      orNull =
+        (x) ->
+          if x isnt nullChoiceText
+            x
+          else
+            null
 
       parcel =
         { code:    ractive.get('code')
-        , onGo:    (if onGoBase    isnt "" then onGoBase    else null)
-        , onSetup: (if onSetupBase isnt "" then onSetupBase else null)
+        , onGo:    orNull(document.getElementById('on-go-dropdown'   ).value)
+        , onSetup: orNull(document.getElementById('on-setup-dropdown').value)
         }
 
       e.source.postMessage({ parcel, identifier: e.data.identifier, type: "code-save-response" }, e.origin)

@@ -16,16 +16,45 @@
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
   <body style="margin: 0px;">
-    <div class="flex-row">
-      <label>On Connect:
-        <select id="on-connect-dropdown" name="on-connect"></select>
-      </label>
-      <label>On Disconnect:
-        <select id="on-disconnect-dropdown" name="on-disconnect"></select>
-      </label>
-      <label>On Click:
-        <select id="on-click-dropdown" name="on-click"></select>
-      </label>
+    <div class="flex-column">
+      <div class="flex-row" style="justify-content: space-between;">
+        <label>Singular:
+          <input type="text" id="role-singular-input" name="role-singular" />
+        </label>
+        <label>Plural:
+          <input type="text" id="role-plural-input" name="role-plural" />
+        </label>
+        <label>Spectator Role?
+          <input type="checkbox" id="is-spectator-role-checkbox" name="is-spectator-role" />
+        </label>
+        <label>Can Join Mid-Run?
+          <input type="checkbox" id="can-join-midrun-checkbox" name="can-join-midrun" />
+        </label>
+      </div>
+      <div class="flex-row" style="justify-content: space-between;">
+        <label>On Connect:
+          <select id="on-connect-dropdown" name="on-connect"></select>
+        </label>
+        <label>On Disconnect:
+          <select id="on-disconnect-dropdown" name="on-disconnect"></select>
+        </label>
+        <label>Max Count:
+          <input type="number" id="max-count-picker" name="max-count" min="-1" max="999" step="1"
+                 oninput="window.validateNumberInput(event)" />
+        </label>
+      </div>
+      <div class="flex-row" style="justify-content: space-between;">
+        <label>On Click:
+          <select id="on-click-dropdown" name="on-click"></select>
+        </label>
+        <label>On Cursor Move:
+          <select id="on-move-dropdown" name="on-move"></select>
+        </label>
+        <label>Perspective Var:
+          <select id="perspective-dropdown" name="perspective"></select>
+        </label>
+      </div>
+      <input type="button" onclick="deleteMe()" value="Delete Role" />
     </div>
     <script>window.exports = {};</script>
     @views.html.spinner()
