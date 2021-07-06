@@ -134,15 +134,19 @@ class NetTangoController
     if @actionSource is "project-load"
       return
 
-    proceduresCode = @getBlocksCode()
-    procedureNames = @getProcedures()
-
     widgetController = @netLogoModel.widgetController
-    widgets = widgetController.ractive.get('widgetObj')
-    @pauseForevers(widgets)
-    widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
-    @spaceChangeListener?()
-    return
+    if widgetController.ractive.get('lastCompileFailed')
+      @recompile()
+
+    else
+      proceduresCode = @getBlocksCode()
+      procedureNames = @getProcedures()
+
+      widgets = widgetController.ractive.get('widgetObj')
+      @pauseForevers(widgets)
+      widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
+      @spaceChangeListener?()
+      return
 
   # () => Unit
   recompile: () ->
