@@ -439,8 +439,12 @@ RactiveBuilder = Ractive.extend({
     <div class="ntb-builder">
       <optionsForm parentClass="ntb-builder" idBasis="ntb-options" verticalOffset="10" confirmDialog={{ confirmDialog }}></optionsForm>
       <confirmDialog></confirmDialog>
-      <modelChooser runtimeMode="{{runtimeMode}}" playMode="{{playMode}}"></modelChooser>
+
+      {{# !playMode }}
+      <modelChooser runtimeMode="{{runtimeMode}}"></modelChooser>
       <projectChooser></projectChooser>
+      {{/}}
+
       <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
       <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
 
