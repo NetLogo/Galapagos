@@ -24,6 +24,15 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       runtimeMode:  runtimeMode # String
     }
 
+    computed: {
+      displayClass: () ->
+        isSideBySide = @get('isSideBySide')
+        if isSideBySide
+          'netlogo-display-horizontal'
+        else
+          'netlogo-display-vertical'
+    }
+
     on: {
 
       'complete': (_) ->
@@ -112,7 +121,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         />
         {{/}}
 
-        <div class="ntb-models{{# isSideBySide }} netlogo-display-horizontal{{/}}">
+        <div class="ntb-models {{ displayClass }}">
 
           <netLogoModel />
 
