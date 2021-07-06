@@ -44,7 +44,7 @@ class NetTangoController
     @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @netLogoModel.loadUrl(url, name, @rewriters))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
-    @ractive.on('*.ntb-load-project',        (_, data)       => @loadProject(data, "project-load"))
+    @ractive.on('*.ntb-load-project',        (_, data)       => @loadProjectData(data))
     @ractive.on('*.ntb-load-remote-project', (_, projectUrl) => @importRemoteProject(projectUrl))
 
     @ractive.on('*.ntb-export-page', (_) => @exportProject('standalone'))
@@ -77,16 +77,22 @@ class NetTangoController
     netLogoCode = @getNetLogoCode()
     @rewriter.rewriteNetLogoCode(netLogoCode)
 
+  # (NetTangoProject) => Unit)
+  loadProjectData: (data) ->
+    @netLogoCode = null
+    @loadProject(data, 'project-load')
+    return
+
   # Runs any updates needed for old versions, then loads the model normally.
   # If this starts to get more complicated, it should be split out into
   # separate version updates. -Jeremy B October 2019
   # (NetTangoProject, "user" | "project-load" | "undo-redo") => Unit
   loadProject: (project, source) =>
     @actionSource = source
-    if (project.code?)
+    if project.code?
       project.code = NetTangoRewriter.removeOldNetTangoCode(project.code)
     @builder.load(project)
-    if (project.netLogoSettings?.isVertical?)
+    if project.netLogoSettings?.isVertical?
       session = @netLogoModel.session
       session.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
     @resetUndoStack()
@@ -199,7 +205,7 @@ class NetTangoController
         @ractive.fire('ntb-error', {}, 'parse-project-json', error)
         return
 
-      @loadProject(project, 'project-load')
+      @loadProjectData(project)
       return
     reader.readAsText(files[0])
     return
@@ -214,7 +220,7 @@ class NetTangoController
       response.json()
     )
     .then( (project) =>
-      @loadProject(project, "project-load")
+      @loadProjectData(project)
     ).catch( (error) =>
       netLogoLoading.style.display = "none"
       error.url = projectUrl
