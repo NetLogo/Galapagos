@@ -28,17 +28,7 @@ RactiveBlockPreview = Ractive.extend({
         blockStyles: blockStyles
       }
 
-      sampleDef = {
-        id:         block.id + 1
-        action:     "Preview Command"
-        format:     'show "hello!"'
-        isRequired: false
-      }
-
-      sampleIns = {
-        definitionId: block.id + 1
-        instanceId:   0
-      }
+      sampleDefs = @makeSampleDefs(block)
 
       blockIns = {
         definitionId: block.id
@@ -46,15 +36,23 @@ RactiveBlockPreview = Ractive.extend({
       }
 
       if block.builderType? and block.builderType is "Procedure"
-        blocks       = if block.isTerminal then [blockIns] else [blockIns, sampleIns]
+        blocks = if block.isTerminal or ((block.allowedTags?.tags ? []).length isnt 0)
+          [blockIns]
+        else
+          sampleIns = {
+            definitionId: block.id + 1
+            instanceId:   0
+          }
+          [blockIns, sampleIns]
+
         chain        = { x: 5, y: 5, blocks: blocks }
-        defs.blocks  = [ block, sampleDef ]
+        defs.blocks  = [ block, sampleDefs... ]
         defs.program = { chains: [ chain ] }
 
       else
         procDef = {
           id:         block.id + 1
-          action:     "Preview Proc"
+          action:     "Preview Procedure"
           isRequired: true
           placement:  NetTango.blockPlacementOptions.STARTER
           format:     "to preview"
@@ -65,7 +63,7 @@ RactiveBlockPreview = Ractive.extend({
           instanceId:   0
         }
         chain = { x: 5, y: 5, blocks: [ procIns, blockIns ] }
-        defs.blocks = [ procDef, sampleDef, block ]
+        defs.blocks = [ procDef, sampleDefs..., block ]
         defs.program = { chains: [ chain ] }
 
       try
@@ -88,6 +86,27 @@ RactiveBlockPreview = Ractive.extend({
   }
 
   containerId: "ntb-block-preview-canvas"
+
+  makeSampleDefs: (block) ->
+    untagged = {
+      id:         block.id + 1
+      action:     "Preview Command"
+      format:     'show "hello!"'
+      isRequired: false
+    }
+    blockTags = block.allowedTags?.tags ? []
+    allTags   = blockTags.concat(block.clauses.flatMap( (clause) -> clause.allowedTags?.tags ? [] ))
+    tags      = allTags.filter( (tag, index, arr) -> arr.indexOf(tag) is index )
+    tagged    = tags.map( (tag, index) ->
+      {
+        id:         block.id + index + 2
+        action:     "#{tag}-tag Command"
+        format:     "show \"hello, #{tag}!\""
+        isRequired: false
+        tags:       [tag]
+      }
+    )
+    [untagged, tagged...]
 
   resetNetTango: () ->
     block = @get("block")
