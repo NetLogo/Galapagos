@@ -215,13 +215,6 @@ RactiveBuilder = Ractive.extend({
     , extraCss:    @get('extraCss')
     }
 
-  # () => String
-  getEmptyNetTangoProcedures: () ->
-    spaces = @get('spaces')
-    spaceProcs = for _, space of spaces
-      space.defs.blocks.filter((b) => b.type is 'nlogo:procedure').map((b) => b.format + "\nend").join("\n")
-    spaceProcs.join("\n")
-
   # () => Unit
   refreshCss: () ->
     styleElement           = @find('#ntb-injected-style')
@@ -497,12 +490,12 @@ RactiveBuilder = Ractive.extend({
 
       <div class="ntb-controls">
         <div class="ntb-block-defs-list">
-          {{#spaces:spaceNum }}
-            <space
-              space="{{ this }}"
-              playMode="{{ playMode }}"
-              blockStyles="{{ blockStyles }}"
-            />
+          {{# spaces }}
+          <space
+            space="{{ this }}"
+            playMode="{{ playMode }}"
+            blockStyles="{{ blockStyles }}"
+          />
           {{/spaces }}
         </div>
 
