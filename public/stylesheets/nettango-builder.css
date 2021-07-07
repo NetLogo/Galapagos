@@ -110,7 +110,7 @@ body#ntp-body, html#ntp-body {
   left: 0;
   position: absolute;
   background: rgba(0, 0, 0, 0.0);
-  z-index: 95;
+  z-index: 96;
 }
 
 .ntb-confirm-overlay {
