@@ -53,7 +53,7 @@ RactiveAttributes = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <arrayView
-      id="{{ attributesId }}"
+      arrayViewId="{{ attributesId }}"
       items="{{ attributes }}"
       itemType="{{ singular }}"
       itemTypePlural="{{ plural }}"

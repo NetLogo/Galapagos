@@ -4,7 +4,7 @@ RactiveArrayView = (partials, components) -> RactiveToggle.extend({
 
   data: () -> {
 
-    id:                undefined      # String
+    arrayViewId:       undefined      # String
     itemType:          undefined      # String
     itemTypePlural:    undefined      # String
     createItem:        undefined      # (Number) => Any

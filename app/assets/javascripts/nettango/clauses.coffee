@@ -11,9 +11,9 @@ partials = {
       <div class="flex-row ntb-form-row">
 
         <div class="ntb-flex-column">
-          <label for="{{ id }}-close">Code format to insert after all clauses</label>
+          <label for="{{ arrayViewId }}-close">Code format to insert after all clauses</label>
           <codeMirror
-            id="{{ id }}-close"
+            id="{{ arrayViewId }}-close"
             mode="netlogo"
             code={{ closeClauses }}
             extraClasses="['ntb-code-input']"
@@ -38,9 +38,9 @@ partials = {
             divClass="ntb-flex-column" class="ntb-input" />
 
           <div class="ntb-flex-column">
-            <label for="{{ id }}-{{ number }}-open">Start code format (default is `[`)</label>
+            <label for="{{ arrayViewId }}-{{ number }}-open">Start code format (default is `[`)</label>
             <codeMirror
-              id="{{ id }}-{{ number }}-open"
+              id="{{ arrayViewId }}-{{ number }}-open"
               mode="netlogo"
               code={{ open }}
               extraClasses="['ntb-code-input']"
@@ -49,9 +49,9 @@ partials = {
           </div>
 
           <div class="ntb-flex-column">
-            <label for="{{ id }}-{{ number }}-close">End code format (default is `]`)</label>
+            <label for="{{ arrayViewId }}-{{ number }}-close">End code format (default is `]`)</label>
             <codeMirror
-              id="{{ id }}-{{ number }}-close"
+              id="{{ arrayViewId }}-{{ number }}-close"
               mode="netlogo"
               code={{ close }}
               extraClasses="['ntb-code-input']"
@@ -63,7 +63,7 @@ partials = {
 
         <div class="flex-row ntb-form-row">
           <allowedTags
-            id="{{ id }}-{{ number }}-allowed-tags"
+            id="{{ arrayViewId }}-{{ number }}-allowed-tags"
             allowedTags={{ allowedTags }}
             knownTags={{ knownTags }}
             blockType="clause"
@@ -107,7 +107,7 @@ RactiveClauses = Ractive.extend({
   template:
     """
     <arrayView
-      id="block-{{ blockId }}-clauses"
+      arrayViewId="block-{{ blockId }}-clauses"
       items="{{ clauses }}"
       itemType="Clause"
       itemTypePlural="Control Clauses"

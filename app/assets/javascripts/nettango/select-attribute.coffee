@@ -62,7 +62,7 @@ RactiveSelectAttribute = Ractive.extend({
     </div>
 
     <arrayView
-      id="select-{{ elementId }}-options"
+      arrayViewId="select-{{ elementId }}-options"
       itemTemplate="{{ optionTemplate }}"
       items="{{ attribute.values }}"
       itemType="Option"
