@@ -51,7 +51,7 @@ copyBlock = (block) ->
 createCommand = (overrides) ->
   command = {
     , action:     "command"
-    , format:     "command1"
+    , format:     "show \"hello!\""
     , isRequired: false
     , placement:  NetTango.blockPlacementOptions.CHILD
     , limit:      undefined
