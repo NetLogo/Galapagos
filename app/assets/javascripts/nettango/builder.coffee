@@ -27,14 +27,6 @@ RactiveBuilder = Ractive.extend({
     showCode:         true      # Boolean
     spaces:           []        # Array[NetTangoSpace]
 
-    blockEditor: {
-      show:        false           # Boolean
-      spaceNumber: undefined       # Integer
-      blockIndex:  undefined       # Integer
-      submitEvent: undefined       # String
-      submitLabel: "Add New Block" # String
-    }
-
     title: "Blank Model" # String
 
     tabOptions: {
