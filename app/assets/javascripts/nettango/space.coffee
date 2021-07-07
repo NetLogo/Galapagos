@@ -87,11 +87,12 @@ RactiveSpace = Ractive.extend({
       return
 
     # (Context, NetTangoBlock) => Unit
-    '*.ntb-show-create-block-form': (_, blockBase) ->
+    '*.ntb-show-create-block-form': ({ event: { pageY } }, blockBase) ->
       space = @get('space')
       block = NetTangoBlockDefaults.copyBlock(blockBase)
       @fire(
         'show-block-edit-form'
+      , pageY
       , this
       , space.name
       , block
@@ -110,11 +111,12 @@ RactiveSpace = Ractive.extend({
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-show-edit-block-form': (_, blockIndex) ->
+    '*.ntb-show-edit-block-form': ({ event: { pageY } }, blockIndex) ->
       space = @get('space')
       block = space.defs.blocks[blockIndex]
       @fire(
         'show-block-edit-form'
+      , pageY
       , this
       , space.name
       , block
@@ -200,6 +202,7 @@ RactiveSpace = Ractive.extend({
           block      = space.defs.blocks[blockIndex]
           @fire(
             'show-block-edit-form'
+          , event.y
           , this
           , space.name
           , block

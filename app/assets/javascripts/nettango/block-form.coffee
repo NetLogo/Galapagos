@@ -202,8 +202,9 @@ RactiveBlockForm = RactiveModalDialog.extend({
     @push('allTags', ...newKnownTags)
     [block, @get('blockIndex')]
 
-  # (String, String, NetTangoBlock, Integer, String, String, String) => Unit
-  show: (target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+  # (Int, String, String, NetTangoBlock, Integer, String, String, String) => Unit
+  show: (top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+    @set('top', top)
     @set('ready', false)
     @set('spaceName', spaceName)
     @set('blockIndex', blockIndex)

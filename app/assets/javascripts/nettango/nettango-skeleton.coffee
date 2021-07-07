@@ -59,9 +59,9 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         modelChooser.show(Math.max(pageY - 100, 50))
         return
 
-      '*.show-block-edit-form': (_, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
+      '*.show-block-edit-form': (_, top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
         blockForm = @findComponent('blockEditForm')
-        blockForm.show(target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
+        blockForm.show(top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
         return
 
       '*.show-options-form': () ->

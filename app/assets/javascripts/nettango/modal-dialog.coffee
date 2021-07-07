@@ -41,11 +41,17 @@ RactiveModalDialog = Ractive.extend({
   show: () ->
     @set("left", 0)
     @set("active", true)
-    deny = @find("#ntb-#{@get('id')}-deny-button")
-    deny.focus()
     return
 
   on: {
+
+    'render': () ->
+      window.addEventListener('keyup', ({ key }) =>
+        if key is 'Escape' and @get('active')
+          @fire('fire-event', {}, 'deny')
+        return
+      )
+      return
 
     # (Event, String) => Unit
     'fire-event': (_, eventId) ->
@@ -55,11 +61,6 @@ RactiveModalDialog = Ractive.extend({
         args   = eventOptions.arguments ? eventOptions.argsMaker?() ? []
         target = eventOptions.target ? this
         target.fire(eventOptions.event, ...args)
-      return
-
-    'check-escape': ({ event: { key } }) ->
-      if key is "Escape"
-        @fire("fire-event", {}, 'deny')
       return
 
     'start-drag': (event) ->
