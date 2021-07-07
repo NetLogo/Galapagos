@@ -14,12 +14,17 @@ checkIsValidDragElement = (x, y) ->
 
 RactiveModalDialog = Ractive.extend({
 
+  lastUpdateMs: undefined # Number - used only by CommonDrag
+  leftStart:    undefined # Int
+  topStart:     undefined # Int
+  view:         undefined # Element - used only by CommonDrag
+
   # type EventOptions = {
-  #     text: String
-  #   , event: String | null
-  #   , target: Ractive | null
-  #   , arguments: Any[] | null
-  #   , argsMaker: () => Any[] | null
+  #   text: String
+  # , event: String | null
+  # , target: Ractive | null
+  # , arguments: Any[] | null
+  # , argsMaker: () => Any[] | null
   # }
 
   data: () -> {
