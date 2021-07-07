@@ -3,15 +3,15 @@ import Tortoise from "/beak/tortoise.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
 # into a Ractive component.  With more work it could encapsulate a lot more
-# functionality and also be made more declarative.  -Jeremy b June 2021
+# functionality and also be made more declarative.  -Jeremy B June 2021
 
 RactiveNetLogoModel = Ractive.extend({
 
-  alerter:          null
-  modelContainer:   null
-  session:          null
-  widgetController: null
-  workspace:        null
+  alerter:          null # AlertDisplay
+  modelContainer:   null # Element
+  session:          null # SessionLite
+  widgetController: null # WidgetController
+  workspace:        null # Workspace
 
   on: {
     complete: (_) ->
@@ -52,7 +52,7 @@ RactiveNetLogoModel = Ractive.extend({
     @session.startLoop()
     @alerter.listenForErrors(@widgetController)
 
-  handleCompileResult: (callback) ->
+  makeCompileResultHandler: (callback) ->
     (result) =>
       if result.type is 'success'
         @openSession(result.session)
@@ -73,14 +73,14 @@ RactiveNetLogoModel = Ractive.extend({
     if @session?
       @session.teardown()
 
-    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @handleCompileResult(callback), rewriters)
+    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters)
     Tortoise.finishLoading()
 
   loadUrl: (url, modelName, rewriters, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromURL(url, modelName, @modelContainer, @handleCompileResult(callback), rewriters)
+    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters)
 
   template: """
     <div class="ntb-netlogo-model">
