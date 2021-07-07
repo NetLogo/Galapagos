@@ -11,7 +11,7 @@ class NetTangoController
 
   constructor: (element, localStorage, @playMode, @runtimeMode) ->
     @storage      = new NetTangoStorage(localStorage)
-    getSpaces     = () => @ractive.findComponent("builder").get("spaces")
+    getSpaces     = () => @builder.get("spaces")
     @isDebugMode  = false
     @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
     @compileAlert = { compileComplete: @netLogoCompileComplete }
@@ -23,6 +23,7 @@ class NetTangoController
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
     @ractive      = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode)
+    @builder      = @ractive.findComponent('builder')
     @netLogoModel = @ractive.findComponent('netLogoModel')
 
     @ractive.observe('isDebugMode', (value) =>
@@ -93,15 +94,13 @@ class NetTangoController
       project.code = NetTangoRewriter.removeOldNetTangoCode(project.code)
     @builder.load(project)
     if project.netLogoSettings?.isVertical?
-      session = @netLogoModel.session
-      session.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
+      @netLogoModel.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
     @resetUndoStack()
     @actionSource = "user"
     return
 
   # () => Unit
   start: (projectUrl) =>
-    @builder = @ractive.findComponent('builder')
     progress = @storage.inProgress
 
     # first try to load from the inline code element

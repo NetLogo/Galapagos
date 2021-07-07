@@ -15,6 +15,68 @@ areStylesDifferent = (bs1, bs2) ->
   ["starterBlockStyle", "containerBlockStyle", "commandBlockStyle"]
     .some( (type) -> isStyleDifferent(bs1[type], bs2[type]) )
 
+tabOptionDefaults = {
+  commandCenterTab: {
+    label: "Hide command center tab"
+    checked: true
+    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(1) { background: #eee; }'
+    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(1) { display: none; }'
+  }
+  codeTab: {
+    label: "Hide code tab"
+    checked: true
+    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(2) { background: #eee; }'
+    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(2) { display: none; }'
+  }
+  infoTab: {
+    label: "Hide info tab"
+    checked: true
+    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }'
+    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(3) { display: none; }'
+  }
+  speedBar: {
+    label: "Hide model speed bar"
+    checked: true
+    checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }'
+    checkedCssExport: '.netlogo-speed-slider { display: none; }'
+  }
+  fileButtons: {
+    label: "Hide file and export buttons"
+    checked: true
+    checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }'
+    checkedCssExport: '.netlogo-export-wrapper { display: none; }'
+  }
+  authoring: {
+    label: "Hide authoring unlock toggle"
+    checked: true
+    checkedCssBuild:  '#authoring-lock { background: #eee; }'
+    checkedCssExport: '#authoring-lock { display: none; }'
+  }
+  tabsPosition: {
+    label: "Hide commands and code position toggle"
+    checked: true
+    checkedCssBuild:  '#tabs-position { background: #eee; }'
+    checkedCssExport: '#tabs-position { display: none; }'
+  }
+  poweredBy: {
+    label: "Hide 'Powered by NetLogo' link"
+    checked: false
+    checkedCssBuild:  '.netlogo-powered-by { background: #eee; }'
+    checkedCssExport: '.netlogo-powered-by { display: none; }'
+  }
+}
+
+netTangoToggleDefaults = {
+  workspaceBelow: {
+    label: "Show NetTango spaces below the NetLogo model"
+    checked: true
+  },
+  showCode: {
+    label: "Show the generated NetLogo Code below the NetTango spaces"
+    checked: true
+  }
+}
+
 RactiveBuilder = Ractive.extend({
 
   data: () -> {
@@ -26,72 +88,10 @@ RactiveBuilder = Ractive.extend({
     lastCompiledCode: ""        # String
     showCode:         true      # Boolean
     spaces:           []        # Array[NetTangoSpace]
-
-    title: "Blank Model" # String
-
-    tabOptions: {
-      commandCenterTab: {
-        label: "Hide command center tab"
-        checked: true
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(1) { background: #eee; }'
-        checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(1) { display: none; }'
-      }
-      codeTab: {
-        label: "Hide code tab"
-        checked: true
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(2) { background: #eee; }'
-        checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(2) { display: none; }'
-      }
-      infoTab: {
-        label: "Hide info tab"
-        checked: true
-        checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }'
-        checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(3) { display: none; }'
-      }
-      speedBar: {
-        label: "Hide model speed bar"
-        checked: true
-        checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }'
-        checkedCssExport: '.netlogo-speed-slider { display: none; }'
-      }
-      fileButtons: {
-        label: "Hide file and export buttons"
-        checked: true
-        checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }'
-        checkedCssExport: '.netlogo-export-wrapper { display: none; }'
-      }
-      authoring: {
-        label: "Hide authoring unlock toggle"
-        checked: true
-        checkedCssBuild:  '#authoring-lock { background: #eee; }'
-        checkedCssExport: '#authoring-lock { display: none; }'
-      }
-      tabsPosition: {
-        label: "Hide commands and code position toggle"
-        checked: true
-        checkedCssBuild:  '#tabs-position { background: #eee; }'
-        checkedCssExport: '#tabs-position { display: none; }'
-      }
-      poweredBy: {
-        label: "Hide 'Powered by NetLogo' link"
-        checked: false
-        checkedCssBuild:  '.netlogo-powered-by { background: #eee; }'
-        checkedCssExport: '.netlogo-powered-by { display: none; }'
-      }
-    }
-
-    netTangoToggles: {
-      workspaceBelow: {
-        label: "Show NetTango spaces below the NetLogo model"
-        checked: true
-      },
-      showCode: {
-        label: "Show the generated NetLogo Code below the NetTango spaces"
-        checked: true
-      }
-    }
-
-    extraCss: "" # String
+    title:            "Blank Model" # String
+    tabOptions:       ObjectUtils.clone(tabOptionDefaults)
+    netTangoToggles:  ObjectUtils.clone(netTangoToggleDefaults)
+    extraCss:         "" # String
   }
 
   on: {
@@ -298,8 +298,26 @@ RactiveBuilder = Ractive.extend({
 
     return
 
+  # () => Unit
+  resetData: () ->
+    @set('allTags',          [])
+    @set('knownTags',        [])
+    @set('breeds',           [])
+    @set('blockStyles',      null)
+    @set('lastCompiledCode', "")
+    @set('showCode',         true)
+    @set('spaces',           [])
+    @set('title',            "Blank Model")
+    @set('tabOptions',       ObjectUtils.clone(tabOptionDefaults))
+    @set('netTangoToggles',  ObjectUtils.clone(netTangoToggleDefaults))
+    @set('extraCss',         "")
+    return
+
   # (NetTangoProject) => Unit
   load: (project) ->
+    # In case things fail, try not to leave a mess around -Jeremy B July 2021
+    @resetData()
+
     # Make sure styles are loaded first, as when spaces are added
     # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
     if project.blockStyles? and areStylesDifferent(NetTango.defaultBlockStyles, project.blockStyles)

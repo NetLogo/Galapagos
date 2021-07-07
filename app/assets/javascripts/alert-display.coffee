@@ -230,6 +230,8 @@ class AlertDisplay
 
 template = """
 <div class="dark-overlay alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
+
+  {{# isActive}}
   <div class="alert-dialog" id="alert-dialog">
 
     <h3 id="alert-title">{{ title }}</h3>
@@ -270,6 +272,8 @@ template = """
     {{/ isDismissable }}
 
   </div>
+  {{/ isActive }}
+
 </div>
 """
 
