@@ -86,7 +86,6 @@ RactiveBuilder = Ractive.extend({
     playMode:         false     # Boolean
     blockStyles:      undefined # NetTangoBlockStyles
     lastCompiledCode: ""        # String
-    showCode:         true      # Boolean
     spaces:           []        # Array[NetTangoSpace]
     title:            "Blank Model" # String
     tabOptions:       ObjectUtils.clone(tabOptionDefaults)
@@ -305,7 +304,6 @@ RactiveBuilder = Ractive.extend({
     @set('breeds',           [])
     @set('blockStyles',      null)
     @set('lastCompiledCode', "")
-    @set('showCode',         true)
     @set('spaces',           [])
     @set('title',            "Blank Model")
     @set('tabOptions',       ObjectUtils.clone(tabOptionDefaults))
@@ -509,8 +507,8 @@ RactiveBuilder = Ractive.extend({
           {{/spaces }}
         </div>
 
-        {{#if !playMode || showCode }}
-        <label for="ntb-code"{{# !showCode}} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
+        {{#if !playMode || netTangoToggles.showCode.checked }}
+        <label for="ntb-code"{{# !netTangoToggles.showCode.checked }} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
         <codeMirror
           id="ntb-code"
           mode="netlogo"
@@ -518,7 +516,7 @@ RactiveBuilder = Ractive.extend({
           config="{ readOnly: 'nocursor' }"
           extraClasses="[ 'ntb-code', 'ntb-code-large', 'ntb-code-readonly' ]"
         />
-        {{/if !playMode || showCode }}
+        {{/if !playMode || netTangoToggles.showCode.checked }}
 
         {{# !playMode }}
         <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>
