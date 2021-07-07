@@ -69,7 +69,7 @@ tabOptionDefaults = {
 netTangoToggleDefaults = {
   workspaceBelow: {
     label: "Show NetTango spaces below the NetLogo model"
-    checked: true
+    checked: false
   },
   showCode: {
     label: "Show the generated NetLogo Code below the NetTango spaces"
