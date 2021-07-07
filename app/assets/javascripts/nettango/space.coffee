@@ -230,16 +230,17 @@ RactiveSpace = Ractive.extend({
     else
       space.defs.program.chains
 
+    spaceDef = {
+      version:     space.defs.version
+    , height:      space.height
+    , width:       space.width
+    , blockStyles: @get("blockStyles")
+    , blocks:      space.defs.blocks
+    , expressions: space.defs.expressions
+    , program:     { chains: newChains }
+    }
     try
-      NetTango.restore("NetLogo", containerId, {
-        version:     space.defs.version,
-        height:      space.height,
-        width:       space.width,
-        blockStyles: @get("blockStyles"),
-        blocks:      space.defs.blocks,
-        expressions: space.defs.expressions,
-        program:     { chains: newChains }
-      }, NetTangoRewriter.formatDisplayAttribute)
+      NetTango.restore("NetLogo", containerId, spaceDef, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       @fire('ntb-error', {}, 'workspace-refresh', ex)
       return
