@@ -103,14 +103,16 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
     template:
       """
       <div class="ntb-components">
+
         <confirmDialog />
-        {{# !playMode }}
-        <modelChooser runtimeMode="{{runtimeMode}}" />
-        <projectChooser />
-        {{/}}
         <popupMenu />
+
+        {{# !playMode }}
+        <modelChooser runtimeMode="{{ runtimeMode }}" />
+        <projectChooser />
         <blockEditForm blockStyles={{ blockStyles }} allTags={{ allTags }} />
         <optionsForm />
+        {{/}}
 
         {{# !playMode }}
         <builderMenu
