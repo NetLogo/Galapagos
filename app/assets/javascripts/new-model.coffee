@@ -3,6 +3,7 @@ window.exports = window.exports ? {}
 # coffeelint: disable=max_line_length
 window.exports.newModel =
   """
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
