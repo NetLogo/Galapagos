@@ -212,11 +212,17 @@ genMainRole = (widgetNlogo) ->
 
 # (String) => Object[Any]
 genClientRole = (widgetNlogo) ->
+  widgets =
+    if widgetNlogo isnt ''
+      widgetNlogo.split('\n\n').map(convertClientWidget)
+    else
+      [{ type: "hnwView", left: 200, right: 350, top: 0, bottom: 150, height: 150, width: 150 }]
+
   { canJoinMidRun:  true
   , onCursorMove:   null
   , onCursorClick:  null
   , onDisconnect:   null
-  , widgets:        widgetNlogo.split('\n\n').map(convertClientWidget)
+  , widgets
   , name:           "student"
   , namePlural:     "students"
   , onConnect:      null
@@ -228,10 +234,10 @@ genClientRole = (widgetNlogo) ->
 # (String) => Object[Any]
 window.generateHNWConfig = (nlogo) ->
 
-  [_, widgets, _, _, _, _, _, clientWidgets, _, _, _] = nlogo.split('\n@#$#@#$#@\n')
+  [_, widgets, _, _, _, _, _, clientWidgets, _, _, _] = nlogo.split('@#$#@#$#@')
 
-  mainRole   = genMainRole(widgets)
-  clientRole = genClientRole(clientWidgets)
+  mainRole   = genMainRole(widgets.trim())
+  clientRole = genClientRole(clientWidgets.trim())
 
   outConfig =
     { roles:     [mainRole, clientRole]

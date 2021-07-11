@@ -35,6 +35,14 @@ postWhenReady = (frame, message, callback = (->)) ->
 
 
 # (Form) => Unit
+window.submitFromScratch = (form) ->
+  modelText = exports.newModel
+  console.log("Newman!", modelText)
+  config = window.generateHNWConfig(modelText)
+  initialize(modelText, config)
+  return
+
+# (Form) => Unit
 window.submitWithoutConfigForm = (form) ->
   formData = new FormData(form)
   model    = formData.get('model-without-config')
