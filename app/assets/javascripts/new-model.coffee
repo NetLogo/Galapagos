@@ -1,6 +1,7 @@
 # coffeelint: disable=max_line_length
 newModel =
   """
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
