@@ -9,14 +9,20 @@ window.controlEventTraffic = (controller, performUpdate) ->
   checkActionKeys = (e) ->
     if ractive.get('hasFocus')
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
-      for _, w of ractive.get('widgetObj') when w.type in ['button', 'hnwButton'] and
-                                         w.actionKey is char and
-                                         ractive.findAllComponents('buttonWidget').
-                                           find((b) -> b.get('widget') is w).get('isEnabled')
-        if w.forever
-          w.running = not w.running
-        else
-          w.run()
+      if not ractive.get('isHNW')
+        for _, w of ractive.get('widgetObj') when w.type is 'button' and
+                                           w.actionKey is char and
+                                           ractive.findAllComponents('buttonWidget').
+                                             find((b) -> b.get('widget') is w).get('isEnabled')
+          if w.forever
+            w.running = not w.running
+          else
+            w.run()
+      else
+        comps = ractive.findAllComponents('hnwButtonWidget')
+        for _, w of ractive.get('widgetObj') when w.type is 'hnwButton' and w.actionKey is char
+          comp = comps.find((b) -> b.get('widget') is w)
+          comp.clickHandler(undefined, comp)
 
     return
 
