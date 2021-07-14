@@ -40,7 +40,6 @@ class SessionLite
 
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
     @widgetController.ractive.on('*.recompile'     , (_, callback, useOverlay) => @recompile(callback, useOverlay))
-    @widgetController.ractive.on('*.recompile-lite', (_, callback)             => @recompileLite(callback))
     @widgetController.ractive.on('export-nlogo'    , (_, event)                => @exportNlogo(event))
     @widgetController.ractive.on('export-html'     , (_, event)                => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'   , (_, event)                => @openNewFile())
@@ -114,14 +113,6 @@ class SessionLite
   teardown: ->
     @widgetController.teardown()
     cancelAnimationFrame(@_eventLoopTimeout)
-
-  # (() => Unit) => Unit
-  recompileLite: (successCallback = (->)) ->
-    lastCompileFailed   = @widgetController.ractive.get('lastCompileFailed')
-    someWidgetIsFailing = @widgetController.widgets().some((w) -> w.compilation?.success is false)
-    if lastCompileFailed or someWidgetIsFailing
-      @recompile(successCallback)
-    return
 
   # (String) => String
   rewriteCode: (code) ->

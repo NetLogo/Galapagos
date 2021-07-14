@@ -8,12 +8,6 @@ WidgetEventGenerators = {
       type: "recompile"
     }
 
-  recompileLite: ->
-    {
-      run:  (ractive, widget) -> ractive.fire('recompile-lite')
-      type: "recompile-lite"
-    }
-
   redrawView: ->
     {
       run:  (ractive, widget) -> ractive.fire('redraw-view')
