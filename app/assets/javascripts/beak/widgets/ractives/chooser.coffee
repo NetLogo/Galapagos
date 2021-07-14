@@ -82,11 +82,9 @@ RactiveChooser = RactiveWidget.extend({
   }
 
   eventTriggers: ->
-    recompileEvent =
-      if @findComponent('editForm').get('amProvingMyself') then @_weg.recompileLite else @_weg.recompile
     {
        choices: [@_weg.refreshChooser]
-    , variable: [recompileEvent, @_weg.rename]
+    , variable: [@_weg.recompile, @_weg.rename]
     }
 
   minWidth:  55

@@ -88,11 +88,9 @@ RactiveInput = RactiveWidget.extend({
   }
 
   eventTriggers: ->
-    amProvingSelf  = @findComponent('editForm').get('amProvingMyself')
-    recompileEvent = if amProvingSelf then @_weg.recompileLite else @_weg.recompile
     {
       currentValue: [@_weg.updateEngineValue]
-    ,     variable: [recompileEvent, @_weg.rename]
+    ,     variable: [@_weg.recompile, @_weg.rename]
     }
 
   on: {
