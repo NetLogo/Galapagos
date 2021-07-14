@@ -117,6 +117,11 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
     },
 
     data: -> model
+
+    oncomplete: ->
+      @fire('track-focus', document.activeElement)
+      return
+
   })
 
 # coffeelint: disable=max_line_length
