@@ -151,6 +151,27 @@ class SessionLite
 
     @rewriters.reduce(rewriter, errors)
 
+  # The `currentValue` for a monitor widget can be a turtle or patch, which
+  # causes an infinite loop in the JSON serialization code due to circular
+  # references.  So skip sending it over.
+
+  # Other widgets can also have a `currentValue` of a turtle or patch,
+  # sliders for sure, but that's a bug with the type checking not rejecting
+  # setting the global for the slider to an agent value.  Safer just to not
+  # send the current value for any widget for now, especially since they are
+  # Galapagos-only and the compiler does not use them.
+
+  # -Jeremy B July 2021
+
+  cloneWidgets: (widgets) ->
+    propsToSkip = ['currentValue']
+    widgets.map( (oldWidget) ->
+      newWidget = {}
+      props     = Object.keys(oldWidget).filter( (p) -> not propsToSkip.includes(p) )
+      props.forEach( (p) -> newWidget[p] = oldWidget[p] )
+      newWidget
+    )
+
   # (() => Unit) => Unit
   recompile: (successCallback = (->), useOverlay = true) ->
 
@@ -160,12 +181,12 @@ class SessionLite
     extraCommands = @rewriterCommands()
 
     compileParams = {
-      code:         rewritten,
-      widgets:      oldWidgets,
-      commands:     extraCommands,
-      reporters:    [],
-      turtleShapes: turtleShapes ? [],
-      linkShapes:   linkShapes ? []
+      code:         rewritten
+    , widgets:      @cloneWidgets(oldWidgets)
+    , commands:     extraCommands
+    , reporters:    []
+    , turtleShapes: turtleShapes ? []
+    , linkShapes:   linkShapes ? []
     }
 
     recompileProcess = () =>
@@ -304,12 +325,16 @@ class SessionLite
     { last, map, toObject, zip } = tortoise_require('brazier/array')
     { pipeline                 } = tortoise_require('brazier/function')
 
-    rewritten = @rewriteCode(@widgetController.code())
-    result    = @compiler.fromModel({ code: rewritten, widgets: @widgetController.widgets()
-                                               , commands: [setupCode, goCode]
-                                               , reporters: metrics.map((m) -> m.reporter).concat([stopConditionCode])
-                                               , turtleShapes: [], linkShapes: []
-                                               })
+    rewritten  = @rewriteCode(@widgetController.code())
+    oldWidgets = @cloneWidgets(@widgetController.widgets())
+    result     = @compiler.fromModel({
+      code:         rewritten
+    , widgets:      oldWidgets
+    , commands:     [setupCode, goCode]
+    , reporters:    metrics.map((m) -> m.reporter).concat([stopConditionCode])
+    , turtleShapes: []
+    , linkShapes:   []
+    })
 
     unwrapCompilation =
       (prefix, defaultCode) -> ({ result: compiledCode, success }) ->
