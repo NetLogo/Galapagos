@@ -4,6 +4,22 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.9.6">July 19th, 2021 - v2.9.6</h2>
+
+  Bugfixes and other changes:
+
+  <ul>
+    <li>When a monitor widget produced an agent value, the model would break when recompiled.</li>
+    <li>When choosers, switches, and input widgets were added, their global variables could not be immediately referenced in the command console.</li>
+    <li>When referencing an extension primitive that does not exist, the error message would not give the correct line number in code.</li>
+    <li>The <code>wait</code> primitive could be used, but it's behavior was strange and it could potentially freeze NetLogo Web.  It's been updated to not wait any amount of time and to print a message about its lack of compatibility with NetLogo desktop.  <a href="docs/differences#wait">Read more info about why it differs from desktop in our docs.</a></li>
+    <li>Some models in the library used <code>while [mouse-down?] [...]</code> which would cause NetLogo Web to freeze.  Those models have been updated to work with NetLogo Web.</li>
+  </ul>
+
+  This release also includes <a href="https://github.com/NetLogo/NetTango/wiki/Release-notes">many changes to NetTango Web</a>, mostly around how the user interface is display.
+
+  Note that releases 2.9.3, 2.9.4, and 2.9.5 were all bugfix releases for NetTango Web.
+
   <h2 id="v2.9.2">June 21st, 2021 - v2.9.2</h2>
 
   <ul>
