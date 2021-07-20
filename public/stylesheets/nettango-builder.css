@@ -259,6 +259,12 @@ body#ntp-body, html#ntp-body {
   line-height: 0.5em;
 }
 
+.ntb-list-submenu {
+  padding: 8px;
+  padding-top: 2px;
+  padding-bottom: 3px;
+}
+
 .ntb-menu-text {
   display: block;
   padding: 8px;
