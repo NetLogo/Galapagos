@@ -50,6 +50,7 @@ resolvers ++= Seq(
   "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
 , "netlogowebjs"    at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
 , "netlogoheadless" at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
+, "play-scraper"    at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
 )
 
 unmanagedResourceDirectories in Assets += baseDirectory.value / "node_modules"
