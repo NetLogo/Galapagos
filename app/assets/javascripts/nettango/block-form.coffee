@@ -13,7 +13,6 @@ import RactiveModalDialog from "./modal-dialog.js"
 RactiveBlockForm = RactiveModalDialog.extend({
 
   data: () -> {
-    ready:          false        # Boolean
     spaceName:      undefined    # String
     block:          undefined    # NetTangoBlock
     blockIndex:     undefined    # Integer
@@ -32,12 +31,25 @@ RactiveBlockForm = RactiveModalDialog.extend({
       ]
 
     isProcedureBlock: () ->
-      block = @get('block')
-      block.builderType is 'Procedure'
+      builderType = @get('builderType')
+      builderType is 'Procedure'
 
   }
 
   on: {
+
+    'init': () ->
+
+      resetPreviewBlock = () ->
+        previewBlock = @getBlock()
+        @set('previewBlock', previewBlock)
+        return
+
+      @observe('block.*', resetPreviewBlock, { init: false })
+      @observe('builderType', resetPreviewBlock, { init: false })
+      return
+
+      return
 
     '*.code-changed': (_, code) ->
       @set('block.format', code)
@@ -52,32 +64,11 @@ RactiveBlockForm = RactiveModalDialog.extend({
   }
 
   observe: {
-
-    'block.*': () ->
-      @resetPreview()
-      return
-
     'terminalType': () ->
       terminalType = @get('terminalType')
       @set('block.isTerminal', terminalType is 'terminal')
       return
-
   }
-
-  resetPreview: () ->
-    ready = @get('ready')
-    if not ready
-      return
-
-    preview = @findComponent('preview')
-    if not preview?
-      return
-
-    previewBlock = @getBlock()
-    @set('previewBlock', previewBlock)
-    preview.resetNetTango()
-    return
-
 
   # (NetTangoBlock) => Unit
   _setBlock: (sourceBlock) ->
@@ -85,7 +76,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
     block = NetTangoBlockDefaults.copyBlock(sourceBlock)
     block.id = sourceBlock.id
 
-    block.builderType =
+    builderType =
       if (block.isRequired and block.placement is NetTango.blockPlacementOptions.STARTER)
         'Procedure'
       else if not block.isRequired and
@@ -95,12 +86,14 @@ RactiveBlockForm = RactiveModalDialog.extend({
         'Custom'
 
     @set('block', block)
+    @set('builderType', builderType)
     @set('previewBlock', block)
     return
 
   # () => NetTangoBlock
   getBlock: () ->
     blockValues = @get('block')
+    builderType = @get('builderType')
     block = { }
 
     [
@@ -123,7 +116,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
     ].filter( (f) -> blockValues.hasOwnProperty(f) and blockValues[f] isnt '' )
       .forEach( (f) -> block[f] = blockValues[f] )
 
-    switch blockValues.builderType
+    switch builderType
       when 'Procedure'
         block.isRequired = true
         block.placement  = NetTango.blockPlacementOptions.STARTER
@@ -205,7 +198,6 @@ RactiveBlockForm = RactiveModalDialog.extend({
   # (Int, String, String, NetTangoBlock, Integer, String, String, String) => Unit
   show: (top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
     @set('top', top)
-    @set('ready', false)
     @set('spaceName', spaceName)
     @set('blockIndex', blockIndex)
     @set('terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
@@ -219,7 +211,6 @@ RactiveBlockForm = RactiveModalDialog.extend({
     })
     @set('deny', { text: cancelLabel })
     @_super()
-    @set('ready', true)
     return
 
   components: {

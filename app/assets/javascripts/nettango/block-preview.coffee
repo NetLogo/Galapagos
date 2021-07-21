@@ -12,6 +12,18 @@ RactiveBlockPreview = Ractive.extend({
 
   on: {
 
+    'init': () ->
+
+      resetWorkspace = () ->
+        block     = @get("block")
+        workspace = NetTango.save(@containerId)
+        @setupWorkspace(workspace, block)
+        @restoreNetTango(workspace)
+        return
+
+      @observe('block', resetWorkspace, { init: false })
+      return
+
     # (Context) => Unit
     'render': (_) ->
       block = @get("block")
@@ -21,61 +33,15 @@ RactiveBlockPreview = Ractive.extend({
 
       blockStyles = @get("blockStyles")
 
-      defs = {
+      workspace = {
         version:     6
         height:      300
         width:       400
         blockStyles: blockStyles
       }
 
-      sampleDefs = @makeSampleDefs(block)
-
-      blockIns = {
-        definitionId: block.id
-        instanceId:   0
-      }
-
-      if block.builderType? and block.builderType is "Procedure"
-        blocks = if block.isTerminal or ((block.allowedTags?.tags ? []).length isnt 0)
-          [blockIns]
-        else
-          sampleIns = {
-            definitionId: block.id + 1
-            instanceId:   0
-          }
-          [blockIns, sampleIns]
-
-        chain        = { x: 5, y: 5, blocks: blocks }
-        defs.blocks  = [ block, sampleDefs... ]
-        defs.program = { chains: [ chain ] }
-
-      else
-        procDef = {
-          id:         block.id + 1
-          action:     "Preview Procedure"
-          isRequired: true
-          placement:  NetTango.blockPlacementOptions.STARTER
-          format:     "to preview"
-          limit:      1
-        }
-        procIns = {
-          definitionId: block.id + 1
-          instanceId:   0
-        }
-        chain = { x: 5, y: 5, blocks: [ procIns, blockIns ] }
-        defs.blocks = [ procDef, sampleDefs..., block ]
-        defs.program = { chains: [ chain ] }
-
-      try
-        NetTango.restore("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
-      catch ex
-        # hmm, what to do with an error, here?
-        console.log(ex)
-        return
-
-      NetTango.onProgramChanged(@containerId, (ntContainerId, event) => @updateNetLogoCode())
-      @updateNetLogoCode()
-
+      @setupWorkspace(workspace, block)
+      @restoreNetTango(workspace)
       return
 
     'end-drag': (context) ->
@@ -87,7 +53,47 @@ RactiveBlockPreview = Ractive.extend({
 
   containerId: "ntb-block-preview-canvas"
 
-  makeSampleDefs: (block) ->
+  setupWorkspace: (workspace, block) ->
+    sampleDefinitions = @makeSampleBlockDefinitions(block)
+
+    blockInstance = {
+      definitionId: block.id
+      instanceId:   0
+    }
+
+    if block.isRequired and block.placement is NetTango.blockPlacementOptions.STARTER
+      blockInstances = if block.isTerminal or ((block.allowedTags?.tags ? []).length isnt 0)
+        [blockInstance]
+      else
+        sampleInstance = {
+          definitionId: block.id + 1
+          instanceId:   0
+        }
+        [blockInstance, sampleInstance]
+
+      chain        = { x: 5, y: 5, blocks: blockInstances }
+      workspace.blocks  = [ block, sampleDefinitions... ]
+      workspace.program = { chains: [ chain ] }
+
+    else
+      procDefinition = {
+        id:         block.id + 1
+        action:     "Preview Procedure"
+        isRequired: true
+        placement:  NetTango.blockPlacementOptions.STARTER
+        format:     "to preview"
+        limit:      1
+      }
+      procInstance = {
+        definitionId: block.id + 1
+        instanceId:   0
+      }
+      chain = { x: 5, y: 5, blocks: [ procInstance, blockInstance ] }
+      workspace.blocks = [ procDefinition, sampleDefinitions..., block ]
+      workspace.program = { chains: [ chain ] }
+    return
+
+  makeSampleBlockDefinitions: (block) ->
     untagged = {
       id:         block.id + 1
       action:     "Preview Command"
@@ -108,18 +114,15 @@ RactiveBlockPreview = Ractive.extend({
     )
     [untagged, tagged...]
 
-  resetNetTango: () ->
-    block = @get("block")
-    defs  = NetTango.save(@containerId)
-    defs.blocks = defs.blocks.map( (b) -> if b.id is block.id then block else b )
-
+  restoreNetTango: (workspace) ->
     try
-      NetTango.restore("NetLogo", @containerId, defs, NetTangoRewriter.formatDisplayAttribute)
+      NetTango.restore("NetLogo", @containerId, workspace, NetTangoRewriter.formatDisplayAttribute)
     catch ex
       # hmm, what to do with an error, here?
       console.log(ex)
       return
 
+    NetTango.onProgramChanged(@containerId, (ntContainerId, event) => @updateNetLogoCode())
     @updateNetLogoCode()
 
     return
