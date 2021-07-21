@@ -551,7 +551,9 @@ document.getElementById("test-model-button").onclick = ->
             parcel                = { type: "galapagos-direct-launch", nlogox, config, sessionName, password }
             innerTestFrame        = document.getElementById("inner-test-frame")
             innerTestFrame.onload = -> innerTestFrame.contentWindow.postMessage(parcel, "*")
-            innerTestFrame.src    = "//#{window.location.hostname}:8080/host?embedded=true"
+            hnwFramePort          = window.hnwFramePort ? "8080"  # "" in prod (std port); "8443" for staging
+            hnwPortSuffix         = if hnwFramePort then ":#{hnwFramePort}" else ""
+            innerTestFrame.src    = "//#{window.location.hostname}#{hnwPortSuffix}/host?embedded=true"
 
             configFrame    = document.getElementById("config-content-frame")
             outerTestFrame = document.getElementById("outer-test-frame")

@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
+@(tagBuilder: TagBuilder, hnwFramePort: String)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 @extraHead = {
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
@@ -14,6 +14,7 @@
 @content = {
   @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
   @tagBuilder.pathToHTML("file-saver/dist/FileSaver.min.js")
+  <script>window.hnwFramePort = "@hnwFramePort";</script>
   @tagBuilder.pathToHTML("javascripts/pages/hnw-config.js", "type" -> "module")
   <div id="config-content-frame">
     <div class="tortoise inner-content">

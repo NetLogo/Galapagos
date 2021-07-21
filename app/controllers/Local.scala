@@ -56,7 +56,7 @@ class Local @Inject() ( components: ControllerComponents
 
   def hnwAuthoring: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.hnwAuthoring(OutsourceTagBuilder))
+      Ok(views.html.hnwAuthoring(OutsourceTagBuilder, configuration.get[String]("hnw.framePort")))
   }
 
   def hnwAuthoringCode: Action[AnyContent] = Action {
