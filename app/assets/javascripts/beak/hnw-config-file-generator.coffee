@@ -1,5 +1,6 @@
 phonyModel = { code: "", widgets: [{ type: 'view' }], commands: [], reporters: [], turtleShapes: [], linkShapes: [] }
-compiler   = (new BrowserCompiler()).fromModel(phonyModel)
+compiler   = new BrowserCompiler()
+compiler.fromModel(phonyModel)
 
 denil = (x) ->
   if x is "NIL" then null else x
@@ -22,7 +23,7 @@ convertMainButton = (left, top, right, bottom, bodyLines) ->
 
 convertMainChooser = (left, top, right, bottom, bodyLines) ->
 
-  mungeChoices = (tr) -> eval(compiler.compileReporter("[ #{str} ]").result)
+  mungeChoices = (str) -> eval(compiler.compileReporter("[ #{str} ]").result)
 
   [disp, variable, choiceStr, defIndex] = bodyLines
 
@@ -114,7 +115,7 @@ convertMainSwitch = (left, top, right, bottom, bodyLines) ->
 
 convertMainLabel = (left, top, right, bottom, bodyLines) ->
   [display, fontSizeStr, colorStr, isTranspStr] = bodyLines
-  fontStr     = parseInt(fontSizeStr)
+  fontSize    = parseInt(fontSizeStr)
   color       = parseFloat(colorStr)
   transparent = isTranspStr is '1'
   { type: "hnwTextBox", left, right, top, bottom, display, color, fontSize, transparent }
