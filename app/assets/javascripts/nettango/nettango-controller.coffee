@@ -9,7 +9,7 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @playMode, @runtimeMode) ->
+  constructor: (element, localStorage, @playMode, @runtimeMode, netTangoModelUrl) ->
     @storage      = new NetTangoStorage(localStorage)
     getSpaces     = () => @builder.get("spaces")
     @isDebugMode  = false
@@ -50,6 +50,8 @@ class NetTangoController
 
     @ractive.on('*.ntb-export-page', (_) => @exportProject('standalone'))
     @ractive.on('*.ntb-export-json', (_) => @exportProject('json'))
+
+    @ractive.on('complete', (_) => @start(netTangoModelUrl))
 
   # (Boolean) => Unit
   setDebugMode: (isDebugMode) =>

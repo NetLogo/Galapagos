@@ -43,6 +43,7 @@ const netTango = new NetTangoController(
 , ls
 , playMode || window.isStandaloneHTML
 , window.environmentMode
+, netTangoModelUrl
 )
 // note that this relies on the `netTango` Ractive instance having rendered its
 // NetLogo model, so the element can exist to grab.  -Jeremy B June 2021
@@ -52,4 +53,3 @@ netTango.netLogoModel.alerter = alerter
 alerter.listenForNetTangoErrors(netTango)
 
 window.ractive = netTango.ractive
-window.onload  = () => netTango.start(netTangoModelUrl)
