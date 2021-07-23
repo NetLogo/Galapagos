@@ -15,11 +15,11 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 RactiveSpace = Ractive.extend({
 
   data: () -> {
-    blockStyles:   null  # NetTangoBlockStyles
-    defsJson:      ""    # String
-    netLogoCode:   ""    # String
-    playMode:      false # Boolean
-    space:         null  # NetTangoSpace
+    blockStyles: null  # NetTangoBlockStyles
+    defsJson:    ""    # String
+    netLogoCode: ""    # String
+    playMode:    false # Boolean
+    space:       null  # NetTangoSpace
   }
 
   on: {
