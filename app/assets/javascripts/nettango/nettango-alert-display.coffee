@@ -28,30 +28,7 @@ netTangoErrors = new Map([
 ])
 # coffeelint: enable=max_line_length
 
-makeRecompileOverlay = (container) ->
-  ractive = new Ractive({
-    el:       container
-    template: '<button class="ntb-button" on-click="recompile">Recompile</button>'
-    show:     () -> container.style.display = 'flex'
-    hide:     () -> container.style.display = 'none'
-  })
-  container.addEventListener('click', () -> ractive.fire('recompile') )
-  ractive
-
 class NetTangoAlertDisplay extends AlertDisplay
-
-  constructor: (container, isStandalone, @recompileContainer) ->
-    super(container, isStandalone)
-    @recompileOverlay = makeRecompileOverlay(@recompileContainer)
-
-  # (WidgetController) => Unit
-  listenForErrors: (widgetController) ->
-    super(widgetController)
-    @recompileOverlay.on('*.recompile', (_) ->
-      widgetController.ractive.fire('recompile', () => @hide())
-      return
-    )
-    return
 
   # (NetTangoController) => Unit
   listenForNetTangoErrors: (netTango) ->
@@ -88,14 +65,12 @@ class NetTangoAlertDisplay extends AlertDisplay
       when 'compile-recoverable'
         netLogoCode = @netTango.getNetLogoCode()
         if @isNetTangoError(netLogoCode, errors[0])
-          @recompileOverlay.show()
           @reportNetTangoError('recompile-procedures', errors[0])
         else
           message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
           @reportError(message)
 
       when 'recompile-procedures'
-        @recompileOverlay.show()
         @reportNetTangoError('recompile-procedures', errors[0])
 
       else

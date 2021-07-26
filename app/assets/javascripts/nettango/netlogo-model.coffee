@@ -56,9 +56,6 @@ RactiveNetLogoModel = Ractive.extend({
     (result) =>
       if result.type is 'success'
         @openSession(result.session)
-        # if this compile came from a new model load, the recompile overlay could still
-        # be up from a fail on the previous model.  -Jeremy B June 2021
-        @alerter.recompileOverlay.hide()
         if callback?
           callback()
 
@@ -85,7 +82,6 @@ RactiveNetLogoModel = Ractive.extend({
   template: """
     <div class="ntb-netlogo-model">
       <div id="netlogo-model-container"></div>
-      <div id="netlogo-recompile-overlay"></div>
     </div>
     """
 

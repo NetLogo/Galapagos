@@ -45,10 +45,7 @@ const netTango = new NetTangoController(
 , window.environmentMode
 , netTangoModelUrl
 )
-// note that this relies on the `netTango` Ractive instance having rendered its
-// NetLogo model, so the element can exist to grab.  -Jeremy B June 2021
-const recompileContainer = document.getElementById("netlogo-recompile-overlay")
-const alerter            = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml, recompileContainer)
+const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
 netTango.netLogoModel.alerter = alerter
 alerter.listenForNetTangoErrors(netTango)
 
