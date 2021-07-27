@@ -189,7 +189,7 @@ RactiveSpace = Ractive.extend({
     @setSpaceNetLogo(space, containerId)
     switch event.type
 
-      when "block-changed", "attribute-changed"
+      when "block-instance-changed", "attribute-changed", "block-definition-moved"
         @saveNetTango()
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
