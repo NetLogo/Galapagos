@@ -222,6 +222,7 @@ class View
 
   # Returns the agent being followed, or null.
   follow: (model) ->
+    @_zoomLevel = null
     persp = model.observer.perspective
     if persp is FOLLOW or persp is RIDE
       if model.observer.followradius?
