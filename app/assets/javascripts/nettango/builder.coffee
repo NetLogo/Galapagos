@@ -3,6 +3,7 @@ import RactiveCodeMirror from "./code-mirror.js"
 import RactiveSpace from "./space.js"
 import ObjectUtils from "./object-utils.js"
 import newModelNetTango from "./new-model-nettango.js"
+import { netLogoOptionInfo, tabOptionDefaults, netTangoToggleDefaults } from "./options.js"
 
 getBlockStyleDefaults = (style) ->
   ObjectUtils.clone(NetTango.defaultBlockStyles[style])
@@ -15,82 +16,20 @@ areStylesDifferent = (bs1, bs2) ->
   ["starterBlockStyle", "containerBlockStyle", "commandBlockStyle"]
     .some( (type) -> isStyleDifferent(bs1[type], bs2[type]) )
 
-tabOptionDefaults = {
-  commandCenterTab: {
-    label: "Hide command center tab"
-    checked: true
-    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(1) { background: #eee; }'
-    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(1) { display: none; }'
-  }
-  codeTab: {
-    label: "Hide code tab"
-    checked: true
-    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(2) { background: #eee; }'
-    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(2) { display: none; }'
-  }
-  infoTab: {
-    label: "Hide info tab"
-    checked: true
-    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }'
-    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(3) { display: none; }'
-  }
-  speedBar: {
-    label: "Hide model speed bar"
-    checked: true
-    checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }'
-    checkedCssExport: '.netlogo-speed-slider { display: none; }'
-  }
-  fileButtons: {
-    label: "Hide file and export buttons"
-    checked: true
-    checkedCssBuild:  '.netlogo-export-wrapper { background: #eee; }'
-    checkedCssExport: '.netlogo-export-wrapper { display: none; }'
-  }
-  authoring: {
-    label: "Hide authoring unlock toggle"
-    checked: true
-    checkedCssBuild:  '#authoring-lock { background: #eee; }'
-    checkedCssExport: '#authoring-lock { display: none; }'
-  }
-  tabsPosition: {
-    label: "Hide commands and code position toggle"
-    checked: true
-    checkedCssBuild:  '#tabs-position { background: #eee; }'
-    checkedCssExport: '#tabs-position { display: none; }'
-  }
-  poweredBy: {
-    label: "Hide 'Powered by NetLogo' link"
-    checked: false
-    checkedCssBuild:  '.netlogo-powered-by { background: #eee; }'
-    checkedCssExport: '.netlogo-powered-by { display: none; }'
-  }
-}
-
-netTangoToggleDefaults = {
-  workspaceBelow: {
-    label: "Show NetTango spaces below the NetLogo model"
-    checked: false
-  },
-  showCode: {
-    label: "Show the generated NetLogo Code below the NetTango spaces"
-    checked: true
-  }
-}
-
 RactiveBuilder = Ractive.extend({
 
   data: () -> {
-    allTags:          []        # Array[String]
-    knownTags:        []        # Array[String]
-    breeds:           []        # Array[String]
-    playMode:         false     # Boolean
-    blockStyles:      undefined # NetTangoBlockStyles
-    lastCompiledCode: ""        # String
-    spaces:           []        # Array[NetTangoSpace]
+    allTags:          []            # Array[String]
+    knownTags:        []            # Array[String]
+    breeds:           []            # Array[String]
+    playMode:         false         # Boolean
+    blockStyles:      undefined     # NetTangoBlockStyles
+    lastCompiledCode: ""            # String
+    spaces:           []            # Array[NetTangoSpace]
     title:            "Blank Model" # String
     tabOptions:       ObjectUtils.clone(tabOptionDefaults)
     netTangoToggles:  ObjectUtils.clone(netTangoToggleDefaults)
-    extraCss:         "" # String
+    extraCss:         ""            # String
   }
 
   on: {
@@ -145,19 +84,8 @@ RactiveBuilder = Ractive.extend({
       return
 
     '*.ntb-options-updated': (options) ->
-      tabOptions = @get("tabOptions")
-      Object.getOwnPropertyNames(options.tabOptions)
-        .forEach( (n) ->
-          if tabOptions.hasOwnProperty(n)
-            tabOptions[n].checked = options.tabOptions[n].checked
-        )
-
-      netTangoToggles = @get("netTangoToggles")
-      Object.getOwnPropertyNames(options.netTangoToggles)
-        .forEach( (n) =>
-          if netTangoToggles.hasOwnProperty(n)
-            @set("netTangoToggles.#{n}.checked", options.netTangoToggles[n].checked)
-        )
+      @set('tabOptions',      options.tabOptions)
+      @set('netTangoToggles', options.netTangoToggles)
 
       if (areStylesDifferent(NetTango.defaultBlockStyles, options.blockStyles))
         oldStyles = @get("blockStyles")
@@ -170,7 +98,7 @@ RactiveBuilder = Ractive.extend({
       @set("extraCss", options.extraCss)
 
       @refreshCss()
-      @set('isSideBySide', not netTangoToggles.workspaceBelow.checked)
+      @set('isSideBySide', not options.netTangoToggles.workspaceBelow)
       @fire("ntb-options-changed")
       return
 
@@ -185,25 +113,13 @@ RactiveBuilder = Ractive.extend({
 
   # () => NetTangoBuilderData
   getNetTangoBuilderData: () ->
-    spaces = @get('spaces')
-
-    netTangoToggles = { }
-    netTangoToggleValues = @get('netTangoToggles')
-    Object.getOwnPropertyNames(netTangoToggleValues)
-      .forEach((n) -> netTangoToggles[n] = netTangoToggleValues[n].checked)
-
-    tabOptions = { }
-    tabOptionValues = @get('tabOptions')
-    Object.getOwnPropertyNames(tabOptionValues)
-      .forEach((n) -> tabOptions[n] = tabOptionValues[n].checked)
-
     {
-      spaces
-    , netTangoToggles
-    , tabOptions
-    , blockStyles: @get('blockStyles')
-    , title:       @get('title')
-    , extraCss:    @get('extraCss')
+      spaces:          @get('spaces')
+    , netTangoToggles: @get('netTangoToggles')
+    , tabOptions:      @get('tabOptions')
+    , blockStyles:     @get('blockStyles')
+    , title:           @get('title')
+    , extraCss:        @get('extraCss')
     }
 
   # () => Unit
@@ -217,29 +133,25 @@ RactiveBuilder = Ractive.extend({
     tabOptions = @get('tabOptions')
 
     newCss = Object.getOwnPropertyNames(tabOptions)
-      .filter( (prop) -> tabOptions[prop].checked and tabOptions[prop].checkedCssBuild isnt '' )
-      .map( (prop) -> if (forExport) then tabOptions[prop].checkedCssExport else tabOptions[prop].checkedCssBuild )
+      .filter( (prop) -> tabOptions[prop] and netLogoOptionInfo[prop]?.checkedCssBuild isnt '' )
+      .map( (prop) -> if (forExport) then netLogoOptionInfo[prop].checkedCssExport else netLogoOptionInfo[prop].checkedCssBuild )
 
     # This is hack to get the bottom borders in the tab area correct, since I cannot conjure
     # any CSS-only solution to handle it.  At some point it might be better to move this
     # to a pure JS solution to hide tabs directly in code, but that would require model
     # updates.  -Jeremy B July 2020
     tabAreaCss = if not forExport then [] else
-      tabAreaBorder = if (tabOptions.commandCenterTab?.checked and
-        tabOptions.codeTab?.checked and tabOptions.infoTab?.checked
-      )
+      tabAreaBorder = if tabOptions.commandCenterTab and tabOptions.codeTab and tabOptions.infoTab
         'div.netlogo-tab-area { border: 0px; }'
       else
         ''
 
-      commandBorder = if (not tabOptions.commandCenterTab?.checked and (
-        not tabOptions.codeTab?.checked or not tabOptions.infoTab?.checked
-      ))
+      commandBorder = if not tabOptions.commandCenterTab and (not tabOptions.codeTab or not tabOptions.infoTab)
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 0px; }'
 
-      codeBorder = if (not tabOptions.codeTab?.checked and not tabOptions.infoTab?.checked)
+      codeBorder = if not tabOptions.codeTab and not tabOptions.infoTab
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 0px; }'
@@ -339,12 +251,12 @@ RactiveBuilder = Ractive.extend({
     tabOptions = @get('tabOptions')
     for key, prop of (project.tabOptions ? { })
       if tabOptions.hasOwnProperty(key)
-        tabOptions[key].checked = prop
+        tabOptions[key] = prop
 
     netTangoToggles = @get('netTangoToggles')
     for key, prop of (project.netTangoToggles ? { })
       if netTangoToggles.hasOwnProperty(key)
-        netTangoToggles[key].checked = prop
+        netTangoToggles[key] = prop
     @set("netTangoToggles", netTangoToggles)
 
     @set("extraCss", if project.hasOwnProperty("extraCss") then project.extraCss else "")
@@ -355,7 +267,7 @@ RactiveBuilder = Ractive.extend({
       @fire('ntb-model-change', "New Model", newModelNetTango)
 
     @refreshCss()
-    @set('isSideBySide', not netTangoToggles.workspaceBelow.checked)
+    @set('isSideBySide', not netTangoToggles.workspaceBelow)
 
     # If this was an import, clear the value so we can re-import the same file in Chrome and Safari - JMB August 2018
     importInput = @find('#ntb-import-json')
@@ -375,22 +287,11 @@ RactiveBuilder = Ractive.extend({
     }
 
     blankData = {
-      code:       newModelNetTango
-      spaces:     [space]
-      title:      "Blank Model"
-      tabOptions: {
-        commandCenterTab: true
-        codeTab:          true
-        infoTab:          true
-        speedBar:         true
-        fileButtons:      true
-        authoring:        true
-        poweredBy:        false
-      }
-      netTangoToggles: {
-        workspaceBelow: false
-        showCode:       true
-      }
+      code:            newModelNetTango
+      spaces:          [space]
+      title:           "Blank Model"
+      tabOptions:      ObjectUtils.clone(tabOptionDefaults)
+      netTangoToggles: ObjectUtils.clone(netTangoToggleDefaults)
       extraCss: ""
     }
     @fire("ntb-load-project", {}, blankData)
@@ -441,12 +342,12 @@ RactiveBuilder = Ractive.extend({
     spaceId = "ntb-defs-#{id}"
     defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
     space = {
-        id:              id
-      , spaceId:         spaceId
-      , name:            "Block Space #{id}"
-      , width:           430
-      , height:          500
-      , defs:            defs
+      id:      id
+    , spaceId: spaceId
+    , name:    "Block Space #{id}"
+    , width:   430
+    , height:  500
+    , defs:    defs
     }
     for propName in [ 'name', 'width', 'height' ]
       if(spaceVals.hasOwnProperty(propName))
@@ -507,8 +408,8 @@ RactiveBuilder = Ractive.extend({
           {{/spaces }}
         </div>
 
-        {{#if !playMode || netTangoToggles.showCode.checked }}
-        <label for="ntb-code"{{# !netTangoToggles.showCode.checked }} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
+        {{#if !playMode || netTangoToggles.showCode }}
+        <label for="ntb-code"{{# !netTangoToggles.showCode }} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
         <codeMirror
           id="ntb-code"
           mode="netlogo"
@@ -516,7 +417,7 @@ RactiveBuilder = Ractive.extend({
           config="{ readOnly: 'nocursor' }"
           extraClasses="[ 'ntb-code', 'ntb-code-large', 'ntb-code-readonly' ]"
         />
-        {{/if !playMode || netTangoToggles.showCode.checked }}
+        {{/if !playMode || netTangoToggles.showCode }}
 
         {{# !playMode }}
         <style id="ntb-injected-css" type="text/css">{{ computedCss }}</style>

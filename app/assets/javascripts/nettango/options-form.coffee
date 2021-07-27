@@ -2,15 +2,18 @@ import RactiveBlockStyleSettings from "./block-style-settings.js"
 import RactiveCodeMirror from "./code-mirror.js"
 import RactiveModalDialog from "./modal-dialog.js"
 import ObjectUtils from "./object-utils.js"
+import { netLogoOptionInfo, netTangoOptionInfo } from "./options.js"
 
 RactiveOptionsForm = RactiveModalDialog.extend({
 
   clearAllTarget: null
 
   data: () -> {
-    deny:    { text: "Discard Changes" }
-    options: undefined
-    top:     150
+    deny:               { text: "Discard Changes" }
+    options:            undefined
+    top:                150
+    netLogoOptionInfo:  netLogoOptionInfo
+    netTangoOptionInfo: netTangoOptionInfo
   }
 
   on: {
@@ -62,16 +65,16 @@ RactiveOptionsForm = RactiveModalDialog.extend({
 
         <ul style-list-style="none">
         {{# tabOptions:key }}<li>
-          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
-          <label for="ntb-{{ key }}">{{ label }}</label>
+          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ tabOptions[key] }}">
+          <label for="ntb-{{ key }}">{{ netLogoOptionInfo[key].label }}</label>
         </li>{{/ tabOptions }}
         </ul>
 
         <ul style-list-style="none">
 
         {{# netTangoToggles:key }}<li>
-          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ checked }}">
-          <label for="ntb-{{ key }}">{{ label }}</label>
+          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ netTangoToggles[key] }}">
+          <label for="ntb-{{ key }}">{{ netTangoOptionInfo[key].label }}</label>
         </li>{{/ netTangoToggles }}
         </ul>
 
