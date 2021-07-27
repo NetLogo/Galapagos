@@ -94,6 +94,15 @@ class NetTangoController
     @actionSource = source
     if project.code?
       project.code = NetTangoRewriter.removeOldNetTangoCode(project.code)
+
+    if project.tabOptions?
+      project.netLogoOptions = project.tabOptions
+      delete project.tabOptions
+
+    if project.netTangoToggles?
+      project.netTangoOptions = project.netTangoToggles
+      delete project.netTangoToggles
+
     @builder.load(project)
     if project.netLogoSettings?.isVertical?
       @netLogoModel.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
@@ -362,8 +371,8 @@ class NetTangoController
   # (NetTangoProject) => Unit
   storeProject: (project) ->
     set = (prop) => @storage.set(prop, project[prop])
-    [ 'code', 'title', 'extraCss', 'spaces', 'tabOptions',
-      'netTangoToggles', 'blockStyles', 'netLogoSettings' ].forEach(set)
+    [ 'code', 'title', 'extraCss', 'spaces', 'netLogoOptions',
+      'netTangoOptions', 'blockStyles', 'netLogoSettings' ].forEach(set)
     return
 
   # () => Unit

@@ -33,7 +33,7 @@ RactiveOptionsForm = RactiveModalDialog.extend({
   show: (target, options) ->
     @target = target
     clonedOptions = {}
-    [ "tabOptions", "netTangoToggles", "extraCss", "blockStyles" ]
+    [ "netLogoOptions", "netTangoOptions", "extraCss", "blockStyles" ]
       .forEach( (prop) ->
         if options.hasOwnProperty(prop) and options[prop]?
           clonedOptions[prop] = ObjectUtils.clone(options[prop])
@@ -64,18 +64,18 @@ RactiveOptionsForm = RactiveModalDialog.extend({
       <div class="netlogo-display-horizontal">
 
         <ul style-list-style="none">
-        {{# tabOptions:key }}<li>
-          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ tabOptions[key] }}">
+        {{# netLogoOptions:key }}<li>
+          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ netLogoOptions[key] }}">
           <label for="ntb-{{ key }}">{{ netLogoOptionInfo[key].label }}</label>
-        </li>{{/ tabOptions }}
+        </li>{{/ netLogoOptions }}
         </ul>
 
         <ul style-list-style="none">
 
-        {{# netTangoToggles:key }}<li>
-          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ netTangoToggles[key] }}">
+        {{# netTangoOptions:key }}<li>
+          <input id="ntb-{{ key }}" type="checkbox" name="{{ key }}" checked="{{ netTangoOptions[key] }}">
           <label for="ntb-{{ key }}">{{ netTangoOptionInfo[key].label }}</label>
-        </li>{{/ netTangoToggles }}
+        </li>{{/ netTangoOptions }}
         </ul>
 
       </div>

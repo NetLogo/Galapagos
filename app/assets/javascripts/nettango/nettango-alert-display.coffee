@@ -89,7 +89,7 @@ class NetTangoAlertDisplay extends AlertDisplay
 
   # () => Boolean
   isCodeTabAvailable: () ->
-    tabOptions = @netTango.builder.get('tabOptions')
-    not @netTango.playMode or not tabOptions.codeTab
+    netLogoOptions = @netTango.builder.get('netLogoOptions')
+    not @netTango.playMode or not netLogoOptions.codeTab
 
 export default NetTangoAlertDisplay

@@ -50,7 +50,7 @@ netTangoOptionInfo = {
   }
 }
 
-tabOptionDefaults = {
+netLogoOptionDefaults = {
   commandCenterTab: true
   codeTab:          true
   infoTab:          true
@@ -60,9 +60,9 @@ tabOptionDefaults = {
   poweredBy:        false
 }
 
-netTangoToggleDefaults = {
+netTangoOptionDefaults = {
   workspaceBelow: false
   showCode:       true
 }
 
-export { netLogoOptionInfo, tabOptionDefaults, netTangoOptionInfo, netTangoToggleDefaults }
+export { netLogoOptionInfo, netLogoOptionDefaults, netTangoOptionInfo, netTangoOptionDefaults }
