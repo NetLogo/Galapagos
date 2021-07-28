@@ -199,9 +199,55 @@ genPlotOps = (container, ractive) ->
   widgets = Object.values(ractive.get('widgetObj'))
   plotOps = {}
   for widget in widgets when widget.type in ["plot", "hnwPlot"]
-    { display, id, type } = widget
-    plotOps[display] = new HighchartsOps(container.querySelector("#netlogo-#{type}-#{id}"))
-    plotOps[display].reset(widget)
+
+    { display, id, legendOn, type, xAxis, xmax, xmin, yAxis, ymax, ymin } = widget
+
+    pops             = new HighchartsOps(container.querySelector("#netlogo-#{type}-#{id}"))
+    plotOps[display] = pops
+
+    if type is "hnwPlot"
+
+      mockPlot = { isLegendEnabled: legendOn
+                 , name:            display
+                 , xLabel:          xAxis
+                 , yLabel:          yAxis
+                 }
+
+      pops.reset(mockPlot)
+      pops.resize(xmin, xmax, ymin, ymax)
+
+      for _, pen of widget.pens
+
+        numToMode = (num) ->
+          { Bar, Line, Point } = tortoise_require('engine/plot/pen').DisplayMode
+          modeObj =
+            switch num
+              when 0 then Line
+              when 1 then Bar
+              when 2 then Point
+              else        Line
+
+        # (Number) => Number
+        javaColorToNetLogo = (c) ->
+
+          componentToHex = (comp) -> Number(comp).toString(16).padStart(2, '0')
+          f              = componentToHex
+
+          r = (c & 0xFF0000) >> 16
+          g = (c & 0x00FF00) >>  8
+          b = (c & 0x0000FF)
+
+          hexStringToNetlogoColor("##{f(r)}#{f(g)}#{f(b)}")
+
+        mockPen = { name:               pen.display
+                  , getColor:       (-> javaColorToNetLogo(pen.color))
+                  , getDisplayMode: (-> numToMode(pen.mode))
+                  }
+
+        pops.resetPen(mockPen)
+        pops.updatePenMode(mockPen, numToMode(pen.mode))
+        pops.registerPen(mockPen)
+
   plotOps
 
 # (Ractive, (String) => Unit) => OutputConfig

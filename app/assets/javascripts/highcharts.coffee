@@ -153,19 +153,21 @@ class window.HighchartsOps extends PlotOps
       return
 
     updatePenMode = (pen) => (mode) =>
-      if typeof pen is "string" # TODO: I HATE THIS --JAB (3/4/20)
-        series = thisOps.penNameToSeries(pen)
-        if series?
-          type    = thisOps.modeToString(mode)
-          options = thisOps.seriesTypeOptions(type)
-          series.update(options)
-      else
-        series = thisOps.penToSeries(pen)
-        if series?
-          type    = thisOps.modeToString(mode)
-          options = thisOps.seriesTypeOptions(type)
-          series.update(options)
-          recorder.recordUpdatePenMode(pen, type)
+
+      truePen = # TODO: I HATE THIS --JAB (3/4/20)
+        if typeof pen is "string"
+          { name: pen }
+        else
+          pen
+
+      series = thisOps.penToSeries(pen)
+
+      if series?
+        type    = thisOps.modeToString(mode)
+        options = thisOps.seriesTypeOptions(type)
+        series.update(options)
+        recorder.recordUpdatePenMode(pen, type)
+
       return
 
     # Why doesn't the color change show up when I call `update` directly with a new color
