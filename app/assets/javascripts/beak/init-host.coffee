@@ -191,7 +191,7 @@ setUpEventListeners = ->
         session.subscribeWithID(null, e.data.token)
 
         username = e.data.username
-        who      = world.turtleManager.peekNextID()
+        who      = null
 
         # NOTE
         if role.onConnect?
@@ -478,7 +478,7 @@ setUpEventListeners = ->
           wind = studentFrame.contentWindow
 
           username = "Fake Client"
-          who      = world.turtleManager.peekNextID()
+          who      = null
 
           # NOTE
           if role.onConnect?
