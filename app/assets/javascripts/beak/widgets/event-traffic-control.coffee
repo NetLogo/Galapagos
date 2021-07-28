@@ -136,8 +136,8 @@ window.controlEventTraffic = (controller, performUpdate) ->
       (widget, value) ->
         value? and
           switch widget.type
-            when 'slider'   or 'hnwSlider'   then not isNaN(value)
-            when 'inputBox' or 'hnwInputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
+            when 'slider',   'hnwSlider'   then not isNaN(value)
+            when 'inputBox', 'hnwInputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
             else  true
 
     widget = ractive.get('widgetObj')[widgetNum]
