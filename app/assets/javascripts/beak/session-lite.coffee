@@ -207,6 +207,7 @@ class window.SessionLite
           if res.model.success
 
             state = world.exportState()
+            breedShapePairs = world.breedManager.breeds().map((b) -> [b.name, b.getShape()])
             world.clearAll()
             @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
 
@@ -224,6 +225,7 @@ class window.SessionLite
               hops._chart.chartBackground.css({ color: '#efefef' })
 
             globalEval(res.model.result)
+            breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
             world.importState(state)
 
             @widgetController.ractive.set('isStale',           false)
