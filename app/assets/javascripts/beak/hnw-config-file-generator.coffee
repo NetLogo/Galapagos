@@ -1,4 +1,6 @@
-phonyModel = { code: "", widgets: [{ type: 'view' }], commands: [], reporters: [], turtleShapes: [], linkShapes: [] }
+phonyDims  = { patchSize: 1, minPxcor: -10, maxPxcor: 10, minPycor: -10, maxPycor: 10, wrappingAllowedInX: true, wrappingAllowedInY: true }
+phonyView  = { type: 'view', left: 0, right: 21, top: 0, bottom: 21, fontSize: 8, updateMode: "Continuous", showTickCounter: false, frameRate: 60, dimensions: phonyDims }
+phonyModel = { code: "", widgets: [phonyView], commands: [], reporters: [], turtleShapes: [], linkShapes: [] }
 compiler   = new BrowserCompiler()
 compiler.fromModel(phonyModel)
 
