@@ -191,7 +191,7 @@ class window.WidgetController
                 ops.reset(update.plot)
               when "register-pen"
                 ops.registerPen(update.pen)
-              when "update-pen"
+              when "reset-pen"
                 ops.resetPen(update.penName)
               when "add-point"
                 ops.addPoint(update.penName)(update.x, update.y)
