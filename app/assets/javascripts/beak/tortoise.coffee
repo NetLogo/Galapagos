@@ -193,7 +193,10 @@ world.ticker._updateFunc = function() {};
           when "hnwChooser"
             "'#{w.choices[w.currentChoice]}'"
           when "hnwInputBox"
-            w.boxedValue.value
+            if w.boxedValue.type is "String"
+              "'#{w.boxedValue.value}'"
+            else
+              w.boxedValue.value
           when "hnwSlider"
             w.default
           when "hnwSwitch"
