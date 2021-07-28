@@ -188,10 +188,23 @@ world.ticker._onTick     = function() {};
 world.ticker._updateFunc = function() {};
 """
 
+      getDefault = (w) ->
+        switch w.type
+          when "hnwChooser"
+            "'#{w.choices[w.currentChoice]}'"
+          when "hnwInputBox"
+            w.boxedValue.value
+          when "hnwSlider"
+            w.default
+          when "hnwSwitch"
+            w.on
+          else
+            throw new Error("Invalid widget type: #{w.type}")
+
       varInit =
         adaptedWidgets.
           filter((w) -> w.type in ["hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"]).
-          map((w) -> "world.observer.setGlobal('#{w.variable}', #{w.default ? w.on ? w.boxedValue?.value ? ("'" + w.choices[w.currentChoice] + "'")});").
+          map((w) -> "world.observer.setGlobal('#{w.variable}', #{getDefault(w)});").
           reduce(((acc, x) -> "#{acc}\n#{x}"), "")
 
       model =
