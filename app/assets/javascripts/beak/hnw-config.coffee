@@ -37,7 +37,6 @@ postWhenReady = (frame, message, callback = (->)) ->
 # (Form) => Unit
 window.submitFromScratch = (form) ->
   modelText = exports.newModel
-  console.log("Newman!", modelText)
   config = window.generateHNWConfig(modelText)
   initialize(modelText, config)
   return
