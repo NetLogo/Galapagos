@@ -119,9 +119,10 @@ convertMainSwitch = (left, top, right, bottom, bodyLines) ->
   { type: "hnwSwitch", left, right, top, bottom, display, variable, 'on': isOn }
 
 convertMainLabel = (left, top, right, bottom, bodyLines) ->
-  [display, fontSizeStr, colorStr, isTranspStr] = bodyLines
-  fontSize    = parseInt(fontSizeStr)
+  [disp, fontSizeStr, colorStr, isTranspStr] = bodyLines
   color       = parseFloat(colorStr)
+  display     = disp.replace(/\\n/, "\n")
+  fontSize    = parseInt(fontSizeStr)
   transparent = isTranspStr is '1'
   { type: "hnwTextBox", left, right, top, bottom, display, color, fontSize, transparent }
 
