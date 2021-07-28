@@ -47,16 +47,17 @@ convertMainInput = (left, top, right, bottom, bodyLines) ->
 
   boxedValue =
     switch type
-      when "Color", "Number" then { type, multiline: isMulti, value: parseFloat(dfault) }
-      when str1, str2, str3  then { type, multiline: isMulti, value:            dfault  }
+      when "Color", "Number" then { type, multiline: isMulti, value: parseFloat(dfault)      }
+      when str1, str2, str3  then { type, multiline: isMulti, value: "#{denil(dfault) ? ""}" }
       else                        throw new Error("Unrecognized Input widget type: #{type}")
 
   { type: "hnwInputBox", left, right, top, bottom, variable, boxedValue }
 
 convertMainMonitor = (left, top, right, bottom, bodyLines) ->
-  [display, _, decimals, _, fs] = bodyLines
-  precision = parseInt(decimals)
+  [disp, _, decimals, _, fs] = bodyLines
+  display   = denil(disp)
   fontSize  = parseInt(fs)
+  precision = parseInt(decimals)
   { type: "hnwMonitor", left, right, top, bottom, display, source: "???1", reporterStyle: "???2", precision, fontSize }
 
 convertMainOutput = (left, top, right, bottom, bodyLines) ->
@@ -68,10 +69,12 @@ convertMainPlot = (left, top, right, bottom, bodyLines) ->
 
   parseBool = (x) -> x.toLowerCase() is "true"
 
-  [display, xAxis, yAxis, xmn, xmx, ymn, ymx, apo, lo, setupAndUpdate, penHeader, penLines...] = bodyLines
+  [display, xLabel, yLabel, xmn, xmx, ymn, ymx, apo, lo, setupAndUpdate, penHeader, penLines...] = bodyLines
 
+  xAxis      = denil(xLabel)
   xmin       = parseFloat(xmn)
   xmax       = parseFloat(xmx)
+  yAxis      = denil(yLabel)
   ymin       = parseFloat(ymn)
   ymax       = parseFloat(ymx)
   autoPlotOn = parseBool(apo)
@@ -165,7 +168,8 @@ convertClientChooser = convertMainChooser
 convertClientInput = convertMainInput
 
 convertClientMonitor = (left, top, right, bottom, bodyLines) ->
-  [display, _, precisionStr] = bodyLines
+  [disp, _, precisionStr] = bodyLines
+  display   = denil(disp)
   precision = parseInt(precisionStr)
   { type: "hnwMonitor", left, right, top, bottom, display, source: "???1", reporterStyle: "turtle-procedure", precision, fontSize: 10 }
 
