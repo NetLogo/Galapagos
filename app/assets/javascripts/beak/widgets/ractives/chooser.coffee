@@ -19,7 +19,7 @@ ChooserEditForm = EditForm.extend({
         elem.value  = code
         validityStr =
           try
-            Converter.stringToJSValue("[#{code}]")
+            @_reify(code)
             ""
           catch ex
             "Invalid format: Must be a space-separated list of NetLogo literal values"
@@ -44,12 +44,15 @@ ChooserEditForm = EditForm.extend({
   genProps: (form) ->
     varName    = form.varName.value
     choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
-    choicesArr = Converter.stringToJSValue("[#{choices}]")
+    choicesArr = @_reify(choices)
     {
        choices: choicesArr
     ,  display: varName
     , variable: varName.toLowerCase()
     }
+
+  _reify: (choices) ->
+    Converter.stringToJSValue("[#{choices}]")
 
   partials: {
 
@@ -97,17 +100,6 @@ HNWChooserEditForm = ChooserEditForm.extend({
     breedVars: undefined # Array[String]
   }
 
-  genProps: (form) ->
-    varName    = form.varName.value
-    choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
-    # choicesArr = Converter.stringToJSValue("[#{choices}]")
-    # TODO: This requires access to the compiler, which lives in the parent frame....
-    # Jason B. (5/24/21)
-    {
-       display: varName
-    , variable: varName.toLowerCase()
-    }
-
   on: {
     'use-new-var': (_, varName) ->
       @set('display',  varName)
@@ -115,11 +107,16 @@ HNWChooserEditForm = ChooserEditForm.extend({
       return
   }
 
+  _reify: (choices) ->
+    # TODO: That's a 'yikes!' from me, dawg.  I'm not happy to reach up into the parent frame here.
+    # I don't have many other good options, though, aside from writing my own literal parser.
+    window.parent.Converter.stringToJSValue("[#{choices}]")
+
   partials: {
 
     codeInput:
       """
-      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices" isDisabled="true"
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
                 label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
       """
 
