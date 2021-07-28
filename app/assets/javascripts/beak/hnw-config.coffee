@@ -309,7 +309,7 @@ genConfigP = ->
 
       nonSuperRoles  = roles.filter((r) -> r.name isnt "supervisor")
       studentRole    = nonSuperRoles[0]
-      supervisorRole = roles.find((r) -> r.name is   "supervisor")
+      supervisorRole = roles.find((r) -> r.name is "supervisor")
       otherRoles     = nonSuperRoles.slice(1)
       roles          = [studentRole, supervisorRole].concat(otherRoles).filter((r) -> r?)
 

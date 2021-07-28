@@ -207,7 +207,7 @@ window.addEventListener("message", (e) ->
                   , onCursorRelease
                   , onDisconnect
                   , perspectiveVar
-                  , widgets:       scrapeWidgets()
+                  , widgets:        scrapeWidgets()
                   }
         , identifier: e.data.identifier
         , type:       "role-save-response"
