@@ -29,9 +29,9 @@ convertMainChooser = (left, top, right, bottom, bodyLines) ->
 
   [disp, variable, choiceStr, defIndex] = bodyLines
 
-  display       = denil(disp)
-  variable      = mungeChoices(choiceStr)
+  choices       = mungeChoices(choiceStr)
   currentChoice = parseInt(defIndex)
+  display       = denil(disp)
 
   { type: "hnwChooser", left, right, top, bottom, display, variable, choices, currentChoice }
 
