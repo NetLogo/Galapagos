@@ -144,11 +144,12 @@ window.addEventListener("message", (e) ->
 
       toNames = (arr) -> arr.map((x) -> x.name)
 
-      populateOptions('on-connect-dropdown'   , toNames(onConnectChoices         ), cachedConfig.onConnect     )
-      populateOptions('on-disconnect-dropdown', toNames(possibleMetaProcedures(0)), cachedConfig.onDisconnect  )
-      populateOptions('on-click-dropdown'     , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorClick )
-      populateOptions('on-move-dropdown'      , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorMove  )
-      populateOptions('perspective-dropdown'  , myVars                            , cachedConfig.perspectiveVar)
+      populateOptions('on-connect-dropdown'   , toNames(onConnectChoices         ), cachedConfig.onConnect      )
+      populateOptions('on-disconnect-dropdown', toNames(possibleMetaProcedures(0)), cachedConfig.onDisconnect   )
+      populateOptions('on-click-dropdown'     , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorClick  )
+      populateOptions('on-cursor-up-dropdown' , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorRelease)
+      populateOptions('on-move-dropdown'      , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorMove   )
+      populateOptions('perspective-dropdown'  , myVars                            , cachedConfig.perspectiveVar )
 
       document.getElementById('can-join-midrun-checkbox'  ).checked = cachedConfig.canJoinMidRun
       document.getElementById('is-spectator-role-checkbox').checked = cachedConfig.isSpectator
@@ -181,16 +182,17 @@ window.addEventListener("message", (e) ->
           else
             null
 
-      canJoinMidRun  =        document.getElementById('can-join-midrun-checkbox'  ).checked
-      isSpectator    =        document.getElementById('is-spectator-role-checkbox').checked
-      limit          = orNull(document.getElementById('max-count-picker'          ).value)
-      name           = orNull(document.getElementById('role-singular-input'       ).value)
-      namePlural     = orNull(document.getElementById('role-plural-input'         ).value)
-      onConnect      = orNull(document.getElementById('on-connect-dropdown'       ).value)
-      onCursorClick  = orNull(document.getElementById('on-click-dropdown'         ).value)
-      onCursorMove   = orNull(document.getElementById('on-move-dropdown'          ).value)
-      onDisconnect   = orNull(document.getElementById('on-disconnect-dropdown'    ).value)
-      perspectiveVar = orNull(document.getElementById('perspective-dropdown'      ).value)
+      canJoinMidRun   =        document.getElementById('can-join-midrun-checkbox'  ).checked
+      isSpectator     =        document.getElementById('is-spectator-role-checkbox').checked
+      limit           = orNull(document.getElementById('max-count-picker'          ).value)
+      name            = orNull(document.getElementById('role-singular-input'       ).value)
+      namePlural      = orNull(document.getElementById('role-plural-input'         ).value)
+      onConnect       = orNull(document.getElementById('on-connect-dropdown'       ).value)
+      onCursorClick   = orNull(document.getElementById('on-click-dropdown'         ).value)
+      onCursorMove    = orNull(document.getElementById('on-move-dropdown'          ).value)
+      onCursorRelease = orNull(document.getElementById('on-cursor-up-dropdown'     ).value)
+      onDisconnect    = orNull(document.getElementById('on-disconnect-dropdown'    ).value)
+      perspectiveVar  = orNull(document.getElementById('perspective-dropdown'      ).value)
 
       e.source.postMessage(
         {
@@ -202,6 +204,7 @@ window.addEventListener("message", (e) ->
                   , onConnect
                   , onCursorClick
                   , onCursorMove
+                  , onCursorRelease
                   , onDisconnect
                   , perspectiveVar
                   , widgets:       scrapeWidgets()
