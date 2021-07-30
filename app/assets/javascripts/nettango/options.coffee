@@ -47,6 +47,9 @@ netTangoOptionInfo = {
   },
   showCode: {
     label: "Show the generated NetLogo Code below the NetTango spaces"
+  },
+  enablePlayModeDefinitionChanges: {
+    label: "Enable changing definition ordering in play mode"
   }
 }
 
@@ -61,8 +64,9 @@ netLogoOptionDefaults = {
 }
 
 netTangoOptionDefaults = {
-  workspaceBelow: false
-  showCode:       true
+  workspaceBelow:                    false
+  showCode:                          true
+  enablePlayModeDefinitionChanges: false
 }
 
 export { netLogoOptionInfo, netLogoOptionDefaults, netTangoOptionInfo, netTangoOptionDefaults }

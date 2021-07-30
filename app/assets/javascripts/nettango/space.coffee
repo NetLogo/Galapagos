@@ -15,11 +15,12 @@ modifyBlockMenuItems = [dele, edit, up, dn, dup]
 RactiveSpace = Ractive.extend({
 
   data: () -> {
-    blockStyles: null  # NetTangoBlockStyles
-    defsJson:    ""    # String
-    netLogoCode: ""    # String
-    playMode:    false # Boolean
-    space:       null  # NetTangoSpace
+    blockStyles:     null  # NetTangoBlockStyles
+    defsJson:        ""    # String
+    netLogoCode:     ""    # String
+    playMode:        false # Boolean
+    space:           null  # NetTangoSpace
+    netTangoOptions: null  # NetTangoBuilderOptions
   }
 
   on: {
@@ -242,8 +243,13 @@ RactiveSpace = Ractive.extend({
     , expressions: space.defs.expressions
     , program:     { chains: newChains }
     }
+    playMode = @get('playMode')
+    netTangoOptions = @get('netTangoOptions')
+    options = {
+      enableDefinitionChanges: (not playMode or netTangoOptions.enablePlayModeDefinitionChanges)
+    }
     try
-      NetTango.restore("NetLogo", containerId, spaceDef, NetTangoRewriter.formatDisplayAttribute)
+      NetTango.restore("NetLogo", containerId, spaceDef, NetTangoRewriter.formatDisplayAttribute, options)
     catch ex
       @fire('ntb-error', {}, 'workspace-refresh', ex)
       return

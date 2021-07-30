@@ -241,13 +241,7 @@ RactiveBuilder = Ractive.extend({
     else
       @set('blockStyles', null)
 
-    @set('spaces', [])
-    for spaceVals in (project.spaces ? [])
-      @createSpace(spaceVals)
-    @updateCode()
-
-    @initializeTags(project["knownTags"] ? [], @get('spaces'))
-
+    # Also make sure options are loaded first.  -Jeremy B July 2021
     netLogoOptions = @get('netLogoOptions')
     for key, prop of (project.netLogoOptions ? { })
       if netLogoOptions.hasOwnProperty(key)
@@ -258,6 +252,13 @@ RactiveBuilder = Ractive.extend({
       if netTangoOptions.hasOwnProperty(key)
         netTangoOptions[key] = prop
     @set("netTangoOptions", netTangoOptions)
+
+    @set('spaces', [])
+    for spaceVals in (project.spaces ? [])
+      @createSpace(spaceVals)
+    @updateCode()
+
+    @initializeTags(project["knownTags"] ? [], @get('spaces'))
 
     @set("extraCss", if project.hasOwnProperty("extraCss") then project.extraCss else "")
 
@@ -401,9 +402,10 @@ RactiveBuilder = Ractive.extend({
         <div class="ntb-block-defs-list">
           {{# spaces }}
           <space
-            space="{{ this }}"
-            playMode="{{ playMode }}"
-            blockStyles="{{ blockStyles }}"
+            space={{ this }}
+            playMode={{ playMode }}
+            blockStyles={{ blockStyles }}
+            netTangoOptions={{ netTangoOptions }}
           />
           {{/spaces }}
         </div>
