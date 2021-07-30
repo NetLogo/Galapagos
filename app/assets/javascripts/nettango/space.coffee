@@ -44,14 +44,14 @@ RactiveSpace = Ractive.extend({
     'ntb-show-block-defaults': ({ event: { pageX, pageY } }, space) ->
       NetTangoBlockDefaults.blocks.eventName = 'ntb-show-create-block-form'
       @fire('show-popup-menu', {}, this, pageX, pageY, NetTangoBlockDefaults.blocks)
-      return false
+      false
 
     # (Context, NetTangoSpace) => Boolean
     'ntb-show-block-modify': ({ event: { pageX, pageY } }, space) ->
       spaces     = @parent.get("spaces")
       modifyMenu = @createModifyMenuContent(space, spaces)
       @fire('show-popup-menu', {}, this, pageX, pageY, modifyMenu)
-      return false
+      false
 
     # (Context, Integer) => Unit
     '*.ntb-delete-block': (_, blockIndex) ->
@@ -306,7 +306,7 @@ RactiveSpace = Ractive.extend({
         data: { fromSpaceId: space.spaceId, fromBlockIndex: blockIndex, toSpaceIndex: otherSpaces[0].index }
       }
 
-    return {
+    {
       name: "duplicate to",
       items: otherSpaces.map( (s) -> {
         name: s.space.name

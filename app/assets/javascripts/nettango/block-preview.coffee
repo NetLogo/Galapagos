@@ -116,7 +116,13 @@ RactiveBlockPreview = Ractive.extend({
 
   restoreNetTango: (workspace) ->
     try
-      NetTango.restore("NetLogo", @containerId, workspace, NetTangoRewriter.formatDisplayAttribute, { enableDefinitionChanges: true })
+      NetTango.restore(
+        "NetLogo"
+      , @containerId
+      , workspace
+      , NetTangoRewriter.formatDisplayAttribute
+      , { enableDefinitionChanges: true }
+      )
     catch ex
       # hmm, what to do with an error, here?
       console.log(ex)

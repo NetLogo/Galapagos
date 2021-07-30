@@ -60,7 +60,7 @@ RactiveBuilder = Ractive.extend({
         }
       , deny: { text: "No, keep workspace" }
       })
-      return false
+      false
 
     '*.ntb-delete-blockspace': (_, spaceNumber) ->
       @deleteSpace(spaceNumber)
@@ -132,26 +132,34 @@ RactiveBuilder = Ractive.extend({
   compileCss: (forExport, extraCss) ->
     netLogoOptions = @get('netLogoOptions')
 
+    mapCss = if forExport
+      (prop) -> netLogoOptionInfo[prop].checkedCssExport
+    else
+      (prop) -> netLogoOptionInfo[prop].checkedCssBuild
+
     newCss = Object.getOwnPropertyNames(netLogoOptions)
       .filter( (prop) -> netLogoOptions[prop] and netLogoOptionInfo[prop]?.checkedCssBuild isnt '' )
-      .map( (prop) -> if (forExport) then netLogoOptionInfo[prop].checkedCssExport else netLogoOptionInfo[prop].checkedCssBuild )
+      .map(mapCss)
 
     # This is hack to get the bottom borders in the tab area correct, since I cannot conjure
     # any CSS-only solution to handle it.  At some point it might be better to move this
     # to a pure JS solution to hide tabs directly in code, but that would require model
     # updates.  -Jeremy B July 2020
     tabAreaCss = if not forExport then [] else
-      tabAreaBorder = if netLogoOptions.commandCenterTab and netLogoOptions.codeTab and netLogoOptions.infoTab
+      allHidden = netLogoOptions.commandCenterTab and netLogoOptions.codeTab and netLogoOptions.infoTab
+      tabAreaBorder = if allHidden
         'div.netlogo-tab-area { border: 0px; }'
       else
         ''
 
-      commandBorder = if not netLogoOptions.commandCenterTab and (not netLogoOptions.codeTab or not netLogoOptions.infoTab)
+      commandPlus = not netLogoOptions.commandCenterTab and (not netLogoOptions.codeTab or not netLogoOptions.infoTab)
+      commandBorder = if commandPlus
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 0px; }'
 
-      codeBorder = if not netLogoOptions.codeTab and not netLogoOptions.infoTab
+      codePlus = not netLogoOptions.codeTab and not netLogoOptions.infoTab
+      codeBorder = if codePlus
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 0px; }'
@@ -232,7 +240,7 @@ RactiveBuilder = Ractive.extend({
     # they initialize NetTango workspaces with them.  -Jeremy B Jan-2020
     if project.blockStyles? and areStylesDifferent(NetTango.defaultBlockStyles, project.blockStyles)
       blockStyles = {}
-      for propName in [ "starterBlockStyle", "containerBlockStyle", "commandBlockStyle" ]
+      for propName in ["starterBlockStyle", "containerBlockStyle", "commandBlockStyle"]
         if project.blockStyles.hasOwnProperty(propName)
           blockStyles[propName] = project.blockStyles[propName]
         else
@@ -356,7 +364,7 @@ RactiveBuilder = Ractive.extend({
 
     @push('spaces', space)
     @fire('ntb-space-changed')
-    return space
+    space
 
   deleteSpace: (spaceNumber) ->
     spaces    = @get('spaces')
