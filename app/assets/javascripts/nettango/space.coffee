@@ -10,7 +10,8 @@ up   = { eventName: 'ntb-block-up',             name: 'move up' }
 dn   = { eventName: 'ntb-block-down',           name: 'move down' }
 dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
 
-modifyBlockMenuItems = [dele, edit, up, dn, dup]
+modifyBlockButtonMenuItems  = [dele, edit, dup]
+modifyBlockContextMenuItems = [dele, edit, up, dn, dup]
 
 RactiveSpace = Ractive.extend({
 
@@ -136,23 +137,17 @@ RactiveSpace = Ractive.extend({
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-block-up': (_, blockIndex) ->
-      space = @get('space')
-      if (blockIndex > 0)
-        swap = space.defs.blocks[blockIndex - 1]
-        space.defs.blocks[blockIndex - 1] = space.defs.blocks[blockIndex]
-        space.defs.blocks[blockIndex] = swap
-        @updateNetTango(space, true)
+    '*.ntb-block-up': (_1, _2, ntEvent) ->
+      containerId = @getNetTangoContainerId()
+      NetTango.moveBlock(containerId, ntEvent.groupIndex, ntEvent.slotIndex, ntEvent.slotIndex - 1)
+      @saveNetTango(containerId)
       return
 
     # (Context, Integer) => Unit
-    '*.ntb-block-down': (_, blockIndex) ->
-      space = @get('space')
-      if (blockIndex < (space.defs.blocks.length - 1))
-        swap = space.defs.blocks[blockIndex + 1]
-        space.defs.blocks[blockIndex + 1] = space.defs.blocks[blockIndex]
-        space.defs.blocks[blockIndex] = swap
-        @updateNetTango(space, true)
+    '*.ntb-block-down': (_1, _2, ntEvent) ->
+      containerId = @getNetTangoContainerId()
+      NetTango.moveBlock(containerId, ntEvent.groupIndex, ntEvent.slotIndex, ntEvent.slotIndex + 1)
+      @saveNetTango(containerId)
       return
 
     # (Context, Integer) => Unit
@@ -219,8 +214,8 @@ RactiveSpace = Ractive.extend({
           blockIndex = space.defs.blocks.findIndex( (block) -> block.id is event.blockId )
           block      = space.defs.blocks[blockIndex]
           spaces     = @parent.get("spaces")
-          modifyMenu = @createModifyMenu(block, blockIndex, space, spaces)
-          @fire('show-popup-menu', {}, this, event.x, event.y, modifyMenu)
+          modifyMenu = @createModifyMenu(modifyBlockContextMenuItems, block, blockIndex, space, spaces)
+          @fire('show-popup-menu', {}, this, event.x, event.y, modifyMenu, event)
 
     return
 
@@ -239,6 +234,7 @@ RactiveSpace = Ractive.extend({
     , width:       space.width
     , blockStyles: @get("blockStyles")
     , blocks:      space.defs.blocks
+    , menuConfig:  space.defs.menuConfig
     , expressions: space.defs.expressions
     , program:     { chains: newChains }
     }
@@ -277,9 +273,9 @@ RactiveSpace = Ractive.extend({
     if keepOldChains then @fire('ntb-space-changed')
     return
 
-  # (NetTangoBlock, Integer, NetTangoSpace, Array[NetTangoSpace]) => Content
-  createModifyMenu: (block, blockIndex, space, spaces) ->
-    items          = modifyBlockMenuItems.map( (x) -> Object.assign({ data: blockIndex }, x) )
+  # (MenuItem[], NetTangoBlock, Integer, NetTangoSpace, Array[NetTangoSpace]) => Content
+  createModifyMenu: (sourceItems, block, blockIndex, space, spaces) ->
+    items          = sourceItems.map( (x) -> Object.assign({ data: blockIndex }, x) )
     dupToSpaceItem = @createDuplicateToSpaceMenuItem(blockIndex, space, spaces)
     if (dupToSpaceItem isnt null)
       items.push(dupToSpaceItem)
@@ -317,7 +313,7 @@ RactiveSpace = Ractive.extend({
   # (NetTangoSpace, Array[NetTangoSpace]) => Content
   createModifyMenuContent: (space, spaces) ->
     items = for block, blockIndex in space.defs.blocks
-      @createModifyMenu(block, blockIndex, space, spaces)
+      @createModifyMenu(modifyBlockButtonMenuItems, block, blockIndex, space, spaces)
 
     {
       name: "_",

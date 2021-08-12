@@ -29,7 +29,7 @@ RactivePopupMenu = Ractive.extend({
       event    = eventName ? @get('content').eventName
       menuData = @get('menuData')
       if (menuData?)
-        target.fire(event, context, menuData, itemData)
+        target.fire(event, context, itemData, menuData)
       else
         target.fire(event, context, itemData)
       @unpop()

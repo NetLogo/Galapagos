@@ -71,9 +71,9 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         optionsForm.show(builder, options)
         return
 
-      '*.show-popup-menu': (_, target, top, left, options) ->
+      '*.show-popup-menu': (_, target, top, left, options, menuData) ->
         popupMenu = @findComponent('popupMenu')
-        popupMenu.popup(target, top, left, options)
+        popupMenu.popup(target, top, left, options, menuData)
         return
 
       '*.ntb-clear-all': (_) ->
