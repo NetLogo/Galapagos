@@ -177,17 +177,16 @@ RactiveSpace = Ractive.extend({
     space.netLogoDisplay = NetTango.exportCode(containerId).trim()
     return
 
-  dispatchNetTangoEvent: (ntContainerId, event) ->
-    if (@get('space')?)
-      # `space` can change after we `render`, so do not use the one we already got above -JMB 11/2018
-      s = @get('space')
-      @handleNetTangoEvent(s, ntContainerId, event)
+  dispatchNetTangoEvent: (event) ->
+    space = @get('space')
+    if space?
+      @handleNetTangoEvent(space, event)
     return
 
   # (NetTangoSpace, String, Event) => Unit
-  handleNetTangoEvent: (space, containerId, event) ->
-    space.defs.program.chains = NetTango.save(containerId).program.chains
-    @setSpaceNetLogo(space, containerId)
+  handleNetTangoEvent: (space, event) ->
+    space.defs.program.chains = NetTango.save(event.containerId).program.chains
+    @setSpaceNetLogo(space, event.containerId)
     switch event.type
 
       when "block-instance-changed", "attribute-changed", "block-definition-moved"
@@ -256,7 +255,7 @@ RactiveSpace = Ractive.extend({
 
     @saveNetTango(containerId)
     @setSpaceNetLogo(space, containerId)
-    NetTango.onProgramChanged(containerId, (args...) => @dispatchNetTangoEvent(args...))
+    NetTango.addEventListener(containerId, (event) => @dispatchNetTangoEvent(event))
     return
 
   # (String|null) => Unit

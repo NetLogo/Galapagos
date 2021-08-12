@@ -4,6 +4,8 @@ import NetTangoBlockDefaults from "./block-defaults.js"
 
 RactiveBlockPreview = Ractive.extend({
 
+  containerId: "ntb-block-preview-canvas"
+
   data: () -> {
     block:       undefined # NetTangoBlock
     code:        undefined # String
@@ -13,7 +15,6 @@ RactiveBlockPreview = Ractive.extend({
   on: {
 
     'init': () ->
-
       resetWorkspace = () ->
         block     = @get("block")
         workspace = NetTango.save(@containerId)
@@ -50,8 +51,6 @@ RactiveBlockPreview = Ractive.extend({
       return false
 
   }
-
-  containerId: "ntb-block-preview-canvas"
 
   setupWorkspace: (workspace, block) ->
     sampleDefinitions = @makeSampleBlockDefinitions(block)
@@ -128,7 +127,7 @@ RactiveBlockPreview = Ractive.extend({
       console.log(ex)
       return
 
-    NetTango.onProgramChanged(@containerId, (ntContainerId, event) => @updateNetLogoCode())
+    NetTango.addEventListener(@containerId, (event) => @updateNetLogoCode())
     @updateNetLogoCode()
 
     return
