@@ -184,7 +184,7 @@ RactiveSpace = Ractive.extend({
     @setSpaceNetLogo(space, event.containerId)
     switch event.type
 
-      when "block-instance-changed", "attribute-changed", "block-definition-moved"
+      when "block-instance-changed", "attribute-changed", "block-definition-moved", "menu-group-collapse-toggled"
         @saveNetTango()
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
