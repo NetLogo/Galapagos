@@ -419,7 +419,7 @@ RactiveBuilder = Ractive.extend({
         </div>
 
         {{#if !playMode || netTangoOptions.showCode }}
-        <label for="ntb-code"{{# !netTangoOptions.showCode }} class="ntb-hide-in-play"{{/}}>NetLogo Code</label>
+        <label for="ntb-code" class="ntb-code-header {{# !netTangoOptions.showCode }} ntb-hide-in-play{{/}}">NetLogo Code</label>
         <codeMirror
           id="ntb-code"
           mode="netlogo"

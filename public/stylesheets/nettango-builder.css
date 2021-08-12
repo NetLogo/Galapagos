@@ -376,6 +376,10 @@ body#ntp-body, html#ntp-body {
   flex-direction: column;
 }
 
+.ntb-code-header {
+  user-select: none;
+}
+
 .ntb-code {
   border-radius: 6px;
   background: #fcfcfc;
