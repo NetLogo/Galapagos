@@ -1,8 +1,9 @@
 RactiveToggle = Ractive.extend({
 
   data: () -> {
-    show:        false # Boolean
-    showAtStart: false # () => Boolean
+    show:         false # Boolean
+    showAtStart:  false # Boolean
+    enableToggle: true  # Boolean
   }
 
   oninit: () ->
@@ -18,10 +19,12 @@ RactiveToggle = Ractive.extend({
 
         {{> titleTemplate }}
 
+        {{# enableToggle }}
         <label class="ntb-toggle-block">
           <input type="checkbox" checked="{{ show }}" />
           {{# show }}▲{{else}}▼{{/}}
         </label>
+        {{/ enableToggle }}
 
       </legend>
 
