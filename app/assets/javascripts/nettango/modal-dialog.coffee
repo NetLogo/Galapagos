@@ -90,14 +90,21 @@ RactiveModalDialog = Ractive.extend({
       <div class="ntb-dialog" style="left: {{left}}px; top: {{top}}px;"
         draggable="true" on-drag="drag-dialog" on-dragstart="start-drag" on-dragend="stop-drag"
         >
+
         {{# active || preRenderContent }}
+
+        {{# headerContent }}
         <div class="ntb-dialog-header">
           {{> headerContent }}
         </div>
+        {{/ headerContent }}
+
         <div class="ntb-dialog-content">
           {{> dialogContent }}
         </div>
+
         {{/}}
+
         <div class="ntb-dialog-buttons">
           <input
             id="ntb-{{id}}-approve-button"
@@ -114,6 +121,7 @@ RactiveModalDialog = Ractive.extend({
             value="{{ deny.text }}"
             >
         </div>
+
       </div>
     </div>
     """
