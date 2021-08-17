@@ -8,6 +8,7 @@ RactiveTags = Ractive.extend({
   , filter:           ''    # String
   , selectedTags:     []    # Array[String]
   , areProcedureTags: false # Boolean
+  , allowNewTags:     true  # Boolean
   }
 
   computed: {
@@ -70,7 +71,7 @@ RactiveTags = Ractive.extend({
       else
         isExistingTag = @get('isExistingTag')
         filter = @get('filter')
-        if not isExistingTag and filter isnt ''
+        if not isExistingTag and filter isnt '' and @get('allowNewTags')
           @addNewTag(filter)
 
       context.event.preventDefault()
@@ -184,11 +185,13 @@ RactiveTags = Ractive.extend({
         Add Selected Tags
       </button>
 
+      {{# allowNewTags }}
       <button class="ntb-button ntb-tag-button" type="button"
         disabled={{ isExistingTag || filter === '' }}
         on-click="add-new-tag">
         Add New Tag
       </button>
+      {{/ allowNewTags }}
 
     </div>
 
@@ -220,7 +223,7 @@ RactiveToggleTags = RactiveToggle.extend({
   partials: {
 
     contentTemplate:
-      """<tags tags={{ tags }} knownTags={{ knownTags }} areProcedureTags={{ areProcedureTags }} />"""
+      """<tags tags={{ tags }} knownTags={{ knownTags }} areProcedureTags={{ areProcedureTags }} allowNewTags={{ allowNewTags }} />"""
 
   , titleTemplate:
       """Tags ({{ tags.length }}) <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""
