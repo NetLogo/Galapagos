@@ -28,7 +28,7 @@ RactiveArrayView = (partials, components) -> RactiveToggle.extend({
       @fire(addEvent)
       return
 
-    'remove-item': (_, number) ->
+    '*.remove-item': (_, number) ->
       removeEvent = @get("itemRemoveEvent")
       @splice("items", number, 1)
       @fire(removeEvent, number)
@@ -59,7 +59,7 @@ RactiveArrayView = (partials, components) -> RactiveToggle.extend({
         {{> headerTemplate }}
       {{/ headerItem }}
 
-      {{# items:number }}
+      {{# items: number }}
         {{> itemTemplate }}
       {{/ items }}
 
