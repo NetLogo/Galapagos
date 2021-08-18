@@ -65,12 +65,12 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         blockForm.show(top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
         return
 
-      '*.show-group-edit-form': (_, left, top, containerId, groupIndex) ->
+      '*.show-group-edit-form': (_, top, containerId, groupIndex) ->
         builder        = @findComponent('builder')
         space          = builder.getSpace(containerId)
         menuConfig     = space.defs.menuConfig
         menuConfigForm = @findComponent('menuConfigForm')
-        menuConfigForm.show(left - 550, top, builder, containerId, menuConfig, groupIndex)
+        menuConfigForm.show(top, builder, containerId, menuConfig, groupIndex)
         return
 
       '*.show-options-form': () ->

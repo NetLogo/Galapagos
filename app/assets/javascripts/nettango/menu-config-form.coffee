@@ -49,7 +49,7 @@ RactiveMenuConfigForm = RactiveModalDialog.extend({
 
   }
 
-  show: (left, top, applyTarget, containerId, menuConfig, selectedGroupIndex) ->
+  show: (top, applyTarget, containerId, menuConfig, selectedGroupIndex) ->
     @set('containerId', containerId)
     @set('menuConfig', ObjectUtils.clone(menuConfig))
     @set('selectedGroupIndex', selectedGroupIndex)
@@ -61,7 +61,7 @@ RactiveMenuConfigForm = RactiveModalDialog.extend({
     , target:    applyTarget
     })
 
-    @_super(top, left)
+    @_super(top)
     return
 
   components: {
