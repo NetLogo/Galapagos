@@ -45,8 +45,14 @@ RactiveBlockForm = RactiveModalDialog.extend({
         @set('previewBlock', previewBlock)
         return
 
-      @observe('block.*', resetPreviewBlock, { init: false })
-      @observe('builderType', resetPreviewBlock, { init: false })
+      skipInit = { init: false }
+      @observe('block.*', resetPreviewBlock, skipInit)
+      @observe('builderType', resetPreviewBlock, skipInit)
+      @observe('terminalType', () ->
+        terminalType = @get('terminalType')
+        @set('block.isTerminal', terminalType is 'terminal')
+        return
+      , skipInit)
       return
 
       return
@@ -61,13 +67,6 @@ RactiveBlockForm = RactiveModalDialog.extend({
       @set('block', block)
       return
 
-  }
-
-  observe: {
-    'terminalType': () ->
-      terminalType = @get('terminalType')
-      @set('block.isTerminal', terminalType is 'terminal')
-      return
   }
 
   # (NetTangoBlock) => Unit
@@ -127,7 +126,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
 
       else
         block.isRequired = blockValues.isRequired ? false
-        block.placement  = blockValues.placement ? falseNetTango.blockPlacementOptions.CHILD
+        block.placement  = blockValues.placement ? NetTango.blockPlacementOptions.CHILD
 
     block.tags        = blockValues.tags ? []
     block.clauses     = @processClauses(blockValues.clauses ? [])
