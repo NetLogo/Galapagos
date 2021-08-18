@@ -13,6 +13,9 @@ dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
 modifyBlockButtonMenuItems  = [dele, edit, dup]
 modifyBlockContextMenuItems = [dele, edit, up, dn, dup]
 
+groupEdit = { eventName: 'ntb-show-edit-group-form', name: 'edit' }
+groupDele = { eventName: 'ntb-delete-group',         name: 'delete' }
+
 RactiveSpace = Ractive.extend({
 
   data: () -> {
@@ -60,6 +63,17 @@ RactiveSpace = Ractive.extend({
       @splice('space.defs.blocks', blockIndex, 1)
       @updateNetTango(space, true)
       @fire('ntb-recompile-all')
+      return
+
+    '*.ntb-show-edit-group-form': (_1, _2, { containerId, groupIndex, y }) ->
+      @fire('show-group-edit-form', {}, y, containerId, groupIndex)
+      return
+
+    '*.ntb-delete-group': (_1, _2, { groupIndex }) ->
+      space = @get('space')
+      space.defs.menuConfig.tagGroups.splice(groupIndex, 1)
+      @updateNetTango(space, false)
+      @fire('ntb-space-changed')
       return
 
     # (Context, NetTangoSpace) => Unit
@@ -191,6 +205,17 @@ RactiveSpace = Ractive.extend({
 
       when "menu-group-clicked"
         @fire('show-group-edit-form', {}, event.y, event.containerId, event.groupIndex)
+
+      when "menu-group-context-menu"
+        space = @get("space")
+
+        items = if event.groupIndex is "main"
+          [groupEdit]
+        else
+          [groupEdit, groupDele]
+
+        groupMenu = { items: items }
+        @fire('show-popup-menu', {}, this, event.x, event.y, groupMenu, event)
 
       when "menu-item-clicked"
         playMode = @get("playMode")
