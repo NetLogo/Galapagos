@@ -2,6 +2,7 @@ import RactiveBlockForm from "./block-form.js"
 import RactiveBuilder from "./builder.js"
 import RactiveBuilderMenu from "./builder-menu.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
+import RactiveMenuConfigForm from "./menu-config-form.js"
 import RactiveModelChooser from "./model-chooser.js"
 import RactiveNetLogoModel from "./netlogo-model.js"
 import RactiveOptionsForm from "./options-form.js"
@@ -64,6 +65,14 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         blockForm.show(top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel)
         return
 
+      '*.show-group-edit-form': (_, left, top, containerId, groupIndex) ->
+        builder        = @findComponent('builder')
+        space          = builder.getSpace(containerId)
+        menuConfig     = space.defs.menuConfig
+        menuConfigForm = @findComponent('menuConfigForm')
+        menuConfigForm.show(left - 550, top, builder, containerId, menuConfig, groupIndex)
+        return
+
       '*.show-options-form': () ->
         builder = @findComponent('builder')
         options = builder.assembleOptions()
@@ -93,6 +102,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
     , builder:        RactiveBuilder
     , builderMenu:    RactiveBuilderMenu
     , confirmDialog:  RactiveConfirmDialog
+    , menuConfigForm: RactiveMenuConfigForm
     , modelChooser:   RactiveModelChooser
     , netLogoModel:   RactiveNetLogoModel
     , optionsForm:    RactiveOptionsForm
@@ -111,6 +121,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         <modelChooser runtimeMode="{{ runtimeMode }}" />
         <projectChooser />
         <blockEditForm blockStyles={{ blockStyles }} allTags={{ allTags }} />
+        <menuConfigForm knownTags={{ allTags }} />
         <optionsForm />
         {{/}}
 

@@ -189,6 +189,9 @@ RactiveSpace = Ractive.extend({
         @fire('ntb-block-code-changed')
         @fire('ntb-space-changed')
 
+      when "menu-group-clicked"
+        @fire('show-group-edit-form', {}, event.x, event.y, event.containerId, event.groupIndex)
+
       when "menu-item-clicked"
         playMode = @get("playMode")
         if (not playMode)

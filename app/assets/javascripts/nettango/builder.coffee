@@ -102,6 +102,13 @@ RactiveBuilder = Ractive.extend({
       @fire("ntb-options-changed")
       return
 
+    '*.ntb-menu-config-updated': (_, containerId, menuConfig) ->
+      space = @getSpace(containerId)
+      space.defs.menuConfig = menuConfig
+      @updateNetTango()
+      @fire("ntb-options-changed")
+      return
+
   }
 
   observe: {
@@ -343,6 +350,12 @@ RactiveBuilder = Ractive.extend({
     , extraCss
     }
     options
+
+  # (String) => NetTangoCodeWorkspace
+  getSpace: (containerId) ->
+    spaces = @get('spaces')
+    space = spaces.filter( (space) -> "#{space.spaceId}-canvas" is containerId )[0]
+    space
 
   # (NetTangoSpace) => NetTangoSpace
   createSpace: (spaceVals) ->
