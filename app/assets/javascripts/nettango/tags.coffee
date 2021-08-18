@@ -228,8 +228,14 @@ RactiveToggleTags = RactiveToggle.extend({
 
   partials: {
 
-    contentTemplate:
-      """<tags tags={{ tags }} knownTags={{ knownTags }} areProcedureTags={{ areProcedureTags }} allowNewTags={{ allowNewTags }} />"""
+    contentTemplate: """
+      <tags
+        tags             = {{ tags }}
+        knownTags        = {{ knownTags }}
+        areProcedureTags = {{ areProcedureTags }}
+        allowNewTags     = {{ allowNewTags }}
+        />
+      """
 
   , titleTemplate:
       """Tags ({{ tags.length }}) <button class="ntb-button" type="button" on-click="clear-tags">Clear Tags</button>"""
