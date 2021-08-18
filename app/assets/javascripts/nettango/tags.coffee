@@ -16,12 +16,18 @@ RactiveTags = Ractive.extend({
     unselectedTags: () ->
       knownTags = @get('knownTags')
       tags      = @get('tags')
-      knownTags.filter( (tag) -> not tags.includes(tag) )
+      if knownTags? and tags?
+        knownTags.filter( (tag) -> not tags.includes(tag) )
+      else
+        []
 
     filteredTags: () ->
       tags     = @get('unselectedTags')
       filter   = @get('filter').toLowerCase()
-      filtered = tags.filter( (t) -> t.toLowerCase().includes(filter) )
+      filtered = if tags? and filter?
+        tags.filter( (t) -> t.toLowerCase().includes(filter) )
+      else
+        []
       filtered.sort( @compareStrings )
 
     isExistingTag: () ->
