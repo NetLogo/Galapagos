@@ -6,7 +6,7 @@ import { netLogoOptionInfo, netTangoOptionInfo } from "./options.js"
 
 RactiveOptionsForm = RactiveModalDialog.extend({
 
-  clearAllTarget: null
+  applyTarget: undefined # Ractive
 
   data: () -> {
     deny:               { text: "Discard Changes" }
@@ -23,15 +23,15 @@ RactiveOptionsForm = RactiveModalDialog.extend({
       , approve: {
           text: "Yes, clear all block styles"
         , event: "ntb-clear-all-block-styles"
-        , target: @target
+        , target: @applyTarget
         }
       , deny: { text: "No, leave block styles in place" }
       })
       return
   }
 
-  show: (target, options) ->
-    @target = target
+  show: (applyTarget, options) ->
+    @applyTarget = applyTarget
     clonedOptions = {}
     [ "netLogoOptions", "netTangoOptions", "extraCss", "blockStyles" ]
       .forEach( (prop) ->
@@ -43,7 +43,7 @@ RactiveOptionsForm = RactiveModalDialog.extend({
       text: "Apply Options"
     , event: "ntb-options-updated"
     , argsMaker: (() => [@get('options')])
-    , target: target
+    , applyTarget: applyTarget
     })
     @_super()
     return

@@ -38,8 +38,9 @@ RactiveModalDialog = Ractive.extend({
   }
 
   # () => Unit
-  show: () ->
-    @set("left", 0)
+  show: (top = 50, left = 50) ->
+    @set("left", left)
+    @set("top", top)
     @set("active", true)
     return
 

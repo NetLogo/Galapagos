@@ -19,8 +19,7 @@ RactiveModelChooser = RactiveModalDialog.extend({
   show: (top) ->
     @set("encodedUrl", null)
     @set("name",       null)
-    @set("top",        top)
-    @_super()
+    @_super(top)
     return
 
     return

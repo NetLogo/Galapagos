@@ -197,7 +197,6 @@ RactiveBlockForm = RactiveModalDialog.extend({
 
   # (Int, String, String, NetTangoBlock, Integer, String, String, String) => Unit
   show: (top, target, spaceName, block, blockIndex, submitLabel, submitEvent, cancelLabel) ->
-    @set('top', top)
     @set('spaceName', spaceName)
     @set('blockIndex', blockIndex)
     @set('terminalType', if block.isTerminal? and block.isTerminal then 'terminal' else 'attachable')
@@ -210,7 +209,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
     , argsMaker: () => @makeSubmitEventArgs()
     })
     @set('deny', { text: cancelLabel })
-    @_super()
+    @_super(top)
     return
 
   components: {

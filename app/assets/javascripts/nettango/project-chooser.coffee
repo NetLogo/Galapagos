@@ -17,11 +17,6 @@ RactiveProjectChooser = RactiveModalDialog.extend({
     projectUrl = hostPrefix + select.value
     [projectUrl]
 
-  show: (top) ->
-    @set('top', top)
-    @_super()
-    return
-
   loadLibrary: (libraryJson) ->
     projects = libraryJson.models.sort((m1, m2) ->
       if m1.folder < m2.folder
