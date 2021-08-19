@@ -209,12 +209,17 @@ RactiveSpace = Ractive.extend({
       when "menu-group-context-menu"
         space = @get("space")
 
+        group = if event.groupIndex is "main"
+          space.defs.menuConfig.mainGroup
+        else
+          space.defs.menuConfig.tagGroups[event.groupIndex]
+
         items = if event.groupIndex is "main"
           [groupEdit]
         else
           [groupEdit, groupDele]
 
-        groupMenu = { items: items }
+        groupMenu = { name: group.header, items: items }
         @fire('show-popup-menu', {}, this, event.x, event.y, groupMenu, event)
 
       when "menu-item-clicked"
@@ -344,7 +349,6 @@ RactiveSpace = Ractive.extend({
       @createModifyMenu(modifyBlockButtonMenuItems, block, blockIndex, space, spaces)
 
     {
-      name: "_",
       items: items
     }
 

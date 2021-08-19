@@ -34,7 +34,6 @@ RactiveBuilderMenu = Ractive.extend({
         { eventName: 'ntb-export-netlogo', name: 'Export NetLogo model' }
       ]
       fileOperations = {
-        name: "File Operations"
         items: items
       }
       @fire('show-popup-menu', {}, this, pageX, pageY, fileOperations)
@@ -42,7 +41,6 @@ RactiveBuilderMenu = Ractive.extend({
 
     'ntb-show-help': ({ event: { pageX, pageY } }) ->
       helpOptions = {
-        name: "Help"
         items: [
           {
               name: 'About the NetTango Web Builder'

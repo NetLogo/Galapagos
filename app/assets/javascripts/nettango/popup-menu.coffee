@@ -11,7 +11,7 @@ RactivePopupMenu = Ractive.extend({
     submenus:  []         # Array[{ left: Number, top: Number, class: String, item: Content }]
   }
 
-  # The `content` for a popup menu should be of an `Items` type - the `name` will be ignored for the `content`
+  # The `content` for a popup menu should be of an `Items` type
   # Content = Spacer | Item | Items
   # Spacer = { spacerText: String }
   # Item   = { name: String, eventName: String, data: Any }
@@ -94,9 +94,12 @@ RactivePopupMenu = Ractive.extend({
     # coffeelint: disable=max_line_length
     """
     <div id="ntb-popup-root" class="ntb-popup {{ class }}" style="left: {{ left }}px; top: {{ top }}px;">
-      <ul class="ntb-list-menu">{{# content.items:itemNum }}
-        {{> item }}
-      {{/content.items }}</ul>
+      <ul class="ntb-list-menu">
+        {{# content.name }}<li>{{ content.name }}</li>{{/ content.name }}
+        {{# content.items:itemNum }}
+          {{> item }}
+        {{/content.items }}
+      </ul>
     </div>
 
     {{#submenus:num }}

@@ -63,7 +63,6 @@ createCommand = (overrides) ->
   command
 
 blocks = {
-  name: "nettango-block-defaults",
   items: [
     {
       name: "Basics"
