@@ -13,8 +13,53 @@ dup  = { eventName: 'ntb-duplicate-block',      name: 'duplicate' }
 modifyBlockButtonMenuItems  = [dele, edit, dup]
 modifyBlockContextMenuItems = [dele, edit, up, dn, dup]
 
-groupEdit = { eventName: 'ntb-show-edit-group-form', name: 'edit' }
-groupDele = { eventName: 'ntb-delete-group',         name: 'delete' }
+groupEdit     = { eventName: 'ntb-show-edit-group-form', name: 'edit' }
+groupDele     = { eventName: 'ntb-delete-group',         name: 'delete' }
+groupSortName = { eventName: 'ntb-group-sort-name',      name: 'sort blocks by name' }
+groupSortType = { eventName: 'ntb-group-sort-type',      name: 'sort blocks by type' }
+
+mainGroupItems = [groupEdit, groupSortName, groupSortType]
+tagGroupItems  = [groupEdit, groupDele, groupSortName, groupSortType]
+
+# (NetTangoBlock, NetTangoBlock) => -1 | 0 | 1
+compareBlocksByName = (b1, b2) ->
+  b1.action.localeCompare(b2.action)
+
+# (NetTangoBlock, NetTangoBlock) => -1 | 0 | 1
+compareBlocksByType = (b1, b2) ->
+  if b1.isRequired
+    if b2.isRequired
+      return 0
+
+    return -1
+
+  if b2.isRequired
+    return 1
+
+  if b1.clauses.length > 0
+    if b2.clauses.length > 0
+      return 0
+
+    return -1
+
+  if b2.clauses.length > 0
+    return 1
+
+  0
+
+# ((NetTangoBlock, NetTangoBlock) => Int) => (NetTangoBlock[], Int[]) => Int[]
+sortGroupBy = (comparitor) -> (blocks, order) ->
+  includedBlocks = order.map( (id) ->
+    blocks.filter( (b) -> b.id is id )[0]
+  )
+  includedBlocks.sort(comparitor)
+  includedBlocks.map( (b) -> b.id )
+
+# (NetTangoBlock[], Int[]) => Int[]
+sortGroupByName = sortGroupBy(compareBlocksByName)
+
+# (NetTangoBlock[], Int[]) => Int[]
+sortGroupByType = sortGroupBy(compareBlocksByType)
 
 RactiveSpace = Ractive.extend({
 
@@ -74,6 +119,14 @@ RactiveSpace = Ractive.extend({
       space.defs.menuConfig.tagGroups.splice(groupIndex, 1)
       @updateNetTango(space, false)
       @fire('ntb-space-changed')
+      return
+
+    '*.ntb-group-sort-name': (_1, _2, { groupIndex }) ->
+      @sortGroupWith(groupIndex, sortGroupByName)
+      return
+
+    '*.ntb-group-sort-type': (_1, _2, { groupIndex }) ->
+      @sortGroupWith(groupIndex, sortGroupByType)
       return
 
     # (Context, NetTangoSpace) => Unit
@@ -175,6 +228,21 @@ RactiveSpace = Ractive.extend({
 
   }
 
+  # ("main" | Int, (NetTangoBlock[], Int[]) => Int[]) => Unit
+  sortGroupWith: (groupIndex, sort) ->
+    space = @get('space')
+    group = if groupIndex is 'main'
+      space.defs.menuConfig.mainGroup
+    else
+      space.defs.menuConfig.tagGroups[groupIndex]
+
+    newOrder = sort(space.defs.blocks, group.order)
+    group.order = newOrder
+
+    @updateNetTango(space, false)
+    @fire('ntb-space-changed')
+    return
+
   # (NetTangoSpace | null) => String
   getNetTangoContainerId: (space) ->
     if not space then space = @get("space")
@@ -214,10 +282,7 @@ RactiveSpace = Ractive.extend({
         else
           space.defs.menuConfig.tagGroups[event.groupIndex]
 
-        items = if event.groupIndex is "main"
-          [groupEdit]
-        else
-          [groupEdit, groupDele]
+        items = if event.groupIndex is "main" then mainGroupItems else tagGroupItems
 
         groupMenu = { name: group.header, items: items }
         @fire('show-popup-menu', {}, this, event.x, event.y, groupMenu, event)
