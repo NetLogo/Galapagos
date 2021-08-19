@@ -41,8 +41,9 @@ RactiveBlockForm = RactiveModalDialog.extend({
     'init': () ->
 
       resetPreviewBlock = () ->
-        previewBlock = @getBlock()
-        @set('previewBlock', previewBlock)
+        if @get('active')
+          previewBlock = @getBlock()
+          @set('previewBlock', previewBlock)
         return
 
       skipInit = { init: false }
