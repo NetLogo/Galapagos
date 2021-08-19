@@ -43,7 +43,7 @@ RactiveOptionsForm = RactiveModalDialog.extend({
       text: "Apply Options"
     , event: "ntb-options-updated"
     , argsMaker: (() => [@get('options')])
-    , applyTarget: applyTarget
+    , target: applyTarget
     })
     @_super()
     return

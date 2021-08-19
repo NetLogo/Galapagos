@@ -340,6 +340,7 @@ RactiveSpace = Ractive.extend({
     netTangoOptions = @get('netTangoOptions')
     options = {
       enableDefinitionChanges: (not playMode or netTangoOptions.enablePlayModeDefinitionChanges)
+      enableCodeTips:          netTangoOptions.enableCodeTips
     }
     try
       NetTango.restore("NetLogo", containerId, spaceDef, NetTangoRewriter.formatDisplayAttribute, options)

@@ -85,13 +85,16 @@ RactiveBuilder = Ractive.extend({
 
     '*.ntb-options-updated': (options) ->
       @set('netLogoOptions',  options.netLogoOptions)
+      oldNetTangoOptions = @get('netTangoOptions')
       @set('netTangoOptions', options.netTangoOptions)
+
+      updateNeeded = false
 
       if (areStylesDifferent(NetTango.defaultBlockStyles, options.blockStyles))
         oldStyles = @get("blockStyles")
         if (not oldStyles?) or areStylesDifferent(oldStyles, options.blockStyles)
           @set("blockStyles", options.blockStyles)
-          @updateNetTango()
+          updateNeeded = true
       else
         @set("blockStyles", null)
 
@@ -99,6 +102,13 @@ RactiveBuilder = Ractive.extend({
 
       @refreshCss()
       @set('isSideBySide', not options.netTangoOptions.workspaceBelow)
+
+      if options.netTangoOptions.enableCodeTips isnt oldNetTangoOptions.enableCodeTips
+        updateNeeded = true
+
+      if updateNeeded
+        @updateNetTango()
+
       @fire("ntb-options-changed")
       return
 

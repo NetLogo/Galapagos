@@ -51,6 +51,9 @@ netTangoOptionInfo = {
   enablePlayModeDefinitionChanges: {
     label: "Enable changing definition ordering in play mode"
   }
+  enableCodeTips: {
+    label: "Enable display of block code tips"
+  }
 }
 
 netLogoOptionDefaults = {
@@ -64,9 +67,10 @@ netLogoOptionDefaults = {
 }
 
 netTangoOptionDefaults = {
-  workspaceBelow:                    false
-  showCode:                          true
+  workspaceBelow:                  false
+  showCode:                        true
   enablePlayModeDefinitionChanges: false
+  enableCodeTips:                  true
 }
 
 export { netLogoOptionInfo, netLogoOptionDefaults, netTangoOptionInfo, netTangoOptionDefaults }
