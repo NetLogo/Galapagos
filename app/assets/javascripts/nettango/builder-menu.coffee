@@ -48,7 +48,7 @@ RactiveBuilderMenu = Ractive.extend({
           }
           {
               name: 'NetTango Web Builder tutorial'
-            , url: 'https://anttango.netlify.com'
+            , url: 'https://ccl.northwestern.edu/nettangoweb/tutorial'
           }
         ]
       }
