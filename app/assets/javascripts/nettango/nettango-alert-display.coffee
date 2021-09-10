@@ -8,7 +8,7 @@ workspaceError = () ->
 # ({ url: String }) => String
 loadFromUrlError = ({ url }) ->
   [
-    'Unable to load NetTango model from the given URL.  Make sure the URL is correct, that there are no network issues, and that CORS access is permitted.'
+    'Unable to load NetTango project from the given URL.  Make sure the URL is correct, that there are no network issues, and that CORS access is permitted.'
   , ''
   , "URL: #{url}"
   ].join('<br/>')

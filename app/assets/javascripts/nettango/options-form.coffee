@@ -55,7 +55,7 @@ RactiveOptionsForm = RactiveModalDialog.extend({
 
   partials: {
 
-    headerContent: "NetTango Model Options"
+    headerContent: "NetTango Project Options"
     dialogContent:
       # coffeelint: disable=max_line_length
       """
