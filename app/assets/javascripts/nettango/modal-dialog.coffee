@@ -35,6 +35,7 @@ RactiveModalDialog = Ractive.extend({
   , top:              50              # Int
   , approve:          { text: "Yes" } # EventOptions
   , deny:             { text: "No"  } # EventOptions
+  , extraClasses:     null            # String
   }
 
   # () => Unit
@@ -87,9 +88,18 @@ RactiveModalDialog = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <div class="ntb-dialog-overlay {{extraClasses}}" {{# !active }}hidden{{/}} on-keyup="check-escape">
-      <div class="ntb-dialog" style="left: {{left}}px; top: {{top}}px;"
-        draggable="true" on-drag="drag-dialog" on-dragstart="start-drag" on-dragend="stop-drag"
+    <div
+      class="ntb-dialog-overlay {{extraClasses}}"
+      on-keyup="check-escape"
+      {{# !active }}hidden{{/}}
+      >
+      <div
+        class="ntb-dialog"
+        style="left: {{left}}px; top: {{top}}px;"
+        draggable="true"
+        on-drag="drag-dialog"
+        on-dragstart="start-drag"
+        on-dragend="stop-drag"
         >
 
         {{# active || preRenderContent }}
@@ -107,6 +117,7 @@ RactiveModalDialog = Ractive.extend({
         {{/}}
 
         <div class="ntb-dialog-buttons">
+
           <input
             id="ntb-{{id}}-approve-button"
             class="widget-edit-text ntb-dialog-button"
@@ -114,6 +125,7 @@ RactiveModalDialog = Ractive.extend({
             on-click="[ 'fire-event', 'approve' ]"
             value="{{ approve.text }}"
             >
+
           <input
             id="ntb-{{id}}-deny-button"
             class="widget-edit-text ntb-dialog-button"
@@ -121,6 +133,7 @@ RactiveModalDialog = Ractive.extend({
             on-click="[ 'fire-event', 'deny' ]"
             value="{{ deny.text }}"
             >
+
         </div>
 
       </div>
