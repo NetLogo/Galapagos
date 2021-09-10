@@ -8,6 +8,7 @@ import RactiveNetLogoModel from "./netlogo-model.js"
 import RactiveOptionsForm from "./options-form.js"
 import RactivePopupMenu from "./popup-menu.js"
 import RactiveProjectChooser from "./project-chooser.js"
+import RactiveHelpDialog from "./help-dialog.js"
 
 # (HTMLElement, Environment, Boolean, Boolean) => Ractive
 create = (element, playMode, runtimeMode, isDebugMode) ->
@@ -85,6 +86,11 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         popupMenu.popup(target, top, left, options, menuData)
         return
 
+      '*.show-help': ({ event: { pageY } }) ->
+        helpDialog = @findComponent('helpDialog')
+        helpDialog.show(Math.max(pageY - 100, 50))
+        return
+
       '*.ntb-clear-all': (_) ->
         builder = @findComponent('builder')
         builder.clearAll()
@@ -102,6 +108,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
     , builder:        RactiveBuilder
     , builderMenu:    RactiveBuilderMenu
     , confirmDialog:  RactiveConfirmDialog
+    , helpDialog:     RactiveHelpDialog
     , menuConfigForm: RactiveMenuConfigForm
     , modelChooser:   RactiveModelChooser
     , netLogoModel:   RactiveNetLogoModel
@@ -115,6 +122,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       <div class="ntb-components">
 
         <confirmDialog />
+        <helpDialog />
         <popupMenu />
 
         {{# !playMode }}

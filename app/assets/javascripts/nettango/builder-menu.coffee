@@ -43,20 +43,24 @@ RactiveBuilderMenu = Ractive.extend({
       helpOptions = {
         items: [
           {
-              name: 'About the NetTango Web Builder'
-            , url: 'https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder'
+            name:      'Quick Help and Hotkeys'
+          , eventName: 'show-help'
           }
-          {
-              name: 'NetTango Web Builder tutorial'
-            , url: 'https://ccl.northwestern.edu/nettangoweb/tutorial'
+          , {
+            name: 'About the NetTango Web Builder'
+          , url:  'https://github.com/NetLogo/Galapagos/wiki/NetTango-Builder'
+          }
+          , {
+            name: 'NetTango Web Builder tutorial'
+          , url:  'https://ccl.northwestern.edu/nettangoweb/tutorial'
           }
         ]
       }
 
       if @get('runtimeMode') is 'dev'
         helpOptions.items.push({
-            name: 'Toggle web console debug'
-          , eventName: 'ntb-toggle-debug'
+          name:      'Toggle web console debug'
+        , eventName: 'ntb-toggle-debug'
         })
 
       @fire('show-popup-menu', {}, this, pageX, pageY, helpOptions)

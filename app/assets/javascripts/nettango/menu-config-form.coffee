@@ -73,7 +73,7 @@ RactiveMenuConfigForm = RactiveModalDialog.extend({
 
   partials: {
 
-    headerContent: undefined
+    headerContent: "Workspace Menu Groups"
 
     dialogContent: """
       <menuConfigControl
