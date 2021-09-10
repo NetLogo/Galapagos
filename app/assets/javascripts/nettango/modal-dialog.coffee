@@ -105,11 +105,9 @@ RactiveModalDialog = Ractive.extend({
 
         {{# active || preRenderContent }}
 
-        {{# headerContent }}
         <div class="ntb-dialog-header">
           {{> headerContent }}
         </div>
-        {{/ headerContent }}
 
         <div class="ntb-dialog-content">
           {{> dialogContent }}
