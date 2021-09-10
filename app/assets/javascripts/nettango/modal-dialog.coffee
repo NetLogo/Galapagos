@@ -34,6 +34,7 @@ RactiveModalDialog = Ractive.extend({
   , left:             0               # Int
   , top:              50              # Int
   , approve:          { text: "Yes" } # EventOptions
+  , showApprove:      true            # Boolean
   , deny:             { text: "No"  } # EventOptions
   , extraClasses:     null            # String
   }
@@ -118,6 +119,7 @@ RactiveModalDialog = Ractive.extend({
 
         <div class="ntb-dialog-buttons">
 
+          {{# showApprove }}
           <input
             id="ntb-{{id}}-approve-button"
             class="widget-edit-text ntb-dialog-button"
@@ -125,6 +127,7 @@ RactiveModalDialog = Ractive.extend({
             on-click="[ 'fire-event', 'approve' ]"
             value="{{ approve.text }}"
             >
+          {{/ showApprove }}
 
           <input
             id="ntb-{{id}}-deny-button"
