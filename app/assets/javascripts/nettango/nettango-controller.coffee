@@ -265,6 +265,7 @@ class NetTangoController
     project = @getProject()
     @updateUndoStack(project)
     @storeProject(project)
+    return
 
   # () => Unit
   updateCanUndoRedo: () ->
