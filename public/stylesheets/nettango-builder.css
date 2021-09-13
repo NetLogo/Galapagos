@@ -46,6 +46,10 @@ body#ntp-body, html#ntp-body {
   border-radius: 20px;
 }
 
+.ntb-play-menu-controls {
+  top: 0;
+}
+
 .ntb-builder {
   position: relative;
   margin: 0 0 10px 0;

@@ -3,9 +3,10 @@ import RactiveModalDialog from "./modal-dialog.js"
 RactiveHelpDialog = RactiveModalDialog.extend({
 
   data: () -> {
-    extraClasses: 'ntb-confirm-overlay' # String
-    showApprove:  false                 # String
-    deny:         { text: "Done" }      # EventOptions
+    extraClasses:    'ntb-confirm-overlay' # String
+    showApprove:     false                 # String
+    deny:            { text: "Done" }      # EventOptions
+    codeTipsEnabled: true                  # Boolean
   }
 
   partials: {
@@ -14,6 +15,12 @@ RactiveHelpDialog = RactiveModalDialog.extend({
 
     dialogContent:
       """
+      {{# playMode }}
+      <div class="ntb-dialog-text">
+        {{> playModeContent }}
+      </div>
+
+      {{ else }}
       <div class="ntb-dialog-text">
 
         NetTango Web is an app that lets you define blocks that snap together to create NetLogo code for use in a NetLogo Web model.
@@ -43,17 +50,28 @@ RactiveHelpDialog = RactiveModalDialog.extend({
 
         In the blocks menu of each workspace, you can <strong>right-click or long-press</strong> on the group headers to edit the block groups or sort the blocks.
 
-        <h2>Block Interactions and Hotkeys</h2>
+        {{> playModeContent }}
 
-        Block chains are created by dragging blocks from the menu into the space beside it, either stand-alone or as part of an existing chain.
-        When a drag starts any valid locations for the dragged blocks will show with flashing, light-blue arrows.
+      </div>
+      {{/ playMode }}
+      """
 
-        <ul>
-          <li><strong>Right click or long-press</strong> on a block in a chain to see a popup code tip that displays the NetLogo code the block adds to the model.</li>
-          <li>Press <strong>Shift</strong> when dragging a block in a chain to grab only that block without its followers.</li>
-        </ul>
+    playModeContent:
+      """
+      <h2>Block Interactions and Hotkeys</h2>
 
-       </div>
+      Block chains are created by dragging blocks from the menu into the space beside it, either stand-alone or as part of an existing chain.
+      When a drag starts any valid locations for the dragged blocks will show with flashing, light-blue arrows.
+
+      <ul>
+        {{# !playMode || codeTipsEnabled }}
+        <li>
+          <strong>Right click or long-press</strong> on a block in a chain to see a popup code tip that displays the NetLogo code the block adds to the model.
+          {{# !codeTipsEnabled }}(currently disabled in project options){{/ !codeTipsEnabled }}
+        </li>
+        {{/ !playMode || codeTipsEnabled }}
+        <li>Press <strong>shift</strong> when dragging a block in a chain to grab only that block without its followers.</li>
+      </ul>
       """
   }
 })

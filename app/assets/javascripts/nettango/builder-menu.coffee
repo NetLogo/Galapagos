@@ -8,6 +8,7 @@ RactiveBuilderMenu = Ractive.extend({
     canRedo:     false     # Boolean
     isDebugMode: false     # Boolean
     runtimeMode: "dev"     # String
+    playMode:    false     # Boolean
   }
 
   on: {
@@ -95,18 +96,30 @@ RactiveBuilderMenu = Ractive.extend({
   template:
     # coffeelint: disable=max_line_length
     """
-    <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
-    <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
+    {{# playMode }}
 
-    <div class="ntb-menu-controls ntb-block-defs-controls">
-      <div class="ntb-title">NetTango Web Builder</div>
-      <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
-      <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
-      <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
-      <button class="ntb-button" type="button" on-click="show-options-form">Options...</button>
-      <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
-      <button class="ntb-button" type="button" on-click="ntb-show-help">Help ▼</button>
-    </div>
+      <div class="ntb-menu-controls ntb-block-defs-controls ntb-play-menu-controls">
+        <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
+        <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
+        <button class="ntb-button" type="button" on-click="show-help">Quick Help and Hotkeys</button>
+      </div>
+
+    {{ else }}
+
+      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
+      <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
+
+      <div class="ntb-menu-controls ntb-block-defs-controls">
+        <div class="ntb-title">NetTango Web Builder</div>
+        <button class="ntb-button" type="button" on-click="ntb-show-file-operations">Files ▼</button>
+        <button class="ntb-button" type="button" on-click="ntb-undo"{{# !canUndo }} disabled{{/}}>Undo</button>
+        <button class="ntb-button" type="button" on-click="ntb-redo"{{# !canRedo }} disabled{{/}}>Redo</button>
+        <button class="ntb-button" type="button" on-click="show-options-form">Options...</button>
+        <button class="ntb-button" type="button" on-click="ntb-create-blockspace" >Add New Block Space</button>
+        <button class="ntb-button" type="button" on-click="ntb-show-help">Help ▼</button>
+      </div>
+
+    {{/ playMode }}
     """
 })
 

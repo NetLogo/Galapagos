@@ -17,13 +17,14 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
     el: element,
 
     data: () -> {
-      breeds:       []          # Array[String]
-      canRedo:      false       # Boolean
-      canUndo:      false       # Boolean
-      isDebugMode:  isDebugMode # Boolean
-      isSideBySide: false       # Boolean
-      playMode:     playMode    # Boolean
-      runtimeMode:  runtimeMode # String
+      breeds:          []          # Array[String]
+      canRedo:         false       # Boolean
+      canUndo:         false       # Boolean
+      isDebugMode:     isDebugMode # Boolean
+      isSideBySide:    false       # Boolean
+      playMode:        playMode    # Boolean
+      runtimeMode:     runtimeMode # String
+      codeTipsEnabled: true        # Boolean
     }
 
     computed: {
@@ -87,6 +88,8 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         return
 
       '*.show-help': ({ event: { pageY } }) ->
+        builder = @findComponent('builder')
+        @set('codeTipsEnabled', builder.get('codeTipsEnabled'))
         helpDialog = @findComponent('helpDialog')
         helpDialog.show(Math.max(pageY - 100, 50))
         return
@@ -121,9 +124,25 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       """
       <div class="ntb-components">
 
+        {{! This weird `playMode` thing is to get around a bug where the `complete` event fires for the skeleton
+            as soon as the `builderMenu` renders which is odd.  I can't see anything unique about the builder
+            menu to cause this, so we just workaround for now.  -Jeremy B September 2021 }}
+        {{# playMode || !playMode }}
+        <builderMenu
+          canUndo={{ canUndo }}
+          canRedo={{ canRedo }}
+          isDebugMode={{ isDebugMode }}
+          playMode={{ playMode }}
+          runtimeMode={{ runtimeMode }}>
+          />
+        {{/ playMode }}
+
         <confirmDialog />
-        <helpDialog />
         <popupMenu />
+        <helpDialog
+          playMode={{ playMode }}
+          codeTipsEnabled={{ codeTipsEnabled }}
+          />
 
         {{# !playMode }}
         <modelChooser runtimeMode="{{ runtimeMode }}" />
@@ -131,15 +150,6 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
         <blockEditForm blockStyles={{ blockStyles }} allTags={{ allTags }} />
         <menuConfigForm knownTags={{ allTags }} />
         <optionsForm />
-        {{/}}
-
-        {{# !playMode }}
-        <builderMenu
-          canUndo={{ canUndo }}
-          canRedo={{ canRedo }}
-          isDebugMode={{ isDebugMode }}
-          runtimeMode={{ runtimeMode }}>
-        />
         {{/}}
 
         <div class="ntb-models {{ displayClass }}">
@@ -152,7 +162,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
             isSideBySide={{ isSideBySide }}
             blockStyles={{ blockStyles }}
             allTags={{ allTags }}
-          />
+            />
 
         </div>
 

@@ -30,6 +30,7 @@ RactiveBuilder = Ractive.extend({
     netLogoOptions:   ObjectUtils.clone(netLogoOptionDefaults)
     netTangoOptions:  ObjectUtils.clone(netTangoOptionDefaults)
     extraCss:         ""            # String
+    codeTipsEnabled:  true          # Boolean
   }
 
   on: {
@@ -87,6 +88,7 @@ RactiveBuilder = Ractive.extend({
       @set('netLogoOptions',  options.netLogoOptions)
       oldNetTangoOptions = @get('netTangoOptions')
       @set('netTangoOptions', options.netTangoOptions)
+      @set('codeTipsEnabled', options.netTangoOptions.enableCodeTips is true)
 
       updateNeeded = false
 
@@ -276,7 +278,8 @@ RactiveBuilder = Ractive.extend({
     for key, prop of (project.netTangoOptions ? { })
       if netTangoOptions.hasOwnProperty(key)
         netTangoOptions[key] = prop
-    @set("netTangoOptions", netTangoOptions)
+    @set('netTangoOptions', netTangoOptions)
+    @set('codeTipsEnabled', netTangoOptions.enableCodeTips is true)
 
     @set('spaces', [])
     for spaceVals in (project.spaces ? [])
