@@ -22,6 +22,7 @@ RactiveHelpDialog = RactiveModalDialog.extend({
 
     headerContent: "Help and Hotkeys"
 
+    # coffeelint: disable=max_line_length
     dialogContent:
       """
       {{# playMode }}
@@ -91,6 +92,8 @@ RactiveHelpDialog = RactiveModalDialog.extend({
       </ul>
 
       """
+      # coffeelint: enable=max_line_length
+
   }
 })
 
