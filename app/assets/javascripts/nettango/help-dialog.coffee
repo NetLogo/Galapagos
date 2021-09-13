@@ -1,5 +1,8 @@
 import RactiveModalDialog from "./modal-dialog.js"
 
+isMac            = window.navigator.platform.startsWith('Mac')
+platformCtrlHtml = if isMac then "&#8984;" else "ctrl"
+
 RactiveHelpDialog = RactiveModalDialog.extend({
 
   data: () -> {
@@ -7,6 +10,12 @@ RactiveHelpDialog = RactiveModalDialog.extend({
     showApprove:     false                 # String
     deny:            { text: "Done" }      # EventOptions
     codeTipsEnabled: true                  # Boolean
+  }
+
+  computed: {
+    modkey: {
+      get: -> platformCtrlHtml
+    }
   }
 
   partials: {
@@ -58,7 +67,7 @@ RactiveHelpDialog = RactiveModalDialog.extend({
 
     playModeContent:
       """
-      <h2>Block Interactions and Hotkeys</h2>
+      <h2>Block Interactions</h2>
 
       Block chains are created by dragging blocks from the menu into the space beside it, either stand-alone or as part of an existing chain.
       When a drag starts any valid locations for the dragged blocks will show with flashing, light-blue arrows.
@@ -72,6 +81,15 @@ RactiveHelpDialog = RactiveModalDialog.extend({
         {{/ !playMode || codeTipsEnabled }}
         <li>Press <strong>shift</strong> when dragging a block in a chain to grab only that block without its followers.</li>
       </ul>
+
+      <h2>Hotkeys</h2>
+
+      <ul class="help-key-table">
+        <li><kbd>{{ modkey }}</kbd><kbd>z</kbd> to undo the last change.</li>
+        <li><kbd>{{ modkey }}</kbd><kbd>y</kbd> or <kbd>{{ modkey }}</kbd><kbd>shift</kbd><kbd>z</kbd> to redo the last undone change.</li>
+        {{# !playMode }}<li><kbd>{{ modkey }}</kbd><kbd>shift</kbd><kbd>z</kbd> to export the current NetTango Web project file.</li>{{/ playMode }}
+      </ul>
+
       """
   }
 })
