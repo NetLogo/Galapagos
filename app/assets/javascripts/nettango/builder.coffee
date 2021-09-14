@@ -273,11 +273,16 @@ RactiveBuilder = Ractive.extend({
     for key, prop of (project.netLogoOptions ? { })
       if netLogoOptions.hasOwnProperty(key)
         netLogoOptions[key] = prop
+      else if netLogoOptionDefaults.hasOwnProperty(key)
+        netLogoOptions[key] = netLogoOptionDefaults[key]
 
     netTangoOptions = @get('netTangoOptions')
     for key, prop of (project.netTangoOptions ? { })
       if netTangoOptions.hasOwnProperty(key)
         netTangoOptions[key] = prop
+      else if netTangoOptionDefaults.hasOwnProperty(key)
+        netTangoOptions[key] = netTangoOptionDefaults[key]
+
     @set('netTangoOptions', netTangoOptions)
     @set('codeTipsEnabled', netTangoOptions.enableCodeTips is true)
 
