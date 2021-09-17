@@ -31,6 +31,7 @@ RactiveBuilder = Ractive.extend({
     netTangoOptions:  ObjectUtils.clone(netTangoOptionDefaults)
     extraCss:         ""            # String
     codeTipsEnabled:  true          # Boolean
+    variables:        []            # Array[String]
   }
 
   on: {
@@ -445,6 +446,7 @@ RactiveBuilder = Ractive.extend({
             playMode={{ playMode }}
             blockStyles={{ blockStyles }}
             netTangoOptions={{ netTangoOptions }}
+            variables={{ variables }}
           />
           {{/spaces }}
         </div>

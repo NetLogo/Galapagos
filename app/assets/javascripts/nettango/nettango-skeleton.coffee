@@ -25,6 +25,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       playMode:        playMode    # Boolean
       runtimeMode:     runtimeMode # String
       codeTipsEnabled: true        # Boolean
+      variables:       []          # Array[String]
     }
 
     computed: {
@@ -133,7 +134,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
           canRedo={{ canRedo }}
           isDebugMode={{ isDebugMode }}
           playMode={{ playMode }}
-          runtimeMode={{ runtimeMode }}>
+          runtimeMode={{ runtimeMode }}
           />
         {{/ playMode }}
 
@@ -159,6 +160,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
           <builder
             playMode={{ playMode }}
             breeds={{ breeds }}
+            variables={{ variables }}
             isSideBySide={{ isSideBySide }}
             blockStyles={{ blockStyles }}
             allTags={{ allTags }}

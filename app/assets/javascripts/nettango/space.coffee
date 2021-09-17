@@ -70,6 +70,7 @@ RactiveSpace = Ractive.extend({
     playMode:        false # Boolean
     space:           null  # NetTangoSpace
     netTangoOptions: null  # NetTangoBuilderOptions
+    variables:       []    # Array[]
   }
 
   on: {
@@ -326,6 +327,8 @@ RactiveSpace = Ractive.extend({
     else
       space.defs.program.chains
 
+    variables = @get('variables')
+
     spaceDef = {
       version:     space.defs.version
     , height:      space.height
@@ -335,6 +338,7 @@ RactiveSpace = Ractive.extend({
     , menuConfig:  space.defs.menuConfig
     , expressions: space.defs.expressions
     , program:     { chains: newChains }
+    , variables:   variables
     }
     playMode = @get('playMode')
     netTangoOptions = @get('netTangoOptions')

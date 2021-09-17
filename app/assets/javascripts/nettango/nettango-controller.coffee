@@ -179,6 +179,12 @@ class NetTangoController
     breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
     breedNames.push('patches')
     ractive.set('breeds', breedNames)
+
+    compiler        = @netLogoModel.session.compiler
+    globalVariables = compiler.listGlobalVars().map( (global) => global.name )
+    breedVariables  = breedNames.map( (breedName) => compiler.listOwnVarsForBreed(breedName) )
+    variables       = breedVariables.concat([globalVariables, compiler.listPatchVars(), compiler.listTurtleVars()]).flat().sort()
+    ractive.set('variables', variables)
     return
 
   # (String, String) => Unit
