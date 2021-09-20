@@ -244,7 +244,7 @@ setUpEventListeners = ->
             else
               world.turtleManager.getTurtle(who).ask(procedure, false)
           when "slider", "switch", "chooser", "inputBox"
-            { varName, value } = JSON.parse(e.data.data.message)
+            { varName, value } = e.data.data
             if role.isSpectator
               mangledName = "__hnw_#{role.name}_#{varName}"
               world.observer.setGlobal(mangledName, value)
@@ -406,7 +406,7 @@ setUpEventListeners = ->
           'ticksStarted'
         , (newValue, oldValue) ->
             if (newValue isnt oldValue)
-              broadcastHNWPayload("hnw-widget-update", { event: { type: "ticksStarted", value: newValue } })
+              broadcastHNWPayload("ticks-started", { value: newValue })
         )
 
         supervisorFrame.addEventListener('load', ->

@@ -62,6 +62,11 @@ sendHNWMessage = (type, message) ->
   return
 
 # (String, Any) => Unit
+window.sendHNWData = (type, message) ->
+  sendHNWPayload(type, { data: message })
+  return
+
+# (String, Any) => Unit
 window.sendHNWWidgetMessage = (type, message) ->
   sendHNWPayload("hnw-widget-message", { data: { type, message } })
   return
@@ -246,7 +251,7 @@ setUpEventListeners = ->
                 console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
 
       when "hnw-widget-update"
-        if (e.data.event.type is "ticksStarted")
+        if (e.data.type is "ticks-started")
           session.widgetController.ractive.set('ticksStarted', e.data.event.value)
         else
           console.warn("Unknown HNW widget update type")

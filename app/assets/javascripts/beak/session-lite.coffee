@@ -684,7 +684,7 @@ class window.SessionLite
       else if window.isHNWJoiner is true
         goodWTypes    = ["slider", "switch", "inputBox", "chooser"]
         widgetUpdates = @_getWidgetUpdates(@widgetController.widgets()).filter((wup) -> wup.type in goodWTypes)
-        widgetUpdates.forEach((wup) -> sendHNWWidgetMessage(wup.type, JSON.stringify(wup))) # Scope this better to individual clients
+        widgetUpdates.forEach((wup) -> sendHNWData("hnw-widget-message", wup)) # Scope this better to individual clients
 
     return
 

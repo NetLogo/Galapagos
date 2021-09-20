@@ -159,7 +159,7 @@ class window.WidgetController
   code: ->
     @ractive.get('code')
 
-  # () => Object[PlotEvent]
+  # () => Object[Array[PlotEvent]]
   getPlotUpdates: ->
     out = {}
     for display, chartOps of @configs.plotOps
