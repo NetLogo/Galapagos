@@ -88,6 +88,14 @@ RactiveSpace = Ractive.extend({
       , { defer: true, strict: true, init: false }
       )
 
+      @observe('variables', ->
+        containerId = @getNetTangoContainerId()
+        variables   = @get('variables')
+        NetTango.setVariables(containerId, variables)
+        return
+      , { defer: true, strict: true, init: false }
+      )
+
       return
 
     # (Context, NetTangoSpace) => Boolean
