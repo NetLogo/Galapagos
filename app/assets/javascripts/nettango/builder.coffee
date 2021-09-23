@@ -31,7 +31,7 @@ RactiveBuilder = Ractive.extend({
     netTangoOptions:  ObjectUtils.clone(netTangoOptionDefaults)
     extraCss:         ""            # String
     codeTipsEnabled:  true          # Boolean
-    variables:        []            # Array[String]
+    variables:        []            # Array[NetTangoVariable]
   }
 
   on: {

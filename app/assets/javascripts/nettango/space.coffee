@@ -70,7 +70,7 @@ RactiveSpace = Ractive.extend({
     playMode:        false # Boolean
     space:           null  # NetTangoSpace
     netTangoOptions: null  # NetTangoBuilderOptions
-    variables:       []    # Array[]
+    variables:       []    # Array[NetTangoVariable]
   }
 
   on: {

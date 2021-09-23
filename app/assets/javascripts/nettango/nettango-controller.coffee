@@ -181,9 +181,14 @@ class NetTangoController
     ractive.set('breeds', breedNames)
 
     compiler        = @netLogoModel.session.compiler
-    globalVariables = compiler.listGlobalVars().map( (global) => global.name )
-    breedVariables  = breedNames.map( (breedName) => compiler.listOwnVarsForBreed(breedName) )
-    variables       = breedVariables.concat([globalVariables, compiler.listPatchVars(), compiler.listTurtleVars()]).flat().sort()
+    globalVariables = compiler.listGlobalVars().map( (global) -> { name: global.name, tags: [] })
+    breedVariables  = breedNames.map( (breedName) ->
+      compiler.listOwnVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: [breedName] })
+    )
+    patchVariables  = compiler.listPatchVars().map( (patchVar) -> { name: patchVar, tags: ['patches'] })
+    turtleVarTags   = breedNames.concat(['turtles'])
+    turtleVariables = compiler.listTurtleVars().map( (turtleVar) -> { name: turtleVar, tags: turtleVarTags })
+    variables       = breedVariables.concat([globalVariables, patchVariables, turtleVariables]).flat()
     ractive.set('variables', variables)
     return
 

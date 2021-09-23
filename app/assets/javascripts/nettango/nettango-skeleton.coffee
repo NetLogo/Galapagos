@@ -25,7 +25,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       playMode:        playMode    # Boolean
       runtimeMode:     runtimeMode # String
       codeTipsEnabled: true        # Boolean
-      variables:       []          # Array[String]
+      variables:       []          # Array[NetTangoVariable]
     }
 
     computed: {
