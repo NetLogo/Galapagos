@@ -249,6 +249,7 @@ RactiveBuilder = Ractive.extend({
     @set('netLogoOptions',   ObjectUtils.clone(netLogoOptionDefaults))
     @set('netTangoOptions',  ObjectUtils.clone(netTangoOptionDefaults))
     @set('extraCss',         "")
+    @set('variables',        [])
     return
 
   # (NetTangoProject) => Unit

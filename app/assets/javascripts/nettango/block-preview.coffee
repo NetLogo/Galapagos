@@ -35,7 +35,7 @@ RactiveBlockPreview = Ractive.extend({
       blockStyles = @get("blockStyles")
 
       workspace = {
-        version:     6
+        version:     7
         height:      300
         width:       400
         blockStyles: blockStyles
