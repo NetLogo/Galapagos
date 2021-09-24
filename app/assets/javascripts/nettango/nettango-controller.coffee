@@ -174,21 +174,35 @@ class NetTangoController
     @rerunForevers(widgets)
 
     # breeds may have changed in code, so update for context tags
-    workspace  = @netLogoModel.workspace
-    breeds     = workspace.breedManager.breeds()
-    breedNames = Object.keys(breeds).map( (b) -> breeds[b].originalName )
-    breedNames.push('patches')
-    ractive.set('breeds', breedNames)
+    workspace        = @netLogoModel.workspace
+    breedsObject     = workspace.breedManager.breeds()
+    breeds           = Object.keys(breedsObject).map( (breedName) -> breedsObject[breedName] )
+    turtleBreedNames = breeds.filter( (b) -> not b.isLinky() ).map( (b) -> b.originalName )
+    linkBreedNames   = breeds.filter( (b) -> b.isLinky()     ).map( (b) -> b.originalName )
+    allAgentTypes    = turtleBreedNames.concat(linkBreedNames).concat(['patches'])
+    ractive.set('breeds', allAgentTypes)
 
-    compiler        = @netLogoModel.session.compiler
+    compiler = @netLogoModel.session.compiler
+
     globalVariables = compiler.listGlobalVars().map( (global) -> { name: global.name, tags: [] })
-    breedVariables  = breedNames.map( (breedName) ->
-      compiler.listOwnVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: [breedName] })
+
+    patchTags      = ['patches']
+    patchVariables = compiler.listPatchVars().map( (patchVar) -> { name: patchVar, tags: patchTags })
+
+    turtleBreedVariables = turtleBreedNames.map( (breedName) ->
+      tags = [breedName]
+      compiler.listOwnVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: tags })
     )
-    patchVariables  = compiler.listPatchVars().map( (patchVar) -> { name: patchVar, tags: ['patches'] })
-    turtleVarTags   = breedNames.concat(['turtles'])
-    turtleVariables = compiler.listTurtleVars().map( (turtleVar) -> { name: turtleVar, tags: turtleVarTags })
-    variables       = breedVariables.concat([globalVariables, patchVariables, turtleVariables]).flat()
+    turtleVariables = compiler.listTurtleVars().map( (turtleVar) -> { name: turtleVar, tags: turtleBreedNames })
+
+    linkBreedVariables = linkBreedNames.map( (breedName) ->
+      tags = [breedName]
+      compiler.listLinkOwnVarsForBreed(breedName).map( (linkVar) -> { name: linkVar, tags: tags })
+    )
+    linkVariables = compiler.listLinkVars().map( (linkVar) -> { name: linkVar, tags: linkBreedNames })
+
+    otherVariables = [globalVariables, patchVariables, turtleVariables, linkVariables]
+    variables      = turtleBreedVariables.concat(linkBreedVariables).concat(otherVariables).flat()
     ractive.set('variables', variables)
     return
 
