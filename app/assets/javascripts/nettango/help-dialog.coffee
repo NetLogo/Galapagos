@@ -88,7 +88,7 @@ RactiveHelpDialog = RactiveModalDialog.extend({
       <ul class="help-key-table">
         <li><kbd>{{ modkey }}</kbd><kbd>z</kbd> to undo the last change.</li>
         <li><kbd>{{ modkey }}</kbd><kbd>y</kbd> or <kbd>{{ modkey }}</kbd><kbd>shift</kbd><kbd>z</kbd> to redo the last undone change.</li>
-        {{# !playMode }}<li><kbd>{{ modkey }}</kbd><kbd>shift</kbd><kbd>z</kbd> to export the current NetTango Web project file.</li>{{/ playMode }}
+        {{# !playMode }}<li><kbd>{{ modkey }}</kbd><kbd>shift</kbd><kbd>e</kbd> to export the current NetTango Web project file.</li>{{/ playMode }}
       </ul>
 
       """
