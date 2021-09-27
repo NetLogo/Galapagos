@@ -186,20 +186,32 @@ class NetTangoController
 
     globalVariables = compiler.listGlobalVars().map( (global) -> { name: global.name, tags: [] })
 
-    patchTags      = ['patches']
-    patchVariables = compiler.listPatchVars().map( (patchVar) -> { name: patchVar, tags: patchTags })
+    # The `badTypes` arrays contain the variables which will never have a type usable in a
+    # NetTango expression (Number or Boolean).  It's not ideal to hardcode them like this,
+    # but it's simple, works, and these don't change very often.  -Jeremy B September 2021
 
-    turtleBreedVariables = turtleBreedNames.map( (breedName) ->
-      tags = [breedName]
-      compiler.listOwnVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: tags })
-    )
-    turtleVariables = compiler.listTurtleVars().map( (turtleVar) -> { name: turtleVar, tags: turtleBreedNames })
+    makeBuiltInVars = (vars, tags, badTypes) ->
+      vars.filter(
+        (v) -> not badTypes.includes(v)
+      ).map(
+        (v) -> { name: v, tags: tags }
+      )
 
-    linkBreedVariables = linkBreedNames.map( (breedName) ->
-      tags = [breedName]
-      compiler.listLinkOwnVarsForBreed(breedName).map( (linkVar) -> { name: linkVar, tags: tags })
-    )
-    linkVariables = compiler.listLinkVars().map( (linkVar) -> { name: linkVar, tags: linkBreedNames })
+    makeBreedVars = (breedNames, getVarsForBreed) ->
+      breedNames.map( (breedName) ->
+        tags = [breedName]
+        getVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: tags })
+      )
+
+    patchVariables = makeBuiltInVars(compiler.listPatchVars(), ['patches'], ['plabel'])
+
+    turtleBreedVariables = makeBreedVars(turtleBreedNames, (bn) -> compiler.listOwnVarsForBreed(bn))
+    badTypes             = ['breed', 'label', 'shape']
+    turtleVariables      = makeBuiltInVars(compiler.listTurtleVars(), turtleBreedNames, badTypes)
+
+    linkBreedVariables = makeBreedVars(linkBreedNames, (bn) -> compiler.listLinkOwnVarsForBreed(bn))
+    badTypes           = ['breed', 'end1', 'end2', 'label', 'shape', 'tie-mode']
+    linkVariables      = makeBuiltInVars(compiler.listLinkVars(), linkBreedNames, badTypes)
 
     otherVariables = [globalVariables, patchVariables, turtleVariables, linkVariables]
     variables      = turtleBreedVariables.concat(linkBreedVariables).concat(otherVariables).flat()
