@@ -35,10 +35,11 @@ RactiveBlockPreview = Ractive.extend({
       blockStyles = @get("blockStyles")
 
       workspace = {
-        version:     7
-        height:      300
-        width:       400
-        blockStyles: blockStyles
+        version:      7
+        height:       300
+        width:        400
+        blockStyles:  blockStyles
+        chainClose: "end"
       }
 
       @setupWorkspace(workspace, block)

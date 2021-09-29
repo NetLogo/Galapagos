@@ -327,7 +327,7 @@ RactiveBlockForm = RactiveModalDialog.extend({
           clauses={{ clauses }}
           closeClauses={{ closeClauses }}
           knownTags={{ blockKnownTags }}
-          canInheritTags={{ !isProcedureBlock }}
+          forProcedureBlock={{ isProcedureBlock }}
           />
 
         <blockStyle styleId="{{ id }}" showAtStart=false styleSettings="{{ this }}"></blockStyle>

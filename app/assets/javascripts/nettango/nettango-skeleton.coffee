@@ -102,7 +102,7 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
 
       '*.ntb-create-blockspace': (_) ->
         builder = @findComponent('builder')
-        builder.createSpace({ defs: { blocks: [], program: { chains: [] }}})
+        builder.createSpace({ defs: { blocks: [], program: { chains: [] }, chainClose: "end" }})
         return
 
     }

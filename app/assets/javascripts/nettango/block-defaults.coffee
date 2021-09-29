@@ -92,7 +92,7 @@ blocks = {
             , isTerminal: true
             , placement:  NetTango.blockPlacementOptions.STARTER
             , limit:      1
-            , clauses:    [{ blocks: [], open: " ", close: " " }]
+            , clauses:    [{ blocks: [], open: "", close: "" }]
           }
         }
       ]
@@ -109,7 +109,7 @@ blocks = {
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ blocks: [] }]
+            , clauses:     [{ blocks: [], open: "[", close: "]" }]
           }
         },
         {
@@ -126,7 +126,7 @@ blocks = {
                 unit:    "%",
                 name:    "percent"
             } ]
-            , clauses: [{ blocks: [] }]
+            , clauses: [{ blocks: [], open: "[", close: "]" }]
           })
         },
         {
@@ -138,7 +138,7 @@ blocks = {
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ blocks: [] }]
+            , clauses:     [{ blocks: [], open: "[", close: "]" }]
           }
         },
         {
@@ -150,7 +150,10 @@ blocks = {
             , limit:       undefined
             , params:      []
             , properties:  []
-            , clauses:     [{ blocks: [] }, { blocks: [] }]
+            , clauses:     [
+              { blocks: [], open: "[", close: "]" }
+            , { blocks: [], open: "[", close: "]" }
+            ]
           }
         },
         {
@@ -161,9 +164,9 @@ blocks = {
             format:       "(ifelse",
             closeClauses: ")"
             clauses: [
-              { blocks: [], open: "random 10 < 5 [" },
-              { blocks: [], action: "else maybe", open: "random 10 < 5 [" },
-              { blocks: [], action: "otherwise" }
+              { blocks: [], open: "random 10 < 5 [", close: "]" },
+              { blocks: [], action: "else maybe", open: "random 10 < 5 [", close: "]" },
+              { blocks: [], action: "otherwise", open: "[", close: "]" }
             ]
           }
         }

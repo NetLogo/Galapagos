@@ -382,7 +382,7 @@ RactiveBuilder = Ractive.extend({
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
-    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] } }
+    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] }, chainClose: "end" }
     space = {
       id:      id
     , spaceId: spaceId

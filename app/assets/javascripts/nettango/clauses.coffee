@@ -3,6 +3,8 @@ import RactiveAllowedTags from "./allowed-tags.js"
 import RactiveArrayView from "./array-view.js"
 import RactiveCodeMirror from "./code-mirror.js"
 
+import ObjectUtils from "./object-utils.js"
+
 partials = {
 
   headerTemplate:
@@ -77,22 +79,33 @@ partials = {
 
 }
 
+procedureClause = {
+  open:   ""
+, close:  ""
+, blocks: []
+, allowedTags: { type: 'unrestricted' }
+}
+
+controlClause = {
+  open:   "["
+, close:  "]"
+, blocks: []
+, allowedTags: { type: 'unrestricted' }
+}
+
 RactiveClauses = Ractive.extend({
 
   data: () -> {
-    blockId:        undefined # Int
-    clauses:        []        # Array[NetTangoAttribute]
-    closeClauses:   ""        # String
-    knownTags:      []        # Array[String]
-    canInheritTags: false     # Boolean
+    blockId:           undefined # Int
+    clauses:           []        # Array[NetTangoAttribute]
+    closeClauses:      ""        # String
+    knownTags:         []        # Array[String]
+    forProcedureBlock: false     # Boolean
 
     createClause:
-      (number) -> {
-        open:   undefined
-      , close:  undefined
-      , blocks: []
-      , allowedTags: { type: 'unrestricted' }
-      }
+      (number) =>
+        forProcedureBlock = @get('forProcedureBlock')
+        ObjectUtils.clone(if forProcedureBlock then procedureClause else controlClause)
 
   }
 
@@ -117,7 +130,7 @@ RactiveClauses = Ractive.extend({
       showAtStart="{{ clauses.length > 0 }}"
       knownTags={{ knownTags }}
       blockType="clause"
-      canInheritTags={{ canInheritTags }}
+      canInheritTags={{ !forProcedureBlock }}
       />
     """
 })
