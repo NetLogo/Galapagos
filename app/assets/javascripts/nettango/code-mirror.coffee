@@ -61,7 +61,7 @@ RactiveCodeMirror = Ractive.extend({
       return
   }
 
-  template: """<div id={{ id }} class="ntb-code-mirror {{classes}}" />"""
+  template: """<div id={{ id }} class="ntb-code-mirror {{classes}}" translate="no" />"""
 
 })
 

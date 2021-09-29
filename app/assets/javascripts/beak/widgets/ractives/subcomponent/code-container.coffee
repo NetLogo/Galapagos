@@ -63,7 +63,12 @@ RactiveCodeContainerBase = Ractive.extend({
 
   template:
     """
-    <div id="{{id}}" class="netlogo-code {{(extraClasses || []).join(' ')}}" style="{{style}}"></div>
+    <div
+      id="{{id}}"
+      class="netlogo-code {{(extraClasses || []).join(' ')}}"
+      style="{{style}}"
+      translate="no"
+    />
     """
 
 })
