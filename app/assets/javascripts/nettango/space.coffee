@@ -335,8 +335,6 @@ RactiveSpace = Ractive.extend({
     else
       space.defs.program.chains
 
-    variables = @get('variables')
-
     spaceDef = {
       version:     space.defs.version
     , height:      space.height
@@ -346,7 +344,11 @@ RactiveSpace = Ractive.extend({
     , menuConfig:  space.defs.menuConfig
     , expressions: space.defs.expressions
     , program:     { chains: newChains }
-    , variables:   variables
+    , chainOpen:   space.defs.chainOpen
+    , chainClose:  space.defs.chainClose
+    # It might seem odd to not send variables over, but we actually send them once NetLogo compiles
+    # succesfully so we have the full, proper list.  -Jeremy B September 2021
+    , variables:   []
     }
     playMode = @get('playMode')
     netTangoOptions = @get('netTangoOptions')
