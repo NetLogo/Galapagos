@@ -26,7 +26,13 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+lazy val root = (project in file("."))
+  .enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+  .settings(
+    // Disable NPM node modules
+    JsEngineKeys.npmNodeModules in Assets := Nil,
+    JsEngineKeys.npmNodeModules in TestAssets := Nil
+  )
 
 val tortoiseVersion = "1.0-1f65392"
 
