@@ -203,7 +203,7 @@ class NetTangoController
         getVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: tags })
       )
 
-    patchVariables = makeBuiltInVars(compiler.listPatchVars(), ['patches'], ['plabel'])
+    patchVariables = makeBuiltInVars(compiler.listPatchVars(), ['patches', 'turtles'], ['plabel'])
 
     turtleBreedVariables = makeBreedVars(turtleBreedNames, (bn) -> compiler.listOwnVarsForBreed(bn))
     badTypes             = ['breed', 'label', 'shape']
