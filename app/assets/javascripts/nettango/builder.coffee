@@ -339,9 +339,15 @@ RactiveBuilder = Ractive.extend({
     newCode     = @assembleCode(displayOnly = false)
     codeChanged = lastCode isnt newCode
     @set('code', @assembleCode(displayOnly = true))
+
     if codeChanged
       @set('lastCode', newCode)
       @fire('ntb-code-dirty')
+
+    else
+      # Code did not change, but if we refreshed NeTango we need to reload the variables
+      @fire('ntb-load-variables')
+
     return
 
   # (Boolean) => String

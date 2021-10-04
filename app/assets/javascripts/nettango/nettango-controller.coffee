@@ -39,6 +39,7 @@ class NetTangoController
     @ractive.on('*.ntb-redo',            (_)              => @redo())
     @ractive.on('*.ntb-code-dirty',      (_)              => @recompileProcedures())
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
+    @ractive.on('*.ntb-load-variables',  (_)              => @resetBreedsAndVariables())
 
     @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)            => @netLogoModel.session.exportNlogo())
@@ -168,13 +169,23 @@ class NetTangoController
     return
 
   netLogoCompileComplete: () =>
+
     # if we had any forever buttons running, re-run them
     widgetController = @netLogoModel.widgetController
     widgets          = widgetController.ractive.get('widgetObj')
     @rerunForevers(widgets)
 
+    @resetBreedsAndVariables()
+
+    return
+
+  resetBreedsAndVariables: () ->
     # breeds may have changed in code, so update for context tags
-    workspace        = @netLogoModel.workspace
+    workspace = @netLogoModel.workspace
+
+    if workspace is null
+      return
+
     breedsObject     = workspace.breedManager.breeds()
     breeds           = Object.keys(breedsObject).map( (breedName) -> breedsObject[breedName] )
     turtleBreedNames = breeds.filter( (b) -> not b.isLinky() ).map( (b) -> b.originalName )
