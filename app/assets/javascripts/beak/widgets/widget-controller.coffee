@@ -46,8 +46,9 @@ class window.WidgetController
   # () => Unit
   updateWidgets: ->
 
-    for _, chartOps of @configs.plotOps
-      chartOps.redraw()
+    if not window.isHNWHost
+      for _, chartOps of @configs.plotOps
+        chartOps.redraw()
 
     for widget in @widgets()
       updateWidget(widget)
