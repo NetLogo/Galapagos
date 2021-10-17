@@ -138,8 +138,10 @@ setUpEventListeners = ->
 
         respondWithView =
           ->
-            base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
-            e.source.postMessage({ base64, type: "nlw-view" }, "*")
+            session.widgetController.viewController.view.visibleCanvas.toBlob(
+              (blob) ->
+                e.source.postMessage({ blob, type: "nlw-view" }, "*")
+            )
 
         session.widgetController.viewController.repaint()
         setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
