@@ -234,6 +234,7 @@ class AlertDisplay
   isKnownProcedure: (type, name) ->
     ['command', 'reporter', 'plot'].includes(type)
 
+# coffeelint: disable=max_line_length
 template = """
 <div class="dark-overlay alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
 
@@ -281,5 +282,6 @@ template = """
 
 </div>
 """
+# coffeelint: enable=max_line_length
 
 export default AlertDisplay
