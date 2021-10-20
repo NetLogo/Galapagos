@@ -33,6 +33,12 @@ class AlertDisplay
           @set('isDismissable', true)
           @set('isActive', false)
           return
+
+        '*.copy-message': (_) ->
+          message = @find('#alert-message')
+          navigator.clipboard.writeText(message?.innerText)
+          return
+
       }
 
       isLinkableProcedure: isLinkableProcedure
@@ -263,13 +269,12 @@ template = """
     </div>
     {{/ isStandalone }}
 
-    {{# isDismissable }}
     <div id="alert-dismiss-container">
-      <button id="alert-dismiss" class="alert-button alert-separator-top" on-click="hide">
-        Dismiss
-      </button>
+      <input id="alert-copy" type="button" class="alert-button" on-click="copy-message" value="Copy Message to Clipboard" />
+      {{# isDismissable }}
+      <input id="alert-dismiss" type="button" class="alert-button alert-separator-top" on-click="hide" value="Dismiss" />
+      {{/ isDismissable }}
     </div>
-    {{/ isDismissable }}
 
   </div>
   {{/ isActive }}
