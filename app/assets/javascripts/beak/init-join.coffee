@@ -156,11 +156,11 @@ setUpEventListeners = ->
 
         if session?
 
-          { widgetUpdates, monitorUpdates, plotUpdates, ticks, viewUpdate } = e.data.update
+          { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = e.data.update
 
-          if ticks?
+          if viewUpdate?.world?[0]?.ticks?
             world.ticker.reset()
-            world.ticker.importTicks(ticks)
+            world.ticker.importTicks(viewUpdate.world.ticks)
 
           if widgetUpdates?
             session.widgetController.applyWidgetUpdates(widgetUpdates)

@@ -100,10 +100,11 @@ setUpEventListeners = ->
         session.subscribe(e.source)
       when "nlw-apply-update"
 
-        { plotUpdates, ticks, viewUpdate } = e.data.update
+        { plotUpdates, viewUpdate } = e.data.update
 
-        world.ticker.reset()
-        world.ticker.importTicks(ticks)
+        if viewUpdate?.world?[0]?.ticks?
+          world.ticker.reset()
+          world.ticker.importTicks(viewUpdate.world.ticks)
 
         vc = session.widgetController.viewController
         vc.applyUpdate(viewUpdate)
