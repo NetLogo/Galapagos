@@ -33,6 +33,7 @@ class window.SessionLite
   _hnwTargetFPS:         undefined # Number
   _hnwLastPersp:         undefined # Object[(String, Agent, Number)]
   _hnwLastLoopTS:        undefined # Number
+  _hnwLastTickTS:        undefined # Number
   _hnwImageCache:        undefined # Object[Object[String]]
   _hnwWidgetGlobalCache: undefined # Object[Any]
   _metadata:             undefined # Object[Any]
@@ -159,21 +160,27 @@ class window.SessionLite
     updatesDeadline    = Math.min(@_lastRedraw + @redrawDelay(), time + MAX_UPDATE_TIME)
     maxNumUpdates      = @calcNumUpdates()
 
-    hnwElapsed        = time - (@_hnwLastLoopTS ? 0)
+    hnwLoopElapsed    = time - (@_hnwLastLoopTS ? 0)
+    hnwTickElapsed    = time - (@_hnwLastTickTS ? 0)
     hnwTargetInterval = 1000 / (@_hnwTargetFPS  ? 1)
+    hnwLoopInterval   = 1000 / 20
 
-    if (not @_hnwLastLoopTS?) or (hnwElapsed > hnwTargetInterval)
+    if (not @_hnwLastLoopTS?) or (hnwLoopElapsed > hnwLoopInterval)
 
-      @_hnwLastLoopTS = time
+      if window.isHNWHost is true
+        @_hnwLastLoopTS = time
 
-      if not @widgetController.ractive.get('isEditing')
-        for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
-          @_lastUpdate = now()
-          @widgetController.runForevers()
-          if document.getElementById('hnw-go')?.checked
-            window.hnwGoProc()
-          if now() >= updatesDeadline
-            break
+      if (not @_hnwLastTickTS?) or (hnwTickElapsed > hnwTargetInterval)
+        if not @widgetController.ractive.get('isEditing')
+          if window.isHNWHost is true
+            @_hnwLastTickTS = time
+          for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
+            @_lastUpdate = now()
+            @widgetController.runForevers()
+            if document.getElementById('hnw-go')?.checked
+              window.hnwGoProc()
+            if now() >= updatesDeadline
+              break
 
       if Updater.hasUpdates()
         # First conditional checks if we're on time with updates. If so, we may as
