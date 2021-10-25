@@ -30,7 +30,9 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
+  _hnwTargetFPS:         undefined # Number
   _hnwLastPersp:         undefined # Object[(String, Agent, Number)]
+  _hnwLastLoopTS:        undefined # Number
   _hnwImageCache:        undefined # Object[Object[String]]
   _hnwWidgetGlobalCache: undefined # Object[Any]
   _metadata:             undefined # Object[Any]
@@ -122,8 +124,10 @@ class window.SessionLite
 
       if representativePing > maxTypicalPing
         0
+      else if @drawEveryFrame
+        1
       else
-        standardCalc()
+        (now() - @_lastUpdate) / (1000 / @_hnwTargetFPS)
     else
       standardCalc()
 
@@ -149,35 +153,44 @@ class window.SessionLite
       DEFAULT_REDRAW_DELAY
 
   eventLoop: (timestamp) =>
+
+    time               = now()
     @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
-    updatesDeadline = Math.min(@_lastRedraw + @redrawDelay(), now() + MAX_UPDATE_TIME)
-    maxNumUpdates   = @calcNumUpdates()
+    updatesDeadline    = Math.min(@_lastRedraw + @redrawDelay(), time + MAX_UPDATE_TIME)
+    maxNumUpdates      = @calcNumUpdates()
 
-    if not @widgetController.ractive.get('isEditing')
-      for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
-        @_lastUpdate = now()
-        @widgetController.runForevers()
-        if document.getElementById('hnw-go')?.checked
-          window.hnwGoProc()
-        if now() >= updatesDeadline
-          break
+    hnwElapsed        = time - (@_hnwLastLoopTS ? 0)
+    hnwTargetInterval = 1000 / (@_hnwTargetFPS  ? 1)
 
-    if Updater.hasUpdates()
-      # First conditional checks if we're on time with updates. If so, we may as
-      # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
-      if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
-        @_lastRedraw = now()
-        @_performUpdate(true)
+    if (not @_hnwLastLoopTS?) or (hnwElapsed > hnwTargetInterval)
+
+      @_hnwLastLoopTS = time
+
+      if not @widgetController.ractive.get('isEditing')
+        for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
+          @_lastUpdate = now()
+          @widgetController.runForevers()
+          if document.getElementById('hnw-go')?.checked
+            window.hnwGoProc()
+          if now() >= updatesDeadline
+            break
+
+      if Updater.hasUpdates()
+        # First conditional checks if we're on time with updates. If so, we may as
+        # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
+        if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
+          @_lastRedraw = now()
+          @_performUpdate(true)
+        else
+          @_performUpdate(false)
       else
         @_performUpdate(false)
-    else
-      @_performUpdate(false)
 
 
-    # Widgets must always be updated, because global variables and plots can be
-    # altered without triggering an "update".  That is to say that `Updater`
-    # only concerns itself with View updates. --JAB (9/2/15)
-    @widgetController.updateWidgets()
+      # Widgets must always be updated, because global variables and plots can be
+      # altered without triggering an "update".  That is to say that `Updater`
+      # only concerns itself with View updates. --JAB (9/2/15)
+      @widgetController.updateWidgets()
 
   teardown: ->
     @widgetController.teardown()
@@ -559,6 +572,10 @@ class window.SessionLite
   # (String) => Unit
   updateWithoutRendering: (uuidToIgnore) ->
     @_performUpdate(true, false, uuidToIgnore)
+    return
+
+  # (Number) => Unit
+  setTargetFrameRate: (@_hnwTargetFPS) ->
     return
 
   # (Boolean, Boolean, String) => Unit

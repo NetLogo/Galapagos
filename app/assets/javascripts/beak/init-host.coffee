@@ -357,6 +357,9 @@ setUpEventListeners = ->
           window.hnwGoProc     = (-> runCommand(e.data.onIterate))
           taeParent.insertBefore(goCheckbox , tabAreaElem)
 
+        if e.data.targetFrameRate?
+          session.setTargetFrameRate(e.data.targetFrameRate)
+
         genUUID = ->
 
           replacer =
