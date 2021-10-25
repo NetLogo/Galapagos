@@ -35,7 +35,9 @@ class window.SessionLite
   _hnwLastLoopTS:        undefined # Number
   _hnwLastTickTS:        undefined # Number
   _hnwImageCache:        undefined # Object[Object[String]]
+  _hnwIsCongested:       undefined # Boolean
   _hnwWidgetGlobalCache: undefined # Object[Any]
+
   _metadata:             undefined # Object[Any]
   _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
   _subscriberObj:        undefined # Object[Window]
@@ -49,6 +51,8 @@ class window.SessionLite
     @_hnwWidgetGlobalCache = {}
     @_monitorFuncs         = {}
     @_subscriberObj        = {}
+
+    @_hnwIsCongested = false
 
     @_metadata =
       { globalVars: []
@@ -170,7 +174,7 @@ class window.SessionLite
       if window.isHNWHost is true
         @_hnwLastLoopTS = time
 
-      if (not @_hnwLastTickTS?) or (hnwTickElapsed > hnwTargetInterval)
+      if (not @_hnwLastTickTS?) or ((not @_hnwIsCongested) and (hnwTickElapsed > hnwTargetInterval))
         if not @widgetController.ractive.get('isEditing')
           if window.isHNWHost is true
             @_hnwLastTickTS = time
@@ -583,6 +587,16 @@ class window.SessionLite
 
   # (Number) => Unit
   setTargetFrameRate: (@_hnwTargetFPS) ->
+    return
+
+  # () => Unit
+  disableCongestionControl: ->
+    @_hnwIsCongested = false
+    return
+
+  # () => Unit
+  enableCongestionControl: ->
+    @_hnwIsCongested = true
     return
 
   # (Boolean, Boolean, String) => Unit

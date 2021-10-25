@@ -185,6 +185,12 @@ setUpEventListeners = ->
         viewUpdate  = { drawingEvents: [imageUpdate] }
         session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
 
+      when "hnw-notify-congested"
+        session.enableCongestionControl()
+
+      when "hnw-notify-uncongested"
+        session.disableCongestionControl()
+
       when "hnw-request-initial-state"
 
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
