@@ -230,15 +230,15 @@ setUpEventListeners = ->
 
               badTurtle    = -> Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
               if turtles? and badTurtle()?
-                baddie = ["turtle", badTurtle]
+                baddie = ["turtle", badTurtle()]
               else
                 badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links[key]?))
                 if links? and badLink()?
-                  baddie = ["link", badLink]
+                  baddie = ["link", badLink()]
                 else
                   badPatch = -> Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
                   if patches? and badPatch()?
-                    baddie = ["patch", badPatch]
+                    baddie = ["patch", badPatch()]
 
               if baddie?
                 parent.postMessage({
