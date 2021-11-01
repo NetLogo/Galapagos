@@ -177,7 +177,7 @@ setUpEventListeners = ->
         window.parent.postMessage(e.data, "*")
 
       when "hnw-latest-ping"
-        window.clients[e.data.joinerID].ping = e.data.ping
+        window.clients[e.data.joinerID]?.ping = e.data.ping
 
       when "hnw-cash-raincheck"
         imageBase64 = session.cashRainCheckFor(e.data.id)
