@@ -565,8 +565,8 @@ Phenotypes
 
 This model allows users to explore the inheritance of fur coat color in a population of rock pocket mice to investigate the [Hardy-Weinberg Principle](https://en.wikipedia.org/wiki/Hardy–Weinberg_principle). Users can set up the initial genetic composition of the mouse population and then can track genotype and phenotype frequencies in the population as the mice reproduce obeying the assumptions underlying Hardy- Weinberg equilibrium. As the populations reproduce, after just a few generations, the population reaches Hardy-Weinberg equilibrium.
 
-The context for this model is the evolution of fur coat color in rock pocket mice that are mainly found in rocky outcrops in the deserts of the southwestern United States and Mexico. This context is developed into a lesson plan by the [Howard Hughes Medical Institute] (https://www.hhmi.org/biointeractive/making-fittest-natural-selection-and-adaptation). The genetics is modeled on the basis of the [research](https://www.pnas.org/content/100/9/5268.) on the rock pocket mice populations.
-The specifics of the model are designed on the basis of an Advanced Placement (AP) Biology [Lab](http://www2.centralcatholichs.com/APbiologysite/AP%20evolution/HWC%20pop%20genetics%20AP%20lab%208.PDF), so that students can computationally investigate the emergence of Hardy-Weinberg equilibrium values in a population that obeys Hardy-Weinberg equilibrium assumptions.
+The context for this model is the evolution of fur coat color in rock pocket mice that are mainly found in rocky outcrops in the deserts of the southwestern United States and Mexico. This context is developed into a lesson plan by the [Howard Hughes Medical Institute] (https://www.biointeractive.org/classroom-resources/making-fittest-natural-selection-and-adaptation). The genetics is modeled on the basis of the [research](https://www.pnas.org/content/100/9/5268.) on the rock pocket mice populations.
+The specifics of the model are designed on the basis of an Advanced Placement (AP) Biology Lab, so that students can computationally investigate the emergence of Hardy-Weinberg equilibrium values in a population that obeys Hardy-Weinberg equilibrium assumptions.
 
 ## HOW IT WORKS
 
@@ -642,8 +642,9 @@ Look at GenEvo 2 Genetic Drift, GenEvo 2 Natural Selection, Mendelian Inheritanc
 ## CREDITS AND REFERENCES
 
 * https://www.pnas.org/content/100/9/5268
-* https://www.hhmi.org/biointeractive/making-fittest-natural-selection-and-adaptation
-[An AP Biology Lab](http://www2.centralcatholichs.com/APbiologysite/AP%20evolution/HWC%20pop%20genetics%20AP%20lab%208.PDF). AP Biology laboratory manual for students. (2001). New York, NY: Advanced Placement Program, The College Board.
+* https://www.biointeractive.org/classroom-resources/making-fittest-natural-selection-and-adaptation
+* An AP Biology Lab from Central Catholic HS which is no longer available publicly.
+* AP Biology laboratory manual for students. (2001). New York, NY: Advanced Placement Program, The College Board.
 
 ## HOW TO CITE
 
@@ -1017,7 +1018,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.0
+NetLogo 6.2.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

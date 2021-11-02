@@ -352,7 +352,7 @@ https://web.archive.org/web/20160131061433/http://www.ddewey.net/mandelbrot/
 
 An introductory online textbook for Complex Analysis.
 (Note: This is a college level text, but the first chapter or so should be accessible to people with only some algebra background.)
-http://people.math.gatech.edu/~cain/winter99/complex.html
+https://people.math.gatech.edu/~cain/winter99/complex.html
 
 The Fractal Geometry of Nature by Benoit Mandelbrot
 
@@ -666,7 +666,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.0
+NetLogo 6.2.1
 @#$#@#$#@
 setup
 repeat 1200 [ go ]

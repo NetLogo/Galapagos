@@ -34,7 +34,7 @@ lazy val root = (project in file("."))
     JsEngineKeys.npmNodeModules in TestAssets := Nil
   )
 
-val tortoiseVersion = "1.0-1f65392"
+val tortoiseVersion = "1.0-9578274"
 
 libraryDependencies ++= Seq(
   ehcache,
