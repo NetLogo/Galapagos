@@ -177,6 +177,17 @@ coffeelint := Def.task {
   )
 }.dependsOn(npmInstall).value
 
+lazy val setupHTTPS = taskKey[Unit]("configure HTTPS")
+setupHTTPS := {
+  val keyStorePath = sys.env.getOrElse("GALAPAGOS_KEYSTORE_PATH",
+    sys.error("setupHTTPS requires GALAPAGOS_KEYSTORE_PATH to point at the PKCS12 keystore"))
+  val httpsPort = sys.env.getOrElse("GALAPAGOS_HTTPS_PORT", "9001")
+  System.getProperties().setProperty("http.port", "disabled")
+  System.getProperties().setProperty("https.port", httpsPort)
+  System.getProperties().setProperty("play.server.https.keyStore.path", keyStorePath)
+  System.getProperties().setProperty("play.server.https.keyStore.type", "PKCS12")
+}
+
 lazy val testInputDirectory  = Def.setting[File] { baseDirectory.value / "test" / "assets" / "javascripts" }
 lazy val testOutputDirectory = Def.setting[File] { baseDirectory.value / "target" / "coffee-output" / "test" }
 
