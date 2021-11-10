@@ -491,7 +491,7 @@ class window.SessionLite
   # (String) => { widgetUpdates: Object[Array[WidgetUpdate]], plotUpdates: Object[Any], viewUpdate: Update }
   getModelState: (myRole) ->
     { drawingEvents, links, observer, patches, turtles, world: w } = @widgetController.viewController.model
-    devs          = @_handleImageCache(drawingEvents, true)
+    devs          = @_handleImageCache(drawingEvents)
     viewUpdate    = { drawingEvents: devs, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }
     widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates(@widgetController.widgets()) }
     plotUpdates   = @widgetController.getPlotUpdates()
@@ -678,7 +678,7 @@ class window.SessionLite
 
     joinerDrawings =
       if (diffedUpdate.drawingEvents ? []).length > 0
-        { drawingEvents: @_handleImageCache(diffedUpdate.drawingEvents, false) }
+        { drawingEvents: @_handleImageCache(diffedUpdate.drawingEvents) }
       else
         {}
 
@@ -777,8 +777,8 @@ class window.SessionLite
     else
       {}
 
-  # (Object[Object[Any]], Boolean) => Object[Object[Any]]
-  _handleImageCache: (drawingUpdates, isFullUpdate) ->
+  # (Object[Object[Any]]) => Object[Object[Any]]
+  _handleImageCache: (drawingUpdates) ->
 
     hashStr = (str) ->
       hash = 0
@@ -793,10 +793,7 @@ class window.SessionLite
         if du.type is "import-drawing"
           hash = hashStr(du.imageBase64)
           @_hnwImageCache[hash] = du.imageBase64
-          if isFullUpdate
-            Object.assign(du, { hash })
-          else
-            { type: "import-drawing-raincheck", hash }
+          { type: "import-drawing-raincheck", hash }
         else
           du
     )
