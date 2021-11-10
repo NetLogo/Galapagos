@@ -53,6 +53,7 @@ class window.SessionLite
     @_subscriberObj        = {}
 
     @_hnwIsCongested = false
+    @_hnwTargetFPS   = 20
 
     @_metadata =
       { globalVars: []
@@ -166,7 +167,7 @@ class window.SessionLite
 
     hnwLoopElapsed    = time - (@_hnwLastLoopTS ? 0)
     hnwTickElapsed    = time - (@_hnwLastTickTS ? 0)
-    hnwTargetInterval = 1000 / (@_hnwTargetFPS  ? 1)
+    hnwTargetInterval = 1000 / @_hnwTargetFPS
     hnwLoopInterval   = 1000 / 20
 
     if (not @_hnwLastLoopTS?) or (hnwLoopElapsed > hnwLoopInterval)
