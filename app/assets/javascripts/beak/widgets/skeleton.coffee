@@ -180,14 +180,6 @@ template =
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
 
-      <div class="hnwSpeedControlBox" style="{{#!isHNWHost}}display: none;{{/}}">
-        <span class="netlogo-label">Typical Ping:</span> <span id="hnw-typical-ping"></span>ms
-        <label>
-          <span class="netlogo-label">Max Typical Ping:</span>
-          <input id="hnw-max-typical-ping" type="number" min=0 max=20000 step=10 value=200 />
-        </label>
-      </div>
-
       <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
         <span class="netlogo-label">model speed</span>
         <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} />

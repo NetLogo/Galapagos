@@ -103,52 +103,27 @@ class window.SessionLite
     thunk()
 
   calcNumUpdates: ->
-
-    twoThirdsian = (xs) ->
-      sorted = xs.sort()
-      if sorted.length is 0
-        undefined
-      else if sorted.length is 1
-        sorted[0]
-      else if sorted.length is 2
-        (2 * (sorted[0] + sorted[1])) / 3
-      else if sorted.length is 3
-        (sorted[1] + sorted[2]) / 2
-      else
-        twoThirdsian(sorted.slice(2, sorted.length - 1))
-
-    standardCalc = =>
-      if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
-
-    if window.isHNWHost is true
-
-      pings              = Object.values(window.clients).map((c) -> c.ping).filter((p) -> p?)
-      representativePing = twoThirdsian(pings)
-
-      document.getElementById("hnw-typical-ping").innerText = Math.round(representativePing ? 0)
-      maxTypicalPing = document.getElementById("hnw-max-typical-ping").value
-
-      if representativePing > maxTypicalPing
-        0
-      else if @drawEveryFrame
-        1
-      else
-        (now() - @_lastUpdate) / (1000 / @_hnwTargetFPS)
+    if @drawEveryFrame
+      1
     else
-      standardCalc()
+      (now() - @_lastUpdate) / @updateDelay()
 
   updateDelay: ->
 
-    viewWidget = @widgetController.widgets().find((w) -> w.type is 'view' or w.type is 'hnwView')
-    speed      = @widgetController.speed()
-    delay      = 1000 / viewWidget.frameRate
-
-    if speed > 0
-      speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
-      delay * (1 - speedFactor)
+    if window.isHNWHost is true
+      (1000 / @_hnwTargetFPS)
     else
-      speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
-      MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
+
+      viewWidget = @widgetController.widgets().find((w) -> w.type is 'view' or w.type is 'hnwView')
+      speed      = @widgetController.speed()
+      delay      = 1000 / viewWidget.frameRate
+
+      if speed > 0
+        speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
+        delay * (1 - speedFactor)
+      else
+        speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
+        MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
 
   redrawDelay: ->
     speed = @widgetController.speed()
