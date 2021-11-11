@@ -135,7 +135,7 @@ setUpEventListeners = ->
         vc.view.visibleCanvas.addEventListener('mousemove', onMouseMove)
 
         if token isnt "invalid token"
-          sendHNWMessage("interface-loaded", null)
+          e.ports[0].postMessage(true)
 
       when "nlw-update-model-state"
         session.widgetController.setCode(e.data.codeTabContents)
@@ -150,7 +150,7 @@ setUpEventListeners = ->
         session.subscribe(e.source)
 
       when "hnw-are-you-ready-for-interface"
-        e.source.postMessage({ type: "yes-i-am-ready-for-interface" }, "*")
+        e.ports[0].postMessage(true)
 
       when "nlw-state-update", "nlw-apply-update"
 

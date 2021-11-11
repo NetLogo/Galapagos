@@ -446,7 +446,7 @@ setUpEventListeners = ->
           , role:  role
           , token: uuid
           , view:  baseView
-          }, "*")
+          }, "*", [(new MessageChannel).port2])
 
           modelState = session.getModelState("")
 
@@ -516,7 +516,7 @@ setUpEventListeners = ->
           , role:  role
           , token: uuid
           , view:  baseView
-          }, "*")
+          }, "*", [(new MessageChannel).port2])
 
           modelState = session.getModelState("")
 
