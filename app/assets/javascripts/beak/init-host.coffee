@@ -118,6 +118,13 @@ setUpEventListeners = ->
 
   roles = {}
 
+  handleJoinerMsg = (e) ->
+    switch e.data.type
+      when "relay"
+        window.postMessage(e.data.payload, "*")
+      when "hnw-fatal-error"
+        window.parent.postMessage(e.data, "*")
+
   window.addEventListener("message", (e) ->
 
     switch e.data.type
@@ -147,10 +154,12 @@ setUpEventListeners = ->
         setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
 
       when "nlw-subscribe-to-updates"
+
         if not window.clients[e.data.uuid]?
           window.clients[e.data.uuid] = {}
-        window.clients[e.data.uuid].window = e.source
-        session.subscribeWithID(e.source, e.data.uuid)
+
+        session.subscribeWithID(e.ports[0], e.data.uuid)
+
       when "nlw-state-update", "nlw-apply-update"
 
         { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = e.data.update
@@ -169,12 +178,6 @@ setUpEventListeners = ->
           vc = session.widgetController.viewController
           vc.applyUpdate(viewUpdate)
           vc.repaint()
-
-      when "relay"
-        window.postMessage(e.data.payload, "*")
-
-      when "hnw-fatal-error"
-        window.parent.postMessage(e.data, "*")
 
       when "hnw-latest-ping"
         window.clients[e.data.joinerID]?.ping = e.data.ping
@@ -208,11 +211,10 @@ setUpEventListeners = ->
             who = result
 
         window.clients[e.data.token] =
-          { roleName: role.name
-          , perspVar: role.perspectiveVar
+          { roleName:    role.name
+          , perspVar:    role.perspectiveVar
           , username
           , who
-          , window: null
           }
 
         session.updateWithoutRendering(e.data.token)
@@ -428,9 +430,8 @@ setUpEventListeners = ->
           wind = supervisorFrame.contentWindow
 
           window.clients[uuid] =
-            { roleName: role.name
-            , perspVar: role.perspectiveVar
-            , window:   wind
+            { roleName:    role.name
+            , perspVar:    role.perspectiveVar
             }
 
           # NOTE
@@ -441,22 +442,30 @@ setUpEventListeners = ->
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
+          channel               = new MessageChannel
+          babyMonitor           = channel.port1
+          babyMonitor.onmessage = handleJoinerMsg
+
           supervisorFrame.contentWindow.postMessage({
+            type: "hnw-set-up-baby-monitor"
+          }, "*", [channel.port2])
+
+          babyMonitor.postMessage({
             type:  "hnw-load-interface"
           , role:  role
           , token: uuid
           , view:  baseView
-          }, "*", [(new MessageChannel).port2])
+          }, [(new MessageChannel).port2])
 
           modelState = session.getModelState("")
 
-          supervisorFrame.contentWindow.postMessage({
+          babyMonitor.postMessage({
             type:        "nlw-state-update"
           , update:      Object.assign({}, modelState, { monitorUpdates })
           , sequenceNum: -1
-          }, "*")
+          })
 
-          session.subscribeWithID(wind, uuid)
+          session.subscribeWithID(babyMonitor, uuid)
 
         )
 
@@ -499,11 +508,10 @@ setUpEventListeners = ->
 
           # NOTE
           window.clients[uuid] =
-            { roleName: role.name
-            , perspVar: role.perspectiveVar
+            { roleName:    role.name
+            , perspVar:    role.perspectiveVar
             , username
             , who
-            , window:   wind
             }
 
           session.updateWithoutRendering(e.data.token)
@@ -511,23 +519,31 @@ setUpEventListeners = ->
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
+          channel               = new MessageChannel
+          babyMonitor           = channel.port1
+          babyMonitor.onmessage = handleJoinerMsg
+
           studentFrame.contentWindow.postMessage({
+            type: "hnw-set-up-baby-monitor"
+          }, "*", [channel.port2])
+
+          babyMonitor.postMessage({
             type:  "hnw-load-interface"
           , role:  role
           , token: uuid
           , view:  baseView
-          }, "*", [(new MessageChannel).port2])
+          }, [(new MessageChannel).port2])
 
           modelState = session.getModelState("")
 
-          studentFrame.contentWindow.postMessage({
+          babyMonitor.postMessage({
             type:        "nlw-state-update"
           , update:      Object.assign({}, modelState, { monitorUpdates })
           , sequenceNum: -1
-          }, "*")
+          })
 
           # NOTE TODO
-          session.subscribeWithID(wind, uuid)
+          session.subscribeWithID(babyMonitor, uuid)
 
         )
 

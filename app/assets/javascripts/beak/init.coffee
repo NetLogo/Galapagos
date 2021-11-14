@@ -97,7 +97,7 @@ setUpEventListeners = ->
         base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
         e.source.postMessage({ base64, type: "nlw-view" }, "*")
       when "nlw-subscribe-to-updates"
-        session.subscribe(e.source)
+        session.subscribe(e.ports[0])
       when "nlw-apply-update"
 
         { plotUpdates, viewUpdate } = e.data.update

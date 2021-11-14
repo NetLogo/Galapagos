@@ -52,8 +52,9 @@ loadHNWModel = (role, view) ->
 protocolObj = { protocolVersion: "0.0.1" }
 
 # (Sting, Object[Any]) => Unit
-sendHNWPayload = (type, payload) ->
-  parent.postMessage({ type: "relay", payload: Object.assign({}, payload, { token, type }, protocolObj) }, "*")
+sendHNWPayload = (type, pload) ->
+  payload = Object.assign({}, pload, { token, type }, protocolObj)
+  window.babyMonitor.postMessage({ type: "relay", payload })
   return
 
 # (String, Any) => Unit
@@ -78,8 +79,7 @@ setUpEventListeners = ->
   myUsername     = undefined
   cachedDrawings = {}
 
-  window.addEventListener("message", (e) ->
-
+  onBabyMonitorMessage = (e) ->
     switch e.data.type
       when "hnw-load-interface"
 
@@ -136,21 +136,6 @@ setUpEventListeners = ->
 
         if token isnt "invalid token"
           e.ports[0].postMessage(true)
-
-      when "nlw-update-model-state"
-        session.widgetController.setCode(e.data.codeTabContents)
-      when "nlw-request-model-state"
-        update = session.getModelState(myRole)
-        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
-      when "nlw-request-view"
-        base64 = session.widgetController.viewController.repaint()
-        base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
-        e.source.postMessage({ base64, type: "nlw-view" }, "*")
-      when "nlw-subscribe-to-updates"
-        session.subscribe(e.source)
-
-      when "hnw-are-you-ready-for-interface"
-        e.ports[0].postMessage(true)
 
       when "nlw-state-update", "nlw-apply-update"
 
@@ -241,12 +226,12 @@ setUpEventListeners = ->
                     baddie = ["patch", badPatch()]
 
               if baddie?
-                parent.postMessage({
+                window.babyMonitor.postMessage({
                   type:      "hnw-fatal-error"
                 , subtype:   "unknown-agent"
                 , agentType: baddie[0]
                 , agentID:   baddie[1][0]
-                }, "*")
+                })
               else
                 console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
 
@@ -255,6 +240,26 @@ setUpEventListeners = ->
           session.widgetController.ractive.set('ticksStarted', e.data.event.value)
         else
           console.warn("Unknown HNW widget update type")
+
+  window.addEventListener("message", (e) ->
+
+    switch e.data.type
+
+      when "nlw-update-model-state"
+        session.widgetController.setCode(e.data.codeTabContents)
+      when "nlw-request-model-state"
+        update = session.getModelState(myRole)
+        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
+      when "nlw-request-view"
+        base64 = session.widgetController.viewController.repaint()
+        base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
+        e.source.postMessage({ base64, type: "nlw-view" }, "*")
+      when "nlw-subscribe-to-updates"
+        session.subscribe(e.ports[0])
+      when "hnw-set-up-baby-monitor"
+        window.babyMonitor = e.ports[0]
+        window.babyMonitor.postMessage(true)
+        window.babyMonitor.onmessage = onBabyMonitorMessage
 
   )
 

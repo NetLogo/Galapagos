@@ -40,7 +40,7 @@ class window.SessionLite
 
   _metadata:             undefined # Object[Any]
   _monitorFuncs:         undefined # Object[((Number) => String, Object[String])]
-  _subscriberObj:        undefined # Object[Window]
+  _subscriberObj:        undefined # Object[MessagePort]
   _lastBCastTicks:       undefined # Number
 
   # (Element|String, Array[Widget], String, String, Boolean, String, String, Boolean, BrowserCompiler, (String) => Unit)
@@ -436,8 +436,8 @@ class window.SessionLite
     finally
       Tortoise.finishLoading()
 
-  # (Window) => Unit
-  subscribe: (wind) ->
+  # (MessagePort) => Unit
+  subscribe: (babyMonitor) ->
 
     genUUID = ->
 
@@ -449,13 +449,13 @@ class window.SessionLite
 
       'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
 
-    @_subscriberObj[genUUID()] = wind
+    @_subscriberObj[genUUID()] = babyMonitor
 
     return
 
-  # (Window, String) => Unit
-  subscribeWithID: (wind, id) ->
-    @_subscriberObj[id] = wind
+  # (MessagePort, String) => Unit
+  subscribeWithID: (babyMonitor, id) ->
+    @_subscriberObj[id] = babyMonitor
     return
 
   # (String) => Unit
@@ -671,11 +671,11 @@ class window.SessionLite
 
         broadUpdate = @_pruneUpdate({ plotUpdates, viewUpdate: joinerUpdate }, @_lastBCastTicks)
         if Object.keys(broadUpdate).length > 0
-          for uuid, wind of @_subscriberObj
-            if uuid isnt uuidToIgnore and wind isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
-              wind.postMessage({ update: broadUpdate, type: "nlw-state-update" }, "*")
+          for uuid, babyMonitor of @_subscriberObj
+            if uuid isnt uuidToIgnore and babyMonitor isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
+              babyMonitor.postMessage({ update: broadUpdate, type: "nlw-state-update" })
 
-        for uuid, wind of @_subscriberObj
+        for uuid, babyMonitor of @_subscriberObj
           if uuid isnt uuidToIgnore
 
             monitorUpdates = @monitorsFor(uuid)
@@ -687,8 +687,8 @@ class window.SessionLite
               update.viewUpdate.observer = perspUpdate
 
             if Object.keys(update).length > 0
-              if wind isnt null
-                wind.postMessage({ update, type: "nlw-state-update" }, "*")
+              if babyMonitor isnt null
+                babyMonitor.postMessage({ update, type: "nlw-state-update" })
               else
                 narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
@@ -779,10 +779,10 @@ class window.SessionLite
 
   # (String) => Unit
   narrowcast: (uuid, type, update) ->
-    wind = @_subscriberObj[uuid]
+    babyMonitor = @_subscriberObj[uuid]
     if Object.keys(update).length > 0
-      if wind isnt null
-        wind.postMessage({ update, type }, "*")
+      if babyMonitor isnt null
+        babyMonitor.postMessage({ update, type })
       else
         narrowcastHNWPayload(uuid, type, { update })
     return
