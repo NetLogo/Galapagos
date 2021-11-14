@@ -98,16 +98,19 @@ loadInitialModel = ->
 
 protocolObj = { protocolVersion: "0.0.1" }
 
+babyMonitor = null # MessagePort
+
 # (Sting, Object[Any]) => Unit
 broadcastHNWPayload = (type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  parent.postMessage({ type: "relay", payload: truePayload }, "*")
+  babyMonitor.postMessage({ type: "relay", payload: truePayload })
   return
 
 # (String, Sting, Object[Any]) => Unit
 window.narrowcastHNWPayload = (uuid, type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  parent.postMessage({ type: "relay", isNarrowcast: true, recipient: uuid, payload: truePayload }, "*")
+  babyMonitor.postMessage({ type: "relay", isNarrowcast: true
+                          , recipient: uuid, payload: truePayload })
   return
 
 # () -> Unit
@@ -121,9 +124,9 @@ setUpEventListeners = ->
   handleJoinerMsg = (e) ->
     switch e.data.type
       when "relay"
-        window.postMessage(e.data.payload, "*")
+        window.postMessage(e.data.payload)
       when "hnw-fatal-error"
-        window.parent.postMessage(e.data, "*")
+        babyMonitor.postMessage(e.data)
 
   window.addEventListener("message", (e) ->
 
@@ -146,19 +149,22 @@ setUpEventListeners = ->
         respondWithView =
           ->
             session.widgetController.viewController.view.visibleCanvas.toBlob(
-              (blob) ->
-                e.source.postMessage({ blob, type: "nlw-view" }, "*")
+              (blob) -> babyMonitor.postMessage({ blob, type: "nlw-view" })
             )
 
         session.widgetController.viewController.repaint()
         setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
+
+      when "hnw-set-up-baby-monitor"
+        window.babyMonitor           = e.ports[0]
+        window.babyMonitor.onmessage = onBabyMonitorMessage
 
       when "nlw-subscribe-to-updates"
 
         if not window.clients[e.data.uuid]?
           window.clients[e.data.uuid] = {}
 
-        session.subscribeWithID(e.ports[0], e.data.uuid)
+        session.subscribeWithID(babyMonitor, e.data.uuid)
 
       when "nlw-state-update", "nlw-apply-update"
 
@@ -223,7 +229,7 @@ setUpEventListeners = ->
         monitorUpdates = session.monitorsFor(e.data.token)
         state          = Object.assign({}, session.getModelState(""), { monitorUpdates })
 
-        e.source.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" }, "*")
+        babyMonitor.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" })
 
       when "hnw-resize"
 
@@ -320,6 +326,8 @@ setUpEventListeners = ->
 
       when "hnw-become-oracle"
 
+        babyMonitor = e.ports[0]
+
         loadModel(e.data.nlogo, "Jason's Experimental Funland")
 
         session.widgetController.ractive.set("isHNW"    , true)
@@ -339,7 +347,7 @@ setUpEventListeners = ->
         exiles.forEach((n) -> n.style.display = "none")
 
         wContainer = document.querySelector('.netlogo-widget-container')
-        parent     = wContainer.parentNode
+        parent     = wContainer.parentNode # TODO: Name shadowing?
 
         flexbox                     = document.createElement("div")
         flexbox.style.display       = "flex"
@@ -442,15 +450,15 @@ setUpEventListeners = ->
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
-          channel               = new MessageChannel
-          babyMonitor           = channel.port1
-          babyMonitor.onmessage = handleJoinerMsg
+          channel                    = new MessageChannel
+          innerBabyMonitor           = channel.port1
+          innerBabyMonitor.onmessage = handleJoinerMsg
 
           supervisorFrame.contentWindow.postMessage({
             type: "hnw-set-up-baby-monitor"
           }, "*", [channel.port2])
 
-          babyMonitor.postMessage({
+          innerBabyMonitor.postMessage({
             type:  "hnw-load-interface"
           , role:  role
           , token: uuid
@@ -459,13 +467,13 @@ setUpEventListeners = ->
 
           modelState = session.getModelState("")
 
-          babyMonitor.postMessage({
+          innerBabyMonitor.postMessage({
             type:        "nlw-state-update"
           , update:      Object.assign({}, modelState, { monitorUpdates })
           , sequenceNum: -1
           })
 
-          session.subscribeWithID(babyMonitor, uuid)
+          session.subscribeWithID(innerBabyMonitor, uuid)
 
         )
 
@@ -519,15 +527,15 @@ setUpEventListeners = ->
           # NOTE
           monitorUpdates = session.monitorsFor(uuid)
 
-          channel               = new MessageChannel
-          babyMonitor           = channel.port1
-          babyMonitor.onmessage = handleJoinerMsg
+          channel                    = new MessageChannel
+          innerBabyMonitor           = channel.port1
+          innerBabyMonitor.onmessage = handleJoinerMsg
 
           studentFrame.contentWindow.postMessage({
             type: "hnw-set-up-baby-monitor"
           }, "*", [channel.port2])
 
-          babyMonitor.postMessage({
+          innerBabyMonitor.postMessage({
             type:  "hnw-load-interface"
           , role:  role
           , token: uuid
@@ -536,14 +544,14 @@ setUpEventListeners = ->
 
           modelState = session.getModelState("")
 
-          babyMonitor.postMessage({
+          innerBabyMonitor.postMessage({
             type:        "nlw-state-update"
           , update:      Object.assign({}, modelState, { monitorUpdates })
           , sequenceNum: -1
           })
 
           # NOTE TODO
-          session.subscribeWithID(babyMonitor, uuid)
+          session.subscribeWithID(innerBabyMonitor, uuid)
 
         )
 
