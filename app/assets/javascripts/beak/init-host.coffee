@@ -103,14 +103,14 @@ babyMonitor = null # MessagePort
 # (Sting, Object[Any]) => Unit
 broadcastHNWPayload = (type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  babyMonitor.postMessage({ type: "relay", payload: truePayload })
+  babyMonitor?.postMessage({ type: "relay", payload: truePayload })
   return
 
 # (String, Sting, Object[Any]) => Unit
 window.narrowcastHNWPayload = (uuid, type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  babyMonitor.postMessage({ type: "relay", isNarrowcast: true
-                          , recipient: uuid, payload: truePayload })
+  babyMonitor?.postMessage({ type: "relay", isNarrowcast: true
+                           , recipient: uuid, payload: truePayload })
   return
 
 # () -> Unit
@@ -121,212 +121,80 @@ setUpEventListeners = ->
 
   roles = {}
 
-  handleJoinerMsg = (e) ->
-    switch e.data.type
-      when "relay"
-        window.postMessage(e.data.payload)
-      when "hnw-fatal-error"
-        babyMonitor.postMessage(e.data)
+  onWidgetMessage = (e) ->
 
-  window.addEventListener("message", (e) ->
+    token  = e.data.token
+    client = window.clients[token]
+    role   = roles[client.roleName]
+    who    = client.who
 
-    switch e.data.type
-      when "nlw-load-model"
-        loadModel(e.data.nlogo, e.data.path)
-      when "nlw-open-new"
-        loadModel(exports.newModel, "NewModel")
-      when "nlw-update-model-state"
-        session.widgetController.setCode(e.data.codeTabContents)
-      when "run-baby-behaviorspace"
-        parcel   = { type: "baby-behaviorspace-results", id: e.data.id, data: results }
-        reaction = (results) -> e.source.postMessage(parcel, "*")
-        session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
-      when "nlw-request-model-state"
-        update = session.getModelState("")
-        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
-      when "nlw-request-view"
+    switch e.data.data.type
+      when "button"
+        procedure = (-> runCommand(e.data.data.message))
+        if role.isSpectator
+          procedure()
+        else
+          world.turtleManager.getTurtle(who).ask(procedure, false)
+      when "slider", "switch", "chooser", "inputBox"
+        { varName, value } = e.data.data
+        if role.isSpectator
+          mangledName = "__hnw_#{role.name}_#{varName}"
+          world.observer.setGlobal(mangledName, value)
+        else
+          world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable(varName, value)), false)
+      when "view"
+        message = e.data.data.message
+        switch message.subtype
+          when "mouse-down"
+            if role.onCursorClick?
+              thunk = (-> runAmbiguous(role.onCursorClick, message.xcor, message.ycor))
+              if role.isSpectator
+                thunk()
+              else
+                world.turtleManager.getTurtle(who).ask(thunk, false)
+          when "mouse-up"
+            if role.onCursorRelease?
+              thunk = (-> runAmbiguous(role.onCursorRelease, message.xcor, message.ycor))
+              if role.isSpectator
+                thunk()
+              else
+                world.turtleManager.getTurtle(who).ask(thunk, false)
+          when "mouse-move"
+            if role.isSpectator
+              if role.cursorXVar?
+                mangledName = "__hnw_#{role.name}_#{role.cursorXVar}"
+                world.observer.setGlobal(mangledName, message.xcor)
+              if role.cursorYVar?
+                mangledName = "__hnw_#{role.name}_#{role.cursorYVar}"
+                world.observer.setGlobal(mangledName, message.ycor)
+            else
+              turtle = world.turtleManager.getTurtle(who)
+              if role.cursorXVar?
+                turtle.ask((-> SelfManager.self().setVariable(role.cursorXVar, message.xcor)), false)
+              if role.cursorYVar?
+                turtle.ask((-> SelfManager.self().setVariable(role.cursorYVar, message.ycor)), false)
+          else
+            console.warn("Unknown HNW View event subtype")
+      else
+        console.warn("Unknown HNW widget event type")
 
-        respondWithView =
-          ->
-            session.widgetController.viewController.view.visibleCanvas.toBlob(
-              (blob) -> babyMonitor.postMessage({ blob, type: "nlw-view" })
-            )
 
-        session.widgetController.viewController.repaint()
-        setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
+  onRaincheckMessage = (e) ->
+    imageBase64 = session.cashRainCheckFor(e.data.id)
+    imageUpdate = { type: "import-drawing", imageBase64, hash: e.data.id }
+    viewUpdate  = { drawingEvents: [imageUpdate] }
+    session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
 
-      when "hnw-set-up-baby-monitor"
-        window.babyMonitor           = e.ports[0]
-        window.babyMonitor.onmessage = onBabyMonitorMessage
-
-      when "nlw-subscribe-to-updates"
-
-        if not window.clients[e.data.uuid]?
-          window.clients[e.data.uuid] = {}
-
-        session.subscribeWithID(babyMonitor, e.data.uuid)
-
-      when "nlw-state-update", "nlw-apply-update"
-
-        { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = e.data.update
-
-        if viewUpdate?.world?[0]?.ticks?
-          world.ticker.reset()
-          world.ticker.importTicks(viewUpdate.world.ticks)
-
-        if widgetUpdates?
-          session.widgetController.applyWidgetUpdates(widgetUpdates)
-
-        if plotUpdates?
-          session.widgetController.applyPlotUpdates(plotUpdates)
-
-        if viewUpdate?
-          vc = session.widgetController.viewController
-          vc.applyUpdate(viewUpdate)
-          vc.repaint()
-
-      when "hnw-latest-ping"
-        window.clients[e.data.joinerID]?.ping = e.data.ping
-
-      when "hnw-cash-raincheck"
-        imageBase64 = session.cashRainCheckFor(e.data.id)
-        imageUpdate = { type: "import-drawing", imageBase64, hash: e.data.id }
-        viewUpdate  = { drawingEvents: [imageUpdate] }
-        session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
-
-      when "hnw-notify-congested"
-        session.enableCongestionControl()
-
-      when "hnw-notify-uncongested"
-        session.disableCongestionControl()
-
-      when "hnw-request-initial-state"
-
-        viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
-        role      = roles[e.data.roleName]
-
-        session.subscribeWithID(null, e.data.token)
-
-        username = e.data.username
-        who      = null
-
-        # NOTE
-        if role.onConnect?
-          result = runAmbiguous(role.onConnect, username)
-          if typeof result is 'number'
-            who = result
-
-        window.clients[e.data.token] =
-          { roleName:    role.name
-          , perspVar:    role.perspectiveVar
-          , username
-          , who
-          }
-
-        session.updateWithoutRendering(e.data.token)
-
-        # NOTE
-        monitorUpdates = session.monitorsFor(e.data.token)
-        state          = Object.assign({}, session.getModelState(""), { monitorUpdates })
-
-        babyMonitor.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" })
-
-      when "hnw-resize"
-
-        isValid = (x) -> x?
-
-        height = e.data.height
-        width  = e.data.width
-        title  = e.data.title
-
-        if [height, width, title].every(isValid)
-          elem           = document.getElementById("hnw-join-frame")
-          elem.width     = width
-          elem.height    = height
-          document.title = title
+  onBabyMonitorMessage = (e) ->
+    switch (e.data.type)
 
       when "hnw-widget-message"
+        onWidgetMessage(e)
 
-        token  = e.data.token
-        client = window.clients[token]
-        role   = roles[client.roleName]
-        who    = client.who
-
-        switch e.data.data.type
-          when "button"
-            procedure = (-> runCommand(e.data.data.message))
-            if role.isSpectator
-              procedure()
-            else
-              world.turtleManager.getTurtle(who).ask(procedure, false)
-          when "slider", "switch", "chooser", "inputBox"
-            { varName, value } = e.data.data
-            if role.isSpectator
-              mangledName = "__hnw_#{role.name}_#{varName}"
-              world.observer.setGlobal(mangledName, value)
-            else
-              world.turtleManager.getTurtle(who).ask((-> SelfManager.self().setVariable(varName, value)), false)
-          when "view"
-            message = e.data.data.message
-            switch message.subtype
-              when "mouse-down"
-                if role.onCursorClick?
-                  thunk = (-> runAmbiguous(role.onCursorClick, message.xcor, message.ycor))
-                  if role.isSpectator
-                    thunk()
-                  else
-                    world.turtleManager.getTurtle(who).ask(thunk, false)
-              when "mouse-up"
-                if role.onCursorRelease?
-                  thunk = (-> runAmbiguous(role.onCursorRelease, message.xcor, message.ycor))
-                  if role.isSpectator
-                    thunk()
-                  else
-                    world.turtleManager.getTurtle(who).ask(thunk, false)
-              when "mouse-move"
-                if role.isSpectator
-                  if role.cursorXVar?
-                    mangledName = "__hnw_#{role.name}_#{role.cursorXVar}"
-                    world.observer.setGlobal(mangledName, message.xcor)
-                  if role.cursorYVar?
-                    mangledName = "__hnw_#{role.name}_#{role.cursorYVar}"
-                    world.observer.setGlobal(mangledName, message.ycor)
-                else
-                  turtle = world.turtleManager.getTurtle(who)
-                  if role.cursorXVar?
-                    turtle.ask((-> SelfManager.self().setVariable(role.cursorXVar, message.xcor)), false)
-                  if role.cursorYVar?
-                    turtle.ask((-> SelfManager.self().setVariable(role.cursorYVar, message.ycor)), false)
-              else
-                console.warn("Unknown HNW View event subtype")
-          else
-            console.warn("Unknown HNW widget event type")
-
-      when "hnw-notify-disconnect"
-
-        id = e.data.joinerID
-
-        if window.clients[id]?
-
-          { roleName, who } = window.clients[id]
-          onDC              = roles[roleName].onDisconnect
-
-          delete window.clients[id]
-          session.unsubscribe(id)
-
-          turtle = world.turtleManager.getTurtle(who)
-
-          if onDC?
-            turtle.ask((-> runAmbiguous(onDC)), false)
-
-          if not turtle.isDead()
-            turtle.ask((-> SelfManager.self().die()), false)
-
-          session.updateWithoutRendering("")
+      when "hnw-cash-raincheck"
+        onRaincheckMessage(e)
 
       when "hnw-become-oracle"
-
-        babyMonitor = e.ports[0]
 
         loadModel(e.data.nlogo, "Jason's Experimental Funland")
 
@@ -554,6 +422,162 @@ setUpEventListeners = ->
           session.subscribeWithID(innerBabyMonitor, uuid)
 
         )
+
+      when "hnw-notify-congested"
+        session.enableCongestionControl()
+
+      when "hnw-notify-uncongested"
+        session.disableCongestionControl()
+
+      when "hnw-request-initial-state"
+
+        viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
+        role      = roles[e.data.roleName]
+
+        session.subscribeWithID(null, e.data.token)
+
+        username = e.data.username
+        who      = null
+
+        # NOTE
+        if role.onConnect?
+          result = runAmbiguous(role.onConnect, username)
+          if typeof result is 'number'
+            who = result
+
+        window.clients[e.data.token] =
+          { roleName:    role.name
+          , perspVar:    role.perspectiveVar
+          , username
+          , who
+          }
+
+        session.updateWithoutRendering(e.data.token)
+
+        # NOTE
+        monitorUpdates = session.monitorsFor(e.data.token)
+        state          = Object.assign({}, session.getModelState(""), { monitorUpdates })
+
+        babyMonitor.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" })
+
+      when "hnw-notify-disconnect"
+
+        id = e.data.joinerID
+
+        if window.clients[id]?
+
+          { roleName, who } = window.clients[id]
+          onDC              = roles[roleName].onDisconnect
+
+          delete window.clients[id]
+          session.unsubscribe(id)
+
+          turtle = world.turtleManager.getTurtle(who)
+
+          if onDC?
+            turtle.ask((-> runAmbiguous(onDC)), false)
+
+          if not turtle.isDead()
+            turtle.ask((-> SelfManager.self().die()), false)
+
+          session.updateWithoutRendering("")
+
+      when "nlw-request-view"
+
+        respondWithView =
+          ->
+            session.widgetController.viewController.view.visibleCanvas.toBlob(
+              (blob) -> babyMonitor.postMessage({ blob, type: "nlw-view" })
+            )
+
+        session.widgetController.viewController.repaint()
+        setTimeout(respondWithView, 0) # Relinquish control for a sec so `repaint` can go off --JAB (9/8/20)
+
+      when "nlw-subscribe-to-updates"
+
+        if not window.clients[e.data.uuid]?
+          window.clients[e.data.uuid] = {}
+
+        session.subscribeWithID(babyMonitor, e.data.uuid)
+
+      when "hnw-latest-ping"
+        window.clients[e.data.joinerID]?.ping = e.data.ping
+
+      when "nlw-state-update", "nlw-apply-update"
+
+        { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = e.data.update
+
+        if viewUpdate?.world?[0]?.ticks?
+          world.ticker.reset()
+          world.ticker.importTicks(viewUpdate.world.ticks)
+
+        if widgetUpdates?
+          session.widgetController.applyWidgetUpdates(widgetUpdates)
+
+        if plotUpdates?
+          session.widgetController.applyPlotUpdates(plotUpdates)
+
+        if viewUpdate?
+          vc = session.widgetController.viewController
+          vc.applyUpdate(viewUpdate)
+          vc.repaint()
+
+      else
+        console.warn("Unknown babyMon message type:", e.data)
+
+  handleJoinerMsg = (e) ->
+    if e.data isnt true
+      switch e.data.type
+        when "relay"
+          window.postMessage(e.data.payload)
+        when "hnw-fatal-error"
+          babyMonitor.postMessage(e.data)
+        else
+          console.warn("Unknown inner joiner message:", e.data)
+
+  window.addEventListener("message", (e) ->
+
+    switch e.data.type
+
+      when "hnw-widget-message"
+        onWidgetMessage(e)
+
+      when "hnw-cash-raincheck"
+        onRaincheckMessage(e)
+
+      when "nlw-load-model"
+        loadModel(e.data.nlogo, e.data.path)
+      when "nlw-open-new"
+        loadModel(exports.newModel, "NewModel")
+      when "nlw-update-model-state"
+        session.widgetController.setCode(e.data.codeTabContents)
+      when "run-baby-behaviorspace"
+        parcel   = { type: "baby-behaviorspace-results", id: e.data.id, data: results }
+        reaction = (results) -> e.source.postMessage(parcel, "*")
+        session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
+      when "nlw-request-model-state"
+        update = session.getModelState("")
+        e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
+      when "hnw-set-up-baby-monitor"
+        babyMonitor           = e.ports[0]
+        babyMonitor.onmessage = onBabyMonitorMessage
+
+      when "hnw-resize"
+
+        isValid = (x) -> x?
+
+        height = e.data.height
+        width  = e.data.width
+        title  = e.data.title
+
+        if [height, width, title].every(isValid)
+          elem           = document.getElementById("hnw-join-frame")
+          elem.width     = width
+          elem.height    = height
+          document.title = title
+
+      else
+        console.warn("Unknown init-host postMessage:", e.data)
 
     return
 
