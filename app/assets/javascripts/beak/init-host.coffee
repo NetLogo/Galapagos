@@ -458,7 +458,10 @@ setUpEventListeners = ->
         monitorUpdates = session.monitorsFor(e.data.token)
         state          = Object.assign({}, session.getModelState(""), { monitorUpdates })
 
-        babyMonitor.postMessage({ token: e.data.token, role, state, viewState, type: "hnw-initial-state" })
+        type       = "hnw-initial-state"
+        msg        = { token: e.data.token, role, state, viewState, type }
+        respondent = e.ports?[0] ? babyMonitor
+        respondent.postMessage(msg)
 
       when "hnw-notify-disconnect"
 
@@ -486,8 +489,9 @@ setUpEventListeners = ->
 
         respondWithView =
           ->
+            respondent = e.ports?[0] ? babyMonitor
             session.widgetController.viewController.view.visibleCanvas.toBlob(
-              (blob) -> babyMonitor.postMessage({ blob, type: "nlw-view" })
+              (blob) -> respondent.postMessage({ blob, type: "nlw-view" })
             )
 
         session.widgetController.viewController.repaint()
