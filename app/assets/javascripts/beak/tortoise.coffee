@@ -1,8 +1,8 @@
 import SessionLite from "./session-lite.js"
 import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], ModelResult, Boolean, String, Boolean) => SessionLite
-newSession = (container, compiler, rewriters, modelResult, readOnly, filename, lastCompileFailed) ->
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, String, Boolean) => SessionLite
+newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, filename, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
@@ -11,6 +11,7 @@ newSession = (container, compiler, rewriters, modelResult, readOnly, filename, l
   , container
   , compiler
   , rewriters
+  , listeners
   , widgets
   , code
   , info
@@ -20,10 +21,10 @@ newSession = (container, compiler, rewriters, modelResult, readOnly, filename, l
   , lastCompileFailed
   )
 
-# (Element, String, String, BrowserCompiler, Array[Rewriter], Model, Boolean) => SessionLite
-openSession = (container, modelPath, name, compiler, rewriters, model, lastCompileFailed) ->
+# (Element, String, String, BrowserCompiler, Array[Rewriter], Array[Listener], Model, Boolean) => SessionLite
+openSession = (container, modelPath, name, compiler, rewriters, listeners, model, lastCompileFailed) ->
   name    = name ? normalizedFileName(modelPath)
-  session = newSession(container, compiler, rewriters, model, false, name, lastCompileFailed)
+  session = newSession(container, compiler, rewriters, listeners, model, false, name, lastCompileFailed)
   session
 
 # (() => Unit) => Unit
@@ -39,23 +40,23 @@ finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
   return
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromNlogoSync = (nlogo, container, path, callback, rewriters = []) ->
+# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
   segments = path.split(/\/|\\/)
   name     = segments[segments.length - 1]
-  compile(container, path, name, nlogo, callback, rewriters)
+  compile(container, path, name, nlogo, callback, rewriters, listeners)
   return
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromNlogo = (nlogo, container, path, callback, rewriters = []) ->
+# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogo, container, path, callback, rewriters)
+    fromNlogoSync(nlogo, container, path, callback, rewriters, listeners)
     finishLoading()
   )
   return
 
-# (String, String, Element, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromURL = (url, modelName, container, callback, rewriters = []) ->
+# (String, String, Element, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)
@@ -65,7 +66,7 @@ fromURL = (url, modelName, container, callback, rewriters = []) ->
           callback({ type: 'failure', source: 'load-from-url', errors: [url] })
         else
           nlogo = req.responseText
-          compile(container, url, modelName, nlogo, callback, rewriters)
+          compile(container, url, modelName, nlogo, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -74,7 +75,7 @@ fromURL = (url, modelName, container, callback, rewriters = []) ->
   )
   return
 
-compile = (container, modelPath, name, nlogo, callback, rewriters) ->
+compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   compiler = new BrowserCompiler()
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
@@ -87,10 +88,11 @@ compile = (container, modelPath, name, nlogo, callback, rewriters) ->
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
     callback({
       type:    'success'
-    , session: openSession(container, modelPath, name, compiler, rewriters, result, false)
+    , session: openSession(container, modelPath, name, compiler, rewriters, listeners, result, false)
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
+    listeners.forEach( (l) -> l.compile?(rewrittenNlogo, nlogo) )
 
   else
     secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
@@ -98,11 +100,12 @@ compile = (container, modelPath, name, nlogo, callback, rewriters) ->
       callback({
         type:        'failure'
       , source:      'compile-recoverable'
-      , session:     openSession(container, modelPath, name, compiler, rewriters, secondChanceResult, true)
+      , session:     openSession(container, modelPath, name, compiler, rewriters, listeners, secondChanceResult, true)
       , errors:      result.model.result
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
+      listeners.forEach( (l) -> l.compile?(rewrittenNlogo, nlogo) )
 
     else
       callback({

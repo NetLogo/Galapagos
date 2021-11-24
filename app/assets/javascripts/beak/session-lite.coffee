@@ -46,13 +46,21 @@ globalEval = eval
 #   compileComplete?: () => Unit
 # }
 
+# type Listener = {
+#   // called on initial model compile with the rewritten nlogo contents as compiled and original nlogo contents
+#   compile?: (String, String) => Unit
+
+#   // called on model recompile with the rewritten code tab contents as compiled and original code tab contents
+#   recompile?: (String, String) => Unit
+# }
+
 class SessionLite
 
   widgetController: undefined # WidgetController
 
-  # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
+  # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
   #   String, String, Boolean, String, String, Boolean)
-  constructor: (@tortoise, container, @compiler, @rewriters, widgets,
+  constructor: (@tortoise, container, @compiler, @rewriters, @listeners, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
@@ -240,6 +248,7 @@ class SessionLite
           successCallback()
           res.commands.forEach((c) -> if c.success then (new Function(c.result))())
           @rewriters.forEach((rw) -> rw.compileComplete?())
+          @listeners.forEach((l) -> l.recompile?(rewritten, code))
 
         else
           @widgetController.ractive.set('lastCompileFailed', true)
