@@ -105,11 +105,14 @@ RactiveButton = RactiveWidget.extend({
   computed: {
     isEnabled: {
       get: ->
-        widget            = @get('widget')
-        ticksAreStarted   = @get('ticksStarted')
-        isAlwaysEnabled   = not widget.disableUntilTicksStart
-        lastCompileFailed = not widget.compilation.success
-        (ticksAreStarted or isAlwaysEnabled or lastCompileFailed) and (not @get('isEditing'))
+        if @get('isEditing')
+          false
+        else
+          widget            = @get('widget')
+          ticksAreStarted   = @get('ticksStarted')
+          isAlwaysEnabled   = not widget.disableUntilTicksStart
+          lastCompileFailed = not widget.compilation.success
+          (ticksAreStarted or isAlwaysEnabled or lastCompileFailed)
     }
   }
 
