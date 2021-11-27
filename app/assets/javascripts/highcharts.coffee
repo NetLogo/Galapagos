@@ -21,6 +21,7 @@ class window.HighchartsOps extends PlotOps
     resize = (xMin, xMax, yMin, yMax) ->
       @_chart.xAxis[0].setExtremes(xMin, xMax)
       @_chart.yAxis[0].setExtremes(yMin, yMax)
+      recorder.recordResize(xMin, xMax, yMin, yMax)
       return
 
     reset = (plot) ->

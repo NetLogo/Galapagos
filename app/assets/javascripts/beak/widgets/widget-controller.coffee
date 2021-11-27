@@ -190,6 +190,8 @@ class window.WidgetController
             switch update.type
               when "reset"
                 ops.reset(update.plot)
+              when "resize"
+                ops.resize(update.xMin, update.xMax, update.yMin, update.yMax)
               when "register-pen"
                 pen = { name:           update.pen.name
                       , getColor:       (-> update.pen.color)

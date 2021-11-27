@@ -36,6 +36,11 @@ class window.PlotRecorder
     @_events.push({ type: "add-point", penName: pen.name, x, y })
     return
 
+  # (Number, Number, Number, Number) => Unit
+  recordResize: (xMin, xMax, yMin, yMax) ->
+    @_events.push({ type: "resize", xMin, xMax, yMin, yMax })
+    return
+
   # (Pen, String) => Unit
   recordUpdatePenMode: (pen, modeString) ->
     @_events.push({ type: "update-pen-mode", penName: pen.name, mode: modeString })
