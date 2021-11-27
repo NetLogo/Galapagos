@@ -184,6 +184,10 @@ window.setUpHNWMonitor = (source, destination) ->
     destination.currentValue = "N/A"
   return
 
+# (HNWPlot, HNWPlot) => Unit
+window.setUpHNWPlot = (source, destination) ->
+  return
+
 # (HNWSlider, HNWSlider) => Unit
 window.setUpHNWSlider = (source, destination) ->
 
