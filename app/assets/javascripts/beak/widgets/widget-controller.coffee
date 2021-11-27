@@ -191,7 +191,11 @@ class window.WidgetController
               when "reset"
                 ops.reset(update.plot)
               when "register-pen"
-                ops.registerPen(update.pen)
+                pen = { name:           update.pen.name
+                      , getColor:       (-> update.pen.color)
+                      , getDisplayMode: (-> "line") # update.pen.type) TODO
+                      }
+                ops.registerPen(pen)
               when "reset-pen"
                 ops.resetPen(update.penName)
               when "add-point"
