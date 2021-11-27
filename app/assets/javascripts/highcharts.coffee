@@ -1,3 +1,4 @@
+ColorModel = tortoise_require('engine/core/colormodel')
 PenBundle  = tortoise_require('engine/plot/pen')
 PlotOps    = tortoise_require('engine/plot/plotops')
 
@@ -206,6 +207,56 @@ class window.HighchartsOps extends PlotOps
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.popped = true
+
+  # () => Array[PlotEvent]
+  cloneInitializer: ->
+
+    recorder = new window.PlotRecorder
+
+    plot = { isLegendEnabled: @_chart.legend.options.enabled
+           , name:            @_chart.title.textStr
+           , xLabel:          @_chart.xAxis[0].axisTitle.textStr
+           , yLabel:          @_chart.yAxis[0].axisTitle.textStr
+           }
+
+    recorder.recordReset(plot)
+
+    xExtremes = @_chart.xAxis[0].getExtremes()
+    xMin      = xExtremes.userMin
+    xMax      = xExtremes.userMax
+
+    yExtremes = @_chart.yAxis[0].getExtremes()
+    yMin      = yExtremes.userMin
+    yMax      = yExtremes.userMax
+
+    recorder.recordResize(xMin, xMax, yMin, yMax)
+
+    Object.keys(@_penNameToSeriesNum).map((n) => @penNameToSeries(n)).forEach(
+      (series) ->
+
+        { Bar, Line, Point } = PenBundle.DisplayMode
+
+        displayMode =
+          switch series.oldType # TODO: Seems like `type` should work, but it's wrong
+            when 'column'  then Bar
+            when 'line'    then Line
+            when 'scatter' then Point
+
+        [, r, g, b] = series.color.match(/rgb\((\d+), (\d+), (\d+)\)/)
+        color       = ColorModel.nearestColorNumberOfRGB(r, g, b)
+
+        pen = { name:           series.name
+              , getColor:       (-> color)
+              , getDisplayMode: (-> displayMode)
+              }
+
+        recorder.recordRegisterPen(pen)
+
+        return
+
+    )
+
+    recorder.pullRecordedEvents()
 
   # () => Unit
   dispose: ->

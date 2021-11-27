@@ -469,7 +469,7 @@ class window.SessionLite
     devs          = @_handleImageCache(drawingEvents)
     viewUpdate    = { drawingEvents: devs, links, observer: { 0: observer }, patches, turtles, world: { 0: w } }
     widgetUpdates = if myRole is "" then @_genWidgetUpdates() else { [myRole]: @_getWidgetUpdates(@widgetController.widgets()) }
-    plotUpdates   = @widgetController.getPlotUpdates()
+    plotUpdates   = @widgetController.getPlotInits()
     { widgetUpdates, plotUpdates, viewUpdate }
 
   # () => Array[Object[WidgetUpdate]]

@@ -161,6 +161,13 @@ class window.WidgetController
     @ractive.get('code')
 
   # () => Object[Array[PlotEvent]]
+  getPlotInits: ->
+    out = {}
+    for display, chartOps of @configs.plotOps
+      out[display] = chartOps.cloneInitializer()
+    out
+
+  # () => Object[Array[PlotEvent]]
   getPlotUpdates: ->
     out = {}
     for display, chartOps of @configs.plotOps
