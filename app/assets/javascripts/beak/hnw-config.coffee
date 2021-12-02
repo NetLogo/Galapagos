@@ -1,6 +1,8 @@
 lastNlogoSections = null # Array[String]
 promiseID         = 0    # Number
 
+sep = '\n@#$#@#$#@'
+
 # (File) => Promse[String]
 readFile = (file) ->
   reader = new FileReader()
@@ -94,7 +96,7 @@ initializeRole = (roleName) ->
 # (String, String) => Unit
 initialize = (nlogo, config) ->
 
-  modelSections = nlogo.split('@#$#@#$#@')
+  modelSections = nlogo.split(sep)
 
   if modelSections.length is 12
 
@@ -130,7 +132,7 @@ reinitialize = (nlogo, config) ->
 
   document.getElementById("download-button").disabled = false
 
-  modelSections = nlogo.split('@#$#@#$#@')
+  modelSections = nlogo.split(sep)
 
   if modelSections.length is 12
 
@@ -333,7 +335,7 @@ requestNlogoAndJSON = ->
       ({ code }) ->
         nlogoSections    = lastNlogoSections.slice(0)
         nlogoSections[0] = code
-        nlogoSections.join('@#$#@#$#@')
+        nlogoSections.join(sep)
     )
 
   configPromise = genConfigP().then((outConfig) -> JSON.stringify(outConfig))
@@ -416,7 +418,7 @@ addNewBreedVar = (breedName, varName) ->
   return
 
 recompile = ->
-  genConfigP().then((config) -> reinitialize(lastNlogoSections.join('@#$#@#$#@'), config))
+  genConfigP().then((config) -> reinitialize(lastNlogoSections.join(sep), config))
   return
 
 window.addEventListener('message', (e) ->
@@ -434,7 +436,7 @@ window.addEventListener('message', (e) ->
       button.remove()
       recompile()
     when "compile-with"
-      nlogo = [e.data.code].concat(lastNlogoSections.slice(1)).join('@#$#@#$#@')
+      nlogo = [e.data.code].concat(lastNlogoSections.slice(1)).join(sep)
       genConfigP().then((config) -> reinitialize(nlogo, config))
     when "recompile"
       recompile()
