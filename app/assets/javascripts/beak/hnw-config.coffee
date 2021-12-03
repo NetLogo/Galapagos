@@ -383,8 +383,8 @@ window.testModel = ->
 
       parcel                = { type: "galapagos-direct-launch", nlogo, config, sessionName, password }
       innerTestFrame        = document.getElementById("inner-test-frame")
-      innerTestFrame.onload = -> innerTestFrame.contentWindow.postMessage(parcel, "*")
-      innerTestFrame.src    = "//#{window.location.hostname}:8080/host"
+      innerTestFrame.onload = -> innerTestFrame.contentWindow.postMessage(parcel, "*") # TODO: Specify domain; not '*'
+      innerTestFrame.src    = "//#{window.location.hostname}:8080/host" # TODO: Proper/dynamic port
 
       configFrame    = document.getElementById("config-content-frame")
       outerTestFrame = document.getElementById("outer-test-frame")
