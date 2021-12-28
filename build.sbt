@@ -1,5 +1,3 @@
-import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
-
 name := "Galapagos"
 
 version := "1.0-SNAPSHOT"
@@ -20,7 +18,7 @@ scalacOptions ++= Seq(
   "-Xfatal-warnings"
 )
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 val tortoiseVersion = "1.0-dafaeda"
 
@@ -65,30 +63,6 @@ fork in Test := false
 
 routesGenerator := InjectedRoutesGenerator
 
-scrapeRoutes ++= Seq(
-  "/humans.txt",
-  "/docs/authoring",
-  "/docs/differences",
-  "/docs/faq",
-  "/whats-new",
-  "/model/list.json",
-  "/model/statuses.json",
-  "/netlogo-engine.js",
-  "/netlogo-agentmodel.js",
-  "/tortoise-compiler.js",
-  "/tortoise-compiler.js.map",
-  "/server-error",
-  "/not-found",
-  "/robots.txt",
-  "/standalone",
-  "/launch",
-  "/ntango-build",
-  "/ntango-play",
-  "/web"
-  )
-
-scrapeDelay := 120
-
 def isJenkins: Boolean = Option(System.getenv("JENKINS_HOME")).nonEmpty
 
 def jenkinsBranch: String =
@@ -96,42 +70,3 @@ def jenkinsBranch: String =
     System.getenv("BRANCH_NAME")
   else
     "PR-" + System.getenv("CHANGE_ID") + "-" + System.getenv("CHANGE_TARGET")
-
-scrapePublishCredential := (Def.settingDyn {
-  if (isJenkins)
-    Def.setting { fromEnvironmentVariables }
-  else
-    // Requires setting up a credentials profile, ask Robert for more details
-    Def.setting { fromCredentialsProfile("nlw-admin") }
-}).value
-
-scrapePublishBucketID := (Def.settingDyn {
-  val branchDeploy = Map(
-    "production" -> "netlogo-web-prod-content",
-    "master"     -> "netlogo-web-staging-content"
-  )
-
-  if (isJenkins)
-    Def.setting { branchDeploy.get(jenkinsBranch) }
-  else
-    Def.setting { branchDeploy.get("production") }
-}).value
-
-scrapePublishDistributionID := (Def.settingDyn {
-  val branchPublish = Map(
-    "production" -> "E3AIHWIXSMPCAI",
-    "master"     -> "E360I3EFLPUZR0"
-  )
-
-  if (isJenkins)
-    Def.setting { branchPublish.get(jenkinsBranch) }
-  else
-    Def.setting { branchPublish.get("production") }
-}).value
-
-scrapeAbsoluteURL := (Def.settingDyn {
-  if (isJenkins && jenkinsBranch == "master")
-    Def.setting { Some("staging.netlogoweb.org") }
-  else
-    Def.setting { Some("netlogoweb.org") }
-}).value
