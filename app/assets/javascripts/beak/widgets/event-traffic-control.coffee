@@ -46,7 +46,9 @@ controlEventTraffic = (controller) ->
     openDialogs.delete(dialog)
     ractive.set('someDialogIsOpen', openDialogs.size > 0)
     temp = document.scrollTop
-    document.querySelector('.netlogo-model').focus()
+    document.querySelector('.netlogo-model').focus({
+      preventScroll: true
+    })
     document.scrollTop = temp
     return
 

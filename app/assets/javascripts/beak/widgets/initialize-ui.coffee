@@ -39,7 +39,9 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compile
     , (code) -> compiler.isReporter(code)
   )
 
-  container.querySelector('.netlogo-model').focus()
+  container.querySelector('.netlogo-model').focus({
+    preventScroll: true
+  })
 
   viewModel = widgets.find(({ type }) -> type is 'view')
 
