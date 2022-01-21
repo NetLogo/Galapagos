@@ -72,27 +72,125 @@ window.sendHNWWidgetMessage = (type, message) ->
   sendHNWPayload("hnw-widget-message", { data: { type, message } })
   return
 
-# () -> Unit
+# () => Unit
 setUpEventListeners = ->
 
   myRole         = undefined
   myUsername     = undefined
   cachedDrawings = {}
 
-  onBabyMonitorMessage = (e) ->
-    switch e.data.type
+  applyUpdate = (update) ->
+
+    if session?
+
+      { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = update
+
+      if viewUpdate?.world?[0]?.ticks?
+        world.ticker.reset()
+        world.ticker.importTicks(viewUpdate.world.ticks)
+
+      if widgetUpdates?
+        session.widgetController.applyWidgetUpdates(widgetUpdates)
+
+      if plotUpdates?
+        session.widgetController.applyPlotUpdates(plotUpdates)
+
+      if monitorUpdates?
+        session.widgetController.applyMonitorUpdates(monitorUpdates)
+
+      if viewUpdate?
+
+        vc = session.widgetController.viewController
+
+        { turtles = {}, patches = {}, links = {}, drawingEvents = [] } = viewUpdate
+        goodTurtles = -> Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?)
+        goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.  links[key]?)
+        goodPatches = -> Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
+
+        allAgentsAreKnown =
+          ((not turtles?) or goodTurtles()) and
+          ((not   links?) or goodLinks()  ) and
+          ((not patches?) or goodPatches())
+
+        if allAgentsAreKnown
+
+          checkIsMajorDrawingEvent =
+            (x) ->
+              x.type in ["import-drawing-raincheck", "import-drawing", "clear-drawing"]
+
+          desWithIndices = drawingEvents.map((de, i) -> [de, i])
+
+          lastDrawingIndex =
+            desWithIndices.reduce(((acc, [de, i]) -> if checkIsMajorDrawingEvent(de) then i else acc), -1)
+
+          realDrawings =
+            drawingEvents.filter(
+              (de) ->
+                (not checkIsMajorDrawingEvent(de)) or (de is drawingEvents[lastDrawingIndex])
+            )
+
+          # Side-effectful munging to avoid blasting the host with 10 image requests on startup --JAB (11/19/20)
+          trueDrawings =
+            realDrawings.reduce(
+              (acc, x) ->
+                switch x.type
+                  when "import-drawing"
+                    cachedDrawings[x.hash] = x.imageBase64
+                    acc.concat([x])
+                  when "import-drawing-raincheck"
+                    if cachedDrawings[x.hash]?
+                      acc.concat({ type: "import-drawing", imageBase64: cachedDrawings[x.hash] })
+                    else
+                      sendHNWPayload("hnw-cash-raincheck", { id: x.hash })
+                      acc
+                  else
+                    acc.concat([x])
+            , [])
+
+          trueUpdate = Object.assign(viewUpdate, { drawingEvents: trueDrawings })
+          vc.applyUpdate(trueUpdate)
+          vc.repaint()
+
+        else
+
+          baddie = undefined
+
+          badTurtle    = -> Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
+          if turtles? and badTurtle()?
+            baddie = ["turtle", badTurtle()]
+          else
+            badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links[key]?))
+            if links? and badLink()?
+              baddie = ["link", badLink()]
+            else
+              badPatch = -> Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
+              if patches? and badPatch()?
+                baddie = ["patch", badPatch()]
+
+          if baddie?
+            window.babyMonitor.postMessage({
+              type:      "hnw-fatal-error"
+            , subtype:   "unknown-agent"
+            , agentType: baddie[0]
+            , agentID:   baddie[1][0]
+            })
+          else
+            console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
+
+  onBabyMonitorMessage = (data) ->
+    switch data.type
       when "hnw-load-interface"
 
-        token = e.data.token
+        token = data.token
 
-        myRole     = e.data.role.name
-        myUsername = e.data.username
+        myRole     = data.role.name
+        myUsername = data.username
 
-        loadHNWModel(e.data.role, e.data.view)
+        loadHNWModel(data.role, data.view)
 
         session.widgetController.ractive.set("isHNW", true)
 
-        for widget in e.data.role.widgets
+        for widget in data.role.widgets
           switch widget.type
             when "hnwInputBox"
               world.observer.setGlobal(widget.variable, widget.boxedValue.value)
@@ -126,7 +224,7 @@ setUpEventListeners = ->
 
         onMouseMove =
           ->
-            if e.data.role.cursorXVar? or e.data.role.cursorYVar?
+            if data.role.cursorXVar? or data.role.cursorYVar?
               obj = { subtype: "mouse-move", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
               sendHNWWidgetMessage('view', obj)
 
@@ -135,109 +233,14 @@ setUpEventListeners = ->
         vc.view.visibleCanvas.addEventListener('mousemove', onMouseMove)
 
         if token isnt "invalid token"
-          e.ports[0].postMessage(true)
+          data.port.postMessage(true)
 
       when "nlw-state-update", "nlw-apply-update"
-
-        if session?
-
-          { widgetUpdates, monitorUpdates, plotUpdates, viewUpdate } = e.data.update
-
-          if viewUpdate?.world?[0]?.ticks?
-            world.ticker.reset()
-            world.ticker.importTicks(viewUpdate.world.ticks)
-
-          if widgetUpdates?
-            session.widgetController.applyWidgetUpdates(widgetUpdates)
-
-          if plotUpdates?
-            session.widgetController.applyPlotUpdates(plotUpdates)
-
-          if monitorUpdates?
-            session.widgetController.applyMonitorUpdates(monitorUpdates)
-
-          if viewUpdate?
-
-            vc = session.widgetController.viewController
-
-            { turtles = {}, patches = {}, links = {}, drawingEvents = [] } = viewUpdate
-            goodTurtles = -> Object.entries(turtles).every(([key, t]) -> t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?)
-            goodLinks   = -> Object.entries(links  ).every(([key, l]) -> l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.  links[key]?)
-            goodPatches = -> Object.entries(patches).every(([key, p]) -> (p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?)
-
-            allAgentsAreKnown =
-              ((not turtles?) or goodTurtles()) and
-              ((not   links?) or goodLinks()  ) and
-              ((not patches?) or goodPatches())
-
-            if allAgentsAreKnown
-
-              checkIsMajorDrawingEvent =
-                (x) ->
-                  x.type in ["import-drawing-raincheck", "import-drawing", "clear-drawing"]
-
-              desWithIndices = drawingEvents.map((de, i) -> [de, i])
-
-              lastDrawingIndex =
-                desWithIndices.reduce(((acc, [de, i]) -> if checkIsMajorDrawingEvent(de) then i else acc), -1)
-
-              realDrawings =
-                drawingEvents.filter(
-                  (de) ->
-                    (not checkIsMajorDrawingEvent(de)) or (de is drawingEvents[lastDrawingIndex])
-                )
-
-              # Side-effectful munging to avoid blasting the host with 10 image requests on startup --JAB (11/19/20)
-              trueDrawings =
-                realDrawings.reduce(
-                  (acc, x) ->
-                    switch x.type
-                      when "import-drawing"
-                        cachedDrawings[x.hash] = x.imageBase64
-                        acc.concat([x])
-                      when "import-drawing-raincheck"
-                        if cachedDrawings[x.hash]?
-                          acc.concat({ type: "import-drawing", imageBase64: cachedDrawings[x.hash] })
-                        else
-                          sendHNWPayload("hnw-cash-raincheck", { id: x.hash })
-                          acc
-                      else
-                        acc.concat([x])
-                , [])
-
-              trueUpdate = Object.assign(viewUpdate, { drawingEvents: trueDrawings })
-              vc.applyUpdate(trueUpdate)
-              vc.repaint()
-
-            else
-
-              baddie = undefined
-
-              badTurtle    = -> Object.entries(turtles).find(([key, t]) -> not (t.id? or t.WHO? or t.who?                               or vc.model.turtles[key]?))
-              if turtles? and badTurtle()?
-                baddie = ["turtle", badTurtle()]
-              else
-                badLink    = -> Object.entries(links  ).find(([key, l]) -> not (l.id? or (l.END1? and l.END2?) or (l.end1? and l.end2?) or vc.model.links[key]?))
-                if links? and badLink()?
-                  baddie = ["link", badLink()]
-                else
-                  badPatch = -> Object.entries(patches).find(([key, p]) -> not ((p.pxcor? and p.pycor?)                                 or vc.model.patches[key]?))
-                  if patches? and badPatch()?
-                    baddie = ["patch", badPatch()]
-
-              if baddie?
-                window.babyMonitor.postMessage({
-                  type:      "hnw-fatal-error"
-                , subtype:   "unknown-agent"
-                , agentType: baddie[0]
-                , agentID:   baddie[1][0]
-                })
-              else
-                console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
+        applyUpdate(data.update)
 
       when "hnw-widget-update"
-        if (e.data.type is "ticks-started")
-          session.widgetController.ractive.set('ticksStarted', e.data.event.value)
+        if data.type is "ticks-started"
+          session.widgetController.ractive.set('ticksStarted', data.event.value)
         else
           console.warn("Unknown HNW widget update type")
 
@@ -257,9 +260,16 @@ setUpEventListeners = ->
       when "nlw-subscribe-to-updates"
         session.subscribe(e.ports[0])
       when "hnw-set-up-baby-monitor"
+
         window.babyMonitor = e.ports[0]
         window.babyMonitor.postMessage(true)
-        window.babyMonitor.onmessage = onBabyMonitorMessage
+
+        window.babyMonitor.onmessage =
+          ({ data, ports: [port] }) ->
+            portObj = if port? then { port } else {}
+            msg     = Object.assign({}, data, portObj)
+            onBabyMonitorMessage(msg)
+            return
 
   )
 
