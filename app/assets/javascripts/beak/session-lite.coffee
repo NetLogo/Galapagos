@@ -787,6 +787,42 @@ class window.SessionLite
         narrowcastHNWPayload(uuid, type, { update })
     return
 
+  # (UUID, UUID, (Object[Any]) => Unit, Window, Object[Any], Object[Any]) => Unit
+  initSamePageClient: (token, uuid, onMsg, cWindow, role, baseView) ->
+
+    @updateWithoutRendering(token)
+
+    # TODO
+    monitorUpdates = @monitorsFor(uuid)
+
+    channel                    = new MessageChannel
+    innerBabyMonitor           = channel.port1
+    innerBabyMonitor.onmessage = onMsg
+
+    cWindow.postMessage({
+      type: "hnw-set-up-baby-monitor"
+    }, "*", [channel.port2])
+
+    innerBabyMonitor.postMessage({
+      type:  "hnw-load-interface"
+    , role:  role
+    , token: uuid
+    , view:  baseView
+    }, [(new MessageChannel).port2])
+
+    modelState = @getModelState("")
+
+    innerBabyMonitor.postMessage({
+      type:        "nlw-state-update"
+    , update:      Object.assign({}, modelState, { monitorUpdates })
+    , sequenceNum: -1
+    })
+
+    # NOTE TODO
+    @subscribeWithID(innerBabyMonitor, uuid)
+
+    return
+
   # (String, Array[Widget]) => Unit
   _updateMetadata: (code, widgets) ->
 

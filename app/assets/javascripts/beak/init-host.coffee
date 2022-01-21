@@ -313,35 +313,9 @@ setUpEventListeners = ->
           # NOTE
           if role.onConnect?
             runAmbiguous(role.onConnect, "the supervisor")
-            session.updateWithoutRendering(uuid)
 
-          # NOTE
-          monitorUpdates = session.monitorsFor(uuid)
-
-          channel                    = new MessageChannel
-          innerBabyMonitor           = channel.port1
-          innerBabyMonitor.onmessage = handleJoinerMsg
-
-          supervisorFrame.contentWindow.postMessage({
-            type: "hnw-set-up-baby-monitor"
-          }, "*", [channel.port2])
-
-          innerBabyMonitor.postMessage({
-            type:  "hnw-load-interface"
-          , role:  role
-          , token: uuid
-          , view:  baseView
-          }, [(new MessageChannel).port2])
-
-          modelState = session.getModelState("")
-
-          innerBabyMonitor.postMessage({
-            type:        "nlw-state-update"
-          , update:      Object.assign({}, modelState, { monitorUpdates })
-          , sequenceNum: -1
-          })
-
-          session.subscribeWithID(innerBabyMonitor, uuid)
+          session.initSamePageClient( uuid, uuid, handleJoinerMsg, wind
+                                    , role, baseView)
 
         )
 
@@ -390,36 +364,8 @@ setUpEventListeners = ->
             , who
             }
 
-          session.updateWithoutRendering(e.data.token)
-
-          # NOTE
-          monitorUpdates = session.monitorsFor(uuid)
-
-          channel                    = new MessageChannel
-          innerBabyMonitor           = channel.port1
-          innerBabyMonitor.onmessage = handleJoinerMsg
-
-          studentFrame.contentWindow.postMessage({
-            type: "hnw-set-up-baby-monitor"
-          }, "*", [channel.port2])
-
-          innerBabyMonitor.postMessage({
-            type:  "hnw-load-interface"
-          , role:  role
-          , token: uuid
-          , view:  baseView
-          }, [(new MessageChannel).port2])
-
-          modelState = session.getModelState("")
-
-          innerBabyMonitor.postMessage({
-            type:        "nlw-state-update"
-          , update:      Object.assign({}, modelState, { monitorUpdates })
-          , sequenceNum: -1
-          })
-
-          # NOTE TODO
-          session.subscribeWithID(innerBabyMonitor, uuid)
+          session.initSamePageClient( e.data.token, uuid, handleJoinerMsg, wind
+                                    , role, baseView)
 
         )
 
