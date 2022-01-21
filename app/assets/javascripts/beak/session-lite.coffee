@@ -36,6 +36,7 @@ class window.SessionLite
   _hnwLastTickTS:        undefined # Number
   _hnwImageCache:        undefined # Object[Object[String]]
   _hnwIsCongested:       undefined # Boolean
+  _hnwPortToIDMan:       undefined # Map[MessagePort, IDManager]
   _hnwWidgetGlobalCache: undefined # Object[Any]
 
   _metadata:             undefined # Object[Any]
@@ -48,6 +49,7 @@ class window.SessionLite
 
     @_hnwLastPersp         = {}
     @_hnwImageCache        = {}
+    @_hnwPortToIDMan       = new Map()
     @_hnwWidgetGlobalCache = {}
     @_monitorFuncs         = {}
     @_subscriberObj        = {}
@@ -673,7 +675,8 @@ class window.SessionLite
         if Object.keys(broadUpdate).length > 0
           for uuid, babyMonitor of @_subscriberObj
             if uuid isnt uuidToIgnore and babyMonitor isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
-              babyMonitor.postMessage({ update: broadUpdate, type: "nlw-state-update" })
+              id = @_hnwPortToIDMan.get(babyMonitor)?.next("")
+              babyMonitor.postMessage({ id, update: broadUpdate, type: "nlw-state-update" })
 
         for uuid, babyMonitor of @_subscriberObj
           if uuid isnt uuidToIgnore
@@ -688,7 +691,8 @@ class window.SessionLite
 
             if Object.keys(update).length > 0
               if babyMonitor isnt null
-                babyMonitor.postMessage({ update, type: "nlw-state-update" })
+                id = @_hnwPortToIDMan.get(babyMonitor).next("")
+                babyMonitor.postMessage({ id, update, type: "nlw-state-update" })
               else
                 narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
@@ -782,7 +786,8 @@ class window.SessionLite
     babyMonitor = @_subscriberObj[uuid]
     if Object.keys(update).length > 0
       if babyMonitor isnt null
-        babyMonitor.postMessage({ update, type })
+        id = @_hnwPortToIDMan.get(babyMonitor).next("")
+        babyMonitor.postMessage({ id, update, type })
       else
         narrowcastHNWPayload(uuid, type, { update })
     return
@@ -803,19 +808,24 @@ class window.SessionLite
       type: "hnw-set-up-baby-monitor"
     }, "*", [channel.port2])
 
+    idMan = new window.IDManager()
+
+    @_hnwPortToIDMan.set(innerBabyMonitor, idMan)
+
     innerBabyMonitor.postMessage({
       type:  "hnw-load-interface"
     , role:  role
     , token: uuid
     , view:  baseView
+    , id:    idMan.next("")
     }, [(new MessageChannel).port2])
 
     modelState = @getModelState("")
 
     innerBabyMonitor.postMessage({
-      type:        "nlw-state-update"
-    , update:      Object.assign({}, modelState, { monitorUpdates })
-    , sequenceNum: -1
+      type:   "nlw-state-update"
+    , update: Object.assign({}, modelState, { monitorUpdates })
+    , id:     idMan.next("")
     })
 
     # NOTE TODO
