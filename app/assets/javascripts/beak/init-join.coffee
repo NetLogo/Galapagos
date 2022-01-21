@@ -1,3 +1,5 @@
+MessageQueue = window.MessageQueue
+
 loadingOverlay  = document.getElementById("loading-overlay")
 modelContainer  = document.querySelector("#netlogo-model-container")
 nlogoScript     = document.querySelector("#nlogo-code")
@@ -264,11 +266,13 @@ setUpEventListeners = ->
         window.babyMonitor = e.ports[0]
         window.babyMonitor.postMessage(true)
 
+        msgQueue = new MessageQueue(onBabyMonitorMessage)
+
         window.babyMonitor.onmessage =
           ({ data, ports: [port] }) ->
             portObj = if port? then { port } else {}
             msg     = Object.assign({}, data, portObj)
-            onBabyMonitorMessage(msg)
+            msgQueue.enqueue(msg)
             return
 
   )
