@@ -675,8 +675,8 @@ class window.SessionLite
         if Object.keys(broadUpdate).length > 0
           for uuid, babyMonitor of @_subscriberObj
             if uuid isnt uuidToIgnore and babyMonitor isnt null # Send to child `iframe`s, and to parent for broadcast to remotes
-              id = @_hnwPortToIDMan.get(babyMonitor)?.next("")
-              babyMonitor.postMessage({ id, update: broadUpdate, type: "nlw-state-update" })
+              msg = { update: broadUpdate, type: "nlw-state-update" }
+              @_postOnPort(babyMonitor, msg)
 
         for uuid, babyMonitor of @_subscriberObj
           if uuid isnt uuidToIgnore
@@ -691,8 +691,7 @@ class window.SessionLite
 
             if Object.keys(update).length > 0
               if babyMonitor isnt null
-                id = @_hnwPortToIDMan.get(babyMonitor).next("")
-                babyMonitor.postMessage({ id, update, type: "nlw-state-update" })
+                @_postOnPort(babyMonitor, { update, type: "nlw-state-update" })
               else
                 narrowcastHNWPayload(uuid, "nlw-state-update", { update })
 
@@ -786,8 +785,7 @@ class window.SessionLite
     babyMonitor = @_subscriberObj[uuid]
     if Object.keys(update).length > 0
       if babyMonitor isnt null
-        id = @_hnwPortToIDMan.get(babyMonitor).next("")
-        babyMonitor.postMessage({ id, update, type })
+        @_postOnPort(babyMonitor, { update, type })
       else
         narrowcastHNWPayload(uuid, type, { update })
     return
@@ -812,24 +810,33 @@ class window.SessionLite
 
     @_hnwPortToIDMan.set(innerBabyMonitor, idMan)
 
-    innerBabyMonitor.postMessage({
+    @_postOnPort(innerBabyMonitor, {
       type:  "hnw-load-interface"
     , role:  role
     , token: uuid
     , view:  baseView
-    , id:    idMan.next("")
     }, [(new MessageChannel).port2])
 
     modelState = @getModelState("")
 
-    innerBabyMonitor.postMessage({
+    @_postOnPort(innerBabyMonitor, {
       type:   "nlw-state-update"
     , update: Object.assign({}, modelState, { monitorUpdates })
-    , id:     idMan.next("")
     })
 
     # NOTE TODO
     @subscribeWithID(innerBabyMonitor, uuid)
+
+    return
+
+  # (MessagePort, Object[Any], Array[MessagePort]?) => Unit
+  _postOnPort: (port, message, transfers = []) ->
+
+    id       = @_hnwPortToIDMan.get(port)?.next("")
+    idObj    = if id? then { id } else {}
+    finalMsg = Object.assign({}, message, idObj, { source: "interframe" })
+
+    port.postMessage(finalMsg, transfers)
 
     return
 
