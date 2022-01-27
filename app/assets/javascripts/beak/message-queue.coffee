@@ -1,4 +1,4 @@
-{ MinID, precedesID, prevID, succeedsID } = window.ID
+{ MaxID, MinID, precedesID, prevID, succeedsID } = window.ID
 
 # type MessageHandler = (Object[Any]) => Unit
 
