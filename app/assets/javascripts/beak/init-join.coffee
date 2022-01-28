@@ -151,7 +151,7 @@ setUpEventListeners = ->
                     if cachedDrawings[x.hash]?
                       acc.concat({ type: "import-drawing", imageBase64: cachedDrawings[x.hash] })
                     else
-                      sendHNWPayload("hnw-cash-raincheck", { id: x.hash })
+                      sendHNWPayload("hnw-cash-raincheck", { hash: x.hash })
                       acc
                   else
                     acc.concat([x])

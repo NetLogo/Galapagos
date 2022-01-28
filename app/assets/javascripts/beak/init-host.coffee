@@ -190,8 +190,8 @@ setUpEventListeners = ->
 
 
   onRaincheckMessage = (e) ->
-    imageBase64 = session.cashRainCheckFor(e.data.id)
-    imageUpdate = { type: "import-drawing", imageBase64, hash: e.data.id }
+    imageBase64 = session.cashRainCheckFor(e.data.hash)
+    imageUpdate = { type: "import-drawing", imageBase64, hash: e.data.hash }
     viewUpdate  = { drawingEvents: [imageUpdate] }
     session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
 
