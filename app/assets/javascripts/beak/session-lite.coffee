@@ -70,21 +70,38 @@ class SessionLite
 
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
     # coffeelint: disable=max_line_length
-    @widgetController.ractive.on('*.recompile'         , (_, callback, useOverlay) => @recompile(callback, useOverlay))
-    @widgetController.ractive.on('*.recompile-for-plot', (_, oldName, newName, renamings) => @recompile((->), true, oldName, newName, renamings))
-    @widgetController.ractive.on('export-nlogo'        , (_, event)                => @exportNlogo(event))
-    @widgetController.ractive.on('export-html'         , (_, event)                => @exportHtml(event))
-    @widgetController.ractive.on('open-new-file'       , (_, event)                => @openNewFile())
-    @widgetController.ractive.on('*.run'               , (_, source, code)         => @run(source, code))
-    @widgetController.ractive.on('*.set-global'        , (_, varName, value)       => @setGlobal(varName, value))
+    ractive = @widgetController.ractive
+    ractive.on('*.recompile'  , (_, callback, useOverlay) => @recompile(callback, useOverlay))
+    ractive.on('*.recompile-for-plot', (_, oldName, newName, renamings) => @recompile((->), true, oldName, newName, renamings))
+    ractive.on('export-nlogo' , (_, event)                => @exportNlogo(event))
+    ractive.on('export-html'  , (_, event)                => @exportHtml(event))
+    ractive.on('open-new-file', (_, event)                => @openNewFile())
+    ractive.on('*.run'        , (_, source, code)         => @run(source, code))
+    ractive.on('*.set-global' , (_, varName, value)       => @setGlobal(varName, value))
 
-    @widgetController.ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
+    listenerEvents = [
+      'new-widget-initialized'
+    , 'new-widget-finalized'
+    , 'new-widget-cancelled'
+    , 'widget-updated'
+    , 'widget-deleted'
+    ]
+
+    listenerEvents.forEach( (eventName) =>
+      ractive.on("*.#{eventName}", (_, args...) =>
+        @listeners.forEach( (l) -> l[eventName]?(args...) )
+        return
+      )
+      return
+    )
+
+    ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
       @recompileProcedures(proceduresCode, procedureNames, successCallback)
     )
     # coffeelint: enable=max_line_length
 
 
-    @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
+    ractive.set('lastCompileFailed', lastCompileFailed)
 
     # The global 'modelConfig' variable is used by the Tortoise runtime - David D. 7/2021
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)

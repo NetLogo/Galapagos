@@ -49,14 +49,23 @@ function handleCompileResult(result) {
   }
 }
 
-const listener = {
-  compile: function() {
-    console.log("compile listener", arguments)
+const listenerEvents = [
+  'compile'
+, 'recompile'
+, 'new-widget-initialized'
+, 'new-widget-finalized'
+, 'new-widget-cancelled'
+, 'widget-updated'
+, 'widget-deleted'
+]
+
+const listener = {}
+
+listenerEvents.forEach( (eventName) => {
+  listener[eventName] = (...args) => {
+    console.log(eventName, args)
   }
-, recompile: function() {
-    console.log("recompile listener", arguments)
-  }
-}
+})
 
 var loadModel = function(nlogo, path) {
   alerter.hide()

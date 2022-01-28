@@ -125,7 +125,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       # Original event name: "cutMyLifeIntoPieces" --Jason B. (11/8/17)
       @fire('unregister-widget', @get('widget').id, true)
 
-    "*.update-widget-value": (_, values) ->
+    "*.update-widget-value": (_, values, isNewWidget) ->
 
       getByPath = (obj) -> (path) ->
         path.split('.').reduce(((acc, x) -> acc[x]), obj)
@@ -189,6 +189,9 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
               else
                 event
             realEvent.run(this, widget)
+
+          notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
+          @fire(notifyEventName, {}, widget, widget.id)
 
           @fire('update-widgets')
 
