@@ -452,12 +452,15 @@ class window.SessionLite
       'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
 
     @_subscriberObj[genUUID()] = babyMonitor
+    @entwineWithIDMan(babyMonitor)
 
     return
 
   # (MessagePort, String) => Unit
   subscribeWithID: (babyMonitor, id) ->
     @_subscriberObj[id] = babyMonitor
+    if babyMonitor? and not @_hnwPortToIDMan.get(babyMonitor)?
+      @entwineWithIDMan(babyMonitor)
     return
 
   # (String) => Unit
@@ -788,6 +791,15 @@ class window.SessionLite
         @_postOnPort(babyMonitor, { update, type })
       else
         narrowcastHNWPayload(uuid, type, { update })
+    return
+
+  # (MessagePort) => Number
+  nextMonIDFor: (port) ->
+    @_hnwPortToIDMan.get(port).next("")
+
+  # (MessagePort) => Unit
+  entwineWithIDMan: (babyMonitor) ->
+    @_hnwPortToIDMan.set(babyMonitor, new window.IDManager())
     return
 
   # (UUID, UUID, (Object[Any]) => Unit, Window, Object[Any], Object[Any]) => Unit

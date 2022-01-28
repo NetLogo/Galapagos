@@ -53,10 +53,18 @@ loadHNWModel = (role, view) ->
 
 protocolObj = { protocolVersion: "0.0.1" }
 
+# (Object[Any], Array[MessagePort]?) => Unit
+postToBM = (message, transfers = []) ->
+
+  idObj    = { id: window.idMan.next("") }
+  finalMsg = Object.assign({}, message, idObj, { source: "nlw-join" })
+
+  window.babyMonitor.postMessage(finalMsg, transfers)
+
 # (Sting, Object[Any]) => Unit
 sendHNWPayload = (type, pload) ->
   payload = Object.assign({}, pload, { token, type }, protocolObj)
-  window.babyMonitor.postMessage({ type: "relay", payload })
+  postToBM({ type: "relay", payload })
   return
 
 # (String, Any) => Unit
@@ -170,12 +178,12 @@ setUpEventListeners = ->
                 baddie = ["patch", badPatch()]
 
           if baddie?
-            window.babyMonitor.postMessage({
-              type:      "hnw-fatal-error"
-            , subtype:   "unknown-agent"
-            , agentType: baddie[0]
-            , agentID:   baddie[1][0]
-            })
+            msg = { type:      "hnw-fatal-error"
+                  , subtype:   "unknown-agent"
+                  , agentType: baddie[0]
+                  , agentID:   baddie[1][0]
+                  }
+            postToBM(msg)
           else
             console.warn("Somehow, not all agents were known, but we couldn't extract a baddie...?")
 
@@ -264,7 +272,7 @@ setUpEventListeners = ->
       when "hnw-set-up-baby-monitor"
 
         window.babyMonitor = e.ports[0]
-        window.babyMonitor.postMessage(true)
+        window.idMan       = new window.IDManager()
 
         msgQueue = new MessageQueue(onBabyMonitorMessage)
 
@@ -274,6 +282,10 @@ setUpEventListeners = ->
             msg     = Object.assign({}, data, portObj)
             msgQueue.enqueue(msg)
             return
+
+        # This message is `await`ed in the frame above.
+        # It does not need an ID. --Jason B. (1/27/22)
+        window.babyMonitor.postMessage({ type: "noop" })
 
   )
 

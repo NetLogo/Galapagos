@@ -25,6 +25,8 @@ openSession = (s) ->
   document.title  = genPageTitle(session.modelTitle())
   activeContainer = modelContainer
   session.startLoop()
+  if babyMonitor?
+    session.entwineWithIDMan(babyMonitor)
   return
 
 runAmbiguous = (name, args...) ->
@@ -100,17 +102,25 @@ protocolObj = { protocolVersion: "0.0.1" }
 
 babyMonitor = null # MessagePort
 
+# (MessagePort, Object[Any], Array[MessagePort]?) => Unit
+postToBM = (message, transfers = []) ->
+
+  idObj    = { id: session.nextMonIDFor(babyMonitor) }
+  finalMsg = Object.assign({}, message, idObj, { source: "nlw-host" })
+
+  babyMonitor.postMessage(finalMsg, transfers)
+
 # (Sting, Object[Any]) => Unit
 broadcastHNWPayload = (type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  babyMonitor?.postMessage({ type: "relay", payload: truePayload })
+  postToBM({ type: "relay", payload: truePayload })
   return
 
 # (String, Sting, Object[Any]) => Unit
 window.narrowcastHNWPayload = (uuid, type, payload) ->
   truePayload = Object.assign({}, payload, { type }, protocolObj)
-  babyMonitor?.postMessage({ type: "relay", isNarrowcast: true
-                           , recipient: uuid, payload: truePayload })
+  postToBM({ type: "relay", isNarrowcast: true
+           , recipient: uuid, payload: truePayload })
   return
 
 # () -> Unit
@@ -475,15 +485,19 @@ setUpEventListeners = ->
       else
         console.warn("Unknown babyMon message type:", e.data)
 
+  relayIDMan = new window.IDManager()
+
   handleJoinerMsg = (e) ->
-    if e.data isnt true
-      switch e.data.type
-        when "relay"
-          window.postMessage(e.data.payload)
-        when "hnw-fatal-error"
-          babyMonitor.postMessage(e.data)
-        else
-          console.warn("Unknown inner joiner message:", e.data)
+    switch e.data.type
+      when "relay"
+        id  = relayIDMan.next("")
+        msg = Object.assign({}, e.data.payload, { id }, { source: "frame-relay" })
+        window.postMessage(msg)
+      when "hnw-fatal-error"
+        postToBM(e.data)
+      when "noop"
+      else
+        console.warn("Unknown inner joiner message:", e.data)
 
   window.addEventListener("message", (e) ->
 
