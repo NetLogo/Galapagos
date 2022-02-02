@@ -27,6 +27,26 @@ RactiveInfoTabEditor = Ractive.extend({
 
 RactiveInfoTabWidget = Ractive.extend({
 
+  data: () -> {
+    isEditing:    false     # Boolean
+    rawText:      undefined # String
+    info:         undefined # String
+    originalText: undefined # String
+  }
+
+  onrender: ->
+    @set('originalText', @get('rawText'))
+    return
+
+  observe: {
+    isEditing: (isEditing, wasEditing) ->
+      rawText = @get('rawText')
+      if wasEditing and !isEditing and (rawText isnt @get('originalText'))
+        @set('originalText', rawText)
+        @fire('info-updated', rawText)
+      return
+  }
+
   components: {
     infoeditor: RactiveInfoTabEditor
   },

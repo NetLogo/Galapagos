@@ -58,6 +58,7 @@ const listenerEvents = [
 , 'new-widget-cancelled'
 , 'widget-updated'
 , 'widget-deleted'
+, 'info-updated'
 ]
 
 const listener = {}

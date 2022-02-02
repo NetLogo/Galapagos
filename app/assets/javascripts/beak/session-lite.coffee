@@ -88,6 +88,7 @@ class SessionLite
     , 'new-widget-cancelled'
     , 'widget-updated'
     , 'widget-deleted'
+    , 'info-updated'
     ]
 
     listenerEvents.forEach( (eventName) =>
