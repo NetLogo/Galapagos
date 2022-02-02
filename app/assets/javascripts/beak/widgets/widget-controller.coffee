@@ -79,7 +79,7 @@ class WidgetController
 
     else
       switch widgetType
-        when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('controller.recompile')
+        when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('recompile-sync', 'system')
       @ractive.fire('widget-deleted', {}, id)
 
     return
@@ -140,11 +140,11 @@ class WidgetController
   speed: ->
     @ractive.get('speed')
 
-  # (String, () => Unit) => Unit
-  setCode: (code, successCallback) =>
+  # (String) => Unit
+  setCode: (code) =>
     @ractive.set('code', code)
     @ractive.findComponent('codePane')?.setCode(code)
-    @ractive.fire('controller.recompile', successCallback)
+    @ractive.fire('recompile', 'system')
     return
 
   # (String) => Unit

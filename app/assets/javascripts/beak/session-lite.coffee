@@ -71,16 +71,19 @@ class SessionLite
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
     # coffeelint: disable=max_line_length
     ractive = @widgetController.ractive
-    ractive.on('*.recompile'  , (_, callback, useOverlay) => @recompile(callback, useOverlay))
-    ractive.on('*.recompile-for-plot', (_, oldName, newName, renamings) => @recompile((->), true, oldName, newName, renamings))
-    ractive.on('export-nlogo' , (_, event)                => @exportNlogo(event))
-    ractive.on('export-html'  , (_, event)                => @exportHtml(event))
-    ractive.on('open-new-file', (_, event)                => @openNewFile())
-    ractive.on('*.run'        , (_, source, code)         => @run(source, code))
-    ractive.on('*.set-global' , (_, varName, value)       => @setGlobal(varName, value))
+    ractive.on('*.recompile'     , (_, source)         => @recompile(source))
+    ractive.on('*.recompile-sync', (_, source)         => @recompileSync(source))
+    ractive.on('*.recompile-for-plot', (_, source, oldName, newName, renamings) => @recompile(source, oldName, newName, renamings))
+    ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
+    ractive.on('export-html'     , (_, event)          => @exportHtml(event))
+    ractive.on('open-new-file'   , (_, event)          => @openNewFile())
+    ractive.on('*.run'           , (_, source, code)   => @run(source, code))
+    ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
     listenerEvents = [
-      'new-widget-initialized'
+      'recompile-start'
+    , 'recompile-complete'
+    , 'new-widget-initialized'
     , 'new-widget-finalized'
     , 'new-widget-cancelled'
     , 'widget-updated'
@@ -88,11 +91,14 @@ class SessionLite
     ]
 
     listenerEvents.forEach( (eventName) =>
-      ractive.on("*.#{eventName}", (_, args...) =>
-        @listeners.forEach( (l) -> l[eventName]?(args...) )
+      @listeners.forEach( (l) ->
+        if l[eventName]?
+          ractive.on("*.#{eventName}", (_, args...) ->
+            l[eventName](args...)
+            return
+          )
         return
       )
-      return
     )
 
     ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
@@ -214,10 +220,9 @@ class SessionLite
       newWidget
     )
 
-  # (() => Unit, Boolean, String, String, Object[String]) => Unit
-  recompile: ( successCallback = (->), useOverlay = true
-             , oldPlotName = "", newPlotName = "", plotRenames = {}) ->
-
+  # ("user" | "system", String, String, Object[String]) => Unit
+  recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
+    @widgetController.ractive.fire('recompile-start', source)
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
     rewritten     = @rewriteCode(code)
@@ -232,59 +237,53 @@ class SessionLite
     , linkShapes:   linkShapes ? []
     }
 
-    recompileProcess = () =>
-      try
-        res = @compiler.fromModel(compileParams)
-        if res.model.success
+    try
+      res = @compiler.fromModel(compileParams)
+      if res.model.success
 
-          state           = world.exportState()
-          breeds          = Object.values(world.breedManager.breeds())
-          breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
-          @widgetController.redraw()
-          # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
+        state           = world.exportState()
+        breeds          = Object.values(world.breedManager.breeds())
+        breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
+        @widgetController.redraw()
+        # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
 
-          if oldPlotName isnt newPlotName
-            pops = @widgetController.configs.plotOps
-            pops[oldPlotName].dispose()
-            delete pops[oldPlotName]
+        if oldPlotName isnt newPlotName
+          pops = @widgetController.configs.plotOps
+          pops[oldPlotName].dispose()
+          delete pops[oldPlotName]
 
-          @widgetController.ractive.set('isStale',           false)
-          @widgetController.ractive.set('lastCompiledCode',  code)
-          @widgetController.ractive.set('lastCompileFailed', false)
-          @widgetController.redraw()
-          @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+        @widgetController.ractive.set('isStale',           false)
+        @widgetController.ractive.set('lastCompiledCode',  code)
+        @widgetController.ractive.set('lastCompileFailed', false)
+        @widgetController.redraw()
+        @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
-          globalEval(res.model.result)
-          breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
-          plots = plotManager.getPlots()
-          state.plotManager =
-            mangleExportedPlots( state.plotManager, plots, plotRenames
-                               , oldPlotName, newPlotName)
-          world.importState(state)
+        globalEval(res.model.result)
+        breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
+        plots = plotManager.getPlots()
+        state.plotManager =
+          mangleExportedPlots(state.plotManager, plots, plotRenames, oldPlotName, newPlotName)
+        world.importState(state)
 
-          successCallback()
-          res.commands.forEach((c) -> if c.success then (new Function(c.result))())
-          @rewriters.forEach((rw) -> rw.compileComplete?())
-          @listeners.forEach((l) -> l.recompile?(rewritten, code))
+        res.commands.forEach((c) -> if c.success then (new Function(c.result))())
+        @rewriters.forEach((rw) -> rw.compileComplete?())
+        @widgetController.ractive.fire('recompile-complete', source, rewritten, code)
 
-        else
-          @widgetController.ractive.set('lastCompileFailed', true)
-          errors = @rewriteErrors(code, rewritten, res.model.result)
-          @widgetController.reportError('compiler', 'recompile', errors)
+      else
+        @widgetController.ractive.set('lastCompileFailed', true)
+        errors = @rewriteErrors(code, rewritten, res.model.result)
+        @widgetController.reportError('compiler', 'recompile', errors)
 
-      catch ex
-        @widgetController.reportError('compiler', 'recompile', [ex.toString()])
+    catch ex
+      @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
-      finally
-        @tortoise.finishLoading()
-
+  # ("user" | "system", String, String, Object[String]) => Unit
+  recompile: (source, oldPlotName = "", newPlotName = "", plotRenames = {}) ->
+    @tortoise.startLoading( () =>
+      @recompileSync(source, oldPlotName, newPlotName, plotRenames)
+      @tortoise.finishLoading()
       return
-
-    if useOverlay
-      @tortoise.startLoading(recompileProcess)
-    else
-      recompileProcess()
-
+    )
     return
 
   recompileProcedures: (proceduresCode, procedureNames, successCallback) ->

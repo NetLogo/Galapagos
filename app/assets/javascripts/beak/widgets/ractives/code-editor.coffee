@@ -216,7 +216,7 @@ RactiveModelCodeComponent = Ractive.extend({
         <li class="netlogo-codetab-widget-listitem">
           {{# !isReadOnly }}
             <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button{{#isEditing}} interface-unlocked{{/}}"
-                on-click="recompile" {{# !isStale }}disabled{{/}} >Recompile Code</button>
+                on-click="['recompile', 'user']" {{# !isStale }}disabled{{/}} >Recompile Code</button>
           {{/}}
         </li>
         <li class="netlogo-codetab-widget-listitem">

@@ -51,7 +51,8 @@ function handleCompileResult(result) {
 
 const listenerEvents = [
   'compile'
-, 'recompile'
+, 'recompile-start'
+, 'recompile-complete'
 , 'new-widget-initialized'
 , 'new-widget-finalized'
 , 'new-widget-cancelled'

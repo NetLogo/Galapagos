@@ -5,13 +5,13 @@ WidgetEventGenerators = {
   # (String, String, Object[String]) => WidgetEvent
   recompileForPlot: (oldName, newName, renamings) ->
     {
-      run:  (ractive, widget) -> ractive.fire('recompile-for-plot', oldName, newName, renamings)
+      run:  (ractive, widget) -> ractive.fire('recompile-for-plot', 'system', oldName, newName, renamings)
       type: "recompile-for-plot"
     }
 
   recompile: ->
     {
-      run:  (ractive, widget) -> ractive.fire('recompile')
+      run:  (ractive, widget) -> ractive.fire('recompile', 'system')
       type: "recompile"
     }
 

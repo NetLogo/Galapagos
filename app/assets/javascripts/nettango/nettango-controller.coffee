@@ -164,7 +164,7 @@ class NetTangoController
     widgetController = @netLogoModel.widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
-    widgetController.ractive.fire('recompile', (->), false)
+    widgetController.ractive.fire('recompile-sync', 'system')
     @spaceChangeListener?()
     return
 
