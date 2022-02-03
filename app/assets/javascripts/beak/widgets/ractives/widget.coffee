@@ -84,6 +84,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       #{if @get('isEditing')  then 'interface-unlocked' else ''}
       #{if @get('isSelected') then 'selected'           else ''}
       """
+
     dims: ->
       """
       position: absolute;
@@ -204,21 +205,55 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
   # coffeelint: disable=max_line_length
   partials: {
-    editorOverlay: """
-                   {{ #isEditing }}
-                     <div draggable="true" style="{{dims}}"
-                          class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
-                          on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
-                          on-contextmenu="@this.fire('show-context-menu', @event)"
-                          on-dblclick="@this.fire('edit-widget')"
-                          on-dragstart="start-widget-drag"
-                          on-drag="drag-widget"
-                          on-dragend="stop-widget-drag"></div>
-                   {{/}}
-                   """
+    editorOverlay:
+      """
+      {{ #isEditing }}
+      <div
+        draggable="true"
+        style="{{dims}}"
+        class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
+        on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
+        on-contextmenu="@this.fire('show-context-menu', @event)"
+        on-dblclick="@this.fire('edit-widget')"
+        on-dragstart="start-widget-drag"
+        on-drag="drag-widget"
+        on-dragend="stop-widget-drag">
+      </div>
+      {{/}}
+      """
   }
-  # coffeelint: enable=max_line_length
 
 })
 
-export default RactiveWidget
+RactiveValueWidget = RactiveWidget.extend({
+  data: () -> {
+    oldValue:      undefined # Any
+    internalValue: undefined # Any
+  }
+  # coffeelint: enable=max_line_length
+
+  widgetType: undefined # String
+
+  on: {
+    'init': () ->
+      resetValuesToCurrent = () =>
+        currentValue = @get('widget.currentValue')
+        @set('internalValue', currentValue)
+        @set('oldValue',      currentValue)
+        return
+
+      @observe('widget.currentValue', resetValuesToCurrent)
+      resetValuesToCurrent()
+      return
+
+    'widget-value-change': () ->
+      newValue = @get('internalValue')
+      oldValue = @get('oldValue')
+      if (oldValue isnt newValue)
+        @set('widget.currentValue', newValue)
+        @fire("#{@widgetType}-widget-changed", @get('widget.id'), newValue, oldValue, @get('widget.boxedValue.type'))
+      return
+  }
+})
+
+export { RactiveWidget, RactiveValueWidget }

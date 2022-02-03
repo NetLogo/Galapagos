@@ -1,4 +1,4 @@
-import RactiveWidget from "./widget.js"
+import { RactiveValueWidget } from "./widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
@@ -63,18 +63,21 @@ ChooserEditForm = EditForm.extend({
 
 })
 
-RactiveChooser = RactiveWidget.extend({
+RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , resizeDirs:         ['left', 'right']
   }
 
+  widgetType: "chooser"
+
   observe: {
     'widget.currentValue': () ->
       widget        = @get('widget')
       currentChoice = widget.choices.findIndex( (c) -> c is widget.currentValue )
       @set('widget.currentChoice', if currentChoice >= 0 then currentChoice else 0)
+      return
   }
 
   components: {
@@ -96,10 +99,14 @@ RactiveChooser = RactiveWidget.extend({
     {{>editorOverlay}}
     <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{classes}}" style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
-      <select class="netlogo-chooser-select" value="{{widget.currentValue}}"{{# isEditing }} disabled{{/}} >
-      {{#widget.choices}}
+      <select
+        class="netlogo-chooser-select"
+        value="{{internalValue}}"
+        on-change="widget-value-change"
+        {{# isEditing }} disabled{{/}} >
+        {{#widget.choices}}
         <option class="netlogo-chooser-option" value="{{.}}">{{>literal}}</option>
-      {{/}}
+        {{/}}
       </select>
     </label>
     <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />

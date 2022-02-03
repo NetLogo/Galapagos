@@ -1,5 +1,5 @@
 import { netlogoColorToCSS } from "/colors.js"
-import RactiveWidget from "./widget.js"
+import { RactiveWidget } from "./widget.js"
 import EditForm from "./edit-form.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"

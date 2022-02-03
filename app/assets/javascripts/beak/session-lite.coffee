@@ -89,6 +89,11 @@ class SessionLite
     , 'widget-updated'
     , 'widget-deleted'
     , 'info-updated'
+    , 'button-widget-clicked'
+    , 'slider-widget-changed'
+    , 'chooser-widget-changed'
+    , 'input-widget-changed'
+    , 'switch-widget-changed'
     ]
 
     listenerEvents.forEach( (eventName) =>

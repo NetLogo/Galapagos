@@ -1,4 +1,4 @@
-import RactiveWidget from "./widget.js"
+import { RactiveWidget } from "./widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
@@ -118,7 +118,18 @@ RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
-    @on('activate-button', (_, run) -> if @get('isEnabled') then run())
+    @on('activate-button', (_, run) ->
+      if @get('isEnabled')
+        run()
+        @fire('button-widget-clicked', @get('widget.id'), false, false)
+      return
+    )
+
+  observe: {
+    'widget.running': (isRunning, wasRunning) ->
+      @fire('button-widget-clicked', @get('widget.id'), true, isRunning)
+      return
+  }
 
   components: {
     editForm: ButtonEditForm
