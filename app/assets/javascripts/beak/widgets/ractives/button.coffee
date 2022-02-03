@@ -100,6 +100,7 @@ RactiveButton = RactiveWidget.extend({
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , errorClass:         undefined # String
   , ticksStarted:       undefined # Boolean
+  , isRunning:          false     # Boolean
   }
 
   computed: {
@@ -118,16 +119,27 @@ RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
+
     @on('activate-button', (_, run) ->
       if @get('isEnabled')
         run()
         @fire('button-widget-clicked', @get('widget.id'), false, false)
       return
     )
+    return
+
+  on: {
+    'forever-button-change': () ->
+      isRunning = @get('isRunning')
+      @set('widget.running', isRunning)
+      @fire('button-widget-clicked', @get('widget.id'), true, isRunning)
+      return
+
+  }
 
   observe: {
-    'widget.running': (isRunning, wasRunning) ->
-      @fire('button-widget-clicked', @get('widget.id'), true, isRunning)
+    'widget.running': (isRunning) ->
+      @set('isRunning', isRunning)
       return
   }
 
@@ -180,11 +192,11 @@ RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}" style="{{dims}}"
-             class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
+             class="netlogo-widget netlogo-button netlogo-forever-button{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
-        <input type="checkbox" checked={{ widget.running }} {{# !isEnabled }}disabled{{/}}/>
+        <input type="checkbox" checked={{ isRunning }} on-change="forever-button-change" {{# !isEnabled }}disabled{{/}}/>
         <div class="netlogo-forever-icon"></div>
       </label>
       """
