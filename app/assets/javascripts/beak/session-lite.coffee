@@ -94,6 +94,7 @@ class SessionLite
     , 'chooser-widget-changed'
     , 'input-widget-changed'
     , 'switch-widget-changed'
+    , 'command-center-run'
     ]
 
     listenerEvents.forEach( (eventName) =>

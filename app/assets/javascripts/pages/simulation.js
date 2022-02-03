@@ -64,6 +64,7 @@ const listenerEvents = [
 , 'chooser-widget-changed'
 , 'input-widget-changed'
 , 'switch-widget-changed'
+, 'command-center-run'
 ]
 
 const listener = {}
