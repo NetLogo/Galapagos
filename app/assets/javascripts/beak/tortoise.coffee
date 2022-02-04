@@ -1,7 +1,8 @@
 import SessionLite from "./session-lite.js"
 import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, String, Boolean) => SessionLite
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, String, Boolean)
+#   => SessionLite
 newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, filename, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
@@ -40,14 +41,16 @@ finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
   return
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+# type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
+
+# (String, Element, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
 fromNlogoSync = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
   segments = path.split(/\/|\\/)
   name     = segments[segments.length - 1]
   compile(container, path, name, nlogo, callback, rewriters, listeners)
   return
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+# (String, Element, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
 fromNlogo = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
   startLoading(->
     fromNlogoSync(nlogo, container, path, callback, rewriters, listeners)
@@ -55,7 +58,7 @@ fromNlogo = (nlogo, container, path, callback, rewriters = [], listeners = []) -
   )
   return
 
-# (String, String, Element, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter], Array[Listener]) => Unit
+# (String, String, Element, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
 fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()

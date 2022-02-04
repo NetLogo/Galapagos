@@ -41,7 +41,7 @@ RactiveInfoTabWidget = Ractive.extend({
   observe: {
     isEditing: (isEditing, wasEditing) ->
       rawText = @get('rawText')
-      if wasEditing and !isEditing and (rawText isnt @get('originalText'))
+      if wasEditing and (not isEditing) and (rawText isnt @get('originalText'))
         @set('originalText', rawText)
         @fire('info-updated', rawText)
       return
