@@ -23,8 +23,8 @@ var speed          = 0.0;
 var isVertical     = true;
 
 var openSession = function(s) {
-  globalThis.session = s;
-  globalThis.session.widgetController.ractive.set('speed',      speed)
+  globalThis.session = s
+  globalThis.session.widgetController.ractive.set('speed', speed)
   globalThis.session.widgetController.ractive.set('isVertical', isVertical)
   document.title = pageTitle(globalThis.session.modelTitle());
   activeContainer = modelContainer;
