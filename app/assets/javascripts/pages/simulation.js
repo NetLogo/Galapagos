@@ -1,3 +1,5 @@
+import { listenerEvents } from "/listener-events.js"
+
 import "/codemirror-mode.js";
 import AlertDisplay from "/alert-display.js";
 import newModel from "/new-model.js";
@@ -49,33 +51,13 @@ function handleCompileResult(result) {
   }
 }
 
-const listenerEvents = [
-  'model-load'
-, 'compile'
-, 'recompile-start'
-, 'recompile-complete'
-, 'new-widget-initialized'
-, 'new-widget-finalized'
-, 'new-widget-cancelled'
-, 'widget-updated'
-, 'widget-deleted'
-, 'info-updated'
-, 'button-widget-clicked'
-, 'slider-widget-changed'
-, 'chooser-widget-changed'
-, 'input-widget-changed'
-, 'switch-widget-changed'
-, 'command-center-run'
-, 'speed-slider-changed'
-]
-
-const listener = {}
+const debugListener = {}
 listenerEvents.forEach( (eventName) => {
-  listener[eventName] = (...args) => {
+  debugListener[eventName] = (...args) => {
     console.log(eventName, args)
   }
 })
-const listeners = [listener]
+const listeners = [debugListener]
 
 function notifyListenersOfModelLoad(source, ...args) {
   listeners.forEach( (listener) => {

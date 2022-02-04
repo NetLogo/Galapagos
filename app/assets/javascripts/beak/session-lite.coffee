@@ -1,3 +1,5 @@
+import { listenerEvents } from "../listener-events.js"
+
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"
 import { toNetLogoMarkdown }    from "./tortoise-utils.js"
@@ -79,24 +81,6 @@ class SessionLite
     ractive.on('open-new-file'   , (_, event)          => @openNewFile())
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
-
-    listenerEvents = [
-      'recompile-start'
-    , 'recompile-complete'
-    , 'new-widget-initialized'
-    , 'new-widget-finalized'
-    , 'new-widget-cancelled'
-    , 'widget-updated'
-    , 'widget-deleted'
-    , 'info-updated'
-    , 'button-widget-clicked'
-    , 'slider-widget-changed'
-    , 'chooser-widget-changed'
-    , 'input-widget-changed'
-    , 'switch-widget-changed'
-    , 'command-center-run'
-    , 'speed-slider-changed'
-    ]
 
     listenerEvents.forEach( (eventName) =>
       @listeners.forEach( (l) ->
