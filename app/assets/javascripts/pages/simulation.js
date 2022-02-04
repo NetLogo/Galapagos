@@ -50,7 +50,8 @@ function handleCompileResult(result) {
 }
 
 const listenerEvents = [
-  'compile'
+  'model-load'
+, 'compile'
 , 'recompile-start'
 , 'recompile-complete'
 , 'new-widget-initialized'
@@ -69,12 +70,20 @@ const listenerEvents = [
 ]
 
 const listener = {}
-
 listenerEvents.forEach( (eventName) => {
   listener[eventName] = (...args) => {
     console.log(eventName, args)
   }
 })
+const listeners = [listener]
+
+function notifyListenersOfModelLoad(source, ...args) {
+  listeners.forEach( (listener) => {
+    if (listener['model-load'] !== undefined) {
+      listener['model-load'](source, ...args)
+    }
+  })
+}
 
 var loadModel = function(nlogo, path) {
   alerter.hide()
@@ -82,7 +91,7 @@ var loadModel = function(nlogo, path) {
     globalThis.session.teardown();
   }
   activeContainer = loadingOverlay;
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], [listener]);
+  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners);
 };
 
 const parseFloatOrElse = function(str, def) {
@@ -151,14 +160,16 @@ isVertical   = !(params.has('tabs') && params.get('tabs') === 'right')
 if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent;
   const path   = nlogoScript.dataset.filename;
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], [listener]);
+  notifyListenersOfModelLoad('script-element')
+  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners);
 
 } else if (window.location.search.length > 0) {
   const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1);
   const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined;
 
   if (redirectOnProtocolMismatch(url)) {
-    Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], [listener]);
+    notifyListenersOfModelLoad('url', url)
+    Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], listeners);
   }
 
 } else {
@@ -169,10 +180,12 @@ if (nlogoScript.textContent.length > 0) {
 window.addEventListener("message", function (e) {
   switch (e.data.type) {
     case "nlw-load-model": {
+      notifyListenersOfModelLoad('file', e.data.path);
       loadModel(e.data.nlogo, e.data.path);
       break;
     }
     case "nlw-open-new": {
+      notifyListenersOfModelLoad('new-model');
       loadModel(newModel, "NewModel");
       break;
     }
