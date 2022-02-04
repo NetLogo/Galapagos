@@ -112,9 +112,12 @@ class SessionLite
   startLoop: ->
     if ProcedurePrims.hasCommand('startup')
       runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
+      @widgetController.ractive.fire('startup-procedure-run')
     @widgetController.redraw()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
+    @widgetController.ractive.fire('session-loop-started')
+    return
 
   updateDelay: ->
     viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]

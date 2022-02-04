@@ -1,6 +1,8 @@
 listenerEvents = Object.freeze([
   'model-load'
 , 'compile'
+, 'startup-procedure-run'
+, 'session-loop-started'
 , 'recompile-start'
 , 'recompile-complete'
 , 'new-widget-initialized'
