@@ -95,6 +95,7 @@ class SessionLite
     , 'input-widget-changed'
     , 'switch-widget-changed'
     , 'command-center-run'
+    , 'speed-slider-changed'
     ]
 
     listenerEvents.forEach( (eventName) =>

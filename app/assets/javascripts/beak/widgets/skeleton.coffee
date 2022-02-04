@@ -184,7 +184,7 @@ template =
 
       <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
         <span class="netlogo-label">model speed</span>
-        <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} />
+        <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" />
         <tickCounter isVisible="{{primaryView.showTickCounter}}"
                      label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
       </label>
