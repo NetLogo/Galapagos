@@ -21,6 +21,7 @@ listenerEvents = Object.freeze([
 , 'command-center-toggled'
 , 'model-code-toggled'
 , 'model-info-toggled'
+, 'authoring-mode-toggled'
 ])
 
 export { listenerEvents }
