@@ -246,12 +246,12 @@ RactiveValueWidget = RactiveWidget.extend({
       resetValuesToCurrent()
       return
 
-    'widget-value-change': () ->
+    'widget-value-change': (_, args...) ->
       newValue = @get('internalValue')
       oldValue = @get('oldValue')
       if (oldValue isnt newValue)
         @set('widget.currentValue', newValue)
-        @fire("#{@widgetType}-widget-changed", @get('widget.id'), newValue, oldValue, @get('widget.boxedValue.type'))
+        @fire("#{@widgetType}-widget-changed", @get('widget.id'), newValue, oldValue, args...)
       return
   }
 })

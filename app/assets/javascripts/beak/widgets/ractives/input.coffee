@@ -199,7 +199,7 @@ RactiveInput = RactiveValueWidget.extend({
             type="number"
             value="{{internalValue}}"
             lazy="true"
-            on-change="widget-value-change"
+            on-change="['widget-value-change', widget.boxedValue.type]"
             {{# isEditing }}disabled{{/}}
             />
         {{/}}
@@ -209,7 +209,7 @@ RactiveInput = RactiveValueWidget.extend({
             value="{{internalValue}}"
             on-keypress="handle-keypress"
             lazy="true"
-            on-change="widget-value-change"
+            on-change="['widget-value-change', widget.boxedValue.type]"
             {{# isEditing }}disabled{{/}} >
           </textarea>
         {{/}}
@@ -221,7 +221,7 @@ RactiveInput = RactiveValueWidget.extend({
             style="height: 50%;"
             initialCode="{{internalValue}}"
             isDisabled="{{isEditing}}"
-            on-change="widget-value-change"
+            on-change="['widget-value-change', widget.boxedValue.type]"
             />
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
@@ -230,7 +230,7 @@ RactiveInput = RactiveValueWidget.extend({
             style="margin: 0; width: 100%;"
             value="{{internalValue}}"
             isEnabled="{{!isEditing}}"
-            on-change="widget-value-change"
+            on-change="['widget-value-change', widget.boxedValue.type]"
             />
         {{/}}
       </label>
