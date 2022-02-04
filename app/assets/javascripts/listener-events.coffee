@@ -18,6 +18,9 @@ listenerEvents = Object.freeze([
 , 'switch-widget-changed'
 , 'command-center-run'
 , 'speed-slider-changed'
+, 'command-center-toggled'
+, 'model-code-toggled'
+, 'model-info-toggled'
 ])
 
 export { listenerEvents }

@@ -213,7 +213,7 @@ template =
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
       <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
+        <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
         <span class="netlogo-tab-text">Command Center</span>
       </label>
       {{#showConsole}}
@@ -221,14 +221,14 @@ template =
       {{/}}
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
+        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
         <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
       </label>
       {{#showCode}}
         <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
       {{/}}
       <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
         <span class="netlogo-tab-text">Model Info</span>
       </label>
       {{#showInfo}}
