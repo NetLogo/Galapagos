@@ -48,7 +48,7 @@ RactiveProjectChooser = RactiveModalDialog.extend({
         @loadLibrary(project)
 
       ).catch( (error) =>
-        @fire('ntb-error', {}, 'load-library-json', error)
+        @fire('nettango-error', {}, 'load-library-json', error)
         return
       )
       return

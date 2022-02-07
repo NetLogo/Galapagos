@@ -92,7 +92,7 @@ class WidgetController
   reportError: (time, source, details) =>
     if not ['runtime', 'compiler'].includes(time)
       throw new Error('Only valid values for `time` are "runtime" or "compiler"')
-    @ractive.fire("nlw-#{time}-error", {}, source, details)
+    @ractive.fire("#{time}-error", {}, source, details)
 
   # (Array[Widget], Array[Widget]) => Unit
   freshenUpWidgets: (realWidgets, newWidgets) ->

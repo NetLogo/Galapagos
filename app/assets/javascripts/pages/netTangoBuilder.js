@@ -38,15 +38,17 @@ const netTangoModelUrl = urlParams.get("netTangoModel")
 const playModeParam    = urlParams.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
 
+const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
+const listeners = [alerter]
 const netTango = new NetTangoController(
   "ntb-container"
 , ls
 , playMode || window.isStandaloneHTML
 , window.environmentMode
 , netTangoModelUrl
+, listeners
 )
-const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHTML)
+alerter.setNetTangoController(netTango)
 netTango.netLogoModel.alerter = alerter
-alerter.listenForNetTangoErrors(netTango)
 
 window.ractive = netTango.ractive

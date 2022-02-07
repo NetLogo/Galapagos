@@ -1,40 +1,40 @@
 import { listenerEvents } from "/listener-events.js"
 
-import "/codemirror-mode.js";
-import AlertDisplay from "/alert-display.js";
-import newModel from "/new-model.js";
-import Tortoise from "/beak/tortoise.js";
+import "/codemirror-mode.js"
+import AlertDisplay from "/alert-display.js"
+import newModel from "/new-model.js"
+import Tortoise from "/beak/tortoise.js"
 
-var loadingOverlay  = document.getElementById("loading-overlay");
-var activeContainer = loadingOverlay;
-var modelContainer  = document.querySelector("#netlogo-model-container");
-var nlogoScript     = document.querySelector("#nlogo-code");
+var loadingOverlay  = document.getElementById("loading-overlay")
+var activeContainer = loadingOverlay
+var modelContainer  = document.querySelector("#netlogo-model-container")
+var nlogoScript     = document.querySelector("#nlogo-code")
 
 var pageTitle       = function(modelTitle) {
   if (modelTitle != null && modelTitle != "") {
-    return "NetLogo Web: " + modelTitle;
+    return "NetLogo Web: " + modelTitle
   } else {
-    return "NetLogo Web";
+    return "NetLogo Web"
   }
-};
+}
 
-globalThis.session = null;
-var speed          = 0.0;
-var isVertical     = true;
+globalThis.session = null
+var speed          = 0.0
+var isVertical     = true
 
 var openSession = function(s) {
   globalThis.session = s
   globalThis.session.widgetController.ractive.set('speed', speed)
   globalThis.session.widgetController.ractive.set('isVertical', isVertical)
-  document.title = pageTitle(globalThis.session.modelTitle());
-  activeContainer = modelContainer;
-  globalThis.session.startLoop();
-  alerter.listenForErrors(globalThis.session.widgetController)
-};
+  document.title = pageTitle(globalThis.session.modelTitle())
+  activeContainer = modelContainer
+  globalThis.session.startLoop()
+  alerter.setWidgetController(globalThis.session.widgetController)
+}
 
-const isStandaloneHTML = (nlogoScript.textContent.length > 0);
+const isStandaloneHTML = (nlogoScript.textContent.length > 0)
 const isInFrame        = parent !== window
-const alerter          = new AlertDisplay(document.getElementById('alert-container'), isStandaloneHTML);
+const alerter          = new AlertDisplay(document.getElementById('alert-container'), isStandaloneHTML)
 const alertDialog      = document.getElementById('alert-dialog')
 
 function handleCompileResult(result) {
@@ -45,9 +45,9 @@ function handleCompileResult(result) {
       openSession(result.session)
     } else {
       activeContainer = alertDialog
-      loadingOverlay.style.display = "none";
+      loadingOverlay.style.display = "none"
     }
-    alerter.reportCompilerErrors(result.source, result.errors)
+    alerter['compiler-error'](result.source, result.errors)
   }
 }
 
@@ -57,7 +57,7 @@ listenerEvents.forEach( (eventName) => {
     console.log(eventName, args)
   }
 })
-const listeners = [debugListener]
+const listeners = [alerter, debugListener]
 
 function notifyListenersOfModelLoad(source, ...args) {
   listeners.forEach( (listener) => {
@@ -70,11 +70,11 @@ function notifyListenersOfModelLoad(source, ...args) {
 var loadModel = function(nlogo, path) {
   alerter.hide()
   if (globalThis.session) {
-    globalThis.session.teardown();
+    globalThis.session.teardown()
   }
-  activeContainer = loadingOverlay;
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners);
-};
+  activeContainer = loadingOverlay
+  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
+}
 
 const parseFloatOrElse = function(str, def) {
   const f = Number.parseFloat(str)
@@ -86,7 +86,7 @@ const clamp = function(min, max, val) {
 }
 
 const readSpeed = function(params) {
-  return params.has('speed') ? clamp(-1, 1, parseFloatOrElse(params.get('speed'), 0.0)) : 0.0;
+  return params.has('speed') ? clamp(-1, 1, parseFloatOrElse(params.get('speed'), 0.0)) : 0.0
 }
 
 const redirectOnProtocolMismatch = function(url) {
@@ -107,7 +107,7 @@ const redirectOnProtocolMismatch = function(url) {
   if (!isSameHost && !isCCL && isInFrame) {
     alerter.reportProtocolError(uri, newModelUrl)
     activeContainer = alertDialog
-    loadingOverlay.style.display = "none";
+    loadingOverlay.style.display = "none"
     return false
   }
 
@@ -127,7 +127,7 @@ const redirectOnProtocolMismatch = function(url) {
   if (!isSameHost && !isCCL) {
     alerter.reportProtocolError(uri, newModelUrl, newHref)
     activeContainer = alertDialog
-    loadingOverlay.style.display = "none";
+    loadingOverlay.style.display = "none"
     return false
   }
 
@@ -140,75 +140,73 @@ speed        = readSpeed(params)
 isVertical   = !(params.has('tabs') && params.get('tabs') === 'right')
 
 if (nlogoScript.textContent.length > 0) {
-  const nlogo  = nlogoScript.textContent;
-  const path   = nlogoScript.dataset.filename;
+  const nlogo  = nlogoScript.textContent
+  const path   = nlogoScript.dataset.filename
   notifyListenersOfModelLoad('script-element')
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners);
+  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
 
 } else if (window.location.search.length > 0) {
-  const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1);
-  const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined;
+  const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1)
+  const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined
 
   if (redirectOnProtocolMismatch(url)) {
     notifyListenersOfModelLoad('url', url)
-    Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], listeners);
+    Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], listeners)
   }
 
 } else {
-  loadModel(newModel, "NewModel");
-
+  loadModel(newModel, "NewModel")
 }
 
 window.addEventListener("message", function (e) {
   switch (e.data.type) {
     case "nlw-load-model": {
-      notifyListenersOfModelLoad('file', e.data.path);
-      loadModel(e.data.nlogo, e.data.path);
-      break;
+      notifyListenersOfModelLoad('file', e.data.path)
+      loadModel(e.data.nlogo, e.data.path)
+      break
     }
     case "nlw-open-new": {
-      notifyListenersOfModelLoad('new-model');
-      loadModel(newModel, "NewModel");
-      break;
+      notifyListenersOfModelLoad('new-model')
+      loadModel(newModel, "NewModel")
+      break
     }
     case "nlw-update-model-state": {
       globalThis.session.widgetController.setCode(e.data.codeTabContents);
-      break;
+      break
     }
     case "run-baby-behaviorspace": {
       var reaction =
         function(results) {
-          e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
-        };
-      globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
-      break;
+          e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
+        }
+        globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
+      break
     }
     case "nlw-export-model": {
-      var model = globalThis.session.getNlogo();
-      e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
-      break;
+      var model = session.getNlogo()
+      e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*")
+      break
     }
   }
-});
+})
 
 if (isInFrame) {
-  var width = "", height = "";
+  var width = "", height = ""
   window.setInterval(function() {
     if (activeContainer.offsetWidth  !== width ||
-      activeContainer.offsetHeight !== height ||
-      (globalThis.session !== null && document.title != pageTitle(globalThis.session.modelTitle()))
-    ) {
+        activeContainer.offsetHeight !== height ||
+        (globalThis.session !== null && document.title != pageTitle(globalThis.session.modelTitle()))) {
       if (globalThis.session !== null) {
-        document.title = pageTitle(globalThis.session.modelTitle());
+        document.title = pageTitle(globalThis.session.modelTitle())
       }
-      width = activeContainer.offsetWidth;
-      height = activeContainer.offsetHeight;
+      width = activeContainer.offsetWidth
+      height = activeContainer.offsetHeight
       parent.postMessage({
         width:  activeContainer.offsetWidth,
         height: activeContainer.offsetHeight,
         title:  document.title,
         type:   "nlw-resize"
-      }, "*");
+      }, "*")
     }
-  }, 200);
+  }, 200)
 }

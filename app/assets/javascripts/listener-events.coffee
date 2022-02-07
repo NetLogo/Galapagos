@@ -22,6 +22,10 @@ listenerEvents = Object.freeze([
 , 'model-code-toggled'
 , 'model-info-toggled'
 , 'authoring-mode-toggled'
+, 'notify-user'
+, 'compiler-error'
+, 'runtime-error'
+, 'exception-error'
 ])
 
 export { listenerEvents }

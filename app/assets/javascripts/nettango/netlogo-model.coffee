@@ -50,7 +50,7 @@ RactiveNetLogoModel = Ractive.extend({
     @workspace        = window.workspace
     document.title    = @pageTitle(@session.modelTitle())
     @session.startLoop()
-    @alerter.listenForErrors(@widgetController)
+    @alerter.setWidgetController(@widgetController)
 
   makeCompileResultHandler: (callback) ->
     (result) =>
@@ -62,7 +62,7 @@ RactiveNetLogoModel = Ractive.extend({
       else
         if result.source is 'compile-recoverable'
           @openSession(result.session)
-        @alerter.reportCompilerErrors(result.source, result.errors)
+        @alerter['compiler-error'](result.source, result.errors)
 
       return
 
@@ -70,14 +70,14 @@ RactiveNetLogoModel = Ractive.extend({
     if @session?
       @session.teardown()
 
-    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters)
+    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters, [@alerter])
     Tortoise.finishLoading()
 
   loadUrl: (url, modelName, rewriters, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters)
+    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters, [@alerter])
 
   template: """
     <div class="ntb-netlogo-model">

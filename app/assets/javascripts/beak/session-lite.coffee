@@ -62,7 +62,7 @@ class SessionLite
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
   #   String, String, Boolean, String, String, Boolean)
-  constructor: (@tortoise, container, @compiler, @rewriters, @listeners, widgets,
+  constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
     code, info, readOnly, filename, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
@@ -82,8 +82,8 @@ class SessionLite
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
-    listenerEvents.forEach( (eventName) =>
-      @listeners.forEach( (l) ->
+    listenerEvents.forEach( (eventName) ->
+      listeners.forEach( (l) ->
         if l[eventName]?
           ractive.on("*.#{eventName}", (_, args...) ->
             l[eventName](args...)

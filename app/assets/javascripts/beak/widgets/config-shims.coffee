@@ -236,10 +236,10 @@ genWorldConfig = (ractive) ->
 genConfigs = (ractive, viewController, container, compiler) ->
 
   notify = (message) ->
-    ractive.fire('nlw-notify', message)
+    ractive.fire('notify-user', message)
 
   reportErrors = (messages) ->
-    ractive.fire('nlw-extension-error', messages)
+    ractive.fire('extension-error', messages)
 
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
