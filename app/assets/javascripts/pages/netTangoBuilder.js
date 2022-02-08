@@ -1,3 +1,7 @@
+import { createDebugListener } from "/debug-listener.js"
+import { listenerEvents } from "/listener-events.js"
+import { netTangoEvents } from "/nettango/nettango-events.js"
+
 import "/codemirror-mode.js";
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js";
 import NetTangoController from "/nettango/nettango-controller.js";
@@ -33,13 +37,20 @@ try {
   ls = NetTangoStorage.fakeStorage()
 }
 
-const urlParams        = new URLSearchParams(window.location.search)
-const netTangoModelUrl = urlParams.get("netTangoModel")
-const playModeParam    = urlParams.get("playMode")
+const params           = new URLSearchParams(window.location.search)
+const netTangoModelUrl = params.get("netTangoModel")
+const playModeParam    = params.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
 
 const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
 const listeners = [alerter]
+
+if (params.has('debugEvents')) {
+  const events = listenerEvents.concat(netTangoEvents)
+  const debugListener = createDebugListener(events)
+  listeners.push(debugListener)
+}
+
 const netTango = new NetTangoController(
   "ntb-container"
 , ls
@@ -50,6 +61,6 @@ const netTango = new NetTangoController(
 )
 alerter.setNetTangoController(netTango)
 netTango.netLogoModel.alerter = alerter
-netTango.netLogoModel.listeners = [alerter]
+netTango.netLogoModel.listeners = listeners
 
 window.ractive = netTango.ractive

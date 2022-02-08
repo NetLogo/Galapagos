@@ -1,11 +1,9 @@
+import { netTangoEvents } from "./nettango-events.js"
+
 import NetTangoRewriter from "./rewriter.js"
 import NetTangoStorage from "./storage.js"
 import NetTangoSkeleton from "./nettango-skeleton.js"
 import UndoRedo from "./undo-redo.js"
-
-netTangoListenerEvents = [
-  'nettango-error'
-]
 
 class NetTangoController
 
@@ -36,11 +34,11 @@ class NetTangoController
       return
     )
 
-    netTangoListenerEvents.forEach( (eventName) ->
+    netTangoEvents.forEach( (event) ->
       listeners.forEach( (l) ->
-        if l[eventName]?
-          ractive.on("*.#{eventName}", (_, args...) ->
-            l[eventName](args...)
+        if l[event]?
+          ractive.on("*.#{event}", (_, args...) ->
+            l[event](args...)
             return
           )
         return

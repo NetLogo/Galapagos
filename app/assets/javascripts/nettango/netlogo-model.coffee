@@ -80,14 +80,14 @@ RactiveNetLogoModel = Ractive.extend({
     if @session?
       @session.teardown()
 
-    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters, [@alerter])
+    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters, @listeners)
     Tortoise.finishLoading()
 
   loadUrl: (url, modelName, rewriters, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters, [@alerter])
+    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters, @listeners)
 
   template: """
     <div class="ntb-netlogo-model">

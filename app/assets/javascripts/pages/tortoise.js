@@ -7,6 +7,8 @@ if(pathSplits.length > 2) {
   hostPrefix = hostPrefix + "/" + pathSplits[1]
 }
 
+const params = new URLSearchParams(window.location.search)
+
 var modelFileInput = document.querySelector('#model-file-input');
 modelFileInput.addEventListener('click', function (event) { this.value = '' })
 modelFileInput.addEventListener('change', function (event) {
@@ -37,17 +39,17 @@ function openModelFromUrl(url) {
   if (url === "Load") {
     selectModel("Select a model");
     if (modelContainer.contentWindow.location == "about:blank") {
-      modelContainer.contentWindow.location.replace("./web");
+      modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
       modelFileInput.value = "";
     }
   } else if (url === "NewModel") {
     selectModel("Select a model");
-    modelContainer.contentWindow.location.replace("./web");
+    modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";
   } else {
     selectModelByURL(url);
-    const query = (window.location.search === "") ? url : `url=${url}&${window.location.search.slice(1)}`;
-    modelContainer.contentWindow.location.replace(`./web?${query}`);
+    params.set("url", url)
+    modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";
   }
 }
@@ -107,7 +109,7 @@ function initModel() {
   if (window.location.hash) {
     var hash = window.location.hash.substring(1);
     if (hash === "NewModel") {
-      modelContainer.contentWindow.location.replace("./web");
+      modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     } else {
       openModelFromUrl(hash);
     }

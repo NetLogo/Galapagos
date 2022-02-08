@@ -1,4 +1,5 @@
 import { listenerEvents } from "/listener-events.js"
+import { createDebugListener } from "/debug-listener.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
@@ -9,6 +10,17 @@ var loadingOverlay  = document.getElementById("loading-overlay")
 var activeContainer = loadingOverlay
 var modelContainer  = document.querySelector("#netlogo-model-container")
 var nlogoScript     = document.querySelector("#nlogo-code")
+const params        = new URLSearchParams(window.location.search)
+
+const paramKeys     = Array.from(params.keys())
+if (paramKeys.length === 1) {
+  const maybeUrl = paramKeys[0]
+  if (maybeUrl.startsWith("http") && params.get(maybeUrl) === '') {
+    params.delete(maybeUrl)
+    params.set('url', maybeUrl)
+    window.location.search = params.toString()
+  }
+}
 
 var pageTitle       = function(modelTitle) {
   if (modelTitle != null && modelTitle != "") {
@@ -51,13 +63,11 @@ function handleCompileResult(result) {
   }
 }
 
-const debugListener = {}
-listenerEvents.forEach( (eventName) => {
-  debugListener[eventName] = (...args) => {
-    console.log(eventName, args)
-  }
-})
-const listeners = [alerter, debugListener]
+const listeners = [alerter]
+
+if (params.has('debugEvents')) {
+  listeners.push(createDebugListener(listenerEvents))
+}
 
 function notifyListeners(event, ...args) {
   listeners.forEach( (listener) => {
@@ -111,7 +121,6 @@ const redirectOnProtocolMismatch = function(url) {
     return false
   }
 
-  const params  = new URLSearchParams(window.location.search)
   var newSearch = ""
   if (params.has("url")) {
     params.set("url", newModelUrl)
@@ -135,7 +144,6 @@ const redirectOnProtocolMismatch = function(url) {
   return false
 }
 
-const params = new URLSearchParams(window.location.search)
 speed        = readSpeed(params)
 isVertical   = !(params.has('tabs') && params.get('tabs') === 'right')
 
@@ -145,8 +153,8 @@ if (nlogoScript.textContent.length > 0) {
   notifyListeners('model-load', 'script-element')
   Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
 
-} else if (window.location.search.length > 0) {
-  const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1)
+} else if (params.has('url')) {
+  const url       = params.get('url')
   const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined
 
   if (redirectOnProtocolMismatch(url)) {
