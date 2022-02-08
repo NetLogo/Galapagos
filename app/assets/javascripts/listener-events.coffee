@@ -25,7 +25,7 @@ listenerEvents = Object.freeze([
 , 'notify-user'
 , 'compiler-error'
 , 'runtime-error'
-, 'exception-error'
+, 'extension-error'
 ])
 
 export { listenerEvents }
