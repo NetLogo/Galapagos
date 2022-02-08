@@ -216,8 +216,7 @@ class SessionLite
     )
 
   # ("user" | "system", String, String, Object[String]) => Unit
-  recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
-    @widgetController.ractive.fire('recompile-start', source)
+  recompileSync: (source) ->
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
     rewritten     = @rewriteCode(code)
@@ -231,6 +230,8 @@ class SessionLite
     , turtleShapes: turtleShapes ? []
     , linkShapes:   linkShapes ? []
     }
+
+    @widgetController.ractive.fire('recompile-start', source, rewritten, code)
 
     try
       res = @compiler.fromModel(compileParams)
