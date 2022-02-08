@@ -2,10 +2,10 @@ import { createDebugListener } from "/debug-listener.js"
 import { listenerEvents } from "/listener-events.js"
 import { netTangoEvents } from "/nettango/nettango-events.js"
 
-import "/codemirror-mode.js";
-import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js";
-import NetTangoController from "/nettango/nettango-controller.js";
-import NetTangoStorage from "/nettango/storage.js";
+import "/codemirror-mode.js"
+import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
+import NetTangoController from "/nettango/nettango-controller.js"
+import NetTangoStorage from "/nettango/storage.js"
 
 const builderContainer = document.getElementById("ntb-container")
 
