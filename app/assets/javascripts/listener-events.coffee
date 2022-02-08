@@ -1,6 +1,7 @@
 listenerEvents = Object.freeze([
   'model-load'
-, 'compile'
+, 'compile-start'
+, 'compile-complete'
 , 'startup-procedure-run'
 , 'session-loop-started'
 , 'recompile-start'

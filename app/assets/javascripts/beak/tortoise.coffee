@@ -85,11 +85,12 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
   extraCommands  = rewriters.reduce(extrasReducer, [])
+  listeners.forEach( (l) -> l['compile-start']?(rewrittenNlogo, nlogo) )
   result         = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
-    listeners.forEach( (l) -> l['compile']?(rewrittenNlogo, nlogo) )
+    listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'success') )
     callback({
       type:    'success'
     , session: openSession(container, modelPath, name, compiler, rewriters, listeners, result, false)
@@ -100,21 +101,22 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   else
     secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
     if secondChanceResult?
-      listeners.forEach( (l) -> l['compile']?(rewrittenNlogo, nlogo) )
+      listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'failure', 'compile-recoverable') )
       callback({
-        type:        'failure'
-      , source:      'compile-recoverable'
-      , session:     openSession(container, modelPath, name, compiler, rewriters, listeners, secondChanceResult, true)
-      , errors:      result.model.result
+        type:    'failure'
+      , source:  'compile-recoverable'
+      , session: openSession(container, modelPath, name, compiler, rewriters, listeners, secondChanceResult, true)
+      , errors:  result.model.result
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
+      listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'failure', 'compile-fatal') )
       callback({
-        type:        'failure'
-      , source:      'compile-fatal'
-      , errors:      result.model.result
+        type:   'failure'
+      , source: 'compile-fatal'
+      , errors: result.model.result
       })
 
   return
