@@ -89,7 +89,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
 
   if result.model.success
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
-    listeners.forEach( (l) -> l.compile?(rewrittenNlogo, nlogo) )
+    listeners.forEach( (l) -> l['compile']?(rewrittenNlogo, nlogo) )
     callback({
       type:    'success'
     , session: openSession(container, modelPath, name, compiler, rewriters, listeners, result, false)
@@ -100,7 +100,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   else
     secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
     if secondChanceResult?
-      listeners.forEach( (l) -> l.compile?(rewrittenNlogo, nlogo) )
+      listeners.forEach( (l) -> l['compile']?(rewrittenNlogo, nlogo) )
       callback({
         type:        'failure'
       , source:      'compile-recoverable'
