@@ -7,6 +7,7 @@ import Tortoise from "/beak/tortoise.js"
 
 RactiveNetLogoModel = Ractive.extend({
 
+  listeners:        null # Array[Listener]
   alerter:          null # AlertDisplay
   modelContainer:   null # Element
   session:          null # SessionLite
@@ -20,12 +21,15 @@ RactiveNetLogoModel = Ractive.extend({
       window.addEventListener("message", (e) =>
         switch e.data.type
           when "nlw-load-model"
+            @notifyListeners('model-load', 'file', e.data.path)
             @loadModel(e.data.nlogo, e.data.path)
 
           when "nlw-open-new"
+            @notifyListeners('model-load', 'new-model')
             @loadModel(newModelNetTango, "NewModel")
 
           when "nlw-load-url"
+            @notifyListeners('model-load', 'url', e.data.name)
             @loadUrl(e.data.url, e.data.name)
 
           when "nlw-update-model-state"
@@ -43,6 +47,12 @@ RactiveNetLogoModel = Ractive.extend({
   pageTitle: (modelTitle) ->
     title = if modelTitle? and modelTitle.trim() isnt "" then ": #{modelTitle}" else ""
     "NetLogo Web#{title}"
+
+  notifyListeners: (event, args...) ->
+    @listeners.forEach( (listener) ->
+      if listener[event]?
+        listener[event](...args)
+    )
 
   openSession: (session) ->
     @session          = session
@@ -62,7 +72,7 @@ RactiveNetLogoModel = Ractive.extend({
       else
         if result.source is 'compile-recoverable'
           @openSession(result.session)
-        @alerter['compiler-error'](result.source, result.errors)
+        @notifyListeners('compiler-error', result.source, result.errors)
 
       return
 

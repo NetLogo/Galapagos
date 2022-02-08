@@ -47,7 +47,7 @@ function handleCompileResult(result) {
       activeContainer = alertDialog
       loadingOverlay.style.display = "none"
     }
-    alerter['compiler-error'](result.source, result.errors)
+    notifyListeners('compiler-error', result.source, result.errors)
   }
 }
 
@@ -59,10 +59,10 @@ listenerEvents.forEach( (eventName) => {
 })
 const listeners = [alerter, debugListener]
 
-function notifyListenersOfModelLoad(source, ...args) {
+function notifyListeners(event, ...args) {
   listeners.forEach( (listener) => {
-    if (listener['model-load'] !== undefined) {
-      listener['model-load'](source, ...args)
+    if (listener[event] !== undefined) {
+      listener[event](...args)
     }
   })
 }
@@ -142,7 +142,7 @@ isVertical   = !(params.has('tabs') && params.get('tabs') === 'right')
 if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent
   const path   = nlogoScript.dataset.filename
-  notifyListenersOfModelLoad('script-element')
+  notifyListeners('model-load', 'script-element')
   Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
 
 } else if (window.location.search.length > 0) {
@@ -150,23 +150,24 @@ if (nlogoScript.textContent.length > 0) {
   const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined
 
   if (redirectOnProtocolMismatch(url)) {
-    notifyListenersOfModelLoad('url', url)
+    notifyListeners('model-load', 'url', url)
     Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], listeners)
   }
 
 } else {
+  notifyListeners('model-load', 'new-model')
   loadModel(newModel, "NewModel")
 }
 
 window.addEventListener("message", function (e) {
   switch (e.data.type) {
     case "nlw-load-model": {
-      notifyListenersOfModelLoad('file', e.data.path)
+      notifyListeners('model-load', 'file', e.data.path)
       loadModel(e.data.nlogo, e.data.path)
       break
     }
     case "nlw-open-new": {
-      notifyListenersOfModelLoad('new-model')
+      notifyListeners('model-load', 'new-model')
       loadModel(newModel, "NewModel")
       break
     }

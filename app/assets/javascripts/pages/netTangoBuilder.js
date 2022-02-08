@@ -50,5 +50,6 @@ const netTango = new NetTangoController(
 )
 alerter.setNetTangoController(netTango)
 netTango.netLogoModel.alerter = alerter
+netTango.netLogoModel.listeners = [alerter]
 
 window.ractive = netTango.ractive
