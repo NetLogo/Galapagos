@@ -32,7 +32,7 @@ class WidgetController
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
-    @ractive.fire('new-widget-initialized', {}, widget, id)
+    @ractive.fire('new-widget-initialized', id)
 
     return
 
@@ -75,12 +75,12 @@ class WidgetController
     @ractive.fire('deselect-widgets')
 
     if wasNew
-      @ractive.fire('new-widget-cancelled', {}, id)
+      @ractive.fire('new-widget-cancelled', id)
 
     else
       switch widgetType
         when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('recompile-sync', 'system')
-      @ractive.fire('widget-deleted', {}, id)
+      @ractive.fire('widget-deleted', id)
 
     return
 

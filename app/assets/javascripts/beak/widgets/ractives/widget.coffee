@@ -192,7 +192,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
             realEvent.run(this, widget)
 
           notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
-          @fire(notifyEventName, {}, widget, widget.id)
+          @fire(notifyEventName, widget.id)
 
           @fire('update-widgets')
 
