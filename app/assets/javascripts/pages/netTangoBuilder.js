@@ -52,7 +52,7 @@ if (params.has('debugEvents')) {
   listeners.push(debugListener)
 }
 if (params.has('relayIframeEvents')) {
-  const relayListener = createIframeRelayListener(params.get('relayIframeEvents'), allEvents)
+  const relayListener = createIframeRelayListener(allEvents, params.get('relayIframeEvents'))
   listeners.push(relayListener)
 }
 

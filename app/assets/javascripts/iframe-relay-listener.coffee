@@ -6,15 +6,21 @@ postMessage = (event, args) ->
   }, '*')
   return
 
-createIframeRelayListener = (eventsString, fallbackEvents) ->
+createIframeRelayListener = (allEvents, eventsString) ->
   events = if eventsString.trim() isnt ''
-    eventsString.split(',').map( (event) -> event.trim() )
+    eventNames = eventsString.split(',').map( (event) -> event.trim() )
+    allEvents.filter( (event) -> eventNames.includes(event.name) )
   else
-    fallbackEvents
+    allEvents
 
   listener = {}
   events.forEach( (event) ->
-    listener[event] = (args...) -> postMessage(event, args)
+    listener[event.name] = (args...) ->
+      namedArgs = {}
+      event.args.forEach( (arg, i) ->
+        namedArgs[arg] = args[i]
+      )
+      postMessage(event.name, namedArgs)
   )
 
   listener

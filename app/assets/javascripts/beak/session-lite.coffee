@@ -82,11 +82,11 @@ class SessionLite
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
-    listenerEvents.forEach( (eventName) ->
+    listenerEvents.forEach( (event) ->
       listeners.forEach( (l) ->
-        if l[eventName]?
-          ractive.on("*.#{eventName}", (_, args...) ->
-            l[eventName](args...)
+        if l[event.name]?
+          ractive.on("*.#{event.name}", (_, args...) ->
+            l[event.name](args...)
             return
           )
         return

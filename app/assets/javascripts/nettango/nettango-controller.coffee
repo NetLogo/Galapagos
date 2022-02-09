@@ -36,9 +36,9 @@ class NetTangoController
 
     netTangoEvents.forEach( (event) ->
       listeners.forEach( (l) ->
-        if l[event]?
-          ractive.on("*.#{event}", (_, args...) ->
-            l[event](args...)
+        if l[event.name]?
+          ractive.on("*.#{event.name}", (_, args...) ->
+            l[event.name](args...)
             return
           )
         return

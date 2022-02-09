@@ -67,11 +67,11 @@ function handleCompileResult(result) {
 const listeners = [alerter]
 
 if (params.has('debugEvents')) {
-  debugListener = createDebugListener(listenerEvents)
+  const debugListener = createDebugListener(listenerEvents)
   listeners.push(debugListener)
 }
 if (params.has('relayIframeEvents')) {
-  const relayListener = createIframeRelayListener(params.get('relayIframeEvents'), listenerEvents)
+  const relayListener = createIframeRelayListener(listenerEvents, params.get('relayIframeEvents'))
   listeners.push(relayListener)
 }
 
