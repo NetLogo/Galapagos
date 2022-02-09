@@ -1,5 +1,6 @@
 import { listenerEvents } from "/listener-events.js"
 import { createDebugListener } from "/debug-listener.js"
+import { createIframeRelayListener } from "/iframe-relay-listener.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
@@ -66,7 +67,12 @@ function handleCompileResult(result) {
 const listeners = [alerter]
 
 if (params.has('debugEvents')) {
-  listeners.push(createDebugListener(listenerEvents))
+  debugListener = createDebugListener(listenerEvents)
+  listeners.push(debugListener)
+}
+if (params.has('relayIframeEvents')) {
+  const relayListener = createIframeRelayListener(params.get('relayIframeEvents'), listenerEvents)
+  listeners.push(relayListener)
 }
 
 function notifyListeners(event, ...args) {

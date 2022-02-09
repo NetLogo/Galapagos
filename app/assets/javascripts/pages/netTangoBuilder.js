@@ -45,10 +45,15 @@ const playMode         = (playModeParam && playModeParam === "true")
 const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
 const listeners = [alerter]
 
+const allEvents = listenerEvents.concat(netTangoEvents)
+
 if (params.has('debugEvents')) {
-  const events = listenerEvents.concat(netTangoEvents)
-  const debugListener = createDebugListener(events)
+  const debugListener = createDebugListener(allEvents)
   listeners.push(debugListener)
+}
+if (params.has('relayIframeEvents')) {
+  const relayListener = createIframeRelayListener(params.get('relayIframeEvents'), allEvents)
+  listeners.push(relayListener)
 }
 
 const netTango = new NetTangoController(
