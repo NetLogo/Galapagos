@@ -96,6 +96,11 @@ RactiveLabel = RactiveWidget.extend({
   eventTriggers: ->
     {}
 
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    widget = @get('widget')
+    [widget.display]
+
   minWidth:  13
   minHeight: 13
 

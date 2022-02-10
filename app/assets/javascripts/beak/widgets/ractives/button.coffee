@@ -123,7 +123,8 @@ RactiveButton = RactiveWidget.extend({
     @on('activate-button', (_, run) ->
       if @get('isEnabled')
         run()
-        @fire('button-widget-clicked', @get('widget.id'), false, false)
+        widget = @get('widget')
+        @fire('button-widget-clicked', widget.id, widget.display, widget.source, false, false)
       return
     )
     return
@@ -132,7 +133,8 @@ RactiveButton = RactiveWidget.extend({
     'forever-button-change': () ->
       isRunning = @get('isRunning')
       @set('widget.running', isRunning)
-      @fire('button-widget-clicked', @get('widget.id'), true, isRunning)
+      widget = @get('widget')
+      @fire('button-widget-clicked', widget.id, widget.display, widget.source, true, isRunning)
       return
 
   }
@@ -153,6 +155,11 @@ RactiveButton = RactiveWidget.extend({
     ,    forever: [@_weg.recompile]
     ,     source: [@_weg.recompile]
     }
+
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    button = @get('widget')
+    [button.display, button.source]
 
   minWidth:  35
   minHeight: 30

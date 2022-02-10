@@ -105,6 +105,10 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
   handleResizeEnd: ->
     return
 
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: (widget) ->
+    []
+
   on: {
 
     'edit-widget': ->
@@ -192,7 +196,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
             realEvent.run(this, widget)
 
           notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
-          @fire(notifyEventName, widget.id)
+          @fire(notifyEventName, widget.id, widget.type, @getExtraNotificationArgs()...)
 
           @fire('update-widgets')
 
@@ -251,9 +255,16 @@ RactiveValueWidget = RactiveWidget.extend({
       oldValue = @get('oldValue')
       if (oldValue isnt newValue)
         @set('widget.currentValue', newValue)
-        @fire("#{@widgetType}-widget-changed", @get('widget.id'), newValue, oldValue, args...)
+        widget = @get('widget')
+        @fire("#{@widgetType}-widget-changed", widget.id, widget.variable, newValue, oldValue, args...)
       return
   }
+
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    widget = @get('widget')
+    [widget.variable]
+
 })
 
 export { RactiveWidget, RactiveValueWidget }

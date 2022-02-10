@@ -90,6 +90,11 @@ RactiveMonitor = RactiveWidget.extend({
   eventTriggers: ->
     { source: [@_weg.recompile] }
 
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    widget = @get('widget')
+    [widget.display, widget.source]
+
   minWidth:  20
   minHeight: 45
 

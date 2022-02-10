@@ -1,3 +1,22 @@
+widgetArgs = Object.freeze([
+  'id'    # Number
+  'type', # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
+  {
+    dependentArg: 'type'
+    cases: [
+      { name: 'global', dependentValues: ['chooser', 'inputBox', 'slider', 'switch'] }
+    , { name: 'name',   dependentValues: ['button', 'monitor', 'plot'] }
+    , { name: 'text',   dependentValues: ['textBox'] }
+    ]
+  },
+  {
+    dependentArg: 'type'
+    cases: [
+      { name: 'code', dependentValues: ['button', 'monitor'] }
+    ]
+  }
+])
+
 listenerEvents = Object.freeze([
   {
     'name': 'model-load',
@@ -47,32 +66,28 @@ listenerEvents = Object.freeze([
   {
     'name': 'new-widget-initialized',
     'args': [
-      'id' # Number
+      'id'    # Number
+      'type', # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
     ]
   },
   {
     'name': 'new-widget-finalized',
-    'args': [
-      'id' # Number
-    ]
+    'args': widgetArgs
   },
   {
     'name': 'new-widget-cancelled',
     'args': [
-      'id' # Number
+      'id'    # Number
+      'type', # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
     ]
   },
   {
     'name': 'widget-updated',
-    'args': [
-      'id' # Number
-    ]
+    'args': widgetArgs
   },
   {
     'name': 'widget-deleted',
-    'args': [
-      'id' # Number
-    ]
+    'args': widgetArgs
   },
   {
     'name': 'info-updated',
@@ -84,6 +99,8 @@ listenerEvents = Object.freeze([
     'name': 'button-widget-clicked',
     'args': [
       'id',          # Number
+      'name',        # String
+      'code',        # String
       'isForever',   # Boolean
       'isNowRunning' # Boolean, false if not a forever button or a forever button was turned off
     ]
@@ -92,6 +109,7 @@ listenerEvents = Object.freeze([
     'name': 'slider-widget-changed',
     'args': [
       'id',       # Number
+      'global',   # String
       'newValue', # Number, the new value of the widget
       'oldValue'  # Number, the prior value of the widget
     ]
@@ -100,6 +118,7 @@ listenerEvents = Object.freeze([
     'name': 'chooser-widget-changed',
     'args': [
       'id',       # Number
+      'global',   # String
       'newValue', # Any, the new value of the widget
       'oldValue', # Any, the prior value of the widget
     ]
@@ -108,6 +127,7 @@ listenerEvents = Object.freeze([
     'name': 'input-widget-changed',
     'args': [
       'id',       # Number
+      'global',   # String
       'newValue', # Any, the new value of the widget
       'oldValue', # Any, the prior value of the widget
       'type'      # 'Number' | 'String' | 'String (reporter)' | 'String (command)' | 'Color'
@@ -116,10 +136,11 @@ listenerEvents = Object.freeze([
   {
     'name': 'switch-widget-changed',
     'args': [
-        'id'       # Number
-      , 'newValue' # Boolean, the new value of the widget
-      , 'oldValue' # Boolean, the prior value of the widget
-      ]
+      'id'        # Number
+      'global',   # String
+      'newValue', # Boolean, the new value of the widget
+      'oldValue', # Boolean, the prior value of the widget
+    ]
   },
   {
     'name': 'command-center-run',
@@ -184,10 +205,26 @@ listenerEvents = Object.freeze([
   }
 ])
 
-createNamedArgs = (argNames, argValues) ->
+getArgName = (argSetting, args) ->
+  if (typeof argSetting) is 'string'
+    argSetting
+  else
+    dependentValue = args[argSetting.dependentArg]
+    maybeCase = argSetting.cases.filter( (argCase) ->
+      argCase.dependentValues.includes(dependentValue)
+    )
+    if maybeCase.length is 1
+      foundCase = maybeCase[0]
+      foundCase.name
+    else
+      null
+
+createNamedArgs = (argSettings, argValues) ->
   namedArgs = {}
-  argNames.forEach( (argName, i) ->
-    namedArgs[argName] = argValues[i]
+  argSettings.forEach( (argSetting, i) ->
+    argName = getArgName(argSetting, namedArgs)
+    if argName isnt null
+      namedArgs[argName] = argValues[i]
   )
   namedArgs
 

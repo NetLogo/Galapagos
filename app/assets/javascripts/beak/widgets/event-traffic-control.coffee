@@ -209,9 +209,9 @@ controlEventTraffic = (controller) ->
     ractive.set('hasFocus', document.activeElement is node)
     return
 
-  # (_, Number, Boolean) => Unit
-  unregisterWidget = (_, id, wasNew) ->
-    controller.removeWidgetById(id, wasNew)
+  # (_, Number, Boolean, Array[Any]) => Unit
+  unregisterWidget = (_, id, wasNew, extraNotificationArgs) ->
+    controller.removeWidgetById(id, wasNew, extraNotificationArgs)
     refreshDims()
     return
 
