@@ -1,3 +1,5 @@
+import { createNamedArgs } from "./listener-events.js"
+
 postMessage = (event, args) ->
   window.parent.postMessage({
     type:  'nlw-notification'
@@ -16,10 +18,7 @@ createIframeRelayListener = (allEvents, eventsString) ->
   listener = {}
   events.forEach( (event) ->
     listener[event.name] = (args...) ->
-      namedArgs = {}
-      event.args.forEach( (arg, i) ->
-        namedArgs[arg] = args[i]
-      )
+      namedArgs = createNamedArgs(event.args, args)
       postMessage(event.name, namedArgs)
   )
 

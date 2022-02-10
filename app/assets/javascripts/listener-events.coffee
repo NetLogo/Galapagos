@@ -184,4 +184,11 @@ listenerEvents = Object.freeze([
   }
 ])
 
-export { listenerEvents }
+createNamedArgs = (argNames, argValues) ->
+  namedArgs = {}
+  argNames.forEach( (argName, i) ->
+    namedArgs[argName] = argValues[i]
+  )
+  namedArgs
+
+export { listenerEvents, createNamedArgs }
