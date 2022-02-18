@@ -390,8 +390,6 @@ setUpEventListeners = ->
         viewState = session.widgetController.widgets().find(({ type }) -> type is 'view')
         role      = roles[e.data.roleName]
 
-        session.subscribeWithID(null, e.data.token)
-
         username = e.data.username
         who      = null
 
@@ -418,6 +416,8 @@ setUpEventListeners = ->
         msg        = { token: e.data.token, role, state, viewState, type }
         respondent = e.ports?[0] ? babyMonitor
         respondent.postMessage(msg)
+
+        session.subscribeWithID(null, e.data.token)
 
       when "hnw-notify-disconnect"
 
