@@ -1,6 +1,7 @@
 import { listenerEvents } from "/listener-events.js"
 import { createDebugListener } from "/debug-listener.js"
 import { createIframeRelayListener } from "/iframe-relay-listener.js"
+import { createQueryHandler } from "/iframe-query-handler.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
@@ -70,7 +71,7 @@ if (params.has('debugEvents')) {
   const debugListener = createDebugListener(listenerEvents)
   listeners.push(debugListener)
 }
-if (params.has('relayIframeEvents')) {
+if (isInFrame && params.has('relayIframeEvents')) {
   const relayListener = createIframeRelayListener(listenerEvents, params.get('relayIframeEvents'))
   listeners.push(relayListener)
 }
@@ -81,6 +82,10 @@ function notifyListeners(event, ...args) {
       listener[event](...args)
     }
   })
+}
+
+if (isInFrame) {
+  createQueryHandler()
 }
 
 var loadModel = function(nlogo, path) {
