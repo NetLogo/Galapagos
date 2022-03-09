@@ -187,7 +187,8 @@ listenerEvents = Object.freeze([
   {
     'name': 'compiler-error',
     'args': [
-      'source' # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser' | 'slider' | 'plot' | 'input' | 'switch' | 'console'
+      'source' # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
+               # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
     ]
   },
   {
