@@ -17,9 +17,8 @@ createIframeRelayListener = (allEvents, eventsString) ->
 
   listener = {}
   events.forEach( (event) ->
-    listener[event.name] = (args...) ->
-      namedArgs = createNamedArgs(event.args, args)
-      postMessage(event.name, namedArgs)
+    listener[event.name] = (commonArgs, eventArgs) ->
+      postMessage(event.name, commonArgs, eventArgs)
   )
 
   listener

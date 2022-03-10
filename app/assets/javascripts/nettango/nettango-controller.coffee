@@ -1,3 +1,4 @@
+import { createCommonArgs, createNamedArgs } from "../listener-events.js"
 import { netTangoEvents } from "./nettango-events.js"
 
 import NetTangoRewriter from "./rewriter.js"
@@ -38,7 +39,9 @@ class NetTangoController
       listeners.forEach( (l) ->
         if l[event.name]?
           ractive.on("*.#{event.name}", (_, args...) ->
-            l[event.name](args...)
+            commonArgs = createCommonArgs()
+            eventArgs  = createNamedArgs(event.args, args)
+            l[event.name](commonArgs, eventArgs)
             return
           )
         return

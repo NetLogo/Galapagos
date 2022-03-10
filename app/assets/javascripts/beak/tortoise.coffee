@@ -1,5 +1,6 @@
 import SessionLite from "./session-lite.js"
 import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
+import { createNotifier, listenerEvents } from "../listener-events.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, String, Boolean)
 #   => SessionLite
@@ -80,17 +81,18 @@ fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) 
 
 compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   compiler = new BrowserCompiler()
+  notifyListeners = createNotifier(listenerEvents, listeners)
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
   extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
   extraCommands  = rewriters.reduce(extrasReducer, [])
-  listeners.forEach( (l) -> l['compile-start']?(rewrittenNlogo, nlogo) )
+  notifyListeners('compile-start', rewrittenNlogo, nlogo)
   result         = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
     result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
-    listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'success') )
+    notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'success')
     callback({
       type:    'success'
     , session: openSession(container, modelPath, name, compiler, rewriters, listeners, result, false)
@@ -101,7 +103,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
   else
     secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
     if secondChanceResult?
-      listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'failure', 'compile-recoverable') )
+      notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'failure', 'compile-recoverable')
       callback({
         type:    'failure'
       , source:  'compile-recoverable'
@@ -112,7 +114,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      listeners.forEach( (l) -> l['compile-complete']?(rewrittenNlogo, nlogo, 'failure', 'compile-fatal') )
+      notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'failure', 'compile-fatal')
       callback({
         type:   'failure'
       , source: 'compile-fatal'

@@ -35,7 +35,8 @@ class NetTangoAlertDisplay extends AlertDisplay
     @netTango = netTango
     return
 
-  'nettango-error': (source, exception) ->
+  # (CommonEventArgs, { source: String, exception: Exception })
+  'nettango-error': (_, {source, exception}) ->
     @reportNetTangoError(source, exception)
     return
 
@@ -58,8 +59,9 @@ class NetTangoAlertDisplay extends AlertDisplay
     else
       false
 
-  # (String, Array[CompilerError]) => Unit
-  'compiler-error': (source, errors) ->
+  # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
+  'compiler-error': (commonArgs, eventArgs) ->
+    { source, errors } = eventArgs
     switch source
       when 'compile-fatal'
         message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
@@ -77,7 +79,7 @@ class NetTangoAlertDisplay extends AlertDisplay
         @reportNetTangoError('recompile-procedures', errors[0])
 
       else
-        super['compiler-error'](source, errors)
+        super['compiler-error'](commonArgs, eventArgs)
 
     return
 

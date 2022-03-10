@@ -1,4 +1,4 @@
-import { listenerEvents } from "../listener-events.js"
+import { createCommonArgs, createNamedArgs, listenerEvents } from "../listener-events.js"
 
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"
@@ -86,7 +86,9 @@ class SessionLite
       listeners.forEach( (l) ->
         if l[event.name]?
           ractive.on("*.#{event.name}", (_, args...) ->
-            l[event.name](args...)
+            commonArgs = createCommonArgs()
+            eventArgs  = createNamedArgs(event.args, args)
+            l[event.name](commonArgs, eventArgs)
             return
           )
         return

@@ -1,5 +1,6 @@
 import newModelNetTango from "./new-model-nettango.js"
 import Tortoise from "/beak/tortoise.js"
+import { createNotifier, listenerEvents } from "../listener-events.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
 # into a Ractive component.  With more work it could encapsulate a lot more
@@ -17,6 +18,7 @@ RactiveNetLogoModel = Ractive.extend({
   on: {
     complete: (_) ->
       @modelContainer = @find("#netlogo-model-container")
+      @notifyListeners = createNotifier(listenerEvents, @listeners)
 
       window.addEventListener("message", (e) =>
         switch e.data.type
@@ -47,12 +49,6 @@ RactiveNetLogoModel = Ractive.extend({
   pageTitle: (modelTitle) ->
     title = if modelTitle? and modelTitle.trim() isnt "" then ": #{modelTitle}" else ""
     "NetLogo Web#{title}"
-
-  notifyListeners: (event, args...) ->
-    @listeners.forEach( (listener) ->
-      if listener[event]?
-        listener[event](...args)
-    )
 
   openSession: (session) ->
     @session          = session

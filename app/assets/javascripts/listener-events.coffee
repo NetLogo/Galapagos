@@ -187,8 +187,9 @@ listenerEvents = Object.freeze([
   {
     'name': 'compiler-error',
     'args': [
-      'source' # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
-               # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
+      'source', # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
+                # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
+      'errors'  # Array[Exception]
     ]
   },
   {
@@ -229,4 +230,25 @@ createNamedArgs = (argSettings, argValues) ->
   )
   namedArgs
 
-export { listenerEvents, createNamedArgs }
+createCommonArgs = () ->
+  {
+    timeStamp: Date.now()
+  }
+
+createNotifier = (events, listeners) ->
+  eventsByName = events.reduce( (current, event) ->
+    current.set(event.name, event)
+  , new Map()
+  )
+
+  (eventName, args...) ->
+    event      = eventsByName.get(eventName)
+    commonArgs = createCommonArgs()
+    eventArgs  = createNamedArgs(event.args, args)
+    listeners.forEach( (listener) ->
+      if listener[event]?
+        listener[event](commonArgs, eventArgs)
+    )
+    return
+
+export { createCommonArgs, createNamedArgs, createNotifier, listenerEvents }

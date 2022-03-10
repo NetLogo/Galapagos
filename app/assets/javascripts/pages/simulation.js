@@ -1,4 +1,4 @@
-import { listenerEvents } from "/listener-events.js"
+import { createNotifier, listenerEvents } from "/listener-events.js"
 import { createDebugListener } from "/debug-listener.js"
 import { createIframeRelayListener } from "/iframe-relay-listener.js"
 import { createQueryHandler } from "/iframe-query-handler.js"
@@ -76,13 +76,7 @@ if (isInFrame && params.has('relayIframeEvents')) {
   listeners.push(relayListener)
 }
 
-function notifyListeners(event, ...args) {
-  listeners.forEach( (listener) => {
-    if (listener[event] !== undefined) {
-      listener[event](...args)
-    }
-  })
-}
+const notifyListeners = createNotifier(listenerEvents, listeners)
 
 if (isInFrame) {
   createQueryHandler()

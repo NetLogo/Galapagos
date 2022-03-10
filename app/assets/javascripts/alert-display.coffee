@@ -157,13 +157,13 @@ class AlertDisplay
 
     return
 
-  # (Array[String]) => Unit
-  'extension-error': (messages) ->
+  # (CommonEventArgs, { messages: Array[String] }) => Unit
+  'extension-error': (_, {messages}) ->
     @reportError(messages.join('<br/>'))
     return
 
-  # (String, Exception) => Unit
-  'runtime-error': (source, exception) ->
+  # (CommonEventArgs, { source: String, exception: Exception }) => Unit
+  'runtime-error': (_, {source, exception}) ->
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
@@ -206,8 +206,8 @@ class AlertDisplay
 
     return
 
-  # (String, Array[CompilerError]) => Unit
-  'compiler-error': (source, errors) ->
+  # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
+  'compiler-error': (_, { source, errors }) ->
     switch source
 
       when 'load-from-url'
