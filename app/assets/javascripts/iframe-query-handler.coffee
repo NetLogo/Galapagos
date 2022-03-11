@@ -1,3 +1,5 @@
+import { cloneWidget } from "/beak/widgets/widget-properties.js"
+
 { createExportValue } = tortoise_require('engine/core/world/export')
 
 postMessage = (target, queries, sourceInfo, results) ->
@@ -22,11 +24,15 @@ filterNames = (names, maybeFilter) ->
 #   sourceInfo: String | null
 # }
 
-# type Query = GlobalsQuery | ReporterQuery
+# type Query = GlobalsQuery | ReporterQuery | WidgetsQuery
 
 # type GlobalsQuery = {
 #   type: 'globals'
 #   variableFilters: Array[String] | null
+# }
+
+# type WidgetsQuery = {
+#   type: 'widgets'
 # }
 
 # type ReporterQuery = {
@@ -34,12 +40,16 @@ filterNames = (names, maybeFilter) ->
 #   code: String
 # }
 
-# type QueryResult = GlobalsResult | ReporterResult
+# type QueryResult = GlobalsResult | ReporterResult | WidgetsResult
 
 # type GlobalsResult = {
 #   type: 'globals-result'
-#   name: String
-#   value: JSON
+#   globals: Array[{ name: String, value: JSON }]
+# }
+
+# type WidgetsResult = {
+#   type: 'widgets-result'
+#   widgets: Array[Widget]
 # }
 
 # type ReporterResult = SuccessResult | FailureResult
@@ -63,11 +73,11 @@ handleQuery = (query) ->
       observer    = workspace.world.observer
       exportValue = createExportValue(workspace.world)
       globalNames = filterNames(observer.varNames(), query.variableFilters)
-      globalNames.map( (global) -> {
-        type:  'globals-result'
-      , name:  global
+      globals = globalNames.map( (global) -> {
+        name:  global
       , value: exportValue(observer.getGlobal(global))
       })
+      { type: 'globals-result', globals }
 
     when 'reporter'
       result = session.runReporter(query.code)
@@ -81,6 +91,10 @@ handleQuery = (query) ->
       else
         result.type = 'reporter-result'
         result
+
+    when 'widgets'
+      widgets = session.widgetController.widgets().map(cloneWidget)
+      { type: 'widgets-result', widgets }
 
     else
       throw new Error("Unknown query: #{query}")

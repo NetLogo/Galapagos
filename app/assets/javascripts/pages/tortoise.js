@@ -1,3 +1,4 @@
+import { listenForQueryResponses, createQueryMaker } from "/debug-query-maker.js"
 import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js"
 
 var modelContainer = document.querySelector('#model-container')
@@ -120,3 +121,8 @@ function initModel() {
 
 bindModelChooser(document.getElementById('tortoise-model-list')
                , initModel, pickModel, window.environmentMode)
+
+if (params.has('debugQueries')) {
+  window.makeQuery = createQueryMaker(modelContainer)
+  listenForQueryResponses()
+}
