@@ -1,10 +1,11 @@
 import { createNamedArgs } from "./listener-events.js"
 
-postMessage = (event, args) ->
+postMessage = (event, commonArgs, eventArgs) ->
   window.parent.postMessage({
-    type:  'nlw-notification'
-  , event: event
-  , args:  args
+    type: 'nlw-notification'
+  , event
+  , commonArgs
+  , eventArgs
   }, '*')
   return
 
