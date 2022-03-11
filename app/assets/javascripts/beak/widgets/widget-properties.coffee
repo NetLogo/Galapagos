@@ -1,3 +1,4 @@
+# coffeelint: disable=max_line_length
 typedWidgetProperties = Object.freeze(new Map([
   ['button',   ['actionKey', 'buttonKind', 'disableUntilTicksStart', 'display', 'forever', 'source']]
 , ['chooser',  ['choices', 'currentChoice', 'display', 'variable']]
@@ -10,6 +11,7 @@ typedWidgetProperties = Object.freeze(new Map([
 , ['textBox',  ['color', 'display', 'fontSize', 'transparent']]
 , ['view',     ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']]
 ]))
+# coffeelint: enable=max_line_length
 
 locationProperties = Object.freeze(['bottom', 'left', 'right', 'top'])
 

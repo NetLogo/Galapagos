@@ -278,13 +278,12 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
     when "plot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
     when "textBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
+# coffeelint: enable=max_line_length
 
 # [T <: Widget] @ Array[String] => T => T => Boolean
 widgetEqualsBy = (props) -> (w1) -> (w2) ->
   { eq } = tortoise_require('brazier/equals')
   propEq = (prop) -> eq(w1[prop])(w2[prop])
   w1.type is w2.type and locationProperties.concat(props).every(propEq)
-
-# coffeelint: enable=max_line_length
 
 export default WidgetController
