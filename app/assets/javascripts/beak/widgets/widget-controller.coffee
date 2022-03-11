@@ -2,6 +2,7 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
        , setUpMonitor, setUpPlot, setUpSlider, setUpSwitch
 } from "./set-up-widgets.js"
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
+import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
 class WidgetController
 
@@ -101,18 +102,19 @@ class WidgetController
 
       newWidget.id = index
 
-      [props, setterUpper] =
+      props       = typedWidgetProperties.get(newWidget.type)
+      setterUpper =
         switch newWidget.type
-          when "button"   then [  buttonProps, setUpButton(@reportError, () => @redraw(); @updateWidgets())]
-          when "chooser"  then [ chooserProps, setUpChooser]
-          when "inputBox" then [inputBoxProps, setUpInputBox]
-          when "monitor"  then [ monitorProps, setUpMonitor]
-          when "output"   then [  outputProps, (->)]
-          when "plot"     then [    plotProps, setUpPlot(@plotSetupHelper())]
-          when "slider"   then [  sliderProps, setUpSlider]
-          when "switch"   then [  switchProps, setUpSwitch]
-          when "textBox"  then [ textBoxProps, (->)]
-          when "view"     then [    viewProps, (->)]
+          when "button"   then setUpButton(@reportError, () => @redraw(); @updateWidgets())
+          when "chooser"  then setUpChooser
+          when "inputBox" then setUpInputBox
+          when "monitor"  then setUpMonitor
+          when "output"   then (->)
+          when "plot"     then setUpPlot(@plotSetupHelper())
+          when "slider"   then setUpSlider
+          when "switch"   then setUpSwitch
+          when "textBox"  then (->)
+          when "view"     then (->)
           else                 throw new Error("Unknown widget type: #{newWidget.type}")
 
       realWidget = realWidgets.find(widgetEqualsBy(props)(newWidget))
@@ -280,20 +282,9 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
 # [T <: Widget] @ Array[String] => T => T => Boolean
 widgetEqualsBy = (props) -> (w1) -> (w2) ->
   { eq } = tortoise_require('brazier/equals')
-  locationProps = ['bottom', 'left', 'right', 'top']
-  propEq        = (prop) -> eq(w1[prop])(w2[prop])
-  w1.type is w2.type and locationProps.concat(props).every(propEq)
+  propEq = (prop) -> eq(w1[prop])(w2[prop])
+  w1.type is w2.type and locationProperties.concat(props).every(propEq)
 
-buttonProps   = ['buttonKind', 'disableUntilTicksStart', 'forever', 'source']
-chooserProps  = ['choices', 'display', 'variable']
-inputBoxProps = ['boxedValue', 'variable']
-monitorProps  = ['display', 'fontSize', 'precision', 'source']
-outputProps   = ['fontSize']
-plotProps     = [ 'autoPlotOn', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']
-sliderProps   = ['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable']
-switchProps   = ['display', 'on', 'variable']
-textBoxProps  = ['color', 'display', 'fontSize', 'transparent']
-viewProps     = ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']
 # coffeelint: enable=max_line_length
 
 export default WidgetController
