@@ -5,6 +5,7 @@ import mangleExportedPlots      from "./mangle-exported-plots.js"
 import { toNetLogoMarkdown }    from "./tortoise-utils.js"
 import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
+import { cloneWidget }          from "./widgets/widget-properties.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -196,29 +197,8 @@ class SessionLite
 
     @rewriters.reduce(rewriter, errors)
 
-  # The `currentValue` for a monitor widget can be a turtle or patch, which
-  # causes an infinite loop in the JSON serialization code due to circular
-  # references.  So skip sending it over.
-
-  # Other widgets can also have a `currentValue` of a turtle or patch,
-  # sliders for sure, but that's a bug with the type checking not rejecting
-  # setting the global for the slider to an agent value.  Safer just to not
-  # send the current value for any widget for now, especially since they are
-  # Galapagos-only and the compiler does not use them.
-
-  # -Jeremy B July 2021
-
-  cloneWidgets: (widgets) ->
-    propsToSkip = ['currentValue']
-    widgets.map( (oldWidget) ->
-      newWidget = {}
-      props     = Object.keys(oldWidget).filter( (p) -> not propsToSkip.includes(p) )
-      props.forEach( (p) -> newWidget[p] = oldWidget[p] )
-      newWidget
-    )
-
   # ("user" | "system", String, String, Object[String]) => Unit
-  recompileSync: (source) ->
+  recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
     rewritten     = @rewriteCode(code)
@@ -226,7 +206,7 @@ class SessionLite
 
     compileParams = {
       code:         rewritten
-    , widgets:      @cloneWidgets(oldWidgets)
+    , widgets:      oldWidgets.map(cloneWidget)
     , commands:     extraCommands
     , reporters:    []
     , turtleShapes: turtleShapes ? []
@@ -381,7 +361,7 @@ class SessionLite
     { pipeline                 } = tortoise_require('brazier/function')
 
     rewritten  = @rewriteCode(@widgetController.code())
-    oldWidgets = @cloneWidgets(@widgetController.widgets())
+    oldWidgets = @widgetController.widgets().map(cloneWidget)
     result     = @compiler.fromModel({
       code:         rewritten
     , widgets:      oldWidgets
