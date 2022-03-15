@@ -281,9 +281,15 @@ class SessionLite
 
     return
 
+  getCode: ->
+    @widgetController.code()
+
+  getInfo: ->
+    toNetLogoMarkdown(@widgetController.ractive.get('info'))
+
   getNlogo: ->
     @compiler.exportNlogo({
-      info:         toNetLogoMarkdown(@widgetController.ractive.get('info')),
+      info:         @getInfo(),
       code:         @rewriteExport(@widgetController.code()),
       widgets:      @widgetController.widgets(),
       turtleShapes: turtleShapes,

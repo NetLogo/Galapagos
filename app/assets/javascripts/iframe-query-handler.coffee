@@ -24,7 +24,7 @@ filterNames = (names, maybeFilter) ->
 #   sourceInfo: String | null
 # }
 
-# type Query = GlobalsQuery | ReporterQuery | WidgetsQuery
+# type Query = GlobalsQuery | ReporterQuery | WidgetsQuery | InfoQuery | CodeQuery | NlogoFileQuery
 
 # type GlobalsQuery = {
 #   type: 'globals'
@@ -35,12 +35,24 @@ filterNames = (names, maybeFilter) ->
 #   type: 'widgets'
 # }
 
+# type InfoQuery = {
+#   type: 'info'
+# }
+
+# type CodeQuery = {
+#   type: 'code'
+# }
+
+# type NlogoFileQuery = {
+#   type: 'nlogo-file'
+# }
+
 # type ReporterQuery = {
 #   type: 'reporter'
 #   code: String
 # }
 
-# type QueryResult = GlobalsResult | ReporterResult | WidgetsResult
+# type QueryResult = GlobalsResult | ReporterResult | WidgetsResult | InfoResult | CodeResult | NlogoFileResult
 
 # type GlobalsResult = {
 #   type: 'globals-result'
@@ -50,6 +62,21 @@ filterNames = (names, maybeFilter) ->
 # type WidgetsResult = {
 #   type: 'widgets-result'
 #   widgets: Array[Widget]
+# }
+
+# type InfoResult = {
+#   type: 'info-result'
+#   info: String
+# }
+
+# type CodeResult = {
+#   type: 'code-result'
+#   code: String
+# }
+
+# type NlogoFileResult = {
+#   type: 'info-result'
+#   nlogo: String
 # }
 
 # type ReporterResult = SuccessResult | FailureResult
@@ -81,27 +108,36 @@ handleQuery = (query) ->
 
     when 'reporter'
       result = session.runReporter(query.code)
+      result.type = 'reporter-result'
+
       if result.success
-        exportValue = createExportValue(workspace.world)
-        {
-          type:    'reporter-result'
-        , success: true
-        , value:   exportValue(result.value)
-        }
-      else
-        result.type = 'reporter-result'
-        result
+        exportValue  = createExportValue(workspace.world)
+        result.value = exportValue(result.value)
+
+      result
 
     when 'widgets'
       widgets = session.widgetController.widgets().map(cloneWidget)
       { type: 'widgets-result', widgets }
+
+    when 'info'
+      info = session.getInfo()
+      { type: 'info-result', info }
+
+    when 'code'
+      code = session.getCode()
+      { type: 'code-result', code }
+
+    when 'nlogo-file'
+      nlogo = session.getNlogo()
+      { type: 'nlogo-file-result', nlogo }
 
     else
       throw new Error("Unknown query: #{query}")
 
 # () => Unit
 createQueryHandler = () ->
-  window.addEventListener("message", (event) ->
+  window.addEventListener('message', (event) ->
     if event.data.type is 'nlw-query'
       results = event.data.queries.map(handleQuery)
       postMessage(event.source, event.data.queries, event.data.sourceInfo, results)
