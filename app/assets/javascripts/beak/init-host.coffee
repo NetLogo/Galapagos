@@ -196,7 +196,15 @@ setUpEventListeners = ->
     session.narrowcast(e.data.token, "nlw-state-update", { viewUpdate })
 
   onBabyMonitorMessage = (e) ->
+
     switch (e.data.type)
+
+      # (NEW): TODO
+      when "hnw-setup-button"
+        runCommand("setup")
+
+      when "hnw-go-checkbox"
+        runCommand("go")
 
       when "hnw-widget-message"
         onWidgetMessage(e)
@@ -205,7 +213,6 @@ setUpEventListeners = ->
         onRaincheckMessage(e)
 
       when "hnw-become-oracle"
-
         loadModel(e.data.nlogo, "Jason's Experimental Funland")
 
         session.widgetController.ractive.set("isHNW"    , true)
@@ -237,19 +244,6 @@ setUpEventListeners = ->
 
         tabAreaElem = document.querySelector(".netlogo-tab-area")
         taeParent   = tabAreaElem.parentNode
-
-        if e.data.onStart?
-          setupButton           = document.createElement("button")
-          setupButton.innerHTML = "setup"
-          setupButton.id        = "hnw-setup-button"
-          setupButton.addEventListener('click', -> runCommand(e.data.onStart))
-          taeParent.insertBefore(setupButton, tabAreaElem)
-
-        if e.data.onIterate?
-          goCheckbox           = document.createElement("label")
-          goCheckbox.innerHTML = "go<input id='hnw-go' type='checkbox'>"
-          window.hnwGoProc     = (-> runCommand(e.data.onIterate))
-          taeParent.insertBefore(goCheckbox , tabAreaElem)
 
         if e.data.targetFrameRate?
           session.setTargetFrameRate(e.data.targetFrameRate)
@@ -525,7 +519,6 @@ setUpEventListeners = ->
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
-
       when "hnw-resize"
 
         isValid = (x) -> x?
