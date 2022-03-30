@@ -519,6 +519,11 @@ setUpEventListeners = ->
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
+
+      # (NEW): TODO
+      when "hnw-set-up-command-center"
+        console.log("TESTING")
+
       when "hnw-resize"
 
         isValid = (x) -> x?

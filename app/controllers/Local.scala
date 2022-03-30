@@ -64,6 +64,11 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.hnwHost(OutsourceTagBuilder))
   }
 
+   def commandCenter: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.commandCenter(OutsourceTagBuilder))
+  }
+
   def hnwJoin: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.hnwJoin(OutsourceTagBuilder))

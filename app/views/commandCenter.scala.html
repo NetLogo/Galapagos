@@ -1,0 +1,55 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("stylesheets/command-center.css")
+  </head>
+  <body>
+    <div class="command-center-body flex-row">
+      <input type="text" class="command-center-text-input">
+      <input type="button" class="command-center-clear-button" value="Clear">
+    </div>
+  </body>
+
+  <!-- <script>
+    const byEID = (eid) => document.getElementById(eid);
+
+    const commandCenterOpen = () => {
+      return !commandCenterOpenBox.classList.contains("invisible");
+    };
+
+    const openCommandCenter = () => {
+      commandCenterOpenBox.classList.remove("invisible");
+      commandCenterClosedBox.classList.add("invisible");
+      commandCenterClosedBottom.classList.add("invisible");
+    };
+
+    const closeCommandCenter = () => {
+      commandCenterOpenBox.classList.add("invisible");
+      commandCenterClosedBox.classList.remove("invisible");
+      commandCenterClosedBottom.classList.remove("invisible");
+    };
+
+    const commandCenterClosedBottom = byEID("command-center-closed-bottom");
+    const commandCenterClosedBox = byEID("command-center-closed");
+    const commandCenterOpenBox = byEID("command-center-open");
+    const commandCenterOpenHeader = byEID("command-center-header");
+
+    commandCenterClosedBox.onclick = () => {
+      // accomodatePopupNarrowScreen("commandCenter");
+      openCommandCenter();
+    };
+
+    commandCenterClosedBottom.onclick = () => {
+      // accomodatePopupNarrowScreen("commandCenter");
+      openCommandCenter();
+    };
+
+    commandCenterOpenHeader.onclick = () => {
+      closeCommandCenter();
+    };
+  </script> -->
+
+</html>

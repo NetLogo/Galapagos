@@ -1,0 +1,24 @@
+/* (NEW): TODO */
+.flex-row {
+  display:        flex;
+  flex-direction: row;
+}
+
+/* (NEW): Stylings for command center (similar to chat boxes for consistency) */
+.command-center-body {
+  position: fixed;
+  bottom: 10px;
+  width: 95%;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.command-center-text-input {
+  width: 80%;
+  height: 40px;
+  margin-right: 5%;
+}
+
+.command-center-clear-button {
+  height: 40px;
+}
