@@ -199,7 +199,7 @@ setUpEventListeners = ->
 
     switch (e.data.type)
 
-      # (NEW): TODO
+      # (NEW): Refactor setup & go buttons to outer frame
       when "hnw-setup-button"
         runCommand("setup")
 
@@ -520,16 +520,13 @@ setUpEventListeners = ->
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
 
-      # (NEW): TODO
+      # (NEW): Other setups (refactoring iframe accordion tabs)
       when "hnw-set-up-command-center"
-        babyMonitor = e.ports[1]
-
+        babyMonitor = e.ports[1] # TODO: Maybe wrong???
       when "hnw-set-up-code-modal"
         babyMonitor = e.ports[0] # TODO: Maybe wrong???
-
       when "hnw-set-up-info-modal"
-        babyMonitory = e.ports[1] # TODO: Maybe wrong???
-
+        babyMonitor = e.ports[1] # TODO: Maybe wrong???
       when "hnw-resize"
 
         isValid = (x) -> x?
