@@ -1,10 +1,8 @@
-/* (NEW): TODO */
 .flex-row {
   display:        flex;
   flex-direction: row;
 }
 
-/* (NEW): Stylings for command center (similar to chat boxes for consistency) */
 .command-center-body {
   position: fixed;
   bottom: 10px;

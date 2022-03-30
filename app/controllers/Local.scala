@@ -69,6 +69,16 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.commandCenter(OutsourceTagBuilder))
   }
 
+  def codeModal: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.codeModal(OutsourceTagBuilder))
+  }
+
+  def infoModal: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.infoModal(OutsourceTagBuilder))
+  }
+
   def hnwJoin: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.hnwJoin(OutsourceTagBuilder))

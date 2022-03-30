@@ -26,6 +26,8 @@ GET         /hnw-config-inner                   controllers.Local.hnwConfigInner
 GET         /hnw-host                           controllers.Local.hnwHost
 GET         /hnw-join                           controllers.Local.hnwJoin
 GET         /command-center                     controllers.Local.commandCenter
+GET         /code-modal                         controllers.Local.codeModal
+GET         /info-modal                         controllers.Local.infoModal
 
 
 # Compiler Service

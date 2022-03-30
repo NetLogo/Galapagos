@@ -522,7 +522,13 @@ setUpEventListeners = ->
 
       # (NEW): TODO
       when "hnw-set-up-command-center"
-        console.log("TESTING")
+        babyMonitor = e.ports[1]
+
+      when "hnw-set-up-code-modal"
+        babyMonitor = e.ports[0] # TODO: Maybe wrong???
+
+      when "hnw-set-up-info-modal"
+        babyMonitory = e.ports[1] # TODO: Maybe wrong???
 
       when "hnw-resize"
 
