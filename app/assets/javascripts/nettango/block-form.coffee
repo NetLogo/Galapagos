@@ -155,16 +155,21 @@ RactiveBlockForm = RactiveModalDialog.extend({
   processAttributes: (attributes) ->
     attributeCopies = for attrValues in attributes
       attribute = { }
-      [ 'name', 'unit', 'type' ].forEach((f) -> attribute[f] = attrValues[f])
+      ['name', 'unit', 'type'].forEach( (f) -> attribute[f] = attrValues[f] )
       # Using `default` as a property name gives Ractive some issues, so we "translate" it back here - JMB August 2018
       attribute.default = attrValues.def
       # User may have switched type a couple times, so only copy the properties if the type is appropriate to them
       # - JMB August 2018
-      if attrValues.type is 'range'
-        [ 'min', 'max', 'step' ].forEach((f) -> attribute[f] = attrValues[f])
-      else if attrValues.type is 'select'
-        [ 'quoteValues' ].forEach((f) -> attribute[f] = attrValues[f])
-        attribute.values = attrValues.values
+      switch attrValues.type
+        when 'range'
+          ['min', 'max', 'step'].forEach( (f) -> attribute[f] = attrValues[f] )
+
+        when 'select'
+          ['quoteValues'].forEach( (f) -> attribute[f] = attrValues[f] )
+          attribute.values = attrValues.values
+
+        when 'text'
+          ['quoteValues'].forEach( (f) -> attribute[f] = attrValues[f] )
 
       attribute
 

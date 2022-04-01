@@ -10,6 +10,7 @@ RactiveAttribute = Ractive.extend({
     attribute:     undefined # NetTangoAttribute
     attributeType: undefined # String ('params' | 'properties')
     valueType:     undefined # String ('bool' | 'num' | 'int' | 'range' | 'text' | 'select')
+    quoteOptions:  undefined # Array[String]
   }
 
   computed: {
@@ -34,6 +35,8 @@ RactiveAttribute = Ractive.extend({
     'init': (_) ->
       valueType = @get('attribute.type')
       @set('valueType', valueType)
+      quoteOptions = Object.keys(NetTango.selectQuoteOptions).map( (key) -> NetTango.selectQuoteOptions[key] )
+      @set("quoteOptions", quoteOptions)
       return
 
     # (Context) => Unit
@@ -98,9 +101,31 @@ RactiveAttribute = Ractive.extend({
     'param-bool': ""
     'param-num': ""
     'param-int': ""
-    'param-text': ""
 
-    'param-select': """<select attribute="{{ attribute }}" elementId="{{ elementId }}" />"""
+    'param-text':
+      """
+      <div class="flex-row ntb-form-row">
+        <dropdown
+          id="{{ elementId }}-quoted"
+          name="{{ attribute.quoteValues }}"
+          selected="{{ attribute.quoteValues }}"
+          label="Quote values in code"
+          divClass="ntb-flex-column"
+          choices="{{ quoteOptions }}"
+        />
+
+        <div class="ntb-flex-column" />
+      </div>
+      """
+
+    'param-select':
+      """
+      <select
+        attribute="{{ attribute }}"
+        elementId="{{ elementId }}"
+        quoteOptions="{{ quoteOptions }}"
+      />
+      """
 
     'param-range':
       """

@@ -31,17 +31,11 @@ RactiveSelectAttribute = Ractive.extend({
   }
 
   on: {
-
-    'init': (_) ->
-      quoteOptions = Object.keys(NetTango.selectQuoteOptions).map( (key) -> NetTango.selectQuoteOptions[key] )
-      @set("quoteOptions", quoteOptions)
-
     'complete': (_) ->
       attribute = @get("attribute")
       if (not attribute.values?)
         @set("attribute.values", [])
       return
-
   }
 
   components: {
