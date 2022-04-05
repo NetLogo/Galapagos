@@ -102,6 +102,11 @@ protocolObj = { protocolVersion: "0.0.1" }
 
 babyMonitor = null # MessagePort
 
+# (NEW): TODO
+commandCenterMonitor = null # MessagePort
+codeModalMonitor = null # MessagePort
+infoModalMonitor = null # MessagePort
+
 # (MessagePort, Object[Any], Array[MessagePort]?) => Unit
 postToBM = (message, transfers = []) ->
 
@@ -522,11 +527,11 @@ setUpEventListeners = ->
 
       # (NEW): Other setups (refactoring iframe accordion tabs)
       when "hnw-set-up-command-center"
-        babyMonitor = e.ports[1] # TODO: Maybe wrong???
+        commandCenterMonitor = e.ports[0]
       when "hnw-set-up-code-modal"
-        babyMonitor = e.ports[0] # TODO: Maybe wrong???
+        codeModalMonitor = e.ports[0]
       when "hnw-set-up-info-modal"
-        babyMonitor = e.ports[1] # TODO: Maybe wrong???
+        infoModalMonitor = e.ports[0]
       when "hnw-resize"
 
         isValid = (x) -> x?
