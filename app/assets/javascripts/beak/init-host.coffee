@@ -532,11 +532,12 @@ setUpEventListeners = ->
 
         # (NEW): TODO
         setTimeout ->
-          # console.log("code:", session.widgetController.ractive.get('code'))
+          modelCode = session.widgetController.ractive.get('code')
+          postToBM({ type: "nlw-model-code", code: modelCode })
         , 1000
 
         # (NEW): TODO
-        # session.widgetController.ractive.observe('code', alertCode)
+        # session.widgetController.ractive.observe('lastCompiledCode', alertCode)
 
       # (NEW): Other setups (refactoring iframe accordion tabs)
       when "hnw-set-up-command-center"

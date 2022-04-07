@@ -1,4 +1,21 @@
+# (NEW): TODO
+codeModalMonitor = null # MessagePort
+
 loadCodeModal = ->
+  # (NEW): TODO
+  window.addEventListener("message", (e) ->
+
+    switch (e.data.type)
+      when "hnw-set-up-code-modal"
+        codeModalMonitor = e.ports[0]
+        codeModalMonitor.onmessage = onCodeModalMessage
+        console.log("codeModalMonitor:", codeModalMonitor)
+        return
+
+    console.warn("Unknown command center postMessage:", e.data)
+  )
+
+  # (NEW): TODO
   checkIsReporter = (str) => compiler.isReporter(str)
 
   template = """
@@ -19,5 +36,13 @@ loadCodeModal = ->
       consoleOutput: ""
     }
   })
+
+# (NEW): TODO
+onCodeModalMessage = (e) ->
+
+  switch (e.data.type)
+    when "hnw-model-code"
+      console.log("CODE!!!!")
+      console.log(e.data.code)
 
 loadCodeModal()

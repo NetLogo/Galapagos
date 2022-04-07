@@ -36,8 +36,8 @@ loadCodeModal = ->
     console.warn("Unknown command center postMessage:", e.data)
   )
 
+# (NEW): TODO
 onCommandCenterMessage = (e) ->
   return
-
 
 loadCodeModal()
