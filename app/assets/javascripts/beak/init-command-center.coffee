@@ -1,13 +1,23 @@
-# (NEW): TODO
 commandCenterMonitor = null # MessagePort
 
-# (NEW): TODO
 loadCodeModal = ->
 
-  # (NEW): TODO
+  # (NEW): Handle messages to command center window (iframe)
+  window.addEventListener("message", (e) ->
+
+    switch (e.data.type)
+      when "hnw-set-up-command-center"
+        commandCenterMonitor = e.ports[0]
+        commandCenterMonitor.onmessage = onCommandCenterMessage
+        return
+
+    console.warn("Unknown command center postMessage:", e.data)
+  )
+
   compiler = new BrowserCompiler()
   checkIsReporter = (str) => compiler.isReporter(str)
 
+  # (NEW): Command center setup
   template = """
     <console output="{{consoleOutput}}" isEditing="false" checkIsReporter="{{checkIsReporter}}" />
   """
@@ -23,19 +33,7 @@ loadCodeModal = ->
     }
   })
 
-  # (NEW): TODO
-  window.addEventListener("message", (e) ->
-
-    switch (e.data.type)
-      when "hnw-set-up-command-center"
-        commandCenterMonitor = e.ports[0]
-        commandCenterMonitor.onmessage = onCommandCenterMessage
-        return
-
-    console.warn("Unknown command center postMessage:", e.data)
-  )
-
-# (NEW): TODO
+# TODO
 onCommandCenterMessage = (e) ->
   return
 

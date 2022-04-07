@@ -1,10 +1,9 @@
-# (NEW): TODO
 infoModalMonitor = null # MessagePort
-ractive = null
+ractive = null # Ractive
 
 loadInfoModal = ->
 
-  # (NEW): TODO
+  # (NEW): Handle messages to info modal window (iframe)
   window.addEventListener("message", (e) ->
 
     switch (e.data.type)
@@ -16,6 +15,7 @@ loadInfoModal = ->
     console.warn("Unknown info modal postMessage:", e.data)
   )
 
+  # (NEW): Info modal setup
   template = """
     <label class="netlogo-tab netlogo-active">
         <input id="info-toggle" type="checkbox" checked="true" />
@@ -35,7 +35,6 @@ loadInfoModal = ->
     }
   })
 
-# (NEW): TODO
 onInfoModalMessage = (e) ->
 
   switch (e.data.type)

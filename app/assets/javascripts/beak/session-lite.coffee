@@ -22,9 +22,6 @@ globalEval = eval
 window.AgentModel = tortoise_require('agentmodel')
 agentToInt        = tortoise_require('engine/core/agenttoint')
 
-# (NEW): TODO
-# modelCode = undefined
-
 class window.SessionLite
 
   # type HNWUpdate       = { widgetUpdates : Array[WidgetUpdate], monitorUpdates : Object[String], plotUpdates : Object[Array[Object[Any]]], viewUpdate : Array[ViewUpdate] }
@@ -33,7 +30,6 @@ class window.SessionLite
 
   widgetController: undefined # WidgetController
 
-  _modelCode:            undefined # (NEW): TODO
   _hnwTargetFPS:         undefined # Number
   _hnwLastPersp:         undefined # Object[(String, Agent, Number)]
   _hnwLastLoopTS:        undefined # Number
@@ -60,9 +56,6 @@ class window.SessionLite
 
     @_hnwIsCongested = false
     @_hnwTargetFPS   = 20
-
-    # console.log("code:", String(code).substr(50))
-    @_modelCode = "this is a big test" # (NEW): TODO
 
     @_metadata =
       { globalVars: []

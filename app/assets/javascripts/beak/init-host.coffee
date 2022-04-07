@@ -101,12 +101,8 @@ protocolObj = { protocolVersion: "0.0.1" }
 
 babyMonitor = null # MessagePort
 
-# (NEW): TODO
-commandCenterMonitor = null # MessagePort
-codeModalMonitor = null # MessagePort
-infoModalMonitor = null # MessagePort
-
-# (NEW): TODO
+# TODO: Will eventually use this when we move to observers for window 'Ractive' component
+# Around L540 in this file
 alertCode = (newValue, oldValue, keyPath) ->
   console.log(oldValue)
   console.log(newValue)
@@ -530,7 +526,7 @@ setUpEventListeners = ->
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
 
-        # (NEW): TODO
+        # (NEW): Pass model code & info to HNW
         setTimeout ->
           modelCode = session.widgetController.ractive.get('code')
           postToBM({ type: "nlw-model-code", code: modelCode })
@@ -539,13 +535,9 @@ setUpEventListeners = ->
           postToBM({ type: "nlw-model-info", info: modelInfo })
         , 1000
 
-        # (NEW): TODO
+        # TODO --> Should eventually remove this^^ timeout & set an observer
         # session.widgetController.ractive.observe('lastCompiledCode', alertCode)
 
-      # (NEW): Other setups (refactoring iframe accordion tabs)
-      when "hnw-set-up-info-modal"
-        console.log("INFO MODAL SETUP")
-        infoModalMonitor = e.ports[0]
       when "hnw-resize"
 
         isValid = (x) -> x?
