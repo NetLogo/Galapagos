@@ -95,7 +95,6 @@ loadInitialModel = ->
 
   else
     loadModel(exports.newModel, "NewModel")
-
   return
 
 protocolObj = { protocolVersion: "0.0.1" }
@@ -106,6 +105,12 @@ babyMonitor = null # MessagePort
 commandCenterMonitor = null # MessagePort
 codeModalMonitor = null # MessagePort
 infoModalMonitor = null # MessagePort
+
+# (NEW): TODO
+alertCode = (newValue, oldValue, keyPath) ->
+  console.log(oldValue)
+  console.log(newValue)
+  console.log(keyPath)
 
 # (MessagePort, Object[Any], Array[MessagePort]?) => Unit
 postToBM = (message, transfers = []) ->
@@ -525,12 +530,25 @@ setUpEventListeners = ->
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
 
+        # (NEW): TODO
+        setTimeout ->
+          # console.log("code:", session.widgetController.ractive.get('code'))
+        , 1000
+
+        # (NEW): TODO
+        # session.widgetController.ractive.observe('code', alertCode)
+
       # (NEW): Other setups (refactoring iframe accordion tabs)
       when "hnw-set-up-command-center"
+        console.log("COMMAND CENTER SETUP")
         commandCenterMonitor = e.ports[0]
       when "hnw-set-up-code-modal"
+        console.log("CODE MODAL SETUP")
         codeModalMonitor = e.ports[0]
+        # codeModalMonitor.postMessage() # (NEW): TODO
+
       when "hnw-set-up-info-modal"
+        console.log("INFO MODAL SETUP")
         infoModalMonitor = e.ports[0]
       when "hnw-resize"
 

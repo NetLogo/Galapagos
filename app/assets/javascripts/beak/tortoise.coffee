@@ -64,6 +64,14 @@ loadData = (container, pathOrURL, name, loader, onError) ->
   }
 
 openSession = (load) -> (compiler, model, lastCompileFailed) ->
+  # if model.code == ""
+  #   console.log("empty model code")
+  # else if model.code == "No code"
+  #   console.log("No model code")
+  # else
+  #   console.log("MODEL CODE PRESENT")
+  #   console.log(model.code)
+
   name    = load.name ? normalizedFileName(load.modelPath)
   session = newSession(load.container, model, false, name, lastCompileFailed, compiler, load.onError)
   load.loader.finish()

@@ -7,6 +7,8 @@ dropNLogoExtension = (s) ->
 # (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
 window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
 
+  # console.log("CODE HERE:", code)
+
   model = {
     checkIsReporter
   , code
