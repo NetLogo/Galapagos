@@ -30,7 +30,6 @@ loadCodeModal = ->
       when "hnw-set-up-command-center"
         commandCenterMonitor = e.ports[0]
         commandCenterMonitor.onmessage = onCommandCenterMessage
-        console.log("commandCenterMonitor:", commandCenterMonitor)
         return
 
     console.warn("Unknown command center postMessage:", e.data)

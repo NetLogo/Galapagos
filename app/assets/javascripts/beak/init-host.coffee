@@ -540,14 +540,6 @@ setUpEventListeners = ->
         # session.widgetController.ractive.observe('lastCompiledCode', alertCode)
 
       # (NEW): Other setups (refactoring iframe accordion tabs)
-      when "hnw-set-up-command-center"
-        console.log("COMMAND CENTER SETUP")
-        commandCenterMonitor = e.ports[0]
-      when "hnw-set-up-code-modal"
-        console.log("CODE MODAL SETUP")
-        codeModalMonitor = e.ports[0]
-        # codeModalMonitor.postMessage() # (NEW): TODO
-
       when "hnw-set-up-info-modal"
         console.log("INFO MODAL SETUP")
         infoModalMonitor = e.ports[0]
