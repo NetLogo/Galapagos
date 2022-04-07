@@ -534,6 +534,9 @@ setUpEventListeners = ->
         setTimeout ->
           modelCode = session.widgetController.ractive.get('code')
           postToBM({ type: "nlw-model-code", code: modelCode })
+
+          modelInfo = session.widgetController.ractive.get('info')
+          postToBM({ type: "nlw-model-info", info: modelInfo })
         , 1000
 
         # (NEW): TODO

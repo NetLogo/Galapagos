@@ -3,6 +3,7 @@ codeModalMonitor = null # MessagePort
 ractive = null
 
 loadCodeModal = ->
+
   # (NEW): TODO
   window.addEventListener("message", (e) ->
 
@@ -12,7 +13,7 @@ loadCodeModal = ->
         codeModalMonitor.onmessage = onCodeModalMessage
         return
 
-    console.warn("Unknown command center postMessage:", e.data)
+    console.warn("Unknown code modal postMessage:", e.data)
   )
 
   # (NEW): TODO

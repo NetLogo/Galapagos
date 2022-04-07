@@ -1,15 +1,112 @@
 @(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
 
-<!-- TODO -->
 <html>
   <head>
     <meta charset="UTF-8">
     <base target="_parent" />
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("lib/chosen/chosen.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
   <body style="margin: 0px;">
+    <div id="info-modal-container"></div>
+
+    <script>window.exports = {};</script>
+    <!-- @views.html.spinner() -->
+    @views.html.errorAlert()
+    <div id="netlogo-model-container" style="display: inline-block;"></div>
+    <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
+    @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
+    <div id="netlogo-extensions-container" style="display: inline-block;"></div>
+    @tagBuilder.pathToHTML("lib/jquery/jquery.js")
+    @tagBuilder.pathToHTML("lib/chosen/chosen.jquery.js")
+    @tagBuilder.pathToHTML("lib/file-saver/FileSaver.js")
+    @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+    @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+    @tagBuilder.pathToHTML("lib/mousetrap/mousetrap.js")
+    @tagBuilder.pathToHTML("lib/localforage/dist/localforage.min.js")
+    @tagBuilder.pathToHTML("lib/highcharts/highcharts.js")
+    @tagBuilder.pathToHTML("lib/highcharts/modules/exporting.js")
+    @tagBuilder.pathToHTML("lib/highcharts/modules/export-data.js")
     @tagBuilder.pathToHTML("lib/ractive/ractive.js")
+    @tagBuilder.pathToHTML("lib/synchrodecoder/synchrodecoder.min.js")
+    @tagBuilder.pathToHTML("lib/codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("lib/codemirror/addon/hint/show-hint.js")
+
+    @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
+    @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
+
+    @tagBuilder.pathToHTML("javascripts/keywords.js")
+    @tagBuilder.pathToHTML("javascripts/codemirror-mode.js")
+    @tagBuilder.pathToHTML("javascripts/colors.js")
+    @tagBuilder.pathToHTML("javascripts/default-shapes.js")
+    @tagBuilder.pathToHTML("javascripts/global-noisy-things.js")
+    @tagBuilder.pathToHTML("javascripts/plotrecorder.js")
+    @tagBuilder.pathToHTML("javascripts/highcharts.js")
+    @tagBuilder.pathToHTML("javascripts/models.js")
+    @tagBuilder.pathToHTML("javascripts/new-model.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/checkbox.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/code-container.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/color-input.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/dropdown.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/labeled-input.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/font-size.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/print-area.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/spacer.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/tick-counter.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/subcomponent/variable.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/async-user-dialog.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/context-menu.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/draggable.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/edit-form.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/widget.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/button.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/chooser.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/code-editor.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/console.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/help-dialog.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/info.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/input.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/label.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/monitor.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/output.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/plot.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/resizer.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/slider.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/switch.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/title.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/ractives/view.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/draw-shape.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/link-drawer.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/draw/view-controller.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/config-shims.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/event-traffic-control.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-context-menu.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-widget-selection.js")
+    <!-- @tagBuilder.pathToHTML("javascripts/beak/widgets/initialize-ui.js") -->
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/set-up-widgets.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/skeleton.js")
+    @tagBuilder.pathToHTML("javascripts/beak/widgets/widget-controller.js")
+    @tagBuilder.pathToHTML("javascripts/beak/babybehaviorspace.js")
+    @tagBuilder.pathToHTML("javascripts/beak/session-lite.js")
+    <!-- @tagBuilder.pathToHTML("javascripts/beak/tortoise.js") -->
+
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Local.standalone
+    )
 
     <!-- This can be used to insert NetLogo code into this page -->
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
@@ -17,5 +114,10 @@
     <script>
       Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
     </script>
+
+    @tagBuilder.pathToHTML("javascripts/beak/id.js")
+    @tagBuilder.pathToHTML("javascripts/beak/id-manager.js")
+    @tagBuilder.pathToHTML("javascripts/beak/init-info-modal.js")
+
   </body>
 </html>
