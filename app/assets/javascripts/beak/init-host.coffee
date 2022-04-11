@@ -240,11 +240,34 @@ setUpEventListeners = ->
         wContainer = document.querySelector('.netlogo-widget-container')
         parent     = wContainer.parentNode # TODO: Name shadowing?
 
-        flexbox                     = document.createElement("div")
-        flexbox.style.display       = "flex"
-        flexbox.style.flexDirection = "row"
+        flexbox                      = document.createElement("div")
+        flexbox.id                   = "main-frames-container"
+        flexbox.style.display        = "flex"
+        flexbox.style.flexDirection  = "row"
+        flexbox.style.width          = "97vw"
+        flexbox.style.justifyContent = "space-between"
 
         parent.replaceChild(flexbox, wContainer)
+
+        # (NEW): Add flexbox for text above supervisor (teacher) & student views
+        titlesFlexbox                      = document.createElement("div")
+        titlesFlexbox.style.display        = "flex"
+        titlesFlexbox.style.flexDirection  = "row"
+        titlesFlexbox.style.justifyContent = "center"
+
+        supervisorTitle                   = document.createElement("p")
+        supervisorTitle.innerHTML         = "Teacher"
+        supervisorTitle.style.fontSize    = "24px"
+        supervisorTitle.style.marginRight = "45vw"
+
+        studentTitle                = document.createElement("p")
+        studentTitle.innerHTML      = "Student"
+        studentTitle.style.fontSize = "24px"
+
+        titlesFlexbox.appendChild(supervisorTitle)
+        titlesFlexbox.appendChild(studentTitle)
+
+        parent.insertBefore(titlesFlexbox, document.getElementById("main-frames-container"))
 
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
 
@@ -295,9 +318,10 @@ setUpEventListeners = ->
         supervisorFrame.id  = "hnw-join-frame"
         supervisorFrame.src = "/hnw-join"
 
-        supervisorFrame.style.border = "3px solid red"
-        supervisorFrame.style.height = "648px"
-        supervisorFrame.style.width  = "842px"
+        supervisorFrame.style.border = "3px solid black"
+        supervisorFrame.style.height = "100vh"
+        supervisorFrame.style.width  = "47vw"
+        supervisorFrame.style.margin = "0 auto"
 
         flexbox.appendChild(supervisorFrame)
 
@@ -333,9 +357,9 @@ setUpEventListeners = ->
         studentFrame.id  = "hnw-join-frame"
         studentFrame.src = "/hnw-join"
 
-        studentFrame.style.border = "3px solid red"
-        studentFrame.style.height = "471px"
-        studentFrame.style.width  = "776px"
+        studentFrame.style.border    = "3px solid black"
+        studentFrame.style.height    = "80vh"
+        studentFrame.style.width     = "47vw"
 
         flexbox.appendChild(studentFrame)
 

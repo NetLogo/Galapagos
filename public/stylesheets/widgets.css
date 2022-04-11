@@ -105,7 +105,7 @@
 
 .netlogo-tab-content {
   margin-top: 0;
-  /* border: 0 solid #242479; */
+  border: 0 solid #242479;
   border-left-width: 2px;
   border-right-width: 2px;
 }
