@@ -29,6 +29,7 @@ loadCodeModal = ->
       console: RactiveConsoleWidget
     },
     data: -> {
+      checkIsReporter: checkIsReporter,
       consoleOutput: ""
     }
   })

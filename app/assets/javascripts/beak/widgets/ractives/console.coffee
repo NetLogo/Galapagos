@@ -62,7 +62,7 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set('historyIndex', history.length)
         if agentType isnt 'observer'
           input = "ask #{agentType} [ #{input} ]"
-        @fire('run', {}, input, consoleErrorLog)
+        @fire('run', {}, input, consoleErrorLog) # FOCUS
         @set('input', '')
         @set('workingEntry', {})
 
