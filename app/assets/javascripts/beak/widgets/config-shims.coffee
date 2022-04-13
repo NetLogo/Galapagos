@@ -1,5 +1,6 @@
-import HighchartsOps from "/highcharts.js"
+import HighchartsOps         from "/highcharts.js"
 import { toNetLogoMarkdown } from "/beak/tortoise-utils.js"
+import synchroDecoder        from "synchrodecoder/synchrodecoder.min.mjs"
 
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->
@@ -253,7 +254,7 @@ genConfigs = (ractive, viewController, container, compiler) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
-  , base64ToImageData: window.synchroDecoder
+  , base64ToImageData: synchroDecoder
   , dialog:            genDialogConfig(viewController, notify)
   , importExport:      genImportExportConfig(ractive, viewController, compiler)
   , inspection:        genInspectionConfig()
