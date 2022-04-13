@@ -252,7 +252,7 @@ class window.SessionLite
             res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
             @alertCompileError(res.model.result)
 
-      Tortoise.startLoading(=> @_codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError))
+      Tortoise.startLoading(=> @_codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError.bind(this)))
 
   getNlogo: ->
     @compiler.exportNlogo({
