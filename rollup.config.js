@@ -1,4 +1,5 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { terser } from "rollup-plugin-terser";
 import fs from "fs";
@@ -18,6 +19,8 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
   const plugins = [
 
     nodeResolve({ browser: true }),
+
+    commonjs(),
 
     // We want to use absolute paths in `import` statements, but don't want to use needlessly long paths from the
     // project root. This custom Rollup resolver allows setting a base directory for absolute imports. - David D. 7/2021
