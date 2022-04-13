@@ -120,7 +120,7 @@ function splitExtension(path) {
 // A simple Rollup plugin to define a base directory for absolute imports.
 //
 // For example: with a base directory of `/app/assets/javascripts`, the absolute import `/beak/skeleton.js`
-// points to the file `/app/assets/javascripts/beak/skeleton.js`. 
+// points to the file `/app/assets/javascripts/beak/skeleton.js`.
 function absoluteImportBasePlugin(baseDir) {
   return {
     name: "absolute-import-base",
@@ -129,7 +129,6 @@ function absoluteImportBasePlugin(baseDir) {
       // - David D. 7/2021
       if(importer && sourcePath.startsWith("/"))
         return path.join(baseDir, sourcePath);
-      
       // When nothing is returned, Rollup falls back to the default resolution. - David D. 7/2021
     },
   }
