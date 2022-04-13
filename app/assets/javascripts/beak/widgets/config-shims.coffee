@@ -253,8 +253,12 @@ genConfigs = (ractive, viewController, container, compiler) ->
   appendToConsole = (str) ->
     ractive.set('consoleOutput', ractive.get('consoleOutput') + str)
 
+  base64ToImageData = (base64) ->
+    { array, height, width } = synchroDecoder(base64)
+    new ImageData(array, width, height)
+
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
-  , base64ToImageData: synchroDecoder
+  , base64ToImageData
   , dialog:            genDialogConfig(viewController, notify)
   , importExport:      genImportExportConfig(ractive, viewController, compiler)
   , inspection:        genInspectionConfig()
