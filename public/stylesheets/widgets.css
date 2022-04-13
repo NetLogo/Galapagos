@@ -266,6 +266,13 @@
   padding: 15px;
 }
 
+/* (NEW): Added some CSS to style the command center inputs */
+.netlogo-command-center-container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
 .netlogo-command-center {
   flex: 1;
   display: flex;
@@ -283,14 +290,40 @@
  * --JAB (10/12/17)
  */
 .netlogo-command-center-editor {
-  height: 1.25em;
+  height: 25px;
+  margin: 0 10px;
   flex-grow: 1;
-  width: 42px; /* Arbitrary as hell; see comment above. --JAB (10/12/17) */
+}
+
+.netlogo-command-center-select {
+  height: 27px;
 }
 
 .netlogo-command-center-editor .CodeMirror {
   border: 1px solid #111;
   height: auto;
+}
+
+.netlogo-command-center-input {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.netlogo-command-center-button {
+  height: 30px;
+  width: 75px;
+  border-radius: 8px;
+  background-color: #bacff3;
+}
+
+.netlogo-command-center-button:hover {
+  filter: brightness(0.9);
+}
+
+.netlogo-command-center-button:active {
+  filter: brightness(0.7);
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
 }
 
 .netlogo-output-widget {
@@ -304,11 +337,6 @@
   background-color: white;
   margin: 0px;
   overflow: auto;
-}
-
-.netlogo-command-center-input {
-  display: flex;
-  flex-shrink: 0;
 }
 
 .netlogo-speed-slider {

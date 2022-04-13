@@ -62,7 +62,7 @@ window.RactiveConsoleWidget = Ractive.extend({
         @set('historyIndex', history.length)
         if agentType isnt 'observer'
           input = "ask #{agentType} [ #{input} ]"
-        @fire('run', {}, input, consoleErrorLog)
+        @fire('run', {}, input, consoleErrorLog) # FOCUS
         @set('input', '')
         @set('workingEntry', {})
 
@@ -124,14 +124,14 @@ window.RactiveConsoleWidget = Ractive.extend({
 
       <div class='netlogo-command-center-input'>
         <label>
-          <select value="{{agentType}}">
+          <select value="{{agentType}}" class='netlogo-command-center-select'>
           {{#agentTypes}}
             <option value="{{.}}">{{.}}</option>
           {{/}}
           </select>
         </label>
         <div class="netlogo-command-center-editor"></div>
-        <button on-click='clear-history'>Clear</button>
+        <button class='netlogo-command-center-button' on-click='clear-history'>Clear</button>
       </div>
     </div>
     """

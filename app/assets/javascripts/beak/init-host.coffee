@@ -101,13 +101,6 @@ protocolObj = { protocolVersion: "0.0.1" }
 
 babyMonitor = null # MessagePort
 
-# TODO: Will eventually use this when we move to observers for window 'Ractive' component
-# Around L540 in this file
-alertCode = (newValue, oldValue, keyPath) ->
-  console.log(oldValue)
-  console.log(newValue)
-  console.log(keyPath)
-
 # (MessagePort, Object[Any], Array[MessagePort]?) => Unit
 postToBM = (message, transfers = []) ->
 
@@ -205,6 +198,9 @@ setUpEventListeners = ->
 
     switch (e.data.type)
 
+      when "hnw-console-run"
+        session.run(e.data.code, () => {})
+
       # (NEW): Refactor setup & go buttons to outer frame
       when "hnw-setup-button"
         runCommand("setup")
@@ -220,6 +216,17 @@ setUpEventListeners = ->
 
       when "hnw-become-oracle"
         loadModel(e.data.nlogo, "Jason's Experimental Funland")
+
+        session.widgetController.ractive.observe(
+          "consoleOutput",
+          (newValue, oldValue, keyPath) ->
+            if newValue?
+              newValuesArr = newValue.split("\n")
+
+              if newValuesArr.length != 1
+                newOutputLine = newValuesArr.at(-2)
+                postToBM({ type: "nlw-command-center-output", newOutputLine })
+        )
 
         session.widgetController.ractive.set("isHNW"    , true)
         session.widgetController.ractive.set("isHNWHost", true)
@@ -271,8 +278,9 @@ setUpEventListeners = ->
 
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
 
-        tabAreaElem = document.querySelector(".netlogo-tab-area")
-        taeParent   = tabAreaElem.parentNode
+        # TODO: Temporarily comment out these lines to remove accordion tabs from inner frame
+        # tabAreaElem = document.querySelector(".netlogo-tab-area")
+        # taeParent   = tabAreaElem.parentNode
 
         if e.data.targetFrameRate?
           session.setTargetFrameRate(e.data.targetFrameRate)
@@ -559,7 +567,7 @@ setUpEventListeners = ->
           postToBM({ type: "nlw-model-info", info: modelInfo })
         , 1000
 
-        # TODO --> Should eventually remove this^^ timeout & set an observer
+        # TODO: Should eventually remove this^^ timeout & set an observer
         # session.widgetController.ractive.observe('lastCompiledCode', alertCode)
 
       when "hnw-resize"

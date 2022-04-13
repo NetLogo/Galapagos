@@ -7,8 +7,6 @@ dropNLogoExtension = (s) ->
 # (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
 window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
 
-  # console.log("CODE HERE:", code)
-
   model = {
     checkIsReporter
   , code
@@ -220,36 +218,41 @@ template =
 
     </div>
 
-    <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
-      {{# !isReadOnly }}
-      <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
-        <span class="netlogo-tab-text">Command Center</span>
-      </label>
-      {{#showConsole}}
-        <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
-      {{/}}
-      {{/}}
-      <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
-        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
-      </label>
-      {{#showCode}}
-        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
-      {{/}}
-      <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
-        <span class="netlogo-tab-text">Model Info</span>
-      </label>
-      {{#showInfo}}
-        <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
-      {{/}}
-    </div>
-
     <input id="general-file-input" type="file" name="general-file" style="display: none;" />
 
   </div>
   """
+
+  # TODO: Temporarily comment out these lines to remove the accordion tabs from inner frame
+  #   <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
+  #     {{# !isReadOnly }}
+  #     <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
+  #       <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
+  #       <span class="netlogo-tab-text">Command Center</span>
+  #     </label>
+  #     {{#showConsole}}
+  #       <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
+  #     {{/}}
+  #     {{/}}
+  #     <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
+  #       <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
+  #       <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
+  #     </label>
+  #     {{#showCode}}
+  #       <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+  #     {{/}}
+  #     <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
+  #       <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+  #       <span class="netlogo-tab-text">Model Info</span>
+  #     </label>
+  #     {{#showInfo}}
+  #       <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
+  #     {{/}}
+  #   </div>
+
+  #   <input id="general-file-input" type="file" name="general-file" style="display: none;" />
+
+  # </div>
 
 partials = {
 
