@@ -187,6 +187,9 @@ class window.SessionLite
 
   # (() => Unit) => Unit
   recompileLite: (successCallback = (->)) ->
+    console.log("Entered 'recompileLite(...)'")
+    console.log("callback:", successCallback)
+
     lastCompileFailed   = @widgetController.ractive.get('lastCompileFailed')
     someWidgetIsFailing = @widgetController.widgets().some((w) -> w.compilation?.success is false)
     if lastCompileFailed or someWidgetIsFailing
@@ -195,6 +198,9 @@ class window.SessionLite
 
   # (() => Unit) => Unit
   recompile: (successCallback = (->)) ->
+
+    console.log("Entered 'recompile(...)'")
+    console.log("callback:", successCallback)
 
     if @widgetController.ractive.get('isEditing') and @widgetController.ractive.get('isHNW')
       parent.postMessage({ type: "recompile" }, "*")

@@ -198,10 +198,17 @@ setUpEventListeners = ->
 
     switch (e.data.type)
 
+      when "hnw-recompile"
+        console.log("RECOMPILE")
+        session.recompile(() => {})
+
+      when "hnw-recompile-lite"
+        console.log("RECOMPILE LITE")
+        session.recompileLite(() => {})
+
       when "hnw-console-run"
         session.run(e.data.code, () => {})
 
-      # (NEW): Refactor setup & go buttons to outer frame
       when "hnw-setup-button"
         runCommand("setup")
 
@@ -279,8 +286,8 @@ setUpEventListeners = ->
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
 
         # TODO: Temporarily comment out these lines to remove accordion tabs from inner frame
-        # tabAreaElem = document.querySelector(".netlogo-tab-area")
-        # taeParent   = tabAreaElem.parentNode
+        tabAreaElem = document.querySelector(".netlogo-tab-area")
+        taeParent   = tabAreaElem.parentNode
 
         if e.data.targetFrameRate?
           session.setTargetFrameRate(e.data.targetFrameRate)

@@ -132,9 +132,7 @@ template =
        on-focus="@this.fire('track-focus', @node)"
        on-blur="@this.fire('track-focus', @node)">
     <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
-
     <div class="netlogo-display-vertical">
-
       <div class="netlogo-header">
         <div class="netlogo-subheader">
           <div class="netlogo-powered-by">
@@ -159,34 +157,27 @@ template =
           </div>
         {{/}}
       </div>
-
       <div class="netlogo-display-horizontal">
-
         <div class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
           <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
         </div>
-
         <div class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-orientation">
           <div class="netlogo-model-orientation {{#isVertical}}vertical-display{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>
         </div>
-
       </div>
-
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
-
       <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
         <span class="netlogo-label">model speed</span>
         <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} />
         <tickCounter isVisible="{{primaryView.showTickCounter}}"
                      label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
       </label>
-
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
@@ -215,44 +206,35 @@ template =
           {{# type === 'hnwOutput'   }} <hnwOutputWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} isHNW="{{isHNW}}" text="{{outputWidgetOutput}}" /> {{/}}
         {{/}}
       </div>
-
     </div>
-
+    <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
+      {{# !isReadOnly }}
+      <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
+        <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
+        <span class="netlogo-tab-text">Command Center</span>
+      </label>
+      {{#showConsole}}
+        <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
+      {{/}}
+      {{/}}
+      <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
+        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
+        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
+      </label>
+      {{#showCode}}
+        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+      {{/}}
+      <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
+        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+        <span class="netlogo-tab-text">Model Info</span>
+      </label>
+      {{#showInfo}}
+        <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
+      {{/}}
+    </div>
     <input id="general-file-input" type="file" name="general-file" style="display: none;" />
-
   </div>
   """
-
-  # TODO: Temporarily comment out these lines to remove the accordion tabs from inner frame
-  #   <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
-  #     {{# !isReadOnly }}
-  #     <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-  #       <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
-  #       <span class="netlogo-tab-text">Command Center</span>
-  #     </label>
-  #     {{#showConsole}}
-  #       <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
-  #     {{/}}
-  #     {{/}}
-  #     <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-  #       <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
-  #       <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
-  #     </label>
-  #     {{#showCode}}
-  #       <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
-  #     {{/}}
-  #     <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-  #       <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
-  #       <span class="netlogo-tab-text">Model Info</span>
-  #     </label>
-  #     {{#showInfo}}
-  #       <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
-  #     {{/}}
-  #   </div>
-
-  #   <input id="general-file-input" type="file" name="general-file" style="display: none;" />
-
-  # </div>
 
 partials = {
 

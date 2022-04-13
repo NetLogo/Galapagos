@@ -45,14 +45,14 @@ loadCodeModal = ->
     }
   })
 
-  ractive.on('console.run', (_, code, errorLog) => postToBM({ type: "hnw-console-run", code }))
+  ractive.on('console.run', (_, code, errorLog) => postToCommandCenterMonitor({ type: "nlw-console-run", code }))
 
 # (MessagePort) => Number
 nextMonIDFor = (port) ->
   hnwPortToIDMan.get(port).next("")
 
 # (MessagePort, Object[Any], Array[MessagePort]?) => Unit
-postToBM = (message, transfers = []) ->
+postToCommandCenterMonitor = (message, transfers = []) ->
 
   idObj    = { id: nextMonIDFor(commandCenterMonitor) }
   finalMsg = Object.assign({}, message, idObj, { source: "nlw-host" })
