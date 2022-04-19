@@ -199,11 +199,9 @@ setUpEventListeners = ->
     switch (e.data.type)
 
       when "hnw-recompile"
-        console.log("RECOMPILE")
         session.recompile(() => {})
 
       when "hnw-recompile-lite"
-        console.log("RECOMPILE LITE")
         session.recompileLite(() => {})
 
       when "hnw-console-run"
