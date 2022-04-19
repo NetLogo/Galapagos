@@ -542,6 +542,10 @@ setUpEventListeners = ->
 
     switch e.data.type
 
+      # TODO
+      when "nlw-code-modal-errors"
+        postToBM({ type: "nlw-code-modal-errors", messages: e.data.messages })
+
       when "hnw-widget-message"
         onWidgetMessage(e)
 

@@ -4,6 +4,35 @@ compiler = new BrowserCompiler()
 codeTab = ""
 widgets = []
 hnwPortToIDMan = new Map()
+alertWindow = null # TODO
+isStandalone = false
+
+nlogoScript = document.querySelector("#nlogo-code")
+isStandaloneHTML = nlogoScript.textContent.length > 0
+window.nlwAlerter = new NLWAlerter(document.getElementById("alert-overlay"), isStandaloneHTML)
+
+# (NEW): TODO
+# String -> Boolean -> String -> Unit
+display = (title, dismissable, content) ->
+  alertWindow.querySelector("#alert-title").innerHTML = title
+  alertWindow.querySelector("#alert-message").innerHTML = content
+
+  if isStandalone
+    alertWindow.querySelector(".standalone-text").style.display = ''
+
+  if not dismissable
+    alertWindow.querySelector("#alert-dismiss-container").style.display = 'none'
+  else
+    alertWindow.querySelector("#alert-dismiss-container").style.display = ''
+
+  alertWindow.style.display = ''
+
+  return
+
+# String -> Boolean -> String -> Unit
+displayError = (content, dismissable = true, title = "Error") ->
+  display(title, dismissable, content)
+  return
 
 loadCodeModal = ->
 
@@ -19,6 +48,10 @@ loadCodeModal = ->
         codeTab = result.code
         widgets = JSON.parse(result.widgets)
         hnwPortToIDMan.set(codeModalMonitor, new window.IDManager())
+
+        alertWindow = document.getElementById("alert-overlay")
+        console.log("codeModalMonitor:", codeModalMonitor)
+        console.log('alertWindow:', alertWindow)
 
         return
 
@@ -129,5 +162,8 @@ onCodeModalMessage = (e) ->
     when "hnw-model-code"
       ractive.findComponent("codePane").setCode(e.data.code)
       ractive.set("lastCompiledCode", e.data.code)
+
+    when "hnw-code-modal-errors"
+      displayError(e.data.messages)
 
 loadCodeModal()

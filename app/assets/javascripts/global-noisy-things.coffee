@@ -6,7 +6,6 @@ class window.NLWAlerter
 
   # String -> Boolean -> String -> Unit
   display: (title, dismissable, content) ->
-
     @_alertWindow.querySelector("#alert-title").innerHTML = title
     @_alertWindow.querySelector("#alert-message").innerHTML = content
 

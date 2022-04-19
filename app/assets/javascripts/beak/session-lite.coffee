@@ -22,6 +22,15 @@ globalEval = eval
 window.AgentModel = tortoise_require('agentmodel')
 agentToInt        = tortoise_require('engine/core/agenttoint')
 
+# (NEW): TODO
+# (MessagePort, Object[Any], Array[MessagePort]?) => Unit
+postToBM = (message, transfers = []) ->
+
+  idObj    = { id: session.nextMonIDFor(babyMonitor) }
+  finalMsg = Object.assign({}, message, idObj, { source: "nlw-host" })
+
+  babyMonitor.postMessage(finalMsg, transfers)
+
 class window.SessionLite
 
   # type HNWUpdate       = { widgetUpdates : Array[WidgetUpdate], monitorUpdates : Object[String], plotUpdates : Object[Array[Object[Any]]], viewUpdate : Array[ViewUpdate] }
@@ -83,6 +92,7 @@ class window.SessionLite
 
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
+    window.idMan = new window.IDManager() # (NEW): TODO
     globalEval(modelJS)
 
   modelTitle: ->
@@ -425,6 +435,12 @@ class window.SessionLite
 
   alertErrors: (messages) =>
     @displayError(messages.join('\n'))
+
+    # (NEW): TODO
+    window.postMessage({ type: "nlw-code-modal-errors", messages: messages.join('\n') }, "*")
+
+    # console.log("window:", window)
+    # postToBM({ type: "nlw-code-modal-errors", messages: messages.join('\n')})
 
   _codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors) ->
     compileParams = {
