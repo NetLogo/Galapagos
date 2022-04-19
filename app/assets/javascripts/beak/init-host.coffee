@@ -542,10 +542,6 @@ setUpEventListeners = ->
 
     switch e.data.type
 
-      # TODO
-      when "nlw-code-modal-errors"
-        postToBM({ type: "nlw-code-modal-errors", messages: e.data.messages })
-
       when "hnw-widget-message"
         onWidgetMessage(e)
 
@@ -565,6 +561,8 @@ setUpEventListeners = ->
       when "nlw-request-model-state"
         update = session.getModelState("")
         e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
+      when "nlw-code-modal-errors"
+        postToBM({ type: "nlw-code-modal-errors", messages: e.data.messages })
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
