@@ -69,6 +69,7 @@ loadCodeModal = ->
       codePane: RactiveModelCodeComponent
     },
     data: -> {
+      code: "",
       lastCompiledCode: ""
     }
   })
@@ -89,15 +90,22 @@ postToCodeModalMonitor = (message, transfers = []) ->
 
   codeModalMonitor.postMessage(finalMsg, transfers)
 
-# TODO
+# (DOMEvent) -> Unit
 onCodeModalMessage = (e) ->
 
   switch (e.data.type)
+
     when "hnw-model-code"
       ractive.findComponent("codePane").setCode(e.data.code)
+      ractive.set("code", e.data.code)
       ractive.set("lastCompiledCode", e.data.code)
 
-    when "hnw-code-modal-errors"
+    when "hnw-recompile-success"
+      ractive.findComponent("codePane").setCode(e.data.code)
+      ractive.set("code", e.data.code)
+      ractive.set("lastCompiledCode", e.data.code)
+
+    when "hnw-recompile-failure"
       displayError(e.data.messages)
 
 loadCodeModal()

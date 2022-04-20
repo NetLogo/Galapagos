@@ -74,7 +74,6 @@ class window.SessionLite
       initializeUI(container, widgets, code, info, readOnly, filename, checkIsReporter, (=> @_performUpdate()))
 
     @widgetController.ractive.on('*.recompile'     , (_, callback)       => @recompile(callback))
-    @widgetController.ractive.on('*.recompile-lite', (_, callback)       => @recompileLite(callback))
     @widgetController.ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
     @widgetController.ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     @widgetController.ractive.on('open-new-file'   , (_, event)          => @openNewFile())
@@ -187,18 +186,7 @@ class window.SessionLite
     cancelAnimationFrame(@_eventLoopTimeout)
 
   # (() => Unit) => Unit
-  recompileLite: (successCallback = (->)) ->
-    console.log("Entered 'recompileLite(...)'")
-    console.log("callback:", successCallback)
-
-    lastCompileFailed   = @widgetController.ractive.get('lastCompileFailed')
-    someWidgetIsFailing = @widgetController.widgets().some((w) -> w.compilation?.success is false)
-    if lastCompileFailed or someWidgetIsFailing
-      @recompile(successCallback)
-    return
-
-  # (() => Unit) => Unit
-  recompile: (code = @widgetController.code(), successCallback = (->)) ->
+  recompile: (code = @widgetController.code(), successCallback = (->), failureCallback = (->)) ->
 
     if @widgetController.ractive.get('isEditing') and @widgetController.ractive.get('isHNW')
       parent.postMessage({ type: "recompile" }, "*")
@@ -235,6 +223,7 @@ class window.SessionLite
             world.importState(state)
 
             @widgetController.ractive.set('isStale',           false)
+            @widgetController.ractive.set('code',              code)
             @widgetController.ractive.set('lastCompiledCode',  code)
             @widgetController.ractive.set('lastCompileFailed', false)
             @_performUpdate(true)
@@ -248,9 +237,9 @@ class window.SessionLite
           else
             @widgetController.ractive.set('lastCompileFailed', true)
             res.model.result.forEach( (r) => r.lineNumber = code.slice(0, r.start).split("\n").length )
-            @alertCompileError(res.model.result)
+            @alertCompileError(res.model.result, failureCallback)
 
-      Tortoise.startLoading(=> @_codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError.bind(this)))
+      Tortoise.startLoading(=> @_codeCompile(code, [], [], oldWidgets, onCompile, @alertCompileError.bind(this), successCallback))
 
   getNlogo: ->
     @compiler.exportNlogo({
@@ -418,13 +407,16 @@ class window.SessionLite
       message = errorLog("Runtime error", [ex])
       { success: false, error: message }
 
-  alertCompileError: (result, errorLog = @alertErrors) ->
-    errorLog(result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message))
+  alertCompileError: (result, failureCallback = () => {}) ->
+    @alertErrors(result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message), failureCallback)
 
-  alertErrors: (messages) =>
-    window.postMessage({ type: "nlw-code-modal-errors", messages: messages.join('\n') }, "*")
+  alertErrors: (messages, failureCallback) =>
+    if not @widgetController.ractive.get('isHNW')
+      @displayError(messages.join('\n'))
+    else
+      failureCallback(messages.join('\n'))
 
-  _codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors) ->
+  _codeCompile: (code, commands, reporters, widgets, onFulfilled, onErrors, successCallback) ->
     compileParams = {
       code:         code,
       widgets:      widgets,
@@ -438,7 +430,11 @@ class window.SessionLite
       @_updateMetadata(code, globalEval(res.widgets))
       onFulfilled(res)
     catch ex
-      onErrors([ex])
+      errorMsgStart = ex.toString().split(" ")[1]
+      if errorMsgStart == "world.breedManager.breeds(...).map"
+        successCallback()
+      else
+        onErrors([ex])
     finally
       Tortoise.finishLoading()
 

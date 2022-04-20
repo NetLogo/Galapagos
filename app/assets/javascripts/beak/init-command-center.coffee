@@ -59,7 +59,7 @@ postToCommandCenterMonitor = (message, transfers = []) ->
 
   commandCenterMonitor.postMessage(finalMsg, transfers)
 
-# TODO
+# (DOMEvent) -> Unit
 onCommandCenterMessage = (e) ->
   switch (e.data.type)
     when "hnw-command-center-output"

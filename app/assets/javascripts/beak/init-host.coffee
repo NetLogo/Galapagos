@@ -199,7 +199,15 @@ setUpEventListeners = ->
     switch (e.data.type)
 
       when "hnw-recompile"
-        session.recompile(e.data.code, () => {})
+
+        # console.log("recompiling...?")
+
+        successCallback = () ->
+          postToBM({ type: "nlw-recompile-success", code: e.data.code })
+        failureCallback = (messages) ->
+          postToBM({ type: "nlw-recompile-failure", messages })
+
+        session.recompile(e.data.code, successCallback, failureCallback)
 
       when "hnw-console-run"
         session.run(e.data.code, () => {})
@@ -556,8 +564,6 @@ setUpEventListeners = ->
       when "nlw-request-model-state"
         update = session.getModelState("")
         e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*")
-      when "nlw-code-modal-errors"
-        postToBM({ type: "nlw-code-modal-errors", messages: e.data.messages })
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
