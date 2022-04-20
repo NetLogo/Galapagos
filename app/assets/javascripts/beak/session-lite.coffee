@@ -409,7 +409,10 @@ class window.SessionLite
       { success: false, error: message }
 
   alertCompileError: (result, failureCallback = () => {}) ->
-    @alertErrors(result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message), failureCallback)
+    @alertErrors(
+      result.map((err) -> if err.lineNumber? then "(Line #{err.lineNumber}) #{err.message}" else err.message),
+      failureCallback
+    )
 
   alertErrors: (messages, failureCallback) =>
     if not @widgetController.ractive.get('isHNW')

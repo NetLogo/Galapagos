@@ -231,7 +231,7 @@ setUpEventListeners = ->
             if newValue?
               newValuesArr = newValue.split("\n")
 
-              if newValuesArr.length != 1
+              if newValuesArr.length isnt 1
                 newOutputLine = newValuesArr.at(-2)
                 postToBM({ type: "nlw-command-center-output", newOutputLine })
         )
@@ -301,7 +301,7 @@ setUpEventListeners = ->
           replacer =
             (c) ->
               r = Math.random() * 16 | 0
-              v = if c == 'x' then r else (r & 0x3 | 0x8)
+              v = if c is 'x' then r else (r & 0x3 | 0x8)
               v.toString(16)
 
           'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
@@ -376,9 +376,9 @@ setUpEventListeners = ->
         studentFrame.id  = "hnw-join-frame"
         studentFrame.src = "/hnw-join"
 
-        studentFrame.style.border    = "3px solid black"
-        studentFrame.style.height    = "80vh"
-        studentFrame.style.width     = "47vw"
+        studentFrame.style.border = "3px solid black"
+        studentFrame.style.height = "80vh"
+        studentFrame.style.width = "47vw"
 
         flexbox.appendChild(studentFrame)
 
@@ -389,7 +389,7 @@ setUpEventListeners = ->
             replacer =
               (c) ->
                 r = Math.random() * 16 | 0
-                v = if c == 'x' then r else (r & 0x3 | 0x8)
+                v = if c is 'x' then r else (r & 0x3 | 0x8)
                 v.toString(16)
 
             'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, replacer)
