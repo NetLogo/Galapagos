@@ -73,8 +73,9 @@ loadCodeModal = ->
     }
   })
 
-  ractive.on('*.recompile'     , (_, callback) => postToCodeModalMonitor({ type: "nlw-recompile", callback }))
-  ractive.on('*.recompile-lite', (_, callback) => postToCodeModalMonitor({ type: "nlw-recompile-lite", callback }))
+  ractive.on('*.recompile'     , (_, callback) =>
+    postToCodeModalMonitor({ type: "nlw-recompile", code: ractive.findComponent("codePane").get("code") })
+  )
 
 # (MessagePort) => Number
 nextMonIDFor = (port) ->

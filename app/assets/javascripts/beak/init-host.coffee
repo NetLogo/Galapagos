@@ -199,10 +199,7 @@ setUpEventListeners = ->
     switch (e.data.type)
 
       when "hnw-recompile"
-        session.recompile(() => {})
-
-      when "hnw-recompile-lite"
-        session.recompileLite(() => {})
+        session.recompile(e.data.code, () => {})
 
       when "hnw-console-run"
         session.run(e.data.code, () => {})
