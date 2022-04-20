@@ -57,7 +57,7 @@ loadCodeModal = ->
   template = """
     <label class="netlogo-tab netlogo-active">
       <input id="code-tab-toggle" type="checkbox" checked="true" />
-      <span class="netlogo-tab-text">NetLogo Code</span>
+      <span class="netlogo-tab-text {{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
     </label>
     <codePane code='' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='false' isReadOnly='false' />
   """
@@ -70,7 +70,8 @@ loadCodeModal = ->
     },
     data: -> {
       code: "",
-      lastCompiledCode: ""
+      lastCompiledCode: "",
+      lastCompileFailed: false
     }
   })
 
@@ -99,13 +100,16 @@ onCodeModalMessage = (e) ->
       ractive.findComponent("codePane").setCode(e.data.code)
       ractive.set("code", e.data.code)
       ractive.set("lastCompiledCode", e.data.code)
+      ractive.set("lastCompileFailed", false)
 
     when "hnw-recompile-success"
       ractive.findComponent("codePane").setCode(e.data.code)
       ractive.set("code", e.data.code)
       ractive.set("lastCompiledCode", e.data.code)
+      ractive.set("lastCompileFailed", false)
 
     when "hnw-recompile-failure"
       displayError(e.data.messages)
+      ractive.set("lastCompileFailed", true)
 
 loadCodeModal()
