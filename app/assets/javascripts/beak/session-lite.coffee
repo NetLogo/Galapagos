@@ -159,8 +159,11 @@ class window.SessionLite
           for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
             @_lastUpdate = now()
             @widgetController.runForevers()
-            if document.getElementById('hnw-go')?.checked
+
+            # (NEW): TODO
+            if @widgetController.ractive.get('goStatus')
               window.hnwGoProc()
+
             if now() >= updatesDeadline
               break
 

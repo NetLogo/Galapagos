@@ -216,8 +216,7 @@ setUpEventListeners = ->
         runCommand("setup")
 
       when "hnw-go-checkbox"
-        console.log("Running the go command???")
-        runCommand("go")
+        session.widgetController.ractive.set('goStatus', e.data.goStatus)
 
       when "hnw-widget-message"
         onWidgetMessage(e)
@@ -292,6 +291,10 @@ setUpEventListeners = ->
         # TODO: Temporarily comment out these lines to remove accordion tabs from inner frame
         tabAreaElem = document.querySelector(".netlogo-tab-area")
         taeParent   = tabAreaElem.parentNode
+
+        # (NEW): TODO
+        if e.data.onIterate?
+          window.hnwGoProc = (-> runCommand(e.data.onIterate))
 
         if e.data.targetFrameRate?
           session.setTargetFrameRate(e.data.targetFrameRate)

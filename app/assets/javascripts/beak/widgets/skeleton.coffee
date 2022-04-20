@@ -12,6 +12,7 @@ window.generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, fi
   , code
   , consoleOutput:      ''
   , exportForm:         false
+  , goStatus:           false  # TODO
   , hasFocus:           false
   , height:             0
   , info
