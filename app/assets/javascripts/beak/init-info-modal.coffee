@@ -17,11 +17,13 @@ loadInfoModal = ->
 
   # (NEW): Info modal setup
   template = """
-    <label class="netlogo-tab netlogo-active">
-        <input id="info-toggle" type="checkbox" checked="true" />
-        <span class="netlogo-tab-text">Model Info</span>
-      </label>
-    <infotab rawText='{{info}}' isEditing='false' />
+    <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
+      <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+      <span class="netlogo-tab-text">Model Info</span>
+    </label>
+    {{#showInfo}}
+      <infotab rawText='{{info}}' isEditing='false' />
+    {{/}}
   """
 
   ractive = new Ractive({
@@ -31,7 +33,8 @@ loadInfoModal = ->
       infotab: RactiveInfoTabWidget
     },
     data: -> {
-      info: ""
+      info: "",
+      showInfo: true
     }
   })
 

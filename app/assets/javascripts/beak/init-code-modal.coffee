@@ -55,11 +55,13 @@ loadCodeModal = ->
   )
 
   template = """
-    <label class="netlogo-tab netlogo-active">
-      <input id="code-tab-toggle" type="checkbox" checked="true" />
+    <label class="netlogo-tab {{#showCode}} netlogo-active{{/}}">
+      <input id="code-tab-toggle" type="checkbox" checked={{ showCode }} />
       <span class="netlogo-tab-text {{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
     </label>
-    <codePane code='' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='false' isReadOnly='false' />
+    {{#showCode}}
+      <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='false' />
+    {{/}}
   """
 
   ractive = new Ractive({
@@ -71,7 +73,8 @@ loadCodeModal = ->
     data: -> {
       code: "",
       lastCompiledCode: "",
-      lastCompileFailed: false
+      lastCompileFailed: false,
+      showCode: true
     }
   })
 

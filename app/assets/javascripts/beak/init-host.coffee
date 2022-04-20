@@ -216,6 +216,7 @@ setUpEventListeners = ->
         runCommand("setup")
 
       when "hnw-go-checkbox"
+        console.log("Running the go command???")
         runCommand("go")
 
       when "hnw-widget-message"

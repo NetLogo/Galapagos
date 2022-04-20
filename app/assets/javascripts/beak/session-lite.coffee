@@ -201,7 +201,8 @@ class window.SessionLite
           if res.model.success
 
             state = world.exportState()
-            breedShapePairs = world.breedManager.breeds().map((b) -> [b.name, b.getShape()])
+            breeds          = Object.values(world.breedManager.breeds())
+            breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
             world.clearAll()
             @_performUpdate(true) # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
 
@@ -430,11 +431,7 @@ class window.SessionLite
       @_updateMetadata(code, globalEval(res.widgets))
       onFulfilled(res)
     catch ex
-      errorMsgStart = ex.toString().split(" ")[1]
-      if errorMsgStart == "world.breedManager.breeds(...).map"
-        successCallback()
-      else
-        onErrors([ex])
+      onErrors([ex])
     finally
       Tortoise.finishLoading()
 
