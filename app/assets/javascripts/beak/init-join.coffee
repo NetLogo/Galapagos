@@ -215,7 +215,6 @@ setUpEventListeners = ->
           [ document.querySelector('.netlogo-header')
           , document.querySelector('.netlogo-display-horizontal')
           , document.querySelector('.netlogo-speed-slider')
-          , document.querySelector('.netlogo-tab-area')
           ]
 
         exiles.forEach((n) -> n.style.display = "none")

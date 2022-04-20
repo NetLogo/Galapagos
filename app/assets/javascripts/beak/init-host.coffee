@@ -199,11 +199,9 @@ setUpEventListeners = ->
     switch (e.data.type)
 
       when "hnw-recompile"
-
-        # console.log("recompiling...?")
-
         successCallback = () ->
           postToBM({ type: "nlw-recompile-success", code: e.data.code })
+
         failureCallback = (messages) ->
           postToBM({ type: "nlw-recompile-failure", messages })
 
@@ -289,10 +287,9 @@ setUpEventListeners = ->
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
 
         # TODO: Temporarily comment out these lines to remove accordion tabs from inner frame
-        tabAreaElem = document.querySelector(".netlogo-tab-area")
-        taeParent   = tabAreaElem.parentNode
+        # tabAreaElem = document.querySelector(".netlogo-tab-area")
+        # taeParent   = tabAreaElem.parentNode
 
-        # (NEW): TODO
         if e.data.onIterate?
           window.hnwGoProc = (-> runCommand(e.data.onIterate))
 
