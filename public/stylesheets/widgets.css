@@ -586,6 +586,15 @@
   white-space: nowrap;
 }
 
+.netlogo-code-compile-error {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px 0 -5px 0;
+  font-weight: bold;
+}
+
 .netlogo-widget-error {
   color: red;
 }

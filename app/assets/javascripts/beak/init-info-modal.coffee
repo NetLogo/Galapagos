@@ -17,10 +17,6 @@ loadInfoModal = ->
 
   # (NEW): Info modal setup
   template = """
-    <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-      <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
-      <span class="netlogo-tab-text">Model Info</span>
-    </label>
     {{#showInfo}}
       <infotab rawText='{{info}}' isEditing='false' />
     {{/}}
