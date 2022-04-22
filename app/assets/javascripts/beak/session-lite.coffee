@@ -795,6 +795,15 @@ class window.SessionLite
 
   # (MessagePort) => Number
   nextMonIDFor: (port) ->
+
+    # (NEW / TODO): Sometimes, when I load the HostA page,
+    # I get error that "@_hnwPortToIDMan.get(port)" is undefined &
+    # that "@_hnwPortToIDMan" is an empty map (with no registered message ports)
+
+    # This is my (probably incorrect) method of dealing with this bug...
+    if not @_hnwPortToIDMan.get(port)?
+      @entwineWithIDMan(port)
+
     @_hnwPortToIDMan.get(port).next("")
 
   # (MessagePort) => Unit
