@@ -422,6 +422,15 @@ setUpEventListeners = ->
 
         )
 
+        # (NEW): Pass model code & info to HNW
+        setTimeout ->
+          modelCode = session.widgetController.ractive.get('code')
+          postToBM({ type: "nlw-model-code", code: modelCode })
+
+          modelInfo = session.widgetController.ractive.get('info')
+          postToBM({ type: "nlw-model-info", info: modelInfo })
+        , 1000
+
       when "hnw-notify-congested"
         session.enableCongestionControl()
 
@@ -568,15 +577,6 @@ setUpEventListeners = ->
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
-
-        # (NEW): Pass model code & info to HNW
-        setTimeout ->
-          modelCode = session.widgetController.ractive.get('code')
-          postToBM({ type: "nlw-model-code", code: modelCode })
-
-          modelInfo = session.widgetController.ractive.get('info')
-          postToBM({ type: "nlw-model-info", info: modelInfo })
-        , 1000
 
         # TODO: Should eventually remove this^^ timeout & set an observer
         # session.widgetController.ractive.observe('lastCompiledCode', alertCode)

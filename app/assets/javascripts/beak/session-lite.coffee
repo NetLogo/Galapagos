@@ -219,6 +219,7 @@ class window.SessionLite
               component.set('resizeCallback', hops.resizeElem.bind(hops))
               hops._chart.chartBackground.css({ color: '#efefef' })
 
+            debugger
             globalEval(res.model.result)
             breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
             world.importState(state)
@@ -359,6 +360,7 @@ class window.SessionLite
     Tortoise.startLoading()
     @_codeCompile(@widgetController.code(), [code], [], @widgetController.widgets(),
       ({ commands, model: { result: modelResult, success: modelSuccess } }) =>
+        debugger
         if modelSuccess
           [{ result, success }] = commands
           if (success)
@@ -801,9 +803,10 @@ class window.SessionLite
     # that "@_hnwPortToIDMan" is an empty map (with no registered message ports)
 
     # This is my (probably incorrect) method of dealing with this bug...
-    if not @_hnwPortToIDMan.get(port)?
-      @entwineWithIDMan(port)
+    # if not @_hnwPortToIDMan.get(port)?
+    #   @entwineWithIDMan(port)
 
+    # debugger
     @_hnwPortToIDMan.get(port).next("")
 
   # (MessagePort) => Unit
