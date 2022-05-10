@@ -266,7 +266,6 @@
   padding: 15px;
 }
 
-/* (NEW): Added some CSS to style the command center inputs */
 .netlogo-command-center-container {
   display: flex;
   flex-direction: column;

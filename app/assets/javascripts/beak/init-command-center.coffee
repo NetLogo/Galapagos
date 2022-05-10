@@ -7,7 +7,6 @@ hnwPortToIDMan = new Map()
 
 loadCodeModal = ->
 
-  # (NEW): Handle messages to command center window (iframe)
   window.addEventListener("message", (e) ->
 
     switch (e.data.type)
@@ -25,10 +24,8 @@ loadCodeModal = ->
     console.warn("Unknown command center postMessage:", e.data)
   )
 
-  # compiler = new BrowserCompiler()
   checkIsReporter = (str) => compiler.isReporter(str)
 
-  # (NEW): Command center setup
   template = """
     <console output="{{consoleOutput}}" isEditing="false" checkIsReporter="{{checkIsReporter}}" />
   """

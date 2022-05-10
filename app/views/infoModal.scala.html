@@ -20,7 +20,6 @@
     <div id="info-modal-container"></div>
 
     <script>window.exports = {};</script>
-    <!-- @views.html.spinner() -->
     @views.html.errorAlert()
     <div id="netlogo-model-container" style="display: inline-block;"></div>
     <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
@@ -96,13 +95,11 @@
     @tagBuilder.pathToHTML("javascripts/beak/widgets/event-traffic-control.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-context-menu.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/handle-widget-selection.js")
-    <!-- @tagBuilder.pathToHTML("javascripts/beak/widgets/initialize-ui.js") -->
     @tagBuilder.pathToHTML("javascripts/beak/widgets/set-up-widgets.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/skeleton.js")
     @tagBuilder.pathToHTML("javascripts/beak/widgets/widget-controller.js")
     @tagBuilder.pathToHTML("javascripts/beak/babybehaviorspace.js")
     @tagBuilder.pathToHTML("javascripts/beak/session-lite.js")
-    <!-- @tagBuilder.pathToHTML("javascripts/beak/tortoise.js") -->
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone

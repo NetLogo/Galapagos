@@ -264,7 +264,6 @@ setUpEventListeners = ->
 
         parent.replaceChild(flexbox, wContainer)
 
-        # (NEW): Add flexbox for text above supervisor (teacher) & student views
         titlesFlexbox                      = document.createElement("div")
         titlesFlexbox.style.display        = "flex"
         titlesFlexbox.style.flexDirection  = "row"
@@ -285,10 +284,6 @@ setUpEventListeners = ->
         parent.insertBefore(titlesFlexbox, document.getElementById("main-frames-container"))
 
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
-
-        # TODO: Temporarily comment out these lines to remove accordion tabs from inner frame
-        # tabAreaElem = document.querySelector(".netlogo-tab-area")
-        # taeParent   = tabAreaElem.parentNode
 
         if e.data.onIterate?
           window.hnwGoProc = (-> runCommand(e.data.onIterate))
@@ -422,7 +417,6 @@ setUpEventListeners = ->
 
         )
 
-        # (NEW): Pass model code & info to HNW
         setTimeout ->
           modelCode = session.widgetController.ractive.get('code')
           postToBM({ type: "nlw-model-code", code: modelCode })
@@ -577,9 +571,6 @@ setUpEventListeners = ->
       when "hnw-set-up-baby-monitor"
         babyMonitor           = e.ports[0]
         babyMonitor.onmessage = onBabyMonitorMessage
-
-        # TODO: Should eventually remove this^^ timeout & set an observer
-        # session.widgetController.ractive.observe('lastCompiledCode', alertCode)
 
       when "hnw-resize"
 

@@ -3,7 +3,6 @@ ractive = null # Ractive
 
 loadInfoModal = ->
 
-  # (NEW): Handle messages to info modal window (iframe)
   window.addEventListener("message", (e) ->
 
     switch (e.data.type)
@@ -15,7 +14,6 @@ loadInfoModal = ->
     console.warn("Unknown info modal postMessage:", e.data)
   )
 
-  # (NEW): Info modal setup
   template = """
     {{#showInfo}}
       <infotab rawText='{{info}}' isEditing='false' />
