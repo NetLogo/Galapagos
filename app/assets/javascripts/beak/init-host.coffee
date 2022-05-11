@@ -259,7 +259,7 @@ setUpEventListeners = ->
         flexbox.id                   = "main-frames-container"
         flexbox.style.display        = "flex"
         flexbox.style.flexDirection  = "row"
-        flexbox.style.width          = "97vw"
+        flexbox.style.width          = "100vw"
         flexbox.style.justifyContent = "space-between"
 
         parent.replaceChild(flexbox, wContainer)
@@ -272,7 +272,7 @@ setUpEventListeners = ->
         supervisorTitle                   = document.createElement("p")
         supervisorTitle.innerHTML         = "Teacher"
         supervisorTitle.style.fontSize    = "24px"
-        supervisorTitle.style.marginRight = "45vw"
+        supervisorTitle.style.marginRight = "50vw"
 
         studentTitle                = document.createElement("p")
         studentTitle.innerHTML      = "Student"
@@ -332,10 +332,10 @@ setUpEventListeners = ->
         supervisorFrame.id  = "hnw-join-frame"
         supervisorFrame.src = "/hnw-join"
 
-        supervisorFrame.style.border = "3px solid black"
-        supervisorFrame.style.height = "100vh"
-        supervisorFrame.style.width  = "47vw"
-        supervisorFrame.style.margin = "0 auto"
+        supervisorFrame.style.border      = "3px solid black"
+        supervisorFrame.style.height      = "648px"
+        supervisorFrame.style.width       = "842px"
+        supervisorFrame.style.marginRight = "10px"
 
         flexbox.appendChild(supervisorFrame)
 
@@ -372,8 +372,8 @@ setUpEventListeners = ->
         studentFrame.src = "/hnw-join"
 
         studentFrame.style.border = "3px solid black"
-        studentFrame.style.height = "80vh"
-        studentFrame.style.width = "47vw"
+        studentFrame.style.height = "471px"
+        studentFrame.style.width  = "776px"
 
         flexbox.appendChild(studentFrame)
 
