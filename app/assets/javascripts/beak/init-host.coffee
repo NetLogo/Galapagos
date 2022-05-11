@@ -239,18 +239,7 @@ setUpEventListeners = ->
         session.widgetController.ractive.set("isHNW"    , true)
         session.widgetController.ractive.set("isHNWHost", true)
 
-        header = document.querySelector('.netlogo-header')
-
-        exiles =
-          [ header.querySelector('.netlogo-subheader')
-          , header.querySelector('.flex-column')
-          , document.querySelector('.netlogo-model-title')
-          , document.querySelector('.netlogo-toggle-container')
-          ]
-
         # Spectator Mode!
-
-        exiles.forEach((n) -> n.style.display = "none")
 
         wContainer = document.querySelector('.netlogo-widget-container')
         parent     = wContainer.parentNode # TODO: Name shadowing?
