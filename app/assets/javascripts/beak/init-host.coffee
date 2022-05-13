@@ -321,10 +321,11 @@ setUpEventListeners = ->
         supervisorFrame.id  = "hnw-join-frame"
         supervisorFrame.src = "/hnw-join"
 
-        supervisorFrame.style.border      = "3px solid black"
-        supervisorFrame.style.height      = "648px"
-        supervisorFrame.style.width       = "842px"
-        supervisorFrame.style.marginRight = "10px"
+        supervisorFrame.style.border          = "3px solid black"
+        supervisorFrame.style.height          = "648px"
+        supervisorFrame.style.width           = "842px"
+        supervisorFrame.style.marginRight     = "10px"
+        supervisorFrame.style.backgroundColor = "white"
 
         flexbox.appendChild(supervisorFrame)
 
@@ -360,9 +361,10 @@ setUpEventListeners = ->
         studentFrame.id  = "hnw-join-frame"
         studentFrame.src = "/hnw-join"
 
-        studentFrame.style.border = "3px solid black"
-        studentFrame.style.height = "471px"
-        studentFrame.style.width  = "776px"
+        studentFrame.style.border          = "3px solid black"
+        studentFrame.style.height          = "471px"
+        studentFrame.style.width           = "776px"
+        studentFrame.style.backgroundColor = "white"
 
         flexbox.appendChild(studentFrame)
 
