@@ -15,11 +15,12 @@
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
-  <body style="margin: 0px;">
+  <body class="flex-column">
     <script>window.exports = {};</script>
     @views.html.spinner()
     @views.html.errorAlert()
-    <div id="netlogo-model-container" style="display: inline-block;"></div>
+    <div class="join-page-header">Student View</div>
+    <div id="netlogo-model-container" class="netlogo-model-container-join"></div>
     <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
     @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
     <div id="netlogo-extensions-container" style="display: inline-block;"></div>
