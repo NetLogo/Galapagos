@@ -330,12 +330,8 @@
   box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
 }
 
-.join-page-header {
-  font-family: sans-serif;
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0 auto;
-  padding: 15px 0;
+.join-page-padding {
+  padding: 10px;
 }
 
 .netlogo-model-container-join {
@@ -346,6 +342,7 @@
   min-width: 900px;
   width: 60%;
   margin: 0 auto;
+  background-color: white;
 }
 
 .netlogo-output-widget {

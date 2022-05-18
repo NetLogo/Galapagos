@@ -328,6 +328,7 @@ setUpEventListeners = ->
         supervisorFrame.style.width           = "842px"
         supervisorFrame.style.marginRight     = "10px"
         supervisorFrame.style.backgroundColor = "white"
+        supervisorFrame.style.padding         = "10px"
 
         flexbox.appendChild(supervisorFrame)
 
@@ -367,6 +368,7 @@ setUpEventListeners = ->
         studentFrame.style.height          = "471px"
         studentFrame.style.width           = "776px"
         studentFrame.style.backgroundColor = "white"
+        studentFrame.style.padding         = "10px"
 
         flexbox.appendChild(studentFrame)
 

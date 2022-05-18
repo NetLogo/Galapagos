@@ -15,11 +15,10 @@
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
-  <body class="flex-column">
+  <body class="flex-column join-page-padding">
     <script>window.exports = {};</script>
     @views.html.spinner()
     @views.html.errorAlert()
-    <div class="join-page-header">Student View</div>
     <div id="netlogo-model-container" class="netlogo-model-container-join"></div>
     <!-- See Safari workaround comments in `color-input.coffee`.  -JMB January 2019 -->
     @tagBuilder.pathToHTML("lib/jscolor-picker/jscolor.js")
