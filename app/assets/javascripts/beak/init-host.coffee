@@ -262,10 +262,12 @@ setUpEventListeners = ->
         supervisorTitle.innerHTML         = "Teacher"
         supervisorTitle.style.fontSize    = "24px"
         supervisorTitle.style.marginRight = "50vw"
+        supervisorTitle.style.fontFamily  = "sans-serif"
 
-        studentTitle                = document.createElement("p")
-        studentTitle.innerHTML      = "Student"
-        studentTitle.style.fontSize = "24px"
+        studentTitle                   = document.createElement("p")
+        studentTitle.innerHTML         = "Student"
+        studentTitle.style.fontSize    = "24px"
+        studentTitle.style.fontFamily  = "sans-serif"
 
         titlesFlexbox.appendChild(supervisorTitle)
         titlesFlexbox.appendChild(studentTitle)
