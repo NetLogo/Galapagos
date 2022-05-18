@@ -248,31 +248,65 @@ setUpEventListeners = ->
         flexbox.id                   = "main-frames-container"
         flexbox.style.display        = "flex"
         flexbox.style.flexDirection  = "row"
-        flexbox.style.width          = "100vw"
+        flexbox.style.width          = "100%"
         flexbox.style.justifyContent = "space-between"
 
         parent.replaceChild(flexbox, wContainer)
 
-        titlesFlexbox                      = document.createElement("div")
-        titlesFlexbox.style.display        = "flex"
-        titlesFlexbox.style.flexDirection  = "row"
-        titlesFlexbox.style.justifyContent = "center"
+        supervisorFlexbox                     = document.createElement("div")
+        supervisorFlexbox.style.display       = "flex"
+        supervisorFlexbox.style.flexDirection = "column"
+        supervisorFlexbox.style.width         = "50%"
+        supervisorFlexbox.style.marginRight   = "25px"
+        supervisorFlexbox.style.alignItems    = "center"
 
-        supervisorTitle                   = document.createElement("p")
+        supervisorTitle                   = document.createElement("div")
         supervisorTitle.innerHTML         = "Teacher"
         supervisorTitle.style.fontSize    = "24px"
-        supervisorTitle.style.marginRight = "50vw"
         supervisorTitle.style.fontFamily  = "sans-serif"
 
-        studentTitle                   = document.createElement("p")
+        supervisorFrame     = document.createElement("iframe")
+        supervisorFrame.id  = "hnw-join-frame"
+        supervisorFrame.src = "/hnw-join"
+
+        supervisorFrame.style.border          = "3px solid black"
+        supervisorFrame.style.height          = "648px"
+        supervisorFrame.style.width           = "842px"
+        supervisorFrame.style.marginRight     = "10px"
+        supervisorFrame.style.backgroundColor = "white"
+        supervisorFrame.style.padding         = "10px"
+        supervisorFrame.style.marginTop       = "10px"
+
+        supervisorFlexbox.appendChild(supervisorTitle)
+        supervisorFlexbox.appendChild(supervisorFrame)
+
+        studentFlexbox = document.createElement("div")
+        studentFlexbox.style.display = "flex"
+        studentFlexbox.style.flexDirection = "column"
+        studentFlexbox.style.width = "50%"
+        studentFlexbox.style.alignItems = "center"
+
+        studentTitle                   = document.createElement("div")
         studentTitle.innerHTML         = "Student"
         studentTitle.style.fontSize    = "24px"
         studentTitle.style.fontFamily  = "sans-serif"
 
-        titlesFlexbox.appendChild(supervisorTitle)
-        titlesFlexbox.appendChild(studentTitle)
+        studentFrame     = document.createElement("iframe")
+        studentFrame.id  = "hnw-join-frame"
+        studentFrame.src = "/hnw-join"
 
-        parent.insertBefore(titlesFlexbox, document.getElementById("main-frames-container"))
+        studentFrame.style.border          = "3px solid black"
+        studentFrame.style.height          = "471px"
+        studentFrame.style.width           = "776px"
+        studentFrame.style.backgroundColor = "white"
+        studentFrame.style.padding         = "10px"
+        studentFrame.style.marginTop       = "10px"
+
+        studentFlexbox.appendChild(studentTitle)
+        studentFlexbox.appendChild(studentFrame)
+
+        flexbox.appendChild(supervisorFlexbox)
+        flexbox.appendChild(studentFlexbox)
 
         baseView = session.widgetController.widgets().find(({ type }) -> type is 'view')
 
@@ -319,18 +353,18 @@ setUpEventListeners = ->
                     console.log("We got '#{monitor.reporterStyle}'?")
               session.registerMonitorFunc(roleName, monitor.source, func)
 
-        supervisorFrame     = document.createElement("iframe")
-        supervisorFrame.id  = "hnw-join-frame"
-        supervisorFrame.src = "/hnw-join"
+        # supervisorFrame     = document.createElement("iframe")
+        # supervisorFrame.id  = "hnw-join-frame"
+        # supervisorFrame.src = "/hnw-join"
 
-        supervisorFrame.style.border          = "3px solid black"
-        supervisorFrame.style.height          = "648px"
-        supervisorFrame.style.width           = "842px"
-        supervisorFrame.style.marginRight     = "10px"
-        supervisorFrame.style.backgroundColor = "white"
-        supervisorFrame.style.padding         = "10px"
+        # supervisorFrame.style.border          = "3px solid black"
+        # supervisorFrame.style.height          = "648px"
+        # supervisorFrame.style.width           = "842px"
+        # supervisorFrame.style.marginRight     = "10px"
+        # supervisorFrame.style.backgroundColor = "white"
+        # supervisorFrame.style.padding         = "10px"
 
-        flexbox.appendChild(supervisorFrame)
+        # flexbox.appendChild(supervisorFrame)
 
         session.widgetController.ractive.observe(
           'ticksStarted'
@@ -360,17 +394,17 @@ setUpEventListeners = ->
 
         )
 
-        studentFrame     = document.createElement("iframe")
-        studentFrame.id  = "hnw-join-frame"
-        studentFrame.src = "/hnw-join"
+        # studentFrame     = document.createElement("iframe")
+        # studentFrame.id  = "hnw-join-frame"
+        # studentFrame.src = "/hnw-join"
 
-        studentFrame.style.border          = "3px solid black"
-        studentFrame.style.height          = "471px"
-        studentFrame.style.width           = "776px"
-        studentFrame.style.backgroundColor = "white"
-        studentFrame.style.padding         = "10px"
+        # studentFrame.style.border          = "3px solid black"
+        # studentFrame.style.height          = "471px"
+        # studentFrame.style.width           = "776px"
+        # studentFrame.style.backgroundColor = "white"
+        # studentFrame.style.padding         = "10px"
 
-        flexbox.appendChild(studentFrame)
+        # flexbox.appendChild(studentFrame)
 
         studentFrame.addEventListener('load', ->
 
