@@ -324,7 +324,7 @@
   min-width: 50px;
   width: 10vw;
   border-radius: 8px;
-  background-color: #b4c4dc;
+  background-color: var(--light-blue);
 }
 
 .netlogo-command-center-button:hover {
@@ -343,12 +343,11 @@
 .netlogo-model-container-join {
   display: flex;
   flex-direction: row;
-  border: 2px solid black;
   justify-content: center;
   min-width: 900px;
   width: 60%;
   margin: 0 auto;
-  background-color: white;
+  background-color: #f9f9f9;
 }
 
 .netlogo-output-widget {

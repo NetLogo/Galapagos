@@ -273,7 +273,6 @@ setUpEventListeners = ->
         supervisorFrame.style.height          = "648px"
         supervisorFrame.style.width           = "842px"
         supervisorFrame.style.marginRight     = "10px"
-        supervisorFrame.style.backgroundColor = "white"
         supervisorFrame.style.padding         = "10px"
         supervisorFrame.style.marginTop       = "10px"
 
@@ -298,7 +297,6 @@ setUpEventListeners = ->
         studentFrame.style.border          = "3px solid black"
         studentFrame.style.height          = "471px"
         studentFrame.style.width           = "776px"
-        studentFrame.style.backgroundColor = "white"
         studentFrame.style.padding         = "10px"
         studentFrame.style.marginTop       = "10px"
 
