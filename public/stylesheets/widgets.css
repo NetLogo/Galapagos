@@ -225,6 +225,12 @@
   height: 14px;
 }
 
+.netlogo-model-container-host {
+  display: inline-block;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
 .netlogo-codeusage-popup {
   position:absolute;
   z-index: 10;
