@@ -324,7 +324,7 @@
   min-width: 50px;
   width: 10vw;
   border-radius: 8px;
-  background-color: var(--light-blue);
+  background-color: var(--medium-blue);
 }
 
 .netlogo-command-center-button:hover {
