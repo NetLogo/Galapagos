@@ -1,7 +1,7 @@
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
-import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"

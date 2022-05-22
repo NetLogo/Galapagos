@@ -22,4 +22,9 @@ RactiveEditFormCheckbox = Ractive.extend({
 
 })
 
-export default RactiveEditFormCheckbox
+RactiveTwoWayCheckbox = RactiveEditFormCheckbox.extend({ twoway: true })
+
+export {
+  RactiveEditFormCheckbox,
+  RactiveTwoWayCheckbox
+}
