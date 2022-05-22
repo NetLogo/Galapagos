@@ -1,6 +1,6 @@
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
-import RactiveEditFormCheckbox from "./subcomponent/checkbox.js"
+import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
