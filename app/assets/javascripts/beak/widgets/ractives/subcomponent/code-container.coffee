@@ -135,12 +135,15 @@ editFormCodeContainerFactory =
     Ractive.extend({
 
       data: -> {
-        config:   undefined # Object
-      , id:       undefined # String
-      , label:    undefined # String
-      , onchange: (->)      # (String) => Unit
-      , style:    undefined # String
-      , value:    undefined # String
+        config:        undefined # Object
+      , id:            undefined # String
+      , isCollapsible: false     # Boolean
+      , isDisabled:    false     # Boolean
+      , isExpanded:    undefined # Boolean
+      , label:         undefined # String
+      , onchange:      (->)      # (String) => Unit
+      , style:         undefined # String
+      , value:         undefined # String
       }
 
       twoway: false
@@ -149,11 +152,28 @@ editFormCodeContainerFactory =
         codeContainer: container
       }
 
+      oninit: ->
+        isExpanded = @get('isExpanded') ? not @get('isCollapsible')
+        @set('isExpanded', isExpanded)
+        return
+
       template:
         """
-        <label for="{{id}}">{{label}}</label>
-        <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"
-                       onchange="{{onchange}}" style="{{style}}" />
+        <div class="flex-row code-container-label{{#isExpanded}} open{{/}}">
+          {{# isCollapsible }}
+            <label for="{{id}}-is-expanded" class="expander widget-edit-checkbox-wrapper">
+              <input id="{{id}}-is-expanded" class="widget-edit-checkbox"
+                     style="display: none;" type="checkbox" checked="{{isExpanded}}"
+                     twoway="true" />
+              <span class="widget-edit-input-label expander-label">&#9654;</span>
+            </label>
+          {{/}}
+          <label for="{{id}}">{{label}}</label>
+        </div>
+        <div class="{{# isCollapsible && !isExpanded }}hidden{{/}}" style="{{style}}">
+          <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"
+                         isDisabled="{{isDisabled}}" onchange="{{onchange}}" />
+        </div>
         """
 
     })
