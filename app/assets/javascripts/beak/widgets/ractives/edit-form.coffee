@@ -40,6 +40,8 @@ EditForm = Ractive.extend({
         newProps = @genProps(node)
         if newProps?
           @fire('update-widget-value', {}, newProps)
+      catch ex
+        console.warn("Widget form submission error: ", ex)
       finally
         @set('amProvingMyself', false)
         @fire('activate-cloaking-device')
