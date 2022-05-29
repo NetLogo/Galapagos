@@ -236,7 +236,8 @@ defaultWidgetMixinFor = (widgetType, x, y) ->
 widgetEqualsBy = (props) -> (w1) -> (w2) ->
   { eq } = tortoise_require('brazier/equals')
   locationProps = ['bottom', 'left', 'right', 'top']
-  w1.type is w2.type and locationProps.concat(props).every((prop) -> eq(w1[prop])(w2[prop]))
+  propEq        = (prop) -> eq(w1[prop])(w2[prop])
+  w1.type is w2.type and locationProps.concat(props).every(propEq)
 
 buttonProps   = ['buttonKind', 'disableUntilTicksStart', 'forever', 'source']
 chooserProps  = ['choices', 'display', 'variable']
