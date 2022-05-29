@@ -276,12 +276,12 @@
  * If I go down a level in the CSS and set the width on the CodeMirror instance directly, that kind of fixes the
  * problem, but only if I know the expect width that I want (which I don't).  However, if I come here and set the
  * width to *any* numeric value, the input always fits exactly the amount of space it's supposed to use.  Fricken weird.
- * --JAB (10/12/17)
+ * --Jason B. (10/12/17)
  */
 .netlogo-command-center-editor {
   height: 1.25em;
   flex-grow: 1;
-  width: 42px; /* Arbitrary as hell; see comment above. --JAB (10/12/17) */
+  width: 42px; /* Arbitrary as hell; see comment above. --Jason B. (10/12/17) */
 }
 
 .netlogo-command-center-editor .CodeMirror {
@@ -507,8 +507,8 @@
 
 .netlogo-multiline-input {
   flex-grow: 1;
-  height:    0; /* This is a hack to get Input widget labels the right heights in Firefox --JAB (11/23/17) */
-  width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -JMB Jan 2018 */
+  height:    0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
+  width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
   margin:    4px;
   resize:    none;
 }
@@ -580,7 +580,7 @@
 /* Credit for this keyboard table CSS goes to the fine folks at GitHub
  * Their code is released under the MIT license. Copyright (c) 2018 GitHub Inc.
  * https://assets-cdn.github.com/assets/github-ef9e6df593c3136722bd837c0437786d.css
- * JAB (5/7/18)
+ * Jason B. (5/7/18)
  */
 .help-key-table .help-keys {
   padding-right: 10px;

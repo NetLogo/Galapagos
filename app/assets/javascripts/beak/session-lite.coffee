@@ -107,7 +107,7 @@ class SessionLite
 
     # Widgets must always be updated, because global variables and plots can be
     # altered without triggering an "update".  That is to say that `Updater`
-    # only concerns itself with View updates. --JAB (9/2/15)
+    # only concerns itself with View updates. --Jason B. (9/2/15)
     @widgetController.updateWidgets()
 
   teardown: ->
@@ -186,7 +186,7 @@ class SessionLite
         if res.model.success
 
           state = world.exportState()
-          @widgetController.redraw() # Redraw right before `Updater` gets clobbered --JAB (2/27/18)
+          @widgetController.redraw() # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
           globalEval(res.model.result)
           world.importState(state)
 

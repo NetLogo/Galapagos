@@ -66,10 +66,10 @@ genDialogConfig = (viewController, notify) ->
     return
 
   # `yesOrNo` should eventually be changed to use a proper synchronous, three-button,
-  # customizable dialog... when HTML and JS start to support that. --JAB (6/1/16)
+  # customizable dialog... when HTML and JS start to support that. --Jason B. (6/1/16)
   #
   # Uhh, they probably never will.  Instead, we should favor the `dialog` extension,
-  # for which we provide "asyncDialog" shims above. --JAB (4/5/19)
+  # for which we provide "asyncDialog" shims above. --Jason B. (4/5/19)
   {
     confirm: (str) -> clearMouse(); window.confirm(str)
     input:   (str) -> clearMouse(); window.prompt(str, "")
@@ -153,9 +153,9 @@ genIOConfig = (ractive) ->
       # Setting the async option to `false` is deprecated and "bad" as far as HTML/JS is
       # concerned.  But this is NetLogo and NetLogo model code doesn't have a concept of
       # async execution, so this is the best we can do.  As long as it isn't used on a
-      # per-tick basis or in a loop, it should be okay.  -JMB August 2017, JAB (10/25/18)
+      # per-tick basis or in a loop, it should be okay.  -Jeremy B. August 2017, Jason B. (10/25/18)
       req.open("GET", url, false)
-      req.overrideMimeType('text\/plain; charset=x-user-defined') # Get as binary string -- JAB (10/27/18)
+      req.overrideMimeType('text\/plain; charset=x-user-defined') # Get as binary string -- Jason B. (10/27/18)
       req.send()
 
       response    = req.response

@@ -104,7 +104,7 @@ class HighchartsOps extends PlotOps
       return
 
     # This is a workaround for a bug in CS2 `@` detection: https://github.com/jashkenas/coffeescript/issues/5111
-    # -JMB December 2018
+    # -Jeremy B. December 2018
     thisOps = null
 
     resetPen = (pen) => () =>
@@ -118,7 +118,7 @@ class HighchartsOps extends PlotOps
       # -Jeremy B February 2021
       maybeLastUpPoint = null
       (x, y) =>
-        # Wrong, and disabled for performance reasons --JAB (10/19/14)
+        # Wrong, and disabled for performance reasons --Jason B. (10/19/14)
         # color = @colorToRGBString(pen.getColor())
         # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
         series = thisOps.penToSeries(pen)
@@ -141,10 +141,11 @@ class HighchartsOps extends PlotOps
         series.update(options, false)
       return
 
-    # Why doesn't the color change show up when I call `update` directly with a new color
-    # (like I can with a type in `updatePenMode`)?
+    # Why doesn't the color change show up when I call `update` directly with a new
+    # color (like I can with a type in `updatePenMode`)?
     # Send me an e-mail if you know why I can't do that.
-    # Leave a comment on this webzone if you know why I can't do that. --JAB (6/2/15)
+    # Leave a comment on this webzone if you know why I can't do that.
+    # --Jason B. (6/2/15)
     updatePenColor = (pen) => (color) =>
       hcColor = thisOps.colorToRGBString(color)
       series  = thisOps.penToSeries(pen)

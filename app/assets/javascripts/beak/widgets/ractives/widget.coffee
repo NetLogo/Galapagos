@@ -16,8 +16,9 @@ WidgetEventGenerators = {
 
   refreshChooser: ->
     {
-      # For whatever reason, if Ractive finds second argument of `fire` to be an object (in this case, our `widget`),
-      # it merges that arg into the context and ruins everything. --JAB (4/8/18)
+      # For whatever reason, if Ractive finds second argument of `fire` to be an
+      # object (in this case, our `widget`), it merges that arg into the context
+      # and ruins everything. --Jason B. (4/8/18)
       run: (ractive, widget) -> ractive.fire('refresh-chooser', "ignore", widget)
       type: "refreshChooser"
     }
@@ -114,7 +115,8 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       false
 
     "*.has-been-proven-unworthy": ->
-      @fire('unregister-widget', @get('widget').id, true) # Original event name: "cutMyLifeIntoPieces" --JAB (11/8/17)
+      # Original event name: "cutMyLifeIntoPieces" --Jason B. (11/8/17)
+      @fire('unregister-widget', @get('widget').id, true)
 
     "*.update-widget-value": (_, values) ->
 

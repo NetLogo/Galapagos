@@ -15,7 +15,8 @@ object PlayUtil {
 
   implicit class EnhancedRequest(request: Request[AnyContent]) {
 
-    // If Play actually made a good-faith effort at parameter extraction, I wouldn't have to go through this rubbish... --JAB 10/3/13
+    // If Play actually made a good-faith effort at parameter extraction,
+    // I wouldn't have to go through this rubbish... --Jason B. (10/3/13)
     def extractBundle: ParamBundle =
       request.body.asMultipartFormData map {
         formData =>

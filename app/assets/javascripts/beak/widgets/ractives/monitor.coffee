@@ -29,7 +29,8 @@ MonitorEditForm = EditForm.extend({
   # `name`s, yes, but CodeMirror only updates the true `textarea`'s value for submission when the
   # `submit` event is triggered, and we're not using the proper `submit` event (since we're using
   # Ractive's), so the `textarea` doesn't have the correct value when we get here.  It's much, much
-  # more straight-forward to just go digging in the form component for its value. --JAB (4/21/16)
+  # more straight-forward to just go digging in the form component for its value.
+  # --Jason B. (4/21/16)
   genProps: (form) ->
     fontSize = parseInt(form.fontSize.value)
     {

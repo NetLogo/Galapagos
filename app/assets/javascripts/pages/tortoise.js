@@ -68,7 +68,7 @@ window.addEventListener("message", function(e) {
     var title  = e.data.title;
 
     // Quack, quack!
-    // Who doesn't love duck typing? --JAB (11/9/15)
+    // Who doesn't love duck typing? --Jason B. (11/9/15)
     if ([height, width, title].every(isValid)) {
       modelContainer.width               = width;
       // When we reset the model height, we lose any scrolling that was in place,

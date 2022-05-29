@@ -23,7 +23,7 @@ RactiveAsyncUserDialog = Ractive.extend({
       if newValue
         @set('xLoc',  @get('wareaWidth' ) * .1       )
         @set('yLoc', (@get('wareaHeight') * .1) + 150)
-        setTimeout((=> @find("#async-user-dialog").focus()), 0) # Can't focus dialog until visible --JAB (4/10/19)
+        setTimeout((=> @find("#async-user-dialog").focus()), 0) # Can't focus dialog until visible --Jason B. (4/10/19)
         @fire('dialog-opened', this)
       else
         @fire('dialog-closed', this)

@@ -41,7 +41,9 @@ RactiveResizer = Ractive.extend({
   # (Ractive) => Unit
   setTarget: (newTarget) ->
     if not @_isLocked
-      setTimeout((=> # Use `setTimeout`, so any pending `clearTarget` resolves first --JAB (12/6/17)
+      # Use `setTimeout`, so any pending `clearTarget` resolves first
+      # --Jason B. (12/6/17)
+      setTimeout((=>
         @clearTarget()
         @set('target', newTarget)
         newTarget.set('isSelected', true)
