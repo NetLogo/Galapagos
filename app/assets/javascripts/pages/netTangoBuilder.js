@@ -45,7 +45,7 @@ const netTango = new NetTangoController(
 , window.environmentMode
 , netTangoModelUrl
 )
-const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
+const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHTML)
 netTango.netLogoModel.alerter = alerter
 alerter.listenForNetTangoErrors(netTango)
 
