@@ -9,7 +9,7 @@ import
     ExecutionContext.Implicits.global
 
 import
-  play.api.{ cache, Environment },
+  play.api.{ cache, Environment, Mode },
     cache.{ NamedCache, SyncCacheApi }
 
 import
@@ -26,7 +26,8 @@ import
 class Startup @Inject() (actorSystem: ActorSystem, @NamedCache("compilation-statuses") cache: SyncCacheApi, environment: Environment) {
   val statusCacher       = actorSystem.actorOf(Props(classOf[StatusCacher], cache))
   val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], () => ModelsLibrary.allModels(environment.mode), statusCacher))
-  actorSystem.scheduler.schedule(0.seconds, 30.minutes)(backgroundCompiler ! CheckBuiltInModels)
+  if (environment.mode == Mode.Prod)
+    actorSystem.scheduler.schedule(0.seconds, 30.minutes)(backgroundCompiler ! CheckBuiltInModels)
 }
 
 class StartupModule extends AbstractModule {
