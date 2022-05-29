@@ -20,7 +20,7 @@ RactiveCodeContainerBase = Ractive.extend({
   # event.  Basically, even though we explicitly say all over the place that we don't want to be
   # doing two-way binding, that `set` call will change the value here and everywhere up the chain.
   # So, to avoid that, `initialCode` is a dummy variable, and we dump it into `code` as soon as
-  # reasonably possible.  --JAB (5/2/16)
+  # reasonably possible.  --Jason B. (5/2/16)
   oncomplete: ->
     initialCode = @get('initialCode')
     @set('code', initialCode ? @get('code') ? "")

@@ -8,7 +8,7 @@ ChooserEditForm = EditForm.extend({
   data: -> {
     choices: undefined # String
   , display: undefined # String
-  , setHiddenInput: ( # We do this so we can validate the contents of the CodeMirror input --JAB (5/14/18)
+  , setHiddenInput: ( # We do this so we can validate the contents of the CodeMirror input --Jason B. (5/14/18)
       (code) ->
         elem        = this.find("##{@get('id')}-choices-hidden")
         elem.value  = code

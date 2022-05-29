@@ -263,7 +263,7 @@ class View
 
   # A very naïve and unaesthetic implementation!
   # I'm just throwing this together for a janky `hubnet-send-follow`.
-  # Do better! --JAB (10/21/17)
+  # Do better! --Jason B. (10/21/17)
   #
   # () => Unit
   _handleZoom: ->
@@ -424,7 +424,7 @@ class DrawingLayer extends Drawer
 
   repaint: (model) ->
     # Potato --JTT 5/29/15
-    # I think Jordan makes a really good point here. --JAB (8/6/15)
+    # I think Jordan makes a really good point here. --Jason B. (8/6/15)
     world  = model.world
     @wrapX = world.wrappingallowedinx
     @wrapY = world.wrappingallowediny

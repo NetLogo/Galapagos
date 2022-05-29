@@ -37,7 +37,8 @@ LabelEditForm = EditForm.extend({
 
   on: {
     init: ->
-      # A hack (because two-way binding isn't fully properly disabling?!) --JAB (4/11/18)
+      # A hack (because two-way binding isn't fully properly disabling?!)
+      # --Jason B. (4/11/18)
       @set('_color', @get('color'))
       return
   }

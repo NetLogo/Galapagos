@@ -1,7 +1,7 @@
 import RactiveContextable from "./contextable.js"
 
 # The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`.
-# --JAB (11/23/17), David D. 7/2021
+# --Jason B. (11/23/17), David D. 7/2021
 CommonDrag = {
 
   dragstart: (ractive, { original }, checkIsValid, callback) ->
@@ -10,9 +10,10 @@ CommonDrag = {
 
     if checkIsValid(clientX, clientY)
 
-      # The invisible GIF is used to hide the ugly "ghost" images that appear by default when dragging
-      # The `setData` thing is done because, without it, Firefox feels that the drag hasn't really begun
-      # So we give them some bogus drag data and get on with our lives. --JAB (11/22/17)
+      # The invisible GIF is used to hide the ugly "ghost" images that appear by
+      # default when dragging.  The `setData` thing is done because, without it,
+      # Firefox feels that the drag hasn't really begun, so we give them some bogus
+      # drag data and get on with our lives. --Jason B. (11/22/17)
       invisiGIF = document.createElement('img')
       invisiGIF.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
       dataTransfer.setDragImage?(invisiGIF, 0, 0)
@@ -32,16 +33,17 @@ CommonDrag = {
   drag: (ractive, { original: { clientX, clientY, view } }, callback) ->
     if ractive.view?
 
-      # Thanks, Firefox! --JAB (11/23/17)
+      # Thanks, Firefox! --Jason B. (11/23/17)
       root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
       x    = if clientX isnt 0 then clientX else (root.get('lastDragX') ? -1)
       y    = if clientY isnt 0 then clientY else (root.get('lastDragY') ? -1)
 
       # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
-      # We only take non-negative values here, to avoid the widget disappearing --JAB (3/22/16, 10/29/17)
+      # We only take non-negative values here, to avoid the widget disappearing
+      # --Jason B. (3/22/16, 10/29/17)
 
       # Only update drag coords 60 times per second.  If we don't throttle,
-      # all of this `set`ing murders the CPU --JAB (10/29/17)
+      # all of this `set`ing murders the CPU --Jason B. (10/29/17)
       if ractive.view is view and x > 0 and y > 0 and ((new Date).getTime() - ractive.lastUpdateMs) >= (1000 / 60)
         ractive.lastUpdateMs = (new Date).getTime()
         callback(x, y)
@@ -66,7 +68,7 @@ CommonDrag = {
 
 }
 
-# Ugh.  Single inheritance is a pox.  --JAB (10/29/17)
+# Ugh.  Single inheritance is a pox.  --Jason B. (10/29/17)
 RactiveDraggableAndContextable = RactiveContextable.extend({
 
   lastUpdateMs: undefined # Number

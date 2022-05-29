@@ -30,7 +30,8 @@ RactiveHelpDialog = Ractive.extend({
     isVisible: (newValue, oldValue) ->
       @set('isOverlayUp', newValue)
       if newValue
-        setTimeout((=> @find("#help-dialog").focus()), 0) # Dialog isn't visible yet, so can't be focused --JAB (5/2/18)
+        # Dialog isn't visible yet, so can't be focused --Jason B. (5/2/18)
+        setTimeout((=> @find("#help-dialog").focus()), 0)
         @fire('dialog-opened', this)
       else
         @fire('dialog-closed', this)

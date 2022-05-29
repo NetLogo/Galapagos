@@ -20,7 +20,7 @@ import { netlogoColorToHexString, hexStringToNetlogoColor } from "/colors.js"
 # So the solution that I've chosen here is to establish kind of a buffer zone, so that we only update the
 # picker when a new value comes in from the engine.
 #
-# --JAB (4/111/18)
+# --Jason B. (4/11/18)
 
 RactiveColorInput = Ractive.extend({
 

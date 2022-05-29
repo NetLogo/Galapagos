@@ -20,7 +20,7 @@ import
  * I couldn't find one, so I implemented a half-assed solution that involves also passing in
  * the resource's true path.  It's kind of hacky and isn't future-proof, but I'm not seeing
  * other good options here.  If you find one, feel free to blow it to pieces.  (Also, make
- * sure that you understand Galapagos#326 before you do!)  --JAB (1/26/16)
+ * sure that you understand Galapagos#326 before you do!)  --Jason B. (1/26/16)
  */
 trait TagBuilder {
   def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html

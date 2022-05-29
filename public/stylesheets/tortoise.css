@@ -48,7 +48,8 @@ iframe {
   min-height: 300px;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch; /* Screw Safari/iOS -- JAB (5/1/16) */
+  -webkit-overflow-scrolling: touch;
+  /* I have unkind things to say about Safari/iOS -- Jason B. (5/1/16) */
 }
 
 .model-container {
@@ -61,7 +62,7 @@ iframe {
    * despite overflow: hidden, which looks awful with the loading animation.
    * This mask fixes that.
    * Found here: http://stackoverflow.com/a/10296258/145080
-   * BCH 7/25/2015
+   * Bryan H. (7/25/15)
    **/
   -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }

@@ -16,7 +16,8 @@ openBracket  = {regex: /[\[\(]/, indent: true}
 closeBracket = {regex: /[\]\)]/, dedent: true}
 variable     = {token: 'variable', regex: new RegExp(wordCh + "+")}
 
-# Some arrays are reversed so that longer strings match first - BCH 1/9/2015, JAB (4/28/18)
+# Some arrays are reversed so that longer strings match first
+# -- Bryan H. 1/9/2015, Jason B. (4/28/18)
 allReporters = [].concat(reporters, turtleVars, patchVars, linkVars).reverse()
 CodeMirror.defineSimpleMode('netlogo', {
   start: [

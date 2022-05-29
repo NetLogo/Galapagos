@@ -28,8 +28,9 @@ EditForm = Ractive.extend({
 
   twoway: false
 
-  # We make the bound values lazy and then call `resetPartials` when showing, so as to
-  # prevent the perpetuation of values after a change-and-cancel. --JAB (4/1/16)
+  # We make the bound values lazy and then call `resetPartials` when showing,
+  # so as to prevent the perpetuation of values after a change-and-cancel.
+  # --Jason B. (4/1/16)
   lazy: true
 
   on: {
@@ -56,7 +57,7 @@ EditForm = Ractive.extend({
           else
             undefined
 
-      # Must unhide before measuring --JAB (3/21/16)
+      # Must unhide before measuring --Jason B. (3/21/16)
       @set('visible', true)
       elem = @getElem()
       elem.focus()

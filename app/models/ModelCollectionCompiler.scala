@@ -25,7 +25,9 @@ class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) exte
     case CheckBuiltInModels =>
       val allModels = getModels()
       cacher ! AllBuiltInModels(allModels)
-      allModels.map { // `map` before parallelizing, so we don't thrash the hard disk by reading files in parallel --JAB (11/11/14)
+      // `map` before parallelizing, so we don't thrash the hard disk by reading
+      // files in parallel --Jason B. (11/11/14)
+      allModels.map {
         file => (file, usingSource(_.fromFile(file))(_.mkString))
       }.par.foreach {
         case (file, contents) => cacher ! compileModel(compiler, file, contents)

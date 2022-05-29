@@ -4,7 +4,7 @@ handleContextMenu =
 
     hideContextMenu =
       (event) ->
-        if event?.button isnt 2 # Thanks, Firefox, you freaking moron. --JAB (12/6/17)
+        if event?.button isnt 2 # Thanks, Firefox, you freaking moron. --Jason B. (12/6/17)
                                 # See this ticket: https://bugzilla.mozilla.org/show_bug.cgi?id=184051
           contextMenu = ractive.findComponent('contextMenu')
           if contextMenu.get('visible')

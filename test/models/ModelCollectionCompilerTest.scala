@@ -36,7 +36,8 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
     assertInboxReceivedInOrder(observer, AllBuiltInModels(modelsCollection.allModels(Mode.Test)))
   }
 
-  // If this test fails, perhaps Oil Cartel now compiles (because HubNet is supported)? --JAB (2/5/17)
+  // If this test fails, perhaps Oil Cartel now compiles (because HubNet is
+  // supported)? --Jason B. (2/5/17)
   it should "send a status update message with the compilation status of each file" in {
     collectionCompiler ! CheckBuiltInModels
     assertInboxReceivedUnordered(
@@ -97,7 +98,7 @@ trait AkkaTestHelper extends Assertions {
 
   // I do this because the tests will otherwise intermittently cause `ClassCastException`s, thanks to this bug:
   // https://github.com/akka/akka/issues/15409 .  It seems to just be a timing issue, so let's be the little train
-  // that could and just keep on a-tryin'! --JAB (11/11/14)
+  // that could and just keep on a-tryin'! --Jason B. (11/11/14)
   @annotation.tailrec
   final protected def genInbox(implicit system: ActorSystem): Inbox =
     try Inbox.create(system)

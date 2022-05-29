@@ -106,7 +106,7 @@ RactiveInput = RactiveWidget.extend({
     #
     # The proper fix is really to get rid of the editor before stuffing the new value into it,
     # but that sounds fidgetty.  This fix is also fidgetty, but it's only fidgetty here, for Inputs;
-    # other widget types are left unbothered by this. --JAB (4/16/18)
+    # other widget types are left unbothered by this. --Jason B. (4/16/18)
     'code-changed': (_, newValue) ->
       if @get('widget').boxedValue.type.includes("String ")
         @set('widget.currentValue', newValue)
@@ -119,7 +119,7 @@ RactiveInput = RactiveWidget.extend({
 
     render: ->
 
-      # Scroll to bottom on value change --JAB (8/17/16)
+      # Scroll to bottom on value change --Jason B. (8/17/16)
       @observe('widget.currentValue'
       , (newValue, oldValue) =>
 
