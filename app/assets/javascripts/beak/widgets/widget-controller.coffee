@@ -178,7 +178,7 @@ updateWidget = (widget) ->
             'N/A'
           else
             if widget.precision? and isNum
-              NLMath.precision(value, widget.precision)
+              withPrecision(value, widget.precision)
             else
               value
         catch err
@@ -216,6 +216,15 @@ updateWidget = (widget) ->
       widget.bottom = widget.top  + desiredHeight
 
   return
+
+# (Number, Number) => Number
+withPrecision = (n, places) ->
+  multiplier = Math.pow(10, places)
+  result     = Math.floor(n * multiplier + 0.5) / multiplier
+  if places > 0
+    result
+  else
+    Math.round(result)
 
 # coffeelint: disable=max_line_length
 # (String, Number, Number) => Unit
