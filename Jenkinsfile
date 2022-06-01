@@ -4,6 +4,11 @@ pipeline {
 
   agent any
 
+  environment {
+    JAVA_HOME="${tool 'Liberica OpenJDK 8u332'}"
+    PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+  }
+
   stages {
     stage('Start') {
       steps {
