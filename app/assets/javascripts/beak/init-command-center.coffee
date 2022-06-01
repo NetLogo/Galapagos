@@ -42,6 +42,8 @@ loadCodeModal = ->
     }
   })
 
+  document.querySelector(".netlogo-command-center").style.border = "0"
+
   ractive.on('console.run', (_, code, errorLog) => postToCommandCenterMonitor({ type: "nlw-console-run", code }))
 
 # (MessagePort) => Number

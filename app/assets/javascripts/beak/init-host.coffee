@@ -249,7 +249,6 @@ setUpEventListeners = ->
 
         exiles.forEach((n) -> n.style.display = "none")
 
-
         wContainer = document.querySelector('.netlogo-widget-container')
         parent     = wContainer.parentNode # TODO: Name shadowing?
 

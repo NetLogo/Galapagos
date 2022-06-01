@@ -77,6 +77,9 @@ loadCodeModal = ->
     }
   })
 
+  document.querySelector(".netlogo-code-container").style.border = "0"
+  document.querySelector(".netlogo-code-tab").style.height = "100vh"
+
   ractive.on('*.recompile'     , (_, callback) =>
     postToCodeModalMonitor({ type: "nlw-recompile", code: ractive.findComponent("codePane").get("code") })
   )
