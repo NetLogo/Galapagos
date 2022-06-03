@@ -32,6 +32,8 @@ loadInfoModal = ->
     }
   })
 
+  document.querySelector(".netlogo-tab-content").style.border = "0"
+
 onInfoModalMessage = (e) ->
 
   switch (e.data.type)
