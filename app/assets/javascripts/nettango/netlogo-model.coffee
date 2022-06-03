@@ -45,6 +45,28 @@ RactiveNetLogoModel = Ractive.extend({
               e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
             @session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
 
+          when "nlw-request-model-state"
+            update = session.hnw.getModelState()
+            e.source.postMessage({ update, type: "nlw-state-update" }, "*")
+
+          when "nlw-request-view"
+            base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
+            e.source.postMessage({ base64, type: "nlw-view" }, "*")
+
+          when "nlw-subscribe-to-updates"
+            @session.hnw.subscribe(e.source, "NetTango")
+
+          when "nlw-apply-update"
+
+            { plotUpdates, ticks, viewUpdate } = e.data.update
+
+            world.ticker.reset()
+            world.ticker.importTicks(ticks)
+
+            vc = @session.widgetController.viewController
+            vc.applyUpdate(viewUpdate)
+            vc.repaint()
+
         return
       )
   }

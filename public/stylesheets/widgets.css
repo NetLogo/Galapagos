@@ -266,6 +266,10 @@
   height: 14px;
 }
 
+.netlogo-model-container-host {
+  display: inline-block;
+}
+
 .netlogo-codeusage-popup {
   position:absolute;
   z-index: 10;
@@ -307,6 +311,14 @@
   padding: 15px;
 }
 
+.netlogo-command-center-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
 .netlogo-command-center {
   flex: 1;
   display: flex;
@@ -327,13 +339,57 @@
  */
 .netlogo-command-center-editor {
   height: 1.25em;
+  margin: 0 10px;
   flex-grow: 1;
-  width: 42px; /* Arbitrary as hell; see comment above. --Jason B. (10/12/17) */
+  width: 42px;
+}
+
+.netlogo-command-center-select {
+  height: 27px;
+  min-width: 75px;
+  width: 10vw;
 }
 
 .netlogo-command-center-editor .CodeMirror {
   border: 1px solid #111;
   height: auto;
+}
+
+.netlogo-command-center-input {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.netlogo-command-center-button {
+  height: 30px;
+  min-width: 50px;
+  width: 10vw;
+  border-radius: 8px;
+  background-color: var(--medium-blue);
+}
+
+.netlogo-command-center-button:hover {
+  filter: brightness(0.9);
+}
+
+.netlogo-command-center-button:active {
+  filter: brightness(0.7);
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
+}
+
+.join-page-padding {
+  padding: 10px;
+}
+
+.netlogo-model-container-join {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-width: 900px;
+  width: 60%;
+  margin: 0 auto;
+  background-color: var(--light-gray);
 }
 
 .netlogo-output-widget {
@@ -347,11 +403,6 @@
   background-color: white;
   margin: 0px;
   overflow: auto;
-}
-
-.netlogo-command-center-input {
-  display: flex;
-  flex-shrink: 0;
 }
 
 .netlogo-speed-slider {
@@ -596,6 +647,15 @@
   white-space: nowrap;
 }
 
+.netlogo-code-compile-error {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 5px 0 -5px 0;
+  font-weight: bold;
+}
+
 .netlogo-widget-error {
   color: red;
 }
@@ -677,9 +737,10 @@
 }
 
 .async-dialog-message {
-  font-size:  16px;
-  margin-top: 20px;
-  word-break: break-word;
+  font-size:   16px;
+  margin-top:  20px;
+  white-space: break-spaces;
+  word-break:  break-word;
 }
 
 .async-dialog-button-row {

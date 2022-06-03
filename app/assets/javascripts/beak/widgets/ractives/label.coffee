@@ -82,6 +82,8 @@ LabelEditForm = EditForm.extend({
 
 })
 
+HNWLabelEditForm = LabelEditForm
+
 RactiveLabel = RactiveWidget.extend({
 
   data: -> {
@@ -137,4 +139,10 @@ RactiveLabel = RactiveWidget.extend({
 
 })
 
-export default RactiveLabel
+RactiveHNWLabel = RactiveLabel.extend({
+  components: {
+    editForm: HNWLabelEditForm
+  }
+})
+
+export { RactiveLabel, RactiveHNWLabel }

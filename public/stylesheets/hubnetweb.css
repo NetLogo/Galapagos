@@ -1,0 +1,32 @@
+.frames-container {
+  gap:             25px;
+  justify-content: space-between;
+}
+
+.student-flex {
+  align-items: center;
+}
+
+.student-frame {
+  border:  3px solid black;
+  margin:  10px 20px 0 0;
+  padding: 10px;
+}
+
+.student-title {
+  font: 24px, sans-serif;
+}
+
+.supervisor-flex {
+  align-items: center;
+}
+
+.supervisor-frame {
+  border:  3px solid black;
+  margin:  10px 10px 0 0;
+  padding: 10px;
+}
+
+.supervisor-title {
+  font: 24px, sans-serif;
+}

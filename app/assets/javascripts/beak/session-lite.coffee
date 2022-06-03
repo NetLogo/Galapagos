@@ -1,7 +1,10 @@
 import { createCommonArgs, createNamedArgs, listenerEvents } from "../notifications/listener-events.js"
 
+import HNWSession from "./hnw/session.js"
+
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"
+import performUpdate            from "./perform-update.js"
 import { toNetLogoMarkdown }    from "./tortoise-utils.js"
 import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
@@ -30,12 +33,16 @@ globalEval = eval
 
 class SessionLite
 
+  hnw:              undefined # HNWSession
   widgetController: undefined # WidgetController
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
   #   String, String, Boolean, String, String, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
     code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
+
+    @hnw = new HNWSession( (() => @widgetController)
+                         , ((ps) => @compiler.compilePlots(ps)))
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
@@ -51,6 +58,7 @@ class SessionLite
     , @nlogoSource
     , workInProgressState
     , @compiler
+    , (=> @_performUpdate())
     )
 
     # coffeelint: disable=max_line_length
@@ -100,26 +108,41 @@ class SessionLite
     @widgetController.ractive.get('modelTitle')
 
   startLoop: ->
-    if ProcedurePrims.hasCommand('startup')
+    if not @hnw.isJoiner() and ProcedurePrims.hasCommand('startup')
       runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
       @widgetController.ractive.fire('startup-procedure-run')
-    @widgetController.redraw()
+    @_performUpdate()
     @widgetController.updateWidgets()
     @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
     @widgetController.ractive.set('isSessionLoopRunning', true)
     @widgetController.ractive.fire('session-loop-started')
     return
 
-  updateDelay: ->
-    viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
-    speed      = @widgetController.speed()
-    delay      = 1000 / viewWidget.frameRate
-    if speed > 0
-      speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
-      delay * (1 - speedFactor)
+  # () => Unit
+  initHNW: ->
+    @hnw.init()
+
+  calcNumUpdates: ->
+    if @drawEveryFrame
+      1
     else
-      speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
-      MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
+      (now() - @_lastUpdate) / @updateDelay()
+
+  updateDelay: ->
+
+    if @hnw.isHost()
+      @hnw.updateDelay()
+    else
+
+      speed = @widgetController.speed()
+      delay = 1000 / @widgetController.getFPS()
+
+      if speed > 0
+        speedFactor = Math.pow(Math.abs(speed), FAST_UPDATE_EXP)
+        delay * (1 - speedFactor)
+      else
+        speedFactor = Math.pow(Math.abs(speed), SLOW_UPDATE_EXP)
+        MAX_UPDATE_DELAY * speedFactor + delay * (1 - speedFactor)
 
   redrawDelay: ->
     speed = @widgetController.speed()
@@ -130,28 +153,45 @@ class SessionLite
       DEFAULT_REDRAW_DELAY
 
   eventLoop: (timestamp) =>
+
+    time               = now()
     @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
-    updatesDeadline = Math.min(@_lastRedraw + @redrawDelay(), now() + MAX_UPDATE_TIME)
-    maxNumUpdates   = if @drawEveryFrame then 1 else (now() - @_lastUpdate) / @updateDelay()
+    updatesDeadline    = Math.min(@_lastRedraw + @redrawDelay(), time + MAX_UPDATE_TIME)
+    maxNumUpdates      = @calcNumUpdates()
 
-    if not @widgetController.ractive.get('isEditing')
-      for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
-        @_lastUpdate = now()
-        @widgetController.runForevers()
-        if now() >= updatesDeadline
-          break
+    [mayLoop, mayTick] = @hnw.checkTickability(time)
 
-    if Updater.hasUpdates()
-      # First conditional checks if we're on time with updates. If so, we may as
-      # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
-      if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
-        @_lastRedraw = now()
-        @widgetController.redraw()
+    if mayLoop
 
-    # Widgets must always be updated, because global variables and plots can be
-    # altered without triggering an "update".  That is to say that `Updater`
-    # only concerns itself with View updates. --Jason B. (9/2/15)
-    @widgetController.updateWidgets()
+      @hnw.updateLoopTime(time)
+
+      if mayTick
+        if not @widgetController.ractive.get('isEditing')
+
+          @hnw.updateTickTime(time)
+
+          for i in [1..maxNumUpdates] by 1 # maxNumUpdates can be 0. Need to guarantee i is ascending.
+            @_lastUpdate = now()
+            @widgetController.runForevers()
+            @hnw.go()
+            if now() >= updatesDeadline
+              break
+
+      if Updater.hasUpdates() or @hnw.shouldUpdate()
+        # First conditional checks if we're on time with updates. If so, we may as
+        # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
+        if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
+          @_lastRedraw = now()
+          @_performUpdate(true)
+        else
+          @_performUpdate(false)
+      else
+        @_performUpdate(false)
+
+      # Widgets must always be updated, because global variables and plots can be
+      # altered without triggering an "update".  That is to say that `Updater`
+      # only concerns itself with View updates. --Jason B. (9/2/15)
+      @widgetController.updateWidgets()
 
   teardown: ->
     @widgetController.teardown()
@@ -187,65 +227,71 @@ class SessionLite
 
   # ("user" | "system", String, String, Object[String]) => Unit
   recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
-    code          = @widgetController.code()
-    oldWidgets    = @widgetController.widgets()
-    rewritten     = @rewriteCode(code)
-    extraCommands = @rewriterCommands()
+    if @widgetController.ractive.get('isEditing') and @hnw.isHNW()
+      parent.postMessage({ type: "recompile" }, "*")
+    else
 
-    compileParams = {
-      code:         rewritten
-    , widgets:      oldWidgets.map(cloneWidget)
-    , commands:     extraCommands
-    , reporters:    []
-    , turtleShapes: turtleShapes ? []
-    , linkShapes:   linkShapes ? []
-    }
+      code          = @widgetController.code()
+      oldWidgets    = @widgetController.widgets()
+      rewritten     = @rewriteCode(code)
+      extraCommands = @rewriterCommands()
 
-    @widgetController.ractive.fire('recompile-start', source, rewritten, code)
+      compileParams = {
+        code:         rewritten
+      , widgets:      oldWidgets.map(cloneWidget)
+      , commands:     extraCommands
+      , reporters:    []
+      , turtleShapes: turtleShapes ? []
+      , linkShapes:   linkShapes ? []
+      }
 
-    try
-      res = @compiler.fromModel(compileParams)
-      if res.model.success
+      @widgetController.ractive.fire('recompile-start', source, rewritten, code)
 
-        state           = world.exportState()
-        breeds          = Object.values(world.breedManager.breeds())
-        breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
-        @widgetController.redraw()
-        # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
+      try
+        res = @compiler.fromModel(compileParams)
+        if res.model.success
 
-        if oldPlotName isnt newPlotName
-          pops = @widgetController.configs.plotOps
-          pops[oldPlotName].dispose()
-          delete pops[oldPlotName]
+          state           = world.exportState()
+          breeds          = Object.values(world.breedManager.breeds())
+          breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
+          @_performUpdate(true)
+          # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
 
-        @widgetController.ractive.set('isStale',           false)
-        @widgetController.ractive.set('lastCompiledCode',  code)
-        @widgetController.ractive.set('lastCompileFailed', false)
-        @widgetController.redraw()
-        @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
-        viewWidget = @widgetController.widgets().find(({ type }) -> type is 'view')
-        @widgetController.viewController.resetModel(viewWidget)
+          if oldPlotName isnt newPlotName
+            pops = @widgetController.configs.plotOps
+            pops[oldPlotName].dispose()
+            delete pops[oldPlotName]
 
-        globalEval(res.model.result)
-        workspace.i18nBundle.switch(@locale)
+          @widgetController.ractive.set('isStale',           false)
+          @widgetController.ractive.set('lastCompiledCode',  code)
+          @widgetController.ractive.set('lastCompileFailed', false)
+          @_performUpdate(true)
+          @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+          viewWidget = @widgetController.widgets().find(({ type }) -> type is 'view')
+          @widgetController.viewController.resetModel(viewWidget)
 
-        breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
-        plots = plotManager.getPlots()
-        state.plotManager =
-          mangleExportedPlots(state.plotManager, plots, plotRenames, oldPlotName, newPlotName)
-        world.importState(state)
+          globalEval(res.model.result)
+          workspace.i18nBundle.switch(@locale)
 
-        res.commands.forEach((c) -> if c.success then (new Function(c.result))())
-        @rewriters.forEach((rw) -> rw.compileComplete?())
-        @widgetController.ractive.fire('recompile-complete', source, rewritten, code)
+          breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
+          plots = plotManager.getPlots()
+          state.plotManager =
+            mangleExportedPlots(state.plotManager, plots, plotRenames, oldPlotName, newPlotName)
+          world.importState(state)
 
-      else
-        @widgetController.ractive.set('lastCompileFailed', true)
-        errors = @rewriteErrors(code, rewritten, res.model.result)
-        @widgetController.reportError('compiler', 'recompile', errors)
+          @hnw.updateMetadata(@compiler)
 
-    catch ex
-      @widgetController.reportError('compiler', 'recompile', [ex.toString()])
+          res.commands.forEach((c) -> if c.success then (new Function(c.result))())
+          @rewriters.forEach((rw) -> rw.compileComplete?())
+          @widgetController.ractive.fire('recompile-complete', source, rewritten, code)
+
+        else
+          @widgetController.ractive.set('lastCompileFailed', true)
+          errors = @rewriteErrors(code, rewritten, res.model.result)
+          @widgetController.reportError('compiler', 'recompile', errors)
+
+      catch ex
+        @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
   # ("user" | "system", String, String, Object[String]) => Unit
   recompile: (source, oldPlotName = "", newPlotName = "", plotRenames = {}) ->
@@ -462,5 +508,15 @@ class SessionLite
       { success: true, value: reporterValue }
     catch ex
       { success: false, error: "Runtime error: #{ex.toString()}" }
+
+  # () => Unit
+  updateWithoutRendering: ->
+    @_performUpdate(true, false)
+    return
+
+  # (Boolean, Boolean) => Unit
+  _performUpdate: (isFullUpdate = false, shouldRepaint = false) ->
+    performUpdate(@widgetController, @hnw, isFullUpdate, shouldRepaint)
+    return
 
 export default SessionLite

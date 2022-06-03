@@ -1,0 +1,107 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
+    @tagBuilder.pathToHTML("stylesheets/hubnetweb-authoring.css")
+    @tagBuilder.pathToHTML("stylesheets/hubnetweb-authoring-inner.css")
+  </head>
+  <body style="margin: 0px;">
+    <div class="flex-column">
+      <div class="authoring-grid-container">
+        <label class="uneditable">Singular:
+          <input type="text" id="role-singular-input" name="role-singular" readonly />
+        </label>
+        <label class="uneditable">Plural:
+          <input type="text" id="role-plural-input" name="role-plural" readonly />
+        </label>
+        <label class="uneditable">Spectator Role?
+          <input type="checkbox" id="is-spectator-role-checkbox" name="is-spectator-role"
+                 onclick="return false;" />
+        </label>
+        <input id="delete-role-button" type="button" class="delete hnw-button" value="Delete Role" />
+        <label></label> <!-- Dummy to create space in grid -->
+        <label>Can Join Mid-Run?
+          <input type="checkbox" id="can-join-midrun-checkbox" name="can-join-midrun" />
+        </label>
+        <label>On Connect:
+          <select id="on-connect-dropdown" name="on-connect" class="authoring-dd"></select>
+        </label>
+        <label>On Disconnect:
+          <select id="on-disconnect-dropdown" name="on-disconnect" class="authoring-dd"></select>
+        </label>
+        <label>After Disconnect:
+          <select id="after-disconnect-dropdown" name="after-disconnect" class="authoring-dd"></select>
+        </label>
+        <label style="justify-self: start">Max Count:<br>
+          <input type="number" id="max-count-picker" name="max-count" min="-1"
+                 max="999" step="1" />
+        </label>
+        <label>On Click:
+          <select id="on-click-dropdown" name="on-click" class="authoring-dd"></select>
+        </label>
+        <label>On Cursor Up:
+          <select id="on-cursor-up-dropdown" name="on-cursor-up" class="authoring-dd"></select>
+        </label>
+        <label>On Cursor Move:
+          <select id="on-move-dropdown" name="on-move" class="authoring-dd"></select>
+        </label>
+        <label>Perspective Var:
+          <select id="perspective-dropdown" name="perspective" class="authoring-dd"></select>
+        </label>
+        <label>View Override Var:
+          <select id="view-override-dropdown" name="view-override" class="authoring-dd"></select>
+        </label>
+        <label>Highlight Color:
+          <input type="color" id="highlight-main-color" name="highlight-main-color" />
+        </label>
+      </div>
+    </div>
+    @views.html.spinner()
+    <div id="alert-container"></div>
+    <div id="netlogo-model-container" style="display: inline-block;"></div>
+    @tagBuilder.pathToHTML("file-saver/dist/FileSaver.js")
+    @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+    @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+    @tagBuilder.pathToHTML("mousetrap/mousetrap.js")
+    @tagBuilder.pathToHTML("localforage/dist/localforage.min.js")
+    @tagBuilder.pathToHTML("highcharts/highcharts.js")
+    @tagBuilder.pathToHTML("highcharts/modules/exporting.js")
+    @tagBuilder.pathToHTML("highcharts/modules/export-data.js")
+    @tagBuilder.pathToHTML("ractive/ractive.js")
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+
+    @tagBuilder.callToHTML(routes.Local.engine, "tortoise-engine.js")
+
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Local.standalone
+    )
+
+    <!-- This can be used to insert NetLogo code into this page -->
+    <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
+
+    <script>
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+    </script>
+
+    @tagBuilder.pathToHTML("javascripts/pages/hnw-config-inner.js", "type" -> "module")
+
+  </body>
+</html>

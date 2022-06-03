@@ -1,5 +1,5 @@
-# (WidgetController) => Unit
-controlEventTraffic = (controller) ->
+# (WidgetController, () => Unit) => Unit
+controlEventTraffic = (controller, performUpdate) ->
 
   { ractive, viewController } = controller
 
@@ -10,14 +10,20 @@ controlEventTraffic = (controller) ->
     nlButtonHasFocus = document.activeElement.classList.contains("netlogo-button")
     if ractive.get('hasFocus') or nlButtonHasFocus
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
-      for _, w of ractive.get('widgetObj') when w.type is 'button' and
-                                         w.actionKey is char and
-                                         ractive.findAllComponents('buttonWidget').
-                                           find((b) -> b.get('widget') is w).get('isEnabled')
-        if w.forever
-          w.running = not w.running
-        else
-          w.run()
+      if not ractive.get('isHNW')
+        for _, w of ractive.get('widgetObj') when w.type is 'button' and
+                                           w.actionKey is char and
+                                           ractive.findAllComponents('buttonWidget').
+                                             find((b) -> b.get('widget') is w).get('isEnabled')
+          if w.forever
+            w.running = not w.running
+          else
+            w.run()
+      else
+        comps = ractive.findAllComponents('hnwButtonWidget')
+        for _, w of ractive.get('widgetObj') when w.type is 'hnwButton' and w.actionKey is char
+          comp = comps.find((b) -> b.get('widget') is w)
+          comp.clickHandler(undefined, comp)
 
     return
 
@@ -97,7 +103,7 @@ controlEventTraffic = (controller) ->
   onWidgetBottomChange = ->
     getBottom =
       (w) ->
-        if w.type is 'plot'
+        if w.type is 'plot' or w.type is 'hnwPlot'
           w.bottom + 3
         else
           w.bottom
@@ -108,7 +114,7 @@ controlEventTraffic = (controller) ->
   onWidgetRightChange = ->
     getRight =
       (w) ->
-        if w.type is 'plot'
+        if w.type is 'plot' or w.type is 'hnwPlot'
           w.right + 3
         else
           w.right
@@ -122,8 +128,8 @@ controlEventTraffic = (controller) ->
       (widget, value) ->
         value? and
           switch widget.type
-            when 'slider'   then not isNaN(value)
-            when 'inputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
+            when 'slider',   'hnwSlider'   then not isNaN(value)
+            when 'inputBox', 'hnwInputBox' then not (widget.boxedValue.type is 'Number' and isNaN(value))
             else  true
 
     widget = ractive.get('widgetObj')[widgetNum]
@@ -135,7 +141,7 @@ controlEventTraffic = (controller) ->
 
   # () => Unit
   redrawView = ->
-    controller.redraw()
+    performUpdate()
     viewController.repaint()
     return
 
@@ -163,7 +169,8 @@ controlEventTraffic = (controller) ->
     return
 
   showWidgetErrors = (widget) ->
-    if not widget.compilation.success
+    isHNWJoiner = ractive.get('isHNW') and not ractive.get('isHNWHost')
+    if not isHNWJoiner and not widget.compilation.success
       controller.reportError('compiler', widget.type, widget.compilation.messages)
 
   # (String, String, Any) => Boolean

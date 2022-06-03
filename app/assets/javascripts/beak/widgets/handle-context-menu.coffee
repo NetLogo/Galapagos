@@ -43,7 +43,8 @@ handleContextMenu =
     handleContextMenu =
       (a, b, c) ->
 
-        theEditFormIsntUp = @get("isEditing") and not @findAllComponents('editForm').some((form) -> form.get('visible'))
+        editForms         = [].concat(@findAllComponents('editForm'), @findAllComponents('hnwEditForm'))
+        theEditFormIsntUp = @get("isEditing") and not editForms.some((form) -> form.get('visible'))
 
         if theEditFormIsntUp
 

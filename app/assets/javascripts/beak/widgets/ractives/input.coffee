@@ -56,10 +56,15 @@ InputEditForm = EditForm.extend({
 
     title: "Input"
 
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}" />
+      """
+
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" value="{{display}}" />
+      {{>variableForm}}
       <spacer height="15px" />
       <div class="flex-row" style="align-items: center;">
         <formDropdown id="{{id}}-boxtype" name="boxtype" label="Type" selected="{{boxtype}}"
@@ -70,6 +75,45 @@ InputEditForm = EditForm.extend({
       <spacer height="10px" />
       """
     # coffeelint: enable=max_line_length
+
+  }
+
+})
+
+HNWInputEditForm = InputEditForm.extend({
+
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display', varName)
+      return
+  }
+
+  partials: {
+
+    variableForm:
+      """
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)"
+                type="button" style="height: 30px;">Define New Variable</button>
+      </div>
+      """
 
   }
 
@@ -185,7 +229,7 @@ RactiveInput = RactiveValueWidget.extend({
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
-              />
+              breedVars="{{breedVars}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -243,4 +287,10 @@ RactiveInput = RactiveValueWidget.extend({
 
 })
 
-export default RactiveInput
+RactiveHNWInput = RactiveInput.extend({
+  components: {
+    editForm: HNWInputEditForm
+  }
+})
+
+export { RactiveInput, RactiveHNWInput }

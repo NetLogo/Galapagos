@@ -1,0 +1,125 @@
+@import play.api.Mode
+
+@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
+
+@extraHead = {
+  <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/hubnetweb-authoring.css").relative' />
+}
+
+@extraBody = {}
+
+@content = {
+  @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
+  @tagBuilder.pathToHTML("file-saver/dist/FileSaver.min.js")
+  @tagBuilder.pathToHTML("javascripts/pages/hnw-config.js", "type" -> "module")
+  <div id="config-content-frame">
+    <div class="tortoise inner-content">
+      <div id="model-selection-bar" class="model-selection-bar">
+
+        <div class="model-selection-row">
+
+          <div>
+            <input id="from-scratch-button" type="button" class="authoring-mode"
+                   value="Create a model from scratch" />
+          </div>
+
+          <div>
+            <input id="without-config-button" type="button" class="authoring-mode"
+                   value="Convert a desktop NetLogo model" />
+            <form id="without-config-form" class="authoring-form"
+                  action="javascript:void(0);">
+              <div class="flex-column" style="margin-right: 25px;">
+                <label>Start Without Config:
+                  <input id="without-config-model-input" type="file" name="model-without-config" accept=".nlogo" />
+                </label>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="model-selection-row">
+
+          <div>
+            <input id="config-nlogo-button" type="button" class="authoring-mode"
+                   value="Edit an existing HubNet Web model (NLogo & JSON)" />
+            <form id="config-form" class="authoring-form"
+                  action="javascript:void(0);">
+              <div class="flex-column">
+                <label>Base Model:
+                  <input id="base-model-input" type="file" name="base-model" accept=".nlogo" />
+                </label>
+                <label>Config File:
+                  <input id="config-input" type="file" name="config" accept=".nlogo.json" />
+                </label>
+              </div>
+            </form>
+          </div>
+
+          <div>
+            <input id="config-bundle-button" type="button" class="authoring-mode"
+                   value="Edit an existing HubNet Web model (bundle)" />
+            <form id="bundle-form" class="authoring-form"
+                  action="javascript:void(0);">
+              <div class="flex-column">
+                <label>JSON:
+                  <input id="config-bundle-input" type="file" name="bundle" accept=".hnw.json" />
+                </label>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+
+      <input id="start-over-button" type="button"
+             class="authoring-mode hidden start-over" value="Start over" />
+
+      <div id="config-content" class="model-box invis" style="width: 100%;">
+        <div class="flex-column">
+
+          <template id="config-template">
+            <iframe class="model-container config-container invis" src="/hnw/authoring-inner" height="600"></iframe>
+          </template>
+          <div id="config-frames" class="flex-row">
+            <iframe id="code-frame" class="model-container vis" src="/hnw/authoring-code" height="600"></iframe>
+          </div>
+
+          <template id="tab-button-template">
+            <input class="role hnw-button config-tab" type="button" value="">
+          </template>
+          <div id="config-tab-buttons" class="flex-row" style="column-gap: 1px;">
+            <input id="code-tab-button"  class="code hnw-button config-tab selected" type="button" value="Code">
+            <input id="add-role-button"  class="plus hnw-button config-tab"          type="button" value="+">
+          </div>
+
+          <div class="flex-row"
+               style="column-gap: 6px; justify-content: center; margin-top: 25px;">
+            <input id="download-bundle-button" class="hnw-button download-button"
+                   type="button" value="Download Bundle" disabled>
+            <input id="download-nlogo-button" class="hnw-button download-button"
+                   type="button" value="Download NLogo/JSON" disabled>
+            <input id="test-model-button" class="hnw-button test-model-button"
+                   type="button" value="Test"     disabled>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="outer-test-frame" class="invis">
+    <div class="flex-column" style="background: white;">
+      <iframe id="inner-test-frame" style="height: 550px; width: 1000px;"
+              allow="clipboard-write;">
+      </iframe>
+      <input id="edit-model-button" class="edit-model-button hnw-button"
+             type="button" value="Edit Model">
+    </div>
+  </div>
+}
+
+@views.html.mainTheme(content, "HubNet Web Builder", Option("hnw/authoring"), extraHead, extraBody, "../")

@@ -39,6 +39,46 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.simulation(OutsourceTagBuilder))
   }
 
+  def hnwAuthoring: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwAuthoring(OutsourceTagBuilder))
+  }
+
+  def hnwAuthoringCode: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwAuthoringCode(OutsourceTagBuilder))
+  }
+
+  def hnwAuthoringInner: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwAuthoringInner(OutsourceTagBuilder))
+  }
+
+  def hnwHost: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwHost(OutsourceTagBuilder))
+  }
+
+   def commandCenterPane: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.commandCenterPane(OutsourceTagBuilder))
+  }
+
+  def codePane: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.codePane(OutsourceTagBuilder))
+  }
+
+  def infoPane: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.infoPane(OutsourceTagBuilder))
+  }
+
+  def hnwJoin: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.hnwJoin(OutsourceTagBuilder))
+  }
+
   def engine: Action[AnyContent] = Action {
     implicit request => replyWithResource(environment)(enginePath)("text/javascript")
   }

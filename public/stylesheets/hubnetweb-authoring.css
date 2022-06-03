@@ -1,0 +1,133 @@
+.authoring-form {
+  display: none;
+}
+
+.authoring-grid-container {
+  align-items:   center;
+  column-gap:    40px;
+  display:       grid;
+  grid:          auto-flow 40px / 160px 160px 160px 160px 160px;
+  justify-items: center;
+  margin:        15px 50px;
+  row-gap:       40px;
+}
+
+.authoring-mode {
+  border:           2px solid #347999;
+  border-radius:    6px;
+  background-color: #ddf4fb;
+  font-size:        18px;
+  font-weight:      bold;
+  padding:          15px;
+  white-space:      normal;
+  height:           105px;
+  width:            300px;
+}
+
+.authoring-mode:hover {
+  filter: brightness(0.9);
+}
+
+.authoring-mode:active {
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
+  filter:     brightness(0.7);
+}
+
+.code.config-tab {
+  background-color: #61a3ee;
+}
+
+.config-tab.hnw-button {
+  border-top:                 none;
+  border-bottom-left-radius:  8px;
+  border-bottom-right-radius: 8px;
+  font-size:                  16px;
+  font-weight:                normal;
+  height:                     30px;
+  width:                      100px;
+}
+
+.config-tab.selected {
+  filter:          brightness(1.3);
+  font-weight:     bold;
+  text-decoration: underline;
+}
+
+.delete.hnw-button {
+  background-color: red;
+  border-radius:    10px;
+  font-size:        18px;
+  margin:           8px auto 0 auto;
+  height:           38px;
+  width:            140px;
+}
+
+.download-button {
+  background-color: #36a36b;
+  border-radius:    10px;
+  font-size:        22px;
+  height:           65px;
+  width:            190px;
+}
+
+.edit-model-button {
+  background-color: #ffc000;
+  border-radius:    12px;
+  font-size:        26px;
+  margin:           8px auto;
+  height:           60px;
+  width:            275px;
+}
+
+.grid-item {
+}
+
+.hnw-button {
+  border:      2px solid black;
+  cursor:      pointer;
+  font-weight: bold;
+  user-select: none;
+  white-space: normal;
+}
+
+.hnw-button:hover {
+  filter: brightness(0.9);
+}
+
+.hnw-button:active {
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
+  filter:     brightness(0.7);
+}
+
+/* This is an override! */
+.model-container {
+  border-bottom-left-radius: 0;
+}
+
+.outer-content {
+  width: 80%;
+}
+
+.plus.config-tab {
+  background-color: #36a36b;
+}
+
+.role.config-tab {
+  background-color: #ffc000;
+}
+
+.start-over {
+  margin-bottom: 10px;
+}
+
+.test-model-button {
+  background-color: #61a3ee;
+  border-radius:    10px;
+  font-size:        22px;
+  height:           65px;
+  width:            190px;
+}
+
+.uneditable {
+  filter: brightness(0.8);
+}

@@ -2,7 +2,7 @@
 
 class AlertDisplay
   constructor: (container, isStandalone) ->
-    @findConsole = (-> null)
+    @appendToConsole = (-> null)
 
     isLinkableProcedure = (type, name) => @isLinkableProcedure(type, name)
     isKnownProcedure    = (type, name) => @isKnownProcedure(type, name)
@@ -138,8 +138,12 @@ class AlertDisplay
 
   # (WidgetController) => Unit
   setWidgetController: (widgetController) ->
+
     # we have to fetch the console as needed because it can show/hide
-    @findConsole = () -> widgetController.ractive.findComponent('console')
+    @appendToConsole =
+      (msg) ->
+        wcRactive = widgetController.ractive
+        wcRactive.set('consoleOutput', wcRactive.get('consoleOutput') + msg)
 
     # If the session (and so the widgetController) are re-loaded, we need to clear the existing event binding first.
     # -Jeremy B April 2021
@@ -217,6 +221,7 @@ class AlertDisplay
 
   # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
   'compiler-error': (_, { source, errors }) ->
+
     switch source
 
       when 'load-from-url'
@@ -259,10 +264,8 @@ class AlertDisplay
 
   # (String) => Unit
   reportConsoleError: (message) ->
-    netLogoConsole = @findConsole()
-    if netLogoConsole?
-      message = message.replace('\n', ' ')
-      netLogoConsole.appendText("ERROR: #{message}\n")
+    fullMessage = "ERROR: #{message.replace('\n', ' ')}\n"
+    @appendToConsole(fullMessage)
     return
 
   'notify-user': (_1, {message}) ->

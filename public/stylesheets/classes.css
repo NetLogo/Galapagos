@@ -10,7 +10,7 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .rounded {
@@ -189,6 +189,16 @@ img.link-img {
 .flex-row {
   display: flex;
   flex-direction: row;
+}
+
+.invis {
+  visibility: hidden;
+  height: 0;
+  width:  0;
+}
+
+.vis {
+  flex-grow: 1;
 }
 
 .code-container-label.open {

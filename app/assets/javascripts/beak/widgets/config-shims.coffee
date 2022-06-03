@@ -1,6 +1,10 @@
 import { toNetLogoMarkdown }              from "/beak/tortoise-utils.js"
 import { synchroDecoder, synchroEncoder } from "@netlogo/synchrodecoder/synchrodecoder.mjs"
 
+# (Ractive) => OutputWidget?
+getOutputWidget = (ractive) ->
+  ractive.findComponent('outputWidget') ? ractive.findComponent('hnwOutputWidget')
+
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->
 
@@ -104,7 +108,7 @@ genImportExportConfig = (ractive, viewController, compiler) ->
         throw new Error("The current model could not be converted to 'nlogo' format")
 
     getOutput: ->
-      ractive.findComponent('outputWidget')?.get('text') ? ractive.findComponent('console').get('output')
+      getOutputWidget(ractive).get('text') ? ractive.findComponent('console').get('output')
 
     getViewBase64: ->
       viewController.view.visibleCanvas.toDataURL("image/png")
@@ -211,11 +215,11 @@ genOutputConfig = (ractive, appendToConsole) ->
   {
     clear:
       ->
-        output = ractive.findComponent('outputWidget')
+        output = getOutputWidget(ractive)
         if (output?) then output.setText('')
     write:
       (str) ->
-        output = ractive.findComponent('outputWidget')
+        output = getOutputWidget(ractive)
         if (output?)
           output.appendText(str)
         else
@@ -226,8 +230,9 @@ genOutputConfig = (ractive, appendToConsole) ->
 genWorldConfig = (ractive) ->
   {
     resizeWorld: ->
+      checkIsForever        = ({ type, forever, running }) -> type in ["button", "hnwButton"] and forever and running
       widgets               = Object.values(ractive.get('widgetObj'))
-      runningForeverButtons = widgets.filter(({ type, forever, running }) -> type is "button" and forever and running)
+      runningForeverButtons = widgets.filter(checkIsForever)
       runningForeverButtons.forEach((button) -> button.running = false)
       return
   }

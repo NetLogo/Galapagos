@@ -1,3 +1,5 @@
+ColorModel = tortoise_require('engine/core/colormodel')
+
 # input: number in [0, 140) range
 # result: CSS color string
 netlogoColorToCSS = (netlogoColor) ->

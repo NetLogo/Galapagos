@@ -1,13 +1,18 @@
 import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
        , setUpMonitor, setUpPlot, setUpSlider, setUpSwitch
-} from "./set-up-widgets.js"
+       , setUpHNWButton, setUpHNWChooser, setUpHNWInputBox
+       , setUpHNWMonitor, setUpHNWPlot, setUpHNWSlider, setUpHNWSwitch
+       } from "./set-up-widgets.js"
+
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
 import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
+PenBundle = tortoise_require('engine/plot/pen')
+
 class WidgetController
 
-  # (Ractive, ViewController, Configs)
-  constructor: (@ractive, @viewController, @configs) ->
+  # (Ractive, ViewController, Configs, () => Unit)
+  constructor: (@ractive, @viewController, @configs, @_performUpdate) ->
     @ractive.observe('isEditing', (isEditing) =>
       color = if isEditing then '#efefef' else '#ffffff'
       Object.values(@configs.plotOps).forEach((pops) -> pops.setBGColor(color))
@@ -27,9 +32,10 @@ class WidgetController
     @ractive.get('widgetObj')[id] = widget
     @ractive.update('widgetObj')
 
-    setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()), @plotSetupHelper())
+    callback = (=> @_performUpdate(); @updateWidgets())
+    setUpWidget(@reportError, widget, id, callback, @plotSetupHelper())
 
-    if widget.currentValue?
+    if widget.variable? and widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
@@ -37,20 +43,39 @@ class WidgetController
 
     return
 
+  # (Plot) => Number
+  createPlot: (plot) ->
+
+    id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
+    @ractive.get('widgetObj')[id] = plot
+    @ractive.update('widgetObj')
+
+    callback = (=> @_performUpdate(); @updateWidgets())
+    setUpWidget(@reportError, plot, id, callback, @plotSetupHelper())
+
+    @ractive.findAllComponents("").find((c) -> c.get('widget') is plot).fire('initialize-widget')
+
+    id
+
   # () => Unit
   runForevers: ->
     for widget in @widgets()
-      if widget.type is 'button' and widget.forever and widget.running
-        widget.run()
+      if widget.forever and widget.running
+        if widget.type is 'button'
+          widget.run()
+        else if widget.type is 'hnwButton'
+          @ractive.fire('hnw-send-widget-message', 'button', widget.hnwProcName)
+
     return
 
   # () => Unit
   updateWidgets: ->
 
-    for _, chartOps of @configs.plotOps
-      chartOps.redraw()
-      color = if @ractive.get('isEditing') then '#efefef' else '#ffffff'
-      chartOps.setBGColor(color)
+    if not @ractive.get('isHNWHost')
+      for _, chartOps of @configs.plotOps
+        chartOps.redraw()
+        color = if @ractive.get('isEditing') then '#efefef' else '#ffffff'
+        chartOps.setBGColor(color)
 
     for widget in @widgets()
       updateWidget(widget)
@@ -105,17 +130,29 @@ class WidgetController
       props       = typedWidgetProperties.get(newWidget.type)
       setterUpper =
         switch newWidget.type
-          when "button"   then setUpButton(@reportError, () => @redraw(); @updateWidgets())
-          when "chooser"  then setUpChooser
-          when "inputBox" then setUpInputBox
-          when "monitor"  then setUpMonitor
-          when "output"   then (->)
-          when "plot"     then setUpPlot(@plotSetupHelper())
-          when "slider"   then setUpSlider
-          when "switch"   then setUpSwitch
-          when "textBox"  then (->)
-          when "view"     then (->)
-          else                 throw new Error("Unknown widget type: #{newWidget.type}")
+          when "button"      then [  buttonProps, setUpButton(@reportError, () => @_performUpdate(); @updateWidgets())]
+          when "chooser"     then [ chooserProps, setUpChooser]
+          when "inputBox"    then [inputBoxProps, setUpInputBox]
+          when "monitor"     then [ monitorProps, setUpMonitor]
+          when "output"      then [  outputProps, (->)]
+          when "plot"        then [    plotProps, setUpPlot(@plotSetupHelper())]
+          when "slider"      then [  sliderProps, setUpSlider]
+          when "switch"      then [  switchProps, setUpSwitch]
+          when "textBox"     then [ textBoxProps, (->)]
+          when "view"        then [    viewProps, (->)]
+
+          when "hnwButton"   then [  buttonProps, setUpHNWButton(=> @_performUpdate(); @updateWidgets())]
+          when "hnwChooser"  then [ chooserProps, setUpHNWChooser]
+          when "hnwInputBox" then [inputBoxProps, setUpHNWInputBox]
+          when "hnwMonitor"  then [ monitorProps, setUpHNWMonitor]
+          when "hnwOutput"   then [  outputProps, (->)]
+          when "hnwPlot"     then [    plotProps, setUpHNWPlot(@plotSetupHelper())]
+          when "hnwSlider"   then [  sliderProps, setUpHNWSlider]
+          when "hnwSwitch"   then [  switchProps, setUpHNWSwitch]
+          when "hnwTextBox"  then [ textBoxProps, (->)]
+          when "hnwView"     then [    viewProps, (->)]
+
+          else                    throw new Error("Unknown widget type: #{newWidget.type}")
 
       realWidget = realWidgets.find(widgetEqualsBy(props)(newWidget))
 
@@ -131,7 +168,12 @@ class WidgetController
         # This can go away when `res.model.result` stops blowing away all of the globals
         # on recompile/when the world state is preserved across recompiles.
         # --Jason B. (6/9/16)
-        if newWidget.type in ["chooser", "inputBox", "slider", "switch"]
+        types =
+          [    "chooser",    "inputBox",    "slider",    "switch"
+          , "hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"
+          ]
+
+        if newWidget.type in types
           world.observer.setGlobal(newWidget.variable, realWidget.currentValue)
 
     @updateWidgets()
@@ -173,9 +215,9 @@ class WidgetController
       window.setTimeout(scrollMe, 50)
     return
 
-  # () => Unit
-  redraw: ->
-    if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
+  # (Array[Update]) => Unit
+  redraw: (updates) ->
+    @viewController.update(updates)
     return
 
   # () => Unit
@@ -188,13 +230,149 @@ class WidgetController
   code: ->
     @ractive.get('code')
 
+  # (String) => Unit
+  appendOutput: (output) ->
+    widget = [].concat( @ractive.findAllComponents("outputWidget")
+                      , @ractive.findAllComponents("hnwOutputWidget"))[0]
+    widget?.appendText(output)
+    return
+
+  # (String) => Unit
+  setOutput: (output) ->
+    widget = [].concat( @ractive.findAllComponents("outputWidget")
+                      , @ractive.findAllComponents("hnwOutputWidget"))[0]
+    widget?.setText(output)
+    return
+
   # (String) => PlotHelper
   plotSetupHelper: ->
     {
-      getPlotComps: ()  => @ractive.findAllComponents("plotWidget")
+      getPlotComps: ()  => [].concat( @ractive.findAllComponents("plotWidget")
+                                    , @ractive.findAllComponents("hnwPlotWidget"))
       getPlotOps:   ()  => @configs.plotOps
       lookupElem:   (s) => @ractive.find(s)
     }
+
+  # () => Number
+  getFPS: ->
+    @widgets().find((w) -> w.type is 'view' or w.type is 'hnwView')?.frameRate ? 30
+
+  # () => Object[Array[PlotEvent]]
+  getPlotInits: ->
+    out = {}
+    for display, chartOps of @configs.plotOps
+      out[display] = chartOps.cloneInitializer()
+    out
+
+  # () => Object[Array[PlotEvent]]
+  getPlotUpdates: ->
+    out = {}
+    for display, chartOps of @configs.plotOps
+      out[display] = chartOps.pullPlotEvents()
+    out
+
+  # (Object[Number]) => Unit
+  applyChooserUpdates: (update) ->
+
+    for varName, value of (update ? {})
+
+      index = value
+
+      widget =
+        @widgets().find(
+          (w) ->
+            w.type.endsWith("hooser") and
+              w.variable.toLowerCase() is varName.toLowerCase()
+        )
+
+      widget.currentChoice = index
+
+      trueValue =
+        if index isnt -1
+          widget.choices[index]
+        else
+          0
+
+      world.observer.setGlobal(varName, trueValue)
+
+    return
+
+  # (Object[Number]) => Unit
+  applyInputNumUpdates: (update) ->
+    for varName, value of (update ? {})
+      world.observer.setGlobal(varName, value)
+    return
+
+  # (Object[String]) => Unit
+  applyInputStrUpdates: (update) ->
+    for varName, value of (update ? {})
+      world.observer.setGlobal(varName, value)
+    return
+
+  # (Object[Number]) => Unit
+  applySliderUpdates: (update) ->
+    for varName, value of (update ? {})
+      world.observer.setGlobal(varName, value)
+    return
+
+  # (Object[Boolean]) => Unit
+  applySwitchUpdates: (update) ->
+    for varName, value of (update ? {})
+      world.observer.setGlobal(varName, value)
+    return
+
+  # (Object[String]) => Unit
+  applyMonitorUpdates: (update) ->
+
+    matchHNWMon =
+      (target) -> (w) ->
+        w.type is "hnwMonitor" and w.source.toLowerCase() is target
+
+    widgets = @widgets()
+
+    for k, v of (update ? {})
+      lowerName           = k.toLowerCase()
+      widget              = widgets.find(matchHNWMon(lowerName))
+      widget.reporter     = do (v) -> (-> v)
+      widget.currentValue = v
+
+    return
+
+  # (Object[Array[PlotEvent]]) => Unit
+  applyPlotUpdates: (updates) ->
+    for plotDisplay, plotUpdates of (updates ? {})
+      for update in plotUpdates ? []
+        if @configs.plotOps?
+          ops = @configs.plotOps[plotDisplay]
+          if ops?
+            switch update.type
+              when "reset"
+                ops.reset(update.plot)
+              when "resize"
+                ops.resize(update.xMin, update.xMax, update.yMin, update.yMax)
+              when "register-pen"
+                pen = { name:           update.pen.name
+                      , getColor:       (-> update.pen.color)
+                      , getDisplayMode: (-> PenBundle.DisplayMode.Line)
+                      , isFake:         true
+                      }
+                ops.registerPen(pen)
+              when "reset-pen"
+                ops.resetPen({ name: update.penName, isFake: true })()
+              when "add-point"
+                pen = { name: update.penName, isFake: true }
+                ops.addPoint(pen)(update.x, update.y)
+              when "update-pen-mode"
+                pen  = { name: update.penName, isFake: true }
+                mode =
+                  switch update.mode.toLowerCase()
+                    when "bar"   then PenBundle.DisplayMode.Bar
+                    when "line"  then PenBundle.DisplayMode.Line
+                    when "point" then PenBundle.DisplayMode.Point
+                ops.updatePenMode(pen)(mode)
+              when "update-pen-color"
+                pen = { name: update.penName, isFake: true }
+                ops.updatePenColor(pen)(update.color)
 
   # (String) => Number
   _countByType: (type) =>
@@ -226,10 +404,10 @@ updateWidget = (widget) ->
 
   switch widget.type
 
-    when 'inputBox'
+    when 'inputBox', 'hnwInputBox'
       widget.boxedValue.value = widget.currentValue
 
-    when 'slider'
+    when 'slider', 'hnwSlider'
       # Soooooo apparently range inputs don't visually update when you set
       # their max, but they DO update when you set their min (and will take
       # new max values into account)... Ractive ignores sets when you give it
@@ -268,15 +446,15 @@ withPrecision = (n, places) ->
 # (String, Number, Number, (String) => Number) => Unit
 defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
   switch widgetType
-    when "output"   then { bottom: y +  60, right: x + 180, fontSize: 12 }
-    when "switch"   then { bottom: y +  33, right: x + 100, on: false, variable: "" }
-    when "slider"   then { bottom: y +  33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox" then { bottom: y +  60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"   then { bottom: y +  60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser"  then { bottom: y +  45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor"  then { bottom: y +  45, right: x +  70, fontSize: 11, precision: 17 }
-    when "plot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
-    when "textBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "output"  , "hnwOutput"   then { bottom: y +  60, right: x + 180, fontSize: 12 }
+    when "switch"  , "hnwSwitch"   then { bottom: y +  33, right: x + 100, on: false, variable: "" }
+    when "slider"  , "hnwSlider"   then { bottom: y +  33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox", "hnwInputBox" then { bottom: y +  60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"  , "hnwButton"   then { bottom: y +  60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser" , "hnwChooser"  then { bottom: y +  45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor" , "hnwMonitor"  then { bottom: y +  45, right: x +  70, fontSize: 11, precision: 17 }
+    when "plot"    , "hnwPlot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
+    when "textBox" , "hnwTextBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 # coffeelint: enable=max_line_length
 

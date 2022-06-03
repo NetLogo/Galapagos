@@ -1,0 +1,58 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/hubnetweb.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
+  </head>
+  <body class="flex-column join-page-padding">
+    @views.html.spinner()
+    <div id="alert-container"></div>
+    <div id="netlogo-model-container" class="netlogo-model-container-join"></div>
+    @tagBuilder.pathToHTML("jquery/dist/jquery.min.js")
+    @tagBuilder.pathToHTML("chosen-js/chosen.jquery.js")
+    @tagBuilder.pathToHTML("file-saver/dist/FileSaver.min.js")
+    @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+    @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+    @tagBuilder.pathToHTML("mousetrap/mousetrap.min.js")
+    @tagBuilder.pathToHTML("localforage/dist/localforage.min.js")
+    @tagBuilder.pathToHTML("highcharts/highcharts.js")
+    @tagBuilder.pathToHTML("highcharts/modules/exporting.js")
+    @tagBuilder.pathToHTML("highcharts/modules/export-data.js")
+    @tagBuilder.pathToHTML("ractive/ractive.js")
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+
+    @tagBuilder.callToHTML(routes.Local.engine, "tortoise-engine.js")
+
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Local.standalone
+    )
+
+    <!-- This can be used to insert NetLogo code into this page -->
+    <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
+
+    <script>
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+    </script>
+
+    @tagBuilder.pathToHTML("javascripts/pages/init-join.js", "type" -> "module")
+
+  </body>
+</html>

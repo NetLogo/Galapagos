@@ -65,7 +65,7 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url, nlogo)
-          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners)
+          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
         finishLoading()
       return
 
@@ -75,9 +75,10 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
   return
 
 # (NlogoSource, Element, String, Boolean,
-#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener],
+#   Array[Widget]) => Unit
 fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
-  getWorkInProgress, callback, rewriters, listeners) ->
+  getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
 
@@ -99,15 +100,14 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   extraCommands = rewriters.reduce(extrasReducer, [])
 
   notifyListeners('compile-start', rewrittenNlogo, startingNlogo)
-  result = compiler.fromNlogo(rewrittenNlogo, extraCommands)
+  result = compiler.fromNlogo(rewrittenNlogo, extraCommands, { code: "", widgets: extraWidgets })
 
   if result.model.success
+
     result.code = if (startingNlogo is rewrittenNlogo)
       result.code
     else
       nlogoToSections(startingNlogo)[0].slice(0, -1)
-
-    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
 
     session = newSession(
       container
@@ -123,7 +123,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     )
 
     callback({
-      type: 'success'
+      type:    'success'
     , session
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
@@ -180,7 +180,7 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   oldCode     = sections[0].slice(0, -1) # drop the trailing '\n' from the regex
   sections[0] = ''
   newNlogo    = sectionsToNlogo(sections)
-  result      = compiler.fromNlogo(newNlogo, [])
+  result      = compiler.fromNlogo(newNlogo, [], { code: "", widgets: [] })
   if not result.model.success
     return null
 
@@ -203,13 +203,90 @@ createSource = (sourceType, path, nlogo) ->
     when 'url'
       new UrlSource(path, nlogo)
 
+# (DOMElement, Role, View, (Session) => Unit) => Unit
+loadHubNetWeb = (container, role, view, callback) ->
+
+  adaptedWidgets =
+    role.widgets.map(
+      (w) ->
+        if w.type is "hnwView"
+          pWidth    = view.dimensions.maxPxcor - view.dimensions.minPxcor
+          patchSize = w.width / pWidth
+          updates   = { patchSize, right: w.right + 4, bottom: w.bottom + 4 }
+          Object.assign({}, view, w, updates)
+        else
+          w
+    )
+
+  code = """var Updater = new (tortoise_require('engine/updater'))((x) => x);
+var world = {};
+world.observer = {}
+var __hnwGlobals = {};
+world.observer.getGlobal = function(varName) { return __hnwGlobals[varName.toLocaleLowerCase()]; };
+world.observer.setGlobal = function(varName, value) { __hnwGlobals[varName.toLocaleLowerCase()] = value; };
+world.setPatchSize       = function() {};
+world.ticker = new (tortoise_require('engine/core/world/ticker'))();
+world.ticker._onReset    = function() {};
+world.ticker._onTick     = function() {};
+world.ticker._updateFunc = function() {};
+var workspace = {};
+workspace.i18nBundle = { supports: function() { return true; }, 'switch': function() {} };
+"""
+
+  getDefault = (w) ->
+    switch w.type
+      when "hnwChooser"
+        "'#{w.choices[w.currentChoice]}'"
+      when "hnwInputBox"
+        if w.boxedValue.type is "String"
+          "'#{w.boxedValue.value}'"
+        else
+          w.boxedValue.value
+      when "hnwSlider"
+        w.default
+      when "hnwSwitch"
+        w.on
+      else
+        throw new Error("Invalid widget type: #{w.type}")
+
+  varInit =
+    adaptedWidgets.
+      filter((w) -> w.type in ["hnwChooser", "hnwInputBox", "hnwSlider", "hnwSwitch"]).
+      map((w) -> "world.observer.setGlobal('#{w.variable}', #{getDefault(w)});").
+      reduce(((acc, x) -> "#{acc}\n#{x}"), "")
+
+  model =
+    { code:      "no code"
+    , commands:  []
+    , info:      "no info"
+    , model:     { success: true, result: code + varInit }
+    , reporters: []
+    , type:      "hnwModelCompilation"
+    , widgets:   JSON.stringify(adaptedWidgets)
+    }
+
+  compiler =
+    { exportNlogo: (-> throw new Error("exportNlogo: This compiler is a stub."))
+    , fromModel  : (-> throw new Error("fromModel:   This compiler is a stub."))
+    , isReporter : (-> throw new Error("isReporter:  This compiler is a stub."))
+    }
+
+  # TODO: I hope I'm not supposed to have any rewriters or listeners or locale
+  # or WIP state here
+  session = newSession( container, compiler, [], [], model, false, "en_us"
+                      , null, new NewSource(""), false)
+  callback(session)
+
+  return
+
 Tortoise = {
   createSource,
   startLoading,
   finishLoading,
   fromNlogo,
   fromNlogoSync,
-  fromURL
+  fromURL,
+  loadHubNetWeb
 }
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what

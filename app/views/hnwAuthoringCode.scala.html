@@ -1,0 +1,55 @@
+@import play.api.Mode
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("chosen-js/chosen.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/alert.css")
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/hubnetweb-authoring.css").relative' />
+  </head>
+  <body style="margin: 0px;">
+
+    <div class="authoring-grid-container">
+      <label class="grid-item">On Setup:
+        <select id="on-setup-dropdown" name="on-setup"></select>
+      </label>
+      <label class="grid-item">On Go:
+        <select id="on-go-dropdown" name="on-go"></select>
+      </label>
+      <label class="grid-item">Frame Rate:
+        <input type="number" id="framerate-picker" name="framerate"
+               min="1" max="60" step="1" pattern="[0-9][0-9]?" value="20" />
+      </label>
+    </div>
+
+    <div id="code-pane"></div>
+
+    @tagBuilder.pathToHTML("jquery/dist/jquery.min.js")
+    @tagBuilder.pathToHTML("chosen-js/chosen.jquery.js")
+    @tagBuilder.pathToHTML("ractive/ractive.js")
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+
+    <script>
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+    </script>
+
+    @tagBuilder.pathToHTML("javascripts/pages/hnw-config-code.js", "type" -> "module")
+
+  </body>
+</html>

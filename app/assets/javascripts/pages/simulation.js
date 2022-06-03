@@ -276,10 +276,40 @@ window.addEventListener('message', function (e) {
         globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
       break;
     }
-    case 'nlw-export-model': {
-      var model = session.getNlogo();
-      e.source.postMessage({ type: 'nlw-export-model-results', id: e.data.id, export: model }, '*');
+    case "nlw-request-model-state": {
+      const update = session.hnw.getModelState();
+      e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*");
       break;
+    }
+    case "nlw-export-model": {
+      var model = globalThis.session.getNlogo();
+      e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
+      break;
+    }
+    case "nlw-request-view": {
+      const base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png");
+      e.source.postMessage({ base64, type: "nlw-view" }, "*");
+      break;
+    }
+    case "nlw-subscribe-to-updates": {
+      session.hnw.subscribe(e.ports[0], "Standard sim");
+      break;
+    }
+    case "nlw-apply-update": {
+
+      const { plotUpdates, viewUpdate } = e.data.update;
+
+      if ((viewUpdate?.world && viewUpdate.world[0]?.ticks) !== undefined) {
+        world.ticker.reset();
+        world.ticker.importTicks(viewUpdate.world[0].ticks);
+      }
+
+      const vc = session.widgetController.viewController;
+      vc.applyUpdate(viewUpdate);
+      vc.repaint();
+
+      break;
+
     }
   }
 })
