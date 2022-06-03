@@ -4,6 +4,7 @@ RactiveEditFormVariable = Ractive.extend({
 
   data: -> {
     id:    undefined # String
+  , label: undefined # String
   , name:  undefined # String
   , value: undefined # String
   }
@@ -25,7 +26,7 @@ RactiveEditFormVariable = Ractive.extend({
   # coffeelint: disable=max_line_length
   template:
     """
-    <label for="{{id}}">Global variable: </label>
+    <label for="{{id}}">{{label}}: </label>
     <input id="{{id}}" class="widget-edit-text" name="{{name}}" placeholder="(Required)"
            type="text" value="{{value}}"
            autofocus autocomplete="off" on-input="validate"

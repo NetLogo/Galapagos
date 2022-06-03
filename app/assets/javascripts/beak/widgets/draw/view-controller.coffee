@@ -37,14 +37,22 @@ entwineDimensions = (viewWidget, modelView) ->
 
   return
 
+# type Dims = { width: Number, height: Number }
+
 class ViewController
+
+  _highlightColor:      undefined # String
+  _highlightedTurtleID: undefined # Number
+  _targetDims:          undefined # Dims
+
   constructor: (@container, viewWidget) ->
     @view = new View(viewWidget.fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
     @drawingLayer = new DrawingLayer(@view, @turtleDrawer, () => @repaint())
     @patchDrawer = new PatchDrawer(@view)
     @spotlightDrawer = new SpotlightDrawer(@view)
-    @container.appendChild(@view.visibleCanvas)
+
+    @container?.appendChild(@view.visibleCanvas)
 
     @mouseDown   = false
     @mouseInside = false
@@ -57,6 +65,11 @@ class ViewController
 
   mouseXcor: => @view.xPixToPcor(@mouseX)
   mouseYcor: => @view.yPixToPcor(@mouseY)
+
+  # (Number, String) => Unit
+  highlightTurtle: (@_highlightedTurtleID, @_highlightColor) ->
+    @repaint()
+    return
 
   initMouseTracking: ->
     @view.visibleCanvas.addEventListener('mousedown', (e) => @mouseDown = true)
@@ -117,12 +130,17 @@ class ViewController
     entwine([[viewWidget, "fontSize"], [@view, "fontSize"]], viewWidget.fontSize)
 
   repaint: ->
-    @view.transformToWorld(@model.world)
+    @view.transformToWorld(@model.world, @_targetDims)
     @patchDrawer.repaint(@model)
     @drawingLayer.repaint(@model)
-    @turtleDrawer.repaint(@model)
+    @turtleDrawer.repaint(@model, @_highlightedTurtleID, @_highlightColor)
     @spotlightDrawer.repaint(@model)
     @view.repaint(@model)
+
+  # (Dims) => Unit
+  setTargetDims: (@_targetDims) ->
+    @repaint()
+    return
 
   # (Update|Array[Update]) => Unit
   applyUpdate: (modelUpdate) ->
@@ -135,7 +153,6 @@ class ViewController
     @applyUpdate(modelUpdate)
     @repaint()
     return
-
 
 # Perspective constants:
 OBSERVE = 0
@@ -155,26 +172,40 @@ class View
     @visibleCtx = @visibleCanvas.getContext('2d')
     @_zoomLevel = null
 
-  transformToWorld: (world) ->
-    @transformCanvasToWorld(world, @canvas, @ctx)
+  # (World, Dims) => Unit
+  transformToWorld: (world, dims) ->
+    @_transformCanvasToWorld(world, @canvas, @ctx, dims)
 
-  transformCanvasToWorld: (world, canvas, ctx) ->
+  # (World, HTMLCanvasElement, CanvasRenderingContext2D, Dims) => Unit
+  _transformCanvasToWorld: (world, canvas, ctx, dims) ->
     # 2 seems to look significantly better even on devices with devicePixelratio < 1. BCH 7/12/2015
     @quality = Math.max(window.devicePixelRatio ? 2, 2)
     @maxpxcor = if world.maxpxcor? then world.maxpxcor else 25
     @minpxcor = if world.minpxcor? then world.minpxcor else -25
     @maxpycor = if world.maxpycor? then world.maxpycor else 25
     @minpycor = if world.minpycor? then world.minpycor else -25
-    @patchsize = if world.patchsize? then world.patchsize else 9
     @wrapX = world.wrappingallowedinx
     @wrapY = world.wrappingallowediny
-    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
+
     @worldWidth = @maxpxcor - @minpxcor + 1
     @worldHeight = @maxpycor - @minpycor + 1
     @worldCenterX = (@maxpxcor + @minpxcor) / 2
     @worldCenterY = (@maxpycor + @minpycor) / 2
+
     @centerX = @worldWidth / 2
     @centerY = @worldHeight / 2
+
+    @patchsize =
+      if dims?
+        w = dims.width  / @worldWidth
+        h = dims.height / @worldHeight
+        Math.max(w, h)
+      else if world.patchsize?
+        world.patchsize
+      else
+        9
+
+    @onePixel = 1/@patchsize  # The size of one pixel in patch coords
     canvas.width =  @worldWidth * @patchsize * @quality
     canvas.height = @worldHeight * @patchsize * @quality
     canvas.style.width = "#{@worldWidth * @patchsize}px"
@@ -278,8 +309,14 @@ class View
 
   # Returns the agent being followed, or null.
   follow: (model) ->
+    @_zoomLevel = null
     persp = model.observer.perspective
-    if persp is FOLLOW or persp is RIDE then @watch(model) else null
+    if persp is FOLLOW or persp is RIDE
+      if model.observer.followradius?
+        @setZoom(model.observer.followradius)
+      @watch(model)
+    else
+      null
 
   # (Number) => Unit
   setZoom: (zoomLevel) ->
@@ -367,14 +404,18 @@ Possible drawing events:
 ###
 
 class DrawingLayer extends Drawer
+
+  _lastAppliedIndex: undefined # Number
+
   constructor: (view, turtleDrawer, repaintView) ->
     super()
-    @view         = view
-    @turtleDrawer = turtleDrawer
-    @repaintView  = repaintView
-    @canvas       = document.createElement('canvas')
-    @canvas.id    = 'dlayer'
-    @ctx          = @canvas.getContext('2d')
+    @view              = view
+    @turtleDrawer      = turtleDrawer
+    @repaintView       = repaintView
+    @canvas            = document.createElement('canvas')
+    @canvas.id         = 'dlayer'
+    @ctx               = @canvas.getContext('2d')
+    @_lastAppliedIndex = -1
 
   resizeCanvas: ->
     @canvas.width  = @view.canvas.width
@@ -398,8 +439,9 @@ class DrawingLayer extends Drawer
     return
 
   # (String) => Unit
-  importDrawing: (base64) ->
-    @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
+  importDrawing: (base64, x = null, y = null) =>
+    if not (x? or y?)
+      @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
     image = new Image()
     image.onload = () =>
       canvasRatio = @canvas.width / @canvas.height
@@ -413,7 +455,7 @@ class DrawingLayer extends Drawer
         # canvas is "thinner" than the image, use full image width and partial height
         height = (canvasRatio / imageRatio) * @canvas.height
 
-      @ctx.drawImage(image, (@canvas.width - width) / 2, (@canvas.height - height) / 2, width, height)
+      @ctx.drawImage(image, x + (@canvas.width - width) / 2, y + (@canvas.height - height) / 2, width, height)
       @repaintView()
       return
     image.src = base64
@@ -489,7 +531,7 @@ class DrawingLayer extends Drawer
         when 'clear-drawing'  then @clearDrawing()
         when 'line'           then @drawLine(event)
         when 'stamp-image'    then @drawStamp(event)
-        when 'import-drawing' then @importDrawing(event.imageBase64)
+        when 'import-drawing' then @importDrawing(event.imageBase64, event.x, event.y)
     )
 
   repaint: (model) ->
@@ -498,15 +540,49 @@ class DrawingLayer extends Drawer
     world  = model.world
     @wrapX = world.wrappingallowedinx
     @wrapY = world.wrappingallowediny
+    @handleDrawingEvents(model)
+    return
 
-    @events = model.drawingEvents
-    model.drawingEvents = []
+  # (AgentModel) => Unit
+  handleDrawingEvents: (model) ->
 
-    if @canvas.width isnt @view.canvas.width or @canvas.height isnt @view.canvas.height
-      @resizeCanvas()
+    if model.drawingEvents.length > @_lastAppliedIndex
 
-    @draw()
+      obIndex = @_findLastObliteratorIndex(model.drawingEvents)
+      if obIndex > @_lastAppliedIndex
+        obliterator         = model.drawingEvents[obIndex]
+        model.drawingEvents = model.drawingEvents.slice(obIndex)
+        switch obliterator.type
+          when 'clear-drawing'  then @clearDrawing()
+          when 'import-drawing'
+            @importDrawing(obliterator.imageBase64, obliterator.x, obliterator.y)
+        @_lastAppliedIndex = 0
+
+      if @canvas.width isnt @view.canvas.width or @canvas.height isnt @view.canvas.height
+        @resizeCanvas()
+
+      model.drawingEvents.slice(@_lastAppliedIndex + 1).forEach((event) =>
+        switch event.type
+          when 'line'        then @drawLine(event)
+          when 'stamp-image' then @drawStamp(event)
+      )
+
+      @_lastAppliedIndex = model.drawingEvents.length - 1
+
     @view.ctx.drawImage(@canvas, 0, 0)
+
+    return
+
+  # (Array[DrawingEvent]) => Number
+  _findLastObliteratorIndex: (events) ->
+    helper = (events, i) ->
+      if i < 0
+        -1
+      else if events[i].type in ["clear-drawing", "import-drawing"]
+        i
+      else
+        helper(events, i - 1)
+    helper(events, events.length - 1)
 
 class SpotlightDrawer extends Drawer
   constructor: (view) ->
@@ -578,40 +654,66 @@ class TurtleDrawer extends Drawer
     @turtleShapeDrawer = new ShapeDrawer({}, @view.onePixel)
     @linkDrawer = new LinkDrawer(@view, {})
 
-  drawTurtle: (turtle, ctx = @view.ctx, isStamp = false) ->
+  # (Turtle, Context, Boolean, Boolean, String) => Unit
+  drawTurtle: ( turtle, ctx = @view.ctx, isStamp = false
+              , isHighlighted = false, highlightColor = "#008000") ->
+
     if not turtle['hidden?']
-      xcor = turtle.xcor
-      ycor = turtle.ycor
-      size = turtle.size
-      @view.drawWrapped(xcor, ycor, size,
-        ((x, y) => @drawTurtleAt(turtle, x, y, ctx)))
+
+      { label, size, xcor, ycor } = turtle
+      @view.drawWrapped(xcor, ycor, size, ((x, y) =>
+        @drawTurtleAt(turtle, x, y, ctx, isHighlighted, highlightColor)
+      ))
+
       if not isStamp
-        @view.drawLabel(xcor + turtle.size / 2,
-                        ycor - turtle.size / 2,
-                        turtle.label,
+        @view.drawLabel(xcor + size / 2,
+                        ycor - size / 2,
+                        label,
                         turtle['label-color'],
                         ctx)
 
-  drawTurtleAt: (turtle, xcor, ycor, ctx) ->
-    heading = turtle.heading
-    scale = turtle.size
-    angle = (180-heading)/360 * 2*Math.PI
+    return
+
+  # (Turtle, Number, Number, Context, Boolean, String) => Unit
+  drawTurtleAt: ( turtle, xcor, ycor, ctx
+                , isHighlighted = false, highlightColor = "#008000") ->
+
+    heading   = turtle.heading
+    scale     = turtle.size
+    angle     = (180-heading)/360 * 2*Math.PI
     shapeName = turtle.shape
-    shape = @turtleShapeDrawer.shapes[shapeName] or defaultShape
+    shape     = @turtleShapeDrawer.shapes[shapeName] or defaultShape
+
     ctx.save()
     ctx.translate(xcor, ycor)
+
     if shape.rotate
       ctx.rotate(angle)
     else
       ctx.rotate(Math.PI)
+
     ctx.scale(scale, scale)
+
+    if isHighlighted
+      ctx.save()
+      ctx.strokeStyle = highlightColor
+      ctx.lineWidth   = 0.1
+      ctx.beginPath()
+      ctx.arc(0, 0, scale * 1.5, 0, 2 * Math.PI)
+      ctx.stroke()
+      ctx.restore()
+
     @turtleShapeDrawer.drawShape(ctx, turtle.color, shapeName, 1 / scale)
+
     ctx.restore()
+
+    return
 
   drawLink: (link, end1, end2, wrapX, wrapY) ->
     @linkDrawer.draw(link, end1, end2, wrapX, wrapY)
 
-  repaint: (model) ->
+  # (AgentModel, Number, String) => Unit
+  repaint: (model, highlightedTurtleID, highlightColor) ->
     world = model.world
     turtles = model.turtles
     links = model.links
@@ -624,7 +726,9 @@ class TurtleDrawer extends Drawer
     drawLink = (link) =>
       @drawLink(link, turtles[link.end1], turtles[link.end2], world.wrappingallowedinx, world.wrappingallowediny)
     drawTurtle = (turtle) =>
-      @drawTurtle(turtle)
+      @drawTurtle( turtle, @view.ctx, false
+                 , highlightedTurtleID? and turtle.who is highlightedTurtleID
+                 , highlightColor)
     @view.usePatchCoordinates()( =>
       @drawAgents(
         'LINKS'
@@ -641,6 +745,7 @@ class TurtleDrawer extends Drawer
       )
       return
     )
+    return
 
   drawAgents: (unbreededName, agents, breeds, draw) ->
     breededAgents = { }

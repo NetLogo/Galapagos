@@ -31,6 +31,8 @@ OutputEditForm = EditForm.extend({
 
 })
 
+HNWOutputEditForm = OutputEditForm
+
 RactiveOutputArea = RactiveWidget.extend({
 
   data: -> {
@@ -48,10 +50,12 @@ RactiveOutputArea = RactiveWidget.extend({
 
   # String -> Unit
   appendText: (str) ->
+    @fire('append-output-text', str)
     @set('text', @get('text') + str)
     return
 
   setText: (str) ->
+    @fire('set-output-text', str)
     @set('text', str)
     return
 
@@ -80,4 +84,10 @@ RactiveOutputArea = RactiveWidget.extend({
 
 })
 
-export default RactiveOutputArea
+RactiveHNWOutputArea = RactiveOutputArea.extend({
+  components: {
+    editForm: HNWOutputEditForm
+  }
+})
+
+export { RactiveOutputArea, RactiveHNWOutputArea }

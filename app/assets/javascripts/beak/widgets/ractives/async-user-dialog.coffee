@@ -1,12 +1,11 @@
 import { CommonDrag } from "./draggable.js"
 
-{ maybe, None   } = tortoise_require('brazier/maybe')
-{ HaltInterrupt } = tortoise_require('util/exception')
+{ maybe, None } = tortoise_require('brazier/maybe')
 
 haltably = (f) ->
   try f()
   catch ex
-    if not (ex instanceof HaltInterrupt)
+    if not (ex instanceof Exception.HaltInterrupt)
       throw ex
 
 RactiveAsyncUserDialog = Ractive.extend({

@@ -1,0 +1,45 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <base target="_parent" />
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.css")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
+    @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/widgets.css")
+    @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogoweb.css")
+    @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
+    @tagBuilder.pathToHTML("stylesheets/spinner.css")
+    @tagBuilder.pathToHTML("stylesheets/hubnetweb.css")
+  </head>
+  <body style="margin: 0;">
+    <div id="netlogo-command-center-container"
+         class="netlogo-command-center-container"></div>
+    @views.html.spinner()
+    @tagBuilder.pathToHTML("jquery/dist/jquery.min.js")
+    @tagBuilder.pathToHTML("chosen-js/chosen.jquery.js")
+    @tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+    @tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+    @tagBuilder.pathToHTML("ractive/ractive.js")
+    @tagBuilder.pathToHTML("codemirror/lib/codemirror.js")
+    @tagBuilder.pathToHTML("codemirror/addon/comment/comment.js")
+    @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.js")
+    @tagBuilder.pathToHTML("codemirror/addon/mode/simple.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
+    @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
+    @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+
+    @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
+
+    <script>
+      Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
+    </script>
+
+    @tagBuilder.pathToHTML( "javascripts/pages/init-command-center.js"
+                          , "type" -> "module")
+
+  </body>
+</html>

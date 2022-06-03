@@ -312,7 +312,11 @@ VIEW_INNER_SPACING = { top: 5, right: 4, bottom: 4, left: 4 }
 VIEW_INNER_SPACING.horizontal = VIEW_INNER_SPACING.left + VIEW_INNER_SPACING.right
 VIEW_INNER_SPACING.vertical = VIEW_INNER_SPACING.top + VIEW_INNER_SPACING.bottom
 
-export default RactiveView
-export {
-  VIEW_INNER_SPACING
-}
+RactiveHNWView = RactiveView.extend({
+  data: -> {
+    contextMenuOptions: []
+  , isNotEditable:      true
+  }
+})
+
+export { RactiveView, RactiveHNWView, VIEW_INNER_SPACING }

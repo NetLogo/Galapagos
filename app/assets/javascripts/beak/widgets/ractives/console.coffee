@@ -124,14 +124,14 @@ RactiveConsoleWidget = Ractive.extend({
 
       <div class='netlogo-command-center-input'>
         <label>
-          <select value="{{agentType}}">
+          <select value="{{agentType}}" class='netlogo-command-center-select'>
           {{#agentTypes}}
             <option value="{{.}}">{{.}}</option>
           {{/}}
           </select>
         </label>
         <div class="netlogo-command-center-editor"></div>
-        <button on-click='clear-history'>Clear</button>
+        <button class='netlogo-command-center-button' on-click='clear-history'>Clear</button>
       </div>
     </div>
     """

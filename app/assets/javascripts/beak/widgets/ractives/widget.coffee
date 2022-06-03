@@ -1,3 +1,4 @@
+import keywords                           from "/keywords.js"
 import { RactiveDraggableAndContextable } from "./draggable.js"
 
 WidgetEventGenerators = {
@@ -120,6 +121,43 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
   getExtraNotificationArgs: (widget) ->
     []
 
+  # (Ractive, (String, Ractive) => Unit) => Boolean
+  _addNewTerm: (sender, finalizer) ->
+    varName = prompt("New name:", "")
+    if varName?
+      if @_isValidIdentifier(varName)
+
+        { globalVars, myVars, procedures } = @parent.get('metadata')
+        globalNames      = globalVars.map((g) -> g.name)
+        procNames        = procedures.map((p) -> p.name)
+        takenIdentifiers = keywords.all.concat(globalNames, myVars, procNames)
+        loweredTakens    = takenIdentifiers.map((ident) -> ident.toLowerCase())
+
+        loweredName = varName.toLowerCase()
+
+        if not loweredTakens.includes(loweredName)
+          finalizer(varName, sender)
+        else
+          sender.fire('nlw-notify', "Name already in use!")
+
+      else
+        sender.fire('nlw-notify', "Not a valid NetLogo identifier!")
+
+    false
+
+  # (String, Ractive) => Unit
+  _defineNewBreedVar: (varName, sender) ->
+    @set('breedVars', [varName].concat(@get('breedVars')))
+    sender.fire('use-new-var', varName)
+    @fire('new-breed-var', varName)
+
+  # (String) => Boolean
+  _isValidIdentifier: (ident) ->
+    letters = "a-z"
+    digits  = "0-9"
+    symbols = "_\\-!#\\$%\\^&\\*<>/\\.\\?=\\+:'"
+    (new RegExp("^[#{letters}#{symbols}][#{letters}#{digits}#{symbols}]*$")).test(ident)
+
   on: {
 
     'edit-widget': ->
@@ -136,6 +174,9 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     'initialize-widget': ->
       @findComponent('editForm').fire("prove-your-worth")
       false
+
+    "*.add-breed-var": ({ component: sender }) ->
+      @_addNewTerm(sender, (v, s) => @_defineNewBreedVar(v, s))
 
     "*.has-been-proven-unworthy": ->
       # Original event name: "cutMyLifeIntoPieces" --Jason B. (11/8/17)
@@ -236,7 +277,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       <div
         draggable="true"
         style="{{dims}}"
-        class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
+        class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot' || widget.type === 'hnwPlot'}} plot-overlay{{/}}"
         on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
         on-contextmenu="@this.fire('show-context-menu', @event)"
         on-dblclick="@this.fire('edit-widget')"

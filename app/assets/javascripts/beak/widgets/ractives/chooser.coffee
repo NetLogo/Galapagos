@@ -1,7 +1,19 @@
 import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
+import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
+
+dump = (x, y) ->
+  if Array.isArray(x)
+    "[#{x.map(dump).join(' ')}]"
+  else if typeof(x) is "string"
+    "\"#{x}\""
+  else if typeof(x) in ["boolean", "number"]
+    x
+  else
+    workspace.dump(x, y)
 
 ChooserEditForm = EditForm.extend({
 
@@ -14,7 +26,7 @@ ChooserEditForm = EditForm.extend({
         elem.value  = code
         validityStr =
           try
-            Converter.stringToJSValue("[#{code}]")
+            @_reify(code)
             ""
           catch ex
             "Invalid format: Must be a space-separated list of NetLogo literal values"
@@ -27,36 +39,100 @@ ChooserEditForm = EditForm.extend({
   components: {
     formCode:     RactiveEditFormMultilineCode
   , formVariable: RactiveEditFormVariable
+  , spacer:       RactiveEditFormSpacer
   }
 
   computed: {
     chooserChoices: {
-      get: -> @get('choices').map((x) -> workspace.dump(x, true)).join('\n')
+      get: -> @get('choices').map((x) -> dump(x, true)).join('\n')
     }
   }
 
   genProps: (form) ->
     varName    = form.varName.value
     choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
-    choicesArr = Converter.stringToJSValue("[#{choices}]")
+    choicesArr = @_reify(choices)
     {
        choices: choicesArr
     ,  display: varName
     , variable: varName.toLowerCase()
     }
 
+  _reify: (choices) ->
+    Converter.stringToJSValue("[#{choices}]")
+
   partials: {
 
     title: "Chooser"
 
+    codeInput:
+      """
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
+                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      """
+
+    variableForm:
+      """
+      <formVariable id="{{id}}-varname" name="varName" label="Global variable" value="{{display}}" />
+      """
+
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" value="{{display}}"        name="varName" />
-      <formCode     id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
-                    label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      {{>variableForm}}
+      <spacer height="15px" />
+      {{>codeInput}}
       <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
              style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
+      """
+
+  }
+
+})
+
+HNWChooserEditForm = ChooserEditForm.extend({
+
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display',  varName)
+      @set('variable', varName.toLowerCase())
+      return
+  }
+
+  _reify: (choices) ->
+    window.parent.Converter.stringToJSValue("[#{choices}]")
+
+  partials: {
+
+    codeInput:
+      """
+      <formCode id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
+                label="Choices" config="{}" style="" onchange="{{setHiddenInput}}" />
+      """
+
+    variableForm:
+      """
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="varName" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)"
+                type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -109,7 +185,7 @@ RactiveChooser = RactiveValueWidget.extend({
         {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
     """
 
   partials: {
@@ -131,4 +207,10 @@ RactiveChooser = RactiveValueWidget.extend({
 
 })
 
-export default RactiveChooser
+RactiveHNWChooser = RactiveChooser.extend({
+  components: {
+    editForm: HNWChooserEditForm
+  }
+})
+
+export { RactiveChooser, RactiveHNWChooser }

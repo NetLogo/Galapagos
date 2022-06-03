@@ -39,6 +39,16 @@ GET         /ntango-play                        controllers.NetTango.builder(the
 # case.  If someone has already hot-linked we let it continue working, but at least use the correct behavior.  -Jeremy B April 2021
 GET         /ntango-play-standalone             controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = false)
 
+# HubNet Web
+GET         /hnw/authoring                      controllers.Local.hnwAuthoring
+GET         /hnw/authoring-code                 controllers.Local.hnwAuthoringCode
+GET         /hnw/authoring-inner                controllers.Local.hnwAuthoringInner
+GET         /hnw/host                           controllers.Local.hnwHost
+GET         /hnw/join                           controllers.Local.hnwJoin
+GET         /command-center-pane                controllers.Local.commandCenterPane
+GET         /code-pane                          controllers.Local.codePane
+GET         /info-pane                          controllers.Local.infoPane
+
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL
 GET         /compile-url                        controllers.CompilerService.compileURL

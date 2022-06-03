@@ -1,0 +1,7 @@
+.netlogo-display-horizontal, .netlogo-header, .netlogo-speed-slider, .netlogo-tab-area {
+  display: none;
+}
+
+.authoring-dd {
+  max-width: 180px;
+}

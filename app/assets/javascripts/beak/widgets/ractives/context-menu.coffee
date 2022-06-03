@@ -1,8 +1,9 @@
 import RactiveWidget from "./widget.js"
 
-genWidgetCreator = (name, widgetType, isEnabled = true, enabler = (-> false)) ->
+genWidgetCreator = (ractive, name, widgetType, isEnabled = true, enabler = (-> false)) ->
+  type = if ractive.get('isHNW') then "hnw" + widgetType.charAt(0).toUpperCase() + widgetType.slice(1) else widgetType
   { text: "Create #{name}", enabler, isEnabled
-  , action: (context, mouseX, mouseY) -> context.fire('create-widget', widgetType, mouseX, mouseY)
+  , action: (context, mouseX, mouseY) -> context.fire('create-widget', type, mouseX, mouseY)
   }
 
 alreadyHasA = (componentName) -> (ractive) ->
@@ -11,16 +12,17 @@ alreadyHasA = (componentName) -> (ractive) ->
   else
     not ractive.findComponent(componentName)?
 
-defaultOptions = [ ["Button",  "button"]
-                 , ["Chooser", "chooser"]
-                 , ["Input",   "inputBox"]
-                 , ["Note",    "textBox"]
-                 , ["Monitor", "monitor"]
-                 , ["Output",  "output", false, alreadyHasA('outputWidget')]
-                 , ["Plot",    "plot"]
-                 , ["Slider",  "slider"]
-                 , ["Switch",  "switch"]
-                 ].map((args) -> genWidgetCreator(args...))
+defaultOptions = (ractive) ->
+  [ ["Button",  "button"]
+  , ["Chooser", "chooser"]
+  , ["Input",   "inputBox"]
+  , ["Label",   "textBox"]
+  , ["Monitor", "monitor"]
+  , ["Output",  "output", false, alreadyHasA('outputWidget')]
+  , ["Plot",    "plot"]
+  , ["Slider",  "slider"]
+  , ["Switch",  "switch"]
+  ].map((args) -> genWidgetCreator(ractive, args...))
 
 RactiveContextMenu = Ractive.extend({
 
@@ -45,7 +47,7 @@ RactiveContextMenu = Ractive.extend({
     'reveal-thineself': (_, component, x, y) ->
 
       @set('target' , component)
-      @set('options', component?.get('contextMenuOptions') ? defaultOptions)
+      @set('options', component?.get('contextMenuOptions') ? defaultOptions(@parent))
       @set('visible', @get('options').length > 0)
       @set('mouseX' , x)
       @set('mouseY' , y)

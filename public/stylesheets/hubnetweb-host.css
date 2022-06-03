@@ -1,0 +1,47 @@
+.controls-column {
+  gap: 4px;
+  justify-content: center;
+  margin-top:      25px;
+  margin-left:     13px;
+}
+
+.controls-column-button {
+  align-items:     center;
+  border:          2px solid black;
+  border-radius:   15px;
+  cursor:          pointer;
+  display:         flex;
+  font-size:       18px;
+  font-weight:     bold;
+  height:          40px;
+  justify-content: center;
+  user-select:     none;
+  width:           175px;
+}
+
+.controls-column-button:hover {
+  filter: brightness(0.9);
+}
+
+.controls-column-button:active {
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
+  filter:     brightness(0.7);
+}
+
+.setup-button {
+  background-color: #61a3ee;
+  margin-right:     50px;
+}
+
+.go-button-standard {
+  background-color: #61a3ee;
+}
+
+.go-button-active {
+  background-color: #7992b3;
+  font-weight:      bold;
+}
+
+.netlogo-speed-slider {
+  margin: auto 0;
+}

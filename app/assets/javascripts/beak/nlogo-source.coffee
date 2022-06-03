@@ -22,6 +22,11 @@ class NlogoSource
   getWipKey: () ->
     'dummy'
 
+  # ((String) => String) => Unit
+  transform: (nlogoTransformer) ->
+    @nlogo = nlogoTransformer(@nlogo)
+    return
+
 class UrlSource extends NlogoSource
   constructor: (url, nlogo) ->
     super('url', normalizedFileName(url), nlogo)

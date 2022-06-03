@@ -94,6 +94,88 @@ ButtonEditForm = EditForm.extend({
 
 })
 
+HNWButtonEditForm = ButtonEditForm.extend({
+
+  data: -> {
+    actionKey:      undefined # String
+  , display:        undefined # String
+  , isForever:      false     # Boolean
+  , procedures:     undefined # Array[Procedure]
+  , procName:       undefined # String
+  , startsDisabled: false     # Boolean
+  , type:           undefined # String
+  }
+
+  computed: {
+    procChoices: {
+      get: ->
+        @get('procedures').filter(
+          (p) ->
+            (not p.isReporter) and
+            p.argCount is 0 and
+            (p.isUseableByObserver or p.isUseableByTurtles)
+        ).map(
+          (p) ->
+            p.name
+        ).sort()
+      set: ((->))
+    }
+  }
+
+  genProps: (form) ->
+
+    hnwProcName = form.procName.value
+
+    buttonKind =
+      if hnwProcName is ""
+        "turtle-procedure"
+      else
+        if @get('procedures').find((p) -> p.name is hnwProcName).isUseableByTurtles
+          "turtle-procedure"
+        else
+          "procedure"
+
+    key = form.actionKey.value
+
+    {              actionKey: (if key.length is 1 then key.toUpperCase() else null)
+    ,             buttonKind
+    , disableUntilTicksStart: false
+    ,                display: (if form.display.value isnt "" then form.display.value else hnwProcName)
+    ,                forever: false
+    ,            hnwProcName
+    ,                 source: undefined
+    }
+
+  partials: {
+
+    title: "Button"
+
+    # coffeelint: disable=max_line_length
+    widgetFields:
+      """
+      <formDropdown id="{{id}}-proc-name" name="procName" selected="{{procName}}" choices="{{procChoices}}" label="Procedure" />
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center;">
+        <labeledInput id="{{id}}-display" labelStr="Display name:" name="display" class="widget-edit-inputbox" type="text" value="{{display}}" />
+      </div>
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center;">
+        <label for="{{id}}-action-key">Action key:</label>
+        <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
+                class="widget-edit-inputbox" style="text-transform: uppercase; width: 33px;"
+                on-keypress="handle-action-key-press" />
+      </div>
+      """
+    # coffeelint: enable=max_line_length
+
+  }
+
+})
+
 RactiveButton = RactiveWidget.extend({
 
   data: -> {
@@ -117,12 +199,17 @@ RactiveButton = RactiveWidget.extend({
     }
   }
 
+  clickHandler: (_, ractive) ->
+    if ractive.get('isEnabled')
+      ractive.get('widget.run')()
+    return
+
   oninit: ->
     @_super()
 
-    @on('activate-button', (_, run) ->
+    @on('activate-button', (_) ->
       if @get('isEnabled')
-        run()
+        @clickHandler(_, this)
         widget = @get('widget')
         @fire('button-widget-clicked', widget.id, widget.display, widget.source, false, false)
       return
@@ -169,9 +256,7 @@ RactiveButton = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>button}}
-    <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
-              idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
-              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+    {{>editForm}}
     """
 
   partials: {
@@ -185,11 +270,18 @@ RactiveButton = RactiveWidget.extend({
       {{/}}
       """
 
+    editForm:
+      """
+      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+                idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+      """
+
     standardButton:
       """
       <button id="{{id}}" type="button" style="{{dims}}"
               class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}"
-              on-click="@this.fire('activate-button', @this.get('widget.run'))">
+              on-click="@this.fire('activate-button')">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
@@ -240,4 +332,35 @@ RactiveButton = RactiveWidget.extend({
 
 })
 
-export default RactiveButton
+RactiveHNWButton = RactiveButton.extend({
+
+  components: {
+    editForm: HNWButtonEditForm
+  }
+
+  computed: {
+    isEnabled: {
+      get: -> (@get('ticksStarted') or (not @get('widget').disableUntilTicksStart)) and
+              (not @get('isEditing'))
+    }
+  }
+
+  clickHandler: (_, ractive) ->
+    if ractive.get('isEnabled')
+      procName = ractive.get('widget.hnwProcName')
+      ractive.parent.fire('hnw-send-widget-message', 'button', procName)
+    return
+
+  partials: {
+    editForm:
+      """
+      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+                idBasis="{{id}}" isForever="{{widget.forever}}" procName="{{widget.hnwProcName}}"
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}"
+                procedures="{{procedures}}" />
+      """
+  }
+
+})
+
+export { RactiveButton, RactiveHNWButton }

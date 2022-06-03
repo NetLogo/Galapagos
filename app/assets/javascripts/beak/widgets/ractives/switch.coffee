@@ -1,5 +1,6 @@
 import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
+import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 
 SwitchEditForm = EditForm.extend({
@@ -27,7 +28,46 @@ SwitchEditForm = EditForm.extend({
 
     widgetFields:
       """
-      <formVariable id="{{id}}-varname" name="variable" value="{{display}}"/>
+      <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}"/>
+      """
+
+  }
+
+})
+
+HNWSwitchEditForm = SwitchEditForm.extend({
+
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  }
+
+  computed: {
+    sortedBreedVars: {
+      get: -> @get('breedVars').slice(0).sort()
+      set: (x) -> @set('breedVars', x)
+    }
+  }
+
+  data: -> {
+    breedVars: undefined # Array[String]
+  }
+
+  on: {
+    'use-new-var': (_, varName) ->
+      @set('display', varName)
+      return
+  }
+
+  partials: {
+
+    widgetFields:
+      """
+      <div class="flex-row">
+        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+                      choices="{{sortedBreedVars}}" selected="{{display}}" />
+        <button on-click="@this.fire('add-breed-var', @this)"
+                type="button" style="height: 30px;">Define New Variable</button>
+      </div>
       """
 
   }
@@ -72,7 +112,7 @@ RactiveSwitch = RactiveValueWidget.extend({
     """
     {{>editorOverlay}}
     {{>switch}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" />
+    <editForm idBasis="{{id}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -91,4 +131,10 @@ RactiveSwitch = RactiveValueWidget.extend({
 
 })
 
-export default RactiveSwitch
+RactiveHNWSwitch = RactiveSwitch.extend({
+  components: {
+    editForm: HNWSwitchEditForm
+  }
+})
+
+export { RactiveSwitch, RactiveHNWSwitch }
