@@ -54,6 +54,11 @@ RactiveCodeContainerBase = Ractive.extend({
 
     return
 
+  # () => Unit
+  refresh: ->
+    @_editor.refresh()
+    return
+
   # (String) => Unit
   setCode: (code) ->
     str = code.toString()
@@ -152,23 +157,44 @@ editFormCodeContainerFactory =
         codeContainer: container
       }
 
-      oninit: ->
-        isExpanded = @get('isExpanded') ? not @get('isCollapsible')
-        @set('isExpanded', isExpanded)
-        return
+      on: {
+
+        init: ->
+
+          isExpanded = @get('isExpanded') ? not @get('isCollapsible')
+          @set('isExpanded', isExpanded)
+
+          # If a CodeMirror instance is rendered invisibly, it displays and interacts
+          # kinda funkily, once made visible, until you click it a couple of times.
+          # In order to get it set up properly, we need to call its `refresh`
+          # method, but we need to wait until Ractive has actually updated the GUI
+          # to render the CodeMirror instance, first.
+          #
+          # Thus: This nonsense. --Jason B. (6/16/22)
+          @observe('isExpanded', (newValue, oldValue) ->
+            if newValue is true and oldValue is false
+              setTimeout((=> @findComponent('codeContainer').refresh()), 0)
+          )
+
+          return
+
+        "toggle-expansion": ->
+          if @get("isCollapsible")
+            @set("isExpanded", not @get("isExpanded"))
+          false
+
+      }
 
       template:
         """
-        <div class="flex-row code-container-label{{#isExpanded}} open{{/}}">
+        <div class="flex-row code-container-label{{#isExpanded}} open{{/}}"
+             on-click="toggle-expansion">
           {{# isCollapsible }}
-            <label for="{{id}}-is-expanded" class="expander widget-edit-checkbox-wrapper">
-              <input id="{{id}}-is-expanded" class="widget-edit-checkbox"
-                     style="display: none;" type="checkbox" checked="{{isExpanded}}"
-                     twoway="true" />
-              <span class="widget-edit-input-label expander-label">&#9654;</span>
-            </label>
+            <div for="{{id}}-is-expanded" class="expander widget-edit-checkbox-wrapper">
+              <span id="{{id}}-is-expanded" class="widget-edit-input-label expander-label">&#9654;</span>
+            </div>
           {{/}}
-          <label for="{{id}}">{{label}}</label>
+          <label for="{{id}}" class="expander-text">{{label}}</label>
         </div>
         <div class="{{# isCollapsible && !isExpanded }}hidden{{/}}" style="{{style}}">
           <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"

@@ -1,4 +1,3 @@
-import HighchartsOps         from "/highcharts.js"
 import { toNetLogoMarkdown } from "/beak/tortoise-utils.js"
 import synchroDecoder        from "synchrodecoder/synchrodecoder.min.mjs"
 
@@ -207,14 +206,6 @@ genMouseConfig = (viewController) ->
     peekY:           viewController.mouseYcor
   }
 
-# (Element, Ractive) => Object[HighchartsOps]
-genPlotOps = (container, ractive) ->
-  widgets = Object.values(ractive.get('widgetObj'))
-  plotOps = {}
-  for { display, id, type } in widgets when type is "plot"
-    plotOps[display] = new HighchartsOps(container.querySelector("#netlogo-plot-#{id}"))
-  plotOps
-
 # (Ractive, (String) => Unit) => OutputConfig
 genOutputConfig = (ractive, appendToConsole) ->
   {
@@ -266,7 +257,7 @@ genConfigs = (ractive, viewController, container, compiler) ->
   , mouse:             genMouseConfig(viewController)
   , output:            genOutputConfig(ractive, appendToConsole)
   , print:             { write: appendToConsole }
-  , plotOps:           genPlotOps(container, ractive)
+  , plotOps:           {}
   , reportErrors:      reportErrors
   , world:             genWorldConfig(ractive)
   }

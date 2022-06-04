@@ -17,7 +17,7 @@ defaultOptions = [ ["Button",  "button"]
                  , ["Note",    "textBox"]
                  , ["Monitor", "monitor"]
                  , ["Output",  "output", false, alreadyHasA('outputWidget')]
-                 , ["Plot",    "plot", false]
+                 , ["Plot",    "plot"]
                  , ["Slider",  "slider"]
                  , ["Switch",  "switch"]
                  ].map((args) -> genWidgetCreator(args...))
@@ -46,7 +46,7 @@ RactiveContextMenu = Ractive.extend({
 
       @set('target' , component)
       @set('options', component?.get('contextMenuOptions') ? defaultOptions)
-      @set('visible', true)
+      @set('visible', @get('options').length > 0)
       @set('mouseX' , x)
       @set('mouseY' , y)
 

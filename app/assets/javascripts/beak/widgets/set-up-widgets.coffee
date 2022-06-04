@@ -1,9 +1,11 @@
-# ((String, Exception) => Unit, Array[Widget], () => Unit) => Unit
-setUpWidgets = (reportError, widgets, updateUI) ->
+import HighchartsOps from "/highcharts.js"
+
+# ((String, Exception) => Unit, Array[Widget], () => Unit, PlotHelper) => Unit
+setUpWidgets = (reportError, widgets, updateUI, plotSetupHelper) ->
   # Note that this must execute before models so we can't call any model or
   # engine functions. BCH 11/5/2014
   for widget, id in widgets
-    setUpWidget(reportError, widget, id, updateUI)
+    setUpWidget(reportError, widget, id, updateUI, plotSetupHelper)
 
   return
 
@@ -11,8 +13,8 @@ reporterOf = (str) -> new Function("return #{str}")
 
 # Destructive - Adds everything for maintaining state to the widget models,
 # such `currentValue`s and actual functions for buttons instead of just code.
-# ((String, String, Exception) => Unit, Widget, String, () => Unit) => Unit
-setUpWidget = (reportError, widget, id, updateUI) ->
+# ((String, String, Exception) => Unit, Widget, String, () => Unit, PlotHelper) => Unit
+setUpWidget = (reportError, widget, id, updateUI, plotSetupHelper) ->
   widget.id = id
   if widget.variable?
     # Convert from NetLogo variables to Tortoise variables.
@@ -31,6 +33,8 @@ setUpWidget = (reportError, widget, id, updateUI) ->
       setUpChooser(widget, widget)
     when "monitor"
       setUpMonitor(widget, widget)
+    when "plot"
+      setUpPlot(plotSetupHelper)(widget, widget)
   return
 
 # (InputBox, InputBox) => Unit
@@ -39,6 +43,43 @@ setUpInputBox = (source, destination) ->
   destination.currentValue = destination.boxedValue.value
   destination.variable     = source.variable
   destination.display      = destination.variable
+  return
+
+# (PlotHelper) => (Plot, Plot) => Unit
+setUpPlot = (helper) -> (source, destination) ->
+
+  destination.autoPlotOn         = source.autoPlotOn
+  destination.bottom             = source.bottom
+  destination.compilation        = source.compilation
+  destination.compiledPens       = source.compiledPens
+  destination.compiledSetupCode  = source.compiledSetupCode
+  destination.compiledUpdateCode = source.compiledUpdateCode
+  destination.display            = source.display
+  destination.id                 = source.id
+  destination.left               = source.left
+  destination.legendOn           = source.legendOn
+  destination.pens               = source.pens
+  destination.right              = source.right
+  destination.setupCode          = source.setupCode
+  destination.top                = source.top
+  destination.type               = source.type
+  destination.updateCode         = source.updateCode
+  destination.xAxis              = source.xAxis
+  destination.xmax               = source.xmax
+  destination.xmin               = source.xmin
+  destination.yAxis              = source.yAxis
+  destination.ymax               = source.ymax
+  destination.ymin               = source.ymin
+
+  pops = helper.getPlotOps()
+  hops = new HighchartsOps(helper.lookupElem("#netlogo-#{source.type}-#{source.id}"))
+  hops.setBGColor("#efefef")
+  pops[source.display] = hops
+
+  plots     = helper.getPlotComps()
+  component = plots.find((plot) -> plot.get("widget").display is source.display)
+  component.set('resizeCallback', hops.resizeElem.bind(hops))
+
   return
 
 # (Switch, Switch) => Unit
@@ -142,6 +183,7 @@ export {
   setUpChooser,
   setUpButton,
   setUpMonitor,
+  setUpPlot,
   setUpSlider,
   runWithErrorHandling,
 }

@@ -2,6 +2,13 @@ import { RactiveDraggableAndContextable } from "./draggable.js"
 
 WidgetEventGenerators = {
 
+  # (String, String, Object[String]) => WidgetEvent
+  recompileForPlot: (oldName, newName, renamings) ->
+    {
+      run:  (ractive, widget) -> ractive.fire('recompile-for-plot', oldName, newName, renamings)
+      type: "recompile-for-plot"
+    }
+
   recompile: ->
     {
       run:  (ractive, widget) -> ractive.fire('recompile')
@@ -130,9 +137,12 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
       try
 
+        extras = values.__extras
+        delete values.__extras
+
         widget = @get('widget')
 
-        widgets       = Object.values(this.parent.get('widgetObj'))
+        widgets       = Object.values(@parent.get('widgetObj'))
         isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
 
         if values.variable? and widgets.some(isTroublesome)
@@ -157,13 +167,28 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
             for name in triggerNames when newies[name] isnt oldies[name]
               triggers[name].map((constructEvent) -> constructEvent(oldies[name], newies[name]))
 
-          events = [].concat(eventArraysArray...)
+          extraEvents =
+            if extras?.recompileForPlot
+              [WidgetEventGenerators.recompileForPlot()]
+            else
+              []
+
+          events = [].concat(extraEvents, eventArraysArray...)
 
           uniqueEvents =
             events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
 
           for event in uniqueEvents
-            event.run(this, widget)
+            realEvent =
+              if event.type is "recompile-for-plot"
+                editForm  = @findComponent('editForm')
+                oldName   = editForm.getOldName()
+                newName   = widget.display
+                renamings = editForm.getRenamings()
+                WidgetEventGenerators.recompileForPlot(oldName, newName, renamings)
+              else
+                event
+            realEvent.run(this, widget)
 
           @fire('update-widgets')
 
@@ -174,10 +199,12 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
   }
 
+  # coffeelint: disable=max_line_length
   partials: {
     editorOverlay: """
                    {{ #isEditing }}
-                     <div draggable="true" style="{{dims}}" class="editor-overlay{{#isSelected}} selected{{/}}"
+                     <div draggable="true" style="{{dims}}"
+                          class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
                           on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
                           on-contextmenu="@this.fire('show-context-menu', @event)"
                           on-dblclick="@this.fire('edit-widget')"
@@ -187,6 +214,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
                    {{/}}
                    """
   }
+  # coffeelint: enable=max_line_length
 
 })
 

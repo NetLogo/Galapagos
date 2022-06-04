@@ -27,7 +27,6 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compile
   # instance yet, so just make the closure.  -Jeremy B March 2021
   reportError = (time, source, exception) ->
     controller.reportError(time, source, exception)
-  setUpWidgets(reportError, widgets, updateUI)
 
   ractive = generateRactiveSkeleton(
       container
@@ -53,6 +52,8 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compile
 
   configs    = genConfigs(ractive, viewController, container, compiler)
   controller = new WidgetController(ractive, viewController, configs)
+
+  setUpWidgets(reportError, widgets, updateUI, controller.plotSetupHelper())
 
   controlEventTraffic(controller)
   handleWidgetSelection(ractive)

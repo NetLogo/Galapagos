@@ -245,3 +245,57 @@
 .initial-color {
   color: initial;
 }
+
+.plot-pen-row {
+  border-bottom: 3px solid gray;
+  padding:       8px;
+}
+
+.plot-pen-row.open {
+  transition: all 0.1s ease-in;
+}
+
+.expander {
+  border:        2px solid #909090;
+  border-radius: 26px;
+  height:        26px;
+  margin-right:  15px;
+  text-align:    center;
+  transform:     rotate(0deg);
+  transition:    transform 0.1s ease-in;
+  user-select:   none;
+  width:         26px;
+}
+
+.expander:hover {
+  background-color: #fffbcb;
+}
+
+.code-container-label:hover .expander {
+  background-color: #fffbcb;
+}
+
+.open .expander {
+  transform:  rotate(90deg);
+  transition: transform 0.1s ease-in;
+}
+
+.expander-label {
+  height:      25px;
+  line-height: 25px;
+  margin-left:  8px;
+  font-size:   16px;
+}
+
+.code-container-label .expander-text {
+  line-height: 30px;
+}
+
+.plot-pen-delete {
+  font-size: 14px;
+  height:    33px;
+}
+
+.plot-editor .CodeMirror * {
+  font-size: 14px;
+}

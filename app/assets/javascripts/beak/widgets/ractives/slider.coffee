@@ -140,6 +140,8 @@ RactiveSlider = RactiveWidget.extend({
       get: -> if @get('widget.direction') isnt 'vertical' then ['left', 'right'] else ['top', 'bottom']
       set: (->)
     }
+    textWidth: ->
+      (@get('widget').currentValue?.toString().length ? 0) + 3.0
   }
 
   components: {
@@ -182,7 +184,7 @@ RactiveSlider = RactiveWidget.extend({
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
             <input type="number" on-change="reset-if-invalid"
-                   style="width: {{widget.currentValue.toString().length + 3.0}}ch"
+                   style="width: {{textWidth}}ch"
                    min="{{widget.minValue}}" max="{{widget.maxValue}}"
                    value="{{widget.currentValue}}" step="{{widget.stepValue}}"
                    {{# isEditing }}disabled{{/}} />
