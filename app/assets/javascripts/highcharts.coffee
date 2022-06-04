@@ -195,10 +195,14 @@ class HighchartsOps extends PlotOps
   penToSeries: (pen) ->
     @_chart.series[@_penNameToSeriesNum[pen.name]]
 
+  # () => Unit
   redraw: ->
     @_chart.redraw()
+    return
 
+  # (Number, Number) => Unit
   resizeElem: (x, y) ->
     @_chart.setSize(x, y, false)
+    return
 
 export default HighchartsOps
