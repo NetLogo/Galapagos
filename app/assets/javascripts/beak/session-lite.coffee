@@ -1,7 +1,8 @@
-import runBabyBehaviorSpace from "./babybehaviorspace.js"
-import { toNetLogoMarkdown } from "./tortoise-utils.js"
+import runBabyBehaviorSpace     from "./babybehaviorspace.js"
+import mangleExportedPlots      from "./mangle-exported-plots.js"
+import { toNetLogoMarkdown }    from "./tortoise-utils.js"
+import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
-import initializeUI from "./widgets/initialize-ui.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -39,16 +40,20 @@ class SessionLite
     @drawEveryFrame    = false
 
     @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
-    @widgetController.ractive.on('*.recompile'     , (_, callback, useOverlay) => @recompile(callback, useOverlay))
-    @widgetController.ractive.on('export-nlogo'    , (_, event)                => @exportNlogo(event))
-    @widgetController.ractive.on('export-html'     , (_, event)                => @exportHtml(event))
-    @widgetController.ractive.on('open-new-file'   , (_, event)                => @openNewFile())
-    @widgetController.ractive.on('*.run'           , (_, source, code)         => @run(source, code))
-    @widgetController.ractive.on('*.set-global'    , (_, varName, value)       => @setGlobal(varName, value))
+    # coffeelint: disable=max_line_length
+    @widgetController.ractive.on('*.recompile'         , (_, callback, useOverlay) => @recompile(callback, useOverlay))
+    @widgetController.ractive.on('*.recompile-for-plot', (_, oldName, newName, renamings) => @recompile((->), true, oldName, newName, renamings))
+    @widgetController.ractive.on('export-nlogo'        , (_, event)                => @exportNlogo(event))
+    @widgetController.ractive.on('export-html'         , (_, event)                => @exportHtml(event))
+    @widgetController.ractive.on('open-new-file'       , (_, event)                => @openNewFile())
+    @widgetController.ractive.on('*.run'               , (_, source, code)         => @run(source, code))
+    @widgetController.ractive.on('*.set-global'        , (_, varName, value)       => @setGlobal(varName, value))
 
     @widgetController.ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
       @recompileProcedures(proceduresCode, procedureNames, successCallback)
     )
+    # coffeelint: enable=max_line_length
+
 
     @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
 
@@ -163,8 +168,9 @@ class SessionLite
       newWidget
     )
 
-  # (() => Unit) => Unit
-  recompile: (successCallback = (->), useOverlay = true) ->
+  # (() => Unit, Boolean, String, String, Object[String]) => Unit
+  recompile: ( successCallback = (->), useOverlay = true
+             , oldPlotName = "", newPlotName = "", plotRenames = {}) ->
 
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
@@ -185,16 +191,30 @@ class SessionLite
         res = @compiler.fromModel(compileParams)
         if res.model.success
 
-          state = world.exportState()
-          @widgetController.redraw() # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
-          globalEval(res.model.result)
-          world.importState(state)
+          state           = world.exportState()
+          breeds          = Object.values(world.breedManager.breeds())
+          breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
+          @widgetController.redraw()
+          # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
+
+          if oldPlotName isnt newPlotName
+            pops = @widgetController.configs.plotOps
+            pops[oldPlotName].dispose()
+            delete pops[oldPlotName]
 
           @widgetController.ractive.set('isStale',           false)
           @widgetController.ractive.set('lastCompiledCode',  code)
           @widgetController.ractive.set('lastCompileFailed', false)
           @widgetController.redraw()
           @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+
+          globalEval(res.model.result)
+          breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
+          plots = plotManager.getPlots()
+          state.plotManager =
+            mangleExportedPlots( state.plotManager, plots, plotRenames
+                               , oldPlotName, newPlotName)
+          world.importState(state)
 
           successCallback()
           res.commands.forEach((c) -> if c.success then (new Function(c.result))())

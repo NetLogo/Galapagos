@@ -191,6 +191,10 @@ img.link-img {
   flex-direction: row;
 }
 
+.code-container-label.open {
+  margin-bottom: 5px;
+}
+
 .cm-s-netlogo-default {
   cursor: text;
 }

@@ -158,7 +158,8 @@ class HighchartsOps extends PlotOps
 
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
     thisOps              = this
-    @_chart              = Highcharts.chart(elemID, {})
+    dummy                = { name: "New Plot" }
+    @_chart              = new Highcharts.Chart(basicConfig(elemID, dummy))
     @_penNameToSeriesNum = {}
     #These pops remove the two redundant functions from the export-csv plugin
     #see https://github.com/highcharts/export-csv and
@@ -170,6 +171,11 @@ class HighchartsOps extends PlotOps
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.popped = true
+
+  # () => Unit
+  dispose: ->
+    @_chart.destroy()
+    return
 
   # (PenBundle.DisplayMode) => String
   modeToString: (mode) ->
@@ -206,6 +212,11 @@ class HighchartsOps extends PlotOps
   # (Number, Number) => Unit
   resizeElem: (x, y) ->
     @_chart.setSize(x, y, false)
+    return
+
+  # (String) => Unit
+  setBGColor: (color) ->
+    @_chart.chartBackground.css({ color })
     return
 
 export default HighchartsOps

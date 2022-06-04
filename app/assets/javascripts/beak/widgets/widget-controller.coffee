@@ -1,14 +1,15 @@
-import { setUpWidget, setUpButton, setUpChooser, setUpInputBox, setUpMonitor, setUpSlider, setUpSwitch
+import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
+       , setUpMonitor, setUpPlot, setUpSlider, setUpSwitch
 } from "./set-up-widgets.js"
 
 class WidgetController
 
   # (Ractive, ViewController, Configs)
   constructor: (@ractive, @viewController, @configs) ->
-
-    for display, chartOps of @configs.plotOps
-      component = @ractive.findAllComponents("plotWidget").find((plot) -> plot.get("widget").display is display)
-      component.set('resizeCallback', chartOps.resizeElem.bind(chartOps))
+    @ractive.observe('isEditing', (isEditing) =>
+      color = if isEditing then '#efefef' else '#ffffff'
+      Object.values(@configs.plotOps).forEach((pops) -> pops.setBGColor(color))
+    )
 
   # (String, Number, Number) => Unit
   createWidget: (widgetType, x, y) ->
@@ -17,17 +18,18 @@ class WidgetController
     adjustedX = Math.round(x - rect.left)
     adjustedY = Math.round(y - rect.top)
     base      = { left: adjustedX, top: adjustedY, type: widgetType }
-    mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY)
+    mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY, @_countByType)
     widget    = Object.assign(base, mixin)
 
     id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
-    setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()))
+    @ractive.get('widgetObj')[id] = widget
+    @ractive.update('widgetObj')
+
+    setUpWidget(@reportError, widget, id, (=> @redraw(); @updateWidgets()), @plotSetupHelper())
 
     if widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
-    @ractive.get('widgetObj')[id] = widget
-    @ractive.update('widgetObj')
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
 
     return
@@ -91,6 +93,8 @@ class WidgetController
 
     for newWidget, index in newWidgets
 
+      newWidget.id = index
+
       [props, setterUpper] =
         switch newWidget.type
           when "button"   then [  buttonProps, setUpButton(@reportError, () => @redraw(); @updateWidgets())]
@@ -98,7 +102,7 @@ class WidgetController
           when "inputBox" then [inputBoxProps, setUpInputBox]
           when "monitor"  then [ monitorProps, setUpMonitor]
           when "output"   then [  outputProps, (->)]
-          when "plot"     then [    plotProps, (->)]
+          when "plot"     then [    plotProps, setUpPlot(@plotSetupHelper())]
           when "slider"   then [  sliderProps, setUpSlider]
           when "switch"   then [  switchProps, setUpSwitch]
           when "textBox"  then [ textBoxProps, (->)]
@@ -163,6 +167,18 @@ class WidgetController
   # () => String
   code: ->
     @ractive.get('code')
+
+  # (String) => PlotHelper
+  plotSetupHelper: ->
+    {
+      getPlotComps: ()  => @ractive.findAllComponents("plotWidget")
+      getPlotOps:   ()  => @configs.plotOps
+      lookupElem:   (s) => @ractive.find(s)
+    }
+
+  # (String) => Number
+  _countByType: (type) =>
+    @widgets().filter((w) -> w.type is type).length
 
 # (Widget) => Unit
 updateWidget = (widget) ->
@@ -229,18 +245,18 @@ withPrecision = (n, places) ->
     Math.round(result)
 
 # coffeelint: disable=max_line_length
-# (String, Number, Number) => Unit
-defaultWidgetMixinFor = (widgetType, x, y) ->
+# (String, Number, Number, (String) => Number) => Unit
+defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
   switch widgetType
-    when "output"   then { bottom: y + 60, right: x + 180, fontSize: 12 }
-    when "switch"   then { bottom: y + 33, right: x + 100, on: false, variable: "" }
-    when "slider"   then { bottom: y + 33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox" then { bottom: y + 60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"   then { bottom: y + 60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser"  then { bottom: y + 45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor"  then { bottom: y + 45, right: x +  70, fontSize: 11, precision: 17 }
-    when "plot"     then { bottom: y + 60, right: x + 180 }
-    when "textBox"  then { bottom: y + 60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "output"   then { bottom: y +  60, right: x + 180, fontSize: 12 }
+    when "switch"   then { bottom: y +  33, right: x + 100, on: false, variable: "" }
+    when "slider"   then { bottom: y +  33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox" then { bottom: y +  60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"   then { bottom: y +  60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser"  then { bottom: y +  45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor"  then { bottom: y +  45, right: x +  70, fontSize: 11, precision: 17 }
+    when "plot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
+    when "textBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 
 # [T <: Widget] @ Array[String] => T => T => Boolean

@@ -94,12 +94,24 @@ controlEventTraffic = (controller) ->
 
   # () => Unit
   onWidgetBottomChange = ->
-    ractive.set('height', Math.max.apply(Math, w.bottom for own i, w of ractive.get('widgetObj') when w.bottom?))
+    getBottom =
+      (w) ->
+        if w.type is 'plot'
+          w.bottom + 3
+        else
+          w.bottom
+    ractive.set('height', Math.max.apply(Math, getBottom(w) for own i, w of ractive.get('widgetObj') when w.bottom?))
     return
 
   # () => Unit
   onWidgetRightChange = ->
-    ractive.set('width' , Math.max.apply(Math, w.right  for own i, w of ractive.get('widgetObj') when w.right? ))
+    getRight =
+      (w) ->
+        if w.type is 'plot'
+          w.right + 3
+        else
+          w.right
+    ractive.set('width' , Math.max.apply(Math, getRight(w) for own i, w of ractive.get('widgetObj') when w.right? ))
     return
 
   # (Any, Any, String, Number) => Unit

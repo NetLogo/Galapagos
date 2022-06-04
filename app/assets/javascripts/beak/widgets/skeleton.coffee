@@ -250,7 +250,7 @@ partials = {
 
   widgetID:
     """
-    netlogo-{{type}}-{{id}}
+    netlogo-{{type}}-{{key}}
     """
 
 }
