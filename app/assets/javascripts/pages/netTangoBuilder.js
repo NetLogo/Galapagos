@@ -9,12 +9,12 @@ function enableFrameSizeUpdates() {
   var width = 0
   var height = 0
   const update = () => {
-    if (builderContainer.offsetWidth !== width || builderContainer.offsetHeight !== height) {
-      width  = builderContainer.offsetWidth
-      height = builderContainer.offsetHeight
+    if (builderContainer.scrollWidth !== width || builderContainer.scrollHeight !== height) {
+      width  = builderContainer.scrollWidth
+      height = builderContainer.scrollHeight
       parent.postMessage({
-          width:  builderContainer.offsetWidth
-        , height: builderContainer.offsetHeight
+          width:  builderContainer.scrollWidth
+        , height: builderContainer.scrollHeight
         , type:   "ntb-resize"
       }, "*")
     }
