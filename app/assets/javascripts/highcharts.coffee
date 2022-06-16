@@ -187,7 +187,7 @@ class HighchartsOps extends PlotOps
       lineWidth:    if isLine then 2 else null,
       type:         if isLine then 'scatter' else type
       pointRange:   if isColumn then interval else null
-      animation:    not isColumn
+      animation:    false
       connectNulls: false
     }
 
