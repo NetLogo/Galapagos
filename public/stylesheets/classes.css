@@ -190,3 +190,7 @@ img.link-img {
   display: flex;
   flex-direction: row;
 }
+
+.cm-s-netlogo-default {
+  cursor: text;
+}
