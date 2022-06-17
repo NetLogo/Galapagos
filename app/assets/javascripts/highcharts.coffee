@@ -1,6 +1,79 @@
 PenBundle  = tortoise_require('engine/plot/pen')
 PlotOps    = tortoise_require('engine/plot/plotops')
 
+# (String, Plot) => Object[Any]
+basicConfig = (elemID, plot) -> {
+  chart: {
+    animation: false,
+    renderTo:  elemID,
+    spacingBottom: 10,
+    spacingLeft: 15,
+    spacingRight: 15,
+    zoomType:  "xy"
+  },
+  credits: { enabled: false },
+  legend:  {
+    enabled: plot.isLegendEnabled,
+    margin: 5,
+    itemStyle: { fontSize: "10px" }
+  },
+  series:  [],
+  title:   {
+    text: plot.name,
+    style: { fontSize: "12px" }
+  },
+  exporting: {
+    buttons: {
+      contextButton: {
+        height: 10,
+        symbolSize: 10,
+        symbolStrokeWidth: 1,
+        symbolY: 5
+      }
+    }
+  }
+  tooltip: {
+    formatter: ->
+      x = Number(Highcharts.numberFormat(@point.x, 2, '.', ''))
+      y = Number(Highcharts.numberFormat(@point.y, 2, '.', ''))
+      "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{x}, #{y}</b><br/>"
+  },
+  xAxis: {
+    title: {
+      text:  plot.xLabel,
+      style: { fontSize: '10px' }
+    },
+    labels: {
+      style: { fontSize: '9px' }
+    }
+  },
+  yAxis: {
+    title: {
+      text:  plot.yLabel,
+      x:     -7,
+      style: { fontSize: '10px' }
+    },
+    labels: {
+      padding: 0,
+      x:       -15,
+      style:   { fontSize: '9px' }
+    }
+  },
+  plotOptions: {
+    series: {
+      turboThreshold: 1
+    },
+    column: {
+      pointPadding: 0,
+      pointWidth:   8,
+      borderWidth:  1,
+      groupPadding: 0,
+      shadow:       false,
+      grouping:     false
+    }
+  }
+}
+
 class HighchartsOps extends PlotOps
 
   _chart:              undefined # Highcharts.Chart
@@ -15,77 +88,7 @@ class HighchartsOps extends PlotOps
 
     reset = (plot) ->
       @_chart.destroy()
-      @_chart = new Highcharts.Chart({
-        chart: {
-          animation: false,
-          renderTo:  elemID,
-          spacingBottom: 10,
-          spacingLeft: 15,
-          spacingRight: 15,
-          zoomType:  "xy"
-        },
-        credits: { enabled: false },
-        legend:  {
-          enabled: plot.isLegendEnabled,
-          margin: 5,
-          itemStyle: { fontSize: "10px" }
-        },
-        series:  [],
-        title:   {
-          text: plot.name,
-          style: { fontSize: "12px" }
-        },
-        exporting: {
-          buttons: {
-            contextButton: {
-              height: 10,
-              symbolSize: 10,
-              symbolStrokeWidth: 1,
-              symbolY: 5
-            }
-          }
-        }
-        tooltip: {
-          formatter: ->
-            x = Number(Highcharts.numberFormat(@point.x, 2, '.', ''))
-            y = Number(Highcharts.numberFormat(@point.y, 2, '.', ''))
-            "<span style='color:#{@series.color}'>#{@series.name}</span>: <b>#{x}, #{y}</b><br/>"
-        },
-        xAxis: {
-          title: {
-            text:  plot.xLabel,
-            style: { fontSize: '10px' }
-          },
-          labels: {
-            style: { fontSize: '9px' }
-          }
-        },
-        yAxis: {
-          title: {
-            text:  plot.yLabel,
-            x:     -7,
-            style: { fontSize: '10px' }
-          },
-          labels: {
-            padding: 0,
-            x:       -15,
-            style:   { fontSize: '9px' }
-          }
-        },
-        plotOptions: {
-          series: {
-            turboThreshold: 1
-          },
-          column: {
-            pointPadding: 0,
-            pointWidth:   8,
-            borderWidth:  1,
-            groupPadding: 0,
-            shadow:       false,
-            grouping:     false
-          }
-        }
-      })
+      @_chart = new Highcharts.Chart(basicConfig(elemID, plot))
       @_penNameToSeriesNum = {}
       return
 
