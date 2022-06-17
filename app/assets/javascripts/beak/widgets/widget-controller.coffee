@@ -44,6 +44,8 @@ class WidgetController
 
     for _, chartOps of @configs.plotOps
       chartOps.redraw()
+      color = if @ractive.get('isEditing') then '#efefef' else '#ffffff'
+      chartOps.setBGColor(color)
 
     for widget in @widgets()
       updateWidget(widget)
