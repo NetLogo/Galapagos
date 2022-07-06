@@ -6,12 +6,26 @@
 
   <h2 id="v2.10.0">July 6th 2022 - v2.10.0</h2>
 
-  The major feature in this release is the ability to create and edit plot widgets in NetLogo Web.
+  <b>The major feature in this release is the ability to create and edit plot widgets in NetLogo Web!</b>  Check out <a href="docs/authoring">the Authoring mode documentation</a> for more information on creating and editing widgets.
 
   Bugfixes and other changes:
 
   <ul>
-    <li></li>
+    <li>The <a href="https://github.com/NetLogo/FP-Extension">Functional Programming extension</a> is now supported on NetLogo Web.</li>
+    <li>The Table extension now contains <code>to-json</code> and <code>from-json</code> primitives for converting to and from JSON strings.</li>
+    <li>Primitives that take any kind of value (string, number, boolean, list, agent, agentset, etc) no longer check their argument types at runtime.  This should provide a small performance improvement for models that heavily use them (<code>lput</code> and <code>fput</code> are examples).</li>
+    <li>Many more primitives and agent built-in variables have proper runtime error checks and will now generate meaningful error messages when an unexpected condition is encountered.</li>
+    <li>When you get a runtime error message you can now easily copy it with the provided button.</li>
+    <li>Fast-running models with large plots could sometimes stop updating and appear blank.  This has been corrected.</li>
+    <li>We removed some methods to overwrite special JavaScript values using built-in primitives.</li>
+    <li>The <code>error</code> primitive will properly generate stack traces.</li>
+    <li>The <code>extract-rgb</code> primitive will work exactly the same as desktop NetLogo's version.</li>
+    <li>The <code>tan</code> primitive will better handle asymptotic values.</li>
+    <li>The <code>mod</code> primitive will check for an invalid zero divisor.</li>
+    <li>The Encode extension will generate UTF-8 strings to match the desktop version's output.  Also, a bug was fixed where a stack overflow could occur with large strings.</li>
+    <li>An exception could be generated when comparing links to turtles.</li>
+    <li>Turtle stamp coloring should better match NetLogo desktop when transparency is used for the color.</li>
+    <li>The model will not attempt to scroll itself into view when loaded.  This matters in the case where a model is embedded in an iframe that is not at the top of the containing page.</li>
   </ul>
 
   <h2 id="v2.9.10">October 7th, 2021 - v2.9.10</h2>
