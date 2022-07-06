@@ -32,9 +32,9 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       displayClass: () ->
         isSideBySide = @get('isSideBySide')
         if isSideBySide
-          'netlogo-display-horizontal'
+          'ntb-models-horizontal'
         else
-          'netlogo-display-vertical'
+          'ntb-models-vertical'
     }
 
     on: {

@@ -58,7 +58,19 @@ body#ntp-body, html#ntp-body {
 .ntb-models {
   margin-left: auto;
   margin-right: auto;
+}
+
+.ntb-models-vertical {
+  display: flex;
+  flex-flow: column;
   align-items: center;
+}
+
+.ntb-models-horizontal {
+  display: flex;
+  flex-flow: row;
+  flex-direction: row;
+  align-items: unset;
 }
 
 .ntb-netlogo-model {
