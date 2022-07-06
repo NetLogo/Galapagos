@@ -30,6 +30,7 @@ RactiveBuilder = Ractive.extend({
     netLogoOptions:   ObjectUtils.clone(netLogoOptionDefaults)
     netTangoOptions:  ObjectUtils.clone(netTangoOptionDefaults)
     extraCss:         ""            # String
+    isSideBySide:     false         # Boolean
     codeTipsEnabled:  true          # Boolean
     variables:        []            # Array[NetTangoVariable]
   }
@@ -249,6 +250,7 @@ RactiveBuilder = Ractive.extend({
     @set('netLogoOptions',   ObjectUtils.clone(netLogoOptionDefaults))
     @set('netTangoOptions',  ObjectUtils.clone(netTangoOptionDefaults))
     @set('extraCss',         "")
+    @set('isSideBySide',     false)
     @set('variables',        [])
     return
 
