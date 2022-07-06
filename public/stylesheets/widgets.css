@@ -17,10 +17,10 @@
 }
 
 .netlogo-display-horizontal {
-  display: flex
-  flex-flow: row
-  flex-direction: row
-  align-items: unset
+  display: flex;
+  flex-flow: row;
+  flex-direction: row;
+  align-items: unset;
 }
 
 .netlogo-header {
