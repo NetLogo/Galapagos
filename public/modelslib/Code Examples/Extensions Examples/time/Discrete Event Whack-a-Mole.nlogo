@@ -1,83 +1,88 @@
-breed[ stayers stayer ] ;; the actual points of the landscape
-breed[ walkers walker ] ;; turtles that move around the landscape
+extensions [ time ]
 
-walkers-own
+globals
 [
-  peak? ;; indicates whether a turtle has reached a "peak",
-        ;; that is, it can no longer go "uphill" from where it stands
+  total-moles       ; Counter for number of times the mole appears
+  whacked-moles     ; Counter for number of times mole was whacked
+  patches-near-mole ; Patches near where mole appears
 ]
-
-patches-own [elevation]
 
 to setup
   clear-all
-  ask patches [ set elevation 0 ]
-  ;; make a landscape with hills and valleys
-  ask n-of 10 patches with [pzcor = 0 ] [ set elevation 120 ]
-  ;; slightly smooth out the landscape
-  repeat 10
-  [
-    diffuse elevation 1
-    ;; the terrain does not require use of the 3D patch grid just the 3D
-    ;; space to display the terrain so when we diffuse add anything
-    ;; diffusing up and down back to the first layer of patches.
-    ask patches with [pzcor = 0 ]
-    [
-      set elevation elevation + [elevation] of patch-at 0 0 1 + [elevation] of patch-at 0 0 -1
-      ask patch-at 0 0 1 [ set elevation 0 ]
-      ask patch-at 0 0 -1 [ set elevation 0 ]
-    ]
-  ]
-  let max-elevation max [elevation] of patches
-  ;; use turtles and links to display the landscape
-  ;; each patch has one stayer which is linked to
-  ;; the neighboring stayers
-  ask patches with [pzcor = 0]
-  [
-    sprout-stayers 1
-    [
-      create-links-with turtles-on neighbors
-      hide-turtle
-    ]
-  ]
-  ;; each stayer is set at a height proportional
-  ;; to the elevation of the patch
-  ask stayers
-  [
-    set zcor (elevation / max-elevation) * max-pzcor
+  reset-ticks  ; normally this is done at the end of setup, but ticks need to be reset before "hide" is called
+
+  ; Initialize variables
+  set total-moles   0
+  set whacked-moles 0
+
+  create-turtles 1 [
+    hide
+    move-to one-of patches
   ]
 
-  ;; put some turtles on patch centers in the landscape
-  ask n-of 80 stayers [
-      hatch-walkers 1 [
-        show-turtle
-        set peak? false
-        set color red
-        pen-down
-        set pen-size 3
-      ]
-   ]
-  reset-ticks
+
 end
 
 to go
-  ;; stop when all turtles are on peak
-  if all? walkers [peak?]
-    [ stop ]
-  ask walkers
-  [
-    let here one-of stayers-here
-    ;; this is essentially uphill except that we use link-neighbors
-    ;; rather than patch neighbors
-    let there max-one-of [link-neighbors] of here [zcor]
-    ;; when there are no more higher neighbors we're on a peak
-    ;; and it's time to stop
-    ifelse [zcor] of there > [zcor] of here
-    [ face there
-      move-to there ]
-    [ set peak? true ]
+  ; The model schedule for events happening on one-second ticks
+
+  ask patches [set pcolor black] ; Reset patch colors
+  tick                           ; Advance time to the next second
+  time:go-until ticks            ; Execute events scheduled up to the current time
+  take-a-whack                   ; Try to whack the mole
+  display                        ; Update the display again to show things that changed since 'tick'
+
+  if ticks >= 120 [stop]         ; Stop at two minutes
+
+end
+
+to hide
+  ; Turtle procedure to re-hide the mole, reset its shape and color if it was whacked,
+  ; and schedule when it reappears
+
+  hide-turtle
+  set shape "face happy"
+  set color brown
+  time:schedule-event self [ -> appear ] ticks + random 3
+
+end
+
+to appear
+  ; Turtle procedure to make mole move to a new patch, reappear, and schedule how long it
+  ; remains visible until hiding. Also: update the agentset of patches near the mole.
+
+  set total-moles total-moles + 1
+  move-to one-of patches
+  set patches-near-mole patches in-radius 1
+  show-turtle
+  time:schedule-event self [ -> hide ] ticks + random (30 / mole-speed)
+
+end
+
+to take-a-whack
+  ; Observer procedure to represent the player trying to whack the mole
+
+  ; If no mole is visible, do not whack
+  if not any? turtles with [not hidden?] [ stop ]
+
+  ; If a mole is visible, randomly pick one of the patches near the mole to hit;
+  ; turn the patch yellow to show it was hit
+  let a-mole-patch one-of patches-near-mole
+  ask a-mole-patch [set pcolor yellow]
+
+  ; If the patch hit contains the mole, the mole changes shape and
+  ; color to indicate being whacked. Then the mole immediately hides.
+  let moles-here turtles-on a-mole-patch
+  if any? moles-here with [not hidden?] [
+    set whacked-moles whacked-moles + 1
+    time:clear-schedule  ; Cancel all scheduled events, which are only the mole's next hide
+    ask moles-here [
+      set shape "x"
+      set color red
+      display           ; Update display to show the whacked mole
+      hide              ; Hide when hit
+    ]
   ]
-  tick
 end
 
 
@@ -86,28 +91,26 @@ end
 ; copyright and related or neighboring rights to this model.
 @#$#@#$#@
 GRAPHICS-WINDOW
-0
-0
-245
-157
+228
+10
+436
+219
 -1
 -1
-6.0
+40.0
 1
 10
 1
 1
 1
 0
-1
-1
-1
--10
-10
--10
-10
 0
-5
+0
+1
+-2
+2
+-2
+2
 1
 1
 1
@@ -115,10 +118,10 @@ ticks
 30.0
 
 BUTTON
-24
-51
-115
-84
+15
+10
+78
+43
 NIL
 setup
 NIL
@@ -132,10 +135,10 @@ NIL
 1
 
 BUTTON
-24
-90
-115
-123
+155
+10
+218
+43
 NIL
 go
 T
@@ -148,20 +151,89 @@ NIL
 NIL
 0
 
+BUTTON
+85
+10
+148
+43
+step
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+MONITOR
+15
+100
+174
+145
+Fraction of moles whacked
+whacked-moles / total-moles
+2
+1
+11
+
+SLIDER
+15
+55
+215
+88
+mole-speed
+mole-speed
+1
+10
+3.0
+.1
+1
+NIL
+HORIZONTAL
+
 @#$#@#$#@
 ## WHAT IS IT?
 
-This example shows make a terrain in 3D and move turtles across the terrain. This is much like the Hill Climbing Example in 2D.  However, the elevation variation in the terrain is visible in the 3D space.
+This model is a very simple illustration of how to use the time extension for discrete event simulation: scheduling model actions (specific agents executing specific procedures) at future times. In this example, all events happen at integer ticks.
 
-## THINGS TO NOTICE
+The model simulates the "Whack-a-mole" arcade game. In that game, mechanical "moles" pop up from beneath the surface at unpredictable times and the person playing the game tries to "whack" the moles by hitting them with a hammer.
 
-The hill climbing code is very similar to `uphill` in 2D. However, we want the turtles to look at the link neighbors of the stayer here rather than the patch neighbors.
+## HOW IT WORKS
+
+This model uses one "mole", a turtle that moves randomly among patches and appears and disappears at random times. The slider `mole-speed` controls how rapidly the mole moves around.
+
+The player is represented by the Observer (procedure `take-a-whack`). When the player sees a mole, it strikes one of patches near the mole, representing a person swinging rapidly and missing often. If the player hits the mole, the mole briefly turns red and then disappears. The player keeps swinging until it hits the mole or the mole moves. The monitor "Fraction of moles whacked" reports the fraction of mole appearances on which the player successfully whacked it.
+
+Each tick represents one second. When trying to whack the mole, the player swings once per tick. The time that a mole remains visible in one patch is drawn randomly from a uniform integer distribution ranging from 1 second to an upper limit determined from the  `mole-speed` slider. When the mole hides, it remains hidden for a random interval equal to 0, 1, or 2 seconds. The game stops at 120 seconds.
+
+## HOW TO USE IT
+
+Use SETUP to initialize the model, and GO to start it. Hitting GO again will pause the simulation at the end of the current minute. The STEP button executes one tick (minute) at a time.
+
+The `mole-speed` slider controls how rapidly the mole moves among patches. Use NetLogo's speed control to slow execution down enough to see the action.
 
 ## NETLOGO FEATURES
 
-Note that terrain models are not full 3D models.  Each spot on the landscape only has eight neighbors; we use links to indicate the neighbors of each location since it cannot be determined spatially.  We do, however, use the 3D space to display the height of each location.
+The procedures `hide` and `appear` illustrate use of the time extension's `schedule-event` primitive to cause an agent to execute a procedure or block of code at a future tick.
 
-<!-- 2007 -->
+The `go` procedure uses two statements to advance the simulation clock and execute the scheduled events. `tick` advances NetLogo's tick counter, as in any model. `time:go-until ticks` causes execution of any events scheduled for execution after the previous tick and up to the current tick. If more than one event is scheduled for the same tick, they are executed in the order they were scheduled.
+
+The procedure `take-a-whack` uses the primitive `clear-schedule` to cancel all the events scheduled for future execution. It is needed because the mole, which has already been scheduled to hide at a future time, has now been whacked and needs to hide immediately. Failing to clear the schedule would cause it to hide twice--and because each execution of `hide` schedules a future `appear`, etc., there would be a whole chain of undesired events.
+
+## RELATED MODELS
+
+The Discrete Event Mousetrap model (in the NetLogo Models Library > Code Examples > Extension Examples > time) also demonstrates use of the time extension for discrete event simulation. That model differs from this one in not using ticks at all: it has no `go` procedure; instead, *all* events in the Mousetrap model are scheduled ("triggered") by other events. It illustrates how to set up and start such a model.
+
+The Discrete Event Distribution Center model illustrates more of the time extensions capabilities: representing model time as real dates and times, scheduling events at non-integer times, and logging events by the time they were executed.
+
+## CREDITS
+
+Prepared by Steve Railsback January 2022.
+
+<!-- 2022 -->
 @#$#@#$#@
 default
 true
@@ -355,6 +427,22 @@ Polygon -7500403 true true 135 105 90 60 45 45 75 105 135 135
 Polygon -7500403 true true 165 105 165 135 225 105 255 45 210 60
 Polygon -7500403 true true 135 90 120 45 150 15 180 45 165 90
 
+sheep
+false
+15
+Circle -1 true true 203 65 88
+Circle -1 true true 70 65 162
+Circle -1 true true 150 105 120
+Polygon -7500403 true false 218 120 240 165 255 165 278 120
+Circle -7500403 true false 214 72 67
+Rectangle -1 true true 164 223 179 298
+Polygon -1 true true 45 285 30 285 30 240 15 195 45 210
+Circle -1 true true 3 83 150
+Rectangle -1 true true 65 221 80 296
+Polygon -1 true true 195 285 210 285 210 240 240 210 195 210
+Polygon -7500403 true false 276 85 285 105 302 99 294 83
+Polygon -7500403 true false 219 85 210 105 193 99 201 83
+
 square
 false
 0
@@ -439,16 +527,31 @@ Line -7500403 true 40 84 269 221
 Line -7500403 true 40 216 269 79
 Line -7500403 true 84 40 221 269
 
+wolf
+false
+0
+Polygon -16777216 true false 253 133 245 131 245 133
+Polygon -7500403 true true 2 194 13 197 30 191 38 193 38 205 20 226 20 257 27 265 38 266 40 260 31 253 31 230 60 206 68 198 75 209 66 228 65 243 82 261 84 268 100 267 103 261 77 239 79 231 100 207 98 196 119 201 143 202 160 195 166 210 172 213 173 238 167 251 160 248 154 265 169 264 178 247 186 240 198 260 200 271 217 271 219 262 207 258 195 230 192 198 210 184 227 164 242 144 259 145 284 151 277 141 293 140 299 134 297 127 273 119 270 105
+Polygon -7500403 true true -1 195 14 180 36 166 40 153 53 140 82 131 134 133 159 126 188 115 227 108 236 102 238 98 268 86 269 92 281 87 269 103 269 113
+
 x
 false
 0
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 3D 6.2.2
+NetLogo 6.2.2
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="sample experiment" repetitions="100" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <metric>whacked-moles / total-moles</metric>
+    <steppedValueSet variable="mole-speed" first="1" step="0.5" last="10"/>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
@@ -462,5 +565,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

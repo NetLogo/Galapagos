@@ -1,7 +1,9 @@
-globals [water-molecules-absorbed salt-molecules-absorbed]
-; The number of molecules (water/salt) absorbed
-
 breed [molecules molecule] ; The turtles which represent molecules
+
+globals [
+  water-molecules-absorbed ; The number of water molecules absorbed
+  salt-molecules-absorbed ; The number of salt molecules absorbed
+]
 
 to setup
   clear-all
@@ -24,8 +26,7 @@ end
 
 ; Now we add the molecules which are shown in the view
 to add-water-molecules ; Procedure to add water molecules
-  create-molecules number-of-water-molecules
-  [
+  create-molecules number-of-water-molecules [
     ; Randomizes the position of the water molecules at the top
     setxy (random-float (1.25 * max-pxcor) - ((1.25 * max-pxcor) / 2))
           (0.9 * max-pycor + random-float 0.5)
@@ -35,8 +36,7 @@ to add-water-molecules ; Procedure to add water molecules
 end
 
 to add-salt-molecules ; Procedure to add salt molecules
-  create-molecules number-of-salt-molecules
-  [
+  create-molecules number-of-salt-molecules [
     ; Randomizes the position of the salt molecules at the top
     setxy (random-float (1.25 * max-pxcor) - ((1.25 * max-pxcor) / 2))
           (0.9 * max-pycor + random-float 0.5)
@@ -53,40 +53,34 @@ end
 ; Checks if the molecule is absorbed
 to check-if-absorbed ; Turtle procedure
   ; Checks if the water molecules are absorbed
-  if color = blue
-  [
+  if color = blue [
     ;  Checks if the patch under the water molecule is brown
-    if [ pcolor ] of patch-here = brown
-    [
-      ifelse random 100 < chance-of-water-absorption
-      [
+    if [ pcolor ] of patch-here = brown [
+      ifelse random 100 < chance-of-water-absorption [
         ; Changes reporter for the water molecules absorbed
         set water-molecules-absorbed water-molecules-absorbed + 1
         die
-      ] ; Moves the molecule towards its neighboring molecule if it is not absorbed
-      [ if count neighbors with [ pcolor = black ] > 0
-        [
-        face one-of neighbors with [ pcolor = black ]
-        fd 1
+      ] [
+        ; Moves the molecule towards its neighboring molecule if it is not absorbed
+        if count neighbors with [ pcolor = black ] > 0 [
+          face one-of neighbors with [ pcolor = black ]
+          fd 1
         ]
       ]
     ]
   ]
   ; Checks if the salt molecules are absorbed
-  if color = grey
-  [
-    if [ pcolor ] of patch-here = brown ; Checks if the patch under the salt molecule is brown
-    [
-      ifelse random 100 < chance-of-salt-absorption
-      [
+  if color = grey [
+    if [ pcolor ] of patch-here = brown [ ; Checks if the patch under the salt molecule is brown
+      ifelse random 100 < chance-of-salt-absorption [
         ; Changes reporter for the salt molecules absorbed
         set salt-molecules-absorbed salt-molecules-absorbed + 1
         die
-      ] ; Moves the molecule towards its neighboring molecule if it is not absorbed
-      [ if count neighbors with [ pcolor = black ] > 0
-        [
-        face one-of neighbors with [ pcolor = black ]
-        fd 1
+      ] [
+        ; Moves the molecule towards its neighboring molecule if it is not absorbed
+        if count neighbors with [ pcolor = black ] > 0 [
+          face one-of neighbors with [ pcolor = black ]
+          fd 1
         ]
       ]
     ]
@@ -114,7 +108,7 @@ end
 GRAPHICS-WINDOW
 644
 10
-742
+862
 457
 -1
 -1
@@ -128,8 +122,8 @@ GRAPHICS-WINDOW
 0
 0
 1
--7
-7
+-17
+17
 -36
 36
 1
@@ -285,7 +279,7 @@ diameter-of-tube
 diameter-of-tube
 5
 25
-10.0
+23.0
 1
 1
 NIL
@@ -377,16 +371,16 @@ What do you infer from the observed graphical values? Are there any correlation 
 
 ## CURRICULAR USE
 
-This model was incorporated into the CT-STEM [Excretory System: Reabsorption unit](https://ct-stem.northwestern.edu/curriculum/preview/1012/), a lesson plan designed for a high school biology class. In the lesson, students experiment with a progression of three absorption models that gradually introduce more features:
+This model was incorporated into the CT-STEM lesson, [Excretory System: Reabsorption](https://ct-stem.northwestern.edu/curriculum/preview/1012/), a lesson plan designed for a high school biology class. In the lesson, students experiment with a progression of three absorption models that gradually introduce more features. The three models are:
 
-1. [A basic model of absorption](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/3/)
-Students are asked to vary the chance of absorption and observe the effect on molecules absorbed.
+1. [A basic model of absorption](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/3/) is used on Page 3.
+This basic model only asks students to vary the number of molecules and chance of absorption and observe the effect on molecules absorbed. This is intended to introduce students to model and allow them to understand the core mechanics of the system before introducing more elements to it.
 
-2. [A model of selective reabsorption](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/4/)
-Students can now observe two different molecules (water and salt) and modify their chance of absorption. Students can change the parameters to model the reabsorption behavior of descending and ascending loops of Henle.
+2. [A model of selective reabsorption](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/4/) is used on Page 4.
+In this model, students can now observe two different molecules (water and salt) and modify their chance of absorption. Students are intended to change the parameters to model the reabsorption behavior of descending and ascending loops of Henle.
 
-3. [This model with variable lumen size](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/5/)
-In addition to controlling two different molecules, students can observe the impact of lumen size on percent absorption.
+3. [This model with variable lumen size](https://ct-stem.northwestern.edu/curriculum/preview/1012/page/5/) is used on Page 5
+This model is the closest to the Excretory Reabsorption model in the model library. It is the most complex model and has the most features. All features from previous models are kept but now students are also able to change the size of the tube and observe how this affects the number of absorbed molecules.
 
 ## EXTENDING THE MODEL
 
@@ -420,7 +414,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Dabholkar, S. and Wilensky, U. (2020).  NetLogo Kidney Reabsorption model.  http://ccl.northwestern.edu/netlogo/models/KidneyReabsorption.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Dabholkar, S. and Wilensky, U. (2020).  NetLogo Excretory Reabsorption model.  http://ccl.northwestern.edu/netlogo/models/ExcretoryReabsorption.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
