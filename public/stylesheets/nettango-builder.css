@@ -467,6 +467,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-code-mirror > .CodeMirror {
+  height: auto;
   resize: vertical;
   min-height: 1.5em;
   max-width: 600px;

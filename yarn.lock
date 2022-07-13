@@ -389,10 +389,10 @@ mousetrap@1.6.5:
   resolved "https://registry.npmjs.org/mousetrap/-/mousetrap-1.6.5.tgz"
   integrity sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==
 
-nettango@0.16.3:
-  version "0.16.3"
-  resolved "https://registry.npmjs.org/nettango/-/nettango-0.16.3.tgz"
-  integrity sha512-mhqNYk16sewtwVxS4alLZzbmhik6u1P5ydTUbGw21bEE2vRYkWOwe0Kw2+/A/VoIirXSJLhp33wKVMyFmYOx+Q==
+nettango@0.16.4:
+  version "0.16.4"
+  resolved "https://registry.yarnpkg.com/nettango/-/nettango-0.16.4.tgz#3c79f478107e3631fbf5c414c09bc90d76da4dab"
+  integrity sha512-N06Wt9C0vxdeVgKCGPqw69JXWkxHw6DN8rOoxqkmsGm8rnfFsadTWaviLpg5PHrz1nq9FnJKbMLcTTxhIaTCVQ==
   dependencies:
     interactjs "^1.10.2"
     zod "^3.8.2"

@@ -7,7 +7,6 @@ RactiveCodeMirror = Ractive.extend({
     config:         undefined # CodeMirrorConfig
     extraClasses:   []        # Array[String]
     multilineClass: undefined # String
-    newCode:        ""        # String
     isDirty:        false     # Boolean
   }
 
@@ -47,13 +46,13 @@ RactiveCodeMirror = Ractive.extend({
         return
       )
 
-      onCodeSet = (initialCode) =>
-        if (initialCode is undefined or initialCode is null) then return
+      onCodeSet = (newCode) =>
+        if (newCode is undefined or newCode is null) then return
         @set('isDirty', false)
-        code = editor.getValue()
-        if (code isnt initialCode)
-          @set('initialCode', initialCode)
-          editor.setValue(initialCode)
+        oldCode = editor.getValue()
+        if (newCode isnt oldCode)
+          @set('initialCode', newCode)
+          editor.setValue(newCode)
         return
 
       @observe('code', onCodeSet)

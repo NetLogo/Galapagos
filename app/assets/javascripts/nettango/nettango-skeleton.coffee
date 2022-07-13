@@ -1,6 +1,7 @@
 import RactiveBlockForm from "./block-form.js"
 import RactiveBuilder from "./builder.js"
 import RactiveBuilderMenu from "./builder-menu.js"
+import RactiveCodeMirror from "./code-mirror.js"
 import RactiveConfirmDialog from "./confirm-dialog.js"
 import RactiveMenuConfigForm from "./menu-config-form.js"
 import RactiveModelChooser from "./model-chooser.js"
@@ -12,7 +13,7 @@ import RactiveHelpDialog from "./help-dialog.js"
 
 # (HTMLElement, Environment, Boolean, Boolean) => Ractive
 create = (element, playMode, runtimeMode, isDebugMode) ->
-  new Ractive({
+  ractive = new Ractive({
 
     el: element,
 
@@ -172,6 +173,25 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
       """
 
   })
+
+  highlighters = new Map()
+  NetTango.setSyntaxHighlighter( (elementId, code) ->
+    if not highlighters.has(elementId)
+      highlighters.set(elementId, new RactiveCodeMirror({
+        el: "#{elementId}"
+        data: () -> {
+          id: "#{elementId}-codemirror"
+        , mode: "netlogo"
+        , code: code
+        , config: { readOnly: 'nocursor' }
+        , extraClasses: ['ntb-code-readonly']
+        }
+      }))
+    highlighter = highlighters.get(elementId)
+    highlighter.set('code', code)
+  )
+
+  ractive
 
 NetTangoSkeleton = { create }
 
