@@ -102,9 +102,10 @@ class AlertDisplay
   @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
     prim       = if primitive is '' then 'a primitive' else primitive.toUpperCase()
     linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then prim else
-      start  = toArray(sourceStart)[0]
-      end    = toArray(sourceEnd)[0]
-      "<a href='/ignore' onclick='this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{start}, #{end}); return false;'>#{prim}</a>"
+      start       = toArray(sourceStart)[0]
+      end         = toArray(sourceEnd)[0]
+      onclickCode = "this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{start}, #{end}); return false;"
+      "<a href='/ignore' onclick='#{onclickCode}'>#{prim}</a>"
     "#{message}\nerror while running #{linkedPrim}"
 
   # (String) => String
@@ -169,7 +170,13 @@ class AlertDisplay
 
     if source is 'console'
       message = if exception instanceof Exception.RuntimeException
-        start = AlertDisplay.makeBareRuntimeErrorMessage(exception.message, exception.primitive, exception.sourceStart, exception.sourceEnd, code)
+        start = AlertDisplay.makeBareRuntimeErrorMessage(
+          exception.message
+        , exception.primitive
+        , exception.sourceStart
+        , exception.sourceEnd
+        , code
+        )
         stack = exception.stackTrace.map(AlertDisplay.makeBareFrameError).join('\n')
         if stack is '' then start else "#{start}\n#{stack}"
 
@@ -183,7 +190,12 @@ class AlertDisplay
 
     else
       message = if exception instanceof Exception.RuntimeException
-        AlertDisplay.makeLinkedRuntimeErrorMessage(exception.message, exception.primitive, exception.sourceStart, exception.sourceEnd)
+        AlertDisplay.makeLinkedRuntimeErrorMessage(
+          exception.message
+        , exception.primitive
+        , exception.sourceStart
+        , exception.sourceEnd
+        )
 
       else if exception instanceof TypeError
         AlertDisplay.makeTypeErrorMessage(exception.message)
