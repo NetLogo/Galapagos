@@ -8,6 +8,7 @@ RactiveModelCodeComponent = Ractive.extend({
     code:              undefined # String
   , isReadOnly:        undefined # Boolean
   , jumpToProcedure:   undefined # String
+  , jumpToCode:        undefined # { start: Int, end: Int }
   , lastCompiledCode:  undefined # String
   , lastCompileFailed:     false # Boolean
   , procedureNames:           {} # Object[String, Number]
@@ -159,6 +160,14 @@ RactiveModelCodeComponent = Ractive.extend({
         @findComponent('codeEditor').set('jumpToProcedure', { procName, index })
     return
 
+  # () => Unit
+  jumpToCode: ->
+    location = @get('jumpToCode')
+    if location?
+      @set('jumpToCode', null)
+      @findComponent('codeEditor').set('jumpToCode', location)
+    return
+
   on: {
     'complete': (_) ->
       @setupProceduresDropdown()
@@ -166,6 +175,7 @@ RactiveModelCodeComponent = Ractive.extend({
       @setupAutoComplete(@autoCompleteWords())
       @setupCodeUsagePopup()
       @jumpToProcedure()
+      @jumpToCode()
       return
 
     'recompile': (_) ->
@@ -185,6 +195,9 @@ RactiveModelCodeComponent = Ractive.extend({
   observe: {
     jumpToProcedure: ->
       @jumpToProcedure()
+
+    jumpToCode: ->
+      @jumpToCode()
   }
 
   # coffeelint: disable=max_line_length

@@ -89,15 +89,20 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
       }
     }
     , jumpToProcedure: undefined # { procName: String, index: Int }
+    , jumpToCode:      undefined # { start: Int, end: Int }
   }
 
   oncomplete: ->
     @_super()
     @jumpToProcedure()
+    @jumpToCode()
 
   observe: {
     'jumpToProcedure': ->
       @jumpToProcedure()
+
+    'jumpToCode': ->
+      @jumpToCode()
   }
 
   # (String, Int) => Unit
@@ -107,11 +112,25 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     @_editor.setSelection(start, end)
     return
 
+  # ({ start: Int, end: Int }) => Unit
+  highlightLocation: (location) ->
+    start = @_editor.posFromIndex(location.start)
+    end   = @_editor.posFromIndex(location.end)
+    @_editor.setSelection(start, end)
+    return
+
   # () => Unit
   jumpToProcedure: () ->
     procInfo = @get('jumpToProcedure')
     if procInfo? and @_editor?
       @highlightProcedure(procInfo.procName, procInfo.index)
+    return
+
+  # () => Unit
+  jumpToCode: () ->
+    location = @get('jumpToCode')
+    if location? and @_editor?
+      @highlightLocation(location)
     return
 
   # () => CodeMirror

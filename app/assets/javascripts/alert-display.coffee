@@ -1,3 +1,5 @@
+{ isSomething, toArray } = tortoise_require('brazier/maybe')
+
 class AlertDisplay
   constructor: (container, isStandalone) ->
     @findConsole = (-> null)
@@ -87,10 +89,23 @@ class AlertDisplay
       when 'plot'     then "called by plot #{frame.name}"
       else                 'called by unknown'
 
-  # (String, String) => String
-  @makeRuntimeErrorMessage: (message, primitive) ->
-    primError = if primitive is '' then 'a primitive' else primitive.toUpperCase()
-    "#{message}\nerror while running #{primError}"
+  # (String, String, Maybe[Int], Maybe[Int]) => String
+  @makeBareRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd, code) ->
+    prim     = if primitive is '' then 'a primitive' else primitive.toUpperCase()
+    location = if not (isSomething(sourceStart)) then "" else
+      start = toArray(sourceStart)[0]
+      line  = code.slice(0, start).split("\n").length
+      " on line #{line}"
+    "#{message}\nerror while running #{prim}#{location}"
+
+  # (String, String, Maybe[Int], [Int], Boolean) => String
+  @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
+    prim       = if primitive is '' then 'a primitive' else primitive.toUpperCase()
+    linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then prim else
+      start  = toArray(sourceStart)[0]
+      end    = toArray(sourceEnd)[0]
+      "<a href='/ignore' onclick='this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{start}, #{end}); return false;'>#{prim}</a>"
+    "#{message}\nerror while running #{linkedPrim}"
 
   # (String) => String
   @makeTypeErrorMessage: (message) ->
@@ -132,23 +147,29 @@ class AlertDisplay
       widgetController.jumpToProcedure(procName)
       false
     )
+    @_ractive.off('jump-to-code')
+    @_ractive.on('jump-to-code', (_, sourceStart, sourceEnd) ->
+      @fire('hide')
+      widgetController.jumpToCode(sourceStart, sourceEnd)
+      false
+    )
 
     # coffeelint: disable=max_line_length
     widgetController.ractive.on('*.nlw-notify',          (_, message)           => @reportNotification(message))
-    widgetController.ractive.on('*.nlw-runtime-error',   (_, source, exception) => @reportRuntimeError(source, exception))
+    widgetController.ractive.on('*.nlw-runtime-error',   (_, source, exception) => @reportRuntimeError(source, exception, widgetController.ractive.get('code')))
     widgetController.ractive.on('*.nlw-compiler-error',  (_, source, errors)    => @reportCompilerErrors(source, errors))
     widgetController.ractive.on('*.nlw-extension-error', (_, messages)          => @reportError(messages.join('<br/>')))
     # coffeelint: enable=max_line_length
     return
 
   # (String, Exception) => Unit
-  reportRuntimeError: (source, exception) ->
+  reportRuntimeError: (source, exception, code) ->
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
     if source is 'console'
       message = if exception instanceof Exception.RuntimeException
-        start = AlertDisplay.makeRuntimeErrorMessage(exception.message, exception.primitive)
+        start = AlertDisplay.makeBareRuntimeErrorMessage(exception.message, exception.primitive, exception.sourceStart, exception.sourceEnd, code)
         stack = exception.stackTrace.map(AlertDisplay.makeBareFrameError).join('\n')
         if stack is '' then start else "#{start}\n#{stack}"
 
@@ -162,7 +183,7 @@ class AlertDisplay
 
     else
       message = if exception instanceof Exception.RuntimeException
-        AlertDisplay.makeRuntimeErrorMessage(exception.message, exception.primitive)
+        AlertDisplay.makeLinkedRuntimeErrorMessage(exception.message, exception.primitive, exception.sourceStart, exception.sourceEnd)
 
       else if exception instanceof TypeError
         AlertDisplay.makeTypeErrorMessage(exception.message)

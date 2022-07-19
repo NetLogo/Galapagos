@@ -153,6 +153,18 @@ class WidgetController
       window.setTimeout(scrollMe, 50)
     return
 
+  # (Int, Int) => Unit
+  jumpToCode: (start, end) ->
+    @ractive.set('showCode', true)
+    @ractive.findComponent('codePane').set('jumpToCode', { start, end })
+    codeTab = @ractive.find('#netlogo-code-tab')
+    if codeTab?
+      # Something during the widget updates resets the scroll position if we do it directly.
+      # So just wait a split sec and then scroll.  -Jeremy B March 2021
+      scrollMe = () -> codeTab.scrollIntoView()
+      window.setTimeout(scrollMe, 50)
+    return
+
   # () => Unit
   redraw: ->
     if Updater.hasUpdates() then @viewController.update(Updater.collectUpdates())
