@@ -98,7 +98,7 @@ class AlertDisplay
       " on line #{line}"
     "#{message}\nerror while running #{prim}#{location}"
 
-  # (String, String, Maybe[Int], [Int], Boolean) => String
+  # (String, String, Maybe[Int], Maybe[Int]) => String
   @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
     prim       = if primitive is '' then 'a primitive' else primitive.toUpperCase()
     linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then prim else
