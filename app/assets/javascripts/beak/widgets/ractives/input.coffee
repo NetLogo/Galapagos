@@ -120,8 +120,6 @@ RactiveInput = RactiveValueWidget.extend({
         false
 
     render: ->
-
-      # Scroll to bottom on value change --Jason B. (8/17/16)
       @observe('widget.currentValue', (newValue, oldValue) =>
         @scrollToBottom(newValue)
         @validateValue(newValue, oldValue)
