@@ -119,6 +119,10 @@ RactiveInput = RactiveValueWidget.extend({
         target.blur()
         false
 
+    init: ->
+      if not @get("widget.currentValue")?
+        @set("widget.currentValue", @get("widget.boxedValue.value"))
+
     render: ->
       @observe('widget.currentValue', (newValue, oldValue) =>
         @scrollToBottom(newValue)
