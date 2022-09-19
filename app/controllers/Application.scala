@@ -16,12 +16,14 @@ import
 
 import play.twirl.api.Html
 
-class Application @Inject() ( assets: Assets
-                            , components: ControllerComponents
-                            , environment: Environment
-                            )  extends AbstractController(components) {
+class Application @Inject() (
+  assets: Assets
+, components: ControllerComponents
+, environment: Environment
+) extends AbstractController(components) {
 
   private implicit val mode = environment.mode
+  private val logger = Logger("application")
 
   // scalastyle:off public.methods.have.type
   def authoring    = themedPage((_)   => views.html.authoring()    , "NetLogo Web Docs - Authoring", "../")
@@ -34,7 +36,7 @@ class Application @Inject() ( assets: Assets
   // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {
-    Logger.info("\"%s\" requested".format(modelName))
+    logger.info("\"%s\" requested".format(modelName))
     assets.versioned(path = "/public/modelslib", modelName)
   }
 
@@ -63,17 +65,19 @@ class Application @Inject() ( assets: Assets
     def scriptTag(x: String) = s"""<script src="$x"></script>"""
     def moduleTag(x: String) = s"""<script type="module" src="$x"></script>"""
 
-    val cssURLs = Seq( "codemirror/lib/codemirror"
-                     , "stylesheets/netlogo-syntax"
-                     ).map((x) => resolve(s"$x.css").toString)
+    val cssURLs = Seq(
+      "codemirror/lib/codemirror"
+    , "stylesheets/netlogo-syntax"
+    ).map( (x) => resolve(s"$x.css").toString )
     val cssTags = cssURLs.map(linkTag)
 
-    val jsURLs = Seq( "lib/codemirror"
-                    , "addon/dialog/dialog"
-                    , "addon/mode/simple"
-                    , "addon/search/searchcursor"
-                    , "addon/search/search"
-                    ).map((x) => resolve(s"codemirror/$x.js").toString)
+    val jsURLs = Seq(
+      "lib/codemirror"
+    , "addon/dialog/dialog"
+    , "addon/mode/simple"
+    , "addon/search/searchcursor"
+    , "addon/search/search"
+    ).map( (x) => resolve(s"codemirror/$x.js").toString )
     val jsTags = jsURLs.map(scriptTag)
 
     val moduleURLs = Seq("pages/differences")

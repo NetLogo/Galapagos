@@ -1,3 +1,4 @@
+import org.nlogo.PlayScrapePlugin
 import org.nlogo.PlayScrapePlugin.credentials.{ fromCredentialsProfile, fromEnvironmentVariables }
 import com.typesafe.sbt.web.Import.WebKeys.webTarget
 import com.typesafe.sbt.web.{ Compat, PathMapping }
@@ -6,12 +7,10 @@ import sbt.io.Path.relativeTo
 
 import scala.sys.process.Process
 
-name := "Galapagos"
-
+name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.8"
-
+scalaVersion := "2.12.17"
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-deprecation",
@@ -27,30 +26,14 @@ scalacOptions ++= Seq(
 )
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, org.nlogo.PlayScrapePlugin)
+  .enablePlugins(PlayScala, PlayScrapePlugin)
   .settings(
     // Disable NPM node modules
-    JsEngineKeys.npmNodeModules in Assets := Nil,
-    JsEngineKeys.npmNodeModules in TestAssets := Nil
+    Assets / JsEngineKeys.npmNodeModules := Nil,
+    TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
 
-val tortoiseVersion = "1.0-faeec41"
-
-libraryDependencies ++= Seq(
-  ehcache,
-  filters,
-  guice,
-  "org.nlogo" % "compilerjvm" % tortoiseVersion,
-  "org.nlogo" % "netlogowebjs" % tortoiseVersion,
-  "com.typesafe.play" %% "play-iteratees" % "2.6.1",
-  "com.typesafe.akka" %% "akka-testkit" % "2.5.15" % "test",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test"
-)
-
-libraryDependencies ++= Seq(
-  "org.webjars" % "markdown-js" % "0.5.0-1",
-  "org.webjars.bower" % "google-caja" % "6005.0.0"
-)
+val tortoiseVersion = "1.0-44c4103"
 
 resolvers ++= Seq(
   "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
@@ -59,7 +42,28 @@ resolvers ++= Seq(
 , "play-scraper"    at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
 )
 
-unmanagedResourceDirectories in Assets += baseDirectory.value / "node_modules"
+libraryDependencies ++= Seq(
+  ehcache
+, filters
+, guice
+// these guice imports are temporary to support Java 17 with Play 2.8.16.  They should be removed once a later version
+// of Play properly references them.  -Jeremy B September 2022
+, "com.google.inject"            % "guice"                % "5.1.0"
+, "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0"
+, "org.nlogo" % "compilerjvm"  % tortoiseVersion
+, "org.nlogo" % "netlogowebjs" % tortoiseVersion
+// ideally these would be moved to `package.json`, but they aren't on npm at these exact versions, so here they stay.
+// -Jeremy B September 2022
+, "org.webjars"       % "markdown-js" % "0.5.0-1"
+, "org.webjars.bower" % "google-caja" % "6005.0.0"
+// akka-testkit must match the akka version used by Play -Jeremy B September 2022
+, "com.typesafe.akka"      %% "akka-testkit"       % "2.6.19" % Test
+, "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"  % Test
+)
+
+evictionErrorLevel := Level.Warn
+
+Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 
 lazy val nodeModules = Def.task[File] {
   baseDirectory.value / "node_modules"
@@ -92,21 +96,20 @@ coffeelint := {
   ()
 }
 
-(compile in Compile) := ((compile in Compile).dependsOn(yarnInstall)).value
-
+(Compile / compile) := ((Compile / compile).dependsOn(yarnInstall)).value
 
 lazy val bundle = taskKey[Pipeline.Stage]("Bundle script files using Rollup")
 
-includeFilter in bundle := "*.js" || "*.js.map"
-excludeFilter in bundle := HiddenFileFilter
+bundle / includeFilter := "*.js" || "*.js.map"
+bundle / excludeFilter := HiddenFileFilter
 
 bundle := Def.task {
   val streamsValue = streams.value
   val inputDir = webTarget.value / "rollup" / "sync-rollup" / "main"
   val outputDir = webTarget.value / "rollup" / "main"
   val scriptsDir = "javascripts" + java.io.File.separator
-  val include = (includeFilter in bundle).value
-  val exclude = (excludeFilter in bundle).value
+  val include = (bundle / includeFilter).value
+  val exclude = (bundle / excludeFilter).value
 
   (inputMappings: Seq[PathMapping]) => {
 
@@ -166,7 +169,7 @@ def runRollup(baseDirectory: File, inputDir: File, outputDir: File, streams: Tas
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
-excludeFilter in digest := "*.chunk.js"
+digest / excludeFilter := "*.chunk.js"
 
 // We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
 // provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to
@@ -174,13 +177,17 @@ excludeFilter in digest := "*.chunk.js"
 PlayKeys.playRunHooks += PlayDevMode()
 
 // Used in Dev and Prod
-pipelineStages in Assets ++= Seq(bundle)
+Assets / pipelineStages ++= Seq(bundle)
 
 // Used in Prod
 pipelineStages ++= Seq(digest)
 
+Test / javaOptions ++= Seq(
+  "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"
+, "--add-opens=java.base/sun.security.ssl=ALL-UNNAMED"
+)
 
-fork in Test := false
+Test / fork := true
 
 routesGenerator := InjectedRoutesGenerator
 

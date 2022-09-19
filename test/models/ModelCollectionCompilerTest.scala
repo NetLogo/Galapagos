@@ -1,25 +1,19 @@
 package models
 
-import
-  java.io.File
+import java.io.File
 
-import
-  scala.{ io => sio, concurrent },
-    concurrent.duration.DurationInt,
-    sio.Source
+import scala.io.Source
+import scala.concurrent.duration.DurationInt
 
-import
-  akka.{ actor, testkit },
-    actor.{ ActorSystem, Inbox, Props },
-    testkit.{ TestActorRef, TestKitBase }
+import akka.actor.{ ActorSystem, Props }
+import akka.testkit.{ TestActorRef, TestKitBase, TestProbe }
 
-import
-  org.scalatest.{ Assertions, FlatSpec, OneInstancePerTest }
+import org.scalatest.{ Assertions, OneInstancePerTest }
+import org.scalatest.flatspec.AnyFlatSpec
 
-import
-  play.api.Mode
+import play.api.Mode
 
-class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
+class ModelCollectionCompilerSpec extends AnyFlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
 
   import ModelCollectionCompiler.CheckBuiltInModels
   import StatusCacher.AllBuiltInModels
@@ -29,7 +23,7 @@ class ModelCollectionCompilerSpec extends FlatSpec with AkkaTestHelper with Test
   }
 
   lazy val observer = genInbox
-  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => modelsCollection.allModels(Mode.Test), observer.getRef()))
+  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => modelsCollection.allModels(Mode.Test), observer.ref))
 
   it should "send an AllModels message with a list of all files" in {
     collectionCompiler ! CheckBuiltInModels
@@ -76,8 +70,8 @@ trait AkkaTestHelper extends Assertions {
 
   val skipMessages = receiveMessagesCount _
 
-  def receiveMessagesCount(i: Inbox, count: Int): Seq[Any] =
-    Seq.fill(count)(i.receive(StandardDuration))
+  def receiveMessagesCount(i: TestProbe, count: Int): Seq[Any] =
+    Seq.fill(count)(i.receiveOne(StandardDuration))
 
   def failureForTestSource(sourceFile: File)(message: Any): Boolean =
     message match {
@@ -85,23 +79,23 @@ trait AkkaTestHelper extends Assertions {
       case _                           => false
     }
 
-  def assertInboxReceivedUnordered(i: Inbox, skip: Int, messageMatchers: (Any => Boolean)*): Unit = {
+  def assertInboxReceivedUnordered(i: TestProbe, skip: Int, messageMatchers: (Any => Boolean)*): Unit = {
     skipMessages(i, skip)
     val receivedMessages = receiveMessagesCount(i, messageMatchers.length)
     messageMatchers.foreach(matchingMessage => assert(receivedMessages.exists(matchingMessage)))
   }
 
-  def assertInboxReceivedInOrder(i: Inbox, messages: Any*): Unit = {
+  def assertInboxReceivedInOrder(i: TestProbe, messages: Any*): Unit = {
     skipMessages(i, 0)
-    messages.foreach(message => assertResult(message)(i.receive(StandardDuration)))
+    messages.foreach(message => assertResult(message)(i.receiveOne(StandardDuration)))
   }
 
   // I do this because the tests will otherwise intermittently cause `ClassCastException`s, thanks to this bug:
   // https://github.com/akka/akka/issues/15409 .  It seems to just be a timing issue, so let's be the little train
   // that could and just keep on a-tryin'! --Jason B. (11/11/14)
   @annotation.tailrec
-  final protected def genInbox(implicit system: ActorSystem): Inbox =
-    try Inbox.create(system)
+  final protected def genInbox(implicit system: ActorSystem): TestProbe =
+    try TestProbe()(system)
     catch {
       case ex: ClassCastException => genInbox
     }

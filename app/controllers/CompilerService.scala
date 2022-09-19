@@ -17,13 +17,85 @@ import
   play.api.{ cache, Environment, mvc },
     cache.{ NamedCache, SyncCacheApi },
     mvc.{ AbstractController, ControllerComponents }
+import controllers.{ Assets => PlayAssets }
 
-import CompilerService._
+import CompilerService.{ ArgMap, CodeKey, CommandsKey, ModelKey, ModelResultV, ReportersKey }
 
-class CompilerService @Inject() (@NamedCache("compilation-statuses") override protected val cache: SyncCacheApi,
-                                                                     components: ControllerComponents,
-                                                                     override protected val environment: Environment)
-  extends AbstractController(components) with EnvironmentHolder with CacheProvider with CompilationRequestHandler with ModelStatusHandler
+class CompilerService @Inject() (
+  @NamedCache("compilation-statuses") override protected val cache: SyncCacheApi,
+  components: ControllerComponents,
+  override protected val environment: Environment
+)(implicit assetsFinder: AssetsFinder) extends AbstractController(components)
+  with EnvironmentHolder
+  with CacheProvider
+  with ModelStatusHandler
+  with RequestResultGenerator
+  with ResourceSender
+{
+
+  import
+    controllers.PlayUtil.EnhancedRequest
+
+  import
+    scalaz.NonEmptyList
+
+  import
+    org.nlogo.{ core, tortoise },
+      core.CompilerException,
+      tortoise.compiler.{ CompiledModel, Compiler }
+
+  import
+    play.api.mvc.{ Action => ActionType, AnyContent, Result }
+
+  import
+    CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }
+
+  val compiler = new Compiler()
+
+  private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment, assetsFinder)
+
+  def compileURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
+  def compileCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
+  def compileNlogo: ActionType[AnyContent] = genCompileAction(generateFromNlogo, jsonResult)
+
+  def exportCode: ActionType[AnyContent] = genCompileAction(generateFromCode, exportResult)
+
+  def tortoiseCompilerJs:    ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
+
+  def tortoiseCompilerJsMap: ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
+
+  private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
+    Action { implicit request =>
+      val argMap = toStringMap(request.extractBundle)
+      val model = generateModel(argMap, request.host).flatMap {
+        case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
+        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
+      }
+      generateResult(argMap, model)
+    }
+
+  private def stringifyNonCompilerExceptions(v: ValidationNel[Exception, CompiledModel]): ModelResultV = {
+    def liftCompilerExceptions(nel: NonEmptyList[Exception]): ModelResultV = {
+      val (ces, es) =
+        nel.list.foldLeft((List.empty[CompilerException], List.empty[Exception])) {
+          case ((ces, es), ce: CompilerException) => (ces :+ ce, es)
+          case ((ces, es), e:  Exception)         => (ces,       es :+ e)
+        }
+      val messages = es.map(_.getMessage)
+      messages.headOption.map {
+        h => NonEmptyList(h, messages.tail: _*).failure
+      }.getOrElse {
+        NonEmptyList(ces.head, ces.tail: _*).failure.successNel[String]
+      }
+    }
+    v.fold(liftCompilerExceptions, _.successNel[CompilerException].successNel[String])
+  }
+
+  private def toStringMap(bundle: ParamBundle): ArgMap = {
+    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
+    bundle.stringParams ++ fileMap
+  }
+}
 
 
 private[controllers] trait EnvironmentHolder {
@@ -83,7 +155,7 @@ private[controllers] object CompilationRequestHandler {
 
   type ModelResult = ValidationNel[String, ModelArgument]
 
-  def generateFromUrl(argMap: ArgMap, hostUri: String)(implicit environment: Environment): ModelResult =
+  def generateFromUrl(argMap: ArgMap, hostUri: String)(implicit environment: Environment, assetsFinder: AssetsFinder): ModelResult =
     extractModelString(argMap, urlMissingMsg).flatMap(url => fetchURL(url, hostUri) map ModelText.apply)
 
   def generateFromCode(argMap: ArgMap, hostUri: String): ModelResult = {
@@ -102,11 +174,11 @@ private[controllers] object CompilationRequestHandler {
   def generateFromNlogo(argMap: ArgMap, hostUri: String): ModelResult =
     extractModelString(argMap, nlogoMissingMsg) map ModelText.apply
 
-  private def fetchURL(url: String, hostUri: String)(implicit environment: Environment): ValidationNel[String, String] = {
+  private def fetchURL(url: String, hostUri: String)(implicit environment: Environment, assetsFinder: AssetsFinder): ValidationNel[String, String] = {
     val LocalHostRegex = s"^https?://$hostUri/assets/([A-Za-z0-9%/]+\\.nlogo)$$".r
     Try {
       (url match {
-        case LocalHostRegex(file) => Assets.resourceNameAt("/public", file).flatMap(environment.resource)
+        case LocalHostRegex(file) => environment.resource(assetsFinder.findAssetPath("/public", file))
         case _                    => None
       }).getOrElse(new URL(url))
     } map {
@@ -130,75 +202,6 @@ private[controllers] object CompilationRequestHandler {
     val parsedJson = argMap.get(key) map Json.parse map toTortoiseJson map parseShapes map(_.map(_.toList))
     parsedJson getOrElse default.successNel
   }
-}
-
-private[controllers] trait CompilationRequestHandler extends RequestResultGenerator with ResourceSender {
-
-  self: AbstractController with EnvironmentHolder =>
-
-  import
-    controllers.PlayUtil.EnhancedRequest
-
-  import
-    scalaz.NonEmptyList
-
-  import
-    org.nlogo.{ core, tortoise },
-      core.CompilerException,
-      tortoise.compiler.{ CompiledModel, Compiler }
-
-  import
-    play.api.mvc.{ Action => ActionType, AnyContent, Result }
-
-  import
-    CompilationRequestHandler.{ generateFromCode, generateFromNlogo, generateFromUrl => gfu, ModelObject, ModelResult, ModelText }
-
-  val compiler = new Compiler()
-
-  private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment)
-
-  def compileURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
-  def compileCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
-  def compileNlogo: ActionType[AnyContent] = genCompileAction(generateFromNlogo, jsonResult)
-
-  def exportCode: ActionType[AnyContent] = genCompileAction(generateFromCode, exportResult)
-
-  def tortoiseCompilerJs:    ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js")("text/javascript") }
-
-  def tortoiseCompilerJsMap: ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
-
-  private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
-    Action { implicit request =>
-      val argMap = toStringMap(request.extractBundle)
-      val model = generateModel(argMap, request.host).flatMap {
-        case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
-        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
-      }
-      generateResult(argMap, model)
-    }
-
-  private def stringifyNonCompilerExceptions(v: ValidationNel[Exception, CompiledModel]): ModelResultV = {
-    def liftCompilerExceptions(nel: NonEmptyList[Exception]): ModelResultV = {
-      val (ces, es) =
-        nel.list.foldLeft((List.empty[CompilerException], List.empty[Exception])) {
-          case ((ces, es), ce: CompilerException) => (ces :+ ce, es)
-          case ((ces, es), e:  Exception)         => (ces,       es :+ e)
-        }
-      val messages = es.map(_.getMessage)
-      messages.headOption.map {
-        h => NonEmptyList(h, messages.tail: _*).failure
-      }.getOrElse {
-        NonEmptyList(ces.head, ces.tail: _*).failure.successNel[String]
-      }
-    }
-    v.fold(liftCompilerExceptions, _.successNel[CompilerException].successNel[String])
-  }
-
-  private def toStringMap(bundle: ParamBundle): ArgMap = {
-    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
-    bundle.stringParams ++ fileMap
-  }
-
 }
 
 private[controllers] trait RequestResultGenerator {

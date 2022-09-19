@@ -14,7 +14,7 @@ resolvers ++= Seq(
 , "sbt-coffeescript" at "https://dl.cloudsmith.io/public/netlogo/sbt-coffeescript/maven/"
 )
 
-addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.6.21")
+addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.8.16")
 addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt"  %  "sbt-mocha"             % "1.1.2")
 addSbtPlugin("com.typesafe.sbt"  %  "sbt-digest"            % "1.1.4")
