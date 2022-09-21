@@ -1,5 +1,5 @@
-assert   = require("assert")
-TortoiseUtils = require("./tortoise-utils.js")
+import assert from 'assert'
+import * as TortoiseUtils from '../../main/beak/tortoise-utils.js'
 
 describe('TortoiseUtils', () ->
   describe('#toNetLogoWebMarkdown()', () ->

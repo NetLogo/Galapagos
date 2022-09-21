@@ -4,6 +4,9 @@ import com.typesafe.sbt.web.Import.WebKeys.webTarget
 import com.typesafe.sbt.web.{ Compat, PathMapping }
 import com.typesafe.sbt.web.pipeline.Pipeline
 import sbt.io.Path.relativeTo
+import sbt.IO
+
+import java.nio.file.{ Files, StandardCopyOption }
 
 import scala.sys.process.Process
 
@@ -65,106 +68,162 @@ evictionErrorLevel := Level.Warn
 
 Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 
-lazy val nodeModules = Def.task[File] {
-  baseDirectory.value / "node_modules"
+def runYarn(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
+  val yarnArgs = Seq("yarn") ++ args
+  Process(yarnArgs, runDir, env:_*).!(log)
+  ()
 }
 
-lazy val yarnIntegrity = Def.task[File] {
-  baseDirectory.value / "node_modules" / ".yarn-integrity"
-}
-
-lazy val packageJson = Def.task[File] {
-  baseDirectory.value / "package.json"
-}
-
-lazy val yarnInstall = taskKey[Unit]("Runs `yarn install` from within SBT")
+lazy val yarnInstall = taskKey[Unit]("runs `yarn install` if necessary based on current repo status")
 yarnInstall := {
-  val log = streams.value.log
-  val nodeDirectory = nodeModules.value
-  val nodeExists = nodeDirectory.exists && nodeDirectory.isDirectory && nodeDirectory.list.length > 0
-  val integrityFile = yarnIntegrity.value
-  if (!nodeExists || !integrityFile.exists || integrityFile.olderThan(packageJson.value))
-    Process(Seq("yarn", "install", "--ignore-optional"), baseDirectory.value).!(log)
-  ()
+  val log           = streams.value.log
+  val nodeDir       = baseDirectory.value / "node_modules"
+  val nodeExists    = nodeDir.exists && nodeDir.isDirectory && nodeDir.list.length > 0
+  val integrityFile = nodeDir / ".yarn-integrity"
+  val packageJson   = baseDirectory.value / "package.json"
+  if (!nodeExists || !integrityFile.exists || integrityFile.olderThan(packageJson)) {
+    runYarn(log, baseDirectory.value, Seq("install", "--ignore-optional"))
+  }
 }
 
-lazy val coffeelint = taskKey[Unit]("lint coffeescript files in Galapagos")
-coffeelint := {
-  yarnInstall.value
+lazy val coffeeInputDirectory  = Def.setting[File] { baseDirectory.value / "app" / "assets" / "javascripts" }
+lazy val coffeeOutputDirectory = Def.setting[File] { baseDirectory.value / "target" / "coffee-output" / "main" }
+
+lazy val coffee = taskKey[Unit]("compile coffeescript files")
+coffee := Def.task {
+  val log               = streams.value.log
+  val baseDir           = baseDirectory.value
+  val coffeeInputDir    = coffeeInputDirectory.value
+  val coffeeChangedDir  = baseDirectory.value / "target" / "coffee-changed"
+  val coffeeOutputDir   = coffeeOutputDirectory.value
+  val coffeeInputPath   = coffeeInputDir.asPath
+  val coffeeChangedPath = coffeeChangedDir.asPath
+  val coffeeOutputPath  = coffeeOutputDir.asPath
+
+  // get our file paths straight
+  val inOutFiles = (coffeeInputDir ** ("*.coffee")).get.map( (sourceFile) => {
+    val relativePath     = coffeeInputPath.relativize(sourceFile.asPath)
+    val changedFile      = coffeeChangedPath.resolve(relativePath).toFile
+    val fileName         = sourceFile.getName.split("\\.").dropRight(1).mkString(".")
+    val relativeParent   = relativePath.getParent
+    val outputParentPath = if (relativeParent == null) {
+      coffeeOutputPath
+    } else {
+      coffeeOutputPath.resolve(relativePath.getParent)
+    }
+    val outputFile = outputParentPath.resolve(s"$fileName.js").toFile
+    (sourceFile, changedFile, outputFile)
+  })
+
+  // get only the coffee files that have changed
+  val changedFiles = inOutFiles.filter({ case (sourceFile, _, outputFile) =>
+    !outputFile.exists || outputFile.olderThan(sourceFile)
+  })
+
+  // compile the coffee files if necessary.
+  if (changedFiles.length == 0) {
+    log.info("No changes found in CoffeeScript files.")
+  } else {
+    log.info(s"Compiling ${changedFiles.length} changed CoffeeScript file(s).")
+    // put the changed coffee files into a temp directory, so we can compile them while maintaining their relative paths.
+    IO.delete(coffeeChangedDir)
+    changedFiles.foreach({ case (sourceFile, changedFile, _) =>
+      Files.createDirectories(changedFile.getParentFile.asPath)
+      Files.copy(sourceFile.toPath, changedFile.toPath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING)
+    })
+    runYarn(
+      log,
+      baseDir,
+      Seq("coffee", "--compile", "--map", "--output", coffeeOutputPath.toString, coffeeChangedPath.toString)
+    )
+  }
+
+  // then copy all the non-coffee script files, too
+  (coffeeInputDir ** ("*.js")).get.foreach( (sourceFile) => {
+    val sourcePath = sourceFile.asPath
+    val outputPath = coffeeInputPath.relativize(sourcePath)
+    IO.copyFile(sourcePath.toFile, coffeeOutputPath.resolve(outputPath).toFile)
+  })
+
+}.dependsOn(yarnInstall).value
+
+lazy val coffeelint = taskKey[Unit]("lint coffeescript files")
+coffeelint := Def.task {
+  runYarn(
+    streams.value.log,
+    baseDirectory.value,
+    Seq("coffeelint", "-f", "coffeelint.json", coffeeInputDirectory.value.toString)
+  )
+}.dependsOn(yarnInstall).value
+
+lazy val testInputDirectory  = Def.setting[File] { baseDirectory.value / "test" / "assets" / "javascripts" }
+lazy val testOutputDirectory = Def.setting[File] { baseDirectory.value / "target" / "coffee-output" / "test" }
+
+lazy val mochaTest = taskKey[Unit]("run mocha js tests")
+mochaTest := Def.task {
   val log = streams.value.log
-  Process(Seq("yarn", "coffeelint"), baseDirectory.value).!(log)
-  ()
-}
+  log.info("Running mocha JS tests")
+  IO.delete(testOutputDirectory.value)
+  runYarn(
+    log,
+    baseDirectory.value,
+    Seq("coffee", "--compile", "--map", "--output", testOutputDirectory.value.toString, testInputDirectory.value.toString)
+  )
+  runYarn(
+    log,
+    baseDirectory.value,
+    Seq("mocha", "--recursive", s"${testOutputDirectory.value.toString}/**/*.js")
+  )
+}.dependsOn(coffee).value
 
-(Compile / compile) := ((Compile / compile).dependsOn(yarnInstall)).value
+lazy val bundleDirectory = Def.setting[File] { baseDirectory.value / "target" / "rollup" }
 
-lazy val bundle = taskKey[Pipeline.Stage]("Bundle script files using Rollup")
-
-bundle / includeFilter := "*.js" || "*.js.map"
+lazy val bundle = taskKey[Pipeline.Stage]("full coffeescript build and bundle with rollup as pipeline")
+bundle / includeFilter := "*.coffee" || "*.js"
 bundle / excludeFilter := HiddenFileFilter
-
 bundle := Def.task {
-  val streamsValue = streams.value
-  val inputDir = webTarget.value / "rollup" / "sync-rollup" / "main"
-  val outputDir = webTarget.value / "rollup" / "main"
-  val scriptsDir = "javascripts" + java.io.File.separator
-  val include = (bundle / includeFilter).value
-  val exclude = (bundle / excludeFilter).value
+  val streamsValue    = streams.value
+  val baseDir         = baseDirectory.value
+  val scriptsDir      = "javascripts" + java.io.File.separator
+  val include         = (bundle / includeFilter).value
+  val exclude         = (bundle / excludeFilter).value
+  val coffeeOutputDir = coffeeOutputDirectory.value
+  val bundleDir       = bundleDirectory.value.relativeTo(baseDir).get
+  val nodeEnv         = if (PlayDevMode.isDevMode) "development" else "production"
 
   (inputMappings: Seq[PathMapping]) => {
 
     // Partition input mappings into files we want to bundle and files we just want to ignore and pass through to the
     // next pipeline stage. - David D. 7/2021
-    val (filesToBundle, ignoredFiles) = inputMappings.partition({
+    val (outputMappings, ignoredFiles) = inputMappings.partition({
       case (file, relativePath) =>
         relativePath.startsWith(scriptsDir) && !file.isDirectory && !exclude.accept(file) && include.accept(file)
     })
 
     // Run the function only if files have changed since the last run - David D. 7/2021
     val runBundler = FileFunction.cached(streamsValue.cacheDirectory / "rollup", FilesInfo.hash) { _ =>
-
-      // Rollup needs its inputs in a folder, not a list of random files, so we sync the input files of this pipeline
-      // stage into a temporary folder, where Rollup can easily access them. - David D. 7/2021
-      SbtWeb.syncMappings(
-        Compat.cacheStore(streamsValue, "sync-rollup"),
-        filesToBundle,
-        inputDir
+      IO.delete(bundleDir)
+      runYarn(
+        streamsValue.log,
+        baseDir,
+        Seq("rollup", "--config", "rollup.config.js",
+          // Custom arguments with the 'config-' prefix are passed through to rollup.config.js. - David D. 7/2021
+          "--config-sourceDir", coffeeOutputDir.getPath,
+          "--config-targetDir", bundleDir.getPath,
+          // Rollup prints all messages, including info to STDERR, but SBT would then display everything as errors and
+          // clutter the output. The --silent flag causes Rollup to output only errors, which we still want to see.
+          // - David D. 7/2021
+          "--silent"
+        ),
+        "NODE_ENV" -> nodeEnv
       )
-
-      val nodeEnv = if (PlayDevMode.isDevMode) "development" else "production"
-      val inputsCount = filesToBundle.count(f => !"*.js.map".accept(f._1))
-
-      streamsValue.log.info(s"Rollup: Bundling ${inputsCount} script file(s) in ${nodeEnv} mode ...")
-      val bundlerOutput = runRollup(baseDirectory.value, inputDir, outputDir, streamsValue, nodeEnv)
-      streamsValue.log.info(s"Rollup: Done bundling.")
-
-      bundlerOutput.toSet
+      (bundleDir ** ("*.js" || "*.js.map")).get.toSet
     }
 
-    val bundledFiles = runBundler(filesToBundle.map(_._1).toSet) pair relativeTo(outputDir)
+    val bundledFiles: Seq[PathMapping] = runBundler(outputMappings.map(_._1).toSet) pair relativeTo(bundleDir)
     bundledFiles ++ ignoredFiles
   }
-
-}.dependsOn(yarnInstall).value
-
-def runRollup(baseDirectory: File, inputDir: File, outputDir: File, streams: TaskStreams, nodeEnv: String): Seq[File] = {
-  Process(
-    Seq("./node_modules/.bin/rollup",
-      "--config", "rollup.config.js",
-      // Custom arguments with the 'config-' prefix are passed through to rollup.config.js. - David D. 7/2021
-      "--config-sourceDir", inputDir.getPath,
-      "--config-targetDir", outputDir.relativeTo(baseDirectory).get.getPath,
-      // Rollup prints all messages, including info to STDERR, but SBT would then display everything as errors and
-      // clutter the output. The --silent flag causes Rollup to output only errors, which we still want to see.
-      // - David D. 7/2021
-      "--silent"
-    ),
-    baseDirectory,
-    "NODE_ENV" -> nodeEnv
-  ).!(streams.log)
-
-  (outputDir ** ("*.js" || "*.js.map")).get
-}
+}.dependsOn(coffee).value
 
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
@@ -186,6 +245,8 @@ Test / javaOptions ++= Seq(
   "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"
 , "--add-opens=java.base/sun.security.ssl=ALL-UNNAMED"
 )
+
+Test / test := (Test / test).dependsOn(mochaTest).value
 
 Test / fork := true
 
