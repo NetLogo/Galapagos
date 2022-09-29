@@ -27,7 +27,7 @@ class Startup @Inject() (actorSystem: ActorSystem, @NamedCache("compilation-stat
   val statusCacher       = actorSystem.actorOf(Props(classOf[StatusCacher], cache))
   val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], () => ModelsLibrary.allModels(environment.mode), statusCacher))
   if (environment.mode == Mode.Prod)
-    actorSystem.scheduler.scheduleWithFixedDelay(0.seconds, 30.minutes)(new Runnable { def run = backgroundCompiler ! CheckBuiltInModels })
+    actorSystem.scheduler.scheduleWithFixedDelay(0.seconds, 30.minutes)(new Runnable { def run: Unit = backgroundCompiler ! CheckBuiltInModels })
 }
 
 class StartupModule extends AbstractModule {
