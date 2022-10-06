@@ -16,5 +16,5 @@ resolvers ++= Seq(
 addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.8.16")
 addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt"  %  "sbt-digest"            % "1.1.4")
-addSbtPlugin("org.nlogo"         %  "play-scraper"          % "0.8.3")
+addSbtPlugin("org.nlogo"         %  "play-scraper"          % "1.0.1")
 addSbtPlugin("com.timushev.sbt"  %  "sbt-updates"           % "0.3.4")

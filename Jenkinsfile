@@ -29,24 +29,13 @@ pipeline {
       }
     }
 
-    stage('Deploy-Staging') {
-      when {
-        branch "master"
-      }
-      steps {
-        library 'netlogo-shared'
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'ccl-aws-deploy', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-          sbt('scrapePlay', 'sbt-1.7.1')
-          sh 'cp -Rv public/modelslib/ target/play-scrape/assets/'
-          sh 'cp -Rv public/nt-modelslib/ target/play-scrape/assets/'
-          sbt('scrapeUpload', 'sbt-1.7.1')
-        }
-      }
-    }
-
     stage('Deploy') {
       when {
-        branch "production"
+        anyOf {
+          branch "scrape-test"
+          branch "master"
+          branch "production"
+        }
       }
       steps {
         library 'netlogo-shared'
