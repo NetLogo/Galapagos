@@ -60,3 +60,7 @@
   outline: 1px solid #CCCCCC;
   outline-offset: -1px;
 }
+
+.netlogo-canvas {
+  border-radius: 3px;
+}
