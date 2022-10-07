@@ -225,6 +225,8 @@ bundle := Def.task {
   }
 }.dependsOn(coffee).value
 
+(Compile / compile) := (Compile / compile).dependsOn(yarnInstall).value
+
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
