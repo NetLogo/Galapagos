@@ -227,16 +227,18 @@ PlotEditForm = EditForm.extend({
 
     @set('guiPens', [])
 
+    replaceIfEmpty = (str, replace) -> if str is '' then replace else str
+
     {  autoPlotOn: form.autoPlotOn.checked
     ,     display: name
     ,    legendOn: form.legendOn.checked
     ,        pens
     ,   setupCode: getCode(this)("#{@get('id')}-setup-code" )
     ,  updateCode: getCode(this)("#{@get('id')}-update-code")
-    ,       xAxis: form.xLabel.value
+    ,       xAxis: replaceIfEmpty(form.xLabel.value, null)
     ,        xmax: form.xMax.valueAsNumber
     ,        xmin: form.xMin.valueAsNumber
-    ,       yAxis: form.yLabel.value
+    ,       yAxis: replaceIfEmpty(form.yLabel.value, null)
     ,        ymax: form.yMax.valueAsNumber
     ,        ymin: form.yMin.valueAsNumber
     ,    __extras: extras
