@@ -1,6 +1,13 @@
 import { CommonDrag } from "./draggable.js"
 
-{ maybe, None } = tortoise_require('brazier/maybe')
+{ maybe, None   } = tortoise_require('brazier/maybe')
+{ HaltInterrupt } = tortoise_require('util/exception')
+
+haltably = (f) ->
+  try f()
+  catch ex
+    if not (ex instanceof HaltInterrupt)
+      throw ex
 
 RactiveAsyncUserDialog = Ractive.extend({
 
@@ -52,7 +59,7 @@ RactiveAsyncUserDialog = Ractive.extend({
 
     'perform-halt': ->
       @fire('close-popup')
-      @get('state').callback(None)
+      haltably(=> @get('state').callback(None))
       false
 
     'perform-chooser-ok': ->
@@ -60,7 +67,7 @@ RactiveAsyncUserDialog = Ractive.extend({
       elem  = document.getElementById('async-dialog-chooser')
       index = elem.selectedIndex
       elem.selectedIndex = 0
-      @get('state').callback(maybe(index))
+      haltably(=> @get('state').callback(maybe(index)))
       false
 
     'perform-input-ok': ->
@@ -68,22 +75,22 @@ RactiveAsyncUserDialog = Ractive.extend({
       elem       = document.getElementById('async-dialog-text-input')
       value      = elem.value
       elem.value = ""
-      @get('state').callback(maybe(value))
+      haltably(=> @get('state').callback(maybe(value)))
       false
 
     'perform-message-ok': ->
       @fire('close-popup')
-      @get('state').callback(maybe(0))
+      haltably(=> @get('state').callback(maybe(0)))
       false
 
     'perform-no': ->
       @fire('close-popup')
-      @get('state').callback(maybe(false))
+      haltably(=> @get('state').callback(maybe(false)))
       false
 
     'perform-yes': ->
       @fire('close-popup')
-      @get('state').callback(maybe(true))
+      haltably(=> @get('state').callback(maybe(true)))
       false
 
     'show-state': (event, state) ->
