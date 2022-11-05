@@ -10,6 +10,7 @@
 /.idea
 /logs/
 /node_modules/
+/.yarnrc.yml
 managed/
 project/project/
 target/
