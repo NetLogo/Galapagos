@@ -11,7 +11,7 @@
     "mousetrap": "1.6.5",
     "nettango": "0.16.4",
     "ractive": "1.3.14",
-    "synchrodecoder": "2.0.1"
+    "synchrodecoder": "3.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.3",

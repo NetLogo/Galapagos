@@ -1,5 +1,5 @@
-import { toNetLogoMarkdown } from "/beak/tortoise-utils.js"
-import synchroDecoder        from "synchrodecoder/synchrodecoder.min.mjs"
+import { toNetLogoMarkdown }              from "/beak/tortoise-utils.js"
+import { synchroDecoder, synchroEncoder } from "synchrodecoder/synchrodecoder.mjs"
 
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->
@@ -250,6 +250,7 @@ genConfigs = (ractive, viewController, container, compiler) ->
 
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
   , base64ToImageData
+  , imageDataToBase64: synchroEncoder
   , dialog:            genDialogConfig(viewController, notify)
   , importExport:      genImportExportConfig(ractive, viewController, compiler)
   , inspection:        genInspectionConfig()

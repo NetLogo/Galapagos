@@ -334,7 +334,7 @@ class DrawingLayer extends Drawer
   clearDrawing: ->
     @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
 
-  importDrawing: (base64) =>
+  importDrawing: (base64, x = null, y = null) =>
     @ctx.clearRect(0, 0, @canvas.width, @canvas.height)
     image = new Image()
     image.onload = () =>
@@ -342,13 +342,16 @@ class DrawingLayer extends Drawer
       imageRatio  = image.width / image.height
       width  = @canvas.width
       height = @canvas.height
-      if(canvasRatio >= imageRatio)
+      if (canvasRatio >= imageRatio)
         # canvas is "wider" than the image, use full image height and partial width
         width = (imageRatio / canvasRatio) * @canvas.width
       else
         # canvas is "thinner" than the image, use full image width and partial height
         height = (canvasRatio / imageRatio) * @canvas.height
-      @ctx.drawImage(image, (@canvas.width - width) / 2, (@canvas.height - height) / 2, width, height)
+
+      [sx, w] = if x isnt null then [x, image.width]  else [(@canvas.width - width)   / 2, width]
+      [sy, h] = if y isnt null then [y, image.height] else [(@canvas.height - height) / 2, height]
+      @ctx.drawImage(image, sx, sy, w, h)
       @repaintView()
       return
     image.src = base64
@@ -424,7 +427,7 @@ class DrawingLayer extends Drawer
         when 'clear-drawing'  then @clearDrawing()
         when 'line'           then @drawLine(event)
         when 'stamp-image'    then @drawStamp(event)
-        when 'import-drawing' then @importDrawing(event.imageBase64)
+        when 'import-drawing' then @importDrawing(event.imageBase64, event.x, event.y)
     )
 
   repaint: (model) ->
