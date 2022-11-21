@@ -7,7 +7,8 @@ controlEventTraffic = (controller) ->
 
   # (Event) => Unit
   checkActionKeys = (e) ->
-    if ractive.get('hasFocus')
+    nlButtonHasFocus = document.activeElement.classList.contains("netlogo-button")
+    if ractive.get('hasFocus') or nlButtonHasFocus
       char = String.fromCharCode(if e.which? then e.which else e.keyCode)
       for _, w of ractive.get('widgetObj') when w.type is 'button' and
                                          w.actionKey is char and
