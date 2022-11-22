@@ -71,7 +71,10 @@ Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 def runNpm(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
   val npmArgs = Seq("npm") ++ args
   log.info(npmArgs.mkString(" "))
-  Process(npmArgs, runDir, env:_*).!(log)
+  val result = Process(npmArgs, runDir, env:_*).!(log)
+  if (result != 0) {
+    throw new MessageOnlyException("npm command indicated an unsuccessful result.")
+  }
   ()
 }
 
