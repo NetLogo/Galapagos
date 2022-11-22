@@ -68,21 +68,22 @@ evictionErrorLevel := Level.Warn
 
 Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 
-def runYarn(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
-  val yarnArgs = Seq("yarn") ++ args
-  Process(yarnArgs, runDir, env:_*).!(log)
+def runNpm(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
+  val npmArgs = Seq("npm") ++ args
+  log.info(npmArgs.mkString(" "))
+  Process(npmArgs, runDir, env:_*).!(log)
   ()
 }
 
-lazy val yarnInstall = taskKey[Unit]("runs `yarn install` if necessary based on current repo status")
-yarnInstall := {
+lazy val npmInstall = taskKey[Unit]("runs `npm install` if necessary based on current repo status")
+npmInstall := {
   val log           = streams.value.log
   val nodeDir       = baseDirectory.value / "node_modules"
   val nodeExists    = nodeDir.exists && nodeDir.isDirectory && nodeDir.list.length > 0
-  val integrityFile = nodeDir / ".yarn-integrity"
+  val integrityFile = nodeDir / ".package-lock.json"
   val packageJson   = baseDirectory.value / "package.json"
   if (!nodeExists || !integrityFile.exists || integrityFile.olderThan(packageJson)) {
-    runYarn(log, baseDirectory.value, Seq("install", "--ignore-optional"))
+    runNpm(log, baseDirectory.value, Seq("install", "--ignore-optional"))
   }
 }
 
@@ -131,10 +132,10 @@ coffee := Def.task {
       Files.createDirectories(changedFile.getParentFile.asPath)
       Files.copy(sourceFile.toPath, changedFile.toPath, StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING)
     })
-    runYarn(
+    runNpm(
       log,
       baseDir,
-      Seq("coffee", "--compile", "--map", "--output", coffeeOutputPath.toString, coffeeChangedPath.toString)
+      Seq("exec", "--", "coffee", "--compile", "--map", "--output", coffeeOutputPath.toString, coffeeChangedPath.toString)
     )
   }
 
@@ -145,16 +146,16 @@ coffee := Def.task {
     IO.copyFile(sourcePath.toFile, coffeeOutputPath.resolve(outputPath).toFile)
   })
 
-}.dependsOn(yarnInstall).value
+}.dependsOn(npmInstall).value
 
 lazy val coffeelint = taskKey[Unit]("lint coffeescript files")
 coffeelint := Def.task {
-  runYarn(
+  runNpm(
     streams.value.log,
     baseDirectory.value,
-    Seq("coffeelint", "-f", "coffeelint.json", coffeeInputDirectory.value.toString)
+    Seq("exec", "--", "coffeelint", "-f", "coffeelint.json", coffeeInputDirectory.value.toString)
   )
-}.dependsOn(yarnInstall).value
+}.dependsOn(npmInstall).value
 
 lazy val testInputDirectory  = Def.setting[File] { baseDirectory.value / "test" / "assets" / "javascripts" }
 lazy val testOutputDirectory = Def.setting[File] { baseDirectory.value / "target" / "coffee-output" / "test" }
@@ -164,15 +165,15 @@ mochaTest := Def.task {
   val log = streams.value.log
   log.info("Running mocha JS tests")
   IO.delete(testOutputDirectory.value)
-  runYarn(
+  runNpm(
     log,
     baseDirectory.value,
-    Seq("coffee", "--compile", "--map", "--output", testOutputDirectory.value.toString, testInputDirectory.value.toString)
+    Seq("exec", "--", "coffee", "--compile", "--map", "--output", testOutputDirectory.value.toString, testInputDirectory.value.toString)
   )
-  runYarn(
+  runNpm(
     log,
     baseDirectory.value,
-    Seq("mocha", "--recursive", s"${testOutputDirectory.value.toString}/**/*.js")
+    Seq("exec", "--", "mocha", "--recursive", s"${testOutputDirectory.value.toString}/**/*.js")
   )
 }.dependsOn(coffee).value
 
@@ -203,10 +204,10 @@ bundle := Def.task {
     // Run the function only if files have changed since the last run - David D. 7/2021
     val runBundler = FileFunction.cached(streamsValue.cacheDirectory / "rollup", FilesInfo.hash) { _ =>
       IO.delete(bundleDir)
-      runYarn(
+      runNpm(
         streamsValue.log,
         baseDir,
-        Seq("rollup", "--config", "rollup.config.js",
+        Seq("exec", "--", "rollup", "--config", "rollup.config.js",
           // Custom arguments with the 'config-' prefix are passed through to rollup.config.js. - David D. 7/2021
           "--config-sourceDir", coffeeOutputDir.getPath,
           "--config-targetDir", bundleDir.getPath,
@@ -225,7 +226,7 @@ bundle := Def.task {
   }
 }.dependsOn(coffee).value
 
-(Compile / compile) := (Compile / compile).dependsOn(yarnInstall).value
+(Compile / compile) := (Compile / compile).dependsOn(npmInstall).value
 
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
