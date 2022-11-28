@@ -15,15 +15,15 @@ var pageTitle       = function(modelTitle) {
     return "NetLogo Web";
   }
 };
-var session;
+globalThis.session = null;
 var speed = 0.0;
 var openSession = function(s) {
-  session = s;
-  session.widgetController.ractive.set('speed', speed)
-  document.title = pageTitle(session.modelTitle());
+  globalThis.session = s;
+  globalThis.session.widgetController.ractive.set('speed', speed)
+  document.title = pageTitle(globalThis.session.modelTitle());
   activeContainer = modelContainer;
-  session.startLoop();
-  alerter.listenForErrors(session.widgetController)
+  globalThis.session.startLoop();
+  alerter.listenForErrors(globalThis.session.widgetController)
 };
 
 const isStandaloneHTML = (nlogoScript.textContent.length > 0);
@@ -47,8 +47,8 @@ function handleCompileResult(result) {
 
 var loadModel = function(nlogo, path) {
   alerter.hide()
-  if (session) {
-    session.teardown();
+  if (globalThis.session) {
+    globalThis.session.teardown();
   }
   activeContainer = loadingOverlay;
   Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
@@ -144,7 +144,7 @@ window.addEventListener("message", function (e) {
       break;
     }
     case "nlw-update-model-state": {
-      session.widgetController.setCode(e.data.codeTabContents);
+      globalThis.session.widgetController.setCode(e.data.codeTabContents);
       break;
     }
     case "run-baby-behaviorspace": {
@@ -152,11 +152,11 @@ window.addEventListener("message", function (e) {
         function(results) {
           e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*");
         };
-      session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+      globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
       break;
     }
     case "nlw-export-model": {
-      var model = session.getNlogo();
+      var model = globalThis.session.getNlogo();
       e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
       break;
     }
@@ -167,10 +167,11 @@ if (isInFrame) {
   var width = "", height = "";
   window.setInterval(function() {
     if (activeContainer.offsetWidth  !== width ||
-        activeContainer.offsetHeight !== height ||
-        (session !== undefined && document.title != pageTitle(session.modelTitle()))) {
-      if (session !== undefined) {
-        document.title = pageTitle(session.modelTitle());
+      activeContainer.offsetHeight !== height ||
+      (globalThis.session !== null && document.title != pageTitle(globalThis.session.modelTitle()))
+    ) {
+      if (globalThis.session !== null) {
+        document.title = pageTitle(globalThis.session.modelTitle());
       }
       width = activeContainer.offsetWidth;
       height = activeContainer.offsetHeight;
