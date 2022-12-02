@@ -288,10 +288,13 @@ class SessionLite
     toNetLogoMarkdown(@widgetController.ractive.get('info'))
 
   getNlogo: ->
+    info    = @getInfo()
+    code    = @rewriteExport(@widgetController.code())
+    widgets = @widgetController.widgets().map(cloneWidget)
     @compiler.exportNlogo({
-      info:         @getInfo(),
-      code:         @rewriteExport(@widgetController.code()),
-      widgets:      @widgetController.widgets(),
+      info:         info,
+      code:         code,
+      widgets:      widgets,
       turtleShapes: turtleShapes,
       linkShapes:   linkShapes
     })

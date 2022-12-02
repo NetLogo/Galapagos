@@ -46,12 +46,17 @@ RactiveSwitch = RactiveValueWidget.extend({
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
   # update `on`, because that's what the widget reader looks at at compilation time in
   # order to determine the value of the Switch. --Jason B. (3/31/16)
-  oninit: ->
-    @_super()
-    Object.defineProperty(@get('widget'), "on", {
-      get:     -> @currentValue
-      set: (x) -> @currentValue = x
-    })
+  observe: {
+    'widget.on': (isOn, wasOn) ->
+      if (isOn isnt wasOn)
+        @set('internalValue', isOn)
+        @fire('widget-value-change')
+      return
+
+    'widget.currentValue': (isOn) ->
+      @set('widget.on', isOn)
+      return
+  }
 
   components: {
     editForm: SwitchEditForm
