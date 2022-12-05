@@ -208,12 +208,14 @@ window.addEventListener('message', function (e) {
 if (isInFrame) {
   var width = '', height = ''
   window.setInterval(function() {
-    if (activeContainer.offsetWidth  !== width ||
+    if (
+      globalThis.session && (
+        activeContainer.offsetWidth  !== width ||
         activeContainer.offsetHeight !== height ||
-        (globalThis.session !== null && document.title != pageTitle(globalThis.session.modelTitle()))) {
-      if (globalThis.session !== null) {
-        document.title = pageTitle(globalThis.session.modelTitle())
-      }
+        document.title != pageTitle(globalThis.session.modelTitle())
+      )
+    ) {
+      document.title = pageTitle(globalThis.session.modelTitle())
       width = activeContainer.offsetWidth
       height = activeContainer.offsetHeight
       parent.postMessage({
