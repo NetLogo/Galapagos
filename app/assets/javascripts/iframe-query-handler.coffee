@@ -1,6 +1,8 @@
 import { cloneWidget } from "/beak/widgets/widget-properties.js"
 
+{ fold } = tortoise_require('brazier/maybe')
 { createExportValue } = tortoise_require('engine/core/world/export')
+{ Perspective } = tortoise_require('engine/core/observer')
 
 postMessage = (target, queries, sourceInfo, results) ->
   target.postMessage({ type:  'nlw-query-response', queries, sourceInfo, results }, '*')
@@ -24,27 +26,11 @@ filterNames = (names, maybeFilter) ->
 #   sourceInfo: String | null
 # }
 
-# type Query = GlobalsQuery | ReporterQuery | WidgetsQuery | InfoQuery | CodeQuery | NlogoFileQuery
+# type Query = GlobalsQuery | ReporterQuery | SimpleQuery
 
 # type GlobalsQuery = {
 #   type: 'globals'
 #   variableFilters: Array[String] | null
-# }
-
-# type WidgetsQuery = {
-#   type: 'widgets'
-# }
-
-# type InfoQuery = {
-#   type: 'info'
-# }
-
-# type CodeQuery = {
-#   type: 'code'
-# }
-
-# type NlogoFileQuery = {
-#   type: 'nlogo-file'
 # }
 
 # type ReporterQuery = {
@@ -52,15 +38,19 @@ filterNames = (names, maybeFilter) ->
 #   code: String
 # }
 
+# type SimpleQuery = {
+#   type: 'widgets' | 'info' | 'code' | 'nlogo-file' | 'metadata'
+# }
+
 # type QueryResult = GlobalsResult | ReporterResult | WidgetsResult | InfoResult | CodeResult | NlogoFileResult
 
 # type GlobalsResult = {
-#   type: 'globals-result'
+#   type:    'globals-result'
 #   globals: Array[{ name: String, value: JSON }]
 # }
 
 # type WidgetsResult = {
-#   type: 'widgets-result'
+#   type:    'widgets-result'
 #   widgets: Array[Widget]
 # }
 
@@ -75,8 +65,24 @@ filterNames = (names, maybeFilter) ->
 # }
 
 # type NlogoFileResult = {
-#   type: 'info-result'
+#   type:  'info-result'
 #   nlogo: String
+# }
+
+# type NlogoSource = DiskSource | UrlSource | NewSource | EmbeddedSource
+
+# type DiskSource = { type: 'disk', fileName: String }
+# type UrlSource = { type: 'url', fileName: String, url: String }
+# type NewSource = { type: 'new' }
+# type ScriptSource = { type: 'script-element' }
+
+# type MetadataResult = {
+#   type:         'metadata-result'
+#   title:        String
+#   source:       NlogoSource
+#   speed:        Number
+#   currentPlot:  String | null
+#   focusedAgent: AgentRef | null
 # }
 
 # type ReporterResult = SuccessResult | FailureResult
@@ -93,8 +99,36 @@ filterNames = (names, maybeFilter) ->
 #   result:  ErrorInfo
 # }
 
-# (Query) => Any
-handleQuery = (query) ->
+getCurrentPlot = (plotManager) ->
+  fold( () -> null )( (p) -> p.name )(plotManager.getCurrentPlotMaybe())
+
+getPerspective = (observer) ->
+  targetAgent     = observer._targetAgent
+  perspectiveType = observer.getPerspective()
+  {
+    type: if perspectiveType? then Perspective.perspectiveToString(perspectiveType) else 'unset'
+    targetAgent: if targetAgent? then targetAgent.toString() else 'nobody'
+  }
+
+getSource = (source) ->
+  switch source.type
+    when 'disk'
+      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName }
+
+    when 'url'
+      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName, url: session.nlogoSource.url }
+
+    when 'new'
+      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName }
+
+    when 'script-element'
+      { type: session.nlogoSource.type }
+
+    else
+      throw new Error("Unknown file source: #{source}")
+
+# (SessionLite, Query) => Any
+handleQuery = (session, query) ->
   switch query.type
     when 'globals'
       observer    = workspace.world.observer
@@ -132,17 +166,29 @@ handleQuery = (query) ->
       nlogo = session.getNlogo()
       { type: 'nlogo-file-result', nlogo }
 
+    when 'metadata'
+      {
+        type: 'metadata-result'
+      , title: session.modelTitle()
+      , source: getSource(session.nlogoSource)
+      , speed: session.widgetController.speed()
+      , ticks: session.widgetController.ractive.get('ticks')
+      , currentPlot: getCurrentPlot(workspace.plotManager)
+      , perspective: getPerspective(workspace.world.observer)
+      }
+
     else
       throw new Error("Unknown query: #{query}")
 
-# () => Unit
-createQueryHandler = () ->
+# (() => SessionLite) => Unit
+attachQueryHandler = (getSession) ->
+  handler = (query) -> handleQuery(getSession(), query)
   window.addEventListener('message', (event) ->
     if event.data.type is 'nlw-query'
-      results = event.data.queries.map(handleQuery)
+      results = event.data.queries.map(handler)
       postMessage(event.source, event.data.queries, event.data.sourceInfo, results)
     return
   )
   return
 
-export { createQueryHandler }
+export { attachQueryHandler }

@@ -62,16 +62,16 @@ class SessionLite
   widgetController: undefined # WidgetController
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
-  #   String, String, Boolean, String, String, Boolean)
+  #   String, String, Boolean, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, readOnly, filename, modelJS, lastCompileFailed) ->
+    code, info, readOnly, @nlogoSource, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
     @_lastUpdate       = 0
     @drawEveryFrame    = false
 
-    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
+    @widgetController = initializeUI(container, widgets, code, info, readOnly, @nlogoSource.getModelTitle(), @compiler)
     # coffeelint: disable=max_line_length
     ractive = @widgetController.ractive
     ractive.on('*.recompile'     , (_, source)         => @recompile(source))

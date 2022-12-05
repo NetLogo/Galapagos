@@ -8,7 +8,7 @@ import genConfigs from "./config-shims.js"
 import ViewController from "./draw/view-controller.js"
 
 # (Element|String, Array[Widget], String, String, Boolean, String, String, BrowserCompiler) => WidgetController
-initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compiler) ->
+initializeUI = (containerArg, widgets, code, info, isReadOnly, modelTitle, compiler) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -34,7 +34,7 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, filename, compile
     , code
     , info
     , isReadOnly
-    , filename
+    , modelTitle
     , (code) -> compiler.isReporter(code)
   )
 

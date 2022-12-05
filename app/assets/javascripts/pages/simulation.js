@@ -1,23 +1,23 @@
 import { createNotifier, listenerEvents } from "/listener-events.js"
 import { createDebugListener } from "/debug-listener.js"
 import { createIframeRelayListener } from "/iframe-relay-listener.js"
-import { createQueryHandler } from "/iframe-query-handler.js"
+import { attachQueryHandler } from "/iframe-query-handler.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
 import newModel from "/new-model.js"
 import Tortoise from "/beak/tortoise.js"
 
-var loadingOverlay  = document.getElementById("loading-overlay")
+var loadingOverlay  = document.getElementById('loading-overlay')
 var activeContainer = loadingOverlay
-var modelContainer  = document.querySelector("#netlogo-model-container")
-var nlogoScript     = document.querySelector("#nlogo-code")
+var modelContainer  = document.querySelector('#netlogo-model-container')
+var nlogoScript     = document.querySelector('#nlogo-code')
 const params        = new URLSearchParams(window.location.search)
 
 const paramKeys     = Array.from(params.keys())
 if (paramKeys.length === 1) {
   const maybeUrl = paramKeys[0]
-  if (maybeUrl.startsWith("http") && params.get(maybeUrl) === '') {
+  if (maybeUrl.startsWith('http') && params.get(maybeUrl) === '') {
     params.delete(maybeUrl)
     params.set('url', maybeUrl)
     window.location.search = params.toString()
@@ -25,10 +25,10 @@ if (paramKeys.length === 1) {
 }
 
 var pageTitle       = function(modelTitle) {
-  if (modelTitle != null && modelTitle != "") {
-    return "NetLogo Web: " + modelTitle
+  if (modelTitle != null && modelTitle != '') {
+    return 'NetLogo Web: ' + modelTitle
   } else {
-    return "NetLogo Web"
+    return 'NetLogo Web'
   }
 }
 
@@ -59,7 +59,7 @@ function handleCompileResult(result) {
       openSession(result.session)
     } else {
       activeContainer = alertDialog
-      loadingOverlay.style.display = "none"
+      loadingOverlay.style.display = 'none'
     }
     notifyListeners('compiler-error', result.source, result.errors)
   }
@@ -79,16 +79,17 @@ if (isInFrame && params.has('relayIframeEvents')) {
 const notifyListeners = createNotifier(listenerEvents, listeners)
 
 if (isInFrame) {
-  createQueryHandler()
+  const getSession = () => { return globalThis.session }
+  attachQueryHandler(getSession)
 }
 
-var loadModel = function(nlogo, path) {
+var loadModel = function(nlogo, nlogoSourceType, path) {
   alerter.hide()
   if (globalThis.session) {
     globalThis.session.teardown()
   }
   activeContainer = loadingOverlay
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogo, modelContainer, nlogoSourceType, path, handleCompileResult, [], listeners)
 }
 
 const parseFloatOrElse = function(str, def) {
@@ -106,15 +107,15 @@ const readSpeed = function(params) {
 
 const redirectOnProtocolMismatch = function(url) {
   const uri = new URL(url)
-  if ("https:" === uri.protocol || "http:" === window.location.protocol) {
+  if ('https:' === uri.protocol || 'http:' === window.location.protocol) {
     // we only care if the model is HTTP and the page is HTTPS. -Jeremy B May 2021
     return true
   }
 
   const loc         = window.location
   const isSameHost  = uri.hostname === loc.hostname
-  const isCCL       = uri.hostname === "ccl.northwestern.edu"
-  const port        = isSameHost && window.debugMode ? "9443" : "443"
+  const isCCL       = uri.hostname === 'ccl.northwestern.edu'
+  const port        = isSameHost && window.debugMode ? '9443' : '443'
   const newModelUrl = `https://${uri.hostname}:${port}${uri.pathname}`
 
   // if we're in an iframe we can't even reliably make a link to use
@@ -122,13 +123,13 @@ const redirectOnProtocolMismatch = function(url) {
   if (!isSameHost && !isCCL && isInFrame) {
     alerter.reportProtocolError(uri, newModelUrl)
     activeContainer = alertDialog
-    loadingOverlay.style.display = "none"
+    loadingOverlay.style.display = 'none'
     return false
   }
 
-  var newSearch = ""
-  if (params.has("url")) {
-    params.set("url", newModelUrl)
+  var newSearch = ''
+  if (params.has('url')) {
+    params.set('url', newModelUrl)
     newSearch = params.toString()
   } else {
     newSearch = newModelUrl
@@ -141,7 +142,7 @@ const redirectOnProtocolMismatch = function(url) {
   if (!isSameHost && !isCCL) {
     alerter.reportProtocolError(uri, newModelUrl, newHref)
     activeContainer = alertDialog
-    loadingOverlay.style.display = "none"
+    loadingOverlay.style.display = 'none'
     return false
   }
 
@@ -156,7 +157,7 @@ if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent
   const path   = nlogoScript.dataset.filename
   notifyListeners('model-load', 'script-element')
-  Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogo, modelContainer, 'script-element', path, handleCompileResult, [], listeners)
 
 } else if (params.has('url')) {
   const url       = params.get('url')
@@ -169,43 +170,43 @@ if (nlogoScript.textContent.length > 0) {
 
 } else {
   notifyListeners('model-load', 'new-model')
-  loadModel(newModel, "NewModel")
+  loadModel(newModel, 'new', 'NewModel')
 }
 
-window.addEventListener("message", function (e) {
+window.addEventListener('message', function (e) {
   switch (e.data.type) {
-    case "nlw-load-model": {
+    case 'nlw-load-model': {
       notifyListeners('model-load', 'file', e.data.path)
-      loadModel(e.data.nlogo, e.data.path)
+      loadModel(e.data.nlogo, 'disk', e.data.path)
       break
     }
-    case "nlw-open-new": {
+    case 'nlw-open-new': {
       notifyListeners('model-load', 'new-model')
-      loadModel(newModel, "NewModel")
+      loadModel(newModel, 'new', 'NewModel')
       break
     }
-    case "nlw-update-model-state": {
+    case 'nlw-update-model-state': {
       globalThis.session.widgetController.setCode(e.data.codeTabContents);
       break
     }
-    case "run-baby-behaviorspace": {
+    case 'run-baby-behaviorspace': {
       var reaction =
         function(results) {
-          e.source.postMessage({ type: "baby-behaviorspace-results", id: e.data.id, data: results }, "*")
+          e.source.postMessage({ type: 'baby-behaviorspace-results', id: e.data.id, data: results }, '*')
         }
         globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction)
       break
     }
-    case "nlw-export-model": {
+    case 'nlw-export-model': {
       var model = session.getNlogo()
-      e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*")
+      e.source.postMessage({ type: 'nlw-export-model-results', id: e.data.id, export: model }, '*')
       break
     }
   }
 })
 
 if (isInFrame) {
-  var width = "", height = ""
+  var width = '', height = ''
   window.setInterval(function() {
     if (activeContainer.offsetWidth  !== width ||
         activeContainer.offsetHeight !== height ||
@@ -219,8 +220,8 @@ if (isInFrame) {
         width:  activeContainer.offsetWidth,
         height: activeContainer.offsetHeight,
         title:  document.title,
-        type:   "nlw-resize"
-      }, "*")
+        type:   'nlw-resize'
+      }, '*')
     }
   }, 200)
 }

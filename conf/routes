@@ -19,6 +19,7 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
+GET         /launch-iframe-test                 controllers.Local.iframeTest
 
 # NetTango redirects
 GET         /ntango-build                       controllers.Assets.at(path="/public", file="/pages/ntango-build-redirect.html")
@@ -34,7 +35,7 @@ GET         /ntango-play-standalone             controllers.NetTango.builder(the
 GET         /nettango-builder                   controllers.NetTango.builder(themed: Boolean = true,  standalone: Boolean = false)
 GET         /nettango-player                    controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = false)
 GET         /nettango-player-standalone         controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = true)
-GET         /nettango-iframe-test               controllers.NetTango.iFrameTest()
+GET         /nettango-iframe-test               controllers.NetTango.iframeTest()
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL

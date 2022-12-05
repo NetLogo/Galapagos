@@ -21,7 +21,7 @@ class NetTango @Inject() (
       Ok(views.html.netTangoBuilder(themed, standalone, if (standalone) InlineTagBuilder else OutsourceTagBuilder))
   }
 
-  def iFrameTest(): Action[AnyContent] = Action {
+  def iframeTest(): Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.netTangoIframeTest())
   }

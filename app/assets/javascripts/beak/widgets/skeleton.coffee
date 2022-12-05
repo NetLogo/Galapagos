@@ -19,14 +19,8 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
-dropNLogoExtension = (s) ->
-  if s.match(/.*\.nlogo/)?
-    s.slice(0, -6)
-  else
-    s
-
 # (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
-generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
+generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitle, checkIsReporter) ->
 
   model = {
     checkIsReporter
@@ -47,7 +41,7 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename,
   , lastCompileFailed:  false
   , lastDragX:          undefined
   , lastDragY:          undefined
-  , modelTitle:         dropNLogoExtension(filename)
+  , modelTitle:         modelTitle
   , outputWidgetOutput: ''
   , primaryView:        undefined
   , someDialogIsOpen:   false

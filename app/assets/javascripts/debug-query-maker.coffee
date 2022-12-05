@@ -5,6 +5,7 @@ defaultQueries = Object.freeze([
   { type: 'info' }
   { type: 'code' }
   { type: 'nlogo-file'}
+  { type: 'metadata' }
 ])
 
 defaultQueriesByType = Object.freeze(defaultQueries.reduce( (queriesSoFar, query) ->

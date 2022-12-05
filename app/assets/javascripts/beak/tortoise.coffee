@@ -1,14 +1,15 @@
 import SessionLite from "./session-lite.js"
-import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
+import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
+import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../listener-events.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, String, Boolean)
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, NlogoSource, Boolean)
 #   => SessionLite
-newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, filename, lastCompileFailed) ->
+newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(
+  session = new SessionLite(
     Tortoise
   , container
   , compiler
@@ -18,15 +19,10 @@ newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, 
   , code
   , info
   , readOnly
-  , filename
+  , nlogoSource
   , result
   , lastCompileFailed
   )
-
-# (Element, String, String, BrowserCompiler, Array[Rewriter], Array[Listener], Model, Boolean) => SessionLite
-openSession = (container, modelPath, name, compiler, rewriters, listeners, model, lastCompileFailed) ->
-  name    = name ? normalizedFileName(modelPath)
-  session = newSession(container, compiler, rewriters, listeners, model, false, name, lastCompileFailed)
   session
 
 # (() => Unit) => Unit
@@ -44,17 +40,26 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (String, Element, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
-  segments = path.split(/\/|\\/)
-  name     = segments[segments.length - 1]
-  compile(container, path, name, nlogo, callback, rewriters, listeners)
+# (String, Element, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogo, container, nlogoSourceType, modelPath, callback, rewriters = [], listeners = []) ->
+  console.log(modelPath)
+  nlogoSource = switch nlogoSourceType
+    when 'disk'
+      new DiskSource(modelPath)
+
+    when 'new'
+      new NewSource()
+
+    when 'script-element'
+      new ScriptSource(modelPath)
+
+  compile(container, nlogoSource, nlogo, callback, rewriters, listeners)
   return
 
-# (String, Element, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogo, container, path, callback, rewriters = [], listeners = []) ->
+# (String, Element, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogo, container, source, path, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogo, container, path, callback, rewriters, listeners)
+    fromNlogoSync(nlogo, container, source, path, callback, rewriters, listeners)
     finishLoading()
   )
   return
@@ -70,7 +75,8 @@ fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) 
           callback({ type: 'failure', source: 'load-from-url', errors: [url] })
         else
           nlogo = req.responseText
-          compile(container, url, modelName, nlogo, callback, rewriters, listeners)
+          urlSource = new UrlSource(url)
+          compile(container, urlSource, nlogo, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -79,7 +85,7 @@ fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) 
   )
   return
 
-compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
+compile = (container, nlogoSource, nlogo, callback, rewriters, listeners) ->
   compiler = new BrowserCompiler()
   notifyListeners = createNotifier(listenerEvents, listeners)
 
@@ -95,7 +101,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
     notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'success')
     callback({
       type:    'success'
-    , session: openSession(container, modelPath, name, compiler, rewriters, listeners, result, false)
+    , session: newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
@@ -107,7 +113,7 @@ compile = (container, modelPath, name, nlogo, callback, rewriters, listeners) ->
       callback({
         type:    'failure'
       , source:  'compile-recoverable'
-      , session: openSession(container, modelPath, name, compiler, rewriters, listeners, secondChanceResult, true)
+      , session: newSession(container, compiler, rewriters, listeners, secondChanceResult, false, nlogoSource, true)
       , errors:  result.model.result
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
