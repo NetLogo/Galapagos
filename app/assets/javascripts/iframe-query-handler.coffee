@@ -39,10 +39,11 @@ filterNames = (names, maybeFilter) ->
 # }
 
 # type SimpleQuery = {
-#   type: 'widgets' | 'info' | 'code' | 'nlogo-file' | 'metadata'
+#   type: 'widgets' | 'info' | 'code' | 'nlogo-file' | 'metadata' | 'view'
 # }
 
-# type QueryResult = GlobalsResult | ReporterResult | WidgetsResult | InfoResult | CodeResult | NlogoFileResult
+# type QueryResult = GlobalsResult | ReporterResult | WidgetsResult | InfoResult | CodeResult | NlogoFileResult |
+#   MetadataResult | ViewResult
 
 # type GlobalsResult = {
 #   type:    'globals-result'
@@ -83,6 +84,11 @@ filterNames = (names, maybeFilter) ->
 #   speed:        Number
 #   currentPlot:  String | null
 #   focusedAgent: AgentRef | null
+# }
+
+# type ViewResult = {
+#   type:   'view-result'
+#   base64: String
 # }
 
 # type ReporterResult = SuccessResult | FailureResult
@@ -175,6 +181,13 @@ handleQuery = (session, query) ->
       , ticks: session.widgetController.ractive.get('ticks')
       , currentPlot: getCurrentPlot(workspace.plotManager)
       , perspective: getPerspective(workspace.world.observer)
+      }
+
+    when 'view'
+      base64 = workspace.importExportPrims.exportViewRaw()
+      {
+        type:   'view-result'
+      , base64: base64
       }
 
     else
