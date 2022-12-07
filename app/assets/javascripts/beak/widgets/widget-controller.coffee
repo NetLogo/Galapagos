@@ -283,7 +283,10 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
 # [T <: Widget] @ Array[String] => T => T => Boolean
 widgetEqualsBy = (props) -> (w1) -> (w2) ->
   { eq } = tortoise_require('brazier/equals')
-  propEq = (prop) -> eq(w1[prop])(w2[prop])
+  propEq = (prop) ->
+    v1 = w1[prop]
+    v2 = w2[prop]
+    ((v1 is null or v1 is undefined) and (v2 is null or v2 is undefined)) or eq(v1)(v2)
   w1.type is w2.type and locationProperties.concat(props).every(propEq)
 
 export default WidgetController

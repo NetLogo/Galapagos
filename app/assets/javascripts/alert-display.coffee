@@ -251,7 +251,7 @@ class AlertDisplay
       netLogoConsole.appendText("ERROR: #{message}\n")
     return
 
-  'notify-user': (message) ->
+  'notify-user': (_1, {message}) ->
     @reportNotification(message)
     return
 

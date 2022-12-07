@@ -1,3 +1,26 @@
+# The function values in the map take custom event args corresponding to their event type (see the definitions below).
+# type Listener = Map[String, (CommonArgs, EventTypeArgs) => Unit]
+
+# type ListenerEvent = {
+#   name: String
+#   args: Array[String | DependentArg]
+# }
+
+# DependentArg exists for widgets and compile errors at this point.  For widgets we want some way to have them share the
+# basic `id` and `type`, but then differentiate the rest of their fields based on the `type`.  It's probably a bit
+# over-engineered, but it's a small impact and it works so I'll leave it alone for now.  -Jeremy B December 2022
+
+# type DependentArg = {
+#   dependentArg: String
+#   cases: Array[Dependency]
+# }
+
+# type Dependency = {
+#   name: String
+#   dependentValues: Array[String]
+# }
+
+# Array[ListenerEvent]
 widgetArgs = Object.freeze([
   'id'    # Number
   'type', # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
@@ -17,6 +40,7 @@ widgetArgs = Object.freeze([
   }
 ])
 
+# Array[ListenerEvent]
 listenerEvents = Object.freeze([
   {
     'name': 'model-load',
@@ -35,8 +59,15 @@ listenerEvents = Object.freeze([
   {
     'name': 'compile-complete',
     'args': [
-      'nlogo',        # String, possibly rewritten nlogo code for the compile
-      'originalNlogo' # String, original nlogo code from the model load
+      'nlogo',         # String, possibly rewritten nlogo code for the compile
+      'originalNlogo', # String, original nlogo code from the model load
+      'status',        # Boolean
+      {
+        dependentArg: 'status'
+        cases: [
+          { name: 'failure-level', dependentValues: ['failure'] }
+        ]
+      }
     ]
   },
   {
@@ -221,8 +252,11 @@ getArgName = (argSetting, args) ->
     else
       null
 
+# (Array[String | DependentArg], Array[Any]) => EventTypeArgs
 createNamedArgs = (argSettings, argValues) ->
   namedArgs = {}
+  if (argSettings.length < argValues.length)
+    throw new Error("not enough arg settings for the values given")
   argSettings.forEach( (argSetting, i) ->
     argName = getArgName(argSetting, namedArgs)
     if argName isnt null
@@ -230,25 +264,29 @@ createNamedArgs = (argSettings, argValues) ->
   )
   namedArgs
 
+# () => CommonArgs
 createCommonArgs = () ->
   {
     timeStamp: Date.now()
   }
 
+# (Array[String], Array[Listener]) => (String, Array[Any]) => Unit
 createNotifier = (events, listeners) ->
   eventsByName = events.reduce( (current, event) ->
     current.set(event.name, event)
+    current
   , new Map()
   )
 
   (eventName, args...) ->
-    event      = eventsByName.get(eventName)
-    commonArgs = createCommonArgs()
-    eventArgs  = createNamedArgs(event.args, args)
-    listeners.forEach( (listener) ->
-      if listener[event]?
-        listener[event](commonArgs, eventArgs)
-    )
+    eventListeners = listeners.filter( (l) -> l[eventName]? )
+    if eventListeners.length > 0
+      event      = eventsByName.get(eventName)
+      commonArgs = createCommonArgs()
+      eventArgs  = createNamedArgs(event.args, args)
+      eventListeners.forEach( (l) ->
+        l[eventName](commonArgs, eventArgs)
+      )
     return
 
 export { createCommonArgs, createNamedArgs, createNotifier, listenerEvents }

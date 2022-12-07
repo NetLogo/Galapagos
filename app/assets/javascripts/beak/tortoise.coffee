@@ -42,7 +42,6 @@ finishLoading = ->
 
 # (String, Element, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
 fromNlogoSync = (nlogo, container, nlogoSourceType, modelPath, callback, rewriters = [], listeners = []) ->
-  console.log(modelPath)
   nlogoSource = switch nlogoSourceType
     when 'disk'
       new DiskSource(modelPath)

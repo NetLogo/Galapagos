@@ -49,14 +49,6 @@ globalEval = eval
 #   compileComplete?: () => Unit
 # }
 
-# type Listener = {
-#   // called on initial model compile with the rewritten nlogo contents as compiled and original nlogo contents
-#   compile?: (String, String) => Unit
-
-#   // called on model recompile with the rewritten code tab contents as compiled and original code tab contents
-#   recompile?: (String, String) => Unit
-# }
-
 class SessionLite
 
   widgetController: undefined # WidgetController
