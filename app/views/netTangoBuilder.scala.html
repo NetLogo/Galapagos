@@ -14,7 +14,7 @@
   @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
   @tagBuilder.pathToHTML("stylesheets/spinner.css")
   @tagBuilder.pathToHTML("stylesheets/alert.css")
-  @tagBuilder.pathToHTML("nettango/nettango.css")
+  @tagBuilder.pathToHTML("@netlogo/nettango/nettango.css")
   @tagBuilder.pathToHTML("stylesheets/nettango-builder.css")
 }
 
@@ -48,7 +48,7 @@
   @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
   @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
 
-  @tagBuilder.pathToHTML("nettango/nettango.js")
+  @tagBuilder.pathToHTML("@netlogo/nettango/nettango.js")
 
   @helper.javascriptRouter("jsRoutes")(
     routes.javascript.Local.standalone

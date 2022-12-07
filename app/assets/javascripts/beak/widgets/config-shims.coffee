@@ -1,5 +1,5 @@
 import { toNetLogoMarkdown }              from "/beak/tortoise-utils.js"
-import { synchroDecoder, synchroEncoder } from "synchrodecoder/synchrodecoder.mjs"
+import { synchroDecoder, synchroEncoder } from "@netlogo/synchrodecoder/synchrodecoder.mjs"
 
 # (String, Ractive) => ((String) => Unit) => Unit
 importFile = (type, ractive) -> (callback) ->

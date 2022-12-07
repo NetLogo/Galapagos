@@ -9,9 +9,9 @@
     "jquery": "3.6.1",
     "localforage": "1.10.0",
     "mousetrap": "1.6.5",
-    "nettango": "0.16.4",
     "ractive": "1.4.1",
-    "synchrodecoder": "3.0.0"
+    "@netlogo/nettango": "0.16.4",
+    "@netlogo/synchrodecoder": "3.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^23.0.2",
