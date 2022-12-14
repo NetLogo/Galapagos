@@ -86,7 +86,7 @@ RactiveBuilder = Ractive.extend({
       @updateNetTango()
       return
 
-    '*.ntb-options-updated': (options) ->
+    '*.ntb-options-updated': (_, options) ->
       @set('netLogoOptions',  options.netLogoOptions)
       oldNetTangoOptions = @get('netTangoOptions')
       @set('netTangoOptions', options.netTangoOptions)

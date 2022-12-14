@@ -182,7 +182,7 @@ RactiveSpace = Ractive.extend({
       return
 
     # (Context, NetTangoBlock) => Unit
-    '*.ntb-block-added': (block) ->
+    '*.ntb-block-added': (_, block) ->
       space = @get('space')
       @push("space.defs.blocks", block)
       @updateNetTango(space, true)
@@ -206,7 +206,7 @@ RactiveSpace = Ractive.extend({
       return
 
     # (Context, NetTangoBlock, Integer) => Unit
-    '*.ntb-block-updated': (block, blockIndex) ->
+    '*.ntb-block-updated': (_, block, blockIndex) ->
       space = @get('space')
       space.defs.blocks[blockIndex] = block
       @updateNetTango(space, true)

@@ -63,7 +63,7 @@ RactiveModalDialog = Ractive.extend({
       if eventOptions? and eventOptions.event?
         args   = eventOptions.arguments ? eventOptions.argsMaker?() ? []
         target = eventOptions.target ? this
-        target.fire(eventOptions.event, ...args)
+        target.fire(eventOptions.event, {}, ...args)
       return
 
     'start-drag': (event) ->
