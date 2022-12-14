@@ -2,7 +2,7 @@
 
 # Requires NetTango and Galapagos repo clones be in the same parent directory.
 
-# You should also `npm link` in `../NetTango` and then `npm link nettango` in this repo
+# You should also `npm link` in `../NetTango` and then `npm link @netlogo/nettango` in this repo
 # to make sure the local copy is used when updated/recompiled in sbt/Play outside of this script.
 
 # After doing `sbt run`, run this script from the root of the Galapagos repo
@@ -17,8 +17,8 @@ cd ../NetTango
 npm run build # shoud generate the "development" version with un-minified file modules via `eval()` for easy debugging
 cd ../Galapagos
 
-cp ../NetTango/nettango.js ./target/web/public/main/nettango/nettango.js
-cp ../NetTango/nettango.css ./target/web/public/main/nettango/nettango.css
+cp ../NetTango/nettango.js ./target/web/public/main/@netlogo/nettango/nettango.js
+cp ../NetTango/nettango.css ./target/web/public/main/@netlogo/nettango/nettango.css
 
 # Once this is all setup, the workflow becomes:
 
