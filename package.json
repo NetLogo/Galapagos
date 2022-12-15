@@ -2,6 +2,8 @@
   "type": "module",
   "mocha": {},
   "dependencies": {
+    "@netlogo/nettango": "^0.16.5",
+    "@netlogo/synchrodecoder": "3.0.0",
     "chosen-js": "1.8.7",
     "codemirror": "5.62.3",
     "file-saver": "2.0.5",
@@ -9,9 +11,7 @@
     "jquery": "3.6.1",
     "localforage": "1.10.0",
     "mousetrap": "1.6.5",
-    "ractive": "1.4.1",
-    "@netlogo/nettango": "0.16.4",
-    "@netlogo/synchrodecoder": "3.0.0"
+    "ractive": "1.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^23.0.2",

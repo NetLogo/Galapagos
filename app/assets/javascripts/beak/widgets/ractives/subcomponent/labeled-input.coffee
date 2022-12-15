@@ -60,6 +60,7 @@ RactiveEditFormLabeledInput = Ractive.extend({
           {{#if placeholder}}placeholder="{{ placeholder }}"{{/if}}
           {{#if min}}min="{{ min }}"{{/if}} {{#if max}}max="{{ max }}"{{/if}}
           on-change="exec" on-input="process-input"
+          {{#if type === 'text'}}dir="auto"{{/if}}
           {{ attrs }} />
       </div>
     </div>

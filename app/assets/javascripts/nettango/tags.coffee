@@ -206,7 +206,7 @@ RactiveTags = Ractive.extend({
     <select class="ntb-tag-options" multiple size={{ workspaceSize }} value={{ selectedTags }}>
 
       {{#each filteredTags }}
-        <option value="{{this}}" on-dblclick='[ 'add-clicked-tag', this ]'>{{this}}</option>
+        <option value="{{this}}" on-dblclick='[ 'add-clicked-tag', this ]' dir="auto">{{this}}</option>
       {{else}}
         <option disabled value>All available tags are applied</option>
       {{/each}}

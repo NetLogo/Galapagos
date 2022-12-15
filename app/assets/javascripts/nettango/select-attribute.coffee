@@ -12,8 +12,8 @@ partials = {
 
   itemTemplate:
     """
-    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" />
-    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" />
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ actual }}" dir="auto" />
+    <input class="widget-edit-text widget-edit-input ntb-input" type="text" value="{{ display }}" dir="auto" />
     <div class="ntb-option-delete">{{> deleteButton }}</div>
     """
 
@@ -57,7 +57,6 @@ RactiveSelectAttribute = Ractive.extend({
 
     <arrayView
       arrayViewId="select-{{ elementId }}-options"
-      itemTemplate="{{ optionTemplate }}"
       items="{{ attribute.values }}"
       itemType="Option"
       itemTypePlural="Options"
