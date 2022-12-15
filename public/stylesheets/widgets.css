@@ -24,22 +24,22 @@
 }
 
 .netlogo-header {
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .netlogo-widget {
-    box-sizing: border-box;
-    background-color: #CCC;
-    border-radius: 4px;
-    overflow: hidden;
+  box-sizing: border-box;
+  background-color: #CCC;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .netlogo-command,.netlogo-input {
-    user-select:      none;
-    -moz-user-select: none;
+  user-select:      none;
+  -moz-user-select: none;
 }
 
 .netlogo-command:hover,.netlogo-input:hover {

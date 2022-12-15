@@ -203,11 +203,11 @@ RactiveView = RactiveWidget.extend({
   , resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
   , ticks:              undefined # String
   }
-  
+
   computed: {
     viewDims: ->
       { top, right, bottom, left } = VIEW_INNER_SPACING
-      "padding: #{top} #{right} #{bottom} #{left};"
+      "padding: #{top}px #{right}px #{bottom}px #{left}px;"
   }
 
   components: {
