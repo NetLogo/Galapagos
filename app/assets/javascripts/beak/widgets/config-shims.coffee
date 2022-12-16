@@ -248,11 +248,15 @@ genConfigs = (ractive, viewController, container, compiler) ->
     { array, height, width } = synchroDecoder(base64)
     new ImageData(array, width, height)
 
+  importImage = (b64, x, y) ->
+    viewController.drawingLayer.importImage(b64, x, y)
+
   { asyncDialog:       genAsyncDialogConfig(ractive, viewController)
   , base64ToImageData
   , imageDataToBase64: synchroEncoder
   , dialog:            genDialogConfig(viewController, notify)
   , importExport:      genImportExportConfig(ractive, viewController, compiler)
+  , importImage:       importImage
   , inspection:        genInspectionConfig()
   , io:                genIOConfig(ractive)
   , mouse:             genMouseConfig(viewController)
