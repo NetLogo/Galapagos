@@ -336,9 +336,13 @@ class DrawingLayer extends Drawer
 
   # (String, Number, Number) => Unit
   importImage: (base64, x, y) =>
+    q = @view.quality
     image = new Image()
     image.onload = () =>
-      @ctx.drawImage(image, x, y, image.width, image.height)
+      smoothing = @ctx.imageSmoothingEnabled
+      @ctx.imageSmoothingEnabled = false
+      @ctx.drawImage(image, x * q, y  * q, image.width * q, image.height * q)
+      @ctx.imageSmoothingEnabled = smoothing
       @repaintView()
       return
     image.src = base64
