@@ -46,7 +46,7 @@ function openModelFromUrl(url) {
     modelFileInput.value = "";
   } else {
     selectModelByURL(url);
-    var query = (window.location.search === "") ? url : `url=${url}&${window.location.search.slice(1)}`;
+    const query = (window.location.search === "") ? url : `url=${url}&${window.location.search.slice(1)}`;
     modelContainer.contentWindow.location.replace(`./web?${query}`);
     modelFileInput.value = "";
   }

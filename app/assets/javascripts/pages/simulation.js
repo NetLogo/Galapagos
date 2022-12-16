@@ -15,11 +15,15 @@ var pageTitle       = function(modelTitle) {
     return "NetLogo Web";
   }
 };
+
 globalThis.session = null;
-var speed = 0.0;
+var speed          = 0.0;
+var isVertical     = true;
+
 var openSession = function(s) {
   globalThis.session = s;
-  globalThis.session.widgetController.ractive.set('speed', speed)
+  globalThis.session.widgetController.ractive.set('speed',      speed)
+  globalThis.session.widgetController.ractive.set('isVertical', isVertical)
   document.title = pageTitle(globalThis.session.modelTitle());
   activeContainer = modelContainer;
   globalThis.session.startLoop();
@@ -112,18 +116,18 @@ const redirectOnProtocolMismatch = function(url) {
   return false
 }
 
+const params = new URLSearchParams(window.location.search)
+speed        = readSpeed(params)
+isVertical   = !(params.has('tabs') && params.get('tabs') === 'right')
+
 if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent;
   const path   = nlogoScript.dataset.filename;
-  const params = new URLSearchParams(window.location.search)
-  speed        = readSpeed(params)
   Tortoise.fromNlogo(nlogo, modelContainer, path, handleCompileResult);
 
 } else if (window.location.search.length > 0) {
-  const params    = new URLSearchParams(window.location.search)
   const url       = params.has('url')  ? params.get('url')             : window.location.search.slice(1);
   const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined;
-  speed           = readSpeed(params)
 
   if (redirectOnProtocolMismatch(url)) {
     Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult);
@@ -131,6 +135,7 @@ if (nlogoScript.textContent.length > 0) {
 
 } else {
   loadModel(newModel, "NewModel");
+
 }
 
 window.addEventListener("message", function (e) {
