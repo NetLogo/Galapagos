@@ -245,6 +245,17 @@
       <li>If you're linking to an exported model HTML page, <code>//myhost.com/path/to/myModel.html</code>, use <code>//myhost.com/path/to/myModel.html?speed=0.5</code></li>
    </ul>
 
+  @linkableHeader("tabs-parameter", "Can I set the Commands and Code setting to be on the right side by default?")
+
+  <p>NetLogo does not store the position of the Command Center, NetLogo Code, and Model Info windows with the model
+  file, but NetLogo Web provides a way to set the position using a URL query parameter.  If you are linking
+  your model all you need to do is add <code>?tabs=right</code>.  If you are linking to the
+  <code>//netlogoweb.org/web</code> page you also will need to use <code>&amp;url=modelURL</code> instead of the plain
+  <code>?modelURL</code>. At the moment the <code>tabs</code> parameter can only be set to <code>right</code>, any other
+  value will cause the Commands and Code to display underneath the model widgets.  See <a
+  href="./faq#speed-parameter">the speed parameter FAQ entry</a> for examples on using query parameters when linking to
+  models.</p>
+
   @linkableHeader("error-messages", "I got an error, but most things in the model seem to be working just fine.  What was the error message about?")
 
   <p>If you enter code into the Command Center and that code is invalid in NetLogo Web,
