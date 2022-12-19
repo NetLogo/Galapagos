@@ -48,6 +48,8 @@ setUpInputBox = (source, destination) ->
 # (PlotHelper) => (Plot, Plot) => Unit
 setUpPlot = (helper) -> (source, destination) ->
 
+  divId = "#netlogo-#{source.type}-#{destination.id}"
+
   destination.autoPlotOn         = source.autoPlotOn
   destination.bottom             = source.bottom
   destination.compilation        = source.compilation
@@ -72,7 +74,7 @@ setUpPlot = (helper) -> (source, destination) ->
   destination.ymin               = source.ymin
 
   pops = helper.getPlotOps()
-  hops = new HighchartsOps(helper.lookupElem("#netlogo-#{source.type}-#{source.id}"))
+  hops = new HighchartsOps(helper.lookupElem(divId))
   hops.setBGColor("#efefef")
   pops[source.display] = hops
 
