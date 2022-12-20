@@ -11,6 +11,10 @@ basicConfig = (elemID, plot) -> {
     spacingRight: 15,
     zoomType:  "xy"
   },
+  boost: {
+    pixelRatio: 0,
+    useGPUTranslations: true
+  },
   credits: { enabled: false },
   legend:  {
     enabled: plot.isLegendEnabled,
@@ -110,21 +114,35 @@ class HighchartsOps extends PlotOps
     # -Jeremy B. December 2018
     thisOps = null
 
+    # ADD_POINT_HACK_1: This is a little hack to get Highcharts to handle `plot-pen-up`.  We put null values in the
+    # data when it's up, but if we do that it will not "re-start" properly when `plot-pen-down` is called. So we store
+    # the last up point so we can re-add it as needed to make the graph look right. -Jeremy B February 2021
+    maybeLastUpPoint = null
+
+    # ADD_POINT_HACK_2: Another Highcharts hack?  In my Beak UI?  You bet!  Here we track the "right-most" point added
+    # for the series. If we ever happen to add a point to the left of that (meaning we're doing a scatter plot or a
+    # "line drawing" plot), we enable Boost.  The Boost WebGL rendering module can only draw 1px wide lines, so we only
+    # do this for this "degenerate" case where the performance of normal SVG drawing gets really bad.  We hope to remove
+    # this hack and enable Boost for all line plots once the issue is resolved in Highcharts.
+    # https://github.com/highcharts/highcharts/issues/11794 -Jeremy B January 2023
+    maybeRightmostPoint = null
+
     resetPen = (pen) => () =>
       thisOps.penToSeries(pen)?.setData([], false)
+      # See ADD_POINT_HACK_1
+      maybeLastUpPoint    = null
+      # See ADD_POINT_HACK_2
+      maybeRightmostPoint = null
       return
 
     addPoint = (pen) =>
-      # This is a little hack to get Highcharts to handle `plot-pen-up`.  We put null values in the data
-      # when it's up, but if we do that it will not "re-start" properly when `plot-pen-down` is called.
-      # So we store the last up point so we can re-add it as needed to make the graph look right.
-      # -Jeremy B February 2021
-      maybeLastUpPoint = null
       (x, y) =>
         # Wrong, and disabled for performance reasons --Jason B. (10/19/14)
         # color = @colorToRGBString(pen.getColor())
         # @penToSeries(pen).addPoint({ marker: { fillColor: color }, x: x, y: y })
         series = thisOps.penToSeries(pen)
+
+        # See ADD_POINT_HACK_1
         pointY = if (pen.getPenMode() is PenBundle.PenMode.Down)
           if maybeLastUpPoint isnt null
             series.addPoint(maybeLastUpPoint, false)
@@ -133,6 +151,18 @@ class HighchartsOps extends PlotOps
         else
           maybeLastUpPoint = [x, y]
           null
+
+        # See ADD_POINT_HACK_2
+        if not maybeRightmostPoint?
+          maybeRightmostPoint = x
+        else
+          if x < maybeRightmostPoint
+            if series.options.boostThreshold isnt 1
+              series.options.boostThreshold = 1
+              series.update(series.options, false)
+          else
+            maybeRightmostPoint = x
+
         series.addPoint([x, pointY], false)
         return
 
@@ -192,12 +222,13 @@ class HighchartsOps extends PlotOps
     isLine    = type is 'line'
     isColumn  = type is 'column'
     {
-      marker:       { enabled: isScatter, radius: if isScatter then 1 else 4 },
-      lineWidth:    if isLine then 2 else null,
-      type:         if isLine then 'scatter' else type
-      pointRange:   if isColumn then interval else null
-      animation:    false
-      connectNulls: false
+      boostThreshold: 0, # Disables Boost, only enabled for true scatter plots (see `addPoint()`)
+      marker:         { enabled: isScatter, radius: if isScatter then 1 else 4 },
+      lineWidth:      if isLine then 2 else null,
+      type:           type,
+      pointRange:     if isColumn then interval else null,
+      animation:      false,
+      connectNulls:   false
     }
 
   # (PenBundle.Pen) => Highcharts.Series
