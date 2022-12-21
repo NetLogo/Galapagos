@@ -1,4 +1,4 @@
-import { listenForQueryResponses, createQueryMaker } from "/debug-query-maker.js"
+import { listenForQueryResponses, createQueryMaker } from "/queries/debug-query-maker.js"
 
 const modelContainer = document.querySelector('#model-container')
 const params         = new URLSearchParams(window.location.search)

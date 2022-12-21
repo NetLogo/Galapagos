@@ -1,5 +1,5 @@
-import { createDebugListener } from "/debug-listener.js"
-import { listenerEvents } from "/listener-events.js"
+import { createDebugListener } from "/notifications/debug-listener.js"
+import { listenerEvents } from "/notifications/listener-events.js"
 import { netTangoEvents } from "/nettango/nettango-events.js"
 
 import "/codemirror-mode.js"

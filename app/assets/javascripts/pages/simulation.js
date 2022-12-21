@@ -1,7 +1,7 @@
-import { createNotifier, listenerEvents } from "/listener-events.js"
-import { createDebugListener } from "/debug-listener.js"
-import { createIframeRelayListener } from "/iframe-relay-listener.js"
-import { attachQueryHandler } from "/iframe-query-handler.js"
+import { createNotifier, listenerEvents } from "/notifications/listener-events.js"
+import { createDebugListener } from "/notifications/debug-listener.js"
+import { createIframeRelayListener } from "/notifications/iframe-relay-listener.js"
+import { attachQueryHandler } from "/queries/iframe-query-handler.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"

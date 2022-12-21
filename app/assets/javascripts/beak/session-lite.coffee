@@ -1,4 +1,4 @@
-import { createCommonArgs, createNamedArgs, listenerEvents } from "../listener-events.js"
+import { createCommonArgs, createNamedArgs, listenerEvents } from "../notifications/listener-events.js"
 
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"

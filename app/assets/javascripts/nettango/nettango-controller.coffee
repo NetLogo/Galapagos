@@ -1,4 +1,4 @@
-import { createCommonArgs, createNamedArgs } from "../listener-events.js"
+import { createCommonArgs, createNamedArgs } from "../notifications/listener-events.js"
 import { netTangoEvents } from "./nettango-events.js"
 
 import NetTangoRewriter from "./rewriter.js"

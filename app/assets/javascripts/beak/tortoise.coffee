@@ -1,7 +1,7 @@
 import SessionLite from "./session-lite.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
-import { createNotifier, listenerEvents } from "../listener-events.js"
+import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, NlogoSource, Boolean)
 #   => SessionLite

@@ -1,4 +1,4 @@
-import { listenForQueryResponses, createQueryMaker } from "/debug-query-maker.js"
+import { listenForQueryResponses, createQueryMaker } from "/queries/debug-query-maker.js"
 import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js"
 
 var modelContainer = document.querySelector('#model-container')
