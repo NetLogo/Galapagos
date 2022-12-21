@@ -11,13 +11,13 @@
 # over-engineered, but it's a small impact and it works so I'll leave it alone for now.  -Jeremy B December 2022
 
 # type DependentArg = {
-#   dependentArg: String
+#   sourceArg: String
 #   cases: Array[Dependency]
 # }
 
 # type Dependency = {
-#   name: String
-#   dependentValues: Array[String]
+#   sourceArgValues: Array[String]
+#   argToAdd: String
 # }
 
 # Array[ListenerEvent]
@@ -25,17 +25,17 @@ widgetArgs = Object.freeze([
   'id'    # Number
   'type', # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
   {
-    dependentArg: 'type'
+    sourceArg: 'type'
     cases: [
-      { name: 'global', dependentValues: ['chooser', 'inputBox', 'slider', 'switch'] }
-    , { name: 'name',   dependentValues: ['button', 'monitor', 'plot'] }
-    , { name: 'text',   dependentValues: ['textBox'] }
+      { sourceArgValues: ['chooser', 'inputBox', 'slider', 'switch'], argToAdd: 'global' }
+    , { sourceArgValues: ['button', 'monitor', 'plot']              , argToAdd: 'name' }
+    , { sourceArgValues: ['textBox']                                , argToAdd: 'text' }
     ]
   },
   {
-    dependentArg: 'type'
+    sourceArg: 'type'
     cases: [
-      { name: 'code', dependentValues: ['button', 'monitor'] }
+      { sourceArgValues: ['button', 'monitor'], argToAdd: 'code' }
     ]
   }
 ])
@@ -63,9 +63,9 @@ listenerEvents = Object.freeze([
       'originalNlogo', # String, original nlogo code from the model load
       'status',        # Boolean
       {
-        dependentArg: 'status'
+        sourceArg: 'status'
         cases: [
-          { name: 'failure-level', dependentValues: ['failure'] }
+          { sourceArgValues: ['failure'], argToAdd: 'failure-level' }
         ]
       }
     ]
@@ -242,13 +242,13 @@ getArgName = (argSetting, args) ->
   if (typeof argSetting) is 'string'
     argSetting
   else
-    dependentValue = args[argSetting.dependentArg]
+    dependentValue = args[argSetting.sourceArg]
     maybeCase = argSetting.cases.filter( (argCase) ->
-      argCase.dependentValues.includes(dependentValue)
+      argCase.sourceArgValues.includes(dependentValue)
     )
     if maybeCase.length is 1
       foundCase = maybeCase[0]
-      foundCase.name
+      foundCase.argToAdd
     else
       null
 
