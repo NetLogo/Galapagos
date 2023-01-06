@@ -253,7 +253,7 @@ class NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @netLogoModel.loadModel(code, title, @rewriters)
+    @netLogoModel.loadModel(code, 'script-element', title, @rewriters)
     return
 
   # (Array[File]) => Unit
@@ -265,7 +265,7 @@ class NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @netLogoModel.loadModel(nlogo, file.name, @rewriters)
+      @netLogoModel.loadModel(nlogo, 'disk', file.name, @rewriters)
       @handleProjectChange()
       return
     reader.readAsText(file)

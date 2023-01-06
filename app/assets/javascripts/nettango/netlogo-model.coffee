@@ -24,11 +24,11 @@ RactiveNetLogoModel = Ractive.extend({
         switch e.data.type
           when "nlw-load-model"
             @notifyListeners('model-load', 'file', e.data.path)
-            @loadModel(e.data.nlogo, e.data.path)
+            @loadModel(e.data.nlogo, 'disk', e.data.path)
 
           when "nlw-open-new"
             @notifyListeners('model-load', 'new-model')
-            @loadModel(newModelNetTango, "NewModel")
+            @loadModel(newModelNetTango, 'new', 'NewModel')
 
           when "nlw-load-url"
             @notifyListeners('model-load', 'url', e.data.name)
@@ -72,11 +72,19 @@ RactiveNetLogoModel = Ractive.extend({
 
       return
 
-  loadModel: (nlogo, path, rewriters, callback) ->
+  loadModel: (nlogo, sourceType, path, rewriters, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters, @listeners)
+    Tortoise.fromNlogoSync(
+      nlogo
+    , @modelContainer
+    , sourceType
+    , path
+    , @makeCompileResultHandler(callback)
+    , rewriters
+    , @listeners
+    )
     Tortoise.finishLoading()
 
   loadUrl: (url, modelName, rewriters, callback) ->
