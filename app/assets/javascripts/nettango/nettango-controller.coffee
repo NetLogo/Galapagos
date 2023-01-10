@@ -1,8 +1,9 @@
 import { createCommonArgs, createNamedArgs } from "../notifications/listener-events.js"
 import { netTangoEvents } from "./nettango-events.js"
 
+import { NamespaceStorage } from "../namespace-storage.js"
+
 import NetTangoRewriter from "./rewriter.js"
-import NetTangoStorage from "./storage.js"
 import NetTangoSkeleton from "./nettango-skeleton.js"
 import UndoRedo from "./undo-redo.js"
 
@@ -13,7 +14,7 @@ class NetTangoController
   netLogoTitle: undefined # String
 
   constructor: (element, localStorage, @playMode, @runtimeMode, netTangoModelUrl, listeners) ->
-    @storage      = new NetTangoStorage(localStorage)
+    @storage      = new NamespaceStorage('ntInProgress', localStorage)
     getSpaces     = () => @builder.get("spaces")
     @isDebugMode  = false
     @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)

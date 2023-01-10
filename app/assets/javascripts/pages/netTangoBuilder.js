@@ -5,7 +5,7 @@ import { netTangoEvents } from "/nettango/nettango-events.js"
 import "/codemirror-mode.js"
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
 import NetTangoController from "/nettango/nettango-controller.js"
-import NetTangoStorage from "/nettango/storage.js"
+import { fakeStorage } from "/namespace-storage.js"
 
 const builderContainer = document.getElementById("ntb-container")
 
@@ -30,11 +30,11 @@ if (parent !== window) {
   enableFrameSizeUpdates()
 }
 
-var ls
+var storage
 try {
-  ls = window.localStorage
+  storage = window.localStorage
 } catch (exception) {
-  ls = NetTangoStorage.fakeStorage()
+  storage = fakeStorage()
 }
 
 const params           = new URLSearchParams(window.location.search)
@@ -58,7 +58,7 @@ if (params.has('relayIframeEvents')) {
 
 const netTango = new NetTangoController(
   "ntb-container"
-, ls
+, storage
 , playMode || window.isStandaloneHTML
 , window.environmentMode
 , netTangoModelUrl
