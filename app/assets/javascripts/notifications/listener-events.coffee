@@ -121,6 +121,17 @@ listenerEvents = Object.freeze([
     'args': widgetArgs
   },
   {
+    'name': 'widget-moved',
+    'args': [
+      'id',     # Number
+      'type',   # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
+      'top',    # Number
+      'bottom', # Number
+      'left',   # Number
+      'right'   # Number
+    ]
+  },
+  {
     'name': 'info-updated',
     'args': [
       'text' # String, new contents of the info area

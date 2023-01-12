@@ -46,6 +46,7 @@ class WipListener
   'new-widget-finalized': () -> @_maybeSetWip()
   'widget-updated':       () -> @_maybeSetWip()
   'widget-deleted':       () -> @_maybeSetWip()
+  'widget-moved':         () -> @_maybeSetWip()
   'info-updated':         () -> @_maybeSetWip()
 
 export { WipListener }

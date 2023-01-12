@@ -93,6 +93,16 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       """
   }
 
+  notifyWidgetMoved: () ->
+    widget = @get('widget')
+    @fire('widget-moved', widget.id, widget.type, widget.top, widget.bottom, widget.left, widget.right)
+    return
+
+  nudge: (direction) ->
+    @_super(direction)
+    @notifyWidgetMoved()
+    return
+
   # (Object[Number]) => Unit
   handleResize: ({ left, right, top, bottom }) ->
     @set('widget.left'  , left  )
@@ -103,6 +113,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
   # () => Unit
   handleResizeEnd: ->
+    @notifyWidgetMoved()
     return
 
   # (Widget) => Array[Any]
@@ -204,6 +215,9 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         console.error(ex)
       finally
         return false
+
+    "*.stop-widget-drag": (_) ->
+      @notifyWidgetMoved()
 
   }
 
