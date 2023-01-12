@@ -20,28 +20,28 @@ class NlogoSource
 class UrlSource extends NlogoSource
   constructor: (url) ->
     super('url', normalizedFileName(url))
-    @url = url
+    @url = decodeURI(url)
 
   getWipKey: () ->
     @url
 
 class DiskSource extends NlogoSource
   constructor: (fileName) ->
-    super('disk', fileName)
+    super('disk', normalizedFileName(fileName))
 
   getWipKey: () ->
     "disk://#{@fileName}"
 
 class NewSource extends NlogoSource
   constructor: () ->
-    super('new', 'New Model.nlogo')
+    super('new', 'New Model')
 
   getWipKey: () ->
     'new'
 
 class ScriptSource extends NlogoSource
   constructor: (fileName) ->
-    super('script-element', fileName)
+    super('script-element', normalizedFileName(fileName))
 
   getWipKey: () ->
     "script-element://#{@fileName}"
