@@ -1,4 +1,6 @@
 import SessionLite from "./session-lite.js"
+import { NamespaceStorage } from "../namespace-storage.js"
+import { WipListener } from "./wip-listener.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
@@ -40,8 +42,8 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (String, Element, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogo, container, nlogoSourceType, modelPath, callback, rewriters = [], listeners = []) ->
+# (String, Element, Storage, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogo, container, localStorage, nlogoSourceType, modelPath, callback, rewriters = [], listeners = []) ->
   nlogoSource = switch nlogoSourceType
     when 'disk'
       new DiskSource(modelPath)
@@ -52,19 +54,19 @@ fromNlogoSync = (nlogo, container, nlogoSourceType, modelPath, callback, rewrite
     when 'script-element'
       new ScriptSource(modelPath)
 
-  compile(container, nlogoSource, nlogo, callback, rewriters, listeners)
+  compile(container, localStorage, nlogoSource, nlogo, callback, rewriters, listeners)
   return
 
-# (String, Element, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogo, container, source, path, callback, rewriters = [], listeners = []) ->
+# (String, Element, Storage, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogo, container, localStorage, source, path, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogo, container, source, path, callback, rewriters, listeners)
+    fromNlogoSync(nlogo, container, localStorage, source, path, callback, rewriters, listeners)
     finishLoading()
   )
   return
 
-# (String, String, Element, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) ->
+# (String, String, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, modelName, container, localStorage, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)
@@ -75,7 +77,7 @@ fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) 
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url)
-          compile(container, urlSource, nlogo, callback, rewriters, listeners)
+          compile(container, localStorage, urlSource, nlogo, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -84,42 +86,59 @@ fromURL = (url, modelName, container, callback, rewriters = [], listeners = []) 
   )
   return
 
-compile = (container, nlogoSource, nlogo, callback, rewriters, listeners) ->
+compile = (container, localStorage, nlogoSource, nlogo, callback, rewriters, listeners) ->
+  storage  = new NamespaceStorage('netLogoWebWip', localStorage)
   compiler = new BrowserCompiler()
+
+  # There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
+  # `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
+  # about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
+  # January 2023
+  wipListener = new WipListener(storage, nlogoSource, nlogo)
+  listeners.push(wipListener)
+
   notifyListeners = createNotifier(listenerEvents, listeners)
 
+  startingNlogo = wipListener.getWip()
+
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
-  rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
-  extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
-  extraCommands  = rewriters.reduce(extrasReducer, [])
-  notifyListeners('compile-start', rewrittenNlogo, nlogo)
-  result         = compiler.fromNlogo(rewrittenNlogo, extraCommands)
+  rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
+
+  extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
+  extraCommands = rewriters.reduce(extrasReducer, [])
+
+  notifyListeners('compile-start', rewrittenNlogo, startingNlogo)
+  result = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
-    result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
-    notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'success')
+    result.code = if startingNlogo is rewrittenNlogo then result.code else nlogoToSections(startingNlogo)[0].slice(0, -1)
+    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
+    session = newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
+    wipListener.setNlogoGetter( () -> session.getNlogo() )
     callback({
       type:    'success'
-    , session: newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
+    , session: session
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
 
   else
-    secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
+    secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)
     if secondChanceResult?
-      notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'failure', 'compile-recoverable')
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-recoverable')
+      session = newSession(container, compiler, rewriters, listeners, secondChanceResult, false, nlogoSource, true)
+      wipListener.setNlogoGetter( () -> session.getNlogo() )
       callback({
         type:    'failure'
       , source:  'compile-recoverable'
-      , session: newSession(container, compiler, rewriters, listeners, secondChanceResult, false, nlogoSource, true)
+      , session: session
       , errors:  result.model.result
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      notifyListeners('compile-complete', rewrittenNlogo, nlogo, 'failure', 'compile-fatal')
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-fatal')
       callback({
         type:   'failure'
       , source: 'compile-fatal'

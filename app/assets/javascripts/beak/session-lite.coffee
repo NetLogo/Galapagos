@@ -93,7 +93,6 @@ class SessionLite
     )
     # coffeelint: enable=max_line_length
 
-
     ractive.set('lastCompileFailed', lastCompileFailed)
 
     # The global 'modelConfig' variable is used by the Tortoise runtime - David D. 7/2021

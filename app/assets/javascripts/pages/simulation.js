@@ -2,6 +2,7 @@ import { createNotifier, listenerEvents } from "/notifications/listener-events.j
 import { createDebugListener } from "/notifications/debug-listener.js"
 import { createIframeRelayListener } from "/notifications/iframe-relay-listener.js"
 import { attachQueryHandler } from "/queries/iframe-query-handler.js"
+import { fakeStorage } from "/namespace-storage.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
@@ -12,9 +13,9 @@ var loadingOverlay  = document.getElementById('loading-overlay')
 var activeContainer = loadingOverlay
 var modelContainer  = document.querySelector('#netlogo-model-container')
 var nlogoScript     = document.querySelector('#nlogo-code')
-const params        = new URLSearchParams(window.location.search)
 
-const paramKeys     = Array.from(params.keys())
+const params    = new URLSearchParams(window.location.search)
+const paramKeys = Array.from(params.keys())
 if (paramKeys.length === 1) {
   const maybeUrl = paramKeys[0]
   if (maybeUrl.startsWith('http') && params.get(maybeUrl) === '') {
@@ -24,7 +25,14 @@ if (paramKeys.length === 1) {
   }
 }
 
-var pageTitle       = function(modelTitle) {
+var storage
+try {
+  storage = window.localStorage
+} catch (exception) {
+  storage = fakeStorage()
+}
+
+var pageTitle = function(modelTitle) {
   if (modelTitle != null && modelTitle != '') {
     return 'NetLogo Web: ' + modelTitle
   } else {
@@ -89,7 +97,7 @@ var loadModel = function(nlogo, nlogoSourceType, path) {
     globalThis.session.teardown()
   }
   activeContainer = loadingOverlay
-  Tortoise.fromNlogo(nlogo, modelContainer, nlogoSourceType, path, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogo, modelContainer, storage, nlogoSourceType, path, handleCompileResult, [], listeners)
 }
 
 const parseFloatOrElse = function(str, def) {
@@ -157,7 +165,7 @@ if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent
   const path   = nlogoScript.dataset.filename
   notifyListeners('model-load', 'script-element')
-  Tortoise.fromNlogo(nlogo, modelContainer, 'script-element', path, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogo, modelContainer, storage, 'script-element', path, handleCompileResult, [], listeners)
 
 } else if (params.has('url')) {
   const url       = params.get('url')
@@ -165,7 +173,7 @@ if (nlogoScript.textContent.length > 0) {
 
   if (redirectOnProtocolMismatch(url)) {
     notifyListeners('model-load', 'url', url)
-    Tortoise.fromURL(url, modelName, modelContainer, handleCompileResult, [], listeners)
+    Tortoise.fromURL(url, modelName, modelContainer, storage, handleCompileResult, [], listeners)
   }
 
 } else {

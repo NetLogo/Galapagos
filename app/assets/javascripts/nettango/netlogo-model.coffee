@@ -1,6 +1,7 @@
 import newModelNetTango from "./new-model-nettango.js"
 import Tortoise from "/beak/tortoise.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
+import { fakeStorage } from "../namespace-storage.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
 # into a Ractive component.  With more work it could encapsulate a lot more
@@ -79,6 +80,7 @@ RactiveNetLogoModel = Ractive.extend({
     Tortoise.fromNlogoSync(
       nlogo
     , @modelContainer
+    , fakeStorage()
     , sourceType
     , path
     , @makeCompileResultHandler(callback)
@@ -91,7 +93,15 @@ RactiveNetLogoModel = Ractive.extend({
     if @session?
       @session.teardown()
 
-    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters, @listeners)
+    Tortoise.fromURL(
+      url
+    , modelName
+    , @modelContainer
+    , fakeStorage()
+    , @makeCompileResultHandler(callback)
+    , rewriters
+    , @listeners
+    )
 
   template: """
     <div class="ntb-netlogo-model">

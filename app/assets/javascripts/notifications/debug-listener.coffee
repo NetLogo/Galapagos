@@ -1,5 +1,3 @@
-import { createNamedArgs } from "./listener-events.js"
-
 createDebugListener = (events) ->
   debugListener = {}
   events.forEach( (event) ->

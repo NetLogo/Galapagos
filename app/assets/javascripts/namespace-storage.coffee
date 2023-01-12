@@ -22,6 +22,12 @@ class NamespaceStorage
     @localStorage.setItem(@namespace, JSON.stringify(@inProgress))
     return
 
+  # (String) => Unit
+  remove: (key) ->
+    delete @inProgress[key]
+    @localStorage.setItem(@namespace, JSON.stringify(@inProgress))
+    return
+
 # () => FakeStorage
 fakeStorage = () ->
   _ls = { }
