@@ -190,6 +190,8 @@ window.addEventListener('message', function (e) {
     }
     case 'nlw-open-new': {
       notifyListeners('model-load', 'new-model')
+      params.delete('url')
+      window.location.search = params.toString()
       loadModel(newModel, 'new', 'NewModel')
       break
     }

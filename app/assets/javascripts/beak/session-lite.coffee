@@ -335,14 +335,16 @@ class SessionLite
 
     if confirm('Are you sure you want to open a new model?  You will lose any changes that you have not exported.')
 
-      parent.postMessage({
-        hash: 'NewModel',
-        type: 'nlw-set-hash'
-      }, "*")
+      if (parent isnt window)
+        parent.postMessage({
+          hash: 'NewModel',
+          type: 'nlw-set-hash'
+        }, "*")
 
-      window.postMessage({
-        type: 'nlw-open-new'
-      }, "*")
+      else
+        window.postMessage({
+          type: 'nlw-open-new'
+        }, "*")
 
     return
 

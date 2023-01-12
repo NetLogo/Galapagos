@@ -45,6 +45,7 @@ function openModelFromUrl(url) {
     }
   } else if (url === "NewModel") {
     selectModel("Select a model")
+    params.delete("url")
     modelContainer.contentWindow.location.replace(`./web?${params.toString()}`)
     modelFileInput.value = ""
   } else {
