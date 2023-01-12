@@ -43,16 +43,16 @@ finishLoading = ->
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
 # (String, Element, Storage, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogo, container, localStorage, nlogoSourceType, modelPath, callback, rewriters = [], listeners = []) ->
-  nlogoSource = switch nlogoSourceType
+fromNlogoSync = (nlogo, container, localStorage, sourceType, path, callback, rewriters = [], listeners = []) ->
+  nlogoSource = switch sourceType
     when 'disk'
-      new DiskSource(modelPath)
+      new DiskSource(path)
 
     when 'new'
       new NewSource()
 
     when 'script-element'
-      new ScriptSource(modelPath)
+      new ScriptSource(path)
 
   compile(container, localStorage, nlogoSource, nlogo, callback, rewriters, listeners)
   return
@@ -111,7 +111,11 @@ compile = (container, localStorage, nlogoSource, nlogo, callback, rewriters, lis
   result = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
-    result.code = if startingNlogo is rewrittenNlogo then result.code else nlogoToSections(startingNlogo)[0].slice(0, -1)
+    result.code = if (startingNlogo is rewrittenNlogo)
+      result.code
+    else
+      nlogoToSections(startingNlogo)[0].slice(0, -1)
+
     notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
     session = newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
     wipListener.setNlogoGetter( () -> session.getNlogo() )
