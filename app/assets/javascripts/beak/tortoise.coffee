@@ -159,6 +159,9 @@ createSource = (sourceType, path, nlogo) ->
     when 'script-element'
       new ScriptSource(path, nlogo)
 
+    when 'url'
+      new UrlSource(path, nlogo)
+
 Tortoise = {
   createSource,
   startLoading,

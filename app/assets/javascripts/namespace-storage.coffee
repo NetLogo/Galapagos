@@ -12,6 +12,10 @@ class NamespaceStorage
       @inProgress = { }
       @localStorage.setItem(@namespace, JSON.stringify(@inProgress))
 
+  # (String) => Boolean
+  hasKey: (key) ->
+    @inProgress.hasOwnProperty(key)
+
   # (String) => Any
   get: (key) ->
     @inProgress[key]

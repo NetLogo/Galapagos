@@ -28,6 +28,7 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitl
   , consoleOutput:      ''
   , exportForm:         false
   , hasFocus:           false
+  , hasWorkInProgress:  false
   , height:             0
   , info
   , isEditing:          false
@@ -115,6 +116,10 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitl
             'authoring - plain'
         else
           'interactive'
+
+      isRevertable: ->
+        not @get('isEditing') and @get('hasWorkInProgress')
+
     },
 
     data: -> model
@@ -146,6 +151,7 @@ template =
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
+              <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
             </div>
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">Export:</span>

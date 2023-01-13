@@ -58,7 +58,7 @@ var isVertical     = true
 
 var openSession = function(s) {
   globalThis.session = s
-  wipListener.setNlogoGetter( () => globalThis.session.getNlogo() )
+  wipListener.setSession(globalThis.session)
   globalThis.session.widgetController.ractive.set('speed', speed)
   globalThis.session.widgetController.ractive.set('isVertical', isVertical)
   document.title = pageTitle(globalThis.session.modelTitle())
@@ -207,6 +207,13 @@ window.addEventListener('message', function (e) {
       params.delete('url')
       window.location.search = params.toString()
       loadModel(newModel, 'new', 'NewModel')
+      break
+    }
+    case 'nlw-revert-wip': {
+      notifyListeners('revert-work-in-progress')
+      wipListener.revertWip()
+      const nlogoSource = wipListener.nlogoSource
+      loadModel(nlogoSource.nlogo, nlogoSource.type, nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName)
       break
     }
     case 'nlw-update-model-state': {

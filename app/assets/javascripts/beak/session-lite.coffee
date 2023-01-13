@@ -71,7 +71,8 @@ class SessionLite
     ractive.on('*.recompile-for-plot', (_, source, oldName, newName, renamings) => @recompile(source, oldName, newName, renamings))
     ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
     ractive.on('export-html'     , (_, event)          => @exportHtml(event))
-    ractive.on('open-new-file'   , (_, event)          => @openNewFile())
+    ractive.on('open-new-file'   , (_)                 => @openNewFile())
+    ractive.on('revert-wip'      , (_)                 => @revertWorkInProgress())
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
@@ -345,6 +346,14 @@ class SessionLite
         window.postMessage({
           type: 'nlw-open-new'
         }, "*")
+
+    return
+
+  # () => Unit
+  revertWorkInProgress: () ->
+    window.postMessage({
+      type: 'nlw-revert-wip'
+    }, "*")
 
     return
 

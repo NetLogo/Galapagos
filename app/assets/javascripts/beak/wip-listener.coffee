@@ -4,11 +4,16 @@ class WipListener
   # (NamespaceStorage)
   constructor: (@storage) ->
     @nlogoSource = new NewSource()
+    # () => String
     @getCurrentNlogo = (() -> "")
+    # () => Unit
+    @notifyOfWorkInProgress = (() -> )
 
-  # (() => String) => Unit
-  setNlogoGetter: (getter) ->
-    @getCurrentNlogo = getter
+  # (SessionLite) => Unit
+  setSession: (session) ->
+    @getCurrentNlogo        = ()       -> session.getNlogo()
+    @notifyOfWorkInProgress = (hasWip) -> session.widgetController.ractive.set('hasWorkInProgress', hasWip)
+    @notifyOfWorkInProgress(@storage.hasKey(@nlogoSource.getWipKey()))
     return
 
   # (NamespaceStorage, NlogoSource, String) => String
@@ -16,6 +21,12 @@ class WipListener
     wipKey   = @nlogoSource.getWipKey()
     maybeWip = @storage.get(wipKey)
     if maybeWip? then maybeWip else @nlogoSource.nlogo
+
+  # () => unit
+  revertWip: () ->
+    wipKey = @nlogoSource.getWipKey()
+    @storage.remove(wipKey)
+    return
 
   # (String) => Unit
   _setWip: (newNlogo) ->
@@ -26,11 +37,15 @@ class WipListener
       # effective as I'd like, because just compiling the code can cause the nlogo contents to change due to (I
       # believe) whitespace changes.  -Jeremy B January 2023
       @storage.remove(wipKey)
+      @notifyOfWorkInProgress(false)
 
     else
       maybeOldNlogo = @storage.get(wipKey)
       if (not maybeOldNlogo?) or (maybeOldNlogo isnt newNlogo)
         @storage.set(wipKey, newNlogo)
+        @notifyOfWorkInProgress(true)
+
+    return
 
 
   # () => Unit
