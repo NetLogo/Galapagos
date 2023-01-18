@@ -1,6 +1,9 @@
+import { NewSource } from  './nlogo-source.js'
+
 class WipListener
-  # (NamespaceStorage, NlogoSource, String)
-  constructor: (@storage, @nlogoSource) ->
+  # (NamespaceStorage)
+  constructor: (@storage) ->
+    @nlogoSource = new NewSource()
     @getCurrentNlogo = (() -> "")
 
   # (() => String) => Unit

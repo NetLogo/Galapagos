@@ -1,6 +1,4 @@
 import SessionLite from "./session-lite.js"
-import { NamespaceStorage } from "../namespace-storage.js"
-import { WipListener } from "./wip-listener.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
@@ -42,16 +40,16 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (NlogoSource, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogoSource, container, localStorage, callback, rewriters = [], listeners = []) ->
+# (NlogoSource, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogoSource, container, localStorage, callback, rewriters, listeners)
+    fromNlogoSync(nlogoSource, container, getWorkInProgress, callback, rewriters, listeners)
     finishLoading()
   )
   return
 
-# (String, String, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromURL = (url, modelName, container, localStorage, callback, rewriters = [], listeners = []) ->
+# (String, String, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, modelName, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)
@@ -62,7 +60,7 @@ fromURL = (url, modelName, container, localStorage, callback, rewriters = [], li
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url, nlogo)
-          fromNlogoSync(urlSource, container, localStorage, callback, rewriters, listeners)
+          fromNlogoSync(urlSource, container, getWorkInProgress, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -71,21 +69,13 @@ fromURL = (url, modelName, container, localStorage, callback, rewriters = [], li
   )
   return
 
-# (NlogoSource, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogoSource, container, localStorage, callback, rewriters, listeners) ->
-  storage  = new NamespaceStorage('netLogoWebWip', localStorage)
+# (NlogoSource, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogoSource, container, getWorkInProgress, callback, rewriters, listeners) ->
   compiler = new BrowserCompiler()
-
-  # There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
-  # `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
-  # about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
-  # January 2023
-  wipListener = new WipListener(storage, nlogoSource)
-  listeners.push(wipListener)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
-  startingNlogo = wipListener.getWip()
+  startingNlogo = getWorkInProgress(nlogoSource)
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
@@ -104,7 +94,6 @@ fromNlogoSync = (nlogoSource, container, localStorage, callback, rewriters, list
 
     notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
     session = newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
-    wipListener.setNlogoGetter( () -> session.getNlogo() )
     callback({
       type:    'success'
     , session: session
@@ -117,7 +106,6 @@ fromNlogoSync = (nlogoSource, container, localStorage, callback, rewriters, list
     if secondChanceResult?
       notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-recoverable')
       session = newSession(container, compiler, rewriters, listeners, secondChanceResult, false, nlogoSource, true)
-      wipListener.setNlogoGetter( () -> session.getNlogo() )
       callback({
         type:    'failure'
       , source:  'compile-recoverable'

@@ -1,3 +1,4 @@
+import newModel from "../new-model.js"
 import { normalizedFileName } from "./tortoise-utils.js"
 
 dropNlogoExtension = (s) ->
@@ -33,7 +34,7 @@ class DiskSource extends NlogoSource
     "disk://#{@fileName}"
 
 class NewSource extends NlogoSource
-  constructor: (nlogo) ->
+  constructor: (nlogo = newModel) ->
     super('new', 'New Model', nlogo)
 
   getWipKey: () ->

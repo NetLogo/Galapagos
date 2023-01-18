@@ -2,7 +2,9 @@ import { createNotifier, listenerEvents } from "/notifications/listener-events.j
 import { createDebugListener } from "/notifications/debug-listener.js"
 import { createIframeRelayListener } from "/notifications/iframe-relay-listener.js"
 import { attachQueryHandler } from "/queries/iframe-query-handler.js"
-import { fakeStorage } from "/namespace-storage.js"
+
+import { fakeStorage, NamespaceStorage } from "/namespace-storage.js"
+import { WipListener } from "/beak/wip-listener.js"
 
 import "/codemirror-mode.js"
 import AlertDisplay from "/alert-display.js"
@@ -25,11 +27,21 @@ if (paramKeys.length === 1) {
   }
 }
 
-var storage
+var ls
 try {
-  storage = window.localStorage
+  ls = window.localStorage
 } catch (exception) {
-  storage = fakeStorage()
+  ls = fakeStorage()
+}
+const storage = new NamespaceStorage('netLogoWebWip', ls)
+// There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
+// `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
+// about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
+// January 2023
+const wipListener = new WipListener(storage)
+const getWorkInProgress = (nlogoSource) => {
+  wipListener.nlogoSource = nlogoSource
+  return wipListener.getWip()
 }
 
 var pageTitle = function(modelTitle) {
@@ -46,6 +58,7 @@ var isVertical     = true
 
 var openSession = function(s) {
   globalThis.session = s
+  wipListener.setNlogoGetter( () => globalThis.session.getNlogo() )
   globalThis.session.widgetController.ractive.set('speed', speed)
   globalThis.session.widgetController.ractive.set('isVertical', isVertical)
   document.title = pageTitle(globalThis.session.modelTitle())
@@ -73,7 +86,7 @@ function handleCompileResult(result) {
   }
 }
 
-const listeners = [alerter]
+const listeners = [alerter, wipListener]
 
 if (params.has('debugEvents')) {
   const debugListener = createDebugListener(listenerEvents)
@@ -98,7 +111,7 @@ var loadModel = function(nlogo, sourceType, path) {
   }
   activeContainer = loadingOverlay
   const nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
-  Tortoise.fromNlogo(nlogoSource, modelContainer, storage, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogoSource, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
 }
 
 const parseFloatOrElse = function(str, def) {
@@ -167,7 +180,7 @@ if (nlogoScript.textContent.length > 0) {
   const path   = nlogoScript.dataset.filename
   notifyListeners('model-load', 'script-element')
   const nlogoSource = Tortoise.createSource('script-element', path, nlogo)
-  Tortoise.fromNlogo(nlogoSource, modelContainer, storage, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(nlogoSource, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
 
 } else if (params.has('url')) {
   const url       = params.get('url')
@@ -175,7 +188,7 @@ if (nlogoScript.textContent.length > 0) {
 
   if (redirectOnProtocolMismatch(url)) {
     notifyListeners('model-load', 'url', url)
-    Tortoise.fromURL(url, modelName, modelContainer, storage, handleCompileResult, [], listeners)
+    Tortoise.fromURL(url, modelName, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
   }
 
 } else {

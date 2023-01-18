@@ -81,7 +81,7 @@ RactiveNetLogoModel = Ractive.extend({
     Tortoise.fromNlogoSync(
       nlogoSource
     , @modelContainer
-    , fakeStorage()
+    , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
     , rewriters
     , @listeners
@@ -96,7 +96,7 @@ RactiveNetLogoModel = Ractive.extend({
       url
     , modelName
     , @modelContainer
-    , fakeStorage()
+    , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
     , rewriters
     , @listeners
