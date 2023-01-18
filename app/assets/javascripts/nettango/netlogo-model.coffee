@@ -32,8 +32,8 @@ RactiveNetLogoModel = Ractive.extend({
             @loadModel(newModelNetTango, 'new', 'NewModel')
 
           when "nlw-load-url"
-            @notifyListeners('model-load', 'url', e.data.name)
-            @loadUrl(e.data.url, e.data.name)
+            @notifyListeners('model-load', 'url', e.data.url)
+            @loadUrl(e.data.url)
 
           when "nlw-update-model-state"
             @widgetController.setCode(e.data.codeTabContents)
@@ -88,13 +88,12 @@ RactiveNetLogoModel = Ractive.extend({
     )
     Tortoise.finishLoading()
 
-  loadUrl: (url, modelName, rewriters, callback) ->
+  loadUrl: (url, rewriters, callback) ->
     if @session?
       @session.teardown()
 
     Tortoise.fromURL(
       url
-    , modelName
     , @modelContainer
     , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)

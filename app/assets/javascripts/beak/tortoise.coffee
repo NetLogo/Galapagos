@@ -48,8 +48,8 @@ fromNlogo = (nlogoSource, container, getWorkInProgress, callback, rewriters = []
   )
   return
 
-# (String, String, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromURL = (url, modelName, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (String, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)

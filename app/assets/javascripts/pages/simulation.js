@@ -183,12 +183,11 @@ if (nlogoScript.textContent.length > 0) {
   Tortoise.fromNlogo(nlogoSource, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
 
 } else if (params.has('url')) {
-  const url       = params.get('url')
-  const modelName = params.has('name') ? decodeURI(params.get('name')) : undefined
+  const url = params.get('url')
 
   if (redirectOnProtocolMismatch(url)) {
     notifyListeners('model-load', 'url', url)
-    Tortoise.fromURL(url, modelName, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
+    Tortoise.fromURL(url, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
   }
 
 } else {
