@@ -77,12 +77,11 @@ RactiveNetLogoModel = Ractive.extend({
     if @session?
       @session.teardown()
 
+    nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
     Tortoise.fromNlogoSync(
-      nlogo
+      nlogoSource
     , @modelContainer
     , fakeStorage()
-    , sourceType
-    , path
     , @makeCompileResultHandler(callback)
     , rewriters
     , @listeners

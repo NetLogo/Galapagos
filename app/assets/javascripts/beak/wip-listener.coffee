@@ -1,6 +1,6 @@
 class WipListener
   # (NamespaceStorage, NlogoSource, String)
-  constructor: (@storage, @nlogoSource, @originalNlogo) ->
+  constructor: (@storage, @nlogoSource) ->
     @getCurrentNlogo = (() -> "")
 
   # (() => String) => Unit
@@ -12,13 +12,13 @@ class WipListener
   getWip: () ->
     wipKey   = @nlogoSource.getWipKey()
     maybeWip = @storage.get(wipKey)
-    if maybeWip? then maybeWip else @originalNlogo
+    if maybeWip? then maybeWip else @nlogoSource.nlogo
 
   # (String) => Unit
   _setWip: (newNlogo) ->
     wipKey = @nlogoSource.getWipKey()
 
-    if newNlogo is @originalNlogo
+    if newNlogo is @nlogoSource.nlogo
       # If the new code is just the original code, then we have no work in progress.  Unfortunately this isn't as
       # effective as I'd like, because just compiling the code can cause the nlogo contents to change due to (I
       # believe) whitespace changes.  -Jeremy B January 2023

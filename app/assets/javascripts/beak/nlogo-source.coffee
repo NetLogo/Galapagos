@@ -7,7 +7,7 @@ dropNlogoExtension = (s) ->
     s
 
 class NlogoSource
-  constructor: (@type, @fileName) ->
+  constructor: (@type, @fileName, @nlogo) ->
 
   # () => String
   getModelTitle: () ->
@@ -18,30 +18,30 @@ class NlogoSource
     'dummy'
 
 class UrlSource extends NlogoSource
-  constructor: (url) ->
-    super('url', normalizedFileName(url))
+  constructor: (url, nlogo) ->
+    super('url', normalizedFileName(url), nlogo)
     @url = decodeURI(url)
 
   getWipKey: () ->
     @url
 
 class DiskSource extends NlogoSource
-  constructor: (fileName) ->
-    super('disk', normalizedFileName(fileName))
+  constructor: (fileName, nlogo) ->
+    super('disk', normalizedFileName(fileName), nlogo)
 
   getWipKey: () ->
     "disk://#{@fileName}"
 
 class NewSource extends NlogoSource
-  constructor: () ->
-    super('new', 'New Model')
+  constructor: (nlogo) ->
+    super('new', 'New Model', nlogo)
 
   getWipKey: () ->
     'new'
 
 class ScriptSource extends NlogoSource
-  constructor: (fileName) ->
-    super('script-element', normalizedFileName(fileName))
+  constructor: (fileName, nlogo) ->
+    super('script-element', normalizedFileName(fileName), nlogo)
 
   getWipKey: () ->
     "script-element://#{@fileName}"

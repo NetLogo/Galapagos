@@ -42,25 +42,10 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (String, Element, Storage, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogo, container, localStorage, sourceType, path, callback, rewriters = [], listeners = []) ->
-  nlogoSource = switch sourceType
-    when 'disk'
-      new DiskSource(path)
-
-    when 'new'
-      new NewSource()
-
-    when 'script-element'
-      new ScriptSource(path)
-
-  compile(container, localStorage, nlogoSource, nlogo, callback, rewriters, listeners)
-  return
-
-# (String, Element, Storage, String, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogo, container, localStorage, source, path, callback, rewriters = [], listeners = []) ->
+# (NlogoSource, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, localStorage, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogo, container, localStorage, source, path, callback, rewriters, listeners)
+    fromNlogoSync(nlogoSource, container, localStorage, callback, rewriters, listeners)
     finishLoading()
   )
   return
@@ -76,8 +61,8 @@ fromURL = (url, modelName, container, localStorage, callback, rewriters = [], li
           callback({ type: 'failure', source: 'load-from-url', errors: [url] })
         else
           nlogo = req.responseText
-          urlSource = new UrlSource(url)
-          compile(container, localStorage, urlSource, nlogo, callback, rewriters, listeners)
+          urlSource = new UrlSource(url, nlogo)
+          fromNlogoSync(urlSource, container, localStorage, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -86,7 +71,8 @@ fromURL = (url, modelName, container, localStorage, callback, rewriters = [], li
   )
   return
 
-compile = (container, localStorage, nlogoSource, nlogo, callback, rewriters, listeners) ->
+# (NlogoSource, Element, Storage, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogoSource, container, localStorage, callback, rewriters, listeners) ->
   storage  = new NamespaceStorage('netLogoWebWip', localStorage)
   compiler = new BrowserCompiler()
 
@@ -94,7 +80,7 @@ compile = (container, localStorage, nlogoSource, nlogo, callback, rewriters, lis
   # `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
   # about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
   # January 2023
-  wipListener = new WipListener(storage, nlogoSource, nlogo)
+  wipListener = new WipListener(storage, nlogoSource)
   listeners.push(wipListener)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
@@ -174,12 +160,24 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   result.code = oldCode
   return result
 
+createSource = (sourceType, path, nlogo) ->
+  switch sourceType
+    when 'disk'
+      new DiskSource(path, nlogo)
+
+    when 'new'
+      new NewSource(nlogo)
+
+    when 'script-element'
+      new ScriptSource(path, nlogo)
+
 Tortoise = {
+  createSource,
   startLoading,
   finishLoading,
   fromNlogo,
   fromNlogoSync,
-  fromURL,
+  fromURL
 }
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what

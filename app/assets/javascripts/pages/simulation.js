@@ -91,13 +91,14 @@ if (isInFrame) {
   attachQueryHandler(getSession)
 }
 
-var loadModel = function(nlogo, nlogoSourceType, path) {
+var loadModel = function(nlogo, sourceType, path) {
   alerter.hide()
   if (globalThis.session) {
     globalThis.session.teardown()
   }
   activeContainer = loadingOverlay
-  Tortoise.fromNlogo(nlogo, modelContainer, storage, nlogoSourceType, path, handleCompileResult, [], listeners)
+  const nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
+  Tortoise.fromNlogo(nlogoSource, modelContainer, storage, handleCompileResult, [], listeners)
 }
 
 const parseFloatOrElse = function(str, def) {
@@ -165,7 +166,8 @@ if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent
   const path   = nlogoScript.dataset.filename
   notifyListeners('model-load', 'script-element')
-  Tortoise.fromNlogo(nlogo, modelContainer, storage, 'script-element', path, handleCompileResult, [], listeners)
+  const nlogoSource = Tortoise.createSource('script-element', path, nlogo)
+  Tortoise.fromNlogo(nlogoSource, modelContainer, storage, handleCompileResult, [], listeners)
 
 } else if (params.has('url')) {
   const url       = params.get('url')
