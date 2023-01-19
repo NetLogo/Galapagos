@@ -145,7 +145,11 @@ template =
             </a>
           </div>
         </div>
-        <editableTitle title="{{modelTitle}}" isEditing="{{isEditing}}"/>
+        <editableTitle
+          title="{{modelTitle}}"
+          isEditing="{{isEditing}}"
+          hasWorkInProgress="{{hasWorkInProgress}}"
+          />
         {{# !isReadOnly }}
           <div class="flex-column" style="align-items: flex-end; user-select: none;">
             <div class="netlogo-export-wrapper">

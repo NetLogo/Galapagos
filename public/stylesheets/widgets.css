@@ -140,18 +140,23 @@
 
 .netlogo-model-title-wrapper {
   justify-content: center;
-  height: 30px;
-  line-height: 30px;
 }
 
 .netlogo-model-title {
   background-color: initial;
-  margin: 0 70px;
+  margin: 0;
   overflow: hidden;
-  padding: 0 8px;
+  padding: 0 10px;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.netlogo-model-modified {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0 10px;
 }
 
 .hidden {
