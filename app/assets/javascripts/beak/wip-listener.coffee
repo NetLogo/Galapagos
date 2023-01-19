@@ -1,4 +1,4 @@
-import { NewSource } from  './nlogo-source.js'
+import { DiskSource, NewSource } from  './nlogo-source.js'
 
 class WipListener
   # (NamespaceStorage)
@@ -47,7 +47,6 @@ class WipListener
 
     return
 
-
   # () => Unit
   _maybeSetWip: () ->
     try
@@ -60,11 +59,24 @@ class WipListener
 
     return
 
+  # (String, String) => Unit
+  _updateForFileExport: (fileName, newNlogo) ->
+    source = new DiskSource(fileName, newNlogo)
+    # If we are current working on an imported file or a new document, the just-exported nlogo file has become our
+    # authoritative source, so reset.  -Jeremy B January 2023
+    if ['disk', 'new'].includes(@nlogoSource.type)
+      @nlogoSource = source
+      @_setWip(newNlogo)
+
+    return
+
+  # These are the Listener events.
   'recompile-complete':   () -> @_maybeSetWip()
   'new-widget-finalized': () -> @_maybeSetWip()
   'widget-updated':       () -> @_maybeSetWip()
   'widget-deleted':       () -> @_maybeSetWip()
   'widget-moved':         () -> @_maybeSetWip()
   'info-updated':         () -> @_maybeSetWip()
+  'nlogo-exported':       (_, { fileName, nlogo }) -> @_updateForFileExport(fileName, nlogo)
 
 export { WipListener }

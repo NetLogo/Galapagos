@@ -75,6 +75,20 @@ listenerEvents = Object.freeze([
     'args': []
   },
   {
+    'name': 'nlogo-exported',
+    'args': [
+      'fileName', # The fileName that was given to the export
+      'nlogo'     # The nlogo source that was exported
+    ]
+  },
+  {
+    'name': 'html-exported',
+    'args': [
+      'fileName', # The fileName that was given to the export
+      'nlogo'     # The nlogo source that was inserted into the HTML
+    ]
+  }
+  {
     'name': 'startup-procedure-run',
     'args': []
   },

@@ -294,12 +294,14 @@ class SessionLite
   exportNlogo: ->
     exportName = @promptFilename('.nlogo')
     if exportName?
-      exportedNLogo = @getNlogo()
-      if (exportedNLogo.success)
-        exportBlob = new Blob([exportedNLogo.result], {type: 'text/plain:charset=utf-8'})
+      exportedNlogo = @getNlogo()
+      if (exportedNlogo.success)
+        exportBlob = new Blob([exportedNlogo.result], {type: 'text/plain:charset=utf-8'})
         saveAs(exportBlob, exportName)
+        @widgetController.ractive.fire('nlogo-exported', exportName, exportedNlogo.result)
+
       else
-        @widgetController.reportError('compiler', 'export-nlogo', exportedNLogo.result)
+        @widgetController.reportError('compiler', 'export-nlogo', exportedNlogo.result)
 
   promptFilename: (extension) =>
     suggestion = @modelTitle() + extension
@@ -324,6 +326,8 @@ class SessionLite
               wrapper.appendChild(dom.documentElement)
               exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
               saveAs(exportBlob, exportName)
+              @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
+
             else
               @widgetController.reportError('compiler', 'export-html', nlogo.result)
 
