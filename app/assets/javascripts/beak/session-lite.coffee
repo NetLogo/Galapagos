@@ -328,7 +328,9 @@ class SessionLite
   # () => Unit
   openNewFile: ->
 
-    if confirm('Are you sure you want to open a new model?  You will lose any changes that you have not exported.')
+    # coffeelint: disable=max_line_length
+    if window.confirm("Are you sure you want to open a new model?\n\nYour work in progress will be saved to your browser's cache to be reloaded the next time you load this model, but exporting your work is the best way to make sure you have a copy.")
+    # coffeelint: enable=max_line_length
 
       if (parent isnt window)
         parent.postMessage({
