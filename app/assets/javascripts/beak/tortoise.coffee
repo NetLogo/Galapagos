@@ -3,9 +3,10 @@ import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.j
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, Boolean, NlogoSource, Boolean)
-#   => SessionLite
-newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, nlogoSource, lastCompileFailed) ->
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
+#  Boolean, Boolean, NlogoSource, Boolean) => SessionLite
+newSession = (container, compiler, rewriters, listeners, modelResult,
+  isReadOnly, hasWorkInProgress, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
@@ -18,7 +19,8 @@ newSession = (container, compiler, rewriters, listeners, modelResult, readOnly, 
   , widgets
   , code
   , info
-  , readOnly
+  , isReadOnly
+  , hasWorkInProgress
   , nlogoSource
   , result
   , lastCompileFailed
@@ -75,7 +77,8 @@ fromNlogoSync = (nlogoSource, container, getWorkInProgress, callback, rewriters,
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
-  startingNlogo = getWorkInProgress(nlogoSource)
+  startingNlogo     = getWorkInProgress(nlogoSource)
+  hasWorkInProgress = (startingNlogo isnt nlogoSource.nlogo)
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
@@ -93,7 +96,19 @@ fromNlogoSync = (nlogoSource, container, getWorkInProgress, callback, rewriters,
       nlogoToSections(startingNlogo)[0].slice(0, -1)
 
     notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
-    session = newSession(container, compiler, rewriters, listeners, result, false, nlogoSource, false)
+
+    session = newSession(
+      container
+    , compiler
+    , rewriters
+    , listeners
+    , result
+    , false
+    , hasWorkInProgress
+    , nlogoSource
+    , false
+    )
+
     callback({
       type:    'success'
     , session: session
@@ -105,7 +120,19 @@ fromNlogoSync = (nlogoSource, container, getWorkInProgress, callback, rewriters,
     secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)
     if secondChanceResult?
       notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-recoverable')
-      session = newSession(container, compiler, rewriters, listeners, secondChanceResult, false, nlogoSource, true)
+
+      session = newSession(
+        container
+      , compiler
+      , rewriters
+      , listeners
+      , secondChanceResult
+      , false
+      , hasWorkInProgress
+      , nlogoSource
+      , true
+      )
+
       callback({
         type:    'failure'
       , source:  'compile-recoverable'

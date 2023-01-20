@@ -12,6 +12,7 @@ import RactiveConsoleWidget from "./ractives/console.js"
 import RactiveOutputArea from "./ractives/output.js"
 import RactiveInfoTabWidget from "./ractives/info.js"
 import RactiveModelTitle from "./ractives/title.js"
+import RactiveStatusPopup from "./ractives/status-popup.js"
 import RactivePlot from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
@@ -19,39 +20,39 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
-# (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
-generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitle, checkIsReporter) ->
+# (Element, Array[Widget], String, String, Boolean, Boolean, String, String, (String) => Boolean) => Ractive
+generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, hasWorkInProgress, modelTitle, checkIsReporter) ->
 
   model = {
     checkIsReporter
   , code
-  , consoleOutput:      ''
-  , exportForm:         false
-  , hasFocus:           false
-  , hasWorkInProgress:  false
-  , height:             0
+  , consoleOutput:        ''
+  , exportForm:           false
+  , hasFocus:             false
+  , hasWorkInProgress
+  , height:               0
   , info
-  , isEditing:          false
-  , isHelpVisible:      false
-  , isOverlayUp:        false
+  , isEditing:            false
+  , isHelpVisible:        false
+  , isOverlayUp:          false
   , isReadOnly
-  , isResizerVisible:   true
-  , isStale:            false
-  , isVertical:         true
-  , lastCompiledCode:   code
-  , lastCompileFailed:  false
-  , lastDragX:          undefined
-  , lastDragY:          undefined
-  , modelTitle:         modelTitle
-  , outputWidgetOutput: ''
-  , primaryView:        undefined
-  , someDialogIsOpen:   false
-  , someEditFormIsOpen: false
-  , speed:              0.0
-  , ticks:              "" # Remember, ticks initialize to nothing, not 0
-  , ticksStarted:       false
-  , widgetObj:          widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-  , width:              0
+  , isResizerVisible:     true
+  , isStale:              false
+  , isVertical:           true
+  , lastCompiledCode:     code
+  , lastCompileFailed:    false
+  , lastDragX:            undefined
+  , lastDragY:            undefined
+  , modelTitle:           modelTitle
+  , outputWidgetOutput:   ''
+  , primaryView:          undefined
+  , someDialogIsOpen:     false
+  , someEditFormIsOpen:   false
+  , speed:                0.0
+  , ticks:                "" # Remember, ticks initialize to nothing, not 0
+  , ticksStarted:         false
+  , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+  , width:                0
   }
 
   animateWithClass = (klass) ->
@@ -88,6 +89,7 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitl
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
     , infotab:       RactiveInfoTabWidget
+    , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
 
     , tickCounter:   RactiveTickCounter
@@ -128,6 +130,11 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, modelTitl
 # coffeelint: disable=max_line_length
 template =
   """
+  <statusPopup
+    hasWorkInProgress={{hasWorkInProgress}}
+    isSessionLoopRunning={{isSessionLoopRunning}}
+    />
+
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
        tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
        on-focus="@this.fire('track-focus', @node)"

@@ -13,7 +13,6 @@ class WipListener
   setSession: (session) ->
     @getCurrentNlogo        = ()       -> session.getNlogo()
     @notifyOfWorkInProgress = (hasWip) -> session.widgetController.ractive.set('hasWorkInProgress', hasWip)
-    @notifyOfWorkInProgress(@storage.hasKey(@nlogoSource.getWipKey()))
     return
 
   # (NamespaceStorage, NlogoSource, String) => String

@@ -124,6 +124,11 @@
   }
 }
 
+.netlogo-model-container {
+  width: min-content;
+  position: relative;
+}
+
 .netlogo-model-text {
   background-color: white;
 }
@@ -136,6 +141,43 @@
 
 .netlogo-model-masthead > form {
   margin: 0 auto;
+}
+
+.netlogo-model-status {
+  position: absolute;
+  width: auto;
+  margin: 0 15%;
+  padding: 0 20px;
+  background: #bcbce5;
+  border-color: #242479;
+  border: 1px solid;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  font-family: "Lucida Grande", sans-serif;
+  font-size: smaller;
+}
+
+.netlogo-model-status-closer {
+  margin: auto 0 auto 10px;
+  width: min-content;
+  height: min-content;
+  cursor: pointer;
+  color: #7F7F7F;
+  font-weight: bold;
+  user-select: none;
+}
+
+.netlogo-model-status-closer:hover {
+  color: black;
+}
+
+.netlogo-model-status-link {
+  color: blue;
+  cursor: pointer;
+}
+
+.netlogo-model-status-link:hover {
+  text-decoration: underline;
 }
 
 .netlogo-model-title-wrapper {
