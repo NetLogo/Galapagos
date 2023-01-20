@@ -20,8 +20,10 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
-# (Element, Array[Widget], String, String, Boolean, Boolean, String, String, (String) => Boolean) => Ractive
-generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, hasWorkInProgress, modelTitle, checkIsReporter) ->
+# (Element, Array[Widget], String, String,
+#   Boolean, Boolean, String, String, (String) => Boolean) => Ractive
+generateRactiveSkeleton = (container, widgets, code, info,
+  isReadOnly, hasWorkInProgress, modelTitle, checkIsReporter) ->
 
   model = {
     checkIsReporter
