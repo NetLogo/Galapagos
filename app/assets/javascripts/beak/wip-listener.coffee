@@ -1,31 +1,58 @@
 import { DiskSource, NewSource } from  './nlogo-source.js'
 
+WIP_INFO_FORMAT_VERSION = 1
+
 class WipListener
   # (NamespaceStorage)
   constructor: (@storage) ->
-    @nlogoSource = new NewSource()
-    # () => String
-    @getCurrentNlogo = (() -> "")
-    # () => Unit
-    @notifyOfWorkInProgress = (() -> )
+    @nlogoSource = null
+    @session     = null
 
   # (SessionLite) => Unit
   setSession: (session) ->
-    @getCurrentNlogo        = ()       -> session.getNlogo()
-    @notifyOfWorkInProgress = (hasWip) -> session.widgetController.ractive.set('hasWorkInProgress', hasWip)
+    @session = session
     return
 
-  # (NamespaceStorage, NlogoSource, String) => String
+  # () => String
+  getCurrentNlogo: () ->
+    @session.getNlogo()
+
+  # () => String
+  getModelTitle: () ->
+    @session.modelTitle()
+
+  # () => Unit
+  notifyOfWorkInProgress: (hasWip) ->
+    @session.widgetController.ractive.set('hasWorkInProgress', hasWip)
+    return
+
+  # (NamespaceStorage, NlogoSource, String) => WipInfo | null
   getWip: () ->
     wipKey   = @nlogoSource.getWipKey()
     maybeWip = @storage.get(wipKey)
-    if maybeWip? then maybeWip else @nlogoSource.nlogo
+    if maybeWip? then maybeWip else null
 
   # () => unit
   revertWip: () ->
     wipKey = @nlogoSource.getWipKey()
     @storage.remove(wipKey)
     return
+
+  # (String, String, String) => Unit
+  _storeWipInfo: (wipKey, newNlogo, title) ->
+    wipInfo = {
+      version:   WIP_INFO_FORMAT_VERSION
+      title:     title
+      timeStamp: Date.now()
+      nlogo:     newNlogo
+    }
+    @storage.set(wipKey, wipInfo)
+    @notifyOfWorkInProgress(true)
+    return
+
+  _removeWipInfo: (wipKey) ->
+    @storage.remove(wipKey)
+    @notifyOfWorkInProgress(false)
 
   # (String) => Unit
   _setWip: (newNlogo) ->
@@ -35,14 +62,12 @@ class WipListener
       # If the new code is just the original code, then we have no work in progress.  Unfortunately this isn't as
       # effective as I'd like, because just compiling the code can cause the nlogo contents to change due to (I
       # believe) whitespace changes.  -Jeremy B January 2023
-      @storage.remove(wipKey)
-      @notifyOfWorkInProgress(false)
+      @_removeWipInfo(wipKey)
 
     else
       maybeOldNlogo = @storage.get(wipKey)
       if (not maybeOldNlogo?) or (maybeOldNlogo isnt newNlogo)
-        @storage.set(wipKey, newNlogo)
-        @notifyOfWorkInProgress(true)
+        @_storeWipInfo(wipKey, newNlogo, @getModelTitle())
 
     return
 
@@ -53,8 +78,8 @@ class WipListener
       if result.success
         @_setWip(result.result)
 
-    catch
-      console.log("Unable to set work in progress, `getCurrentNlogo()` or `_setWip()` failed.")
+    catch e
+      console.log("Unable to set work in progress, `getCurrentNlogo()` or `_setWip()` failed.", e)
 
     return
 
@@ -65,7 +90,13 @@ class WipListener
     # authoritative source, so reset.  -Jeremy B January 2023
     if ['disk', 'new'].includes(@nlogoSource.type)
       @nlogoSource = source
-      @_setWip(newNlogo)
+      wipKey       = @nlogoSource.getWipKey()
+      title        = @getModelTitle()
+      if fileName is "#{title}.nlogo"
+        @_removeWipInfo(wipKey)
+
+      else
+        @_storeWipInfo(wipKey, newNlogo, title)
 
     return
 

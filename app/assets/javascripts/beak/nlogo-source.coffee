@@ -9,10 +9,14 @@ dropNlogoExtension = (s) ->
 
 class NlogoSource
   constructor: (@type, @fileName, @nlogo) ->
+    @_title = null
+
+  setModelTitle: (title) ->
+    @_title = title
 
   # () => String
   getModelTitle: () ->
-    dropNlogoExtension(@fileName)
+    if @_title? then @_title else dropNlogoExtension(@fileName)
 
   # () => String
   getWipKey: () ->

@@ -41,7 +41,12 @@ const storage = new NamespaceStorage('netLogoWebWip', ls)
 const wipListener = new WipListener(storage)
 const getWorkInProgress = (nlogoSource) => {
   wipListener.nlogoSource = nlogoSource
-  return wipListener.getWip()
+  const wipInfo = wipListener.getWip()
+  if (wipInfo !== null) {
+    nlogoSource.setModelTitle(wipInfo.title)
+    return wipInfo.nlogo
+  }
+  return nlogoSource.nlogo
 }
 
 var pageTitle = function(modelTitle) {
