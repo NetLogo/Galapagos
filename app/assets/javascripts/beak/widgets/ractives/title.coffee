@@ -18,6 +18,7 @@ RactiveModelTitle = RactiveContextable.extend({
         oldName = @get('title')
         newName = prompt("Enter a new name for your model", oldName)
         @set('title', defaultOnEmpty(newName) ? oldName)
+        @fire('title-changed', @get('title'))
 
       return
 

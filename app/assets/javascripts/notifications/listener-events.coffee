@@ -233,6 +233,12 @@ listenerEvents = Object.freeze([
     ]
   },
   {
+    'name': 'title-changed',
+    'args': [
+      'title' # String
+    ]
+  },
+  {
     'name': 'authoring-mode-toggled',
     'args': [
       'isActive' # Boolean
