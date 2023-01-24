@@ -30,6 +30,7 @@ class NetTangoController
     @ractive      = ractive
     @builder      = @ractive.findComponent('builder')
     @netLogoModel = @ractive.findComponent('netLogoModel')
+    @netLogoModel.rewriters = @rewriters
 
     @ractive.observe('isDebugMode', (value) =>
       @setDebugMode(value)
@@ -59,9 +60,9 @@ class NetTangoController
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
     @ractive.on('*.ntb-load-variables',  (_)              => @resetBreedsAndVariables())
 
-    @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)            => @netLogoModel.session.exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @netLogoModel.loadUrl(url, name, @rewriters))
+    @ractive.on('*.ntb-import-netlogo', (local)  => @importNetLogo(local.node.files))
+    @ractive.on('*.ntb-export-netlogo', (_)      => @netLogoModel.session.exportNlogo())
+    @ractive.on('*.ntb-load-nl-url',    (_, url) => @netLogoModel.loadUrl(url))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
     @ractive.on('*.ntb-load-project',        (_, data)       => @loadProjectData(data))
@@ -254,7 +255,7 @@ class NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @netLogoModel.loadModel(code, 'script-element', title, @rewriters)
+    @netLogoModel.loadModel(code, 'script-element', title)
     return
 
   # (Array[File]) => Unit
@@ -266,7 +267,7 @@ class NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @netLogoModel.loadModel(nlogo, 'disk', file.name, @rewriters)
+      @netLogoModel.loadModel(nlogo, 'disk', file.name)
       @handleProjectChange()
       return
     reader.readAsText(file)

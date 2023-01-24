@@ -9,6 +9,7 @@ import { fakeStorage } from "../namespace-storage.js"
 
 RactiveNetLogoModel = Ractive.extend({
 
+  rewriters:        null # Array[Rewriter]
   listeners:        null # Array[Listener]
   alerter:          null # AlertDisplay
   modelContainer:   null # Element
@@ -73,7 +74,7 @@ RactiveNetLogoModel = Ractive.extend({
 
       return
 
-  loadModel: (nlogo, sourceType, path, rewriters, callback) ->
+  loadModel: (nlogo, sourceType, path, callback) ->
     if @session?
       @session.teardown()
 
@@ -84,12 +85,12 @@ RactiveNetLogoModel = Ractive.extend({
     , false
     , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
-    , rewriters
+    , @rewriters
     , @listeners
     )
     Tortoise.finishLoading()
 
-  loadUrl: (url, rewriters, callback) ->
+  loadUrl: (url, callback) ->
     if @session?
       @session.teardown()
 
@@ -98,7 +99,7 @@ RactiveNetLogoModel = Ractive.extend({
     , @modelContainer
     , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
-    , rewriters
+    , @rewriters
     , @listeners
     )
 
