@@ -62,6 +62,7 @@ class SessionLite
     ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     ractive.on('open-new-file'   , (_)                 => @openNewFile())
     ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
+    ractive.on('*.undo-revert'   , (_)                 => @undoRevert())
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
@@ -349,6 +350,14 @@ class SessionLite
   revertWorkInProgress: () ->
     window.postMessage({
       type: 'nlw-revert-wip'
+    }, "*")
+
+    return
+
+  # () => Unit
+  undoRevert: () ->
+    window.postMessage({
+      type: 'nlw-undo-revert'
     }, "*")
 
     return

@@ -32,6 +32,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , exportForm:           false
   , hasFocus:             false
   , hasWorkInProgress
+  , hasRevertedWork:      false
   , height:               0
   , info
   , isEditing:            false
@@ -164,7 +165,11 @@ template =
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
-              <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+              {{#!hasRevertedWork}}
+                <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+              {{else}}
+                <button class="netlogo-ugly-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
+              {{/}}
             </div>
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">Export:</span>

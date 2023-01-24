@@ -7,10 +7,16 @@ class WipListener
   constructor: (@storage) ->
     @nlogoSource = null
     @session     = null
+    @reverted    = null
 
   # (SessionLite) => Unit
   setSession: (session) ->
     @session = session
+    # This is necessary in the case where we didn't tell the session there was WIP at initialization becase we wanted to
+    # avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
+    wipKey   = @nlogoSource.getWipKey()
+    @notifyOfWorkInProgress(@storage.hasKey(wipKey))
+    @session.widgetController.ractive.set('hasRevertedWork', @reverted?)
     return
 
   # () => String
@@ -32,10 +38,18 @@ class WipListener
     maybeWip = @storage.get(wipKey)
     if maybeWip? then maybeWip else null
 
-  # () => unit
+  # () => Unit
   revertWip: () ->
     wipKey = @nlogoSource.getWipKey()
+    @reverted = @storage.get(wipKey)
     @storage.remove(wipKey)
+    return
+
+  # () => Unit
+  undoRevert: () ->
+    wipKey = @nlogoSource.getWipKey()
+    @storage.set(wipKey, @reverted)
+    @reverted = null
     return
 
   # (String, String, String) => Unit
@@ -50,12 +64,16 @@ class WipListener
     @notifyOfWorkInProgress(true)
     return
 
+  # (String) => Unit
   _removeWipInfo: (wipKey) ->
     @storage.remove(wipKey)
     @notifyOfWorkInProgress(false)
+    return
 
   # (String) => Unit
   _setWip: (newNlogo) ->
+    @reverted = null
+    @session.widgetController.ractive.set('hasRevertedWork', false)
     wipKey = @nlogoSource.getWipKey()
     title  = @getModelTitle()
 

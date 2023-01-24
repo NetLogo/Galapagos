@@ -109,14 +109,22 @@ if (isInFrame) {
   attachQueryHandler(getSession)
 }
 
-var loadModel = function(nlogo, sourceType, path) {
+var loadModel = function(nlogo, sourceType, path, isUndoReversion) {
   alerter.hide()
   if (globalThis.session) {
     globalThis.session.teardown()
   }
   activeContainer = loadingOverlay
   const nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
-  Tortoise.fromNlogo(nlogoSource, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(
+    nlogoSource
+  , modelContainer
+  , isUndoReversion
+  , getWorkInProgress
+  , handleCompileResult
+  , []
+  , listeners
+  )
 }
 
 const parseFloatOrElse = function(str, def) {
@@ -185,40 +193,72 @@ if (nlogoScript.textContent.length > 0) {
   const path   = nlogoScript.dataset.filename
   notifyListeners('model-load', 'script-element')
   const nlogoSource = Tortoise.createSource('script-element', path, nlogo)
-  Tortoise.fromNlogo(nlogoSource, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
+  Tortoise.fromNlogo(
+    nlogoSource
+  , modelContainer
+  , false
+  , getWorkInProgress
+  , handleCompileResult
+  , []
+  , listeners
+  )
 
 } else if (params.has('url')) {
   const url = params.get('url')
 
   if (redirectOnProtocolMismatch(url)) {
     notifyListeners('model-load', 'url', url)
-    Tortoise.fromURL(url, modelContainer, getWorkInProgress, handleCompileResult, [], listeners)
+    Tortoise.fromURL(
+      url
+    , modelContainer
+    , getWorkInProgress
+    , handleCompileResult
+    , []
+    , listeners
+    )
   }
 
 } else {
   notifyListeners('model-load', 'new-model')
-  loadModel(newModel, 'new', 'NewModel')
+  loadModel(newModel, 'new', 'NewModel', false)
 }
 
 window.addEventListener('message', function (e) {
   switch (e.data.type) {
     case 'nlw-load-model': {
       notifyListeners('model-load', 'file', e.data.path)
-      loadModel(e.data.nlogo, 'disk', e.data.path)
+      loadModel(e.data.nlogo, 'disk', e.data.path, false)
       break
     }
     case 'nlw-open-new': {
       notifyListeners('model-load', 'new-model')
       params.delete('url')
       window.location.search = params.toString()
-      loadModel(newModel, 'new', 'NewModel')
+      loadModel(newModel, 'new', 'NewModel', false)
       break
     }
     case 'nlw-revert-wip': {
       notifyListeners('revert-work-in-progress')
       wipListener.revertWip()
       const nlogoSource = wipListener.nlogoSource
-      loadModel(nlogoSource.nlogo, nlogoSource.type, nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName)
+      loadModel(
+        nlogoSource.nlogo
+      , nlogoSource.type
+      , nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName
+      , false
+      )
+      break
+    }
+    case 'nlw-undo-revert': {
+      notifyListeners('undo-revert')
+      wipListener.undoRevert()
+      const nlogoSource = wipListener.nlogoSource
+      loadModel(
+        nlogoSource.nlogo
+      , nlogoSource.type
+      , nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName
+      , true
+      )
       break
     }
     case 'nlw-update-model-state': {

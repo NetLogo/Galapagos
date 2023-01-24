@@ -75,6 +75,10 @@ listenerEvents = Object.freeze([
     'args': []
   },
   {
+    'name': 'undo-revert',
+    'args': []
+  },
+  {
     'name': 'nlogo-exported',
     'args': [
       'fileName', # The fileName that was given to the export

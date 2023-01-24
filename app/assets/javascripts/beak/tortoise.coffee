@@ -42,10 +42,10 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (NlogoSource, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogoSource, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (NlogoSource, Element, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogoSource, container, getWorkInProgress, callback, rewriters, listeners)
+    fromNlogoSync(nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
     finishLoading()
   )
   return
@@ -62,7 +62,7 @@ fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listener
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url, nlogo)
-          fromNlogoSync(urlSource, container, getWorkInProgress, callback, rewriters, listeners)
+          fromNlogoSync(urlSource, container, false, getWorkInProgress, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -71,14 +71,14 @@ fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listener
   )
   return
 
-# (NlogoSource, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogoSource, container, getWorkInProgress, callback, rewriters, listeners) ->
+# (NlogoSource, Element, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters, listeners) ->
   compiler = new BrowserCompiler()
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
   startingNlogo     = getWorkInProgress(nlogoSource)
-  hasWorkInProgress = (startingNlogo isnt nlogoSource.nlogo)
+  hasWorkInProgress = not isUndoReversion and (startingNlogo isnt nlogoSource.nlogo)
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)

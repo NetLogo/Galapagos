@@ -81,6 +81,7 @@ RactiveNetLogoModel = Ractive.extend({
     Tortoise.fromNlogoSync(
       nlogoSource
     , @modelContainer
+    , false
     , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
     , rewriters
