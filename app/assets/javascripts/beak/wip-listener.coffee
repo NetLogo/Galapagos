@@ -3,18 +3,22 @@ import { DiskSource, NewSource } from  './nlogo-source.js'
 WIP_INFO_FORMAT_VERSION = 1
 
 class WipListener
-  # (NamespaceStorage)
-  constructor: (@storage) ->
-    @nlogoSource = null
-    @session     = null
-    @reverted    = null
+  # (NamespaceStorage, String | null)
+  constructor: (@storage, storageTag) ->
+    @storagePrefix = if storageTag? then "#{storageTag}:" else ""
+    @nlogoSource   = null
+    @session       = null
+    @reverted      = null
+
+  getWipKey: () ->
+    "#{@storagePrefix}#{@nlogoSource.getWipKey()}"
 
   # (SessionLite) => Unit
   setSession: (session) ->
     @session = session
     # This is necessary in the case where we didn't tell the session there was WIP at initialization becase we wanted to
     # avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
-    wipKey   = @nlogoSource.getWipKey()
+    wipKey   = @getWipKey()
     @notifyOfWorkInProgress(@storage.hasKey(wipKey))
     @session.widgetController.ractive.set('hasRevertedWork', @reverted?)
     return
@@ -34,20 +38,20 @@ class WipListener
 
   # (NamespaceStorage, NlogoSource, String) => WipInfo | null
   getWip: () ->
-    wipKey   = @nlogoSource.getWipKey()
+    wipKey   = @getWipKey()
     maybeWip = @storage.get(wipKey)
     if maybeWip? then maybeWip else null
 
   # () => Unit
   revertWip: () ->
-    wipKey = @nlogoSource.getWipKey()
+    wipKey = @getWipKey()
     @reverted = @storage.get(wipKey)
     @storage.remove(wipKey)
     return
 
   # () => Unit
   undoRevert: () ->
-    wipKey = @nlogoSource.getWipKey()
+    wipKey = @getWipKey()
     @storage.set(wipKey, @reverted)
     @reverted = null
     return
@@ -74,7 +78,7 @@ class WipListener
   _setWip: (newNlogo) ->
     @reverted = null
     @session.widgetController.ractive.set('hasRevertedWork', false)
-    wipKey = @nlogoSource.getWipKey()
+    wipKey = @getWipKey()
     title  = @getModelTitle()
 
     if newNlogo is @nlogoSource.nlogo and "#{title}.nlogo" is @nlogoSource.fileName()
