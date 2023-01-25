@@ -255,7 +255,7 @@ class NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @netLogoModel.loadModel(code, 'script-element', title)
+    @netLogoModel.loadModel(code, 'script-element', "#{title}.nlogo")
     return
 
   # (Array[File]) => Unit
