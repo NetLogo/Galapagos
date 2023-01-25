@@ -18,9 +18,13 @@ class WipListener
     @session = session
     # This is necessary in the case where we didn't tell the session there was WIP at initialization becase we wanted to
     # avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
-    wipKey   = @getWipKey()
-    @notifyOfWorkInProgress(@storage.hasKey(wipKey))
-    @session.widgetController.ractive.set('hasRevertedWork', @reverted?)
+    if @reverted?
+      @session.widgetController.ractive.set('workInProgressState', 'enabled-with-reversion')
+
+    else
+      wipKey = @getWipKey()
+      @notifyOfWorkInProgress(@storage.hasKey(wipKey))
+
     return
 
   # () => String
@@ -33,7 +37,8 @@ class WipListener
 
   # () => Unit
   notifyOfWorkInProgress: (hasWip) ->
-    @session.widgetController.ractive.set('hasWorkInProgress', hasWip)
+    state = if hasWip then 'enabled-with-wip' else 'enabled-and-empty'
+    @session.widgetController.ractive.set('workInProgressState', state)
     return
 
   # (NamespaceStorage, NlogoSource, String) => WipInfo | null
@@ -77,9 +82,8 @@ class WipListener
   # (String) => Unit
   _setWip: (newNlogo) ->
     @reverted = null
-    @session.widgetController.ractive.set('hasRevertedWork', false)
-    wipKey = @getWipKey()
-    title  = @getModelTitle()
+    wipKey    = @getWipKey()
+    title     = @getModelTitle()
 
     if newNlogo is @nlogoSource.nlogo and "#{title}.nlogo" is @nlogoSource.fileName()
       # If the new code is just the original code, then we have no work in progress.  Unfortunately this isn't as

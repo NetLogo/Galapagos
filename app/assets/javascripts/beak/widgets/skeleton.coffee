@@ -21,9 +21,9 @@ import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
 # (Element, Array[Widget], String, String,
-#   Boolean, Boolean, String, String, (String) => Boolean) => Ractive
+#   Boolean, String, Boolean, String, String, (String) => Boolean) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
-  isReadOnly, hasWorkInProgress, modelTitle, checkIsReporter) ->
+  isReadOnly, workInProgressState, modelTitle, checkIsReporter) ->
 
   model = {
     checkIsReporter
@@ -31,8 +31,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , consoleOutput:        ''
   , exportForm:           false
   , hasFocus:             false
-  , hasWorkInProgress
-  , hasRevertedWork:      false
+  , workInProgressState
   , height:               0
   , info
   , isEditing:            false
@@ -125,6 +124,15 @@ generateRactiveSkeleton = (container, widgets, code, info,
       isRevertable: ->
         not @get('isEditing') and @get('hasWorkInProgress')
 
+      disableWorkInProgress: ->
+        @get('workInProgressState') is 'disabled'
+
+      hasWorkInProgress: ->
+        @get('workInProgressState') is 'enabled-with-wip'
+
+      hasRevertedWork: ->
+        @get('workInProgressState') is 'enabled-with-reversion'
+
     },
 
     data: -> model
@@ -165,10 +173,12 @@ template =
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
-              {{#!hasRevertedWork}}
-                <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
-              {{else}}
-                <button class="netlogo-ugly-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
+              {{#!disableWorkInProgress}}
+                {{#!hasRevertedWork}}
+                  <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+                {{else}}
+                  <button class="netlogo-ugly-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
+                {{/}}
               {{/}}
             </div>
             <div class="netlogo-export-wrapper">

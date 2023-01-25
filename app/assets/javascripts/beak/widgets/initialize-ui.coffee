@@ -7,8 +7,8 @@ import controlEventTraffic from "./event-traffic-control.js"
 import genConfigs from "./config-shims.js"
 import ViewController from "./draw/view-controller.js"
 
-# (Element|String, Array[Widget], String, String, Boolean, Boolean, String, String, BrowserCompiler) => WidgetController
-initializeUI = (containerArg, widgets, code, info, isReadOnly, hasWorkInProgress, modelTitle, compiler) ->
+# (Element|String, Array[Widget], String, String, Boolean, String, String, String, BrowserCompiler) => WidgetController
+initializeUI = (containerArg, widgets, code, info, isReadOnly, workInProgressState, modelTitle, compiler) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -34,7 +34,7 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, hasWorkInProgress
     , code
     , info
     , isReadOnly
-    , hasWorkInProgress
+    , workInProgressState
     , modelTitle
     , (code) -> compiler.isReporter(code)
   )

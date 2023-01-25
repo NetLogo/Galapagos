@@ -83,7 +83,7 @@ RactiveNetLogoModel = Ractive.extend({
       nlogoSource
     , @modelContainer
     , false
-    , ((s) -> s.nlogo)
+    , null
     , @makeCompileResultHandler(callback)
     , @rewriters
     , @listeners

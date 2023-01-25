@@ -4,9 +4,9 @@ import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoi
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
-#  Boolean, Boolean, NlogoSource, Boolean) => SessionLite
+#  Boolean, String, NlogoSource, Boolean) => SessionLite
 newSession = (container, compiler, rewriters, listeners, modelResult,
-  isReadOnly, hasWorkInProgress, nlogoSource, lastCompileFailed) ->
+  isReadOnly, workInProgressState, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
@@ -20,7 +20,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , code
   , info
   , isReadOnly
-  , hasWorkInProgress
+  , workInProgressState
   , nlogoSource
   , result
   , lastCompileFailed
@@ -71,14 +71,23 @@ fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listener
   )
   return
 
-# (NlogoSource, Element, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters, listeners) ->
+# (NlogoSource, Element, Boolean, Boolean,
+#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogoSource, container, isUndoReversion,
+  getWorkInProgress, callback, rewriters, listeners) ->
+
   compiler = new BrowserCompiler()
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
-  startingNlogo     = getWorkInProgress(nlogoSource)
-  hasWorkInProgress = not isUndoReversion and (startingNlogo isnt nlogoSource.nlogo)
+  startingNlogo       = nlogoSource.nlogo
+  workInProgressState = 'disabled'
+  if getWorkInProgress isnt null
+    startingNlogo       = getWorkInProgress(nlogoSource)
+    workInProgressState = if isUndoReversion or startingNlogo isnt nlogoSource.nlogo
+      'enabled-with-wip'
+    else
+      'enabled-and-empty'
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
@@ -104,7 +113,7 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion, getWorkInProgress, cal
     , listeners
     , result
     , false
-    , hasWorkInProgress
+    , workInProgressState
     , nlogoSource
     , false
     )
@@ -128,7 +137,7 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion, getWorkInProgress, cal
       , listeners
       , secondChanceResult
       , false
-      , hasWorkInProgress
+      , workInProgressState
       , nlogoSource
       , true
       )

@@ -33,9 +33,9 @@ class SessionLite
   widgetController: undefined # WidgetController
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
-  #   String, String, Boolean, Boolean, NlogoSource, String, Boolean)
+  #   String, String, Boolean, String, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, isReadOnly, hasWorkInProgress, @nlogoSource, modelJS, lastCompileFailed) ->
+    code, info, isReadOnly, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
@@ -48,7 +48,7 @@ class SessionLite
     , code
     , info
     , isReadOnly
-    , hasWorkInProgress
+    , workInProgressState
     , @nlogoSource.getModelTitle()
     , @compiler
     )

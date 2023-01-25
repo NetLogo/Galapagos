@@ -27,27 +27,36 @@ if (paramKeys.length === 1) {
   }
 }
 
-var ls
-try {
-  ls = window.localStorage
-} catch (exception) {
-  ls = fakeStorage()
-}
-const storage    = new NamespaceStorage('netLogoWebWip', ls)
-const storageTag = params.has('storageTag') ? params.get('storageTag') : null
-// There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
-// `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
-// about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
-// January 2023
-const wipListener = new WipListener(storage, storageTag)
-const getWorkInProgress = (nlogoSource) => {
-  wipListener.nlogoSource = nlogoSource
-  const wipInfo = wipListener.getWip()
-  if (wipInfo !== null) {
-    nlogoSource.setModelTitle(wipInfo.title)
-    return wipInfo.nlogo
+const listeners = []
+
+const disableWorkInProgress = params.has('disableWorkInProgress')
+var wipListener       = null
+var getWorkInProgress = null
+
+if (!disableWorkInProgress) {
+  var ls
+  try {
+    ls = window.localStorage
+  } catch (exception) {
+    ls = fakeStorage()
   }
-  return nlogoSource.nlogo
+  const storage    = new NamespaceStorage('netLogoWebWip', ls)
+  const storageTag = params.has('storageTag') ? params.get('storageTag') : null
+  // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
+  // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
+  // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
+  // January 2023
+  wipListener = new WipListener(storage, storageTag)
+  getWorkInProgress = (nlogoSource) => {
+    wipListener.nlogoSource = nlogoSource
+    const wipInfo = wipListener.getWip()
+    if (wipInfo !== null) {
+      nlogoSource.setModelTitle(wipInfo.title)
+      return wipInfo.nlogo
+    }
+    return nlogoSource.nlogo
+  }
+  listeners.push(wipListener)
 }
 
 var pageTitle = function(modelTitle) {
@@ -64,7 +73,9 @@ var isVertical     = true
 
 var openSession = function(s) {
   globalThis.session = s
-  wipListener.setSession(globalThis.session)
+  if (!disableWorkInProgress) {
+    wipListener.setSession(globalThis.session)
+  }
   globalThis.session.widgetController.ractive.set('speed', speed)
   globalThis.session.widgetController.ractive.set('isVertical', isVertical)
   document.title = pageTitle(globalThis.session.modelTitle())
@@ -77,6 +88,7 @@ const isStandaloneHTML = (nlogoScript.textContent.length > 0)
 const isInFrame        = parent !== window
 const alerter          = new AlertDisplay(document.getElementById('alert-container'), isStandaloneHTML)
 const alertDialog      = document.getElementById('alert-dialog')
+listeners.push(alerter)
 
 function handleCompileResult(result) {
   if (result.type === 'success') {
@@ -91,8 +103,6 @@ function handleCompileResult(result) {
     notifyListeners('compiler-error', result.source, result.errors)
   }
 }
-
-const listeners = [alerter, wipListener]
 
 if (params.has('debugEvents')) {
   const debugListener = createDebugListener(listenerEvents)
