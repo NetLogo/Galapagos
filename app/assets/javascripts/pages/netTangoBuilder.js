@@ -64,8 +64,31 @@ const netTango = new NetTangoController(
 , netTangoModelUrl
 , listeners
 )
+
+const netLogoListeners = listeners.slice(0)
+var lastNlogo = ""
+const runIfDifferent = (f) => {
+  const nlogoResult = netTango.netLogoModel.session.getNlogo()
+  if (nlogoResult.success) {
+    if (nlogoResult.result !== lastNlogo) {
+      lastNlogo = nlogoResult.result
+      netTango.handleProjectChange()
+    }
+  }
+}
+const netLogoWipListener = {
+  'recompile-complete':   runIfDifferent
+, 'new-widget-finalized': runIfDifferent
+, 'widget-updated':       runIfDifferent
+, 'widget-deleted':       runIfDifferent
+, 'widget-moved':         runIfDifferent
+, 'info-updated':         runIfDifferent
+, 'title-changed':        runIfDifferent
+}
+netLogoListeners.push(netLogoWipListener)
+
 alerter.setNetTangoController(netTango)
 netTango.netLogoModel.alerter = alerter
-netTango.netLogoModel.listeners = listeners
+netTango.netLogoModel.listeners = netLogoListeners
 
 window.ractive = netTango.ractive
