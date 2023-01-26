@@ -25,7 +25,8 @@ bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
         .addClass(status)
 
   populateModelChoices = (select, modelNames) ->
-    select.append($('<option>').text('Select a model'))
+    unselected = $('<option>').text('Select a model')
+    select.append(unselected)
     for modelName in modelNames
       option = $('<option>').attr('value', adjustModelPath(modelName))
         .text(modelDisplayName(modelName))
@@ -43,9 +44,26 @@ bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
         modelName   = modelSplits[modelSplits.length - 1]
         selectionChanged(modelURL, modelName)
     )
+    # This is a hack to get a message to appear at the bottom of the chosen dropdown.  It relies on knowing about the
+    # `chosen-drop` div in order to add the message.  Not too bad overall, but changes to chosen can easily break this,
+    # too.  -Jeremy B January 2023
+    select.on('chosen:ready', (e) ->
+      chosenDrop = $('.chosen-drop')
+      disabledMessage = $('<a>')
+        .text("Grayed out models don't yet run in NetLogo Web.")
+        .attr('href', '/docs/faq#library-models')
+        .click( (me) ->
+          # Chosen prevents default ops on its contents somehow, so we don't let the event get that far.
+          me.stopPropagation()
+        )
+      disabledDiv = $('<div>')
+        .addClass('model-list-disabled-message')
+        .append(disabledMessage)
+      chosenDrop.append(disabledDiv)
+    )
     populateModelChoices(select, modelNames)
     select.appendTo(container)
-    select.chosen({search_contains: true, width: "inherit"})
+    select.chosen({ search_contains: true, width: "inherit"  })
     select
 
   $.ajax('./model/list.json', {

@@ -43,6 +43,12 @@ iframe {
   display: inline-block;
 }
 
+.model-list-disabled-message {
+  text-align: left;
+  padding: 10px 10px;
+  font-size: smaller;
+}
+
 .model-box {
   max-width: 100%;
   min-height: 300px;
