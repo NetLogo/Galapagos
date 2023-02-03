@@ -36,6 +36,14 @@
 
   <h3>Saving Your Changes</h3>
 
-  <p>To learn about how to retain any changes you made in authoring mode, please see the <a href="faq#saving">"How can I save models from NetLogo Web?" section of the FAQ</a>.</p>
+  <p>As you make changes to your model, NetLogo Web will automatically save them to your web browser's local storage cache.  Each model source will be stored separately according to the source of the model: URLs, file uploads, or the New Model.  To return to your work in progress just open NetLogo Web to the same source you used before.  It will alert you that your changes have been loaded from the cache.  If you wish you can Press the <strong>Revert to Original</strong> button to restore the model to its original source.  If you revert your changes by mistake, you can press the <strong>Undo Revert</strong> button.</p>
+
+  <p>Your web browser's local cache does have limited space, and while it should be reliable, it can be wiped when certain actions happen, like re-installing your browser or wiping the cache to free up space.  As such it's always a good idea to occassionally save off your work in progress to a permanent file on your computing device.  To learn more about saving local copies of your authoring work, please see the <a href="faq#saving">"How can I save models from NetLogo Web?" section of the FAQ</a>.</p>
+
+  <p>You can disable auto-save by adding <code>disableWorkInProgress</code> to the URL of your NetLogo Web session.  For example, if you have open <code>netlogoweb.org/launch#modelURL</code>, then do <code>netlogoweb.org/launch?disableWorkInProgress#modelURL</code>.  This can be useful when hot-linking models or embedding model HTML files in another site when you do not want people using those models to have changes auto-saved.</p>
+
+  <p>You can use a <code>storageTag</code> query paramater to allow saving a different work in progress for the same model URL.  This is useful when you're embedding the same model in multiple places but want each "instance" to be treated differently for retaining the work in progress.  The storage tag can be any text string you like.  For example, if you have open <code>netlogoweb.org/launch#modelURL</code>, then do <code>netlogoweb.org/launch?sotrageTag=unique1#modelURL</code> to use a separate storage space.  This works with directly linked models as well as exported HTML models.</p>
+
+  <p>See <a href="faq#speed-parameter">the <code>speed</code> parameter docs</a> for more information on setting query parameters for NetLogo Web models.</p>
 
 </div>
