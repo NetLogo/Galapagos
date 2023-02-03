@@ -84,10 +84,10 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion,
   workInProgressState = 'disabled'
   if getWorkInProgress isnt null
     startingNlogo       = getWorkInProgress(nlogoSource)
-    workInProgressState = if isUndoReversion or startingNlogo isnt nlogoSource.nlogo
-      'enabled-with-wip'
-    else
+    workInProgressState = if isUndoReversion or startingNlogo is nlogoSource.nlogo
       'enabled-and-empty'
+    else
+      'enabled-with-wip'
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
