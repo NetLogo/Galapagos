@@ -120,8 +120,17 @@ class WipListener
 
     return
 
+  # (CompilerErrorArgs) => Unit
+  _filterCompileErrors: (compilerErrorArgs) ->
+    isUserChange = ['recompile'].includes(compilerErrorArgs.source)
+    if isUserChange
+      @_maybeSetWip()
+
+    return
+
   # These are the Listener events.
   'recompile-complete':   () -> @_maybeSetWip()
+  'compiler-error':       (_, e) -> @_filterCompileErrors(e)
   'new-widget-finalized': () -> @_maybeSetWip()
   'widget-updated':       () -> @_maybeSetWip()
   'widget-deleted':       () -> @_maybeSetWip()
