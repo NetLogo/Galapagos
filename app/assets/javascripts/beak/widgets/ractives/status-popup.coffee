@@ -1,3 +1,5 @@
+CACHE_ALERT_DEFAULT_DISPLAY_TIME = 20
+
 RactiveStatusPopup = Ractive.extend({
 
   data: -> {
@@ -17,7 +19,7 @@ RactiveStatusPopup = Ractive.extend({
 
   showStatus: () ->
     @set('isUp', true)
-    timer = 5
+    timer = CACHE_ALERT_DEFAULT_DISPLAY_TIME
     @set('statusTimer', timer)
     timerTick = () =>
       if timer < 1

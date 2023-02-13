@@ -282,14 +282,10 @@ getArgName = (argSetting, args) ->
     argSetting
   else
     dependentValue = args[argSetting.sourceArg]
-    maybeCase = argSetting.cases.filter( (argCase) ->
+    maybeCase = argSetting.cases.find( (argCase) ->
       argCase.sourceArgValues.includes(dependentValue)
     )
-    if maybeCase.length is 1
-      foundCase = maybeCase[0]
-      foundCase.argToAdd
-    else
-      null
+    maybeCase?.argToAdd
 
 # (Array[String | DependentArg], Array[Any]) => EventTypeArgs
 createNamedArgs = (argSettings, argValues) ->
@@ -298,7 +294,7 @@ createNamedArgs = (argSettings, argValues) ->
     throw new Error("not enough arg settings for the values given")
   argSettings.forEach( (argSetting, i) ->
     argName = getArgName(argSetting, namedArgs)
-    if argName isnt null
+    if argName?
       namedArgs[argName] = argValues[i]
   )
   namedArgs

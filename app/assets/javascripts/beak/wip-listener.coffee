@@ -16,7 +16,7 @@ class WipListener
   # (SessionLite) => Unit
   setSession: (session) ->
     @session = session
-    # This is necessary in the case where we didn't tell the session there was WIP at initialization becase we wanted to
+    # This is necessary in the case where we didn't tell the session there was WIP at initialization because we wanted to
     # avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
     if @reverted?
       @session.widgetController.ractive.set('workInProgressState', 'enabled-with-reversion')
@@ -65,7 +65,7 @@ class WipListener
   _storeWipInfo: (wipKey, newNlogo, title) ->
     wipInfo = {
       version:   WIP_INFO_FORMAT_VERSION
-      title:     title
+      title
       timeStamp: Date.now()
       nlogo:     newNlogo
     }
@@ -112,7 +112,7 @@ class WipListener
   # (String, String) => Unit
   _updateForFileExport: (fileName, newNlogo) ->
     source = new DiskSource(fileName, newNlogo)
-    # If we are current working on an imported file or a new document, the just-exported nlogo file has become our
+    # If we are currently working on an imported file or a new document, the just-exported nlogo file has become our
     # authoritative source, so reset.  -Jeremy B January 2023
     if ['disk', 'new'].includes(@nlogoSource.type)
       @nlogoSource = source

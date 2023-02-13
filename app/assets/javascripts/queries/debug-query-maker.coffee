@@ -35,7 +35,7 @@ createQueryMaker = (modelContainer) ->
 listenForQueryResponses = () ->
   window.addEventListener('message', (event) ->
     if (event.data.type is 'nlw-query-response')
-      console.log(event.data)
+      console.debug(event.data)
     return
   )
   return

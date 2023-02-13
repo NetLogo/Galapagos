@@ -119,8 +119,8 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion,
     )
 
     callback({
-      type:    'success'
-    , session: session
+      type: 'success'
+    , session
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )

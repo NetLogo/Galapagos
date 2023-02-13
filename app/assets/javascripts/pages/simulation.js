@@ -30,34 +30,36 @@ if (paramKeys.length === 1) {
 const listeners = []
 
 const disableWorkInProgress = params.has('disableWorkInProgress')
-var wipListener       = null
-var getWorkInProgress = null
-
-if (!disableWorkInProgress) {
-  var ls
-  try {
-    ls = window.localStorage
-  } catch (exception) {
-    ls = fakeStorage()
-  }
-  const storage    = new NamespaceStorage('netLogoWebWip', ls)
-  const storageTag = params.has('storageTag') ? params.get('storageTag') : null
-  // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
-  // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
-  // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
-  // January 2023
-  wipListener = new WipListener(storage, storageTag)
-  getWorkInProgress = (nlogoSource) => {
-    wipListener.nlogoSource = nlogoSource
-    const wipInfo = wipListener.getWip()
-    if (wipInfo !== null) {
-      nlogoSource.setModelTitle(wipInfo.title)
-      return wipInfo.nlogo
+const [wipListener, getWorkInProgress] = (() => {
+  if (!disableWorkInProgress) {
+    var ls
+    try {
+      ls = window.localStorage
+    } catch (exception) {
+      ls = fakeStorage()
     }
-    return nlogoSource.nlogo
+    const storage    = new NamespaceStorage('netLogoWebWip', ls)
+    const storageTag = params.has('storageTag') ? params.get('storageTag') : null
+    // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
+    // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
+    // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
+    // January 2023
+    const wl = new WipListener(storage, storageTag)
+    const gwip = (nlogoSource) => {
+      wl.nlogoSource = nlogoSource
+      const wipInfo = wl.getWip()
+      if (wipInfo !== null) {
+        nlogoSource.setModelTitle(wipInfo.title)
+        return wipInfo.nlogo
+      }
+      return nlogoSource.nlogo
+    }
+    listeners.push(wl)
+    return [wl, gwip]
+  } else {
+    return [null, null]
   }
-  listeners.push(wipListener)
-}
+})()
 
 var pageTitle = function(modelTitle) {
   if (modelTitle != null && modelTitle != '') {
