@@ -80,12 +80,13 @@ const redirectOnProtocolMismatch = function(url) {
 
   const loc         = window.location
   const isSameHost  = uri.hostname === loc.hostname
+  const isCCL       = uri.hostname === "ccl.northwestern.edu"
   const port        = isSameHost && window.debugMode ? "9443" : "443"
   const newModelUrl = `https://${uri.hostname}:${port}${uri.pathname}`
 
   // if we're in an iframe we can't even reliably make a link to use
   // so just alert the user.
-  if (!isSameHost && isInFrame) {
+  if (!isSameHost && !isCCL && isInFrame) {
     alerter.reportProtocolError(uri, newModelUrl)
     activeContainer = alertDialog
     loadingOverlay.style.display = "none";
@@ -105,7 +106,7 @@ const redirectOnProtocolMismatch = function(url) {
 
   // if we're not on the same host the link might work, but let
   // the user know and let them click it.
-  if (!isSameHost) {
+  if (!isSameHost && !isCCL) {
     alerter.reportProtocolError(uri, newModelUrl, newHref)
     activeContainer = alertDialog
     loadingOverlay.style.display = "none";
