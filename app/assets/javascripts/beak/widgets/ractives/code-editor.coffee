@@ -34,7 +34,7 @@ RactiveModelCodeComponent = Ractive.extend({
     return
 
   setupProceduresDropdown: ->
-    $('#procedurenames-dropdown').chosen({ search_contains: true })
+    $('#procedurenames-dropdown').chosen({ search_contains: true, width: "296px" })
     $('#procedurenames-dropdown').on('change', =>
       procedureNames = @get('procedureNames')
       selectedProcedure = $('#procedurenames-dropdown').val()
