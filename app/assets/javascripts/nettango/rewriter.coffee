@@ -1,6 +1,7 @@
 import { nlogoToSections, sectionsToNlogo } from "/beak/tortoise-utils.js"
+import Rewriter from "/beak/rewriter.js"
 
-class NetTangoRewriter
+class NetTangoRewriter extends Rewriter
   @BEGIN = "; --- NETTANGO BEGIN ---"
   @END   = "; --- NETTANGO END ---"
   @MODIFY_WARNING =
@@ -11,6 +12,7 @@ class NetTangoRewriter
     "\n; can safely edit this code however you want, just like a normal NetLogo model."
 
   constructor: (@getNetTangoCode, @getNetTangoSpaces, @isDebugMode) ->
+    super()
     return
 
   # (String) => String

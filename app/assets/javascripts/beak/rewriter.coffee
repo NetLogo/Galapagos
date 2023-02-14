@@ -1,24 +1,37 @@
-# So far I haven't had a reason to turn this into a real class or to add the properties as real code somewhere.  But I
-# still wanted the basic shape of the Rewriter documented somewhere.  Note that due to changes in how NetTango Web
-# handles recompiles on block changes, some of these are no longer used by that app.  -Jeremy B January 2023
+# At the moment NetTango Web is the only consumer of this class.  Due to changes in how NetTango works since it was developed, some of the rewriter points are no longer used by that app.  -Jeremy B January 2023
 
-# type Rewriter = {
-#   // called to rewrite the nlogo string before initial compilation
-#   injectNlogo?: (String) => String
+class Rewriter
 
-#   // called to rewrite the code contents of a model when recompiling
-#   injectCode?: (String) => String
+  # Called when a compile or recompile is successful.
+  # () => Unit
+  compileComplete: () ->
+    return
 
-#   // called to rewrite the code contents of a mdoel when exporting as full nlogo
-#   exportCode?: (String) => String
+  # Called to rewrite the nlogo string before initial compilation of the full nlogo model file.
+  # (String) => String
+  injectNlogo: (nlogo) ->
+    nlogo
 
-#   // called when recompiling to get any extra command strings to compile as well
-#   getExtraCommands?: () => Array[String]
+  # Called to rewrite the code contents of a model when recompiling.
+  # (String) => String
+  injectCode: (code) ->
+    code
 
-#   // called when errors occur to re-write if necessary from injected code
-#   // the arguments are the original code, the rewritten code, and the errors
-#   updateErrors?: (String, String, Array[String]) => Array[String]
+  # Called to rewrite the code contents of a model when exporting as full nlogo.
+  # (String) => String
+  exportCode: (code) ->
+    code
 
-#   // called when a compile or recompile is successful
-#   compileComplete?: () => Unit
-# }
+  # Called when recompiling to get any extra command strings to compile as well.
+  # () => Array[String]
+  getExtraCommands:  () ->
+    []
+
+  # Called when errors occur to re-write if necessary from injected code.  This can happen when the injected code
+  # modifies the line numbers of the original code (it won't match the code editor window).  The arguments are the
+  # original code, the rewritten code, and the errors.
+  # (String, String, Array[String]) => Array[String]
+  updateErrors: (original, rewritten, errors) ->
+    errors
+
+export default Rewriter
