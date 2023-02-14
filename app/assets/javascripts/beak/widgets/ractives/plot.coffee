@@ -7,7 +7,7 @@ import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveColorInput                from "./subcomponent/color-input.js"
 import { RactiveEditFormLabeledInput }  from "./subcomponent/labeled-input.js"
 import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
-import { RactiveWidget }                from "./widget.js"
+import RactiveWidget                    from "./widget.js"
 
 PlotEditForm = {}
 

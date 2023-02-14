@@ -1,4 +1,4 @@
-import { RactiveWidget } from "./widget.js"
+import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"

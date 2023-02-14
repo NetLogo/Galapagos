@@ -1,4 +1,4 @@
-import { RactiveWidget } from "./widget.js"
+import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
 import RactivePrintArea from "./subcomponent/print-area.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"

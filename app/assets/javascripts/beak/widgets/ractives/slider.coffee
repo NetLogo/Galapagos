@@ -1,4 +1,4 @@
-import { RactiveValueWidget } from "./widget.js"
+import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import { RactiveEditFormOneLineCode } from "./subcomponent/code-container.js"

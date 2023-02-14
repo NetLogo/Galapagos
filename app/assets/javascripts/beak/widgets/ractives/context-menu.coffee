@@ -1,4 +1,4 @@
-import { RactiveWidget } from "./widget.js"
+import RactiveWidget from "./widget.js"
 
 genWidgetCreator = (name, widgetType, isEnabled = true, enabler = (-> false)) ->
   { text: "Create #{name}", enabler, isEnabled
