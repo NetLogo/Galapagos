@@ -16,8 +16,8 @@ class WipListener
   # (SessionLite) => Unit
   setSession: (session) ->
     @session = session
-    # This is necessary in the case where we didn't tell the session there was WIP at initialization because we wanted to
-    # avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
+    # This is necessary in the case where we didn't tell the session there was WIP at initialization because we wanted
+    # to avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
     if @reverted?
       @session.widgetController.ractive.set('workInProgressState', 'enabled-with-reversion')
 

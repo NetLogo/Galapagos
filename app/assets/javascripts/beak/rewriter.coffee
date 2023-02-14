@@ -1,4 +1,5 @@
-# At the moment NetTango Web is the only consumer of this class.  Due to changes in how NetTango works since it was developed, some of the rewriter points are no longer used by that app.  -Jeremy B January 2023
+# At the moment NetTango Web is the only consumer of this class.  Due to changes in how NetTango works since it was
+# developed, some of the rewriter points are no longer used by that app.  -Jeremy B January 2023
 
 class Rewriter
 
