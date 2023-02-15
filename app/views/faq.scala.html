@@ -223,17 +223,17 @@
   @linkableHeader("generate-simple-pages", "Is there an automatic way to generate a model page every time I create a new version of my model?")
 
   <p>You can link to <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-     (where <code><strong>modelURL</strong></code> is the URL of your model).  Every
-     time someone goes to that link (or an iframe is loaded that uses that link as
-     the source URL), the most recent version of your model will be fetched from
-     <code><strong>modelURL</strong></code> and turned into a simple model page.</p>
+     (where <code><strong>modelURL</strong></code> is the URL of your model).  Every time someone goes to that link (or
+     an iframe is loaded that uses that link as the source URL), the most recent version of your model will be fetched
+     from <code><strong>modelURL</strong></code> and turned into a simple model page.</p>
 
-  <p>While this generally should not be a problem, this method requires
-     having an active connection to our website (netlogoweb.org) in order
-     to work, unlike normal standalone NetLogo Web pages, which can be
-     hosted entirely on your own server.</p>
+  <p>This method requires the ability to make a connection to our website (netlogoweb.org) in order to work, and you
+  must make sure your web server has CORS access for netlogoweb.org correctly setup (see <a
+  href="faq#hosting-nlw-files">hosting NetLogo Web models</a> for more info).  This is different than exported
+  standalone NetLogo Web HTML model pages, which can be hosted entirely on your own server that won't require any CORS
+  configuration.  The exported HTML will also not automatically update every time you change your model.</p>
 
-  @linkableHeader("speed-parameter", "Can I set the speed slider to a differnt value than the default when my model loads?")
+  @linkableHeader("speed-parameter", "Can I set the speed slider to a different value than the default when my model loads?")
 
   <p>NetLogo does not store the speed slider setting with the model file, but NetLogo Web
      provides a way to set the slider value on load using a URL query parameter.  If

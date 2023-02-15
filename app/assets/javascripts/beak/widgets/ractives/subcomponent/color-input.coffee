@@ -41,6 +41,7 @@ RactiveColorInput = Ractive.extend({
         catch ex
           0
       @set('value', color)
+      @fire('change')
       false
 
     render: ->

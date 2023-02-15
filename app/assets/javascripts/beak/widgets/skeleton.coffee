@@ -12,6 +12,7 @@ import RactiveConsoleWidget from "./ractives/console.js"
 import RactiveOutputArea from "./ractives/output.js"
 import RactiveInfoTabWidget from "./ractives/info.js"
 import RactiveModelTitle from "./ractives/title.js"
+import RactiveStatusPopup from "./ractives/status-popup.js"
 import RactivePlot from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
@@ -19,44 +20,41 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
-dropNLogoExtension = (s) ->
-  if s.match(/.*\.nlogo/)?
-    s.slice(0, -6)
-  else
-    s
-
-# (Element, Array[Widget], String, String, Boolean, String, String, (String) => Boolean) => Ractive
-generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename, checkIsReporter) ->
+# (Element, Array[Widget], String, String,
+#   Boolean, String, Boolean, String, String, (String) => Boolean) => Ractive
+generateRactiveSkeleton = (container, widgets, code, info,
+  isReadOnly, workInProgressState, modelTitle, checkIsReporter) ->
 
   model = {
     checkIsReporter
   , code
-  , consoleOutput:      ''
-  , exportForm:         false
-  , hasFocus:           false
-  , height:             0
+  , consoleOutput:        ''
+  , exportForm:           false
+  , hasFocus:             false
+  , workInProgressState
+  , height:               0
   , info
-  , isEditing:          false
-  , isHelpVisible:      false
-  , isOverlayUp:        false
+  , isEditing:            false
+  , isHelpVisible:        false
+  , isOverlayUp:          false
   , isReadOnly
-  , isResizerVisible:   true
-  , isStale:            false
-  , isVertical:         true
-  , lastCompiledCode:   code
-  , lastCompileFailed:  false
-  , lastDragX:          undefined
-  , lastDragY:          undefined
-  , modelTitle:         dropNLogoExtension(filename)
-  , outputWidgetOutput: ''
-  , primaryView:        undefined
-  , someDialogIsOpen:   false
-  , someEditFormIsOpen: false
-  , speed:              0.0
-  , ticks:              "" # Remember, ticks initialize to nothing, not 0
-  , ticksStarted:       false
-  , widgetObj:          widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-  , width:              0
+  , isResizerVisible:     true
+  , isStale:              false
+  , isVertical:           true
+  , lastCompiledCode:     code
+  , lastCompileFailed:    false
+  , lastDragX:            undefined
+  , lastDragY:            undefined
+  , modelTitle:           modelTitle
+  , outputWidgetOutput:   ''
+  , primaryView:          undefined
+  , someDialogIsOpen:     false
+  , someEditFormIsOpen:   false
+  , speed:                0.0
+  , ticks:                "" # Remember, ticks initialize to nothing, not 0
+  , ticksStarted:         false
+  , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+  , width:                0
   }
 
   animateWithClass = (klass) ->
@@ -93,6 +91,7 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename,
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
     , infotab:       RactiveInfoTabWidget
+    , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
 
     , tickCounter:   RactiveTickCounter
@@ -121,6 +120,19 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename,
             'authoring - plain'
         else
           'interactive'
+
+      isRevertable: ->
+        not @get('isEditing') and @get('hasWorkInProgress')
+
+      disableWorkInProgress: ->
+        @get('workInProgressState') is 'disabled'
+
+      hasWorkInProgress: ->
+        @get('workInProgressState') is 'enabled-with-wip'
+
+      hasRevertedWork: ->
+        @get('workInProgressState') is 'enabled-with-reversion'
+
     },
 
     data: -> model
@@ -129,6 +141,11 @@ generateRactiveSkeleton = (container, widgets, code, info, isReadOnly, filename,
 # coffeelint: disable=max_line_length
 template =
   """
+  <statusPopup
+    hasWorkInProgress={{hasWorkInProgress}}
+    isSessionLoopRunning={{isSessionLoopRunning}}
+    />
+
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
        tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
        on-focus="@this.fire('track-focus', @node)"
@@ -146,12 +163,23 @@ template =
             </a>
           </div>
         </div>
-        <editableTitle title="{{modelTitle}}" isEditing="{{isEditing}}"/>
+        <editableTitle
+          title="{{modelTitle}}"
+          isEditing="{{isEditing}}"
+          hasWorkInProgress="{{hasWorkInProgress}}"
+          />
         {{# !isReadOnly }}
           <div class="flex-column" style="align-items: flex-end; user-select: none;">
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
+              {{#!disableWorkInProgress}}
+                {{#!hasRevertedWork}}
+                  <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+                {{else}}
+                  <button class="netlogo-ugly-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
+                {{/}}
+              {{/}}
             </div>
             <div class="netlogo-export-wrapper">
               <span style="margin-right: 4px;">Export:</span>
@@ -184,7 +212,7 @@ template =
 
       <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
         <span class="netlogo-label">model speed</span>
-        <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} />
+        <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" />
         <tickCounter isVisible="{{primaryView.showTickCounter}}"
                      label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
       </label>
@@ -213,7 +241,7 @@ template =
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
       <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{showConsole}}" />
+        <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
         <span class="netlogo-tab-text">Command Center</span>
       </label>
       {{#showConsole}}
@@ -221,14 +249,14 @@ template =
       {{/}}
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" />
+        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
         <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
       </label>
       {{#showCode}}
         <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
       {{/}}
       <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" />
+        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
         <span class="netlogo-tab-text">Model Info</span>
       </label>
       {{#showInfo}}

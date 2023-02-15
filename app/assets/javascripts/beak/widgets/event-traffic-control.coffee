@@ -195,11 +195,13 @@ controlEventTraffic = (controller) ->
     refreshDims()
     return
 
-  # (String) => Unit
-  toggleBooleanData = (dataName) ->
+  # (String, String) => Unit
+  toggleBoolean = (dataName, notifyEvent) ->
     if not ractive.get('someDialogIsOpen')
       newData = not ractive.get(dataName)
       ractive.set(dataName, newData)
+      if notifyEvent?
+        ractive.fire(notifyEvent, newData)
     return
 
   # (Node) => Unit
@@ -207,9 +209,9 @@ controlEventTraffic = (controller) ->
     ractive.set('hasFocus', document.activeElement is node)
     return
 
-  # (_, Number, Boolean) => Unit
-  unregisterWidget = (_, id, wasNew) ->
-    controller.removeWidgetById(id, wasNew)
+  # (_, Number, Boolean, Array[Any]) => Unit
+  unregisterWidget = (_, id, wasNew, extraNotificationArgs) ->
+    controller.removeWidgetById(id, wasNew, extraNotificationArgs)
     refreshDims()
     return
 
@@ -233,8 +235,8 @@ controlEventTraffic = (controller) ->
   ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)
 
   ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
-  ractive.on('toggle-interface-lock', () -> toggleBooleanData('isEditing'))
-  ractive.on('toggle-orientation'   , () -> toggleBooleanData('isVertical'))
+  ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))
+  ractive.on('toggle-orientation'   , () -> toggleBoolean('isVertical'))
   ractive.on('*.redraw-view'        , redrawView)
   ractive.on('*.resize-view'        , resizeView)
   ractive.on('*.unregister-widget'  , unregisterWidget)

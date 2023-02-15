@@ -13,7 +13,7 @@ RactiveModelChooser = RactiveModalDialog.extend({
   }
 
   getModelInfo: () ->
-    [@get("encodedUrl"), @get("name")]
+    [@get("encodedUrl")]
 
   # (Int) => Unit
   show: (top) ->

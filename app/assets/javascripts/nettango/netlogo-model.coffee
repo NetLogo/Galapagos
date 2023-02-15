@@ -1,5 +1,7 @@
 import newModelNetTango from "./new-model-nettango.js"
 import Tortoise from "/beak/tortoise.js"
+import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
+import { fakeStorage } from "../namespace-storage.js"
 
 # This is a very straightforward translation of the old code to run a NetLogo Web model
 # into a Ractive component.  With more work it could encapsulate a lot more
@@ -7,6 +9,8 @@ import Tortoise from "/beak/tortoise.js"
 
 RactiveNetLogoModel = Ractive.extend({
 
+  rewriters:        null # Array[Rewriter]
+  listeners:        null # Array[Listener]
   alerter:          null # AlertDisplay
   modelContainer:   null # Element
   session:          null # SessionLite
@@ -16,17 +20,21 @@ RactiveNetLogoModel = Ractive.extend({
   on: {
     complete: (_) ->
       @modelContainer = @find("#netlogo-model-container")
+      @notifyListeners = createNotifier(listenerEvents, @listeners)
 
       window.addEventListener("message", (e) =>
         switch e.data.type
           when "nlw-load-model"
-            @loadModel(e.data.nlogo, e.data.path)
+            @notifyListeners('model-load', 'file', e.data.path)
+            @loadModel(e.data.nlogo, 'disk', e.data.path)
 
           when "nlw-open-new"
-            @loadModel(newModelNetTango, "NewModel")
+            @notifyListeners('model-load', 'new-model')
+            @loadModel(newModelNetTango, 'new', 'NewModel')
 
           when "nlw-load-url"
-            @loadUrl(e.data.url, e.data.name)
+            @notifyListeners('model-load', 'url', e.data.url)
+            @loadUrl(e.data.url)
 
           when "nlw-update-model-state"
             @widgetController.setCode(e.data.codeTabContents)
@@ -50,7 +58,7 @@ RactiveNetLogoModel = Ractive.extend({
     @workspace        = window.workspace
     document.title    = @pageTitle(@session.modelTitle())
     @session.startLoop()
-    @alerter.listenForErrors(@widgetController)
+    @alerter.setWidgetController(@widgetController)
 
   makeCompileResultHandler: (callback) ->
     (result) =>
@@ -62,22 +70,38 @@ RactiveNetLogoModel = Ractive.extend({
       else
         if result.source is 'compile-recoverable'
           @openSession(result.session)
-        @alerter.reportCompilerErrors(result.source, result.errors)
+        @notifyListeners('compiler-error', result.source, result.errors)
 
       return
 
-  loadModel: (nlogo, path, rewriters, callback) ->
+  loadModel: (nlogo, sourceType, path, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromNlogoSync(nlogo, @modelContainer, path, @makeCompileResultHandler(callback), rewriters)
+    nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
+    Tortoise.fromNlogoSync(
+      nlogoSource
+    , @modelContainer
+    , false
+    , null
+    , @makeCompileResultHandler(callback)
+    , @rewriters
+    , @listeners
+    )
     Tortoise.finishLoading()
 
-  loadUrl: (url, modelName, rewriters, callback) ->
+  loadUrl: (url, callback) ->
     if @session?
       @session.teardown()
 
-    Tortoise.fromURL(url, modelName, @modelContainer, @makeCompileResultHandler(callback), rewriters)
+    Tortoise.fromURL(
+      url
+    , @modelContainer
+    , ((s) -> s.nlogo)
+    , @makeCompileResultHandler(callback)
+    , @rewriters
+    , @listeners
+    )
 
   template: """
     <div class="ntb-netlogo-model">

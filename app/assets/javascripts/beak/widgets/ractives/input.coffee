@@ -1,4 +1,4 @@
-import RactiveWidget from "./widget.js"
+import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
@@ -75,11 +75,13 @@ InputEditForm = EditForm.extend({
 
 })
 
-RactiveInput = RactiveWidget.extend({
+RactiveInput = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   }
+
+  widgetType: "input"
 
   components: {
     colorInput: RactiveColorInput
@@ -109,7 +111,7 @@ RactiveInput = RactiveWidget.extend({
     # other widget types are left unbothered by this. --Jason B. (4/16/18)
     'code-changed': (_, newValue) ->
       if @get('widget').boxedValue.type.includes("String ")
-        @set('widget.currentValue', newValue)
+        @set('internalValue', newValue)
       false
 
     'handle-keypress': ({ original: { keyCode, target } }) ->
@@ -120,15 +122,10 @@ RactiveInput = RactiveWidget.extend({
     render: ->
 
       # Scroll to bottom on value change --Jason B. (8/17/16)
-      @observe('widget.currentValue'
-      , (newValue, oldValue) =>
-
-          @scrollToBottom(newValue)
-
-          @validateValue(newValue, oldValue)
-
-          return
-
+      @observe('widget.currentValue', (newValue, oldValue) =>
+        @scrollToBottom(newValue)
+        @validateValue(newValue, oldValue)
+        return
       )
 
   }
@@ -197,16 +194,44 @@ RactiveInput = RactiveWidget.extend({
       <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input {{classes}}" style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
-          <input class="netlogo-multiline-input" type="number" value="{{widget.currentValue}}" lazy="true" {{# isEditing }}disabled{{/}} />
+          <input
+            class="netlogo-multiline-input"
+            type="number"
+            value="{{internalValue}}"
+            lazy="true"
+            on-change="['widget-value-change', widget.boxedValue.type]"
+            {{# isEditing }}disabled{{/}}
+            />
         {{/}}
         {{# widget.boxedValue.type === 'String'}}
-          <textarea class="netlogo-multiline-input" value="{{widget.currentValue}}" on-keypress="handle-keypress" lazy="true" {{# isEditing }}disabled{{/}} ></textarea>
+          <textarea
+            class="netlogo-multiline-input"
+            value="{{internalValue}}"
+            on-keypress="handle-keypress"
+            lazy="true"
+            on-change="['widget-value-change', widget.boxedValue.type]"
+            {{# isEditing }}disabled{{/}} >
+          </textarea>
         {{/}}
         {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
-          <editor extraClasses="['netlogo-multiline-input']" id="{{id}}-code" injectedConfig="{ scrollbarStyle: 'null' }" style="height: 50%;" initialCode="{{widget.currentValue}}" isDisabled="{{isEditing}}" />
+          <editor
+            extraClasses="['netlogo-multiline-input']"
+            id="{{id}}-code"
+            injectedConfig="{ scrollbarStyle: 'null' }"
+            style="height: 50%;"
+            initialCode="{{internalValue}}"
+            isDisabled="{{isEditing}}"
+            on-change="['widget-value-change', widget.boxedValue.type]"
+            />
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
-          <colorInput class="netlogo-multiline-input" style="margin: 0; width: 100%;" value="{{widget.currentValue}}" isEnabled="{{!isEditing}}" />
+          <colorInput
+            class="netlogo-multiline-input"
+            style="margin: 0; width: 100%;"
+            value="{{internalValue}}"
+            isEnabled="{{!isEditing}}"
+            on-change="['widget-value-change', widget.boxedValue.type]"
+            />
         {{/}}
       </label>
       """

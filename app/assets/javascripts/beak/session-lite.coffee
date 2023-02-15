@@ -1,8 +1,11 @@
+import { createCommonArgs, createNamedArgs, listenerEvents } from "../notifications/listener-events.js"
+
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"
 import { toNetLogoMarkdown }    from "./tortoise-utils.js"
 import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
+import { cloneWidget }          from "./widgets/widget-properties.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -29,33 +32,59 @@ class SessionLite
 
   widgetController: undefined # WidgetController
 
-  # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Widget],
-  #   String, String, Boolean, String, String, Boolean)
-  constructor: (@tortoise, container, @compiler, @rewriters, widgets,
-    code, info, readOnly, filename, modelJS, lastCompileFailed) ->
+  # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
+  #   String, String, Boolean, String, NlogoSource, String, Boolean)
+  constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
+    code, info, isReadOnly, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
     @_lastUpdate       = 0
     @drawEveryFrame    = false
 
-    @widgetController = initializeUI(container, widgets, code, info, readOnly, filename, @compiler)
-    # coffeelint: disable=max_line_length
-    @widgetController.ractive.on('*.recompile'         , (_, callback, useOverlay) => @recompile(callback, useOverlay))
-    @widgetController.ractive.on('*.recompile-for-plot', (_, oldName, newName, renamings) => @recompile((->), true, oldName, newName, renamings))
-    @widgetController.ractive.on('export-nlogo'        , (_, event)                => @exportNlogo(event))
-    @widgetController.ractive.on('export-html'         , (_, event)                => @exportHtml(event))
-    @widgetController.ractive.on('open-new-file'       , (_, event)                => @openNewFile())
-    @widgetController.ractive.on('*.run'               , (_, source, code)         => @run(source, code))
-    @widgetController.ractive.on('*.set-global'        , (_, varName, value)       => @setGlobal(varName, value))
+    @widgetController = initializeUI(
+      container
+    , widgets
+    , code
+    , info
+    , isReadOnly
+    , workInProgressState
+    , @nlogoSource.getModelTitle()
+    , @compiler
+    )
 
-    @widgetController.ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
+    # coffeelint: disable=max_line_length
+    ractive = @widgetController.ractive
+    ractive.on('*.recompile'     , (_, source)         => @recompile(source))
+    ractive.on('*.recompile-sync', (_, source)         => @recompileSync(source))
+    ractive.on('*.recompile-for-plot', (_, source, oldName, newName, renamings) => @recompile(source, oldName, newName, renamings))
+    ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
+    ractive.on('export-html'     , (_, event)          => @exportHtml(event))
+    ractive.on('open-new-file'   , (_)                 => @openNewFile())
+    ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
+    ractive.on('*.undo-revert'   , (_)                 => @undoRevert())
+    ractive.on('*.run'           , (_, source, code)   => @run(source, code))
+    ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
+
+    listenerEvents.forEach( (event) ->
+      listeners.forEach( (l) ->
+        if l[event.name]?
+          ractive.on("*.#{event.name}", (_, args...) ->
+            commonArgs = createCommonArgs()
+            eventArgs  = createNamedArgs(event.args, args)
+            l[event.name](commonArgs, eventArgs)
+            return
+          )
+        return
+      )
+    )
+
+    ractive.on('*.recompile-procedures', (_, proceduresCode, procedureNames, successCallback) =>
       @recompileProcedures(proceduresCode, procedureNames, successCallback)
     )
     # coffeelint: enable=max_line_length
 
-
-    @widgetController.ractive.set('lastCompileFailed', lastCompileFailed)
+    ractive.set('lastCompileFailed', lastCompileFailed)
 
     # The global 'modelConfig' variable is used by the Tortoise runtime - David D. 7/2021
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
@@ -68,9 +97,13 @@ class SessionLite
   startLoop: ->
     if ProcedurePrims.hasCommand('startup')
       runWithErrorHandling('startup', @widgetController.reportError, () -> ProcedurePrims.callCommand('startup'))
+      @widgetController.ractive.fire('startup-procedure-run')
     @widgetController.redraw()
     @widgetController.updateWidgets()
     requestAnimationFrame(@eventLoop)
+    @widgetController.ractive.set('isSessionLoopRunning', true)
+    @widgetController.ractive.fire('session-loop-started')
+    return
 
   updateDelay: ->
     viewWidget = @widgetController.widgets().filter(({ type }) -> type is 'view')[0]
@@ -147,31 +180,8 @@ class SessionLite
 
     @rewriters.reduce(rewriter, errors)
 
-  # The `currentValue` for a monitor widget can be a turtle or patch, which
-  # causes an infinite loop in the JSON serialization code due to circular
-  # references.  So skip sending it over.
-
-  # Other widgets can also have a `currentValue` of a turtle or patch,
-  # sliders for sure, but that's a bug with the type checking not rejecting
-  # setting the global for the slider to an agent value.  Safer just to not
-  # send the current value for any widget for now, especially since they are
-  # Galapagos-only and the compiler does not use them.
-
-  # -Jeremy B July 2021
-
-  cloneWidgets: (widgets) ->
-    propsToSkip = ['currentValue']
-    widgets.map( (oldWidget) ->
-      newWidget = {}
-      props     = Object.keys(oldWidget).filter( (p) -> not propsToSkip.includes(p) )
-      props.forEach( (p) -> newWidget[p] = oldWidget[p] )
-      newWidget
-    )
-
-  # (() => Unit, Boolean, String, String, Object[String]) => Unit
-  recompile: ( successCallback = (->), useOverlay = true
-             , oldPlotName = "", newPlotName = "", plotRenames = {}) ->
-
+  # ("user" | "system", String, String, Object[String]) => Unit
+  recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
     code          = @widgetController.code()
     oldWidgets    = @widgetController.widgets()
     rewritten     = @rewriteCode(code)
@@ -179,65 +189,62 @@ class SessionLite
 
     compileParams = {
       code:         rewritten
-    , widgets:      @cloneWidgets(oldWidgets)
+    , widgets:      oldWidgets.map(cloneWidget)
     , commands:     extraCommands
     , reporters:    []
     , turtleShapes: turtleShapes ? []
     , linkShapes:   linkShapes ? []
     }
 
-    recompileProcess = () =>
-      try
-        res = @compiler.fromModel(compileParams)
-        if res.model.success
+    @widgetController.ractive.fire('recompile-start', source, rewritten, code)
 
-          state           = world.exportState()
-          breeds          = Object.values(world.breedManager.breeds())
-          breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
-          @widgetController.redraw()
-          # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
+    try
+      res = @compiler.fromModel(compileParams)
+      if res.model.success
 
-          if oldPlotName isnt newPlotName
-            pops = @widgetController.configs.plotOps
-            pops[oldPlotName].dispose()
-            delete pops[oldPlotName]
+        state           = world.exportState()
+        breeds          = Object.values(world.breedManager.breeds())
+        breedShapePairs = breeds.map((b) -> [b.name, b.getShape()])
+        @widgetController.redraw()
+        # Redraw right before `Updater` gets clobbered --Jason B. (2/27/18)
 
-          @widgetController.ractive.set('isStale',           false)
-          @widgetController.ractive.set('lastCompiledCode',  code)
-          @widgetController.ractive.set('lastCompileFailed', false)
-          @widgetController.redraw()
-          @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+        if oldPlotName isnt newPlotName
+          pops = @widgetController.configs.plotOps
+          pops[oldPlotName].dispose()
+          delete pops[oldPlotName]
 
-          globalEval(res.model.result)
-          breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
-          plots = plotManager.getPlots()
-          state.plotManager =
-            mangleExportedPlots( state.plotManager, plots, plotRenames
-                               , oldPlotName, newPlotName)
-          world.importState(state)
+        @widgetController.ractive.set('isStale',           false)
+        @widgetController.ractive.set('lastCompiledCode',  code)
+        @widgetController.ractive.set('lastCompileFailed', false)
+        @widgetController.redraw()
+        @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
-          successCallback()
-          res.commands.forEach((c) -> if c.success then (new Function(c.result))())
-          @rewriters.forEach((rw) -> rw.compileComplete?())
+        globalEval(res.model.result)
+        breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
+        plots = plotManager.getPlots()
+        state.plotManager =
+          mangleExportedPlots(state.plotManager, plots, plotRenames, oldPlotName, newPlotName)
+        world.importState(state)
 
-        else
-          @widgetController.ractive.set('lastCompileFailed', true)
-          errors = @rewriteErrors(code, rewritten, res.model.result)
-          @widgetController.reportError('compiler', 'recompile', errors)
+        res.commands.forEach((c) -> if c.success then (new Function(c.result))())
+        @rewriters.forEach((rw) -> rw.compileComplete?())
+        @widgetController.ractive.fire('recompile-complete', source, rewritten, code)
 
-      catch ex
-        @widgetController.reportError('compiler', 'recompile', [ex.toString()])
+      else
+        @widgetController.ractive.set('lastCompileFailed', true)
+        errors = @rewriteErrors(code, rewritten, res.model.result)
+        @widgetController.reportError('compiler', 'recompile', errors)
 
-      finally
-        @tortoise.finishLoading()
+    catch ex
+      @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
+  # ("user" | "system", String, String, Object[String]) => Unit
+  recompile: (source, oldPlotName = "", newPlotName = "", plotRenames = {}) ->
+    @tortoise.startLoading( () =>
+      @recompileSync(source, oldPlotName, newPlotName, plotRenames)
+      @tortoise.finishLoading()
       return
-
-    if useOverlay
-      @tortoise.startLoading(recompileProcess)
-    else
-      recompileProcess()
-
+    )
     return
 
   recompileProcedures: (proceduresCode, procedureNames, successCallback) ->
@@ -257,11 +264,20 @@ class SessionLite
 
     return
 
+  getCode: ->
+    @widgetController.code()
+
+  getInfo: ->
+    toNetLogoMarkdown(@widgetController.ractive.get('info'))
+
   getNlogo: ->
+    info    = @getInfo()
+    code    = @rewriteExport(@widgetController.code())
+    widgets = @widgetController.widgets().map(cloneWidget)
     @compiler.exportNlogo({
-      info:         toNetLogoMarkdown(@widgetController.ractive.get('info')),
-      code:         @rewriteExport(@widgetController.code()),
-      widgets:      @widgetController.widgets(),
+      info:         info,
+      code:         code,
+      widgets:      widgets,
       turtleShapes: turtleShapes,
       linkShapes:   linkShapes
     })
@@ -269,12 +285,14 @@ class SessionLite
   exportNlogo: ->
     exportName = @promptFilename('.nlogo')
     if exportName?
-      exportedNLogo = @getNlogo()
-      if (exportedNLogo.success)
-        exportBlob = new Blob([exportedNLogo.result], {type: 'text/plain:charset=utf-8'})
+      exportedNlogo = @getNlogo()
+      if (exportedNlogo.success)
+        exportBlob = new Blob([exportedNlogo.result], {type: 'text/plain:charset=utf-8'})
         saveAs(exportBlob, exportName)
+        @widgetController.ractive.fire('nlogo-exported', exportName, exportedNlogo.result)
+
       else
-        @widgetController.reportError('compiler', 'export-nlogo', exportedNLogo.result)
+        @widgetController.reportError('compiler', 'export-nlogo', exportedNlogo.result)
 
   promptFilename: (extension) =>
     suggestion = @modelTitle() + extension
@@ -299,6 +317,8 @@ class SessionLite
               wrapper.appendChild(dom.documentElement)
               exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
               saveAs(exportBlob, exportName)
+              @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
+
             else
               @widgetController.reportError('compiler', 'export-html', nlogo.result)
 
@@ -309,16 +329,36 @@ class SessionLite
   # () => Unit
   openNewFile: ->
 
-    if confirm('Are you sure you want to open a new model?  You will lose any changes that you have not exported.')
+    # coffeelint: disable=max_line_length
+    if window.confirm("Are you sure you want to open a new model?\n\nYour work in progress will be saved to your browser's cache to be reloaded the next time you load this model, but exporting your work is the best way to make sure you have a copy.")
+    # coffeelint: enable=max_line_length
 
-      parent.postMessage({
-        hash: 'NewModel',
-        type: 'nlw-set-hash'
-      }, "*")
+      if (parent isnt window)
+        parent.postMessage({
+          hash: 'NewModel',
+          type: 'nlw-set-hash'
+        }, "*")
 
-      window.postMessage({
-        type: 'nlw-open-new'
-      }, "*")
+      else
+        window.postMessage({
+          type: 'nlw-open-new'
+        }, "*")
+
+    return
+
+  # () => Unit
+  revertWorkInProgress: () ->
+    window.postMessage({
+      type: 'nlw-revert-wip'
+    }, "*")
+
+    return
+
+  # () => Unit
+  undoRevert: () ->
+    window.postMessage({
+      type: 'nlw-undo-revert'
+    }, "*")
 
     return
 
@@ -337,7 +377,7 @@ class SessionLite
     { pipeline                 } = tortoise_require('brazier/function')
 
     rewritten  = @rewriteCode(@widgetController.code())
-    oldWidgets = @cloneWidgets(@widgetController.widgets())
+    oldWidgets = @widgetController.widgets().map(cloneWidget)
     result     = @compiler.fromModel({
       code:         rewritten
     , widgets:      oldWidgets

@@ -1,29 +1,30 @@
 import SessionLite from "./session-lite.js"
-import { toNetLogoWebMarkdown, normalizedFileName, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
+import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
+import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
+import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], ModelResult, Boolean, String, Boolean) => SessionLite
-newSession = (container, compiler, rewriters, modelResult, readOnly, filename, lastCompileFailed) ->
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
+#  Boolean, String, NlogoSource, Boolean) => SessionLite
+newSession = (container, compiler, rewriters, listeners, modelResult,
+  isReadOnly, workInProgressState, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
-  new SessionLite(
+  session = new SessionLite(
     Tortoise
   , container
   , compiler
   , rewriters
+  , listeners
   , widgets
   , code
   , info
-  , readOnly
-  , filename
+  , isReadOnly
+  , workInProgressState
+  , nlogoSource
   , result
   , lastCompileFailed
   )
-
-# (Element, String, String, BrowserCompiler, Array[Rewriter], Model, Boolean) => SessionLite
-openSession = (container, modelPath, name, compiler, rewriters, model, lastCompileFailed) ->
-  name    = name ? normalizedFileName(modelPath)
-  session = newSession(container, compiler, rewriters, model, false, name, lastCompileFailed)
   session
 
 # (() => Unit) => Unit
@@ -39,23 +40,18 @@ finishLoading = ->
   document.querySelector("#loading-overlay").style.display = "none"
   return
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromNlogoSync = (nlogo, container, path, callback, rewriters = []) ->
-  segments = path.split(/\/|\\/)
-  name     = segments[segments.length - 1]
-  compile(container, path, name, nlogo, callback, rewriters)
-  return
+# type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (String, Element, String, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromNlogo = (nlogo, container, path, callback, rewriters = []) ->
+# (NlogoSource, Element, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogo, container, path, callback, rewriters)
+    fromNlogoSync(nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
     finishLoading()
   )
   return
 
-# (String, String, Element, (Result[SessionLite, Array[CompilerError | String]]) => Unit, Array[Rewriter]) => Unit
-fromURL = (url, modelName, container, callback, rewriters = []) ->
+# (String, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)
@@ -65,7 +61,8 @@ fromURL = (url, modelName, container, callback, rewriters = []) ->
           callback({ type: 'failure', source: 'load-from-url', errors: [url] })
         else
           nlogo = req.responseText
-          compile(container, url, modelName, nlogo, callback, rewriters)
+          urlSource = new UrlSource(url, nlogo)
+          fromNlogoSync(urlSource, container, false, getWorkInProgress, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -74,41 +71,92 @@ fromURL = (url, modelName, container, callback, rewriters = []) ->
   )
   return
 
-compile = (container, modelPath, name, nlogo, callback, rewriters) ->
+# (NlogoSource, Element, Boolean, Boolean,
+#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogoSync = (nlogoSource, container, isUndoReversion,
+  getWorkInProgress, callback, rewriters, listeners) ->
+
   compiler = new BrowserCompiler()
 
+  notifyListeners = createNotifier(listenerEvents, listeners)
+
+  startingNlogo       = nlogoSource.nlogo
+  workInProgressState = 'disabled'
+  if getWorkInProgress isnt null
+    startingNlogo       = getWorkInProgress(nlogoSource)
+    workInProgressState = if isUndoReversion or startingNlogo is nlogoSource.nlogo
+      'enabled-and-empty'
+    else
+      'enabled-with-wip'
+
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
-  rewrittenNlogo = rewriters.reduce(rewriter, nlogo)
-  extrasReducer  = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
-  extraCommands  = rewriters.reduce(extrasReducer, [])
-  result         = compiler.fromNlogo(rewrittenNlogo, extraCommands)
+  rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
+
+  extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
+  extraCommands = rewriters.reduce(extrasReducer, [])
+
+  notifyListeners('compile-start', rewrittenNlogo, startingNlogo)
+  result = compiler.fromNlogo(rewrittenNlogo, extraCommands)
 
   if result.model.success
-    result.code = if nlogo is rewrittenNlogo then result.code else nlogoToSections(nlogo)[0].slice(0, -1)
+    result.code = if (startingNlogo is rewrittenNlogo)
+      result.code
+    else
+      nlogoToSections(startingNlogo)[0].slice(0, -1)
+
+    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
+
+    session = newSession(
+      container
+    , compiler
+    , rewriters
+    , listeners
+    , result
+    , false
+    , workInProgressState
+    , nlogoSource
+    , false
+    )
+
     callback({
-      type:    'success'
-    , session: openSession(container, modelPath, name, compiler, rewriters, result, false)
+      type: 'success'
+    , session
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
 
   else
-    secondChanceResult = fromNlogoWithoutCode(nlogo, compiler)
+    secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)
     if secondChanceResult?
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-recoverable')
+
+      session = newSession(
+        container
+      , compiler
+      , rewriters
+      , listeners
+      , secondChanceResult
+      , false
+      , workInProgressState
+      , nlogoSource
+      , true
+      )
+
       callback({
-        type:        'failure'
-      , source:      'compile-recoverable'
-      , session:     openSession(container, modelPath, name, compiler, rewriters, secondChanceResult, true)
-      , errors:      result.model.result
+        type:    'failure'
+      , source:  'compile-recoverable'
+      , session: session
+      , errors:  result.model.result
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-fatal')
       callback({
-        type:        'failure'
-      , source:      'compile-fatal'
-      , errors:      result.model.result
+        type:   'failure'
+      , source: 'compile-fatal'
+      , errors: result.model.result
       })
 
   return
@@ -136,12 +184,27 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   result.code = oldCode
   return result
 
+createSource = (sourceType, path, nlogo) ->
+  switch sourceType
+    when 'disk'
+      new DiskSource(path, nlogo)
+
+    when 'new'
+      new NewSource(nlogo)
+
+    when 'script-element'
+      new ScriptSource(path, nlogo)
+
+    when 'url'
+      new UrlSource(path, nlogo)
+
 Tortoise = {
+  createSource,
   startLoading,
   finishLoading,
   fromNlogo,
   fromNlogoSync,
-  fromURL,
+  fromURL
 }
 
 # See http://perfectionkills.com/global-eval-what-are-the-options/ for what

@@ -1,14 +1,17 @@
-import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js"
+import { listenForQueryResponses, createQueryMaker } from "/queries/debug-query-maker.js";
+import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js";
 
 var modelContainer = document.querySelector('#model-container');
 var hostPrefix     = location.protocol + '//' + location.host;
-var pathSplits = location.pathname.split("/")
-if(pathSplits.length > 2) {
-  hostPrefix = hostPrefix + "/" + pathSplits[1]
+var pathSplits = location.pathname.split("/");
+if (pathSplits.length > 2) {
+  hostPrefix = hostPrefix + "/" + pathSplits[1];
 }
 
+const params = new URLSearchParams(window.location.search);
+
 var modelFileInput = document.querySelector('#model-file-input');
-modelFileInput.addEventListener('click', function (event) { this.value = '' })
+modelFileInput.addEventListener('click', function (event) { this.value = '' });
 modelFileInput.addEventListener('change', function (event) {
   var reader = new FileReader();
   reader.onload = function (e) {
@@ -37,18 +40,22 @@ function openModelFromUrl(url) {
   if (url === "Load") {
     selectModel("Select a model");
     if (modelContainer.contentWindow.location == "about:blank") {
-      modelContainer.contentWindow.location.replace("./web");
+      modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
       modelFileInput.value = "";
     }
+
   } else if (url === "NewModel") {
     selectModel("Select a model");
-    modelContainer.contentWindow.location.replace("./web");
+    params.delete("url");
+    modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";
+
   } else {
     selectModelByURL(url);
-    const query = (window.location.search === "") ? url : `url=${url}&${window.location.search.slice(1)}`;
-    modelContainer.contentWindow.location.replace(`./web?${query}`);
+    params.set("url", url);
+    modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";
+
   }
 }
 
@@ -63,7 +70,7 @@ window.addEventListener("message", function(e) {
 
     case "nlw-resize": {
 
-      var isValid = function(x) { return (typeof x !== "undefined" && x !== null); };
+      var isValid = function(x) { return (typeof x !== "undefined" && x !== null) };
 
       var height = e.data.height;
       var width  = e.data.width;
@@ -75,9 +82,9 @@ window.addEventListener("message", function(e) {
         modelContainer.width               = width;
         // When we reset the model height, we lose any scrolling that was in place,
         // so we "copy" it back to the main document.  -Jeremy B March 2021
-        const modelScrollTop               = modelContainer.contentDocument.body.scrollTop
+        const modelScrollTop               = modelContainer.contentDocument.body.scrollTop;
         modelContainer.height              = height;
-        document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop
+        document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop;
         document.title                     = title;
       }
 
@@ -91,7 +98,7 @@ window.addEventListener("message", function(e) {
 
   }
 
-});
+})
 
 function openNlogo(nlogoContents) {
   window.location.hash = "Load";
@@ -107,7 +114,7 @@ function initModel() {
   if (window.location.hash) {
     var hash = window.location.hash.substring(1);
     if (hash === "NewModel") {
-      modelContainer.contentWindow.location.replace("./web");
+      modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     } else {
       openModelFromUrl(hash);
     }
@@ -118,3 +125,8 @@ function initModel() {
 
 bindModelChooser(document.getElementById('tortoise-model-list')
                , initModel, pickModel, window.environmentMode);
+
+if (params.has('debugQueries')) {
+  window.makeQuery = createQueryMaker(modelContainer);
+  listenForQueryResponses();
+}

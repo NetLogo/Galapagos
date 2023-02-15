@@ -31,9 +31,13 @@ netTangoErrors = new Map([
 class NetTangoAlertDisplay extends AlertDisplay
 
   # (NetTangoController) => Unit
-  listenForNetTangoErrors: (netTango) ->
+  setNetTangoController: (netTango) ->
     @netTango = netTango
-    @netTango.ractive.on('*.ntb-error', (_, source, exception) => @reportNetTangoError(source, exception))
+    return
+
+  # (CommonEventArgs, { source: String, exception: Exception })
+  'nettango-error': (_, {source, exception}) ->
+    @reportNetTangoError(source, exception)
     return
 
   # (String, Exception) => Unit
@@ -55,8 +59,9 @@ class NetTangoAlertDisplay extends AlertDisplay
     else
       false
 
-  # (String, Array[CompilerError]) => Unit
-  reportCompilerErrors: (source, errors) ->
+  # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
+  'compiler-error': (commonArgs, eventArgs) ->
+    { source, errors } = eventArgs
     switch source
       when 'compile-fatal'
         message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
@@ -74,7 +79,7 @@ class NetTangoAlertDisplay extends AlertDisplay
         @reportNetTangoError('recompile-procedures', errors[0])
 
       else
-        super.reportCompilerErrors(source, errors)
+        super['compiler-error'](commonArgs, eventArgs)
 
     return
 

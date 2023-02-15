@@ -2,6 +2,7 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
        , setUpMonitor, setUpPlot, setUpSlider, setUpSwitch
 } from "./set-up-widgets.js"
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
+import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
 class WidgetController
 
@@ -32,6 +33,7 @@ class WidgetController
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
+    @ractive.fire('new-widget-initialized', id, widgetType)
 
     return
 
@@ -64,8 +66,8 @@ class WidgetController
 
     return
 
-  # (Number, Boolean) => Unit
-  removeWidgetById: (id, widgetWasNew = false) ->
+  # (Number, Boolean, Array[Any]) => Unit
+  removeWidgetById: (id, wasNew, extraNotificationArgs) ->
 
     widgetType = @ractive.get('widgetObj')[id].type
 
@@ -73,9 +75,13 @@ class WidgetController
     @ractive.update('widgetObj')
     @ractive.fire('deselect-widgets')
 
-    if not widgetWasNew
+    if wasNew
+      @ractive.fire('new-widget-cancelled', id, widgetType)
+
+    else
       switch widgetType
-        when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('controller.recompile')
+        when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('recompile-sync', 'system')
+      @ractive.fire('widget-deleted', id, widgetType, extraNotificationArgs...)
 
     return
 
@@ -87,7 +93,7 @@ class WidgetController
   reportError: (time, source, details) =>
     if not ['runtime', 'compiler'].includes(time)
       throw new Error('Only valid values for `time` are "runtime" or "compiler"')
-    @ractive.fire("nlw-#{time}-error", {}, source, details)
+    @ractive.fire("#{time}-error", {}, source, details)
 
   # (Array[Widget], Array[Widget]) => Unit
   freshenUpWidgets: (realWidgets, newWidgets) ->
@@ -96,18 +102,19 @@ class WidgetController
 
       newWidget.id = index
 
-      [props, setterUpper] =
+      props       = typedWidgetProperties.get(newWidget.type)
+      setterUpper =
         switch newWidget.type
-          when "button"   then [  buttonProps, setUpButton(@reportError, () => @redraw(); @updateWidgets())]
-          when "chooser"  then [ chooserProps, setUpChooser]
-          when "inputBox" then [inputBoxProps, setUpInputBox]
-          when "monitor"  then [ monitorProps, setUpMonitor]
-          when "output"   then [  outputProps, (->)]
-          when "plot"     then [    plotProps, setUpPlot(@plotSetupHelper())]
-          when "slider"   then [  sliderProps, setUpSlider]
-          when "switch"   then [  switchProps, setUpSwitch]
-          when "textBox"  then [ textBoxProps, (->)]
-          when "view"     then [    viewProps, (->)]
+          when "button"   then setUpButton(@reportError, () => @redraw(); @updateWidgets())
+          when "chooser"  then setUpChooser
+          when "inputBox" then setUpInputBox
+          when "monitor"  then setUpMonitor
+          when "output"   then (->)
+          when "plot"     then setUpPlot(@plotSetupHelper())
+          when "slider"   then setUpSlider
+          when "switch"   then setUpSwitch
+          when "textBox"  then (->)
+          when "view"     then (->)
           else                 throw new Error("Unknown widget type: #{newWidget.type}")
 
       realWidget = realWidgets.find(widgetEqualsBy(props)(newWidget))
@@ -135,11 +142,11 @@ class WidgetController
   speed: ->
     @ractive.get('speed')
 
-  # (String, () => Unit) => Unit
-  setCode: (code, successCallback) =>
+  # (String) => Unit
+  setCode: (code) =>
     @ractive.set('code', code)
     @ractive.findComponent('codePane')?.setCode(code)
-    @ractive.fire('controller.recompile', successCallback)
+    @ractive.fire('recompile', 'system')
     return
 
   # (String) => Unit
@@ -271,24 +278,15 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
     when "plot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
     when "textBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
+# coffeelint: enable=max_line_length
 
 # [T <: Widget] @ Array[String] => T => T => Boolean
 widgetEqualsBy = (props) -> (w1) -> (w2) ->
   { eq } = tortoise_require('brazier/equals')
-  locationProps = ['bottom', 'left', 'right', 'top']
-  propEq        = (prop) -> eq(w1[prop])(w2[prop])
-  w1.type is w2.type and locationProps.concat(props).every(propEq)
-
-buttonProps   = ['buttonKind', 'disableUntilTicksStart', 'forever', 'source']
-chooserProps  = ['choices', 'display', 'variable']
-inputBoxProps = ['boxedValue', 'variable']
-monitorProps  = ['display', 'fontSize', 'precision', 'source']
-outputProps   = ['fontSize']
-plotProps     = [ 'autoPlotOn', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']
-sliderProps   = ['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable']
-switchProps   = ['display', 'on', 'variable']
-textBoxProps  = ['color', 'display', 'fontSize', 'transparent']
-viewProps     = ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']
-# coffeelint: enable=max_line_length
+  propEq = (prop) ->
+    v1 = w1[prop]
+    v2 = w2[prop]
+    ((v1 is null or v1 is undefined) and (v2 is null or v2 is undefined)) or eq(v1)(v2)
+  w1.type is w2.type and locationProperties.concat(props).every(propEq)
 
 export default WidgetController

@@ -1,5 +1,9 @@
+import { createCommonArgs, createNamedArgs } from "../notifications/listener-events.js"
+import { netTangoEvents } from "./nettango-events.js"
+
+import { NamespaceStorage } from "../namespace-storage.js"
+
 import NetTangoRewriter from "./rewriter.js"
-import NetTangoStorage from "./storage.js"
 import NetTangoSkeleton from "./nettango-skeleton.js"
 import UndoRedo from "./undo-redo.js"
 
@@ -9,8 +13,8 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @playMode, @runtimeMode, netTangoModelUrl) ->
-    @storage      = new NetTangoStorage(localStorage)
+  constructor: (element, localStorage, @playMode, @runtimeMode, netTangoModelUrl, listeners) ->
+    @storage      = new NamespaceStorage('ntInProgress', localStorage)
     getSpaces     = () => @builder.get("spaces")
     @isDebugMode  = false
     @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
@@ -22,13 +26,28 @@ class NetTangoController
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
-    @ractive      = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode)
+    ractive       = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode)
+    @ractive      = ractive
     @builder      = @ractive.findComponent('builder')
     @netLogoModel = @ractive.findComponent('netLogoModel')
+    @netLogoModel.rewriters = @rewriters
 
     @ractive.observe('isDebugMode', (value) =>
       @setDebugMode(value)
       return
+    )
+
+    netTangoEvents.forEach( (event) ->
+      listeners.forEach( (l) ->
+        if l[event.name]?
+          ractive.on("*.#{event.name}", (_, args...) ->
+            commonArgs = createCommonArgs()
+            eventArgs  = createNamedArgs(event.args, args)
+            l[event.name](commonArgs, eventArgs)
+            return
+          )
+        return
+      )
     )
 
     @ractive.on('*.ntb-model-change',    (_, title, code) => @setNetLogoCode(title, code))
@@ -41,9 +60,9 @@ class NetTangoController
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
     @ractive.on('*.ntb-load-variables',  (_)              => @resetBreedsAndVariables())
 
-    @ractive.on('*.ntb-import-netlogo', (local)        => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)            => @netLogoModel.session.exportNlogo())
-    @ractive.on('*.ntb-load-nl-url',    (_, url, name) => @netLogoModel.loadUrl(url, name, @rewriters))
+    @ractive.on('*.ntb-import-netlogo', (local)  => @importNetLogo(local.node.files))
+    @ractive.on('*.ntb-export-netlogo', (_)      => @netLogoModel.session.exportNlogo())
+    @ractive.on('*.ntb-load-nl-url',    (_, url) => @netLogoModel.loadUrl(url))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))
     @ractive.on('*.ntb-load-project',        (_, data)       => @loadProjectData(data))
@@ -164,7 +183,7 @@ class NetTangoController
     widgetController = @netLogoModel.widgetController
     widgets = widgetController.ractive.get('widgetObj')
     @pauseForevers(widgets)
-    widgetController.ractive.fire('recompile', (->), false)
+    widgetController.ractive.fire('recompile-sync', 'system')
     @spaceChangeListener?()
     return
 
@@ -236,7 +255,7 @@ class NetTangoController
 
     @netLogoCode  = code
     @netLogoTitle = title
-    @netLogoModel.loadModel(code, title, @rewriters)
+    @netLogoModel.loadModel(code, 'script-element', "#{title}.nlogo")
     return
 
   # (Array[File]) => Unit
@@ -248,7 +267,7 @@ class NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @netLogoModel.loadModel(nlogo, file.name, @rewriters)
+      @netLogoModel.loadModel(nlogo, 'disk', file.name)
       @handleProjectChange()
       return
     reader.readAsText(file)
@@ -264,7 +283,7 @@ class NetTangoController
       try
         project = JSON.parse(e.target.result)
       catch error
-        @ractive.fire('ntb-error', {}, 'parse-project-json', error)
+        @ractive.fire('nettango-error', {}, 'parse-project-json', error)
         return
 
       @loadProjectData(project)
@@ -286,7 +305,7 @@ class NetTangoController
     ).catch( (error) =>
       netLogoLoading.style.display = "none"
       error.url = projectUrl
-      @ractive.fire('ntb-error', {}, 'load-from-url', error)
+      @ractive.fire('nettango-error', {}, 'load-from-url', error)
       return
     )
     return
@@ -297,7 +316,7 @@ class NetTangoController
     title          = session.modelTitle()
     modelCodeMaybe = session.getNlogo()
     if (not modelCodeMaybe.success)
-      @ractive.fire('ntb-error', {}, 'export-nlogo', modelCodeMaybe)
+      @ractive.fire('nettango-error', {}, 'export-nlogo', modelCodeMaybe)
 
     project       = @builder.getNetTangoBuilderData()
     project.code  = modelCodeMaybe.result
@@ -388,7 +407,7 @@ class NetTangoController
     ).then( (exportDom) =>
       @exportStandalone(project.title, exportDom, project)
     ).catch( (error) =>
-      @ractive.fire('ntb-error', {}, 'export-html', error)
+      @ractive.fire('nettango-error', {}, 'export-html', error)
       return
     )
     return

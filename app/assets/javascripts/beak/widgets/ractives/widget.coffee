@@ -5,13 +5,13 @@ WidgetEventGenerators = {
   # (String, String, Object[String]) => WidgetEvent
   recompileForPlot: (oldName, newName, renamings) ->
     {
-      run:  (ractive, widget) -> ractive.fire('recompile-for-plot', oldName, newName, renamings)
+      run:  (ractive, widget) -> ractive.fire('recompile-for-plot', 'system', oldName, newName, renamings)
       type: "recompile-for-plot"
     }
 
   recompile: ->
     {
-      run:  (ractive, widget) -> ractive.fire('recompile')
+      run:  (ractive, widget) -> ractive.fire('recompile', 'system')
       type: "recompile"
     }
 
@@ -84,6 +84,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       #{if @get('isEditing')  then 'interface-unlocked' else ''}
       #{if @get('isSelected') then 'selected'           else ''}
       """
+
     dims: ->
       """
       position: absolute;
@@ -91,6 +92,16 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       width: #{@get('right') - @get('left')}px; height: #{@get('bottom') - @get('top')}px;
       """
   }
+
+  notifyWidgetMoved: () ->
+    widget = @get('widget')
+    @fire('widget-moved', widget.id, widget.type, widget.top, widget.bottom, widget.left, widget.right)
+    return
+
+  nudge: (direction) ->
+    @_super(direction)
+    @notifyWidgetMoved()
+    return
 
   # (Object[Number]) => Unit
   handleResize: ({ left, right, top, bottom }) ->
@@ -102,7 +113,12 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
   # () => Unit
   handleResizeEnd: ->
+    @notifyWidgetMoved()
     return
+
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: (widget) ->
+    []
 
   on: {
 
@@ -125,7 +141,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       # Original event name: "cutMyLifeIntoPieces" --Jason B. (11/8/17)
       @fire('unregister-widget', @get('widget').id, true)
 
-    "*.update-widget-value": (_, values) ->
+    "*.update-widget-value": (_, values, isNewWidget) ->
 
       getByPath = (obj) -> (path) ->
         path.split('.').reduce(((acc, x) -> acc[x]), obj)
@@ -190,6 +206,9 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
                 event
             realEvent.run(this, widget)
 
+          notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
+          @fire(notifyEventName, widget.id, widget.type, @getExtraNotificationArgs()...)
+
           @fire('update-widgets')
 
       catch ex
@@ -197,24 +216,30 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       finally
         return false
 
+    "*.stop-widget-drag": (_) ->
+      @notifyWidgetMoved()
+
   }
 
   # coffeelint: disable=max_line_length
   partials: {
-    editorOverlay: """
-                   {{ #isEditing }}
-                     <div draggable="true" style="{{dims}}"
-                          class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
-                          on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
-                          on-contextmenu="@this.fire('show-context-menu', @event)"
-                          on-dblclick="@this.fire('edit-widget')"
-                          on-dragstart="start-widget-drag"
-                          on-drag="drag-widget"
-                          on-dragend="stop-widget-drag"></div>
-                   {{/}}
-                   """
+    editorOverlay:
+      """
+      {{ #isEditing }}
+      <div
+        draggable="true"
+        style="{{dims}}"
+        class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot'}} plot-overlay{{/}}"
+        on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
+        on-contextmenu="@this.fire('show-context-menu', @event)"
+        on-dblclick="@this.fire('edit-widget')"
+        on-dragstart="start-widget-drag"
+        on-drag="drag-widget"
+        on-dragend="stop-widget-drag">
+      </div>
+      {{/}}
+      """
   }
-  # coffeelint: enable=max_line_length
 
 })
 

@@ -274,6 +274,7 @@ RactiveView = RactiveWidget.extend({
   # () => Unit
   handleResizeEnd: ->
     @fire('set-patch-size', @findComponent('editForm').get('patchSize'))
+    @notifyWidgetMoved()
     return
 
   minWidth:  10

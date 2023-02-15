@@ -42,6 +42,10 @@ RactiveCodeContainerBase = Ractive.extend({
       @get('onchange')(code)
     )
 
+    @_editor.on('blur', =>
+      @fire('change')
+    )
+
     @observe('isDisabled', (isDisabled) ->
       @_editor.setOption('readOnly', if isDisabled then 'nocursor' else false)
       classes = this.find('.netlogo-code').querySelector('.CodeMirror-scroll').classList

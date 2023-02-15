@@ -471,6 +471,11 @@ RactivePlot = RactiveWidget.extend({
 
   }
 
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    widget = @get('widget')
+    [widget.display]
+
   minWidth:  100
   minHeight: 85
 

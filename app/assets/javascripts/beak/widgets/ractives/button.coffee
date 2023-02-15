@@ -100,6 +100,7 @@ RactiveButton = RactiveWidget.extend({
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , errorClass:         undefined # String
   , ticksStarted:       undefined # Boolean
+  , isRunning:          false     # Boolean
   }
 
   computed: {
@@ -118,7 +119,31 @@ RactiveButton = RactiveWidget.extend({
 
   oninit: ->
     @_super()
-    @on('activate-button', (_, run) -> if @get('isEnabled') then run())
+
+    @on('activate-button', (_, run) ->
+      if @get('isEnabled')
+        run()
+        widget = @get('widget')
+        @fire('button-widget-clicked', widget.id, widget.display, widget.source, false, false)
+      return
+    )
+    return
+
+  on: {
+    'forever-button-change': () ->
+      isRunning = @get('isRunning')
+      @set('widget.running', isRunning)
+      widget = @get('widget')
+      @fire('button-widget-clicked', widget.id, widget.display, widget.source, true, isRunning)
+      return
+
+  }
+
+  observe: {
+    'widget.running': (isRunning) ->
+      @set('isRunning', isRunning)
+      return
+  }
 
   components: {
     editForm: ButtonEditForm
@@ -130,6 +155,11 @@ RactiveButton = RactiveWidget.extend({
     ,    forever: [@_weg.recompile]
     ,     source: [@_weg.recompile]
     }
+
+  # (Widget) => Array[Any]
+  getExtraNotificationArgs: () ->
+    button = @get('widget')
+    [button.display, button.source]
 
   minWidth:  35
   minHeight: 30
@@ -169,11 +199,11 @@ RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}" style="{{dims}}"
-             class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.running}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
+             class="netlogo-widget netlogo-button netlogo-forever-button{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
-        <input type="checkbox" checked={{ widget.running }} {{# !isEnabled }}disabled{{/}}/>
+        <input type="checkbox" checked={{ isRunning }} on-change="forever-button-change" {{# !isEnabled }}disabled{{/}}/>
         <div class="netlogo-forever-icon"></div>
       </label>
       """

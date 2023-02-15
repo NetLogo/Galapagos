@@ -62,6 +62,7 @@ RactiveConsoleWidget = Ractive.extend({
         if agentType isnt 'observer'
           input = "ask #{agentType} [ #{input} ]"
         @fire('run', {}, 'console', input)
+        @fire('command-center-run', input)
         @set('input', '')
         @set('workingEntry', {})
 

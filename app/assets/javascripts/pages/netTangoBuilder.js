@@ -1,7 +1,11 @@
-import "/codemirror-mode.js";
-import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js";
-import NetTangoController from "/nettango/nettango-controller.js";
-import NetTangoStorage from "/nettango/storage.js";
+import { createDebugListener } from "/notifications/debug-listener.js"
+import { listenerEvents } from "/notifications/listener-events.js"
+import { netTangoEvents } from "/nettango/nettango-events.js"
+
+import "/codemirror-mode.js"
+import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
+import NetTangoController from "/nettango/nettango-controller.js"
+import { fakeStorage } from "/namespace-storage.js"
 
 const builderContainer = document.getElementById("ntb-container")
 
@@ -26,27 +30,65 @@ if (parent !== window) {
   enableFrameSizeUpdates()
 }
 
-var ls
+var storage
 try {
-  ls = window.localStorage
+  storage = window.localStorage
 } catch (exception) {
-  ls = NetTangoStorage.fakeStorage()
+  storage = fakeStorage()
 }
 
-const urlParams        = new URLSearchParams(window.location.search)
-const netTangoModelUrl = urlParams.get("netTangoModel")
-const playModeParam    = urlParams.get("playMode")
+const params           = new URLSearchParams(window.location.search)
+const netTangoModelUrl = params.get("netTangoModel")
+const playModeParam    = params.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
+
+const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
+const listeners = [alerter]
+
+const allEvents = listenerEvents.concat(netTangoEvents)
+
+if (params.has('debugEvents')) {
+  const debugListener = createDebugListener(allEvents)
+  listeners.push(debugListener)
+}
+if (params.has('relayIframeEvents')) {
+  const relayListener = createIframeRelayListener(allEvents, params.get('relayIframeEvents'))
+  listeners.push(relayListener)
+}
 
 const netTango = new NetTangoController(
   "ntb-container"
-, ls
+, storage
 , playMode || window.isStandaloneHTML
 , window.environmentMode
 , netTangoModelUrl
+, listeners
 )
-const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHTML)
+
+const netLogoListeners = listeners.slice(0)
+var lastNlogo = ""
+const runIfDifferent = (f) => {
+  const nlogoResult = netTango.netLogoModel.session.getNlogo()
+  if (nlogoResult.success) {
+    if (nlogoResult.result !== lastNlogo) {
+      lastNlogo = nlogoResult.result
+      netTango.handleProjectChange()
+    }
+  }
+}
+const netLogoWipListener = {
+  'recompile-complete':   runIfDifferent
+, 'new-widget-finalized': runIfDifferent
+, 'widget-updated':       runIfDifferent
+, 'widget-deleted':       runIfDifferent
+, 'widget-moved':         runIfDifferent
+, 'info-updated':         runIfDifferent
+, 'title-changed':        runIfDifferent
+}
+netLogoListeners.push(netLogoWipListener)
+
+alerter.setNetTangoController(netTango)
 netTango.netLogoModel.alerter = alerter
-alerter.listenForNetTangoErrors(netTango)
+netTango.netLogoModel.listeners = netLogoListeners
 
 window.ractive = netTango.ractive

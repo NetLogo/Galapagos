@@ -143,7 +143,7 @@ RactiveSpace = Ractive.extend({
       try
         newDefs = JSON.parse(newJson)
       catch ex
-        @fire('ntb-error', {}, 'json-apply', ex)
+        @fire('nettango-error', {}, 'json-apply', ex)
         return
 
       @set("space.defs", newDefs)
@@ -359,7 +359,7 @@ RactiveSpace = Ractive.extend({
     try
       NetTango.restore("NetLogo", containerId, spaceDef, NetTangoRewriter.formatDisplayAttribute, options)
     catch ex
-      @fire('ntb-error', {}, 'workspace-refresh', ex)
+      @fire('nettango-error', {}, 'workspace-refresh', ex)
       return
 
     @saveNetTango(containerId)

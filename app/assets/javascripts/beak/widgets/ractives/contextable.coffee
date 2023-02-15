@@ -12,7 +12,8 @@ RactiveContextable = Ractive.extend({
     , isEnabled: true
     , action: ->
         component.fire('hide-context-menu')
-        component.fire('unregister-widget', component.get('widget').id)
+        widget = component.get('widget')
+        component.fire('unregister-widget', widget.id, false, component.getExtraNotificationArgs())
     }
   , edit: { text: "Edit", isEnabled: true, action: -> component.fire('edit-widget') }
   }

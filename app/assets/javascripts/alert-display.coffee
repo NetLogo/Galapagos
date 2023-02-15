@@ -132,7 +132,7 @@ class AlertDisplay
     """
 
   # (WidgetController) => Unit
-  listenForErrors: (widgetController) ->
+  setWidgetController: (widgetController) ->
     # we have to fetch the console as needed because it can show/hide
     @findConsole = () -> widgetController.ractive.findComponent('console')
 
@@ -155,16 +155,15 @@ class AlertDisplay
       false
     )
 
-    # coffeelint: disable=max_line_length
-    widgetController.ractive.on('*.nlw-notify',          (_, message)           => @reportNotification(message))
-    widgetController.ractive.on('*.nlw-runtime-error',   (_, source, exception) => @reportRuntimeError(source, exception, widgetController.ractive.get('code')))
-    widgetController.ractive.on('*.nlw-compiler-error',  (_, source, errors)    => @reportCompilerErrors(source, errors))
-    widgetController.ractive.on('*.nlw-extension-error', (_, messages)          => @reportError(messages.join('<br/>')))
-    # coffeelint: enable=max_line_length
     return
 
-  # (String, Exception) => Unit
-  reportRuntimeError: (source, exception, code) ->
+  # (CommonEventArgs, { messages: Array[String] }) => Unit
+  'extension-error': (_, {messages}) ->
+    @reportError(messages.join('<br/>'))
+    return
+
+  # (CommonEventArgs, { source: String, exception: Exception }) => Unit
+  'runtime-error': (_, {source, exception}) ->
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
@@ -207,8 +206,8 @@ class AlertDisplay
 
     return
 
-  # (String, Array[CompilerError]) => Unit
-  reportCompilerErrors: (source, errors) ->
+  # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
+  'compiler-error': (_, { source, errors }) ->
     switch source
 
       when 'load-from-url'
@@ -234,8 +233,10 @@ class AlertDisplay
     @_ractive.set('isDismissable', false)
     @reportError(message)
 
+  # () => Unit
   hide: () ->
     @_ractive.fire('hide')
+    return
 
   # (String, Array[StackFrame]) => Unit
   reportError: (message, frames = []) ->
@@ -248,6 +249,10 @@ class AlertDisplay
     if netLogoConsole?
       message = message.replace('\n', ' ')
       netLogoConsole.appendText("ERROR: #{message}\n")
+    return
+
+  'notify-user': (_1, {message}) ->
+    @reportNotification(message)
     return
 
   # (String) => Unit

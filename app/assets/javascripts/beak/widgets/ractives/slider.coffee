@@ -1,4 +1,4 @@
-import RactiveWidget from "./widget.js"
+import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import { RactiveEditFormOneLineCode } from "./subcomponent/code-container.js"
@@ -119,20 +119,26 @@ SliderEditForm = EditForm.extend({
 
 })
 
-RactiveSlider = RactiveWidget.extend({
+RactiveSlider = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , errorClass:         undefined # String
+  , internalValue:      0         # Number
   }
+
+  widgetType: "slider"
 
   on: {
     'reset-if-invalid': (context) ->
       # input elements don't reject out-of-range hand-typed numbers so we have to do the dirty work
       if (context.node.validity.rangeOverflow)
-        @set('widget.currentValue', @get('widget.maxValue'))
+        @set('internalValue', @get('widget.maxValue'))
       else if (context.node.validity.rangeUnderflow)
-        @set('widget.currentValue', @get('widget.minValue'))
+        @set('internalValue', @get('widget.minValue'))
+
+      @fire('widget-value-change')
+      return
   }
 
   computed: {
@@ -141,7 +147,11 @@ RactiveSlider = RactiveWidget.extend({
       set: (->)
     }
     textWidth: ->
-      (@get('widget').currentValue?.toString().length ? 0) + 3.0
+      internalValue = @get('internalValue')
+      if internalValue?
+        (internalValue.toString().length) + 3.0
+      else
+        3
   }
 
   components: {
@@ -176,18 +186,26 @@ RactiveSlider = RactiveWidget.extend({
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
-        <input type="range"
-               max="{{widget.maxValue}}" min="{{widget.minValue}}"
-               step="{{widget.stepValue}}" value="{{widget.currentValue}}"
-               {{# isEditing }}disabled{{/}} />
+        <input
+          type="range"
+          max="{{widget.maxValue}}"
+          min="{{widget.minValue}}"
+          step="{{widget.stepValue}}"
+          value="{{internalValue}}"
+          on-change="widget-value-change"
+          {{# isEditing }}disabled{{/}} />
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
-            <input type="number" on-change="reset-if-invalid"
-                   style="width: {{textWidth}}ch"
-                   min="{{widget.minValue}}" max="{{widget.maxValue}}"
-                   value="{{widget.currentValue}}" step="{{widget.stepValue}}"
-                   {{# isEditing }}disabled{{/}} />
+            <input
+              type="number"
+              on-change="reset-if-invalid"
+              style="width: {{textWidth}}ch"
+              min="{{widget.minValue}}"
+              max="{{widget.maxValue}}"
+              step="{{widget.stepValue}}"
+              value="{{internalValue}}"
+              {{# isEditing }}disabled{{/}} />
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
         </div>

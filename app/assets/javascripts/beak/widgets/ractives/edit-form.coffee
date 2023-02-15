@@ -39,7 +39,7 @@ EditForm = Ractive.extend({
       try
         newProps = @genProps(node)
         if newProps?
-          @fire('update-widget-value', {}, newProps)
+          @fire('update-widget-value', {}, newProps, @get('amProvingMyself'))
       catch ex
         console.warn("Widget form submission error: ", ex)
       finally
