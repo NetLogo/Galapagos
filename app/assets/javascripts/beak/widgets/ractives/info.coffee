@@ -1,3 +1,5 @@
+import { markdownToHtml } from "/beak/tortoise-utils.js"
+
 RactiveInfoTabEditor = Ractive.extend({
 
   data: -> {
@@ -53,16 +55,8 @@ RactiveInfoTabWidget = Ractive.extend({
 
   computed: {
     sanitizedText: ->
-      @mdToHTML(@get("rawText"))
+      markdownToHtml(@get("rawText"))
   }
-
-  mdToHTML: (md) ->
-    # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
-    # RG 8/18/15
-    window.html_sanitize(
-      window.markdown.toHTML(md),
-      (url) -> if /^https?:\/\//.test(url) then url else undefined, # URL Sanitizer
-      (id) -> id)                                                   # ID Sanitizer
 
   template:
     """
