@@ -7,6 +7,8 @@ import javax.inject.Inject
 import play.api.{ Configuration, Environment }
 import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
+import play.twirl.api.Html
+
 class NetTango @Inject() (
   components: ControllerComponents
 , configuration: Configuration
@@ -21,9 +23,14 @@ class NetTango @Inject() (
       Ok(views.html.netTangoBuilder(themed, standalone, if (standalone) InlineTagBuilder else OutsourceTagBuilder))
   }
 
-  def iframeTest(): Action[AnyContent] = Action {
+  def iframeTest: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.netTangoIframeTest())
+  }
+
+  def library: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.mainTheme(views.html.netTangoLibrary(OutsourceTagBuilder)(request, environment), "NetTango Library", None, Html(""), Html(""), "../"))
   }
 
 }

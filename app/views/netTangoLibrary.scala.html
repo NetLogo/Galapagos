@@ -1,0 +1,17 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+@tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
+@tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
+
+<style>
+  .inner-content {
+    text-align: left;
+    margin: 0 10%;
+  }
+</style>
+
+<div class="inner-content" id="nettango-library">
+  Loading NetTango Web project library...
+</div>
+
+@tagBuilder.pathToHTML("/javascripts/pages/netTangoLibrary.js", "type" -> "module")

@@ -21,7 +21,14 @@ GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /launch-iframe-test                 controllers.Local.iframeTest
 
-# NetTango redirects
+# NetTango
+GET         /nettango-builder                   controllers.NetTango.builder(themed: Boolean = true,  standalone: Boolean = false)
+GET         /nettango-player                    controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = false)
+GET         /nettango-player-standalone         controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = true)
+GET         /nettango-library                   controllers.NetTango.library
+GET         /nettango-iframe-test               controllers.NetTango.iframeTest
+
+# NetTango redirects - deprecated routes to be permanently deleted at some future date
 GET         /ntango-build                       controllers.Assets.at(path="/public", file="/pages/ntango-build-redirect.html")
 # Leaving these play routes in place for now in case anyone has hot-linked to the player page.  An HTML redirect would break things for them.
 # Maybe monitor the AWS stats and remove it if we don't see acitivity here for a bit?
@@ -30,12 +37,6 @@ GET         /ntango-play                        controllers.NetTango.builder(the
 # Setting `standalone = false` is intentional here.  This was incorrectly listed as the route to hot-link a model, which is not the
 # case.  If someone has already hot-linked we let it continue working, but at least use the correct behavior.  -Jeremy B April 2021
 GET         /ntango-play-standalone             controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = false)
-
-# NetTango
-GET         /nettango-builder                   controllers.NetTango.builder(themed: Boolean = true,  standalone: Boolean = false)
-GET         /nettango-player                    controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = false)
-GET         /nettango-player-standalone         controllers.NetTango.builder(themed: Boolean = false, standalone: Boolean = true)
-GET         /nettango-iframe-test               controllers.NetTango.iframeTest()
 
 # Compiler Service
 POST        /compile-url                        controllers.CompilerService.compileURL
