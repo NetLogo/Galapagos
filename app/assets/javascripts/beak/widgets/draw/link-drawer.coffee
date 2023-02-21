@@ -94,7 +94,7 @@ class LinkDrawer
 
     # one pixel should == one patch (before scale) -- JTT 4/15/15
     thicknessFactor = thickness / @view.onePixel
-    
+
     if thickness <= 1
       scale         = 1 / @view.onePixel / 5
       realThickness = thickness * 10
@@ -137,24 +137,26 @@ class LinkDrawer
 
         { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': visible } = line
 
-        if visible
+        isMiddleLine = line is lines[1]
+
+        if visible or isMiddleLine
 
           [xcomp, ycomp] = @calculateComps(x1, y1, x2, y2, size)
           [xOff, yOff]   = @calculateSublineOffset(centerOffset, thickness, xcomp, ycomp)
           offsetSubline  = @getOffsetSubline(x1, y1, x2, y2, xOff, yOff)
-          isMiddleLine   = line is lines[1]
-          isCurved       = curviness > 0
-          hasLabel       = label?
 
           [midpointX, midpointY] = offsetSubline.midpoint()
-
           [controlX,  controlY]  = @calculateControlPoint(midpointX, midpointY, curviness, xcomp, ycomp)
 
-          @drawSubline(offsetSubline, dashPattern, thickness, color, isCurved, controlX, controlY, ctx)
+          if visible
+            isCurved = curviness > 0
+            @drawSubline(offsetSubline, dashPattern, thickness, color, isCurved, controlX, controlY, ctx)
 
           if isMiddleLine
             if isDirected and size > (.25 * @view.onePixel)
               @drawShape(x2, y2, controlX, controlY, heading, color, thickness, linkShape, shapeName, ctx)
+
+            hasLabel = label?
             if hasLabel and not isStamp
               @drawLabel(controlX, controlY, label, labelColor)
 
