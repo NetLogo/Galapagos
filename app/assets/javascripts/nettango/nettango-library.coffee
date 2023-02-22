@@ -7,8 +7,6 @@ autoLinkUrls = (libraryMarkdown) ->
     if a.index is linkRegEx.lastIndex
       linkRegEx.lastIndex++
 
-    console.log(a.index, a[0], a[0].length, a[1], a[1].length)
-
     { url: a[1], index: (a.index + a[0].length - a[1].length - 1) }
 
   matches.reverse().reduce( (s, match) ->
