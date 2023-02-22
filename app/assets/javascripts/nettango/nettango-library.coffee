@@ -23,7 +23,7 @@ relativizeProjectUrls = (origin, libraryMarkdown) ->
   assets  = builder.replaceAll('https://netlogoweb.org/assets/nt-modelslib', "#{origin}/assets/nt-modelslib")
   assets
 
-bindLibrary = (origin) ->
+bindLibrary = (libraryDivId, origin) ->
   fetch('assets/nt-modelslib/LIBRARY.md')
   .then( (response) ->
     if (not response.ok)
@@ -31,15 +31,19 @@ bindLibrary = (origin) ->
     response.text()
 
   ).then( (libraryMarkdown) =>
-    libraryDiv  = document.getElementById('nettango-library')
+    libraryDiv  = document.getElementById(libraryDivId)
     relativized = relativizeProjectUrls(origin, libraryMarkdown)
     linked      = autoLinkUrls(relativized)
     libraryHtml = markdownToHtml(linked)
     libraryDiv.innerHTML = libraryHtml
 
   ).catch( (error) =>
-    # TBD...
-    console.log(error)
+    libraryDiv = document.getElementById(libraryDivId)
+    libraryError = "There was a problem loading the NetTango project library information. Details are below." +
+      " You can try to reload reload or " +
+      " visit <a href=\"https://github.com/NetLogo/nettango-models/blob/main/LIBRARY.md\">" +
+      " the NetTango project library GitHub page</a> instead."
+    libraryDiv.innerHTML = "<p>#{libraryError}</p><p>#{error.message}</p><p>#{error.stack}</p>"
     return
   )
   return
