@@ -8,7 +8,7 @@ import sbt.IO
 
 import java.nio.file.{ Files, StandardCopyOption }
 
-import scala.sys.process.Process
+import scala.sys.process.{ Process, ProcessLogger }
 
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
@@ -68,12 +68,30 @@ evictionErrorLevel := Level.Warn
 
 Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 
+// This is definitely not meant to be universal, just to get the info without the typical color codes -Jeremy B February
+// 2023
+def unAnsi(str: String): String =
+  str.replaceAll("\\u001B\\[\\d+m", "")
+
 def runNpm(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
   val npmArgs = Seq("npm") ++ args
   log.info(npmArgs.mkString(" "))
-  val result = Process(npmArgs, runDir, env:_*).!(log)
+
+  val output = new StringBuilder()
+  val writingLogger = ProcessLogger(
+    (out) => {
+      output.append(unAnsi(out))
+      output.append("\n")
+      log.info(out)
+    }
+  , (err) => {
+      output.append(unAnsi(err))
+      output.append("\n")
+    }
+  )
+  val result = Process(npmArgs, runDir, env:_*).!(writingLogger)
   if (result != 0) {
-    throw new MessageOnlyException("npm command indicated an unsuccessful result.")
+    throw new MessageOnlyException(s"npm command indicated an unsuccessful result.\n\n${output.toString}")
   }
   ()
 }
