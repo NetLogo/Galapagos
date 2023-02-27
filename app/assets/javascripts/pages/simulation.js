@@ -124,7 +124,7 @@ if (isInFrame) {
 
 var loadModel = function(nlogo, sourceType, path, isUndoReversion) {
   alerter.hide();
-  if (globalThis.session) {;
+  if (globalThis.session) {
     globalThis.session.teardown();
   }
   activeContainer = loadingOverlay;
