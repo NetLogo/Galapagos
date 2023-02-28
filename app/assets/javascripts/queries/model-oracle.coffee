@@ -27,9 +27,28 @@ class ModelOracle
     else
       names
 
+  # () => Array[Breed]
+  _getAllBreeds: () ->
+    breedsMap = @workspace.breedManager.breeds()
+    breeds    = Object.keys(breedsMap).map( (breedName) -> breedsMap[breedName] )
+    breeds
+
+  # () => Array[String]
+  getLinkBreeds: () ->
+    breeds = @_getAllBreeds()
+    linkBreeds = breeds.filter( (b) -> b.isLinky() ).map( (b) -> b.originalName )
+    linkBreeds
+
+  # () => Array[String]
+  getTurtleBreeds: () ->
+    breeds = @_getAllBreeds()
+    turtleBreeds = breeds.filter( (b) -> not b.isLinky() ).map( (b) -> b.originalName )
+    turtleBreeds
+
   # () => String
   getCode: () ->
-    @session.getCode()
+    code = @session.getCode()
+    code
 
   # () => String | null
   getCurrentPlot: () ->
@@ -72,6 +91,11 @@ class ModelOracle
     nlogo = @session.getNlogo()
     nlogo
 
+  # (String) => Any
+  getSetting: (settingName) ->
+    setting = @session.widgetController.ractive.get(settingName)
+    setting
+
   # () => NlogoSource
   getSource: () ->
     source = @session.nlogoSource
@@ -86,6 +110,31 @@ class ModelOracle
   getTicks: () ->
     ticks = @session.widgetController.ractive.get('ticks')
     ticks
+
+  # () => Array[String]
+  getLinkVars: () ->
+    linkVars = @session.compiler.listLinkVars()
+    linkVars
+
+  # (String) => Array[String]
+  getLinkBreedVars: (breed) ->
+    breedVars = @session.compiler.listLinkOwnVarsForBreed(breed)
+    breedVars
+
+  # () => Array[String]
+  getPatchVars: () ->
+    patchVars = @session.compiler.listPatchVars()
+    patchVars
+
+  # () => Array[String]
+  getTurtleVars: () ->
+    turtleVars = @session.compiler.listTurtleVars()
+    turtleVars
+
+  # (String) => Array[String]
+  getTurtleBreedVars: (breed) ->
+    breedVars = @session.compiler.listOwnVarsForBreed(breed)
+    breedVars
 
   # () => String
   getView: () ->

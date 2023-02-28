@@ -68,7 +68,7 @@ const netTango = new NetTangoController(
 const netLogoListeners = listeners.slice(0)
 var lastNlogo = ""
 const runIfDifferent = (f) => {
-  const nlogoResult = netTango.netLogoModel.session.getNlogo()
+  const nlogoResult = netTango.netLogoModel.oracle.getNlogo()
   if (nlogoResult.success) {
     if (nlogoResult.result !== lastNlogo) {
       lastNlogo = nlogoResult.result

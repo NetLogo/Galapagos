@@ -91,7 +91,7 @@ class NetTangoController
 
   # () => String
   getNetLogoCode: () ->
-    @netLogoModel.widgetController.code()
+    @netLogoModel.oracle.getCode()
 
   # This is a debugging method to get a view of the altered code output that
   # NetLogo will compile
@@ -200,21 +200,17 @@ class NetTangoController
 
   resetBreedsAndVariables: () ->
     # breeds may have changed in code, so update for context tags
-    workspace = @netLogoModel.workspace
+    oracle = @netLogoModel.oracle
 
-    if workspace is null
+    if not oracle?
       return
 
-    breedsObject     = workspace.breedManager.breeds()
-    breeds           = Object.keys(breedsObject).map( (breedName) -> breedsObject[breedName] )
-    turtleBreedNames = breeds.filter( (b) -> not b.isLinky() ).map( (b) -> b.originalName )
-    linkBreedNames   = breeds.filter( (b) -> b.isLinky()     ).map( (b) -> b.originalName )
+    turtleBreedNames = oracle.getTurtleBreeds()
+    linkBreedNames   = oracle.getLinkBreeds()
     allAgentTypes    = turtleBreedNames.concat(linkBreedNames).concat(['patches'])
     ractive.set('breeds', allAgentTypes)
 
-    compiler = @netLogoModel.session.compiler
-
-    globalVariables = compiler.listGlobalVars().map( (global) -> { name: global.name, tags: [] })
+    globalVariables = oracle.getGlobals().map( (global) -> { name: global.name, tags: [] })
 
     # The `badTypes` arrays contain the variables which will never have a type usable in a
     # NetTango expression (Number or Boolean).  It's not ideal to hardcode them like this,
@@ -233,15 +229,15 @@ class NetTangoController
         getVarsForBreed(breedName).map( (breedVar) -> { name: breedVar, tags: tags })
       )
 
-    patchVariables = makeBuiltInVars(compiler.listPatchVars(), ['patches', 'turtles'], ['plabel'])
+    patchVariables = makeBuiltInVars(oracle.getPatchVars(), ['patches', 'turtles'], ['plabel'])
 
-    turtleBreedVariables = makeBreedVars(turtleBreedNames, (bn) -> compiler.listOwnVarsForBreed(bn))
+    turtleBreedVariables = makeBreedVars(turtleBreedNames, (bn) -> oracle.getTurtleBreedVars(bn))
     badTypes             = ['breed', 'label', 'shape']
-    turtleVariables      = makeBuiltInVars(compiler.listTurtleVars(), turtleBreedNames, badTypes)
+    turtleVariables      = makeBuiltInVars(oracle.getTurtleVars(), turtleBreedNames, badTypes)
 
-    linkBreedVariables = makeBreedVars(linkBreedNames, (bn) -> compiler.listLinkOwnVarsForBreed(bn))
+    linkBreedVariables = makeBreedVars(linkBreedNames, (bn) -> oracle.getLinkBreedVars(bn))
     badTypes           = ['breed', 'end1', 'end2', 'label', 'shape', 'tie-mode']
-    linkVariables      = makeBuiltInVars(compiler.listLinkVars(), linkBreedNames, badTypes)
+    linkVariables      = makeBuiltInVars(oracle.getLinkVars(), linkBreedNames, badTypes)
 
     otherVariables = [globalVariables, patchVariables, turtleVariables, linkVariables]
     variables      = turtleBreedVariables.concat(linkBreedVariables).concat(otherVariables).flat()
@@ -312,18 +308,18 @@ class NetTangoController
 
   # () => NetTangoProject
   getProject: () ->
-    session        = @netLogoModel.session
-    title          = session.modelTitle()
-    modelCodeMaybe = session.getNlogo()
-    if (not modelCodeMaybe.success)
-      @ractive.fire('nettango-error', {}, 'export-nlogo', modelCodeMaybe)
+    oracle     = @netLogoModel.oracle
+    title      = oracle.getModelTitle()
+    nlogoMaybe = oracle.getNlogo()
+    if (not nlogoMaybe.success)
+      @ractive.fire('nettango-error', {}, 'export-nlogo', nlogoMaybe)
 
     project       = @builder.getNetTangoBuilderData()
-    project.code  = modelCodeMaybe.result
+    project.code  = nlogoMaybe.result
     project.title = title
-    isVertical    = session.widgetController.ractive.get("isVertical") ? false
+    isVertical    = oracle.getSetting("isVertical") ? false
     project.netLogoSettings = { isVertical }
-    return project
+    project
 
   handleProjectChange: () ->
     if @actionSource is "project-load"
