@@ -1,18 +1,8 @@
-import { cloneWidget } from "/beak/widgets/widget-properties.js"
-
-{ fold } = tortoise_require('brazier/maybe')
-{ createExportValue } = tortoise_require('engine/core/world/export')
-{ Perspective } = tortoise_require('engine/core/observer')
+import { createModelOracle } from "./model-oracle.js"
 
 postMessage = (target, queries, sourceInfo, results) ->
   target.postMessage({ type:  'nlw-query-response', queries, sourceInfo, results }, '*')
   return
-
-filterNames = (names, maybeFilter) ->
-  filteredNames = if maybeFilter?
-    names.filter( (name) -> maybeFilter.includes(name) )
-  else
-    names
 
 # type QueryRequest = {
 #   type: 'nlw-query'
@@ -105,103 +95,68 @@ filterNames = (names, maybeFilter) ->
 #   result:  ErrorInfo
 # }
 
-getCurrentPlot = (plotManager) ->
-  fold( () -> null )( (p) -> p.name )(plotManager.getCurrentPlotMaybe())
-
-getPerspective = (observer) ->
-  targetAgent     = observer._targetAgent
-  perspectiveType = observer.getPerspective()
-  {
-    type: if perspectiveType? then Perspective.perspectiveToString(perspectiveType) else 'unset'
-    targetAgent: if targetAgent? then targetAgent.toString() else 'nobody'
-  }
-
-getSource = (source) ->
-  switch source.type
-    when 'disk'
-      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName }
-
-    when 'url'
-      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName, url: session.nlogoSource.url }
-
-    when 'new'
-      { type: session.nlogoSource.type, fileName: session.nlogoSource.fileName }
-
-    when 'script-element'
-      { type: session.nlogoSource.type }
-
-    else
-      throw new Error("Unknown file source: #{source}")
-
-# (SessionLite, Query) => Any
-handleQuery = (session, query) ->
+# (ModelOracle, Query) => QueryResult
+handleQuery = (oracle, query) ->
   switch query.type
     when 'globals'
-      observer    = workspace.world.observer
-      exportValue = createExportValue(workspace.world)
-      globalNames = filterNames(observer.varNames(), query.variableFilters)
-      globals = globalNames.map( (global) -> {
-        name:  global
-      , value: exportValue(observer.getGlobal(global))
-      })
+      globals = oracle.getGlobals(query.variableFilters)
       { type: 'globals-result', globals }
 
     when 'reporter'
-      result = session.runReporter(query.code)
+      result = oracle.runReporter(query.code)
       result.type = 'reporter-result'
-
-      if result.success
-        exportValue  = createExportValue(workspace.world)
-        result.value = exportValue(result.value)
-
       result
 
     when 'widgets'
-      widgets = session.widgetController.widgets().map(cloneWidget)
+      widgets = oracle.getWidgets()
       { type: 'widgets-result', widgets }
 
     when 'info'
-      info = session.getInfo()
+      info = oracle.getInfo()
       { type: 'info-result', info }
 
     when 'code'
-      code = session.getCode()
+      code = oracle.getCode()
       { type: 'code-result', code }
 
     when 'nlogo-file'
-      nlogo = session.getNlogo()
+      nlogo = oracle.getNlogo()
       { type: 'nlogo-file-result', nlogo }
 
     when 'metadata'
       {
-        type: 'metadata-result'
-      , title: session.modelTitle()
-      , source: getSource(session.nlogoSource)
-      , speed: session.widgetController.speed()
-      , ticks: session.widgetController.ractive.get('ticks')
-      , currentPlot: getCurrentPlot(workspace.plotManager)
-      , perspective: getPerspective(workspace.world.observer)
+        type:        'metadata-result'
+      , title:       oracle.getModelTitle()
+      , source:      oracle.getSource()
+      , speed:       oracle.getSpeed()
+      , ticks:       oracle.getTicks()
+      , currentPlot: oracle.getCurrentPlot()
+      , perspective: oracle.getCurrentPerspective()
       }
 
     when 'view'
-      base64 = workspace.importExportPrims.exportViewRaw()
-      {
-        type:   'view-result'
-      , base64: base64
-      }
+      base64 = oracle.getView()
+      { type: 'view-result', base64 }
 
     else
       throw new Error("Unknown query: #{query}")
 
 # (() => SessionLite) => Unit
 attachQueryHandler = (getSession) ->
-  handler = (query) -> handleQuery(getSession(), query)
+  oracle = null
+  handler = (query) ->
+    currentSession = getSession()
+    if (not oracle?) or oracle.session isnt currentSession
+      oracle = createModelOracle(currentSession, globalThis.workspace)
+    handleQuery(oracle, query)
+
   window.addEventListener('message', (event) ->
     if event.data.type is 'nlw-query'
       results = event.data.queries.map(handler)
       postMessage(event.source, event.data.queries, event.data.sourceInfo, results)
     return
   )
+
   return
 
 export { attachQueryHandler }
