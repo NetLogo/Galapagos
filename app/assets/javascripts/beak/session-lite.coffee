@@ -56,7 +56,7 @@ class SessionLite
     # coffeelint: disable=max_line_length
     ractive = @widgetController.ractive
     ractive.on('*.recompile'     , (_, source)         => @recompile(source))
-    ractive.on('*.recompile-sync', (_, source)         => @recompileSync(source))
+    ractive.on('*.recompile-sync', (_, source)         => @recompileSync(source, "", "", {}))
     ractive.on('*.recompile-for-plot', (_, source, oldName, newName, renamings) => @recompile(source, oldName, newName, renamings))
     ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
     ractive.on('export-html'     , (_, event)          => @exportHtml(event))
