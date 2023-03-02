@@ -335,6 +335,8 @@ RactiveSpace = Ractive.extend({
     else
       space.defs.program.chains
 
+    variables = @get('variables')
+
     spaceDef = {
       version:     space.defs.version
     , height:      space.height
@@ -346,9 +348,9 @@ RactiveSpace = Ractive.extend({
     , program:     { chains: newChains }
     , chainOpen:   space.defs.chainOpen
     , chainClose:  space.defs.chainClose
-    # It might seem odd to not send variables over, but we actually send them once NetLogo compiles
-    # succesfully so we have the full, proper list.  -Jeremy B September 2021
-    , variables:   []
+    # If this is during a load or new project this will be empty.  But that's fine because after the NetLogo model load
+    # and compile is complete this will get updated via the `variables` observer.  -Jeremy B March 2023
+    , variables
     }
     playMode = @get('playMode')
     netTangoOptions = @get('netTangoOptions')

@@ -58,7 +58,6 @@ class NetTangoController
     @ractive.on('*.ntb-redo',            (_)              => @redo())
     @ractive.on('*.ntb-code-dirty',      (_)              => @recompileProcedures())
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
-    @ractive.on('*.ntb-load-variables',  (_)              => @resetBreedsAndVariables())
 
     @ractive.on('*.ntb-import-netlogo', (local)  => @importNetLogo(local.node.files))
     @ractive.on('*.ntb-export-netlogo', (_)      => @netLogoModel.session.exportNlogo())
@@ -172,34 +171,27 @@ class NetTangoController
       proceduresCode = @getBlocksCode()
       procedureNames = @getProcedures()
 
-      widgets = widgetController.ractive.get('widgetObj')
-      @pauseForevers(widgets)
-      widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @netLogoCompileComplete)
+      @pauseForevers()
+      widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @rerunForevers)
       @spaceChangeListener?()
       return
 
   # () => Unit
   recompile: () ->
     widgetController = @netLogoModel.widgetController
-    widgets = widgetController.ractive.get('widgetObj')
-    @pauseForevers(widgets)
+    @pauseForevers()
     widgetController.ractive.fire('recompile-sync', 'system')
     @spaceChangeListener?()
     return
 
   netLogoCompileComplete: () =>
-
     # if we had any forever buttons running, re-run them
-    widgetController = @netLogoModel.widgetController
-    widgets          = widgetController.ractive.get('widgetObj')
-    @rerunForevers(widgets)
-
+    @rerunForevers()
+    # breeds and variables may have changed in code, so update for context tags and variables
     @resetBreedsAndVariables()
-
     return
 
   resetBreedsAndVariables: () ->
-    # breeds may have changed in code, so update for context tags
     oracle = @netLogoModel.oracle
 
     if not oracle?
@@ -208,6 +200,7 @@ class NetTangoController
     turtleBreedNames = oracle.getTurtleBreeds()
     linkBreedNames   = oracle.getLinkBreeds()
     allAgentTypes    = turtleBreedNames.concat(linkBreedNames).concat(['patches'])
+
     ractive.set('breeds', allAgentTypes)
 
     globalVariables = oracle.getGlobals().map( (global) -> { name: global.name, tags: [] })
@@ -454,9 +447,12 @@ class NetTangoController
     @spaceChangeListener = f
     return
 
-  # (Array[Widget]) => Unit
-  pauseForevers: (widgets) ->
+  # () => Unit
+  pauseForevers: () ->
     if not @runningIndices? or @runningIndices.length is 0
+      widgetController = @netLogoModel.widgetController
+      widgets = widgetController.ractive.get('widgetObj')
+
       @runningIndices = Object.getOwnPropertyNames(widgets)
         .filter( (index) ->
           widget = widgets[index]
@@ -465,9 +461,12 @@ class NetTangoController
       @runningIndices.forEach( (index) -> widgets[index].running = false )
     return
 
-  # (Array[Widget]) => Unit
-  rerunForevers: (widgets) ->
+  # () => Unit
+  rerunForevers: () =>
     if @runningIndices? and @runningIndices.length > 0
+      widgetController = @netLogoModel.widgetController
+      widgets = widgetController.ractive.get('widgetObj')
+
       @runningIndices.forEach( (index) -> widgets[index].running = true )
     @runningIndices = []
     return
