@@ -56,12 +56,14 @@ if (params.has('relayIframeEvents')) {
   const relayListener = createIframeRelayListener(allEvents, params.get('relayIframeEvents'))
   listeners.push(relayListener)
 }
+const disableAutoStore = params.has('disableAutoStore')
 
 const netTango = new NetTangoController(
   "ntb-container"
 , storage
 , playMode || window.isStandaloneHTML
 , window.environmentMode
+, disableAutoStore
 , netTangoModelUrl
 , listeners
 )

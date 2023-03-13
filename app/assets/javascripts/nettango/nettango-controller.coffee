@@ -13,14 +13,15 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @playMode, @runtimeMode, netTangoModelUrl, listeners) ->
-    @storage      = new NamespaceStorage('ntInProgress', localStorage)
-    getSpaces     = () => @builder.get("spaces")
-    @isDebugMode  = false
-    @rewriter     = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
-    @compileAlert = { compileComplete: @netLogoCompileComplete }
-    @rewriters    = [@rewriter, @compileAlert]
-    @undoRedo     = new UndoRedo()
+  constructor: (element, localStorage, @playMode, @runtimeMode, @disableAutoStore, netTangoModelUrl, listeners) ->
+    @storage       = new NamespaceStorage('ntInProgress', localStorage)
+    @autoStorePlay = @playMode and not @disableAutoStore
+    getSpaces      = () => @builder.get("spaces")
+    @isDebugMode   = false
+    @rewriter      = new NetTangoRewriter(@getBlocksCode, getSpaces, @isDebugMode)
+    @compileAlert  = { compileComplete: @netLogoCompileComplete }
+    @rewriters     = [@rewriter, @compileAlert]
+    @undoRedo      = new UndoRedo()
 
     Mousetrap.bind(['ctrl+shift+e', 'command+shift+e'], () => @exportProject('json'))
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
@@ -138,7 +139,11 @@ class NetTangoController
     if (netTangoCodeElement? and netTangoCodeElement.textContent? and netTangoCodeElement.textContent isnt "")
       project = JSON.parse(netTangoCodeElement.textContent)
       @storageId = project.storageId
-      if (@playMode and @storageId? and progress? and progress.playProgress? and progress.playProgress[@storageId]?)
+      if (
+        @autoStorePlay and
+        @storageId? and
+        progress? and progress.playProgress? and progress.playProgress[@storageId]?
+      )
         progress = progress.playProgress[@storageId]
         project.spaces = progress.spaces
       @loadProject(project, "project-load")
@@ -430,6 +435,10 @@ class NetTangoController
     set = (prop) => @storage.set(prop, project[prop])
     [ 'code', 'title', 'extraCss', 'spaces', 'netLogoOptions',
       'netTangoOptions', 'blockStyles', 'netLogoSettings' ].forEach(set)
+
+    if @autoStorePlay
+      @storePlayProgress()
+
     return
 
   # () => Unit
