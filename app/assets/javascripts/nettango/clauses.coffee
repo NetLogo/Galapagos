@@ -40,7 +40,9 @@ partials = {
             divClass="ntb-flex-column" class="ntb-input" />
 
           <div class="ntb-flex-column">
-            <label for="{{ arrayViewId }}-{{ number }}-open">Start code format (default is `[`)</label>
+            <label for="{{ arrayViewId }}-{{ number }}-open">Start code format
+              {{# !forProcedureBlock }}(default is `[`){{/}}
+            </label>
             <codeMirror
               id="{{ arrayViewId }}-{{ number }}-open"
               mode="netlogo"
@@ -51,7 +53,9 @@ partials = {
           </div>
 
           <div class="ntb-flex-column">
-            <label for="{{ arrayViewId }}-{{ number }}-close">End code format (default is `]`)</label>
+            <label for="{{ arrayViewId }}-{{ number }}-close">End code format
+              {{# !forProcedureBlock }}(default is `]`){{/}}
+            </label>
             <codeMirror
               id="{{ arrayViewId }}-{{ number }}-close"
               mode="netlogo"
@@ -131,6 +135,7 @@ RactiveClauses = Ractive.extend({
       knownTags={{ knownTags }}
       blockType="clause"
       canInheritTags={{ !forProcedureBlock }}
+      forProcedureBlock={{ forProcedureBlock }}
       />
     """
 })

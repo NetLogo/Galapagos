@@ -74,25 +74,27 @@ blocks = {
         {
           name: "new procedure"
           data: {
-            , action:     "procedure"
-            , format:     "to proc1"
-            , isRequired: true
-            , placement:  NetTango.blockPlacementOptions.STARTER
-            , limit:      1
-            , params:     []
-            , properties: []
+            , action:       "procedure"
+            , format:       "to proc1"
+            , closeStarter: "end"
+            , isRequired:   true
+            , placement:    NetTango.blockPlacementOptions.STARTER
+            , limit:        1
+            , params:       []
+            , properties:   []
           }
         },
         {
           name: "wrapping procedure"
           data: {
-            , action:     "procedure"
-            , format:     "to proc1"
-            , isRequired: true
-            , isTerminal: true
-            , placement:  NetTango.blockPlacementOptions.STARTER
-            , limit:      1
-            , clauses:    [{ blocks: [], open: "", close: "" }]
+            , action:       "procedure"
+            , format:       "to proc1"
+            , closeStarter: "end"
+            , isRequired:   true
+            , isTerminal:   true
+            , placement:    NetTango.blockPlacementOptions.STARTER
+            , limit:        1
+            , clauses:      [{ blocks: [], open: "", close: "" }]
           }
         }
       ]
