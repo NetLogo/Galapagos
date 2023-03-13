@@ -16,7 +16,7 @@ target/
 tmp/
 .bsp/
 
-/public/pages/iframeTest.html
+/public/pages/iframe-test.html
 
 /public/modelslib/src/test/resources/modelwords.txt
 /public/modelslib/test/stats/usage_of_primitives.svg

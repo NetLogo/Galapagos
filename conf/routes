@@ -19,7 +19,7 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
-GET         /launch-iframe-test                 controllers.Local.iframeTest
+GET         /iframe-test                        controllers.Local.iframeTest
 
 # NetTango
 GET         /nettango-builder                   controllers.NetTango.builder(themed: Boolean = true,  standalone: Boolean = false)

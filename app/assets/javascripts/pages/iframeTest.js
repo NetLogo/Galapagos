@@ -38,3 +38,6 @@ if (params.has('debugQueries')) {
   window.makeQuery = createQueryMaker(modelContainer)
   listenForQueryResponses()
 }
+
+const url = `/assets/pages/iframe-test.html?${params.toString()}`;
+modelContainer.contentWindow.location.replace(url);

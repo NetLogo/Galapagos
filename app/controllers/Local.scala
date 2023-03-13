@@ -26,7 +26,7 @@ class Local @Inject() ( components: ControllerComponents
 
   def iframeTest: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.tortoiseIframeTest())
+      Ok(views.html.iframeTest())
   }
 
   def standalone: Action[AnyContent] = Action {

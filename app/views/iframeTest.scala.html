@@ -1,0 +1,30 @@
+@import play.api.Mode
+
+@()(implicit mode: Mode, request: Request[_])
+
+@extraHead = {
+  <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
+}
+
+@content = {
+  <div class="tortoise inner-content">
+    <div>
+      <p>This is a test page for loading up a model as an exported HTML file.  Just place your HTML file in <code>public/pages/</code> as <code>iframe-test.html</code> and it will show up here.  One good reason is tracking down bugs that only appear in the exported HTML file when loaded in an iframe.  Another good reason might be to use the <code>?debugQueries</code> URL parameter to check that iframe queries work as expected. The possibilities are almost limitless.</p>
+    </div>
+    <div class="model-box">
+      <iframe id="model-container" class="model-container"></iframe>
+    </div>
+  </div>
+}
+
+@extraBody = {
+  <script>
+    window.environmentMode = "@mode.toString.toLowerCase";
+  </script>
+
+  <script type="module" src='@routes.Assets.versioned("javascripts/pages/iframeTest.js").relative'></script>
+}
+
+@views.html.mainTheme(content, "NetLogo Web", Option("launch"), extraHead, extraBody)
