@@ -1,5 +1,6 @@
 import { createDebugListener } from "/notifications/debug-listener.js"
 import { listenerEvents } from "/notifications/listener-events.js"
+import { createIframeRelayListener } from "/notifications/iframe-relay-listener.js";
 import { netTangoEvents } from "/nettango/nettango-events.js"
 
 import "/codemirror-mode.js"
