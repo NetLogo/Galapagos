@@ -33,9 +33,9 @@ class SessionLite
   widgetController: undefined # WidgetController
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
-  #   String, String, Boolean, String, NlogoSource, String, Boolean)
+  #   String, String, Boolean, String, String, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, isReadOnly, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
+    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
 
     @_eventLoopTimeout = -1
     @_lastRedraw       = 0
@@ -90,6 +90,7 @@ class SessionLite
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
+    workspace.i18nBundle.switch(@locale)
 
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
@@ -220,6 +221,8 @@ class SessionLite
         @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 
         globalEval(res.model.result)
+        workspace.i18nBundle.switch(@locale)
+
         breedShapePairs.forEach(([name, shape]) -> world.breedManager.get(name).setShape(shape))
         plots = plotManager.getPlots()
         state.plotManager =

@@ -116,6 +116,7 @@ if (isInFrame && params.has('relayIframeEvents')) {
 }
 
 const notifyListeners = createNotifier(listenerEvents, listeners);
+const locale          = navigator.language.replace('-', '_').toLowerCase()
 
 if (isInFrame) {
   const getSession = () => { return globalThis.session };
@@ -132,6 +133,7 @@ var loadModel = function(nlogo, sourceType, path, isUndoReversion) {
   Tortoise.fromNlogo(
     nlogoSource
   , modelContainer
+  , locale
   , isUndoReversion
   , getWorkInProgress
   , handleCompileResult
@@ -198,8 +200,8 @@ const redirectOnProtocolMismatch = function(url) {
   return false;
 }
 
-speed        = readSpeed(params);
-isVertical   = !(params.has('tabs') && params.get('tabs') === 'right');
+speed      = readSpeed(params);
+isVertical = !(params.has('tabs') && params.get('tabs') === 'right');
 
 if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent;
@@ -209,6 +211,7 @@ if (nlogoScript.textContent.length > 0) {
   Tortoise.fromNlogo(
     nlogoSource
   , modelContainer
+  , locale
   , false
   , getWorkInProgress
   , handleCompileResult
@@ -224,6 +227,7 @@ if (nlogoScript.textContent.length > 0) {
     Tortoise.fromURL(
       url
     , modelContainer
+    , locale
     , getWorkInProgress
     , handleCompileResult
     , []

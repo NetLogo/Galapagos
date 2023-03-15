@@ -4,9 +4,9 @@ import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoi
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
-#  Boolean, String, NlogoSource, Boolean) => SessionLite
+#  Boolean, String, String, NlogoSource, Boolean) => SessionLite
 newSession = (container, compiler, rewriters, listeners, modelResult,
-  isReadOnly, workInProgressState, nlogoSource, lastCompileFailed) ->
+  isReadOnly, locale, workInProgressState, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
@@ -20,6 +20,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , code
   , info
   , isReadOnly
+  , locale
   , workInProgressState
   , nlogoSource
   , result
@@ -42,16 +43,16 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (NlogoSource, Element, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (NlogoSource, Element, String, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, locale, isUndoReversion, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogoSource, container, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
+    fromNlogoSync(nlogoSource, container, locale, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
     finishLoading()
   )
   return
 
-# (String, Element, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (String, Element, String, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     req = new XMLHttpRequest()
     req.open('GET', url)
@@ -62,7 +63,7 @@ fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listener
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url, nlogo)
-          fromNlogoSync(urlSource, container, false, getWorkInProgress, callback, rewriters, listeners)
+          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners)
         finishLoading()
       return
 
@@ -71,9 +72,9 @@ fromURL = (url, container, getWorkInProgress, callback, rewriters = [], listener
   )
   return
 
-# (NlogoSource, Element, Boolean, Boolean,
+# (NlogoSource, Element, String, Boolean,
 #   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogoSync = (nlogoSource, container, isUndoReversion,
+fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners) ->
 
   compiler = new BrowserCompiler()
@@ -113,6 +114,7 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion,
     , listeners
     , result
     , false
+    , locale
     , workInProgressState
     , nlogoSource
     , false
@@ -137,6 +139,7 @@ fromNlogoSync = (nlogoSource, container, isUndoReversion,
       , listeners
       , secondChanceResult
       , false
+      , locale
       , workInProgressState
       , nlogoSource
       , true
