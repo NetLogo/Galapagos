@@ -43,8 +43,10 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (NlogoSource, Element, String, Boolean, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogoSource, container, locale, isUndoReversion, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (NlogoSource, Element, String, Boolean,
+#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, locale, isUndoReversion,
+  getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
     fromNlogoSync(nlogoSource, container, locale, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
     finishLoading()

@@ -13,7 +13,8 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, locale, localStorage, @playMode, @runtimeMode, @disableAutoStore, netTangoModelUrl, listeners) ->
+  constructor: (element, locale, localStorage, @playMode, @runtimeMode,
+    @disableAutoStore, netTangoModelUrl, listeners) ->
     @storage       = new NamespaceStorage('ntInProgress', localStorage)
     @autoStorePlay = @playMode and not @disableAutoStore
     getSpaces      = () => @builder.get("spaces")
