@@ -11,13 +11,14 @@ import RactivePopupMenu from "./popup-menu.js"
 import RactiveProjectChooser from "./project-chooser.js"
 import RactiveHelpDialog from "./help-dialog.js"
 
-# (HTMLElement, Environment, Boolean, Boolean) => Ractive
-create = (element, playMode, runtimeMode, isDebugMode) ->
+# (HTMLElement, String, Environment, Boolean, Boolean) => Ractive
+create = (element, locale, playMode, runtimeMode, isDebugMode) ->
   ractive = new Ractive({
 
     el: element,
 
     data: () -> {
+      locale:          locale      # String
       breeds:          []          # Array[String]
       canRedo:         false       # Boolean
       canUndo:         false       # Boolean
@@ -156,7 +157,9 @@ create = (element, playMode, runtimeMode, isDebugMode) ->
 
         <div class="ntb-models {{ displayClass }}">
 
-          <netLogoModel />
+          <netLogoModel
+            locale={{ locale }}
+            />
 
           <builder
             playMode={{ playMode }}

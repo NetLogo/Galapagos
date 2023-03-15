@@ -13,7 +13,7 @@ class NetTangoController
   netLogoCode:  undefined # String
   netLogoTitle: undefined # String
 
-  constructor: (element, localStorage, @playMode, @runtimeMode, @disableAutoStore, netTangoModelUrl, listeners) ->
+  constructor: (element, locale, localStorage, @playMode, @runtimeMode, @disableAutoStore, netTangoModelUrl, listeners) ->
     @storage       = new NamespaceStorage('ntInProgress', localStorage)
     @autoStorePlay = @playMode and not @disableAutoStore
     getSpaces      = () => @builder.get("spaces")
@@ -27,7 +27,7 @@ class NetTangoController
     Mousetrap.bind(['ctrl+z',       'command+z'      ], () => @undo())
     Mousetrap.bind(['ctrl+y',       'command+shift+z'], () => @redo())
 
-    ractive       = NetTangoSkeleton.create(element, @playMode, @runtimeMode, @isDebugMode)
+    ractive       = NetTangoSkeleton.create(element, locale, @playMode, @runtimeMode, @isDebugMode)
     @ractive      = ractive
     @builder      = @ractive.findComponent('builder')
     @netLogoModel = @ractive.findComponent('netLogoModel')

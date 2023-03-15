@@ -57,9 +57,11 @@ if (params.has('relayIframeEvents')) {
   listeners.push(relayListener)
 }
 const disableAutoStore = params.has('disableAutoStore')
+const locale           = params.has('locale') ? params.get('locale')?.replace('-', '_').toLowerCase() : navigator.language.replace('-', '_').toLowerCase()
 
 const netTango = new NetTangoController(
   "ntb-container"
+, locale
 , storage
 , playMode || window.isStandaloneHTML
 , window.environmentMode

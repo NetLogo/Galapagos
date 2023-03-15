@@ -14,7 +14,6 @@ RactiveNetLogoModel = Ractive.extend({
   listeners:        null # Array[Listener]
   alerter:          null # AlertDisplay
   modelContainer:   null # Element
-  locale:           null # String
   session:          null # SessionLite
   widgetController: null # WidgetController
   workspace:        null # Workspace
@@ -84,7 +83,7 @@ RactiveNetLogoModel = Ractive.extend({
     Tortoise.fromNlogoSync(
       nlogoSource
     , @modelContainer
-    , @locale
+    , @get('locale')
     , false
     , null
     , @makeCompileResultHandler(callback)
@@ -100,7 +99,7 @@ RactiveNetLogoModel = Ractive.extend({
     Tortoise.fromURL(
       url
     , @modelContainer
-    , @locale
+    , @get('locale')
     , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
     , @rewriters
