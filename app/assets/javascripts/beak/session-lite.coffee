@@ -90,7 +90,11 @@ class SessionLite
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)
     window.modelConfig.version = NETLOGO_VERSION
     globalEval(modelJS)
-    workspace.i18nBundle.switch(@locale)
+    if workspace.i18nBundle.supports(@locale)
+      workspace.i18nBundle.switch(@locale)
+    else
+      console.warn("Unsupported locale '#{@locale}', reverting to 'en_us'.")
+      @locale = 'en_us'
 
   modelTitle: ->
     @widgetController.ractive.get('modelTitle')
