@@ -25,8 +25,8 @@ initializeUI = (containerArg, widgets, code, info, isReadOnly, workInProgressSta
 
   # Same as above, need a way to report errors, but we don't have the controller
   # instance yet, so just make the closure.  -Jeremy B March 2021
-  reportError = (time, source, exception) ->
-    controller.reportError(time, source, exception)
+  reportError = (time, source, exception, ...args) ->
+    controller.reportError(time, source, exception, ...args)
 
   ractive = generateRactiveSkeleton(
       container

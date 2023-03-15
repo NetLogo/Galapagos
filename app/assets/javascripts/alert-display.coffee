@@ -89,7 +89,7 @@ class AlertDisplay
       when 'plot'     then "called by plot #{frame.name}"
       else                 'called by unknown'
 
-  # (String, String, Maybe[Int], Maybe[Int]) => String
+  # (String, String, Maybe[Int], Maybe[Int], String) => String
   @makeBareRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd, code) ->
     prim     = if primitive is '' then 'a primitive' else primitive.toUpperCase()
     location = if not (isSomething(sourceStart)) then "" else
@@ -97,6 +97,11 @@ class AlertDisplay
       line  = code.slice(0, start).split("\n").length
       " on line #{line}"
     "#{message}\nerror while running #{prim}#{location}"
+
+  # (String, String, String) => String
+  @makeButtonRuntimeErrorMessage: (message, primitive, code) ->
+    prim = if primitive is '' then 'a primitive' else primitive.toUpperCase()
+    "#{message}\nerror while running #{prim} in button \"#{code}\""
 
   # (String, String, Maybe[Int], Maybe[Int]) => String
   @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
@@ -162,8 +167,8 @@ class AlertDisplay
     @reportError(messages.join('<br/>'))
     return
 
-  # (CommonEventArgs, { source: String, exception: Exception }) => Unit
-  'runtime-error': (_, {source, exception}) ->
+  # (CommonEventArgs, { source: String, exception: Exception, code: String | undefined }) => Unit
+  'runtime-error': (_, {source, exception, code}) ->
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
@@ -186,6 +191,11 @@ class AlertDisplay
         exception.message
 
       @reportConsoleError(message)
+
+    else if source is 'button' and exception instanceof Exception.RuntimeException and code?
+      message = if exception instanceof Exception.RuntimeException
+        AlertDisplay.makeButtonRuntimeErrorMessage(exception.message, exception.primitive, code)
+      @reportError(message, exception.stackTrace ? [])
 
     else
       message = if exception instanceof Exception.RuntimeException

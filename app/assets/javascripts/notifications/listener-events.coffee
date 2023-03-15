@@ -265,8 +265,13 @@ listenerEvents = Object.freeze([
   {
     'name': 'runtime-error',
     'args': [
-      'source',   # 'button' | ' console'
-      'exception' # Exception
+      # At the moment runtime errors from the engine are labelled as `button` errors, because that's how the engine code
+      # typically gets run but this seems a little odd to me looking at it now.  I'd expect `button` errors to be
+      # runtime errors from the code of the button itself before control is passed to a "code tab" procedure.  Not going
+      # to change anything for now, just noting it for others. -Jeremy B March 2023
+      'source',    # 'button' | 'console' | 'startup'
+      'exception', # Exception
+      'code'       # String | undefined - only provided for command console errors or errors within button code
     ]
   },
   {

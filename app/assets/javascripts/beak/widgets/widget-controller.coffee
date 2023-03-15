@@ -90,10 +90,10 @@ class WidgetController
     v for _, v of @ractive.get('widgetObj')
 
   # ("runtime" | "compiler", String, Exception | Array[String])
-  reportError: (time, source, details) =>
+  reportError: (time, source, details, ...args) =>
     if not ['runtime', 'compiler'].includes(time)
       throw new Error('Only valid values for `time` are "runtime" or "compiler"')
-    @ractive.fire("#{time}-error", {}, source, details)
+    @ractive.fire("#{time}-error", {}, source, details, ...args)
 
   # (Array[Widget], Array[Widget]) => Unit
   freshenUpWidgets: (realWidgets, newWidgets) ->

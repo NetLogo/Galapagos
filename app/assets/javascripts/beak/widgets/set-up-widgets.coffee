@@ -98,26 +98,26 @@ setUpChooser = (source, destination) ->
   return
 
 # Returns `true` when a stop interrupt was returned or an error/halt was thrown.
-# ((String, String, Exception) => Unit, () => Any) => Boolean
-runWithErrorHandling = (source, reportError, f) ->
+# ((String, String, Exception) => Unit, () => Any, String | undefined) => Boolean
+runWithErrorHandling = (source, reportError, f, code) ->
   try
     f() is StopInterrupt
   catch ex
     if not (ex instanceof Exception.HaltInterrupt)
-      reportError("runtime", source, ex)
+      reportError("runtime", source, ex, code)
     true
 
 # ((String, String, Exception) => Unit, () => Unit, Button, () => Any) => () => Unit
-makeRunForeverTask = (reportError, updateUI, button, f) -> () ->
-  mustStop = runWithErrorHandling("button", reportError, f)
+makeRunForeverTask = (reportError, updateUI, button, f, code) -> () ->
+  mustStop = runWithErrorHandling("button", reportError, f, code)
   if mustStop
     button.running = false
     updateUI()
   return
 
 # ((String, String, Exception) => Unit, () => Unit, () => Any) => () => Unit
-makeRunOnceTask = (reportError, updateUI, f) -> () ->
-  runWithErrorHandling("button", reportError, f)
+makeRunOnceTask = (reportError, updateUI, f, code) -> () ->
+  runWithErrorHandling("button", reportError, f, code)
   updateUI()
   return
 
@@ -133,12 +133,13 @@ setUpButton = (reportError, updateUI) -> (source, destination) ->
     destination.running = false
 
   if source.compilation?.success
+    code = if source.display? then source.display else source.source
     destination.compiledSource = source.compiledSource
     f = new Function(destination.compiledSource)
     destination.run = if source.forever
-      makeRunForeverTask(reportError, updateUI, destination, f)
+      makeRunForeverTask(reportError, updateUI, destination, f, code)
     else
-      makeRunOnceTask(reportError, updateUI, f)
+      makeRunOnceTask(reportError, updateUI, f, code)
 
   else
     destination.run = makeCompilerErrorTask(reportError, destination, source.compilation?.messages ? [])

@@ -434,7 +434,7 @@ class SessionLite
       return
 
     command = new Function(result)
-    runWithErrorHandling(source, @widgetController.reportError, command)
+    runWithErrorHandling(source, @widgetController.reportError, command, code)
     return
 
   # (String) => { success: true, value: Any } | { success: false, error: String }
