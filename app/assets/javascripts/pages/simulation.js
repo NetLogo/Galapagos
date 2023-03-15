@@ -116,7 +116,7 @@ if (isInFrame && params.has('relayIframeEvents')) {
 }
 
 const notifyListeners = createNotifier(listenerEvents, listeners);
-const locale          = navigator.language.replace('-', '_').toLowerCase()
+const locale          = params.has('locale') ? params.get('locale')?.replace('-', '_').toLowerCase() : navigator.language.replace('-', '_').toLowerCase()
 
 if (isInFrame) {
   const getSession = () => { return globalThis.session };
