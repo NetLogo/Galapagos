@@ -4,6 +4,24 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.10.4">March 20th 2023 - v2.10.4</h2>
+
+  <p>This release brings automatic saving of work in progress as you make changes to your models in NetLogo Web.  This autosave uses your browser's local cache so it doesn't require a server or account to use.  Each unique source of a model, a URL, a filename, or using New Model, is treated as a storage location for auto-save.  Returning to the same URL, re-uploading the model file, or going back to the New Model will get you right back to your work in progress with an option to revert to the original model if you prefer.  To try it out just <a href="launch#/assets/modelslib/Sample%20Models/Biology/Slime.nlogo">open your favorite model</a> and <a href="docs/authoring">do some authoring</a>.  See <a href="docs/authoring#saving">the "Saving Your Changes" section</a> of the authoring docs for more information, including how to disable autosave when embedding models.  For safe keeping of models you put a lot of work into, we still recommend occasionally <a href="docs/faq#saving">downloading an <code>.nlogo</code> file locally to your computer</a>.</p>
+
+  <p></p>
+
+  <p>Other features and improvements in this release:</p>
+
+  <ul>
+    <li>Support translation of model runtime errors for simplified Chinese.  This is the first step towards supporting more languages in more parts of NetLogo Web.</li>
+    <li>The link direction indicator will draw correctly when its shape does not include a middle line.</li>
+    <li>For people embedding NetLogo Web models into other web pages or apps, we've added an event system that can be hooked into via JavaScript code to monitor model usage, along with a query system so information can be more easily pulled out of a model.  Full documentation of these features is coming.</li>
+    <li>The rendering speed of scatter plots has been improved.</li>
+    <li>We added some clarifying text on why some models that don't work yet in NetLogo Web are greyed out in the models library list.</li>
+    <li>Improved the display of errors when a model completely fails to load.</li>
+    <li>Fixed a few small bugs in NetTango Web.</li>
+  </ul>
+
   <h2 id="v2.10.3">December 20th 2022 - v2.10.3</h2>
 
   This is a small release with bugfixes and features.

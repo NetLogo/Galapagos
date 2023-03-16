@@ -8,11 +8,11 @@
 
   <p>Note: Since this document is about how to use authoring mode, from here on out, we will assume that your model is currently in authoring mode.</p>
 
-  <h3>Editing</h3>
+  <h3 id="editing">Editing</h3>
 
   <p>Existing widgets can have their properties edited by double-clicking them or right-clicking them and selecting "Edit", which will then open a widget configuration dialog box. This is true of the model's title, as well. If you press the <kbd>Escape</kbd> key, click the 'X' in the corner of the dialog window, or click "Cancel", all changes to the widget configuration dialog will be discarded, and the dialog will close. Otherwise, upon clicking "OK", all changes to the widget configuration dialog will be accepted and applied to the corresponding widget.</p>
 
-  <h3>Creation</h3>
+  <h3 id="creation">Creation</h3>
 
   <p>In order to create new widgets, right-click the light green background of the widget area. This will give you a menu of creatable widgets to choose from. When you click one of the options in that menu, a dialog will appear for configuring the new widget that you are creating. If you press the <kbd>Escape</kbd> key, click the 'X' in the corner of the dialog window, or click "Cancel", creation of the widget will be aborted, and the dialog will close. Otherwise, clicking "OK" will finalize the creation of the widget.</p>
 
@@ -20,7 +20,7 @@
 
   <p>Note: A single model cannot have more than one View widget or Output widget.</p>
 
-  <h3>Selection, Sizing, and Movement</h3>
+  <h3 id="selection">Selection, Sizing, and Movement</h3>
 
   <p>You can move a widget to a different location in the widget area by clicking and dragging it to the new location. You can even move it to the right or bottom edge of the widget area in order to trigger an automatic expansion of the widget area.</p>
 
@@ -30,11 +30,11 @@
 
   <p>Note: NetLogo Web does not yet support having multiple widgets selected at once.</p>
 
-  <h3>Deletion</h3>
+  <h3 id="deletion">Deletion</h3>
 
   <p>With the exception of the View widget, all widgets can also be deleted. In order to delete a widget, right-click the widget and select "Delete".  However, just like in desktop NetLogo, deleting a widget can cause the model to start generating compilation errors (for example, if you delete a Slider widget that declares a variable that is referenced in the "Code" section). Of course, this can be remedied by adding a new widget that declares that global variable anew, or by removing any references to the now-deleted variable by editing the "Code" pane and changing the code inside of any non-compiling (red text) widgets.</p>
 
-  <h3>Saving Your Changes</h3>
+  <h3 id="saving">Saving Your Changes</h3>
 
   <p>As you make changes to your model, NetLogo Web will automatically save them to your web browser's local storage cache.  Each model source will be stored separately according to the source of the model: URLs, file uploads, or the New Model.  To return to your work in progress just open NetLogo Web to the same source you used before.  It will alert you that your changes have been loaded from the cache.  If you wish you can Press the <strong>Revert to Original</strong> button to restore the model to its original source.  If you revert your changes by mistake, you can press the <strong>Undo Revert</strong> button.</p>
 
