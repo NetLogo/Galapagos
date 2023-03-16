@@ -220,9 +220,9 @@ if (nlogoScript.textContent.length > 0) {
   );
 
 } else if (params.has('url')) {
-  const url = params.get('url');
+  const url = params.get('url').trim();
 
-  if (redirectOnProtocolMismatch(url)) {
+  if (!url.startsWith('http') || redirectOnProtocolMismatch(url)) {
     notifyListeners('model-load', 'url', url);
     Tortoise.fromURL(
       url
