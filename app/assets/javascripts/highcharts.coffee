@@ -82,18 +82,21 @@ class HighchartsOps extends PlotOps
 
   _chart:              undefined # Highcharts.Chart
   _penNameToSeriesNum: undefined # Object[String, Number]
+  _needsRedraw:        true
 
   constructor: (elemID) ->
 
     resize = (xMin, xMax, yMin, yMax) ->
       @_chart.xAxis[0].setExtremes(xMin, xMax, false)
       @_chart.yAxis[0].setExtremes(yMin, yMax, false)
+      @_needsRedraw = true
       return
 
     reset = (plot) ->
       @_chart.destroy()
       @_chart = new Highcharts.Chart(basicConfig(elemID, plot))
       @_penNameToSeriesNum = {}
+      @_needsRedraw = true
       return
 
     registerPen = (pen) ->
@@ -108,6 +111,7 @@ class HighchartsOps extends PlotOps
       options = thisOps.seriesTypeOptions(type, pen.getInterval())
       series.update(options, false)
       @_penNameToSeriesNum[pen.name] = num
+      @_needsRedraw = true
       return
 
     # This is a workaround for a bug in CS2 `@` detection: https://github.com/jashkenas/coffeescript/issues/5111
@@ -129,6 +133,7 @@ class HighchartsOps extends PlotOps
 
     resetPen = (pen) => () =>
       thisOps.penToSeries(pen)?.setData([], false)
+      thisOps._needsRedraw = true
       # See ADD_POINT_HACK_1
       maybeLastUpPoint    = null
       # See ADD_POINT_HACK_2
@@ -164,6 +169,7 @@ class HighchartsOps extends PlotOps
             maybeRightmostPoint = x
 
         series.addPoint([x, pointY], false)
+        thisOps._needsRedraw = true
         return
 
     updatePenMode = (pen) => (mode) =>
@@ -184,6 +190,7 @@ class HighchartsOps extends PlotOps
       series  = thisOps.penToSeries(pen)
       series.options.color = hcColor
       series.update(series.options, false)
+      thisOps._needsRedraw = true
       return
 
     super(resize, reset, registerPen, resetPen, addPoint, updatePenMode, updatePenColor)
@@ -197,7 +204,7 @@ class HighchartsOps extends PlotOps
     #--Camden Clark (3/27/17)
     #I heard you like hacks, so I put hacks in your hacks.
     #Highcharts uses the same menuItems for all charts, so we have to apply the hack once. - JMB November 2017
-    if(not @_chart.options.exporting.buttons.contextButton.menuItems.popped?)
+    if not @_chart.options.exporting.buttons.contextButton.menuItems.popped?
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.pop()
       @_chart.options.exporting.buttons.contextButton.menuItems.popped = true
@@ -237,7 +244,11 @@ class HighchartsOps extends PlotOps
 
   # () => Unit
   redraw: ->
-    @_chart.redraw()
+    # Highcharts does a pretty good job of not doign too much work when nothing has really changed, but if we can avoid
+    # any work at all, we might as well.  -Jeremy B March 2023
+    if @_needsRedraw
+      @_chart.redraw()
+      @_needsRedraw = false
     return
 
   # (Number, Number) => Unit
