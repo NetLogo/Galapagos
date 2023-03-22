@@ -2,6 +2,8 @@ import NetTangoRewriter from "./rewriter.js"
 import RactiveCodeMirror from "./code-mirror.js"
 import NetTangoBlockDefaults from "./block-defaults.js"
 
+import { createEmptyDefs } from "./nettango-data.js"
+
 RactiveBlockPreview = Ractive.extend({
 
   containerId: "ntb-block-preview-canvas"
@@ -33,15 +35,7 @@ RactiveBlockPreview = Ractive.extend({
         block.id = 0
 
       blockStyles = @get("blockStyles")
-
-      workspace = {
-        version:      7
-        height:       300
-        width:        400
-        blockStyles:  blockStyles
-        chainClose: "end"
-      }
-
+      workspace   = createEmptyDefs(blockStyles)
       @setupWorkspace(workspace, block)
       @restoreNetTango(workspace)
       return

@@ -3,6 +3,8 @@ import RactiveCodeMirror from "./code-mirror.js"
 import RactiveSpace from "./space.js"
 import ObjectUtils from "./object-utils.js"
 import newModelNetTango from "./new-model-nettango.js"
+
+import { createEmptyDefs, createProject, createWorkspace } from "./nettango-data.js"
 import { netLogoOptionInfo, netLogoOptionDefaults, netTangoOptionDefaults } from "./options.js"
 
 getBlockStyleDefaults = (style) ->
@@ -315,24 +317,9 @@ RactiveBuilder = Ractive.extend({
     return
 
   clearAll: () ->
-    space = {
-        id:      0
-      , spaceId: "ntb-defs-0"
-      , name:    "Block Space 0"
-      , width:   430
-      , height:  500
-      , defs:    { blocks: [], program: { chains: [] } }
-    }
-
-    blankData = {
-      code:            newModelNetTango
-      spaces:          [space]
-      title:           "Blank Model"
-      netLogoOptions:  ObjectUtils.clone(netLogoOptionDefaults)
-      netTangoOptions: ObjectUtils.clone(netTangoOptionDefaults)
-      extraCss: ""
-    }
-    @fire("ntb-load-project", {}, blankData)
+    newProject = createProject("New Project")
+    newProject.spaces = [createWorkspace(0, "ntb-defs-0", "Block Space 0")]
+    @fire("ntb-load-project", {}, newProject)
     return
 
   # (Boolean) => Unit
@@ -381,12 +368,16 @@ RactiveBuilder = Ractive.extend({
     space = spaces.filter( (space) -> "#{space.spaceId}-canvas" is containerId )[0]
     space
 
+  # () => NetTangoSpace
+  createNewWorkspace: () ->
+    @createSpace(createWorkspace())
+
   # (NetTangoSpace) => NetTangoSpace
   createSpace: (spaceVals) ->
     spaces  = @get('spaces')
     id      = spaces.length
     spaceId = "ntb-defs-#{id}"
-    defs    = if spaceVals.defs? then spaceVals.defs else { blocks: [], program: { chains: [] }, chainClose: "end" }
+    defs    = if spaceVals.defs? then spaceVals.defs else createEmptyDefs()
     space = {
       id:      id
     , spaceId: spaceId
@@ -395,9 +386,10 @@ RactiveBuilder = Ractive.extend({
     , height:  500
     , defs:    defs
     }
-    for propName in [ 'name', 'width', 'height' ]
-      if(spaceVals.hasOwnProperty(propName))
-        space[propName] = spaceVals[propName]
+    copyProps = [ 'name', 'width', 'height' ].filter( (propName) ->
+      spaceVals.hasOwnProperty(propName) and spaceVals[propName]?
+    )
+    copyProps.forEach( (propName) -> space[propName] = spaceVals[propName] )
 
     @push('spaces', space)
     @fire('ntb-space-changed')
