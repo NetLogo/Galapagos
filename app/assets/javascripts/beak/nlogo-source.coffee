@@ -27,8 +27,17 @@ class UrlSource extends NlogoSource
     super('url', normalizedFileName(url), nlogo)
     @url = decodeURI(url)
 
+    # Treat relative/HTTP/HTTPS links to the same model as the same source.
+    [@host, @path] = if @url.startsWith('http:') or @url.startsWith('https:')
+      uri = new URL(@url)
+      [uri.host, decodeURI(uri.pathname)]
+    else
+      # host-relative URL
+      p = if @url.startsWith('/') then @url else "/#{@url}"
+      [globalThis.location.host, p]
+
   getWipKey: () ->
-    @url
+    "url://#{@host}#{@path}"
 
 class DiskSource extends NlogoSource
   constructor: (fileName, nlogo) ->
