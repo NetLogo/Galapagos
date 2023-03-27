@@ -23,10 +23,12 @@ RactiveEditFormDropdown = Ractive.extend({
 
   on: {
     # (Context) => Unit
-    '*.changed': (_) ->
+    '*.changed': (context) ->
       event = @get('changeEvent')
       if (event?)
         @fire(event)
+      else
+        @fire('dropdown-changed', context.event.target.value)
       return
   }
 
