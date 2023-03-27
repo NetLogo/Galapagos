@@ -6,9 +6,17 @@ class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
     @storagePrefix = if storageTag? then "#{storageTag}:" else ""
-    @nlogoSource   = null
     @session       = null
     @reverted      = null
+
+  _nlogoSource: null
+  nlogoSource: {
+    get: ()  ->
+      @_nlogoSource
+
+    set: (v) ->
+      @_nlogoSource = v
+  }
 
   getWipKey: () ->
     "#{@storagePrefix}#{@nlogoSource.getWipKey()}"
