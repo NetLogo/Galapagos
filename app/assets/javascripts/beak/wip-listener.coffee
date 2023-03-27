@@ -5,22 +5,20 @@ class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
     @storagePrefix = if storageTag? then "#{storageTag}:" else ""
+    @_nlogoSource  = null
     @_data         = new WipData(@storage, @storagePrefix)
     @session       = null
     @reverted      = null
 
-  _nlogoSource: null
-  nlogoSource: {
-    get: ()  ->
-      @_nlogoSource
+  getNlogoSource: () ->
+    @_nlogoSource
 
-    set: (v) ->
-
-      @_nlogoSource = v
-  }
+  setNlogoSource: (nlogoSource) ->
+    @_data.update(nlogoSource)
+    @_nlogoSource = nlogoSource
 
   getWipKey: () ->
-    "#{@storagePrefix}#{@nlogoSource.getWipKey()}"
+    "#{@storagePrefix}#{@getNlogoSource().getWipKey()}"
 
   # (SessionLite) => Unit
   setSession: (session) ->
@@ -88,14 +86,15 @@ class WipListener
     wipKey    = @getWipKey()
     title     = @getModelTitle()
 
-    if newNlogo is @nlogoSource.nlogo and "#{title}.nlogo" is @nlogoSource.fileName()
+    source = @getNlogoSource()
+    if newNlogo is source.nlogo and "#{title}.nlogo" is source.fileName()
       # If the new code is just the original code, then we have no work in progress.  Unfortunately this isn't as
       # effective as I'd like, because just compiling the code can cause the nlogo contents to change due to (I
       # believe) whitespace changes.  -Jeremy B January 2023
       @_removeWipInfo(wipKey)
 
     else
-      @nlogoSource.setModelTitle(title)
+      source.setModelTitle(title)
       @_storeWipInfo(wipKey, newNlogo, title)
 
     return
@@ -117,8 +116,8 @@ class WipListener
     source = new DiskSource(fileName, newNlogo)
     # If we are currently working on an imported file or a new document, the just-exported nlogo file has become our
     # authoritative source, so reset.  -Jeremy B January 2023
-    if ['disk', 'new'].includes(@nlogoSource.type)
-      @nlogoSource = source
+    if ['disk', 'new'].includes(@getNlogoSource().type)
+      @setNlogoSource(source)
       @_setWip(newNlogo)
 
     return

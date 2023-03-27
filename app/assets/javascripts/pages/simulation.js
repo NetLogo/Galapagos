@@ -46,7 +46,7 @@ const [wipListener, getWorkInProgress] = (() => {
     // January 2023
     const wl = new WipListener(storage, storageTag);
     const gwip = (nlogoSource) => {
-      wl.nlogoSource = nlogoSource;
+      wl.setNlogoSource(nlogoSource);
       const wipInfo = wl.getWip();
       if (wipInfo !== null) {
         nlogoSource.setModelTitle(wipInfo.title);
@@ -257,7 +257,7 @@ window.addEventListener('message', function (e) {
     case 'nlw-revert-wip': {
       notifyListeners('revert-work-in-progress');
       wipListener.revertWip();
-      const nlogoSource = wipListener.nlogoSource;
+      const nlogoSource = wipListener.getNlogoSource();
       loadModel(
         nlogoSource.nlogo
       , nlogoSource.type
@@ -269,7 +269,7 @@ window.addEventListener('message', function (e) {
     case 'nlw-undo-revert': {
       notifyListeners('undo-revert');
       wipListener.undoRevert();
-      const nlogoSource = wipListener.nlogoSource;
+      const nlogoSource = wipListener.getNlogoSource();
       loadModel(
         nlogoSource.nlogo
       , nlogoSource.type
