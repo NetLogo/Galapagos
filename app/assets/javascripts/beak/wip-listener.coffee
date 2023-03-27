@@ -1,11 +1,11 @@
 import { DiskSource, NewSource } from  './nlogo-source.js'
-
-WIP_INFO_FORMAT_VERSION = 1
+import { WipData } from './wip-data.js'
 
 class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
     @storagePrefix = if storageTag? then "#{storageTag}:" else ""
+    @_data         = new WipData(@storage, @storagePrefix)
     @session       = null
     @reverted      = null
 
@@ -15,6 +15,7 @@ class WipListener
       @_nlogoSource
 
     set: (v) ->
+
       @_nlogoSource = v
   }
 
@@ -71,13 +72,7 @@ class WipListener
 
   # (String, String, String) => Unit
   _storeWipInfo: (wipKey, newNlogo, title) ->
-    wipInfo = {
-      version:   WIP_INFO_FORMAT_VERSION
-      title
-      timeStamp: Date.now()
-      nlogo:     newNlogo
-    }
-    @storage.set(wipKey, wipInfo)
+    @_data.store(wipKey, newNlogo, title)
     @notifyOfWorkInProgress(true)
     return
 
