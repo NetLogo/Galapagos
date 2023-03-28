@@ -9,6 +9,7 @@ import { WipListener } from "/beak/wip-listener.js";
 import "/codemirror-mode.js";
 import AlertDisplay from "/alert-display.js";
 import newModel from "/new-model.js";
+import Settings from "/settings.js"
 import Tortoise from "/beak/tortoise.js";
 
 var loadingOverlay  = document.getElementById('loading-overlay');
@@ -27,11 +28,11 @@ if (paramKeys.length === 1) {
   }
 }
 
+const settings = Settings.fromQueryParams(params);
 const listeners = [];
 
-const disableWorkInProgress = params.has('disableWorkInProgress');
 const [wipListener, getWorkInProgress] = (() => {
-  if (!disableWorkInProgress) {
+  if (settings.workInProgress.enabled) {
     var ls;
     try {
       ls = window.localStorage;
@@ -39,12 +40,11 @@ const [wipListener, getWorkInProgress] = (() => {
       ls = fakeStorage();
     }
     const storage    = new NamespaceStorage('netLogoWebWip', ls);
-    const storageTag = params.has('storageTag') ? params.get('storageTag') : null;
     // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
     // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
     // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
     // January 2023
-    const wl = new WipListener(storage, storageTag);
+    const wl = new WipListener(storage, settings.workInProgress.storageTag);
     const gwip = (nlogoSource) => {
       wl.setNlogoSource(nlogoSource);
       const wipInfo = wl.getWip();
@@ -70,16 +70,14 @@ var pageTitle = function(modelTitle) {
 }
 
 globalThis.session = null;
-var speed          = 0.0;
-var isVertical     = true;
 
 var openSession = function(s) {
   globalThis.session = s;
-  if (!disableWorkInProgress) {
+  if (settings.workInProgress.enabled) {
     wipListener.setSession(globalThis.session);
   }
-  globalThis.session.widgetController.ractive.set('speed', speed);
-  globalThis.session.widgetController.ractive.set('isVertical', isVertical);
+  globalThis.session.widgetController.ractive.set('speed', settings.speed);
+  globalThis.session.widgetController.ractive.set('isVertical', settings.useVerticalLayout);
   document.title = pageTitle(globalThis.session.modelTitle());
   activeContainer = modelContainer;
   globalThis.session.startLoop();
@@ -106,17 +104,16 @@ function handleCompileResult(result) {
   }
 }
 
-if (params.has('debugEvents')) {
+if (settings.events.enableDebug) {
   const debugListener = createDebugListener(listenerEvents);
   listeners.push(debugListener);
 }
-if (isInFrame && params.has('relayIframeEvents')) {
-  const relayListener = createIframeRelayListener(listenerEvents, params.get('relayIframeEvents'), params.get('relayIframeEventsTag'));
+if (isInFrame && settings.events.enableIframeRelay) {
+  const relayListener = createIframeRelayListener(listenerEvents, settings.events.iframeRelayEvents, settings.events.iframeRelayEventsTag);
   listeners.push(relayListener);
 }
 
 const notifyListeners = createNotifier(listenerEvents, listeners);
-const locale          = params.has('locale') ? params.get('locale')?.replace('-', '_').toLowerCase() : navigator.language.replace('-', '_').toLowerCase()
 
 if (isInFrame) {
   const getSession = () => { return globalThis.session };
@@ -133,26 +130,13 @@ var loadModel = function(nlogo, sourceType, path, isUndoReversion) {
   Tortoise.fromNlogo(
     nlogoSource
   , modelContainer
-  , locale
+  , settings.locale
   , isUndoReversion
   , getWorkInProgress
   , handleCompileResult
   , []
   , listeners
   );
-}
-
-const parseFloatOrElse = function(str, def) {
-  const f = Number.parseFloat(str);
-  return (f !== NaN ? f : def);
-}
-
-const clamp = function(min, max, val) {
-  return Math.max(min, Math.min(max, val));
-}
-
-const readSpeed = function(params) {
-  return params.has('speed') ? clamp(-1, 1, parseFloatOrElse(params.get('speed'), 0.0)) : 0.0;
 }
 
 const redirectOnProtocolMismatch = function(url) {
@@ -200,9 +184,6 @@ const redirectOnProtocolMismatch = function(url) {
   return false;
 }
 
-speed      = readSpeed(params);
-isVertical = !(params.has('tabs') && params.get('tabs') === 'right');
-
 if (nlogoScript.textContent.length > 0) {
   const nlogo  = nlogoScript.textContent;
   const path   = nlogoScript.dataset.filename;
@@ -211,7 +192,7 @@ if (nlogoScript.textContent.length > 0) {
   Tortoise.fromNlogo(
     nlogoSource
   , modelContainer
-  , locale
+  , settings.locale
   , false
   , getWorkInProgress
   , handleCompileResult
@@ -227,7 +208,7 @@ if (nlogoScript.textContent.length > 0) {
     Tortoise.fromURL(
       url
     , modelContainer
-    , locale
+    , settings.locale
     , getWorkInProgress
     , handleCompileResult
     , []

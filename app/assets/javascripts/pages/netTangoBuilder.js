@@ -4,6 +4,7 @@ import { createIframeRelayListener } from "/notifications/iframe-relay-listener.
 import { netTangoEvents } from "/nettango/nettango-events.js"
 
 import "/codemirror-mode.js"
+import Settings from "/settings.js"
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
 import NetTangoController from "/nettango/nettango-controller.js"
 import { fakeStorage } from "/namespace-storage.js"
@@ -39,6 +40,7 @@ try {
 }
 
 const params           = new URLSearchParams(window.location.search)
+const settings         = Settings.fromQueryParams(params)
 const netTangoModelUrl = params.get("netTangoModel")
 const playModeParam    = params.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
@@ -48,20 +50,19 @@ const listeners = [alerter]
 
 const allEvents = listenerEvents.concat(netTangoEvents)
 
-if (params.has('debugEvents')) {
+if (settings.events.enableDebug) {
   const debugListener = createDebugListener(allEvents)
   listeners.push(debugListener)
 }
-if (params.has('relayIframeEvents')) {
-  const relayListener = createIframeRelayListener(allEvents, params.get('relayIframeEvents'))
+if (settings.events.enableIframeRelay) {
+  const relayListener = createIframeRelayListener(allEvents, settings.events.iframeRelayEvents, settings.events.iframeRelayEventsTag)
   listeners.push(relayListener)
 }
 const disableAutoStore = params.has('disableAutoStore')
-const locale           = params.has('locale') ? params.get('locale')?.replace('-', '_').toLowerCase() : navigator.language.replace('-', '_').toLowerCase()
 
 const netTango = new NetTangoController(
   "ntb-container"
-, locale
+, settings.locale
 , storage
 , playMode || window.isStandaloneHTML
 , window.environmentMode

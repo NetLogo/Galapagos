@@ -1,5 +1,6 @@
 import { listenForQueryResponses, createQueryMaker } from "/queries/debug-query-maker.js";
 import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js";
+import Settings from "/settings.js"
 
 var modelContainer = document.querySelector('#model-container');
 var hostPrefix     = location.protocol + '//' + location.host;
@@ -8,7 +9,8 @@ if (pathSplits.length > 2) {
   hostPrefix = hostPrefix + "/" + pathSplits[1];
 }
 
-const params = new URLSearchParams(window.location.search);
+const params   = new URLSearchParams(window.location.search);
+const settings = Settings.fromQueryParams(params);
 
 var modelFileInput = document.querySelector('#model-file-input');
 modelFileInput.addEventListener('click', function (event) { this.value = '' });
@@ -126,7 +128,7 @@ function initModel() {
 bindModelChooser(document.getElementById('tortoise-model-list')
                , initModel, pickModel, window.environmentMode);
 
-if (params.has('debugQueries')) {
+if (settings.queries.enableDebug) {
   window.makeQuery = createQueryMaker(modelContainer);
   listenForQueryResponses();
 }
