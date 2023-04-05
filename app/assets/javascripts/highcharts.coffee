@@ -161,7 +161,7 @@ class HighchartsOps extends PlotOps
         if not maybeRightmostPoint?
           maybeRightmostPoint = x
         else
-          if x < maybeRightmostPoint
+          if x <= maybeRightmostPoint
             if series.options.boostThreshold isnt 1
               series.options.boostThreshold = 1
               series.update(series.options, false)
