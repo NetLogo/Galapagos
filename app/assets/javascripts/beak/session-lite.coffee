@@ -221,6 +221,7 @@ class SessionLite
         @widgetController.ractive.set('isStale',           false)
         @widgetController.ractive.set('lastCompiledCode',  code)
         @widgetController.ractive.set('lastCompileFailed', false)
+        @widgetController.viewController.resetModel()
         @widgetController.redraw()
         @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
 

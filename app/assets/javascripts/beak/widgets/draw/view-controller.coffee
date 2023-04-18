@@ -20,9 +20,7 @@ class ViewController
     @mouseY      = 0
     @initMouseTracking()
     @initTouchTracking()
-
-    @model = new AgentModel()
-    @model.world.turtleshapelist = defaultShapes
+    @resetModel()
     @repaint()
 
   mouseXcor: => @view.xPixToPcor(@mouseX)
@@ -79,6 +77,10 @@ class ViewController
     )
 
     return
+
+  resetModel: ->
+    @model = new AgentModel()
+    @model.world.turtleshapelist = defaultShapes
 
   repaint: ->
     @view.transformToWorld(@model.world)
