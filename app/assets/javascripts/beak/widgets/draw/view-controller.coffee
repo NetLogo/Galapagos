@@ -191,13 +191,26 @@ class View
     if not ctx? then ctx = @ctx
     label = if label? then label.toString() else ''
     if label.length > 0
-      @drawWrapped(xcor, ycor, label.length * @fontSize / @onePixel, (x,y) =>
+      @drawWrapped(xcor, ycor, label.length * @fontSize / @onePixel, (x, y) =>
         ctx.save()
         ctx.translate(x, y)
         ctx.scale(@onePixel, -@onePixel)
-        ctx.textAlign = 'end'
+        ctx.textAlign = 'left'
         ctx.fillStyle = netlogoColorToCSS(color)
-        ctx.fillText(label, 0, 0)
+        # This magic 1.2 value is a pretty good guess for width/height ratio for most fonts. The 2D context does not
+        # give a way to get height directly, so this quick and dirty method works fine.  -Jeremy B April 2023
+        lineHeight   = ctx.measureText("M").width * 1.2
+        lines        = label.split("\n")
+        lineWidths   = lines.map( (line) -> ctx.measureText(line).width )
+        maxLineWidth = Math.max(lineWidths...)
+        # This magic 1.5 value is to get the alignment to mirror what happens in desktop relatively closely.  Without
+        # it, labels are too far out to the "right" of the agent since the origin of the text drawing is calculated
+        # differently there.  -Jeremy B April 2023
+        xOffset      = -1 * (maxLineWidth + 1) / 1.5
+        lines.forEach( (line, i) ->
+          yOffset = i * lineHeight
+          ctx.fillText(line, xOffset, yOffset)
+        )
         ctx.restore()
       )
 
@@ -209,7 +222,7 @@ class View
       if (x + size / 2) > @minpxcor - 0.5 and (x - size / 2) < @maxpxcor + 0.5
         for y in ys
           if (y + size / 2) > @minpycor - 0.5 and (y - size / 2) < @maxpycor + 0.5
-            drawFn(x,y)
+            drawFn(x, y)
     return
 
   # IDs used in watch and follow
