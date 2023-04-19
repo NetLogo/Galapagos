@@ -19,10 +19,11 @@ import play.twirl.api.Html
 class Application @Inject() (
   assets: Assets
 , components: ControllerComponents
-, environment: Environment
+, env: Environment
 ) extends AbstractController(components) {
 
-  private implicit val mode = environment.mode
+  private implicit val environment = env
+  private implicit val mode = env.mode
   private val logger = Logger("application")
 
   // scalastyle:off public.methods.have.type
@@ -31,6 +32,7 @@ class Application @Inject() (
   def faq          = themedPage((req) => views.html.faq()(req)     , "NetLogo Web FAQ"             , "../")
   def attributions = themedPage((_)   => views.html.attributions() , "NetLogo Web Attributions"    , "../")
   def index        = themedPage((req) => views.html.index()(req)   , "NetLogo Web")
+  def settings     = themedPage((req) => views.html.settings(OutsourceTagBuilder)(req, environment), "NetLogo Web Settings")
   def serverError  = themedPage((_)   => views.html.serverError()  , "NetLogo Web - Error")
   def whatsNew     = themedPage((req) => views.html.whatsNew()(req), "What's New in NetLogo Web"   , ""   , Option("updates"))
   // scalastyle:on public.methods.have.type

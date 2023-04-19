@@ -287,6 +287,7 @@ scrapeRoutes ++= Seq(
   "/model/statuses.json",
   "/netlogo-engine.js",
   "/netlogo-agentmodel.js",
+  "/settings",
   "/tortoise-compiler.js",
   "/tortoise-compiler.js.map",
   "/server-error",

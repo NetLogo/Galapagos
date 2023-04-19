@@ -1,0 +1,11 @@
+@(tagBuilder: TagBuilder)(implicit request: Request[_], environment: play.api.Environment)
+
+<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/settings.css").relative' />
+
+<div id="nlw-settings" class="inner-content">
+  <p>Waiting for settings editor to load (is JavaScript enabled?)...</p>
+</div>
+
+@tagBuilder.pathToHTML("ractive/ractive.js")
+
+<script type="module" src='@routes.Assets.versioned("javascripts/pages/settings.js").relative'></script>
