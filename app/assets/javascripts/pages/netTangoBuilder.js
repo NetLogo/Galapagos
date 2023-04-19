@@ -40,7 +40,8 @@ try {
 }
 
 const params           = new URLSearchParams(window.location.search)
-const settings         = Settings.fromQueryParams(params)
+const settings         = new Settings()
+settings.applyQueryParams(params)
 const netTangoModelUrl = params.get("netTangoModel")
 const playModeParam    = params.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")

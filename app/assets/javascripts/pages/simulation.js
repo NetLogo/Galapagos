@@ -28,7 +28,8 @@ if (paramKeys.length === 1) {
   }
 }
 
-const settings = Settings.fromQueryParams(params);
+const settings = new Settings()
+settings.applyQueryParams(params);
 const listeners = [];
 
 const [wipListener, getWorkInProgress] = (() => {

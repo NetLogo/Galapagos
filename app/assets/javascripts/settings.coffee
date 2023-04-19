@@ -35,29 +35,31 @@ class Settings
     enableDebug: false
   }
 
-  # (URLSearchParams) => Settings
-  @fromQueryParams: (params) ->
-    settings = new Settings()
+  # (URLSearchParams) => Unit
+  applyQueryParams: (params) ->
+    if params.has('locale')
+      @locale = params.get('locale').replace('-', '_').toLowerCase()
 
-    localeString    = getOrElse(params, 'locale', 'en_us')
-    settings.locale = localeString.replace('-', '_').toLowerCase()
+    if params.has('tabs')
+      @useVerticalLayout = not (params.get('tabs') is 'right')
 
-    tabsString                 = getOrElse(params, 'tabs', 'bottom')
-    settings.useVerticalLayout = not (tabsString is 'right')
+    if params.has('speed')
+      speedString = params.get('speed')
+      @speed = clamp(-1, 1, parseFloatOrElse(speedString, 0.0))
 
-    speedString    = getOrElse(params, 'speed', '0.0')
-    settings.speed = clamp(-1, 1, parseFloatOrElse(speedString, 0.0))
+    @workInProgress.enabled = not params.has('disableWorkInProgress') and @workInProgress.enabled
+    if params.has('storageTag')
+      @workInProgress.storageTag = params.get('storageTag')
 
-    settings.workInProgress.enabled    = not params.has('disableWorkInProgress')
-    settings.workInProgress.storageTag = getOrElse(params, 'storageTag', '')
+    @events.enableDebug       = params.has('debugEvents') or @events.enableDebug
+    @events.enableIframeRelay = params.has('relayIframeEvents') or @events.enableIframeRelay
+    if params.has('relayIframeEvents')
+      @events.iframeRelayEvents = params.get('relayIframeEvents')
+    if params.has('relayIframeEventsTag')
+      @events.iframeRelayEventsTag = params.get('relayIframeEventsTag')
 
-    settings.events.enableDebug          = params.has('debugEvents')
-    settings.events.enableIframeRelay    = params.has('relayIframeEvents')
-    settings.events.iframeRelayEvents    = getOrElse(params, 'relayIframeEvents', '')
-    settings.events.iframeRelayEventsTag = getOrElse(params, 'relayIframeEventsTag', '')
+    @queries.enableDebug = params.has('debugQueries') or @queries.enableDebug
 
-    settings.queries.enableDebug = params.has('debugQueries')
-
-    settings
+    return
 
 export default Settings
