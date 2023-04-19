@@ -87,7 +87,7 @@ class WipListener
     title     = @getModelTitle()
 
     source = @getNlogoSource()
-    if newNlogo is source.nlogo and "#{title}.nlogo" is source.fileName()
+    if newNlogo is source.nlogo and "#{title}.nlogo" is source.fileName
       # If the new code is just the original code, then we have no work in progress.  Unfortunately this isn't as
       # effective as I'd like, because just compiling the code can cause the nlogo contents to change due to (I
       # believe) whitespace changes.  -Jeremy B January 2023
