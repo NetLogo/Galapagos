@@ -40,7 +40,9 @@ try {
 }
 
 const params           = new URLSearchParams(window.location.search)
+const settingsStorage  = new NamespaceStorage('netLogoWebSettings', storage)
 const settings         = new Settings()
+settings.applyStorage(settingsStorage)
 settings.applyQueryParams(params)
 const netTangoModelUrl = params.get("netTangoModel")
 const playModeParam    = params.get("playMode")

@@ -10,7 +10,7 @@ if (pathSplits.length > 2) {
 }
 
 const params   = new URLSearchParams(window.location.search);
-const settings = new Settings()
+const settings = new Settings();
 settings.applyQueryParams(params);
 
 var modelFileInput = document.querySelector('#model-file-input');

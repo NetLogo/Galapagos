@@ -9,7 +9,8 @@ import { WipListener } from "/beak/wip-listener.js";
 import "/codemirror-mode.js";
 import AlertDisplay from "/alert-display.js";
 import newModel from "/new-model.js";
-import Settings from "/settings.js"
+import Settings from "/settings.js";
+import { initSettingsStorage } from "/settings-storage.js";
 import Tortoise from "/beak/tortoise.js";
 
 var loadingOverlay  = document.getElementById('loading-overlay');
@@ -28,19 +29,22 @@ if (paramKeys.length === 1) {
   }
 }
 
-const settings = new Settings()
+var ls;
+try {
+  ls = window.localStorage;
+} catch (exception) {
+  ls = fakeStorage();
+}
+
+const settingsStorage = initSettingsStorage(ls);
+const settings = new Settings();
+settings.applyStorage(settingsStorage);
 settings.applyQueryParams(params);
 const listeners = [];
 
 const [wipListener, getWorkInProgress] = (() => {
   if (settings.workInProgress.enabled) {
-    var ls;
-    try {
-      ls = window.localStorage;
-    } catch (exception) {
-      ls = fakeStorage();
-    }
-    const storage    = new NamespaceStorage('netLogoWebWip', ls);
+    const storage = new NamespaceStorage('netLogoWebWip', ls);
     // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
     // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
     // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B

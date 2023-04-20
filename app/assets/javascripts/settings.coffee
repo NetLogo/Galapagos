@@ -35,6 +35,19 @@ class Settings
     enableDebug: false
   }
 
+  # (NamespaceStorage) => Unit
+  applyStorage: (storage) ->
+    if storage.hasKey('locale')
+      @locale = storage.get('locale')
+
+    if storage.hasKey('useVerticalLayout')
+      @useVerticalLayout = storage.get('useVerticalLayout')
+
+    if storage.hasKey('workInProgress.enabled')
+      @workInProgress.enabled = storage.get('workInProgress.enabled')
+
+    return
+
   # (URLSearchParams) => Unit
   applyQueryParams: (params) ->
     if params.has('locale')

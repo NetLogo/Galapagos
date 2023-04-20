@@ -3,6 +3,28 @@ locales = [
 , { code: "en_us", description: "English, United States" }
 ]
 
+settings = new Map()
+settings.set('locale', {
+  def: ''
+, ractiveName: 'locale'
+, in:  ((l) -> l)
+, out: ((l) -> l)
+})
+settings.set('workInProgress.enabled', {
+  def: 'Enabled'
+, ractiveName: 'workInProgressSetting'
+, in:  ((wipEnabled) -> if wipEnabled then 'Enabled' else 'Disabled')
+, out: ((value)      -> value is 'Enabled')
+})
+settings.set('useVerticalLayout', {
+  def: 'below'
+, ractiveName: 'verticalLayoutSetting'
+, in:  ((useVerticalLayout) -> if useVerticalLayout then 'below' else 'right')
+, out: ((value)             -> value is 'below')
+})
+
+settingNames = Array.from(settings.keys())
+
 template = """
 <div class="settings-panel">
   <h1 class="settings-header">NetLogo Web Settings</h1>
@@ -42,20 +64,33 @@ template = """
 </div>
 """
 
-createSettingsRactive = (container) ->
+# (HtmlDivElement, NamespaceStorage) => Ractive
+createSettingsRactive = (container, storage) ->
+  data = { locales }
+  settingNames.forEach( (name) ->
+    setting = settings.get(name)
+    data[setting.ractiveName] = if storage.hasKey(name)
+      setting.in(storage.get(name))
+    else
+      setting.def
+  )
+
   ractive = new Ractive({
-    el:   container
-  , data: (() -> {
-      locales
-    , locale: ""
-    , workInProgressSetting: "Enabled"
-    , verticalLayoutSetting: "below"
-    })
+    el: container
+  , data
   , template
   , on: {
     'setting-changed': (_) ->
-      #console.log(arguments)
-      #console.log(@get('locale'), @get('workInProgressSetting'), @get('verticalLayoutSetting'))
+      settingNames.forEach( (name) =>
+        setting = settings.get(name)
+        value   = @get(setting.ractiveName)
+        if setting.def is value
+          storage.remove(name)
+        else
+          storage.set(name, setting.out(value))
+
+        return
+      )
 
       return
   }
