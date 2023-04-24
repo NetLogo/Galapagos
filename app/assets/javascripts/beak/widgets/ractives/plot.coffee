@@ -143,7 +143,7 @@ PenForm = Ractive.extend({
           <div>
             <label for="{{id}}-interval" class="widget-edit-input-label" style="margin-right: 5px;">Interval:</label>
             <input id="{{id}}-interval" name="interval" class="widget-edit-text widget-edit-input widget-edit-inputbox"
-                   style="margin: 0 10px 0 0; width: 70px;" min="0" max="10000" type="number" value="{{interval}}">
+                   style="margin: 0 10px 0 0; width: 70px;" min="0" max="10000" type="number" step="any" value="{{interval}}">
           </div>
           <formCheckbox id="{{id}}-in-legend?" isChecked={{shouldShowInLegend}} labelText="In legend?" name="legend" />
         </div>
@@ -346,12 +346,12 @@ PlotEditForm = EditForm.extend({
             <spacer height="5px" />
             <div class="flex-row">
               <label for="{{id}}-x-min" class="widget-edit-input-label" style="margin-right: 0px; min-width: 70px;">X min:</label>
-              <input id="{{id}}-x-min" name="xMin" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{xMin}}">
+              <input id="{{id}}-x-min" name="xMin" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{xMin}}" step="any">
             </div>
             <spacer height="5px" />
             <div class="flex-row">
               <label for="{{id}}-x-max" class="widget-edit-input-label" style="margin-right: 0px; min-width: 70px;">X max:</label>
-              <input id="{{id}}-x-max" name="xMax" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{xMax}}">
+              <input id="{{id}}-x-max" name="xMax" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{xMax}}" step="any">
             </div>
           </div>
           <spacer width="20px" />
@@ -363,12 +363,12 @@ PlotEditForm = EditForm.extend({
             <spacer height="5px" />
             <div class="flex-row">
               <label for="{{id}}-y-min" class="widget-edit-input-label" style="margin-right: 0px; min-width: 70px;">Y min:</label>
-              <input id="{{id}}-y-min" name="yMin" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{yMin}}">
+              <input id="{{id}}-y-min" name="yMin" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{yMin}}" step="any">
             </div>
             <spacer height="5px" />
             <div class="flex-row">
               <label for="{{id}}-y-max" class="widget-edit-input-label" style="margin-right: 0px; min-width: 70px;">Y max:</label>
-              <input id="{{id}}-y-max" name="yMax" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{yMax}}">
+              <input id="{{id}}-y-max" name="yMax" class="widget-edit-text widget-edit-input widget-edit-inputbox" type="number" value="{{yMax}}" step="any">
             </div>
           </div>
         </div>
