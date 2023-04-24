@@ -158,15 +158,17 @@ class HighchartsOps extends PlotOps
           null
 
         # See ADD_POINT_HACK_2
-        if not maybeRightmostPoint?
-          maybeRightmostPoint = x
-        else
-          if x <= maybeRightmostPoint
-            if series.options.boostThreshold isnt 1
-              series.options.boostThreshold = 1
-              series.update(series.options, false)
-          else
+        isColumn = (pen.getDisplayMode() is PenBundle.DisplayMode.Bar)
+        if not isColumn
+          if not maybeRightmostPoint?
             maybeRightmostPoint = x
+          else
+            if isColumn and x <= maybeRightmostPoint
+              if series.options.boostThreshold isnt 1
+                series.options.boostThreshold = 1
+                series.update(series.options, false)
+            else
+              maybeRightmostPoint = x
 
         series.addPoint([x, pointY], false)
         thisOps._needsRedraw = true
