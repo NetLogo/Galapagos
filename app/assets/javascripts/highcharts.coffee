@@ -69,8 +69,6 @@ basicConfig = (elemID, plot) -> {
     },
     column: {
       pointPadding: 0,
-      pointWidth:   8,
-      borderWidth:  1,
       groupPadding: 0,
       shadow:       false,
       grouping:     false
