@@ -48,8 +48,8 @@ class SessionLite
     , code
     , info
     , isReadOnly
+    , @nlogoSource
     , workInProgressState
-    , @nlogoSource.getModelTitle()
     , @compiler
     )
 

@@ -17,6 +17,22 @@ RactiveStatusPopup = Ractive.extend({
       @closeStatus()
   }
 
+  computed: {
+    'sourceMessage': () ->
+      sourceType = @get('sourceType')
+      switch sourceType
+        when 'url'
+          'model from the link'
+        when 'disk'
+          'model from the uploaded file'
+        when 'new'
+          'new blank model'
+        when 'script-element'
+          'model from the page'
+        else
+          'model'
+  }
+
   showStatus: () ->
     @set('isUp', true)
     timer = CACHE_ALERT_DEFAULT_DISPLAY_TIME
@@ -44,7 +60,10 @@ RactiveStatusPopup = Ractive.extend({
     {{# isUp }}
     <div class="netlogo-model-status flex-row">
       <div>
-        This model has been loaded with previous work in progress found in your cache.  To reload without the changes, press <span class="netlogo-model-status-link" on-click="revert-wip">File: <strong>Revert to Original</strong></span> ({{statusTimer}}).
+        This model has been loaded with previous work in progress found in your cache.
+        To reload the unmodified {{sourceMessage}},
+        press <span class="netlogo-model-status-link" on-click="revert-wip">File: <strong>Revert to Original</strong></span>
+        ({{statusTimer}}).
       </div>
       <div class="netlogo-model-status-closer" on-click="close-status">
       X

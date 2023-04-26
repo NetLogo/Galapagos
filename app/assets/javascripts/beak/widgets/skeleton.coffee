@@ -21,9 +21,9 @@ import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 
 # (Element, Array[Widget], String, String,
-#   Boolean, String, Boolean, String, String, (String) => Boolean) => Ractive
+#   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
-  isReadOnly, workInProgressState, modelTitle, checkIsReporter) ->
+  isReadOnly, source, workInProgressState, checkIsReporter) ->
 
   model = {
     checkIsReporter
@@ -45,11 +45,12 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , lastCompileFailed:    false
   , lastDragX:            undefined
   , lastDragY:            undefined
-  , modelTitle:           modelTitle
+  , modelTitle:           source.getModelTitle()
   , outputWidgetOutput:   ''
   , primaryView:          undefined
   , someDialogIsOpen:     false
   , someEditFormIsOpen:   false
+  , source
   , speed:                0.0
   , ticks:                "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:         false
@@ -144,6 +145,7 @@ template =
   <statusPopup
     hasWorkInProgress={{hasWorkInProgress}}
     isSessionLoopRunning={{isSessionLoopRunning}}
+    sourceType={{source.type}}
     />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
