@@ -4,7 +4,7 @@ import { WipData } from './wip-data.js'
 class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
-    @storagePrefix = if storageTag? then "#{storageTag}:" else ""
+    @storagePrefix = if storageTag? and storageTag.trim() isnt '' then "#{storageTag}:" else ""
     @_nlogoSource  = null
     @_data         = new WipData(@storage, @storagePrefix)
     @session       = null
