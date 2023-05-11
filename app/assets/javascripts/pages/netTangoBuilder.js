@@ -7,7 +7,7 @@ import "/codemirror-mode.js"
 import Settings from "/settings.js"
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
 import NetTangoController from "/nettango/nettango-controller.js"
-import { fakeStorage } from "/namespace-storage.js"
+import { fakeStorage, NamespaceStorage } from "/namespace-storage.js"
 
 const builderContainer = document.getElementById("ntb-container")
 
