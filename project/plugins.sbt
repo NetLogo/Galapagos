@@ -13,7 +13,7 @@ resolvers ++= Seq(
   "play-scraper" at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
 )
 
-addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.8.16")
+addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.8.19")
 addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt"  %  "sbt-digest"            % "1.1.4")
 addSbtPlugin("org.nlogo"         %  "play-scraper"          % "1.0.1")

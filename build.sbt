@@ -60,7 +60,7 @@ libraryDependencies ++= Seq(
 , "org.webjars"       % "markdown-js" % "0.5.0-1"
 , "org.webjars.bower" % "google-caja" % "6005.0.0"
 // akka-testkit must match the akka version used by Play -Jeremy B September 2022
-, "com.typesafe.akka"      %% "akka-testkit"       % "2.6.19" % Test
+, "com.typesafe.akka"      %% "akka-testkit"       % "2.6.20" % Test
 , "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"  % Test
 )
 
