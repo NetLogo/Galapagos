@@ -105,7 +105,7 @@ class SessionLite
       @widgetController.ractive.fire('startup-procedure-run')
     @widgetController.redraw()
     @widgetController.updateWidgets()
-    requestAnimationFrame(@eventLoop)
+    @_eventLoopTimeout = requestAnimationFrame(@eventLoop)
     @widgetController.ractive.set('isSessionLoopRunning', true)
     @widgetController.ractive.fire('session-loop-started')
     return
