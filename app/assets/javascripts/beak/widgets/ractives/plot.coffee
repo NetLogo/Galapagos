@@ -445,29 +445,32 @@ RactivePlot = RactiveWidget.extend({
 
     render: ->
 
-      ractive          = this
-      topLevel         = document.querySelector("##{@get('id')}")
-      topLevelObserver = new MutationObserver(
-        (mutations) -> mutations.forEach(
-          ({ addedNodes }) ->
-            container = Array.from(addedNodes).find((elem) -> elem.classList.contains("highcharts-container"))
-            if container?
-              topLevelObserver.disconnect()
-              containerObserver = new MutationObserver(
-                (mutties) -> mutties.forEach(
-                  ({ addedNodes: addedNodies }) ->
-                    menu = Array.from(addedNodies).find((elem) -> elem.classList.contains("highcharts-contextmenu"))
-                    if menu?
-                      ractive.set('menuIsOpen', true)
-                      containerObserver.disconnect()
-                      menuObserver = new MutationObserver(-> ractive.set('menuIsOpen', menu.style.display isnt "none"))
-                      menuObserver.observe(menu, { attributes: true })
+      ractive  = this
+      topLevel = document.querySelector("##{@get('id')}")
+
+      if topLevel?
+        topLevelObserver = new MutationObserver(
+          (mutations) -> mutations.forEach(
+            ({ addedNodes }) ->
+              container = Array.from(addedNodes).find((elem) -> elem.classList.contains("highcharts-container"))
+              if container?
+                topLevelObserver.disconnect()
+                containerObserver = new MutationObserver(
+                  (mutties) -> mutties.forEach(
+                    ({ addedNodes: addedNodies }) ->
+                      menu = Array.from(addedNodies).find((elem) -> elem.classList.contains("highcharts-contextmenu"))
+                      if menu?
+                        ractive.set('menuIsOpen', true)
+                        containerObserver.disconnect()
+                        toggleMenu   = -> ractive.set('menuIsOpen', menu.style.display isnt "none")
+                        menuObserver = new MutationObserver(toggleMenu)
+                        menuObserver.observe(menu, { attributes: true })
+                  )
                 )
-              )
-              containerObserver.observe(container, { childList: true })
+                containerObserver.observe(container, { childList: true })
+          )
         )
-      )
-      topLevelObserver.observe(topLevel, { childList: true })
+        topLevelObserver.observe(topLevel, { childList: true })
 
   }
 
