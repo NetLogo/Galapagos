@@ -309,30 +309,39 @@ class SessionLite
   exportHtml: ->
     exportName = @promptFilename('.html')
     if exportName?
-      req = new XMLHttpRequest()
-      req.open('GET', window.standaloneURL)
-      req.onreadystatechange = =>
-        if req.readyState is req.DONE
-          if req.status is 200
-            nlogo = @getNlogo()
-            if nlogo.success
-              parser = new DOMParser()
-              dom = parser.parseFromString(req.responseText, 'text/html')
-              nlogoScript = dom.querySelector('#nlogo-code')
-              nlogoScript.textContent = nlogo.result
-              nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogo')
-              wrapper = document.createElement('div')
-              wrapper.appendChild(dom.documentElement)
-              exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
-              saveAs(exportBlob, exportName)
-              @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
+      exportHtmlEx = (htmlString) =>
+        nlogo = @getNlogo()
+        if nlogo.success
+          parser = new DOMParser()
+          dom = parser.parseFromString(htmlString, 'text/html')
+          nlogoScript = dom.querySelector('#nlogo-code')
+          nlogoScript.textContent = nlogo.result
+          nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogo')
+          wrapper = document.createElement('div')
+          wrapper.appendChild(dom.documentElement)
+          exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
+          saveAs(exportBlob, exportName)
+          @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
 
+        else
+          @widgetController.reportError('compiler', 'export-html', nlogo.result)
+
+      if ['https:', 'http:'].includes(window.location.protocol)
+        req = new XMLHttpRequest()
+        req.open('GET', window.standaloneURL)
+        req.onreadystatechange = =>
+          if req.readyState is req.DONE
+            if req.status is 200
+              exportHtmlEx(req.responseText)
             else
-              @widgetController.reportError('compiler', 'export-html', nlogo.result)
+              alert("Couldn't get standalone page")
 
-          else
-            alert("Couldn't get standalone page")
-      req.send("")
+        req.send("")
+
+      else
+        # assume we're a standalone local HTML `file://`
+        quine = window.document.children.item(0).outerHTML
+        exportHtmlEx(quine)
 
   # () => Unit
   openNewFile: ->
