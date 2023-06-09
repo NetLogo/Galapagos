@@ -626,7 +626,8 @@ class TurtleDrawer extends Drawer
           draw(agent)
 
     for breedName in breeds
-      drawBreed(breedName)
+      if breedName != unbreededName
+        drawBreed(breedName)
 
     drawBreed(unbreededName)
 
