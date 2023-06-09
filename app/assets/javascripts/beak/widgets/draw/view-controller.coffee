@@ -587,22 +587,28 @@ class TurtleDrawer extends Drawer
       @turtleShapeDrawer = new ShapeDrawer(world.turtleshapelist ? @turtleShapeDrawer.shapes, @view.onePixel)
     if world.linkshapelist isnt @linkDrawer.shapes and world.linkshapelist?
       @linkDrawer = new LinkDrawer(@view, world.linkshapelist)
+    drawLink = (link) =>
+      @drawLink(link, turtles[link.end1], turtles[link.end2], world.wrappingallowedinx, world.wrappingallowediny)
+    drawTurtle = (turtle) =>
+      @drawTurtle(turtle)
     @view.usePatchCoordinates()( =>
-      @drawAgents(links,
-        if (world.linkbreeds?) then world.linkbreeds else [ "LINKS" ],
-        (link) =>
-          @drawLink(link, turtles[link.end1], turtles[link.end2], world.wrappingallowedinx, world.wrappingallowediny)
+      @drawAgents(
+        'LINKS'
+      , links
+      , (if (world.linkbreeds?) then world.linkbreeds else [])
+      , drawLink
       )
       @view.ctx.lineWidth = @onePixel
-      @drawAgents(turtles,
-        if (world.turtlebreeds?) then world.turtlebreeds else [ "TURTLES" ],
-        (turtle) =>
-          @drawTurtle(turtle)
+      @drawAgents(
+        'TURTLES'
+      , turtles
+      , (if (world.turtlebreeds?) then world.turtlebreeds else [])
+      , drawTurtle
       )
       return
     )
 
-  drawAgents: (agents, breeds, draw) ->
+  drawAgents: (unbreededName, agents, breeds, draw) ->
     breededAgents = { }
     for _, agent of agents
       members = []
@@ -613,12 +619,16 @@ class TurtleDrawer extends Drawer
         members = breededAgents[breedName]
       members.push(agent)
 
-    for breedName in breeds
+    drawBreed = (breedName) ->
       if breededAgents[breedName]?
         members = breededAgents[breedName]
         for agent in members
           draw(agent)
 
+    for breedName in breeds
+      drawBreed(breedName)
+
+    drawBreed(unbreededName)
 
 # Works by creating a scratchCanvas that has a pixel per patch. Those pixels
 # are colored accordingly. Then, the scratchCanvas is drawn onto the main
