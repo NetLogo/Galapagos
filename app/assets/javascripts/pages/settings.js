@@ -1,5 +1,7 @@
 import { createSettingsRactive } from '/settings-controller.js'
 import { initSettingsStorage } from "/settings-storage.js";
+import { NamespaceStorage } from '/namespace-storage.js';
+
 
 const elementId = 'nlw-settings'
 const container = document.getElementById(elementId)
@@ -12,5 +14,10 @@ try {
 }
 
 const settingsStorage = initSettingsStorage(ls)
+const wipStorage = new NamespaceStorage('netLogoWebWip', ls)
 
-globalThis.ractive = createSettingsRactive(container, settingsStorage)
+
+globalThis.ractive = createSettingsRactive(container, settingsStorage, wipStorage)
+
+
+

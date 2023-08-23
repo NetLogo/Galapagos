@@ -10,6 +10,7 @@ settings.set('locale', {
 , in:  ((l) -> l)
 , out: ((l) -> l)
 })
+
 settings.set('workInProgress.enabled', {
   def: 'Enabled'
 , ractiveName: 'workInProgressSetting'
@@ -59,14 +60,40 @@ template = """
       <option value={{code}}>{{description}}</option>
       {{/}}
     </select>
-  </div>
-
+  </div>                           
 </div>
+
+
+ <h1 class="settings-subheader">Works in Progress</h1>
+ <a><center> Here you can access all the models that have been edited</center></a>
+  
+  <ul>
+    {{#each workInProgressLinks}}
+        <li> <a href="{{url}}">{{modelTitle}}</a> <br>Date Last Modified: {{dataAccessed}}</li>
+        <br>
+    {{/each}}
+  </ul>
+
 """
+formatLinks = (wipStorage) ->
+  result = []
+
+  for url, model of wipStorage.inProgress
+    if model.title and model.timeStamp
+      formattedUrl = "/launch#http://" + url.replace(/^url:\/\//, '')
+      result.unshift({
+        modelTitle: model.title,
+        url: formattedUrl,
+        dataAccessed: new Date(model.timeStamp).toLocaleString()
+        })
+
+  result
+  
 
 # (HtmlDivElement, NamespaceStorage) => Ractive
-createSettingsRactive = (container, storage) ->
+createSettingsRactive = (container, storage, wipStorage) ->
   data = { locales }
+  data.workInProgressLinks = formatLinks(wipStorage)
   settingNames.forEach( (name) ->
     setting = settings.get(name)
     data[setting.ractiveName] = if storage.hasKey(name)
