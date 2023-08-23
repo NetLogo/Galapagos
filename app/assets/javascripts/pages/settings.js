@@ -16,8 +16,4 @@ try {
 const settingsStorage = initSettingsStorage(ls)
 const wipStorage = new NamespaceStorage('netLogoWebWip', ls)
 
-
 globalThis.ractive = createSettingsRactive(container, settingsStorage, wipStorage)
-
-
-

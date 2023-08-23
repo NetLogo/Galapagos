@@ -64,15 +64,15 @@ template = """
 </div>
 
 
- <h1 class="settings-subheader">Works in Progress</h1>
- <a><center> Here you can access all the models that have been edited</center></a>
+<h1 class="settings-subheader">Works in Progress</h1>
+<a><center> Here you can access all the models that have been edited</center></a>
   
-  <ul>
-    {{#each workInProgressLinks}}
-        <li> <a href="{{url}}">{{modelTitle}}</a> <br>Date Last Modified: {{dataAccessed}}</li>
-        <br>
-    {{/each}}
-  </ul>
+<ul>
+  {{#each workInProgressLinks}}
+    <li> <a href="{{url}}">{{modelTitle}}</a> <br>Date Last Modified: {{dataAccessed}}</li>
+    <br>
+  {{/each}}
+</ul>
 
 """
 formatLinks = (wipStorage) ->
