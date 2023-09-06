@@ -32,3 +32,12 @@
   grid-column: span 1;
   margin: 0 0 0.8em 0;
 }
+
+li {
+  margin-top: 15px;
+}
+
+.description {
+text-align: center;
+
+}
