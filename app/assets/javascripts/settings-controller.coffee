@@ -71,48 +71,38 @@ template = """
 
 <ul>
   {{#each workInProgressLinks}}
-    <li><a href="{{url}}">{{modelTitle}}</a> {{storageTag}} <div>{{dateAccessed}} at {{timeAccessed}}</div></li>
+    <li><a href="{{url}}">{{modelTitle}}</a> {{storageTag}} <div>{{dataAccessed}}</div></li>
   {{/each}}
 </ul>
 
 """
 #Formatting Links for HTML display
 formatLinks = (wipStorage) ->
-  result = []
+  results = []
 
   for url, model of wipStorage.inProgress
     if model.title and model.timeStamp and not(url.startsWith('disk') or url.startsWith('new')) and model.version == WIP_INFO_FORMAT_VERSION
       storageTagOutput = ""
       storageTag = url.split(':').shift();
-      if storageTag !="url"
-        storageTagOutput = " (tag: " + storageTag + ")"
+      if storageTag != "url"
+        storageTagOutput = " (tag: #{storageTag})"
         formattedUrl = "/launch?storageTag=#{storageTag}##{window.location.protocol}//" + url.replace(/.*:\/\//, '')
       else
         formattedUrl = "/launch##{window.location.protocol}//" + url.replace(/^url:\/\//, '')
 
-      result.unshift({
+      results.unshift({
         modelTitle: model.title,
         url: formattedUrl,
-        dateAccessed: new Date(model.timeStamp).toLocaleDateString('locale', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        }),
-        timeAccessed: new Date(model.timeStamp).toLocaleTimeString('locale', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
+        dataAccessed: (new Date(model.timeStamp)).toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })
         storageTag: storageTagOutput
-
+        timeStamp: model.timeStamp
       })
 
-  result.sort ((b, a) ->
-    dateTimeA = new Date("#{a.dateAccessed} #{a.timeAccessed}")
-    dateTimeB = new Date("#{b.dateAccessed} #{b.timeAccessed}")
-    dateTimeA - dateTimeB)
+  results.sort ((b, a) ->
+    a.timeStamp - b.timeStamp
+    )
 
-  result
+  results
 
 # (HtmlDivElement, NamespaceStorage) => Ractive
 createSettingsRactive = (container, storage, wipStorage) ->
