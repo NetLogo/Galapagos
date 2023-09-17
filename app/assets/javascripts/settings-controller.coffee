@@ -81,10 +81,11 @@ formatLinks = (wipStorage) ->
   results = []
 
   for url, model of wipStorage.inProgress
-    if model.title and model.timeStamp and not(url.startsWith('disk') or url.startsWith('new')) and model.version == WIP_INFO_FORMAT_VERSION
+    if model.title and model.timeStamp and not(url.startsWith('disk') or url.startsWith('new')) and
+    model.version is WIP_INFO_FORMAT_VERSION
       storageTagOutput = ""
-      storageTag = url.split(':').shift();
-      if storageTag != "url"
+      storageTag = url.split(':').shift()
+      if storageTag isnt "url"
         storageTagOutput = " (tag: #{storageTag})"
         formattedUrl = "/launch?storageTag=#{storageTag}##{window.location.protocol}//" + url.replace(/.*:\/\//, '')
       else
@@ -93,14 +94,13 @@ formatLinks = (wipStorage) ->
       results.unshift({
         modelTitle: model.title,
         url: formattedUrl,
-        dataAccessed: (new Date(model.timeStamp)).toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        dataAccessed: (new Date(model.timeStamp)).toLocaleString(undefined,
+        { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })
         storageTag: storageTagOutput
         timeStamp: model.timeStamp
       })
 
-  results.sort ((b, a) ->
-    a.timeStamp - b.timeStamp
-    )
+  results.sort((b, a) -> a.timeStamp - b.timeStamp)
 
   results
 
