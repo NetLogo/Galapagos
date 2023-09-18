@@ -16,6 +16,13 @@
   grid-column: span 2;
 }
 
+.settings-subheader {
+  font-size: 1.4rem;
+  margin: 1em 0 0.5em 0;
+  text-align: center;
+  grid-column: span 2;
+}
+
 .setting-label {
   grid-column: span 1;
   margin: 0 0 0.8em 0;
@@ -24,4 +31,12 @@
 .setting-control {
   grid-column: span 1;
   margin: 0 0 0.8em 0;
+}
+
+li {
+  margin-top: 15px;
+}
+
+.description {
+text-align: center;
 }

@@ -72,4 +72,4 @@ class WipData
     @storage.set(wipKey, wipInfo)
     return
 
-export { WipData }
+export { WipData, WIP_INFO_FORMAT_VERSION }

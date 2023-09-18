@@ -1,3 +1,5 @@
+import { WIP_INFO_FORMAT_VERSION } from '/beak/wip-data.js'
+
 locales = [
   { code: "zh_cn", description: "Chinese, simplified - 中文 (简体)" }
 , { code: "en_us", description: "English, United States" }
@@ -10,6 +12,7 @@ settings.set('locale', {
 , in:  ((l) -> l)
 , out: ((l) -> l)
 })
+
 settings.set('workInProgress.enabled', {
   def: 'Enabled'
 , ractiveName: 'workInProgressSetting'
@@ -60,13 +63,51 @@ template = """
       {{/}}
     </select>
   </div>
-
 </div>
+
+
+<h1 class="settings-subheader">Works in Progress</h1>
+<div class="description">Here are all the models you have made changes to in NetLogo Web.</div>
+
+<ul>
+  {{#each workInProgressLinks}}
+    <li><a href="{{url}}">{{modelTitle}}</a> {{storageTag}} <div>{{dataAccessed}}</div></li>
+  {{/each}}
+</ul>
+
 """
+#Formatting Links for HTML display
+formatLinks = (wipStorage) ->
+  results = []
+
+  for url, model of wipStorage.inProgress
+    if model.title and model.timeStamp and not(url.startsWith('disk') or url.startsWith('new')) and
+    model.version is WIP_INFO_FORMAT_VERSION
+      storageTagOutput = ""
+      storageTag = url.split(':').shift()
+      if storageTag isnt "url"
+        storageTagOutput = " (tag: #{storageTag})"
+        formattedUrl = "/launch?storageTag=#{storageTag}##{window.location.protocol}//" + url.replace(/.*:\/\//, '')
+      else
+        formattedUrl = "/launch##{window.location.protocol}//" + url.replace(/^url:\/\//, '')
+
+      results.unshift({
+        modelTitle: model.title,
+        url: formattedUrl,
+        dataAccessed: (new Date(model.timeStamp)).toLocaleString(undefined,
+        { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        storageTag: storageTagOutput
+        timeStamp: model.timeStamp
+      })
+
+  results.sort((b, a) -> a.timeStamp - b.timeStamp)
+
+  results
 
 # (HtmlDivElement, NamespaceStorage) => Ractive
-createSettingsRactive = (container, storage) ->
+createSettingsRactive = (container, storage, wipStorage) ->
   data = { locales }
+  data.workInProgressLinks = formatLinks(wipStorage)
   settingNames.forEach( (name) ->
     setting = settings.get(name)
     data[setting.ractiveName] = if storage.hasKey(name)
