@@ -43,7 +43,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-test
-    if: ${{ github.ref == 'refs/heads/scrape-test' }}
+    if: ${{ github.ref == 'refs/heads/scrape-test' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/production' }}
     env:
       AWS_REGION: 'us-east-1'
       AWS_ROLE_TO_ASSUME: 'arn:aws:iam::922513866616:role/Galapagos-AWS-Deploy'
