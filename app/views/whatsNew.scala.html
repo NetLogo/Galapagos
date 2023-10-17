@@ -12,6 +12,10 @@
     <li>You can now export HTML versions of a model from already-exported HTML files.</li>
     <li>Unbreeded agents will now render after breeded agents, matching desktop NetLogo's behavior.</li>
     <li>Any linked models you have edited that are in your browser local storage will be displayed in a list on the settings page so you can just right back in.</li>
+    <li>Monitors and plots now correctly use auxillary random number generators, so they don't affect the main behavior of a model.</li>
+    <li>Command and reporter strings used for <code>run</code> and <code>runresult</code> are cached separately, to avoid some odd errors.</li>
+    <li>The performance of link neighbor checks is slightly improved.</li>
+    <li>Table extension: Using a non-array table key that doesn't exist will throw a more meaningul error message.</li>
   </ul>
 
   <h2 id="v2.10.7">May 11th 2023 - v2.10.7</h2>
