@@ -2,7 +2,7 @@ import newModel from "../new-model.js"
 import { normalizedFileName } from "./tortoise-utils.js"
 
 dropNlogoExtension = (s) ->
-  if s.toLocaleLowerCase().endsWith('.nlogo')?
+  if s.toLocaleLowerCase().endsWith('.nlogo')
     s.slice(0, -6)
   else
     s
