@@ -336,13 +336,20 @@
     <strong>have</strong> entered an infinite loop, the recommended solution is to
     terminate the browser tab.</p>
 
-    @linkableHeader("repeat-go", "I want to run my 'go' procedure many times with 'repeat', but it doesn't update the view!")
+   @linkableHeader("repeat-go", "I want to run my 'go' procedure many times with 'repeat', but it doesn't update the view!")
 
-    <p>A common NetLogo task is to run a procedure a number of times and then stop.  This is easy to do by using code like: <code>repeat 10 [ go ]</code> or <code>repeat 50 [ my-proc ]</code>.  In desktop NetLogo, if your procedure uses <code>tick</code>, then the view will also update for each time the procedure is called.  In NetLogo Web, however, no visual updates will happen until all repeats of the procedure are complete.  This is due to technical limitations of the browser environment.</p>
+   <p>A common NetLogo task is to run a procedure a number of times and then stop.  This is easy to do by using code
+   like: <code>repeat 10 [ go ]</code> or <code>repeat 50 [ my-proc ]</code>.  In desktop NetLogo, if your procedure
+   uses <code>tick</code>, then the view will also update for each time the procedure is called.  In NetLogo Web,
+   however, no visual updates will happen until all repeats of the procedure are complete.  This is due to technical
+   limitations of the browser environment.</p>
 
-    <p>There is an easy workaround, it just requires a couple small changes to the model.  Use a button in your model set to run forever and have that forever button run a repeat/count procedure.  Inside that procedure, you can count ticks using a global variable and call <code>stop</code> once you've reached your tick count limit.  This will allow view updates to happen, run the required number of steps, and then stop execution as expected.</p>
+   <p>There is an easy workaround, it just requires a couple small changes to the model.  Use a button in your model set
+   to run forever and have that forever button run a repeat/count procedure.  Inside that procedure, you can count ticks
+   using a global variable and call <code>stop</code> once you've reached your tick count limit.  This will allow view
+   updates to happen, run the required number of steps, and then stop execution as expected.</p>
 
-    <code>    ; this assumes you have a global variable, 'ticked', declared and set to 0 in 'setup'
+   <code>    ; this assumes you have a global variable, 'ticked', declared and set to 0 in 'setup'
     ; and a procedure named 'go' to run.  Just run this proc in a forever button.
     to go-repeat
       set ticked (ticked + 1)
@@ -355,7 +362,34 @@
         stop
       ]
     end
-    </code>
+   </code>
+
+  @linkableHeader("mouse", "How do I use the mouse primitives in NetLogo Web?")
+
+  <p>Simlar to the issue with <code>repeat</code> noted above, using <code>mouse-down?</code> inside a looping primitive
+  like <code>while</code>, <code>loop</code>, or <code>repeat</code> will
+  <a href="https://github.com/NetLogo/Tortoise/issues/151">cause NetLogo Web to freeze instead of operating as it would
+  in desktop NetLogo</a>.</p>
+
+  <p>The workaround is to use a forever button to run the mouse code instead of one of the looping primitives.  Global
+  variables can be used if you need the procedure to remember some information about where the original mouse click
+  happened, or the current status of the mouse click action.
+  <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20One%20Example.nlogo" title="Mouse Drag One Example model">
+  The Mouse Drag One Example model</a> shows a basic example dragging a single agent.
+  <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20Multiple%20Example.nlogo" title="Mouse Drag Multiple Example model">
+  The Mouse Drag Multiple Example model</a> shows a more complex scenario using a simple state machine.</p>
+
+  <p>Below is some sample code that will increase the size of one of the turtles a user clicks on.  This procedure should be added to a forever button so that when it's enabled the mouse clicks will have the desired effect.</p>
+
+  <code>
+  to increase-size
+    if mouse-down? [
+      ask up-to-n-of 1 (turtles with [(distancexy mouse-xcor mouse-ycor) <= 1]) [
+        set size (size + 0.1)
+      ]
+    ]
+  end
+  </code>
 
   @linkableHeader("performance", "Why does everything seem so much slower in NetLogo Web?")
 
