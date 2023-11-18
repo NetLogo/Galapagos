@@ -1,3 +1,5 @@
+import { createSettingsRactive, locales } from './settings-controller.js'
+
 getOrElse = (params, key, def) ->
   if params.has(key)
     params.get(key)
@@ -13,7 +15,17 @@ clamp = (min, max, val) ->
 
 class Settings
 
-  locale: "en_us"
+  constructor: ->
+    @locale = navigator.language.replace('-', '_').toLowerCase()
+
+    exactMatch = locales.find((locale) => @locale is locale.code)
+
+    if exactMatch
+      @locale = exactMatch.code
+    else
+      matchingLocale = locales.find((locale) => @locale.startsWith(locale.code.split('_')[0]))
+      if matchingLocale
+        @locale = matchingLocale.code
 
   useVerticalLayout: true
 
