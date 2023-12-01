@@ -194,6 +194,13 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
           uniqueEvents =
             events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
 
+          # Special casing this feels a bit silly, but it works, and given the special casing for plots, I guess it's
+          # par for the course.  Necessary because if the redraw happens before all changes are applied (topology and
+          # world coordinates) then the unapplied stuff is lost.  -Jeremy B December 2023
+          uniqueEvents.sort( (event1, event2) ->
+            if (event1.type is 'redrawView') then 1 else if (event2.type is 'redrawView') then -1 else 0
+          )
+
           for event in uniqueEvents
             realEvent =
               if event.type is "recompile-for-plot"
