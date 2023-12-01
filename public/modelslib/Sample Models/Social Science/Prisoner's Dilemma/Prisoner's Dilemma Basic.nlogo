@@ -262,7 +262,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. (2002).  NetLogo PD Basic model.  http://ccl.northwestern.edu/netlogo/models/PDBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Wilensky, U. (2002).  NetLogo Prisoner's Dilemma Basic model.  http://ccl.northwestern.edu/netlogo/models/Prisoner'sDilemmaBasic.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -631,7 +631,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.2
+NetLogo 6.4.0
 @#$#@#$#@
 setup
 @#$#@#$#@

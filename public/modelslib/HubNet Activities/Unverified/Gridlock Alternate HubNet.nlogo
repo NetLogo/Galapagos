@@ -429,7 +429,7 @@ end
 ;; verify that my-plot-metric is a valid metric that will result in a number
 ;; and add that number to the my-plot-data list for the intersection
 to add-new-client-metric-value  ;; intersection procedure
-  let err __check-syntax (word "plotxy clock " my-plot-metric)
+  let err __check-syntax (word "plotxy ticks " my-plot-metric)
   ifelse err = ""
   [
     let new-value run-result my-plot-metric
@@ -446,7 +446,7 @@ to add-new-client-metric-value  ;; intersection procedure
   ]
   [
     hubnet-send user-id "metric-error-message" (word my-plot-metric
-      " does not produce a numeric value.")
+      " errored when run:  " err)
     clear-client-plot-data
   ]
 end
@@ -1781,7 +1781,7 @@ false
 Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 @#$#@#$#@
-NetLogo 6.2.2
+NetLogo 6.4.0
 @#$#@#$#@
 need-to-manually-make-preview-for-this-model
 @#$#@#$#@
