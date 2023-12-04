@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
     TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
 
-val tortoiseVersion = "1.0-7f9c0fb"
+val tortoiseVersion = "1.0-f6344f5"
 
 resolvers ++= Seq(
   "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
