@@ -50,11 +50,11 @@ loadInitialModel = (setSession) ->
     source  = new ScriptSource(nlogoScript.dataset.filename, trimmed)
     Tortoise.fromNlogoSync( source
                           , modelContainer
-                          , "en_us" # TODO: Where am I supposed to get this?
-                          , false   # TODO: Eh?
-                          , null    # TODO: What is `getWorkInProgress` for?
+                          , "en_us"
+                          , false
+                          , null
                           , openSession(setSession)
-                          , []      # TODO: Should I have rewriters?
+                          , []
                           , []      # TODO: Should I have listeners?
                           )
   else
@@ -72,11 +72,11 @@ loadModel = (setSession) -> (source, widgets = []) ->
   Tortoise.fromNlogoSync(
     source
   , modelContainer
-  , "en_us" # TODO: Where am I supposed to get this?
-  , false   # TODO: Eh?
-  , null    # TODO: What is `getWorkInProgress` for?
+  , "en_us"
+  , false
+  , null
   , handleCR
-  , []      # TODO: Should I have rewriters?
+  , []
   , []      # TODO: Should I have listeners?
   , widgets
   )
