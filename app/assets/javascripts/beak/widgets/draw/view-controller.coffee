@@ -5,9 +5,41 @@ import { LinkDrawer } from "./link-drawer.js"
 
 AgentModel = tortoise_require('agentmodel')
 
+# (Array[(Object[Any], String)], Any) => Unit
+entwine = (objKeyPairs, value) ->
+
+  backingValue = value
+
+  for [obj, key, tag] in objKeyPairs
+    Object.defineProperty(obj, key, {
+      configurable: true
+      get: -> backingValue
+      set: (newValue) -> backingValue = newValue
+    })
+
+  return
+
+# (Widgets.View, ViewController.View) => Unit
+entwineDimensions = (viewWidget, modelView) ->
+
+  translations = {
+    maxPxcor:           "maxpxcor"
+  , maxPycor:           "maxpycor"
+  , minPxcor:           "minpxcor"
+  , minPycor:           "minpycor"
+  , patchSize:          "patchsize"
+  , wrappingAllowedInX: "wrappingallowedinx"
+  , wrappingAllowedInY: "wrappingallowediny"
+  }
+
+  for wName, mName of translations
+    entwine([[viewWidget.dimensions, wName], [modelView, mName]], viewWidget.dimensions[wName])
+
+  return
+
 class ViewController
-  constructor: (@container, fontSize) ->
-    @view = new View(fontSize)
+  constructor: (@container, viewWidget) ->
+    @view = new View(viewWidget.fontSize)
     @turtleDrawer = new TurtleDrawer(@view)
     @drawingLayer = new DrawingLayer(@view, @turtleDrawer, () => @repaint())
     @patchDrawer = new PatchDrawer(@view)
@@ -20,7 +52,7 @@ class ViewController
     @mouseY      = 0
     @initMouseTracking()
     @initTouchTracking()
-    @resetModel()
+    @resetModel(viewWidget)
     @repaint()
 
   mouseXcor: => @view.xPixToPcor(@mouseX)
@@ -78,9 +110,11 @@ class ViewController
 
     return
 
-  resetModel: ->
+  resetModel: (viewWidget) ->
     @model = new AgentModel()
     @model.world.turtleshapelist = defaultShapes
+    entwineDimensions(viewWidget, @model.world)
+    entwine([[viewWidget, "fontSize"], [@view, "fontSize"]], viewWidget.fontSize)
 
   repaint: ->
     @view.transformToWorld(@model.world)
