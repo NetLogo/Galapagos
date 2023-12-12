@@ -141,4 +141,4 @@ createSettingsRactive = (container, storage, wipStorage) ->
   })
   ractive
 
-export { createSettingsRactive , locales}
+export { createSettingsRactive , locales }

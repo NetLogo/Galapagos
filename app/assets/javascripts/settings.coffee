@@ -1,4 +1,4 @@
-import { createSettingsRactive, locales } from './settings-controller.js'
+import { locales } from './settings-controller.js'
 
 getOrElse = (params, key, def) ->
   if params.has(key)
@@ -13,17 +13,24 @@ parseFloatOrElse = (str, def) ->
 clamp = (min, max, val) ->
   Math.max(min, Math.min(max, val))
 
+updatedLocales = locales.map (locale) ->
+  newLocale = {}
+  for key, value of locale
+    newLocale[key] = value
+  newLocale.languageCode = locale.code.split('_')[0]
+  newLocale
+
 class Settings
 
   constructor: ->
     @locale = navigator.language.replace('-', '_').toLowerCase()
 
-    exactMatch = locales.find((locale) => @locale is locale.code)
+    exactMatch = updatedLocales.find((locale) => @locale is locale.code)
 
     if exactMatch
       @locale = exactMatch.code
     else
-      matchingLocale = locales.find((locale) => @locale.startsWith(locale.code.split('_')[0]))
+      matchingLocale = updatedLocales.find((locale) => @locale.startsWith(locale.languageCode))
       if matchingLocale
         @locale = matchingLocale.code
 
