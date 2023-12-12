@@ -71,7 +71,7 @@ Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 // This is definitely not meant to be universal, just to get the info without the typical color codes -Jeremy B February
 // 2023
 def unAnsi(str: String): String =
-  str.replaceAll("\\u001B\\\\d+m", "")
+  str.replaceAll("\\u001B\\[\\d+m", "")
 
 def runNpm(log: Logger, runDir: File, args: Seq[String], env: (String, String)*): Unit = {
   val npmArgs = Seq("npm") ++ args

@@ -141,8 +141,4 @@ createSettingsRactive = (container, storage, wipStorage) ->
   })
   ractive
 
-<<<<<<< HEAD
 export { createSettingsRactive , locales }
-=======
-export { createSettingsRactive , locales}
->>>>>>> 1a0249ad (Adding locales languages options)
