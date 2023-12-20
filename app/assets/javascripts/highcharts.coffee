@@ -110,32 +110,35 @@ class HighchartsOps extends PlotOps
       series.update(options, false)
       @_penNameToSeriesNum[pen.name] = num
       @_needsRedraw = true
+
+      # ADD_POINT_HACK_1: This is a little hack to get Highcharts to handle `plot-pen-up`.  We put null values in the
+      # data when it's up, but if we do that it will not "re-start" properly when `plot-pen-down` is called. So we store
+      # the last up point so we can re-add it as needed to make the graph look right. -Jeremy B February 2021
+      series._maybeLastUpPoint = null
+
+      # ADD_POINT_HACK_2: Another Highcharts hack?  In my Beak UI?  You bet!  Here we track the "right-most" point added
+      # for the series. If we ever happen to add a point to the left of that (meaning we're doing a scatter plot or a
+      # "line drawing" plot), we enable Boost.  The Boost WebGL rendering module can only draw 1px wide lines, so we
+      # only do this for this "degenerate" case where the performance of normal SVG drawing gets really bad.  We hope to
+      # remove this hack and enable Boost for all line plots once the issue is resolved in Highcharts.
+      # https://github.com/highcharts/highcharts/issues/11794 -Jeremy B January 2023
+      series._maybeRightmostPoint = null
+
       return
 
     # This is a workaround for a bug in CS2 `@` detection: https://github.com/jashkenas/coffeescript/issues/5111
     # -Jeremy B. December 2018
     thisOps = null
 
-    # ADD_POINT_HACK_1: This is a little hack to get Highcharts to handle `plot-pen-up`.  We put null values in the
-    # data when it's up, but if we do that it will not "re-start" properly when `plot-pen-down` is called. So we store
-    # the last up point so we can re-add it as needed to make the graph look right. -Jeremy B February 2021
-    maybeLastUpPoint = null
-
-    # ADD_POINT_HACK_2: Another Highcharts hack?  In my Beak UI?  You bet!  Here we track the "right-most" point added
-    # for the series. If we ever happen to add a point to the left of that (meaning we're doing a scatter plot or a
-    # "line drawing" plot), we enable Boost.  The Boost WebGL rendering module can only draw 1px wide lines, so we only
-    # do this for this "degenerate" case where the performance of normal SVG drawing gets really bad.  We hope to remove
-    # this hack and enable Boost for all line plots once the issue is resolved in Highcharts.
-    # https://github.com/highcharts/highcharts/issues/11794 -Jeremy B January 2023
-    maybeRightmostPoint = null
-
     resetPen = (pen) => () =>
-      thisOps.penToSeries(pen)?.setData([], false)
       thisOps._needsRedraw = true
-      # See ADD_POINT_HACK_1
-      maybeLastUpPoint    = null
-      # See ADD_POINT_HACK_2
-      maybeRightmostPoint = null
+      series = thisOps.penToSeries(pen)
+      if series?
+        series.setData([], false)
+        # See ADD_POINT_HACK_1
+        series._maybeLastUpPoint    = null
+        # See ADD_POINT_HACK_2
+        series._maybeRightmostPoint = null
       return
 
     addPoint = (pen) =>
@@ -147,26 +150,25 @@ class HighchartsOps extends PlotOps
 
         # See ADD_POINT_HACK_1
         pointY = if (pen.getPenMode() is PenBundle.PenMode.Down)
-          if maybeLastUpPoint isnt null
-            series.addPoint(maybeLastUpPoint, false)
-            maybeLastUpPoint = null
+          if series._maybeLastUpPoint isnt null
+            series.addPoint(series._maybeLastUpPoint, false)
+            series._maybeLastUpPoint = null
           y
         else
-          maybeLastUpPoint = [x, y]
+          series._maybeLastUpPoint = [x, y]
           null
 
         # See ADD_POINT_HACK_2
         isColumn = (pen.getDisplayMode() is PenBundle.DisplayMode.Bar)
-        if not isColumn
-          if not maybeRightmostPoint?
-            maybeRightmostPoint = x
+        if not isColumn and series.options.boostThreshold isnt 1
+          if not series._maybeRightmostPoint?
+            series._maybeRightmostPoint = x
           else
-            if x <= maybeRightmostPoint
-              if series.options.boostThreshold isnt 1
-                series.options.boostThreshold = 1
-                series.update(series.options, false)
+            if x <= series._maybeRightmostPoint
+              series.options.boostThreshold = 1
+              series.update(series.options, false)
             else
-              maybeRightmostPoint = x
+              series._maybeRightmostPoint = x
 
         series.addPoint([x, pointY], false)
         thisOps._needsRedraw = true
