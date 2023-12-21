@@ -150,7 +150,7 @@ class HighchartsOps extends PlotOps
 
         # See ADD_POINT_HACK_1
         pointY = if (pen.getPenMode() is PenBundle.PenMode.Down)
-          if series._maybeLastUpPoint isnt null
+          if series._maybeLastUpPoint?
             series.addPoint(series._maybeLastUpPoint, false)
             series._maybeLastUpPoint = null
           y
