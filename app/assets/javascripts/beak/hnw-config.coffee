@@ -36,9 +36,9 @@ postWhenReady = (frame, message, callback = (->)) ->
   return
 
 document.getElementById("start-over-button").onclick = ->
-  document.getElementById("model-selection-bar").classList.remove("hidden")
-  document.getElementById("start-over-button"  ).classList.add(   "hidden")
-  document.getElementById("config-content"     ).classList.add(    "invis")
+  document.getElementById("mode-controls"    ).classList.remove("hidden")
+  document.getElementById("start-over-button").classList.add(   "hidden")
+  document.getElementById("config-content"   ).classList.add(    "invis")
   cancelInterval()
 
 # () => Unit
@@ -171,9 +171,9 @@ initialize = (nlogo, config) ->
 
     lastNlogoSections = modelSections
 
-    document.getElementById("model-selection-bar").classList.add(   "hidden")
-    document.getElementById("start-over-button"  ).classList.remove("hidden")
-    document.getElementById('config-content'     ).classList.remove("invis")
+    document.getElementById("mode-controls"    ).classList.add(   "hidden")
+    document.getElementById("start-over-button").classList.remove("hidden")
+    document.getElementById('config-content'   ).classList.remove("invis")
 
     configFrameContainer = document.getElementById('config-frames')
     tabButtonContainer   = document.getElementById('config-tab-buttons')

@@ -22,9 +22,8 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  flex-direction: column;
+  flex-direction: row;
   flex: 1;
-  gap: 20px;
   padding: 5px;
   margin: 0 0 10px 0;
   background-color: #CDE4EB;
@@ -33,15 +32,6 @@
 
 .model-selection-bar > div {
   padding: 0 15px;
-}
-
-.model-selection-row {
-  align-items:     center;
-  display:         flex;
-  flex-direction:  row;
-  flex:            1;
-  gap:             20px;
-  justify-content: space-between;
 }
 
 iframe {

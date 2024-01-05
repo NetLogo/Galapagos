@@ -99,6 +99,32 @@
   filter:     brightness(0.7);
 }
 
+.mode-controls {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+  padding: 5px;
+  margin: 0 0 10px 0;
+  background-color: #CDE4EB;
+  font-size: medium;
+}
+
+.mode-controls > div {
+  padding: 0 15px;
+}
+
+.mode-controls-row {
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
+  flex:            1;
+  gap:             20px;
+  justify-content: space-between;
+}
+
 /* This is an override! */
 .model-container {
   border-bottom-left-radius: 0;
