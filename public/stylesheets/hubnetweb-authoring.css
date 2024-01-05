@@ -125,9 +125,11 @@
   justify-content: space-between;
 }
 
-/* This is an override! */
+/* These are overrides! */
 .model-container {
   border-bottom-left-radius: 0;
+  min-height:                unset;
+  min-width:                 unset;
 }
 
 .outer-content {
