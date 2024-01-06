@@ -13,7 +13,12 @@ activeContainer = loadingOverlay
 
 nlogoScript      = document.querySelector("#nlogo-code")
 isStandaloneHTML = nlogoScript.textContent.length > 0
-alerter          = new AlertDisplay(document.getElementById("alert-container"), isStandaloneHTML)
+
+listeners = [] # Array[Listener]
+
+aCon    = document.getElementById("alert-container")
+alerter = new AlertDisplay(aCon, isStandaloneHTML)
+listeners.push(alerter)
 
 # ((Session) => Unit) => (Session) => Unit
 openSession = (setSession) -> (s) ->
@@ -42,7 +47,7 @@ loadHNWModel = (setSession) -> (role, view) ->
   alerter.hide()
   session?.teardown()
   activeContainer = loadingOverlay
-  Tortoise.loadHubNetWeb(modelContainer, role, view, openSession(setSession))
+  Tortoise.loadHubNetWeb(modelContainer, role, view, openSession(setSession), listeners)
   return
 
 handleFrameResize((-> activeContainer), (-> session))

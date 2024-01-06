@@ -15,7 +15,12 @@ activeContainer = loadingOverlay
 
 nlogoScript      = document.querySelector("#nlogo-code")
 isStandaloneHTML = nlogoScript.textContent.length > 0
-alerter          = new AlertDisplay(document.getElementById("alert-container"), isStandaloneHTML)
+
+listeners = [] # Array[Listener]
+
+aCon    = document.getElementById("alert-container")
+alerter = new AlertDisplay(aCon, isStandaloneHTML)
+listeners.push(alerter)
 
 # ((Session) => Unit) => (Object[Any]) => Unit
 handleCompileResult = (setSession) -> (result) ->
@@ -55,7 +60,7 @@ loadInitialModel = (setSession) ->
                           , null
                           , openSession(setSession)
                           , []
-                          , []      # TODO: Should I have listeners?
+                          , listeners
                           )
   else
     loadModel(setSession)(new NewSource())
@@ -77,7 +82,7 @@ loadModel = (setSession) -> (source, widgets = []) ->
   , null
   , handleCR
   , []
-  , []      # TODO: Should I have listeners?
+  , listeners
   , widgets
   )
   return

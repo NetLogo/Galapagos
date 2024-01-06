@@ -11,7 +11,11 @@ nlogoScript     = document.querySelector("#nlogo-code")
 
 isStandaloneHTML = nlogoScript.textContent.length > 0
 
-alerter = new AlertDisplay(document.getElementById("alert-container"), isStandaloneHTML)
+listeners = [] # Array[Listener]
+
+aCon    = document.getElementById("alert-container")
+alerter = new AlertDisplay(aCon, isStandaloneHTML)
+listeners.push(alerter)
 
 nullChoiceText = '<no selection>'
 
@@ -187,7 +191,7 @@ window.onmessage = (e) ->
 
       session?.teardown()
       activeContainer = loadingOverlay
-      Tortoise.loadHubNetWeb(modelContainer, cachedConfig, view, openSession)
+      Tortoise.loadHubNetWeb(modelContainer, cachedConfig, view, openSession, listeners)
       ractive = session.widgetController.ractive
 
       ractive.set("isEditing", true )

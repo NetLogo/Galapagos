@@ -203,8 +203,8 @@ createSource = (sourceType, path, nlogo) ->
     when 'url'
       new UrlSource(path, nlogo)
 
-# (DOMElement, Role, View, (Session) => Unit) => Unit
-loadHubNetWeb = (container, role, view, callback) ->
+# (DOMElement, Role, View, (Session) => Unit, Array[Listener]) => Unit
+loadHubNetWeb = (container, role, view, callback, listeners) ->
 
   adaptedWidgets =
     role.widgets.map(
@@ -271,9 +271,7 @@ workspace.i18nBundle = { supports: function() { return true; }, 'switch': functi
     , isReporter : (-> throw new Error("isReporter:  This compiler is a stub."))
     }
 
-  # TODO: I hope I'm not supposed to have any rewriters or listeners or locale
-  # or WIP state here
-  session = newSession( container, compiler, [], [], model, false, "en_us"
+  session = newSession( container, compiler, [], listeners, model, false, "en_us"
                       , null, new NewSource(""), false)
   callback(session)
 
