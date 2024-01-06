@@ -26,6 +26,8 @@ openSession = (setSession) -> (s) ->
   wc.ractive.set("isHNW"    , true )
   wc.ractive.set("isHNWHost", false)
 
+  wc.ractive.fire("unbind-keys")
+
   session.startLoop()
   session.hnw.subscribe(parent, "load-model::openSession")
   alerter.setWidgetController(wc)

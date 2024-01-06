@@ -238,6 +238,13 @@ controlEventTraffic = (controller, performUpdate) ->
 
   mousetrap.bind('?', onQMark)
 
+  ractive.on("unbind-keys", (->
+    mousetrap.unbind([ 'up', 'down', 'left', 'right', 'del', 'escape', '?'
+                     , 'ctrl+shift+l', 'command+shift+l'
+                     , 'ctrl+shift+h', 'command+shift+h'
+                     ])
+  ))
+
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.right'       , onWidgetRightChange)
   ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)

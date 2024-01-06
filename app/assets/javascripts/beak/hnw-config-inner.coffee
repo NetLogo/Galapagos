@@ -196,6 +196,8 @@ window.onmessage = (e) ->
       ractive.set("metadata" , { globalVars, myVars, procedures })
       #session.subscribe(parent, "Authoring frame")
 
+      ractive.fire("unbind-keys")
+
       ractive.on("*.new-breed-var", (_, varName) ->
         msg = { type: "new-breed-var", breed: cachedConfig.namePlural, var: varName }
         parent.postMessage(msg, "*")

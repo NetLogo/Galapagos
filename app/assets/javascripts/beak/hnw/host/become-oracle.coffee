@@ -353,6 +353,8 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   ractive.set("isHNW"    , true)
   ractive.set("isHNWHost", true)
 
+  ractive.fire("unbind-keys")
+
   ractive.on("show", (_, title, messages, frames) ->
     babyPost({ type: "nlw-recompile-failure", messages })
     false
