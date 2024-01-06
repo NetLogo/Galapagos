@@ -553,6 +553,12 @@ window.addEventListener('message', (e) ->
       genConfigP().then((config) -> reinitialize(nlogo, config))
     when "recompile"
       recompile()
+    when "resize-me"
+      { height, width } = e.data.data
+      containers = Array.from(document.querySelectorAll("iframe.model-container"))
+      container  = containers.find((c) -> c.contentWindow is e.source)
+      container.height = height
+      container.width  = width
     when "code-save-response", "role-save-response"
     else
       console.warn("Unknown event type: #{e.data.type}")

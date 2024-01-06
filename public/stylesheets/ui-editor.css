@@ -299,3 +299,8 @@
 .plot-editor .CodeMirror * {
   font-size: 14px;
 }
+
+.code-body {
+  margin:   0px;
+  overflow: hidden;
+}

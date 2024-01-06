@@ -258,3 +258,9 @@ window.onmessage = (e) ->
       session.widgetController.ractive.set("metadata", e.data.metadata)
     else
       console.warn("Unknown config event type: #{e.data.type}")
+
+resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
+  parent.postMessage({ type: "resize-me", data: { height, width } })
+)
+
+resizer.observe(window.document.documentElement)

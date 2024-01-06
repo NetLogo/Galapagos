@@ -99,3 +99,9 @@ window.onmessage = (e) ->
 
     else
       console.warn("Unknown code pane event type: #{e.data.type}")
+
+resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
+  parent.postMessage({ type: "resize-me", data: { height, width } })
+)
+
+resizer.observe(window.document.documentElement)
