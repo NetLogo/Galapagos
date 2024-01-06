@@ -303,6 +303,7 @@ setUpHNWPlot = (helper) -> (source, destination) ->
     dummyPen = { name:               pen.display
                , getColor:       (-> javaColorToNetLogo(pen.color))
                , getDisplayMode: (-> numToMode(pen.mode))
+               , getInterval:    (-> pen.interval)
                , isFake:         true
                }
 

@@ -23,7 +23,10 @@ class PlotRecorder
 
   # (Pen) => Unit
   recordRegisterPen: (pen) ->
-    @_events.push({ type: "register-pen", pen: { name: pen.name, color: pen.getColor(), type: pen.getDisplayMode() } })
+    p = { name: pen.name, color: pen.getColor(), interval: pen.getInterval()
+        , type: pen.getDisplayMode()
+        }
+    @_events.push({ type: "register-pen", pen: p })
     return
 
   # (Pen) => Unit
@@ -43,7 +46,10 @@ class PlotRecorder
 
   # (Pen, String) => Unit
   recordUpdatePenMode: (pen, modeString) ->
-    @_events.push({ type: "update-pen-mode", penName: pen.name, mode: modeString })
+    event = { type: "update-pen-mode", penName: pen.name, mode: modeString
+            , interval: pen.getInterval()
+            }
+    @_events.push(event)
     return
 
   # (Pen, Number) => Unit
