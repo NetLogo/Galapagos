@@ -198,7 +198,6 @@ window.onmessage = (e) ->
       ractive.set("isHNW"    , true )
       ractive.set("isHNWHost", false)
       ractive.set("metadata" , { globalVars, myVars, procedures })
-      #session.subscribe(parent, "Authoring frame")
 
       ractive.fire("unbind-keys")
 
@@ -207,9 +206,6 @@ window.onmessage = (e) ->
         parent.postMessage(msg, "*")
         return
       )
-
-      #Object.values(session.widgetController.configs.plotOps).forEach(
-      #  (pops) -> pops.reset())
 
     when "request-save"
 
