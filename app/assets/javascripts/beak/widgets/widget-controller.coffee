@@ -127,30 +127,39 @@ class WidgetController
 
       newWidget.id = index
 
-      props       = typedWidgetProperties.get(newWidget.type)
+      hnwTypePrefix = "hnw"
+      propsType =
+        if not newWidget.type.startsWith(hnwTypePrefix)
+          newWidget.type
+        else
+          s = newWidget.type
+          l = hnwTypePrefix.length
+          "#{s[l].toLowerCase()}#{s.slice(l + 1)}"
+
+      props       = typedWidgetProperties.get(propsType)
       setterUpper =
         switch newWidget.type
-          when "button"      then [  buttonProps, setUpButton(@reportError, () => @_performUpdate(); @updateWidgets())]
-          when "chooser"     then [ chooserProps, setUpChooser]
-          when "inputBox"    then [inputBoxProps, setUpInputBox]
-          when "monitor"     then [ monitorProps, setUpMonitor]
-          when "output"      then [  outputProps, (->)]
-          when "plot"        then [    plotProps, setUpPlot(@plotSetupHelper())]
-          when "slider"      then [  sliderProps, setUpSlider]
-          when "switch"      then [  switchProps, setUpSwitch]
-          when "textBox"     then [ textBoxProps, (->)]
-          when "view"        then [    viewProps, (->)]
+          when "button"      then setUpButton(@reportError, () => @_performUpdate(); @updateWidgets())
+          when "chooser"     then setUpChooser
+          when "inputBox"    then setUpInputBox
+          when "monitor"     then setUpMonitor
+          when "output"      then (->)
+          when "plot"        then setUpPlot(@plotSetupHelper())
+          when "slider"      then setUpSlider
+          when "switch"      then setUpSwitch
+          when "textBox"     then (->)
+          when "view"        then (->)
 
-          when "hnwButton"   then [  buttonProps, setUpHNWButton(=> @_performUpdate(); @updateWidgets())]
-          when "hnwChooser"  then [ chooserProps, setUpHNWChooser]
-          when "hnwInputBox" then [inputBoxProps, setUpHNWInputBox]
-          when "hnwMonitor"  then [ monitorProps, setUpHNWMonitor]
-          when "hnwOutput"   then [  outputProps, (->)]
-          when "hnwPlot"     then [    plotProps, setUpHNWPlot(@plotSetupHelper())]
-          when "hnwSlider"   then [  sliderProps, setUpHNWSlider]
-          when "hnwSwitch"   then [  switchProps, setUpHNWSwitch]
-          when "hnwTextBox"  then [ textBoxProps, (->)]
-          when "hnwView"     then [    viewProps, (->)]
+          when "hnwButton"   then setUpHNWButton(=> @_performUpdate(); @updateWidgets())
+          when "hnwChooser"  then setUpHNWChooser
+          when "hnwInputBox" then setUpHNWInputBox
+          when "hnwMonitor"  then setUpHNWMonitor
+          when "hnwOutput"   then (->)
+          when "hnwPlot"     then setUpHNWPlot(@plotSetupHelper())
+          when "hnwSlider"   then setUpHNWSlider
+          when "hnwSwitch"   then setUpHNWSwitch
+          when "hnwTextBox"  then (->)
+          when "hnwView"     then (->)
 
           else                    throw new Error("Unknown widget type: #{newWidget.type}")
 
