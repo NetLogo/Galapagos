@@ -378,8 +378,8 @@
   box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
 }
 
-.join-page-padding {
-  padding: 10px;
+.join-body {
+  margin: 0;
 }
 
 .netlogo-model-container-join {
@@ -387,7 +387,6 @@
   flex-direction: row;
   justify-content: center;
   min-width: 900px;
-  width: 60%;
   margin: 0 auto;
   background-color: var(--light-gray);
 }

@@ -2,8 +2,7 @@ import AlertDisplay from "/alert-display.js"
 
 import Tortoise from "/beak/tortoise.js"
 
-import genPageTitle      from "../common/gen-page-title.js"
-import handleFrameResize from "../common/handle-frame-resize.js"
+import genPageTitle from "../common/gen-page-title.js"
 
 session = undefined # Session
 
@@ -49,7 +48,5 @@ loadHNWModel = (setSession) -> (role, view) ->
   activeContainer = loadingOverlay
   Tortoise.loadHubNetWeb(modelContainer, role, view, openSession(setSession), listeners)
   return
-
-handleFrameResize((-> activeContainer), (-> session))
 
 export default loadHNWModel

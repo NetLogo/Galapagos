@@ -56,3 +56,9 @@ window.addEventListener("message", (e) ->
       initBabyMonitor(e)
 
 )
+
+resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
+  parent.postMessage({ type: "resize-joiner", data: { height, width } }, "*")
+)
+
+resizer.observe(document.querySelector(".netlogo-model-container-join"))

@@ -3,8 +3,7 @@ import AlertDisplay from "/alert-display.js"
 import Tortoise                    from "/beak/tortoise.js"
 import { NewSource, ScriptSource } from "/beak/nlogo-source.js"
 
-import genPageTitle      from "../common/gen-page-title.js"
-import handleFrameResize from "../common/handle-frame-resize.js"
+import genPageTitle from "../common/gen-page-title.js"
 
 session = undefined # Session
 
@@ -94,7 +93,5 @@ removeHostWidgets = (nlogo) ->
   [code, widgets, theRest...] = nlogo.split("\n@#$#@#$#@\n")
   newWidgets                  = widgets.replace(regex, "$1")
   [code, newWidgets, theRest...].join(delim)
-
-handleFrameResize((-> activeContainer), (-> session))
 
 export { loadInitialModel, loadModel }

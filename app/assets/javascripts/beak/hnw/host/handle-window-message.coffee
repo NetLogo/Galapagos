@@ -62,6 +62,12 @@ handleWindowMessage = ( onWidgetMessage, onRainCheckMessage, getSession
         elem.height    = height
         document.title = title
 
+    when "resize-joiner"
+      joiners          = document.querySelectorAll("iframe.hnw-join-frame")
+      container        = Array.from(joiners).find((c) -> c.contentWindow is e.source)
+      container.height = e.data.data.height
+      container.width  = e.data.data.width
+
     else
       console.warn("Unknown init-host postMessage:", e.data)
 
