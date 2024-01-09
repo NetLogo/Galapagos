@@ -13,12 +13,12 @@ parseFloatOrElse = (str, def) ->
 clamp = (min, max, val) ->
   Math.max(min, Math.min(max, val))
 
-updatedLocales = locales.map (locale) ->
+updatedLocales = locales.map((locale) ->
   newLocale = {}
   for key, value of locale
     newLocale[key] = value
-  newLocale.languageCode = locale.code.split('_')[0]
   newLocale
+)
 
 class Settings
 
