@@ -13,24 +13,17 @@ parseFloatOrElse = (str, def) ->
 clamp = (min, max, val) ->
   Math.max(min, Math.min(max, val))
 
-updatedLocales = locales.map((locale) ->
-  newLocale = {}
-  for key, value of locale
-    newLocale[key] = value
-  newLocale
-)
-
 class Settings
 
   constructor: ->
     @locale = navigator.language.replace('-', '_').toLowerCase()
 
-    exactMatch = updatedLocales.find((locale) => @locale is locale.code)
+    exactMatch = locales.find((locale) => @locale is locale.code)
 
     if exactMatch
       @locale = exactMatch.code
     else
-      matchingLocale = updatedLocales.find((locale) => @locale.startsWith(locale.languageCode))
+      matchingLocale = locales.find((locale) => @locale.startsWith(locale.languageCode))
       if matchingLocale
         @locale = matchingLocale.code
 
