@@ -4,6 +4,33 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.11.0">December 4th 2023 - v2.11.0</h2>
+
+  <p>This release adds compatibility with some <a href="https://ccl.northwestern.edu/netlogo/docs/versions.html#version-640-november-2023">NetLogo 6.4</a> features, including updates to the models library.</p>
+
+  <ul>
+    <li>Support multi-variable assignment with <code>let</code> and <code>set</code>.</li>
+    <li>Support <a href="https://ccl.northwestern.edu/netlogo/docs/dictionary.html#who-are-not">the new <code>who-are-not</code> reporter</a> for agentset disjunction.</li>
+    <li>Plot error messages will correctly include the plot's name.</li>
+    <li>The CSV extension will correctly parse strings that start with numbers as text.</li>
+    <li>When a model has errors in the NetLogo code, those errors will be displayed first before displaying errors from the plot widgets that may be caused by the code errors.</li>
+    <li>New FAQ entries have been added about <a href="docs/faq#mouse">best practices for using mouse prims</a> and <a href="docs/faq#repeat-go">looping constructs in NetLogo Web</a>.</li>
+  </ul>
+
+  <h2 id="v2.10.8">October 17th 2023 - v2.10.8</h2>
+
+  <p>This release includes a few small improvements and fixes.</p>
+
+  <ul>
+    <li>You can now export HTML versions of a model from already-exported HTML files.</li>
+    <li>Unbreeded agents will now render after breeded agents, matching desktop NetLogo's behavior.</li>
+    <li>Any linked models you have edited that are in your browser local storage will be displayed in a list on the settings page so you can just right back in.</li>
+    <li>Monitors and plots now correctly use auxillary random number generators, so they don't affect the main behavior of a model.</li>
+    <li>Command and reporter strings used for <code>run</code> and <code>runresult</code> are cached separately, to avoid some odd errors.</li>
+    <li>The performance of link neighbor checks is slightly improved.</li>
+    <li>Table extension: Using a non-array table key that doesn't exist will throw a more meaningul error message.</li>
+  </ul>
+
   <h2 id="v2.10.7">May 11th 2023 - v2.10.7</h2>
 
   <p>This small release includes a fix to get NetTango Web working correctly again.</p>

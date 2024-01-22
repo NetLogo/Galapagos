@@ -45,13 +45,10 @@ initializeUI = (containerArg, widgets, code, info,
     preventScroll: true
   })
 
-  viewModel = widgets.find(({ type }) -> type is 'view')
+  viewWidget = widgets.find(({ type }) -> type is 'view')
 
-  ractive.set('primaryView', viewModel)
-  viewController = new ViewController(container.querySelector('.netlogo-view-container'), viewModel.fontSize)
-
-  entwineDimensions(viewModel, viewController.model.world)
-  entwine([[viewModel, "fontSize"], [viewController.view, "fontSize"]], viewModel.fontSize)
+  ractive.set('primaryView', viewWidget)
+  viewController = new ViewController(container.querySelector('.netlogo-view-container'), viewWidget)
 
   configs    = genConfigs(ractive, viewController, container, compiler)
   controller = new WidgetController(ractive, viewController, configs)
@@ -63,36 +60,5 @@ initializeUI = (containerArg, widgets, code, info,
   handleContextMenu(ractive)
 
   controller
-
-# (Array[(Object[Any], String)], Any) => Unit
-entwine = (objKeyPairs, value) ->
-
-  backingValue = value
-
-  for [obj, key] in objKeyPairs
-    Object.defineProperty(obj, key, {
-      get: -> backingValue
-      set: (newValue) -> backingValue = newValue
-    })
-
-  return
-
-# (Widgets.View, ViewController.View) => Unit
-entwineDimensions = (viewWidget, modelView) ->
-
-  translations = {
-    maxPxcor:           "maxpxcor"
-  , maxPycor:           "maxpycor"
-  , minPxcor:           "minpxcor"
-  , minPycor:           "minpycor"
-  , patchSize:          "patchsize"
-  , wrappingAllowedInX: "wrappingallowedinx"
-  , wrappingAllowedInY: "wrappingallowediny"
-  }
-
-  for wName, mName of translations
-    entwine([[viewWidget.dimensions, wName], [modelView, mName]], viewWidget.dimensions[wName])
-
-  return
 
 export default initializeUI

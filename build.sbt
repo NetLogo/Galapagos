@@ -36,7 +36,7 @@ lazy val root = (project in file("."))
     TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
 
-val tortoiseVersion = "1.0-88d5c3c"
+val tortoiseVersion = "1.0-f6344f5"
 
 resolvers ++= Seq(
   "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
@@ -307,16 +307,16 @@ scrapeRoutes ++= Seq(
 
 scrapeDelay := 120
 
-def isJenkins: Boolean = Option(System.getenv("JENKINS_HOME")).nonEmpty
+def isBuildServer: Boolean = !Option(System.getenv("BUILD_SERVER")).isEmpty
 
-def jenkinsBranch: String =
+def buildBranch: String =
   if (Option(System.getenv("CHANGE_TARGET")).isEmpty)
-    System.getenv("BRANCH_NAME")
+    System.getenv("BUILD_BRANCH")
   else
     "PR-" + System.getenv("CHANGE_ID") + "-" + System.getenv("CHANGE_TARGET")
 
 scrapePublishCredential := (Def.settingDyn {
-  if (isJenkins)
+  if (isBuildServer)
     Def.setting { fromEnvironmentVariables }
   else
     // Requires setting up a credentials profile, ask Robert for more details
@@ -330,8 +330,8 @@ scrapePublishBucketID := (Def.settingDyn {
     "scrape-test" -> "netlogo-web-experiments-content/scrape-test"
   )
 
-  if (isJenkins)
-    Def.setting { branchDeploy.get(jenkinsBranch) }
+  if (isBuildServer)
+    Def.setting { branchDeploy.get(buildBranch) }
   else
     Def.setting { branchDeploy.get("production") }
 }).value
@@ -343,8 +343,8 @@ scrapePublishDistributionID := (Def.settingDyn {
     "scrape-test" -> "E2TDYOH5TZH83M"
   )
 
-  if (isJenkins)
-    Def.setting { branchPublish.get(jenkinsBranch) }
+  if (isBuildServer)
+    Def.setting { branchPublish.get(buildBranch) }
   else
     Def.setting { branchPublish.get("production") }
 }).value
@@ -356,8 +356,8 @@ scrapeAbsoluteURL := (Def.settingDyn {
     "scrape-test" -> "experiments.netlogoweb.org/scrape-test"
   )
 
-  if (isJenkins)
-    Def.setting { branchURL.get(jenkinsBranch) }
+  if (isBuildServer)
+    Def.setting { branchURL.get(buildBranch) }
   else
     Def.setting { branchURL.get("production") }
 }).value

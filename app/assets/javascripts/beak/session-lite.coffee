@@ -16,7 +16,7 @@ DEFAULT_REDRAW_DELAY = 1000 / 30
 MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
-NETLOGO_VERSION      = '2.10.7'
+NETLOGO_VERSION      = '2.11.0'
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari
@@ -221,9 +221,10 @@ class SessionLite
         @widgetController.ractive.set('isStale',           false)
         @widgetController.ractive.set('lastCompiledCode',  code)
         @widgetController.ractive.set('lastCompileFailed', false)
-        @widgetController.viewController.resetModel()
         @widgetController.redraw()
         @widgetController.freshenUpWidgets(oldWidgets, globalEval(res.widgets))
+        viewWidget = @widgetController.widgets().find(({ type }) -> type is 'view')
+        @widgetController.viewController.resetModel(viewWidget)
 
         globalEval(res.model.result)
         workspace.i18nBundle.switch(@locale)
