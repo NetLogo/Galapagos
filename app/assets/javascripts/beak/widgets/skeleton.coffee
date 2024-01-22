@@ -58,6 +58,312 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , width:                0
   }
 
+  promptForGithubToken = ->
+    token = prompt("Please enter your Github token:")
+    unless token
+      alert("Token is required to upload to Gist")
+      return null
+    token
+
+
+  uploadToGithub = ->
+    console.log(session.modelTitle())
+    console.log("Upload to Github passed")
+
+
+
+
+
+  uploadToGist = ->
+    console.log(session.modelTitle())
+
+
+    nlogoContent = session.getNlogo().result
+    console.log("Upload to Gist passed")
+
+
+    filename = session.modelTitle()
+
+    data = {
+      "description": "Uploaded from NetLogo"
+      "public": true
+      "files": {}
+    }
+
+    data["files"][filename] = { "content": nlogoContent }
+
+    console.log(localStorage)
+    storedSettings = localStorage.getItem('netLogoWebSettings')
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      githubToken = settingsObj.githubToken
+    else
+      githubToken = null
+
+    if not githubToken
+      alert("GitHub token is not set. Press OK to manually set it, or set it in Settings.")
+      githubToken = promptForGithubToken()
+    else
+      alert("Using GitHub token from Settings")
+
+    return unless githubToken
+
+    console.log("Fetching from Github Gist API")
+
+    gistUrl = null
+
+    # Fetch request to GitHub Gist API
+    fetch('https://api.github.com/gists',{
+      method: 'POST'
+      body: JSON.stringify(data)
+      headers:{
+        'Content-Type': 'application/json'
+        'Authorization': "token #{githubToken}"  # Replace with your OAuth token
+       }
+        #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
+      }
+    )
+    #console.log "Authorization: token #{githubToken}"
+    .then((response) ->
+      if response.ok
+        gistUrl = response.html_url
+
+        alert("Successfully uploaded to Github Gist. Click OK for link")
+      else
+        alert("Failed to upload to GitHub Gist")
+
+      response.json())
+    .then((data) ->
+      alert("Gist Link: " + data.html_url)
+      localStorage.setItem('lastUsedGistId', data.id)
+      console.log(data)
+      console.log(data.html_url))
+
+
+    .catch((error) -> console.error('Error:', error))
+
+
+  updateGist = ->
+    console.log("Update Gist passed")
+    gistId = localStorage.getItem('lastUsedGistId')
+
+    '''gistId = if storedGistId
+      #useStoredGistId = confirm("Use the last Gist ID:
+      #{storedGistId}?\nClick 'OK' for yes or 'Cancel' to enter a new ID.")
+      #if useStoredGistId then storedGistId else prompt("Please enter the Gist ID to update:")
+    else
+      prompt("Please enter the Gist ID to update:")'''
+
+    return unless gistId and gistId.trim() isnt ""
+
+    # Save the used Gist ID for future reference
+    console.log(session.modelTitle())
+
+    nlogoContent = session.getNlogo().result
+    console.log("Update to Gist initiated")
+
+    filename = session.modelTitle() + '.nlogo'  # Ensure filename has a proper extension
+
+    data =
+      {"files": {}}
+    data["files"][filename] = { "content": nlogoContent }
+
+    console.log(localStorage)
+    storedSettings = localStorage.getItem('netLogoWebSettings')
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      githubToken = settingsObj.githubToken
+    else
+      githubToken = null
+
+    if not githubToken
+      alert("GitHub token is not set. Press OK to manually set it, or set it in Settings.")
+      githubToken = promptForGithubToken()
+    else
+      alert("Using GitHub token from Settings")
+
+    return unless githubToken
+
+    console.log("Fetching from Github Gist API")
+
+    # PATCH request to GitHub Gist API to update the gist
+    fetch("https://api.github.com/gists/#{gistId}",
+      {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+      headers:
+        {'Content-Type': 'application/json',
+        'Authorization': "token #{githubToken}"}
+      }
+    )
+    .then((response) ->
+      if response.ok
+        alert("Successfully updated the Gist")
+      else
+        alert("Failed to update the GitHub Gist")
+      response.json()
+    )
+    .then((data) ->
+      alert("Updated Gist Link: " + data.html_url)
+      console.log(data)
+    )
+    .catch((error) -> console.error('Error:', error))
+
+
+  uploadToRepo = ->
+    console.log(session.modelTitle())
+
+    nlogoContent = session.getNlogo().result
+    console.log("Upload to Repository passed")
+
+    filename = session.modelTitle()
+    repoOwner = 'alizenart'  # Replace with your GitHub username
+    repoName = 'nlogoGithub'  # Replace with your repository name
+    branchName = 'main'  # Replace with your branch name, if different
+
+    encodedContent = btoa(nlogoContent)
+
+    data = {
+      "message": "Uploaded from NetLogo"
+      "content": encodedContent
+      "branch": branchName
+    }
+
+    console.log(localStorage)
+    storedSettings = localStorage.getItem('netLogoWebSettings')
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      githubToken = settingsObj.githubToken
+    else
+      githubToken = null
+
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      repoOwner = settingsObj.githubUser
+    else
+      repoOwner = null
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      repoName = settingsObj.repoName
+    else
+      repoName = null
+
+    if not githubToken
+      alert("GitHub token is not set. Press OK to manually set it, or set it in Settings.")
+      githubToken = promptForGithubToken()
+    else
+      alert("Using GitHub token from Settings")
+
+    return unless githubToken
+
+    console.log("Fetching from Github Repository API")
+
+    repoUrl = "https://api.github.com/repos/#{repoOwner}/#{repoName}/contents/#{filename}"
+
+    # Fetch request to GitHub Repository API
+    fetch(repoUrl, {
+      method: 'PUT'
+      body: JSON.stringify(data)
+      headers: {
+        'Content-Type': 'application/json'
+        'Authorization': "token #{githubToken}"  # Replace with your OAuth token
+      }
+    })
+    .then((response) ->
+      if response.ok
+        alert("Successfully uploaded to GitHub Repository. Click OK for link")
+      else
+        alert("Failed to upload to GitHub Repository")
+
+      response.json())
+    .then((data) ->
+      alert("File URL: " + data.content.html_url)
+      console.log(data)
+      console.log(data.content.html_url))
+    .catch((error) -> console.error('Error:', error))
+
+  updateRepo = ->
+    console.log(session.modelTitle())
+
+    updatedContent = session.getNlogo().result  # Assuming this retrieves the updated content
+    console.log("Update to Repository passed")
+
+    filename = session.modelTitle()
+    repoOwner = 'alizenart'  # Replace with your GitHub username
+    repoName = 'nlogoGithub'  # Replace with your repository name
+    branchName = 'main'  # Replace with your branch name, if different
+
+    encodedContent = btoa(updatedContent)
+
+    console.log(localStorage)
+    storedSettings = localStorage.getItem('netLogoWebSettings')
+
+    if storedSettings
+      settingsObj = JSON.parse(storedSettings)
+      githubToken = settingsObj.githubToken
+    else
+      githubToken = null
+
+    if not githubToken
+      alert("GitHub token is not set. Press OK to manually set it, or set it in Settings.")
+      githubToken = promptForGithubToken()
+    else
+      alert("Using GitHub token from Settings")
+
+    return unless githubToken
+
+    console.log("Fetching from Github Repository API for update")
+
+    repoUrl = "https://api.github.com/repos/#{repoOwner}/#{repoName}/contents/#{filename}"
+
+    # First, get the file to find its SHA
+    fetch(repoUrl, headers: { 'Authorization': "token #{githubToken}" })
+    .then (response) -> response.json()
+    .then (fileData) ->
+      if fileData.sha
+        # File exists, proceed to update it
+        updatedData = {
+          message: "Updated from NetLogo"
+          content: encodedContent
+          sha: fileData.sha
+          branch: branchName
+        }
+
+        # Now, update the file
+        fetch(repoUrl, {
+          method: 'PUT'
+          body: JSON.stringify(updatedData)
+          headers: {
+            'Content-Type': 'application/json'
+            'Authorization': "token #{githubToken}"
+          }
+        })
+      else
+        throw new Error('File does not exist')
+    .then (updateResponse) ->
+      if updateResponse.ok
+        alert('File updated successfully')
+      else
+        alert('Failed to update the file')
+      updateResponse.json()
+    .then (data) -> console.log(data)
+    .catch (error) -> console.error('Error:', error)
+
+
+    .then((data) ->
+      alert("File URL: " + data.content.html_url)
+      console.log(data)
+      console.log(data.content.html_url))
+    .catch((error) -> console.error('Error:', error))
+
+
+
+
   animateWithClass = (klass) ->
     (t, params) ->
       params = t.processParams(params)
@@ -109,6 +415,27 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , viewWidget:    RactiveView
 
     , spacer:        RactiveEditFormSpacer
+
+    },
+
+    on: {
+      'uploadToGist': (event) ->
+          console.log("Upload to Gist button clicked")
+          # Trigger file input click
+          uploadToGist()
+      'updateGist': (event) ->
+          console.log("Update Gist button clicked")
+          # Trigger file input click
+          updateGist()
+      'uploadToRepo': (event) ->
+          console.log("Upload to Gist button clicked")
+          # Trigger file input click
+          uploadToRepo()
+      'updateRepo': (event) ->
+          console.log("Upload to Gist button clicked")
+          # Trigger file input click
+          updateRepo()
+
 
     },
 
@@ -187,6 +514,16 @@ template =
               <span style="margin-right: 4px;">Export:</span>
               <button class="netlogo-ugly-button" on-click="export-nlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
               <button class="netlogo-ugly-button" on-click="export-html"{{#isEditing}} disabled{{/}}>HTML</button>
+            </div>
+            <div class="netlogo-export-wrapper">
+              <span style="margin-right: 4px;">Connect to Gist:</span>
+              <button class="netlogo-ugly-button" on-click="uploadToGist">New</button>
+              <button class="netlogo-ugly-button" on-click="updateGist">Update</button>
+            </div>
+            <div class="netlogo-export-wrapper">
+              <span style="margin-right: 4px;">Connect to GitHub Repo:</span>
+              <button class="netlogo-ugly-button" on-click="uploadToRepo">New</button>
+              <button class="netlogo-ugly-button" on-click="updateRepo">Update</button>
             </div>
           </div>
         {{/}}

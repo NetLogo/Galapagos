@@ -29,7 +29,30 @@ settings.set('useVerticalLayout', {
 , out: ((value)             -> value is 'below')
 })
 
+
+settings.set('githubToken', {
+  def: ''
+, ractiveName: 'githubToken'
+, in:  ((token) -> token)
+, out: ((token) -> token)
+})
+
+settings.set('githubUser', {
+  def: ''
+, ractiveName: 'githubUser'
+, in:  ((user) -> user)
+, out: ((user) -> user)
+})
+
+settings.set('repoName', {
+  def: ''
+, ractiveName: 'repoName'
+, in:  ((repo) -> repo)
+, out: ((repo) -> repo)
+})
+
 settingNames = Array.from(settings.keys())
+settingNames.push('githubToken')
 
 template = """
 <div class="settings-panel">
@@ -66,6 +89,29 @@ template = """
       {{/}}
     </select>
   </div>
+  <div class="setting-label">
+    GitHub Personal Access Token:
+  </div>
+  <div class="setting-control">
+    <input type="text" value={{githubToken}} on-change="setting-changed" placeholder="Enter GitHub Token"/>
+  </div>
+
+  <div class="setting-label">
+    GitHub Username:
+  </div>
+  <div class="setting-control">
+    <input type="text" value={{githubUser}} on-change="setting-changed" placeholder="Enter GitHub Username"/>
+  </div>
+
+  <div class="setting-label">
+    GitHub Repo Name:
+  </div>
+
+  <div class="setting-control">
+    <input type="text" value={{repoName}} on-change="setting-changed" placeholder="Enter GitHub Repository Name"/>
+  </div>
+
+
 </div>
 
 
