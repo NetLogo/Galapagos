@@ -133,12 +133,13 @@ class LinkDrawer
     linkShape = @shapes[shapeName]
     { curviness, lines } = linkShape
 
-    lines.forEach(
-      (line) =>
+    # Draw the middle line last so the arrow shape will always be on top
+    [0, 2, 1].forEach(
+      (i) =>
 
-        { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': visible } = line
+        { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': visible } = lines[i]
 
-        isMiddleLine = line is lines[1]
+        isMiddleLine = i is 1
 
         if visible or isMiddleLine
 
