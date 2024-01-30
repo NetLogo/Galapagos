@@ -34,9 +34,14 @@ CommonDrag = {
     if ractive.view?
 
       # Thanks, Firefox! --Jason B. (11/23/17)
+
+      # Firefox now throws in some weird negative values for clientX/clientY when the drag event occurs in an iframe
+      # instead of just uselessly setting `0` (which is still does outside of an iframe?).  Hopefully other browsers are
+      # still more sensible.  -Jeremy B January 2024
+
       root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
-      x    = if clientX isnt 0 then clientX else (root.get('lastDragX') ? -1)
-      y    = if clientY isnt 0 then clientY else (root.get('lastDragY') ? -1)
+      x    = if clientX > 0 then clientX else (root.get('lastDragX') ? -1)
+      y    = if clientY > 0 then clientY else (root.get('lastDragY') ? -1)
 
       # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
       # We only take non-negative values here, to avoid the widget disappearing
