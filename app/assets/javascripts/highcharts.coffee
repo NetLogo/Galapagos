@@ -108,6 +108,13 @@ class HighchartsOps extends PlotOps
     reset = (plot) ->
       @_chart.destroy()
       @_chart = new Highcharts.Chart(basicConfig(elemID, plot))
+      @_chart.addSeries({
+        color:        @colorToRGBString(15),
+        data:         [],
+        dataLabels:   { enabled: false },
+        name:         "placeholder",
+        showInLegend: false
+      })
       @_penNameToSeriesNum = {}
       @_needsRedraw = true
       dummy = pluck(["isLegendEnabled", "name", "xLabel", "yLabel"], plot)
