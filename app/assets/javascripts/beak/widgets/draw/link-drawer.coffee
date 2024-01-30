@@ -38,8 +38,9 @@ class LinkDrawer
 
   calculateSublineOffset: (centerOffset, thickness, xcomp, ycomp) ->
     thicknessFactor = thickness / @view.onePixel
-    xOff = centerOffset * thicknessFactor * xcomp
-    yOff = centerOffset * thicknessFactor * ycomp
+    # The `-1` factor is to match NetLogo desktop behavior
+    xOff = -1 * centerOffset * thicknessFactor * xcomp
+    yOff = -1 * centerOffset * thicknessFactor * ycomp
     [xOff, yOff]
 
   getOffsetSubline: (x1, y1, x2, y2, xOff, yOff) ->
