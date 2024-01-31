@@ -106,12 +106,12 @@ class AlertDisplay
   # (String, String, Maybe[Int], Maybe[Int]) => String
   @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
     prim       = if primitive is '' then 'a primitive' else primitive.toUpperCase()
-    linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then prim else
+    linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then "running #{prim}" else
       start       = toArray(sourceStart)[0]
       end         = toArray(sourceEnd)[0]
       onclickCode = "this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{start}, #{end}); return false;"
-      "<a href='/ignore' onclick='#{onclickCode}'>#{prim}</a>"
-    "#{message}\nerror while running #{linkedPrim}"
+      "<a href='/ignore' onclick='#{onclickCode}'>running #{prim}</a>"
+    "#{message}\nerror while #{linkedPrim}"
 
   # (String) => String
   @makeTypeErrorMessage: (message) ->
@@ -192,19 +192,18 @@ class AlertDisplay
 
       @reportConsoleError(message)
 
-    else if source is 'button' and exception instanceof Exception.RuntimeException and code?
-      message = if exception instanceof Exception.RuntimeException
-        AlertDisplay.makeButtonRuntimeErrorMessage(exception.message, exception.primitive, code)
-      @reportError(message, exception.stackTrace ? [])
-
     else
       message = if exception instanceof Exception.RuntimeException
-        AlertDisplay.makeLinkedRuntimeErrorMessage(
-          exception.message
-        , exception.primitive
-        , exception.sourceStart
-        , exception.sourceEnd
-        )
+        if source is 'button' and exception.stackTrace.length is 0
+          AlertDisplay.makeButtonRuntimeErrorMessage(exception.message, exception.primitive, code)
+
+        else
+          AlertDisplay.makeLinkedRuntimeErrorMessage(
+            exception.message
+          , exception.primitive
+          , exception.sourceStart
+          , exception.sourceEnd
+          )
 
       else if exception instanceof TypeError
         AlertDisplay.makeTypeErrorMessage(exception.message)
