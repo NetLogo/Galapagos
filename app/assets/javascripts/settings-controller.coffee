@@ -1,8 +1,11 @@
 import { WIP_INFO_FORMAT_VERSION } from '/beak/wip-data.js'
 
 locales = [
-  { code: "zh_cn", description: "Chinese, simplified - 中文 (简体)" }
-, { code: "en_us", description: "English, United States" }
+  { code: "zh_cn", description: "Chinese, simplified - 中文 (简体)", languageCode: "zh" }
+, { code: "en_us", description: "English - United States", languageCode: "en" }
+, { code: "es_es", description: "Spanish - Español", languageCode: "es" }
+, { code: "ja_jp", description: "Japanese  - 日本語", languageCode: "ja" }
+, { code: "pt_pt", description: "Portuguese - Português", languageCode: "pt" }
 ]
 
 settings = new Map()
@@ -138,4 +141,4 @@ createSettingsRactive = (container, storage, wipStorage) ->
   })
   ractive
 
-export { createSettingsRactive }
+export { createSettingsRactive , locales }
