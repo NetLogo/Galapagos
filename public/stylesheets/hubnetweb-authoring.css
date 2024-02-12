@@ -62,12 +62,15 @@
   width:            140px;
 }
 
-.download-button {
-  background-color: #36a36b;
+.authoring.hnw-button {
   border-radius:    10px;
   font-size:        22px;
   height:           65px;
   width:            190px;
+}
+
+.download-button {
+  background-color: #36a36b;
 }
 
 .edit-model-button {
@@ -145,15 +148,11 @@
 }
 
 .start-over {
-  margin-bottom: 10px;
+  background-color: red;
 }
 
 .test-model-button {
   background-color: #61a3ee;
-  border-radius:    10px;
-  font-size:        22px;
-  height:           65px;
-  width:            190px;
 }
 
 .uneditable {

@@ -38,7 +38,6 @@ postWhenReady = (frame, message, callback = (->)) ->
 document.getElementById("start-over-button").onclick = ->
   if confirm("You will lose all of your unsaved changes.  Continue?")
     document.getElementById("mode-controls"    ).classList.remove("hidden")
-    document.getElementById("start-over-button").classList.add(   "hidden")
     document.getElementById("config-content"   ).classList.add(    "invis")
     cancelInterval()
 
@@ -173,7 +172,6 @@ initialize = (nlogo, config) ->
     lastNlogoSections = modelSections
 
     document.getElementById("mode-controls"    ).classList.add(   "hidden")
-    document.getElementById("start-over-button").classList.remove("hidden")
     document.getElementById('config-content'   ).classList.remove("invis")
 
     configFrameContainer = document.getElementById('config-frames')
@@ -204,8 +202,8 @@ initialize = (nlogo, config) ->
 # (String, String) => Unit
 reinitialize = (nlogo, config) ->
 
-  document.getElementById("download-nlogo-button" ).disabled = false
-  document.getElementById("download-bundle-button").disabled = false
+  ids = ["download-bundle-button", "download-nlogo-button", "start-over-button"]
+  ids.forEach((id) -> document.getElementById(id).disabled = false)
 
   modelSections = nlogo.split(sep)
 

@@ -76,9 +76,6 @@
 
       </div>
 
-      <input id="start-over-button" type="button"
-             class="authoring-mode hidden start-over" value="Start over" />
-
       <div id="config-content" class="model-box invis" style="width: 100%;">
         <div class="flex-column">
 
@@ -99,12 +96,14 @@
 
           <div class="flex-row"
                style="column-gap: 6px; justify-content: center; margin-top: 25px;">
-            <input id="download-bundle-button" class="hnw-button download-button"
+            <input id="download-bundle-button" class="hnw-button authoring download-button"
                    type="button" value="Download Bundle" disabled>
-            <input id="download-nlogo-button" class="hnw-button download-button"
+            <input id="download-nlogo-button" class="hnw-button authoring download-button"
                    type="button" value="Download NLogo/JSON" disabled>
-            <input id="test-model-button" class="hnw-button test-model-button"
-                   type="button" value="Test"     disabled>
+            <input id="test-model-button" class="hnw-button authoring test-model-button"
+                   type="button" value="Test" disabled>
+            <input id="start-over-button" class="hnw-button authoring start-over"
+                   type="button" value="Start Over" disabled>
           </div>
 
         </div>
