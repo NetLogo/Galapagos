@@ -36,10 +36,11 @@ postWhenReady = (frame, message, callback = (->)) ->
   return
 
 document.getElementById("start-over-button").onclick = ->
-  document.getElementById("mode-controls"    ).classList.remove("hidden")
-  document.getElementById("start-over-button").classList.add(   "hidden")
-  document.getElementById("config-content"   ).classList.add(    "invis")
-  cancelInterval()
+  if confirm("You will lose all of your unsaved changes.  Continue?")
+    document.getElementById("mode-controls"    ).classList.remove("hidden")
+    document.getElementById("start-over-button").classList.add(   "hidden")
+    document.getElementById("config-content"   ).classList.add(    "invis")
+    cancelInterval()
 
 # () => Unit
 document.getElementById("from-scratch-button").onclick = ->
