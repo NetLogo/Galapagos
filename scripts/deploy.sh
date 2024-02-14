@@ -1,25 +1,45 @@
 #!/bin/bash
 
-# This script can be used to deploy Galapagos to a non-standard AWS location
-# AWS credentials will need to be configured for this script to work.  See the
-# AWS command line tools docs for how to do that.
+# Deploy Galapagos to a specific AWS S3 bucket and invalidate its CloudFront distribution.
 
-# Usage (from root of the Galapgos repo):
-# ./scripts/deploy.sh s3-target-bucket/target-folder DISTRIBUTION_ID url/path
+# Check for necessary command line tools and exit if not installed.
+for cmd in sbt aws cp; do
+  command -v "$cmd" >/dev/null 2>&1 || { echo >&2 "This script requires $cmd but it's not installed. Aborting."; exit 1; }
+done
 
-# Example deploying to experiments site in subfolder /nettango/:
-# ./scripts/deploy.sh netlogo-web-experiments-content/nettango E2TDYOH5TZH83M experiments.netlogoweb.org/nettango
+# Verify that the script parameters are passed.
+if [ "$#" -ne 3 ]; then
+  echo "Usage: $0 s3-target-bucket/target-folder DISTRIBUTION_ID url/path" >&2
+  exit 1
+fi
 
-# For reference, if there is an emergency, these commands can be run to deploy
-# to staging or production in the situation where Jenkins is down or otherwise
-# cannot be used to deploy.
-# ./scripts/deploy.sh netlogo-web-staging-content E360I3EFLPUZR0 staging.netlogoweb.org
-# ./scripts/deploy.sh netlogo-web-prod-content E3AIHWIXSMPCAI netlogoweb.org
+# Variables
+S3_BUCKET_PATH="s3://$1"
+CLOUDFRONT_DISTRIBUTION_ID="$2"
+ABSOLUTE_URL="$3"
 
-sbt "set scrapeAbsoluteURL := Some(\"$3\")" clean scrapePlay
-cp -Rv public/modelslib/ target/play-scrape/assets/
-cp -Rv public/nt-modelslib/ target/play-scrape/assets/
+# Inform the user of the operations being performed.
+echo "Deploying to ${S3_BUCKET_PATH} with base URL set to ${ABSOLUTE_URL}"
+
+# Set the absolute URL for sbt scraping.
+sbt "set scrapeAbsoluteURL := Some(\"$ABSOLUTE_URL\")" clean scrapePlay
+
+# Copy assets to the target directory.
+echo "Copying assets to the target directory..."
+cp -Rv public/{modelslib,nt-modelslib} target/play-scrape/assets/
 cp node_modules/chosen-js/chosen-sprite*.png target/play-scrape/assets/chosen-js/
-aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*.*" --exclude "*.html"
-aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*[!.]*" --include "*.html" --content-type "text/html; charset=utf-8"
-aws cloudfront create-invalidation --distribution-id $2 --paths "/*"
+
+# Sync files to S3 bucket.
+echo "Syncing assets to ${S3_BUCKET_PATH}..."
+aws s3 sync ./target/play-scrape "$S3_BUCKET_PATH" --delete --acl public-read \
+  --exclude "*" --include "*.*" --exclude "*.html"
+
+echo "Syncing HTML files to ${S3_BUCKET_PATH} with correct content type..."
+aws s3 sync ./target/play-scrape "$S3_BUCKET_PATH" --delete --acl public-read \
+  --exclude "*" --include "*[!.]*" --include "*.html" --content-type "text/html; charset=utf-8"
+
+# Invalidate CloudFront distribution.
+echo "Creating CloudFront invalidation for distribution ID ${CLOUDFRONT_DISTRIBUTION_ID}..."
+aws cloudfront create-invalidation --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "/*"
+
+echo "Deployment complete."
