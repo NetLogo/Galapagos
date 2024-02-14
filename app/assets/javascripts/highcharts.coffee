@@ -159,8 +159,8 @@ class HighchartsOps extends PlotOps
           null
 
         # See ADD_POINT_HACK_2
-        isColumn = (pen.getDisplayMode() is PenBundle.DisplayMode.Bar)
-        if not isColumn and series.options.boostThreshold isnt 1
+        isScatter = (pen.getDisplayMode() is PenBundle.DisplayMode.Point)
+        if isScatter and series.options.boostThreshold isnt 1
           if not series._maybeRightmostPoint?
             series._maybeRightmostPoint = x
           else
@@ -234,7 +234,7 @@ class HighchartsOps extends PlotOps
       boostThreshold: 0, # Disables Boost, only enabled for true scatter plots (see `addPoint()`)
       marker:         { enabled: isScatter, radius: if isScatter then 1 else 4 },
       lineWidth:      if isLine then 2 else null,
-      type:           type,
+      type:           if isLine then 'scatter' else type,
       pointRange:     if isColumn then interval else null,
       animation:      false,
       connectNulls:   false
