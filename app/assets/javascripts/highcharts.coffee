@@ -105,8 +105,7 @@ class HighchartsOps extends PlotOps
         dataLabels: { enabled: false },
         name:       pen.name
       })
-      type    = @modeToString(pen.getDisplayMode())
-      options = thisOps.seriesTypeOptions(type, pen.getInterval())
+      options = thisOps.seriesTypeOptions(pen.getDisplayMode(), pen.getInterval())
       series.update(options, false)
       @_penNameToSeriesNum[pen.name] = num
       @_needsRedraw = true
@@ -177,8 +176,7 @@ class HighchartsOps extends PlotOps
     updatePenMode = (pen) => (mode) =>
       series = thisOps.penToSeries(pen)
       if series?
-        type    = thisOps.modeToString(mode)
-        options = thisOps.seriesTypeOptions(type, pen.getInterval())
+        options = thisOps.seriesTypeOptions(mode, pen.getInterval())
         series.update(options, false)
       return
 
@@ -216,29 +214,43 @@ class HighchartsOps extends PlotOps
     @_chart.destroy()
     return
 
-  # (PenBundle.DisplayMode) => String
-  modeToString: (mode) ->
-    { Bar, Line, Point } = PenBundle.DisplayMode
-    switch mode
-      when Bar   then 'column'
-      when Line  then 'line'
-      when Point then 'scatter'
-      else 'line'
-
-  # (String, Number) => Highcharts.Options
-  seriesTypeOptions: (type, interval) ->
-    isScatter = type is 'scatter'
-    isLine    = type is 'line'
-    isColumn  = type is 'column'
-    {
+  # (PenBundle.DisplayMode, Number) => Highcharts.Options
+  seriesTypeOptions: (mode, interval) ->
+    baseOptions = {
       boostThreshold: 0, # Disables Boost, only enabled for true scatter plots (see `addPoint()`)
-      marker:         { enabled: isScatter, radius: if isScatter then 1 else 4 },
-      lineWidth:      if isLine then 2 else null,
-      type:           if isLine then 'scatter' else type,
-      pointRange:     if isColumn then interval else null,
+      lineWidth:      null,
+      marker:         { enabled: false },
+      pointRange:     null,
       animation:      false,
       connectNulls:   false
     }
+
+    { Bar, Line, Point } = PenBundle.DisplayMode
+    typeOptions = switch mode
+      when Bar
+        {
+          type:       'column',
+          pointRange: interval
+        }
+
+      when Line
+        {
+          # We use `scatter` type for line plots with a `lineWidth` set, as this allows "drawing" points to the plot
+          # back and forth along the x-axis.  The `line` type allows only a single y-value per x-axis point.  -Jeremy B
+          # February 2024
+          type:     'scatter',
+          lineWidth: 2
+        }
+
+      when Point
+        {
+          type:   'scatter',
+          marker: { enabled: true, radius: 1 },
+        }
+
+      else throw new Error("What kind of pen display mode is #{mode}?")
+
+    Object.assign(baseOptions, typeOptions)
 
   # (PenBundle.Pen) => Highcharts.Series
   penToSeries: (pen) ->
