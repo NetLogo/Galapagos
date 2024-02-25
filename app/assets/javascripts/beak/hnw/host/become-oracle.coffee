@@ -76,8 +76,8 @@ handleJoinerMsg = (nextID, bm) -> (e) ->
     else
       console.warn("Unknown inner joiner message:", e.data)
 
-# (Session, Object[Any], () => Unit) => DOMElement
-initUI = (session, data, notifyStopIterating) ->
+# (Session, Object[Any]) => DOMElement
+initUI = (session, data) ->
 
   exiles =
     [ document.querySelector('.netlogo-header')
@@ -87,6 +87,13 @@ initUI = (session, data, notifyStopIterating) ->
 
   exiles.forEach((n) -> n.classList.add("hidden"))
 
+  speedSlider = document.querySelector(".netlogo-speed-slider")
+  template    = document.getElementById("hnw-controls-container-template")
+  speedSlider.parentNode.insertBefore(template.content.cloneNode(true), speedSlider)
+
+  controls = document.getElementById("hnw-controls-container")
+  controls.appendChild(speedSlider)
+
   flexbox    = document.createElement("div")
   flexbox.id = "main-frames-container"
   flexbox.classList.add("flex-row", "frames-container")
@@ -95,17 +102,47 @@ initUI = (session, data, notifyStopIterating) ->
   wContainer.parentNode.replaceChild(flexbox, wContainer)
 
   if data.onStart?
-    session.widgetController.ractive.on("hnw-setup", (-> runCommand(data.onStart)))
+    setupButton         = controls.querySelector(".hnw-setup-button")
+    setupButton.onclick = -> runCommand(data.onStart)
 
-  if data.onIterate?
-    session.widgetController.ractive.on("hnw-go", (
-      ->
-        didStop = runCommand(data.onIterate)
-        if didStop
-          notifyStopIterating()
-    ))
+  initGoButton(session, data.onIterate, controls.querySelector(".hnw-go-button"))
 
   flexbox
+
+# (Session, () => Unit) => Unit
+initGoButton = (session, onIterate, goButton) ->
+
+  if onIterate?
+
+    goButton.onclick =
+      ->
+
+        goWasActive = goButton.classList.contains("go-button-active")
+
+        [remove, add, text, goStatus] =
+          if goWasActive
+            ["go-button-active"  , "go-button-standard", "Go"  , false]
+          else
+            ["go-button-standard", "go-button-active"  , "Stop", true ]
+
+        goButton.classList.remove(remove)
+        goButton.classList.add(      add)
+        goButton.innerText = text
+
+        r = session.widgetController.ractive
+        r.set("isHNWTicking", not r.get("isHNWTicking"))
+
+    session.widgetController.ractive.on("hnw-go", (
+      ->
+        didStop = runCommand(onIterate)
+        if didStop
+          goButton.click()
+    ))
+
+  else
+    goButton.remove()
+
+  return
 
 # (Monitor, String, Session) => Unit
 registerMonitor = (monitor, roleName, session) ->
@@ -394,9 +431,7 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
 
   ractive.observe("consoleOutput", onOutput)
 
-  notifyStopIterating = -> babyPost({ type: "hnw-stop-iterating" })
-
-  flexbox = initUI(session, e.data, notifyStopIterating)
+  flexbox = initUI(session, e.data)
 
   baseView =
     session.widgetController.widgets().find(({ type }) -> type is 'view')

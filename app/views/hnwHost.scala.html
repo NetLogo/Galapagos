@@ -14,6 +14,7 @@
     @tagBuilder.pathToHTML("stylesheets/netlogo-syntax.css")
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/hubnetweb.css")
+    @tagBuilder.pathToHTML("stylesheets/hubnetweb-host.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
   </head>
   <body style="margin: 0px;">
@@ -67,6 +68,17 @@
     </script>
 
     @tagBuilder.pathToHTML("javascripts/pages/init-host.js", "type" -> "module")
+
+    <template id="hnw-controls-container-template">
+      <div id="hnw-controls-container" class="flex-row">
+        <div class="flex-column controls-column">
+          <input type="button" value="Setup"
+                 class="hnw-setup-button button-base controls-column-button setup-button">
+          <input type="button" value="Go"
+                 class="hnw-go-button button-base controls-column-button go-button-standard">
+        </div>
+      </div>
+    </template>
 
   </body>
 </html>
