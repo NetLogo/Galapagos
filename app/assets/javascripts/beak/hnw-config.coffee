@@ -590,3 +590,7 @@ cancelInterval = ->
   return
 
 cancelInterval()
+
+# This prompts the user about possible loss of work upon tab close
+# --Jason B. (2/24/24)
+window.addEventListener("beforeunload", ((e) -> e.preventDefault()))
