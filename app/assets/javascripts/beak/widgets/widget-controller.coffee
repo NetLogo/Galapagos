@@ -71,6 +71,8 @@ class WidgetController
   # () => Unit
   updateWidgets: ->
 
+    isHNWClient = @ractive.get('isHNW') and not @ractive.get('isHNWHost')
+
     if not @ractive.get('isHNWHost')
       for _, chartOps of @configs.plotOps
         chartOps.redraw()
@@ -78,7 +80,7 @@ class WidgetController
         chartOps.setBGColor(color)
 
     for widget in @widgets()
-      updateWidget(widget)
+      updateWidget(widget, isHNWClient)
 
     if world.ticker.ticksAreStarted()
       @ractive.set('ticks'       , Math.floor(world.ticker.tickCount()))
@@ -390,8 +392,8 @@ class WidgetController
   _countByType: (type) =>
     @widgets().filter((w) -> w.type is type).length
 
-# (Widget) => Unit
-updateWidget = (widget) ->
+# (Widget, Boolean) => Unit
+updateWidget = (widget, isHNWClient) ->
 
   if widget.currentValue?
     widget.currentValue =
@@ -405,8 +407,16 @@ updateWidget = (widget) ->
           if isntValidValue
             'N/A'
           else
-            if widget.precision? and isNum
-              withPrecision(value, widget.precision)
+            preci = widget.precision
+            if preci?
+              if not isHNWClient
+                withPrecision(value, preci)
+              else # In HNW, all Monitor values are strings --Jason B. (2/25/24)
+                parsed = parseFloat(value)
+                if Number.isNaN(parsed)
+                  value
+                else
+                  withPrecision(parsed, preci)
             else
               value
         catch err
