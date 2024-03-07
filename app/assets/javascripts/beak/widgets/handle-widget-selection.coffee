@@ -25,7 +25,7 @@ handleWidgetSelection =
           if widget? and (widget.type isnt "view") and hasNoEditWindowUp
             unlockSelection()
             deselectThoseWidgets()
-            ractive.fire('unregister-widget', widget.id, false, widget.getExtraNotificationArgs())
+            ractive.fire('unregister-widget', widget.id, false, selected.getExtraNotificationArgs())
         return
 
     justSelectIt =
