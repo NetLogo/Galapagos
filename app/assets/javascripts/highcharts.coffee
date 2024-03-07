@@ -233,7 +233,7 @@ class HighchartsOps extends PlotOps
         series.update(options, false)
 
         if not pen.isFake
-          recorder.recordUpdatePenMode(pen, type)
+          recorder.recordUpdatePenMode(pen, mode)
 
       return
 
