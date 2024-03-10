@@ -199,8 +199,6 @@ window.onmessage = (e) ->
       ractive.set("isHNWHost", false)
       ractive.set("metadata" , { globalVars, myVars, procedures })
 
-      ractive.fire("unbind-keys")
-
       ractive.on("*.new-breed-var", (_, varName) ->
         msg = { type: "new-breed-var", breed: cachedConfig.namePlural, var: varName }
         parent.postMessage(msg, "*")
