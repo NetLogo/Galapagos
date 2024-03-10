@@ -139,8 +139,9 @@ window.onmessage = (e) ->
 
       possibleMetaProcedures = (argsNum) ->
         procedures.filter(
-          ({ argCount, isReporter, isUseableByTurtles }) ->
-            argCount is argsNum and (not isReporter) and isUseableByTurtles
+          ({ argCount, isReporter, isUseableByObserver, isUseableByTurtles }) ->
+            argCount is argsNum and (not isReporter) and
+              (isUseableByObserver or isUseableByTurtles)
         )
 
       afterDisconnectChoices =
