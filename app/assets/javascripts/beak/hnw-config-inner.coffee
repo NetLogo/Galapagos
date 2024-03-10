@@ -147,7 +147,7 @@ window.onmessage = (e) ->
       afterDisconnectChoices =
         procedures.filter(
           ({ argCount, isUseableByObserver }) ->
-            argCount is 1 and isUseableByObserver
+            argCount <= 1 and isUseableByObserver
         )
 
       onConnectChoices =
