@@ -9,7 +9,7 @@ import { loadInitialModel } from "./load-model.js"
 import sendInitialState     from "./send-initial-state.js"
 
 babyMonitor     = null # MessagePort
-session         = null # Session
+session         = null # SessionLite
 widgetTemplates =   {} # Object[String, Array[Widget, Array[P13N]]]
 
 getBabyMonitor     = -> babyMonitor
