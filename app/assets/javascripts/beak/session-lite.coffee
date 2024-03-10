@@ -279,8 +279,6 @@ class SessionLite
             mangleExportedPlots(state.plotManager, plots, plotRenames, oldPlotName, newPlotName)
           world.importState(state)
 
-          @hnw.updateMetadata(@compiler)
-
           res.commands.forEach((c) -> if c.success then (new Function(c.result))())
           @rewriters.forEach((rw) -> rw.compileComplete?())
           @widgetController.ractive.fire('recompile-complete', source, rewritten, code)

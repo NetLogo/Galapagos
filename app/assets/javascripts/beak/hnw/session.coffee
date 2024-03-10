@@ -667,30 +667,6 @@ class HNWSession
 
     return
 
-  # (BrowserCompiler) => Unit
-  updateMetadata: (compiler) ->
-
-    widgetController = @_getWC()
-
-    ractive = widgetController.ractive
-
-    if @isHNW() and ractive.get('isEditing')
-
-      ractive.set('metadata.globalVars', compiler.listGlobalVars())
-      ractive.set('metadata.procedures', compiler.listProcedures())
-
-      baseMetadata = ractive.get('metadata')
-
-      elems = Array.from(document.getElementById('config-frames').children)
-
-      for frame in elems when frame.dataset.roleName?
-        roleName = frame.dataset.roleName
-        itsVars  = compiler.listVarsForBreed(roleName)
-        metadata = Object.assign({}, baseMetadata, { myVars: itsVars })
-        frame.contentWindow.postMessage({ metadata, type: "update-metadata" }, "*")
-
-    return
-
   # (UUID) => (String, Any) => Unit
   updateWidgetCache: (uuid) => (varName, value) =>
     if varName?
