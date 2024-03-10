@@ -235,7 +235,7 @@ reinitialize = (nlogo, config) ->
                                 , 'pen-mode', 'pen-size', 'shape', 'size', 'who', 'xcor', 'ycor'])
         }
 
-    globalVars = compiler.listGlobalVars()
+    globals    = compiler.listGlobalVars()
     procedures = compiler.listProcedures()
 
     postWhenReady(codeFrame, {
@@ -250,7 +250,16 @@ reinitialize = (nlogo, config) ->
 
       frame = document.querySelector("iframe[data-role-name=\"#{role.name}\"]")
 
-      myVars = compiler.listVarsForBreed(role.namePlural)
+      globalVars =
+        globals.filter((g) -> g.type is "user" and not g.name.startsWith("__hnw_"))
+
+      myVars =
+        if role.isSpectator
+          slug = "__hnw_#{role.name}_"
+          vars = globals.filter((g) -> g.type is "user" and g.name.startsWith(slug))
+          vars.map((v) -> v.name.slice(slug.length))
+        else
+          compiler.listVarsForBreed(role.namePlural)
 
       postWhenReady(frame, { globalVars
                            , myVars
