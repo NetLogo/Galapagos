@@ -541,7 +541,7 @@ window.addEventListener('message', (e) ->
     when "delete-me"
       iframe        = e.source.frameElement
       roleName      = iframe.dataset.roleName
-      button        = document.querySelector(".hnw-config-tab-button[value='#{roleName}']")
+      button        = document.querySelector(".role.hnw-button.config-tab[value='#{roleName}']")
       codeTabButton = document.getElementById('code-tab-button')
       selectConfigTab(codeTabButton)
       iframe.remove()
