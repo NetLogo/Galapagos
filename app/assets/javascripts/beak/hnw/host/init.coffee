@@ -85,13 +85,7 @@ onBabyMonitorMessage = (e) ->
   switch (e.data.type)
 
     when "hnw-recompile"
-
-      successCallback = ->
-        ractive = session.widgetController.ractive
-        ractive.fire("hnw-compilation-success", e.data.code)
-
       session.widgetController.setCode(e.data.code)
-      session.recompile(successCallback)
 
     when "hnw-console-run"
       session.run("console", e.data.code)

@@ -21,6 +21,14 @@ aCon    = document.getElementById("alert-container")
 alerter = new AlertDisplay(aCon, isStandaloneHTML)
 listeners.push(alerter)
 
+afterRecompile = ->
+  ractive = session.widgetController.ractive
+  code    = ractive.get('lastCompiledCode')
+  session.widgetController.ractive.fire("hnw-compilation-success", code)
+
+listeners.push({ "recompile-complete": afterRecompile })
+
+
 # ((Session) => Unit) => (Object[Any]) => Unit
 handleCompileResult = (setSession) -> (result) ->
   if result.type is 'success'
