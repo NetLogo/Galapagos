@@ -16,7 +16,7 @@
 # ./scripts/deploy.sh netlogo-web-staging-content E360I3EFLPUZR0 staging.netlogoweb.org
 # ./scripts/deploy.sh netlogo-web-prod-content E3AIHWIXSMPCAI netlogoweb.org
 
-sbt "set scrapeAbsoluteURL := Some(\"$3\")" clean scrapePlay
+sbt "set scrapeAbsoluteURL := Some(\"$3\")" clean bundle scrapePlay
 cp -Rv public/modelslib/ target/play-scrape/assets/
 cp -Rv public/nt-modelslib/ target/play-scrape/assets/
 cp node_modules/chosen-js/chosen-sprite*.png target/play-scrape/assets/chosen-js/
