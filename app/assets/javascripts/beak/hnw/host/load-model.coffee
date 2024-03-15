@@ -2,6 +2,7 @@ import AlertDisplay from "/alert-display.js"
 
 import Tortoise                    from "/beak/tortoise.js"
 import { NewSource, ScriptSource } from "/beak/nlogo-source.js"
+import { createCommonArgs }        from "/notifications/listener-events.js"
 
 import genPageTitle from "../common/gen-page-title.js"
 
@@ -39,7 +40,7 @@ handleCompileResult = (setSession) -> (result) ->
     else
       activeContainer = alertDialog
       loadingOverlay.style.display = "none"
-    alerter.reportCompilerErrors(result.source, result.errors)
+    alerter['compiler-error'](createCommonArgs(), result)
   return
 
 # ((Session) => Unit) => (Session) => Unit

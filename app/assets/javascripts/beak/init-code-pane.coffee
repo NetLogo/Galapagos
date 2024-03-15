@@ -25,7 +25,7 @@ onCodePaneMessage = (e) ->
       ractive.set("lastCompileFailed", false)
 
     when "hnw-recompile-failure"
-      alerter._ractive.fire("show", title, content, [])
+      alerter.show(title, content, [])
       ractive.set("lastCompileFailed", true)
 
 # (MessagePort) => Number
