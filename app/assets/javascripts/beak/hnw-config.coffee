@@ -405,13 +405,6 @@ genConfigP = ->
 
   Promise.all(promises).then(
     ([codeFrameConfig, roles...]) ->
-
-      nonSuperRoles  = roles.filter((r) -> r.name isnt "supervisor" and r.name isnt "teacher")
-      studentRole    = nonSuperRoles[0]
-      supervisorRole = roles.find((r) -> r.name is "supervisor" or r.name is "teacher")
-      otherRoles     = nonSuperRoles.slice(1)
-      roles          = [studentRole, supervisorRole].concat(otherRoles).filter((r) -> r?)
-
       { onIterate:       codeFrameConfig.onGo
       , onStart:         codeFrameConfig.onSetup
       , targetFrameRate: codeFrameConfig.targetFrameRate
@@ -419,7 +412,6 @@ genConfigP = ->
       , type:            "hubnet-web"
       , version:         "hnw-alpha-1"
       }
-
   )
 
 
