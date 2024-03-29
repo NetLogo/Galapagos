@@ -42,7 +42,7 @@ convertMainButton = (left, top, right, bottom, bodyLines) ->
   , bottom
   , display:                denil(display)
   , source
-  , hnwProcName:            source
+  , hnwProcName:            source.toLowerCase()
   , forever:                isForever is "T"
   , disableUntilTicksStart: duts is '1'
   , buttonKind:             "procedure"
@@ -55,19 +55,21 @@ convertMainChooser = (left, top, right, bottom, bodyLines) ->
 
   mungeChoices = (str) -> globalEval(compiler.compileReporter("[ #{str} ]").result)
 
-  [disp, variable, choiceStr, defIndex] = bodyLines
+  [disp, varName, choiceStr, defIndex] = bodyLines
 
   choices       = mungeChoices(choiceStr)
   currentChoice = parseInt(defIndex)
   display       = denil(disp)
+  variable      = varName.toLowerCase()
 
   { type: "hnwChooser", left, right, top, bottom, display, variable, choices, currentChoice }
 
 convertMainInput = (left, top, right, bottom, bodyLines) ->
 
-  [variable, dfault, isMu, _, type] = bodyLines
+  [varName, dfault, isMu, _, type] = bodyLines
 
-  isMulti = isMu is '1'
+  isMulti  = isMu is '1'
+  variable = varName.toLowerCase()
 
   str1 = "String"
   str2 = "String (commands)"
@@ -134,22 +136,24 @@ convertMainPlot = (left, top, right, bottom, bodyLines) ->
 
 convertMainSlider = (left, top, right, bottom, bodyLines) ->
 
-  [disp, variable, min, max, dfault, stepStr, _, unis, dir] = bodyLines
+  [disp, varName, min, max, dfault, stepStr, _, unis, dir] = bodyLines
 
   display   = denil(disp)
   default_  = parseFloat(dfault)
   step      = parseFloat(stepStr)
   units     = denil(unis)
   direction = dir.toLowerCase()
+  variable  = varName.toLowerCase()
 
   { type: "hnwSlider", left, right, top, bottom, display, variable
   , min, max, 'default': default_, step, units, direction
   }
 
 convertMainSwitch = (left, top, right, bottom, bodyLines) ->
-  [disp, variable, isOff] = bodyLines
-  display = denil(disp)
-  isOn    = parseInt(isOff) is 0
+  [disp, varName, isOff] = bodyLines
+  display  = denil(disp)
+  isOn     = parseInt(isOff) is 0
+  variable = varName.toLowerCase()
   { type: "hnwSwitch", left, right, top, bottom, display, variable, 'on': isOn }
 
 convertMainLabel = (left, top, right, bottom, bodyLines) ->
