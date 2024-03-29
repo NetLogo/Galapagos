@@ -158,14 +158,23 @@ window.onmessage = (e) ->
 
       toNames = (arr) -> arr.map((x) -> x.name)
 
-      populateOptions('after-disconnect-dropdown', toNames(afterDisconnectChoices   ), cachedConfig.afterDisconnect)
-      populateOptions('on-connect-dropdown'      , toNames(onConnectChoices         ), cachedConfig.onConnect      )
-      populateOptions('on-disconnect-dropdown'   , toNames(possibleMetaProcedures(0)), cachedConfig.onDisconnect   )
-      populateOptions('on-click-dropdown'        , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorClick  )
-      populateOptions('on-cursor-up-dropdown'    , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorRelease)
-      populateOptions('on-move-dropdown'         , toNames(possibleMetaProcedures(2)), cachedConfig.onCursorMove   )
-      populateOptions('perspective-dropdown'     , myVars                            , cachedConfig.perspectiveVar )
-      populateOptions('view-override-dropdown'   , myVars                            , cachedConfig.viewOverrideVar)
+      afterDisconnect = cachedConfig.afterDisconnect?.toLowerCase()
+      onConnect       = cachedConfig.onConnect      ?.toLowerCase()
+      onDisconnect    = cachedConfig.onDisconnect   ?.toLowerCase()
+      onCursorClick   = cachedConfig.onCursorClick  ?.toLowerCase()
+      onCursorRelease = cachedConfig.onCursorRelease?.toLowerCase()
+      onCursorMove    = cachedConfig.onCursorMove   ?.toLowerCase()
+      perspectiveVar  = cachedConfig.perspectiveVar ?.toLowerCase()
+      viewOverrideVar = cachedConfig.viewOverrideVar?.toLowerCase()
+
+      populateOptions('after-disconnect-dropdown', toNames(afterDisconnectChoices   ), afterDisconnect)
+      populateOptions('on-connect-dropdown'      , toNames(onConnectChoices         ), onConnect      )
+      populateOptions('on-disconnect-dropdown'   , toNames(possibleMetaProcedures(0)), onDisconnect   )
+      populateOptions('on-click-dropdown'        , toNames(possibleMetaProcedures(2)), onCursorClick  )
+      populateOptions('on-cursor-up-dropdown'    , toNames(possibleMetaProcedures(2)), onCursorRelease)
+      populateOptions('on-move-dropdown'         , toNames(possibleMetaProcedures(2)), onCursorMove   )
+      populateOptions('perspective-dropdown'     , myVars                            , perspectiveVar )
+      populateOptions('view-override-dropdown'   , myVars                            , viewOverrideVar)
 
       document.getElementById('can-join-midrun-checkbox'  ).checked = cachedConfig.canJoinMidRun
       document.getElementById('is-spectator-role-checkbox').checked = cachedConfig.isSpectator
