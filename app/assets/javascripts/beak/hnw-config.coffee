@@ -238,10 +238,21 @@ reinitialize = (nlogo, config) ->
     globals    = compiler.listGlobalVars()
     procedures = compiler.listProcedures()
 
+    pluckMain = (configValue, procs, term) ->
+      if configValue isnt ""
+        configValue.toLowerCase()
+      else if procs.some((p) -> p.name.toLowerCase() is term)
+        term
+      else
+        ""
+
+    onSetup = pluckMain(config.onStart  , procedures, "setup")
+    onGo    = pluckMain(config.onIterate, procedures,    "go")
+
     postWhenReady(codeFrame, {
       procedures
-    , onGo:            config.onIterate
-    , onSetup:         config.onStart
+    , onGo
+    , onSetup
     , targetFrameRate: config.targetFrameRate
     , type:            "import-procedures"
     })
