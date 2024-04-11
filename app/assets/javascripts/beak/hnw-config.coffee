@@ -37,6 +37,7 @@ postWhenReady = (frame, message, callback = (->)) ->
 
 document.getElementById("start-over-button").onclick = ->
   if confirm("You will lose all of your unsaved changes.  Continue?")
+    window.onbeforeunload = null
     document.getElementById("mode-controls"    ).classList.remove("hidden")
     document.getElementById("config-content"   ).classList.add(    "invis")
     cancelInterval()
@@ -164,6 +165,10 @@ initializeRole = (roleName) ->
 
 # (String, String) => Unit
 initialize = (nlogo, config) ->
+
+  # This prompts the user about possible loss of work upon tab close
+  # --Jason B. (2/24/24)
+  window.onbeforeunload = (e) -> e.preventDefault()
 
   modelSections = nlogo.split(sep)
 
@@ -602,7 +607,3 @@ cancelInterval = ->
   return
 
 cancelInterval()
-
-# This prompts the user about possible loss of work upon tab close
-# --Jason B. (2/24/24)
-window.addEventListener("beforeunload", ((e) -> e.preventDefault()))
