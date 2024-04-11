@@ -317,11 +317,70 @@ VIEW_INNER_SPACING = { top: 5, right: 4, bottom: 4, left: 4 }
 VIEW_INNER_SPACING.horizontal = VIEW_INNER_SPACING.left + VIEW_INNER_SPACING.right
 VIEW_INNER_SPACING.vertical = VIEW_INNER_SPACING.top + VIEW_INNER_SPACING.bottom
 
-RactiveHNWView = RactiveView.extend({
-  data: -> {
-    contextMenuOptions: []
-  , isNotEditable:      true
+HNWViewEditForm = EditForm.extend({
+
+  data: {
+    height: undefined # Number
+  , left:   undefined # Number
+  , top:    undefined # Number
+  , width:  undefined # Number
   }
+
+  twoway: false
+
+  components: {
+    labeledInput: RactiveEditFormLabeledInput
+  , spacer:       RactiveEditFormSpacer
+  }
+
+  genProps: (form) ->
+
+    height = Number.parseInt(form.height.value)
+    bottom = @get("top") + height
+
+    width = Number.parseInt(form.width.value)
+    right = @get("left") + width
+
+    { bottom
+    , height
+    , right
+    , width
+    }
+
+  partials: {
+
+    title: "View Settings"
+
+    widgetFields:
+      """
+      <labeledInput id="{{id}}-width" labelStr="Width:"
+                    name="width" type="number" value="{{width}}"
+                    attrs="min=10 step='1' required" />
+      <spacer height="7px" />
+      <labeledInput id="{{id}}-height" labelStr="Height:"
+                    name="height" type="number" value="{{height}}"
+                    attrs="min=10 step='1' required" />
+      """
+
+  }
+
+})
+
+RactiveHNWView = RactiveView.extend({
+
+  components: {
+    editForm: HNWViewEditForm
+  }
+
+  partials: {
+    editForm:
+      """
+      <editForm height="{{widget.height}}" left="{{widget.left}}"
+                top="{{widget.top}}" width="{{widget.width}}"
+                style="width: 225px;" />
+      """
+  }
+
 })
 
 export { RactiveView, RactiveHNWView, VIEW_INNER_SPACING }
