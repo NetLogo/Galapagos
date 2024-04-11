@@ -285,16 +285,21 @@ RactiveView = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>view}}
-    <editForm idBasis="view" style="width: 510px;"
-              maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
-              minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
-              wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"
-              patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
-              framerate="{{widget.frameRate}}"
-              isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+    {{>editForm}}
     """
 
   partials: {
+
+    editForm:
+      """
+      <editForm idBasis="view" style="width: 510px;"
+                maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
+                minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
+                wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"
+                patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
+                framerate="{{widget.frameRate}}"
+                isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+      """
 
     view:
       """
