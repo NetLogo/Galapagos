@@ -285,13 +285,7 @@ RactiveView = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>view}}
-    <editForm idBasis="view" style="width: 510px;"
-              maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
-              minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
-              wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"
-              patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
-              framerate="{{widget.frameRate}}"
-              isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+    {{>editForm}}
     """
 
   partials: {
@@ -300,6 +294,16 @@ RactiveView = RactiveWidget.extend({
     ariaRole:  "role='img'"
     ariaDesc:  "aria-description='Displays the NetLogo world with patches and agents. Updates as the model runs.'"
     ariaTicks: "aria-live='polite' aria-atomic='true'"
+    editForm:
+      """
+      <editForm idBasis="view" style="width: 510px;"
+                maxX="{{widget.dimensions.maxPxcor}}" maxY="{{widget.dimensions.maxPycor}}"
+                minX="{{widget.dimensions.minPxcor}}" minY="{{widget.dimensions.minPycor}}"
+                wrapsInX="{{widget.dimensions.wrappingAllowedInX}}" wrapsInY="{{widget.dimensions.wrappingAllowedInY}}"
+                patchSize="{{widget.dimensions.patchSize}}" turtleLabelSize="{{widget.fontSize}}"
+                framerate="{{widget.frameRate}}"
+                isShowingTicks="{{widget.showTickCounter}}" tickLabel="{{widget.tickCounterLabel}}" />
+      """
 
     view:
       """
