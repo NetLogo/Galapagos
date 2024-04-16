@@ -244,7 +244,7 @@ reinitialize = (nlogo, config) ->
     procedures = compiler.listProcedures()
 
     pluckMain = (configValue, procs, term) ->
-      if configValue isnt ""
+      if configValue? and configValue isnt ""
         configValue.toLowerCase()
       else if procs.some((p) -> p.name.toLowerCase() is term)
         term
