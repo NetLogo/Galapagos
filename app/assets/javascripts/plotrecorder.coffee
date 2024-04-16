@@ -1,5 +1,4 @@
-PenBundle  = tortoise_require('engine/plot/pen')
-PlotOps    = tortoise_require('engine/plot/plotops')
+{ DisplayMode: { displayModeToString } } = tortoise_require('engine/plot/pen')
 
 # type PlotEvent = { type: String, * }
 
@@ -24,7 +23,7 @@ class PlotRecorder
   # (Pen) => Unit
   recordRegisterPen: (pen) ->
     p = { name: pen.name, color: pen.getColor(), interval: pen.getInterval()
-        , type: pen.getDisplayMode()
+        , mode: displayModeToString(pen.getDisplayMode())
         }
     @_events.push({ type: "register-pen", pen: p })
     return
@@ -44,10 +43,10 @@ class PlotRecorder
     @_events.push({ type: "resize", xMin, xMax, yMin, yMax })
     return
 
-  # (Pen, String) => Unit
-  recordUpdatePenMode: (pen, modeString) ->
-    event = { type: "update-pen-mode", penName: pen.name, mode: modeString
-            , interval: pen.getInterval()
+  # (Pen, Pen.DisplayMode) => Unit
+  recordUpdatePenMode: (pen, mode) ->
+    event = { type: "update-pen-mode", penName: pen.name
+            , mode: displayModeToString(mode), interval: pen.getInterval()
             }
     @_events.push(event)
     return

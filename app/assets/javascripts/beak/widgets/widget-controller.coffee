@@ -7,7 +7,7 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
 import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
-PenBundle = tortoise_require('engine/plot/pen')
+{ DisplayMode: { displayModeFromString } } = tortoise_require('engine/plot/pen')
 
 class WidgetController
 
@@ -362,9 +362,10 @@ class WidgetController
               when "resize"
                 ops.resize(update.xMin, update.xMax, update.yMin, update.yMax)
               when "register-pen"
+                mode = displayModeFromString(update.pen.mode)
                 pen = { name:           update.pen.name
                       , getColor:       (-> update.pen.color)
-                      , getDisplayMode: (-> PenBundle.DisplayMode.Line)
+                      , getDisplayMode: (-> mode)
                       , getInterval:    (-> update.pen.interval)
                       , isFake:         true
                       }
@@ -375,12 +376,8 @@ class WidgetController
                 pen = { name: update.penName, isFake: true }
                 ops.addPoint(pen)(update.x, update.y)
               when "update-pen-mode"
-                pen  = { name: update.penName, isFake: true }
-                mode =
-                  switch update.mode.toLowerCase()
-                    when "bar"   then PenBundle.DisplayMode.Bar
-                    when "line"  then PenBundle.DisplayMode.Line
-                    when "point" then PenBundle.DisplayMode.Point
+                pen         = { name: update.penName, isFake: true }
+                mode        = displayModeFromString(update.mode)
                 getInterval = (-> update.interval)
                 pen         = { name: update.penName, getInterval, isFake: true }
                 ops.updatePenMode(pen)(mode)
