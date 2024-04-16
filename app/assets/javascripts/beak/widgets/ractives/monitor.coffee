@@ -125,7 +125,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
             "procedure"
         else if myVars.includes(source)
           "turtle-var"
-        else if globalVars.includes(source)
+        else if globalVars.map((g) -> g.name).includes(source)
           "global-var"
         else
           throw Error("Wat?")
