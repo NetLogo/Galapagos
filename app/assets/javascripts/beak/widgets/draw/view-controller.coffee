@@ -548,8 +548,8 @@ class DrawingLayer extends Drawer
 
     if model.drawingEvents.length > @_lastAppliedIndex
 
-      obIndex = @_findLastObliteratorIndex(model.drawingEvents)
-      if obIndex > @_lastAppliedIndex
+      obIndex = @_findLastObliteratorIndex(model.drawingEvents, @_lastAppliedIndex)
+      if obIndex isnt -1
         obliterator         = model.drawingEvents[obIndex]
         model.drawingEvents = model.drawingEvents.slice(obIndex)
         switch obliterator.type
@@ -573,10 +573,10 @@ class DrawingLayer extends Drawer
 
     return
 
-  # (Array[DrawingEvent]) => Number
-  _findLastObliteratorIndex: (events) ->
+  # (Array[DrawingEvent], Number) => Number
+  _findLastObliteratorIndex: (events, lastCheckedIndex) ->
     i = events.length - 1
-    while i >= 0
+    while i > lastCheckedIndex
       if events[i].type in ["clear-drawing", "import-drawing"]
         return i
       else
