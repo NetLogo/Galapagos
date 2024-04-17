@@ -575,14 +575,13 @@ class DrawingLayer extends Drawer
 
   # (Array[DrawingEvent]) => Number
   _findLastObliteratorIndex: (events) ->
-    helper = (events, i) ->
-      if i < 0
-        -1
-      else if events[i].type in ["clear-drawing", "import-drawing"]
-        i
+    i = events.length - 1
+    while i >= 0
+      if events[i].type in ["clear-drawing", "import-drawing"]
+        return i
       else
-        helper(events, i - 1)
-    helper(events, events.length - 1)
+        i--
+    -1
 
 class SpotlightDrawer extends Drawer
   constructor: (view) ->
