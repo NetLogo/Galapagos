@@ -1,8 +1,9 @@
 import newModel          from "/new-model.js"
 import generateHNWConfig from './hnw-config-file-generator.js'
 
-lastNlogoSections = null # Array[String]
-promiseID         = 0    # Number
+lastNlogoSections      = null # Array[String]
+lastSuccessfulCompiler = null # BrowserCompiler
+promiseID              = 0    # Number
 
 # type Entry = { frame :: IFrame, message :: Object[Any], callback :: () => Unit }
 queue      = undefined # Array[Entry]
@@ -234,7 +235,8 @@ reinitialize = (nlogo, config) ->
       else
         msg = result.model.result.map((x) -> x.message).join('\n')
         alert(new Error("Model did not compile:\n\n#{msg}"))
-        { listGlobalVars:   (-> [])
+        lastSuccessfulCompiler or {
+          listGlobalVars:   (-> [])
         , listProcedures:   (-> [])
         , listVarsForBreed: (-> [ 'breed', 'color', 'heading', 'hidden?', 'label', 'label-color'
                                 , 'pen-mode', 'pen-size', 'shape', 'size', 'who', 'xcor', 'ycor'])
@@ -282,6 +284,8 @@ reinitialize = (nlogo, config) ->
                            , procedures
                            , role
                            , type: "config-with-json" })
+
+      lastSuccessfulCompiler = compiler
 
       return
 
