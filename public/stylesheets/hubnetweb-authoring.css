@@ -93,11 +93,15 @@
   white-space: normal;
 }
 
-.hnw-button:hover {
+.hnw-button[disabled] {
+  filter: brightness(0.7);
+}
+
+.hnw-button:hover:not([disabled]) {
   filter: brightness(0.9);
 }
 
-.hnw-button:active {
+.hnw-button:active:not([disabled]) {
   box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
   filter:     brightness(0.7);
 }
