@@ -366,7 +366,7 @@ document.getElementById("add-role-button").onclick = ->
       myFrame = document.querySelector(".model-container[data-role-name='#{roleSingular}']")
 
       oldCode     = lastNlogoSections[0]
-      regex       = new RegExp("^\\s*breed\\s*\\[\\s*#{rolePlural}\\s+")
+      regex       = new RegExp("^\\s*breed\\s*\\[\\s*#{rolePlural}\\s+", "m")
       breedExists = regex.test(oldCode)
 
       postWhenReady(myFrame, parcel, (-> if not breedExists then recompile()))
