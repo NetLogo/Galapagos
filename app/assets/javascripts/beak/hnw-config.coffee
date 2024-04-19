@@ -372,15 +372,8 @@ document.getElementById("add-role-button").onclick = ->
       postWhenReady(myFrame, parcel, (-> if not breedExists then recompile()))
 
       if not breedExists
-
-        beforeFirstProcedureRegex = new RegExp("(.*?)^((?:^ *;.*?)*(?:to |to-report ).*)", "ms")
-        breedDeclaration          = "breed [ #{rolePlural} #{roleSingular} ]"
-
-        lastNlogoSections[0] =
-          if beforeFirstProcedureRegex.test(oldCode)
-            oldCode.replace(beforeFirstProcedureRegex, "$1#{breedDeclaration}\n\n$2")
-          else
-            "#{oldCode}\n\n#{breedDeclaration}"
+        breedDeclaration = "breed [ #{rolePlural} #{roleSingular} ]"
+        lastNlogoSections[0] = "#{breedDeclaration}\n\n#{oldCode}"
 
   else
     addRole()
