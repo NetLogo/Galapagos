@@ -128,12 +128,12 @@ HNWButtonEditForm = ButtonEditForm.extend({
 
     buttonKind =
       if hnwProcName is ""
-        "turtle-procedure"
+        "procedure"
       else
-        if @get('procedures').find((p) -> p.name is hnwProcName).isUseableByTurtles
-          "turtle-procedure"
-        else
+        if @get('procedures').find((p) -> p.name is hnwProcName).isUseableByObserver
           "procedure"
+        else
+          "turtle-procedure"
 
     key = form.actionKey.value
 
