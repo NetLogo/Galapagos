@@ -505,6 +505,16 @@ updateWidget = (widget, isHNWClient) ->
       widget.width  = canvasWidth  + VIEW_INNER_SPACING.horizontal
       widget.height = canvasHeight + VIEW_INNER_SPACING.vertical
 
+    when 'hnwView'
+      { maxPxcor, maxPycor, minPxcor, minPycor } = widget.dimensions
+      patchWidth                  = (maxPxcor - minPxcor + 1)
+      patchHeight                 = (maxPycor - minPycor + 1)
+      patchSize                   = widget.width / patchWidth
+      widget.dimensions.patchSize = patchSize
+      widget.height               = patchHeight * patchSize
+      widget.right  = widget.left + widget.width  + VIEW_INNER_SPACING.horizontal
+      widget.bottom = widget.top  + widget.height + VIEW_INNER_SPACING.vertical
+
   return
 
 # (Number, Number) => Number

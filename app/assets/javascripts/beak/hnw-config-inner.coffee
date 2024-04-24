@@ -185,10 +185,10 @@ window.onmessage = (e) ->
 
       hnwView = cachedConfig.widgets.find((w) -> w.type is "hnwView")
 
-      viewShim = { dimensions: { maxPxcor: 1
-                               , maxPycor: 1
-                               , minPxcor: -1
-                               , minPycor: -1
+      viewShim = { dimensions: { maxPxcor: 0
+                               , maxPycor: 0
+                               , minPxcor: 0
+                               , minPycor: 0
                                , patchSize: 1
                                , wrappingAllowedInX: true
                                , wrappingAllowedInY: true
