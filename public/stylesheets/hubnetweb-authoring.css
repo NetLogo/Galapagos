@@ -82,6 +82,10 @@
   width:            275px;
 }
 
+.full-height:not(.invis) {
+  height: 100%;
+}
+
 .grid-item {
 }
 
