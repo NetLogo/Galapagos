@@ -267,7 +267,7 @@ RactiveView = RactiveWidget.extend({
         @set('widget.x'     , Math.round(x     ))
         @set('widget.width' , Math.round(width ))
 
-        @findComponent('editForm').set('patchSize', patchSize)
+        @_updatePatchSize(patchSize)
 
     return
 
@@ -275,6 +275,11 @@ RactiveView = RactiveWidget.extend({
   handleResizeEnd: ->
     @fire('set-patch-size', @findComponent('editForm').get('patchSize'))
     @notifyWidgetMoved()
+    return
+
+  # (Number) => Unit
+  _updatePatchSize: (patchSize) ->
+    @findComponent('editForm').set('patchSize', patchSize)
     return
 
   minWidth:  10
@@ -371,6 +376,11 @@ RactiveHNWView = RactiveView.extend({
   components: {
     editForm: HNWViewEditForm
   }
+
+  # (Number) => Unit
+  _updatePatchSize: (patchSize) ->
+    @set('widget.dimensions.patchSize', patchSize)
+    return
 
   partials: {
     editForm:
