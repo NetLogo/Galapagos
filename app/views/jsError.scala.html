@@ -1,0 +1,13 @@
+@(enableDivId: String = "")
+
+<div id="js-warning">
+  NetLogo Web requires JavaScript in order to run a model, but it does not appear to be working.  Please check your browser settings to ensure this site can use JavaScript, or contact your administrator if you are using a managed computer.
+</div>
+<script type="text/javascript">
+  const jsWarnDiv = document.getElementById("js-warning");
+  jsWarnDiv.style = "display: none;";
+  @if(enableDivId != "") {
+    const enableDiv = document.getElementById("@enableDivId");
+    enableDiv.style = "";
+  }
+</script>

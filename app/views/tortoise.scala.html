@@ -6,10 +6,11 @@
   <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/js-error.css").relative' />
 }
 
 @content = {
-  <div class="tortoise inner-content">
+  <div id="tortoise-content" class="tortoise inner-content" style="display: none;">
     <div class="model-selection-bar">
       <div>
         <label>Search the Models Library:
@@ -26,6 +27,7 @@
       <iframe id="model-container" class="model-container" src="about:blank"></iframe>
     </div>
   </div>
+  @views.html.jsError("tortoise-content")
 }
 
 @extraBody = {
