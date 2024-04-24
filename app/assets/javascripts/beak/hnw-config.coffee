@@ -485,8 +485,10 @@ document.getElementById("download-nlogo-button").onclick = ->
 document.getElementById("edit-model-button").onclick = ->
   configFrame    = document.getElementById("config-content-frame")
   outerTestFrame = document.getElementById("outer-test-frame")
+  contentDiv     = document.querySelector(".content")
   configFrame   .classList.remove('invis')
   outerTestFrame.classList.   add('invis')
+  contentDiv    .classList.remove('full-height')
   return
 
 # () => Unit
@@ -514,8 +516,10 @@ document.getElementById("test-model-button").onclick = ->
 
             configFrame    = document.getElementById("config-content-frame")
             outerTestFrame = document.getElementById("outer-test-frame")
+            contentDiv     = document.querySelector(".content")
             configFrame   .classList.   add('invis')
             outerTestFrame.classList.remove('invis')
+            contentDiv    .classList.   add('full-height')
 
         )
 
