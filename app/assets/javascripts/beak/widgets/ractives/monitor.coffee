@@ -133,15 +133,15 @@ HNWMonitorEditForm = MonitorEditForm.extend({
 
     reporterStyle =
       if source is ""
-        "turtle-procedure"
+        "procedure"
       else
         { globalVars, myVars, procedures } = @get('metadata')
         proc = procedures.find((p) -> p.name is source)
         if proc?
-          if proc.isUseableByTurtles
-            "turtle-procedure"
-          else
+          if proc.isUseableByObserver
             "procedure"
+          else
+            "turtle-procedure"
         else if myVars.includes(source)
           "turtle-var"
         else if globalVars.map((g) -> g.name).includes(source)
