@@ -48,6 +48,48 @@ class AlertDisplay
 
     })
 
+  # This method is for scenarios where an unexpected error occured trying to initialize the basic model/simulation code.
+  # So we don't assume even Ractive or other libraries are usable, we just try some basic HTML/DOM changes to show the
+  # user the error message.  -Jeremy B April 2024
+
+  # (Exception) => Unit
+  @showEarlyInitFailure: (ex) ->
+    alertBox = document.getElementById('alert-container')
+
+    alertOverlay = document.createElement('div')
+    alertOverlay.classList.add('dark-overlay')
+    alertOverlay.classList.add('alert-overlay')
+    alertBox.appendChild(alertOverlay)
+
+    alertDialog = document.createElement('div')
+    alertDialog.id = 'alert-dialog'
+    alertDialog.classList.add('alert-dialog')
+    alertOverlay.appendChild(alertDialog)
+
+    alertTitle = document.createElement('h3')
+    alertTitle.id = 'alert-title'
+    alertTitle.innerText = 'Simulation Initialization Error'
+    alertDialog.appendChild(alertTitle)
+
+    alertText = document.createElement('div')
+    alertText.id = 'alert-message'
+    alertText.classList.add('alert-text')
+    # coffeelint: disable=max_line_length
+    alertText.innerText = """An error has occured while NetLogo Web was initializing the simulaton engine and view.  You can try reloading to see if this resolves the problem.
+
+    If you need additional assistance you can email bugs@ccl.northwestern.edu.  In order to be able to help, please provide us with 1) the error below 2) the full URL of this page from the address bar 3) your web browser (Chrome, Firefox, Safari, Edge) and 4) your operating system (macOS, Windows, Chromebook, Linux).
+
+      #{ex.message}
+
+      Stack: #{ex.stack}
+      """
+    # coffeelint: enable=max_line_length
+    alertDialog.appendChild(alertText)
+
+    loadingOverlay = document.getElementById('loading-overlay')
+    loadingOverlay.style = 'display: none;'
+    return
+
   @makeRemoteLoadErrorMessage: (url) ->
     """Unable to load NetLogo model from #{url}, please ensure:
     <ul>
