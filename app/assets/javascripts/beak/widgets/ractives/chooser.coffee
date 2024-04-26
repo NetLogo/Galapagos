@@ -134,7 +134,7 @@ HNWChooserEditForm = ChooserEditForm.extend({
 
     variableForm:
       """
-      <div class="flex-row">
+      <div class="flex-column">
         <formDropdown id="{{id}}-varname" name="varName" label="Turtle variable"
                       choices="{{sortedBreedVars}}" selected="{{display}}" />
         <button on-click="@this.fire('add-breed-var', @this)"
