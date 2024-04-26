@@ -107,7 +107,7 @@ HNWInputEditForm = InputEditForm.extend({
 
     variableForm:
       """
-      <div class="flex-row">
+      <div class="flex-column">
         <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
                       choices="{{sortedBreedVars}}" selected="{{display}}" />
         <button on-click="@this.fire('add-breed-var', @this)"

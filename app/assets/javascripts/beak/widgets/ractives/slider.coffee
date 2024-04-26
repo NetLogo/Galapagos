@@ -152,7 +152,7 @@ HNWSliderEditForm = SliderEditForm.extend({
 
     variableForm:
       """
-      <div class="flex-row">
+      <div class="flex-column">
         <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
                       choices="{{sortedBreedVars}}" selected="{{variable}}" />
         <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
