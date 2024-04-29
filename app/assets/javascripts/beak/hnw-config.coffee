@@ -571,9 +571,10 @@ window.addEventListener('message', (e) ->
     when "recompile"
       recompile()
     when "resize-me"
-      { height, width } = e.data.data
+      { height, width, hnwID } = e.data.data
+      f = (c) -> c.contentWindow is e.source or c.contentWindow.hnwID is hnwID
       containers = Array.from(document.querySelectorAll("iframe.model-container"))
-      container  = containers.find((c) -> c.contentWindow is e.source)
+      container  = containers.find(f)
       container.height = height
       container.width  = width
     when "code-save-response", "role-save-response"
