@@ -57,8 +57,12 @@ window.addEventListener("message", (e) ->
 
 )
 
+# A hack!  Because Safari's `MessageEvent.source` is
+# the same as its `Message.target` (somehow) --Jason B. (4/29/24)
+window.hnwID = Math.random()
+
 resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
-  parent.postMessage({ type: "resize-joiner", data: { height, width } }, "*")
+  parent.postMessage({ type: "resize-joiner", data: { height, width, hnwID } }, "*")
 )
 
 resizer.observe(document.querySelector(".netlogo-model-container-join"))
