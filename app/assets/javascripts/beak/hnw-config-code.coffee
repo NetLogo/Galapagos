@@ -100,8 +100,12 @@ window.onmessage = (e) ->
     else
       console.warn("Unknown code pane event type: #{e.data.type}")
 
+# A hack!  Because Safari's `MessageEvent.source` is
+# the same as its `Message.target` (somehow) --Jason B. (4/29/24)
+window.hnwID = Math.random()
+
 resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
-  parent.postMessage({ type: "resize-me", data: { height, width } })
+  parent.postMessage({ type: "resize-me", data: { height, width, hnwID } })
 )
 
 resizer.observe(window.document.documentElement)
