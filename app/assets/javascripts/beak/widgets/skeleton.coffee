@@ -81,9 +81,52 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
 
   uploadToGist = ->
+    #window.location.href = 'http://localhost:3000/auth/github'
+
+
+    '''
+    clientId = 'd995f9114ca6573c3914'
+    scope = 'gist repo'
+    redirectUri = 'http://127.0.0.1:9000/launch'
+    
+
+    authorizationUrl = "https://github.com/login/oauth/authorize?client_id=#{clientId}&scope=#{scope}&redirect_uri=#{encodeURIComponent(redirectUri)}"
+
+    
+    window.open authorizationUrl, 'githubOauth', 'width=800,height=600'
+    #window.location.href = authorizationUrl
+
+    
+
+    
+
+    code = new URLSearchParams(window.location.search).get('code')
+
+    console.log("code log")
+
+    
+    tokenResponse = await fetch "https://github.com/login/oauth/access_token",
+      method: 'POST'
+      headers:
+        'Content-Type': 'application/json'
+        'Accept': 'application/json'
+      body: JSON.stringify
+        client_id: 'd995f9114ca6573c3914'
+        client_secret: '841dfd2f900f75eab6caec277c05c23348b094e4'
+        code: code
+
+    tokenData = await tokenResponse.json()
+    accessToken = tokenData.access_token
+    '''
+
+
+    accessToken = localStorage.getItem('accessToken')
+
+
+
     console.log(session.modelTitle())
 
-
+    
     nlogoContent = session.getNlogo().result
     console.log("Upload to Gist passed")
 
@@ -100,7 +143,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     console.log(localStorage)
     storedSettings = localStorage.getItem('netLogoWebSettings')
-
+    
     if storedSettings
       settingsObj = JSON.parse(storedSettings)
       githubToken = settingsObj.githubToken
@@ -125,7 +168,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
       body: JSON.stringify(data)
       headers:{
         'Content-Type': 'application/json'
-        'Authorization': "token #{githubToken}"  # Replace with your OAuth token
+        'Authorization': "token #{accessToken}"  # Replace with your OAuth token
        }
       }
     )
@@ -147,6 +190,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
 
     .catch((error) -> console.error('Error:', error))
+    
 
 
   updateGist = ->

@@ -7,7 +7,12 @@ locales = [
 , { code: "ja_jp", description: "Japanese  - 日本語", languageCode: "ja" }
 , { code: "pt_pt", description: "Portuguese - Português", languageCode: "pt" }
 ]
-
+'''
+data = {
+  locales: locales,
+  isConnectedToGitHub: false
+}
+'''
 settings = new Map()
 settings.set('locale', {
   def: ''
@@ -54,6 +59,52 @@ settings.set('repoName', {
 settingNames = Array.from(settings.keys())
 settingNames.push('githubToken')
 
+toggleGitHubConnection: (event) ->
+  console.log("in toggle")
+  if @get('isConnectedToGitHub')
+    @disconnectFromGitHub()
+    disconnectFromGitHub.call(this)
+  else
+    @connectToGitHub()
+    connectToGitHub.call(this)
+
+disconnectFromGithub = ->
+  localStorage.removeItem('accessToken') 
+  document.cookie = 'accessToken=; Max-Age=-99999999;'  
+  @set('isConnectedToGitHub', false)
+  console.log("Disconnected from GitHub")
+
+  
+connectToGitHub = ->
+  console.log("Update Gist passed")
+  authWindow = window.open('http://localhost:3000/auth/github', 'githubOauth', 'width=800,height=600')
+
+  checkAccessTokenSet = =>
+    console.log("document cookie: ")
+    console.log("cookie")
+    accessToken = document.cookie;
+    console.log(accessToken)
+    if accessToken
+      accessTokenValue = accessToken.split('=')[1]
+      console.log("Access token found in cookies:", accessTokenValue)
+      localStorage.setItem('accessToken', accessTokenValue)
+      @set('isConnectedToGitHub', true)
+      alert("AccessToken is set")
+      return true
+    else
+      console.log("Access token not found in cookies yet.")
+      return false
+
+  waitForAccessToken = =>
+    if checkAccessTokenSet()
+      console.log("Access token is set. Proceeding with authentication.")
+    else
+      setTimeout(waitForAccessToken, 1000)
+
+  waitForAccessToken()
+
+
+
 template = """
 <div class="settings-panel">
   <h1 class="settings-header">NetLogo Web Settings</h1>
@@ -89,28 +140,13 @@ template = """
       {{/}}
     </select>
   </div>
-  <div class="setting-label">
-    GitHub Personal Access Token:
+  
+  <div class="netlogo-export-wrapper">
+    <span style="margin-right: 4px;">Connect to Github:</span>
+    <button class="netlogo-ugly-button" on-click="toggleGitHubConnection">
+      {{#if isConnectedToGitHub}}Disconnect{{else}}Connect{{/if}}
+    </button>
   </div>
-  <div class="setting-control">
-    <input type="text" value={{githubToken}} on-change="setting-changed" placeholder="Enter GitHub Token"/>
-  </div>
-
-  <div class="setting-label">
-    GitHub Username:
-  </div>
-  <div class="setting-control">
-    <input type="text" value={{githubUser}} on-change="setting-changed" placeholder="Enter GitHub Username"/>
-  </div>
-
-  <div class="setting-label">
-    GitHub Repo Name:
-  </div>
-
-  <div class="setting-control">
-    <input type="text" value={{repoName}} on-change="setting-changed" placeholder="Enter GitHub Repository Name"/>
-  </div>
-
 
 </div>
 
@@ -155,7 +191,7 @@ formatLinks = (wipStorage) ->
 
 # (HtmlDivElement, NamespaceStorage) => Ractive
 createSettingsRactive = (container, storage, wipStorage) ->
-  data = { locales }
+  data = { locales , isConnectedToGitHub: false}
   data.workInProgressLinks = formatLinks(wipStorage)
   settingNames.forEach( (name) ->
     setting = settings.get(name)
@@ -181,9 +217,45 @@ createSettingsRactive = (container, storage, wipStorage) ->
 
         return
       )
-
-      return
+    'toggleGitHubConnection': (event) ->
+      if @get('isConnectedToGitHub')
+        console.log("Disconnecting from GitHub...")
+        @set('isConnectedToGitHub', false)
+      else
+        console.log("Connecting to GitHub...")
+        @connectToGitHub()
   }
+  , connectToGitHub : -> #arrow tells its a function 
+      console.log("connectToGithub ractive")
+      @set('isConnectedToGitHub', true)
+
+      console.log("Update Gist passed")
+      authWindow = window.open('http://localhost:3000/auth/github', 'githubOauth', 'width=800,height=600')
+
+      checkAccessTokenSet = =>
+        console.log("document cookie: ")
+        console.log("cookie")
+        accessToken = document.cookie;
+        console.log(accessToken)
+        if accessToken
+          accessTokenValue = accessToken.split('=')[1]
+          console.log("Access token found in cookies:", accessTokenValue)
+          localStorage.setItem('accessToken', accessTokenValue)
+          @set('isConnectedToGitHub', true)
+          alert("AccessToken is set")
+          return true
+        else
+          console.log("Access token not found in cookies yet.")
+          return false
+
+      waitForAccessToken = =>
+        if checkAccessTokenSet()
+          console.log("Access token is set. Proceeding with authentication.")
+        else
+          setTimeout(waitForAccessToken, 1000)
+
+      waitForAccessToken()
+
   })
   ractive
 
