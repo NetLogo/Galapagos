@@ -151,7 +151,7 @@ attachQueryHandler = (getSession) ->
     handleQuery(oracle, query)
 
   window.addEventListener('message', (event) ->
-    if event.data.type is 'nlw-query'
+    if (event.data? and event.data.type is 'nlw-query')
       results = event.data.queries.map(handler)
       postMessage(event.source, event.data.queries, event.data.sourceInfo, results)
     return

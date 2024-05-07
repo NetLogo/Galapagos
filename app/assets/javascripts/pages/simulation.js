@@ -233,6 +233,10 @@ try {
   }
 
   window.addEventListener('message', function (e) {
+    if (e.data === null || typeof(e.data) !== 'object') {
+      return;
+    }
+
     switch (e.data.type) {
       case 'nlw-load-model': {
         notifyListeners('model-load', 'file', e.data.path);

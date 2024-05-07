@@ -10,7 +10,7 @@
     <iframe id="ntb-container" src="./nettango-player" title="NetTango Builder" scrolling="no"></iframe>
     <script type="text/javascript">
       window.addEventListener("message", (event) => {
-        if (event.data.type === "ntb-resize") {
+        if (event.data !== null && typeof(event.data) === 'object' && event.data.type === "ntb-resize") {
           console.log("ntb-resize received:", event)
           const ntbContainer  = document.getElementById("ntb-container")
           ntbContainer.width  = event.data.width

@@ -4,6 +4,9 @@ const modelContainer = document.querySelector('#model-container')
 const params         = new URLSearchParams(window.location.search)
 
 window.addEventListener("message", function(e) {
+  if (e.data === null || typeof(e.data) !== 'object') {
+    return;
+  }
 
   switch (e.data.type) {
 

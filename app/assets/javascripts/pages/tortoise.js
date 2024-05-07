@@ -68,6 +68,9 @@ window.addEventListener("hashchange", function(e) {
 })
 
 window.addEventListener("message", function(e) {
+  if (e.data === null || typeof(e.data) !== 'object') {
+    return;
+  }
 
   switch (e.data.type) {
 
