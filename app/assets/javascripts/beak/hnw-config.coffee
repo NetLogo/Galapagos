@@ -553,6 +553,11 @@ recompile = ->
 
 window.addEventListener('message', (e) ->
   switch e.data.type
+    when "hnw-author-bundle"
+      { hnwNlogo, ...bundle } = e.data.bundle
+      initialize(hnwNlogo, bundle)
+    when "hnw-author-pair"
+      initialize(e.data.nlogo, e.data.config)
     when "new-breed-var"
       addNewBreedVar(e.data.breed, e.data.var)
       recompile()
