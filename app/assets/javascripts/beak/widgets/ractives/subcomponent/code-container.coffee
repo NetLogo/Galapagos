@@ -149,7 +149,11 @@ RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
     @._super()
     forceOneLine =
       (_, change) ->
-        oneLineText = change.text.join('').replace(/\n/g, '')
+        lines = if change.text[change.text.length - 1] is ''
+          change.text.slice(0, change.text.length - 1)
+        else
+          change.text
+        oneLineText = lines.join(' ')
         change.update(change.from, change.to, [oneLineText])
         true
     @_editor.on('beforeChange', forceOneLine)
