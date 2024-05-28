@@ -2,7 +2,7 @@ import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
-import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
+import { RactiveCodeContainerMultiline, RactiveCodeContainerOneLine } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
@@ -128,9 +128,10 @@ RactiveInput = RactiveValueWidget.extend({
   widgetType: "input"
 
   components: {
-    colorInput: RactiveColorInput
-  , editForm:   InputEditForm
-  , editor:     RactiveCodeContainerMultiline
+    colorInput:       RactiveColorInput
+  , editForm:         InputEditForm
+  , multiLineEditor:  RactiveCodeContainerMultiline
+  , singleLineEditor: RactiveCodeContainerOneLine
   }
 
   eventTriggers: ->
@@ -183,7 +184,8 @@ RactiveInput = RactiveValueWidget.extend({
       scrollToBottom = -> elem.scrollTop = elem.scrollHeight
       setTimeout(scrollToBottom, 0)
 
-    @findComponent('editor')?.setCode(newValue)
+    @findComponent('multiLineEditor')?.setCode(newValue)
+    @findComponent('singleLineEditor')?.setCode(newValue)
     return
 
   # (String, String|Number, String|Number) => Unit
@@ -260,15 +262,26 @@ RactiveInput = RactiveValueWidget.extend({
           </textarea>
         {{/}}
         {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
-          <editor
-            extraClasses="['netlogo-multiline-input']"
-            id="{{id}}-code"
-            injectedConfig="{ scrollbarStyle: 'null' }"
-            style="height: 50%;"
-            initialCode="{{internalValue}}"
-            isDisabled="{{isEditing}}"
-            on-change="['widget-value-change', widget.boxedValue.type]"
-            />
+          {{# widget.boxedValue.multiline }}
+            <multiLineEditor
+              extraClasses="['netlogo-multiline-input']"
+              id="{{id}}-code"
+              injectedConfig="{ scrollbarStyle: 'null' }"
+              style="height: 50%;"
+              initialCode="{{internalValue}}"
+              isDisabled="{{isEditing}}"
+              on-change="['widget-value-change', widget.boxedValue.type]"
+              />
+          {{else}}
+            <singleLineEditor
+              id="{{id}}-code"
+              injectedConfig="{ scrollbarStyle: 'null' }"
+              style="height: 50%;"
+              initialCode="{{internalValue}}"
+              isDisabled="{{isEditing}}"
+              on-change="['widget-value-change', widget.boxedValue.type]"
+              />
+          {{/}}
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
           <colorInput
