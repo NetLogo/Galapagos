@@ -274,6 +274,7 @@ RactiveInput = RactiveValueWidget.extend({
               />
           {{else}}
             <singleLineEditor
+              extraClasses="['netlogo-singleline-input']"
               id="{{id}}-code"
               injectedConfig="{ scrollbarStyle: 'null' }"
               style="height: 50%;"

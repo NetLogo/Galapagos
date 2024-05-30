@@ -610,6 +610,12 @@
   resize:    none;
 }
 
+.netlogo-singleline-input {
+  flex-grow: 1;
+  margin:    4px;
+  resize:    none;
+}
+
 .netlogo-chooser {
     padding: 2px 4px;
     display: flex;
