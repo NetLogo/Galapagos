@@ -85,8 +85,12 @@ body#ntp-body, html#ntp-body {
   display: block;
 }
 
-.ntb-netlogo-model .netlogo-code {
+.ntb-netlogo-model .netlogo-code-container .netlogo-code {
   overflow-y: scroll;
+}
+
+.ntb-netlogo-model .netlogo-widget .CodeMirror {
+  height: 100%;
 }
 
 .ntb-block-def {
