@@ -122,8 +122,22 @@ runWithErrorHandling = (source, reportError, f, code) ->
   try
     f() is StopInterrupt
   catch ex
-    if not (ex instanceof Exception.HaltInterrupt)
+    isHaltInterrupt = (_ex) ->
+      (_ex instanceof Exception.HaltInterrupt)
+
+    # just swallow plot runtime errors to not interrupt the user
+    isPlotError = (_source, _ex) ->
+      (_ex instanceof Exception.RuntimeException) and
+      _source is 'button' and
+      _ex.stackTrace.length > 0 and
+      _ex.stackTrace[0].type is 'plot'
+
+    if not isHaltInterrupt(ex)
+      if isPlotError(source, ex)
+        return false
+
       reportError("runtime", source, ex, code)
+
     true
 
 # ((String, String, Exception) => Unit, () => Unit, Button, () => Any) => () => Unit
