@@ -79,120 +79,42 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
 
 
+  #upload the Gist using a POST request with the Github API configured
 
   uploadToGist = ->
-    #window.location.href = 'http://localhost:3000/auth/github'
-
-
-    '''
-    clientId = 'd995f9114ca6573c3914'
-    scope = 'gist repo'
-    redirectUri = 'http://127.0.0.1:9000/launch'
-    
-
-    authorizationUrl = "https://github.com/login/oauth/authorize?client_id=#{clientId}&scope=#{scope}&redirect_uri=#{encodeURIComponent(redirectUri)}"
-
-    
-    window.open authorizationUrl, 'githubOauth', 'width=800,height=600'
-    #window.location.href = authorizationUrl
-
-    
-
-    
-
-    code = new URLSearchParams(window.location.search).get('code')
-
-    console.log("code log")
-
-    
-    tokenResponse = await fetch "https://github.com/login/oauth/access_token",
-      method: 'POST'
-      headers:
-        'Content-Type': 'application/json'
-        'Accept': 'application/json'
-      body: JSON.stringify
-        client_id: 'd995f9114ca6573c3914'
-        client_secret: '841dfd2f900f75eab6caec277c05c23348b094e4'
-        code: code
-
-    tokenData = await tokenResponse.json()
-    accessToken = tokenData.access_token
-    '''
-
-
-    accessToken = localStorage.getItem('accessToken')
-
-
-
-    console.log(session.modelTitle())
-
-    
+    console.log session.modelTitle()
     nlogoContent = session.getNlogo().result
-    console.log("Upload to Gist passed")
-
-
     filename = session.modelTitle()
 
-    data = {
-      "description": "Uploaded from NetLogo"
-      "public": true
-      "files": {}
-    }
+    data =
+      filename: filename
+      content: nlogoContent
 
-    data["files"][filename] = { "content": nlogoContent }
+    console.log "Triggering server-side upload to GitHub Gist"
+    console.log document.cookie
 
-    console.log(localStorage)
-    storedSettings = localStorage.getItem('netLogoWebSettings')
+    accessToken = localStorage.getItem('accessToken')
+    console.log "access token: " + accessToken
     
-    if storedSettings
-      settingsObj = JSON.parse(storedSettings)
-      githubToken = settingsObj.githubToken
-    else
-      githubToken = null
-
-    if not githubToken
-      alert("GitHub token is not set. Press OK to manually set it, or set it in Settings.")
-      githubToken = promptForGithubToken()
-    else
-      alert("Using GitHub token from Settings")
-
-    return unless githubToken
-
-    console.log("Fetching from Github Gist API")
-
-    gistUrl = null
-
-    # Fetch request to GitHub Gist API
-    fetch('https://api.github.com/gists',{
+    # change link below based on the server using
+    fetch 'https://alison-nlw-gh-oauth.onrender.com/api/upload-nlogo',
       method: 'POST'
-      body: JSON.stringify(data)
-      headers:{
+      body: JSON.stringify data
+      headers:
         'Content-Type': 'application/json'
-        'Authorization': "token #{accessToken}"  # Replace with your OAuth token
-       }
-      }
-    )
-    #console.log "Authorization: token #{githubToken}"
-    .then((response) ->
-      if response.ok
-        gistUrl = response.html_url
-
-        alert("Successfully uploaded to Github Gist. Click OK for link")
+        'Authorization': "Bearer #{accessToken}" 
+      credentials: 'include' 
+    .then (response) -> response.json()
+    .then (data) ->
+      if data.gistUrl
+        alert "Successfully uploaded to GitHub Gist. Gist URL: #{data.gistUrl}"
       else
-        alert("Failed to upload to GitHub Gist")
-
-      response.json())
-    .then((data) ->
-      alert("Gist Link: " + data.html_url)
-      localStorage.setItem('lastUsedGistId', data.id)
-      console.log(data)
-      console.log(data.html_url))
+        alert "Failed to upload to GitHub Gist."
+      console.log data
+    .catch (error) -> console.error 'Error:', error
 
 
-    .catch((error) -> console.error('Error:', error))
-    
-
-
+  #update Gist to the Github
   updateGist = ->
     console.log("Update Gist passed")
     gistId = localStorage.getItem('lastUsedGistId')
@@ -260,7 +182,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     )
     .catch((error) -> console.error('Error:', error))
 
-
+  #upload current Netlogo file to specified Github Repo
   uploadToRepo = ->
     console.log(session.modelTitle())
 
@@ -336,6 +258,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
       console.log(data.content.html_url))
     .catch((error) -> console.error('Error:', error))
 
+  #update the GitHub repo
   updateRepo = ->
     console.log(session.modelTitle())
 

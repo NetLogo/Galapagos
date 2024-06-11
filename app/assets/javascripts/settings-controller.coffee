@@ -74,10 +74,10 @@ disconnectFromGithub = ->
   @set('isConnectedToGitHub', false)
   console.log("Disconnected from GitHub")
 
-  
+'''
 connectToGitHub = ->
   console.log("Update Gist passed")
-  authWindow = window.open('http://localhost:3000/auth/github', 'githubOauth', 'width=800,height=600')
+  authWindow = window.open('https://alison-nlw-gh-oauth.onrender.com/auth/github', 'githubOauth', 'width=800,height=600')
 
   checkAccessTokenSet = =>
     console.log("document cookie: ")
@@ -102,7 +102,7 @@ connectToGitHub = ->
       setTimeout(waitForAccessToken, 1000)
 
   waitForAccessToken()
-
+'''
 
 
 template = """
@@ -228,33 +228,11 @@ createSettingsRactive = (container, storage, wipStorage) ->
   , connectToGitHub : -> #arrow tells its a function 
       console.log("connectToGithub ractive")
       @set('isConnectedToGitHub', true)
+      console.log("HIIII")
 
       console.log("Update Gist passed")
-      authWindow = window.open('http://localhost:3000/auth/github', 'githubOauth', 'width=800,height=600')
+      authWindow = window.open('https://alison-nlw-gh-oauth.onrender.com/auth/github', 'githubOauth', 'width=800,height=600')
 
-      checkAccessTokenSet = =>
-        console.log("document cookie: ")
-        console.log("cookie")
-        accessToken = document.cookie;
-        console.log(accessToken)
-        if accessToken
-          accessTokenValue = accessToken.split('=')[1]
-          console.log("Access token found in cookies:", accessTokenValue)
-          localStorage.setItem('accessToken', accessTokenValue)
-          @set('isConnectedToGitHub', true)
-          alert("AccessToken is set")
-          return true
-        else
-          console.log("Access token not found in cookies yet.")
-          return false
-
-      waitForAccessToken = =>
-        if checkAccessTokenSet()
-          console.log("Access token is set. Proceeding with authentication.")
-        else
-          setTimeout(waitForAccessToken, 1000)
-
-      waitForAccessToken()
 
   })
   ractive
