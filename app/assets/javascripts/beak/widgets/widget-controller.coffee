@@ -96,9 +96,18 @@ class WidgetController
   # (Number, Boolean, Array[Any]) => Unit
   removeWidgetById: (id, wasNew, extraNotificationArgs) ->
 
-    widgetType = @ractive.get('widgetObj')[id].type
+    widgetType = null
+    widgetObj = @ractive.get('widgetObj')
+    
+    for key, w of widgetObj 
+      if w.id is id
+        widgetType = w.type
+        delete widgetObj[key]
+        break
 
-    delete @ractive.get('widgetObj')[id]
+    if widgetType is null
+      throw new Error('Could not find widget to remove by id') 
+
     @ractive.update('widgetObj')
     @ractive.fire('deselect-widgets')
 
