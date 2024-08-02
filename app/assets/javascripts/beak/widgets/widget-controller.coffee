@@ -96,28 +96,30 @@ class WidgetController
   # (Number, Boolean, Array[Any]) => Unit
   removeWidgetById: (id, wasNew, extraNotificationArgs) ->
 
-    widgetType = null
-    widgetObj = @ractive.get('widgetObj')
-    
-    for key, w of widgetObj 
-      if w.id is id
-        widgetType = w.type
-        delete widgetObj[key]
-        break
+    wobj = @ractive.get('widgetObj')
 
-    if widgetType is null
-      throw new Error('Could not find widget to remove by id') 
+    entry = Object.entries(wobj).find(([_, v]) -> v.id is id)
 
-    @ractive.update('widgetObj')
-    @ractive.fire('deselect-widgets')
+    if entry?
 
-    if wasNew
-      @ractive.fire('new-widget-cancelled', id, widgetType)
+      [index, widget] = entry
+
+      widgetType = widget.type
+      delete wobj[index]
+
+      @ractive.update('widgetObj')
+      @ractive.fire('deselect-widgets')
+
+      if wasNew
+        @ractive.fire('new-widget-cancelled', id, widgetType)
+
+      else
+        switch widgetType
+          when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('recompile-sync', 'system')
+        @ractive.fire('widget-deleted', id, widgetType, extraNotificationArgs...)
 
     else
-      switch widgetType
-        when "chooser", "inputBox", "plot", "slider", "switch" then @ractive.fire('recompile-sync', 'system')
-      @ractive.fire('widget-deleted', id, widgetType, extraNotificationArgs...)
+      throw new Error("Failed to find any widget in #{JSON.stringify(wobj)} with ID '#{id}'.")
 
     return
 
