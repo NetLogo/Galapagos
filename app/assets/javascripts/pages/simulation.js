@@ -87,6 +87,9 @@ try {
     if (settings.workInProgress.enabled) {
       wipListener.setSession(globalThis.session);
     }
+    if (settings.title) {
+      globalThis.session.widgetController.ractive.set('modelTitle', settings.title);
+    }
     globalThis.session.widgetController.ractive.set('speed', settings.speed);
     globalThis.session.widgetController.ractive.set('isVertical', settings.useVerticalLayout);
     document.title = pageTitle(globalThis.session.modelTitle());

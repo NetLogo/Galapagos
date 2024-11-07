@@ -29,6 +29,8 @@ class Settings
 
   useVerticalLayout: true
 
+  title: undefined # String
+
   speed: 0.0
 
   workInProgress: {
@@ -67,6 +69,9 @@ class Settings
 
     if params.has('tabs')
       @useVerticalLayout = not (params.get('tabs') is 'right')
+
+    if params.has('title')
+      @title = params.get('title')
 
     if params.has('speed')
       speedString = params.get('speed')
