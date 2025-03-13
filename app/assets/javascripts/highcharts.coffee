@@ -246,8 +246,7 @@ class HighchartsOps extends PlotOps
 
       hcColor              = thisOps.colorToRGBString(color)
       series               = thisOps.penToSeries(pen)
-      series.options.color = hcColor
-      series.update(series.options, false)
+      series.update({color: hcColor}, false)
       thisOps._needsRedraw = true
 
       if not pen.isFake
