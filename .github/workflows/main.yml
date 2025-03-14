@@ -27,6 +27,8 @@ jobs:
           cache: 'npm'
           cache-dependency-path: package-lock.json
 
+      - uses: sbt/setup-sbt@v1
+
       - name: Git Init
         run: git submodule update --init --recursive
 
@@ -81,6 +83,8 @@ jobs:
       - name: Verify AWS Credentials
         run: |
           aws sts get-caller-identity
+
+      - uses: sbt/setup-sbt@v1
 
       - name: Scrape
         run: |
