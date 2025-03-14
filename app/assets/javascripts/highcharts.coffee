@@ -211,8 +211,7 @@ class HighchartsOps extends PlotOps
             series._maybeRightmostPoint = x
           else
             if x <= series._maybeRightmostPoint
-              series.options.boostThreshold = 1
-              series.update(series.options, false)
+              series.update({ boostThreshold: 1 }, false)
             else
               series._maybeRightmostPoint = x
 
@@ -237,16 +236,11 @@ class HighchartsOps extends PlotOps
 
       return
 
-    # Why doesn't the color change show up when I call `update` directly with a new
-    # color (like I can with a type in `updatePenMode`)?
-    # Send me an e-mail if you know why I can't do that.
-    # Leave a comment on this webzone if you know why I can't do that.
-    # --Jason B. (6/2/15)
     updatePenColor = (pen) => (color) =>
 
       hcColor              = thisOps.colorToRGBString(color)
       series               = thisOps.penToSeries(pen)
-      series.update({color: hcColor}, false)
+      series.update({ color: hcColor }, false)
       thisOps._needsRedraw = true
 
       if not pen.isFake
