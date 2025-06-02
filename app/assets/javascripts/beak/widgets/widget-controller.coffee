@@ -24,7 +24,7 @@ class WidgetController
     rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
     adjustedX = Math.round(x - (rect.left + window.scrollX ) )
     adjustedY = Math.round(y - (rect.top + window.scrollY) )
-    base      = { left: adjustedX, top: adjustedY, type: widgetType }
+    base      = { x: adjustedX, y: adjustedY, type: widgetType, oldSize: false }
     mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY, @_countByType)
     widget    = Object.assign(base, mixin)
 
@@ -459,10 +459,10 @@ updateWidget = (widget, isHNWClient) ->
 
     when 'view'
       { maxPxcor, maxPycor, minPxcor, minPycor, patchSize } = widget.dimensions
-      canvasWidth  = Math.round(patchSize * (maxPxcor - minPxcor + 1))
-      canvasHeight = Math.round(patchSize * (maxPycor - minPycor + 1))
-      widget.right  = widget.left + canvasWidth + VIEW_INNER_SPACING.horizontal
-      widget.bottom = widget.top  + canvasHeight + VIEW_INNER_SPACING.vertical
+      canvasWidth   = Math.round(patchSize * (maxPxcor - minPxcor + 1))
+      canvasHeight  = Math.round(patchSize * (maxPycor - minPycor + 1))
+      widget.width  = canvasWidth  + VIEW_INNER_SPACING.horizontal
+      widget.height = canvasHeight + VIEW_INNER_SPACING.vertical
 
   return
 
@@ -479,15 +479,15 @@ withPrecision = (n, places) ->
 # (String, Number, Number, (String) => Number) => Unit
 defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
   switch widgetType
-    when "output"  , "hnwOutput"   then { bottom: y +  60, right: x + 180, fontSize: 12 }
-    when "switch"  , "hnwSwitch"   then { bottom: y +  33, right: x + 100, on: false, variable: "" }
-    when "slider"  , "hnwSlider"   then { bottom: y +  33, right: x + 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox", "hnwInputBox" then { bottom: y +  60, right: x + 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"  , "hnwButton"   then { bottom: y +  60, right: x + 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser" , "hnwChooser"  then { bottom: y +  45, right: x + 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor" , "hnwMonitor"  then { bottom: y +  45, right: x +  70, fontSize: 11, precision: 17 }
-    when "plot"    , "hnwPlot"     then { bottom: y + 160, right: x + 200, autoPlotOn: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
-    when "textBox" , "hnwTextBox"  then { bottom: y +  60, right: x + 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "output"  , "hnwOutput"   then { height:  60, width: 180, fontSize: 12 }
+    when "switch"  , "hnwSwitch"   then { height:  33, width: 100, on: false, variable: "" }
+    when "slider"  , "hnwSlider"   then { height:  33, width: 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox", "hnwInputBox" then { height:  60, width: 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"  , "hnwButton"   then { height:  60, width: 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser" , "hnwChooser"  then { height:  45, width: 140, choices: [], currentChoice: -1, variable: "" }
+    when "monitor" , "hnwMonitor"  then { height:  45, width:  70, fontSize: 11, precision: 17 }
+    when "plot"    , "hnwPlot"     then { height: 160, width: 200, autoPlotX: true, autoPlotY: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
+    when "textBox" , "hnwTextBox"  then { height:  60, width: 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 # coffeelint: enable=max_line_length
 

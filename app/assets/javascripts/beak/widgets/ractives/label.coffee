@@ -88,7 +88,6 @@ RactiveLabel = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , convertColor:       netlogoColorToCSS
   }
 
   components: {
@@ -123,7 +122,8 @@ RactiveLabel = RactiveWidget.extend({
     label:
       """
       <pre id="{{id}}" class="netlogo-widget netlogo-text-box {{classes}}"
-           style="{{dims}} font-size: {{widget.fontSize}}px; color: {{ convertColor(widget.color) }}; {{# widget.transparent}}background: transparent;{{/}}"
+           style="{{dims}} font-size: {{widget.fontSize}}px;
+           {{# widget.transparent}}background: transparent;{{/}}"
            >{{ widget.display }}</pre>
       """
 

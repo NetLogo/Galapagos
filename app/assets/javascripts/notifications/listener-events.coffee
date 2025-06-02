@@ -147,10 +147,10 @@ listenerEvents = Object.freeze([
     'args': [
       'id',     # Number
       'type',   # 'button' | 'chooser' | 'inputBox' | 'textBox' | 'monitor' | 'output' | 'plot' | 'slider' | 'switch'
-      'top',    # Number
-      'bottom', # Number
-      'left',   # Number
-      'right'   # Number
+      'y',      # Number
+      'height', # Number
+      'x',      # Number
+      'width'   # Number
     ]
   },
   {

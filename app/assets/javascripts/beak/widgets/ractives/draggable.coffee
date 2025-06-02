@@ -77,25 +77,21 @@ CommonDrag = {
 RactiveDraggableAndContextable = RactiveContextable.extend({
 
   lastUpdateMs: undefined # Number
-  startLeft:    undefined # Number
-  startRight:   undefined # Number
-  startTop:     undefined # Number
-  startBottom:  undefined # Number
+  startX:       undefined # Number
+  startY:       undefined # Number
   view:         undefined # Element
 
   data: -> {
-    left:      undefined # Number
-  , right:     undefined # Number
-  , top:       undefined # Number
-  , bottom:    undefined # Number
+    x: undefined # Number
+  , y: undefined # Number
   }
 
   nudge: (direction) ->
     switch direction
-      when "up"    then if @get('top')  > 0 then @set('top' , @get('top' ) - 1); @set('bottom', @get('bottom') - 1)
-      when "down"  then                          @set('top' , @get('top' ) + 1); @set('bottom', @get('bottom') + 1)
-      when "left"  then if @get('left') > 0 then @set('left', @get('left') - 1); @set('right' , @get('right' ) - 1)
-      when "right" then                          @set('left', @get('left') + 1); @set('right' , @get('right' ) + 1)
+      when "up"    then if @get('y') > 0 then @set('y', @get('y') - 1)
+      when "down"  then                       @set('y', @get('y') + 1)
+      when "left"  then if @get('x') > 0 then @set('x', @get('x') - 1)
+      when "right" then                       @set('x', @get('x') + 1)
       else              console.log("'#{direction}' is an impossible direction for nudging...")
 
   on: {
@@ -103,10 +99,8 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
     'start-widget-drag': (event) ->
       CommonDrag.dragstart(this, event, (-> true), (x, y) =>
         @fire('select-component', event.component)
-        @startLeft    = @get(  'left') - x
-        @startRight   = @get( 'right') - x
-        @startTop     = @get(   'top') - y
-        @startBottom  = @get('bottom') - y
+        @startX = @get('x') - x
+        @startY = @get('y') - y
       )
 
     'drag-widget': (event) ->
@@ -118,34 +112,28 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
 
         findAdjustment = (n) -> n - (Math.round(n / 5) * 5)
 
-        xAdjust = if isSnapping then findAdjustment(@startLeft + x) else 0
-        yAdjust = if isSnapping then findAdjustment(@startTop  + y) else 0
+        xAdjust = if isSnapping then findAdjustment(@startX + x) else 0
+        yAdjust = if isSnapping then findAdjustment(@startY + y) else 0
 
-        newLeft = @startLeft + x - xAdjust
-        newTop  = @startTop  + y - yAdjust
+        newX = @startX + x - xAdjust
+        newY = @startY + y - yAdjust
 
-        if newLeft < 0
-          @set( 'left', 0)
-          @set('right', @startRight - @startLeft)
+        if newX < 0
+          @set('x', 0)
         else
-          @set( 'left', newLeft)
-          @set('right', @startRight + x - xAdjust)
+          @set('x', newX)
 
-        if newTop < 0
-          @set(   'top', 0)
-          @set('bottom', @startBottom - @startTop)
+        if newY < 0
+          @set('y', 0)
         else
-          @set(   'top', newTop)
-          @set('bottom', @startBottom + y - yAdjust)
+          @set('y', newY)
 
       )
 
     'stop-widget-drag': ->
       CommonDrag.dragend(this, =>
-        @startLeft    = undefined
-        @startRight   = undefined
-        @startTop     = undefined
-        @startBottom  = undefined
+        @startX = undefined
+        @startY = undefined
       )
 
   }
@@ -154,5 +142,5 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
 
 export {
   CommonDrag,
-  RactiveDraggableAndContextable,
+  RactiveDraggableAndContextable
 }

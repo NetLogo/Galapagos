@@ -20,17 +20,17 @@ FlexColumn = Ractive.extend({
 SliderEditForm = EditForm.extend({
 
   data: -> {
-    bottom:    undefined # Number
-  , direction: undefined # String
-  , left:      undefined # Number
+    direction: undefined # String
+  , height:    undefined # Number
   , maxCode:   undefined # String
   , minCode:   undefined # String
-  , right:     undefined # Number
   , stepCode:  undefined # String
-  , top:       undefined # Number
   , units:     undefined # String
   , value:     undefined # Number
   , variable:  undefined # String
+  , width:     undefined # Number
+  , x:         undefined # Number
+  , y:         undefined # Number
   }
 
   twoway: false
@@ -50,30 +50,30 @@ SliderEditForm = EditForm.extend({
 
     value = Number.parseFloat(form.value.value)
 
-    oldTop    = @get('top')
-    oldRight  = @get('right')
-    oldBottom = @get('bottom')
-    oldLeft   = @get('left')
+    oldX      = @get('x')
+    oldY      = @get('y')
+    oldWidth  = @get('width')
+    oldHeight = @get('height')
 
-    [right, bottom] =
+    [width, height] =
       if (@get('direction') is 'horizontal' and     form.vertical.checked) or
          (@get('direction') is 'vertical'   and not form.vertical.checked)
-        [oldLeft + (oldBottom - oldTop), oldTop + (oldRight - oldLeft)]
+        [oldHeight, oldWidth]
       else
-        [oldRight, oldBottom]
+        [oldWidth, oldHeight]
 
     {
-            bottom
-    , currentValue: value
+      currentValue: value
     ,      default: value
     ,    direction: (if form.vertical.checked then "vertical" else "horizontal")
     ,      display: form.variable.value
+    ,       height
     ,          max: @findComponent('formMaxCode' ).findComponent('codeContainer').get('code')
     ,          min: @findComponent('formMinCode' ).findComponent('codeContainer').get('code')
-    ,        right
     ,         step: @findComponent('formStepCode').findComponent('codeContainer').get('code')
     ,        units: (if form.units.value isnt "" then form.units.value else undefined)
     ,     variable: form.variable.value.toLowerCase()
+    ,        width
     }
 
   partials: {
@@ -221,8 +221,8 @@ RactiveSlider = RactiveValueWidget.extend({
     {{>slider}}
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
-              top="{{widget.top}}" right="{{widget.right}}" bottom="{{widget.bottom}}"
-              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}"
+              y="{{widget.y}}" width="{{widget.width}}" height="{{widget.height}}"
+              x="{{widget.x}}" value="{{widget.default}}" variable="{{widget.variable}}"
               breedVars="{{breedVars}}" />
     """
 
@@ -261,9 +261,9 @@ RactiveSlider = RactiveValueWidget.extend({
     verticalDims:
       """
       position: absolute;
-      left: {{ left }}px; top: {{ top }}px;
-      width: {{ bottom - top }}px; height: {{ right - left }}px;
-      transform: translateY({{ bottom - top }}px) rotate(270deg);
+      left: {{ x }}px; top: {{ y }}px;
+      width: {{ height }}px; height: {{ width }}px;
+      transform: translateY({{ height }}px) rotate(270deg);
       transform-origin: top left;
       """
 

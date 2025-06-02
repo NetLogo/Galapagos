@@ -5,17 +5,17 @@ typedWidgetProperties = Object.freeze(new Map([
 , ['inputBox', ['boxedValue', 'variable']]
 , ['monitor',  ['display', 'fontSize', 'precision', 'source']]
 , ['output',   ['fontSize']]
-, ['plot',     ['autoPlotOn', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']]
+, ['plot',     ['autoPlotX', 'autoPlotY', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']]
 , ['slider',   ['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable']]
 , ['switch',   ['display', 'on', 'variable']]
-, ['textBox',  ['color', 'display', 'fontSize', 'transparent']]
+, ['textBox',  ['display', 'fontSize', 'markdown', 'transparent']]
 , ['view',     ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']]
 ]))
 # coffeelint: enable=max_line_length
 
-locationProperties = Object.freeze(['bottom', 'left', 'right', 'top'])
+locationProperties = Object.freeze(['x', 'width', 'y', 'height'])
 
-otherProperties = Object.freeze(['type'])
+otherProperties = Object.freeze(['type', 'oldSize'])
 
 # Care should be taken to *not* copy the `currentValue` for a monitor widget.
 # That value can be a turtle or patch, which causes an infinite loop in the

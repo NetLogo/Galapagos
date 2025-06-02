@@ -227,20 +227,20 @@ RactiveView = RactiveWidget.extend({
     }
 
   # (Object[Number]) => Unit
-  handleResize: ({ left: newLeft, right: newRight, top: newTop, bottom: newBottom }) ->
+  handleResize: ({ x: newX, width: newWidth, y: newY, height: newHeight }) ->
 
-    if newLeft >= 0 and newTop >= 0
+    if newX >= 0 and newY >= 0
 
-      oldLeft   = @get('left'  )
-      oldRight  = @get('right' )
-      oldTop    = @get('top'   )
-      oldBottom = @get('bottom')
+      oldX      = @get('x'     )
+      oldWidth  = @get('width' )
+      oldY      = @get('y'     )
+      oldHeight = @get('height')
 
-      oldCanvasWidth  = oldRight  - oldLeft - VIEW_INNER_SPACING.horizontal
-      oldCanvasHeight = oldBottom - oldTop - VIEW_INNER_SPACING.vertical
+      oldCanvasWidth  = oldWidth  - VIEW_INNER_SPACING.horizontal
+      oldCanvasHeight = oldHeight - VIEW_INNER_SPACING.vertical
 
-      newCanvasWidth  = newRight  - newLeft - VIEW_INNER_SPACING.horizontal
-      newCanvasHeight = newBottom - newTop - VIEW_INNER_SPACING.vertical
+      newCanvasWidth  = newWidth  - VIEW_INNER_SPACING.horizontal
+      newCanvasHeight = newHeight - VIEW_INNER_SPACING.vertical
 
       dWidth  = Math.abs(oldCanvasWidth  - newCanvasWidth )
       dHeight = Math.abs(oldCanvasHeight - newCanvasHeight)
@@ -254,18 +254,18 @@ RactiveView = RactiveWidget.extend({
       dx = scaledWidth  - oldCanvasWidth
       dy = scaledHeight - oldCanvasHeight
 
-      movedLeft = newLeft isnt oldLeft
-      movedUp   = newTop  isnt oldTop
+      movedLeft = newX isnt oldX
+      movedUp   = newY isnt oldY
 
-      [top , bottom] = if movedUp   then [oldTop  - dy, newBottom] else [newTop , oldBottom + dy]
-      [left,  right] = if movedLeft then [oldLeft - dx, newRight ] else [newLeft, oldRight  + dx]
+      [y, height] = if movedUp   then [oldY - dy, newHeight] else [newY, oldHeight + dy]
+      [x, width ] = if movedLeft then [oldX - dx, newWidth ] else [newX, oldWidth  + dx]
 
       if left >= 0 and top >= 0
 
-        @set('widget.top'   , Math.round(top   ))
-        @set('widget.bottom', Math.round(bottom))
-        @set('widget.left'  , Math.round(left  ))
-        @set('widget.right' , Math.round(right ))
+        @set('widget.y'     , Math.round(y     ))
+        @set('widget.height', Math.round(height))
+        @set('widget.x'     , Math.round(x     ))
+        @set('widget.width' , Math.round(width ))
 
         @findComponent('editForm').set('patchSize', patchSize)
 

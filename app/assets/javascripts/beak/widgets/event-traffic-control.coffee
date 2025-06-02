@@ -100,25 +100,29 @@ controlEventTraffic = (controller, performUpdate) ->
     return
 
   # () => Unit
-  onWidgetBottomChange = ->
+  onWidgetYChange = ->
     getBottom =
       (w) ->
         if w.type is 'plot' or w.type is 'hnwPlot'
-          w.bottom + 3
+          w.y + w.height + 3
         else
-          w.bottom
-    ractive.set('height', Math.max.apply(Math, getBottom(w) for own i, w of ractive.get('widgetObj') when w.bottom?))
+          w.y + w.height
+
+    bottoms = (getBottom(w) for own i, w of ractive.get('widgetObj') when (w.y? and w.height?))
+    ractive.set('height', Math.max.apply(Math, bottoms))
     return
 
   # () => Unit
-  onWidgetRightChange = ->
+  onWidgetXChange = ->
     getRight =
       (w) ->
         if w.type is 'plot' or w.type is 'hnwPlot'
-          w.right + 3
+          w.x + w.width + 3
         else
-          w.right
-    ractive.set('width' , Math.max.apply(Math, getRight(w) for own i, w of ractive.get('widgetObj') when w.right? ))
+          w.x + w.width
+
+    rights = (getRight(w) for own i, w of ractive.get('widgetObj') when (w.x? and w.width?))
+    ractive.set('width', Math.max.apply(Math, rights))
     return
 
   # (Any, Any, String, Number) => Unit
@@ -155,8 +159,8 @@ controlEventTraffic = (controller, performUpdate) ->
 
   # () => Unit
   refreshDims = ->
-    onWidgetRightChange()
-    onWidgetBottomChange()
+    onWidgetXChange()
+    onWidgetYChange()
     return
 
   # (String) => Unit
@@ -246,8 +250,10 @@ controlEventTraffic = (controller, performUpdate) ->
   ))
 
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
-  ractive.observe('widgetObj.*.right'       , onWidgetRightChange)
-  ractive.observe('widgetObj.*.bottom'      , onWidgetBottomChange)
+  ractive.observe('widgetObj.*.x'           , onWidgetXChange)
+  ractive.observe('widgetObj.*.width'       , onWidgetXChange)
+  ractive.observe('widgetObj.*.y'           , onWidgetYChange)
+  ractive.observe('widgetObj.*.height'      , onWidgetYChange)
 
   ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))

@@ -38,7 +38,7 @@ MonitorEditForm = EditForm.extend({
     {
         display: (if form.display.value isnt "" then form.display.value else undefined)
     ,  fontSize
-    ,    bottom: @parent.get('widget.top') + (2 * fontSize) + 23
+    ,    height: (2 * fontSize) + 23
     , precision: parseInt(form.precision.value)
     ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
     }
@@ -135,7 +135,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
     {
             display: (if form.display.value isnt "" then form.display.value else source)
     ,      fontSize
-    ,        bottom: @parent.get('widget.top') + (2 * fontSize) + 23
+    ,        height: (2 * fontSize) + 23
     ,     precision: parseInt(form.precision.value)
     , reporterStyle
     ,        source

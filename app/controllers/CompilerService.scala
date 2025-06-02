@@ -162,8 +162,8 @@ private[controllers] object CompilationRequestHandler {
     val info = argMap.getOrElse("info", "")
     for {
       widgets      <- CompileWidgets(argMap.getOrElse("widgets", "[]"))
-      turtleShapes <- extractShapes[VectorShape]("turtleShapes", readVectorShapes, Model.defaultShapes    )(argMap)
-      linkShapes   <- extractShapes[LinkShape](  "linkShapes",   readLinkShapes,   Model.defaultLinkShapes)(argMap)
+      turtleShapes <- extractShapes[VectorShape]("turtleShapes", readVectorShapes, Model.defaultTurtleShapes)(argMap)
+      linkShapes   <- extractShapes[LinkShape](  "linkShapes",   readLinkShapes,   Model.defaultLinkShapes  )(argMap)
       code         <- (argMap get CodeKey).fold(codeMissingMsg.failureNel[String])(_.successNel[String])
       model        <- Validation.fromTryCatchThrowable[Model, RuntimeException](
         Model(code, widgets, info = info, turtleShapes = turtleShapes, linkShapes = linkShapes))
@@ -197,8 +197,8 @@ private[controllers] object CompilationRequestHandler {
   private val codeMissingMsg  = s"You must provide a `$CodeKey` parameter that contains the code from a NetLogo model."
   private val nlogoMissingMsg = s"You must provide a `$ModelKey` parameter that contains the contents of an nlogo file."
 
-  private def extractShapes[T](key: String, parseShapes: TortoiseJson => ValidationNel[String, Seq[T]], default: List[T])
-                              (argMap: Map[String, String]): ValidationNel[String, List[T]] = {
+  private def extractShapes[T](key: String, parseShapes: TortoiseJson => ValidationNel[String, Seq[T]], default: Seq[T])
+                              (argMap: Map[String, String]): ValidationNel[String, Seq[T]] = {
     val parsedJson = argMap.get(key) map Json.parse map toTortoiseJson map parseShapes map(_.map(_.toList))
     parsedJson getOrElse default.successNel
   }

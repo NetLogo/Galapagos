@@ -16,17 +16,15 @@ RactiveResizer = Ractive.extend({
     dims: ->
       """
       position: absolute;
-      left: #{@get('left')}px; top: #{@get('top')}px;
+      left: #{@get('x')}px; top: #{@get('y')}px;
       width: #{@get('width')}px; height: #{@get('height')}px;
       """
-    midX:   -> (@get( 'width') / 2) - 5
+    midX:   -> (@get('width' ) / 2) - 5
     midY:   -> (@get('height') / 2) - 5
-    left:   -> @get('target').get(  'left') - 5
-    right:  -> @get('target').get( 'right') + 5
-    top:    -> @get('target').get(   'top') - 5
-    bottom: -> @get('target').get('bottom') + 5
-    height: -> @get('bottom') - @get( 'top')
-    width:  -> @get( 'right') - @get('left')
+    x:      -> @get('target').get('x') - 5
+    y:      -> @get('target').get('y') - 5
+    height: -> @get('target').get('height') + 10
+    width:  -> @get('target').get('width' ) + 10
   }
 
   # () => Unit
@@ -67,14 +65,13 @@ RactiveResizer = Ractive.extend({
     'start-handle-drag': (event) ->
       CommonDrag.dragstart(this, event, (-> true), (x, y) =>
         { left, top } = @find('.widget-resizer').getBoundingClientRect()
-        @_xAdjustment = left - @get('left')
-        @_yAdjustment = top  - @get('top')
+        @_xAdjustment = left - @get('x')
+        @_yAdjustment = top  - @get('y')
       )
 
     'drag-handle': (event) ->
 
       CommonDrag.drag(this, event, (x, y) =>
-
         snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
         isMac      = window.navigator.platform.startsWith('Mac')
         isSnapping = ((not isMac and not event.original.ctrlKey) or (isMac and not event.original.metaKey))
@@ -83,10 +80,10 @@ RactiveResizer = Ractive.extend({
         yCoord               = snappedY - @_yAdjustment
 
         target    = @get('target')
-        oldLeft   = target.get('left')
-        oldRight  = target.get('right')
-        oldTop    = target.get('top')
-        oldBottom = target.get('bottom')
+        oldLeft   = target.get('x')
+        oldTop    = target.get('y')
+        oldRight  = oldLeft + target.get('width')
+        oldBottom = oldTop  + target.get('height')
 
         left   = ['left'  , xCoord]
         right  = ['right' , xCoord]
@@ -107,6 +104,8 @@ RactiveResizer = Ractive.extend({
             when "TopRight"   then [top, right]
             else throw new Error("What the heck resize direction is '#{direction}'?")
 
+        oldCoords = { left: oldLeft, top: oldTop, bottom: oldBottom, right: oldRight }
+
         clamp = (dir, value) =>
 
           opposite =
@@ -117,8 +116,7 @@ RactiveResizer = Ractive.extend({
               when 'bottom' then 'top'
               else throw new Error("What the heck opposite direction is '#{dir}'?")
 
-
-          oppositeValue = target.get(opposite)
+          oppositeValue = oldCoords[opposite]
 
           newValue = switch opposite
             when 'left'   then Math.max(value, oppositeValue + target.minWidth )
@@ -137,10 +135,15 @@ RactiveResizer = Ractive.extend({
           else
             {}
 
-        oldCoords = { left: oldLeft, top: oldTop, bottom: oldBottom, right: oldRight }
-        newCoords = Object.assign(oldCoords, newChanges)
+        newCoords = Object.assign({}, oldCoords, newChanges)
 
-        @get('target').handleResize(newCoords)
+        finalCoords = {
+          x:      newCoords.left,
+          y:      newCoords.top,
+          height: newCoords.bottom - newCoords.top,
+          width:  newCoords.right  - newCoords.left
+        }
+        @get('target').handleResize(finalCoords)
 
       )
 

@@ -38,7 +38,8 @@ mangleExportedPlots = (epm, plotArr, renames, oldPlotName, newPlotName) ->
 
       target.currentPenNameOrNull = fold(-> null)((p) -> p.name)(cpm)
       target.name                 = plot.name
-      target.isAutoplotting       = plot.isAutoplotting
+      target.isAutoPlotX          = plot.isAutoPlotX
+      target.isAutoPlotY          = plot.isAutoPlotY
       target.isLegendOpen         = plot.isLegendEnabled
 
       pens = plot.getPens()

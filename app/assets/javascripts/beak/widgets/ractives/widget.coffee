@@ -89,14 +89,14 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     dims: ->
       """
       position: absolute;
-      left: #{@get('left')}px; top: #{@get('top')}px;
-      width: #{@get('right') - @get('left')}px; height: #{@get('bottom') - @get('top')}px;
+      left: #{@get('x')}px; top: #{@get('y')}px;
+      width: #{@get('width')}px; height: #{@get('height')}px;
       """
   }
 
   notifyWidgetMoved: () ->
     widget = @get('widget')
-    @fire('widget-moved', widget.id, widget.type, widget.top, widget.bottom, widget.left, widget.right)
+    @fire('widget-moved', widget.id, widget.type, widget.y, widget.height, widget.x, widget.width)
     return
 
   nudge: (direction) ->
@@ -105,11 +105,11 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     return
 
   # (Object[Number]) => Unit
-  handleResize: ({ left, right, top, bottom }) ->
-    @set('widget.left'  , left  )
-    @set('widget.right' , right )
-    @set('widget.top'   , top   )
-    @set('widget.bottom', bottom)
+  handleResize: ({ x, width, y, height }) ->
+    @set('widget.x'     , x)
+    @set('widget.width' , width)
+    @set('widget.y'     , y)
+    @set('widget.height', height)
     return
 
   # () => Unit
