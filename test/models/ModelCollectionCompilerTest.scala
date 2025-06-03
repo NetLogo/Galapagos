@@ -54,7 +54,7 @@ trait AkkaTestHelper extends Assertions {
 
   self: TestKitBase =>
 
-  override implicit val system = ActorSystem("TestActorSystem")
+  override implicit val system: ActorSystem = ActorSystem("TestActorSystem")
 
   class TestSource(val path: String) {
     def file:     File   = new File(path)

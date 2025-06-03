@@ -22,7 +22,7 @@ class CompilerServiceIntegrationTest extends PlaySpec with GuiceOneAppPerSuite {
     new GuiceApplicationBuilder()
       .configure("play.akka.shutdown-timeout" -> "2s")
       .configure("akka.log-dead-letters"      -> 0)
-      .build
+      .build()
 
   implicit lazy val materializer: Materializer = app.materializer
 

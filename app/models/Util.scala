@@ -21,6 +21,4 @@ object Util {
   def usingSource[T](sourceBuildFunc: (Source.type) => BufferedSource)(sourceProcessFunc: (BufferedSource) => T): T =
     usingSource(sourceBuildFunc(Source))(sourceProcessFunc)
 
-  def noneIfEmpty[S, T[S] <: GenIterable[S]](x: T[S]): Option[T[S]] = if (!x.isEmpty) Option(x) else None
-
 }

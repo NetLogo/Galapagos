@@ -92,8 +92,8 @@ class CompilerService @Inject() (
   }
 
   private def toStringMap(bundle: ParamBundle): ArgMap = {
-    val fileMap = bundle.byteParams mapValues (str => new String(str, "ISO-8859-1"))
-    bundle.stringParams ++ fileMap
+    val fileMap = bundle.byteParams.view.mapValues(str => new String(str, "ISO-8859-1"))
+    (bundle.stringParams ++ fileMap).toMap
   }
 }
 

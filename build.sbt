@@ -13,19 +13,18 @@ import scala.sys.process.{ Process, ProcessLogger }
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.12.17"
+scalaVersion := "2.13.16"
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-deprecation",
   "-unchecked",
   "-feature",
   "-language:_",
-  // Scala 2.12.4 produces warnings for unused imports, but Play generates
-  // files as part of compilation that have unused imports, so we have to
-  // disable these warnings for now.  -JMB July 2017
-  "-Xlint:-unused",
   "-Ywarn-value-discard",
-  "-Xfatal-warnings"
+  "-Xfatal-warnings",
+  // The Play-generated routes code throws errors about inexhaustive matches, so we squelch them for now.  -Jeremy B
+  // June 2025
+  "-Wconf:src=target/scala-2.13/routes/main/.*:silent"
 )
 
 lazy val root = (project in file("."))
@@ -36,23 +35,19 @@ lazy val root = (project in file("."))
     TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
 
-val tortoiseVersion = "1.0-2c571d9"
+val tortoiseVersion = "1.0-785cc0a"
 
 resolvers ++= Seq(
-  "compilerjvm"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
-, "netlogowebjs"    at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
-, "netlogoheadless" at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
-, "play-scraper"    at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
+  "tortoise"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
+, "netlogo"      at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
+, "play-scraper" at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
 )
 
 libraryDependencies ++= Seq(
   ehcache
 , filters
 , guice
-// these guice imports are temporary to support Java 17 with Play 2.8.16.  They should be removed once a later version
-// of Play properly references them.  -Jeremy B September 2022
-, "com.google.inject"            % "guice"                % "5.1.0"
-, "com.google.inject.extensions" % "guice-assistedinject" % "5.1.0"
+, "org.scala-lang.modules" %% "scala-parallel-collections" % "1.2.0"
 , "org.nlogo" % "compilerjvm"  % tortoiseVersion
 , "org.nlogo" % "netlogowebjs" % tortoiseVersion
 // ideally these would be moved to `package.json`, but they aren't on npm at these exact versions, so here they stay.
@@ -60,8 +55,8 @@ libraryDependencies ++= Seq(
 , "org.webjars"       % "markdown-js" % "0.5.0-1"
 , "org.webjars.bower" % "google-caja" % "6005.0.0"
 // akka-testkit must match the akka version used by Play -Jeremy B September 2022
-, "com.typesafe.akka"      %% "akka-testkit"       % "2.6.20" % Test
-, "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0"  % Test
+, "com.typesafe.akka"      %% "akka-testkit"       % play.core.PlayVersion.akkaVersion % Test
+, "org.scalatestplus.play" %% "scalatestplus-play" % "6.0.1" % Test
 )
 
 evictionErrorLevel := Level.Warn

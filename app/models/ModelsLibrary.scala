@@ -44,7 +44,7 @@ object ModelsLibrary extends NetLogoModelCollection {
   private def allNetLogoFilesIn(f: File): Seq[File] = {
     def recursivelyListFiles(f: File): Seq[File] = {
       val childFiles = f.listFiles
-      childFiles ++ childFiles.filter(_.isDirectory).flatMap(recursivelyListFiles)
+      childFiles.toIndexedSeq ++ childFiles.filter(_.isDirectory).flatMap(recursivelyListFiles)
     }
     recursivelyListFiles(f).filter(isNetLogoFile)
   }

@@ -4,7 +4,7 @@ import
   javax.inject.{ Inject, Provider }
 
 import
-  play.api.{ Configuration, Environment, http, mvc => apimvc, OptionalSourceMapper, routing => apirouting},
+  play.api.{ Configuration, Environment, http, Mode, mvc => apimvc, OptionalSourceMapper, routing => apirouting},
       http.DefaultHttpErrorHandler,
       apimvc.{ Result, Results, RequestHeader },
         Results.Status,
@@ -19,7 +19,7 @@ class ErrorHandler @Inject() (
   router:       Provider[Router]
 ) extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
-  private implicit val mode = env.mode
+  private implicit val mode: Mode = env.mode
 
   override protected def onNotFound(request: RequestHeader, message: String): Future[Result] =
     Future.successful(

@@ -10,7 +10,7 @@ import
     ModelsLibrary.{ allModels, prettyFilepath }
 
 import
-  play.api.{ Environment, libs, Logger, mvc },
+  play.api.{ Environment, libs, Logger, Mode, mvc },
     libs.json.Json,
     mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
@@ -22,8 +22,8 @@ class Application @Inject() (
 , env: Environment
 ) extends AbstractController(components) {
 
-  private implicit val environment = env
-  private implicit val mode = env.mode
+  private implicit val environment: Environment = env
+  private implicit val mode:        Mode        = environment.mode
   private val logger = Logger("application")
 
   // scalastyle:off public.methods.have.type

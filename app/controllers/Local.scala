@@ -6,7 +6,7 @@ import
   javax.inject.Inject
 
 import
-  play.api.{ Configuration, Environment, mvc },
+  play.api.{ Configuration, Environment, Mode, mvc },
     mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
 class Local @Inject() ( components: ControllerComponents
@@ -16,8 +16,8 @@ class Local @Inject() ( components: ControllerComponents
 
   import Local._
 
-  implicit val environment = environ
-  implicit val mode        = environment.mode
+  implicit val environment: Environment = environ
+  implicit val mode:        Mode        = environment.mode
 
   def launch: Action[AnyContent] = Action {
     implicit request =>

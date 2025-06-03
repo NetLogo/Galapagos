@@ -79,7 +79,7 @@
     window.isStandaloneHTML = @standalone;
     window.environmentMode = "@mode.toString.toLowerCase";
     window.standaloneURL = `${window.location.protocol}@TagBuilder.protocolRelativeURL(
-      new java.net.URL(routes.Local.standalone.absoluteURL)
+      new java.net.URL(routes.Local.standalone.absoluteURL())
     )`;
   </script>
 

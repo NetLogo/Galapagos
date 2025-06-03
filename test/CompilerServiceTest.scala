@@ -56,11 +56,11 @@ class CompilerServiceTest extends PlaySpec {
       val reporters = Map("one" -> "count turtles", "two" -> "5 + 10", "three" -> "4 + 2")
 
       val result            = CompileResponse.fromModel(wsModelV, commands, reporters)
-      val compiledCommands  = commands.mapValues  { s => wsModel.compileCommand(s) }
-      val compiledReporters = reporters.mapValues { s => wsModel.compileReporter(s) }
+      val compiledCommands  = commands.view.mapValues({ s => wsModel.compileCommand(s) }).toMap
+      val compiledReporters = reporters.view.mapValues({ s => wsModel.compileReporter(s) }).toMap
 
-      result.commands  mustBe IDedValuesMap(compiledCommands)
-      result.reporters mustBe IDedValuesMap(compiledReporters)
+      result.commands.mustBe(IDedValuesMap(compiledCommands))
+      result.reporters.mustBe(IDedValuesMap(compiledReporters))
     }
 
     "gracefully handle errors in commands and reporters" in {

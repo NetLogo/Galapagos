@@ -13,8 +13,10 @@ resolvers ++= Seq(
   "play-scraper" at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
 )
 
-addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.8.19")
-addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")
-addSbtPlugin("com.typesafe.sbt"  %  "sbt-digest"            % "1.1.4")
-addSbtPlugin("org.nlogo"         %  "play-scraper"          % "1.0.1")
-addSbtPlugin("com.timushev.sbt"  %  "sbt-updates"           % "0.3.4")
+addSbtPlugin("com.typesafe.play" %  "sbt-plugin"            % "2.9.7")
+// Conflict with a common dependency of Play/Twirl.  No updates in a long time, so maybe time to switch.  -Jeremy B June
+// 2025
+// addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")
+addSbtPlugin("com.github.sbt"    %  "sbt-digest"            % "2.1.0")
+addSbtPlugin("org.nlogo"         %  "play-scraper"          % "1.1.0")
+addSbtPlugin("com.timushev.sbt"  %  "sbt-updates"           % "0.5.0")

@@ -4,7 +4,7 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.{ Configuration, Environment }
+import play.api.{ Configuration, Environment, Mode }
 import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
 
 import play.twirl.api.Html
@@ -15,8 +15,8 @@ class NetTango @Inject() (
 , environ: Environment
 ) extends AbstractController(components) with ResourceSender {
 
-  implicit val environment = environ
-  implicit val mode        = environment.mode
+  implicit val environment: Environment = environ
+  implicit val mode:        Mode        = environment.mode
 
   def builder(themed: Boolean, standalone: Boolean): Action[AnyContent] = Action {
     implicit request =>

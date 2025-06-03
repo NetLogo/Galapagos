@@ -54,7 +54,7 @@ sealed trait IDedValues[T] {
 }
 
 case class IDedValuesMap[T](map: Map[String, T]) extends IDedValues[T] {
-  override def mapValues[U](f: (T) => U): IDedValues[U] = IDedValuesMap(map.mapValues(f))
+  override def mapValues[U](f: (T) => U): IDedValues[U] = IDedValuesMap(map.view.mapValues(f).toMap)
 }
 
 case class IDedValuesSeq[T](seq: Seq[T]) extends IDedValues[T] {

@@ -14,6 +14,9 @@ import
 import
   models.Util.usingSource
 
+import
+  scala.collection.parallel.CollectionConverters._
+
 class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) extends Actor {
 
   val compiler = new Compiler()
