@@ -25,6 +25,8 @@ class CompilerServiceTest extends PlaySpec {
 
   import CompilerServiceHelpers._
 
+  import scala.language.implicitConversions
+
   private implicit def map2IdedValues[T](map: Map[String, T]): IDedValuesMap[T] = IDedValuesMap(map)
   private implicit def seq2IdedValues[T](seq: Seq[T]):         IDedValuesSeq[T] = IDedValuesSeq(seq)
 

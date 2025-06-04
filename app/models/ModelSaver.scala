@@ -36,7 +36,7 @@ object ModelSaver {
   }
 
   private def slurpURL(url: URL): String =
-    usingSource(_.fromURL(url)(Codec.ISO8859))(_.mkString)
+    usingSource(_.fromURL(url)(using Codec.ISO8859))(_.mkString)
 
 }
 

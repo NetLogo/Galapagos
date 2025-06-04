@@ -13,19 +13,25 @@ import scala.sys.process.{ Process, ProcessLogger }
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.13.16"
+scalaVersion := "3.7.0"
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
   "-deprecation",
   "-unchecked",
   "-feature",
-  "-language:_",
-  "-Ywarn-value-discard",
+  "-experimental",
   "-Xfatal-warnings",
   // The Play-generated routes code throws errors about inexhaustive matches, so we squelch them for now.  -Jeremy B
   // June 2025
-  "-Wconf:src=target/scala-2.13/routes/main/.*:silent"
+  "-Wconf:src=routes/main/.*:silent",
+  // And in Scala 3 for explicit implicits not using `using` -Jeremy B June 2025
+  "-Wconf:src=twirl/main/views/html/.*:silent"
 )
+// Play includes some of the same compiler flags we do, but duplicate flags is a warn/error in Scala 3.  Feels weird to
+// drop them here, so we just de-duplicate them.  -Jeremy B June 2025
+scalacOptions ~= { options =>
+  options.distinct
+}
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, PlayScrapePlugin)
@@ -35,12 +41,12 @@ lazy val root = (project in file("."))
     TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
 
-val tortoiseVersion = "1.0-785cc0a"
+val tortoiseVersion = "1.0-998de29"
 
 resolvers ++= Seq(
-  "tortoise"     at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
-, "netlogo"      at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
-, "play-scraper" at "https://dl.cloudsmith.io/public/netlogo/play-scraper/maven/"
+  "tortoise"                at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
+, "netlogo"                 at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
+, "play-scraper-workaround" at "https://dl.cloudsmith.io/public/netlogo/play-scraper-workaround/maven/"
 )
 
 libraryDependencies ++= Seq(

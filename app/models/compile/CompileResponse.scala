@@ -29,12 +29,13 @@ object CompileResponse {
                 commands:    IDedValues[String],
                 reporters:   IDedValues[String]): CompileResponse =
     CompileResponse(
-      modelResult map       (_.compiledCode),
-      modelResult map       (_.model.info)                                       getOrElse FailureMessage,
-      modelResult map       (_.model.code)                                       getOrElse FailureMessage,
-      modelResult map       (m => m.widgets)                                     getOrElse Seq(),
-      commands    mapValues (s => modelResult     map (_.compileCommand (s))     getOrElse FailureExceptionNel),
-      reporters   mapValues (s => modelResult     map (_.compileReporter(s))     getOrElse FailureExceptionNel))
+      modelResult.map(_.compiledCode),
+      modelResult.map(_.model.info  ).getOrElse(FailureMessage),
+      modelResult.map(_.model.code  ).getOrElse(FailureMessage),
+      modelResult.map(m => m.widgets).getOrElse(Seq()),
+      commands.mapValues( s => modelResult.map(_.compileCommand(s) ).getOrElse(FailureExceptionNel)),
+      reporters.mapValues(s => modelResult.map(_.compileReporter(s)).getOrElse(FailureExceptionNel))
+    )
 
   def exportNlogo(modelResult: CompileResult[CompiledModel]): CompileResult[String] =
     modelResult.map(cm => ModelReader.formatModel(cm.model))

@@ -30,7 +30,7 @@ class NetTango @Inject() (
 
   def library: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.mainTheme(views.html.netTangoLibrary(OutsourceTagBuilder)(request, environment), "NetTango Library", None, Html(""), Html(""), "../"))
+      Ok(views.html.mainTheme(views.html.netTangoLibrary(OutsourceTagBuilder)(using request, environment), "NetTango Library", None, Html(""), Html(""), "../"))
   }
 
 }

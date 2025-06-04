@@ -25,7 +25,7 @@ import
 @Singleton
 class Startup @Inject() (actorSystem: ActorSystem, @NamedCache("compilation-statuses") cache: SyncCacheApi, environment: Environment) {
   val statusCacher       = actorSystem.actorOf(Props(classOf[StatusCacher], cache))
-  val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], () => ModelsLibrary.allModels(environment.mode), statusCacher))
+  val backgroundCompiler = actorSystem.actorOf(Props(classOf[ModelCollectionCompiler], () => ModelsLibrary.allModels(using environment.mode), statusCacher))
   if (environment.mode == Mode.Prod)
     actorSystem.scheduler.scheduleWithFixedDelay(0.seconds, 30.minutes)(new Runnable { def run: Unit = backgroundCompiler ! CheckBuiltInModels })
 }

@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
+@(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 @extraHead = {
   <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />

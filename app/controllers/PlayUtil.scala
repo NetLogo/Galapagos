@@ -27,12 +27,12 @@ object PlayUtil {
                 if (file.length > 20E6.toLong)
                   "UPLOADED FILE TOO LARGE".getBytes
                 else
-                  usingSource(_.fromFile(file)(Codec.ISO8859))(_.map(_.toByte).toArray)
+                  usingSource(_.fromFile(file)(using Codec.ISO8859))(_.map(_.toByte).toArray)
               (formFile.key, arr)
           }
           ParamBundle(formData.asFormUrlEncoded, fileKVs.toMap)
       } orElse {
-        request.body.asFormUrlEncoded.flatMap( (b) => if (b.isEmpty) { None } else { Some(b) } ).map( i => ParamBundle(Map(i.toSeq: _*)) )
+        request.body.asFormUrlEncoded.flatMap( (b) => if (b.isEmpty) { None } else { Some(b) } ).map( i => ParamBundle(Map(i.toSeq*)) )
       } orElse {
         Option(request.queryString).map(ParamBundle(_))
       } getOrElse {

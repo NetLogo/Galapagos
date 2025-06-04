@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(themed: Boolean, standalone: Boolean, tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[_], environment: play.api.Environment)
+@(themed: Boolean, standalone: Boolean, tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 @extraHead = {
   @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")

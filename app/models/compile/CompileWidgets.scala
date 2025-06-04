@@ -26,7 +26,7 @@ import
 object CompileWidgets {
   def apply(json: String): ValidationNel[String, List[Widget]] = {
     JsonConverter.toTortoise(Json.parse(json)) match {
-      case TortoiseArray(widgets) => widgets.map(readWidgetJson).toList.sequenceU
+      case TortoiseArray(widgets) => widgets.map(readWidgetJson).toList.sequence
       case other                  => s"$other (a ${other.getClass.getSimpleName}) is not a valid list of widgets".failureNel
     }
   }

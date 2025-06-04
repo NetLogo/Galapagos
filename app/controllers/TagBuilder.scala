@@ -23,8 +23,8 @@ import
  * sure that you understand Galapagos#326 before you do!)  --Jason B. (1/26/16)
  */
 trait TagBuilder {
-  def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html
-  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment):            Html
+  def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[?], environment: Environment): Html
+  def callToHTML(call: Call, resourcePath: String)(implicit request: Request[?], environment: Environment):            Html
 }
 
 object TagBuilder {
@@ -39,10 +39,10 @@ object TagBuilder {
 
 object InlineTagBuilder extends TagBuilder {
 
-  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html =
+  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[?], environment: Environment): Html =
     pathToTag(s"public/$path", attributes)
 
-  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
+  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[?], environment: Environment): Html =
     pathToTag(resourcePath)
 
   private def pathToTag(path: String, attributes: Seq[(String, String)] = Seq.empty)(implicit environment: Environment): Html = {
@@ -58,7 +58,7 @@ object InlineTagBuilder extends TagBuilder {
 
   private def genTag(source: String, url: URL, attributes: Seq[(String, String)] = Seq.empty): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
-    val FileExtensionRegex(ext) = url.toString
+    val FileExtensionRegex(ext) = url.toString: @unchecked
     ext match {
       case "js"  => TagBuilder.makeTag("script", source, attributes.toMap)
       case "css" => TagBuilder.makeTag("style",  source, attributes.toMap)
@@ -70,15 +70,15 @@ object InlineTagBuilder extends TagBuilder {
 
 object OutsourceTagBuilder extends TagBuilder {
 
-  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[_], environment: Environment): Html =
+  override def pathToHTML(path: String, attributes: (String, String)*)(implicit request: Request[?], environment: Environment): Html =
     genTag(routes.Assets.versioned(path).relative, attributes)
 
-  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[_], environment: Environment): Html =
+  override def callToHTML(call: Call, resourcePath: String)(implicit request: Request[?], environment: Environment): Html =
     genTag(call.relative)
 
   private def genTag(protoRelativeURL: String, attributes: Seq[(String, String)] = Seq.empty): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
-    val FileExtensionRegex(ext) = protoRelativeURL
+    val FileExtensionRegex(ext) = protoRelativeURL: @unchecked
     ext match {
       case "js"  => TagBuilder.makeTag("script", "", attributes.toMap + ("src" -> protoRelativeURL) )
       case "css" => TagBuilder.makeTag("link",   "", attributes.toMap + ("rel" -> "stylesheet") + ("href" -> protoRelativeURL))

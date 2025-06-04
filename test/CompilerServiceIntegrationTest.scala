@@ -41,27 +41,27 @@ class CompilerServiceIntegrationTest extends PlaySpec with GuiceOneAppPerSuite {
               case (firstResult, firstResultBody) =>
                 val fields = sanitizedJsonModel(firstResultBody, "turtleShapes", "linkShapes") - "model"
                 firstResult.header.status  mustEqual 200
-                makeRequest("POST", "/compile-code", fields.toSeq: _*).map {
+                makeRequest("POST", "/compile-code", fields.toSeq*).map {
                   case (secondResult, secondResultBody) =>
                     secondResult.header.status mustEqual 200
                     secondResultBody mustEqual firstResultBody
                 }
             }
-          }(longTimeout)
+          }(using longTimeout)
         }
     }
   }
 
   private def makeRequest(method: String, path: String, formBody: (String, String)*): Future[(Result, String)] = {
-    val req = FakeRequest(method, path).withFormUrlEncodedBody(formBody: _*)
+    val req = FakeRequest(method, path).withFormUrlEncodedBody(formBody*)
     val (_, handler) = app.requestHandler.handlerForRequest(req)
     call(handler.asInstanceOf[EssentialAction], req).map(res => (res, contentAsString(Future(res))))
   }
 
   private def sanitizedJsonModel(rawJson: String, modelVars: String*): Map[String, String] = {
-    val jobject@JsObject(jsonFields) = Json.parse(rawJson)
+    val jobject@JsObject(jsonFields) = Json.parse(rawJson): @unchecked
 
-    val JsString(modelJs) = (jobject \ "model" \ "result").get
+    val JsString(modelJs) = (jobject \ "model" \ "result").get: @unchecked
 
     val fields = jsonFields.toMap.map {
       case ("widgets", JsString(s)) => {

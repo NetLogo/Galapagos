@@ -1,6 +1,6 @@
 @import views.ViewUtils
 
-@()(implicit request: Request[_])
+@()(implicit request: Request[?])
 
 @linkableHeader(rawHeaderID: String, header: String) = {
   @defining(ViewUtils.idSafe(rawHeaderID)) { headerId =>

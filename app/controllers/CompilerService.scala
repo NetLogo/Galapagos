@@ -16,7 +16,7 @@ import
 import
   play.api.{ cache, Environment, mvc },
     cache.{ NamedCache, SyncCacheApi },
-    mvc.{ AbstractController, ControllerComponents }
+    mvc.{ AbstractController, ControllerComponents, Request }
 import controllers.{ Assets => PlayAssets }
 
 import CompilerService.{ ArgMap, CodeKey, CommandsKey, ModelKey, ModelResultV, ReportersKey }
@@ -52,7 +52,7 @@ class CompilerService @Inject() (
 
   val compiler = new Compiler()
 
-  private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(environment, assetsFinder)
+  private val generateFromUrl = (argMap: ArgMap, url: String) => gfu(argMap, url)(using environment, assetsFinder)
 
   def compileURL:   ActionType[AnyContent] = genCompileAction(generateFromUrl,   jsonResult)
   def compileCode:  ActionType[AnyContent] = genCompileAction(generateFromCode,  jsonResult)
@@ -65,14 +65,15 @@ class CompilerService @Inject() (
   def tortoiseCompilerJsMap: ActionType[AnyContent] = Action { replyWithResource(environment)("tortoise-compiler.js.map")("application/octet-stream") }
 
   private def genCompileAction(generateModel: (ArgMap, String) => ModelResult, generateResult: (ArgMap, ModelResultV) => Result) =
-    Action { implicit request =>
-      val argMap = toStringMap(request.extractBundle)
-      val model = generateModel(argMap, request.host).flatMap {
-        case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
-        case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
-      }
-      generateResult(argMap, model)
-    }
+    Action({
+      implicit request: Request[AnyContent] =>
+        val argMap = toStringMap(request.extractBundle)
+        val model = generateModel(argMap, request.host).flatMap {
+          case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
+          case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
+        }
+        generateResult(argMap, model)
+    })
 
   private def stringifyNonCompilerExceptions(v: ValidationNel[Exception, CompiledModel]): ModelResultV = {
     def liftCompilerExceptions(nel: NonEmptyList[Exception]): ModelResultV = {
@@ -83,9 +84,9 @@ class CompilerService @Inject() (
         }
       val messages = es.map(_.getMessage)
       messages.headOption.map {
-        h => NonEmptyList(h, messages.tail: _*).failure
+        h => NonEmptyList(h, messages.tail*).failure
       }.getOrElse {
-        NonEmptyList(ces.head, ces.tail: _*).failure.successNel[String]
+        NonEmptyList(ces.head, ces.tail*).failure.successNel[String]
       }
     }
     v.fold(liftCompilerExceptions, _.successNel[CompilerException].successNel[String])
@@ -206,7 +207,7 @@ private[controllers] object CompilationRequestHandler {
 
 private[controllers] trait RequestResultGenerator {
 
-  self: AbstractController with EnvironmentHolder =>
+  self: AbstractController & EnvironmentHolder =>
 
   import
     java.net.URL
@@ -310,7 +311,7 @@ private[controllers] trait RequestResultGenerator {
 
 private[controllers] trait ModelStatusHandler {
 
-  self: AbstractController with CacheProvider =>
+  self: AbstractController & CacheProvider =>
 
   import
     play.api.{ libs, mvc },
@@ -325,7 +326,7 @@ private[controllers] trait ModelStatusHandler {
   def modelStatuses: ActionType[AnyContent] = Action {
     implicit request =>
       val resultJson =
-        cache.get(AllBuiltInModelsCacheKey).getOrElse(Seq[String]())
+        cache.get[Seq[String]](AllBuiltInModelsCacheKey).getOrElse(Seq[String]())
           .map(genStatusJson)
           .foldLeft(Json.obj())(_ ++ _)
       Ok(Json.stringify(resultJson))
