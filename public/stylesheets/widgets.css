@@ -3,12 +3,12 @@
  */
 
 .netlogo-model {
-    display: flex;
-    padding: 20px;
-    flex-flow: column;
-    font-size: 12px;
-    font-family: "Lucida Grande", sans-serif;
-    outline: none;
+  display: flex;
+  padding: 20px;
+  flex-flow: column;
+  font-size: 12px;
+  font-family: "Lucida Grande", sans-serif;
+  outline: none;
 }
 
 .netlogo-display-vertical {
@@ -433,20 +433,20 @@
 }
 
 .netlogo-tick-counter {
-    background-color: #F4F4F4;
-    font-size: 13px;
-    margin: 3px;
-    border: none;
-    height: 15px;
+  background-color: #F4F4F4;
+  font-size: 13px;
+  margin: 3px;
+  border: none;
+  height: 15px;
 }
 
 .netlogo-button {
-    border:  inherit;
-    color:   black;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0px;
+  border:  inherit;
+  color:   black;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0px;
 }
 
 .netlogo-button:disabled {
@@ -458,15 +458,15 @@
 }
 
 .netlogo-button.clear-button {
-    padding: 5px;
+  padding: 5px;
 }
 
 .netlogo-button .netlogo-label {
-    /* For some reason, Safari doesn't like justify-content in buttons,
-       we have to resort to putting a span in the button that can then be
-       centered.
-       BCH 11/14/2014 */
-    margin: auto;
+  /* For some reason, Safari doesn't like justify-content in buttons,
+      we have to resort to putting a span in the button that can then be
+      centered.
+      BCH 11/14/2014 */
+  margin: auto;
 }
 
 .netlogo-action-key {
@@ -481,8 +481,8 @@
 }
 
 .netlogo-button:active, .netlogo-forever-button.netlogo-active {
-    background-color: gray;
-    color: white;
+  background-color: gray;
+  color: white;
 }
 
 .netlogo-forever-button .netlogo-forever-icon {
@@ -512,21 +512,31 @@
 }
 
 .netlogo-text-box {
-    background-color: white;
-    border: none;
-    margin: 0;
-    white-space: pre-wrap;
-    font-family: "Lucida Grande", sans-serif;
+  background-color: white;
+  border: none;
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "Lucida Grande", sans-serif;
+}
+
+/* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
+June 2025 */
+.netlogo-text-box > h1, h2, h3, h4, h5, h6, div, p, ul {
+  margin: 0;
+}
+
+.netlogo-text-box > ul {
+  padding-inline-start: 1.5em;
 }
 
 .netlogo-switcher {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .netlogo-slider {
-    padding-left: 3px;
-    padding-right: 3px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .netlogo-slider:hover {
@@ -565,16 +575,16 @@
 }
 
 .netlogo-slider-label input[type=number] {
-    margin: 0px;
-    border: 1px;
-    padding: 0px;
+  margin: 0px;
+  border: 1px;
+  padding: 0px;
 }
 
 .netlogo-monitor {
-    padding: 2px 4px;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-around;
+  padding: 2px 4px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
 }
 
 .netlogo-monitor > .netlogo-value {
@@ -584,7 +594,7 @@
 }
 
 .netlogo-value {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .netlogo-code {
@@ -596,10 +606,10 @@
 }
 
 .netlogo-input-box {
-    padding: 2px 4px;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-around;
+  padding: 2px 4px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
 }
 
 .netlogo-multiline-input {
@@ -617,16 +627,16 @@
 }
 
 .netlogo-chooser {
-    padding: 2px 4px;
-    display: flex;
-    flex-flow: column;
-    justify-content: space-around;
+  padding: 2px 4px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
 }
 
 .netlogo-plot {
-    box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
-    border: 1px solid black;
-    overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+  box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
+  border: 1px solid black;
+  overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
 }
 
 .highcharts-container {
@@ -634,7 +644,7 @@
 }
 
 .netlogo-forever-button > input {
-    display: none;
+  display: none;
 }
 
 .netlogo-subheader {

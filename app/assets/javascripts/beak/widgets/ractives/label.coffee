@@ -1,7 +1,9 @@
-import { netlogoColorToCSS } from "/colors.js"
+import { markdownToHtml } from "/beak/tortoise-utils.js"
+
+import { argbIntToCSS } from "/colors.js"
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
-import RactiveColorInput from "./subcomponent/color-input.js"
+import RactiveIntColorInput from "./subcomponent/int-color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
@@ -10,17 +12,19 @@ import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
 LabelEditForm = EditForm.extend({
 
   data: -> {
-    color:       undefined # String
-  , fontSize:    undefined # Number
-  , text:        undefined # String
-  , transparent: undefined # Boolean
-  , _color:      undefined # String
+    backgroundLight:  undefined # Int
+  , textColorLight:   undefined # Int
+  , fontSize:         undefined # Number
+  , markdown:         undefined # Boolean
+  , text:             undefined # String
+  , _backgroundLight: undefined # Int
+  , _textColorLight:  undefined # Int
   }
 
   twoway: false
 
   components: {
-    colorInput:   RactiveColorInput
+    colorInput:   RactiveIntColorInput
   , formCheckbox: RactiveEditFormCheckbox
   , formFontSize: RactiveEditFormFontSize
   , labeledInput: RactiveEditFormLabeledInput
@@ -29,17 +33,19 @@ LabelEditForm = EditForm.extend({
 
   genProps: (form) ->
     {
-            color: @findComponent('colorInput').get('value')
-    ,     display: form.text.value
-    ,    fontSize: parseInt(form.fontSize.value)
-    , transparent: form.transparent.checked
+      backgroundLight: @get('_backgroundLight')
+    ,         display: form.text.value
+    ,        fontSize: parseInt(form.fontSize.value)
+    ,        markdown: form.markdown.checked
+    ,  textColorLight: @get('_textColorLight')
     }
 
   on: {
     init: ->
       # A hack (because two-way binding isn't fully properly disabling?!)
       # --Jason B. (4/11/18)
-      @set('_color', @get('color'))
+      @set('_backgroundLight', @get('backgroundLight'))
+      @set('_textColorLight',  @get('textColorLight'))
       return
   }
 
@@ -58,15 +64,25 @@ LabelEditForm = EditForm.extend({
       <spacer height="20px" />
 
       <div class="flex-row" style="align-items: center;">
-        <div style="width: 48%;">
+        <div style="width: 40%;">
           <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
         </div>
         <spacer width="4%" />
-        <div style="width: 48%;">
+        <div style="width: 56%;">
           <div class="flex-row" style="align-items: center;">
             <label for="{{id}}-text-color" class="widget-edit-input-label">Text color:</label>
             <div style="flex-grow: 1;">
-              <colorInput id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick" value="{{_color}}" />
+              <colorInput
+                id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick"
+                value="{{_textColorLight}}" useAlpha="false" />
+            </div>
+          </div>
+          <div class="flex-row" style="align-items: center;">
+            <label for="{{id}}-background-color" class="widget-edit-input-label">Background:</label>
+            <div style="flex-grow: 1;">
+              <colorInput
+                id="{{id}}-background-color" name="bgColor" class="widget-edit-text widget-edit-input widget-edit-color-pick"
+                value="{{_backgroundLight}}" useAlpha="true" />
             </div>
           </div>
         </div>
@@ -74,7 +90,8 @@ LabelEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <formCheckbox id="{{id}}-transparent-checkbox" isChecked={{transparent}} labelText="Transparent background" name="transparent" />
+      <formCheckbox id="{{id}}-markdown" isChecked={{markdown}} labelText="Markdown" name="markdown" />
+
       """
     # coffeelint: enable=max_line_length
 
@@ -88,7 +105,25 @@ RactiveLabel = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    style:              ""
   }
+
+  observe: {
+    'dims': ->
+      @updateStyleAndDisplay()
+
+    'widget.*': ->
+      @updateStyleAndDisplay()
+  }
+
+  updateStyleAndDisplay: ->
+    widget          = @get('widget')
+    dims            = @get('dims')
+    color           = argbIntToCSS(widget.textColorLight)
+    backgroundColor = argbIntToCSS(widget.backgroundLight)
+    @set('style',   "#{dims} color: #{color}; font-size: #{widget.fontSize}px; background-color: #{backgroundColor};")
+    @set('display', if widget.markdown then markdownToHtml(widget.display) else widget.display)
+    return
 
   components: {
     editForm: LabelEditForm
@@ -121,17 +156,33 @@ RactiveLabel = RactiveWidget.extend({
     # BCH 7/28/2015
     label:
       """
-      <pre id="{{id}}" class="netlogo-widget netlogo-text-box {{classes}}"
-           style="{{dims}} font-size: {{widget.fontSize}}px;
-           {{# widget.transparent}}background: transparent;{{/}}"
-           >{{ widget.display }}</pre>
+      {{# widget.markdown }}
+        <div
+          id="{{id}}"
+          class="netlogo-widget netlogo-text-box {{classes}}"
+          style="{{style}}"
+          >
+          {{{display}}}
+        </div>
+      {{else}}
+        <pre
+          id="{{id}}"
+          class="netlogo-widget netlogo-text-box {{classes}}"
+          style="{{style}}"
+          >{{display}}</pre>
+      {{/ widget.markdown}}
       """
 
     form:
       """
-      <editForm idBasis="{{id}}" color="{{widget.color}}"
-                fontSize="{{widget.fontSize}}" text="{{widget.display}}"
-                transparent="{{widget.transparent}}" />
+      <editForm
+        idBasis="{{id}}"
+        textColorLight="{{widget.textColorLight}}"
+        backgroundLight="{{widget.backgroundLight}}"
+        fontSize="{{widget.fontSize}}"
+        markdown="{{widget.markdown}}"
+        text="{{widget.display}}"
+        />
       """
 
   }

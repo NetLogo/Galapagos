@@ -1,9 +1,35 @@
 ColorModel = tortoise_require('engine/core/colormodel')
 
+argbIntToRGBAArray = (i) ->
+  a = (i >> 24) & 0xFF
+  r = (i >> 16) & 0xFF
+  g = (i >> 8) & 0xFF
+  b = (i >> 0) & 0xFF
+  [r, g, b, a]
+
+rgbaArrayToHex = (rgba) ->
+  hexes = rgba.map( (x) -> hex = x.toString(16); if hex.length is 1 then "0#{hex}" else hex )
+  "##{hexes.join('')}"
+
+rgbaArrayToARGBInt = ([r, g, b, a]) ->
+  (a << 24) | (r << 16) | (g << 8) | b
+
+argbIntToHexString = (i) ->
+  rgba = argbIntToRGBAArray(i)
+  rgbaArrayToHex(rgba)
+
+argbIntToCSS = (i) ->
+  [r, g, b, a] = argbIntToRGBAArray(i)
+  "rgba(#{r}, #{g}, #{b}, #{a/255})"
+
+hexStringToARGBInt = (hex) ->
+  [r, g, b] = hexStringToRGBArray(hex)
+  (a << 24) | (r << 16) | (g << 8) | b
+
 # input: number in [0, 140) range
 # result: CSS color string
 netlogoColorToCSS = (netlogoColor) ->
-  [r,g,b] = array = netlogoColorToRGB(netlogoColor)
+  [r, g, b] = array = netlogoColorToRGB(netlogoColor)
   a = if array.length > 3 then array[3] else 255
   if a < 255
     "rgba(#{r}, #{g}, #{b}, #{a/255})"
@@ -14,20 +40,22 @@ netlogoColorToCSS = (netlogoColor) ->
 # just the parts that use its default color, often we want to use the opaque
 # version of its color so we can use global transparency on it. BCH 12/10/2014
 netlogoColorToOpaqueCSS = (netlogoColor) ->
-  [r,g,b] = array = netlogoColorToRGB(netlogoColor)
+  [r, g, b] = array = netlogoColorToRGB(netlogoColor)
   "rgb(#{r}, #{g}, #{b})"
 
 # (Number) => String
 netlogoColorToHexString = (netlogoColor) ->
-  rgb   = netlogoColorToRGB(netlogoColor)
-  hexes = rgb.map((x) -> hex = x.toString(16); if hex.length is 1 then "0#{hex}" else hex)
-  "##{hexes.join('')}"
+  rgb = netlogoColorToRGB(netlogoColor)
+  rgbaArrayToHex(rgb)
+
+hexStringToRGBArray = (hex) ->
+  hexPair = "([0-9a-f]{2})"
+  hexes   = hex.toLowerCase().match(new RegExp("##{hexPair}#{hexPair}#{hexPair}")).slice(1)
+  hexes.map( (x) -> parseInt(x, 16) )
 
 # (String) => Number
 hexStringToNetlogoColor = (hex) ->
-  hexPair   = "([0-9a-f]{2})"
-  rgbHexes  = hex.toLowerCase().match(new RegExp("##{hexPair}#{hexPair}#{hexPair}")).slice(1)
-  [r, g, b] = rgbHexes.map((x) -> parseInt(x, 16))
+  [r, g, b] = hexStringToRGBArray(hex)
   ColorModel.nearestColorNumberOfRGB(r, g, b)
 
 netlogoColorToRGB = (netlogoColor) ->
@@ -79,7 +107,7 @@ netlogoBaseColors = [
 
 cachedNetlogoColors = for colorTimesTen in [0..1400]
   baseIndex = Math.floor(colorTimesTen / 100)
-  [r,g,b] = netlogoBaseColors[baseIndex]
+  [r, g, b] = netlogoBaseColors[baseIndex]
   step = (colorTimesTen % 100 - 50) / 50.48 + 0.012
   if step < 0
     r += Math.floor(r*step)
@@ -92,9 +120,14 @@ cachedNetlogoColors = for colorTimesTen in [0..1400]
   [r, g, b]
 
 export {
+  argbIntToCSS,
+  argbIntToRGBAArray,
+  hexStringToRGBArray,
   netlogoColorToCSS,
   netlogoColorToOpaqueCSS,
   netlogoColorToHexString,
   hexStringToNetlogoColor,
   netlogoColorToRGB,
+  rgbaArrayToARGBInt,
+  rgbaArrayToHex
 }
