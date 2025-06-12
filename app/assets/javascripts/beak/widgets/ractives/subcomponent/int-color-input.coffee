@@ -5,7 +5,9 @@ import {
 , rgbaArrayToHex
 } from "/colors.js"
 
-# The HTML standard only recently defined a color input that supports setting alpha transparency values.  It is not at all well supported as of June 2025.  So yeah.  We also add the ability to disable alpha channel, just to make it easy to edit non-transparent values that also use the RGBA integer format.
+# The HTML standard only recently defined a color input that supports setting alpha transparency values.  It is not at
+# all well supported as of June 2025.  So yeah.  We also add the ability to disable alpha channel, just to make it easy
+# to edit non-transparent values that also use the RGBA integer format.
 
 # https://caniuse.com/mdn-html_elements_input_alpha
 # https://html.spec.whatwg.org/multipage/input.html#attr-input-alpha
