@@ -48,7 +48,13 @@ finishLoading = ->
 fromNlogo = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    fromNlogoSync(nlogoSource, container, locale, isUndoReversion, getWorkInProgress, callback, rewriters, listeners)
+    if nlogoSource.isOldFormat()
+      fromNlogoSync(nlogoSource, container, locale, isUndoReversion,
+        getWorkInProgress, callback, rewriters, listeners)
+    else
+      fromNlogoXMLSync(nlogoSource, container, locale, isUndoReversion,
+        getWorkInProgress, callback, rewriters, listeners)
+
     finishLoading()
   )
   return
@@ -65,7 +71,11 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
         else
           nlogo = req.responseText
           urlSource = new UrlSource(url, nlogo)
-          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+          if urlSource.isOldFormat()
+            fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+          else
+            fromNlogoXMLSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+
         finishLoading()
       return
 
@@ -73,6 +83,117 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
     return
   )
   return
+
+fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
+  getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
+
+  compiler = new BrowserCompiler()
+
+  notifyListeners = createNotifier(listenerEvents, listeners)
+
+  startingNlogoXML    = nlogoxSource.nlogo
+  workInProgressState = 'disabled'
+  if getWorkInProgress isnt null
+    startingNlogoXML    = getWorkInProgress(nlogoxSource)
+    workInProgressState = if isUndoReversion or startingNlogoXML is nlogoxSource.nlogo
+      'enabled-and-empty'
+    else
+      'enabled-with-wip'
+
+  rewriter          = (newCode, rw) -> if rw.injectNlogoXML? then rw.injectNlogoXML(newCode) else newCode
+  rewrittenNlogoXML = rewriters.reduce(rewriter, startingNlogoXML)
+
+  extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
+  extraCommands = rewriters.reduce(extrasReducer, [])
+
+  notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
+  result = compiler.fromNlogoXML(rewrittenNlogoXML, extraCommands, { code: "", widgets: extraWidgets })
+
+  if result.model.success
+
+    # result.code = if (startingNlogoXML is rewrittenNlogoXML)
+    #   result.code
+    # else
+    #   nlogoToSections(startingNlogo)[0].slice(0, -1)
+
+    session = newSession(
+      container
+    , compiler
+    , rewriters
+    , listeners
+    , result
+    , false
+    , locale
+    , workInProgressState
+    , nlogoxSource
+    , false
+    )
+
+    callback({
+      type:    'success'
+    , session
+    })
+    result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
+    rewriters.forEach( (rw) -> rw.compileComplete?() )
+
+  else
+    secondChanceResult = fromNlogoXMLWithoutCode(startingNlogoXML, compiler)
+    if secondChanceResult?
+      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'failure', 'compile-recoverable')
+
+      session = newSession(
+        container
+      , compiler
+      , rewriters
+      , listeners
+      , secondChanceResult
+      , false
+      , locale
+      , workInProgressState
+      , nlogoxSource
+      , true
+      )
+
+      callback({
+        type:    'failure'
+      , source:  'compile-recoverable'
+      , session: session
+      , errors:  result.model.result
+      })
+      result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
+      rewriters.forEach( (rw) -> rw.compileComplete?() )
+
+    else
+      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'failure', 'compile-fatal')
+      callback({
+        type:   'failure'
+      , source: 'compile-fatal'
+      , errors: result.model.result
+      })
+
+  return
+
+fromNlogoXMLWithoutCode = (nlogox, compiler) ->
+  parser    = new DOMParser()
+  nlogoDoc  = parser.parseFromString(nlogox, "text/xml")
+  errorNode = nlogoDoc.querySelector("parsererror")
+  if errorNode
+    return null
+
+  codeElement = nlogoDoc.querySelector("code")
+  codeText    = codeElement.innerHTML
+  oldCode = if not codeText.startsWith("<![CDATA[")
+    codeText
+  else
+    codeText.slice("<![CDATA[".length, -1 * ("]]>".length))
+  codeElement.innerHTML = ""
+  serializer = new XMLSerializer()
+  newNlogox = serializer.serializeToString(nlogoDoc)
+  result      = compiler.fromNlogoXML(newNlogox, [], { code: "", widgets: [] })
+  if not result.model.success
+    return null
+  result.code = oldCode
+  return result
 
 # (NlogoSource, Element, String, Boolean,
 #   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener],
@@ -169,7 +290,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
 # If we have a compiler failure, maybe just the code section has errors.
 # We do a second chance compile to see if it'll work without code so we
 # can get some widgets/plots on the screen and let the user fix those
-# errors up.  -JMB August 2017
+# errors up.  -Jeremy B August 2017
 
 # (String, BrowserCompiler) => null | ModelCompilation
 fromNlogoWithoutCode = (nlogo, compiler) ->
@@ -183,9 +304,6 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   result      = compiler.fromNlogo(newNlogo, [], { code: "", widgets: [] })
   if not result.model.success
     return null
-
-  # It mutates state, but it's an easy way to get the code re-added
-  # so it can be edited/fixed.
   result.code = oldCode
   return result
 
@@ -266,9 +384,9 @@ workspace.i18nBundle = { supports: function() { return true; }, 'switch': functi
     }
 
   compiler =
-    { exportNlogo: (-> throw new Error("exportNlogo: This compiler is a stub."))
-    , fromModel  : (-> throw new Error("fromModel:   This compiler is a stub."))
-    , isReporter : (-> throw new Error("isReporter:  This compiler is a stub."))
+    { exportNlogoXML: (-> throw new Error("exportNlogoXML: This compiler is a stub."))
+    , fromModel     : (-> throw new Error("fromModel: This compiler is a stub."))
+    , isReporter    : (-> throw new Error("isReporter: This compiler is a stub."))
     }
 
   session = newSession( container, compiler, [], listeners, model, false, "en_us"

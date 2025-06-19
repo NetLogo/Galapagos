@@ -13,6 +13,14 @@ import scala.sys.process.{ Process, ProcessLogger }
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
+val tortoiseVersion = "1.0-d33a06a"
+
+resolvers ++= Seq(
+  "tortoise"                at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
+, "netlogo"                 at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
+, "play-scraper-workaround" at "https://dl.cloudsmith.io/public/netlogo/play-scraper-workaround/maven/"
+)
+
 scalaVersion := "3.7.0"
 scalacOptions ++= Seq(
   "-encoding", "UTF-8",
@@ -40,14 +48,6 @@ lazy val root = (project in file("."))
     Assets / JsEngineKeys.npmNodeModules := Nil,
     TestAssets / JsEngineKeys.npmNodeModules := Nil
   )
-
-val tortoiseVersion = "1.0-a1940c1"
-
-resolvers ++= Seq(
-  "tortoise"                at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
-, "netlogo"                 at "https://dl.cloudsmith.io/public/netlogo/netlogo/maven/"
-, "play-scraper-workaround" at "https://dl.cloudsmith.io/public/netlogo/play-scraper-workaround/maven/"
-)
 
 libraryDependencies ++= Seq(
   ehcache

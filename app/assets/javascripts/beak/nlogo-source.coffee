@@ -2,7 +2,9 @@ import newModel from "../new-model.js"
 import { normalizedFileName } from "./tortoise-utils.js"
 
 dropNlogoExtension = (s) ->
-  if s.toLocaleLowerCase().endsWith('.nlogo')
+  if s.toLocaleLowerCase().endsWith('.nlogox')
+    s.slice(0, -7)
+  else if s.toLocaleLowerCase().endsWith('.nlogo')
     s.slice(0, -6)
   else
     s
@@ -17,6 +19,10 @@ class NlogoSource
   # () => String
   getModelTitle: () ->
     if @_title? then @_title else dropNlogoExtension(@fileName)
+
+  # () => Boolean
+  isOldFormat: () ->
+    @fileName.toLocaleLowerCase().endsWith('.nlogo')
 
   # () => String
   getWipKey: () ->
@@ -53,7 +59,7 @@ class DiskSource extends NlogoSource
 
 class NewSource extends NlogoSource
   constructor: (nlogo = newModel) ->
-    super('new', 'New Model', nlogo)
+    super('new', 'New Model.nlogox', nlogo)
 
   getWipKey: () ->
     'new'

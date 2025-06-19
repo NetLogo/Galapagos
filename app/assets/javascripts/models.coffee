@@ -39,7 +39,7 @@ bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
     select.on('change', (e) ->
       if modelSelect.get(0).selectedIndex > 0
         modelPath   = modelSelect.get(0).value
-        modelURL    = "#{modelPath}.nlogo"
+        modelURL    = "#{modelPath}.nlogox"
         modelSplits = modelPath.split("/")
         modelName   = modelSplits[modelSplits.length - 1]
         selectionChanged(modelURL, modelName)
@@ -103,7 +103,7 @@ selectModelByURL = (modelURL) ->
 
   if urlIsInternal(modelURL)
 
-    regexStr            = ".*/(modelslib/|test/|demomodels/)(.+).nlogo"
+    regexStr            = ".*/(modelslib/|test/|demomodels/)(.+).nlogox"
     [prefix, modelName] = extractNMatches(regexStr)(2)(modelURL)
     truePrefix          = if prefix is "modelslib/" then "" else prefix
 

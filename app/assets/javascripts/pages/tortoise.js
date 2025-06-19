@@ -33,7 +33,7 @@ function pickModel(url) {
 function pickRandom() {
   var model = handPickedModels[Math.floor(Math.random() * handPickedModels.length)];
   selectModel(model);
-  pickModel(model + ".nlogo");
+  pickModel(model + ".nlogox");
 }
 
 function openModelFromUrl(url) {

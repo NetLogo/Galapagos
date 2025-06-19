@@ -62,7 +62,7 @@ class NetTangoController
     @ractive.on('*.ntb-recompile-all',   (_)              => @recompile())
 
     @ractive.on('*.ntb-import-netlogo', (local)  => @importNetLogo(local.node.files))
-    @ractive.on('*.ntb-export-netlogo', (_)      => @netLogoModel.session.exportNlogo())
+    @ractive.on('*.ntb-export-netlogo', (_)      => @netLogoModel.session.exportNlogoXML())
     @ractive.on('*.ntb-load-nl-url',    (_, url) => @netLogoModel.loadUrl(url))
 
     @ractive.on('*.ntb-import-project',      (local)         => @importProject(local.node.files))

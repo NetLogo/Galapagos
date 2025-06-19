@@ -70,7 +70,7 @@ class CompilerService @Inject() (
         val argMap = toStringMap(request.extractBundle)
         val model = generateModel(argMap, request.host).flatMap {
           case ModelObject(m)  => CompiledModel.fromModel(m, compiler).successNel[String]
-          case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoContents(text, compiler))
+          case ModelText(text) => stringifyNonCompilerExceptions(CompiledModel.fromNlogoXMLContents(text, compiler))
         }
         generateResult(argMap, model)
     })
@@ -251,7 +251,7 @@ private[controllers] trait RequestResultGenerator {
         .map(name => if (name.endsWith(".nlogo")) name else s"$name.nlogo")
         .getOrElse("export.nlogo")
 
-    val compiledModelV = modelV flatMap CompileResponse.exportNlogo leftMap (_.map(ex => ex: JSerializable))
+    val compiledModelV = modelV flatMap CompileResponse.exportNlogoXML leftMap (_.map(ex => ex: JSerializable))
 
     compiledModelV.fold(
       nelResult(BadRequest),

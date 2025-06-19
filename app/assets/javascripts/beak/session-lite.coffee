@@ -66,7 +66,7 @@ class SessionLite
     ractive.on('*.recompile'     , (_, source)         => @recompile(source))
     ractive.on('*.recompile-sync', (_, source)         => @recompileSync(source, "", "", {}))
     ractive.on('*.recompile-for-plot', (_, source, oldName, newName, renamings) => @recompile(source, oldName, newName, renamings))
-    ractive.on('export-nlogo'    , (_, event)          => @exportNlogo(event))
+    ractive.on('export-nlogo'    , (_, event)          => @exportNlogoXML(event))
     ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     ractive.on('open-new-file'   , (_)                 => @openNewFile())
     ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
@@ -327,7 +327,7 @@ class SessionLite
     info    = @getInfo()
     code    = @rewriteExport(@widgetController.code())
     widgets = @widgetController.widgets().map(cloneWidget)
-    @compiler.exportNlogo({
+    @compiler.exportNlogoXML({
       info:         info,
       code:         code,
       widgets:      widgets,
@@ -335,8 +335,8 @@ class SessionLite
       linkShapes:   linkShapes
     })
 
-  exportNlogo: ->
-    exportName = @promptFilename('.nlogo')
+  exportNlogoXML: ->
+    exportName = @promptFilename('.nlogox')
     if exportName?
       exportedNlogo = @getNlogo()
       if (exportedNlogo.success)

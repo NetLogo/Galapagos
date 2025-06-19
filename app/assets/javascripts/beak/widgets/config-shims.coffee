@@ -94,7 +94,7 @@ genImportExportConfig = (ractive, viewController, compiler) ->
     getNlogo: ->
 
       { result, success } =
-        compiler.exportNlogo({
+        compiler.exportNlogoXML({
           info:         toNetLogoMarkdown(ractive.get('info')),
           code:         ractive.get('code'),
           widgets:      (v for _, v of ractive.get('widgetObj')),
