@@ -42,7 +42,7 @@ class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) exte
 object ModelCollectionCompiler {
   case object CheckBuiltInModels
   protected[models] def compileModel(compiler: Compiler, file: File, contents: String): ModelCompilationStatus =
-    CompiledModel.fromNlogoContents(contents, compiler).map(ModelSaver(_)).fold(
+    CompiledModel.fromNlogoXMLContents(contents, compiler).map(ModelSaver(_)).fold(
       nel => CompilationFailure(file, nel.list.toList),
       _   => CompilationSuccess(file)
     )
