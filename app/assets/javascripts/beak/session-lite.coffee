@@ -9,6 +9,7 @@ import { toNetLogoMarkdown }    from "./tortoise-utils.js"
 import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
 import { cloneWidget }          from "./widgets/widget-properties.js"
+import { serializeResources }   from "./external-resources.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -235,6 +236,7 @@ class SessionLite
       oldWidgets    = @widgetController.widgets()
       rewritten     = @rewriteCode(code)
       extraCommands = @rewriterCommands()
+      resources     = serializeResources()
 
       compileParams = {
         code:         rewritten
@@ -243,6 +245,7 @@ class SessionLite
       , reporters:    []
       , turtleShapes: turtleShapes ? []
       , linkShapes:   linkShapes ? []
+      , resources:    resources
       }
 
       @widgetController.ractive.fire('recompile-start', source, rewritten, code)
@@ -324,15 +327,17 @@ class SessionLite
     toNetLogoMarkdown(@widgetController.ractive.get('info'))
 
   getNlogo: ->
-    info    = @getInfo()
-    code    = @rewriteExport(@widgetController.code())
-    widgets = @widgetController.widgets().map(cloneWidget)
+    info      = @getInfo()
+    code      = @rewriteExport(@widgetController.code())
+    widgets   = @widgetController.widgets().map(cloneWidget)
+    resources = serializeResources()
     @compiler.exportNlogoXML({
       info:         info,
       code:         code,
       widgets:      widgets,
       turtleShapes: turtleShapes,
-      linkShapes:   linkShapes
+      linkShapes:   linkShapes,
+      resources:    resources
     })
 
   exportNlogoXML: ->
