@@ -1,10 +1,18 @@
 markdownToHtml = (md) ->
+  getBase64IfResource = (url) ->
+    name = url.getPath()
+    if workspace.resources.hasOwnProperty(name)
+      resource = workspace.resources[name]
+      "data:image/#{resource.extension};base64,#{resource.data}"
+    else
+      null
+
   # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
   # RG 8/18/15
   window.html_sanitize(
     window.markdown.toHTML(md),
-    (url) -> if /^https?:\/\//.test(url) then url else undefined, # URL Sanitizer
-    (id) -> id)                                                   # ID Sanitizer
+    (url) -> if /^https?:\/\//.test(url) then url else getBase64IfResource(url), # URL Sanitizer
+    (id) -> id)                                                                  # ID Sanitizer
 
 # (String) => String
 toNetLogoWebMarkdown = (md) ->
