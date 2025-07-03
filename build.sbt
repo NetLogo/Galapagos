@@ -327,7 +327,7 @@ scrapePublishCredential := (Def.settingDyn {
 scrapePublishBucketID := (Def.settingDyn {
   val branchDeploy = Map(
     "production"  -> "netlogo-web-prod-content",
-    "master"      -> "netlogo-web-staging-content",
+    "main"        -> "netlogo-web-staging-content",
     "scrape-test" -> "netlogo-web-experiments-content/scrape-test"
   )
 
@@ -340,7 +340,7 @@ scrapePublishBucketID := (Def.settingDyn {
 scrapePublishDistributionID := (Def.settingDyn {
   val branchPublish = Map(
     "production"  -> "E3AIHWIXSMPCAI",
-    "master"      -> "E360I3EFLPUZR0",
+    "main"        -> "E360I3EFLPUZR0",
     "scrape-test" -> "E2TDYOH5TZH83M"
   )
 
@@ -353,7 +353,7 @@ scrapePublishDistributionID := (Def.settingDyn {
 scrapeAbsoluteURL := (Def.settingDyn {
   val branchURL = Map(
     "production"  -> "netlogoweb.org",
-    "master"      -> "staging.netlogoweb.org",
+    "main"        -> "staging.netlogoweb.org",
     "scrape-test" -> "experiments.netlogoweb.org/scrape-test"
   )
 
