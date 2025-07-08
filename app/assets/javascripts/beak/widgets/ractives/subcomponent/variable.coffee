@@ -30,7 +30,7 @@ RactiveEditFormVariable = Ractive.extend({
     <input id="{{id}}" class="widget-edit-text" name="{{name}}" placeholder="(Required)"
            type="text" value="{{value}}"
            autofocus autocomplete="off" on-input="validate"
-           pattern="[=*!<>:#+/%'&$^.?\\-_a-zA-Z][=*!<>:#+/%'&$^.?\\-\\w]*"
+           pattern="^[$^.?=*!<>:#+\\/%'&\\-_a-zA-Z][$^.?=*!<>:#+\\/%'&\\-_\\w]*$"
            title="One or more alphanumeric characters and characters in (( $^.?=*!<>:#+/%'&-_ )).  Cannot start with a number"
            required />
     """
