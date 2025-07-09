@@ -366,7 +366,7 @@ class SessionLite
           dom = parser.parseFromString(htmlString, 'text/html')
           nlogoScript = dom.querySelector('#nlogo-code')
           nlogoScript.textContent = nlogo.result
-          nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogo')
+          nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogox')
           wrapper = document.createElement('div')
           wrapper.appendChild(dom.documentElement)
           exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
