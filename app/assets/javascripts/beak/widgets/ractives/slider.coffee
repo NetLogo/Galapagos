@@ -238,7 +238,7 @@ RactiveSlider = RactiveValueWidget.extend({
           min="{{widget.minValue}}"
           step="{{widget.stepValue}}"
           value="{{internalValue}}"
-          on-change="widget-value-change"
+          on-input="widget-value-change"
           {{# isEditing }}disabled{{/}} />
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
