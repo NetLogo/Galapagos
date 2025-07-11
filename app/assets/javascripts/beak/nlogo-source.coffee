@@ -67,9 +67,15 @@ class NewSource extends NlogoSource
 class ScriptSource extends NlogoSource
   constructor: (fileName, nlogo) ->
     super('script-element', normalizedFileName(fileName), nlogo)
+    console.log("ScriptSource", fileName, @fileName)
+    debugger
 
   getWipKey: () ->
     "script-element://#{@fileName}"
+
+  # () => Boolean
+  isOldFormat: () ->
+    false
 
 export {
   UrlSource

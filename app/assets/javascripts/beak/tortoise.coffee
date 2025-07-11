@@ -48,6 +48,7 @@ finishLoading = ->
 fromNlogo = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
+    debugger
     if nlogoSource.isOldFormat()
       fromNlogoSync(nlogoSource, container, locale, isUndoReversion,
         getWorkInProgress, callback, rewriters, listeners)
@@ -308,6 +309,7 @@ fromNlogoWithoutCode = (nlogo, compiler) ->
   return result
 
 createSource = (sourceType, path, nlogo) ->
+  console.log("createSource()", sourceType, path, nlogo)
   switch sourceType
     when 'disk'
       new DiskSource(path, nlogo)
