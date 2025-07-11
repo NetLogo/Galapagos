@@ -78,9 +78,9 @@
     Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
     window.isStandaloneHTML = @standalone;
     window.environmentMode = "@mode.toString.toLowerCase";
-    window.standaloneURL = `${window.location.protocol}@TagBuilder.protocolRelativeURL(
-      new java.net.URL(routes.Local.standalone.absoluteURL())
-    )`;
+    const l = window.location;
+    const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
+    window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
   </script>
 
   @if(standalone) {

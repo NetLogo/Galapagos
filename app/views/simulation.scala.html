@@ -56,7 +56,7 @@
     <!-- This can be used to insert NetLogo code into this page -->
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogox"></script>
 
-    @*
+    @* <!--
     These globals depend on variables from the Play view, such as `@standalone` etc, therefore they cannot be defined in a
     separate script file.
 
@@ -64,14 +64,14 @@
     to assign a filename (or more precisely, module specifier) to an inline `script` tag. And if it has no filename, from
     which location would we `import` it?)
 
-    - David D. 7/2021
+    - David D. 7/2021 -->
     *@
     <script>
       window.debugMode = @{environment.mode != play.api.Mode.Prod};
-      Ractive.DEBUG = window.debugMode
-      window.standaloneURL = `${window.location.protocol}@TagBuilder.protocolRelativeURL(
-        new java.net.URL(routes.Local.standalone.absoluteURL())
-      )`;
+      Ractive.DEBUG = window.debugMode;
+      const l = window.location;
+      const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
+      window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
     </script>
 
     @if(isStandalone) {

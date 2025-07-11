@@ -203,7 +203,6 @@ try {
     const path   = nlogoScript.dataset.filename;
     notifyListeners('model-load', 'script-element');
     const nlogoSource = Tortoise.createSource('script-element', path, nlogo);
-    debugger;
     Tortoise.fromNlogo(
       nlogoSource
     , modelContainer

@@ -49,7 +49,7 @@
     <!-- This can be used to insert NetLogo code into this page -->
     <script type="text/nlogo" id="nlogo-code" data-filename="model.nlogo"></script>
 
-    @*
+    @* <!--
     These globals depend on variables from the Play view, such as `@standalone` etc, therefore they cannot be defined in a
     separate script file.
 
@@ -57,14 +57,17 @@
     to assign a filename (or more precisely, module specifier) to an inline `script` tag. And if it has no filename, from
     which location would we `import` it?)
 
-    - David D. 7/2021
+    - David D. 7/2021 -->
     *@
     <script>
       window.debugMode = @{environment.mode != play.api.Mode.Prod};
-      Ractive.DEBUG = window.debugMode
-      window.standaloneURL = `${window.location.protocol}@TagBuilder.protocolRelativeURL(
-        new java.net.URL(routes.Local.standalone.absoluteURL())
-      )`;
+      Ractive.DEBUG = window.debugMode;
+      const l = window.location;
+      const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
+      // Previously this was set by getting the `sboluteUrl()` of the Play Framework Route.  The problem is that it only
+      // knows about dev and prod, so special URLs for staging and experimental deployments wouldn't work.  This seems
+      // simple enough, although it will require a manual update if the `standalone` ever changes.  -Jeremy B July 2025
+      window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
     </script>
 
     @tagBuilder.pathToHTML("javascripts/pages/init-host.js", "type" -> "module")
