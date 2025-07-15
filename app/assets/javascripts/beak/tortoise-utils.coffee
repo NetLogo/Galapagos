@@ -42,11 +42,23 @@ nlogoToSections = (nlogo) ->
 sectionsToNlogo = (sections) ->
   sections.join('@#$#@#$#@')
 
+# (String) => Document
+nlogoXMLToDoc = (nlogox) ->
+  parser = new DOMParser()
+  parser.parseFromString(nlogox, "text/xml")
+
+# (Document) => String
+docToNlogoXML = (nlogoDoc) ->
+  serializer = new XMLSerializer()
+  serializer.serializeToString(nlogoDoc)
+
 export {
   markdownToHtml,
   toNetLogoWebMarkdown,
   toNetLogoMarkdown,
   normalizedFileName,
   nlogoToSections,
-  sectionsToNlogo
+  sectionsToNlogo,
+  nlogoXMLToDoc,
+  docToNlogoXML
 }

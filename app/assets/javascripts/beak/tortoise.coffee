@@ -1,6 +1,12 @@
 import SessionLite from "./session-lite.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
-import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
+import {
+  toNetLogoWebMarkdown,
+  nlogoToSections,
+  sectionsToNlogo,
+  nlogoXMLToDoc,
+  docToNlogoXML
+} from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
@@ -111,10 +117,10 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
 
   if result.model.success
 
-    # result.code = if (startingNlogoXML is rewrittenNlogoXML)
-    #   result.code
-    # else
-    #   nlogoToSections(startingNlogo)[0].slice(0, -1)
+    result.code = if (startingNlogoXML is rewrittenNlogoXML)
+      result.code
+    else
+      nlogoXMLToDoc(startingNlogoXML).querySelector("code").innerHTML
 
     session = newSession(
       container
@@ -174,8 +180,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   return
 
 fromNlogoXMLWithoutCode = (nlogox, compiler) ->
-  parser    = new DOMParser()
-  nlogoDoc  = parser.parseFromString(nlogox, "text/xml")
+  nlogoDoc  = nlogoXMLToDoc(nlogox)
   errorNode = nlogoDoc.querySelector("parsererror")
   if errorNode
     return null
@@ -187,9 +192,8 @@ fromNlogoXMLWithoutCode = (nlogox, compiler) ->
   else
     codeText.slice("<![CDATA[".length, -1 * ("]]>".length))
   codeElement.innerHTML = ""
-  serializer = new XMLSerializer()
-  newNlogox = serializer.serializeToString(nlogoDoc)
-  result      = compiler.fromNlogoXML(newNlogox, [], { code: "", widgets: [] })
+  newNlogox  = docToNlogoXML(nlogoDoc)
+  result     = compiler.fromNlogoXML(newNlogox, [], { code: "", widgets: [] })
   if not result.model.success
     return null
   result.code = oldCode
