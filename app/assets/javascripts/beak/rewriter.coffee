@@ -13,6 +13,11 @@ class Rewriter
   injectNlogo: (nlogo) ->
     nlogo
 
+  # Called to rewrite the nlogo XML string before initial compilation of the full nlogo model file.
+  # (String) => String
+  injectNlogoXML: (nlogox) ->
+    nlogox
+
   # Called to rewrite the code contents of a model when recompiling.
   # (String) => String
   injectCode: (code) ->
