@@ -7,7 +7,7 @@
   padding: 20px;
   flex-flow: column;
   font-size: 12px;
-  font-family: "Lucida Grande", sans-serif;
+  font-family: var(--font-widget);
   outline: none;
 }
 
@@ -32,8 +32,8 @@
 
 .netlogo-widget {
   box-sizing: border-box;
-  background-color: #CCC;
-  border-radius: 4px;
+  background-color: #eeeeee;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -42,10 +42,9 @@
   -moz-user-select: none;
 }
 
-.netlogo-command:hover,.netlogo-input:hover {
-  box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+.netlogo-command:hover {
+  filter:     brightness(1.1);
   cursor:     pointer;
-  z-index:    3;
 }
 
 .netlogo-command.netlogo-disabled:hover {
@@ -153,7 +152,7 @@
   border: 1px solid;
   border-top: 0;
   border-radius: 0 0 8px 8px;
-  font-family: "Lucida Grande", sans-serif;
+  font-family: var(--font-widget);
   font-size: smaller;
 }
 
@@ -375,7 +374,6 @@
 
 .netlogo-command-center-button:active {
   filter: brightness(0.7);
-  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
 }
 
 .join-body {
@@ -393,7 +391,7 @@
 
 .netlogo-output-widget {
   display: flex;
-  padding: 5px;
+  padding: 2px;
 }
 
 .netlogo-output-area {
@@ -409,8 +407,40 @@
   border: none;
   display: flex;
   flex-direction: column;
-  margin: 15px auto 0 auto;
+  padding: 15px 10px;
+  margin: 0 auto;
   width: 75%;
+}
+.model-speed-input {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0.3rem 0.5rem 0.5rem 0.5rem;
+}
+input[type=range] ~ .netlogo-slider-bar.model-speed-slider-interface {
+  height: 2px;
+  width: clamp(100px, 50%, 300px);
+  margin-top: unset;
+}
+input[type=range] ~ .netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
+  background-color: var(--color-widget-accessories);
+}
+
+.netlogo-beautiful-button {
+  background-color: white;
+  border: 1px solid #afafaf;
+  border-radius: 4px;
+  padding: .15lh .5lh;
+  cursor: pointer;
+}
+
+.netlogo-beautiful-button:hover {
+  background-color: #f5f5f5;
+}
+
+.netlogo-background-button:active {
+  background-color: #dfdfdf;
 }
 
 .netlogo-widget input[type=range]::-ms-tooltip {
@@ -449,12 +479,10 @@
   padding: 0px;
 }
 
-.netlogo-button:disabled {
-  color: rgb(150, 150, 150);
-}
-
-.netlogo-disabled, .interface-unlocked {
-  color: #707070;
+.netlogo-button:disabled,
+.netlogo-button.netlogo-disabled {
+  background-color: var(--color-widget-button-disabled);
+  color: var(--color-widget-button-disabled-text);
 }
 
 .netlogo-button.clear-button {
@@ -494,10 +522,13 @@
   position:          absolute;
   right:             5px;
   width:             10px;
+
+  filter:            invert(1);
 }
 
 .netlogo-disabled .netlogo-forever-icon {
   background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjODA4MDgwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+  filter:           unset;
 }
 
 .netlogo-button-agent-context {
@@ -515,8 +546,9 @@
   background-color: white;
   border: none;
   margin: 0;
+  padding: 0.1rem; 
   white-space: pre-wrap;
-  font-family: "Lucida Grande", sans-serif;
+  font-family: var(--font-widget);
 }
 
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
@@ -532,11 +564,56 @@ June 2025 */
 .netlogo-switcher {
   display: flex;
   align-items: center;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
+}
+
+.netlogo-switcher > .netlogo-label {
+  margin-left: 0;
+}
+
+.netlogo-switcher-element {
+  display: flex;
+  height: 100%;
+  border-radius: 8px;
+
+  --knob-size: 10px;
+  width: var(--knob-size);
+  min-width: var(--knob-size);
+
+  position:relative;
+}
+
+input[type=checkbox]:checked ~ .netlogo-switcher-element {
+  background-color: var(--color-widget-switch-primary);
+}
+
+input[type=checkbox]:not(checked) ~ .netlogo-switcher-element {
+  background-color: var(--color-widget-switch-off);
+}
+
+.netlogo-switcher-element > .netlogo-switcher-element-knob {
+  height: var(--knob-size);
+  width: var(--knob-size);
+
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  scale: 1.05;
+  background-color: white;
+  box-shadow: inset 0 0 0 1px var(--color-widget-switch-primary);
+  transition: top 0.2s ease-in-out;
+}
+input[type=checkbox]:checked ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
+  top: 0;
+}
+input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
+  top: calc(100% - var(--knob-size));
 }
 
 .netlogo-slider {
-  padding-left: 3px;
-  padding-right: 3px;
+  margin-top: 2px;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
+  background-color: var(--color-widget-background);
 }
 
 .netlogo-slider:hover {
@@ -553,6 +630,49 @@ June 2025 */
   width: 100%;
 }
 
+
+input[type=range] ~ .netlogo-slider-bar {
+  position: relative;
+
+  width: 100%;
+  height: 6px;
+
+  margin-top: 6px;
+
+  border-radius: 0.5rem;
+
+  background-color: var(--color-widget-accessories-neutral);
+}
+
+input[type=range] ~ .netlogo-slider-bar > .netlogo-slider-bar-fill {
+  width: 0%;
+  height: 100%;
+
+  border-radius: 0.5rem;
+
+  background-color: var(--color-widget-accessories);
+}
+
+input[type=range] ~ .netlogo-slider-bar > .netlogo-slider-bar-handle {
+  --circle-size: 10px;
+  --circle-radius: calc(var(--circle-size) / 2);
+  position: absolute;
+
+  width: var(--circle-size);
+  height: var(--circle-size);
+
+  border-radius: 50%;
+  border: 2px solid var(--color-widget-accessories);
+  background-color: white;
+
+  cursor: pointer;
+  top: calc(-1 * (var(--circle-radius) - 1px)); /* 1px is to account for the border width */
+  transform: translateX(-50%);
+}
+
+
+
+
 .netlogo-label {
   margin: 0 auto;
   overflow: hidden;
@@ -563,6 +683,7 @@ June 2025 */
 .netlogo-slider-label {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .netlogo-slider-label .netlogo-label {
@@ -576,21 +697,30 @@ June 2025 */
 
 .netlogo-slider-label input[type=number] {
   margin: 0px;
-  border: 1px;
-  padding: 0px;
+
+  border: 1px solid var(--color-widget-input-border);
+  border-radius: 6px;
+  text-align: right;
+  padding: 2px;
 }
 
 .netlogo-monitor {
-  padding: 2px 4px;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
   display: flex;
   flex-flow: column;
   justify-content: space-around;
 }
 
+.netlogo-monitor > .netlogo-label {
+  margin-left: 0;
+}
+
 .netlogo-monitor > .netlogo-value {
   background-color: white;
   min-height: 11px;
-  padding: 2px 2px;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
+  border: 1px solid #b2b2b2;
+  border-radius: 6px;
 }
 
 .netlogo-value {
@@ -606,7 +736,7 @@ June 2025 */
 }
 
 .netlogo-input-box {
-  padding: 2px 4px;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
   display: flex;
   flex-flow: column;
   justify-content: space-around;
@@ -618,6 +748,13 @@ June 2025 */
   width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
   margin:    4px;
   resize:    none;
+  border:    1px solid var(--color-widget-input-border);
+  border-radius: 4px;
+  padding-inline: 0.2rem;
+}
+
+.netlogo-input-box > .netlogo-label {
+  margin: 0 auto 0 0;
 }
 
 .netlogo-singleline-input {
@@ -627,16 +764,27 @@ June 2025 */
 }
 
 .netlogo-chooser {
-  padding: 2px 4px;
+  padding: var(--widget-padding-y) var(--widget-padding-x);
   display: flex;
   flex-flow: column;
   justify-content: space-around;
 }
 
+.netlogo-chooser .netlogo-label {
+  margin: 0 auto 0 0;
+}
+
+.netlogo-chooser-select {
+  border: 1px solid var(--color-widget-select-border);
+  border-radius: 4px;
+  padding: 0.1rem 0.2rem;
+}
+
 .netlogo-plot {
   box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
-  border: 1px solid black;
   overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+  padding: 0;
+  border: 1px solid #eeeeee;
 }
 
 .highcharts-container {
