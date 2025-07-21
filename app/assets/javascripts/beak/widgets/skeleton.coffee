@@ -19,6 +19,7 @@ import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
 import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
+import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -126,6 +127,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , hnwViewWidget:    RactiveHNWView
 
     , spacer:        RactiveEditFormSpacer
+    , customSlider:  RactiveCustomSlider
 
     },
 
@@ -162,6 +164,15 @@ generateRactiveSkeleton = (container, widgets, code, info,
     oncomplete: ->
       @fire('track-focus', document.activeElement)
       return
+    
+    on: {
+      onSpeedChange: (context, delta) ->
+        speed = @get('speed')
+        newSpeed = Math.max(-1, Math.min(1, speed + delta))
+        newSpeed = parseFloat(newSpeed.toFixed(2)) # Ensure two decimal places
+        @set('speed', newSpeed)
+        @fire('speed-slider-changed', newSpeed)
+    }
 
   })
 
@@ -238,8 +249,26 @@ template =
       <contextMenu></contextMenu>
 
       <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
-        <span class="netlogo-label">model speed</span>
-        <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" />
+        <span class="netlogo-label">Model Speed</span>
+        <div class="model-speed-input">
+          <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
+          <button class="netlogo-beautiful-button"
+          on-click="['onSpeedChange', -0.1]"
+          {{#isEditing}} disabled{{/}}>-</button>
+          <customSlider
+            id="speed-slider-input-interface"
+            min="{{-1}}"
+            max="{{1}}"
+            step="{{0.01}}"
+            value="{{speed}}"
+            inputFor="speed-slider-input"
+            isEnabled="{{!isEditing}}"
+            class="model-speed-slider-interface"
+          />
+          <button class="netlogo-beautiful-button"
+          on-click="['onSpeedChange', 0.1]"
+          {{#isEditing}} disabled{{/}}>+</button>
+        </div>
         <tickCounter isVisible="{{primaryView.showTickCounter}}"
                      label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
       </label>
