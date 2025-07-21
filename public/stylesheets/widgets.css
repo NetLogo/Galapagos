@@ -2,6 +2,11 @@
  * General-purpose widget styles, applied regardless of what the widget "theme" is
  */
 
+:root {
+  --widget-outer-radius: 8px;
+  --widget-inner-radius: 4px;
+}
+
 .netlogo-model {
   display: flex;
   padding: 20px;
@@ -33,7 +38,7 @@
 .netlogo-widget {
   box-sizing: border-box;
   background-color: #eeeeee;
-  border-radius: 8px;
+  border-radius: var(--widget-outer-radius);
   overflow: hidden;
 }
 
@@ -546,7 +551,7 @@ input[type=range] ~ .netlogo-slider-bar.model-speed-slider-interface > .netlogo-
   background-color: white;
   border: none;
   margin: 0;
-  padding: 0.1rem; 
+  padding: 2px;
   white-space: pre-wrap;
   font-family: var(--font-widget);
 }
