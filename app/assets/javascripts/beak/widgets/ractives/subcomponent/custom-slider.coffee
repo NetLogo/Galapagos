@@ -2,7 +2,7 @@ import Ractive from "ractive"
 
 RactiveCustomSlider = Ractive.extend({
 
-  data: ->
+  data: -> {
     value: 0
     min: 0
     max: 100
@@ -12,8 +12,9 @@ RactiveCustomSlider = Ractive.extend({
     onValueChange: null
     inputFor: null
     maxDecimal: 2
+  }
 
-  computed:
+  computed: {
     percentFilled: ->
       min = @get("min")
       max = @get("max")
@@ -26,7 +27,8 @@ RactiveCustomSlider = Ractive.extend({
       if @get("isEnabled") is false
         classes.push("disabled")
       return classes.filter(Boolean).join(" ") # Filter out any empty classes
-
+  }
+  
   on: {
     "start-drag": (event) ->
       slider = this
