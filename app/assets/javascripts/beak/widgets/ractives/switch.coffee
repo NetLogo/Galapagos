@@ -108,6 +108,7 @@ RactiveSwitch = RactiveValueWidget.extend({
   minWidth:  35
   minHeight: 33
 
+
   template:
     """
     {{>editorOverlay}}
@@ -121,8 +122,11 @@ RactiveSwitch = RactiveValueWidget.extend({
     switch:
       """
       <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{classes}}" style="{{dims}}">
-        <input type="checkbox" checked="{{ internalValue }}" on-change="widget-value-change" {{# isEditing }} disabled{{/}} />
+        <input type="checkbox" checked="{{ internalValue }}" on-change="widget-value-change" {{# isEditing }} disabled{{/}} hidden />
         <span class="netlogo-label">{{ widget.display }}</span>
+        <div class="netlogo-switcher-element">
+          <div class="netlogo-switcher-element-knob" ></div>
+        </div>
       </label>
       """
 

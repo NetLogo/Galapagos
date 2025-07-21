@@ -56,21 +56,18 @@
 .netlogo-widget.interface-unlocked {
   user-select:      none;
   -moz-user-select: none;
+  opacity:          0.7;
 }
 
 .netlogo-widget.interface-unlocked:hover, .editor-overlay:hover + .netlogo-widget.interface-unlocked {
-  box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
   cursor:     default;
-  z-index:    3;
+  opacity:    1;
 }
 
 .netlogo-widget.selected {
   z-index: 53;
 }
 
-.netlogo-widget-container.interface-unlocked {
-  background-color: rgb(234, 255, 225);
-}
 
 .context-menu-item {
   border-bottom: solid 1px #dfdfdf;

@@ -1,32 +1,61 @@
+/*
+ * OpenSans
+ * */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+  --color-dark-blue: #0072f5; 
+  --color-widget-button: var(--color-dark-blue);
+  --color-widget-button-active: #003473;
+  --color-widget-button-text: #ffffff;
+  --color-widget-button-disabled: #d5d5d5;
+  --color-widget-button-disabled-text: #999999;
+
+  --color-widget-accessories: var(--color-dark-blue);
+  --color-widget-accessories-neutral: #afafaf;
+
+  --color-widget-background: #cae6ff;
+
+  --color-widget-plot-background: #eeeeee;
+  --color-widget-plot-border: #bcbcbc;
+
+  --color-widget-select-border: #459ef9;
+  --color-widget-input-border:#0070f6;
+
+  --color-widget-switch-primary: var(--color-dark-blue);
+  --color-widget-switch-off: #d5d5d5;
+  
+
+  --widget-padding-x: 0.5rem;
+  --widget-padding-y: 0.3rem;
+
+  --font-widget: 'Open Sans', sans-serif;
+}
+
 .netlogo-command {
-  background-color: #BACFF3;
+  background-color: var(--color-widget-button);
+  color: var(--color-widget-button-text);
 }
 .netlogo-command.netlogo-active, .netlogo-command:active {
-  background-color: #1F6A99;
-  color: #BACFF3;
+  background-color: var(--color-widget-button-active);
 }
 .netlogo-button.netlogo-disabled:active, .netlogo-forever-button.netlogo-disabled.netlogo-active {
-  background-color: #BCBCE5;
-  color: #888888;
-}
-.netlogo-button.interface-unlocked:active {
-  background-color: #BACFF3;
-  color: #707070
+  background-color: var(--color-widget-button-disabled);
+  color: var(--color-widget-button-disabled-text);
 }
 .netlogo-input {
-  background-color: #8FE585;
+  background-color: var(--color-widget-background);
 }
 .netlogo-output {
-  background-color: #FFFF9A;
-  border: 1px solid #E7E741;
+  background-color: #eeeeee;
 }
 
 .netlogo-slider-label .netlogo-label {
-  background-color: #8FE585;
+  background-color: transparent;
 }
 
-.netlogo-slider-label .netlogo-slider-value {
-  background-color: #8FE585;
+.netlogo-slider-label .netlogo-slider-value input {
+  background-color: white
 }
 
 .netlogo-tab-area {
@@ -57,8 +86,6 @@
 
 .netlogo-view-container {
   background-color: #F4F4F4;
-  outline: 1px solid #CCCCCC;
-  outline-offset: -1px;
 }
 
 .netlogo-canvas {

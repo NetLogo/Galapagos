@@ -6,6 +6,7 @@ import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+import RactiveCustomSlider from "./subcomponent/custom-slider.js"
 
 # coffeelint: disable=max_line_length
 FlexColumn = Ractive.extend({
@@ -170,10 +171,12 @@ RactiveSlider = RactiveValueWidget.extend({
   , breedVars:          undefined # Array[String]
   , errorClass:         undefined # String
   , internalValue:      0         # Number
+  , onValueChange: (val) ->
+      @set("internalValue", val)
+      @fire("widget-value-change")
   }
 
   widgetType: "slider"
-
   on: {
     'reset-if-invalid': (context) ->
       # input elements don't reject out-of-range hand-typed numbers so we have to do the dirty work
@@ -200,7 +203,8 @@ RactiveSlider = RactiveValueWidget.extend({
   }
 
   components: {
-    editForm: SliderEditForm
+    editForm: SliderEditForm,
+    customSlider: RactiveCustomSlider
   }
 
   eventTriggers: ->
@@ -232,14 +236,6 @@ RactiveSlider = RactiveValueWidget.extend({
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
-        <input
-          type="range"
-          max="{{widget.maxValue}}"
-          min="{{widget.minValue}}"
-          step="{{widget.stepValue}}"
-          value="{{internalValue}}"
-          on-input="widget-value-change"
-          {{# isEditing }}disabled{{/}} />
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
@@ -255,6 +251,22 @@ RactiveSlider = RactiveValueWidget.extend({
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
         </div>
+        <input
+          type="range"
+          max="{{widget.maxValue}}"
+          min="{{widget.minValue}}"
+          step="{{widget.stepValue}}"
+          value="{{internalValue}}"
+          on-input="widget-value-change"
+          {{# isEditing }}disabled{{/}} hidden />
+        <customSlider
+          id="{{id}}-custom"
+          min="{{widget.minValue}}"
+          max="{{widget.maxValue}}"
+          step="{{widget.stepValue}}"
+          value="{{internalValue}}"
+          onChange="{{onValueChange}}"/>
+        
       </label>
       """
 
