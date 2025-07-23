@@ -52,6 +52,13 @@ docToNlogoXML = (nlogoDoc) ->
   serializer = new XMLSerializer()
   serializer.serializeToString(nlogoDoc)
 
+# (String) => String
+stripXMLCdata = (xml) ->
+  if xml.startsWith("<![CDATA[") and xml.endsWith("]]>")
+    xml.slice(9, -3)
+  else
+    xml
+
 export {
   markdownToHtml,
   toNetLogoWebMarkdown,
@@ -60,5 +67,6 @@ export {
   nlogoToSections,
   sectionsToNlogo,
   nlogoXMLToDoc,
-  docToNlogoXML
+  docToNlogoXML,
+  stripXMLCdata
 }

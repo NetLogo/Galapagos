@@ -8,9 +8,11 @@ class NamespaceStorage
     inProgressJson = @localStorage.getItem(@namespace)
     if (inProgressJson)
       @inProgress = JSON.parse(inProgressJson)
+      @wasFirstInstance = false
     else
       @inProgress = { }
       @localStorage.setItem(@namespace, JSON.stringify(@inProgress))
+      @wasFirstInstance = true
 
   # (String) => Boolean
   hasKey: (key) ->

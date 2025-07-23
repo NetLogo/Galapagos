@@ -5,7 +5,8 @@ import {
   nlogoToSections,
   sectionsToNlogo,
   nlogoXMLToDoc,
-  docToNlogoXML
+  docToNlogoXML,
+  stripXMLCdata
 } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
@@ -120,7 +121,8 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     result.code = if (startingNlogoXML is rewrittenNlogoXML)
       result.code
     else
-      nlogoXMLToDoc(startingNlogoXML).querySelector("code").innerHTML
+      code = nlogoXMLToDoc(startingNlogoXML).querySelector("code").innerHTML
+      stripXMLCdata(code)
 
     session = newSession(
       container
@@ -405,6 +407,7 @@ Tortoise = {
   finishLoading,
   fromNlogo,
   fromNlogoSync,
+  fromNlogoXMLSync,
   fromURL,
   loadHubNetWeb
 }

@@ -97,12 +97,29 @@ RactiveNetLogoModel = Ractive.extend({
 
       return
 
-  loadModel: (nlogo, sourceType, path, callback) ->
+  loadOldFormatModel: (nlogo, sourceType, path, callback) ->
     if @session?
       @session.teardown()
 
     nlogoSource = Tortoise.createSource(sourceType, path, nlogo)
     Tortoise.fromNlogoSync(
+      nlogoSource
+    , @modelContainer
+    , @get('locale')
+    , false
+    , null
+    , @makeCompileResultHandler(callback)
+    , @rewriters
+    , @listeners
+    )
+    Tortoise.finishLoading()
+
+  loadXMLModel: (nlogox, sourceType, path, callback) ->
+    if @session?
+      @session.teardown()
+
+    nlogoSource = Tortoise.createSource(sourceType, path, nlogox)
+    Tortoise.fromNlogoXMLSync(
       nlogoSource
     , @modelContainer
     , @get('locale')

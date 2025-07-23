@@ -1,4 +1,4 @@
-import { docToNlogoXML, nlogoToSections, nlogoXMLToDoc, sectionsToNlogo } from "/beak/tortoise-utils.js"
+import { docToNlogoXML, nlogoToSections, nlogoXMLToDoc, sectionsToNlogo, stripXMLCdata } from "/beak/tortoise-utils.js"
 import Rewriter from "/beak/rewriter.js"
 
 class NetTangoRewriter extends Rewriter
@@ -29,7 +29,9 @@ class NetTangoRewriter extends Rewriter
   injectNlogoXML: (nlogox) =>
     nlogoDoc              = nlogoXMLToDoc(nlogox)
     codeElement           = nlogoDoc.querySelector("code")
-    codeElement.innerHTML = @rewriteNetLogoCode(codeElement.innerHTML)
+    startingCode          = codeElement.innerHTML.trim()
+    unescapedCode         = stripXMLCdata(startingCode)
+    codeElement.innerHTML = "<![CDATA[#{@rewriteNetLogoCode(unescapedCode)}]]>"
     docToNlogoXML(nlogoDoc)
 
   exportCode: (code) =>

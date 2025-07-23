@@ -4,7 +4,7 @@ import RactiveSpace from "./space.js"
 import ObjectUtils from "./object-utils.js"
 import newModelNetTango from "./new-model-nettango.js"
 
-import { createEmptyDefs, createProject, createWorkspace } from "./nettango-data.js"
+import { createEmptyDefs, createNewProject, createWorkspace } from "./nettango-data.js"
 import { netLogoOptionInfo, netLogoOptionDefaults, netTangoOptionDefaults } from "./options.js"
 
 getBlockStyleDefaults = (style) ->
@@ -317,9 +317,7 @@ RactiveBuilder = Ractive.extend({
     return
 
   clearAll: () ->
-    newProject = createProject("New Project")
-    newProject.spaces = [createWorkspace(0, "ntb-defs-0", "Block Space 0")]
-    @fire("ntb-load-project", {}, newProject)
+    @fire("ntb-load-project", {}, createNewProject())
     return
 
   # (Boolean) => Unit

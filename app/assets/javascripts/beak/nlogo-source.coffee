@@ -71,10 +71,6 @@ class ScriptSource extends NlogoSource
   getWipKey: () ->
     "script-element://#{@fileName}"
 
-  # () => Boolean
-  isOldFormat: () ->
-    false
-
 export {
   UrlSource
 , DiskSource

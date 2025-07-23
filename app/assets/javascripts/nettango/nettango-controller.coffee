@@ -4,6 +4,8 @@ import { netTangoEvents } from "./nettango-events.js"
 import { NamespaceStorage } from "../namespace-storage.js"
 
 import NetTangoRewriter from "./rewriter.js"
+import newModelNetTango from "./new-model-nettango.js"
+import { NETTANGO_PROJECT_VERSION, createNewProject } from "./nettango-data.js"
 import NetTangoSkeleton from "./nettango-skeleton.js"
 import UndoRedo from "./undo-redo.js"
 
@@ -15,7 +17,11 @@ class NetTangoController
 
   constructor: (element, locale, localStorage, @playMode, @runtimeMode,
     @disableAutoStore, netTangoModelUrl, listeners) ->
-    @storage       = new NamespaceStorage('ntInProgress', localStorage)
+
+    @storage = new NamespaceStorage('ntInProgress', localStorage)
+    if @storage.wasFirstInstance
+      @storeProject(createNewProject())
+
     @autoStorePlay = @playMode and not @disableAutoStore
     getSpaces      = () => @builder.get("spaces")
     @isDebugMode   = false
@@ -248,9 +254,15 @@ class NetTangoController
     if (code is @netLogoCode and title is @netLogoTitle)
       return
 
-    @netLogoCode  = code
     @netLogoTitle = title
-    @netLogoModel.loadModel(code, 'script-element', "#{title}.nlogo")
+
+    if code.trim().startsWith("<?xml")
+      @netLogoModel.loadXMLModel(code, 'script-element', "#{title}.nlogox")
+      @netLogoCode = code
+    else
+      @netLogoModel.loadOldFormatModel(code, 'script-element', "#{title}.nlogo")
+      @netLogoCode = @netLogoModel.oracle.getNlogo()
+
     return
 
   # (Array[File]) => Unit
@@ -313,10 +325,11 @@ class NetTangoController
     if (not nlogoMaybe.success)
       @ractive.fire('nettango-error', {}, 'export-nlogo', nlogoMaybe)
 
-    project       = @builder.getNetTangoBuilderData()
-    project.code  = nlogoMaybe.result
-    project.title = title
-    isVertical    = oracle.getSetting("isVertical") ? false
+    project                 = @builder.getNetTangoBuilderData()
+    project.code            = nlogoMaybe.result
+    project.title           = title
+    project.projectVersion  = NETTANGO_PROJECT_VERSION
+    isVertical              = oracle.getSetting("isVertical") ? false
     project.netLogoSettings = { isVertical }
     project
 
@@ -435,7 +448,7 @@ class NetTangoController
   storeProject: (project) ->
     set = (prop) => @storage.set(prop, project[prop])
     [ 'code', 'title', 'extraCss', 'spaces', 'netLogoOptions',
-      'netTangoOptions', 'blockStyles', 'netLogoSettings' ].forEach(set)
+      'netTangoOptions', 'blockStyles', 'netLogoSettings', 'projectVersion' ].forEach(set)
 
     if @autoStorePlay
       @storePlayProgress()
