@@ -4,15 +4,15 @@
 # This is a singleton class for managing NetLogo Web (NLW) extensions.
 # There is a few, unfortunately, global objects that we have to depend on:
 #  1. Extensions.          -- Managed by Tortoise Engine
-#  2. nlwExtensionsManager -- Managed by Galapagos
-class NLWExtensionManager
+#  2. nlwExtensionsLoader  -- Managed by Galapagos
+class NLWExtensionsLoader
     @instance: null
     constructor: (compiler) ->
-        if NLWExtensionManager.instance?
-            return NLWExtensionManager.instance
+        if NLWExtensionsLoader.instance?
+            return NLWExtensionsLoader.instance
 
-        NLWExtensionManager.instance = this
-        window.nlwExtensionManager = NLWExtensionManager.instance
+        NLWExtensionsLoader.instance = this
+        window.NLWExtensionsLoader = NLWExtensionsLoader.instance
 
         @compiler = compiler
         @urlRepo = {}
@@ -24,8 +24,8 @@ class NLWExtensionManager
             .filter((ext) -> ext.url != null)                     
             .map((ext) ->
                 {name, url} = ext
-                baseName = NLWExtensionManager.getBaseNameFromURL(url)
-                primURL  = NLWExtensionManager.getPrimitiveJSONSrc(url)
+                baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
+                primURL  = NLWExtensionsLoader.getPrimitiveJSONSrc(url)
                 if urlRepo[baseName]?
                     # If the extension is already loaded, just return it
                     return [baseName, urlRepo[baseName]]
@@ -33,8 +33,8 @@ class NLWExtensionManager
                 # and fetch the primitives JSON file before we 
                 # trigger the recompilation.   
                 return Promise.resolve().then(() ->
-                    prims = await NLWExtensionManager.fetchPrimitives(primURL)
-                    NLWExtensionManager.confirmNamesMatch(prims, name)
+                    prims = await NLWExtensionsLoader.fetchPrimitives(primURL)
+                    NLWExtensionsLoader.confirmNamesMatch(prims, name)
                     return [baseName, {
                         getExtension: () -> import(url),
                         prims
@@ -44,8 +44,7 @@ class NLWExtensionManager
         ))
 
         Object.assign(@urlRepo, url_extensions)
-        NLWExtensionManager.updateGlobalExtensionsObject(url_extensions)
-        console.log("Loaded URL extensions:", url_extensions)
+        NLWExtensionsLoader.updateGlobalExtensionsObject(url_extensions)
         url_extensions
 
     # Helpers
@@ -86,9 +85,9 @@ class NLWExtensionManager
     
     @getPrimitiveJSONSrc: (url) ->
         # Get the base name from the URL and append '.json'
-        baseName = NLWExtensionManager.getBaseNameFromURL(url)
+        baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
         return "#{baseName}.json"
 
 
 # Exports
-export default NLWExtensionManager
+export default NLWExtensionsLoader

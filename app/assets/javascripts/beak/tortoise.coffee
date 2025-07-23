@@ -2,7 +2,7 @@ import SessionLite from "./session-lite.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
-import NLWExtensionManager from "./nlw-extensions-manager.js"
+import NLWExtensionsLoader from "./nlw-extensions-loader.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
@@ -90,7 +90,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
-  extensionManager = new NLWExtensionManager(compiler)
+  extensionsLoader = new NLWExtensionsLoader(compiler)
 
   parser = new DOMParser();
   xmlDoc = parser.parseFromString(nlogoxSource.nlogo, "text/xml");
@@ -105,7 +105,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   else
     codeText.slice("<![CDATA[".length, -1 * ("]]>".length))
 
-  await extensionManager.loadURLExtensions(code)
+  await extensionsLoader.loadURLExtensions(code)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
@@ -220,9 +220,9 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
-  extensionManager = new NLWExtensionManager(compiler)
+  extensionsLoader = new NLWExtensionsLoader(compiler)
 
-  await extensionManager.loadURLExtensions(nlogoSource)
+  await extensionsLoader.loadURLExtensions(nlogoSource)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
