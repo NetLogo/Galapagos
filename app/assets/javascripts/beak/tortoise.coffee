@@ -2,6 +2,7 @@ import SessionLite from "./session-lite.js"
 import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
+import NLWExtensionManager from "./nlw-extensions-manager.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
@@ -27,6 +28,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , lastCompileFailed
   )
   session
+
 
 # (() => Unit) => Unit
 startLoading = (process) ->
@@ -88,6 +90,22 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
+  extensionManager = new NLWExtensionManager(compiler)
+
+  parser = new DOMParser();
+  xmlDoc = parser.parseFromString(nlogoxSource.nlogo, "text/xml");
+  errorNode = xmlDoc.querySelector("parsererror")
+  if errorNode
+    throw new Error("Invalid Nlogo XML: " + errorNode.textContent)
+
+  codeElement = xmlDoc.querySelector("code")
+  codeText    = codeElement.innerHTML
+  code        = if not codeText.startsWith("<![CDATA[")
+    codeText
+  else
+    codeText.slice("<![CDATA[".length, -1 * ("]]>".length))
+
+  await extensionManager.loadURLExtensions(code)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
@@ -202,6 +220,9 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
+  extensionManager = new NLWExtensionManager(compiler)
+
+  await extensionManager.loadURLExtensions(nlogoSource)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
