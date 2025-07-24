@@ -3,6 +3,7 @@ import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.j
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 import NLWExtensionsLoader from "./nlw-extensions-loader.js"
+import { NlogoXFile } from "./nlogo-file.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
@@ -92,21 +93,6 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   compiler = new BrowserCompiler()
   extensionsLoader = new NLWExtensionsLoader(compiler)
 
-  parser = new DOMParser();
-  xmlDoc = parser.parseFromString(nlogoxSource.nlogo, "text/xml");
-  errorNode = xmlDoc.querySelector("parsererror")
-  if errorNode
-    throw new Error("Invalid Nlogo XML: " + errorNode.textContent)
-
-  codeElement = xmlDoc.querySelector("code")
-  codeText    = codeElement.innerHTML
-  code        = if not codeText.startsWith("<![CDATA[")
-    codeText
-  else
-    codeText.slice("<![CDATA[".length, -1 * ("]]>".length))
-
-  await extensionsLoader.loadURLExtensions(code)
-
   notifyListeners = createNotifier(listenerEvents, listeners)
 
   startingNlogoXML    = nlogoxSource.nlogo
@@ -124,10 +110,24 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
   extraCommands = rewriters.reduce(extrasReducer, [])
 
+  file = new NlogoXFile(rewrittenNlogoXML)
+  code = file.getCode()
+  
+  compileSuccess = true
+  errors = []
+  try
+    await extensionsLoader.loadURLExtensions(code)
+  catch e
+    compileSuccess = false
+    errors.push(e.message)
+
   notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
   result = compiler.fromNlogoXML(rewrittenNlogoXML, extraCommands, { code: "", widgets: extraWidgets })
+  if not result.model.success
+    compileSuccess = false
+    errors = [...result.model.result, ...errors]
 
-  if result.model.success
+  if compileSuccess
 
     # result.code = if (startingNlogoXML is rewrittenNlogoXML)
     #   result.code
@@ -176,7 +176,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
         type:    'failure'
       , source:  'compile-recoverable'
       , session: session
-      , errors:  result.model.result
+      , errors
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
@@ -186,7 +186,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       callback({
         type:   'failure'
       , source: 'compile-fatal'
-      , errors: result.model.result
+      , errors
       })
 
   return
