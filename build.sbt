@@ -326,9 +326,10 @@ scrapePublishCredential := (Def.settingDyn {
 
 scrapePublishBucketID := (Def.settingDyn {
   val branchDeploy = Map(
-    "production"  -> "netlogo-web-prod-content",
-    "main"        -> "netlogo-web-staging-content",
-    "scrape-test" -> "netlogo-web-experiments-content/scrape-test"
+    "production"      -> "netlogo-web-prod-content",
+    "main"            -> "netlogo-web-staging-content",
+    "modelingcommons" -> "netlogo-web-modelingcommons-content",
+    "scrape-test"     -> "netlogo-web-experiments-content/scrape-test"
   )
 
   if (isBuildServer)
@@ -339,9 +340,10 @@ scrapePublishBucketID := (Def.settingDyn {
 
 scrapePublishDistributionID := (Def.settingDyn {
   val branchPublish = Map(
-    "production"  -> "E3AIHWIXSMPCAI",
-    "main"        -> "E360I3EFLPUZR0",
-    "scrape-test" -> "E2TDYOH5TZH83M"
+    "production"      -> "E3AIHWIXSMPCAI",
+    "main"            -> "E360I3EFLPUZR0",
+    "modelingcommons" -> "E3UEBDSNEZ97GK",
+    "scrape-test"     -> "E2TDYOH5TZH83M"
   )
 
   if (isBuildServer)
@@ -352,9 +354,10 @@ scrapePublishDistributionID := (Def.settingDyn {
 
 scrapeAbsoluteURL := (Def.settingDyn {
   val branchURL = Map(
-    "production"  -> "netlogoweb.org",
-    "main"        -> "staging.netlogoweb.org",
-    "scrape-test" -> "experiments.netlogoweb.org/scrape-test"
+    "production"      -> "netlogoweb.org",
+    "main"            -> "staging.netlogoweb.org",
+    "modelingcommons" -> "modelingcommons.netlogoweb.org",
+    "scrape-test"     -> "experiments.netlogoweb.org/scrape-test"
   )
 
   if (isBuildServer)
