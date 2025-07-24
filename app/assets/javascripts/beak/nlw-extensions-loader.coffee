@@ -7,6 +7,7 @@
 #  2. URLExtensionsRepo    -- Managed by Galapagos
 class NLWExtensionsLoader
     @instance: null
+    @allowedExtensions = ["js"]
     constructor: (compiler) ->
         if NLWExtensionsLoader.instance?
             return NLWExtensionsLoader.instance
@@ -68,7 +69,10 @@ class NLWExtensionsLoader
             return null
 
     appendURLProtocol: (url) ->
-        return "url://#{url}"
+       if not url.startsWith("url://")
+            return "url://" + url
+        else
+            return url
 
     removeURLProtocol: (name) ->
         # Remove the "url://" protocol from the name
@@ -79,6 +83,20 @@ class NLWExtensionsLoader
 
     isURL: (name) ->
         return name.startsWith("url://")
+
+    validateURL: (url) ->
+        url = @removeURLProtocol(url)
+        try
+            new URL(url)
+            fileExtension = url.split('.').pop()
+            if @allowedExtensions.includes(fileExtension)
+                return true
+            else
+                console.error("Invalid file extension: #{fileExtension}. Allowed extensions are: #{@allowedExtensions.join(', ')}")
+                return false 
+        catch e
+            console.error("Invalid URL: #{url} - #{e.message}")
+            return false
 
     # Helpers
     @getModuleFromURL: (url) ->
