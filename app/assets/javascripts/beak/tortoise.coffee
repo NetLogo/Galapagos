@@ -9,6 +9,8 @@ import {
   stripXMLCdata
 } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
+import NLWExtensionsLoader from "./nlw-extensions-loader.js"
+import { NlogoXFile } from "./nlogo-file.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
@@ -34,6 +36,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , lastCompileFailed
   )
   session
+
 
 # (() => Unit) => Unit
 startLoading = (process) ->
@@ -95,6 +98,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
+  extensionsLoader = new NLWExtensionsLoader(compiler)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
@@ -113,10 +117,24 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   extrasReducer = (extras, rw) -> if rw.getExtraCommands? then extras.concat(rw.getExtraCommands()) else extras
   extraCommands = rewriters.reduce(extrasReducer, [])
 
+  file = new NlogoXFile(rewrittenNlogoXML)
+  code = file.getCode()
+  
+  compileSuccess = true
+  errors = []
+  try
+    await extensionsLoader.loadURLExtensions(code)
+  catch e
+    compileSuccess = false
+    errors.push(e.message)
+
   notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
   result = compiler.fromNlogoXML(rewrittenNlogoXML, extraCommands, { code: "", widgets: extraWidgets })
+  if not result.model.success
+    compileSuccess = false
+    errors = [...result.model.result, ...errors]
 
-  if result.model.success
+  if compileSuccess
 
     result.code = if (startingNlogoXML is rewrittenNlogoXML)
       result.code
@@ -166,7 +184,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
         type:    'failure'
       , source:  'compile-recoverable'
       , session: session
-      , errors:  result.model.result
+      , errors
       })
       result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
       rewriters.forEach( (rw) -> rw.compileComplete?() )
@@ -176,7 +194,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       callback({
         type:   'failure'
       , source: 'compile-fatal'
-      , errors: result.model.result
+      , errors
       })
 
   return
@@ -208,6 +226,9 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
+  extensionsLoader = new NLWExtensionsLoader(compiler)
+
+  await extensionsLoader.loadURLExtensions(nlogoSource)
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
