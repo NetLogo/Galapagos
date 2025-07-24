@@ -4,7 +4,7 @@
 # This is a singleton class for managing NetLogo Web (NLW) extensions.
 # There is a few, unfortunately, global objects that we have to depend on:
 #  1. Extensions.          -- Managed by Tortoise Engine
-#  2. nlwExtensionsLoader  -- Managed by Galapagos
+#  2. URLExtensionsRepo    -- Managed by Galapagos
 class NLWExtensionsLoader
     @instance: null
     constructor: (compiler) ->
@@ -33,10 +33,11 @@ class NLWExtensionsLoader
                 # and fetch the primitives JSON file before we 
                 # trigger the recompilation.   
                 return Promise.resolve().then(() ->
+                    extensionModule = await NLWExtensionsLoader.getModuleFromURL(url)
                     prims = await NLWExtensionsLoader.fetchPrimitives(primURL)
                     NLWExtensionsLoader.confirmNamesMatch(prims, name)
                     return [baseName, {
-                        getExtension: () -> import(url),
+                        extensionModule,
                         prims
                     }]
                 )
@@ -47,17 +48,53 @@ class NLWExtensionsLoader
         NLWExtensionsLoader.updateGlobalExtensionsObject(url_extensions)
         url_extensions
 
+    # Public API
+    getPrimitivesFromURL: (url) ->
+        # Get the primitives JSON file from the URL, if it exists
+        url = @removeURLProtocol(url)
+        baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
+        if @urlRepo[baseName]?
+            return @urlRepo[baseName].prims
+        else
+            return null
+
+    getExtensionModuleFromURL: (url) ->
+        # Get the extension module from the URL, if it exists
+        url = @removeURLProtocol(url)
+        baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
+        if @urlRepo[baseName]?
+            return @urlRepo[baseName].extensionModule
+        else
+            return null
+
+    appendURLProtocol: (url) ->
+        return "url://#{url}"
+
+    removeURLProtocol: (name) ->
+        # Remove the "url://" protocol from the name
+        if name.startsWith("url://")
+            return name.slice("url://".length)
+        else
+            return name
+
+    isURL: (name) ->
+        return name.startsWith("url://")
+
     # Helpers
+    @getModuleFromURL: (url) ->
+        # Get the module from the URL, if it exists
+        extensionImport = await import(url)
+        extensionKeys = Object.keys(extensionImport)
+        if extensionKeys.length > 0
+            return extensionImport[extensionKeys[0]]
+        else
+            throw new Error("Extension module at #{url} does not export anything.")
+            
     @updateGlobalExtensionsObject: (url_extensions) ->
         # Update the global Extensions object with the new URL extensions
-        if not window.Extensions?
-            window.Extensions = {}
-        for _, ext of url_extensions
-            key = ext.prims.name
-            if window.Extensions[key]?
-                console.warn("Extension '#{key}' already exists in global Extensions object.")
-            window.Extensions[key] = ext
-        console.log("NLW Extensions updated in global object:", window.Extensions)
+        if not window.URLExtensionsRepo?
+            window.URLExtensionsRepo = {}
+        Object.assign(window.URLExtensionsRepo, url_extensions)
 
     @confirmNamesMatch: (primitives, name) ->
         # Check if the primitives JSON file name matches the extension name
