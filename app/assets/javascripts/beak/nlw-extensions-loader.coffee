@@ -5,6 +5,22 @@
 # There is a few, unfortunately, global objects that we have to depend on:
 #  1. Extensions.          -- Managed by Tortoise Engine
 #  2. URLExtensionsRepo    -- Managed by Galapagos
+# 
+# I tried to keep this file the main source of truth for NLW extensions as
+# much as possible. This works hand-in-hand with the Tortoise Engine, particularly
+# the NLWExtensionsManager class, which is responsible for managing the
+# extensions in the Tortoise Engine.
+#
+# A lot of the functionality here is part of an API used by the Tortoise Engine.
+# I could've implemented those in Scala, but I chose not to do so because
+# I wanted to keep the NLW extensions management logic in JavaScript, where
+# it is easier to work with URLs and dynamic imports.
+# Also, because we cannot trigger asynchronous work in Scala and support in JavaScript
+# easily––at least without the browser complaining about it––the `loadURLExtensions`
+# had to be implemented in JavaScript anyways.
+#
+# - Omar Ibrahim, July 2025
+#
 class NLWExtensionsLoader
     @instance: null
     @allowedExtensions = ["js"]
