@@ -44,7 +44,7 @@ RactiveCustomSlider = Ractive.extend({
       onChange = slider.get("onChange")
 
       move = (e) ->
-        currentX = e.clientX or e.touches?[0]?.clientX
+        currentX = e.clientX or e.touches?[0]?.clientX or e.event.clientX
         percent = (currentX - sliderLeft) / sliderWidth
         percent = Math.max(0, Math.min(1, percent))
         val = min + percent * (max - min)
@@ -70,6 +70,7 @@ RactiveCustomSlider = Ractive.extend({
       window.addEventListener("mouseup", stop)
       window.addEventListener("touchmove", move)
       window.addEventListener("touchend", stop)
+      move(event) # Initial move to set the value
       event.original.preventDefault()
   }
 
