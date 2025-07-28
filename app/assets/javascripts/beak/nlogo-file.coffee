@@ -12,6 +12,22 @@ class AbstractNlogoFile
     getCode: ->
         return 'dummy'
 
+class NlogoFile extends AbstractNlogoFile
+    constructor: (source) ->
+        super(source)
+        @delimiter = "@#$#@#$#@"
+
+    getSource: ->
+        return @source
+
+    getCode: ->
+        # Extract the code from the source using the delimiter
+        parts = @source.split(@delimiter)
+        if parts.length > 1
+            return parts[0].trim()
+        else
+            return @source.trim()
+
 class NlogoXFile extends AbstractNlogoFile
     constructor: (source) ->
         super(source)
@@ -34,4 +50,4 @@ class NlogoXFile extends AbstractNlogoFile
 
         return code
 
-export { NlogoXFile }
+export { NlogoXFile, NlogoFile }
