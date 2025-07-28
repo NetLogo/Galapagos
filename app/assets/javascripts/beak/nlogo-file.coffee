@@ -31,14 +31,14 @@ class NlogoFile extends AbstractNlogoFile
 class NlogoXFile extends AbstractNlogoFile
     constructor: (source) ->
         super(source)
-        parser = new DOMParser();
-        @doc = parser.parseFromString(source, "text/xml");
+        parser = new DOMParser()
+        @doc = parser.parseFromString(source, "text/xml")
         errorNode = @doc.querySelector("parsererror")
         if errorNode
             throw new Error("Invalid Nlogo XML: " + errorNode.textContent)
 
     getSource: ->
-        return @source 
+        return @source
     
     getCode: ->
         codeElement = @doc.querySelector("code")

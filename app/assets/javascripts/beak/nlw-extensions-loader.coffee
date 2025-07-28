@@ -5,7 +5,7 @@
 # There is a few, unfortunately, global objects that we have to depend on:
 #  1. Extensions.          -- Managed by Tortoise Engine
 #  2. URLExtensionsRepo    -- Managed by Galapagos
-# 
+#
 # I tried to keep this file the main source of truth for NLW extensions as
 # much as possible. This works hand-in-hand with the Tortoise Engine, particularly
 # the NLWExtensionsManager class, which is responsible for managing the
@@ -20,7 +20,7 @@
 # had to be implemented in JavaScript anyways.
 #
 # - Omar Ibrahim, July 2025
-# 
+#
 class NLWExtensionsLoader
     @instance: null
     @allowedExtensions = ["js"]
@@ -37,8 +37,8 @@ class NLWExtensionsLoader
     loadURLExtensions: (source) ->
         urlRepo = @urlRepo
         extensions = @compiler.listExtensions(source)
-        url_extensions = Object.fromEntries (await Promise.all(extensions
-            .filter((ext) -> ext.url != null)     
+        url_extensions = Object.fromEntries(await Promise.all(extensions
+            .filter((ext) -> ext.url isnt null)
             .map((ext) =>
                 {name, url} = ext
                 url = @normalizeURL(@removeURLProtocol(url))
@@ -48,8 +48,8 @@ class NLWExtensionsLoader
                     # If the extension is already loaded, just return it
                     return [url, urlRepo[url]]
                 # We want to get a lazy loader for the extension,
-                # and fetch the primitives JSON file before we 
-                # trigger the recompilation.   
+                # and fetch the primitives JSON file before we
+                # trigger the recompilation.
                 return Promise.resolve().then(() ->
                     extensionModule = await NLWExtensionsLoader.getModuleFromURL(url)
                     prims = await NLWExtensionsLoader.fetchPrimitives(primURL)
@@ -106,8 +106,10 @@ class NLWExtensionsLoader
             if NLWExtensionsLoader.allowedExtensions.includes(fileExtension)
                 return true
             else
-                console.error("Invalid file extension: #{fileExtension}. Allowed extensions are: #{@allowedExtensions.join(', ')}")
-                return false 
+                console.error("Invalid file extension: #{fileExtension}. "    +
+                    "Allowed extensions are: #{@allowedExtensions.join(', ')}"
+                )
+                return false
         catch e
             console.error("Invalid URL: #{url} - #{e.message}")
             return false
@@ -133,7 +135,7 @@ class NLWExtensionsLoader
             return extensionImport[extensionKeys[0]]
         else
             throw new Error("Extension module at #{url} does not export anything.")
-            
+
     @updateGlobalExtensionsObject: (url_extensions) ->
         # Update the global Extensions object with the new URL extensions
         if not window.URLExtensionsRepo?
@@ -143,7 +145,8 @@ class NLWExtensionsLoader
     @confirmNamesMatch: (primitives, name) ->
         # Check if the primitives JSON file name matches the extension name
         if primitives?.name.toLowerCase() isnt name.toLowerCase()
-            console.warn("Primitives JSON file name '#{primitives.name.toLowerCase()}' does not match extension import name '#{name.toLowerCase()}'")
+            console.warn("Primitives JSON file name '#{primitives.name.toLowerCase()}' " +
+            "does not match extension import name '#{name.toLowerCase()}'")
 
     @fetchPrimitives: (primURL) ->
         try
@@ -163,7 +166,7 @@ class NLWExtensionsLoader
         # base name, with a .json extension.
         # e.g. "my-extension.js" becomes "my-extension.json"
         url.split('.').slice(0, -1).join('.')
-    
+
     @getPrimitiveJSONSrc: (url) ->
         # Get the base name from the URL and append '.json'
         baseName = NLWExtensionsLoader.getBaseNameFromURL(url)

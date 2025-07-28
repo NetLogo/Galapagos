@@ -27,7 +27,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , nlogoSource
   , result
   , lastCompileFailed,
-     onBeforeRecompile || []
+     onBeforeRecompile or []
   )
   session
 
