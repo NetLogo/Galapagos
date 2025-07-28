@@ -20,7 +20,7 @@
 # had to be implemented in JavaScript anyways.
 #
 # - Omar Ibrahim, July 2025
-#
+# 
 class NLWExtensionsLoader
     @instance: null
     @allowedExtensions = ["js"]
@@ -38,14 +38,15 @@ class NLWExtensionsLoader
         urlRepo = @urlRepo
         extensions = @compiler.listExtensions(source)
         url_extensions = Object.fromEntries (await Promise.all(extensions
-            .filter((ext) -> ext.url != null)                     
-            .map((ext) ->
+            .filter((ext) -> ext.url != null)     
+            .map((ext) =>
                 {name, url} = ext
+                url = @normalizeURL(@removeURLProtocol(url))
                 baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
                 primURL  = NLWExtensionsLoader.getPrimitiveJSONSrc(url)
-                if urlRepo[baseName]?
+                if urlRepo[url]?
                     # If the extension is already loaded, just return it
-                    return [baseName, urlRepo[baseName]]
+                    return [url, urlRepo[url]]
                 # We want to get a lazy loader for the extension,
                 # and fetch the primitives JSON file before we 
                 # trigger the recompilation.   
@@ -53,7 +54,7 @@ class NLWExtensionsLoader
                     extensionModule = await NLWExtensionsLoader.getModuleFromURL(url)
                     prims = await NLWExtensionsLoader.fetchPrimitives(primURL)
                     NLWExtensionsLoader.confirmNamesMatch(prims, name)
-                    return [baseName, {
+                    return [url, {
                         extensionModule,
                         prims
                     }]
@@ -68,19 +69,17 @@ class NLWExtensionsLoader
     # Public API
     getPrimitivesFromURL: (url) ->
         # Get the primitives JSON file from the URL, if it exists
-        url = @removeURLProtocol(url)
-        baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
-        if @urlRepo[baseName]?
-            return @urlRepo[baseName].prims
+        url = @normalizeURL(url)
+        if @urlRepo[url]?
+            return @urlRepo[url].prims
         else
             return null
 
     getExtensionModuleFromURL: (url) ->
         # Get the extension module from the URL, if it exists
-        url = @removeURLProtocol(url)
-        baseName = NLWExtensionsLoader.getBaseNameFromURL(url)
-        if @urlRepo[baseName]?
-            return @urlRepo[baseName].extensionModule
+        url = @normalizeURL(url)
+        if @urlRepo[url]?
+            return @urlRepo[url].extensionModule
         else
             return null
 
@@ -101,11 +100,10 @@ class NLWExtensionsLoader
         return name.startsWith("url://")
 
     validateURL: (url) ->
-        url = @removeURLProtocol(url)
         try
-            new URL(url)
-            fileExtension = url.split('.').pop()
-            if @allowedExtensions.includes(fileExtension)
+            url = @normalizeURL(url)
+            fileExtension = url.split('.').pop().toLowerCase()
+            if NLWExtensionsLoader.allowedExtensions.includes(fileExtension)
                 return true
             else
                 console.error("Invalid file extension: #{fileExtension}. Allowed extensions are: #{@allowedExtensions.join(', ')}")
@@ -113,6 +111,18 @@ class NLWExtensionsLoader
         catch e
             console.error("Invalid URL: #{url} - #{e.message}")
             return false
+
+    normalizeURL: (url) ->
+        # Remove Search Params and Hash from the URL
+        try
+            url = @removeURLProtocol(url)
+            uri = new URL(url)
+            uri.search = ''
+            uri.hash = ''
+            return uri.toString()
+        catch e
+            console.error("Error normalizing URL: #{url} - #{e.message}")
+            return url
 
     # Helpers
     @getModuleFromURL: (url) ->
