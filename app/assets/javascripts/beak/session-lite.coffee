@@ -40,7 +40,8 @@ class SessionLite
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
   #   String, String, Boolean, String, String, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
+    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS, lastCompileFailed,
+    @onBeforeRecompile) ->
 
     @hnw = new HNWSession( (() => @widgetController)
                          , ((ps) => @compiler.compilePlots(ps)))
@@ -231,7 +232,6 @@ class SessionLite
     if @widgetController.ractive.get('isEditing') and @hnw.isHNW()
       parent.postMessage({ type: "recompile" }, "*")
     else
-
       code          = @widgetController.code()
       oldWidgets    = @widgetController.widgets()
       rewritten     = @rewriteCode(code)
@@ -251,6 +251,10 @@ class SessionLite
       @widgetController.ractive.fire('recompile-start', source, rewritten, code)
 
       try
+        # # Execute the onBeforeRecompile callbacks
+        for callback in @onBeforeRecompile
+          await callback(source, rewritten, code)
+
         res = @compiler.fromModel(compileParams)
         if res.model.success
 

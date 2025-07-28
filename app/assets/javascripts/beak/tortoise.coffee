@@ -3,12 +3,12 @@ import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.j
 import { toNetLogoWebMarkdown, nlogoToSections, sectionsToNlogo } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 import NLWExtensionsLoader from "./nlw-extensions-loader.js"
-import { NlogoXFile } from "./nlogo-file.js"
+import { NlogoXFile, NlogoFile } from "./nlogo-file.js"
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
 newSession = (container, compiler, rewriters, listeners, modelResult,
-  isReadOnly, locale, workInProgressState, nlogoSource, lastCompileFailed) ->
+  isReadOnly, locale, workInProgressState, nlogoSource, lastCompileFailed, onBeforeRecompile) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
@@ -26,7 +26,8 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , workInProgressState
   , nlogoSource
   , result
-  , lastCompileFailed
+  , lastCompileFailed,
+     onBeforeRecompile || []
   )
   session
 
@@ -113,6 +114,8 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   file = new NlogoXFile(rewrittenNlogoXML)
   code = file.getCode()
   
+  notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
+
   compileSuccess = true
   errors = []
   try
@@ -121,11 +124,21 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     compileSuccess = false
     errors.push(e.message)
 
-  notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
   result = compiler.fromNlogoXML(rewrittenNlogoXML, extraCommands, { code: "", widgets: extraWidgets })
   if not result.model.success
     compileSuccess = false
     errors = [...result.model.result, ...errors]
+
+
+  onBeforeRecompile = [
+    (source, rewritten, code) ->
+      try
+        await extensionsLoader.loadURLExtensions(rewritten)
+        return true
+      catch e
+        return false
+  ]
+
 
   if compileSuccess
 
@@ -145,6 +158,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     , workInProgressState
     , nlogoxSource
     , false
+    , onBeforeRecompile
     )
 
     callback({
@@ -170,6 +184,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       , workInProgressState
       , nlogoxSource
       , true
+      , onBeforeRecompile
       )
 
       callback({
@@ -222,7 +237,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   compiler = new BrowserCompiler()
   extensionsLoader = new NLWExtensionsLoader(compiler)
 
-  await extensionsLoader.loadURLExtensions(nlogoSource)
+  
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
@@ -242,15 +257,40 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   extraCommands = rewriters.reduce(extrasReducer, [])
 
   notifyListeners('compile-start', rewrittenNlogo, startingNlogo)
-  result = compiler.fromNlogo(rewrittenNlogo, extraCommands, { code: "", widgets: extraWidgets })
 
-  if result.model.success
+  file = new NlogoFile(rewrittenNlogo)
+  code = file.getCode()
+  
+  compileSuccess = true
+  errors = []
+  try
+    await extensionsLoader.loadURLExtensions(code)
+  catch e
+    compileSuccess = false
+    errors.push(e.message)
+
+  result = compiler.fromNlogo(rewrittenNlogo, extraCommands, { code: "", widgets: extraWidgets })
+  if not result.model.success
+    compileSuccess = false
+    errors = [...result.model.result, ...errors]
+
+  onBeforeRecompile = [
+    (source, rewritten, code) ->
+      try
+        await extensionsLoader.loadURLExtensions(rewritten)
+        return true
+      catch e
+        return false
+  ]
+
+  if compileSuccess
 
     result.code = if (startingNlogo is rewrittenNlogo)
       result.code
     else
       nlogoToSections(startingNlogo)[0].slice(0, -1)
-
+      
+    
     session = newSession(
       container
     , compiler
@@ -262,6 +302,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     , workInProgressState
     , nlogoSource
     , false
+    , onBeforeRecompile
     )
 
     callback({
@@ -287,6 +328,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       , workInProgressState
       , nlogoSource
       , true
+      , onBeforeRecompile
       )
 
       callback({
