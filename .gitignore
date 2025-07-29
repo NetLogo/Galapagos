@@ -15,7 +15,10 @@ managed/
 project/project/
 target/
 tmp/
+
 .bsp/
+.metals/
+.bloop/
 
 /public/pages/iframe-test.html
 
