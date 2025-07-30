@@ -1,4 +1,4 @@
-import newModel from "../new-model.js"
+import { newModel } from "../new-model.js"
 import { normalizedFileName } from "./tortoise-utils.js"
 
 dropNlogoExtension = (s) ->
