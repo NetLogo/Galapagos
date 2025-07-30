@@ -1,4 +1,4 @@
-import newModel  from "/new-model.js"
+import { newModel } from "/new-model.js"
 
 import applyUpdate          from "./apply-update.js"
 import becomeOracle         from "./become-oracle.js"
