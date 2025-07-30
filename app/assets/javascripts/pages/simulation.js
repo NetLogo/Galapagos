@@ -8,7 +8,7 @@ import { WipListener } from "/beak/wip-listener.js";
 
 import "/codemirror-mode.js";
 import AlertDisplay from "/alert-display.js";
-import newModel from "/new-model.js";
+import { newModel } from "/new-model.js";
 import Settings from "/settings.js";
 import { initSettingsStorage } from "/settings-storage.js";
 import Tortoise from "/beak/tortoise.js";
