@@ -1,8 +1,8 @@
 # coffeelint: disable=max_line_length
-newModel =
+newCustomModel = (code) ->
   """<?xml version="1.0" encoding="utf-8"?>
 <model version="NetLogo 7.0.0-beta2" snapToGrid="false">
-  <code></code>
+  <code>#{code}</code>
   <widgets>
     <view x="368" wrappingAllowedX="true" y="10" frameRate="30.0" minPycor="-16" height="433" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="true" width="433" tickCounterLabel="ticks" maxPycor="16" updateMode="0" maxPxcor="16" minPxcor="-16"></view>
   </widgets>
@@ -880,4 +880,6 @@ newModel =
 """
 # coffeelint: enable=max_line_length
 
-export default newModel
+newModel = newCustomModel("")
+
+export { newModel, newCustomModel }
