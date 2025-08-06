@@ -10,6 +10,7 @@ directives = [
   'DIRECTED-LINK-BREED',
   'UNDIRECTED-LINK-BREED',
   'EXTENSIONS',
+  'EXTENSION',
   '__INCLUDES'
 ]
 
