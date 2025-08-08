@@ -48,7 +48,7 @@ scrapeWidgets = ->
   session.widgetController.widgets().map(
     (w) ->
 
-      commons = { bottom: w.bottom, left: w.left, right: w.right, top: w.top, type: w.type }
+      commons = { x: w.x, y: w.y, width: w.width, height: w.height, type: w.type }
 
       notCommons =
         (switch w.type
