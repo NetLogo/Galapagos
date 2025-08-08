@@ -1,15 +1,58 @@
-import newModel          from "/new-model.js"
+import { newCustomModel } from "/new-model.js"
 import generateHNWConfig from './hnw-config-file-generator.js'
 
-lastNlogoSections      = null # Array[String]
-lastSuccessfulCompiler = null # BrowserCompiler
-promiseID              = 0    # Number
+import { nlogoXMLToDoc, docToNlogoXML, stripXMLCdata } from "./tortoise-utils.js"
+
+lastWrangler = null # TextWrangler
+promiseID    = 0    # Number
 
 # type Entry = { frame :: IFrame, message :: Object[Any], callback :: () => Unit }
 queue      = undefined # Array[Entry]
 intervalID = undefined # Number
 
-sep = '\n@#$#@#$#@'
+class OldFormatTextWrangler
+  @sep: '\n@#$#@#$#@'
+
+  constructor: (@modelText) ->
+    @sections = @modelText.split(OldFormatTextWrangler.sep)
+
+  checkValidity: () ->
+    [@sections.length is 12, "Invalid '.nlogo' file; must have 12 sections"]
+
+  getCode: () ->
+    @sections[0]
+
+  withCode: (code) ->
+    newSource = [code].concat(@sections.slice(1)).join(OldFormatTextWrangler.sep)
+    new OldFormatTextWrangler(newSource)
+
+  compile: (compiler) ->
+    compiler.fromNlogo(@modelText)
+
+class XMLTextWrangler
+  constructor: (@modelText) ->
+    try
+      @doc     = nlogoXMLToDoc(@modelText)
+      @isValid = ["code", "info", "widgets"].every( (element) => @doc.querySelector(element) isnt null )
+
+    catch ex
+      @isValid = false
+
+  checkValidity: () ->
+    [@isValid, "Invalid '.nlogox' file; not an XML file or missing necessary sections"]
+
+  getCode: () ->
+    stripXMLCdata(@doc.querySelector("code").innerHTML)
+
+  withCode: (code) ->
+    newDoc                = nlogoXMLToDoc(@modelText)
+    codeElement           = newDoc.querySelector("code")
+    codeElement.innerHTML = "<![CDATA[#{code}]]>"
+    newSource             = docToNlogoXML(newDoc)
+    new XMLTextWrangler(newSource)
+
+  compile: (compiler) ->
+    compiler.fromNlogoXML(@modelText)
 
 params = Object.fromEntries(new URLSearchParams(window.location.search).entries())
 
@@ -38,23 +81,26 @@ postWhenReady = (frame, message, callback = (->)) ->
 
 document.getElementById("start-over-button").onclick = ->
   if confirm("You will lose all of your unsaved changes.  Continue?")
-    window.onbeforeunload = null
-    document.getElementById("mode-controls"    ).classList.remove("hidden")
-    document.getElementById("config-content"   ).classList.add(    "invis")
+    document.getElementById("mode-controls" ).classList.remove("hidden")
+    document.getElementById("config-content").classList.add(    "invis")
     cancelInterval()
 
 # () => Unit
 document.getElementById("from-scratch-button").onclick = ->
 
-  modelText = """breed [ students student ]
+  newCode =
+    """
+    breed [ students student ]
 
-to setup
-end
+    to setup
+    end
 
-to go
-end#{newModel}"""
+    to go
+    end
+    """.trim()
 
-  config = generateHNWConfig(modelText)
+  modelText        = newCustomModel(newCode)
+  config           = generateHNWConfig(modelText)
   config.onIterate = "go"
   config.onStart   = "setup"
 
@@ -97,7 +143,7 @@ document.getElementById("config-nlogo-button").onclick = ->
 
     Promise.all([baseModelFile, configFile].map(readFile)).then(
       ([baseModelText, configText]) ->
-        config        = JSON.parse(configText)
+        config = JSON.parse(configText)
         initialize(baseModelText, config)
     )
 
@@ -165,17 +211,19 @@ initializeRole = (roleName) ->
   return
 
 # (String, String) => Unit
-initialize = (nlogo, config) ->
+initialize = (modelText, config) ->
 
-  # This prompts the user about possible loss of work upon tab close
-  # --Jason B. (2/24/24)
-  window.onbeforeunload = (e) -> e.preventDefault()
+  wrangler =
+    if modelText.trim().startsWith("<?xml")
+      new XMLTextWrangler(modelText)
+    else
+      new OldFormatTextWrangler(modelText)
 
-  modelSections = nlogo.split(sep)
+  [isValid, error] = wrangler.checkValidity()
 
-  if modelSections.length is 12
+  if isValid
 
-    lastNlogoSections = modelSections
+    lastWrangler = wrangler
 
     document.getElementById("mode-controls"    ).classList.add(   "hidden")
     document.getElementById('config-content'   ).classList.remove("invis")
@@ -198,34 +246,33 @@ initialize = (nlogo, config) ->
 
     selectConfigTab(codeTabButton)
 
-    reinitialize(nlogo, config)
+    reinitialize(wrangler, config)
 
   else
-    alert(new Error("Invalid '.nlogo' file; must have 12 sections"))
+    alert(new Error(error))
 
   return
 
 # (String, String) => Unit
-reinitialize = (nlogo, config) ->
+reinitialize = (wrangler, config) ->
 
   ids = ["download-bundle-button", "download-nlogo-button", "start-over-button"]
   ids.forEach((id) -> document.getElementById(id).disabled = false)
 
-  modelSections = nlogo.split(sep)
+  [isValid, error] = wrangler.checkValidity()
+  if isValid
 
-  if modelSections.length is 12
-
-    lastNlogoSections = modelSections
+    lastWrangler = wrangler
 
     codeFrame = document.getElementById('code-frame')
 
     postWhenReady(codeFrame, {
-      code: modelSections[0]
+      code: wrangler.getCode()
     , type: "import-code"
     })
 
     compiler = new BrowserCompiler()
-    result   = compiler.fromNlogo(nlogo)
+    result   = wrangler.compile(compiler)
 
     document.getElementById('test-model-button').disabled = not result.model.success
 
@@ -292,7 +339,7 @@ reinitialize = (nlogo, config) ->
     )
 
   else
-    alert(new Error("Invalid '.nlogo' file; must have 12 sections"))
+    alert(new Error(error))
 
   return
 
@@ -334,9 +381,7 @@ document.getElementById("add-role-button").onclick = ->
       initializeRole(roleSingular)
 
       dummyView =
-        { "bottom": 472, "left": 162, "right": 591, "top": 43, "height": 429
-        , "width": 429, "type": "hnwView"
-        }
+        { "x": 162, "y": 43, "height": 429, "width": 429, "type": "hnwView" }
 
       dummyConfig =
         { afterDisconnect:    null
@@ -365,15 +410,22 @@ document.getElementById("add-role-button").onclick = ->
 
       myFrame = document.querySelector(".model-container[data-role-name='#{roleSingular}']")
 
-      oldCode     = lastNlogoSections[0]
-      regex       = new RegExp("^\\s*breed\\s*\\[\\s*#{rolePlural}\\s+", "m")
+      oldCode     = lastWrangler.getCode()
+      regex       = new RegExp("^\\s*breed\\s*\\[\\s*#{rolePlural}\\s+")
       breedExists = regex.test(oldCode)
 
       postWhenReady(myFrame, parcel, (-> if not breedExists then recompile()))
 
       if not breedExists
-        breedDeclaration = "breed [ #{rolePlural} #{roleSingular} ]"
-        lastNlogoSections[0] = "#{breedDeclaration}\n\n#{oldCode}"
+
+        beforeFirstProcedureRegex = new RegExp("(.*?)^((?:^ *;.*?)*(?:to |to-report ).*)", "ms")
+        breedDeclaration          = "breed [ #{rolePlural} #{roleSingular} ]"
+
+        newCode = if beforeFirstProcedureRegex.test(oldCode)
+          oldCode.replace(beforeFirstProcedureRegex, "$1#{breedDeclaration}\n\n$2")
+        else
+          "#{oldCode}\n\n#{breedDeclaration}"
+        lastWrangler = lastWrangler.withCode(newCode)
 
   else
     addRole()
@@ -436,9 +488,7 @@ requestNlogoAndJSON = ->
   nlogoPromise =
     postPromise(codeFrame)({ type: "request-save" }).then(
       ({ code }) ->
-        nlogoSections    = lastNlogoSections.slice(0)
-        nlogoSections[0] = code
-        recombine(nlogoSections)
+        lastWrangler.withCode(code).modelText
     )
 
   configPromise = genConfigP().then((outConfig) -> JSON.stringify(outConfig))
@@ -527,10 +577,10 @@ document.getElementById("test-model-button").onclick = ->
 
 addNewBreedVar = (breedName, varName) ->
 
-  oldCode = lastNlogoSections[0]
+  oldCode = lastWrangler.getCode()
 
   regex = new RegExp("(#{breedName}-own\\s+\\[.*?)( *)\\]", "ms")
-  lastNlogoSections[0] =
+  newCode =
     if regex.test(oldCode)
       # Regex paths commented by Jason B. (5/21/21)
       # Path 1: There is already a `breed-owns` declaration for this breed, so append to it
@@ -544,11 +594,12 @@ addNewBreedVar = (breedName, varName) ->
       else
         # Path 3: There are no procedures; simply append the new declaration to the code
         "#{oldCode}\n\n#{breedName}-own [ #{varName} ]"
+  lastWrangler = lastWrangler.withCode(newCode)
 
   return
 
 recompile = ->
-  genConfigP().then((config) -> reinitialize(recombine(lastNlogoSections), config))
+  genConfigP().then((config) -> reinitialize(lastWrangler, config))
   return
 
 window.addEventListener('message', (e) ->
@@ -571,8 +622,8 @@ window.addEventListener('message', (e) ->
       button.remove()
       recompile()
     when "compile-with"
-      nlogo = [e.data.code].concat(lastNlogoSections.slice(1)).join(sep)
-      genConfigP().then((config) -> reinitialize(nlogo, config))
+      wrangler = lastWrangler.withCode(e.data.code)
+      genConfigP().then((config) -> reinitialize(wrangler, config))
     when "recompile"
       recompile()
     when "resize-me"
@@ -584,7 +635,7 @@ window.addEventListener('message', (e) ->
       container.width  = width
     when "code-save-response", "role-save-response"
     else
-      console.warn("Unknown event type: #{e.data.type}")
+      console.warn("Unknown event type", e.data)
 )
 
 recombine = (sections) ->

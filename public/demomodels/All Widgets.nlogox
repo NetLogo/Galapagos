@@ -10,7 +10,7 @@ to clear
   clear-all
 end</code>
   <widgets>
-    <view x="590" wrappingAllowedX="true" y="10" frameRate="30.0" minPycor="-16" height="267" showTickCounter="true" patchSize="7.97" fontSize="10" wrappingAllowedY="true" width="267" tickCounterLabel="ticks" maxPycor="16" updateMode="0" maxPxcor="16" minPxcor="-16"></view>
+    <view x="590" wrappingAllowedX="true" y="10" frameRate="30.0" minPycor="-16" height="263" showTickCounter="true" patchSize="7.97" fontSize="10" wrappingAllowedY="true" width="263" tickCounterLabel="ticks" maxPycor="16" updateMode="0" maxPxcor="16" minPxcor="-16"></view>
     <button x="75" y="30" height="33" disableUntilTicks="false" forever="false" kind="Turtle" width="63" sizeVersion="0">fd 1</button>
     <button x="5" actionKey="G" y="30" height="33" disableUntilTicks="false" forever="false" kind="Observer" width="63" sizeVersion="0">go</button>
     <button x="145" y="30" height="33" disableUntilTicks="true" forever="true" kind="Patch" display="blue" width="65" sizeVersion="0">set pcolor blue</button>
@@ -20,7 +20,7 @@ end</code>
     <slider x="190" step="0.001" y="75" max="0.02" display="qux" height="146" min="0.01" direction="Vertical" default="0.015" variable="qux" width="33" sizeVersion="0"></slider>
     <slider x="5" step="1" y="125" max="100" display="bar" height="33" min="0" direction="Horizontal" default="50.0" variable="bar" width="172" sizeVersion="0"></slider>
     <switch x="5" y="170" height="33" on="false" variable="abc" display="abc" width="103" sizeVersion="0"></switch>
-    <chooser x="5" y="265" height="45" variable="options" current="0" display="options" width="138" sizeVersion="0">
+    <chooser x="5" y="265" height="45" variable="options" current="3" display="options" width="138" sizeVersion="0">
       <choice type="string" value="a"></choice>
       <choice type="double" value="1.0"></choice>
       <choice type="list">[]</choice>
@@ -47,8 +47,17 @@ end</code>
     <button x="285" y="75" height="33" disableUntilTicks="false" forever="false" kind="Observer" width="107" sizeVersion="0">clear-output</button>
     <button x="285" y="30" height="33" disableUntilTicks="false" forever="false" kind="Observer" width="97" sizeVersion="0">reset-ticks</button>
     <note x="469" y="50" backgroundDark="0" fontSize="11" width="150" markdown="false" height="41" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">This note is a font 11, with a transparent background and black text</note>
-    <note x="469" y="105" backgroundDark="0" fontSize="12" width="150" markdown="false" height="56" textColorDark="-1" textColorLight="-13345367" backgroundLight="0">this note is font-size 12, with an opaque background and blue text</note>
-    <note x="495" y="320" backgroundDark="-2705995" fontSize="12" width="150" markdown="false" height="60" textColorDark="-16777216" textColorLight="-1" backgroundLight="-8044480">Note with special light/dark 
+    <note x="470" y="95" backgroundDark="0" fontSize="12" width="150" markdown="false" height="56" textColorDark="-1" textColorLight="-13345367" backgroundLight="1191239935">this note is font-size 12, with a partially-opaque background and blue text
+</note>
+    <note x="470" y="155" backgroundDark="0" fontSize="12" width="150" markdown="true" height="175" textColorDark="-1" textColorLight="-1" backgroundLight="-65536"># H1
+
+solid background, markdown
+
+- List
+- List
+- List
+.</note>
+  <note x="495" y="320" backgroundDark="-2705995" fontSize="12" width="150" markdown="false" height="60" textColorDark="-16777216" textColorLight="-1" backgroundLight="-8044480">Note with special light/dark
 background colors</note>
   </widgets>
   <info>## WHAT IS IT?
