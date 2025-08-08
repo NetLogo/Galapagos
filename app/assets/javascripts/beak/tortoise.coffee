@@ -334,10 +334,10 @@ loadHubNetWeb = (container, role, view, callback, listeners) ->
     role.widgets.map(
       (w) ->
         if w.type is "hnwView"
-          dims           = view.dimensions
-          pWidth         = dims.maxPxcor - dims.minPxcor + 1
-          dims.patchSize = w.width / pWidth
-          Object.assign({}, view, w)
+          pWidth    = view.dimensions.maxPxcor - view.dimensions.minPxcor + 1
+          patchSize = w.width / pWidth
+          updates   = { patchSize }
+          Object.assign({}, view, w, updates)
         else
           w
     )
