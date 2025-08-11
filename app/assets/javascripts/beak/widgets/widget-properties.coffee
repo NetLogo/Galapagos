@@ -3,7 +3,7 @@ typedWidgetProperties = Object.freeze(new Map([
   ['button',   ['actionKey', 'buttonKind', 'disableUntilTicksStart', 'display', 'forever', 'source']]
 , ['chooser',  ['choices', 'currentChoice', 'display', 'variable']]
 , ['inputBox', ['boxedValue', 'variable']]
-, ['monitor',  ['display', 'fontSize', 'precision', 'source']]
+, ['monitor',  ['display', 'fontSize', 'precision', 'source', 'units']]
 , ['output',   ['fontSize']]
 , ['plot',     ['autoPlotX', 'autoPlotY', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']]
 , ['slider',   ['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable']]
