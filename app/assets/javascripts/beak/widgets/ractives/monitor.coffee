@@ -189,7 +189,7 @@ RactiveMonitor = RactiveWidget.extend({
     {{>editorOverlay}}
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
-              precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}" 
+              precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}"
               units={{widget.units}} />
     """
 
