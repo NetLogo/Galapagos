@@ -73,7 +73,7 @@ RactiveCustomSlider = Ractive.extend({
         percent = Math.max(0, Math.min(1, percent))
         val = min + percent * (max - min)
         val = Math.round(val / step) * step
-        val = parseFloat(val.toFixed(slider.get("maxDecimal"))) 
+        val = parseFloat(val.toFixed(slider.get("maxDecimal")))
 
         updateValue(val)
 
@@ -87,7 +87,7 @@ RactiveCustomSlider = Ractive.extend({
       window.addEventListener("mouseup", stop)
       window.addEventListener("touchmove", move)
       window.addEventListener("touchend", stop)
-      move(event) 
+      move(event)
       event.original.preventDefault()
     
     "keydown": (event) ->

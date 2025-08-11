@@ -189,7 +189,7 @@ RactiveSlider = RactiveValueWidget.extend({
       return
 
     'focus-slider': (context) ->
-      if context.original.target?.tagName is 'INPUT' \ 
+      if context.original.target?.tagName is 'INPUT' \
         and context.original.target?.type is 'number'
         return
       className = @get('id') + '-custom'
@@ -252,7 +252,7 @@ RactiveSlider = RactiveValueWidget.extend({
     slider:
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
-             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}" 
+             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
              on-click="['focus-slider']">
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
