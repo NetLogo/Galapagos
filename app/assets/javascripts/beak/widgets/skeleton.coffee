@@ -169,7 +169,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
       onSpeedChange: (context, delta) ->
         speed = @get('speed')
         newSpeed = Math.max(-1, Math.min(1, speed + delta))
-        newSpeed = parseFloat(newSpeed.toFixed(2)) # Ensure two decimal places
+        newSpeed = parseFloat(newSpeed.toFixed(2))
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
     }
