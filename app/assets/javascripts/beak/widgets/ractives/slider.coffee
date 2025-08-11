@@ -258,7 +258,6 @@ RactiveSlider = RactiveValueWidget.extend({
           step="{{widget.stepValue}}"
           value="{{internalValue}}"
           onChange="{{onValueChange}}"/>
-        
       </label>
       """
 

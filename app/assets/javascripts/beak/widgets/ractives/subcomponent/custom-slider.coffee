@@ -12,6 +12,7 @@ RactiveCustomSlider = Ractive.extend({
     onValueChange: null
     inputFor: null
     maxDecimal: 2
+    ariaLabel: "Custom Slider"
   }
 
   computed: {
@@ -26,9 +27,32 @@ RactiveCustomSlider = Ractive.extend({
       classes = ["netlogo-slider-bar", @get("class")]
       if @get("isEnabled") is false
         classes.push("disabled")
-      return classes.filter(Boolean).join(" ") # Filter out any empty classes
+      return classes.filter(Boolean).join(" ")
+
+    tabIndex: ->
+      if @get("isEnabled") then 0 else -1
   }
-  
+
+  updateValue: (newValue) ->
+    if typeof newValue is 'number'
+      min = @get("min")
+      max = @get("max")
+      step = @get("step")
+
+      newValue = Math.max(min, Math.min(max, newValue))
+      newValue = Math.round(newValue / step) * step
+      newValue = parseFloat(newValue.toFixed(@get("maxDecimal")))
+
+      if newValue isnt @get("value")
+        onChange = @get("onChange")
+        if onChange?
+          onChange(newValue)
+        if @get("inputFor")?
+          input = document.getElementById(@get("inputFor"))
+          if input?
+            input.value = newValue
+            input.dispatchEvent(new Event("change", { bubbles: true }))
+
   on: {
     "start-drag": (event) ->
       slider = this
@@ -41,7 +65,7 @@ RactiveCustomSlider = Ractive.extend({
       rect = event.node.getBoundingClientRect()
       sliderLeft = rect.left + window.scrollX
 
-      onChange = slider.get("onChange")
+      updateValue = slider.updateValue.bind(slider)
 
       move = (e) ->
         currentX = e.clientX or e.touches?[0]?.clientX or e.event.clientX
@@ -49,16 +73,9 @@ RactiveCustomSlider = Ractive.extend({
         percent = Math.max(0, Math.min(1, percent))
         val = min + percent * (max - min)
         val = Math.round(val / step) * step
-        val = parseFloat(val.toFixed(slider.get("maxDecimal"))) # Limit decimal places
+        val = parseFloat(val.toFixed(slider.get("maxDecimal"))) 
 
-        if onChange?
-          onChange(val)
-        
-        if slider.get("inputFor")?
-          input = document.getElementById(slider.get("inputFor"))
-          if input?
-            input.value = val
-            input.dispatchEvent(new Event("change", { bubbles: true }))
+        updateValue(val)
 
       stop = ->
         window.removeEventListener("mousemove", move)
@@ -70,19 +87,40 @@ RactiveCustomSlider = Ractive.extend({
       window.addEventListener("mouseup", stop)
       window.addEventListener("touchmove", move)
       window.addEventListener("touchend", stop)
-      move(event) # Initial move to set the value
+      move(event) 
       event.original.preventDefault()
+    
+    "keydown": (event) ->
+      if not @get("isEnabled")
+        return
+      if not (event.original.key is "ArrowLeft" or event.original.key is "ArrowRight")
+        return
+
+      if document.activeElement is event.node
+        event.original.preventDefault()
+
+        val = @get("value")
+        step = @get("step")
+        if event.original.key is "ArrowLeft"
+          val -= step
+        else if event.original.key is "ArrowRight"
+          val += step
+
+        @updateValue(val)
+
   }
 
   template: """
     <div class="{{className}}"
          on-mousedown="['start-drag']"
          on-touchstart="['start-drag']"
+         on-keydown="['keydown']"
          role="slider"
          aria-valuemin="{{min}}"
          aria-valuemax="{{max}}"
          aria-valuenow="{{value}}"
-         aria-label="Custom Slider">
+         tabindex="{{tabIndex}}"
+         aria-label="{{ariaLabel}}">
       <div class="netlogo-slider-bar-fill" style="width: {{percentFilled}}%;"></div>
       <div class="netlogo-slider-bar-handle" style="left: {{percentFilled}}%;"></div>
     </div>
