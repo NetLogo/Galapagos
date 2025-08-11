@@ -251,14 +251,6 @@ RactiveSlider = RactiveValueWidget.extend({
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
         </div>
-        <input
-          type="range"
-          max="{{widget.maxValue}}"
-          min="{{widget.minValue}}"
-          step="{{widget.stepValue}}"
-          value="{{internalValue}}"
-          on-input="widget-value-change"
-          {{# isEditing }}disabled{{/}} hidden />
         <customSlider
           id="{{id}}-custom"
           min="{{widget.minValue}}"
