@@ -108,7 +108,6 @@ RactiveSwitch = RactiveValueWidget.extend({
   minWidth:  35
   minHeight: 33
 
-
   template:
     """
     {{>editorOverlay}}
