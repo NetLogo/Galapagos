@@ -13,6 +13,7 @@ MonitorEditForm = EditForm.extend({
   , fontSize:  undefined # Number
   , precision: undefined # Number
   , source:    undefined # String
+  , units:     undefined # String
   }
 
   components: {
@@ -41,6 +42,7 @@ MonitorEditForm = EditForm.extend({
     ,    height: (2 * fontSize) + 23
     , precision: parseInt(form.precision.value)
     ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
+    ,     units: (if form.units.value isnt "" then form.units.value else undefined)
     }
 
   partials: {
@@ -67,14 +69,20 @@ MonitorEditForm = EditForm.extend({
 
       <div class="flex-row" style="align-items: center; justify-content: space-between;">
 
-        <label for="{{id}}">Decimal places: </label>
-        <input  id="{{id}}" name="precision" placeholder="(Required)"
-                class="widget-edit-inputbox" style="width: 70px;"
-                type="number" value="{{precision}}" min=-30 max=17 step=1 required />
-        <spacer width="50px" />
-        <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+        <div class="flex-row" style="width: 50%; align-items: center;">
+          <label for="{{id}}">Decimal places: </label>
+          <input  id="{{id}}" name="precision" placeholder="(Required)"
+                  class="widget-edit-inputbox" style="width: 70px;"
+                  type="number" value="{{precision}}" min=-30 max=17 step=1 required />
+        </div>
 
+        <labeledInput id="{{id}}-units" labelStr="Units:" labelStyle="margin-left: 10px;" name="units" type="text" value="{{units}}"
+                      style="flex-grow: 1; padding: 4px;" />
       </div>
+
+      <spacer height="15px" />
+
+      <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
       """
     # coffeelint: enable=max_line_length
 
@@ -181,7 +189,8 @@ RactiveMonitor = RactiveWidget.extend({
     {{>editorOverlay}}
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
-              precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}" />
+              precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}" 
+              units={{widget.units}} />
     """
 
   # coffeelint: disable=max_line_length
@@ -194,7 +203,12 @@ RactiveMonitor = RactiveWidget.extend({
         <label class="netlogo-label {{errorClass}}" on-click="['show-widget-errors', widget]">
           {{widget.display || widget.source}}
         </label>
-        <output class="netlogo-value">{{widget.currentValue}}</output>
+        <div class="flex-row" style="align-items: baseline; justify-content: center; gap: 0.25rem;">
+          <output class="netlogo-value">{{widget.currentValue}}</output>
+          {{#widget.units}}
+            <span class="netlogo-units">{{widget.units}}</span>
+          {{/}}
+        </div>
       </div>
       """
 
