@@ -187,6 +187,23 @@ RactiveSlider = RactiveValueWidget.extend({
 
       @fire('widget-value-change')
       return
+
+    'focus-slider': (context) ->
+      if context.original.target?.tagName is 'INPUT' \ 
+        and context.original.target?.type is 'number'
+        return
+      className = @get('id') + '-custom'
+      elem = context.node.querySelector(".#{className}")
+      if elem?
+        context.original.stopPropagation()
+        context.original.preventDefault()
+        # This is a hack to get the browser to apply
+        # :focus-visible instead of :focus to the slider.
+        # -Omar I. Aug 11, 2025
+        elem.contentEditable = true
+        elem.focus()
+        elem.contentEditable = false
+      return
   }
 
   computed: {
@@ -235,7 +252,8 @@ RactiveSlider = RactiveValueWidget.extend({
     slider:
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
-             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}">
+             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}" 
+             on-click="['focus-slider']">
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
@@ -252,7 +270,7 @@ RactiveSlider = RactiveValueWidget.extend({
           </span>
         </div>
         <customSlider
-          id="{{id}}-custom"
+          class="{{id}}-custom"
           min="{{widget.minValue}}"
           max="{{widget.maxValue}}"
           step="{{widget.stepValue}}"
