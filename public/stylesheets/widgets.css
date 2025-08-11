@@ -423,12 +423,12 @@
   align-items: center;
   margin: 0.3rem 0.5rem 0.5rem 0.5rem;
 }
-input[type=range] ~ .netlogo-slider-bar.model-speed-slider-interface {
+.netlogo-slider-bar.model-speed-slider-interface {
   height: 2px;
   width: clamp(100px, 50%, 300px);
   margin-top: unset;
 }
-input[type=range] ~ .netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
+.netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
   background-color: var(--color-widget-accessories);
   top: calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
 }
@@ -637,7 +637,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 }
 
 
-input[type=range] ~ .netlogo-slider-bar {
+.netlogo-slider-bar {
   position: relative;
 
   width: 100%;
@@ -650,7 +650,7 @@ input[type=range] ~ .netlogo-slider-bar {
   background-color: var(--color-widget-accessories-neutral);
 }
 
-input[type=range] ~ .netlogo-slider-bar > .netlogo-slider-bar-fill {
+.netlogo-slider-bar > .netlogo-slider-bar-fill {
   width: 0%;
   height: 100%;
 
@@ -659,7 +659,7 @@ input[type=range] ~ .netlogo-slider-bar > .netlogo-slider-bar-fill {
   background-color: var(--color-widget-accessories);
 }
 
-input[type=range] ~ .netlogo-slider-bar > .netlogo-slider-bar-handle {
+.netlogo-slider-bar > .netlogo-slider-bar-handle {
   --circle-size: 10px;
   --circle-radius: calc(var(--circle-size) / 2);
   position: absolute;
