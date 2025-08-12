@@ -63,7 +63,9 @@
   opacity:          0.7;
 }
 
-.netlogo-widget.interface-unlocked:hover, .editor-overlay:hover + .netlogo-widget.interface-unlocked {
+.netlogo-widget.interface-unlocked:hover,
+.editor-overlay:hover + .netlogo-widget.interface-unlocked,
+.editor-overlay.selected + .netlogo-widget.interface-unlocked {
   cursor:     default;
   opacity:    1;
 }
