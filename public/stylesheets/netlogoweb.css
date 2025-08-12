@@ -46,6 +46,8 @@
   --widget-padding-y: 0.3rem;
 
   --font-widget: 'Open Sans', sans-serif;
+
+  --checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=);
 }
 
 .netlogo-command {
@@ -106,4 +108,53 @@
 
 .netlogo-canvas {
   border-radius: 3px;
+}
+
+/* Utilities */
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* Color input */
+.netlogo-color-input {
+  padding: 0.2rem;
+  margin: 0.1rem;
+  box-sizing: border-box;
+
+  aspect-ratio: 1 / 1;
+  width: 2rem;
+
+  border-radius: 0.2rem;
+
+  background-color: #eee;
+}
+
+.netlogo-color-input:hover {
+  cursor: pointer;
+  background-color: #ccc;
+}
+
+.netlogo-swatches {
+  display: grid;
+  grid-template-columns: auto auto;
+
+  width: 100%;
+  height: 100%;
+
+  gap: 0;
+  
+  background-image: var(--checkerboard);
+  background-position-x: left;
+  background-position-y: center;
+  inset: 0;
+
+  border-radius: 0.1rem;
+}
+
+.no-alpha .netlogo-swatches {
+  grid-template-columns: auto;
 }
