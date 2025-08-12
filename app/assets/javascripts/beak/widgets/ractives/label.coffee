@@ -64,27 +64,24 @@ LabelEditForm = EditForm.extend({
       <spacer height="20px" />
 
       <div class="flex-row" style="align-items: center;">
-        <div style="width: 40%;">
+        <div style="width: 100%;">
           <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
         </div>
-        <spacer width="4%" />
-        <div style="width: 56%;">
-          <div class="flex-row" style="align-items: center;">
-            <label for="{{id}}-text-color" class="widget-edit-input-label">Text color:</label>
-            <div style="flex-grow: 1;">
-              <colorInput
-                id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick"
-                value="{{_textColorLight}}" useAlpha="false" />
-            </div>
-          </div>
-          <div class="flex-row" style="align-items: center;">
-            <label for="{{id}}-background-color" class="widget-edit-input-label">Background:</label>
-            <div style="flex-grow: 1;">
-              <colorInput
-                id="{{id}}-background-color" name="bgColor" class="widget-edit-text widget-edit-input widget-edit-color-pick"
-                value="{{_backgroundLight}}" useAlpha="true" />
-            </div>
-          </div>
+      </div>
+      <spacer height="10px" />
+
+      <div style="width: 50%;">
+        <div class="flex-row" style="align-items: center; width: 100%; justify-content: space-between;">
+          <label for="{{id}}-text-color" class="widget-edit-input-label">Text color</label>
+          <colorInput
+            id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick"
+            value="{{_textColorLight}}" useAlpha="false" />
+        </div>
+        <div class="flex-row" style="align-items: center; width: 100%; justify-content: space-between;">
+          <label for="{{id}}-background-color" class="widget-edit-input-label">Background color</label>
+          <colorInput
+            id="{{id}}-background-color" name="bgColor" class="widget-edit-text widget-edit-input widget-edit-color-pick"
+            value="{{_backgroundLight}}" useAlpha="true" />
         </div>
       </div>
 
