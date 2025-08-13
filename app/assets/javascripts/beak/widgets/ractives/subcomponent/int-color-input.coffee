@@ -30,16 +30,13 @@ RactiveIntColorInput = Ractive.extend({
   , isModalOpen: false   # Boolean
 
   , onColorPicked: (data) ->
-      if (data.rgb?)
-        alpha = 255
-        if @get('useAlpha') and typeof data.alpha is 'number'
-          alpha = data.alpha
-        rgba = [...data.rgb, alpha]
-        color = rgbaArrayToARGBInt(rgba)
-        @set('value', color)
-        @fire('change')
-      else if (data.num?)
-        throw new Error("Not yet implemented")
+      alpha = 255
+      if @get('useAlpha') and typeof data.alpha is 'number'
+        alpha = data.alpha
+      rgba = [...data.rgb, alpha]
+      color = rgbaArrayToARGBInt(rgba)
+      @set('value', color)
+      @fire('change')
 
       @set('isModalOpen', false)
       return
@@ -87,11 +84,24 @@ RactiveIntColorInput = Ractive.extend({
         if @get('isEnabled') then undefined else 'netlogo-disabled',
         if @get('useAlpha') then undefined else 'no-alpha'
       ].filter((c) -> c?).join(' ')
+
+    pickerType: ->
+      if @get('useAlpha') then 'numAndRGBA' else 'num'
+
+    initialColor: ->
+      argbInt = @get('value')
+      rgba = [0, 0, 0, 255]
+      if typeof argbInt is 'number'
+        rgba = argbIntToRGBAArray(argbInt)
+      return {
+        typ: "rgba",
+        value: { red: rgba[0], green: rgba[1], blue: rgba[2], alpha: rgba[3] / 255 * 100}
+      }
   }
 
   template:
     """
-    <div class="{{classNames}}" on-click="['click']">
+    <div class="{{classNames}}" on-click="['click']" data-value="{{value}}">
       <div class="netlogo-swatches">
         <div class="netlogo-swatch" style="background-color: {{hexColor}};"></div>
         {{#useAlpha}}
@@ -103,8 +113,9 @@ RactiveIntColorInput = Ractive.extend({
     <colorPicker id="{{id}}-color-picker"
                  onPick="{{onColorPicked}}"
                  onClose="{{onColorPickerClose}}"
-                 pickerType="numAndRGBA"
-                 initialColor="{{value}}"
+                 pickerType="{{pickerType}}"
+                 initialColor="{{initialColor}}"
+                 defaultPicker="advanced"
                   />
     {{/}}
     """
