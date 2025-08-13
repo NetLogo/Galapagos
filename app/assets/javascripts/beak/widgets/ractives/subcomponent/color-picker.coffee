@@ -79,17 +79,17 @@ RactiveColorPicker = Ractive.extend({
         s.trim()
       )
       nums = parts.map((p) ->
-        parseFloat p
+        parseFloat(p)
       )
 
-      if nums.length == 4 or nums.length == 3
+      if nums.length is 4 or nums.length is 3
         rgb = nums.slice(0, 3)
         alpha = if nums.length is 4 then nums[3] else 255
-        hex = 
+        hex =
           try rgbaArrayToHex(rgb)
           catch ex
             "#000000"
-        num = 
+        num =
           try hexStringToNetlogoColor(hex)
           catch ex
             0
@@ -99,12 +99,12 @@ RactiveColorPicker = Ractive.extend({
           alpha: alpha
         }
 
-    else if !isNaN(parseFloat(str))
-      num = 
+    else if not isNaN(parseFloat(str))
+      num =
         try parseFloat(str)
         catch ex
           0
-      rgb = 
+      rgb =
         try netlogoColorToRGB(num)
         catch ex
           [0, 0, 0]
