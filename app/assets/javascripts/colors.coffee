@@ -1,5 +1,3 @@
-ColorModel = tortoise_require('engine/core/colormodel')
-
 argbIntToRGBAArray = (i) ->
   a = (i >> 24) & 0xFF
   r = (i >> 16) & 0xFF
@@ -53,8 +51,14 @@ hexStringToRGBArray = (hex) ->
   hexes   = hex.toLowerCase().match(new RegExp("##{hexPair}#{hexPair}#{hexPair}")).slice(1)
   hexes.map( (x) -> parseInt(x, 16) )
 
+ColorModel = null
+
 # (String) => Number
 hexStringToNetlogoColor = (hex) ->
+  # This is to avoid needing Tortoise just to use the other color conversion methods.  -Jeremy B August 2025
+  if not ColorModel?
+    ColorModel = tortoise_require('engine/core/colormodel')
+
   [r, g, b] = hexStringToRGBArray(hex)
   ColorModel.nearestColorNumberOfRGB(r, g, b)
 
