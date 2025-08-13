@@ -100,7 +100,7 @@ RactiveModal = Ractive.extend({
     
     "mouse-down": (event) ->
       @set('isMouseDown', true)
-      return 
+      return
 
     "mouse-up": (event) ->
       @set('isMouseDown', false)
