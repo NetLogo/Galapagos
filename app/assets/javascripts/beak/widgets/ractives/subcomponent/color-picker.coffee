@@ -1,5 +1,10 @@
 import RactiveModal from './modal.js'
 import AsyncLoader from './async-loader.js'
+import {
+  hexStringToNetlogoColor,
+  rgbaArrayToHex,
+  netlogoColorToRGB,
+} from "/colors.js"
 
 COLOR_PICKER_URL = "/assets/pages/color-picker/index.html"
 RactiveColorPicker = Ractive.extend({
@@ -12,6 +17,7 @@ RactiveColorPicker = Ractive.extend({
 
     , initialColor: undefined
     , pickerType: "num"          # "num" or "numAndRGBA"
+    , defaultPicker: "simple"    # "simple" or "advanced"
 
     , iframeLoaded: false  # Boolean
   },
@@ -35,16 +41,19 @@ RactiveColorPicker = Ractive.extend({
         @set('pickerType', 'num')
 
     iframeLoaded: (event) ->
-        @set('iframeLoaded', true)
         iframe = event.node
 
         iframe.contentWindow.postMessage({
           type: "init-baby-monitor",
-          initialColor: { typ: "number", value: @get('initialColor') }
-          pickerType: @get('pickerType')
+          initialColor: @get('initialColor'),
+          pickerType: @get('pickerType'),
+          defaultPicker: @get('defaultPicker')
         }, "*", [
           @messageChannel.port2
         ])
+
+        @set('iframeLoaded', true)
+        
         return
   },
 
@@ -55,13 +64,58 @@ RactiveColorPicker = Ractive.extend({
 
   onColorPickerEvent: (event) ->
     if event.data.type is 'pick'
-      @get('onPick')?(event.data)
+      data = { ...event.data, ...@parseColor(event.data.color) }
+      @get('onPick')?(data)
     else if event.data.type is 'cancel'
       @get('onClose')?()
     else
       console.warn("RactiveColorPicker: Unknown event type received from color picker:", event.data.type)
       return
     return
+
+  parseColor: (str) ->
+    if str.startsWith('[') and str.endsWith(']')
+      parts = str.slice(1, -1).split(' ').map((s) ->
+        s.trim()
+      )
+      nums = parts.map((p) ->
+        parseFloat p
+      )
+
+      if nums.length == 4 or nums.length == 3
+        rgb = nums.slice(0, 3)
+        alpha = if nums.length is 4 then nums[3] else 255
+        hex = 
+          try rgbaArrayToHex(rgb)
+          catch ex
+            "#000000"
+        num = 
+          try hexStringToNetlogoColor(hex)
+          catch ex
+            0
+        return {
+          rgb: nums.slice(0, 3)
+          num: num
+          alpha: alpha
+        }
+
+    else if !isNaN(parseFloat(str))
+      num = 
+        try parseFloat(str)
+        catch ex
+          0
+      rgb = 
+        try netlogoColorToRGB(num)
+        catch ex
+          [0, 0, 0]
+      return {
+        num: parseFloat(str)
+        rgb: rgb
+        alpha: 255
+      }
+
+    {}
+
 
   template: """
   <modal id="{{modalId}}" title="Color Picker">

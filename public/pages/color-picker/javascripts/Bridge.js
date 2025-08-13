@@ -8,26 +8,9 @@
         }
         const port = event.ports[0];
 
-        const parseColor = (str) => {
-          if (str.startsWith("[") && str.endsWith("]")) {
-            const parts = str.slice(1, -1).split(" ").map((s) => s.trim());
-            const nums = parts.map((p) => parseFloat(p));
-            if (nums.length === 4) {
-              return { rgb: nums.slice(0, 3), alpha: nums[3] };
-            } else if (nums.length === 3) {
-              return { rgb: nums, alpha: 255 };
-            } else if (nums.length === 1) {
-              return { num: nums[0] };
-            }
-          } else if (!isNaN(parseFloat(str))) {
-            return { num: parseFloat(str) };
-          }
-          return null;
-        };
-
         window.nlBabyMonitor = {
           onPick: (str) => {
-            port.postMessage({ type: "pick", color: str, ...parseColor(str) });
+            port.postMessage({ type: "pick", color: str });
           },
           onCopy: (str) => {
             port.postMessage({ type: "copy", value: str });
@@ -40,9 +23,17 @@
           },
         };
 
-        if (event.data.initialColor) {
-          const { typ, value } = event.data.initialColor;
-          setValue(typ, value);
+        if (event.data.defaultPicker) {
+          switch (event.data.defaultPicker) {
+            case "simple":
+              /* NOP */
+              break;
+            case "advanced":
+              window.switchToAdvPicker();
+              break;
+            default:
+              console.warn(`Unknown defaultPicker '${event.data.defaultPicker}', defaulting to 'simple'`);
+          }
         }
 
         if (event.data.pickerType) {
@@ -58,6 +49,14 @@
               window.useNumberOnlyPicker();
           }
         }
+
+        if (event.data.initialColor) {
+          console.log("Received initial color:", event.data.initialColor);
+          const { typ, value } = event.data.initialColor;
+          console.log("Setting initial color:", typ, value);
+          setValue(typ, value);
+        }
+
       }
     });
   });
