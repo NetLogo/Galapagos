@@ -1,4 +1,7 @@
-import { netlogoColorToHexString, hexStringToNetlogoColor } from "/colors.js"
+import RactiveColorPicker from "./color-picker.js"
+import {
+  netlogoColorToHexString
+} from "/colors.js"
 
 # This exists to address some trickiness.  Here are the relevant constraints:
 #
@@ -31,46 +34,69 @@ RactiveColorInput = Ractive.extend({
   , name:       undefined # String
   , style:      undefined # String
   , value:      undefined # String
+
+  , isModalOpen: false    # Boolean
+
+  , onColorPicked: (data) ->
+      @set('value', data.num)
+      @fire('change')
+
+      @set('isModalOpen', false)
+      return
+
+  , onColorPickerClose: ->
+      @set('isModalOpen', false)
+      return
+  }
+
+  components: {
+    colorPicker: RactiveColorPicker
   }
 
   on: {
+    click: (event) ->
+      if @get('isEnabled')
+        @set('isModalOpen', true)
 
-    'handle-color-change': ({ node: { value: hexValue } }) ->
-      color =
-        try hexStringToNetlogoColor(hexValue)
-        catch ex
-          0
-      @set('value', color)
-      @fire('change')
-      false
-
-    render: ->
-
-      observeValue =
-        (newValue, oldValue) ->
-          if newValue isnt oldValue
-            hexValue =
-              try netlogoColorToHexString(@get('value'))
-              catch ex
-                "#000000"
-            input = @find('input')
-            input.value = hexValue
-            # See Safari workaround comment below.  -JMB January 2019
-            if (input.jsc?)
-              input.style.backgroundColor = input.value
-          return
-
-      @observe('value', observeValue)
-
-      return
-
+      return false
   }
+
+  computed: {
+    initialColor: ->
+      value = @get('value') or 0
+      return {
+        typ: "number",
+        value
+      }
+      
+    hexColor: ->
+      netlogoColor = @get('value')
+      if typeof netlogoColor is 'number'
+        netlogoColorToHexString(netlogoColor)
+      else
+        "#000000"
+
+    classNames: ->
+      [
+        'netlogo-color-input',
+        if @get('isEnabled') then 'enabled' else 'disabled',
+        @get('class')
+      ].filter((x) -> x).join(' ')
+  }
+  
 
   template:
     """
     <input id="{{id}}" class="{{class}}" name="{{name}}" style="{{style}}" type="color"
-           on-change="handle-color-change"
-           {{# !isEnabled }}disabled{{/}} />
+           {{# !isEnabled }}disabled{{/}} value="{{hexColor}}"
+           on-click="['click']" />
+    {{#isModalOpen}}
+    <colorPicker id="{{id}}-color-picker"
+                 onPick="{{onColorPicked}}"
+                 onClose="{{onColorPickerClose}}"
+                 pickerType="num"
+                 initialColor="{{initialColor}}" />
+    {{/}}
     """
 
 })
