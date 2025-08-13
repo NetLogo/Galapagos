@@ -944,8 +944,12 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   --title-padding: 0.2rem;
   --title-height: 1rem;
 
+  box-sizing: border-box;
   position: fixed;
   z-index: var(--z-basis);
+  
+  display: flex;
+  flex-direction: column;
 
   transform: translate(-50%, -50%);
 
@@ -970,9 +974,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   position: sticky;
   top: 0;
 
-  width: 100%;
   min-height: var(--title-height);
-  max-height: var(--title-height);
 
   text-align: center;
   padding: var(--title-padding);
@@ -988,7 +990,16 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   font-size: small;
 }
 
+.netlogo-modal-top-bar-container {
+  position: relative;
+  width: 100%;
+}
+
+.netlogo-modal-title-text {
+  flex-grow: 1;
+}
+
 .netlogo-modal-content {
   overflow: auto;
-  height: calc(100% - var(--title-height) - 2 * var(--title-padding) - var(--border-width));
+  flex: 1 1 auto;         /* take remaining space */
 }
