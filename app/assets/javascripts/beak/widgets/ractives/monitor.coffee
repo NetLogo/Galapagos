@@ -39,7 +39,7 @@ MonitorEditForm = EditForm.extend({
     {
         display: (if form.display.value isnt "" then form.display.value else undefined)
     ,  fontSize
-    ,    height: (2 * fontSize) + 23
+    ,    height: (2 * fontSize) + 38 
     , precision: parseInt(form.precision.value)
     ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
     ,     units: (if form.units.value isnt "" then form.units.value else undefined)

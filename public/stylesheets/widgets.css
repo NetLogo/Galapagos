@@ -582,7 +582,7 @@ June 2025 */
   height: 100%;
   border-radius: 8px;
 
-  --knob-size: 10px;
+  --knob-size: 12px;
   width: var(--knob-size);
   min-width: var(--knob-size);
 
