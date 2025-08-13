@@ -300,7 +300,7 @@ genClientRole = (widgetNlogo) ->
 
 # (String) => [Object[Any], Object[Any]]
 genOldFormatRoles = (nlogo) ->
-  [_, widgets, _, _, _, _, _, clientWidgets, _, _, _] = nlogo.split('@#$#@#$#@')
+  [_, widgets, _, _, _, _, _, _, clientWidgets, _, _, _] = nlogo.split('@#$#@#$#@')
   mainRole   = genMainRole(widgets.trim())
   clientRole = genClientRole(clientWidgets.trim())
   [mainRole, clientRole]
