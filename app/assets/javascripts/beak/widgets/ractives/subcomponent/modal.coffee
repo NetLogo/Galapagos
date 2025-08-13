@@ -6,10 +6,13 @@ RactiveModal = Ractive.extend({
     , posX: 0             # Number
     , posY: 0             # Number
     , isDragging: false   # Boolean
+    , isMouseDown: false  # Boolean
     , lastClientX: 0      # Number
     , lastClientY: 0      # Number
     , containerWidth: "90vw"                         # String
     , containerHeight: "min(90vh, max(600px, 60vw))" # String
+    , minHeight: "200px"                      # String
+    , minWidth:  "300px"                      # String
   },
 
   resizeObserver: undefined,
@@ -25,12 +28,19 @@ RactiveModal = Ractive.extend({
           if countResizes < 2
             return
 
+          if @get('isDragging')
+            return
+
+          if not @get('isMouseDown')
+            return
+
           for entry in entries
             # `px` indicates that the user resize has been applied
             # otherwise, we want to preserve the initial sizing
             # -Omar I, Aug 12, 2025
             if not entry.target.style.width? or not entry.target.style.height?
               continue
+            fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize)
             if entry.target.style.width.includes('px')
               @set('containerWidth', "#{entry.contentRect.width}px")
             if entry.target.style.height.includes('px')
@@ -87,6 +97,14 @@ RactiveModal = Ractive.extend({
 
 
       return
+    
+    "mouse-down": (event) ->
+      @set('isMouseDown', true)
+      return 
+
+    "mouse-up": (event) ->
+      @set('isMouseDown', false)
+      return
   },
 
   computed: {
@@ -107,17 +125,36 @@ RactiveModal = Ractive.extend({
         "none"
       else
         "auto"
+
+    containerStyle: ->
+      Object.entries({
+        width: @get('containerWidth')
+        , height: @get('containerHeight')
+        , "min-width": @get('minWidth')
+        , "min-height": @get('minHeight')
+        , top: @get('top')
+        , left: @get('left')
+        , resize: @get('resize')
+      }).map(([key, value]) -> "#{key}: #{value};").join(" ")
   }
 
   template: """
-  <div id={{id}} class="netlogo-modal-container" role="dialog"
-     style="width: {{containerWidth}}; height: {{containerHeight}}; top: {{top}}; left: {{left}}; resize: {{resize}};">
+  <div id={{id}} class="netlogo-modal-container"
+       role="dialog"
+       style="{{containerStyle}}"
+       on-mousedown="['mouse-down']"
+       on-touchstart="['mouse-down']"
+       on-mouseup="['mouse-up']"
+       on-touchend="['mouse-up']"
+       >
      <div class="netlogo-modal-title"
-     on-mousedown="['start-drag']"
-     on-touchstart="['start-drag']"
-     role="heading"
+          on-mousedown="['start-drag']"
+          on-touchstart="['start-drag']"
+          role="heading"
      >
-      {{title}}
+      <div class="netlogo-modal-top-bar-container">
+        <div class="netlogo-modal-title-text">{{title}}</div>
+      </div>
      </div>
      <div class="netlogo-modal-content"
         style="pointer-events: {{contentPointerEvents}};">
