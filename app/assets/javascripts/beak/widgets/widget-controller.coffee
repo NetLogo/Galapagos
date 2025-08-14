@@ -479,14 +479,14 @@ withPrecision = (n, places) ->
 # (String, Number, Number, (String) => Number) => Unit
 defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
   switch widgetType
-    when "output"  , "hnwOutput"   then { height:  60, width: 180, fontSize: 12 }
-    when "switch"  , "hnwSwitch"   then { height:  33, width: 100, on: false, variable: "" }
-    when "slider"  , "hnwSlider"   then { height:  33, width: 170, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
-    when "inputBox", "hnwInputBox" then { height:  60, width: 180, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"  , "hnwButton"   then { height:  60, width: 180, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
-    when "chooser" , "hnwChooser"  then { height:  45, width: 140, choices: [], currentChoice: -1, variable: "" }
-    when "monitor" , "hnwMonitor"  then { height:  45, width:  70, fontSize: 11, precision: 17 }
-    when "plot"    , "hnwPlot"     then { height: 160, width: 200, autoPlotX: true, autoPlotY: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
+    when "output"  , "hnwOutput"   then { height:  60, width: 220, fontSize: 12 }
+    when "switch"  , "hnwSwitch"   then { height:  40, width: 100, on: false, variable: "" }
+    when "slider"  , "hnwSlider"   then { height:  50, width: 250, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
+    when "inputBox", "hnwInputBox" then { height:  60, width: 250, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
+    when "button"  , "hnwButton"   then { height:  50, width: 120, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "chooser" , "hnwChooser"  then { height:  60, width: 250, choices: [], currentChoice: -1, variable: "" }
+    when "monitor" , "hnwMonitor"  then { height:  60, width: 100, fontSize: 11, precision: 17 }
+    when "plot"    , "hnwPlot"     then { height: 175, width: 230, autoPlotX: true, autoPlotY: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
     when "textBox" , "hnwTextBox"  then { height:  60, width: 180, color: 0, display: "", fontSize: 12, transparent: true }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 # coffeelint: enable=max_line_length
