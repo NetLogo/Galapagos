@@ -14,6 +14,7 @@ InputEditForm = EditForm.extend({
   , display:     undefined # String
   , isMultiline: undefined # Boolean
   , value:       undefined # Any
+  , oldSize:     undefined # Boolean
   }
 
   components: {
@@ -50,6 +51,7 @@ InputEditForm = EditForm.extend({
     , currentValue: value
     ,      display: variable
     ,     variable: variable.toLowerCase()
+    ,      oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -73,6 +75,10 @@ InputEditForm = EditForm.extend({
                       name="multiline" disabled="typeof({{isMultiline}}) === 'undefined'" />
       </div>
       <spacer height="10px" />
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" />
+      </div>
       """
     # coffeelint: enable=max_line_length
 
@@ -231,7 +237,7 @@ RactiveInput = RactiveValueWidget.extend({
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
-              breedVars="{{breedVars}}" />
+              breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -239,7 +245,7 @@ RactiveInput = RactiveValueWidget.extend({
 
     input:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input {{classes}}" style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
           <input

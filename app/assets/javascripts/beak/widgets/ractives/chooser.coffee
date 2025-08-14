@@ -2,6 +2,7 @@ import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 
@@ -20,6 +21,7 @@ ChooserEditForm = EditForm.extend({
   data: -> {
     choices: undefined # String
   , display: undefined # String
+  , oldSize: undefined # Boolean
   , setHiddenInput: ( # We do this so we can validate the contents of the CodeMirror input --Jason B. (5/14/18)
       (code) ->
         elem        = this.find("##{@get('id')}-choices-hidden")
@@ -39,6 +41,7 @@ ChooserEditForm = EditForm.extend({
   components: {
     formCode:     RactiveEditFormMultilineCode
   , formVariable: RactiveEditFormVariable
+  , formCheckbox: RactiveEditFormCheckbox
   , spacer:       RactiveEditFormSpacer
   }
 
@@ -56,6 +59,7 @@ ChooserEditForm = EditForm.extend({
        choices: choicesArr
     ,  display: varName
     , variable: varName.toLowerCase()
+    ,  oldSize: form.oldSize.checked
     }
 
   _reify: (choices) ->
@@ -84,6 +88,9 @@ ChooserEditForm = EditForm.extend({
       <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
              style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
+      <spacer height="15px" />
+      <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                  name="oldSize" />
       """
 
   }
@@ -173,7 +180,7 @@ RactiveChooser = RactiveValueWidget.extend({
   template:
     """
     {{>editorOverlay}}
-    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{classes}}" style="{{dims}}">
+    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}">
       <span class="netlogo-label">{{widget.display}}</span>
       <select
         class="netlogo-chooser-select"
@@ -185,7 +192,7 @@ RactiveChooser = RactiveValueWidget.extend({
         {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
     """
 
   partials: {

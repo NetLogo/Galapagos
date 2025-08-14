@@ -15,6 +15,7 @@ ButtonEditForm = EditForm.extend({
   , source:         undefined # String
   , startsDisabled: undefined # Boolean
   , type:           undefined # String
+  , oldSize:        undefined # Boolean
   }
 
   computed: { displayedType: { get: -> @_typeToDisplay(@get('type')) } }
@@ -45,6 +46,7 @@ ButtonEditForm = EditForm.extend({
     ,                display: (if form.display.value isnt "" then form.display.value else undefined)
     ,                forever: form.forever.checked
     ,                 source: (if source isnt "" then source else undefined)
+    ,                oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -81,6 +83,13 @@ ButtonEditForm = EditForm.extend({
                 class="widget-edit-inputbox" style="text-transform: uppercase; width: 33px;"
                 on-keypress="handle-action-key-press" />
       </div>
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" />
+      </div>
       """
     # coffeelint: enable=max_line_length
 
@@ -104,6 +113,7 @@ HNWButtonEditForm = ButtonEditForm.extend({
   , procName:       undefined # String
   , startsDisabled: false     # Boolean
   , type:           undefined # String
+  , oldSize:        undefined # Boolean
   }
 
   computed: {
@@ -144,6 +154,7 @@ HNWButtonEditForm = ButtonEditForm.extend({
     ,                forever: false
     ,            hnwProcName
     ,                 source: undefined
+    ,                oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -168,6 +179,13 @@ HNWButtonEditForm = ButtonEditForm.extend({
         <input  id="{{id}}-action-key" name="actionKey" type="text" value="{{actionKey}}"
                 class="widget-edit-inputbox" style="text-transform: uppercase; width: 33px;"
                 on-keypress="handle-action-key-press" />
+      </div>
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" />
       </div>
       """
     # coffeelint: enable=max_line_length
@@ -274,13 +292,13 @@ RactiveButton = RactiveWidget.extend({
       """
       <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
                 idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
-                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
+                startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" oldSize="{{widget.oldSize}}" />
       """
 
     standardButton:
       """
       <button id="{{id}}" type="button" style="{{dims}}"
-              class="netlogo-widget netlogo-button netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}"
+              class="netlogo-widget netlogo-button netlogo-command{{#widget.oldSize}} old-size{{/}}{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}"
               on-click="@this.fire('activate-button')">
         {{>buttonContext}}
         {{>label}}
@@ -291,7 +309,7 @@ RactiveButton = RactiveWidget.extend({
     foreverButton:
       """
       <label id="{{id}}" style="{{dims}}"
-             class="netlogo-widget netlogo-button netlogo-forever-button{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
+             class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.oldSize}} old-size{{/}}{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
@@ -357,7 +375,7 @@ RactiveHNWButton = RactiveButton.extend({
       <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
                 idBasis="{{id}}" isForever="{{widget.forever}}" procName="{{widget.hnwProcName}}"
                 startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}"
-                procedures="{{procedures}}" />
+                procedures="{{procedures}}" oldSize="{{widget.oldSize}}" />
       """
   }
 

@@ -226,6 +226,7 @@ PlotEditForm = EditForm.extend({
   , yLabel:     undefined # String
   , yMax:       undefined # Number
   , yMin:       undefined # Number
+  , oldSize:    undefined # Boolean
   }
 
   components: {
@@ -295,6 +296,7 @@ PlotEditForm = EditForm.extend({
     ,      yAxis: replaceIfEmpty(form.yLabel.value, null)
     ,       ymax: form.yMax.valueAsNumber
     ,       ymin: form.yMin.valueAsNumber
+    ,      oldSize: form.oldSize.checked
     ,   __extras: extras
     }
 
@@ -462,6 +464,8 @@ PlotEditForm = EditForm.extend({
         <spacer height="10px" />
         <div class="flex-row" style="justify-content: space-evenly; width: 100%;">
           <formCheckbox id="{{id}}-show-legend" isChecked={{legendOn}} labelText="Display legend?" name="legendOn"  />
+          <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                      name="oldSize" />
         </div>
         <spacer height="10px" />
         {{>plotSetupInput}}
@@ -506,6 +510,7 @@ HNWPlotEditForm = PlotEditForm.extend({
   , yLabel:     undefined # String
   , yMax:       undefined # Number
   , yMin:       undefined # Number
+  , oldSize:    undefined # Boolean
   }
 
   computed: {
@@ -550,6 +555,7 @@ HNWPlotEditForm = PlotEditForm.extend({
     ,      yAxis: replaceIfEmpty(form.yLabel.value, null)
     ,       ymax: form.yMax.valueAsNumber
     ,       ymin: form.yMin.valueAsNumber
+    ,      oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -657,7 +663,7 @@ RactivePlot = RactiveWidget.extend({
   template:
     """
     {{>editorOverlay}}
-    <div id="{{id}}" class="netlogo-widget netlogo-plot {{classes}}"
+    <div id="{{id}}" class="netlogo-widget netlogo-plot {{#widget.oldSize}}old-size{{/}} {{classes}}"
          style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"></div>
     {{>editForm}}
     """
@@ -672,7 +678,7 @@ RactivePlot = RactiveWidget.extend({
         legendOn={{widget.legendOn}} pens="{{widget.pens}}"
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
         xLabel="{{widget.xAxis}}" xMin="{{widget.xmin}}" xMax="{{widget.xmax}}"
-        yLabel="{{widget.yAxis}}" yMin="{{widget.ymin}}" yMax="{{widget.ymax}}" />
+        yLabel="{{widget.yAxis}}" yMin="{{widget.ymin}}" yMax="{{widget.ymax}}" oldSize="{{widget.oldSize}}" />
       """
   }
   # coffeelint: enable=max_line_length
@@ -696,7 +702,7 @@ RactiveHNWPlot = RactivePlot.extend({
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
         xLabel="{{widget.xAxis}}" xMin="{{widget.xmin}}" xMax="{{widget.xmax}}"
         yLabel="{{widget.yAxis}}" yMin="{{widget.ymin}}" yMax="{{widget.ymax}}"
-        procedures="{{procedures}}" />
+        procedures="{{procedures}}" oldSize="{{widget.oldSize}}" />
       """
   }
   # coffeelint: enable=max_line_length

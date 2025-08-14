@@ -7,6 +7,7 @@ SwitchEditForm = EditForm.extend({
 
   data: -> {
     display: undefined # String
+  , oldSize: undefined # Boolean
   }
 
   twoway: false
@@ -20,6 +21,7 @@ SwitchEditForm = EditForm.extend({
     {
        display: variable
     , variable: variable.toLowerCase()
+    ,  oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -29,6 +31,11 @@ SwitchEditForm = EditForm.extend({
     widgetFields:
       """
       <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}"/>
+      <spacer height="15px" />
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" />
+      </div>
       """
 
   }
@@ -112,7 +119,7 @@ RactiveSwitch = RactiveValueWidget.extend({
     """
     {{>editorOverlay}}
     {{>switch}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" breedVars="{{breedVars}}" />
+    <editForm idBasis="{{id}}" display="{{widget.display}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -120,7 +127,7 @@ RactiveSwitch = RactiveValueWidget.extend({
 
     switch:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{classes}}" style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}">
         <input type="checkbox" checked="{{ internalValue }}" on-change="widget-value-change" {{# isEditing }} disabled{{/}} hidden />
         <span class="netlogo-label">{{ widget.display }}</span>
         <div class="netlogo-switcher-element">
