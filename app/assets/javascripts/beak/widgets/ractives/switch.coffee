@@ -1,6 +1,7 @@
 import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 
 SwitchEditForm = EditForm.extend({
@@ -13,7 +14,8 @@ SwitchEditForm = EditForm.extend({
   twoway: false
 
   components: {
-    formVariable: RactiveEditFormVariable
+    formVariable: RactiveEditFormVariable,
+    formCheckbox: RactiveEditFormCheckbox
   }
 
   genProps: (form) ->
@@ -32,7 +34,8 @@ SwitchEditForm = EditForm.extend({
       """
       <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}"/>
       <spacer height="15px" />
-      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+      <div class="flex-row"
+           style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
         <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
                     name="oldSize" />
       </div>
