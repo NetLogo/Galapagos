@@ -12,9 +12,6 @@ RactiveColorPicker = Ractive.extend({
     id: "color-picker-modal"  # String
     , url: COLOR_PICKER_URL   # String
 
-    , onPick: undefined       # Function
-    , onClose: undefined      # Function
-
     , initialColor: undefined
     , pickerType: "num"          # "num" or "numAndRGBA"
     , defaultPicker: "simple"    # "simple" or "advanced"
@@ -65,9 +62,9 @@ RactiveColorPicker = Ractive.extend({
   onColorPickerEvent: (event) ->
     if event.data.type is 'pick'
       data = { ...event.data, ...@parseColor(event.data.color) }
-      @get('onPick')?(data)
+      @fire('pick', data)
     else if event.data.type is 'cancel'
-      @get('onClose')?()
+      @fire('cancel')
     else
       console.warn("RactiveColorPicker: Unknown event type received from color picker:", event.data.type)
       return
