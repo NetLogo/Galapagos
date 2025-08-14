@@ -62,7 +62,6 @@ RactiveCustomSlider = Ractive.extend({
 
   getSliderLength: (node) ->
     rect = node.getBoundingClientRect()
-    console.log("rect:", rect, "orientation:", @get('orientation'))
     switch @get('orientation')
       when 'horizontal' then rect.width
       when 'vertical' then rect.height
