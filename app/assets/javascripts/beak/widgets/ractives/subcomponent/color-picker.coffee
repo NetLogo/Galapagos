@@ -1,5 +1,5 @@
 import RactiveModal from './modal.js'
-import AsyncLoader from './async-loader.js'
+import RactiveAsyncLoader from './async-loader.js'
 import {
   hexStringToNetlogoColor,
   rgbaArrayToHex,
@@ -24,7 +24,7 @@ RactiveColorPicker = Ractive.extend({
 
   components: {
       modal: RactiveModal
-    , asyncLoader: AsyncLoader
+    , asyncLoader: RactiveAsyncLoader
   },
 
   messageChannel: undefined,  # MessageChannel
@@ -114,7 +114,7 @@ RactiveColorPicker = Ractive.extend({
         alpha: 255
       }
 
-    {}
+    throw new Error("Invalid color format")
 
 
   template: """
