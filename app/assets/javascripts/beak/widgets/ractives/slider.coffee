@@ -276,7 +276,9 @@ RactiveSlider = RactiveValueWidget.extend({
           max="{{widget.maxValue}}"
           step="{{widget.stepValue}}"
           value="{{internalValue}}"
-          onChange="{{onValueChange}}"/>
+          onChange="{{onValueChange}}"
+          orientation="{{widget.direction}}"
+          />
       </label>
       """
 

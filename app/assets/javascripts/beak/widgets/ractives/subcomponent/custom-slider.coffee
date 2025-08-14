@@ -3,16 +3,17 @@ import Ractive from "ractive"
 RactiveCustomSlider = Ractive.extend({
 
   data: -> {
-    value: 0
-    min: 0
-    max: 100
-    step: 1
-    isEnabled: true
-    class: null
-    onValueChange: null
-    inputFor: null
-    maxDecimal: 2
-    ariaLabel: "Custom Slider"
+    value: 0                       # Number
+    min: 0                           # Number
+    max: 100                         # Number
+    step: 1                          # Number
+    isEnabled: true                  # Boolean
+    class: null                      # String
+    onValueChange: null              # Function
+    inputFor: null                   # String (id of an input element to update on change)
+    maxDecimal: 2                    # Number
+    ariaLabel: "Custom Slider"       # String
+    orientation: "horizontal"        # String ("horizontal" or "vertical" (rotated 270 degrees))
   }
 
   computed: {
@@ -53,29 +54,56 @@ RactiveCustomSlider = Ractive.extend({
             input.value = newValue
             input.dispatchEvent(new Event("change", { bubbles: true }))
 
+  getClientPosition: (event) ->
+    switch @get('orientation')
+      when 'horizontal' then event.clientX or event.touches?[0]?.clientX
+      when 'vertical' then event.clientY or event.touches?[0]?.clientY
+      else event.clientX or event.touches?[0]?.clientX
+
+  getSliderLength: (node) ->
+    rect = node.getBoundingClientRect()
+    console.log("rect:", rect, "orientation:", @get('orientation'))
+    switch @get('orientation')
+      when 'horizontal' then rect.width
+      when 'vertical' then rect.height
+      else throw new Error("Invalid orientation: #{@get('orientation')}")
+
+  getSliderLengthFromNode: (node) ->
+    # Might look like a typo, but since rotation happens using
+    # CSS, the bounding box changes but the node's offsetWidth/Height
+    # do not. -Omar I. Aug 14, 2025
+    return node.offsetWidth
+    
+  getSliderStart: (node) ->
+    rect = node.getBoundingClientRect()
+    switch @get('orientation')
+      when 'horizontal' then rect.left + window.scrollX
+      when 'vertical' then rect.top + window.scrollY
+      else throw new Error("Invalid orientation: #{@get('orientation')}")
+
   on: {
     "start-drag": (event) ->
       slider = this
-      startX = event.original.clientX or event.original.touches?[0]?.clientX
-      sliderWidth = event.node.offsetWidth
+
+      sliderLength = slider.getSliderLengthFromNode(event.node)
       min = slider.get("min")
       max = slider.get("max")
       step = slider.get("step")
 
-      rect = event.node.getBoundingClientRect()
-      sliderLeft = rect.left + window.scrollX
-
-      updateValue = slider.updateValue.bind(slider)
+      sliderStart = slider.getSliderStart(event.node)
 
       move = (e) ->
-        currentX = e.clientX or e.touches?[0]?.clientX or e.event.clientX
-        percent = (currentX - sliderLeft) / sliderWidth
+        currentPos = slider.getClientPosition(e)
+        percent = (currentPos - sliderStart) / sliderLength
+        if slider.get('orientation') is 'vertical'
+          # The y-axis is inverted
+          percent = 1 - percent
         percent = Math.max(0, Math.min(1, percent))
         val = min + percent * (max - min)
         val = Math.round(val / step) * step
         val = parseFloat(val.toFixed(slider.get("maxDecimal")))
 
-        updateValue(val)
+        slider.updateValue(val)
 
       stop = ->
         window.removeEventListener("mousemove", move)
@@ -87,13 +115,15 @@ RactiveCustomSlider = Ractive.extend({
       window.addEventListener("mouseup", stop)
       window.addEventListener("touchmove", move)
       window.addEventListener("touchend", stop)
-      move(event)
+      move(event.original)
       event.original.preventDefault()
     
     "keydown": (event) ->
       if not @get("isEnabled")
         return
-      if not (event.original.key is "ArrowLeft" or event.original.key is "ArrowRight")
+
+      allowedKeys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]
+      if not (event.original.key in allowedKeys)
         return
 
       if document.activeElement is event.node
@@ -101,9 +131,9 @@ RactiveCustomSlider = Ractive.extend({
 
         val = @get("value")
         step = @get("step")
-        if event.original.key is "ArrowLeft"
+        if event.original.key is "ArrowLeft" or event.original.key is "ArrowDown"
           val -= step
-        else if event.original.key is "ArrowRight"
+        else if event.original.key is "ArrowRight" or event.original.key is "ArrowUp"
           val += step
 
         @updateValue(val)
