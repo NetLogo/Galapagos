@@ -587,6 +587,7 @@ June 2025 */
   min-width: var(--knob-size);
 
   position:relative;
+  cursor: pointer;
 }
 
 input[type=checkbox]:checked ~ .netlogo-switcher-element {
@@ -1024,6 +1025,9 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 }
 
 /* Old-size */
+.old-size {
+  border-radius: 4px;
+}
 .netlogo-slider.old-size {
   padding-left: 3px;
   padding-right: 3px;
@@ -1048,5 +1052,9 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 }
 
 .netlogo-chooser.old-size {
+  padding: 2px 4px;
+}
+
+.netlogo-switcher.old-size {
   padding: 2px 4px;
 }
