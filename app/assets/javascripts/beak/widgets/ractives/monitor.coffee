@@ -2,6 +2,7 @@ import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
@@ -14,12 +15,14 @@ MonitorEditForm = EditForm.extend({
   , precision: undefined # Number
   , source:    undefined # String
   , units:     undefined # String
+  , oldSize:   undefined # Boolean
   }
 
   components: {
     formCode:     RactiveEditFormMultilineCode
   , formDropdown: RactiveEditFormDropdown
   , formFontSize: RactiveEditFormFontSize
+  , formCheckbox: RactiveEditFormCheckbox
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
   }
@@ -43,6 +46,7 @@ MonitorEditForm = EditForm.extend({
     , precision: parseInt(form.precision.value)
     ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
     ,     units: (if form.units.value isnt "" then form.units.value else undefined)
+    ,   oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -83,6 +87,13 @@ MonitorEditForm = EditForm.extend({
       <spacer height="15px" />
 
       <formFontSize id="{{id}}-font-size" name="fontSize" value="{{fontSize}}"/>
+
+      <spacer height="15px" />
+
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" />
+      </div>
       """
     # coffeelint: enable=max_line_length
 
@@ -147,6 +158,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
     ,     precision: parseInt(form.precision.value)
     , reporterStyle
     ,        source
+    ,       oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -190,7 +202,7 @@ RactiveMonitor = RactiveWidget.extend({
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
               precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}"
-              units={{widget.units}} />
+              units={{widget.units}} oldSize="{{widget.oldSize}}" />
     """
 
   # coffeelint: disable=max_line_length
@@ -198,7 +210,7 @@ RactiveMonitor = RactiveWidget.extend({
 
     monitor:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-monitor netlogo-output {{classes}}"
+      <div id="{{id}}" class="netlogo-widget netlogo-monitor netlogo-output {{#widget.oldSize}}old-size{{/}} {{classes}}"
            style="{{dims}} font-size: {{widget.fontSize}}px;">
         <label class="netlogo-label {{errorClass}}" on-click="['show-widget-errors', widget]">
           {{widget.display || widget.source}}
