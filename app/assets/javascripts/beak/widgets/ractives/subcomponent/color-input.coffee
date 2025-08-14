@@ -36,17 +36,6 @@ RactiveColorInput = Ractive.extend({
   , value:      undefined # String
 
   , isModalOpen: false    # Boolean
-
-  , onColorPicked: (data) ->
-      @set('value', data.num)
-      @fire('change')
-
-      @set('isModalOpen', false)
-      return
-
-  , onColorPickerClose: ->
-      @set('isModalOpen', false)
-      return
   }
 
   components: {
@@ -58,6 +47,17 @@ RactiveColorInput = Ractive.extend({
       if @get('isEnabled')
         @set('isModalOpen', true)
 
+      return false
+
+    "color-picked": (data) ->
+      @set('value', data.num)
+      @fire('change')
+
+      @set('isModalOpen', false)
+      return
+
+    "color-picker-cancel": (event) ->
+      @set('isModalOpen', false)
       return false
   }
 
@@ -92,8 +92,8 @@ RactiveColorInput = Ractive.extend({
            on-click="['click']" />
     {{#isModalOpen}}
     <colorPicker id="{{id}}-color-picker"
-                 onPick="{{onColorPicked}}"
-                 onClose="{{onColorPickerClose}}"
+                 on-pick="['color-picked']"
+                 on-cancel="['color-picker-cancel']"
                  pickerType="num"
                  initialColor="{{initialColor}}" />
     {{/}}

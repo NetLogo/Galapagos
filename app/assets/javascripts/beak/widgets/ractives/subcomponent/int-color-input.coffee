@@ -28,22 +28,6 @@ RactiveIntColorInput = Ractive.extend({
   , value:     undefined # String
 
   , isModalOpen: false   # Boolean
-
-  , onColorPicked: (data) ->
-      alpha = 255
-      if @get('useAlpha') and typeof data.alpha is 'number'
-        alpha = data.alpha
-      rgba = [...data.rgb, alpha]
-      color = rgbaArrayToARGBInt(rgba)
-      @set('value', color)
-      @fire('change')
-
-      @set('isModalOpen', false)
-      return
-
-  , onColorPickerClose: ->
-      @set('isModalOpen', false)
-      return
   }
 
   components: {
@@ -57,6 +41,22 @@ RactiveIntColorInput = Ractive.extend({
         event.original.preventDefault()
 
         @set('isModalOpen', true)
+      return false
+
+    "color-picked": (data) ->
+      alpha = 255
+      if @get('useAlpha') and typeof data.alpha is 'number'
+        alpha = data.alpha
+      rgba = [...data.rgb, alpha]
+      color = rgbaArrayToARGBInt(rgba)
+      @set('value', color)
+      @fire('change')
+
+      @set('isModalOpen', false)
+      return
+    
+    "color-picker-cancel": (event) ->
+      @set('isModalOpen', false)
       return false
   }
 
@@ -111,8 +111,8 @@ RactiveIntColorInput = Ractive.extend({
     </div>
     {{#isModalOpen}}
     <colorPicker id="{{id}}-color-picker"
-                 onPick="{{onColorPicked}}"
-                 onClose="{{onColorPickerClose}}"
+                 on-pick="['color-picked']"
+                 on-cancel="['color-picker-cancel']"
                  pickerType="{{pickerType}}"
                  initialColor="{{initialColor}}"
                  defaultPicker="advanced"
