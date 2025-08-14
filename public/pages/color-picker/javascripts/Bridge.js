@@ -51,9 +51,7 @@
         }
 
         if (event.data.initialColor) {
-          console.log("Received initial color:", event.data.initialColor);
           const { typ, value } = event.data.initialColor;
-          console.log("Setting initial color:", typ, value);
           setValue(typ, value);
         }
 
