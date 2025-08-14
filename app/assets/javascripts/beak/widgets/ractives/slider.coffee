@@ -32,6 +32,7 @@ SliderEditForm = EditForm.extend({
   , width:     undefined # Number
   , x:         undefined # Number
   , y:         undefined # Number
+  , oldSize:   undefined # Boolean
   }
 
   twoway: false
@@ -75,6 +76,7 @@ SliderEditForm = EditForm.extend({
     ,        units: (if form.units.value isnt "" then form.units.value else undefined)
     ,     variable: form.variable.value.toLowerCase()
     ,        width
+    ,      oldSize: form.oldSize.checked
     }
 
   partials: {
@@ -118,8 +120,12 @@ SliderEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?"
+      <div class="flex-row" style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
+        <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?"
                     name="vertical" />
+        <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
+                    name="oldSize" name="oldSize" />
+      </div>
       """
 
   }
@@ -245,14 +251,14 @@ RactiveSlider = RactiveValueWidget.extend({
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               y="{{widget.y}}" width="{{widget.width}}" height="{{widget.height}}"
               x="{{widget.x}}" value="{{widget.default}}" variable="{{widget.variable}}"
-              breedVars="{{breedVars}}" />
+              breedVars="{{breedVars}}" oldSize={{widget.oldSize}} />
     """
 
   partials: {
 
     slider:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{errorClass}} {{classes}}"
+      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{#widget.oldSize}}old-size{{/}} {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
              on-click="['focus-slider']">
         <div class="netlogo-slider-label">
@@ -277,8 +283,7 @@ RactiveSlider = RactiveValueWidget.extend({
           step="{{widget.stepValue}}"
           value="{{internalValue}}"
           onChange="{{onValueChange}}"
-          orientation="{{widget.direction}}"
-          />
+          orientation="{{widget.direction}}"/>
       </label>
       """
 
