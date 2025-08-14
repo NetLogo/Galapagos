@@ -1022,3 +1022,31 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   overflow: auto;
   flex: 1 1 auto;         /* take remaining space */
 }
+
+/* Old-size */
+.netlogo-slider.old-size {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.old-size .netlogo-slider-label input[type=number] {
+  margin: 0px;
+  border: 1px;
+  padding: 0px;
+}
+
+.netlogo-monitor.old-size {
+  padding: 2px 4px;
+}
+
+.netlogo-monitor.old-size > .netlogo-value {
+  padding: 2px 2px;
+}
+
+.netlogo-input-box.old-size {
+  padding: 2px 4px;
+}
+
+.netlogo-chooser.old-size {
+  padding: 2px 4px;
+}
