@@ -32,7 +32,7 @@ RactiveAsyncLoader = Ractive.extend({
         {{else}}
             {{#error}}
                 {{> errorMessage }}
-            {{/if}}
+            {{/error}}
         {{/if}}
         <div class="async-loader-content" style="display: {{display}}">
             {{ yield }}
