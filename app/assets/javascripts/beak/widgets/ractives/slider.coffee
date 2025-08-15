@@ -183,7 +183,7 @@ RactiveSlider = RactiveValueWidget.extend({
   }
 
   widgetType: "slider"
-  
+
   on: {
     'reset-if-invalid': (context) ->
       # input elements don't reject out-of-range hand-typed numbers so we have to do the dirty work
