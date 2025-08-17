@@ -250,10 +250,18 @@ bundle := Def.task {
 
 (Compile / compile) := (Compile / compile).dependsOn(npmInstall).value
 
+// I'm probably missing something very simple, but basic glob patterns aren't working to get the color-picker directory
+// excluded, so I went with the brute force method.  -Jeremy B August 2025
+val substringFilterMaker = (filter: String) => new FileFilter {
+  def accept(file: File): Boolean = {
+    file.toString.contains(filter)
+  }
+}
+
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
-digest / excludeFilter := "*.chunk.js"
+digest / excludeFilter := "*.chunk.js" || "*.png" || "*.html" || "*.ttf" || substringFilterMaker("public/pages/color-picker")
 
 // We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
 // provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to

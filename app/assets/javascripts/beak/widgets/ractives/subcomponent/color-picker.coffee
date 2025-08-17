@@ -6,7 +6,7 @@ import {
   netlogoColorToRGB,
 } from "/colors.js"
 
-COLOR_PICKER_URL = "/assets/pages/color-picker/index.html"
+COLOR_PICKER_URL = "../assets/pages/color-picker/index.html"
 RactiveColorPicker = Ractive.extend({
   data: {
     id: "color-picker-modal"  # String
@@ -50,7 +50,7 @@ RactiveColorPicker = Ractive.extend({
         ])
 
         @set('iframeLoaded', true)
-        
+
         return
   },
 
