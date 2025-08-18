@@ -150,7 +150,6 @@ RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , resizeDirs:         ['left', 'right']
   }
 
   widgetType: "chooser"

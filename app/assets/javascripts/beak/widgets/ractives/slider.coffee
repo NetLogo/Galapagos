@@ -214,10 +214,6 @@ RactiveSlider = RactiveValueWidget.extend({
   }
 
   computed: {
-    resizeDirs: {
-      get: -> if @get('widget.direction') isnt 'vertical' then ['left', 'right'] else ['top', 'bottom']
-      set: (->)
-    }
     textWidth: ->
       internalValue = @get('internalValue')
       if internalValue?

@@ -178,7 +178,6 @@ RactiveMonitor = RactiveWidget.extend({
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   , errorClass:         undefined # String
-  , resizeDirs:         ['left', 'right']
   }
 
   components: {
