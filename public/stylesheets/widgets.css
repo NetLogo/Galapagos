@@ -623,6 +623,9 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   margin-top: 2px;
   padding: var(--widget-padding-y) var(--widget-padding-x);
   background-color: var(--color-widget-background);
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
 }
 
 .netlogo-slider:hover {
@@ -776,9 +779,14 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
   margin:    4px;
   resize:    none;
-  border:    1px solid var(--color-widget-input-border);
-  border-radius: 4px;
+  border:    1.5px solid var(--color-widget-input-border);
+  box-shadow:     0 1px 3px rgba(0,0,0,0.12);
+  border-radius:  4px;
   padding-inline: 0.2rem;
+}
+
+.netlogo-multiline-input[type=number] {
+  color: #a42f00;
 }
 
 .netlogo-input-box > .netlogo-label {
