@@ -338,11 +338,11 @@ try {
         )
       ) {
         document.title = pageTitle(globalThis.session.modelTitle());
-        width = activeContainer.offsetWidth;
+        width  = activeContainer.offsetWidth;
         height = activeContainer.offsetHeight;
         parent.postMessage({
-          width:  activeContainer.offsetWidth,
-          height: activeContainer.offsetHeight,
+          width,
+          height,
           title:  document.title,
           type:   'nlw-resize'
         }, '*');
