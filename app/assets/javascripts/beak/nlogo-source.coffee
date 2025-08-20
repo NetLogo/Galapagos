@@ -22,7 +22,7 @@ class NlogoSource
 
   # () => Boolean
   isOldFormat: () ->
-    @fileName.toLocaleLowerCase().endsWith('.nlogo')
+    not @nlogo.trim().startsWith("<?xml")
 
   # () => String
   getWipKey: () ->
