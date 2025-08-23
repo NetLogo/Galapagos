@@ -7,6 +7,8 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
 import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
+import { prepareColorPickerForInline } from "./ractives/subcomponent/color-picker.js"
+
 PenBundle = tortoise_require('engine/plot/pen')
 
 class WidgetController
@@ -126,6 +128,10 @@ class WidgetController
   # () => Array[Widget]
   widgets: ->
     v for _, v of @ractive.get('widgetObj')
+
+  # () => void
+  onBeforeExportHTML: ->
+    await prepareColorPickerForInline()
 
   # ("runtime" | "compiler", String, Exception | Array[String])
   reportError: (time, source, details, ...args) =>

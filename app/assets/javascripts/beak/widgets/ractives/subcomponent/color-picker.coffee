@@ -7,6 +7,8 @@ import {
 } from "/colors.js"
 
 COLOR_PICKER_URL = "../assets/pages/color-picker/index.html"
+COLOR_PICKER_INLINED_URL = "../assets/pages/color-picker/inlined/index.html"
+COLOR_PICKER_INLINED_DATA_NAME = "colorPickerIframe"
 RactiveColorPicker = Ractive.extend({
   data: {
     id: "color-picker-modal"  # String
@@ -44,6 +46,11 @@ RactiveColorPicker = Ractive.extend({
         console.warn("RactiveColorPicker: Unknown pickerType '#{@get('pickerType')}', defaulting to 'num'")
         @set('pickerType', 'num')
 
+      htmlDataTag = document.querySelector("data[data-name=#{COLOR_PICKER_INLINED_DATA_NAME}]")
+      if htmlDataTag
+        htmlString = htmlDataTag.value
+        @set('srcDoc', htmlString)
+
     iframeLoaded: (event) ->
         iframe = event.node
 
@@ -72,7 +79,6 @@ RactiveColorPicker = Ractive.extend({
         @fire('cancel')
         return false
       return true
-
   },
 
   computed: {
@@ -134,18 +140,36 @@ RactiveColorPicker = Ractive.extend({
 
     throw new Error("Invalid color format")
 
-
   template: """
   <modal id="{{modalId}}" title="Color Picker"
          trafficLights="{{@this.trafficLights}}"
          on-keypress="['key-press']">
     <asyncLoader loading="{{!iframeLoaded}}">
         <iframe id="{{id}}" style="width: 100%; height: 100%;"
-                src="{{url}}" frameborder="0" on-load="iframeLoaded">
+                src="{{url}}"
+                {{#if srcDoc}} srcDoc="{{srcDoc}}" {{/if}}
+                frameborder="0" on-load="iframeLoaded">
         </iframe>
     </asyncLoader>
   </modal>
   """
 })
 
+prepareColorPickerForInline = () ->
+  try
+    response = await fetch(COLOR_PICKER_INLINED_URL)
+    htmlString = await response.text()
+
+    dataTag = document.createElement("data")
+    dataTag.dataset['name'] = COLOR_PICKER_INLINED_DATA_NAME
+    dataTag.value = htmlString
+
+    document.body.appendChild(dataTag)
+  catch e
+    throw new Error("Failed to prepare RactiveColorPicker for inlining: #{e}")
+
+
 export default RactiveColorPicker
+export {
+  prepareColorPickerForInline
+}

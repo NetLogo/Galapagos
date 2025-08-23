@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8"/>
+    <title>Color Picker</title>
+    <script type="module" crossorigin>(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const r of document.querySelectorAll('link[rel="modulepreload"]'))o(r);new MutationObserver(r=>{for(const n of r)if(n.type==="childList")for(const a of n.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&o(a)}).observe(document,{childList:!0,subtree:!0});function e(r){const n={};return r.integrity&&(n.integrity=r.integrity),r.referrerPolicy&&(n.referrerPolicy=r.referrerPolicy),r.crossOrigin==="use-credentials"?n.credentials="include":r.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function o(r){if(r.ep)return;r.ep=!0;const n=e(r);fetch(r.href,n)}})();const O=140,mt=(s,t)=>e=>e<s?s:e>t?t:e,_=mt(0,255),et=(s,t,e)=>`${s}_${t}_${e}`,wt=s=>s.split("_").map(parseFloat),Bt=[[140,140,140],[215,48,39],[241,105,19],[156,109,70],[237,237,47],[87,176,58],[42,209,57],[27,158,119],[82,196,196],[43,140,190],[50,92,168],[123,78,163],[166,25,105],[224,126,149],[0,0,0],[255,255,255]],[ft,q]=(()=>{const s={},t=[];for(let e=0;e<O*10;e++){let o=null;if(e===0)o=[0,0,0];else if(e===99)o=[255,255,255];else{const r=Math.floor(e/100),n=Bt[r],a=(e%100-50)/50.48+.012,h=a<=0?(u=>u):(u=>255-u);o=n.map(u=>u+Math.trunc(h(u)*a))}s[et(...o)]=e/10,t.push(o)}return[t,s]})(),Lt=s=>ft[Math.floor((e=>{const o=e%O;return o>=0?o:O+o})(s)*10)],yt=(s,t,e,o,r,n)=>{const a=s+Math.floor(o/2),h=s-o,u=t-r,i=e-n;return((512+a)*h*h>>8)+4*u*u+((767-a)*i*i>>8)},St=(s,t,e)=>{const o=(r,[n,a])=>{const[h,u,i]=wt(n),c=yt(s,t,e,h,u,i);return c<r[1]?[a,c]:r};return Object.entries(q).reduce(o,[0,Number.MAX_VALUE])[0]},j={},At=(s,t,e)=>{const o=_(s),r=_(t),n=_(e),a=et(o,r,n),h=j[a];if(h!==void 0)return h;{const u=q[a]!==void 0?q[a]:St(o,r,n);return j[a]=u,u}},Ht={colorToRGB:Lt,nearestColorNumberOfRGB:At};window.NLColorModel=Ht;var K={},z;function Nt(){return z||(z=1,document.addEventListener("DOMContentLoaded",()=>{window.addEventListener("message",s=>{if(s.data.type==="init-baby-monitor"){if(s.ports.length===0){console.error("No port provided for baby monitor communication.");return}const t=s.ports[0];if(!(t instanceof MessagePort)){console.error("Provided port is not a MessagePort instance.");return}if(window.nlBabyMonitor={onPick:e=>{t.postMessage({type:"pick",color:e})},onCopy:e=>{t.postMessage({type:"copy",value:e}),navigator.clipboard.writeText(e).catch(o=>{console.error("Failed to copy text: ",o)})},onCancel:()=>{t.postMessage({type:"cancel"})}},s.data.defaultPicker)switch(s.data.defaultPicker){case"simple":break;case"advanced":window.switchToAdvPicker();break;default:console.warn(`Unknown defaultPicker '${s.data.defaultPicker}', defaulting to 'simple'`)}if(s.data.pickerType)switch(s.data.pickerType){case"num":window.useNumberOnlyPicker();break;case"numAndRGBA":window.useNumAndRGBAPicker();break;default:console.warn(`Unknown pickerType '${s.data.pickerType}', defaulting to 'num'`),window.useNumberOnlyPicker()}if(s.data.initialColor){const{typ:e,value:o}=s.data.initialColor;setValue(e,o)}}})})),K}Nt();const kt=(s,t,e)=>t.has(s)?B(t.get(s)):e(s),B=s=>s,f=s=>t=>B(s.getElementById(t)),y=s=>t=>Array.from(s.querySelectorAll(t)),x=s=>t=>y(s)(t)[0],vt=s=>t=>{s.value=t.toString()},xt=s=>(t,e)=>{vt(f(s)(t))(e)};var b=(s=>(s[s.NLNumber=0]="NLNumber",s[s.NLWord=1]="NLWord",s[s.RGB=2]="RGB",s[s.RGBA=3]="RGBA",s[s.HSB=4]="HSB",s[s.HSBA=5]="HSBA",s[s.HSL=6]="HSL",s[s.HSLA=7]="HSLA",s))(b||{});class g{name;value;constructor(t,e){this.name=t,this.value=e}}const D=new g("black",0),M=new g("white",9.9),ot=new g("gray",5),It=new g("red",15),Gt=new g("orange",25),Rt=new g("brown",35),$t=new g("yellow",45),Dt=new g("green",55),Mt=new g("lime",65),Et=new g("turquoise",75),Ct=new g("cyan",85),Wt=new g("sky",95),Tt=new g("blue",105),Pt=new g("violet",115),Ut=new g("magenta",125),_t=new g("pink",135),F=[D,M,ot,It,Gt,Rt,$t,Dt,Mt,Et,Ct,Wt,Tt,Pt,Ut,_t],J=(()=>{const s=F.flatMap(t=>{const e=t.value;return[M,D,ot].includes(t)?[[e,t]]:[[e-5,D],[e,t],[e+4.9,M]]});return Object.fromEntries(s)})(),Vt=(s,t,e)=>{const o=st(s,t,e);if(J.hasOwnProperty(o))return[B(J[o]),0];{const n=F.filter(h=>h!==D&&h!==M).reduce((h,u)=>Math.abs(o-u.value)<Math.abs(o-h.value)?u:h,new g("nonsense",1e9)),a=Math.round((o-n.value)*10)/10;return[n,a]}},rt=s=>window.NLColorModel.colorToRGB(s),st=(s,t,e)=>window.NLColorModel.nearestColorNumberOfRGB(s,t,e),N=s=>Math.round(s*10)/10,nt=s=>N(360*(s/100));let A=class{number;proxy;constructor(t){this.number=t,this.proxy=this.toRGBA()}equals(t){if(typeof t=="object"&&"toNLNumber"in t){const e=t.toNLNumber();return this.number===e.number}else return!1}toString(){return`NLNumber(${this.number})`}toNLNumber(){return this}toNLWord(){return this.proxy.toNLWord()}toRGB(){const[t,e,o]=rt(this.number);return new C(t,e,o)}toRGBA(){return this.toRGB().toRGBA()}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this.proxy.toHSL()}toHSLA(){return this.proxy.toHSLA()}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}withAlpha(t){return this.proxy.withAlpha(t)}},at=class it{literal;modifier;proxy;constructor(t,e=0){this.literal=t,this.modifier=e,this.proxy=this.toRGBA()}static parse(t){const[e,o,r]=t.split(" "),n=F.find(a=>a.name===e);if(n!==void 0){const a=o!=="+"&&o!=="-"||isNaN(Number(r))?0:o==="+"?Number(r):-Number(r);return new it(n,a)}else throw new Error(`Invalid NL color word: ${e}`)}equals(t){if(typeof t=="object"&&"toNLWord"in t){const e=t.toNLWord();return this.literal===e.literal&&this.modifier===e.modifier}else return!1}toString(){return`NLWord(${this.toText()})`}toNLNumber(){return new A(this.literal.value+this.modifier)}toNLWord(){return this}toRGB(){return this.proxy.toRGB()}toRGBA(){return this.toNLNumber().toRGBA()}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this.proxy.toHSL()}toHSLA(){return this.proxy.toHSLA()}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}toText(){const t=this.modifier===0?"":(()=>{const e=this.modifier>0?"+":"-",o=Math.abs(this.modifier);return` ${e} ${o}`})();return`${this.literal.name}${t}`}withAlpha(t){return this.proxy.withAlpha(t)}};class C{red;green;blue;proxy;constructor(t,e,o){this.red=t,this.green=e,this.blue=o,this.proxy=this.toRGBA()}equals(t){if(typeof t=="object"&&"toRGB"in t){const e=t.toRGB();return this.red===e.red&&this.green===e.green&&this.blue===e.blue}else return!1}toString(){return`RGB(${this.red}, ${this.green}, ${this.blue})`}toNLNumber(){return new A(st(this.red,this.green,this.blue))}toNLWord(){const[t,e]=Vt(this.red,this.green,this.blue);return new at(t,e)}toRGB(){return this}toRGBA(){return new k(this.red,this.green,this.blue,100)}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this.proxy.toHSL()}toHSLA(){return this.proxy.toHSLA()}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}withAlpha(t){return this.proxy.withAlpha(t)}}let k=class ut{red;green;blue;alpha;constructor(t,e,o,r){this.red=t,this.green=e,this.blue=o,this.alpha=r}equals(t){if(typeof t=="object"&&"toRGBA"in t){const e=t.toRGBA();return this.red===e.red&&this.green===e.green&&this.blue===e.blue&&this.alpha===e.alpha}else return!1}toString(){return`RGBA(${this.red}, ${this.green}, ${this.blue}, ${this.alpha})`}toNLNumber(){return this.toRGB().toNLNumber()}toNLWord(){return this.toRGB().toNLWord()}toRGB(){return new C(this.red,this.green,this.blue)}toRGBA(){return this}toHSB(){return this.toHSBA().toHSB()}toHSBA(){const t=(n,a,h)=>{const u=n/255,i=a/255,c=h/255,l=Math.max(u,i,c),d=l-Math.min(u,i,c);let p=null;d===0?p=0:d&&l===u?p=(i-c)/d:l===i?p=2+(c-u)/d:p=4+(u-i)/d;const m=60*(p<0?p+6:p),w=l&&d/l*100,L=l*100;return[m,w,L].map(N)},[e,o,r]=t(this.red,this.green,this.blue);return new v(e,o,r,this.alpha)}toHSL(){return this.toHSLA().toHSL()}toHSLA(){const t=(n,a,h)=>{const u=n/255,i=a/255,c=h/255,l=Math.max(u,i,c),d=l-Math.min(u,i,c),p=1-Math.abs(l+l-d-1),m=d&&(l===u?(i-c)/d:l===i?2+(c-u)/d:4+(u-i)/d),w=60*(m<0?m+6:m),P=(p!==0?d/p:0)*100,R=(l+l-d)/2*100;return[w,P,R].map(N)},[e,o,r]=t(this.red,this.green,this.blue);return new H(e,o,r,this.alpha)}toHexadecimal(){return new W(this.red,this.green,this.blue,this.alpha)}toGUI_HSLA(){return this.toHSLA().toGUI_HSLA()}withAlpha(t){return new ut(this.red,this.green,this.blue,t)}};class Y{hue;saturation;brightness;proxy;constructor(t,e,o){this.hue=t,this.saturation=e,this.brightness=o,this.proxy=this.toHSBA()}equals(t){if(typeof t=="object"&&"toHSB"in t){const e=t.toHSB();return this.hue===e.hue&&this.saturation===e.saturation&&this.brightness===e.brightness}else return!1}toString(){return`HSB(${this.hue}, ${this.saturation}, ${this.brightness})`}toNLNumber(){return this.proxy.toNLNumber()}toNLWord(){return this.proxy.toNLWord()}toRGB(){return this.proxy.toRGB()}toRGBA(){return this.proxy.toRGBA()}toHSB(){return this}toHSBA(){return new v(this.hue,this.saturation,this.brightness,100)}toHSL(){return this.proxy.toHSL()}toHSLA(){return this.proxy.toHSLA()}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}withAlpha(t){return this.proxy.withAlpha(t)}}class v{hue;saturation;brightness;alpha;constructor(t,e,o,r){this.hue=t,this.saturation=e,this.brightness=o,this.alpha=r}equals(t){if(typeof t=="object"&&"toHSBA"in t){const e=t.toHSBA();return this.hue===e.hue&&this.saturation===e.saturation&&this.brightness===e.brightness&&this.alpha===e.alpha}else return!1}toString(){return`HSBA(${this.hue}, ${this.saturation}, ${this.brightness}, ${this.alpha})`}toNLNumber(){return this.toRGBA().toNLNumber()}toNLWord(){return this.toRGBA().toNLWord()}toRGB(){return this.toRGBA().toRGB()}toRGBA(){const t=n=>{const a=u=>(u+this.hue/60)%6,h=this.brightness/100*(1-this.saturation/100*Math.max(0,Math.min(a(n),4-a(n),1)));return Math.round(255*h)},e=t(5),o=t(3),r=t(1);return new k(e,o,r,this.alpha)}toHSB(){return new Y(this.hue,this.saturation,this.brightness)}toHSBA(){return this}toHSL(){return this.toHSLA().toHSL()}toHSLA(){const t=(r,n)=>{const a=(2-r/100)*n/2;return[a===0?0:r*n/(a<50?a*2:200-a*2),a].map(N)},[e,o]=t(this.saturation,this.brightness);return new H(this.hue,e,o,this.alpha)}toHexadecimal(){return this.toRGBA().toHexadecimal()}toGUI_HSLA(){return this.toHSLA().toGUI_HSLA()}withAlpha(t){return new v(this.hue,this.saturation,this.brightness,t)}}class ht{hue;saturation;lightness;proxy;constructor(t,e,o){this.hue=t,this.saturation=e,this.lightness=o,this.proxy=this.toHSLA()}equals(t){if(typeof t=="object"&&"toHSL"in t){const e=t.toHSL();return this.hue===e.hue&&this.saturation===e.saturation&&this.lightness===e.lightness}else return!1}toString(){return`HSL(${this.hue}, ${this.saturation}, ${this.lightness})`}toNLNumber(){return this.proxy.toNLNumber()}toNLWord(){return this.proxy.toNLWord()}toRGB(){return this.proxy.toRGB()}toRGBA(){return this.proxy.toRGBA()}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this}toHSLA(){return new H(this.hue,this.saturation,this.lightness,100)}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}withAlpha(t){return this.proxy.withAlpha(t)}}class H{hue;saturation;lightness;alpha;constructor(t,e,o,r){this.hue=t,this.saturation=e,this.lightness=o,this.alpha=r}equals(t){if(typeof t=="object"&&"toHSLA"in t){const e=t.toHSLA();return this.hue===e.hue&&this.saturation===e.saturation&&this.lightness===e.lightness&&this.alpha===e.alpha}else return!1}toString(){return`HSLA(${this.hue}, ${this.saturation}, ${this.lightness}, ${this.alpha})`}toNLNumber(){return this.toRGBA().toNLNumber()}toNLWord(){return this.toRGBA().toNLWord()}toRGB(){return this.toRGBA().toRGB()}toRGBA(){const t=(n,a,h)=>{const u=h/100,i=a/100*Math.min(u,1-u),c=l=>{const d=(l+n/30)%12,p=u-i*Math.max(-1,Math.min(d-3,9-d,1));return Math.round(p*255)};return[c(0),c(8),c(4)]},[e,o,r]=t(this.hue,this.saturation,this.lightness);return new k(e,o,r,this.alpha)}toHSB(){const t=this.toHSBA();return new Y(t.hue,t.saturation,t.brightness)}toHSBA(){const t=(r,n)=>{const a=r*(n<50?n:100-n)/100,h=n+a,u=h!==0?N(200*a/h):0,i=N(h);return[u,i]},[e,o]=t(this.saturation,this.lightness);return new v(this.hue,e,o,this.alpha)}toHSL(){return new ht(this.hue,this.saturation,this.lightness)}toHSLA(){return this}toHexadecimal(){return this.toRGBA().toHexadecimal()}toGUI_HSLA(){const t=1+this.saturation/100,e=100-Math.min(100,this.lightness*t),o=this.hue/360*100;return new S(o,this.saturation,e,this.alpha)}withAlpha(t){return new H(this.hue,this.saturation,this.lightness,t)}}class W{red;green;blue;alpha;proxy;constructor(t,e,o,r){this.red=t,this.green=e,this.blue=o,this.alpha=r,this.proxy=new k(t,e,o,r)}static parse(t){const e=t.slice(1);if(e.length===6||e.length===8){const[o,r,n,a]=[0,2,4,6].map(u=>parseInt(e.slice(u,u+2),16)),h=isNaN(a)?100:Math.round(a/255*100);return new W(o,r,n,h)}else throw new Error(`Unparseable hexadecimal: ${t}`)}hex(){const t=r=>r.toString(16).padStart(2,"0"),e=this.toRGBA(),o=e.alpha<100?t(Math.round(e.alpha/100*255)):"";return`#${t(e.red)}${t(e.green)}${t(e.blue)}${o}`}equals(t){if(typeof t=="object"&&"toHexadecimal"in t){const e=t.toHexadecimal();return this.red===e.red&&this.green===e.green&&this.blue===e.blue&&this.alpha===e.alpha}else return!1}toString(){return`Hexadecimal(${this.hex()})`}toNLNumber(){return this.proxy.toNLNumber()}toNLWord(){return this.proxy.toNLWord()}toRGB(){return this.proxy.toRGB()}toRGBA(){return this.proxy}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this.proxy.toHSL()}toHSLA(){return this.proxy.toHSLA()}toHexadecimal(){return this}toGUI_HSLA(){return this.proxy.toGUI_HSLA()}withAlpha(t){return this.proxy.withAlpha(t)}}class S{hue;saturation;lightness;alpha;proxy;constructor(t,e,o,r){this.hue=t,this.saturation=e,this.lightness=o,this.alpha=r,this.proxy=this.toHSLA()}equals(t){if(typeof t=="object"&&"toGUI_HSLA"in t){const e=t.toGUI_HSLA();return this.hue===e.hue&&this.saturation===e.saturation&&this.lightness===e.lightness&&this.alpha===e.alpha}else return!1}toString(){return`GUI_HSLA(${this.hue}, ${this.saturation}, ${this.lightness}, ${this.alpha})`}toNLNumber(){return this.proxy.toNLNumber()}toNLWord(){return this.proxy.toNLWord()}toRGB(){return this.proxy.toRGB()}toRGBA(){return this.proxy.toRGBA()}toHSB(){return this.proxy.toHSB()}toHSBA(){return this.proxy.toHSBA()}toHSL(){return this.proxy.toHSL()}toHSLA(){const t=nt(this.hue),e=this.saturation,o=100-this.lightness,r=1+this.saturation/100,n=o/r,a=this.alpha;return new H(t,e,n,a)}toHexadecimal(){return this.proxy.toHexadecimal()}toGUI_HSLA(){return this}withHue(t){return new S(t,this.saturation,this.lightness,this.alpha)}withSaturation(t){return new S(this.hue,t,this.lightness,this.alpha)}withLightness(t){return new S(this.hue,this.saturation,t,this.alpha)}withAlpha(t){return new S(this.hue,this.saturation,this.lightness,t)}}const $=s=>Math.max(0,Math.min(100,s)),ct={"nl-number":"netlogo-number-controls","nl-word":"netlogo-word-controls",hsb:"hsb-controls",hsba:"hsba-controls",hsl:"hsl-controls",hsla:"hsla-controls",rgb:"rgb-controls",rgba:"rgba-controls",hex:"hex-controls"},Q=new Map([[b.NLNumber,"nl-number"],[b.NLWord,"nl-word"],[b.RGB,"rgb"],[b.RGBA,"rgba"],[b.HSB,"hsb"],[b.HSBA,"hsba"],[b.HSL,"hsl"],[b.HSLA,"hsla"]]);class Ot{findElemByID;findElems;findFirstElem;setInputByID;constructor(t){const e=f(t)("advanced-pane");this.findElemByID=f(t),this.findElems=y(e),this.findFirstElem=x(e),this.setInputByID=xt(t)}findActiveControls(){const e=this.findElems(".repr-controls-container .repr-controls").find(o=>o.style.display==="flex");return B(e)}findInputValues(){const t=this.findReprDropdown(),e=B(ct[t.value]),o=this.findElemByID(e);return y(o)(".repr-input").map(r=>r.value)}findOutputDropdown(){return this.findElemByID("output-format-dropdown")}findReprDropdown(){return this.findElemByID("repr-dropdown")}}class qt{setupDrag1DX(t,e,o){let r=!1;const n=i=>{const{left:c,right:l,width:d}=t.getBoundingClientRect(),p=i,w=(p<c?c:p>l?l:p)-c,L=Math.round(w/d*100);o(L)},a=i=>{i.button==0&&(r=!0,n(i.clientX),e.body.classList.add("dragging"))},h=i=>{r&&n(i.clientX)},u=i=>{i.button==0&&(r=!1,e.body.classList.remove("dragging"))};t.addEventListener("mousedown",a,!1),e.addEventListener("mousemove",h,!1),e.addEventListener("mouseup",u,!1),e.addEventListener("mouseleave",u,!1)}setupDrag1DY(t,e,o){let r=!1;const n=i=>{const{bottom:c,top:l,height:d}=t.getBoundingClientRect(),p=i,m=p<l?l:p>c?c:p,w=c-m,L=Math.round(w/d*100);o(L)},a=i=>{i.button==0&&(r=!0,n(i.clientY),e.body.classList.add("dragging"))},h=i=>{r&&n(i.clientY)},u=i=>{i.button==0&&(r=!1,e.body.classList.remove("dragging"))};t.addEventListener("mousedown",a,!1),e.addEventListener("mousemove",h,!1),e.addEventListener("mouseup",u,!1),e.addEventListener("mouseleave",u,!1)}setupDrag2D(t,e,o){let r=!1;const n=(i,c)=>{const{left:l,right:d,width:p}=t.getBoundingClientRect(),m=i,L=(m<l?l:m>d?d:m)-l,P=Math.round(L/p*100),{top:G,bottom:R,height:pt}=t.getBoundingClientRect(),U=c,bt=(U<G?G:U>R?R:U)-G,gt=Math.round(bt/pt*100);o(P,gt)},a=i=>{i.button==0&&(r=!0,n(i.clientX,i.clientY),e.body.classList.add("dragging"))},h=i=>{r&&n(i.clientX,i.clientY)},u=i=>{i.button==0&&(r=!1,e.body.classList.remove("dragging"))};t.addEventListener("mousedown",a,!1),e.addEventListener("mousemove",h,!1),e.addEventListener("mouseup",u,!1),e.addEventListener("mouseleave",u,!1)}}class Ft{constructor(){}read(t,e){const o=t.findReprDropdown(),r=t.findInputValues();switch(o.value){case"nl-number":{const[n]=r;e(new A(parseFloat(n)));break}case"nl-word":{const[n]=r;e(at.parse(n));break}case"hsb":{const[n,a,h]=r.map(u=>parseInt(u));e(new Y(n,a,h));break}case"hsba":{const[n,a,h,u]=r.map(i=>parseInt(i));e(new v(n,a,h,u));break}case"hsl":{const[n,a,h]=r.map(u=>parseInt(u));e(new ht(n,a,h));break}case"hsla":{const[n,a,h,u]=r.map(i=>parseInt(i));e(new H(n,a,h,u));break}case"rgb":{const[n,a,h]=r.map(u=>parseInt(u));e(new C(n,a,h));break}case"rgba":{const[n,a,h,u]=r.map(i=>parseInt(i));e(new k(n,a,h,u));break}case"hex":{const[n]=r;e(W.parse(n));break}default:alert(`Invalid representation dropdown value: ${o.value}`)}}}class Yt{write(t,e){const o=t.findActiveControls();switch(o.id){case"netlogo-number-controls":{t.setInputByID("netlogo-number",e.toNLNumber().number);break}case"netlogo-word-controls":{t.setInputByID("netlogo-word",e.toNLWord().toText());break}case"hsb-controls":{const{hue:r,saturation:n,brightness:a}=e.toHSB();t.setInputByID("hsb-h",r),t.setInputByID("hsb-s",n),t.setInputByID("hsb-b",a);break}case"hsba-controls":{const{hue:r,saturation:n,brightness:a,alpha:h}=e.toHSBA();t.setInputByID("hsba-h",r),t.setInputByID("hsba-s",n),t.setInputByID("hsba-b",a),t.setInputByID("hsba-a",h);break}case"hsl-controls":{const{hue:r,saturation:n,lightness:a}=e.toHSL();t.setInputByID("hsl-h",r),t.setInputByID("hsl-s",n),t.setInputByID("hsl-l",a);break}case"hsla-controls":{const{hue:r,saturation:n,lightness:a,alpha:h}=e.toHSLA();t.setInputByID("hsla-h",r),t.setInputByID("hsla-s",n),t.setInputByID("hsla-l",a),t.setInputByID("hsla-a",h);break}case"rgb-controls":{const{red:r,green:n,blue:a}=e.toRGB();t.setInputByID("rgb-r",r),t.setInputByID("rgb-g",n),t.setInputByID("rgb-b",a);break}case"rgba-controls":{const{red:r,green:n,blue:a,alpha:h}=e.toRGBA();t.setInputByID("rgba-r",r),t.setInputByID("rgba-g",n),t.setInputByID("rgba-b",a),t.setInputByID("rgba-a",h);break}case"hex-controls":{t.setInputByID("hex",e.toHexadecimal().hex());break}default:alert(`Invalid representation dropdown ID: ${o.id}`)}}}const V=s=>["hsba","hsla","rgba","hex"].includes(s);class T{dom;repr;reprReader;reprWriter;constructor(t,e){this.dom=new Ot(t),this.repr=new S(0,0,0,0),this.reprReader=new Ft,this.reprWriter=new Yt,this.dom.findOutputDropdown().addEventListener("change",()=>this.updateOutputControl()),this.activateOutputs(e);const r=this.dom.findReprDropdown();r.addEventListener("change",()=>this.updateReprControls()),r.value="nl-number",this.updateReprControls(),this.setHue(60),this.setSwatchCoords(75,20),this.setAlpha(100),Array.from(this.dom.findElems(".repr-input")).forEach(a=>{a.addEventListener("change",()=>this.reprReader.read(this.dom,h=>this.setRepr(h)))});const n=new qt;n.setupDrag2D(this.dom.findElemByID("swatch-container"),t,(a,h)=>this.setSwatchCoords(a,h)),n.setupDrag1DY(this.dom.findElemByID("alpha-slider"),t,a=>this.setAlpha(a)),n.setupDrag1DY(this.dom.findElemByID("hue-slider"),t,a=>this.setHue(a))}setAlpha(t){const e=$(t);this.repr=this.repr.withAlpha(e),this.dom.findElemByID("alpha-knob").style.bottom=`${e.toFixed(2)}%`,this.updateColor()}setHue(t){const e=$(t);this.repr=this.repr.toGUI_HSLA().withHue(e),this.dom.findElemByID("hue-knob").style.bottom=`${e.toFixed(2)}%`,this.dom.findElemByID("swatch-gradient").style.background=`hsla(${nt(t)}deg, 100%, 50%, 100%)`,this.updateColor(),this.updateAlphaGradient()}setSwatchCoords(t,e){const o=$(t),r=$(e);this.repr=this.repr.toGUI_HSLA().withSaturation(o).withLightness(r);const n=this.dom.findElemByID("swatch-pointer");n.style.left=`${o.toFixed(2)}%`,n.style.top=`${r.toFixed(2)}%`,this.updateColor(),this.updateAlphaGradient()}setRepr(t){this.repr=t;const e=t.toGUI_HSLA();this.setHue(e.hue),this.setSwatchCoords(e.saturation,e.lightness),this.setAlpha(e.alpha)}updateColor(){const t=this.repr.toHSLA(),e=`${t.hue}deg, ${t.saturation}%, ${t.lightness}%`;this.dom.findElemByID("preview-color-opaque").style.background=`hsl(${e})`,this.dom.findElemByID("preview-color-transparent").style.background=`hsla(${e}, ${t.alpha}%)`,this.reprWriter.write(this.dom,this.repr),this.updateOutput()}updateOutputControl(){this.updateAlphaVis(),this.updateOutput()}updateOutput(){this.dom.findFirstElem(".output-field").innerText=this.getOutputValue(!1),this.validateControls()}validateControls(){const t=this.repr.toGUI_HSLA().alpha,e=this.dom.findOutputDropdown(),o=V(e.value);t===100||o?(e.classList.remove("alpha-warning"),e.title=""):(e.classList.add("alpha-warning"),e.title="You have chosen a color with alpha (transparency), but this output format does not support transparency, so the output color will be entirely opaque.")}getNLNumberValue(){return this.repr.toNLNumber().number}getOutputValue(t){const e=B(this.dom.findElemByID("output-format-dropdown").selectedOptions[0]).value,o=Array.from(Q.entries()),r=new Map(o.map(([a,h])=>[h,a])),n=a=>Math.round(a/100*255);switch(r.get(e)){case b.NLNumber:return this.repr.toNLNumber().number.toString();case b.NLWord:const a=this.repr.toNLWord().toText(),h=!a.includes(" ");return!t||h?a:`(${a})`;case b.RGB:const u=this.repr.toRGB();return`(rgb ${u.red} ${u.green} ${u.blue})`;case b.RGBA:const i=this.repr.toRGBA(),c=n(i.alpha),l=c<255?` ${c}`:"";return`[${i.red} ${i.green} ${i.blue}${l}]`;case b.HSB:const d=this.repr.toHSB();return`(hsb ${d.hue} ${d.saturation} ${d.brightness})`;case b.HSBA:const p=this.repr.toHSBA();return`(lput ${n(p.alpha)} (hsb ${p.hue} ${p.saturation} ${p.brightness}))`;case b.HSL:const m=this.repr.toHSL();return`[${m.hue} ${m.saturation} ${m.lightness}]`;case b.HSLA:const w=this.repr.toHSLA();return`[${w.hue} ${w.saturation} ${w.lightness} ${n(w.alpha)}]`;default:throw new Error(`Unknown output value for output format: ${e}`)}}updateAlphaGradient(){const{hue:t,saturation:e,lightness:o}=this.repr.toHSL(),r=`${t}, ${e}%, ${o}%`,n=this.dom.findFirstElem(".slider-background.alpha");n.style.background=`linear-gradient(to top, hsla(${r}, 0) 0%, hsl(${r}) 100%)`}updateReprControls(){this.dom.findElems(".repr-controls-container .repr-controls").forEach(o=>{o.style.display=""});const t=this.dom.findReprDropdown(),e=B(ct[t.value]);this.dom.findElemByID(e).style.display="flex",this.updateAlphaVis(),this.updateColor()}updateAlphaVis(){const t=this.dom.findReprDropdown(),e=this.dom.findOutputDropdown(),o=V(t.value),r=V(e.value),n=this.dom.findElemByID("alpha-wrapper");o||r?n.classList.remove("hidden"):(n.classList.add("hidden"),this.setAlpha(100))}activateOutputs(t){t.forEach(e=>{const o=kt(e,Q,n=>{throw new Error(`Impossible output type: ${JSON.stringify(n)}`)}),r=this.dom.findFirstElem(`#output-format-dropdown > option[value=${o}]`);r.disabled=!1,r.selected=!0})}}const Xt={dialogBackground:"rgb(238, 238, 238)",dialogText:"black",tabBackground:"white",tabBackgroundHover:"#d3d3d3",tabBackgroundSelected:"rgb(6, 112, 237)",tabBorder:"rgb(175, 175, 175)",tabText:"black",tabTextSelected:"white",controlBackground:"white",controlBackgroundActive:"#0091ff",controlBackgroundHover:"#d3d3d3",controlBorder:"black",controlText:"black",dropdownArrow:"black",genericBorder:"#808080",outputBackground:"#7d7d7d",checkmarkColor:"#3eb84f",copyHover:"#c5c5c5",okButtonBackground:"rgb(6, 112, 237)",okButtonBackgroundHover:"rgb(0, 92, 217)",okButtonBorder:"rgb(6, 112, 237)",okButtonText:"white",okButtonActive:"rgb(0, 72, 197)",cancelButtonBackground:"white",cancelButtonBackgroundHover:"rgb(245, 245, 245)",cancelButtonBorder:"rgb(175, 175, 175)",cancelButtonText:"black",cancelButtonActive:"rgb(215, 215, 215)"},jt=(s,t)=>{const e={...Xt,...s},o=(r,n)=>t.style.setProperty(r,n);o("--dialog-background",e.dialogBackground),o("--dialog-text",e.dialogText),o("--tab-background",e.tabBackground),o("--tab-background-hover",e.tabBackgroundHover),o("--tab-background-selected",e.tabBackgroundSelected),o("--tab-border",e.tabBorder),o("--tab-text",e.tabText),o("--tab-text-selected",e.tabTextSelected),o("--control-background",e.controlBackground),o("--control-background-active",e.controlBackgroundActive),o("--control-background-hover",e.controlBackgroundHover),o("--control-border",e.controlBorder),o("--control-text",e.controlText),o("--dropdown-arrow",e.dropdownArrow),o("--generic-border",e.genericBorder),o("--output-background",e.outputBackground),o("--checkmark-color",e.checkmarkColor),o("--copy-hover",e.copyHover),o("--ok-button-background",e.okButtonBackground),o("--ok-button-background-hover",e.okButtonBackgroundHover),o("--ok-button-border",e.okButtonBorder),o("--ok-button-text",e.okButtonText),o("--ok-button-active",e.okButtonActive),o("--cancel-button-background",e.cancelButtonBackground),o("--cancel-button-background-hover",e.cancelButtonBackgroundHover),o("--cancel-button-border",e.cancelButtonBorder),o("--cancel-button-text",e.cancelButtonText),o("--cancel-button-active",e.cancelButtonActive)};class Kt{color;pane;constructor(t){this.color=new A(0),this.pane=f(t)("simple-pane"),[...Array(154).keys()].map(o=>o<=139?o:(o-140)*10+9.9).sort((o,r)=>o-r).forEach(o=>{const[r,n,a]=o%10===0?[0,0,0]:Math.floor(o)!==o?[255,255,255]:rt(o),h=`rgb(${r}, ${n}, ${a})`,u=o-Math.floor(o/10)*10<4;let i=t.createElement("div");i.classList.add("swatch-color"),i.classList.add(u?"dark":"light"),h==="rgb(255, 255, 255)"&&i.classList.add("white"),i.style.cssText=`background-color: ${h}; border-color: ${h};`,i.onclick=()=>{this.color=new A(o),x(this.pane)(".output-field").value=this.color.toNLWord().toText(),Array.from(this.pane.querySelectorAll(".swatch-color.selected")).forEach(c=>c.classList.remove("selected")),i.classList.add("selected")},i.dataset.color_num=(o*10).toString(),B(this.pane.querySelector(".swatches")).append(i)}),this.setColor(0)}getNLNumberValue(){return this.color.number}getOutputValue(t){if(t){const e=x(this.pane)(".output-field").value;return!e.includes(" ")?e:`(${e})`}else return this.getNLNumberValue().toString()}setColor(t){const e=Math.round(t*10),o=y(this.pane)(".swatch-color");o.slice(1).reduce((n,a)=>{const h=Math.abs(e-parseInt(B(n.dataset.color_num)));return Math.abs(e-parseInt(B(a.dataset.color_num)))<h?a:n},B(o[0])).click()}}const{NLNumber:X,NLWord:zt,RGBA:lt}=b,E="simple-tab",I="advanced-tab";var dt=!1;const Z=(s,t)=>{f(document)(s).addEventListener("click",e=>{const o=x(document)("#tab-strip .tab-button.selected").id;if(dt&&s!==o)switch(s){case E:{if(o===I){const r=window.advanced.getNLNumberValue();window.simple.setColor(r)}else throw new Error(`But what non-simple tab is '${o}'?`);break}case I:{if(o===E){const r=window.simple.getNLNumberValue(),n=new A(r);window.advanced.setRepr(n)}else throw new Error(`But what non-advanced tab is '${o}'?`);break}default:throw new Error(`Which tab is this?  ${s}`)}y(document)("#tab-strip .tab-button").forEach(r=>r.classList.remove("selected")),e.target.classList.add("selected"),y(document)("#content-pane .pane").forEach(r=>r.classList.add("hidden")),f(document)(t).classList.remove("hidden")})},Jt=s=>{const t=f(s)("outputs-template").content;Array.from(y(s)(".outputs-placeholder")).forEach(e=>{const o=t.cloneNode(!0);B(e.parentNode).replaceChild(o,e)})};window.addEventListener("load",()=>{const s=navigator.platform;(s==="MacIntel"||s.startsWith("iPad")||s.startsWith("iPhone"))&&document.body.classList.add("apple2025"),window.nlBabyMonitor={onPick:t=>{},onCopy:t=>{navigator.clipboard.writeText(t)},onCancel:()=>{}},Z(E,"simple-pane"),Z(I,"advanced-pane"),Jt(document),window.simple=new Kt(document),window.advanced=new T(document,new Set([])),f(document)("pick-button").addEventListener("click",t=>{window.nlBabyMonitor.onPick(tt(!1))}),f(document)("cancel-button").addEventListener("click",t=>{window.nlBabyMonitor.onCancel()}),Array.from(y(document)(".copy-button")).forEach(t=>{var e=!1;t.addEventListener("click",()=>{e||(t.classList.add("on-cooldown"),e=!0,setTimeout(()=>{t.classList.remove("on-cooldown"),e=!1},1200),window.nlBabyMonitor.onCopy(tt(!0)))})}),window.syncTheme({}),dt=!0});window.injectCSS=s=>{const t=document.createElement("style");t.textContent=s,document.head.append(t)};window.useNumberOnlyPicker=()=>{window.advanced=new T(document,new Set([X]))};window.useNonPickPicker=()=>{f(document)("pick-button").classList.add("hidden"),window.advanced=new T(document,new Set([X,zt,lt]))};window.useNumAndRGBAPicker=()=>{window.advanced=new T(document,new Set([X,lt]))};window.setValue=(s,t)=>{let e;if(s==="number")e=new A(t);else if(s==="rgb"){const{red:o,green:r,blue:n}=t;e=new C(o,r,n)}else if(s==="rgba"){const{red:o,green:r,blue:n,alpha:a}=t;e=new k(o,r,n,a)}else throw new Error(`Unknown value type: ${t}`);window.simple.setColor(e.toNLNumber().number),window.advanced.setRepr(e)};window.switchToAdvPicker=()=>{B(document.getElementById(I)).click()};window.syncTheme=s=>{jt(s,document.body)};const tt=s=>{const t=x(document)("#tab-strip .tab-button.selected");switch(t.id){case E:return window.simple.getOutputValue(s);case I:return window.advanced.getOutputValue(s);default:throw new Error(`Unknown picker type tab ID: ${t.id}`)}};</script>
+    <style rel="stylesheet" crossorigin>*{font-family:Segoe UI,Open Sans,sans-serif;font-size:12px}body{background:var(--dialog-background);padding:.75rem 0}body.dragging,body.dragging *{cursor:grabbing;user-select:none;-webkit-user-select:none}.flex.column.x-mid{align-items:center}.flex.row.x-mid,.flex.column.y-mid{justify-content:center}.flex.row.y-mid{align-items:center}.flex{display:flex}.flex.column{flex-direction:column}.flex.row{flex-direction:row}#content-pane{height:38rem;width:70%}.checkmark{display:inline-block;height:2.5rem;width:2.6rem;-webkit-transform:rotate(45deg);transform:rotate(45deg)}.checkmark:before,.checkmark:after{background-color:#3eb84f;content:"";position:absolute}.checkmark:before{left:16px;top:5px;height:18px;width:2px}.checkmark:after{left:9px;top:21px;height:2px;width:8px}.copy-button{border-radius:.5rem;min-height:100%}.copy-button:not(.on-cooldown):hover{background-color:var(--copy-hover)}.copy-button.on-cooldown .inner{display:none}.copy-button:not(.on-cooldown) .checkmark{display:none}.copy-button .inner{padding:0;position:relative;height:1.7rem;width:2.6rem}.copy-button-layer{background-color:var(--dialog-background);border-color:var(--dialog-text);border-style:solid;border-radius:.2rem;border-width:.15rem;height:68%;width:34%;position:absolute}.copy-button-layer.back{left:21%;bottom:0}.copy-button-layer.front{right:21%;top:0;z-index:1}.form-buttons .main-buttons{gap:.8rem}.apple2025 .form-buttons .main-buttons .ok{order:10}.form-button{border-style:solid;border-width:1px;border-radius:.5rem;min-width:5rem;padding:.313rem 1rem}.form-button.ok{background:var(--ok-button-background);border-color:var(--ok-button-border);color:var(--ok-button-text)}.form-button.ok:hover{background:var(--ok-button-background-hover)}.form-button.ok:active{background:var(--ok-button-active)}.form-button.cancel{background:var(--cancel-button-background);border-color:var(--cancel-button-border);color:var(--cancel-button-text)}.form-button.cancel:hover{background:var(--cancel-button-background-hover)}.form-button.cancel:active{background:var(--cancel-button-active)}.hidden{display:none!important}.invis{visibility:hidden!important}.main-outputs{gap:.3rem;margin:1.5rem 0}.output-field{background-color:var(--output-background);border-color:var(--generic-border);border-radius:.5rem;border-style:solid;border-width:1px;color:var(--tab-text-selected);font-size:1.2rem;line-height:2rem;padding:.2rem .4rem;text-align:center;width:12rem}.tab-button{background-color:var(--tab-background);border-color:var(--tab-border);border-style:solid;border-width:1px;color:var(--tab-text);cursor:default;height:2rem;line-height:2rem;margin:.2rem 0;min-width:10rem;padding:.2rem .7rem;text-align:center;user-select:none;-webkit-user-select:none}.tab-button:first-child{border-radius:.6rem 0 0 .6rem}.tab-button:last-child{border-radius:0 .6rem .6rem 0}.tab-button:not(:first-child){margin-left:-1px}.tab-button:hover{background-color:var(--tab-background-hover)}.tab-button.selected{background-color:var(--tab-background-selected);color:var(--tab-text-selected)}.tab-strip{margin-bottom:1.5rem;position:relative}.simple .swatches{border-color:var(--generic-border);border-style:solid;border-radius:.35rem;border-width:2px;display:grid;grid-template-columns:repeat(11,1fr);padding:5px;height:30rem;width:30rem}.swatch-color{border:2px solid black;transition:transform .07s}.swatch-color.white:hover{opacity:.8}.swatch-color:hover{transform:scale(1.2);z-index:10}.swatch-color.selected.light{border-color:#000!important}.swatch-color.selected.dark{border-color:#fff!important}:root{--checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=)}.advanced.pane{width:100%}.alpha-warning{box-shadow:#ff8200cc 0 0 1px 1px,#ff820066 0 0 3px 3px}.form-label{color:var(--dialog-text);user-select:none;-webkit-user-select:none}.input-bar{position:relative;width:1rem}.numeric-controls{gap:1.75rem;padding:1rem 1rem 12px}.numeric-controls select,.numeric-controls input{border-color:var(--generic-border);border-style:solid;border-width:1px;padding:4px 7px}.picker.pane{background:#fff;border-radius:2px;box-shadow:#0000004d 0 0 2px,#0000004d 0 4px 8px;box-sizing:initial;width:28.125rem}.preview-background{background-image:var(--checkerboard);background-position-x:left;background-position-y:center;inset:0}.preview-container{width:4rem}.preview-color.cell{aspect-ratio:1 / 2;flex-grow:1}.preview-color.cell.opaque{border-radius:.5rem 0 0 .5rem}.preview-color.cell.wrapper{border-radius:0 .5rem .5rem 0;position:relative;overflow:hidden}.preview-color.wrapper .layer{flex-grow:1}.preview-color.wrapper .layer.front{z-index:2}.preview-color.wrapper .layer.back{position:absolute}.repr-controls{display:none}.repr-controls-container{width:100%}.repr-controls-wrapper{margin-top:4px}.repr-dropdown-label{color:var(--dialog-text)}.repr-input{text-align:right;background:var(--control-background);border:1px solid var(--control-border);border-radius:4px;color:var(--control-text);padding:3px 6px}.repr-input:hover{background:var(--control-background-hover)}.repr-input.solo,.repr-pair{flex-grow:1}.results-row{gap:1.5rem}.dropdown{appearance:none;background:var(--control-background);border:1px solid var(--control-border);border-radius:4px;color:var(--control-text);padding:3px}.dropdown:hover,.dropdown-arrow:hover+.dropdown{background:var(--control-background-hover)}.dropdown-arrow{height:0;width:0;position:relative}.dropdown-arrow-inner{border-color:var(--dropdown-arrow);border-bottom:1px solid;border-right:1px solid;height:9px;width:9px;transform:rotate(45deg);position:absolute;right:-243px;bottom:-18px}.labeled-input{margin-top:4px}.slider-background{inset:0;position:absolute}.slider-background.checkerboard{background-image:var(--checkerboard);background-position-x:left;background-position-y:center}.slider-background.hue{background:linear-gradient(to top,red,#ff0 17%,#0f0 33%,#0ff,#00f 67%,#f0f 83%,red)}.slider-knob{position:absolute}.slider-knob-circle{background-color:#f8f8f8;border-radius:.5rem;box-shadow:#000000bf 0 1px 4px;height:1.1rem;pointer-events:none;transform:translate(-.05rem,.35rem);width:1.1rem}.slider-track{cursor:grab;height:100%;margin:3px 0;position:relative}.sliders-container{padding:.7rem .5rem}.sliders{flex-grow:1;gap:.4rem}.pointer{position:absolute;pointer-events:none}.pointer-circle{border-radius:.375rem;box-shadow:inset #000 0 0 0 1px,#fff 0 0 2px 1px;height:.75rem;transform:translate(-.375rem,-.375rem);width:.75rem}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{margin-left:4px}.output-controls-container{gap:.375rem}.swatch-container{cursor:grab;flex-grow:1;min-width:30rem;overflow:hidden;padding-bottom:55%;position:relative}.swatch-gradient{inset:0;position:absolute}.swatch-gradient.black{background:linear-gradient(to top,#000,#0000)}.swatch-gradient.white{background:linear-gradient(to right,#fff,#fff0)}.wysiwyg-controls{align-items:stretch;border-color:var(--generic-border);border-style:solid;border-radius:.35rem;border-width:2px;flex-grow:1;gap:.5rem;padding:1rem}</style>
+  </head>
+
+  <body class="flex column x-mid">
+    <div id="main" class="flex column x-mid">
+
+      <div id="tab-strip" class="tab-strip flex row">
+        <div id="simple-tab"   class="simple   tab-button selected">Simple</div>
+        <div id="advanced-tab" class="advanced tab-button">Advanced</div>
+      </div>
+
+      <div id="content-pane" class="flex column y-mid">
+
+        <div id="simple-pane" class="simple pane flex column x-mid">
+          <div id="simple-swatch-container" class="swatches flex column"></div>
+          <div class="outputs-placeholder"></div> <!-- See 'outputs-template' -->
+        </div>
+
+        <div id="advanced-pane" class="advanced pane flex row x-mid hidden">
+
+          <div class="wysiwyg-controls flex row">
+
+            <div class="sliders-container flex row">
+
+              <div class="sliders flex row">
+
+                <div class="input-bar">
+                  <div class="slider-background hue">
+                    <div id="hue-slider" class="slider-track">
+                      <div id="hue-knob" class="slider-knob" style="bottom: 41.6667%;">
+                        <div id="hue-knob-circle" class="slider-knob-circle"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="alpha-wrapper" class="input-bar">
+                  <div class="slider-background checkerboard">
+                    <div class="slider-background alpha">
+                      <div id="alpha-slider" class="slider-track">
+                        <div id="alpha-knob" class="slider-knob" style="bottom: 100%;">
+                          <div id="alpha-knob-circle" class="slider-knob-circle"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div id="swatch-container" class="swatch-container">
+              <div id="swatch-gradient" class="swatch-gradient" style="background: rgb(0, 255, 128);">
+                <div class="swatch-gradient white">
+                  <div class="swatch-gradient black"></div>
+                  <div id="swatch-pointer" class="pointer" style="left: 66.6667%; top: 70%;">
+                    <div id="swatch-pointer-circle" class="pointer-circle"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="numeric-controls flex column y-mid">
+
+            <div>
+
+              <label class="repr-dropdown-label flex column form-label">
+                Input Format
+                <div class="dropdown-arrow">
+                  <div class="dropdown-arrow-inner"></div>
+                </div>
+                <select id="repr-dropdown" class="dropdown labeled-input">
+                  <option class="dropdown-option" value="nl-number">NetLogo number</option>
+                  <option class="dropdown-option" value="nl-word">NetLogo word</option>
+                  <option class="dropdown-option" value="rgb">RGB</option>
+                  <option class="dropdown-option" value="rgba">RGBA</option>
+                  <option class="dropdown-option" value="hsb">HSB</option>
+                  <option class="dropdown-option" value="hsba">HSBA</option>
+                  <option class="dropdown-option" value="hsl">HSL</option>
+                  <option class="dropdown-option" value="hsla">HSLA</option>
+                  <option class="dropdown-option" value="hex">Hexadecimal</option>
+                </select>
+              </label>
+
+              <div class="repr-controls-wrapper flex row y-mid">
+
+                <div class="repr-controls-container">
+
+                  <div id="netlogo-number-controls" class="repr-controls row">
+                    <input id="netlogo-number" class="repr-input solo" type="number" min="0" max="140" step="0.1" />
+                  </div>
+
+                  <div id="netlogo-word-controls" class="repr-controls row">
+                    <input id="netlogo-word" class="repr-input solo" type="text" />
+                  </div>
+
+                  <div id="hsb-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsb-h" type="number" class="repr-input" min="0" max="360" />
+                      <label for="hsb-h" class="form-label" title="Hue">Hue (°)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsb-s" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsb-s" class="form-label" title="Saturation">Sat. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsb-b" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsb-b" class="form-label" title="Brightness">Bright. (%)</label>
+                    </div>
+                  </div>
+
+                  <div id="hsba-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsba-h" type="number" class="repr-input" min="0" max="360" />
+                      <label for="hsba-h" class="form-label" title="Hue">Hue (°)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsba-s" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsba-s" class="form-label" title="Saturation">Sat. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsba-b" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsba-b" class="form-label" title="Brightness">Bright. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsba-a" class="repr-input" type="number" min="0" max="100" />
+                      <label for="hsba-a" class="form-label" title="Alpha">Alpha (%)</label>
+                    </div>
+                  </div>
+
+                  <div id="hsl-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsl-h" type="number" class="repr-input" min="0" max="360" />
+                      <label for="hsl-h" class="form-label" title="Hue">Hue (°)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsl-s" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsl-s" class="form-label" title="Saturation">Sat. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsl-l" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsl-l" class="form-label" title="Lightness">Light. (%)</label>
+                    </div>
+                  </div>
+
+                  <div id="hsla-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsla-h" type="number" class="repr-input" min="0" max="360" />
+                      <label for="hsla-h" class="form-label" title="Hue">Hue (°)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsla-s" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsla-s" class="form-label" title="Saturation">Sat. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsla-l" type="number" class="repr-input" min="0" max="100" />
+                      <label for="hsla-l" class="form-label" title="Lightness">Light. (%)</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="hsla-a" class="repr-input" type="number" min="0" max="100" />
+                      <label for="hsla-a" class="form-label" title="Alpha">Alpha (%)</label>
+                    </div>
+                  </div>
+
+                  <div id="rgb-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgb-r" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgb-r" class="form-label" title="Red">Red</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgb-g" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgb-g" class="form-label" title="Green">Green</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgb-b" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgb-b" class="form-label" title="Blue">Blue</label>
+                    </div>
+                  </div>
+
+                  <div id="rgba-controls" class="repr-controls row">
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgba-r" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgba-r" class="form-label" title="Red">Red</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgba-g" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgba-g" class="form-label" title="Green">Green</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgba-b" class="repr-input" type="number" min="0" max="255" />
+                      <label for="rgba-b" class="form-label" title="Blue">Blue</label>
+                    </div>
+                    <div class="repr-pair flex column x-mid">
+                      <input id="rgba-a" class="repr-input" type="number" min="0" max="100" />
+                      <label for="rgba-a" class="form-label" title="Alpha">Alpha (%)</label>
+                    </div>
+                  </div>
+
+                  <div id="hex-controls" class="repr-controls row">
+                    <input id="hex" class="repr-input solo" type="text" />
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="output-controls-container flex column">
+              <label class="repr-dropdown-label flex column form-label">
+                NetLogo Output Format
+                <div class="dropdown-arrow">
+                  <div class="dropdown-arrow-inner"></div>
+                </div>
+                <select id="output-format-dropdown" class="dropdown labeled-input">
+                  <option class="dropdown-option" value="nl-number" disabled selected>NetLogo number</option>
+                  <option class="dropdown-option" value="nl-word" disabled>NetLogo word</option>
+                  <option class="dropdown-option" value="rgba" disabled>RGBA</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="results-row flex row">
+
+              <div class="preview-container flex row y-mid">
+                <div id="preview-color-opaque" class="preview-color cell opaque" style="background: rgb(25, 77, 51);"></div>
+                <div id="preview-color-alpha-wrapper" class="preview-color cell wrapper flex row">
+                  <div id="preview-color-transparent" class="preview-color transparent layer front" style="background: rgb(25, 77, 51);"></div>
+                  <div class="preview-background layer back"></div>
+                </div>
+              </div>
+
+              <div class="outputs-placeholder"></div> <!-- See 'outputs-template' -->
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-buttons flex row x-mid">
+        <div class="main-buttons flex row">
+          <input type="button" id=  "pick-button" class="form-button ok"     value="OK"     />
+          <input type="button" id="cancel-button" class="form-button cancel" value="Cancel" />
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+
+  <template id="outputs-template">
+    <div class="main-outputs flex row">
+      <output class="output-field flex row x-mid y-mid"></output>
+      <div class="copy-button flex row y-mid">
+        <div class="inner">
+          <div class="copy-button-layer front"></div>
+          <div class="copy-button-layer back"></div>
+        </div>
+        <div class="checkmark"></div>
+      </div>
+    </div>
+  </template>
+
+</html>
