@@ -360,10 +360,15 @@ class SessionLite
     exportName = @promptFilename('.html')
     if exportName?
       exportHtmlEx = (htmlString) =>
+        parser = new DOMParser()
+        dom = parser.parseFromString(htmlString, 'text/html')
+
+        dataElements = document.querySelectorAll('data')
+        for element in dataElements
+          dom.body.appendChild(element)
+
         nlogo = @getNlogo()
         if nlogo.success
-          parser = new DOMParser()
-          dom = parser.parseFromString(htmlString, 'text/html')
           nlogoScript = dom.querySelector('#nlogo-code')
           nlogoScript.textContent = nlogo.result
           nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogox')
@@ -376,6 +381,7 @@ class SessionLite
         else
           @widgetController.reportError('compiler', 'export-html', nlogo.result)
 
+      await @widgetController.onBeforeExportHTML()
       if ['https:', 'http:'].includes(window.location.protocol)
         req = new XMLHttpRequest()
         req.open('GET', window.standaloneURL)
