@@ -75,7 +75,7 @@ RactiveColorPicker = Ractive.extend({
     "key-press": (event) ->
       if event.original.key is "Escape"
         event.original.preventDefault()
-        event.original.stopPropagation()  
+        event.original.stopPropagation()
         @fire('cancel')
         return false
       return true
