@@ -363,10 +363,8 @@ class SessionLite
         parser = new DOMParser()
         dom = parser.parseFromString(htmlString, 'text/html')
 
-        dataElements = document.querySelectorAll('data')
-        for element in dataElements
-          dom.body.appendChild(element)
-
+        await @widgetController.onBeforeExportHTMLDocument(dom)
+        
         nlogo = @getNlogo()
         if nlogo.success
           nlogoScript = dom.querySelector('#nlogo-code')
@@ -381,7 +379,7 @@ class SessionLite
         else
           @widgetController.reportError('compiler', 'export-html', nlogo.result)
 
-      await @widgetController.onBeforeExportHTML()
+      await @widgetController.onBeforeExportHTMLFetch()
       if ['https:', 'http:'].includes(window.location.protocol)
         req = new XMLHttpRequest()
         req.open('GET', window.standaloneURL)

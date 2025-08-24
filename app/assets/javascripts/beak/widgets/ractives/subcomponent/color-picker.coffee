@@ -5,6 +5,7 @@ import {
   rgbaArrayToHex,
   netlogoColorToRGB,
 } from "/colors.js"
+import CodeUtils from "../../code-utils.js"
 
 COLOR_PICKER_URL = "../assets/pages/color-picker/index.html"
 COLOR_PICKER_INLINED_URL = "../assets/pages/color-picker/inlined/index.html"
@@ -46,9 +47,8 @@ RactiveColorPicker = Ractive.extend({
         console.warn("RactiveColorPicker: Unknown pickerType '#{@get('pickerType')}', defaulting to 'num'")
         @set('pickerType', 'num')
 
-      htmlDataTag = document.querySelector("data[data-name=#{COLOR_PICKER_INLINED_DATA_NAME}]")
-      if htmlDataTag
-        htmlString = htmlDataTag.value
+      htmlString = CodeUtils.dataTagStore.retrieve(COLOR_PICKER_INLINED_DATA_NAME)
+      if htmlString
         @set('srcDoc', htmlString)
 
     iframeLoaded: (event) ->
@@ -159,12 +159,7 @@ prepareColorPickerForInline = () ->
   try
     response = await fetch(COLOR_PICKER_INLINED_URL)
     htmlString = await response.text()
-
-    dataTag = document.createElement("data")
-    dataTag.dataset['name'] = COLOR_PICKER_INLINED_DATA_NAME
-    dataTag.value = htmlString
-
-    document.body.appendChild(dataTag)
+    CodeUtils.dataTagStore.upsert(COLOR_PICKER_INLINED_DATA_NAME, htmlString)
   catch e
     throw new Error("Failed to prepare RactiveColorPicker for inlining: #{e}")
 
