@@ -68,7 +68,7 @@ RactiveColorInput = Ractive.extend({
         typ: "number",
         value
       }
-      
+
     hexColor: ->
       netlogoColor = @get('value')
       if typeof netlogoColor is 'number'
@@ -83,12 +83,11 @@ RactiveColorInput = Ractive.extend({
         @get('class')
       ].filter((x) -> x).join(' ')
   }
-  
 
   template:
     """
     <input id="{{id}}" class="{{class}}" name="{{name}}" style="{{style}}" type="color"
-           {{# !isEnabled }}disabled{{/}} value="{{hexColor}}"
+           {{# !isEnabled }}disabled{{/}} value="{{hexColor}}" twoway="false"
            on-click="['click']" />
     {{#isModalOpen}}
     <colorPicker id="{{id}}-color-picker"
