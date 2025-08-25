@@ -1,4 +1,4 @@
-import RactiveModal, { TrafficLight } from './modal.js'
+import RactiveModal from './modal.js'
 import RactiveAsyncLoader from './async-loader.js'
 import {
   hexStringToNetlogoColor,
@@ -29,13 +29,6 @@ RactiveColorPicker = Ractive.extend({
 
   messageChannel: undefined,  # MessageChannel
   innerBabyMonitor: undefined, # Port1 of MessageChannel
-  trafficLights: [
-    new TrafficLight({
-      id: "color-picker-close"
-      , color: "#ff5f57"
-      , title: "Close (Esc)"
-    })
-  ]
 
   on: {
     init: ->
@@ -66,19 +59,6 @@ RactiveColorPicker = Ractive.extend({
         @set('iframeLoaded', true)
 
         return
-
-    "traffic-light-click": (event, light, index) ->
-      if light?.id is "color-picker-close"
-        @fire('cancel')
-      return
-
-    "key-press": (event) ->
-      if event.original.key is "Escape"
-        event.original.preventDefault()
-        event.original.stopPropagation()
-        @fire('cancel')
-        return false
-      return true
   },
 
   computed: {
@@ -141,9 +121,7 @@ RactiveColorPicker = Ractive.extend({
     throw new Error("Invalid color format")
 
   template: """
-  <modal id="{{modalId}}" title="Color Picker"
-         trafficLights="{{@this.trafficLights}}"
-         on-keypress="['key-press']">
+  <modal id="{{modalId}}" title="Color Picker">
     <asyncLoader loading="{{!iframeLoaded}}">
         <iframe id="{{id}}" style="width: 100%; height: 100%;"
                 src="{{url}}"
