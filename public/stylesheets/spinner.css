@@ -15,7 +15,7 @@
   position: absolute;
 }
 
-#spinner {
+.spinner {
   height: 50px;
   width:  50px;
   transform-origin: 60% 60%;
