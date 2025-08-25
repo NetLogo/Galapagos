@@ -4,10 +4,10 @@
  @font-face {
   font-family: 'Open Sans';
   src: url('../fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf') format('truetype');
-  font-weight: 100 900;  
-  font-stretch: 75% 125%; 
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
   font-style: normal;
-  font-display: swap; 
+  font-display: swap;
 }
 
 @font-face {
@@ -20,7 +20,7 @@
 }
 
 :root {
-  --color-dark-blue: #0072f5; 
+  --color-dark-blue: #0072f5;
   --color-widget-button: var(--color-dark-blue);
   --color-widget-button-active: #003473;
   --color-widget-button-text: #ffffff;
@@ -40,7 +40,7 @@
 
   --color-widget-switch-primary: var(--color-dark-blue);
   --color-widget-switch-off: #d5d5d5;
-  
+
 
   --widget-padding-x: 0.5rem;
   --widget-padding-y: 0.3rem;
@@ -110,15 +110,6 @@
   border-radius: 3px;
 }
 
-/* Utilities */
-.spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
 /* Color input */
 .netlogo-color-input {
   padding: 0.2rem;
@@ -139,7 +130,7 @@
   background-color: #ccc;
 }
 
-.netlogo-color-input > * { 
+.netlogo-color-input > * {
   box-sizing: border-box;
 }
 
@@ -151,7 +142,7 @@
   aspect-ratio: 1 / 1;
 
   gap: 0;
-  
+
   background-image: var(--checkerboard);
   background-position-x: left;
   background-position-y: center;
