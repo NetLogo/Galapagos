@@ -9,6 +9,7 @@ RactiveAsyncLoader = Ractive.extend({
   partials: {
     # The SVGs are just a hardcopy of what the spinner view spits out into the simulation/other pages.  -Jeremy B August
     # 2025
+    # coffeelint: disable=max_line_length
     loadingBar: """
       <div style="display: flex; align-items: center; justify-content: center; position: fixed; background: #999; width: 100%; height: 100%;">
 
@@ -57,6 +58,7 @@ RactiveAsyncLoader = Ractive.extend({
       </div>
       </div>
       """
+      # coffeelint: enable=max_line_length
 
     errorMessage: """
       <div class="async-loader-error">
