@@ -31,7 +31,7 @@ RactiveColorPicker = Ractive.extend({
   innerBabyMonitor: undefined, # Port1 of MessageChannel
 
   on: {
-    init: ->
+    'init': ->
       @messageChannel = new MessageChannel
       @innerBabyMonitor = @messageChannel.port1
       @innerBabyMonitor.onmessage = @onColorPickerEvent.bind(this)
@@ -44,7 +44,7 @@ RactiveColorPicker = Ractive.extend({
       if htmlString
         @set('srcDoc', htmlString)
 
-    iframeLoaded: (event) ->
+    'iframe-loaded': (event) ->
         iframe = event.node
 
         iframe.contentWindow.postMessage({
@@ -126,7 +126,7 @@ RactiveColorPicker = Ractive.extend({
         <iframe id="{{id}}" style="width: 100%; height: 100%;"
                 src="{{url}}"
                 {{#if srcDoc}} srcDoc="{{srcDoc}}" {{/if}}
-                frameborder="0" on-load="iframeLoaded">
+                frameborder="0" on-load="iframe-loaded">
         </iframe>
     </asyncLoader>
   </modal>
