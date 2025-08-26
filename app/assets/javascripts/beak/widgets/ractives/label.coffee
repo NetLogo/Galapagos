@@ -44,8 +44,8 @@ LabelEditForm = EditForm.extend({
     init: ->
       # A hack (because two-way binding isn't fully properly disabling?!)
       # --Jason B. (4/11/18)
-      @set('_backgroundLight', @get('backgroundLight'))
-      @set('_textColorLight',  @get('textColorLight'))
+      @set('_backgroundLight', @get('backgroundLight') or 0x00000000)
+      @set('_textColorLight',  @get('textColorLight') or 0xFF000000)
       return
   }
 
