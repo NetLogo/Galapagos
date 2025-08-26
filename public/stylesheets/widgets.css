@@ -994,7 +994,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 
   overflow: hidden;
 
-  border: solid 1px #e8e8e8;
+  border: solid 1px #d1d1d1;
 
   transition: opacity 0.2s ease-in-out;
 
