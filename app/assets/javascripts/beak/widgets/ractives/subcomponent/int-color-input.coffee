@@ -54,7 +54,7 @@ RactiveIntColorInput = Ractive.extend({
 
       @set('isModalOpen', false)
       return
-    
+
     "color-picker-cancel": (event) ->
       @set('isModalOpen', false)
       return false
@@ -68,7 +68,7 @@ RactiveIntColorInput = Ractive.extend({
         rgbaArrayToHex(rgba.slice(0, 3))
       else
         "#000000"
-    
+
     alpha: ->
       argbInt = @get('value')
       if typeof argbInt is 'number' and @get('useAlpha')

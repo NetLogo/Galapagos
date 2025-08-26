@@ -72,7 +72,7 @@ RactiveCustomSlider = Ractive.extend({
     # CSS, the bounding box changes but the node's offsetWidth/Height
     # do not. -Omar I. Aug 14, 2025
     return node.offsetWidth
-    
+
   getSliderStart: (node) ->
     rect = node.getBoundingClientRect()
     switch @get('orientation')

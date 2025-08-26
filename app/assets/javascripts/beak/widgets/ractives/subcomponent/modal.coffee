@@ -48,7 +48,7 @@ RactiveModal = Ractive.extend({
         )
 
         @resizeObserver.observe(@find('.netlogo-modal-container'))
-      
+
       return
 
     teardown: ->
@@ -77,7 +77,7 @@ RactiveModal = Ractive.extend({
 
           modalCls.set('lastClientX', event.clientX)
           modalCls.set('lastClientY', event.clientY)
-      
+
       stop = () ->
         modalCls.set('isDragging', false)
         modalCls.set('lastClientX', 0)
@@ -97,7 +97,7 @@ RactiveModal = Ractive.extend({
 
 
       return
-    
+
     "mouse-down": (event) ->
       @set('isMouseDown', true)
       return
@@ -110,7 +110,7 @@ RactiveModal = Ractive.extend({
   computed: {
     top: ->
       "calc(50% + #{@get('posY')}px)"
-    
+
     left: ->
       "calc(50% + #{@get('posX')}px)"
 
