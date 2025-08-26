@@ -16,7 +16,7 @@ defaultOptions = (ractive) ->
   [ ["Button",  "button"]
   , ["Chooser", "chooser"]
   , ["Input",   "inputBox"]
-  , ["Label",   "textBox"]
+  , ["Note",    "textBox"]
   , ["Monitor", "monitor"]
   , ["Output",  "output", false, alreadyHasA('outputWidget')]
   , ["Plot",    "plot"]
