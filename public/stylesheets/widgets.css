@@ -571,6 +571,7 @@ June 2025 */
   display: flex;
   align-items: center;
   padding: var(--widget-padding-y) var(--widget-padding-x);
+  cursor: pointer;
 }
 
 .netlogo-switcher > .netlogo-label {
@@ -586,8 +587,7 @@ June 2025 */
   width: var(--knob-size);
   min-width: var(--knob-size);
 
-  position:relative;
-  cursor: pointer;
+  position: relative;
 }
 
 input[type=checkbox]:checked ~ .netlogo-switcher-element {
