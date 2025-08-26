@@ -141,6 +141,8 @@ prepareColorPickerForInline = () ->
   catch e
     throw new Error("Failed to prepare RactiveColorPicker for inlining: #{e}")
 
+CodeUtils.speculativeLoading.prefetchDocument(COLOR_PICKER_URL)
+CodeUtils.speculativeLoading.prefetchAsset(COLOR_PICKER_INLINED_URL)
 
 export default RactiveColorPicker
 export {
