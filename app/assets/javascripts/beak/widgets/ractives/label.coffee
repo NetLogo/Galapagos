@@ -75,7 +75,7 @@ LabelEditForm = EditForm.extend({
           <label for="{{id}}-text-color" class="widget-edit-input-label">Text color</label>
           <colorInput
             id="{{id}}-text-color" name="color" class="widget-edit-text widget-edit-input widget-edit-color-pick"
-            value="{{_textColorLight}}" useAlpha="false" />
+            value="{{_textColorLight}}" useAlpha="true" />
         </div>
         <div class="flex-row" style="align-items: center; width: 100%; justify-content: space-between;">
           <label for="{{id}}-background-color" class="widget-edit-input-label">Background color</label>
