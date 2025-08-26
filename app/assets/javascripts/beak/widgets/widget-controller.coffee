@@ -499,7 +499,7 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
     when "chooser" , "hnwChooser"  then { height:  60, width: 250, choices: [], currentChoice: -1, variable: "" }
     when "monitor" , "hnwMonitor"  then { height:  60, width: 100, fontSize: 11, precision: 17 }
     when "plot"    , "hnwPlot"     then { height: 175, width: 230, autoPlotX: true, autoPlotY: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }
-    when "textBox" , "hnwTextBox"  then { height:  60, width: 180, color: 0, display: "", fontSize: 12, transparent: true }
+    when "textBox" , "hnwTextBox"  then { height:  60, width: 180, backgroundLight: 0, textColorLight: -16777216, display: "", fontSize: 12, markdown: false }
     else throw new Error("Huh?  What kind of widget is a #{widgetType}?")
 # coffeelint: enable=max_line_length
 
