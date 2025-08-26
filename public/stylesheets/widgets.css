@@ -598,6 +598,14 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element {
   background-color: var(--color-widget-switch-off);
 }
 
+.netlogo-switcher:hover > input[type=checkbox]:checked ~ .netlogo-switcher-element {
+  background-color: var(--color-widget-switch-primary-hover);
+}
+
+.netlogo-switcher:hover > input[type=checkbox]:not(checked) ~ .netlogo-switcher-element {
+  background-color: var(--color-widget-switch-off-hover);
+}
+
 .netlogo-switcher-element > .netlogo-switcher-element-knob {
   height: var(--knob-size);
   width: var(--knob-size);
