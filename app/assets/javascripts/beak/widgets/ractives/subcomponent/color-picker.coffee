@@ -30,13 +30,14 @@ RactiveColorPicker = Ractive.extend({
   messageChannel: undefined,  # MessageChannel
   innerBabyMonitor: undefined, # Port1 of MessageChannel
 
-  onkeydown: (event) ->
+  onkeyup: (event) ->
     if event.key is 'Escape'
       event.stopPropagation()
       event.preventDefault()
       @fire('cancel')
       return false
     return
+  onkeyupBound: undefined
 
   on: {
     'init': ->
@@ -52,11 +53,12 @@ RactiveColorPicker = Ractive.extend({
       if htmlString
         @set('srcDoc', htmlString)
 
-      window.addEventListener('keydown', @onkeydown.bind(this), true)
+      @onkeyupBound = @onkeyup.bind(this)
+      window.addEventListener('keyup', @onkeyupBound, true)
       return
 
     'teardown': ->
-      window.removeEventListener('keydown', @onkeydown.bind(this), true)
+      window.removeEventListener('keyup', @onkeyupBound, true)
       if @innerBabyMonitor
         @innerBabyMonitor.close()
         @innerBabyMonitor = undefined
