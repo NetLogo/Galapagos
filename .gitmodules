@@ -1,3 +1,7 @@
 [submodule "public/nt-modelslib"]
-	path = public/nt-modelslib
-	url = https://github.com/NetLogo/nettango-models.git
+  path = public/nt-modelslib
+  url = https://github.com/NetLogo/nettango-models.git
+[submodule "public/pages/color-picker"]
+  path = public/pages/color-picker
+  url = https://github.com/NetLogo/ColorPicker.git
+  branch = build
