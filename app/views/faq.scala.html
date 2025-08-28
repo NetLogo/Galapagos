@@ -161,7 +161,7 @@
 
   <p>If you are interested in saving the model for use in the desktop
     version of NetLogo, the "Export: NetLogo" button can be used to do
-    so.  This will generate a traditional ".nlogo" file that has a name
+    so.  This will generate a traditional <code>.nlogox</code> file that has a name
     of your choosing, which will be placed in your computer's
     "downloads" directory and can then be opened once again in either
     NetLogo or NetLogo Web.</p>
@@ -180,14 +180,14 @@
     are still a couple of options that we can suggest, based on what kind of
     files you would like hosted.</p>
 
-  <p>If you're just looking to host <code>.nlogo</code> files, you can use
+  <p>If you're just looking to host <code>.nlogox</code> files, you can use
     <a href="https://www.dropbox.com/help/16">Dropbox</a> or
     <a href="http://www.labnol.org/internet/free-file-hosting-github/29092/">GitHub</a>
     or basically any service that allows linking directly to hosted files.
-    Once your <code>.nlogo</code> file has been hosted somewhere, follow
+    Once your <code>.nlogox</code> file has been hosted somewhere, follow
     <a href="./faq#generate-simple-pages">the page-generation instructions</a>,
     and share the <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-    link, using the <code>.nlogo</code> file URL from your hosting service as
+    link, using the <code>.nlogox</code> file URL from your hosting service as
     the <code><strong>modelURL</strong></code> value.</p>
 
   <p>Another option for linking directly to pages containing NetLogo Web models
@@ -207,11 +207,11 @@
     Advanced users might even be comfortable with simply hosting the HTML files
     for themselves on a public-facing web server.</p>
 
-  <p>That said, hosting a <code>.nlogo</code> file on your own web server is
+  <p>That said, hosting a <code>.nlogox</code> file on your own web server is
     more complicated, though.  To do that, host the file, and make sure that
     your web server allows it to be accessed cross-origin.  To do this, you
     might need to have the server set the <code>Access-Control-Allow-Origin</code>
-    header in the <code>.nlogo</code> file's HTTP response to either <code>*</code>
+    header in the <code>.nlogox</code> file's HTTP response to either <code>*</code>
     or whichever NetLogo Web domain you're using (i.e.
     <code>http://netlogoweb.org</code> or <code>https://netlogoweb.org</code> or
     <code>http://netlogo-web.org</code> or <code>https://netlogo-web.org</code>).
@@ -374,9 +374,9 @@
   <p>The workaround is to use a forever button to run the mouse code instead of one of the looping primitives.  Global
     variables can be used if you need the procedure to remember some information about where the original mouse click
     happened, or the current status of the mouse click action.
-    <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20One%20Example.nlogo" title="Mouse Drag One Example model">
+    <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20One%20Example.nlogox" title="Mouse Drag One Example model">
     The Mouse Drag One Example model</a> shows a basic example dragging a single agent.
-    <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20Multiple%20Example.nlogo" title="Mouse Drag Multiple Example model">
+    <a href="../launch#/assets/modelslib/Code%20Examples/Mouse%20Drag%20Multiple%20Example.nlogox" title="Mouse Drag Multiple Example model">
     The Mouse Drag Multiple Example model</a> shows a more complex scenario using a simple state machine.</p>
 
   <p>Below is some sample code that will increase the size of one of the turtles a user clicks on.  This procedure
