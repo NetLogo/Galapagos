@@ -148,90 +148,144 @@
 
   @linkableHeader("saving", "How can I save models from NetLogo Web?")
 
-  <p>If you would like to save the model that is currently open in NetLogo
-    Web (including any changes that you might have made to it), NetLogo Web
-    offers two different ways of doing so.</p>
+  <p>NetLogo Web offers two different ways to save a currently open model, including any changes you've made to it. You
+    can download a copy of the model to your computer in the standard NetLogo format for safe-keeping. A downloaded
+    NetLogo model can be opened in NetLogo desktop, re-uploaded to NetLogo Web, or <a href="./faq#hotlinking">hotlinked to
+    NetLogo Web for display on a web page</a>. You can also export a full HTML page of the model, which includes
+    everything needed to run the model and post that HTML on your web site host to share with others.</p>
 
-  <p>If you would like to keep your model as a NetLogo Web model and share
-    it with others to view in the browser, you can click the "Export:
-    HTML" button in NetLogo Web to generate a single HTML file of your
-    model.  Like any other HTML file, files generated in this way can then
-    be <a href="./faq#hosting-nlw-files">hosted on a website</a> and viewed
-    in any modern browser.</p>
+  <p>To save your model to your computer in the standard NetLogo format, click the <strong>Export: NetLogo</strong>
+    button. This will generate a <code>.nlogox</code> file that has a name of your choosing, which will be placed in your
+    computer's "Downloads" directory and can then be opened once again in either NetLogo desktop or <a
+    href="./faq#loading">upload to NetLogo Web</a>. You can also <a href="./faq#hotlinking">place the model on a web file
+    host and hotlink it</a> to NetLogo Web so others can use it online.</p>
 
-  <p>If you are interested in saving the model for use in the desktop
-    version of NetLogo, the "Export: NetLogo" button can be used to do
-    so.  This will generate a traditional <code>.nlogox</code> file that has a name
-    of your choosing, which will be placed in your computer's
-    "downloads" directory and can then be opened once again in either
-    NetLogo or NetLogo Web.</p>
+  <p>To save your model as an HTML file that includes everything needed to run the model, click the <strong>Export:
+    HTML</strong> button in NetLogo Web to generate a single HTML file of your model. Like any other HTML file, files
+    generated in this way can then be <a href="./faq#hosting-nlw-files">hosted on a website</a> and viewed in any modern
+    browser.</p>
 
-  <p>With a model downloaded from NetLogo Web, you can use the desktop
-    version of NetLogo, make whatever changes to the model that you
-    would like, save those changes, and then open the new version of
-    the model in NetLogo Web (using "Upload a Model" in NetLogo Web, like before).</p>
+  @linkableHeader("hosting-nlw-files", "What are my options for hosting and sharing NetLogo Web files?")</p>
 
-  @linkableHeader("hosting-nlw-files", "What are my options for hosting NetLogo Web files?")
+  <p>If you want to share you NetLogo model in a way that won't require users to open the model in NetLogo desktop or
+    upload it to NetLogo Web, you will need a website host to store your files and display them. If you already have a
+    website, then you have a website host and can skip the rest of these recommendations. If you don't have a website, one
+    popular option for a simple static website host is <a
+    href="https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site">GitHub
+    Pages</a>. Common website platforms like Wix and SquareSpace should support hosting NetLogo models or static HTML
+    files. There are many other options, and all you need is <a
+    href="https://duckduckgo.com/?t=h_&amp;q=static+website+hosting&amp;ia=web">a simple, static website</a> in order to
+    host NetLogo models. In the future, we're hoping to provide a service just for hosting NetLogo models to make things
+    even simpler.</p>
 
-  <p>Unfortunately, free and simple-to-use hosting services are surprisingly few
-    in number these days.  We realize that this makes things difficult for many
-    of our users, and we definitely plan to provide our own service that makes
-    this easier for people in the future.  For the time being, though, there
-    are still a couple of options that we can suggest, based on what kind of
-    files you would like hosted.</p>
+  <p>Once you have a website host, the next choice you have is to post your models as standard <code>.nlogox</code>
+    files and hotlink them to NetLogo Web, or to post exported HTML files of your models. If you plan to post many models,
+    or expect to make updates to models fairly frequently, hotlinking to NetLogo files will likely be easier as you won't
+    have to re-export new HTML pages each time you make an update. If you are just posting a single model as a one-time
+    thing, then posting the exported HTML page might be simpler. Below are some further benefits to each method.</p>
 
-  <p>If you're just looking to host <code>.nlogox</code> files, you can use
-    <a href="https://www.dropbox.com/help/16">Dropbox</a> or
-    <a href="http://www.labnol.org/internet/free-file-hosting-github/29092/">GitHub</a>
-    or basically any service that allows linking directly to hosted files.
-    Once your <code>.nlogox</code> file has been hosted somewhere, follow
-    <a href="./faq#generate-simple-pages">the page-generation instructions</a>,
-    and share the <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-    link, using the <code>.nlogox</code> file URL from your hosting service as
-    the <code><strong>modelURL</strong></code> value.</p>
+  <p>Benefits to hotlinking your model to netlogoweb.org:</p>
 
-  <p>Another option for linking directly to pages containing NetLogo Web models
-    is to use the <a href="http://modelingcommons.org">Modeling Commons</a>,
-    which is a public space for uploading, sharing, and discussing NetLogo
-    models.  All models uploaded to the Modeling Commons have integration with
-    NetLogo Web through the "Run in NetLogo Web" tab on the model's page.  For
-    any model, if you open that "Run" tab and then copy your browser's current
-    URL, that URL can be used for direct access to the NetLogo Web version of
-    the model.</p>
+  <ul>
+    <li>Network resource usage will be reduced. Every hot-linked model uses the same code from netlogoweb.org, which
+      your web browser can cache and re-use. If you have multiple models on a page, this will greatly reduce the download
+      size of your pages and speed up loading times as models are much smaller than exported HTML files.</li>
+    <li>The update process is simpler. When you update your model where it's posted on your website host, the places you
+      link to it will also be updated. You do not have to re-export and post a new HTML file with each model update.</li>
+    <li>Your model will automatically get bug fixes, performance enhancements, and other improvements that are made to
+      NetLogo Web.</li>
+  </ul>
 
-  <p>If you want to host an HTML standalone model (as generated by following the
-    instructions in <a href="./faq#saving">the section about "Export: HTML"</a>,
-    then your options are more limited.  One option is to
-    <a href="https://pages.github.com/">use GitHub Pages</a>, or some other
-    <a href="https://www.google.com/#q=static+web+host">static web host</a>.
-    Advanced users might even be comfortable with simply hosting the HTML files
-    for themselves on a public-facing web server.</p>
+  <p>If you want to hotlink your model, see <a href="./faq#hotlinking">the hotlinking FAQ entry for more
+    information</a>.</p>
 
-  <p>That said, hosting a <code>.nlogox</code> file on your own web server is
-    more complicated, though.  To do that, host the file, and make sure that
-    your web server allows it to be accessed cross-origin.  To do this, you
-    might need to have the server set the <code>Access-Control-Allow-Origin</code>
-    header in the <code>.nlogox</code> file's HTTP response to either <code>*</code>
-    or whichever NetLogo Web domain you're using (i.e.
-    <code>http://netlogoweb.org</code> or <code>https://netlogoweb.org</code> or
-    <code>http://netlogo-web.org</code> or <code>https://netlogo-web.org</code>).
-    Then, follow the instructions given <a href="./faq#generate-simple-pages">here</a>,
-    and share your model through the <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-    link, using the URL of the model on the web server for the
-    <code><strong>modelURL</strong></code> value.</p>
+  <p>Benefits to using a static HTML export with "Save as NetLogo Web":</p>
+
+  <ul>
+    <li>No network access to another site (netlogoweb.org) is required. The model and code to run it are self-contained.
+      This can be a benefit in an environment where network access is very restriced.</li>
+    <li>You do not have to worry about setting up cross-origin resource sharing (CORS) access from your website host to
+      <code>netlogoweb.org</code>. CORS settings are common and usually easy to change for most website hosts, but if your
+      host is restrictive you may need to use exported HTML files for your models instead. More information on CORS is in
+      <a href="./faq#hotlinking">the hotlinking section of the FAQ</a>.</li>
+  </ul>
+
+  <p>If you want to post the static HTML version of your model, your website host's documentation should include
+    information on how to do so.</p>
+
+  <p>Another option for sharing your model and linking directly to pages containing NetLogo Web models is to use the <a
+    href="https://modelingcommons.org">Modeling Commons</a>, which is a public space for uploading, sharing, and
+    discussing NetLogo models. All models uploaded to the Modeling Commons have integration with NetLogo Web through the
+    <strong>Run in NetLogo Web</strong> tab on the model's page. For any model, if you open that <strong>Run in NetLogo
+    Web</strong> tab and then copy your browser's current URL, that URL can be used for direct access to the NetLogo Web
+    version of the model.</p>
 
   @linkableHeader("generate-simple-pages", "Is there an automatic way to generate a model page every time I create a new version of my model?")
 
-  <p>You can link to <code>//netlogoweb.org/web?<strong>modelURL</strong></code>
-    (where <code><strong>modelURL</strong></code> is the URL of your model).  Every time someone goes to that link (or
-    an iframe is loaded that uses that link as the source URL), the most recent version of your model will be fetched
-    from <code><strong>modelURL</strong></code> and turned into a simple model page.</p>
+  <p>Yes, you can <a href="./faq#hotlinking">hotlink your model to
+    <code>netlogoweb.org</code></a>. As long as you update your model at the location in the link you create, that link
+    will always use the latest version.</p>
 
-  <p>This method requires the ability to make a connection to our website (netlogoweb.org) in order to work, and you
-    must make sure your web server has CORS access for netlogoweb.org correctly setup (see <a
-    href="faq#hosting-nlw-files">hosting NetLogo Web models</a> for more info).  This is different than exported
-    standalone NetLogo Web HTML model pages, which can be hosted entirely on your own server that won't require any CORS
-    configuration.  The exported HTML will also not automatically update every time you change your model.</p>
+  @linkableHeader("hotlinking", "How do I create a runnable link to my model to share or embed on my website (hotlinking)?")</p>
+
+  <p>To generate a runnable link (URL) of your <code>.nlogox</code> model file to share, follow the below steps.  You
+    will need your model posted on a website host accessible to the Internet to use this technique, see <a
+    href="./faq#hosting-nlw-files">the hosting and sharing FAQ entry for more information</a>. The examples given
+    reference GitHub Pages, but any website host should be similar.</p>
+
+  <ul>
+    <li>Get the URL of your model as posted on your website host.
+      <ul><li>For example: <code>https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
+      </li>
+    <li>Create a URL by using <code>https://netlogoweb.org/launch#myModelURL</code>.
+      <ul><li>For example: <code>https://netlogoweb.org/launch#https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
+      </li>
+    <li>Open the link in a web brwoser to test it out, you should see your model load in NetLogo Web and be ready to
+      go.</li>
+  </ul>
+
+  <p>To embed your runnable model in an HTML page on your site, use an <code>iframe</code> element:</p>
+
+  <ul>
+    <li>Get the URL of your model as posted on your website host.
+      <ul><li>For example: <code>https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
+      </li>
+    <li>Create a URL by using <code>https://netlogoweb.org/web?url=myModelURL</code>. Note the use of
+      <code>web?url=myModelURL</code> instead of <code>launch#myModelURL</code>. The <code>/web</code> page loads without
+      the NetLogo Web menus and borders, which is more appropriate for embedding in another site.
+      <ul><li>For example: <code>https://netlogoweb.org/web?url=https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
+      </li>
+    <li>Open the link in a web browser to test it out, you should see your model load in NetLogo Web and be ready to
+      go.</li>
+    <li>On the website page you want to embed your model, add an <code>iframe</code> element with a <code>src=</code> to your model URL.</li>
+  </ul>
+
+  <p>For example, here is what a basic HTML page that embeds the model might look like:</p>
+
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;NetLogo Model Hotlinking Example&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p&gt;NetLogo Model Hotlinking Example&lt;/p&gt;
+    &lt;iframe
+      src=&quot;https://netlogoweb.org/web?url=https://octocat.github.io/MyNetLogoModel.nlogox&quot;
+      width=&quot;600&quot; height=&quot;600&quot;&gt;
+    &lt;/iframe&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+  <h3>Cross-Origin Resource Sharing (CORS)</h3>
+
+  <p>One common issue in hotlinking models is making sure that your website host allows cross-origin resource sharing
+    (CORS) with NetLogo Web. Essentially this is a way for your website host to tell web browser that's it's okay for
+    NetLogo Web to load resources, even though they are different websites. Some website hosts, such as GitHub Pages, are
+    permissive by default and you won't have to make any changes to get them to work. If your website host is not
+    permissive by default, you might need to have your host set the <code>Access-Control-Allow-Origin</code> header in the
+    <code>.nlogox</code> file's HTTP response to either <code>*</code> or whichever NetLogo Web domain you're using,
+    <code>https://netlogoweb.org</code> or <code>https://netlogo-web.org</code>. This is a common setting for website
+    hosts, and they should include some way to update it for your website's files.</p>
 
   @linkableHeader("speed-parameter", "Can I set the speed slider to a different value than the default when my model loads?")
 
