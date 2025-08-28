@@ -79,6 +79,8 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
   lastUpdateMs: undefined # Number
   startX:       undefined # Number
   startY:       undefined # Number
+  lastX:        undefined # Number
+  lastY:        undefined # Number
   view:         undefined # Element
 
   data: -> {
@@ -99,8 +101,10 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
     'start-widget-drag': (event) ->
       CommonDrag.dragstart(this, event, (-> true), (x, y) =>
         @fire('select-component', event.component)
-        @startX = @get('x') - x
-        @startY = @get('y') - y
+        @lastX  = @get('x')
+        @lastY  = @get('y')
+        @startX = @lastX - x
+        @startY = @lastY - y
       )
 
     'drag-widget': (event) ->
@@ -110,23 +114,34 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
 
       CommonDrag.drag(this, event, (x, y) =>
 
-        findAdjustment = (n) -> n - (Math.round(n / 5) * 5)
+        fineAdjustment = (n) -> n - (Math.round(n / 5) * 5)
 
-        xAdjust = if isSnapping then findAdjustment(@startX + x) else 0
-        yAdjust = if isSnapping then findAdjustment(@startY + y) else 0
+        xAdjust = if isSnapping then fineAdjustment(@startX + x) else 0
+        yAdjust = if isSnapping then fineAdjustment(@startY + y) else 0
 
         newX = @startX + x - xAdjust
         newY = @startY + y - yAdjust
 
-        if newX < 0
+        # In Chromium, the very last drag event when the mouse button is released inside an iframe *sometimes* produces
+        # garbage values when the screen is scrolled away from top+left.  Rather than updating with the recent drag
+        # event we just got, we store it for next time and use the last one stored, ensuring we always skip the very
+        # last drag event.  The drag events occur pretty frequently, so there is very little chance of dropping things
+        # in the wrong spot.  -Jeremy B August 2025
+        updateX = @lastX
+        updateY = @lastY
+
+        @lastX = newX
+        @lastY = newY
+
+        if updateX < 0
           @set('x', 0)
         else
-          @set('x', newX)
+          @set('x', updateX)
 
-        if newY < 0
+        if updateY < 0
           @set('y', 0)
         else
-          @set('y', newY)
+          @set('y', updateY)
 
       )
 
@@ -134,6 +149,8 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
       CommonDrag.dragend(this, =>
         @startX = undefined
         @startY = undefined
+        @lastX  = undefined
+        @lastY  = undefined
       )
 
   }
