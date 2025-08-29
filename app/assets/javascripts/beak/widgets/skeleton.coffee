@@ -242,38 +242,40 @@ template =
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>
         </div>
+
+        <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
+          <div class="netlogo-speed-slider-layout">
+            <span class="netlogo-label">Model Speed</span>
+            <div class="model-speed-input">
+              <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"
+                {{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
+              <button class="netlogo-beautiful-button" on-click="['onSpeedChange', -0.1]"
+                {{#isEditing}} disabled{{/}}>-</button>
+              <customSlider
+                id="speed-slider-input-interface"
+                min="{{-1}}"
+                max="{{1}}"
+                step="{{0.01}}"
+                value="{{speed}}"
+                snapTo="0"
+                snapTolerance="4.5"
+                inputFor="speed-slider-input"
+                isEnabled="{{!isEditing}}"
+                class="model-speed-slider-interface"
+              />
+              <button class="netlogo-beautiful-button" on-click="['onSpeedChange', 0.1]"
+                {{#isEditing}} disabled{{/}}>+</button>
+            </div>
+            <tickCounter isVisible="{{primaryView.showTickCounter}}"
+              label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
+          </div>
+        </label>
+
       </div>
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
-
-      <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
-        <span class="netlogo-label">Model Speed</span>
-        <div class="model-speed-input">
-          <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"{{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
-          <button class="netlogo-beautiful-button"
-          on-click="['onSpeedChange', -0.1]"
-          {{#isEditing}} disabled{{/}}>-</button>
-          <customSlider
-            id="speed-slider-input-interface"
-            min="{{-1}}"
-            max="{{1}}"
-            step="{{0.01}}"
-            value="{{speed}}"
-            snapTo="0"
-            snapTolerance="4.5"
-            inputFor="speed-slider-input"
-            isEnabled="{{!isEditing}}"
-            class="model-speed-slider-interface"
-          />
-          <button class="netlogo-beautiful-button"
-          on-click="['onSpeedChange', 0.1]"
-          {{#isEditing}} disabled{{/}}>+</button>
-        </div>
-        <tickCounter isVisible="{{primaryView.showTickCounter}}"
-                     label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
-      </label>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"

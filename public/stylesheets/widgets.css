@@ -410,12 +410,22 @@
 .netlogo-speed-slider {
   background-color: transparent;
   border: none;
-  display: flex;
-  flex-direction: column;
   padding: 0.4rem;
   margin: 0 auto;
   width: 75%;
 }
+
+.netlogo-speed-slider-layout {
+  display: flex;
+  flex-direction: column;
+  width: min-content;
+}
+
+.netlogo-speed-slider input {
+  border: none;
+  width: 100%;
+}
+
 .model-speed-input {
   display: flex;
   gap: 0.5rem;
@@ -423,11 +433,13 @@
   align-items: center;
   margin: 0.1rem;
 }
+
 .netlogo-slider-bar.model-speed-slider-interface {
   height: 2px;
-  width: clamp(100px, 50%, 300px);
+  min-width: 200px;
   margin-top: unset;
 }
+
 .netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
   background-color: var(--color-widget-accessories);
   top: calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
@@ -437,7 +449,9 @@
   background-color: white;
   border: 1px solid #afafaf;
   border-radius: 4px;
-  padding: .15lh .5lh;
+  padding: .15lh .35lh;
+  font-size: 14px;
+  font-family: monospace;
   cursor: pointer;
 }
 
@@ -451,11 +465,6 @@
 
 .netlogo-widget input[type=range]::-ms-tooltip {
   display: none;
-}
-
-.netlogo-speed-slider input {
-  border: none;
-  width: 100%;
 }
 
 .netlogo-model input[type=range] {
