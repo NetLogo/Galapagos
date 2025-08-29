@@ -164,7 +164,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     oncomplete: ->
       @fire('track-focus', document.activeElement)
       return
-    
+
     on: {
       onSpeedChange: (context, delta) ->
         speed = @get('speed')
@@ -261,6 +261,8 @@ template =
             max="{{1}}"
             step="{{0.01}}"
             value="{{speed}}"
+            snapTo="0"
+            snapTolerance="4.5"
             inputFor="speed-slider-input"
             isEnabled="{{!isEditing}}"
             class="model-speed-slider-interface"
