@@ -5,6 +5,7 @@ import RactiveContextable from "./contextable.js"
 CommonDrag = {
 
   dragstart: (ractive, { original }, checkIsValid, callback) ->
+    @dragState = 'started'
 
     { clientX, clientY, dataTransfer, view } = original
 
@@ -30,32 +31,60 @@ CommonDrag = {
 
     return
 
-  drag: (ractive, { original: { clientX, clientY, view } }, callback) ->
+  drag: (ractive, { original }, callback) ->
+    { clientX, clientY, view } = original
+
+    # The coordinates Firefox provides on drag events are just useless.  Rather than relying on some weird browser agent
+    # string logic to decide if we need the hack, we instead monitor the first couple drag events and see if we have
+    # movement (recorded in `lastDrag(X|Y)`) but no change in the drag event values.  You might think we could use
+    # values from the dragstart event to compare, but Firefox actually reports those correctly!  Wah-wah.  The big plus
+    # here is that the prior code allowed the hack to be applied to browsers where it wasn't needed; this should result
+    # in more consistent behavior.  There was also a secondary bug in the prior code where windows in an iframe scrolled
+    # outside of top+left would give positive values for `client(X|Y)` that would be incorrect, but wouldn't use the
+    # hack.  -Jeremy B August 2025
+
+    # Thanks, Firefox! --Jason B. (11/23/17)
+
     if ractive.view?
+      [dragIt, x, y] = switch @dragState
+        when 'started'
+          root        = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
+          @hackChecks = { clientX, clientY, lastDragX: root.get('lastDragX'), lastDragY: root.get('lastDragY') }
+          @dragState  = 'dragging-ff-hack-check'
+          [false]
 
-      # Thanks, Firefox! --Jason B. (11/23/17)
+        when 'dragging-ff-hack-check'
+          root      = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
+          lastDragX = root.get('lastDragX')
+          lastDragY = root.get('lastDragY')
+          haveMoved = lastDragX isnt @hackChecks.lastDragX or root.get('lastDragY') isnt @hackChecks.lastDragY
+          if haveMoved
+            needHack = clientX is @hackChecks.clientX and clientY is @hackChecks.clientY
+            if needHack
+              @dragState = 'dragging-with-hack'
+              [true, lastDragX, lastDragY]
+            else
+              @dragState = 'dragging'
+              [true, clientX, clientY]
 
-      # Firefox now throws in some weird negative values for clientX/clientY when the drag event occurs in an iframe
-      # instead of just uselessly setting `0` (which is still does outside of an iframe?).  Hopefully other browsers are
-      # still more sensible.  -Jeremy B January 2024
+        when 'dragging-with-hack'
+          root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
+          [true, root.get('lastDragX') ? -1, root.get('lastDragY') ? -1]
 
-      root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
-      x    = if clientX > 0 then clientX else (root.get('lastDragX') ? -1)
-      y    = if clientY > 0 then clientY else (root.get('lastDragY') ? -1)
+        when 'dragging'
+          [true, clientX, clientY]
 
-      # When dragging stops, `client(X|Y)` tend to be very negative nonsense values
-      # We only take non-negative values here, to avoid the widget disappearing
-      # --Jason B. (3/22/16, 10/29/17)
-
-      # Only update drag coords 60 times per second.  If we don't throttle,
-      # all of this `set`ing murders the CPU --Jason B. (10/29/17)
-      if ractive.view is view and x > 0 and y > 0 and ((new Date).getTime() - ractive.lastUpdateMs) >= (1000 / 60)
-        ractive.lastUpdateMs = (new Date).getTime()
-        callback(x, y)
+      if dragIt
+        # Only update drag coords 60 times per second.  If we don't throttle, all of this `set`ing murders the CPU
+        # --Jason B. (10/29/17)
+        if ractive.view is view and x > 0 and y > 0 and ((new Date).getTime() - ractive.lastUpdateMs) >= (1000 / 60)
+          ractive.lastUpdateMs = (new Date).getTime()
+          callback(x, y)
 
     true
 
   dragend: (ractive, callback) ->
+    @dragState = 'waiting'
 
     if ractive.view?
 
@@ -126,7 +155,8 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
         # garbage values when the screen is scrolled away from top+left.  Rather than updating with the recent drag
         # event we just got, we store it for next time and use the last one stored, ensuring we always skip the very
         # last drag event.  The drag events occur pretty frequently, so there is very little chance of dropping things
-        # in the wrong spot.  -Jeremy B August 2025
+        # in the wrong spot.  There was a prior fix for this, but it relied on the garbage values being negative, which
+        # it turns out isn't always the case.  -Jeremy B August 2025
         updateX = @lastX
         updateY = @lastY
 
