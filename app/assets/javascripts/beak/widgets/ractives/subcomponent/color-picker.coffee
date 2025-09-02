@@ -141,7 +141,9 @@ RactiveColorPicker = Ractive.extend({
     throw new Error("Invalid color format")
 
   template: """
-  <modal id="{{modalId}}" title="Color Picker">
+  <modal id="{{modalId}}" title="Color Picker"
+         minWidth="clamp(300px, 90vw, 650px)"
+         minHeight="clamp(500px, 90vh, 500px)">
     <asyncLoader loading="{{!iframeLoaded}}">
         <iframe id="{{id}}" style="width: 100%; height: 100%;"
                 {{#if !srcDoc}} src="{{url}}" {{/if}}
