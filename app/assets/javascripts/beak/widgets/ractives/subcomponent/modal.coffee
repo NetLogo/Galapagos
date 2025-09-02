@@ -11,11 +11,12 @@ RactiveModal = Ractive.extend({
     , lastClientY: 0      # Number
     , containerWidth: "90vw"                         # String
     , containerHeight: "min(90vh, max(600px, 60vw))" # String
-    , minHeight: "200px"                      # String
-    , minWidth:  "300px"                      # String
+    , minHeight: "200px"                             # String
+    , minWidth:  "300px"                             # String
+    , maxHeight: "unset"                             # String
+    , maxWidth:  "unset"                             # String
     , trafficLights: []   # Array of TrafficLight
   }
-
 
   resizeObserver: undefined,
 
@@ -138,6 +139,8 @@ RactiveModal = Ractive.extend({
         , height: @get('containerHeight')
         , "min-width": @get('minWidth')
         , "min-height": @get('minHeight')
+        , "max-width": @get('maxWidth')
+        , "max-height": @get('maxHeight')
         , top: @get('top')
         , left: @get('left')
         , resize: @get('resize')

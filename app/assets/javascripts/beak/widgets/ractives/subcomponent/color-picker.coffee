@@ -163,8 +163,10 @@ RactiveColorPicker = Ractive.extend({
 
   template: """
   <modal id="{{modalId}}" title="Color Picker"
-         minWidth="clamp(300px, 90vw, 650px)"
-         minHeight="clamp(500px, 90vh, 500px)"
+         minWidth="clamp(30rem, 95vw, 55rem)"
+         minHeight="clamp(25rem, 95vh, 45rem)"
+         maxWidth="60rem"
+         maxHeight="60rem"
          trafficLights="{{@this.trafficLights}}"
          on-keypress="['key-press']">
     <asyncLoader loading="{{!iframeLoaded}}">
