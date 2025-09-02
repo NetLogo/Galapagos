@@ -259,7 +259,7 @@ end
 ; Copyright 2015 Uri Wilensky.
 ; See Info tab for full copyright and license.]]></code>
   <widgets>
-    <view3d wrappingAllowedZ="true" x="0" wrappingAllowedX="true" y="0" minPycor="-8" height="247" showTickCounter="true" patchSize="13.0" fontSize="10" wrappingAllowedY="true" width="241" tickCounterLabel="ticks" maxPycor="8" updateMode="1" frameRate="30.0" maxPzcor="8" maxPxcor="8" minPxcor="-8" minPzcor="-8"></view3d>
+    <view3d wrappingAllowedZ="true" x="0" wrappingAllowedX="true" y="0" minPycor="-8" height="247" showTickCounter="true" patchSize="12.0" fontSize="10" wrappingAllowedY="true" width="241" tickCounterLabel="ticks" maxPycor="8" updateMode="1" frameRate="30.0" maxPzcor="8" maxPxcor="8" minPxcor="-8" minPzcor="-8"></view3d>
     <button x="125" y="15" height="33" disableUntilTicks="true" forever="true" kind="Observer" width="85" sizeVersion="0">go</button>
     <button x="15" y="15" height="33" disableUntilTicks="false" forever="false" kind="Observer" width="90" sizeVersion="0">setup</button>
     <slider x="235" step=".01" y="25" max="1" display="p4to3" height="33" min="0" direction="Horizontal" default="0.05" variable="p4to3" width="195" sizeVersion="0"></slider>
@@ -281,18 +281,18 @@ end
     <switch x="120" y="260" height="33" on="true" variable="h2-on?" display="h2-on?" width="102" sizeVersion="0"></switch>
     <switch x="120" y="295" height="33" on="true" variable="h1-on?" display="h1-on?" width="102" sizeVersion="0"></switch>
     <slider x="235" step="0.01" y="295" max="2" display="red-diffuse" height="33" min="0" direction="Horizontal" default="0.1" variable="red-diffuse" width="195" sizeVersion="0"></slider>
-    <note x="15" y="225" height="30" backgroundDark="0" fontSize="11" width="215" markdown="false" textColorLight="-16777216" backgroundLight="0">Turns on/off the color visualizations
+    <note x="15" y="225" backgroundDark="0" fontSize="11" width="215" markdown="false" height="30" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Turns on/off the color visualizations
 for the nth free hydrogen</note>
     <switch x="15" y="175" height="33" on="true" variable="grid-draw" display="grid-draw" width="122" sizeVersion="0"></switch>
     <monitor x="450" precision="3" y="80" height="45" fontSize="11" display="Fraction of Surface H Remaining" width="205" sizeVersion="0">(sum [h-count - 1] of patches with [patch-type = "surface"]) / (3 * count patches with [patch-type = "surface"])</monitor>
     <monitor x="450" precision="3" y="25" height="45" fontSize="11" display="Percent of Hydrogen Remaining" width="205" sizeVersion="0">(h-remain / h-total) * 100</monitor>
-    <note x="15" y="145" height="30" backgroundDark="0" fontSize="11" width="205" markdown="false" textColorLight="-16777216" backgroundLight="0">Enables or disables
+    <note x="15" y="145" backgroundDark="0" fontSize="11" width="205" markdown="false" height="30" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Enables or disables
 the grid markings</note>
-    <note x="235" y="10" height="26" backgroundDark="0" fontSize="11" width="205" markdown="false" textColorLight="-16777216" backgroundLight="0">Hydrogen Desorption Probabilities</note>
-    <note x="235" y="145" height="26" backgroundDark="0" fontSize="11" width="205" markdown="false" textColorLight="-16777216" backgroundLight="0">Hydrogen Absorption Probabilities</note>
-    <note x="235" y="250" height="40" backgroundDark="0" fontSize="11" width="210" markdown="false" textColorLight="-16777216" backgroundLight="0">Probability to move to depleted red
+    <note x="235" y="10" backgroundDark="0" fontSize="11" width="205" markdown="false" height="26" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Hydrogen Desorption Probabilities</note>
+    <note x="235" y="145" backgroundDark="0" fontSize="11" width="205" markdown="false" height="26" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Hydrogen Absorption Probabilities</note>
+    <note x="235" y="250" backgroundDark="0" fontSize="11" width="210" markdown="false" height="40" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Probability to move to depleted red
 patch vs different colored patch</note>
-    <note x="15" y="60" height="30" backgroundDark="0" fontSize="11" width="180" markdown="false" textColorLight="-16777216" backgroundLight="0">Simulation termination %
+    <note x="15" y="60" backgroundDark="0" fontSize="11" width="180" markdown="false" height="30" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">Simulation termination %
 (of initial hydrogen)</note>
     <plot x="450" autoPlotX="true" yMax="10.0" autoPlotY="true" y="310" xMin="0.0" height="150" legend="false" xMax="4.0" yMin="0.0" display="Patch Distribution" width="205" sizeVersion="0">
       <setup></setup>
@@ -319,13 +319,13 @@ This research tool allows us to better understand the kinetics of hydrogen desor
 
 Diffusion and desorption are complex material behaviors, and these kinetics are not well understood. There are several fundamental parameters involved in these processes:
 
-####Bond breaking
+#### Bond breaking
 Hydrogen atoms are stored on molecular units like BH<sub>4</sub> and AlH<sub>4</sub>, where they are bonded to some central atom like boron or aluminum. In order for hydrogen to diffuse, it must break the bond formed with this central atom. An important factor affecting this process is the strength of the bond, controlled in the model by the hydrogen desorption probabilities sliders.
 
-####Diffusion through different phases
+#### Diffusion through different phases
 As hydrogen desorbs, the underlying crystal structure of the material will change. This in turn affects the movement speed of hydrogen atoms through the material. It is important to model the relative probability of a hydrogen atom moving into a cell depleted of hydrogen, versus a completely full cell.
 
-####Reabsorption
+#### Reabsorption
 There is a probability that if a hydrogen atom travels to a non-full cell, it will form bonds with the central atom in that cell. This reabsorption property is probabilistic and can dramatically affect the desorption rate from the materials.
 
 This model explores the contribution of each of these properties on the desorption and diffusion behavior of candidate hydrogen storage materials. Different materials can be modeled through setting the absorption and desorption probabilities to match the behavior of the material under investigation.
@@ -430,9 +430,7 @@ NetLogo itself is free software for non-commercial use under the terms of the GN
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
 
-This is a 3D version of the 2D model Hydrogen Diffusion.
-
-<!-- 2015 3D Cite: Kim, D. -->]]></info>
+<!-- 2015 Cite: Kim, D. -->]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
       <polygon color="-1920102913" filled="true" marked="true">

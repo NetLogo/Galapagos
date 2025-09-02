@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0-beta2" snapToGrid="true">
+<model version="NetLogo 7.0.0-RC1" snapToGrid="true">
   <code><![CDATA[; Globals declared in widgets
 ; num-turtles               ;; number of conic-parts turtles to create
 ; conic-constant            ;; constant used to define the conic section - the absolute value
@@ -16,17 +16,17 @@ globals [
                                  ;; mouse-x and mouse-y are used to filter out redundant mouse down events
          recent-mouse-x          ;; rounded x-cor of most recent mouse click
          recent-mouse-y          ;; rounded y-cor of most recent mouse click
-         MOUSE-CLICK-CLOSENESS   ;; how close mouse click must be to focus for dragging
-         CONIC-EPS               ;; how close conic-dist must be to conic-constant for a turtle to stop
-         BACKGROUND-COLOR        ;; color of background
-         CONIC-PART-COLOR        ;; color of conic-parts turtles that move to form conic section
-         CONIC-PART-SHAPE        ;; shape of conic-parts turtles
-         CONIC-PART-SIZE         ;; size of conic-parts turtles
-         FOCUS-COLOR             ;; color of circle or hyperbola focus turtles
-         FOCUS-SHAPE             ;; shape of focus turtles
-         FOCUS-SIZE              ;; size of focus turtles
-         DISTANCE-LINK-COLOR     ;; color of distance links
-         DISTANCE-LINK-THICKNESS ;; thickness of distance links
+         mouse-click-closeness   ;; how close mouse click must be to focus for dragging
+         conic-eps               ;; how close conic-dist must be to conic-constant for a turtle to stop
+         background-color        ;; color of background
+         conic-part-color        ;; color of conic-parts turtles that move to form conic section
+         conic-part-shape        ;; shape of conic-parts turtles
+         conic-part-size         ;; size of conic-parts turtles
+         focus-color             ;; color of circle or hyperbola focus turtles
+         focus-shape             ;; shape of focus turtles
+         focus-size              ;; size of focus turtles
+         distance-link-color     ;; color of distance links
+         distance-link-thickness ;; thickness of distance links
 ]
 
 
@@ -35,9 +35,9 @@ to setup
   initialize-values
   color-background-patches
   create-conic-parts num-turtles [
-    set color CONIC-PART-COLOR
-    set shape CONIC-PART-SHAPE
-    set size CONIC-PART-SIZE
+    set color conic-part-color
+    set shape conic-part-shape
+    set size conic-part-size
     setxy random-xcor random-ycor
   ]
 
@@ -56,17 +56,17 @@ to setup
 end
 
 to initialize-values
-  set CONIC-EPS               0.05
-  set BACKGROUND-COLOR        black
-  set CONIC-PART-COLOR        green
-  set CONIC-PART-SHAPE        "circle"
-  set CONIC-PART-SIZE         1
-  set FOCUS-COLOR             white
-  set FOCUS-SHAPE             "circle"
-  set FOCUS-SIZE              2
-  set DISTANCE-LINK-COLOR     red
-  set DISTANCE-LINK-THICKNESS 1.5
-  set MOUSE-CLICK-CLOSENESS   3
+  set conic-eps               0.05
+  set background-color        black
+  set conic-part-color        green
+  set conic-part-shape        "circle"
+  set conic-part-size         1
+  set focus-color             white
+  set focus-shape             "circle"
+  set focus-size              2
+  set distance-link-color     red
+  set distance-link-thickness 1.5
+  set mouse-click-closeness   3
 end
 
 to go
@@ -98,9 +98,9 @@ to create-or-move-focus-if-mouse-down
       ifelse need-a-focus? [
         create-foci 1 [
           setxy mouse-xcor mouse-ycor
-          set color FOCUS-COLOR
-          set shape FOCUS-SHAPE
-          set size FOCUS-SIZE
+          set color focus-color
+          set shape focus-shape
+          set size focus-size
         ]
         ; If the second focus was created, and the need for a
         ; distance turtle is pending, create one.
@@ -122,7 +122,7 @@ to handle-select-and-drag
     ; pick the closest turtle
     set selected-focus min-one-of foci [distancexy mouse-xcor mouse-ycor]
     ; check whether or not it's close enough
-    if [ distancexy mouse-xcor mouse-ycor ] of selected-focus > MOUSE-CLICK-CLOSENESS [
+    if [ distancexy mouse-xcor mouse-ycor ] of selected-focus > mouse-click-closeness [
       set selected-focus nobody ; if not, don't select it
     ]
   ]
@@ -135,7 +135,7 @@ end
 ; Move the turtles that will form the conic.
 ; Move randomly if there is no focus, or turtle is getting further from distance
 ;  to conic.
-; Stop if within CONIC-EPS of desired "distance".
+; Stop if within conic-eps of desired "distance".
 ; Move forward if distance to conic is decreasing.
 to move-conic-parts ; turtle procedure
   ; move randomly if a focus is needed
@@ -143,10 +143,10 @@ to move-conic-parts ; turtle procedure
   [ rt random-float 360 turn-if-cant-move 1 fd 1]
   [ let old-conic-dist conic-dist
     set conic-dist compute-conic-dist
-    ; Turtle stops if it is within CONIC-EPS of desired "distance"
+    ; Turtle stops if it is within conic-eps of desired "distance"
     ; If the turtle is not reducing the "distance" make a random turn and move
     ; forward, otherwise just move forward
-    if (abs (conic-constant - conic-dist) > CONIC-EPS) [
+    if (abs (conic-constant - conic-dist) > conic-eps) [
       if ((conic-dist = old-conic-dist) or
         ((conic-dist < old-conic-dist) and (conic-dist < conic-constant)) or
         ((conic-dist > old-conic-dist) and (conic-dist > conic-constant)))
@@ -164,7 +164,7 @@ end
 
 ; Set color of patches.
 to color-background-patches
-  ask patches [ set pcolor BACKGROUND-COLOR ]
+  ask patches [ set pcolor background-color ]
 end
 
 ; This distance is the difference between the greater and smaller distances of the
@@ -199,8 +199,8 @@ to create-distance-turtle
     ask distance-turtle [
       create-links-with foci
       ask my-links [
-        set color DISTANCE-LINK-COLOR
-        set thickness DISTANCE-LINK-THICKNESS ]
+        set color distance-link-color
+        set thickness distance-link-thickness ]
     ]
     adjust-dist-links-labels
   ]
@@ -247,7 +247,7 @@ end
 ; Copyright 1998 Uri Wilensky.
 ; See Info tab for full copyright and license.]]></code>
   <widgets>
-    <view x="375" wrappingAllowedX="false" y="15" frameRate="30.0" minPycor="-80" height="483" showTickCounter="true" patchSize="3.0" fontSize="10" wrappingAllowedY="false" width="483" tickCounterLabel="ticks" maxPycor="80" updateMode="1" maxPxcor="80" minPxcor="-80"></view>
+    <view x="375" wrappingAllowedX="false" y="15" frameRate="30.0" minPycor="-80" height="487" showTickCounter="true" patchSize="3.0" fontSize="10" wrappingAllowedY="false" width="487" tickCounterLabel="ticks" maxPycor="80" updateMode="1" maxPxcor="80" minPxcor="-80"></view>
     <slider x="50" step="1" y="45" max="4000" width="266" display="num-turtles" height="50" min="1" direction="Horizontal" default="2500.0" variable="num-turtles"></slider>
     <button x="185" y="110" height="45" disableUntilTicks="true" forever="true" kind="Observer" width="85">go</button>
     <button x="90" y="110" height="45" disableUntilTicks="false" forever="false" kind="Observer" width="80">setup</button>
@@ -258,17 +258,18 @@ Click two  locations for placing foci to create the hyperbola.
 To move focus drag it with the mouse.</note>
     <button x="55" y="455" height="35" disableUntilTicks="true" forever="false" kind="Observer" width="157" display="Clear Distance Turtle">clear-any-distance-turtle</button>
     <button x="55" y="405" height="35" disableUntilTicks="true" forever="false" kind="Observer" width="157" display="New Distance Turtle">create-distance-turtle</button>
-    <button x="55" y="360" height="35" disableUntilTicks="true" forever="false" kind="Observer" width="157" display="Refresh Particles">ask conic-parts [ 
-  setxy random-xcor random-ycor 
+    <button x="55" y="360" height="35" disableUntilTicks="true" forever="false" kind="Observer" width="157" display="Refresh Particles">ask conic-parts [
+  setxy random-xcor random-ycor
 ]</button>
-    <monitor x="430" precision="1" y="505" height="60" fontSize="12" width="370" display="conic distance of distance turtle">ifelse-value not ticks-started? or (distance-turtle = nobody)
+    <monitor x="430" precision="1" y="510" height="60" fontSize="12" width="370" display="conic distance of distance turtle">ifelse-value not ticks-started? or (distance-turtle = nobody)
 [ "" ]
 [ explain-hyperbola-distance ]</monitor>
   </widgets>
   <info><![CDATA[## WHAT IS IT?
-This model displays a conic section: the hyperbola. The ancient Greeks called circles, ellipses, hyperbolas and parabolas conic sections because they can be generated geometrically by taking different cross sections of a cone.  Later the conic sections were described algebraically as quadratic curves. In this model, the hyperbola shape is emergent, generated by the behavior of turtles that are trying to satisfy a distance criterion as below.  There are two additional models that demonstrate the use of an agent-based approach to exploring conic sections: Emergent Shapes - Ellipse, and Emergent Shapes - Parabola. You may find it helpful to explore the Ellipse model first because the geometry is easier to visualize. 
 
-A hyperbola is the set of points such that the absolute value of the difference of the distances to two fixed points (the foci) is constant. The constant is represented in this model by the variable CONIC-CONSTANT. 
+This model displays a conic section: the hyperbola. The ancient Greeks called circles, ellipses, hyperbolas and parabolas conic sections because they can be generated geometrically by taking different cross sections of a cone. Later the conic sections were described algebraically as quadratic curves. In this model, the hyperbola shape is emergent, generated by the behavior of turtles that are trying to satisfy a distance criterion as below.  There are two additional models that demonstrate the use of an agent-based approach to exploring conic sections: Emergent Shapes - Ellipse, and Emergent Shapes - Parabola. You may find it helpful to explore the Ellipse model first.
+
+A hyperbola is the set of points such that the absolute value of the difference of the distances to two fixed points (the foci) is constant. The constant is represented in this model by the variable CONIC-CONSTANT.
 
 Here's an equivalent and less abstract description that may be easier to understand. Pick any two points in the plane and call them the foci of the hyperbola.  Choose a number that will be referred to as the "conic constant." Now pick any point in the plane and draw the 2 line segments between that point and each of the foci. Measure the length of each of these 2 line segments and substract the smaller length from the bigger length. If the number is equal to the conic constant than the point you chose is on the hyperbola. If not, then it isn't. The shape made by all the points for which their calculation is equal to the conic constant is the hyperbola.
 
@@ -277,7 +278,6 @@ Both the ellipse and the hyperbola are defined in terms of two fixed points (the
 ## HOW IT WORKS
 
 In this model the turtles use feedback to make decisions about how to behave. They set out in random directions and then act on information as to whether or not they are getting closer to where they want to be. If they are getting closer, they continue moving forward in the direction they are going. If they are moving farther away, they set out in a new random direction.
-
 
 ## HOW TO USE IT
 
@@ -291,7 +291,7 @@ In this model the turtles use feedback to make decisions about how to behave. Th
 
 ### Change the Hyperbola
 - Change the CONIC-CONSTANT using the slider. The turtles will automatically adjust themselves.
--  You can move either focus by clicking on it and dragging it. 
+-  You can move either focus by clicking on it and dragging it.
 
 
 ### The Distance Turtle
@@ -299,7 +299,7 @@ A "distance turtle" is a randomly chosen turtle used to display the conic "dista
 
 #### The Monitor
 The monitor labeled "conic distance of distance turtle" shows and explains the conic distance. An example would be "25.1 = 32.9 - 7.8 =  abs(difference of distances to foci).
- 
+
 #### New Distance Turtle Button
 If the conic has been specified a new distance turtle is activated. If a distance turtle already exists it is replaced. If the hyperbola has not been specified, the distance turtle will be activated after the second focus is chosen.
 
@@ -310,7 +310,6 @@ If a distance turtle exists it will be deactivated and its red line segments wil
 This button moves the small green turtles to random locations.
 If there is a distance turtle, it will persist.
 
-
 ## THINGS TO NOTICE
 
 When forming a hyperbola, turtles adjust their positions so that the absolute value of the difference of the distances to the two user-defined foci equals the  CONIC-CONSTANT (a value determined by the user with a slider). If the foci are too close together, there is no way to satisfy this condition. What do the turtles do then?
@@ -319,12 +318,12 @@ When forming a hyperbola, turtles adjust their positions so that the absolute va
 
 Once you've made a hyperbola, play arpound with moving its foci. What hapens  to the green turtles when you move the foci?
 
-You may be able to get a better feeling for the turtles' behavior if only a few turtles are alive at a time. Try setting num-turtles to a small value (like 16 or 1) and watching the turtles. 
+You may be able to get a better feeling for the turtles' behavior if only a few turtles are alive at a time. Try setting num-turtles to a small value (like 16 or 1) and watching the turtles.
 You can also slow down (or speed up) the movement of the turtles by either using the speed slider on the interface tool bar, or by clicking on "Settings..." and changing the frame rate.
 
 Create  a distance turtle. Calculate the absolute value of the difference between the labeled lengths of its 2 red line segments. Now move one of the focuses. Recalculate the difference between the lengths of its 2 red lines. Did the calculated number change? Why do you think it stayed the same?
 
-The constant CONIC-EPS is set in the SETUP procedure. It determines how close the turtles have to be to their ideal 'distance' (the absolute value of the difference of distances to its foci) before they stop. Change its value --- what do you see? Why? Be sure to try some integer values.
+The constant conic-eps is set in the SETUP procedure. It determines how close the turtles have to be to their ideal 'distance' (the absolute value of the difference of distances to its foci) before they stop. Change its value --- what do you see? Why? Be sure to try some integer values.
 
 ## EXTENDING THE MODEL
 
@@ -352,7 +351,7 @@ If you mention this model or the NetLogo software in a publication, we ask that 
 
 For the model itself:
 
-* Wilensky, U. & Brandes, A. (1998; 2024).  NetLogo Emergent Shapes -  Hyperbola.  http://ccl.northwestern.edu/netlogo/models/ConicSections-Hyperbola.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
+* Brandes, A. and Wilensky, U. (1998).  NetLogo Emergent Shapes - Hyperbola model.  http://ccl.northwestern.edu/netlogo/models/EmergentShapes-Hyperbola.  Center for Connected Learning and Computer-Based Modeling, Northwestern University, Evanston, IL.
 
 Please cite the NetLogo software as:
 
@@ -364,15 +363,17 @@ Copyright 1998 Uri Wilensky.
 
 ![CC BY-NC-SA 3.0](http://ccl.northwestern.edu/images/creativecommons/byncsa.png)
 
-This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
+This model is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License.  To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 559 Nathan Abbott Way, Stanford, California 94305, USA.
 
-Commercial licenses are also available. To inquire about commercial licenses, please contact Uri Wilensky at uri@northwestern.edu.
+NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
-This model is based on an earlier model that was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
+To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
 
-This model was converted to NetLogo as part of the projects: PARTICIPATORY SIMULATIONS: NETWORK-BASED DESIGN FOR SYSTEMS LEARNING IN CLASSROOMS and/or INTEGRATED SIMULATION AND MODELING ENVIRONMENT. The project gratefully acknowledges the support of the National Science Foundation (REPP & ROLE programs) -- grant numbers REC #9814682 and REC-0126227.
+This model was created as part of the project: CONNECTED MATHEMATICS: MAKING SENSE OF COMPLEX PHENOMENA THROUGH BUILDING OBJECT-BASED PARALLEL MODELS (OBPML).  The project gratefully acknowledges the support of the National Science Foundation (Applications of Advanced Technologies Program) -- grant numbers RED #9552950 and REC #9632612.
 
-<!-- 1998 2001 -->]]></info>
+Converted from StarLogoT to NetLogo, 2024.
+
+<!-- 1998 2024 Cite: Brandes, A. -->]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
       <polygon color="-1920102913" filled="true" marked="true">
