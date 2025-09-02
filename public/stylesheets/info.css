@@ -1,0 +1,140 @@
+/*
+
+This is copied from desktop NetLogo's info.css (as of 7.0 release) and colors are from the `LightTheme` in
+`InterfaceColors.scala`.  Some tweaks were done to get things looking similar, mostly on margins for `<p>` and `<li>`
+elements.  Font sizes are also hard-coded here instead of calculated.  -Jeremy B September 2025
+
+*/
+
+.netlogo-info-markdown {
+  --light-grey: rgb(238, 238, 238);
+  --body-font-size: 10pt;
+  --h1-background: rgb(209, 208, 255);
+  --h1-color: rgb(19, 13, 134);
+  --h1-font-size: 20pt;
+  --h2-background: rgb(211, 231, 255);
+  --h2-color: rgb(0, 90, 200);
+  --h2-font-size: 17.5pt;
+  --h3-color: rgb(88, 88, 88);
+  --h3-font-size: 15pt;
+  --h4-color: rgb(115, 115, 115);
+  --h4-font-size: 13pt;
+  --h5-font-size: 11pt;
+  --h6-font-size: 10pt;
+  --code-background: var(--light-grey);
+  --p-color: black;
+  --block-bar: rgb(96, 96, 96);
+  --info-background: white;
+  --link-color: rgb(0, 110, 240);
+}
+
+:link { color: rgb(110,0,110); }
+:visited { color: rgb(110,0,110); }
+.netlogo-info {
+  margin-left: 5px;
+  font-family: "Segoe UI", "Open Sans", sans-serif;
+  background: none;
+  font-size: var(--body-font-size);
+}
+.netlogo-info h1 {
+  background: var(--h1-background);
+  color: var(--h1-color);
+  font-size: var(--h1-font-size);
+  margin-bottom: 4px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.netlogo-info h2 {
+  margin-top: 15px;
+  margin-left: 6px;
+  margin-bottom: 4px;
+  background: var(--h2-background);
+  color: var(--h2-color);
+  font-size: var(--h2-font-size);
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.netlogo-info h3 {
+  margin-top: 15px;
+  margin-left: 15px;
+  margin-bottom: 4px;
+  color: var(--h3-color);
+  font-size: var(--h3-font-size);
+  padding: 0.2em;
+  padding-right: 6px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.netlogo-info h4 {
+  margin-top: 15px;
+  margin-left: 15px;
+  color: var(--h4-color);
+  font-size: var(--h4-font-size);
+}
+.netlogo-info h5 {
+  margin-top: 15px;
+  margin-left: 15px;
+  color: var(--h4-color);
+  font-size: var(--h5-font-size);
+}
+.netlogo-info h6 {
+  margin-top: 15px;
+  margin-left: 15px;
+  color: var(--h4-color);
+  font-size: var(--h6-font-size);
+}
+.netlogo-info p {
+  margin: 15px;
+  color: var(--p-color);
+  font-size: var(--body-font-size);
+}
+.netlogo-info pre {
+  background: var(--code-background);
+  font-family: monospace;
+  font-size: var(--body-font-size);
+  padding-left: 10px;
+  padding-right: 3px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin-left: 15px;
+  margin-top:9px;
+  margin-bottom:0px;
+}
+.netlogo-info code {
+  font-family: monospace;
+  font-size: var(--body-font-size);
+}
+.netlogo-info blockquote {
+  background: var(--block-bar);
+  margin-left: 15px;
+  margin-top: 7px;
+  margin-bottom: 1px;
+  padding-left: 3px;
+}
+.netlogo-info blockquote div {
+  background: var(--info-background);
+  padding-bottom: 10px;
+}
+.netlogo-info blockquote p
+{
+  color: var(--p-color);
+}
+.netlogo-info ol {
+  margin-bottom: 1px;
+}
+.netlogo-info ul {
+  margin-bottom: 1px;
+}
+.netlogo-info li {
+  color: var(--p-color);
+}
+.netlogo-info li > p {
+  margin: 3px;
+}
+.netlogo-info a {
+  color: var(--link-color);
+}

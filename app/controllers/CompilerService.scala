@@ -273,6 +273,7 @@ private[controllers] trait RequestResultGenerator {
       Set(
         "/public/stylesheets/classes.css",
         "/public/stylesheets/widgets.css",
+        "/public/stylesheets/info.css",
         "/public/stylesheets/ui-editor.css",
         "/public/stylesheets/netlogoweb.css",
         "/public/stylesheets/netlogo-syntax.css",
