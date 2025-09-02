@@ -109,14 +109,30 @@ window.addEventListener("message", function(e) {
 
 })
 
+// This is a convenience in case a user uploads an HTML export of a model instead of the actual model code.  It's easy
+// enough to parse out the actual model source and name, and we can assume it's probably what the user intended.
+// -Jeremy B September 2025
+function checkHTMLUpload(nlogoContents, originalPath) {
+  if (nlogoContents.trim().startsWith("<html>")) {
+    const parser           = new DOMParser();
+    const doc              = parser.parseFromString(nlogoContents, "text/html");
+    const nlogoCodeElement = doc.getElementById("nlogo-code");
+    if (nlogoCodeElement === null) {
+      return [nlogoContents, originalPath];
+    } else {
+      const path = nlogoCodeElement.getAttribute("data-filename");
+      return [nlogoCodeElement.innerText, (path === null ? "Model.nlogox" : path)];
+    }
+  } else {
+    return [nlogoContents, originalPath];
+  }
+}
+
 function openNlogo(nlogoContents) {
   window.location.hash = "Load";
   var filePath = document.getElementById("model-file-input").value;
-  modelContainer.contentWindow.postMessage({
-    nlogo: nlogoContents,
-    path: filePath,
-    type: "nlw-load-model"
-  }, "*");
+  const [nlogo, path] = checkHTMLUpload(nlogoContents, filePath);
+  modelContainer.contentWindow.postMessage({ nlogo, path, type: "nlw-load-model"}, "*");
 }
 
 function initModel() {
