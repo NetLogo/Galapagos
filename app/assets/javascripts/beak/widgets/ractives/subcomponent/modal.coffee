@@ -1,6 +1,6 @@
 
 RactiveModal = Ractive.extend({
-  data: {
+  data: () -> {
     title: undefined      # String
     , id: undefined       # String
     , posX: 0             # Number
@@ -13,7 +13,9 @@ RactiveModal = Ractive.extend({
     , containerHeight: "min(90vh, max(600px, 60vw))" # String
     , minHeight: "200px"                      # String
     , minWidth:  "300px"                      # String
-  },
+    , trafficLights: []   # Array of TrafficLight
+  }
+
 
   resizeObserver: undefined,
 
@@ -105,6 +107,10 @@ RactiveModal = Ractive.extend({
     "mouse-up": (event) ->
       @set('isMouseDown', false)
       return
+
+    "traffic-light-click": (event, light, index) ->
+      @parent.fire('traffic-light-click', event, light, index)
+      return
   },
 
   computed: {
@@ -147,13 +153,22 @@ RactiveModal = Ractive.extend({
        on-mouseup="['mouse-up']"
        on-touchend="['mouse-up']"
        >
-     <div class="netlogo-modal-title"
-          on-mousedown="['start-drag']"
-          on-touchstart="['start-drag']"
-          role="heading"
-     >
+     <div class="netlogo-modal-title" role="heading" aria-level="1">
       <div class="netlogo-modal-top-bar-container">
-        <div class="netlogo-modal-title-text">{{title}}</div>
+        <div class="netlogo-modal-traffic-lights">
+          {{#each trafficLights:i}}
+            <div class="netlogo-modal-traffic-light {{.class}}"
+                 style="background-color: {{.color}}; {{.style}}"
+                 aria-label="{{.title}}" role="button"
+                 on-click="['traffic-light-click', this, i]"
+                 data-title="{{.title}}" data-index="{{i}}"
+                 ></div>
+          {{/each}}
+        </div>
+        <div class="netlogo-modal-title-text"
+              on-mousedown="['start-drag']"
+              on-touchstart="['start-drag']"
+        >{{title}}</div>
       </div>
      </div>
      <div class="netlogo-modal-content"
@@ -164,4 +179,19 @@ RactiveModal = Ractive.extend({
   """
 })
 
+class TrafficLight
+  constructor: ({
+    color,
+    id = undefined,
+    title = "",
+    className = "",
+    style = "",
+  }) ->
+    @id = id
+    @color = color
+    @title = title
+    @class = className
+    @style = style
+
 export default RactiveModal
+export { TrafficLight }
