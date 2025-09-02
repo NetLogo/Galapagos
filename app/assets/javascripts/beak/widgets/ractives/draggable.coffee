@@ -66,6 +66,8 @@ CommonDrag = {
             else
               @dragState = 'dragging'
               [true, clientX, clientY]
+          else
+            [false]
 
         when 'dragging-with-hack'
           root = (findRoot = (r) -> if r.parent? then findRoot(r.parent) else r)(ractive)
