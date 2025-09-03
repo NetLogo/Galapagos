@@ -215,7 +215,7 @@ RactiveInput = RactiveValueWidget.extend({
   validateValue: (newValue, oldValue) ->
     inputType = @get("widget.boxedValue.type")
     valueType = typeof(newValue)
-    
+
     if inputType is "Number"
       try
         newValue = workspace.evalPrims.readFromString(newValue)
