@@ -807,7 +807,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   padding-inline: 0.2rem;
 }
 
-.netlogo-multiline-input[type=number] {
+.netlogo-multiline-input[data-type=number] {
   color: #a42f00;
 }
 
