@@ -426,9 +426,14 @@ updateWidget = (widget, isHNWClient) ->
         try
           value = widget.reporter()
           isNum = (typeof(value) is "number")
+          isString = (typeof(value) is "string") \
+                      and (value.trim() isnt "") \
+                      and (parseFloat(value).toString() isnt value)
           isntValidValue = not (value? and (not isNum or isFinite(value)))
           if isntValidValue
             'N/A'
+          else if isString
+            value
           else
             preci = widget.precision
             if preci?
