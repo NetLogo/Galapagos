@@ -4,6 +4,33 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+  <h2 id="v2.12.0">September 9th 2025 - v2.12.0</h2>
+
+  <p>This release updates NetLogo Web for compatibility with the changes to <a href="https://docs.netlogo.org/versions.html#version-700-september-2025">NetLogo 7</a>.  The most notable changes include an update to the user interface to more closely match desktop NetLogo, and full support for the new NetLogo 7 file format in NetLogo Web.</p>
+
+  <p>Other major improvements include:</p>
+
+  <ul>
+    <li>NetLogo Web supports using external resources (images, CSVs, or others) with the <a href="https://github.com/NetLogo/Resource-Extension?tab=readme-ov-file#resource-extension">Resource Extension</a>.  These resources are loaded into a NetLogo model using <a href="https://docs.netlogo.org/resource-manager.html">the External Resource manager</a> in NetLogo desktop.  This provides a great way to bundle background images or default data needed during setup into a model so it can be easily shared on the web as a single file without needing to fetch other files for loading.  The ability to add resources directly to models authored in NetLogo Web is coming soon.</li>
+    <li>The models library available in NetLogo Web has been updated to <a href="https://docs.netlogo.org/versions.html#models-library-changes">the latest version released with NetLogo 7</a>.</li>
+    <li>The color picker in NetLogo Web has been changed to the same version used in desktop.  This custom color picker makes picking NetLogo-specific color values much simpler for color input widgets.</li>
+  </ul>
+
+  <p>And there are more minor improvements and bugfixes:</p>
+
+  <ul>
+    <li>Plots can have auto-plotting enabled or disabled per axis (X or Y).  Plot axis ranges will also auto-expand in a manner very similar to desktop.</li>
+    <li>Note widgets can have partially transparent backgrounds instead of all-or-nothing.</li>
+    <li>The model speed slider will snap back to the center value when dragged very close to it, as in desktop.</li>
+    <li>Multi-assign of variables from a list value can now be nested, as in: <code>let [a b [x y z]] [1 2 [9 8 7]]</code>.</li>
+    <li>The primitive <code>set-topology</code> allows you to set a model's horizontal and vertical wrapping from code; it replaces the old <code>__change-topology</code> command.</li>
+    <li>When an exported NetLogo Web model HTML file is uploaded to NetLogo Web using the <b>Upload a Model</b> button, the model code will be extracted from the HTML and the model will be loaded to run.</li>
+    <li>Dragging widgets in authoring mode could result in them snapping to the top or left of the model, depending on the window position.  This will no longer occur, and dragging should work normally.</li>
+    <li>Repeatedly plotting the same point could cause strange lines on the plot display.  This will no longer occur.  Thanks to contributor benJrohrer for the fix!</li>
+    <li>Monitor widgets given string values or globals with string values will display them properly, instead of showing blank.</li>
+    <li>Typing a constant expression (<code>pi</code> or <code>e</code>) into a number input widget will get the constant value instead of blank.</li>
+  </ul>
+
   <h2 id="v2.11.5">November 20th 2024 - v2.11.5</h2>
 
   <p>This release includes a few small improvements and bugfixes.</p>

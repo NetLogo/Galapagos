@@ -20,7 +20,7 @@ DEFAULT_REDRAW_DELAY = 1000 / 30
 MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
-NETLOGO_VERSION      = '2.11.4'
+NETLOGO_VERSION      = '2.12.0'
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari
@@ -364,7 +364,7 @@ class SessionLite
         dom = parser.parseFromString(htmlString, 'text/html')
 
         await @widgetController.onBeforeExportHTMLDocument(dom)
-        
+
         nlogo = @getNlogo()
         if nlogo.success
           nlogoScript = dom.querySelector('#nlogo-code')
