@@ -101,8 +101,8 @@ RactiveAsyncUserDialog = Ractive.extend({
       @fire('show-state', {}, { type: 'chooser', message, choices, callback })
       false
 
-    'show-text-input': (event, message, callback) ->
-      @fire('show-state', {}, { type: 'text-input', message, callback })
+    'show-text-input': (event, message, defaultValue, callback) ->
+      @fire('show-state', {}, { type: 'text-input', message, defaultValue, callback })
       false
 
     'show-yes-or-no': (event, message, callback) ->
@@ -161,7 +161,7 @@ RactiveAsyncUserDialog = Ractive.extend({
         </div>
 
       {{ elseif state.type === 'text-input' }}
-        <input id="async-dialog-text-input" class="async-dialog-text-input" type="text" />
+        <input id="async-dialog-text-input" class="async-dialog-text-input" type="text" value="{{state.defaultValue}}" />
         <div class="async-dialog-button-row">
           <input id="async-dialog-input-ok" type="button" on-click="perform-input-ok" value="OK"/>
         </div>

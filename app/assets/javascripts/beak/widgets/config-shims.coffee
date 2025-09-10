@@ -45,9 +45,9 @@ genAsyncDialogConfig = (ractive, viewController) ->
       tellDialog('show-chooser', message, choices, callback)
       return
 
-    getText: (message) -> (callback) ->
+    getText: (message, defaultValue) -> (callback) ->
       clearMouse()
-      tellDialog('show-text-input', message, callback)
+      tellDialog('show-text-input', message, defaultValue, callback)
       return
 
     getYesOrNo: (message) -> (callback) ->
@@ -75,10 +75,10 @@ genDialogConfig = (viewController, notify) ->
   # Uhh, they probably never will.  Instead, we should favor the `dialog` extension,
   # for which we provide "asyncDialog" shims above. --Jason B. (4/5/19)
   {
-    confirm: (str) -> clearMouse(); window.confirm(str)
-    input:   (str) -> clearMouse(); window.prompt(str, "")
-    notify:  (str) -> clearMouse(); notify(str)
-    yesOrNo: (str) -> clearMouse(); window.confirm(str)
+    confirm: (str)               -> clearMouse(); window.confirm(str)
+    input:   (str, defaultValue) -> clearMouse(); window.prompt(str, defaultValue)
+    notify:  (str)               -> clearMouse(); notify(str)
+    yesOrNo: (str)               -> clearMouse(); window.confirm(str)
   }
 
 # (Ractive, ViewController, BrowserCompiler) => ImportExportConfig
