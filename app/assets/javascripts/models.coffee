@@ -101,7 +101,7 @@ selectModelByURL = (modelURL) ->
       extractDomain = (str) -> extractNMatches(".*?//?([^/]+)|()")(1)(str)[0]
       extractDomain(window.location.href) is extractDomain(url)
 
-  if urlIsInternal(modelURL)
+  if urlIsInternal(modelURL) and modelURL.trim().endsWith("nlogox")
 
     regexStr            = ".*/(modelslib/|test/|demomodels/)(.+).nlogox"
     [prefix, modelName] = extractNMatches(regexStr)(2)(modelURL)
