@@ -317,7 +317,7 @@ scrapeRoutes ++= Seq(
 scrapeDelay := 120
 
 // enable this when any file metadata changes are made (usually in the `Play-Scraper` project)
-scrapeForceUpload := true
+// scrapeForceUpload := true
 
 def isBuildServer: Boolean = !Option(System.getenv("BUILD_SERVER")).isEmpty
 
