@@ -7,7 +7,7 @@ resolvers ++= Seq(
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin"   % "2.9.7")
 addSbtPlugin("com.github.sbt"    % "sbt-digest"   % "2.1.0")
-addSbtPlugin("org.nlogo"         % "play-scraper" % "1.2.0-a9c7c58")
+addSbtPlugin("org.nlogo"         % "play-scraper" % "1.3.0-cddbd6d")
 addSbtPlugin("com.timushev.sbt"  % "sbt-updates"  % "0.5.0")
 
 // Conflict with a common dependency of Play/Twirl.  No updates in a long time, so maybe time to switch.  -Jeremy B June
