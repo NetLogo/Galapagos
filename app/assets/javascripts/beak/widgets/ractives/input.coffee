@@ -216,7 +216,7 @@ RactiveInput = RactiveValueWidget.extend({
     inputType = @get("widget.boxedValue.type")
     valueType = typeof(newValue)
 
-    if inputType is "Number"
+    if (inputType is "Number" and valueType isnt "number")
       try
         newValue = workspace.evalPrims.readFromString(newValue)
         if newValue? and typeof(newValue) is "number"
@@ -225,7 +225,7 @@ RactiveInput = RactiveValueWidget.extend({
         @resetValue("number", oldValue, 0)
         return
 
-    if inputType is "Color" and valueType isnt "number"
+    if (inputType is "Color" and valueType isnt "number")
       @resetValue("number", oldValue, 0)
       return
 
