@@ -21,16 +21,13 @@ end</code>
     <chooser x="5" y="265" height="45" variable="options" current="0" display="options" width="138" sizeVersion="0">
       <choice type="string" value="a"></choice>
       <choice type="double" value="1.0"></choice>
-      <choice type="list"></choice>
-      <choice type="list">
-        <value value="a"></value>
-        <value value="1.0"></value>
-        <value value="2.0"></value>
-      </choice>
+      <choice type="list">[]</choice>
+      <choice type="list">["a" 1 2]</choice>
     </chooser>
     <chooser x="5" y="210" height="45" variable="one-option" current="0" display="one-option" width="138" sizeVersion="0">
       <choice type="double" value="0.0"></choice>
     </chooser>
+
     <input x="10" multiline="false" y="315" height="60" variable="single-line-string-var" type="string" width="235" sizeVersion="0">The quick brown fox jumps over the lazy dog.</input>
     <input x="10" multiline="true" y="445" height="60" variable="multi-line-string-var" type="string" width="235" sizeVersion="0">The quick brown fox jumps over the lazy dog.</input>
     <input x="10" multiline="false" y="380" height="60" variable="single-line-string-var-2" type="string" width="235" sizeVersion="0">a short string</input>
