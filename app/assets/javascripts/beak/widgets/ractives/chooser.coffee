@@ -154,12 +154,18 @@ RactiveChooser = RactiveValueWidget.extend({
 
   widgetType: "chooser"
 
-  observe: {
-    'widget.currentValue': () ->
-      widget        = @get('widget')
-      currentChoice = widget.choices.findIndex( (c) -> c is widget.currentValue )
-      @set('widget.currentChoice', if currentChoice >= 0 then currentChoice else 0)
-      return
+  on: {
+    'chooser-option-change': (event) ->
+      widget       = @get('widget')
+      selectedIdx  = parseInt(event.node.value)
+      selectedChoice = widget.choices[selectedIdx] or widget.choices[0]
+      isSelectedIdxValid = selectedIdx >= 0 and selectedIdx < widget.choices.length
+      if isSelectedIdxValid
+        @set('internalValue', selectedChoice)
+        @set('widget.currentChoice', if selectedIdx >= 0 then selectedIdx else 0)
+        @fire('widget-value-change')
+        return
+      return false
   }
 
   components: {
@@ -183,11 +189,11 @@ RactiveChooser = RactiveValueWidget.extend({
       <span class="netlogo-label">{{widget.display}}</span>
       <select
         class="netlogo-chooser-select"
-        value="{{internalValue}}"
-        on-change="widget-value-change"
+        value="{{widget.currentChoice}}"
+        on-change="chooser-option-change"
         {{# isEditing }} disabled{{/}} >
-        {{#widget.choices}}
-        <option class="netlogo-chooser-option" value="{{.}}">{{>literal}}</option>
+        {{#widget.choices:index}}
+        <option class="netlogo-chooser-option" value="{{index}}">{{>literal}}</option>
         {{/}}
       </select>
     </label>
