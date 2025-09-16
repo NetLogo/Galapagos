@@ -20,6 +20,7 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
+GET         /jumpto                             controllers.Local.jumpto
 GET         /iframe-test                        controllers.Local.iframeTest
 
 # NetTango

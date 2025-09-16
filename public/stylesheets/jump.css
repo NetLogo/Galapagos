@@ -1,0 +1,8 @@
+ul.jump-search-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul.jump-search-list > li {
+  margin: 10px 5px;
+}

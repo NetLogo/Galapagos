@@ -305,6 +305,7 @@ scrapeRoutes ++= Seq(
   "/standalone",
   "/launch",
   "/web",
+  "/jumpto",
   "/nettango-builder",
   "/nettango-library",
   "/nettango-player",

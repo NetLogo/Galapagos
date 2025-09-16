@@ -39,6 +39,11 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.simulation(OutsourceTagBuilder))
   }
 
+  def jumpto: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.jump())
+  }
+
   def hnwAuthoring: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.hnwAuthoring(OutsourceTagBuilder))

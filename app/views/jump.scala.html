@@ -1,0 +1,20 @@
+@import play.api.Mode
+
+@()(implicit mode: Mode, request: Request[?])
+
+@extraHead = {
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/jump.css").relative' />
+}
+
+@content = {
+  <div id="jump-control" class="inner-content">
+    <p>Waiting to redirect to a model or load the search key list (is JavaScript enabled?)...</p>
+  </div>
+}
+
+@extraBody = {
+  <script src='@routes.Assets.versioned("ractive/ractive.min.js").relative' type="text/javascript"></script>
+  <script type="module" src='@routes.Assets.versioned("javascripts/pages/jump.js").relative'></script>
+}
+
+@views.html.mainTheme(content, "NetLogo Web", None, extraHead, extraBody)
