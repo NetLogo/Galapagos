@@ -72,9 +72,9 @@
   display: block;
   width: 100%;
   height: auto;
-  max-width: 256px;
-  max-height: 256px;
-  margin: auto;
+  max-width: 192px;
+  max-height: 192px;
+  margin: 16px auto;
 }
 
 .index-link {
