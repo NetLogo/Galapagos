@@ -75,12 +75,17 @@ routeJumpSearchKey = (location, comparableList) ->
     throw new Error("TODO: Better error; no search key given")
 
   else
+    matched = false
     searchKeyMatches = comparableList.filter( (m) -> m.shortName.startsWith(searchKey) )
-    if searchKeyMatches.length is 1 then redirectToModel(location, searchKeyMatches[0].entry)
+    if searchKeyMatches.length is 1
+      redirectToModel(location, searchKeyMatches[0].entry)
+      matched = true
 
     exact = searchKeyMatches.filter( (m) -> m.shortName is searchKey )
-    if exact.length is 1 then redirectToModel(location, exact[0].entry)
+    if exact.length is 1
+      redirectToModel(location, exact[0].entry)
+      matched = true
 
-    return { searchKey, searchKeyMatches }
+    return { matched, searchKey, searchKeyMatches }
 
 export { fetchModelList, routeJumpSearchKey, createJumpRactive }
