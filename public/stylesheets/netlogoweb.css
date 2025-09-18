@@ -20,6 +20,7 @@
 }
 
 :root {
+  --color-light-blue: #cae6ff;
   --color-dark-blue: #0072f5;
   --color-widget-button: var(--color-dark-blue);
   --color-widget-button-active: #003473;
@@ -30,7 +31,7 @@
   --color-widget-accessories: var(--color-dark-blue);
   --color-widget-accessories-neutral: #afafaf;
 
-  --color-widget-background: #cae6ff;
+  --color-widget-background: var(--color-light-blue);
 
   --color-widget-plot-background: #eeeeee;
   --color-widget-plot-border: #bcbcbc;
@@ -43,6 +44,12 @@
 
   --color-widget-switch-primary-hover: #00aaff;
   --color-widget-switch-off-hover:     #e5e5e5;
+
+  --color-tab-background:        #eff5fc;
+  --color-tab-hover:             var(--color-light-blue);
+  --color-tab-active-background: var(--color-light-blue);
+  --color-tab-active-hover:      #98cbf8;
+  --color-tab-border:            #999999;
 
   --widget-padding-x: 0.5rem;
   --widget-padding-y: 0.3rem;
@@ -79,29 +86,29 @@
 }
 
 .netlogo-tab-area {
-  border-color: #242479;
+  border-color: var(--color-tab-border);
 }
 
 .netlogo-tab {
-  background-color: #BCBCE5;
-  border-color: #242479;
+  background-color: var(--color-tab-background);
+  border-color: var(--color-tab-border);
   font-size: 16px;
 }
 
 .netlogo-tab.netlogo-active {
-  background-color: #7C76fD;
+  background-color: var(--color-tab-active-background);
 }
 
 .netlogo-tab:active {
-  background-color: #7C76fD;
+  background-color: var(--color-tab-active-background);
 }
 
 .netlogo-tab:hover  {
-  background-color: #D3D3EE;
+  background-color: var(--color-tab-hover);
 }
 
 .netlogo-tab.netlogo-active:hover  {
-  background-color: #9E99FD;
+  background-color: var(--color-tab-active-hover);
 }
 
 .netlogo-view-container {
