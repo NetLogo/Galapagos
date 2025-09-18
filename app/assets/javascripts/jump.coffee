@@ -1,6 +1,7 @@
-modelEntryToComparable = (entry) ->
-  shortName  = entry.split('/').slice(-1)[0].toLowerCase().replaceAll(" ", "-")
-  { entry, shortName }
+modelEntryToComparable = (entry, statusObj) ->
+  shortName = entry.split('/').slice(-1)[0].toLowerCase().replaceAll(" ", "-")
+  status    = if statusObj? then statusObj.status ? 'unknown' else 'unknown'
+  { entry, shortName, status }
 
 createModelUrl = (location, matchEntry) ->
   matchAssets = matchEntry.replace("public/", "assets/")
@@ -61,12 +62,14 @@ createJumpRactive = (clipboard, location, container, searchKey, searchKeyMatches
   ractive
 
 fetchModelList = () ->
-  modelListResponse = await fetch('./model/list.json')
+  modelListResponse  = await fetch('./model/list.json')
+  statusListResponse = await fetch('./model/statuses.json')
   if not modelListResponse.ok
     throw new Error("TODO: Better error; could not fetch list.json of models")
   else
     modelList      = await modelListResponse.json()
-    comparableList = modelList.map(modelEntryToComparable)
+    statusList     = if statusListResponse.ok then await statusListResponse.json() else {}
+    comparableList = modelList.map( (m) => modelEntryToComparable(m, statusList[m]) )
     return comparableList
 
 routeJumpSearchKey = (location, comparableList) ->
@@ -76,7 +79,9 @@ routeJumpSearchKey = (location, comparableList) ->
 
   else
     matched = false
-    searchKeyMatches = comparableList.filter( (m) -> m.shortName.startsWith(searchKey) )
+    searchKeyMatches = comparableList.filter( (m) ->
+      m.status isnt 'not_compiling' and m.shortName.startsWith(searchKey)
+    )
     if searchKeyMatches.length is 1
       redirectToModel(location, searchKeyMatches[0].entry)
       matched = true
