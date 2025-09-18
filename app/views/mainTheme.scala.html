@@ -32,11 +32,11 @@
           case class TopLink(id: String, url: String, text: String) extends TopSomething
           case class TopLabel(id: String, text: String)             extends TopSomething
 
-          val LaunchLink  = TopLink ("launch"   , s"./${relativizer}launch"            , "Launch")
-          val UpdatesLink = TopLink ("updates"  , s"./${relativizer}whats-new"         , "What's New")
-          val DocsLabel   = TopLabel("docs"                                            , "Documentation")
-          val NetLogoLink = TopLink ("netlogo"  , "http://ccl.northwestern.edu/netlogo", "About NetLogo")
-          val Settings    = TopLink ("settings" , s"./${relativizer}settings"          , "Settings")
+          val LaunchLink  = TopLink ("launch"   , s"./${relativizer}launch"   , "Launch")
+          val UpdatesLink = TopLink ("updates"  , s"./${relativizer}whats-new", "What's New")
+          val DocsLabel   = TopLabel("docs"                                   , "Documentation")
+          val NetLogoLink = TopLink ("netlogo"  , "https://netlogo.org"       , "About NetLogo")
+          val Settings    = TopLink ("settings" , s"./${relativizer}settings" , "Settings")
 
           Html(Seq(LaunchLink, UpdatesLink, DocsLabel, NetLogoLink, Settings).map {
 
