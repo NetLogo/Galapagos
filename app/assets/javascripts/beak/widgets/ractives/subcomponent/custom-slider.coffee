@@ -1,5 +1,3 @@
-import Ractive from "ractive"
-
 RactiveCustomSlider = Ractive.extend({
 
   data: -> {
