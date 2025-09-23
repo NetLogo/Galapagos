@@ -4,6 +4,8 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
        , setUpHNWMonitor, setUpHNWPlot, setUpHNWSlider, setUpHNWSwitch
        } from "./set-up-widgets.js"
 
+import { miniDump } from "../tortoise-utils.js"
+
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
 import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
@@ -434,7 +436,7 @@ updateWidget = (widget, isHNWClient) ->
             'N/A'
           else if isString
             value
-          else
+          else if isNum
             preci = widget.precision
             if preci?
               if not isHNWClient
@@ -447,6 +449,9 @@ updateWidget = (widget, isHNWClient) ->
                   withPrecision(parsed, preci)
             else
               value
+          else
+            miniDump(value)
+
         catch err
           'N/A'
       else
