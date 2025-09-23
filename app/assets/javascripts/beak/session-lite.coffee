@@ -2,14 +2,14 @@ import { createCommonArgs, createNamedArgs, listenerEvents } from "../notificati
 
 import HNWSession from "./hnw/session.js"
 
-import runBabyBehaviorSpace     from "./babybehaviorspace.js"
-import mangleExportedPlots      from "./mangle-exported-plots.js"
-import performUpdate            from "./perform-update.js"
-import { toNetLogoMarkdown }    from "./tortoise-utils.js"
-import initializeUI             from "./widgets/initialize-ui.js"
-import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
-import { cloneWidget }          from "./widgets/widget-properties.js"
-import { serializeResources }   from "./external-resources.js"
+import runBabyBehaviorSpace            from "./babybehaviorspace.js"
+import mangleExportedPlots             from "./mangle-exported-plots.js"
+import performUpdate                   from "./perform-update.js"
+import { miniDump, toNetLogoMarkdown } from "./tortoise-utils.js"
+import initializeUI                    from "./widgets/initialize-ui.js"
+import { runWithErrorHandling }        from "./widgets/set-up-widgets.js"
+import { cloneWidget }                 from "./widgets/widget-properties.js"
+import { serializeResources }          from "./external-resources.js"
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -472,14 +472,6 @@ class SessionLite
     massagedConfig = { experimentName, parameterSet, repetitionsPerCombo, metrics: compiledMetrics
                      , setup, go, stopCondition, iterationLimit }
     setGlobal      = world.observer.setGlobal.bind(world.observer)
-
-    miniDump = (x) ->
-      if Array.isArray(x)
-        x.map(miniDump)
-      else if typeof(x) in ["boolean", "number", "string"]
-        x
-      else
-        workspace.dump(x)
 
     runBabyBehaviorSpace(massagedConfig, setGlobal, miniDump)
 
