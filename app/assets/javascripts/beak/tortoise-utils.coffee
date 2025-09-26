@@ -14,14 +14,6 @@ markdownToHtml = (md) ->
     (url) -> if /^https?:\/\//.test(url) then url else getBase64IfResource(url), # URL Sanitizer
     (id) -> id)                                                                  # ID Sanitizer
 
-miniDump = (x) ->
-  if Array.isArray(x)
-    x.map(miniDump)
-  else if typeof(x) in ["boolean", "number", "string"]
-    x
-  else
-    workspace.dump(x)
-
 # (String) => String
 toNetLogoWebMarkdown = (md) ->
   md.replace(
@@ -69,7 +61,6 @@ stripXMLCdata = (xml) ->
 
 export {
   markdownToHtml,
-  miniDump,
   toNetLogoWebMarkdown,
   toNetLogoMarkdown,
   normalizedFileName,
