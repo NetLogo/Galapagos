@@ -4,8 +4,6 @@ import { setUpWidget, setUpButton, setUpChooser, setUpInputBox
        , setUpHNWMonitor, setUpHNWPlot, setUpHNWSlider, setUpHNWSwitch
        } from "./set-up-widgets.js"
 
-import { miniDump } from "../tortoise-utils.js"
-
 import { VIEW_INNER_SPACING } from "./ractives/view.js"
 import { locationProperties, typedWidgetProperties } from "./widget-properties.js"
 
@@ -450,7 +448,7 @@ updateWidget = (widget, isHNWClient) ->
             else
               value
           else
-            miniDump(value)
+            workspace.dump(value, false)
 
         catch err
           'N/A'
