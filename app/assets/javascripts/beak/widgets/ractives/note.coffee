@@ -9,7 +9,7 @@ import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
 
-LabelEditForm = EditForm.extend({
+NoteEditForm = EditForm.extend({
 
   data: -> {
     backgroundLight:  undefined # Int
@@ -96,9 +96,9 @@ LabelEditForm = EditForm.extend({
 
 })
 
-HNWLabelEditForm = LabelEditForm
+HNWNoteEditForm = NoteEditForm
 
-RactiveLabel = RactiveWidget.extend({
+RactiveNote = RactiveWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
@@ -123,7 +123,7 @@ RactiveLabel = RactiveWidget.extend({
     return
 
   components: {
-    editForm: LabelEditForm
+    editForm: NoteEditForm
   }
 
   eventTriggers: ->
@@ -187,10 +187,10 @@ RactiveLabel = RactiveWidget.extend({
 
 })
 
-RactiveHNWLabel = RactiveLabel.extend({
+RactiveHNWNote = RactiveNote.extend({
   components: {
-    editForm: HNWLabelEditForm
+    editForm: HNWNoteEditForm
   }
 })
 
-export { RactiveLabel, RactiveHNWLabel }
+export { RactiveNote, RactiveHNWNote }

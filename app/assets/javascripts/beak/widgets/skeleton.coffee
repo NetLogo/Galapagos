@@ -1,4 +1,4 @@
-import { RactiveLabel, RactiveHNWLabel } from "./ractives/label.js"
+import { RactiveNote, RactiveHNWNote } from "./ractives/note.js"
 import { RactiveInput, RactiveHNWInput } from "./ractives/input.js"
 import { RactiveButton, RactiveHNWButton } from "./ractives/button.js"
 import { RactiveView, RactiveHNWView } from "./ractives/view.js"
@@ -104,7 +104,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     , tickCounter:   RactiveTickCounter
 
-    , labelWidget:   RactiveLabel
+    , noteWidget:    RactiveNote
     , switchWidget:  RactiveSwitch
     , buttonWidget:  RactiveButton
     , sliderWidget:  RactiveSlider
@@ -115,7 +115,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , plotWidget:    RactivePlot
     , viewWidget:    RactiveView
 
-    , hnwLabelWidget:   RactiveHNWLabel
+    , hnwNoteWidget:   RactiveHNWNote
     , hnwSwitchWidget:  RactiveHNWSwitch
     , hnwButtonWidget:  RactiveHNWButton
     , hnwSliderWidget:  RactiveHNWSlider
@@ -283,8 +283,8 @@ template =
            on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#widgetObj:key}}
-          {{# type ===    'textBox'  }}    <labelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
-          {{# type === 'hnwTextBox'  }} <hnwLabelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
+          {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
+          {{# type === 'hnwTextBox'  }} <hnwNoteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
           {{# type ===    'view'     }}    <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" /> {{/}}
           {{# type === 'hnwView'     }} <hnwViewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" /> {{/}}
           {{# type ===    'switch'   }}    <switchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" breedVars="{{metadata.myVars}}" /> {{/}}
