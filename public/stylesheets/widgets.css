@@ -861,6 +861,12 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   white-space: nowrap;
 }
 
+.netlogo-powered-by-image {
+  vertical-align: middle;
+  width: 24px;
+  height: 24px;
+}
+
 .netlogo-export-wrapper {
   align-items: center;
   display: flex;

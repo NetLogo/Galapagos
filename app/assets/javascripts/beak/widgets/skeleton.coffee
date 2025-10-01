@@ -197,7 +197,42 @@ template =
         <div class="netlogo-subheader">
           <div class="netlogo-powered-by">
             <a href="https://netlogo.org">
-              <img style="vertical-align: middle;" alt="NetLogo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAdhAAAHYQGVw7i2AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAA5pJREFUSImtlT1sHFUQx3/zdu/Dl927w8Zny8bgGAO2A6IIQpFsC5rQYQpkiBSEIqVBIIokCqEJ0FBEQgjoqFLgihRQQEMqyAdCchoMEmBw+IplOUpy4fBxtnffUOxmd88+CxRlpNVIb+fN7/1n3s6KqnL0DF1rjeYJHDlokN3G4IgIYkAExMgWD+l7waRroRguI2Yun+fUm0/Sktl3taviNc+KMPmfiXYCdlzT8/mCs9/1C3+fsNZMioCgGBFAo10AooCAKJYYiCbeCHGsZjxgZGpj3R53QzUHjY0XEawogiCiSCah6QCM4oljJePBRMAXXLV22G5LFAHzruGBAZda2eA4sBnAct3y+/UQFYmTdFZgI+CIC7hqyZwoOoXjwGOjOcpdJlYHOQdG+xwQWL4RIgaCULYoIFtm1yU2VcCmp9jd70bJiWIBNAaN1BzurzmIwErd8sNKiNq0b9kyGzKmCtYqVpWhXhfW12izGCTxg0J/xXBP1WBttFetopbEu9n9xsDoQI7hPpeuotD94Vvkm3Xqs8doDY2lEEkcAP1Vw2/XwmztOygQ2DdRYPy+HF3FaOva1Aylrz9j9PAeRk8+Tfn7CylEE0cpLwxWHUTZoiADGOhx6K04bRVp7ZmiOb4Pq4r/zedMHJnm0aPT9H11BrE2LZnA2IDD3hEXV+IyW7CWFDDcl6OTrT+4l9bQOFbBAv53F3j47eeZPDzGvZ+8j7PRStSUi4aJQbdNQdIDvyQdAY0nZql8+TGNR6b5B8gDOSM4ItQufkp58RI/vfweG143KtDjG7wiNFqRsgSQdzsDckvfsln0qC6cIy9QAAoCUr6by7PH+POZVwkLpbQ3Ein5qxk1PQGstbSjiuL8FxQWL2ERrCoblR6WZ17hyrNHCErlqAfZO6XgEPXBiKSA5WsBD5Xa+yDrTcwfP2KDgKDkc2PmJVYPvE64q9IWpxrNo1uQetOiNvrgEsAvVwIGe128YqrCnT+Ls7RA/cBr3HzuONa/q2MZb0FAaTSVqzfDZMomgM1QubjQ4vHxAlUvulxarXF17mes371j4qw1W8r84joaKtbEH9yLHzS0vS5QqziUdxnynW/uNrMWGk1l5XqApe0PhwsEZEeGwmo9ZLUe/r/s20yjf0Q0KgID/HqbmXZGpCNjySDM3WlABvKRMZ53Cjh/pwEC58T33jGnD9Eyvrcf4Q1gkagnt2sBsChwUnzvqdOHaP0LTVV62r1EEPcAAAAASUVORK5CYII="/>
+              <svg class="netlogo-powered-by-image" viewBox="0 0 48 48" role="img">
+                <g clip-path="url(#clip0_1191_6280)">
+                  <rect width="48" height="48" fill="url(#paint0_linear_1191_6280)"/>
+                  <mask id="mask0_1191_6280" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="2" y="1" width="44" height="44">
+                    <rect x="2" y="1" width="43.252" height="43.252" fill="#D9D9D9"/>
+                  </mask>
+                  <g mask="url(#mask0_1191_6280)">
+                    <path d="M13.75 37C11.0614 37 8.7642 35.9659 6.85852 33.8976C4.95284 31.8293 4 29.3014 4 26.3139C4 23.7532 4.69432 21.4715 6.08295 19.4689C7.47159 17.4663 9.73182 16.4233 11.9773 15.8652C12.7159 12.8449 14.6364 9.95578 16.4091 8.97096C18.8985 7.58798 25.8948 6.95142 27.6211 12.2298C28.818 11.5675 31.88 11.2094 33.6527 13.1792C34.4961 14.1162 35.9091 15.6466 35.9091 18.8199C37.9477 19.0825 39.6392 20.5112 40.9835 22.202C42.3278 23.8927 43 25.8707 43 28.1359C43 30.5982 42.2244 32.6911 40.6733 34.4146C39.1222 36.1382 37.2386 37 35.0227 37H13.75Z" fill="#BBD7FF"/>
+                  </g>
+                  <path d="M19.8371 25.266L14.4669 16.1838L17.8471 25.1211C17.8913 25.2379 17.8937 25.3665 17.8539 25.4849L14.808 34.5415L19.8371 25.266Z" fill="url(#paint1_linear_1191_6280)"/>
+                  <path d="M19.6201 25.1302L14.4259 16.1209C14.294 15.8922 14.5343 15.6295 14.7738 15.7403L34.758 24.9887L19.8595 25.2655C19.761 25.2674 19.6693 25.2155 19.6201 25.1302Z" fill="url(#paint2_linear_1191_6280)"/>
+                  <path d="M19.6255 25.4098L14.7696 34.6059C14.6463 34.8393 14.8961 35.0929 15.1314 34.9733L34.758 24.9887L19.8595 25.2655C19.761 25.2674 19.6715 25.3227 19.6255 25.4098Z" fill="url(#paint3_linear_1191_6280)"/>
+                </g>
+                <defs>
+                  <linearGradient id="paint0_linear_1191_6280" x1="70.2667" y1="-23.6" x2="30" y2="30.8" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#103E7D"/>
+                    <stop offset="0.465" stop-color="#7FBFFF"/>
+                    <stop offset="1" stop-color="#5E92F3"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_1191_6280" x1="27.5" y1="22.5" x2="12.1082" y2="27.2506" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#F31500"/>
+                    <stop offset="1" stop-color="#BB1101"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_1191_6280" x1="27.5" y1="22.5" x2="12.1082" y2="27.2506" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#F31500"/>
+                    <stop offset="1" stop-color="#BB1101"/>
+                  </linearGradient>
+                  <linearGradient id="paint3_linear_1191_6280" x1="27.5" y1="22.5" x2="12.1082" y2="27.2506" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#F31500"/>
+                    <stop offset="1" stop-color="#BB1101"/>
+                  </linearGradient>
+                  <clipPath id="clip0_1191_6280">
+                  <rect width="48" height="48" rx="9.06667" fill="white"/>
+                  </clipPath>
+                </defs>
+              </svg>
               <span style="font-size: 16px;">powered by NetLogo</span>
             </a>
           </div>
