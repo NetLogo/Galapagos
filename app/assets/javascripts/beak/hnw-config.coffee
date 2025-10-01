@@ -244,10 +244,10 @@ initialize = (modelText, config) ->
 
   return
 
-# (String, String) => Unit
+# (XMLTextWrangler, String) => Unit
 reinitialize = (wrangler, config) ->
 
-  ids = ["download-bundle-button", "download-nlogo-button", "start-over-button"]
+  ids = ["download-nlogox-button", "start-over-button"]
   ids.forEach((id) -> document.getElementById(id).disabled = false)
 
   [isValid, error] = wrangler.checkValidity()
@@ -470,13 +470,12 @@ genConfigP = ->
       }
   )
 
-
 # () => Promise[(String, String)]
-requestNlogoAndJSON = ->
+requestNlogoxAndJSON = ->
 
   codeFrame = document.getElementById('code-frame')
 
-  nlogoPromise =
+  nlogoxPromise =
     postPromise(codeFrame)({ type: "request-save" }).then(
       ({ code }) ->
         lastWrangler.withCode(code).modelText
@@ -484,40 +483,42 @@ requestNlogoAndJSON = ->
 
   configPromise = genConfigP().then((outConfig) -> JSON.stringify(outConfig))
 
-  Promise.all([nlogoPromise, configPromise])
+  Promise.all([nlogoxPromise, configPromise])
+
+class HubNetWebConfigElement extends HTMLElement
+  constructor: ->
+    super()
+
+customElements.define("hubnet-web-config", HubNetWebConfigElement)
 
 # () => Unit
-document.getElementById("download-bundle-button").onclick = ->
+document.getElementById("download-nlogox-button").onclick = ->
 
   filename = prompt("Enter file name (without file extension):", "")
 
   if filename?
 
-    name = if filename.endsWith(".hnw.json" ) then filename else "#{filename}.hnw.json"
+    nlogoxName = if filename.endsWith(".nlogox") then filename else "#{filename}.nlogox"
 
-    requestNlogoAndJSON().then(
-      ([nlogo, json]) ->
-        obj          = JSON.parse(json)
-        obj.hnwNlogo = nlogo
-        download(name)(JSON.stringify(obj))
-    )
+    requestNlogoxAndJSON().then(
+      ([nlogox, json]) ->
+        nlogoDoc     = nlogoXMLToDoc(nlogox)
+        modelElement = nlogoDoc.querySelector("model")
 
-  return
+        existingConfig = modelElement.querySelector("hubnet-web-config")
+        if existingConfig? then modelElement.removeChild(existingConfig)
 
-# () => Unit
-document.getElementById("download-nlogo-button").onclick = ->
+        hnwConfigElement           = new HubNetWebConfigElement()
+        hnwReplaceString           = "{{{HUBNET-WEB-CONFIG-REPLACEMENT}}}"
+        hnwConfigElement.innerHTML = hnwReplaceString
+        modelElement.appendChild(hnwConfigElement)
 
-  filename = prompt("Enter file name (without file extension):", "")
+        hnwNlogoxUnfixed = docToNlogoXML(nlogoDoc)
 
-  if filename?
-
-    nlogoName = if filename.endsWith(".nlogo")       then filename else "#{filename}.nlogo"
-    jsonName  = if filename.endsWith(".nlogo.json" ) then filename else "#{filename}.nlogo.json"
-
-    requestNlogoAndJSON().then(
-      ([nlogo, json]) ->
-        download(nlogoName)(nlogo)
-        download(jsonName)(json)
+        # Web browsers don't like CDATA in their HTML documents, so they turn them into HTML comments.  This is enough
+        # to get them back into a proper form for the NetLogo Web parser.  -Jeremy B Octover 2025
+        hnwNlogox = hnwNlogoxUnfixed.replace(hnwReplaceString, "<![CDATA[#{json}]]>")
+        download(nlogoxName)(hnwNlogox)
     )
 
   return
@@ -547,10 +548,10 @@ document.getElementById("test-model-button").onclick = ->
 
       if password?
 
-        requestNlogoAndJSON().then(
-          ([nlogo, config]) ->
+        requestNlogoxAndJSON().then(
+          ([nlogox, config]) ->
 
-            parcel                = { type: "galapagos-direct-launch", nlogo, config, sessionName, password }
+            parcel                = { type: "galapagos-direct-launch", nlogox, config, sessionName, password }
             innerTestFrame        = document.getElementById("inner-test-frame")
             innerTestFrame.onload = -> innerTestFrame.contentWindow.postMessage(parcel, "*")
             innerTestFrame.src    = "//#{window.location.hostname}:8080/host?embedded=true"
