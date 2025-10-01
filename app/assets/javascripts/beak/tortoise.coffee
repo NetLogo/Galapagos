@@ -231,6 +231,16 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
 
   if result.model.success
 
+    straightToXml = compiler.exportNlogoXML({
+      info:         result.info,
+      code:         result.code,
+      widgets:      JSON.parse(result.widgets),
+      turtleShapes: [],
+      linkShapes:   [],
+      resources:    []
+    })
+    console.log(straightToXml)
+
     result.code = if (startingNlogo is rewrittenNlogo)
       result.code
     else

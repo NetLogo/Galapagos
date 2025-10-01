@@ -247,7 +247,7 @@ initialize = (modelText, config) ->
 # (String, String) => Unit
 reinitialize = (wrangler, config) ->
 
-  ids = ["download-bundle-button", "download-nlogo-button", "start-over-button"]
+  ids = ["download-nlogox-button", "start-over-button"]
   ids.forEach((id) -> document.getElementById(id).disabled = false)
 
   [isValid, error] = wrangler.checkValidity()
@@ -464,7 +464,6 @@ genConfigP = ->
 
   )
 
-
 # () => Promise[(String, String)]
 requestNlogoAndJSON = ->
 
@@ -481,37 +480,20 @@ requestNlogoAndJSON = ->
   Promise.all([nlogoPromise, configPromise])
 
 # () => Unit
-document.getElementById("download-bundle-button").onclick = ->
+document.getElementById("download-nlogox-button").onclick = ->
+
+  throw new Exception("Not yet re-implemented....")
 
   filename = prompt("Enter file name (without file extension):", "")
 
   if filename?
 
-    name = if filename.endsWith(".hnw.json" ) then filename else "#{filename}.hnw.json"
+    nlogoxName = if filename.endsWith(".nlogox")       then filename else "#{filename}.nlogox"
 
-    requestNlogoAndJSON().then(
-      ([nlogo, json]) ->
-        obj          = JSON.parse(json)
-        obj.hnwNlogo = nlogo
-        download(name)(JSON.stringify(obj))
-    )
-
-  return
-
-# () => Unit
-document.getElementById("download-nlogo-button").onclick = ->
-
-  filename = prompt("Enter file name (without file extension):", "")
-
-  if filename?
-
-    nlogoName = if filename.endsWith(".nlogo")       then filename else "#{filename}.nlogo"
-    jsonName  = if filename.endsWith(".nlogo.json" ) then filename else "#{filename}.nlogo.json"
-
-    requestNlogoAndJSON().then(
-      ([nlogo, json]) ->
-        download(nlogoName)(nlogo)
-        download(jsonName)(json)
+    requestNlogoxAndJSON().then(
+      ([nlogox, json]) ->
+        throw new Exception("Not yet re-implemented....")
+        # download(nlogoxName)(nlogo)
     )
 
   return
