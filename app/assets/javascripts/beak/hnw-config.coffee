@@ -10,25 +10,6 @@ promiseID    = 0    # Number
 queue      = undefined # Array[Entry]
 intervalID = undefined # Number
 
-class OldFormatTextWrangler
-  @sep: '\n@#$#@#$#@'
-
-  constructor: (@modelText) ->
-    @sections = @modelText.split(OldFormatTextWrangler.sep)
-
-  checkValidity: () ->
-    [@sections.length is 12, "Invalid '.nlogo' file; must have 12 sections"]
-
-  getCode: () ->
-    @sections[0]
-
-  withCode: (code) ->
-    newSource = [code].concat(@sections.slice(1)).join(OldFormatTextWrangler.sep)
-    new OldFormatTextWrangler(newSource)
-
-  compile: (compiler) ->
-    compiler.fromNlogo(@modelText)
-
 class XMLTextWrangler
   constructor: (@modelText) ->
     try
@@ -119,8 +100,22 @@ document.getElementById("without-config-button").onclick = ->
     model    = formData.get('model-without-config')
     readFile(model).then(
       (modelText) ->
-        config = generateHNWConfig(modelText)
-        initialize(modelText, config)
+        finalText = if modelText.trim().startsWith("<?xml")
+          modelText
+        else
+          compiler = new BrowserCompiler()
+          oldFormatResult = compiler.convertNlogoToXML(modelText)
+          if (not oldFormatResult.success)
+            console.log(oldFormatResult)
+            # coffeelint: disable=max_line_length
+            err = "Failed to convert old format model to XML.  Make sure the model is a valid NetLogo 6 or 7 model.  The converter gave the error:  #{oldFormatResult.result[0].message}"
+            # coffeelint: enable=max_line_length
+            alert(new Error(err))
+
+          oldFormatResult.result
+
+        config = generateHNWConfig(finalText)
+        initialize(finalText, config)
     )
     input.value = ""
 
@@ -213,11 +208,7 @@ initializeRole = (roleName) ->
 # (String, String) => Unit
 initialize = (modelText, config) ->
 
-  wrangler =
-    if modelText.trim().startsWith("<?xml")
-      new XMLTextWrangler(modelText)
-    else
-      new OldFormatTextWrangler(modelText)
+  wrangler = new XMLTextWrangler(modelText)
 
   [isValid, error] = wrangler.checkValidity()
 
