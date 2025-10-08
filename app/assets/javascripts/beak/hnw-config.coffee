@@ -1,7 +1,7 @@
 import { newCustomModel } from "/new-model.js"
 import generateHNWConfig from './hnw-config-file-generator.js'
 
-import { nlogoXMLToDoc, docToNlogoXML, stripXMLCdata } from "./tortoise-utils.js"
+import { nlogoXMLToDoc, docToNlogoXML, stripXMLCdata, convertNlogoToXML } from "./tortoise-utils.js"
 
 lastWrangler = null # TextWrangler
 promiseID    = 0    # Number
@@ -103,16 +103,11 @@ document.getElementById("without-config-button").onclick = ->
         finalText = if modelText.trim().startsWith("<?xml")
           modelText
         else
-          compiler = new BrowserCompiler()
-          oldFormatResult = compiler.convertNlogoToXML(modelText)
-          if (not oldFormatResult.success)
-            console.log(oldFormatResult)
-            # coffeelint: disable=max_line_length
-            err = "Failed to convert old format model to XML.  Make sure the model is a valid NetLogo 6 or 7 model.  The converter gave the error:  #{oldFormatResult.result[0].message}"
-            # coffeelint: enable=max_line_length
-            alert(new Error(err))
+          try
+            convertNlogoToXML(modelText)
 
-          oldFormatResult.result
+          catch err
+            alert(err)
 
         config = generateHNWConfig(finalText)
         initialize(finalText, config)
@@ -138,17 +133,13 @@ document.getElementById("config-nlogo-button").onclick = ->
 
     Promise.all([baseModelFile, configFile].map(readFile)).then(
       ([baseModelText, configText]) ->
-        compiler = new BrowserCompiler()
-        oldFormatResult = compiler.convertNlogoToXML(baseModelText)
-        if (not oldFormatResult.success)
-          console.log(oldFormatResult)
-          # coffeelint: disable=max_line_length
-          err = "Failed to convert old format model to XML.  Make sure the model is a valid NetLogo 6 or 7 model.  The converter gave the error:  #{oldFormatResult.result[0].message}"
-          # coffeelint: enable=max_line_length
-          alert(new Error(err))
+        modelText = try
+          convertNlogoToXML(baseModelText)
+        catch err
+          alert(err)
 
         config = JSON.parse(configText)
-        initialize(oldFormatResult.result, config)
+        initialize(modelText, config)
     )
 
     baseInput  .value = ""
@@ -183,15 +174,10 @@ document.getElementById("config-bundle-button").onclick = ->
           bundle = JSON.parse(bundleText)
 
           if bundle.hnwNlogo?
-            nlogo        = bundle.hnwNlogo
+            nlogo     = bundle.hnwNlogo
             delete bundle.hnwNlogo
-            compiler     = new BrowserCompiler()
-            nlogoxResult = compiler.convertNlogoToXML(nlogo)
-            if not nlogoxResult.success
-              console.log(nlogoxResult)
-              throw new Error("Failed to convert old format model to NetLogo 7 format.")
-
-            [nlogoxResult.result, bundle]
+            modelText = convertNlogoToXML(nlogo)
+            [modelText, bundle]
 
         initialize(nlogox, config)
         bundleInput.value = ""
