@@ -150,30 +150,37 @@ RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
+    internalChoice: 0
   }
 
   widgetType: "chooser"
 
-  _setChoice: (idx) ->
+  _setChoice: (idx, { setInternalValue = true } = {}) ->
+    # This method syncs up values but control of side effects
+    # is up to the caller via the setInternalValue option and
+    # the choice to call @fire('widget-value-change') or not.
     widget          = @get('widget')
     valid           = idx >= 0 and idx < widget.choices.length
-    # The compiler will complain if we set the currentChoice to an
-    # invalid index. However, we use that information internally
-    # to know whether the current value is valid or not and display
-    # the currentValue in the chooser when it is not valid. --Omar I. (09/23/2025)
-    compiler_idx    = if valid then idx else 0
-    choice          = widget.choices[idx] or widget.choices[0]
+    choice          = widget.choices[idx]
 
-    @set('internalValue', choice)
-    @set('widget.internalChoice', idx)
-    @set('widget.currentChoice',  compiler_idx)
+    if setInternalValue
+      @set('internalValue', choice)
+    @set('internalChoice', idx)
+    @set('widget.currentChoice', if valid then idx else 0)
     choice
+
+  refreshChooser: (myself) -> (_, _1, chooser) ->
+    if myself.get('widget') is chooser
+      { eq } = tortoise_require('brazier/equals')
+      chooser.currentChoice = Math.max(0, chooser.choices.findIndex(eq(chooser.currentValue)))
+      myself.set('internalChoice', chooser.currentChoice)
 
   on: {
     'init': ->
       widget = @get('widget')
-      @_setChoice(widget.currentChoice) if widget.currentChoice is -1
-        
+      @_setChoice(widget.currentChoice)
+      @root.on('*.refresh-chooser', @refreshChooser(this))
+
     'chooser-option-change': (event) ->
       @_setChoice(parseInt(event.node.value))
       @fire('widget-value-change')
@@ -181,27 +188,15 @@ RactiveChooser = RactiveValueWidget.extend({
 
   observe: {
     'widget.currentValue': () ->
-      widget = @get('widget')
-      idx    = widget.choices.findIndex((c) -> c is widget.currentValue)
-      @_setChoice(idx)
-
-    'widget.choices': () ->
-      widget = @get('widget')
-      idx    = widget.choices.findIndex((c) -> c is widget.currentValue)
-      @set('widget.internalChoice', idx)
+      widget    = @get('widget')
+      idx       = widget.choices.findIndex((c) -> c is widget.currentValue)
+      if widget.choices[idx] is widget.choices[@get('internalChoice')]
+        return # NOOP
+      @_setChoice(idx, { setInternalValue: false })
   }
 
   components: {
     editForm: ChooserEditForm
-  }
-
-  computed: {
-    selectedIndex: ->
-      widget = @get('widget')
-      if widget.internalChoice < 0
-        widget.choices.length
-      else
-        widget.currentChoice
   }
 
   eventTriggers: ->
@@ -222,14 +217,11 @@ RactiveChooser = RactiveValueWidget.extend({
       <select
         name="chooser"
         class="netlogo-chooser-select"
-        value="{{selectedIndex}}"
+        value="{{internalChoice}}"
         on-change="chooser-option-change"
         {{# isEditing }} disabled{{/}} >
         {{#widget.choices:index}}
         <option class="netlogo-chooser-option" value="{{index}}">{{>literal}}</option>
-        {{/}}
-        {{#widget.internalChoice < 0}}
-        <option class="netlogo-chooser-option" value="{{widget.choices.length}}" disabled>{{widget.currentValue}}</option>
         {{/}}
       </select>
     </label>
