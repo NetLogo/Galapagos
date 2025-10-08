@@ -59,6 +59,19 @@ stripXMLCdata = (xml) ->
   else
     xml
 
+# (String) => String
+convertNlogoToXML = (nlogo) ->
+  compiler = new BrowserCompiler()
+  oldFormatResult = compiler.convertNlogoToXML(nlogo)
+  if not oldFormatResult.success
+    console.log(oldFormatResult)
+    # coffeelint: disable=max_line_length
+    err = "Failed to convert old format model to XML.  Make sure the model is a valid NetLogo 6 or 7 model.  The converter gave the error:  #{oldFormatResult.result[0].message}"
+    # coffeelint: enable=max_line_length
+    throw new Error(err)
+
+  oldFormatResult.result
+
 export {
   markdownToHtml,
   toNetLogoWebMarkdown,
@@ -68,5 +81,6 @@ export {
   sectionsToNlogo,
   nlogoXMLToDoc,
   docToNlogoXML,
-  stripXMLCdata
+  stripXMLCdata,
+  convertNlogoToXML
 }
