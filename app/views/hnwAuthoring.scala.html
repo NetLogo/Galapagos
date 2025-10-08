@@ -44,29 +44,29 @@
         <div class="mode-controls-row">
 
           <div>
-            <input id="config-nlogo-button" type="button" class="authoring-mode"
-                   value="Edit an existing HubNet Web model (NLogo & JSON)" />
-            <form id="config-form" class="authoring-form"
+            <input id="config-bundle-button" type="button" class="authoring-mode"
+                   value="Edit an existing HubNet Web model (NLogox or bundle)" />
+            <form id="bundle-form" class="authoring-form"
                   action="javascript:void(0);">
               <div class="flex-column">
-                <label>Base Model:
-                  <input id="base-model-input" type="file" name="base-model" accept=".nlogo,.nlogox" />
-                </label>
-                <label>Config File:
-                  <input id="config-input" type="file" name="config" accept=".nlogo.json,.json" />
+                <label>JSON:
+                  <input id="config-bundle-input" type="file" name="bundle" accept=".nlogox,.hnw.json" />
                 </label>
               </div>
             </form>
           </div>
 
           <div>
-            <input id="config-bundle-button" type="button" class="authoring-mode"
-                   value="Edit an existing HubNet Web model (bundle)" />
-            <form id="bundle-form" class="authoring-form"
+            <input id="config-nlogo-button" type="button" class="authoring-mode"
+                   value="Edit an existing HubNet Web model (NLogo & JSON)" />
+            <form id="config-form" class="authoring-form"
                   action="javascript:void(0);">
               <div class="flex-column">
-                <label>JSON:
-                  <input id="config-bundle-input" type="file" name="bundle" accept=".hnw.json,.json" />
+                <label>Base Model:
+                  <input id="base-model-input" type="file" name="base-model" accept=".nlogo" />
+                </label>
+                <label>Config File:
+                  <input id="config-input" type="file" name="config" accept=".nlogo.json" />
                 </label>
               </div>
             </form>
