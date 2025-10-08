@@ -138,8 +138,17 @@ document.getElementById("config-nlogo-button").onclick = ->
 
     Promise.all([baseModelFile, configFile].map(readFile)).then(
       ([baseModelText, configText]) ->
+        compiler = new BrowserCompiler()
+        oldFormatResult = compiler.convertNlogoToXML(baseModelText)
+        if (not oldFormatResult.success)
+          console.log(oldFormatResult)
+          # coffeelint: disable=max_line_length
+          err = "Failed to convert old format model to XML.  Make sure the model is a valid NetLogo 6 or 7 model.  The converter gave the error:  #{oldFormatResult.result[0].message}"
+          # coffeelint: enable=max_line_length
+          alert(new Error(err))
+
         config = JSON.parse(configText)
-        initialize(baseModelText, config)
+        initialize(oldFormatResult.result, config)
     )
 
     baseInput  .value = ""
@@ -164,13 +173,27 @@ document.getElementById("config-bundle-button").onclick = ->
     readFile(bundleFile).then(
       (bundleText) ->
 
-        bundle = JSON.parse(bundleText)
+        [nlogox, config] = if bundleText.trim().startsWith("<?xml")
+          nlogoDoc         = nlogoXMLToDoc(bundleText)
+          hnwConfigElement = nlogoDoc.querySelector("hubnet-web-config")
+          configJson       = stripXMLCdata(hnwConfigElement.innerHTML)
+          [bundleText, JSON.parse(configJson)]
 
-        if bundle.hnwNlogo?
-          nlogo = bundle.hnwNlogo
-          delete bundle.hnwNlogo
-          initialize(nlogo, bundle)
+        else
+          bundle = JSON.parse(bundleText)
 
+          if bundle.hnwNlogo?
+            nlogo        = bundle.hnwNlogo
+            delete bundle.hnwNlogo
+            compiler     = new BrowserCompiler()
+            nlogoxResult = compiler.convertNlogoToXML(nlogo)
+            if not nlogoxResult.success
+              console.log(nlogoxResult)
+              throw new Error("Failed to convert old format model to NetLogo 7 format.")
+
+            [nlogoxResult.result, bundle]
+
+        initialize(nlogox, config)
         bundleInput.value = ""
 
     )
