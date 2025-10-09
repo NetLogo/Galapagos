@@ -150,49 +150,36 @@ RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-    internalChoice: 0
+    internalChoice:     0
   }
 
   widgetType: "chooser"
 
-  _setChoice: (idx, { setInternalValue = true } = {}) ->
-    # This method syncs up values but control of side effects
-    # is up to the caller via the setInternalValue option and
-    # the choice to call @fire('widget-value-change') or not.
-    widget          = @get('widget')
-    valid           = idx >= 0 and idx < widget.choices.length
-    choice          = widget.choices[idx]
-
-    if setInternalValue
-      @set('internalValue', choice)
-    @set('internalChoice', idx)
-    @set('widget.currentChoice', if valid then idx else 0)
-    choice
-
-  refreshChooser: (myself) -> (_, _1, chooser) ->
-    if myself.get('widget') is chooser
-      { eq } = tortoise_require('brazier/equals')
-      chooser.currentChoice = Math.max(0, chooser.choices.findIndex(eq(chooser.currentValue)))
-      myself.set('internalChoice', chooser.currentChoice)
-
   on: {
-    'init': ->
+    'init': () ->
       widget = @get('widget')
-      @_setChoice(widget.currentChoice)
-      @root.on('*.refresh-chooser', @refreshChooser(this))
+      @set('internalChoice', widget.currentChoice)
+      @set('internalValue',  widget.choices[widget.currentChoice])
+      return
 
-    'chooser-option-change': (event) ->
-      @_setChoice(parseInt(event.node.value))
+    'chooser-option-change': () ->
+      widget        = @get('widget')
+      currentChoice = @get('internalChoice')
+      currentValue  = widget.choices[currentChoice]
+      @set('internalValue', currentValue)
+      @set('widget.currentChoice', currentChoice)
       @fire('widget-value-change')
+      return
   }
 
   observe: {
     'widget.currentValue': () ->
-      widget    = @get('widget')
-      idx       = widget.choices.findIndex((c) -> c is widget.currentValue)
-      if widget.choices[idx] is widget.choices[@get('internalChoice')]
-        return # NOOP
-      @_setChoice(idx, { setInternalValue: false })
+      widget        = @get('widget')
+      currentChoice = widget.choices.findIndex( (c) -> c is widget.currentValue )
+      if currentChoice is @get('internalChoice')
+        return
+      @set('internalChoice', currentChoice)
+      return
   }
 
   components: {
