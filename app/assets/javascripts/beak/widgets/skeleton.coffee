@@ -20,6 +20,10 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
+import RactiveKeyboardListener from "./accessibility/keyboard-listener.js"
+import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
+import { keybinds } from "./accessibility/keybinds.js"
+import { getFirstFocusableSibling } from "./accessibility/utils.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -39,6 +43,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , info
   , isEditing:            false
   , isHelpVisible:        false
+  , isKeyboardHelpVisible: false
   , isHNW:                false
   , isHNWHost:            false
   , isHNWTicking:         false
@@ -95,6 +100,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
+    , keyboardHelp:  RactiveKeyboardHelp
     , infotab:       RactiveInfoTabWidget
     , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
@@ -123,9 +129,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , hnwPlotWidget:    RactiveHNWPlot
     , hnwViewWidget:    RactiveHNWView
 
-    , spacer:        RactiveEditFormSpacer
-    , customSlider:  RactiveCustomSlider
-
+    , spacer:           RactiveEditFormSpacer
+    , customSlider:     RactiveCustomSlider
+    , keyboardListener: RactiveKeyboardListener
     },
 
     computed: {
@@ -163,6 +169,18 @@ generateRactiveSkeleton = (container, widgets, code, info,
       return
 
     on: {
+      init: ->
+        @keyboardListener = @findComponent('keyboardListener').keyboardListener
+        @set('keyboardListener', @keyboardListener)
+        window.keyboardListener = @keyboardListener  # for debugging
+        for keybind in keybinds
+          @keyboardListener.bindKey(
+            keybind.metadata.defaultComboStr,
+            keybind.callback.bind(null, this),
+            keybind.id,
+            keybind.metadata
+          )
+
       onSpeedChange: (context, delta) ->
         speed = @get('speed')
         newSpeed = Math.max(-1, Math.min(1, speed + delta))
@@ -171,6 +189,44 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @fire('speed-slider-changed', newSpeed)
     }
 
+    setTab: (tabName, options = {}) ->
+      tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
+
+      validTabs = ['Console', 'Code', 'Info']
+      unless tabCanonicalName in validTabs
+        console.error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
+        return
+
+      showPropertyName = "show#{tabCanonicalName}"
+
+      if options.active is 'toggle'
+        showPropertyValue = not @get(showPropertyName)
+      else if typeof options.active isnt 'undefined'
+        showPropertyValue = options.active
+      else
+        return
+
+      @set(showPropertyName, showPropertyValue)
+
+      if options.focus is true and showPropertyValue is true
+        @_focusTab(tabName.toLowerCase())
+
+    toggleKeyboardHelp: ->
+      @set('isKeyboardHelpVisible', not @get('isKeyboardHelpVisible'))
+
+    _focusTab: (tabName) ->
+      tabId = "tab-#{tabName}"
+      tabElement = @find("##{tabId}")
+      return unless tabElement?
+
+      focusTargets = [
+        getFirstFocusableSibling(tabElement),
+        tabElement
+      ]
+
+      for target in focusTargets when target?
+        target.focus()
+        break
   })
 
 # coffeelint: disable=max_line_length
@@ -181,6 +237,8 @@ template =
     isSessionLoopRunning={{isSessionLoopRunning}}
     sourceType={{source.type}}
     />
+
+  <keyboardListener />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
        tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
@@ -288,6 +346,7 @@ template =
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
+      <keyboardHelp isVisible="{{isKeyboardHelpVisible}}" isOverlayUp="{{isOverlayUp}}" wareaHeight="{{height}}" wareaWidth="{{width}}" keyboardListener="{{keyboardListener}}"></keyboardHelp>
       <contextMenu></contextMenu>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
@@ -323,7 +382,7 @@ template =
 
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
-      <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
+      <label id="tab-console" class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
         <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
         <span class="netlogo-tab-text">Command Center</span>
       </label>
@@ -331,14 +390,14 @@ template =
         <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
       {{/}}
       {{/}}
-      <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
+      <label id="tab-code" class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
         <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
         <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
       </label>
       {{#showCode}}
         <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
       {{/}}
-      <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
+      <label id="tab-info" class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
         <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
         <span class="netlogo-tab-text">Model Info</span>
       </label>
