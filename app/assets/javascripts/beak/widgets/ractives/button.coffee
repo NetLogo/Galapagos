@@ -308,7 +308,7 @@ RactiveButton = RactiveWidget.extend({
 
     foreverButton:
       """
-      <label id="{{id}}" style="{{dims}}"
+      <label id="{{id}}" style="{{dims}}" role="button"
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.oldSize}} old-size{{/}}{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
