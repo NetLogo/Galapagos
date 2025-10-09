@@ -277,6 +277,37 @@ try {
         );
         break;
       }
+      // EXAMPLE:
+      // document.getElementById('model-container').contentWindow.postMessage({
+      //   type: 'nlw-set-model-code',
+      //   codeTabContents: 'globals [ var-1 var-2 ]\nto setup\n  show "setup"\nend\nto go\n  show "go"\nend',
+      //   autoRecompile: false
+      // }, '*')
+      case 'nlw-set-model-code': {
+        globalThis.session.widgetController.setCode(e.data.codeTabContents, e.data.autoRecompile);
+        break;
+      }
+      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-recompile' }, '*')
+      case 'nlw-recompile': {
+        globalThis.session.recompile('system');
+        break;
+      }
+      // EXAMPLE:
+      // document.getElementById('model-container').contentWindow.postMessage({
+      //   type: 'nlw-recompile-procedures',
+      //   proceduresCode: 'to go show "go has been replaced!" end to setup show "setup has been replaced!" end',
+      //   procedureNames: ['GO', 'SETUP'],
+      //   autoRerunForevers: true
+      // }, '*')
+      // NOTE: This does not update the code tab contents in the UI.  If you want that updated, too, you'll need to use
+      // `nlw-set-model-code` with `autoRecompile: false`.
+      case 'nlw-recompile-procedures': {
+        const wc = globalThis.session.widgetController
+        wc.pauseForevers()
+        const rerun = e.data.autoRerunForevers ? wc.rerunForevers : () => {}
+        globalThis.session.recompileProcedures(e.data.proceduresCode, e.data.procedureNames, rerun)
+        break;
+      }
       case 'nlw-update-model-state': {
         globalThis.session.widgetController.setCode(e.data.codeTabContents);
         break;
