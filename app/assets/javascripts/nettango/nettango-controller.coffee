@@ -183,22 +183,24 @@ class NetTangoController
       proceduresCode = @getBlocksCode()
       procedureNames = @getProcedures()
 
-      @pauseForevers()
-      widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, @rerunForevers)
+      widgetController.pauseForevers()
+      # coffeelint: disable=max_line_length
+      widgetController.ractive.fire('recompile-procedures', proceduresCode, procedureNames, widgetController.rerunForevers)
+      # coffeelint: enable=max_line_length
       @spaceChangeListener?()
       return
 
   # () => Unit
   recompile: () ->
     widgetController = @netLogoModel.widgetController
-    @pauseForevers()
+    widgetController.pauseForevers()
     widgetController.ractive.fire('recompile-sync', 'system')
     @spaceChangeListener?()
     return
 
   netLogoCompileComplete: () =>
     # if we had any forever buttons running, re-run them
-    @rerunForevers()
+    @netLogoModel.widgetController.rerunForevers()
     # breeds and variables may have changed in code, so update for context tags and variables
     @resetBreedsAndVariables()
     return
@@ -468,30 +470,6 @@ class NetTangoController
   # (() => Unit) => Unit
   setSpaceChangeListener: (f) ->
     @spaceChangeListener = f
-    return
-
-  # () => Unit
-  pauseForevers: () ->
-    if not @runningIndices? or @runningIndices.length is 0
-      widgetController = @netLogoModel.widgetController
-      widgets = widgetController.ractive.get('widgetObj')
-
-      @runningIndices = Object.getOwnPropertyNames(widgets)
-        .filter( (index) ->
-          widget = widgets[index]
-          widget.type is "button" and widget.forever and widget.running
-        )
-      @runningIndices.forEach( (index) -> widgets[index].running = false )
-    return
-
-  # () => Unit
-  rerunForevers: () =>
-    if @runningIndices? and @runningIndices.length > 0
-      widgetController = @netLogoModel.widgetController
-      widgets = widgetController.ractive.get('widgetObj')
-
-      @runningIndices.forEach( (index) -> widgets[index].running = true )
-    @runningIndices = []
     return
 
 export default NetTangoController
