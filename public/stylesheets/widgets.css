@@ -3,312 +3,335 @@
  */
 
 :root {
-  --widget-outer-radius: 8px;
-  --widget-inner-radius: 4px;
+	--widget-outer-radius: 8px;
+	--widget-inner-radius: 4px;
 }
 
 .netlogo-model {
-  display: flex;
-  padding: 20px;
-  flex-flow: column;
-  font-size: 12px;
-  font-family: var(--font-widget);
-  outline: none;
+	display: flex;
+	padding: 20px;
+	flex-flow: column;
+	font-size: 12px;
+	font-family: var(--font-widget);
+	outline: none;
 }
 
 .netlogo-display-vertical {
-  display: flex;
-  flex-flow: column;
+	display: flex;
+	flex-flow: column;
 }
 
 .netlogo-display-horizontal {
-  display: flex;
-  flex-flow: row;
-  flex-direction: row;
-  align-items: unset;
+	display: flex;
+	flex-flow: row;
+	flex-direction: row;
+	align-items: unset;
 }
 
 .netlogo-header {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  justify-content: space-between;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: space-between;
 }
 
 .netlogo-widget {
-  box-sizing: border-box;
-  background-color: #eeeeee;
-  border-radius: var(--widget-outer-radius);
-  overflow: hidden;
+	box-sizing: border-box;
+	background-color: #eeeeee;
+	border-radius: var(--widget-outer-radius);
+	overflow: hidden;
 }
 
-.netlogo-command,.netlogo-input {
-  user-select:      none;
-  -moz-user-select: none;
+.netlogo-command,
+.netlogo-input {
+	user-select: none;
+	-moz-user-select: none;
 }
 
 .netlogo-command:hover {
-  filter:     brightness(1.1);
-  cursor:     pointer;
+	filter: brightness(1.1);
+	cursor: pointer;
 }
 
 .netlogo-command.netlogo-disabled:hover {
-  box-shadow: none;
-  cursor:     default;
+	box-shadow: none;
+	cursor: default;
 }
 
 .netlogo-tab-area {
-  margin: 25px 10px;
-  border: 2px solid;
-  border-radius: 10px;
-  overflow: hidden;
+	margin: 25px 10px;
+	border: 2px solid;
+	border-radius: 10px;
+	overflow: hidden;
 }
 
 .netlogo-tab {
-  display: block;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+");
-  background-position: 97% 50%;
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  padding: 7px;
-  text-align: center;
-  cursor: pointer;
+	display: block;
+	background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+');
+	background-position: 97% 50%;
+	background-repeat: no-repeat;
+	background-size: 20px 20px;
+	padding: 7px;
+	text-align: center;
+	cursor: pointer;
 }
 
 .netlogo-tab.netlogo-active {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwxIDIsMSAxLDAiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+");
+	background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwxIDIsMSAxLDAiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+');
 }
 
 .netlogo-tab:not(:last-child) {
-  border-bottom: 1px solid;
-  border-bottom-color: inherit;
+	border-bottom: 1px solid;
+	border-bottom-color: inherit;
 }
 
-.netlogo-tab input[type=checkbox] {
-  display: none;
+.netlogo-tab input[type='checkbox'] {
+	display: none;
 }
 
 .netlogo-tab-text {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  user-select: none;
-  -moz-user-select: none;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	user-select: none;
+	-moz-user-select: none;
 }
 
 .netlogo-tab-content {
-  margin-top: 0;
-  border: 0 solid #242479;
+	margin-top: 0;
+	border: 0 solid #242479;
 }
 
 .unselectable {
-  user-select:      none;
-  -moz-user-select: none;
+	user-select: none;
+	-moz-user-select: none;
+}
+
+.growing {
+	animation-name: grow;
+	animation-duration: 0.4s;
+	animation-timing-function: ease-out;
+}
+
+.shrinking {
+	animation-name: grow;
+	animation-direction: reverse;
+	animation-duration: 0.4s;
+	animation-timing-function: ease-in;
+}
+
+@keyframes grow {
+	0% {
+		max-height: 0;
+	}
+	100% {
+		max-height: 100%;
+	}
 }
 
 .netlogo-model-container {
-  width: min-content;
-  position: relative;
+	width: min-content;
+	position: relative;
 }
 
 .netlogo-model-text {
-  background-color: white;
+	background-color: white;
 }
 
 .netlogo-model-masthead {
-  flex-grow: 1;
-  margin: 0 10px 0 0;
-  width: 350px;
+	flex-grow: 1;
+	margin: 0 10px 0 0;
+	width: 350px;
 }
 
 .netlogo-model-masthead > form {
-  margin: 0 auto;
+	margin: 0 auto;
 }
 
 .netlogo-model-status {
-  position: absolute;
-  width: auto;
-  margin: 0 15%;
-  padding: 0 20px;
-  background: #bcbce5;
-  border-color: #242479;
-  border: 1px solid;
-  border-top: 0;
-  border-radius: 0 0 8px 8px;
-  font-family: var(--font-widget);
-  font-size: smaller;
+	position: absolute;
+	width: auto;
+	margin: 0 15%;
+	padding: 0 20px;
+	background: #bcbce5;
+	border-color: #242479;
+	border: 1px solid;
+	border-top: 0;
+	border-radius: 0 0 8px 8px;
+	font-family: var(--font-widget);
+	font-size: smaller;
 }
 
 .netlogo-model-status-closer {
-  margin: auto 0 auto 10px;
-  width: min-content;
-  height: min-content;
-  cursor: pointer;
-  color: #7F7F7F;
-  font-weight: bold;
-  user-select: none;
+	margin: auto 0 auto 10px;
+	width: min-content;
+	height: min-content;
+	cursor: pointer;
+	color: #7f7f7f;
+	font-weight: bold;
+	user-select: none;
 }
 
 .netlogo-model-status-closer:hover {
-  color: black;
+	color: black;
 }
 
 .netlogo-model-status-link {
-  color: blue;
-  cursor: pointer;
+	color: blue;
+	cursor: pointer;
 }
 
 .netlogo-model-status-link:hover {
-  text-decoration: underline;
+	text-decoration: underline;
 }
 
 .netlogo-model-title-wrapper {
-  justify-content: center;
+	justify-content: center;
 }
 
 .netlogo-model-title {
-  background-color: initial;
-  margin: 0;
-  overflow: hidden;
-  padding: 0 10px;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	background-color: initial;
+	margin: 0;
+	overflow: hidden;
+	padding: 0 10px;
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .netlogo-model-modified {
-  display: flex;
-  justify-content: center;
-  margin: 0;
-  padding: 0 10px;
+	display: flex;
+	justify-content: center;
+	margin: 0;
+	padding: 0 10px;
 }
 
 .hidden {
-  visibility: hidden;
+	visibility: hidden;
 }
 
 .netlogo-title-input {
-  font-size: 1.5em;
-  font-weight: bold;
-  letter-spacing: normal;
-  margin: 0 5%;
-  text-align: center;
-  width: 350px;
+	font-size: 1.5em;
+	font-weight: bold;
+	letter-spacing: normal;
+	margin: 0 5%;
+	text-align: center;
+	width: 350px;
 }
 
 .netlogo-code-container {
-  background-color: white;
-  margin-top: 0;
+	background-color: white;
+	margin-top: 0;
 }
 
 .netlogo-ugly-button {
-  color:      black;
-  text-align: center;
-  background-color: rgb(240, 240, 240);
-  border-color: rgb(238, 238, 238);
+	color: black;
+	text-align: center;
+	background-color: rgb(240, 240, 240);
+	border-color: rgb(238, 238, 238);
 }
 
 .netlogo-ugly-button:disabled {
-  color: rgb(150, 150, 150);
+	color: rgb(150, 150, 150);
 }
 
 .netlogo-recompilation-button {
-  width: 30%;
-  margin: 12px auto;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
+	width: 30%;
+	margin: 12px auto;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .netlogo-procedurenames-dropdown {
-  width: 30%;
-  margin: 12px auto;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
+	width: 30%;
+	margin: 12px auto;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .netlogo-codetab-widget-list {
-  padding: 0;
-  margin: 12px 12px;
-  display: inline;
+	padding: 0;
+	margin: 12px 12px;
+	display: inline;
 }
 
 .netlogo-codetab-widget-listitem {
-  display: inline;
-  padding: 6px;
+	display: inline;
+	padding: 6px;
 }
 
 .netlogo-autocomplete-label {
-  font-size: 16px;
+	font-size: 16px;
 }
 
 .netlogo-autocomplete-checkbox {
-  width: 14px;
-  height: 14px;
+	width: 14px;
+	height: 14px;
 }
 
 .netlogo-model-container-host {
-  display: inline-block;
+	display: inline-block;
 }
 
 .netlogo-codeusage-popup {
-  position:absolute;
-  z-index: 10;
-  border:1px solid #B2B2B2;
-  background: white;
-  box-shadow: 3px 3px 2px #E9E9E9;
-  border-radius:4px;
-  max-height: 15em;
-  overflow-y: auto;
+	position: absolute;
+	z-index: 10;
+	border: 1px solid #b2b2b2;
+	background: white;
+	box-shadow: 3px 3px 2px #e9e9e9;
+	border-radius: 4px;
+	max-height: 15em;
+	overflow-y: auto;
 }
 
 .netlogo-codeusage-list {
-  list-style:none;
-  margin-top:1px;
-  padding: 1px;
-  font-size:90%;
-  font-family: monospace;
+	list-style: none;
+	margin-top: 1px;
+	padding: 1px;
+	font-size: 90%;
+	font-family: monospace;
 }
 
 .netlogo-codeusage-item {
-  padding: 1px;
+	padding: 1px;
 }
 
 .netlogo-codeusage-item:hover {
-  color: white;
-  background:#284570;
-  border-radius:2px;
+	color: white;
+	background: #284570;
+	border-radius: 2px;
 }
 
 .netlogo-info-editor {
-  border: 1px solid black;
-  height: 500px;
+	border: 1px solid black;
+	height: 500px;
 }
 
 .netlogo-info {
-  flex: 1;
-  margin-top: 0;
-  padding-top: 10px;
-  padding: 15px;
+	flex: 1;
+	margin-top: 0;
+	padding-top: 10px;
+	padding: 15px;
 }
 
 .netlogo-command-center-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  margin: 0;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	margin: 0;
 }
 
 .netlogo-command-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 175px;
-  padding: 6px 8px;
-  border-bottom: 1px solid;
-  border-bottom-color: inherit;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	height: 175px;
+	padding: 6px 8px;
+	border-bottom: 1px solid;
+	border-bottom-color: inherit;
 }
 
 /* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
@@ -320,602 +343,648 @@
  * --Jason B. (10/12/17)
  */
 .netlogo-command-center-editor {
-  height: 1.25em;
-  margin: 0 10px;
-  flex-grow: 1;
-  width: 42px;
+	height: 1.25em;
+	margin: 0 10px;
+	flex-grow: 1;
+	width: 42px;
 }
 
 .netlogo-command-center-select {
-  height: 27px;
-  min-width: 75px;
-  width: 10vw;
+	height: 27px;
+	min-width: 75px;
+	width: 10vw;
 }
 
 .netlogo-command-center-editor .CodeMirror {
-  border: 1px solid #111;
-  height: auto;
+	border: 1px solid #111;
+	height: auto;
 }
 
 .netlogo-command-center-input {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
 }
 
 .netlogo-command-center-button {
-  height: 30px;
-  min-width: 50px;
-  width: 10vw;
-  border-radius: 8px;
-  background-color: var(--medium-blue);
+	height: 30px;
+	min-width: 50px;
+	width: 10vw;
+	border-radius: 8px;
+	background-color: var(--medium-blue);
 }
 
 .netlogo-command-center-button:hover {
-  filter: brightness(0.9);
+	filter: brightness(0.9);
 }
 
 .netlogo-command-center-button:active {
-  filter: brightness(0.7);
+	filter: brightness(0.7);
 }
 
 .join-body {
-  margin: 0;
+	margin: 0;
 }
 
 .netlogo-model-container-join {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  min-width: 900px;
-  margin: 0 auto;
-  background-color: var(--light-gray);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	min-width: 900px;
+	margin: 0 auto;
+	background-color: var(--light-gray);
 }
 
 .netlogo-output-widget {
-  display: flex;
-  padding: 2px;
+	display: flex;
+	padding: 2px;
 }
 
 .netlogo-output-area {
-  flex-grow: 1;
-  flex-direction: column;
-  background-color: white;
-  margin: 0px;
-  overflow: auto;
+	flex-grow: 1;
+	flex-direction: column;
+	background-color: white;
+	margin: 0px;
+	overflow: auto;
 }
 
 .netlogo-speed-slider {
-  background-color: transparent;
-  border: none;
-  padding: 0.4rem;
-  margin: 0 auto;
-  width: 75%;
+	background-color: transparent;
+	border: none;
+	padding: 0.4rem;
+	margin: 0 auto;
+	width: 75%;
 }
 
 .netlogo-speed-slider-layout {
-  display: flex;
-  flex-direction: column;
-  width: min-content;
+	display: flex;
+	flex-direction: column;
+	width: min-content;
 }
 
 .netlogo-speed-slider input {
-  border: none;
-  width: 100%;
+	border: none;
+	width: 100%;
 }
 
 .model-speed-input {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  align-items: center;
-  margin: 0.1rem;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: center;
+	align-items: center;
+	margin: 0.1rem;
 }
 
 .netlogo-slider-bar.model-speed-slider-interface {
-  height: 2px;
-  min-width: 200px;
-  margin-top: unset;
+	height: 2px;
+	min-width: 200px;
+	margin-top: unset;
 }
 
 .netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
-  background-color: var(--color-widget-accessories);
-  top: calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
+	background-color: var(--color-widget-accessories);
+	top: calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
 }
 
 .netlogo-beautiful-button {
-  background-color: white;
-  border: 1px solid #afafaf;
-  border-radius: 4px;
-  padding: .15lh .35lh;
-  font-size: 14px;
-  font-family: monospace;
-  cursor: pointer;
+	background-color: white;
+	border: 1px solid #afafaf;
+	border-radius: 4px;
+	padding: 0.15lh 0.35lh;
+	font-size: 14px;
+	font-family: monospace;
+	cursor: pointer;
 }
 
 .netlogo-beautiful-button:hover {
-  background-color: #f5f5f5;
+	background-color: #f5f5f5;
 }
 
 .netlogo-background-button:active {
-  background-color: #dfdfdf;
+	background-color: #dfdfdf;
 }
 
-.netlogo-widget input[type=range]::-ms-tooltip {
-  display: none;
+.netlogo-widget input[type='range']::-ms-tooltip {
+	display: none;
 }
 
-.netlogo-model input[type=range] {
-    cursor: pointer;
-    cursor: grab;
+.netlogo-model input[type='range'] {
+	cursor: pointer;
+	cursor: grab;
 }
 
-.netlogo-model input[type=range]:active {
-    cursor: pointer;
-    cursor: grabbing;
+.netlogo-model input[type='range']:active {
+	cursor: pointer;
+	cursor: grabbing;
 }
 
 .netlogo-tick-counter {
-  background-color: #F4F4F4;
-  font-size: 13px;
-  margin: 3px;
-  border: none;
-  height: 15px;
+	background-color: #f4f4f4;
+	font-size: 13px;
+	margin: 3px;
+	border: none;
+	height: 15px;
 }
 
 .netlogo-button {
-  border:  inherit;
-  color:   black;
-  display: flex;
-  justify-content: space-around;
-  font-family: var(--font-widget);
-  font-size: 12px;
-  align-items: center;
-  padding: 0px;
+	font-family: var(--font-widget);
+	font-size: 12px;
+	border: inherit;
+	color: black;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	padding: 0px;
 }
 
 .netlogo-button:disabled,
 .netlogo-button.netlogo-disabled {
-  background-color: var(--color-widget-button-disabled);
-  color: var(--color-widget-button-disabled-text);
+	background-color: var(--color-widget-button-disabled);
+	color: var(--color-widget-button-disabled-text);
 }
 
 .netlogo-button.clear-button {
-  padding: 5px;
+	padding: 5px;
 }
 
 .netlogo-button .netlogo-label {
-  /* For some reason, Safari doesn't like justify-content in buttons,
+	/* For some reason, Safari doesn't like justify-content in buttons,
       we have to resort to putting a span in the button that can then be
       centered.
       BCH 11/14/2014 */
-  margin: auto;
+	margin: auto;
 }
 
 .netlogo-action-key {
-  color:    grey;
-  position: absolute;
-  right:    6px;
-  top:      5px;
+	color: grey;
+	position: absolute;
+	right: 6px;
+	top: 5px;
 }
 
 .netlogo-action-key.netlogo-focus {
-  color: black;
+	color: black;
 }
 
-.netlogo-button:active, .netlogo-forever-button.netlogo-active {
-  background-color: gray;
-  color: white;
+.netlogo-button:active,
+.netlogo-forever-button.netlogo-active {
+	background-color: gray;
+	color: white;
 }
 
 .netlogo-forever-button .netlogo-forever-icon {
-  background-image:  url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
-  background-repeat: no-repeat;
-  background-size:   10px 10px;
-  bottom:            5px;
-  height:            10px;
-  position:          absolute;
-  right:             5px;
-  width:             10px;
+	background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+	background-repeat: no-repeat;
+	background-size: 10px 10px;
+	bottom: 5px;
+	height: 10px;
+	position: absolute;
+	right: 5px;
+	width: 10px;
 
-  filter:            invert(1);
+	filter: invert(1);
 }
 
 .netlogo-disabled .netlogo-forever-icon {
-  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjODA4MDgwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
-  filter:           unset;
+	background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjODA4MDgwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+	filter: unset;
 }
 
 .netlogo-button-agent-context {
-  font-size: 11px;
-  left:      8px;
-  position:  absolute;
-  top:       5px;
+	font-size: 11px;
+	left: 8px;
+	position: absolute;
+	top: 5px;
 }
 
 .netlogo-disabled .netlogo-button-agent-content {
-  color: #808080;
+	color: #808080;
 }
 
 .netlogo-button.netlogo-disabled:active,
 .netlogo-forever-button.netlogo-disabled.netlogo-active {
-  background-color: var(--color-widget-button-disabled);
-  color: var(--color-widget-button-disabled-text);
+	background-color: var(--color-widget-button-disabled);
+	color: var(--color-widget-button-disabled-text);
 }
 
 .netlogo-command {
-  background-color: var(--color-widget-button);
-  color: var(--color-widget-button-text);
+	background-color: var(--color-widget-button);
+	color: var(--color-widget-button-text);
 }
 .netlogo-command.netlogo-active,
 .netlogo-command:active {
-  background-color: var(--color-widget-button-active);
+	background-color: var(--color-widget-button-active);
 }
 
 .netlogo-input {
-  background-color: var(--color-widget-background);
+	background-color: var(--color-widget-background);
 }
 
 .netlogo-output {
-  background-color: #e8e8e8;
+	background-color: #e8e8e8;
 }
 
 .netlogo-note {
-  background-color: white;
-  border: none;
-  margin: 0;
-  padding: 2px;
-  white-space: pre-wrap;
-  font-family: var(--font-widget);
+	background-color: white;
+	border: none;
+	margin: 0;
+	padding: 2px;
+	white-space: pre-wrap;
+	font-family: var(--font-widget);
+}
+
+.netlogo-text-box {
+	background-color: white;
+	border: none;
+	margin: 0;
+	padding: 2px;
+	white-space: pre-wrap;
+	font-family: var(--font-widget);
 }
 
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
 June 2025 */
-.netlogo-note > h1, h2, h3, h4, h5, h6, div, p, ul {
-  margin: 0;
+.netlogo-note > h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+p,
+ul {
+	margin: 0;
 }
 
 .netlogo-note > ul {
-  padding-inline-start: 1.5em;
+	padding-inline-start: 1.5em;
+}
+
+.netlogo-text-box > h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+p,
+ul {
+	margin: 0;
+}
+
+.netlogo-text-box > ul {
+	padding-inline-start: 1.5em;
 }
 
 .netlogo-switcher {
-  display: flex;
-  align-items: center;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  cursor: pointer;
+	display: flex;
+	align-items: center;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	cursor: pointer;
 }
 
 .netlogo-switcher > .netlogo-label {
-  margin-left: 0;
+	margin-left: 0;
 }
 
 .netlogo-switcher-element {
-  display: flex;
-  height: 100%;
-  border-radius: 8px;
+	display: flex;
+	height: 100%;
+	border-radius: 8px;
 
-  --knob-size: 12px;
-  width: var(--knob-size);
-  min-width: var(--knob-size);
+	--knob-size: 12px;
+	width: var(--knob-size);
+	min-width: var(--knob-size);
 
-  position: relative;
+	position: relative;
 }
 
-input[type=checkbox]:checked ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-primary);
+input[type='checkbox']:checked ~ .netlogo-switcher-element {
+	background-color: var(--color-widget-switch-primary);
 }
 
-input[type=checkbox]:not(checked) ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-off);
+input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
+	background-color: var(--color-widget-switch-off);
 }
 
-.netlogo-switcher:hover > input[type=checkbox]:checked ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-primary-hover);
+.netlogo-switcher:hover > input[type='checkbox']:checked ~ .netlogo-switcher-element {
+	background-color: var(--color-widget-switch-primary-hover);
 }
 
-.netlogo-switcher:hover > input[type=checkbox]:not(checked) ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-off-hover);
+.netlogo-switcher:hover > input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
+	background-color: var(--color-widget-switch-off-hover);
 }
 
 .netlogo-switcher-element > .netlogo-switcher-element-knob {
-  height: var(--knob-size);
-  width: var(--knob-size);
+	height: var(--knob-size);
+	width: var(--knob-size);
 
-  border-radius: 50%;
-  position: absolute;
-  left: 0;
-  scale: 1.05;
-  background-color: white;
-  box-shadow: inset 0 0 0 1px var(--color-widget-switch-primary);
-  transition: top 0.1s ease-in-out;
+	border-radius: 50%;
+	position: absolute;
+	left: 0;
+	scale: 1.05;
+	background-color: white;
+	box-shadow: inset 0 0 0 1px var(--color-widget-switch-primary);
+	transition: top 0.1s ease-in-out;
 
-  cursor: pointer;
+	cursor: pointer;
 }
-input[type=checkbox]:checked ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
-  top: 0;
+input[type='checkbox']:checked ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
+	top: 0;
 }
-input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
-  top: calc(100% - var(--knob-size));
+input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
+	top: calc(100% - var(--knob-size));
 }
 
 .netlogo-slider {
-  margin-top: 2px;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  background-color: var(--color-widget-background);
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+	margin-top: 2px;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	background-color: var(--color-widget-background);
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
 }
 
 .netlogo-slider:hover {
-    cursor: default;
+	cursor: default;
 }
 
-.netlogo-slider input[type=range] {
-  background-color: transparent;
-  height: 22px;
-  margin: 0px;
-  margin-bottom: -3px;
-  margin-top: -1px;
-  padding: 0px;
-  width: 100%;
+.netlogo-slider input[type='range'] {
+	background-color: transparent;
+	height: 22px;
+	margin: 0px;
+	margin-bottom: -3px;
+	margin-top: -1px;
+	padding: 0px;
+	width: 100%;
 }
 
 .netlogo-slider-bar {
-  position: relative;
+	position: relative;
 
-  width: 100%;
-  height: 6px;
+	width: 100%;
+	height: 6px;
 
-  margin-top: 6px;
+	margin-top: 6px;
 
-  border-radius: 0.5rem;
+	border-radius: 0.5rem;
 
-  background-color: var(--color-widget-accessories-neutral);
+	background-color: var(--color-widget-accessories-neutral);
 }
 
 .netlogo-slider-bar::after {
-  content: "";
-  display: block;
+	content: '';
+	display: block;
 
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
 
-  width: 100%;
-  /* Increases hit-box without altering layout */
-  height: calc(100% + 0.8rem);
+	width: 100%;
+	/* Increases hit-box without altering layout */
+	height: calc(100% + 0.8rem);
 
-  background-color: transparent;
+	background-color: transparent;
 
-  cursor: pointer;
+	cursor: pointer;
 }
 
 .netlogo-slider-bar > .netlogo-slider-bar-fill {
-  width: 0%;
-  height: 100%;
+	width: 0%;
+	height: 100%;
 
-  border-radius: 0.5rem;
+	border-radius: 0.5rem;
 
-  background-color: var(--color-widget-accessories);
+	background-color: var(--color-widget-accessories);
 }
 
 .netlogo-slider-bar > .netlogo-slider-bar-handle {
-  --circle-size: 10px;
-  --circle-radius: calc(var(--circle-size) / 2);
-  position: absolute;
+	--circle-size: 10px;
+	--circle-radius: calc(var(--circle-size) / 2);
+	position: absolute;
 
-  width: var(--circle-size);
-  height: var(--circle-size);
+	width: var(--circle-size);
+	height: var(--circle-size);
 
-  border-radius: 50%;
-  border: 2px solid var(--color-widget-accessories);
-  background-color: white;
+	border-radius: 50%;
+	border: 2px solid var(--color-widget-accessories);
+	background-color: white;
 
-  cursor: pointer;
-  top: calc(-1 * (var(--circle-radius) - 1px)); /* 1px is to account for the border width */
-  transform: translateX(-50%);
+	cursor: pointer;
+	top: calc(-1 * (var(--circle-radius) - 1px)); /* 1px is to account for the border width */
+	transform: translateX(-50%);
 }
 
 .netlogo-label {
-  margin: 0 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  user-select: none;
+	margin: 0 auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	user-select: none;
 }
 
 .netlogo-slider-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .netlogo-slider-label .netlogo-label {
-  flex: 1 1 auto;
-  min-width: 0;
-  background-color: transparent;
+	background-color: transparent;
+	flex: 1 1 auto;
+	min-width: 0;
 }
 
 .netlogo-slider-label .netlogo-slider-value {
-  flex: 0 0 auto;
+	flex: 0 0 auto;
 }
 
 .netlogo-slider-value-input {
-  font-family: var(--font-widget);
-  font-size:   14px;
+	font-family: var(--font-widget);
+	font-size: 14px;
 }
 
-.netlogo-slider-label input[type=number] {
-  margin: 0px;
-  border: 1px solid var(--color-widget-input-border);
-  border-radius: 6px;
-  text-align: right;
-  padding: 2px;
+.netlogo-slider-label input[type='number'] {
+	margin: 0px;
+	border: 1px solid var(--color-widget-input-border);
+	border-radius: 6px;
+	text-align: right;
+	padding: 2px;
 }
 
 .netlogo-slider-label .netlogo-slider-value input {
-  background-color: white;
+	background-color: white;
 }
 
 .netlogo-monitor {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
 }
 
 .netlogo-monitor > .netlogo-label {
-  margin-left: 0;
+	margin-left: 0;
 }
 
 .netlogo-monitor .netlogo-value {
-  background-color: white;
-  min-height: 11px;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  border: 1px solid #b2b2b2;
-  border-radius: 6px;
-  flex-shrink: 0;
-  flex-grow: 1;
+	background-color: white;
+	min-height: 11px;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	border: 1px solid #b2b2b2;
+	border-radius: 6px;
+	flex-shrink: 0;
+	flex-grow: 1;
 
-  max-width: calc(100% - 1 * var(--widget-padding-x));
-  text-overflow: ellipsis;
-  overflow-x: hidden;
+	max-width: calc(100% - 1 * var(--widget-padding-x));
+	text-overflow: ellipsis;
+	overflow-x: hidden;
+}
+
+.netlogo-value {
+	overflow: hidden;
 }
 
 .netlogo-code {
-  border: 1px solid black;
+	border: 1px solid black;
 }
 
 .netlogo-code-tab {
-  height: 500px;
+	height: 500px;
 }
 
 .netlogo-input-box {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
 }
 
 .netlogo-multiline-input {
-  flex-grow: 1;
-  height:    0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
-  width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
-  margin:    4px;
-  resize:    none;
-  border:    1.5px solid var(--color-widget-input-border);
-  box-shadow:     0 1px 3px rgba(0,0,0,0.12);
-  border-radius:  4px;
-  padding-inline: 0.2rem;
-  font-family: var(--font-widget);
-  font-size:   12px;
+	flex-grow: 1;
+	height: 0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
+	width: auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
+	margin: 4px;
+	resize: none;
+	border: 1.5px solid var(--color-widget-input-border);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+	border-radius: 4px;
+	padding-inline: 0.2rem;
+	font-family: var(--font-widget);
+	font-size: 12px;
 }
 
-.netlogo-multiline-input[data-type=number] {
-  color: #a42f00;
-  font-family: monospace;
-  font-size:   14px;
+.netlogo-multiline-input[data-type='number'] {
+	color: #a42f00;
+	font-family: monospace;
+	font-size: 14px;
 }
 
 .netlogo-input-box > .netlogo-label {
-  margin: 0 auto 0 0;
+	margin: 0 auto 0 0;
 }
 
 .netlogo-singleline-input {
-  flex-grow: 1;
-  margin:    4px;
-  resize:    none;
+	flex-grow: 1;
+	margin: 4px;
+	resize: none;
 }
 
 .netlogo-chooser {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+	padding: var(--widget-padding-y) var(--widget-padding-x);
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
 }
 
 .netlogo-chooser .netlogo-label {
-  margin: 0 auto 0 0;
+	margin: 0 auto 0 0;
 }
 
 .netlogo-chooser-select {
-  border: 1px solid var(--color-widget-select-border);
-  border-radius: 4px;
-  padding: 0.1rem 0.2rem;
-  font-family: var(--font-widget);
-  font-size: 12px;
-  background-color: #ffffff;
+	border: 1px solid var(--color-widget-select-border);
+	border-radius: 4px;
+	padding: 0.1rem 0.2rem;
+	font-family: var(--font-widget);
+	font-size: 12px;
+	background-color: #ffffff;
 }
 
 .netlogo-plot {
-  box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
-  overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
-  padding: 0;
-  border: 1px solid #eeeeee;
+	box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
+	overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+	padding: 0;
+	border: 1px solid #eeeeee;
 }
 
 .highcharts-root {
-  font-family: var(--font-widget) !important;
+	font-family: var(--font-widget) !important;
 }
 
 .highcharts-container {
-  overflow: visible !important; /* Let our context-menus be free - JMB November 2017 */
+	overflow: visible !important; /* Let our context-menus be free - JMB November 2017 */
 }
 
 .netlogo-forever-button > input {
-  display: none;
+	display: none;
 }
 
 .netlogo-subheader {
-  align-items: center;
-  display: flex;
-  flex-flow: column;
-  flex-grow: 0;
-  white-space: nowrap;
+	align-items: center;
+	display: flex;
+	flex-flow: column;
+	flex-grow: 0;
+	white-space: nowrap;
 }
 
 .netlogo-powered-by-image {
-  vertical-align: middle;
-  width: 24px;
-  height: 24px;
+	vertical-align: middle;
+	width: 24px;
+	height: 24px;
 }
 
 .netlogo-export-wrapper {
-  align-items: center;
-  display: flex;
-  flex-grow: 0;
-  white-space: nowrap;
+	align-items: center;
+	display: flex;
+	flex-grow: 0;
+	white-space: nowrap;
 }
 
 .netlogo-code-compile-error {
-  color: red;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: 5px 0 -5px 0;
-  font-weight: bold;
+	color: red;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	margin: 5px 0 -5px 0;
+	font-weight: bold;
+}
+
+.netlogo-widget-error {
+	color: red;
+}
+
+.netlogo-widget-error:hover {
+	cursor: pointer;
 }
 
 .CodeMirror {
-  height: auto;
+	height: auto;
 }
 
 .CodeMirror-scroll.cm-disabled {
-  background-color: #ebebe4;
+	background-color: #ebebe4;
 }
 
 .help-popup {
-  background-color: white;
-  border:           1px solid black;
-  border-radius:    5px;
-  box-shadow:       0 0 10px rgba(0,0,0,0.5);
-  font-size:        20px;
-  padding:          30px 15px;
-  position:         absolute;
-  outline:          none;
-  z-index:          200;
+	background-color: white;
+	border: 1px solid black;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	font-size: 20px;
+	padding: 30px 15px;
+	position: absolute;
+	outline: none;
+	z-index: 200;
 }
 
 /* Credit for this keyboard table CSS goes to the fine folks at GitHub
@@ -924,265 +993,372 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
  * Jason B. (5/7/18)
  */
 .help-key-table .help-keys {
-  padding-right: 10px;
-  text-align:    right;
-  white-space:   nowrap;
+	padding-right: 10px;
+	text-align: right;
+	white-space: nowrap;
 }
 
 .help-key-table td {
-  font-size: 16px;
-  padding:   3px 0;
+	font-size: 16px;
+	padding: 3px 0;
 }
 
 .help-key-table kbd {
-  background-color:    #fafbfc;
-  border-bottom-color: #c6cbd1;
-  border-radius:       3px;
-  border:              solid 1px #d1d5da;
-  box-shadow:          inset 0 -1px 0 #c6cbd1;
-  color:               #3b793a;
-  display:             inline-block;
-  font:                16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  line-height:         15px;
-  padding:             3px 5px;
-  vertical-align:      middle;
+	background-color: #fafbfc;
+	border-bottom-color: #c6cbd1;
+	border-radius: 3px;
+	border: solid 1px #d1d5da;
+	box-shadow: inset 0 -1px 0 #c6cbd1;
+	color: #3b793a;
+	display: inline-block;
+	font: 16px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	line-height: 15px;
+	padding: 3px 5px;
+	vertical-align: middle;
+}
+
+/* Keyboard Help Dialog Styles */
+
+.keyboard-help-header {
+	flex: 0 0 auto;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+
+	position: sticky;
+	top: 1rem;
+	z-index: 1;
+}
+
+.keyboard-help-closer {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 30px;
+	height: 30px;
+
+	padding: 0;
+	margin: 0 0 0 auto;
+
+	color: #666;
+	background: #f1f1f1;
+
+	font-size: 24px;
+	font-weight: bold;
+
+	cursor: pointer;
+
+	border: none;
+	border-radius: 50%;
+}
+
+.keyboard-help-closer:hover {
+	background-color: #e1e1e1;
+	color: #000;
+}
+
+.keyboard-help-content {
+	flex: 1;
+	overflow-y: visible;
+}
+
+.keyboard-help-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 16px;
+}
+
+.keyboard-help-table th {
+	background-color: #f8f9fa;
+	border-bottom: 2px solid #dee2e6;
+	font-weight: 600;
+	padding: 12px 8px;
+	text-align: left;
+
+	position: sticky;
+	top: 0;
+}
+
+.keyboard-help-table td {
+	border-bottom: 1px solid #dee2e6;
+	padding: 10px 8px;
+	vertical-align: top;
+}
+
+.keyboard-help-key {
+	white-space: nowrap;
+	width: 200px;
+	padding-right: 15px;
+}
+
+kbd {
+	background-color: #fafbfc;
+	border-bottom-color: #c6cbd1;
+	border-radius: 3px;
+	border: solid 1px #d1d5da;
+	box-shadow: inset 0 -1px 0 #c6cbd1;
+	color: #444;
+	display: inline-block;
+	font: 14px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	line-height: 1.2;
+	padding: 4px 6px;
+	margin: 0 2px;
+	vertical-align: middle;
+	user-select: none;
+}
+
+.keyboard-help-description {
+	color: #555;
+	line-height: 1.4;
+}
+
+.keyboard-help-empty {
+	color: #666;
+	font-style: italic;
+	text-align: center;
+	padding: 40px 20px;
+	font-size: 18px;
 }
 
 .modal-overlay {
-  background-color: rgba(200,200,200,0.7);
-  bottom:           0;
-  left:             0;
-  position:         absolute;
-  right:            0;
-  top:              0;
-  z-index:          99;
+	background-color: rgba(200, 200, 200, 0.7);
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: 99;
 }
 
 .async-popup {
-  background-color: white;
-  border:           1px solid black;
-  border-radius:    5px;
-  box-shadow:       0 0 10px rgba(0,0,0,0.5);
-  min-width:        120px;
-  padding:          10px 10px 0 14px;
-  position:         absolute;
-  outline:          none;
-  z-index:          90;
+	background-color: white;
+	border: 1px solid black;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	min-width: 120px;
+	padding: 10px 10px 0 14px;
+	position: absolute;
+	outline: none;
+	z-index: 90;
 }
 
 .async-dialog-message {
-  font-size:   16px;
-  margin-top:  20px;
-  white-space: break-spaces;
-  word-break:  break-word;
+	font-size: 16px;
+	margin-top: 20px;
+	white-space: break-spaces;
+	word-break: break-word;
 }
 
 .async-dialog-button-row {
-  align-items:     center;
-  display:         flex;
-  flex-direction:  row;
-  justify-content: flex-end;
-  margin:          10px 0;
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	margin: 10px 0;
 }
 
 .async-dialog-controls {
-  margin: 8px 4px 0 0;
+	margin: 8px 4px 0 0;
 }
 
 .async-dialog-text-input {
-  width: 100%;
+	width: 100%;
 }
 
 .h-center-flexbox {
-  align-items:     center;
-  display:         flex;
-  flex-direction:  row;
-  justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
 }
 
 /* Modals */
 .netlogo-modal-container {
-  --z-basis: 100;
-  --border-width: 1px;
-  --title-padding: 0.2rem;
-  --title-height: 1rem;
+	--z-basis: 100;
+	--border-width: 1px;
+	--title-padding: 0.2rem;
+	--title-height: 1rem;
 
-  box-sizing: border-box;
-  position: fixed;
-  z-index: var(--z-basis);
+	box-sizing: border-box;
+	position: fixed;
+	z-index: var(--z-basis);
 
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 
-  transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 
-  border-radius: 0.5rem;
-  box-shadow: 0px 1px 2px #00000080;
+	border-radius: 0.5rem;
+	box-shadow: 0px 1px 2px #00000080;
 
-  overflow: hidden;
+	overflow: hidden;
 
-  border: solid 1px #e8e8e8;
+	border: solid 1px #e8e8e8;
 
-  transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
 
-  background-color: #eee;
+	background-color: #eee;
 }
 
 .netlogo-modal-container.is-hidden {
-  opacity: 0;
-  pointer-events: none!important;
+	opacity: 0;
+	pointer-events: none !important;
 }
 
 .netlogo-modal-title {
-  position: sticky;
-  top: 0;
+	position: sticky;
+	top: 0;
 
-  min-height: var(--title-height);
+	min-height: var(--title-height);
 
-  text-align: center;
-  padding: var(--title-padding);
+	text-align: center;
+	padding: var(--title-padding);
 
-  cursor: grab;
-  user-select: none;
+	cursor: grab;
+	user-select: none;
 
-  background-color: white;
-  border-bottom: solid var(--border-width) #111;
+	background-color: white;
+	border-bottom: solid var(--border-width) #111;
 
-  z-index: calc(var(--z-basis) + 1);
+	z-index: calc(var(--z-basis) + 1);
 
-  font-size: small;
+	font-size: small;
 }
 
 .netlogo-modal-top-bar-container {
-  position: relative;
-  width: 100%;
+	position: relative;
+	width: 100%;
 }
 
 .netlogo-modal-title-text {
-  flex-grow: 1;
+	flex-grow: 1;
 }
 
 .netlogo-modal-content {
-  overflow: auto;
-  flex: 1 1 auto;         /* take remaining space */
+	overflow: auto;
+	flex: 1 1 auto; /* take remaining space */
 }
 
 /* Old-size */
 .old-size {
-  border-radius: 4px;
+	border-radius: 4px;
 }
 .netlogo-slider.old-size {
-  padding-top: 2px;
-  padding-left: 3px;
-  padding-right: 3px;
-  font-size: 12px;
+	padding-top: 2px;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: 12px;
 }
 
-.old-size .netlogo-slider-label input[type=number] {
-  margin: 0px;
-  border: 1px;
-  padding: 0px;
-  font-size: 12px;
+.old-size .netlogo-slider-label input[type='number'] {
+	margin: 0px;
+	border: 1px;
+	padding: 0px;
+	font-size: 12px;
 }
 
 .netlogo-monitor.old-size {
-  padding: 2px 4px;
+	padding: 2px 4px;
 }
 
 .netlogo-monitor.old-size > div > .netlogo-value {
-  padding: 2px 2px;
+	padding: 2px 2px;
 }
 
 .netlogo-input-box.old-size {
-  padding: 2px 4px;
+	padding: 2px 4px;
 }
 
 .netlogo-input-box.old-size > .netlogo-label {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .netlogo-chooser.old-size {
-  padding: 2px 4px;
+	padding: 2px 4px;
 }
 
 .netlogo-chooser.old-size > .netlogo-label {
-  font-size: 12px;
+	font-size: 12px;
 }
 
 .netlogo-chooser.old-size {
-  padding: 2px 4px;
+	padding: 2px 4px;
 }
 
 .netlogo-chooser.old-size > .netlogo-chooser-select {
-  padding: 2px 4px;
+	padding: 2px 4px;
+	font-size: 12px;
 }
 
 .netlogo-switcher.old-size {
-  padding: 2px 4px;
+	padding: 2px 4px;
 }
 
 .netlogo-widget-error {
-  color: red;
+	color: red;
 }
 .netlogo-widget-error.netlogo-button {
-  color: white;
-  background: red;
+	color: white;
+	background: red;
 }
 
 .netlogo-widget-error:hover {
-  cursor: pointer !important;
+	cursor: pointer !important;
 }
 
 .netlogo-view-container {
-  background-color: #f4f4f4;
+	background-color: #f4f4f4;
 }
 
 .netlogo-canvas {
-  border-radius: 3px;
+	border-radius: 3px;
 }
 
 /* Color input */
 .netlogo-color-input {
-  padding: 0.2rem;
-  margin: 0.1rem;
-  box-sizing: border-box;
+	padding: 0.2rem;
+	margin: 0.1rem;
+	box-sizing: border-box;
 
-  aspect-ratio: 1 / 1;
-  width: 2rem;
+	aspect-ratio: 1 / 1;
+	width: 2rem;
 
-  border-radius: 0.2rem;
+	border-radius: 0.2rem;
 
-  background-color: #eee;
-  height: 100%;
+	background-color: #eee;
+	height: 100%;
 }
 
 .netlogo-color-input:hover {
-  cursor: pointer;
-  background-color: #ccc;
+	cursor: pointer;
+	background-color: #ccc;
 }
 
 .netlogo-color-input > * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .netlogo-swatches {
-  display: grid;
-  grid-template-columns: auto auto;
+	display: grid;
+	grid-template-columns: auto auto;
 
-  width: 100%;
-  aspect-ratio: 1 / 1;
+	width: 100%;
+	aspect-ratio: 1 / 1;
 
-  gap: 0;
+	gap: 0;
 
-  background-image: var(--checkerboard);
-  background-position-x: left;
-  background-position-y: center;
-  inset: 0;
+	background-image: var(--checkerboard);
+	background-position-x: left;
+	background-position-y: center;
+	inset: 0;
 
-  border-radius: 0.1rem;
-  overflow: hidden;
+	border-radius: 0.1rem;
+	overflow: hidden;
 }
 
 .no-alpha .netlogo-swatches {
-  grid-template-columns: auto;
+	grid-template-columns: auto;
 }
