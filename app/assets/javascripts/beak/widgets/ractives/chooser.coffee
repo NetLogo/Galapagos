@@ -146,6 +146,8 @@ HNWChooserEditForm = ChooserEditForm.extend({
 
 })
 
+{ eq } = tortoise_require('brazier/equals')
+
 RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
@@ -175,7 +177,7 @@ RactiveChooser = RactiveValueWidget.extend({
   observe: {
     'widget.currentValue': () ->
       widget        = @get('widget')
-      currentChoice = widget.choices.findIndex( (c) -> c is widget.currentValue )
+      currentChoice = widget.choices.findIndex(eq(widget.currentValue))
       if currentChoice is @get('internalChoice')
         return
       @set('internalChoice', currentChoice)
