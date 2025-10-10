@@ -20,6 +20,7 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
+import RactiveTabWidget from "./ractives/tab.js"
 import RactiveKeyboardListener from "./accessibility/keyboard-listener.js"
 import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
@@ -132,6 +133,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , spacer:           RactiveEditFormSpacer
     , customSlider:     RactiveCustomSlider
     , keyboardListener: RactiveKeyboardListener
+    , tab:              RactiveTabWidget
     },
 
     computed: {
@@ -208,25 +210,25 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
       @set(showPropertyName, showPropertyValue)
 
-      if options.focus is true and showPropertyValue is true
-        @_focusTab(tabName.toLowerCase())
+      if showPropertyValue
+        componentToFocus = {
+          "Code": "codeContainer",
+          "Info": "infoeditor"
+        }[tabCanonicalName]
+
+        setTimeout(=>
+          @findComponent(componentToFocus)?.focus()
+        , 200)
+
+      if options.focus and showPropertyValue
+        componentTabName = tabName.toLowerCase()
+        tab = @findAllComponents("tab")
+              .find((c) -> c.get('name') is componentTabName)
+        tab?.focus()
+        tab?.scrollIntoView()
 
     toggleKeyboardHelp: ->
       @set('isKeyboardHelpVisible', not @get('isKeyboardHelpVisible'))
-
-    _focusTab: (tabName) ->
-      tabId = "tab-#{tabName}"
-      tabElement = @find("##{tabId}")
-      return unless tabElement?
-
-      focusTargets = [
-        getFirstFocusableSibling(tabElement),
-        tabElement
-      ]
-
-      for target in focusTargets when target?
-        target.focus()
-        break
   })
 
 # coffeelint: disable=max_line_length
@@ -382,28 +384,20 @@ template =
 
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
-      <label id="tab-console" class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
-        <span class="netlogo-tab-text">Command Center</span>
-      </label>
-      {{#showConsole}}
+      <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
+            on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
         <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
+      </tab>
       {{/}}
-      {{/}}
-      <label id="tab-code" class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
-        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
-      </label>
-      {{#showCode}}
-        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
-      {{/}}
-      <label id="tab-info" class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
-        <span class="netlogo-tab-text">Model Info</span>
-      </label>
-      {{#showInfo}}
+      <tab name="code" title="NetLogo Code" show="{{showCode}}"
+            on-toggle="['model-code-toggled', show]" focus-target=".netlogo-code-tab">
+        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' scroll-block="center"
+                  lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+      </tab>
+      <tab name="info" title="Model Info" show="{{showInfo}}" scroll-block="start"
+            on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
-      {{/}}
+      </tab>
     </div>
 
     <input id="general-file-input" type="file" name="general-file" style="display: none;" />
