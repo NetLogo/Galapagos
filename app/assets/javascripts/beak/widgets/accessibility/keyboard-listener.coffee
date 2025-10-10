@@ -70,6 +70,7 @@ class KeyCombo
       , shift: parts.includes('shift')
       , meta:  parts.includes('meta')  or parts.includes('cmd') or parts.includes('command')
     }
+    @digitKey = @key.length is 1 and @key.match(/[0-9]/)
 
     modifierCount = Object.values(@modifiers).filter((x) => x).length
     if 1 + modifierCount isnt parts.length + 1
@@ -77,7 +78,8 @@ class KeyCombo
 
   # KeyboardEvent => Boolean
   matchesEvent: (event) ->
-    return false if event.key.toLowerCase() isnt @key
+    return false if @digitKey and event.code isnt "Digit#{@key}"
+    return false if event.key.toLowerCase() isnt @key and not @digitKey
     return false if event.ctrlKey  isnt @modifiers.ctrl
     return false if event.altKey   isnt @modifiers.alt
     return false if event.shiftKey isnt @modifiers.shift
@@ -87,7 +89,7 @@ class KeyCombo
   # () => String
   toString: -> [
     ...Object.entries(@modifiers).filter(([_, v]) => v).map(([mod, _]) =>
-      if    mod is 'ctrl'  then (if isMac then 'Control' else 'Ctrl')
+      if      mod is 'ctrl'  then (if isMac then 'Control' else 'Ctrl')
       else if mod is 'alt'   then (if isMac then '⌥'  else 'Alt')
       else if mod is 'shift' then '⇧'
       else if mod is 'meta'  then (if isMac then '⌘'  else 'Meta')
