@@ -1,10 +1,25 @@
 import { createKeyMetadata } from "./keyboard-listener.js"
+import { offsetFocus } from "./utils.js"
 
 keybinds = [
   {
-    id: "clear-focus"
+    id: "focus:clear"
     callback: () -> document.activeElement?.blur()
     metadata: createKeyMetadata("Escape", "Clear focus from the current element.")
+  },
+  {
+    id: "focus:next"
+    callback: (_, event) ->
+      if offsetFocus(document.body, document.activeElement, 1)
+        event?.preventDefault()
+    metadata: createKeyMetadata("Ctrl+T", "Alternative to Tab key (for use in Code editor).")
+  },
+  {
+    id: "focus:previous"
+    callback: (_, event) ->
+      if offsetFocus(document.body, document.activeElement, -1)
+        event?.preventDefault()
+    metadata: createKeyMetadata("Ctrl+Shift+T", "Alternative to Shift+Tab key (for use in Code editor).")
   },
   {
     id: "toggle-tab:console"
@@ -37,7 +52,17 @@ keybinds = [
     metadata: createKeyMetadata("Ctrl+Shift+3", "Focus the Info tab.")
   },
   {
-    id: "show-keyboard-help",
+    id: "toggle:editing",
+    callback: (skeleton, event) -> skeleton.set('isEditing', not skeleton.get('isEditing'))
+    metadata: createKeyMetadata("Ctrl+E", "Toggle editing mode for the Info tab.")
+  },
+  {
+    id: "toggle:help",
+    callback: (skeleton, event) -> skeleton.set('isHelpVisible', not skeleton.get('isHelpVisible'))
+    metadata: createKeyMetadata("Ctrl+H", "Show help.")
+  },
+  {
+    id: "toggle:keyboard-help",
     callback: (skeleton, event) -> skeleton.toggleKeyboardHelp()
     metadata: createKeyMetadata("F1", "Show keyboard shortcuts help.")
   }
