@@ -70,6 +70,11 @@ RactiveCodeContainerBase = Ractive.extend({
       @_editor.setValue(str)
     return
 
+  # () => Unit
+  focus: ->
+    @_editor.focus()
+    return
+
   template:
     """
     <div
