@@ -1018,7 +1018,6 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 /* Keyboard Help Dialog Styles */
-
 .keyboard-help-header {
 	flex: 0 0 auto;
 	position: relative;
@@ -1071,15 +1070,38 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 	font-size: 16px;
 }
 
+.keyboard-help-table thead {
+	position: sticky;
+	top: 0;
+
+	border-bottom: 2px solid #dee2e6;
+}
+
+.keyboard-help-group-header {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.3rem;
+
+	padding: 0.5rem;
+	background-color: #f8f9fa;
+}
+
+.keyboard-help-group-title {
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+.keyboard-help-group-description {
+	font-size: 1rem;
+}
+
 .keyboard-help-table th {
 	background-color: #f8f9fa;
 	border-bottom: 2px solid #dee2e6;
 	font-weight: 600;
 	padding: 12px 8px;
 	text-align: left;
-
-	position: sticky;
-	top: 0;
 }
 
 .keyboard-help-table td {
@@ -1100,7 +1122,7 @@ kbd {
 	border-radius: 3px;
 	border: solid 1px #d1d5da;
 	box-shadow: inset 0 -1px 0 #c6cbd1;
-	color: #444;
+	color: #3b793a;
 	display: inline-block;
 	font: 14px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 	line-height: 1.2;
