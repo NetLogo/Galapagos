@@ -1,36 +1,5 @@
 import RactiveModal from './subcomponent/modal.js'
 
-# (Array[Object]) => String
-generateKeybindRows = (keybinds) ->
-  rows = keybinds.map((keybind) ->
-    combo =  keybind.combo
-    description = keybind.metadata?.description or 'No description available'
-    formattedCombo = combo.toString()
-
-    """
-    <tr>
-      <td class="keyboard-help-key">
-        <kbd>#{formattedCombo}</kbd>
-      </td>
-      <td class="keyboard-help-description">#{description}</td>
-    </tr>
-    """
-  ).join('\n')
-
-  return """
-    <table class="keyboard-help-table">
-      <thead>
-        <tr>
-          <th>Key Combination</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        #{rows}
-      </tbody>
-    </table>
-  """
-
 RactiveKeyboardHelp = Ractive.extend({
 
   data: -> {
@@ -39,16 +8,31 @@ RactiveKeyboardHelp = Ractive.extend({
     isOverlayUp: false
     wareaHeight: 600
     wareaWidth: 600
-    keyboardListener: null
+    keybinds: [] # see accessibility/keybinds.js
   }
 
-  keybindsData: []
-  keybindsHtml: ""
+  generateGroups: ->
+    groups = @get('keybinds')
+    return '' unless groups and groups.length > 0
+
+    groups = groups.map((g) =>
+      keybinds = (g.keybinds or []).map((kb) ->
+        description = kb.metadata?.description or 'No description available'
+        combos = (kb.combos or []).map((combo) -> { keys: combo.getKeys() })
+        { description: description, combos: combos }
+      )
+      disabled = not g.meetsConditions(@root)
+      { name: g.name, description: g.description, keybinds: keybinds, disabled }
+    )
+
+    @set('groups', groups)
+    return
 
   observe: {
     isVisible: (newValue) ->
       @set('isOverlayUp', newValue)
       if newValue
+        @generateGroups()
         setTimeout((=> @find('#keyboard-help-dialog')?.focus?()), 0)
         @fire('dialog-opened', this)
       else
@@ -57,24 +41,6 @@ RactiveKeyboardHelp = Ractive.extend({
   }
 
   on: {
-    'init': ->
-      listener = @get('keyboardListener')
-      return [] unless listener?
-
-      keybinds = []
-      if listener.keybinds?
-        listener.keybinds.forEach((value, combo) ->
-          keybinds.push({
-            combo: combo
-            callback: value.callback
-            id: value.id
-            metadata: value.metadata
-          })
-        )
-      @set('keybindsData', keybinds)
-      @set('keybindsHtml', generateKeybindRows(keybinds))
-      return
-
     'close-help': ->
       @set('isVisible', false)
       false
@@ -95,6 +61,31 @@ RactiveKeyboardHelp = Ractive.extend({
     modal: RactiveModal
   }
 
+  partials: {
+    keybindRow: """
+    <tr>
+      <td class="keyboard-help-key">
+        <div class="keyboard-help-multiple">
+          {{#combos}}
+            <div class="keyboard-help-single">
+              {{#keys}}
+                <kbd>{{.}}</kbd>
+              {{/keys}}
+            </div>
+          {{/combos}}
+        </div>
+      </td>
+      <td class="keyboard-help-description">{{description}}</td>
+    </tr>
+    """
+
+    closeButton: """
+    <button class="keyboard-help-closer" on-click="close-help" title="Close (Esc)">
+      ×
+    </button>
+    """
+  }
+
   template:
     """
     {{#if isVisible }}
@@ -102,20 +93,41 @@ RactiveKeyboardHelp = Ractive.extend({
     <modal title="Keyboard Shortcuts"
             id="{{id}}"
             posX="0" posY="0"
-            containerWidth="{{wareaWidth * .8}}"
-            containerHeight="{{wareaHeight * .8}}"
+            containerWidth="{{wareaWidth}}"
+            containerHeight="{{wareaHeight}}"
             minWidth="350px"
             minHeight="400px"
     >
       <div class="keyboard-help-header">
-        <button class="keyboard-help-closer" on-click="close-help" title="Close (Esc)">
-          ×
-        </button>
+        {{>closeButton}}
       </div>
 
       <div class="keyboard-help-content">
-        {{# keybindsData.length > 0 }}
-          {{{ keybindsHtml }}}
+        {{# groups.length > 0 }}
+          <table class="keyboard-help-table">
+            <thead>
+              <tr>
+                <th>Key Combination</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            {{#groups}}
+              {{#unless disabled}}
+              <tr>
+                <th colspan="2">
+                  <div class="keyboard-help-group-header">
+                    <h3 class="keyboard-help-group-title">{{name}}</h3>
+                    {{#if description}}<p class="keyboard-help-group-description">{{description}}</p>{{/if}}
+                  </div>
+                </th>
+              </tr>
+
+              {{#keybinds}}
+                {{>keybindRow .}}
+              {{/keybinds}}
+              {{/unless}}
+            {{/groups}}
+          </table>
         {{else}}
           <p class="keyboard-help-empty">No keyboard shortcuts are currently available.</p>
         {{/}}
@@ -123,7 +135,6 @@ RactiveKeyboardHelp = Ractive.extend({
     </modal>
     {{/if}}
     """
-
 })
 
 export default RactiveKeyboardHelp

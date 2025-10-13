@@ -21,10 +21,8 @@ import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 import RactiveTabWidget from "./ractives/tab.js"
-import RactiveKeyboardListener from "./accessibility/keyboard-listener.js"
 import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
-import { getFirstFocusableSibling } from "./accessibility/utils.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -69,6 +67,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , ticksStarted:         false
   , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
   , width:                0
+  , keybinds:             keybinds
   }
 
   animateWithClass = (klass) ->
@@ -132,7 +131,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     , spacer:           RactiveEditFormSpacer
     , customSlider:     RactiveCustomSlider
-    , keyboardListener: RactiveKeyboardListener
     , tab:              RactiveTabWidget
     },
 
@@ -171,18 +169,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
       return
 
     on: {
-      init: ->
-        @keyboardListener = @findComponent('keyboardListener').keyboardListener
-        @set('keyboardListener', @keyboardListener)
-        window.keyboardListener = @keyboardListener  # for debugging
-        for keybind in keybinds
-          @keyboardListener.bindKey(
-            keybind.metadata.defaultComboStr,
-            keybind.callback.bind(null, this),
-            keybind.id,
-            keybind.metadata
-          )
-
       onSpeedChange: (context, delta) ->
         speed = @get('speed')
         newSpeed = Math.max(-1, Math.min(1, speed + delta))
@@ -190,45 +176,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
     }
-
-    setTab: (tabName, options = {}) ->
-      tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
-
-      validTabs = ['Console', 'Code', 'Info']
-      unless tabCanonicalName in validTabs
-        console.error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
-        return
-
-      showPropertyName = "show#{tabCanonicalName}"
-
-      if options.active is 'toggle'
-        showPropertyValue = not @get(showPropertyName)
-      else if typeof options.active isnt 'undefined'
-        showPropertyValue = options.active
-      else
-        return
-
-      @set(showPropertyName, showPropertyValue)
-
-      if showPropertyValue
-        componentToFocus = {
-          "Code": "codeContainer",
-          "Info": "infoeditor"
-        }[tabCanonicalName]
-
-        setTimeout(=>
-          @findComponent(componentToFocus)?.focus()
-        , 200)
-
-      if options.focus and showPropertyValue
-        componentTabName = tabName.toLowerCase()
-        tab = @findAllComponents("tab")
-              .find((c) -> c.get('name') is componentTabName)
-        tab?.focus()
-        tab?.scrollIntoView()
-
-    toggleKeyboardHelp: ->
-      @set('isKeyboardHelpVisible', not @get('isKeyboardHelpVisible'))
   })
 
 # coffeelint: disable=max_line_length
@@ -239,8 +186,6 @@ template =
     isSessionLoopRunning={{isSessionLoopRunning}}
     sourceType={{source.type}}
     />
-
-  <keyboardListener />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
        tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
@@ -348,7 +293,7 @@ template =
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
-      <keyboardHelp isVisible="{{isKeyboardHelpVisible}}" isOverlayUp="{{isOverlayUp}}" wareaHeight="{{height}}" wareaWidth="{{width}}" keyboardListener="{{keyboardListener}}"></keyboardHelp>
+      <keyboardHelp isVisible="{{isKeyboardHelpVisible}}" isOverlayUp="{{isOverlayUp}}" wareaHeight="{{height}}" wareaWidth="{{width}}" keybinds="{{keybinds}}"></keyboardHelp>
       <contextMenu></contextMenu>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
@@ -394,7 +339,7 @@ template =
         <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' scroll-block="center"
                   lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
       </tab>
-      <tab name="info" title="Model Info" show="{{showInfo}}" scroll-block="start"
+      <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
       </tab>
