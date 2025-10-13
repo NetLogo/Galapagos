@@ -1,71 +1,181 @@
-import { createKeyMetadata } from "./keyboard-listener.js"
 import { offsetFocus } from "./utils.js"
+import { isMac } from "./utils.js"
+import { Keybind, KeybindGroup } from "./keybind.js"
+
+platformCmd = if isMac then "command" else "ctrl"
 
 keybinds = [
-  {
-    id: "focus:clear"
-    callback: () -> document.activeElement?.blur()
-    metadata: createKeyMetadata("Escape", "Clear focus from the current element.")
-  },
-  {
-    id: "focus:next"
-    callback: (_, event) ->
-      if offsetFocus(document.body, document.activeElement, 1)
-        event?.preventDefault()
-    metadata: createKeyMetadata("Ctrl+T", "Alternative to Tab key (for use in Code editor).")
-  },
-  {
-    id: "focus:previous"
-    callback: (_, event) ->
-      if offsetFocus(document.body, document.activeElement, -1)
-        event?.preventDefault()
-    metadata: createKeyMetadata("Ctrl+Shift+T", "Alternative to Shift+Tab key (for use in Code editor).")
-  },
-  {
-    id: "toggle-tab:console"
-    callback: (skeleton, event) -> skeleton.setTab('console', { active: 'toggle', focus: true })
-    metadata: createKeyMetadata("Ctrl+1", "Toggle the Console tab.")
-  },
-  {
-    id: "toggle-tab:code"
-    callback: (skeleton, event) -> skeleton.setTab('code', { active: 'toggle', focus: true })
-    metadata: createKeyMetadata("Ctrl+2", "Toggle the Code tab.")
-  },
-  {
-    id: "toggle-tab:info"
-    callback: (skeleton, event) -> skeleton.setTab('info', { active: 'toggle', focus: true })
-    metadata: createKeyMetadata("Ctrl+3", "Toggle the Info tab.")
-  },
-  {
-    id: "focus-tab:console",
-    callback: (skeleton, event) -> skeleton.setTab('console', { active: true, focus: true })
-    metadata: createKeyMetadata("Ctrl+Shift+1", "Focus the Console tab.")
-  },
-  {
-    id: "focus-tab:code",
-    callback: (skeleton, event) -> skeleton.setTab('code', { active: true, focus: true })
-    metadata: createKeyMetadata("Ctrl+Shift+2", "Focus the Code tab.")
-  },
-  {
-    id: "focus-tab:info",
-    callback: (skeleton, event) -> skeleton.setTab('info', { active: true, focus: true })
-    metadata: createKeyMetadata("Ctrl+Shift+3", "Focus the Info tab.")
-  },
-  {
-    id: "toggle:editing",
-    callback: (skeleton, event) -> skeleton.set('isEditing', not skeleton.get('isEditing'))
-    metadata: createKeyMetadata("Ctrl+E", "Toggle editing mode for the Info tab.")
-  },
-  {
-    id: "toggle:help",
-    callback: (skeleton, event) -> skeleton.set('isHelpVisible', not skeleton.get('isHelpVisible'))
-    metadata: createKeyMetadata("Ctrl+H", "Show help.")
-  },
-  {
-    id: "toggle:keyboard-help",
-    callback: (skeleton, event) -> skeleton.toggleKeyboardHelp()
-    metadata: createKeyMetadata("F1", "Show keyboard shortcuts help.")
-  }
+  new KeybindGroup(
+    "General Shortcuts",
+    undefined,
+    [],
+    [
+      new Keybind(
+        "focus:clear",
+        () -> document.activeElement?.blur()
+        ["Escape"],
+        { description: "Clear focus from the current element."}
+      ),
+      new Keybind(
+        "focus:next",
+        (ractive, event) ->
+          if offsetFocus(document.body, document.activeElement, 1)
+            event?.preventDefault()
+        ["#{platformCmd}+t"],
+        { description: "Alternative to Tab key (for use in Code editor)." }
+      ),
+      new Keybind(
+        "focus:previous",
+        (ractive, event) ->
+          if offsetFocus(document.body, document.activeElement, -1)
+            event?.preventDefault()
+        ["#{platformCmd}+shift+t"],
+        { description: "Alternative to Shift+Tab key (for use in Code editor)." }
+      ),
+      new Keybind(
+        "toggle:keyboard-help",
+        (ractive, event) -> ractive.fire('toggle-keyboard-help')
+        ["f1"],
+        { description: "Show keyboard shortcuts help." }
+      ),
+      new Keybind(
+        "toggle:help",
+        (ractive, event) -> ractive.set('isHelpVisible', not ractive.get('isHelpVisible'))
+        ["#{platformCmd}+h"],
+        { description: "Show help." }
+      ),
+      new Keybind(
+        "toggle:editing",
+        (ractive, event) -> ractive.set('isEditing', not ractive.get('isEditing'))
+        ["#{platformCmd}+e"],
+        { description: "Toggle authoring mode for the model." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:console",
+        (ractive, event) -> ractive.fire('set-tab', 'console', { active: 'toggle', focus: true })
+        ["#{platformCmd}+1"],
+        { description: "Toggle the Console tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:code",
+        (ractive, event) -> ractive.fire('set-tab', 'code', { active: 'toggle', focus: true })
+        ["#{platformCmd}+2"],
+        { description: "Toggle the Code tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:info",
+        (ractive, event) -> ractive.fire('set-tab', 'info', { active: 'toggle', focus: true })
+        ["#{platformCmd}+3"],
+        { description: "Toggle the Info tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "focus-tab:console",
+        (ractive, event) -> ractive.fire('set-tab', 'console', { active: true, focus: true })
+        ["#{platformCmd}+shift+1"],
+        { description: "Focus the Console tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "focus-tab:code",
+        (ractive, event) -> ractive.fire('set-tab', 'code', { active: true , focus: true })
+        ["#{platformCmd}+shift+2"],
+        { description: "Focus the Code tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "focus-tab:info",
+        (ractive, event) -> ractive.fire('set-tab', 'info', { active: true, focus: true })
+        ["#{platformCmd}+shift+3"],
+        { description: "Focus the Info tab." },
+        { preventDefault: true }
+      )
+    ]
+  ),
+  new KeybindGroup(
+    "Code Editor Shortcuts",
+    "Available in the code editor.",
+    [],
+    [
+      new Keybind(
+        "find:usages",
+        () -> {},
+        ["#{platformCmd}+u"],
+        { description: "Find all usages of selected text." },
+        { bind: false }
+      ),
+      new Keybind(
+        "un/comment:line",
+        () -> {},
+        ["#{platformCmd}+;"],
+        { description: "Comment/Uncomment the current line." },
+        { bind: false }
+      )
+    ]
+  ),
+  new KeybindGroup(
+    "Authoring Mode Shortcuts",
+    "Available when authoring the model.",
+    [(ractive) -> ractive.get('stateName').startsWith('authoring')],
+    [
+      new Keybind(
+        "widget:toggle-resizer-visibility",
+        (ractive) -> ractive.fire('hide-resizer')
+        ["#{platformCmd}+shift+h"],
+        { description: "Show/hide the widget resizer." }
+      ),
+      new Keybind(
+        "widget:close/deselect",
+        (ractive) -> ractive.fire('deselect-widgets'),
+        ["Escape"],
+        { description: "Close the context menu or deselect any selected widget." }
+      ),
+      new Keybind(
+        "widget:move-freely",
+        (ractive, event) -> ractive.fire('move-widget-freely', event),
+        ["#{platformCmd}"],
+        { description: "Move the selected widget freely." },
+        { bind: false }
+      ),
+      new Keybind(
+        "widget:nudge",
+        (ractive, _, combo) -> ractive.fire('nudge-widget', combo),
+        ["up", "down", "left", "right"],
+        { description: "Nudge the selected widget in any direction." },
+        { options: { }}
+      ),
+      new Keybind(
+        "widget:delete",
+        (ractive) -> not isMac and ractive.fire('delete-selected'),
+        ["del", "backspace"],
+        { description: "Delete the selected widget." }
+      )
+    ]
+  ),
+  new KeybindGroup(
+    "Edit Form Shortcuts",
+    "Available when editing a widget's properties.",
+    [(ractive) -> ractive.get('stateName').startsWith('authoring')],
+    [
+      new Keybind(
+        "form:submit",
+        () => {},
+        ["Enter"],
+        { description: "Submit the form." },
+        { bind: false }
+      ),
+      new Keybind(
+        "form:close",
+        () => {},
+        ["Escape"],
+        { description: "Close the form and ignore any changes made." },
+        { bind: false }
+      )
+    ]
+  )
 ]
 
 export { keybinds }

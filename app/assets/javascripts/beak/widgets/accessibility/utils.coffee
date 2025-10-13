@@ -26,3 +26,5 @@ export offsetFocus = (container, element, offset) ->
     focusables[newIndex]?.focus()
     return true
   return false
+
+export isMac = window.navigator.platform.startsWith('Mac')
