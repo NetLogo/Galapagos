@@ -1,4 +1,5 @@
 import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
 
 # (WidgetController, () => Unit) => Unit
 controlEventTraffic = (controller, performUpdate) ->
@@ -165,6 +166,11 @@ controlEventTraffic = (controller, performUpdate) ->
     onWidgetYChange()
     return
 
+  # () => Unit
+  refreshSortingKeys = ->
+    setSortingKeys(ractive.get('widgetObj'))
+    return
+
   # (String) => Unit
   rejectDupe = (varName) ->
     controller.reportError(
@@ -277,19 +283,21 @@ controlEventTraffic = (controller, performUpdate) ->
     return
 
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
-
   keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
   mousetrap.bind('?', onQMark)
-
   ractive.on("unbind-keys", (->
     keybinds.forEach((keybindGroup) -> keybindGroup.unbind(mousetrap))
   ))
+
+  window.addEventListener('keyup', refreshSortingKeys)
+  window.addEventListener('dragend', refreshSortingKeys)
 
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.x'           , onWidgetXChange)
   ractive.observe('widgetObj.*.width'       , onWidgetXChange)
   ractive.observe('widgetObj.*.y'           , onWidgetYChange)
   ractive.observe('widgetObj.*.height'      , onWidgetYChange)
+  ractive.observe('isEditing'               , refreshSortingKeys)
 
   ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))
@@ -317,6 +325,7 @@ controlEventTraffic = (controller, performUpdate) ->
 
   ractive.on('set-tab', (_, name, options) => setTab(name, options))
   ractive.on('toggle-keyboard-help', -> toggleBoolean('isKeyboardHelpVisible'))
+  ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
 
   return
 
