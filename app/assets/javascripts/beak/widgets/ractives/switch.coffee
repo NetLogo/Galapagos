@@ -140,7 +140,7 @@ RactiveSwitch = RactiveValueWidget.extend({
     switch:
       """
       <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}"
-        role="switch" aria-checked="{{ internalValue }}" tabindex="0" on-keydown="widget-keydown">
+        role="switch" aria-checked="{{ internalValue }}" tabindex="0" on-keydown="widget-keydown" {{attrs}}>
         <input type="checkbox" checked="{{ internalValue }}" on-change="widget-value-change" {{# isEditing }} disabled{{/}} hidden />
         <span class="netlogo-label">{{ widget.display }}</span>
         <div class="netlogo-switcher-element" role="presentation">
