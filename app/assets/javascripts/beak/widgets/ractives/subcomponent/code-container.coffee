@@ -12,6 +12,8 @@ RactiveCodeContainerBase = Ractive.extend({
   , injectedConfig: undefined # Object
   , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
+  , tabindex:       undefined # String
+  , 'aria-label':   undefined # String
   }
 
   # An astute observer will ask what the purpose of `initialCode` is--why wouldn't we just make it
@@ -82,6 +84,8 @@ RactiveCodeContainerBase = Ractive.extend({
       class="netlogo-code {{(extraClasses || []).join(' ')}}"
       style="{{style}}"
       translate="no"
+      tabindex="{{tabindex}}"
+      aria-label="{{'Code input for ' + widget.variable}}"
     />
     """
 

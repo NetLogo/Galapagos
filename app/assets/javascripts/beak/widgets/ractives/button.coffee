@@ -297,9 +297,9 @@ RactiveButton = RactiveWidget.extend({
 
     standardButton:
       """
-      <button id="{{id}}" type="button" style="{{dims}}"
+      <button id="{{id}}" type="button" style="{{dims}}" {{attrs}}
               class="netlogo-widget netlogo-button netlogo-command{{#widget.oldSize}} old-size{{/}}{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}"
-              on-click="@this.fire('activate-button')">
+              on-click="@this.fire('activate-button')" aria-disabled="{{# !isEnabled }}true{{else}}false{{/}}">
         {{>buttonContext}}
         {{>label}}
         {{>actionKeyIndicator}}
@@ -308,7 +308,8 @@ RactiveButton = RactiveWidget.extend({
 
     foreverButton:
       """
-      <label id="{{id}}" style="{{dims}}" role="button" aria-disabled="{{# !isEnabled }}true{{else}}false{{/}}"
+      <label id="{{id}}" style="{{dims}}" role="button" aria-disabled="{{# !isEnabled }}true{{else}}false{{/}}" {{attrs}}
+             disabled="{{# !isEnabled }}true{{else}}false{{/}}" aria-pressed="{{# isRunning }}true{{else}}false{{/}}"
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.oldSize}} old-size{{/}}{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
