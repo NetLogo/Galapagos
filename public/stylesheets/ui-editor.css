@@ -61,7 +61,10 @@
   user-select:      none;
   -moz-user-select: none;
   opacity:          0.7;
+  pointer-events: none;
 }
+
+
 
 .netlogo-widget.interface-unlocked:hover,
 .editor-overlay:hover + .netlogo-widget.interface-unlocked,
