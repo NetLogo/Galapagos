@@ -264,6 +264,7 @@ RactiveInput = RactiveValueWidget.extend({
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
             {{# isEditing }}disabled{{/}}
+            {{attrs}}
             />
         {{/}}
         {{# widget.boxedValue.type === 'String'}}
@@ -273,6 +274,7 @@ RactiveInput = RactiveValueWidget.extend({
             on-keypress="handle-keypress"
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            {{attrs}}
             {{# isEditing }}disabled{{/}} >
           </textarea>
         {{/}}
@@ -286,6 +288,8 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
+              tabindex="{{tabindex}}"
+              aria-label="Code input for {{widget.variable}}"
               />
           {{else}}
             <singleLineEditor
@@ -296,6 +300,8 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
+              tabindex="{{tabindex}}"
+              aria-label="Code input for {{widget.variable}}"
               />
           {{/}}
         {{/}}
@@ -306,6 +312,8 @@ RactiveInput = RactiveValueWidget.extend({
             value="{{internalValue}}"
             isEnabled="{{!isEditing}}"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            tabindex="{{tabindex}}"
+            aria-label="Color input for {{widget.variable}}"
             />
         {{/}}
       </label>
