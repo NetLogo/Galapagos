@@ -23,6 +23,7 @@ import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 import RactiveTabWidget from "./ractives/tab.js"
 import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -65,7 +66,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , speed:                0.0
   , ticks:                "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:         false
-  , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+  , widgetObj:            setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
   , width:                0
   , keybinds:             keybinds
   }
