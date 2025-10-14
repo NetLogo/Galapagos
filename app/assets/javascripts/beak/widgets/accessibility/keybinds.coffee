@@ -2,7 +2,7 @@ import { offsetFocus } from "./utils.js"
 import { isMac } from "./utils.js"
 import { Keybind, KeybindGroup } from "./keybind.js"
 
-platformCmd = if isMac then "command" else "ctrl"
+modKey = if isMac then "command" else "ctrl"
 
 keybinds = [
   new KeybindGroup(
@@ -21,7 +21,7 @@ keybinds = [
         (ractive, event) ->
           if offsetFocus(document.body, document.activeElement, 1)
             event?.preventDefault()
-        ["#{platformCmd}+t"],
+        ["alt+t"],
         { description: "Alternative to Tab key (for use in Code editor)." }
       ),
       new Keybind(
@@ -29,7 +29,7 @@ keybinds = [
         (ractive, event) ->
           if offsetFocus(document.body, document.activeElement, -1)
             event?.preventDefault()
-        ["#{platformCmd}+shift+t"],
+        ["alt+shift+t"],
         { description: "Alternative to Shift+Tab key (for use in Code editor)." }
       ),
       new Keybind(
@@ -41,55 +41,55 @@ keybinds = [
       new Keybind(
         "toggle:help",
         (ractive, event) -> ractive.set('isHelpVisible', not ractive.get('isHelpVisible'))
-        ["#{platformCmd}+h"],
+        ["#{modKey}+h"],
         { description: "Show help." }
       ),
       new Keybind(
         "toggle:editing",
-        (ractive, event) -> ractive.set('isEditing', not ractive.get('isEditing'))
-        ["#{platformCmd}+e"],
+        (ractive, event) -> ractive.fire('toggle-interface-lock')
+        ["#{modKey}+shift+l"],
         { description: "Toggle authoring mode for the model." },
         { preventDefault: true }
       ),
       new Keybind(
         "toggle-tab:console",
         (ractive, event) -> ractive.fire('set-tab', 'console', { active: 'toggle', focus: true })
-        ["#{platformCmd}+1"],
+        ["#{modKey}+1"],
         { description: "Toggle the Console tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "toggle-tab:code",
         (ractive, event) -> ractive.fire('set-tab', 'code', { active: 'toggle', focus: true })
-        ["#{platformCmd}+2"],
+        ["#{modKey}+2"],
         { description: "Toggle the Code tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "toggle-tab:info",
         (ractive, event) -> ractive.fire('set-tab', 'info', { active: 'toggle', focus: true })
-        ["#{platformCmd}+3"],
+        ["#{modKey}+3"],
         { description: "Toggle the Info tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "focus-tab:console",
         (ractive, event) -> ractive.fire('set-tab', 'console', { active: true, focus: true })
-        ["#{platformCmd}+shift+1"],
+        ["#{modKey}+shift+1"],
         { description: "Focus the Console tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "focus-tab:code",
         (ractive, event) -> ractive.fire('set-tab', 'code', { active: true , focus: true })
-        ["#{platformCmd}+shift+2"],
+        ["#{modKey}+shift+2"],
         { description: "Focus the Code tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "focus-tab:info",
         (ractive, event) -> ractive.fire('set-tab', 'info', { active: true, focus: true })
-        ["#{platformCmd}+shift+3"],
+        ["#{modKey}+shift+3"],
         { description: "Focus the Info tab." },
         { preventDefault: true }
       )
@@ -103,14 +103,14 @@ keybinds = [
       new Keybind(
         "find:usages",
         () -> {},
-        ["#{platformCmd}+u"],
+        ["#{modKey}+u"],
         { description: "Find all usages of selected text." },
         { bind: false }
       ),
       new Keybind(
         "un/comment:line",
         () -> {},
-        ["#{platformCmd}+;"],
+        ["#{modKey}+;"],
         { description: "Comment/Uncomment the current line." },
         { bind: false }
       )
@@ -124,7 +124,7 @@ keybinds = [
       new Keybind(
         "widget:toggle-resizer-visibility",
         (ractive) -> ractive.fire('hide-resizer')
-        ["#{platformCmd}+shift+h"],
+        ["#{modKey}+shift+h"],
         { description: "Show/hide the widget resizer." }
       ),
       new Keybind(
@@ -136,7 +136,7 @@ keybinds = [
       new Keybind(
         "widget:move-freely",
         (ractive, event) -> ractive.fire('move-widget-freely', event),
-        ["#{platformCmd}"],
+        ["#{modKey}"],
         { description: "Move the selected widget freely." },
         { bind: false }
       ),
