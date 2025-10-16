@@ -74,7 +74,7 @@ RactiveOutputArea = RactiveWidget.extend({
 
     output:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-output netlogo-output-widget {{classes}}" style="{{dims}}">
+      <div id="{{id}}" class="netlogo-widget netlogo-output netlogo-output-widget {{classes}}" style="{{dims}}" {{attrs}}>
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}" />
       </div>
       """

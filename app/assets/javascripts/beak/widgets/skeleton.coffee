@@ -20,6 +20,10 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
+import RactiveTabWidget from "./ractives/tab.js"
+import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
+import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -39,6 +43,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , info
   , isEditing:            false
   , isHelpVisible:        false
+  , isKeyboardHelpVisible: false
   , isHNW:                false
   , isHNWHost:            false
   , isHNWTicking:         false
@@ -61,8 +66,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , speed:                0.0
   , ticks:                "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:         false
-  , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
+  , widgetObj:            setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
   , width:                0
+  , keybinds:             keybinds
   }
 
   animateWithClass = (klass) ->
@@ -98,6 +104,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
+    , keyboardHelp:  RactiveKeyboardHelp
     , infotab:       RactiveInfoTabWidget
     , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
@@ -126,9 +133,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , hnwPlotWidget:    RactiveHNWPlot
     , hnwViewWidget:    RactiveHNWView
 
-    , spacer:        RactiveEditFormSpacer
-    , customSlider:  RactiveCustomSlider
-
+    , spacer:           RactiveEditFormSpacer
+    , customSlider:     RactiveCustomSlider
+    , tab:              RactiveTabWidget
     },
 
     computed: {
@@ -173,7 +180,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
     }
-
   })
 
 # coffeelint: disable=max_line_length
@@ -291,6 +297,7 @@ template =
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
+      <keyboardHelp isVisible="{{isKeyboardHelpVisible}}" isOverlayUp="{{isOverlayUp}}" wareaHeight="{{height}}" wareaWidth="{{width}}" keybinds="{{keybinds}}"></keyboardHelp>
       <contextMenu></contextMenu>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
@@ -326,28 +333,20 @@ template =
 
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
-      <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
-        <span class="netlogo-tab-text">Command Center</span>
-      </label>
-      {{#showConsole}}
+      <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
+            on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
         <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
+      </tab>
       {{/}}
-      {{/}}
-      <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
-        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
-      </label>
-      {{#showCode}}
-        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
-      {{/}}
-      <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
-        <span class="netlogo-tab-text">Model Info</span>
-      </label>
-      {{#showInfo}}
+      <tab name="code" title="NetLogo Code" show="{{showCode}}"
+            on-toggle="['model-code-toggled', show]" focus-target=".netlogo-code-tab">
+        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' scroll-block="center"
+                  lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+      </tab>
+      <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
+            on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
-      {{/}}
+      </tab>
     </div>
 
     <input id="general-file-input" type="file" name="general-file" style="display: none;" />
