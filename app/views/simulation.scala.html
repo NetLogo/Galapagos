@@ -1,4 +1,6 @@
-@(tagBuilder: TagBuilder, isStandalone: Boolean = false)(implicit request: Request[?], environment: play.api.Environment)
+@import play.api.Mode
+
+@(tagBuilder: TagBuilder, isStandalone: Boolean = false)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 <html>
   <head>
@@ -17,6 +19,7 @@
     @tagBuilder.pathToHTML("stylesheets/spinner.css")
     @tagBuilder.pathToHTML("stylesheets/alert.css")
     @tagBuilder.pathToHTML("stylesheets/js-error.css")
+    @views.html.analytics(isStandalone)
   </head>
   <body style="margin: 0px;">
     @views.html.spinner()

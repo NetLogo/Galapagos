@@ -1,15 +1,29 @@
 @import play.api.Mode
 
-@()(implicit mode: Mode)
+@(isStandalone: Boolean = false)(implicit mode: Mode)
 
 @if(mode == Mode.Prod) {
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-K67S9EZ4QL"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has("disableAnalytics")) {
+      // in theory injecting the script this way shouldn't be necessary with Google's consent flags, but I was still
+      // seeing results pop up in the analytics reports that didn't look quite right.  So this seems safer.  -Jeremy B
+      // Octver 2025
+      const gScript = document.createElement('script');
+      gScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-K67S9EZ4QL';
+      gScript.async = true;
+      document.head.appendChild(gScript);
 
-    gtag('config', 'G-K67S9EZ4QL');
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-K67S9EZ4QL', {
+        'custom_map': {'dimension1': 'app_type'}
+      });
+      @if(isStandalone) {
+      gtag('event', 'page_view', { 'app_type': 'exported_standalone' });
+      }
+    }
   </script>
 }
