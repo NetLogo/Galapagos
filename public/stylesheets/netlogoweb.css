@@ -26,7 +26,7 @@
   --color-widget-button-active: #003473;
   --color-widget-button-text: #ffffff;
   --color-widget-button-disabled: #d5d5d5;
-  --color-widget-button-disabled-text: #999999;
+  --color-widget-button-disabled-text: #737373;
 
   --color-widget-accessories: var(--color-dark-blue);
   --color-widget-accessories-neutral: #afafaf;
@@ -74,7 +74,7 @@
   background-color: var(--color-widget-background);
 }
 .netlogo-output {
-  background-color: #d7d7d7;
+  background-color: #e8e8e8;
 }
 
 .netlogo-slider-label .netlogo-label {
