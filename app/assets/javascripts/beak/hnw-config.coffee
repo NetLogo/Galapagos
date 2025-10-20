@@ -167,8 +167,16 @@ document.getElementById("config-bundle-button").onclick = ->
         [nlogox, config] = if bundleText.trim().startsWith("<?xml")
           nlogoDoc         = nlogoXMLToDoc(bundleText)
           hnwConfigElement = nlogoDoc.querySelector("hubnet-web-config")
-          configJson       = stripXMLCdata(hnwConfigElement.innerHTML)
-          [bundleText, JSON.parse(configJson)]
+          if hnwConfigElement?
+            configJson = stripXMLCdata(hnwConfigElement.innerHTML)
+            [bundleText, JSON.parse(configJson)]
+
+          else
+            # coffeelint: disable=max_line_length
+            alert(new Error("The selected NetLogo model did not have a HubNet Web configuration section.  We will generate a new configuration, but this may mean the wrong file was selected."))
+            # coffeelint: enable=max_line_length
+            config = generateHNWConfig(bundleText)
+            [bundleText, config]
 
         else
           bundle = JSON.parse(bundleText)
