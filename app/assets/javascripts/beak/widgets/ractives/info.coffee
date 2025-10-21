@@ -6,6 +6,7 @@ RactiveInfoTabEditor = Ractive.extend({
     isEditing: false
   }
 
+  # CodeMirror
   infoTabEditor: undefined
 
   onrender: ->
@@ -23,6 +24,7 @@ RactiveInfoTabEditor = Ractive.extend({
       @set('info',    @infoTabEditor.getValue())
     )
 
+  # () => Unit
   focus: ->
     @infoTabEditor.focus()
     return

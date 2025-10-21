@@ -1,43 +1,47 @@
 import { isMac } from "./utils.js"
 import { KeyCombo } from "./key-combo.js"
 
+# Keybind[mousetrap, ractive]
+# mousetrap: Mousetrap
+# ractive: Ractive
 export class Keybind
-  # id: string
+  id: undefined     # String
+  cb: undefined     # (ractive, KeyboardEvent, combo) => Boolean | Unit
+  combos: undefined # Array[KeyCombo]
+  metadata: {}      # { description: String, docs: String }
+  options: {}       # { type: "keydown" | "keyup" | "keypress", bind: Boolean, preventDefault: Boolean }
+
+  # parameters:
+  # id: String
   # cb: (ractive, KeyboardEvent, combo) => Boolean | Unit
-  # comboStrs: https://craig.is/killing/mice (excluding sequences)
+  # comboStrs: Array[String] (see https://craig.is/killing/mice; excluding sequences)
   # metadata: { description: String, docs: String } | undefined
-  # options: { type: "keydown" | "keyup" | "keypress", bind: Boolean, preventDefault: Boolean }
-  constructor: (
-    id, cb, comboStrs, metadata = {},
-    options = {}
-  ) ->
-    @id = id
-    @cb = cb
-    @metadata = metadata
+  # options: { type: "keydown" | "keyup" | "keypress", bind: Boolean, preventDefault: Boolean } | undefined
+  constructor: (@id, @cb, comboStrs, @metadata, options) ->
     @options = { type: "keydown", bind: true, preventDefault: false, ...options }
     @combos = comboStrs.map((comboStr) -> new KeyCombo(comboStr))
     Object.defineProperty(this, 'comboStrs', {
       get: => @combos.map((combo) -> combo.comboStr)
     })
 
-  # (Mousetrap, ractive) => Unit
+  # (mousetrap, ractive, ((ractive) => Boolean) | undefined) => Unit
   bind: (mousetrap, ractive, check) ->
-    if @options.bind isnt true
-      return
+    if @options.bind is true
+      mousetrap.bind(@comboStrs, (e, combo) =>
+        if not check or check(ractive) and @cb?
+          if @options.preventDefault
+            e.preventDefault()
+          return @cb(ractive, e, combo)
+      , @options.type)
 
-    mousetrap.bind(@comboStrs, (e, combo) =>
-      if not check or check(ractive) and @cb?
-        if @options.preventDefault
-          e.preventDefault()
-        return @cb(ractive, e, combo)
-    , @options.type)
-
-  # (Mousetrap) => Unit
+  # (mousetrap) => Unit
   unbind: (mousetrap) ->
-    if @options.bind isnt true
-      return
-    mousetrap.unbind(@comboStrs, @options.type)
+    if @options.bind is true
+      mousetrap.unbind(@comboStrs, @options.type)
 
+# KeybindGroup[mousetrap, ractive]
+# mousetrap: Mousetrap
+# ractive: Ractive
 export class KeybindGroup
   # name: String
   # description: String | undefined
@@ -53,12 +57,12 @@ export class KeybindGroup
   meetsConditions: (ractive) ->
     return @conditions.every((condition) => condition(ractive))
 
-  # (Mousetrap, ractive) => Unit
+  # (mousetrap, ractive) => Unit
   bind: (mousetrap, ractive) ->
     @keybinds.forEach((keybind) =>
       keybind.bind(mousetrap, ractive, @meetsConditions.bind(this))
     )
 
-  # (Mousetrap) => Unit
+  # (mousetrap) => Unit
   unbind: (mousetrap) ->
     @keybinds.forEach((keybind) -> keybind.unbind(mousetrap))

@@ -8,12 +8,14 @@ RactiveKeyboardHelp = Ractive.extend({
     isOverlayUp: false
     wareaHeight: 600
     wareaWidth: 600
-    keybinds: [] # see accessibility/keybinds.js
+    keybinds: [] # see accessibility/keybinds.js for structure – Omar I. (Oct 13 2025)
   }
 
+  # () => Unit
   generateGroups: ->
     groups = @get('keybinds')
-    return '' unless groups and groups.length > 0
+    if not groups or groups.length is 0
+      return
 
     groups = groups.map((g) =>
       keybinds = (g.keybinds or []).map((kb) ->
@@ -22,7 +24,7 @@ RactiveKeyboardHelp = Ractive.extend({
         { description: description, combos: combos }
       )
       disabled = not g.meetsConditions(@root)
-      { name: g.name, description: g.description, keybinds: keybinds, disabled }
+      { name: g.name, description: g.description, keybinds, disabled }
     )
 
     @set('groups', groups)
@@ -43,7 +45,7 @@ RactiveKeyboardHelp = Ractive.extend({
   on: {
     'close-help': ->
       @set('isVisible', false)
-      false
+      return
 
     'handle-key': ({ original: { key } }) ->
       if key is "Escape"
@@ -51,11 +53,15 @@ RactiveKeyboardHelp = Ractive.extend({
         false
   }
 
+  # () => Unit
   show: ->
     @set('isVisible', true)
+    return
 
+  # () => Unit
   hide: ->
     @set('isVisible', false)
+    return
 
   components: {
     modal: RactiveModal
@@ -88,7 +94,7 @@ RactiveKeyboardHelp = Ractive.extend({
 
   template:
     """
-    {{#if isVisible }}
+    {{#isVisible }}
     <div class="keyboard-help-backdrop" on-click="close-help"></div>
     <modal title="Keyboard Shortcuts"
             id="{{id}}"
@@ -133,7 +139,7 @@ RactiveKeyboardHelp = Ractive.extend({
         {{/}}
       </div>
     </modal>
-    {{/if}}
+    {{/}}
     """
 })
 

@@ -98,8 +98,9 @@ RactiveSwitch = RactiveValueWidget.extend({
         @set('internalValue', not @get('internalValue'))
         @fire('widget-value-change')
         event.preventDefault()
-        return false
-      return true
+        false
+      else
+        true
   }
 
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
