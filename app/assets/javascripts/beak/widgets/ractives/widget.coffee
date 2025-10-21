@@ -93,12 +93,19 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       width: #{@get('width')}px; height: #{@get('height')}px;
       """
 
+    # Number (-1 | Positive Integer)
     tabindex: ->
       if @get('isEditing') then -1 else @get('widget.sortingKey') + 1
 
+    # Number (-1 | Positive Integer)
+    editorTabindex: ->
+      if @get('isEditing') then @get('widget.sortingKey') + 1 else -1
+
+    # String
     ariaLabel: ->
       "Widget #{@get('widget.id')} (#{@get('widget.type')})"
 
+    # String
     attrs: ->
       [ "tabindex=\"#{@get('tabindex')}\"",
         "aria-label=\"#{@get('ariaLabel')}\"",
@@ -322,7 +329,8 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         on-focus="@this.fire('select-widget', @event)"
         on-blur="@this.fire('deselect-widgets')"
         role="button"
-        tabindex="{{widget.sortingKey}}"
+        tabindex="{{editorTabindex}}"
+        aria-label="Editable overlay for widget {{widget.id}} of type {{widget.type}}"
         >
       </div>
       {{/}}

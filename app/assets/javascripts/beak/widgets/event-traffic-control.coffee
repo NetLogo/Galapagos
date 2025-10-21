@@ -245,7 +245,7 @@ controlEventTraffic = (controller, performUpdate) ->
     tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
 
     validTabs = ['Console', 'Code', 'Info']
-    unless tabCanonicalName in validTabs
+    if not tabCanonicalName in validTabs
       console.error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
       return
 

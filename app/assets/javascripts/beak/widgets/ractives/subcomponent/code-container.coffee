@@ -85,7 +85,7 @@ RactiveCodeContainerBase = Ractive.extend({
       style="{{style}}"
       translate="no"
       tabindex="{{tabindex}}"
-      aria-label="{{'Code input for ' + widget.variable}}"
+      aria-label="{{aria-label}}"
     />
     """
 

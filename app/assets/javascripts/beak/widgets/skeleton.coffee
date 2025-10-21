@@ -33,42 +33,42 @@ generateRactiveSkeleton = (container, widgets, code, info,
   model = {
     checkIsReporter
   , code
-  , consoleOutput:        ''
-  , exportForm:           false
-  , hasFocus:             false
+  , consoleOutput:         ''
+  , exportForm:            false
+  , hasFocus:              false
   , workInProgressState
-  , height:               0
-  , hnwClients:           {}
-  , hnwRoles:             {}
+  , height:                0
+  , hnwClients:            {}
+  , hnwRoles:              {}
   , info
-  , isEditing:            false
-  , isHelpVisible:        false
+  , isEditing:             false
+  , isHelpVisible:         false
   , isKeyboardHelpVisible: false
-  , isHNW:                false
-  , isHNWHost:            false
-  , isHNWTicking:         false
-  , isOverlayUp:          false
+  , isHNW:                 false
+  , isHNWHost:             false
+  , isHNWTicking:          false
+  , isOverlayUp:           false
   , isReadOnly
-  , isResizerVisible:     true
-  , isStale:              false
-  , isVertical:           true
-  , lastCompiledCode:     code
-  , lastCompileFailed:    false
-  , lastDragX:            undefined
-  , lastDragY:            undefined
-  , metadata:             { globalVars: [], myVars: [], procedures: [] }
-  , modelTitle:           source.getModelTitle()
-  , outputWidgetOutput:   ''
-  , primaryView:          undefined
-  , someDialogIsOpen:     false
-  , someEditFormIsOpen:   false
+  , isResizerVisible:      true
+  , isStale:               false
+  , isVertical:            true
+  , lastCompiledCode:      code
+  , lastCompileFailed:     false
+  , lastDragX:             undefined
+  , lastDragY:             undefined
+  , metadata:              { globalVars: [], myVars: [], procedures: [] }
+  , modelTitle:            source.getModelTitle()
+  , outputWidgetOutput:    ''
+  , primaryView:           undefined
+  , someDialogIsOpen:      false
+  , someEditFormIsOpen:    false
   , source
-  , speed:                0.0
-  , ticks:                "" # Remember, ticks initialize to nothing, not 0
-  , ticksStarted:         false
-  , widgetObj:            setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
-  , width:                0
-  , keybinds:             keybinds
+  , speed:                 0.0
+  , ticks:                 "" # Remember, ticks initialize to nothing, not 0
+  , ticksStarted:          false
+  , widgetObj:             setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
+  , width:                 0
+  , keybinds:              keybinds
   }
 
   animateWithClass = (klass) ->
