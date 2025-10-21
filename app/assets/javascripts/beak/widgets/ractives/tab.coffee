@@ -15,15 +15,17 @@ RactiveTabWidget = Ractive.extend({
     , 'scroll-container': 'all'    # String ('all' | 'nearest')
   }
 
+  # () => Unit
   focus: ->
     target = @find(@get('focus-target'))
     if target?
-      options = @get('scroll-options') or {}
+      options = @get('scroll-options') ? {}
       target.focus(options)
     return
 
+  # () => Unit
   scrollIntoView: ->
-    name = @get('name') or 'unknown'
+    name = @get('name') ? 'unknown'
     target = @find(@get('focus-target'))
     if target?
       options = {
@@ -41,7 +43,6 @@ RactiveTabWidget = Ractive.extend({
       setTimeout( ->
         scrollTarget.scrollIntoView(options)
       , 200)
-    return
 
   on: {
     keydown: ({ original: event}) ->
