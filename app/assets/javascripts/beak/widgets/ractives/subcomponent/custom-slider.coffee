@@ -33,9 +33,9 @@ RactiveCustomSlider = Ractive.extend({
     maxDecimal: ->
       step = @get("step") or 1
       stepString = String(step)
-      if stepString.indexOf('e-') > -1
+      if stepString.includes('e-')
         return parseInt(stepString.split('e-')[1])
-      else if stepString.indexOf('.') > -1
+      else if stepString.includes('.')
         return stepString.split('.')[1].length
       else
         return 2
@@ -180,7 +180,7 @@ RactiveCustomSlider = Ractive.extend({
          aria-valuemax="{{max}}"
          aria-valuenow="{{value}}"
          aria-label="{{ariaLabel}}"
-         aria-disabled="{{#if isEnabled}}false{{else}}true{{/if}}"
+         aria-disabled="{{!isEnabled}}"
          tabindex="{{#if isEnabled}}{{tabindex}}{{else}}-1{{/if}}"
          >
       <div class="netlogo-slider-bar-fill" style="width: {{percentFilled}}%;"></div>
