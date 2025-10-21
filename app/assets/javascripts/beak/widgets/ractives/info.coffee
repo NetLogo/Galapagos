@@ -6,8 +6,11 @@ RactiveInfoTabEditor = Ractive.extend({
     isEditing: false
   }
 
+  # CodeMirror
+  infoTabEditor: undefined
+
   onrender: ->
-    infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
+    @infoTabEditor = CodeMirror(@find('.netlogo-info-editor'), {
       value: @get('rawText'),
       tabsize: 2,
       mode: 'markdown',
@@ -16,10 +19,15 @@ RactiveInfoTabEditor = Ractive.extend({
       lineWrapping: true
     })
 
-    infoTabEditor.on('change', =>
-      @set('rawText', infoTabEditor.getValue())
-      @set('info',    infoTabEditor.getValue())
+    @infoTabEditor.on('change', =>
+      @set('rawText', @infoTabEditor.getValue())
+      @set('info',    @infoTabEditor.getValue())
     )
+
+  # () => Unit
+  focus: ->
+    @infoTabEditor.focus()
+    return
 
   template:
     """

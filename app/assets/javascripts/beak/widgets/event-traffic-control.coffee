@@ -1,3 +1,6 @@
+import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
+
 # (WidgetController, () => Unit) => Unit
 controlEventTraffic = (controller, performUpdate) ->
 
@@ -163,6 +166,11 @@ controlEventTraffic = (controller, performUpdate) ->
     onWidgetYChange()
     return
 
+  # () => Unit
+  refreshSortingKeys = ->
+    setSortingKeys(ractive.get('widgetObj'))
+    return
+
   # (String) => Unit
   rejectDupe = (varName) ->
     controller.reportError(
@@ -233,27 +241,63 @@ controlEventTraffic = (controller, performUpdate) ->
     world.changeTopology(wrapX, wrapY)
     return
 
+  setTab = (tabName, options = {}) ->
+    tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
+
+    validTabs = ['Console', 'Code', 'Info']
+    if not tabCanonicalName in validTabs
+      console.error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
+      return
+
+    showPropertyName = "show#{tabCanonicalName}"
+
+    if options.active is 'toggle'
+      showPropertyValue = not ractive.get(showPropertyName)
+    else if typeof options.active isnt 'undefined'
+      showPropertyValue = options.active
+    else
+      return
+
+    ractive.set(showPropertyName, showPropertyValue)
+
+    if showPropertyValue
+      componentToFocus = {
+        "Code": "codeEditor",
+        "Info": "infoeditor",
+        "Console": "console"
+      }[tabCanonicalName]
+
+      setTimeout(=>
+        ractive.findComponent(componentToFocus)?.focus()
+      , 200)
+    else
+      ractive.find('.netlogo-model').focus()
+
+    if options.focus and showPropertyValue
+      componentTabName = tabName.toLowerCase()
+      tab = ractive.findAllComponents("tab")
+            .find((c) -> c.get('name') is componentTabName)
+      tab?.focus()
+      tab?.scrollIntoView()
+
+    return
+
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
-  mousetrap.bind(['up', 'down', 'left', 'right']            , (_, name) -> ractive.fire('nudge-widget', name))
-  mousetrap.bind(['ctrl+shift+l', 'command+shift+l']        ,           -> ractive.fire('toggle-interface-lock'))
-  mousetrap.bind(['ctrl+shift+h', 'command+shift+h']        ,           -> ractive.fire('hide-resizer'))
-  mousetrap.bind('del'                                      ,           -> ractive.fire('delete-selected'))
-  mousetrap.bind('escape'                                   ,           -> ractive.fire('deselect-widgets'))
-
+  keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
   mousetrap.bind('?', onQMark)
-
   ractive.on("unbind-keys", (->
-    mousetrap.unbind([ 'up', 'down', 'left', 'right', 'del', 'escape', '?'
-                     , 'ctrl+shift+l', 'command+shift+l'
-                     , 'ctrl+shift+h', 'command+shift+h'
-                     ])
+    keybinds.forEach((keybindGroup) -> keybindGroup.unbind(mousetrap))
   ))
+
+  window.addEventListener('keyup', refreshSortingKeys)
+  window.addEventListener('dragend', refreshSortingKeys)
 
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.x'           , onWidgetXChange)
   ractive.observe('widgetObj.*.width'       , onWidgetXChange)
   ractive.observe('widgetObj.*.y'           , onWidgetYChange)
   ractive.observe('widgetObj.*.height'      , onWidgetYChange)
+  ractive.observe('isEditing'               , refreshSortingKeys)
 
   ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))
@@ -278,6 +322,10 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('*.dialog-opened'   , (_, dialog) ->  onOpenDialog(dialog))
   ractive.on('*.edit-form-closed', (_, editForm) -> onCloseEditForm(editForm))
   ractive.on('*.edit-form-opened', (_, editForm) ->  onOpenEditForm(editForm))
+
+  ractive.on('set-tab', (_, name, options) => setTab(name, options))
+  ractive.on('toggle-keyboard-help', -> toggleBoolean('isKeyboardHelpVisible'))
+  ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
 
   return
 

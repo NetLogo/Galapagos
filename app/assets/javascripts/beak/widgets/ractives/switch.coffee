@@ -92,6 +92,17 @@ RactiveSwitch = RactiveValueWidget.extend({
 
   widgetType: "switch"
 
+  on: {
+    'widget-keydown': ({ original: event }) ->
+      if event.key in [' ', 'Enter']
+        @set('internalValue', not @get('internalValue'))
+        @fire('widget-value-change')
+        event.preventDefault()
+        false
+      else
+        true
+  }
+
   # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
   # update `on`, because that's what the widget reader looks at at compilation time in
   # order to determine the value of the Switch. --Jason B. (3/31/16)
@@ -129,10 +140,11 @@ RactiveSwitch = RactiveValueWidget.extend({
 
     switch:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}">
+      <label id="{{id}}" class="netlogo-widget netlogo-switcher netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}"
+        role="switch" aria-checked="{{ internalValue }}" tabindex="0" on-keydown="widget-keydown" {{attrs}}>
         <input type="checkbox" checked="{{ internalValue }}" on-change="widget-value-change" {{# isEditing }} disabled{{/}} hidden />
         <span class="netlogo-label">{{ widget.display }}</span>
-        <div class="netlogo-switcher-element">
+        <div class="netlogo-switcher-element" role="presentation">
           <div class="netlogo-switcher-element-knob" ></div>
         </div>
       </label>

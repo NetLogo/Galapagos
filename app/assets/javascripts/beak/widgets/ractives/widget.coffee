@@ -92,6 +92,24 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       left: #{@get('x')}px; top: #{@get('y')}px;
       width: #{@get('width')}px; height: #{@get('height')}px;
       """
+
+    # Number (-1 | Positive Integer)
+    tabindex: ->
+      if @get('isEditing') then -1 else @get('widget.sortingKey') + 1
+
+    # Number (-1 | Positive Integer)
+    editorTabindex: ->
+      if @get('isEditing') then @get('widget.sortingKey') + 1 else -1
+
+    # String
+    ariaLabel: ->
+      "Widget #{@get('widget.id')} (#{@get('widget.type')})"
+
+    # String
+    attrs: ->
+      [ "tabindex=\"#{@get('tabindex')}\"",
+        "aria-label=\"#{@get('ariaLabel')}\"",
+      ].join(' ')
   }
 
   notifyWidgetMoved: () ->
@@ -167,8 +185,31 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         false
       return
 
+    '*.edit-form-closed': ->
+      # 'edit-form-closed' may be fired before the DOM element is rendered
+      # so we need to check for DOM mount before trying to focus it.
+      # - Omar I. (Oct 14 2025)
+      if @el?
+        # The skeleton forces the focus out of the widget when the edit form
+        # closes *after* this callback runs, so we need to defer the focus call.
+        # - Omar I. (Oct 14 2025)
+        setTimeout((=>
+          @find('.editor-overlay')?.focus({ preventScroll: true })
+        ), 0)
+      return
+
     init: ->
       @findComponent('editForm')?.fire("activate-cloaking-device")
+      return
+
+    'on-editor-overlay-keydown': (event, trueEvent) ->
+      if trueEvent.target isnt @find('.editor-overlay')
+        return
+
+      if trueEvent.key is 'Enter' and @get('isSelected')
+        trueEvent.preventDefault()
+        @fire('edit-widget')
+
       return
 
     'initialize-widget': ->
@@ -279,11 +320,18 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         style="{{dims}}"
         class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot' || widget.type === 'hnwPlot'}} plot-overlay{{/}}"
         on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
+        on-keydown="@this.fire('on-editor-overlay-keydown', @event)"
         on-contextmenu="@this.fire('show-context-menu', @event)"
         on-dblclick="@this.fire('edit-widget')"
         on-dragstart="start-widget-drag"
         on-drag="drag-widget"
-        on-dragend="stop-widget-drag">
+        on-dragend="stop-widget-drag"
+        on-focus="@this.fire('select-widget', @event)"
+        on-blur="@this.fire('deselect-widgets')"
+        role="button"
+        tabindex="{{editorTabindex}}"
+        aria-label="Editable overlay for widget {{widget.id}} of type {{widget.type}}"
+        >
       </div>
       {{/}}
       """
