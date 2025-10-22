@@ -1,8 +1,9 @@
 import AlertDisplay from "/alert-display.js"
 
-import Tortoise                    from "/beak/tortoise.js"
-import { NewSource, ScriptSource } from "/beak/nlogo-source.js"
-import { createCommonArgs }        from "/notifications/listener-events.js"
+import Tortoise                         from "/beak/tortoise.js"
+import { NewSource, ScriptSource }      from "/beak/nlogo-source.js"
+import { docToNlogoXML, nlogoXMLToDoc } from "/beak/tortoise-utils.js"
+import { createCommonArgs }             from "/notifications/listener-events.js"
 
 import genPageTitle from "../common/gen-page-title.js"
 
@@ -61,15 +62,15 @@ loadInitialModel = (setSession) ->
   if nlogoScript.textContent.length > 0
     trimmed = removeHostWidgets(nlogoScript.textContent)
     source  = new ScriptSource(nlogoScript.dataset.filename, trimmed)
-    Tortoise.fromNlogoSync( source
-                          , modelContainer
-                          , "en_us"
-                          , false
-                          , null
-                          , openSession(setSession)
-                          , []
-                          , listeners
-                          )
+    Tortoise.fromNlogoXMLSync( source
+                             , modelContainer
+                             , "en_us"
+                             , false
+                             , null
+                             , openSession(setSession)
+                             , []
+                             , listeners
+                             )
   else
     loadModel(setSession)(new NewSource())
 
@@ -82,7 +83,7 @@ loadModel = (setSession) -> (source, widgets = []) ->
   activeContainer = loadingOverlay
   handleCR        = handleCompileResult(setSession)
   source.transform(removeHostWidgets)
-  Tortoise.fromNlogoSync(
+  Tortoise.fromNlogoXMLSync(
     source
   , modelContainer
   , "en_us"
@@ -96,11 +97,11 @@ loadModel = (setSession) -> (source, widgets = []) ->
   return
 
 # (String) => String
-removeHostWidgets = (nlogo) ->
-  delim                       = "\n@#$#@#$#@\n"
-  regex                       = new RegExp(".*?(^GRAPHICS-WINDOW$.*?\n\n).*", "sm")
-  [code, widgets, theRest...] = nlogo.split("\n@#$#@#$#@\n")
-  newWidgets                  = widgets.replace(regex, "$1")
-  [code, newWidgets, theRest...].join(delim)
+removeHostWidgets = (nlogox) ->
+  nlogoDoc       = nlogoXMLToDoc(nlogox)
+  widgetsElement = nlogoDoc.querySelector("widgets")
+  viewElement    = widgetsElement.querySelector("view")
+  widgetsElement.replaceChildren(viewElement)
+  docToNlogoXML(nlogoDoc)
 
 export { loadInitialModel, loadModel }

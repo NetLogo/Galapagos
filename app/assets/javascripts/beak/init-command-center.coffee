@@ -34,7 +34,7 @@ window.addEventListener("message", (e) ->
     when "hnw-set-up-command-center"
       port           = e.ports[0]
       port.onmessage = onCommandCenterMessage
-      compiler.fromNlogo(e.data.nlogo)
+      compiler.fromNlogoXML(e.data.nlogox)
       hnwPortToIDMan.set(port, new IDManager())
       document.getElementById("loading-overlay").style.display = "none"
     else
