@@ -47,7 +47,7 @@ window.addEventListener("message", (e) ->
     when "hnw-set-up-code-pane"
       port           = e.ports[0]
       port.onmessage = onCodePaneMessage
-      compiler.fromNlogo(e.data.nlogo)
+      compiler.fromNlogoXML(e.data.nlogox)
       hnwPortToIDMan.set(port, new IDManager())
       document.getElementById("loading-overlay").style.display = "none"
     else
