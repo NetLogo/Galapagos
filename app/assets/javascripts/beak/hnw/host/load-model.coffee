@@ -1,8 +1,9 @@
 import AlertDisplay from "/alert-display.js"
 
-import Tortoise                    from "/beak/tortoise.js"
-import { NewSource, ScriptSource } from "/beak/nlogo-source.js"
-import { createCommonArgs }        from "/notifications/listener-events.js"
+import Tortoise                         from "/beak/tortoise.js"
+import { NewSource, ScriptSource }      from "/beak/nlogo-source.js"
+import { docToNlogoXML, nlogoXMLToDoc } from "/beak/tortoise-utils.js"
+import { createCommonArgs }             from "/notifications/listener-events.js"
 
 import genPageTitle from "../common/gen-page-title.js"
 
@@ -96,11 +97,11 @@ loadModel = (setSession) -> (source, widgets = []) ->
   return
 
 # (String) => String
-removeHostWidgets = (nlogo) ->
-  delim                       = "\n@#$#@#$#@\n"
-  regex                       = new RegExp(".*?(^GRAPHICS-WINDOW$.*?\n\n).*", "sm")
-  [code, widgets, theRest...] = nlogo.split("\n@#$#@#$#@\n")
-  newWidgets                  = widgets.replace(regex, "$1")
-  [code, newWidgets, theRest...].join(delim)
+removeHostWidgets = (nlogox) ->
+  nlogoDoc       = nlogoXMLToDoc(nlogox)
+  widgetsElement = nlogoDoc.querySelector("widgets")
+  viewElement    = widgetsElement.querySelector("view")
+  widgetsElement.replaceChildren(viewElement)
+  docToNlogoXML(nlogoDoc)
 
 export { loadInitialModel, loadModel }
