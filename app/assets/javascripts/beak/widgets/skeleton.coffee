@@ -196,7 +196,7 @@ template =
        on-blur="@this.fire('track-focus', @node)">
     <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
 
-    <div class="netlogo-display-vertical" aria-label="NetLogo Model Application">
+    <div id="netlogo-ui-controls" class="netlogo-display-vertical" aria-label="NetLogo Model Application">
 
       <div class="netlogo-header">
         <div class="netlogo-subheader">
