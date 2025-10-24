@@ -314,7 +314,7 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   templatePairs = {}
 
   compiler       = new BrowserCompiler()
-  preCompilation = compiler.fromNlogo(e.data.nlogo)
+  preCompilation = compiler.fromNlogoXML(e.data.nlogox)
 
   procedures =
     if preCompilation.model.success
@@ -371,7 +371,7 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
         display = "__hnw_role_#{role.name}_#{widget.display}"
         fakePlots.push({ widget..., display, type: "plot" })
 
-  loadModel(setSession)(new ScriptSource("HubNet Web", e.data.nlogo), fakePlots)
+  loadModel(setSession)(new ScriptSource("HubNet Web", e.data.nlogox), fakePlots)
 
   roles = e.data.roles.reduce(((acc, role) -> acc[role.name] = role; acc), {})
   setRoles(roles)
