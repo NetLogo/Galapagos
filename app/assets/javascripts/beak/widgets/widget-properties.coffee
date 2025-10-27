@@ -8,7 +8,7 @@ typedWidgetProperties = Object.freeze(new Map([
 , ['plot',     ['autoPlotX', 'autoPlotY', 'display', 'legendOn', 'pens', 'setupCode', 'updateCode', 'xAxis', 'xmax', 'xmin', 'yAxis', 'ymax', 'ymin']]
 , ['slider',   ['default', 'direction', 'display', 'max', 'min', 'step', 'units', 'variable']]
 , ['switch',   ['display', 'on', 'variable']]
-, ['textBox',  ['display', 'fontSize', 'markdown', 'transparent', 'backgroundLight', 'textColorLight']]
+, ['textBox',  ['display', 'fontSize', 'markdown', 'transparent', 'backgroundLight', 'textColorLight', 'backgroundDark', 'textColorDark']]
 , ['view',     ['dimensions', 'fontSize', 'frameRate', 'showTickCounter', 'tickCounterLabel', 'updateMode']]
 ]))
 # coffeelint: enable=max_line_length
