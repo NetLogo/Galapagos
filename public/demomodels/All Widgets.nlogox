@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.1" snapToGrid="true">
   <code>extensions [ resource ]
 
 to go
@@ -48,6 +48,8 @@ end</code>
     <button x="285" y="30" height="33" disableUntilTicks="false" forever="false" kind="Observer" width="97" sizeVersion="0">reset-ticks</button>
     <note x="469" y="50" backgroundDark="0" fontSize="11" width="150" markdown="false" height="41" textColorDark="-1" textColorLight="-16777216" backgroundLight="0">This note is a font 11, with a transparent background and black text</note>
     <note x="469" y="105" backgroundDark="0" fontSize="12" width="150" markdown="false" height="56" textColorDark="-1" textColorLight="-13345367" backgroundLight="0">this note is font-size 12, with an opaque background and blue text</note>
+    <note x="495" y="320" backgroundDark="-2705995" fontSize="12" width="150" markdown="false" height="60" textColorDark="-16777216" textColorLight="-1" backgroundLight="-8044480">Note with special light/dark 
+background colors</note>
   </widgets>
   <info>## WHAT IS IT?
 
