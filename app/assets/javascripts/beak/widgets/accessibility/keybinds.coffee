@@ -92,7 +92,14 @@ keybinds = [
         ["#{modKey}+shift+3"],
         { description: "Focus the Info tab." },
         { preventDefault: true }
-      )
+      ),
+      new Keybind(
+        "toggle:input-mode",
+        () -> {},
+        ["#{modKey}+i"],
+        { description: "Toggle input mode for widgets with multiple input-modes (e.g. sliders)." },
+        { bind: false }
+      ),
     ]
   ),
   new KeybindGroup(
