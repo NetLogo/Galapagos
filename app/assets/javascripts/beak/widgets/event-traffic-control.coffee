@@ -282,6 +282,18 @@ controlEventTraffic = (controller, performUpdate) ->
 
     return
 
+  focusFirstWidget = (ractive) ->
+    firstWidget = ractive.find('[tabindex="1"]:not(.netlogo-model)')
+    if firstWidget?
+      # Hack to force :focus-visible instead of
+      # :focus, so the focus ring appears.
+      # - Omar I (Oct 29 2025)
+      firstWidget.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      firstWidget.contentEditable = true
+      firstWidget.focus()
+      firstWidget.contentEditable = false
+    return
+
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
   keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
   mousetrap.bind('?', onQMark)
@@ -326,6 +338,7 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('set-tab', (_, name, options) => setTab(name, options))
   ractive.on('toggle-keyboard-help', -> toggleBoolean('isKeyboardHelpVisible'))
   ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
+  ractive.on('focus-first-widget', -> focusFirstWidget(ractive))
 
   return
 
