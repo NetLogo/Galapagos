@@ -13,7 +13,7 @@ keybinds = [
       new Keybind(
         "focus:clear",
         () -> document.activeElement?.blur()
-        ["Escape"],
+        ["escape"],
         { description: "Clear focus from the current element."}
       ),
       new Keybind(
