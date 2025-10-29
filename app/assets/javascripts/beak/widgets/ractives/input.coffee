@@ -183,6 +183,13 @@ RactiveInput = RactiveValueWidget.extend({
 
   }
 
+  computed: {
+    localEditorConfig: ->
+      {
+        tabindex: if @get('isEditing') then -1 else @get('tabindex')
+      }
+  }
+
   # (String) => Unit
   scrollToBottom: (newValue) ->
     elem = @find('.netlogo-multiline-input')
@@ -288,7 +295,7 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
-              tabindex="{{tabindex}}"
+              localConfig="{{localEditorConfig}}"
               aria-label="Code input for {{widget.variable}}"
               />
           {{else}}
@@ -300,7 +307,7 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
-              tabindex="{{tabindex}}"
+              localConfig="{{localEditorConfig}}"
               aria-label="Code input for {{widget.variable}}"
               />
           {{/}}
