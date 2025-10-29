@@ -24,7 +24,7 @@ import RactiveTabWidget from "./ractives/tab.js"
 import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
-import { isToggleKeydownEvent, ractiveAccessibleClickEvent } from "./accessibility/utils.js"
+import { ractiveAccessibleClickEvent, ractiveCopyEvent } from "./accessibility/utils.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -88,7 +88,8 @@ generateRactiveSkeleton = (container, widgets, code, info,
         t.node.addEventListener(event, listener(listener))
       t.node.classList.add(klass)
 
-  Ractive.events.activateClick = ractiveAccessibleClickEvent
+  Ractive.events.activateClick   = ractiveAccessibleClickEvent
+  Ractive.events.copy            = ractiveCopyEvent
 
   Ractive.transitions.grow       = animateWithClass('growing')
   Ractive.transitions.shrink     = animateWithClass('shrinking')
