@@ -52,45 +52,45 @@ keybinds = [
         { preventDefault: true }
       ),
       new Keybind(
-        "toggle-tab:console",
-        (ractive, event) -> ractive.fire('set-tab', 'console', { active: 'toggle', focus: true })
-        ["#{modKey}+1"],
-        { description: "Toggle the Console tab." },
-        { preventDefault: true }
-      ),
-      new Keybind(
-        "toggle-tab:code",
-        (ractive, event) -> ractive.fire('set-tab', 'code', { active: 'toggle', focus: true })
-        ["#{modKey}+2"],
-        { description: "Toggle the Code tab." },
-        { preventDefault: true }
-      ),
-      new Keybind(
-        "toggle-tab:info",
-        (ractive, event) -> ractive.fire('set-tab', 'info', { active: 'toggle', focus: true })
-        ["#{modKey}+3"],
-        { description: "Toggle the Info tab." },
-        { preventDefault: true }
-      ),
-      new Keybind(
         "focus-tab:console",
         (ractive, event) -> ractive.fire('set-tab', 'console', { active: true, focus: true })
-        ["#{modKey}+shift+1"],
+        ["#{modKey}+1"],
         { description: "Focus the Console tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "focus-tab:code",
         (ractive, event) -> ractive.fire('set-tab', 'code', { active: true , focus: true })
-        ["#{modKey}+shift+2"],
+        ["#{modKey}+2"],
         { description: "Focus the Code tab." },
         { preventDefault: true }
       ),
       new Keybind(
         "focus-tab:info",
         (ractive, event) -> ractive.fire('set-tab', 'info', { active: true, focus: true })
-        ["#{modKey}+shift+3"],
+        ["#{modKey}+3"],
         { description: "Focus the Info tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:console",
+        (ractive, event) -> ractive.fire('set-tab', 'console', { active: 'toggle', focus: true })
+        ["#{modKey}+shift+1"],
+        { description: "Toggle the Console tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:code",
+        (ractive, event) -> ractive.fire('set-tab', 'code', { active: 'toggle', focus: true })
+        ["#{modKey}+shift+2"],
+        { description: "Toggle the Code tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:info",
+        (ractive, event) -> ractive.fire('set-tab', 'info', { active: 'toggle', focus: true })
+        ["#{modKey}+shift+3"],
+        { description: "Toggle the Info tab." },
         { preventDefault: true }
       ),
       new Keybind(
