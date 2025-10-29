@@ -10,7 +10,7 @@ unlessNoFocus = (selector) ->
   "#{selector}#{noFocusSelectors.join('')}"
 
 
-export accessibilitySelectors = Object.freeze(
+accessibilitySelectors = Object.freeze(
   Object.fromEntries(
     [
       ["form", ["input", "select", "textarea", "button", "object"]],
@@ -39,14 +39,14 @@ sortByTabIndex = (a, b) ->
     0
 
 # (HTMLElement) => Array[HTMLElement]
-export getAllFocusableElements = (container) ->
+getAllFocusableElements = (container) ->
   selector = Object.values(accessibilitySelectors).flat().join(', ')
   elements = Array.from(container.querySelectorAll(selector))
                   .filter((el) -> el.offsetWidth > 0 or el.offsetHeight > 0)
   elements.sort(sortByTabIndex)
 
 # (HTMLElement, HTMLElement, Number) => Boolean
-export offsetFocus = (container, element, offset) ->
+offsetFocus = (container, element, offset) ->
   focusables = getAllFocusableElements(container)
   index = focusables.indexOf(element)
   if index isnt -1
@@ -54,4 +54,19 @@ export offsetFocus = (container, element, offset) ->
     focusables[newIndex]?.focus()
   index isnt -1
 
-export isMac = window.navigator.platform.startsWith('Mac')
+isMac = window.navigator.platform.startsWith('Mac')
+
+# HTMLKeyboardEvent => Boolean
+isToggleKeydownEvent = (event) ->
+  return event.key in [' ', 'Enter', 'Spacebar']
+
+export {
+  noFocusSelectors,
+  unlessNoFocus,
+  accessibilitySelectors,
+  sortByTabIndex,
+  getAllFocusableElements,
+  offsetFocus,
+  isToggleKeydownEvent,
+  isMac
+}
