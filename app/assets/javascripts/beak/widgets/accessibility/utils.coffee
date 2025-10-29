@@ -60,6 +60,27 @@ isMac = window.navigator.platform.startsWith('Mac')
 isToggleKeydownEvent = (event) ->
   return event.key in [' ', 'Enter', 'Spacebar']
 
+# (HTMLElement, (Object) => Void) => Void
+ractiveAccessibleClickEvent = (node, fire) ->
+  clickHandler = (event) ->
+    fire({ node: node, original: event })
+    return
+
+  keydownHandler = (event) ->
+    if isToggleKeydownEvent(event)
+      event.preventDefault()
+      fire({ node: node, original: event })
+    return
+
+  node.addEventListener('click', clickHandler, false)
+  node.addEventListener('keydown', keydownHandler, false)
+
+  return {
+    teardown: ->
+      node.removeEventListener('click', clickHandler, false)
+      node.removeEventListener('keydown', keydownHandler, false)
+  }
+
 export {
   noFocusSelectors,
   unlessNoFocus,
@@ -67,6 +88,7 @@ export {
   sortByTabIndex,
   getAllFocusableElements,
   offsetFocus,
+  isMac,
   isToggleKeydownEvent,
-  isMac
+  ractiveAccessibleClickEvent
 }

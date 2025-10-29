@@ -24,6 +24,7 @@ import RactiveTabWidget from "./ractives/tab.js"
 import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
+import { isToggleKeydownEvent, ractiveAccessibleClickEvent } from "./accessibility/utils.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -86,6 +87,11 @@ generateRactiveSkeleton = (container, widgets, code, info,
       for event in eventNames
         t.node.addEventListener(event, listener(listener))
       t.node.classList.add(klass)
+
+  Ractive.events.activateClick = ractiveAccessibleClickEvent
+
+  Ractive.transitions.grow       = animateWithClass('growing')
+  Ractive.transitions.shrink     = animateWithClass('shrinking')
 
   new Ractive({
 
@@ -250,13 +256,17 @@ template =
 
       <div class="netlogo-display-horizontal">
 
-        <div id="authoring-lock" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
+        <div id="authoring-lock" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}"
+             on-activateClick="toggle-interface-lock" tabindex="0" role="button" aria-pressed="{{isEditing}}">
           <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
         </div>
 
-        <div id="tabs-position" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-orientation">
+        <div id="tabs-position" tabindex="0" on-activateClick="toggle-orientation" role="button"
+             aria-label="Toggle Tabs Position" aria-pressed="{{isVertical}}"
+             aria-value="{{#isVertical}}Bottom{{else}}Right Side{{/}}"
+             class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}">
           <div class="netlogo-model-orientation {{#isVertical}}vertical-display{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>
