@@ -1,6 +1,7 @@
 RactiveCustomSlider = Ractive.extend({
 
   data: -> {
+    id:            null            # String
     value:         0               # Number
     min:           0               # Number
     max:           100             # Number
@@ -171,7 +172,8 @@ RactiveCustomSlider = Ractive.extend({
   }
 
   template: """
-    <div class="{{className}}"
+    <div {{#id}}id="{{id}}"{{/}}
+         class="{{className}}"
          on-mousedown="['start-drag']"
          on-touchstart="['start-drag']"
          on-keydown="['keydown']"
