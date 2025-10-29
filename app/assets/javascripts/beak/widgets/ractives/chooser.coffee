@@ -210,6 +210,7 @@ RactiveChooser = RactiveValueWidget.extend({
         on-change="chooser-option-change"
         tabindex="{{tabindex}}"
         aria-label="{{'Code input for ' + widget.variable}}"
+        on-copy='copy-current-value'
         {{# isEditing }} disabled{{/}} >
         {{#widget.choices:index}}
         <option class="netlogo-chooser-option" value="{{index}}">{{>literal}}</option>
