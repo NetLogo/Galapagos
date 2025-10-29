@@ -242,6 +242,14 @@ RactiveButton = RactiveWidget.extend({
       @fire('button-widget-clicked', widget.id, widget.display, widget.source, true, isRunning)
       return
 
+    'handle-forever-button-keydown': (ctx) ->
+      event = ctx.event
+      if event.key is " " or event.key is "Enter"
+        event.preventDefault()
+        isRunning = not @get('isRunning')
+        @set('isRunning', isRunning)
+        @fire('forever-button-change')
+      return
   }
 
   observe: {
@@ -310,6 +318,7 @@ RactiveButton = RactiveWidget.extend({
       """
       <label id="{{id}}" style="{{dims}}" role="button" aria-disabled="{{!isEnabled}}" aria-label="{{ariaLabel}}"
              disabled="{{!isEnabled}}" aria-pressed="{{# isRunning }}true{{else}}false{{/}}" tabindex="{{#isEnabled}}{{tabindex}}{{else}}-1{{/}}"
+             on-keydown="handle-forever-button-keydown"
              class="netlogo-widget netlogo-button netlogo-forever-button{{#widget.oldSize}} old-size{{/}}{{#isRunning}} netlogo-active{{/}} netlogo-command{{# !isEnabled }} netlogo-disabled{{/}} {{errorClass}} {{classes}}">
         {{>buttonContext}}
         {{>label}}
