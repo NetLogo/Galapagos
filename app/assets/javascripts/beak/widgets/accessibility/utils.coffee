@@ -64,13 +64,11 @@ isToggleKeydownEvent = (event) ->
 ractiveAccessibleClickEvent = (node, fire) ->
   clickHandler = (event) ->
     fire({ node: node, original: event })
-    return
 
   keydownHandler = (event) ->
     if isToggleKeydownEvent(event)
       event.preventDefault()
       fire({ node: node, original: event })
-    return
 
   node.addEventListener('click', clickHandler, false)
   node.addEventListener('keydown', keydownHandler, false)
@@ -78,6 +76,22 @@ ractiveAccessibleClickEvent = (node, fire) ->
   return {
     teardown: ->
       node.removeEventListener('click', clickHandler, false)
+      node.removeEventListener('keydown', keydownHandler, false)
+  }
+
+ractiveCopyEvent = (node, fire) ->
+  keydownHandler = (event) ->
+    modKey   = if isMac then event.metaKey else event.ctrlKey
+    copyKey  = event.key is 'c'
+    matchKey = modKey and copyKey
+
+    if matchKey
+      fire({ node: node, original: event })
+
+  node.addEventListener('keydown', keydownHandler, false)
+
+  return {
+    teardown: ->
       node.removeEventListener('keydown', keydownHandler, false)
   }
 
@@ -90,5 +104,6 @@ export {
   offsetFocus,
   isMac,
   isToggleKeydownEvent,
+  ractiveCopyEvent,
   ractiveAccessibleClickEvent
 }
