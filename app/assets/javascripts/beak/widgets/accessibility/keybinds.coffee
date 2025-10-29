@@ -52,6 +52,13 @@ keybinds = [
         { preventDefault: true }
       ),
       new Keybind(
+        "focus:model-widgets",
+        (ractive, event) -> ractive.fire('focus-first-widget')
+        ["#{modKey}+0"],
+        { description: "Focus the first widget in the model." },
+        { preventDefault: true }
+      ),
+      new Keybind(
         "focus-tab:console",
         (ractive, event) -> ractive.fire('set-tab', 'console', { active: true, focus: true })
         ["#{modKey}+1"],
