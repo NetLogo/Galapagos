@@ -7,6 +7,7 @@ import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
 import RactiveCustomSlider from "./subcomponent/custom-slider.js"
+import { isMac } from "../accessibility/utils.js"
 
 # coffeelint: disable=max_line_length
 FlexColumn = Ractive.extend({
@@ -184,7 +185,25 @@ RactiveSlider = RactiveValueWidget.extend({
 
   widgetType: "slider"
 
+  sliderElem: null # HTMLElement
+  inputElem:  null # HTMLElement
+
+  # () => Unit
+  focusSlider: () ->
+    if @sliderElem?
+      # This is a hack to get the browser to apply
+      # :focus-visible instead of :focus to the slider.
+      # -Omar I. Aug 11, 2025
+      @sliderElem.contentEditable = true
+      @sliderElem.focus()
+      @sliderElem.contentEditable = false
+    return
+
   on: {
+    'render': (context) ->
+      @sliderElem = @find("#" + @get('sliderId'))
+      @inputElem  = @find("#" + @get('inputId'))
+
     'reset-if-invalid': (context) ->
       # input elements don't reject out-of-range hand-typed numbers so we have to do the dirty work
       if (context.node.validity.rangeOverflow)
@@ -195,21 +214,29 @@ RactiveSlider = RactiveValueWidget.extend({
       @fire('widget-value-change')
       return
 
+    'handle-keydown': (context) ->
+      event  = context.original
+      key    = event.key
+      modKey = if isMac then event.metaKey else event.ctrlKey
+
+      if ['i', 'I'].includes(key) and modKey
+        event.preventDefault()
+        @fire('switch-input-focus')
+
+    'switch-input-focus': (context) ->
+      if document.activeElement is @sliderElem and @inputElem?
+        @inputElem.focus()
+      else if document.activeElement is @inputElem and @sliderElem?
+        @focusSlider()
+      return
+
     'focus-slider': (context) ->
       if context.original.target?.tagName is 'INPUT' \
         and context.original.target?.type is 'number'
         return
-      className = @get('id') + '-custom'
-      elem = context.node.querySelector(".#{className}")
-      if elem?
-        context.original.stopPropagation()
-        context.original.preventDefault()
-        # This is a hack to get the browser to apply
-        # :focus-visible instead of :focus to the slider.
-        # -Omar I. Aug 11, 2025
-        elem.contentEditable = true
-        elem.focus()
-        elem.contentEditable = false
+      context.original.stopPropagation()
+      context.original.preventDefault()
+      @focusSlider()
       return
   }
 
@@ -220,6 +247,9 @@ RactiveSlider = RactiveValueWidget.extend({
         (internalValue.toString().length) + 3.0
       else
         3
+
+    inputId: -> if @get('id') then "#{@get('id')}-input-field" else null
+    sliderId: -> if @get('id') then "#{@get('id')}-custom-slider" else null
   }
 
   components: {
@@ -256,12 +286,13 @@ RactiveSlider = RactiveValueWidget.extend({
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{#widget.oldSize}}old-size{{/}} {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
-             on-click="['focus-slider']">
+             on-click="['focus-slider']" on-keydown="['handle-keydown']">
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
             <input
               class="netlogo-slider-value-input"
+              id="{{inputId}}"
               type="number"
               on-change="reset-if-invalid"
               style="width: {{textWidth}}ch"
@@ -275,6 +306,7 @@ RactiveSlider = RactiveValueWidget.extend({
           </span>
         </div>
         <customSlider
+          id="{{sliderId}}"
           class="{{id}}-custom"
           min="{{widget.minValue}}"
           max="{{widget.maxValue}}"
