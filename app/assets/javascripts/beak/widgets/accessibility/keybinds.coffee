@@ -100,6 +100,13 @@ keybinds = [
         { description: "Toggle input mode for widgets with multiple input-modes (e.g. sliders)." },
         { bind: false }
       ),
+      new Keybind(
+        "widget:copy-current-value",
+        () -> {},
+        ["#{modKey}+c"],
+        { description: "Copies the current widget's value to the clipboard (chooser, input, slider, monitor)." },
+        { bind: false }
+      )
     ]
   ),
   new KeybindGroup(

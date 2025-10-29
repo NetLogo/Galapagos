@@ -216,6 +216,16 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       @findComponent('editForm').fire("prove-your-worth")
       false
 
+    'copy-current-value': ->
+      widget = @get('widget')
+      currentValue = widget.currentValue?.toString() or ""
+      try
+        await navigator.clipboard.writeText(currentValue)
+        alert("Copied to clipboard: " + currentValue)
+      catch error
+        alert("Failed to copy to clipboard: " + error)
+      return
+
     "*.add-breed-var": ({ component: sender }) ->
       @_addNewTerm(sender, (v, s) => @_defineNewBreedVar(v, s))
 

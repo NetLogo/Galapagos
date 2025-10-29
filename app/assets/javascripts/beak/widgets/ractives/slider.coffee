@@ -286,7 +286,7 @@ RactiveSlider = RactiveValueWidget.extend({
       """
       <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{#widget.oldSize}}old-size{{/}} {{errorClass}} {{classes}}"
              style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
-             on-click="['focus-slider']" on-keydown="['handle-keydown']">
+             on-click="['focus-slider']" on-keydown="['handle-keydown']" on-copy='copy-current-value'>
         <div class="netlogo-slider-label">
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">

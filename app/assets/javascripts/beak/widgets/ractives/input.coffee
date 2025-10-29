@@ -270,6 +270,7 @@ RactiveInput = RactiveValueWidget.extend({
             data-type="number"
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            on-copy='copy-current-value'
             {{# isEditing }}disabled{{/}}
             {{attrs}}
             />
@@ -281,6 +282,7 @@ RactiveInput = RactiveValueWidget.extend({
             on-keypress="handle-keypress"
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            on-copy='copy-current-value'
             {{attrs}}
             {{# isEditing }}disabled{{/}} >
           </textarea>
