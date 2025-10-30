@@ -342,6 +342,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         on-dragend="stop-widget-drag"
         on-focus="@this.fire('select-widget', @event)"
         on-blur="@this.fire('deselect-widgets')"
+        on-copy="@this.fire('copy-current-value')"
         role="button"
         tabindex="{{editorTabindex}}"
         aria-label="Editable overlay for widget {{widget.id}} of type {{widget.type}}"

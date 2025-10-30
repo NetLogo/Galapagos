@@ -29,6 +29,15 @@ RactiveValueWidget = RactiveWidget.extend({
         widget = @get('widget')
         @fire("#{@widgetType}-widget-changed", widget.id, widget.variable, newValue, oldValue, args...)
       return
+
+    'paste-into-current-value': ->
+      widget = @get('widget')
+      try
+        text = await navigator.clipboard.readText()
+        @fire('update-widget-value-from-string', text)
+      catch error
+        alert("Failed to read from clipboard: " + error)
+      return
   }
 
   # (Widget) => Array[Any]
