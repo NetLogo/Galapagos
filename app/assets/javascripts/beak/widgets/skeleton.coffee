@@ -194,7 +194,7 @@ template =
     />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
-       tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
+       tabindex="0" on-keydown="@this.fire('check-action-keys', @event)"
        on-focus="@this.fire('track-focus', @node)"
        on-blur="@this.fire('track-focus', @node)">
     <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
