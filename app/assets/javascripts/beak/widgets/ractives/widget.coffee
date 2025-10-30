@@ -103,7 +103,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
     # Number (-1 | Positive Integer)
     editorTabindex: ->
-      if @get('isEditing') then @get('widget.sortingKey') + 1 else -1
+      if @get('isEditing') then @get('tabIndexEnabledValue') else -1
 
     # String
     ariaLabel: ->
