@@ -46,12 +46,15 @@ getAllFocusableElements = (container) ->
   elements.sort(sortByTabIndex)
 
 # (HTMLElement, HTMLElement, Number) => Boolean
-offsetFocus = (container, element, offset) ->
+offsetFocus = (container, element, offset, visible = false) ->
   focusables = getAllFocusableElements(container)
   index = focusables.indexOf(element)
   if index isnt -1
     newIndex = (index + offset + focusables.length) % focusables.length
-    focusables[newIndex]?.focus()
+    if visible
+      focusElementVisible(focusables[newIndex])
+    else
+      focusables[newIndex]?.focus()
   index isnt -1
 
 isMac = window.navigator.platform.startsWith('Mac')
@@ -64,7 +67,7 @@ isToggleKeydownEvent = (event) ->
 focusElementVisible = (element) ->
   if element and element.focus
     element.contentEditable = true
-    element.focus()
+    element.focus({ preventScroll: true, focusVisible: true })
     element.contentEditable = false
   return
 
