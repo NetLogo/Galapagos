@@ -170,6 +170,14 @@ keybinds = [
         { options: { }}
       ),
       new Keybind(
+        "widget:nudge",
+        (ractive, _, combo) ->
+          ractive.fire('nudge-widget', combo.replace("shift+", ""), event.shiftKey)
+        ["shift+up", "shift+down", "shift+left", "shift+right"],
+        { description: "Nudge the selected widget farther in any direction." },
+        { options: { }}
+      ),
+      new Keybind(
         "widget:delete",
         (ractive) -> ractive.fire('delete-selected'),
         ["del", "backspace"],
