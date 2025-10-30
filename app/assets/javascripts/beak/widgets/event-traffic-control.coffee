@@ -1,5 +1,6 @@
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
+import { focusElementVisible } from "./accessibility/utils.js"
 
 # (WidgetController, () => Unit) => Unit
 controlEventTraffic = (controller, performUpdate) ->
@@ -100,6 +101,52 @@ controlEventTraffic = (controller, performUpdate) ->
   onOpenEditForm = (editForm) ->
     ractive.set('someEditFormIsOpen', true)
     onOpenDialog(editForm)
+    return
+
+  # (RactiveHTML(Keyboard|Mouse)Event) => Unit
+  onContextMenu = (event) ->
+    activeElement = document.activeElement
+    rect          = activeElement.getBoundingClientRect()
+    clientX       = rect.left + rect.width  / 2
+    clientY       = rect.top  + rect.height / 2
+
+    rightClickEvent = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      button: 2,
+      buttons: 2,
+      clientX,
+      clientY,
+    })
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    activeElement.dispatchEvent(rightClickEvent)
+
+    setTimeout( ->
+      firstMenuItem = ractive.find('.context-menu-item')
+      if firstMenuItem?
+        focusElementVisible(firstMenuItem)
+    , 10)
+
+    return
+
+  showAddWidgetMenu = (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    activeElement = document.activeElement
+    defaultRect   = { left: window.scrollX, top: window.scrollY, width: 100, height: 100 }
+    smallOffset   = 10
+    rect          = activeElement.getBoundingClientRect() ? defaultRect
+    pageX         = rect.left + rect.width  / 2 + smallOffset
+    pageY         = rect.top  + rect.height / 2 + smallOffset
+
+    customEvent   = { ...event, pageX, pageY }
+    ractive.fire('show-context-menu', { component: ractive }, customEvent)
+
     return
 
   # () => Unit
@@ -285,13 +332,8 @@ controlEventTraffic = (controller, performUpdate) ->
   focusFirstWidget = (ractive) ->
     firstWidget = ractive.find('[tabindex="1"]:not(.netlogo-model)')
     if firstWidget?
-      # Hack to force :focus-visible instead of
-      # :focus, so the focus ring appears.
-      # - Omar I (Oct 29 2025)
       firstWidget.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      firstWidget.contentEditable = true
-      firstWidget.focus()
-      firstWidget.contentEditable = false
+      focusElementVisible(firstWidget)
     return
 
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
@@ -338,6 +380,8 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
   ractive.on('focus-first-widget', -> focusFirstWidget(ractive))
   ractive.on('toggle-help', (_, event) -> onQMark(event))
+  ractive.on('trigger-context-menu', (_, event) -> onContextMenu(event))
+  ractive.on('show-add-widget-menu', (_, event) -> showAddWidgetMenu(event))
 
   return
 
