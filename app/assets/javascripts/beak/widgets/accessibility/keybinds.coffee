@@ -17,22 +17,6 @@ keybinds = [
         { description: "Clear focus from the current element."}
       ),
       new Keybind(
-        "focus:next",
-        (ractive, event) ->
-          if offsetFocus(document.body, document.activeElement, 1)
-            event?.preventDefault()
-        ["alt+t"],
-        { description: "Alternative to Tab key (for use in Code editor)." }
-      ),
-      new Keybind(
-        "focus:previous",
-        (ractive, event) ->
-          if offsetFocus(document.body, document.activeElement, -1)
-            event?.preventDefault()
-        ["alt+shift+t"],
-        { description: "Alternative to Shift+Tab key (for use in Code editor)." }
-      ),
-      new Keybind(
         "toggle:help",
         (ractive, event) -> ractive.fire('toggle-help', event),
         ["#{modKey}+h", "?", 'f1'],
@@ -128,6 +112,22 @@ keybinds = [
         ["#{modKey}+;"],
         { description: "Comment/Uncomment the current line." },
         { bind: false }
+      ),
+      new Keybind(
+        "focus:next",
+        (ractive, event) ->
+          if offsetFocus(document.body, document.activeElement, 1)
+            event?.preventDefault()
+        ["alt+t"],
+        { description: "Alternative to Tab key." }
+      ),
+      new Keybind(
+        "focus:previous",
+        (ractive, event) ->
+          if offsetFocus(document.body, document.activeElement, -1)
+            event?.preventDefault()
+        ["alt+shift+t"],
+        { description: "Alternative to Shift+Tab key." }
       )
     ]
   ),
@@ -164,9 +164,21 @@ keybinds = [
       ),
       new Keybind(
         "widget:delete",
-        (ractive) -> not isMac and ractive.fire('delete-selected'),
+        (ractive) -> ractive.fire('delete-selected'),
         ["del", "backspace"],
         { description: "Delete the selected widget." }
+      ),
+      new Keybind(
+        "*:context-menu",
+        (ractive, event) -> ractive.fire('trigger-context-menu', event),
+        ["#{modKey}+shift+f10", "menu", "#{modKey}+alt+x"],
+        { description: "Open the context menu for the focused element." }
+      ),
+      new Keybind(
+        "app:show-add-widget-menu",
+        (ractive, event) -> ractive.fire('show-add-widget-menu', event),
+        ["#{modKey}+alt+a"],
+        { description: "Show the Add Widget menu." }
       )
     ]
   ),
