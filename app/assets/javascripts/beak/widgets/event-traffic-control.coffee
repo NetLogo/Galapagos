@@ -296,7 +296,6 @@ controlEventTraffic = (controller, performUpdate) ->
 
   mousetrap = Mousetrap(ractive.find('.netlogo-model'))
   keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
-  mousetrap.bind('?', onQMark)
   ractive.on("unbind-keys", (->
     keybinds.forEach((keybindGroup) -> keybindGroup.unbind(mousetrap))
   ))
@@ -336,9 +335,9 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('*.edit-form-opened', (_, editForm) ->  onOpenEditForm(editForm))
 
   ractive.on('set-tab', (_, name, options) => setTab(name, options))
-  ractive.on('toggle-keyboard-help', -> toggleBoolean('isKeyboardHelpVisible'))
   ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
   ractive.on('focus-first-widget', -> focusFirstWidget(ractive))
+  ractive.on('toggle-help', (_, event) -> onQMark(event))
 
   return
 
