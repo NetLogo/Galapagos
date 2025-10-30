@@ -1,4 +1,5 @@
 import { CommonDrag } from "./draggable.js"
+import { getAllFocusableElements } from "../accessibility/utils.js"
 
 EditForm = Ractive.extend({
 
@@ -63,6 +64,12 @@ EditForm = Ractive.extend({
       @set('visible', true)
       elem = @getElem()
       elem.focus()
+
+      setTimeout(=>
+        focusableElements = getAllFocusableElements(elem)
+        if focusableElements.length > 0
+          focusableElements[0].focus()
+      , 0)
 
       @fire(  'lock-selection', @parent)
       @fire('edit-form-opened', this)
