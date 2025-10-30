@@ -89,7 +89,14 @@ keybinds = [
         "widget:copy-current-value",
         () -> {},
         ["#{modKey}+c"],
-        { description: "Copies the current widget's value to the clipboard (chooser, input, slider, monitor)." },
+        { description: "Copies the current widget's value to the clipboard (chooser, input, slider)." },
+        { bind: false }
+      ),
+      new Keybind(
+        "widget:paste-into-current-value",
+        () -> {},
+        ["#{modKey}+v"],
+        { description: "Pastes the clipboard value into the current widget (slider)." },
         { bind: false }
       )
     ]
