@@ -199,13 +199,13 @@ template =
        on-blur="@this.fire('track-focus', @node)">
     <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
 
-    <div class="netlogo-display-vertical">
+    <div class="netlogo-display-vertical" aria-label="NetLogo Model Application">
 
       <div class="netlogo-header">
         <div class="netlogo-subheader">
           <div class="netlogo-powered-by">
             <a href="https://netlogo.org">
-              <svg class="netlogo-powered-by-image" viewBox="0 0 32 32" fill="none" role="img">
+              <svg class="netlogo-powered-by-image" viewBox="0 0 32 32" fill="none" role="img" alt="NetLogo Logo">
                 <g clip-path="url(#clip0_6761_1992)">
                 <rect x="32" y="32" width="32" height="32" transform="rotate(-180 32 32)" fill="#43B8FF"/>
                 <mask id="mask0_6761_1992" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1" y="0" width="30" height="30">
@@ -233,7 +233,7 @@ template =
           />
         {{# !isReadOnly }}
           <div class="flex-column" style="align-items: flex-end; user-select: none;">
-            <div class="netlogo-export-wrapper">
+            <div class="netlogo-export-wrapper" aria-label="File Options" role="group">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
@@ -244,7 +244,7 @@ template =
                 {{/}}
               {{/}}
             </div>
-            <div class="netlogo-export-wrapper">
+            <div class="netlogo-export-wrapper" aria-label="Export Options" role="group">
               <span style="margin-right: 4px;">Export:</span>
               <button class="netlogo-ugly-button" on-click="export-nlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
               <button class="netlogo-ugly-button" on-click="export-html"{{#isEditing}} disabled{{/}}>HTML</button>
@@ -271,14 +271,15 @@ template =
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>
         </div>
 
-        <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
+        <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}" aria-label="Model Speed Slider"
+               role="slider" aria-valuemin="-1" aria-valuemax="1" aria-valuenow="{{speed}}">
           <div class="netlogo-speed-slider-layout">
             <span class="netlogo-label">Model Speed</span>
             <div class="model-speed-input">
               <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"
                 {{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
               <button class="netlogo-beautiful-button" on-click="['onSpeedChange', -0.1]"
-                {{#isEditing}} disabled{{/}}>-</button>
+                {{#isEditing}} disabled{{/}} aria-label="Decrease Model Speed">-</button>
               <customSlider
                 id="speed-slider-input-interface"
                 min="{{-1}}"
@@ -292,7 +293,7 @@ template =
                 class="model-speed-slider-interface"
               />
               <button class="netlogo-beautiful-button" on-click="['onSpeedChange', 0.1]"
-                {{#isEditing}} disabled{{/}}>+</button>
+                {{#isEditing}} disabled{{/}} aria-label="Increase Model Speed">+</button>
             </div>
             <tickCounter isVisible="{{primaryView.showTickCounter}}"
               label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
@@ -308,7 +309,8 @@ template =
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
-           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer">
+           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer"
+           aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#widgetObj:key}}
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
