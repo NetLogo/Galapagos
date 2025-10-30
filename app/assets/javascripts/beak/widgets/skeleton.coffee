@@ -21,7 +21,6 @@ import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 import RactiveTabWidget from "./ractives/tab.js"
-import RactiveKeyboardHelp from "./ractives/keyboard-help.js"
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
 import { ractiveAccessibleClickEvent, ractiveCopyEvent } from "./accessibility/utils.js"
@@ -44,7 +43,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , info
   , isEditing:             false
   , isHelpVisible:         false
-  , isKeyboardHelpVisible: false
   , isHNW:                 false
   , isHNWHost:             false
   , isHNWTicking:          false
@@ -108,7 +106,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
-    , keyboardHelp:  RactiveKeyboardHelp
     , infotab:       RactiveInfoTabWidget
     , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
@@ -304,8 +301,7 @@ template =
       </div>
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
-      <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
-      <keyboardHelp isVisible="{{isKeyboardHelpVisible}}" isOverlayUp="{{isOverlayUp}}" wareaHeight="{{height}}" wareaWidth="{{width}}" keybinds="{{keybinds}}"></keyboardHelp>
+      <helpDialog keybindGroups="{{keybinds}}" isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"

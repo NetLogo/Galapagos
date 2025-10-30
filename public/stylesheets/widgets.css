@@ -981,82 +981,10 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 	border-radius: 5px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	font-size: 20px;
-	padding: 30px 15px;
 	position: absolute;
 	outline: none;
 	z-index: 200;
-}
-
-/* Credit for this keyboard table CSS goes to the fine folks at GitHub
- * Their code is released under the MIT license. Copyright (c) 2018 GitHub Inc.
- * https://assets-cdn.github.com/assets/github-ef9e6df593c3136722bd837c0437786d.css
- * Jason B. (5/7/18)
- */
-.help-key-table .help-keys {
-	padding-right: 10px;
-	text-align: right;
-	white-space: nowrap;
-}
-
-.help-key-table td {
-	font-size: 16px;
-	padding: 3px 0;
-}
-
-.help-key-table kbd {
-	background-color: #fafbfc;
-	border-bottom-color: #c6cbd1;
-	border-radius: 3px;
-	border: solid 1px #d1d5da;
-	box-shadow: inset 0 -1px 0 #c6cbd1;
-	color: #3b793a;
-	display: inline-block;
-	font: 16px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-	line-height: 15px;
-	padding: 3px 5px;
-	vertical-align: middle;
-}
-
-/* Keyboard Help Dialog Styles */
-.keyboard-help-header {
-	flex: 0 0 auto;
-	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-
-	position: sticky;
-	top: 1rem;
-	z-index: 1;
-}
-
-.keyboard-help-closer {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: 30px;
-	height: 30px;
-
-	padding: 0;
-	margin: 0 0 0 auto;
-
-	color: #666;
-	background: #f1f1f1;
-
-	font-size: 24px;
-	font-weight: bold;
-
-	cursor: pointer;
-
-	border: none;
-	border-radius: 50%;
-}
-
-.keyboard-help-closer:hover {
-	background-color: #e1e1e1;
-	color: #000;
+	overflow-y: auto;
 }
 
 .keyboard-help-content {
@@ -1108,6 +1036,12 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 	border-bottom: 1px solid #dee2e6;
 	padding: 10px 8px;
 	vertical-align: top;
+}
+
+.keyboard-help-multiple {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
 }
 
 .keyboard-help-key {

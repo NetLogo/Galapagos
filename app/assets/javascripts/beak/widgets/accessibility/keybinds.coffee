@@ -33,15 +33,9 @@ keybinds = [
         { description: "Alternative to Shift+Tab key (for use in Code editor)." }
       ),
       new Keybind(
-        "toggle:keyboard-help",
-        (ractive, event) -> ractive.fire('toggle-keyboard-help')
-        ["f1"],
-        { description: "Show keyboard shortcuts help." }
-      ),
-      new Keybind(
         "toggle:help",
-        (ractive, event) -> ractive.set('isHelpVisible', not ractive.get('isHelpVisible'))
-        ["#{modKey}+h"],
+        (ractive, event) -> ractive.fire('toggle-help', event),
+        ["#{modKey}+h", "?", 'f1'],
         { description: "Show help." }
       ),
       new Keybind(
