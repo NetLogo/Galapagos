@@ -60,11 +60,15 @@ handleWidgetSelection =
         else
           true
 
+    # (KeyboardEvent, "up" | "down" | "left" | "right", Boolean) => Boolean
     nudgeWidget =
-      (event, direction) ->
+      (event, direction, nudgeFar) ->
         selected = resizer().get('target')
         if selected? and (not ractive.get('someDialogIsOpen'))
-          selected.nudge(direction)
+          repeatCount = if nudgeFar then 10 else 1
+          direction   =
+          for i in [1..repeatCount]
+            selected.nudge(direction)
           false
         else
           true
