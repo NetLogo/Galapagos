@@ -95,6 +95,14 @@ ractiveCopyEvent = (node, fire) ->
       node.removeEventListener('keydown', keydownHandler, false)
   }
 
+# (HTMLElement) => Void
+focusElementVisible = (element) ->
+  if element and element.focus
+    element.contentEditable = true
+    element.focus()
+    element.contentEditable = false
+  return
+
 export {
   noFocusSelectors,
   unlessNoFocus,
@@ -105,5 +113,6 @@ export {
   isMac,
   isToggleKeydownEvent,
   ractiveCopyEvent,
-  ractiveAccessibleClickEvent
+  ractiveAccessibleClickEvent,
+  focusElementVisible
 }
