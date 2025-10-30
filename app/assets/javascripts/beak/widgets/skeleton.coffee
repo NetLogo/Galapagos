@@ -23,7 +23,7 @@ import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 import RactiveTabWidget from "./ractives/tab.js"
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
-import { ractiveAccessibleClickEvent, ractiveCopyEvent } from "./accessibility/events.js"
+import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -88,6 +88,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
   Ractive.events.activateClick   = ractiveAccessibleClickEvent
   Ractive.events.copy            = ractiveCopyEvent
+  Ractive.events.paste           = ractivePasteEvent
 
   Ractive.transitions.grow       = animateWithClass('growing')
   Ractive.transitions.shrink     = animateWithClass('shrinking')

@@ -54,6 +54,7 @@ ractivePasteEvent = (node, fire) ->
       node.removeEventListener('keydown', keydownHandler, false)
   }
 
+
 export {
   ractiveAccessibleClickEvent,
   ractiveCopyEvent,
