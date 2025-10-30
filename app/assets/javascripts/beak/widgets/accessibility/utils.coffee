@@ -60,41 +60,6 @@ isMac = window.navigator.platform.startsWith('Mac')
 isToggleKeydownEvent = (event) ->
   return event.key in [' ', 'Enter', 'Spacebar']
 
-# (HTMLElement, (Object) => Void) => Void
-ractiveAccessibleClickEvent = (node, fire) ->
-  clickHandler = (event) ->
-    fire({ node: node, original: event })
-
-  keydownHandler = (event) ->
-    if isToggleKeydownEvent(event)
-      event.preventDefault()
-      fire({ node: node, original: event })
-
-  node.addEventListener('click', clickHandler, false)
-  node.addEventListener('keydown', keydownHandler, false)
-
-  return {
-    teardown: ->
-      node.removeEventListener('click', clickHandler, false)
-      node.removeEventListener('keydown', keydownHandler, false)
-  }
-
-ractiveCopyEvent = (node, fire) ->
-  keydownHandler = (event) ->
-    modKey   = if isMac then event.metaKey else event.ctrlKey
-    copyKey  = event.key is 'c'
-    matchKey = modKey and copyKey
-
-    if matchKey
-      fire({ node: node, original: event })
-
-  node.addEventListener('keydown', keydownHandler, false)
-
-  return {
-    teardown: ->
-      node.removeEventListener('keydown', keydownHandler, false)
-  }
-
 # (HTMLElement) => Void
 focusElementVisible = (element) ->
   if element and element.focus
@@ -112,7 +77,5 @@ export {
   offsetFocus,
   isMac,
   isToggleKeydownEvent,
-  ractiveCopyEvent,
-  ractiveAccessibleClickEvent,
   focusElementVisible
 }
