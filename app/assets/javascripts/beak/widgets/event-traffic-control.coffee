@@ -330,7 +330,15 @@ controlEventTraffic = (controller, performUpdate) ->
     return
 
   focusFirstWidget = (ractive) ->
-    firstWidget = ractive.find('[tabindex="1"]:not(.netlogo-model)')
+    widgetContainer = ractive.find('.netlogo-widget-container')
+    widgets         = widgetContainer.querySelectorAll('[tabindex]:not([tabindex="-1"])')
+
+    firstWidget     = Array.from(widgets).sort((a, b) ->
+      aTabIndex = parseInt(a.getAttribute('tabindex'), 10)
+      bTabIndex = parseInt(b.getAttribute('tabindex'), 10)
+      aTabIndex - bTabIndex
+    )[0]
+
     if firstWidget?
       firstWidget.scrollIntoView({ behavior: 'smooth', block: 'center' })
       focusElementVisible(firstWidget)
