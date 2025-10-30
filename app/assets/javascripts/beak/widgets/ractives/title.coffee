@@ -28,14 +28,14 @@ RactiveModelTitle = RactiveContextable.extend({
     """
     <div class="netlogo-model-masthead">
       <div class="flex-column netlogo-model-title-wrapper">
-        <h2 id="netlogo-title"
+        <h2 id="netlogo-title" aria-label="Model Title"
             on-contextmenu="@this.fire('show-context-menu', @event)"
             class="netlogo-widget netlogo-model-title {{classes}}{{# isEditing }} interface-unlocked initial-color{{/}}"
             on-dblclick="edit-title">
           {{ title }}
         </h2>
         {{# hasWorkInProgress}}
-        <p class="netlogo-model-modified">Modified from original</p>
+        <p class="netlogo-model-modified" role="status">Modified from original</p>
         {{/}}
       </div>
     </div>

@@ -295,13 +295,25 @@ RactiveSlider = RactiveValueWidget.extend({
 
   partials: {
 
+    className: "netlogo-widget netlogo-slider netlogo-input {{#widget.oldSize}}old-size{{/}} {{errorClass}} {{classes}}"
+    style:     "{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
+    aria:      """
+      role="slider"
+      aria-valuemin="{{widget.minValue}}"
+      aria-valuemax="{{widget.maxValue}}"
+      aria-valuenow="{{internalValue}}"
+      aria-label="{{widget.display}} slider"
+      aria-disabled="{{isEditing}}"
+      aria-valuetext="{{internalValue}} {{#widget.units}}{{widget.units}}{{/}}"
+      """
     slider:
       """
-      <label id="{{id}}" class="netlogo-widget netlogo-slider netlogo-input {{#widget.oldSize}}old-size{{/}} {{errorClass}} {{classes}}"
-             style="{{ #widget.direction !== 'vertical' }}{{dims}}{{else}}{{>verticalDims}}{{/}}"
-             on-click="['focus-slider']" on-keydown="['handle-keydown']" on-copy='copy-current-value' on-paste='paste-into-current-value'>
+      <label id="{{id}}" class="{{>className}}" style="{{>style}}" {{>aria}}
+             on-click="['focus-slider']" on-keydown="['handle-keydown']"
+             on-copy='copy-current-value' on-paste='paste-into-current-value'>
         <div class="netlogo-slider-label">
-          <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
+          <span class="netlogo-label" aria-label="Slider Variable Name"
+                on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
             <input
               class="netlogo-slider-value-input"
@@ -314,6 +326,7 @@ RactiveSlider = RactiveValueWidget.extend({
               step="{{widget.stepValue}}"
               value="{{internalValue}}"
               tabindex="-1"
+              aria-label="Slider Value Input Field"
               {{# isEditing }}disabled{{/}} />
             {{#widget.units}}{{widget.units}}{{/}}
           </span>
