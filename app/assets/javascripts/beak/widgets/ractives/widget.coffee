@@ -93,9 +93,13 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       width: #{@get('width')}px; height: #{@get('height')}px;
       """
 
+    # Number (Positive Integer)
+    tabIndexEnabledValue: ->
+      @get('widget.sortingKey') + 1
+
     # Number (-1 | Positive Integer)
     tabindex: ->
-      if @get('isEditing') then -1 else @get('widget.sortingKey') + 1
+      if @get('isEditing') then -1 else @get('tabIndexEnabledValue')
 
     # Number (-1 | Positive Integer)
     editorTabindex: ->
