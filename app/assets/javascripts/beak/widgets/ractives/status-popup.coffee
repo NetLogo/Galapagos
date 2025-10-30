@@ -58,20 +58,33 @@ RactiveStatusPopup = Ractive.extend({
   template:
     """
     {{# isUp }}
-    <div class="netlogo-model-status flex-row">
-      <div>
-        This model has been loaded with previous work in progress found in your cache.
+    <div class="netlogo-model-status flex-row" aria-live="polite" role="alert" aria-atomic="true"
+           aria-label="Model Load Status" aria-description="{{>shortMessage}}">
+      <div aria-label="Model Load Message" role="text">
+        {{>shortMessage}}
         To reload the unmodified {{sourceMessage}},
-        press <span class="netlogo-model-status-link" on-click="revert-wip">File: <strong>Revert to Original</strong></span>
-        ({{statusTimer}}).
+        press {{>revertButton}}
+        {{>timer}}.
       </div>
-      <div class="netlogo-model-status-closer" on-click="close-status">
+      <div class="netlogo-model-status-closer" on-click="close-status" role="button" tabindex="0"
+           aria-label="Close Model Load Status">
       X
       </div>
     </div>
     {{/}}
     """
   # coffeelint: enable=max_line_length
+
+  partials: {
+    shortMessage: "This model has been loaded with previous work in progress found in your cache."
+    revertButton: """
+      <span class="netlogo-model-status-link" on-click="revert-wip" aria-label="Revert to Original"
+            role="button" tabindex="0">
+        File: <strong>Revert to Original</strong>
+      </span>
+    """
+    timer: "<span aria-label='Seconds Remaining' aria-valuenow='{{statusTimer}}'>({{statusTimer}})</span>"
+  }
 })
 
 export default RactiveStatusPopup

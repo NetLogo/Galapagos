@@ -296,9 +296,15 @@ RactiveView = RactiveWidget.extend({
 
   partials: {
 
+    ariaLabel: "aria-label='NetLogo view widget showing the world and agents'"
+    ariaRole:  "role='img'"
+    ariaDesc:  "aria-description='Displays the NetLogo world with patches and agents. Updates as the model runs.'"
+    ariaTicks: "aria-live='polite' aria-atomic='true'"
+
     view:
       """
-      <div id="{{id}}" class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}{{viewDims}}"></div>
+      <div id="{{id}}" {{>ariaLabel}} {{>ariaRole}} {{>ariaDesc}} {{>ariaTicks}}
+          class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}{{viewDims}}"></div>
       """
 
   }

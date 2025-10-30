@@ -90,7 +90,6 @@ RactiveCodeContainerBase = Ractive.extend({
       class="netlogo-code {{(extraClasses || []).join(' ')}}"
       style="{{style}}"
       translate="no"
-      tabindex="{{tabindex}}"
       aria-label="{{aria-label}}"
     />
     """

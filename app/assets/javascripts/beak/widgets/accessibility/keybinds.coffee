@@ -123,7 +123,7 @@ keybinds = [
       new Keybind(
         "focus:next",
         (ractive, event) ->
-          if offsetFocus(document.body, document.activeElement, 1)
+          if offsetFocus(document.body, document.activeElement, 1, true)
             event?.preventDefault()
         ["alt+t"],
         { description: "Alternative to Tab key." }
@@ -131,7 +131,7 @@ keybinds = [
       new Keybind(
         "focus:previous",
         (ractive, event) ->
-          if offsetFocus(document.body, document.activeElement, -1)
+          if offsetFocus(document.body, document.activeElement, -1, true)
             event?.preventDefault()
         ["alt+shift+t"],
         { description: "Alternative to Shift+Tab key." }
