@@ -343,6 +343,9 @@ controlEventTraffic = (controller, performUpdate) ->
     if firstWidget?
       firstWidget.scrollIntoView({ behavior: 'smooth', block: 'center' })
       focusElementVisible(firstWidget)
+    else
+      ractive.find('.netlogo-model').focus()
+
     return
 
   modelContainer = ractive.find('.netlogo-model')
