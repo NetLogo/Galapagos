@@ -149,8 +149,58 @@ function initModel() {
   }
 }
 
+function forwardKeyboardEventsToModel() {
+  const events = ["keydown", "keypress", "keyup"];
+
+  const shouldForwardEvent = (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey) {
+      if (["0", "1", "2", "3", "?", "h"].includes(event.key.toLowerCase())) {
+        return true
+      } else if (Array(4).fill(null).map((_, i) => `Digit${i}`).includes(event.code)) {
+        return true;
+      }  else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  const handler = (e) => {
+    if (shouldForwardEvent(e)) {
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const forwardedEvent = {
+        type: e.type,
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        shiftKey: e.shiftKey,
+        altKey: e.altKey,
+        metaKey: e.metaKey,
+      };
+      
+      try {
+        const modelWindow = modelContainer.contentWindow;
+        modelWindow.postMessage({ type: "nlw-forward-key-event", eventData: forwardedEvent }, "*");
+      } catch (error) {
+        console.warn("Error forwarding key event to model iframe:", error);
+      }
+    } 
+  };
+
+  events.forEach((evt) => window.addEventListener(evt, handler, true));
+  return () => {
+    events.forEach((evt) => window.removeEventListener(evt, handler, true));
+  };
+}
+
 bindModelChooser(document.getElementById('tortoise-model-list')
                , initModel, pickModel, window.environmentMode);
+
+forwardKeyboardEventsToModel();
 
 if (settings.queries.enableDebug) {
   window.makeQuery = createQueryMaker(modelContainer);

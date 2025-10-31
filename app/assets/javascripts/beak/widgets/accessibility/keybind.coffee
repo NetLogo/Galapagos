@@ -29,7 +29,7 @@ export class Keybind
     if @options.bind is true
       mousetrap.bind(@comboStrs, (e, combo) =>
         if not check or check(ractive) and @cb?
-          if @options.preventDefault
+          if @options.preventDefault and e.preventDefault?
             e.preventDefault()
           return @cb(ractive, e, combo)
       , @options.type)
