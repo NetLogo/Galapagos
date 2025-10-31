@@ -19,7 +19,7 @@ keybinds = [
       new Keybind(
         "toggle:help",
         (ractive, event) -> ractive.fire('toggle-help', event),
-        ["#{modKey}+h", "?", 'f1'],
+        ["#{modKey}+h", "?", "shift+?", "f1"],
         { description: "Show help." }
       ),
       new Keybind(
