@@ -1,6 +1,6 @@
 import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
-import { focusElementVisible } from "./accessibility/utils.js"
+import { focusElementVisible, isMac } from "./accessibility/utils.js"
 
 # (WidgetController, () => Unit) => Unit
 controlEventTraffic = (controller, performUpdate) ->
@@ -72,7 +72,8 @@ controlEventTraffic = (controller, performUpdate) ->
 
     focusedElement = undefined
 
-    ({ target }) ->
+    (event) ->
+      target = event?.target or document.activeElement
 
       isProbablyEditingText =
         (target.tagName.toLowerCase() in ["input", "textarea"] and not target.readOnly) or
@@ -344,11 +345,29 @@ controlEventTraffic = (controller, performUpdate) ->
       focusElementVisible(firstWidget)
     return
 
-  mousetrap = Mousetrap(ractive.find('.netlogo-model'))
+  modelContainer = ractive.find('.netlogo-model')
+  mousetrap = Mousetrap(modelContainer)
   keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
   ractive.on("unbind-keys", (->
     keybinds.forEach((keybindGroup) -> keybindGroup.unbind(mousetrap))
   ))
+
+  window.addEventListener('message', (event) ->
+    if event.data?.type is "nlw-forward-key-event"
+      keyboardEvent = event.data.eventData
+
+      combo = [
+        if keyboardEvent.ctrlKey then "ctrl" else null,
+        if keyboardEvent.metaKey and not isMac then "meta" else null,
+        if keyboardEvent.metaKey and isMac then "command" else null,
+        if keyboardEvent.altKey then "alt" else null,
+        if keyboardEvent.shiftKey then "shift" else null,
+        if keyboardEvent.key.length is 1 then keyboardEvent.key.toLowerCase() else keyboardEvent.key
+      ].filter((part) -> part isnt null).join("+")
+      console.log("Forwarding key event: #{combo} (#{keyboardEvent.type})")
+      mousetrap.trigger(combo, keyboardEvent.type)
+  )
+
 
   window.addEventListener('keyup', refreshSortingKeys)
   window.addEventListener('dragend', refreshSortingKeys)
