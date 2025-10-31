@@ -84,6 +84,7 @@ RactiveConsoleWidget = Ractive.extend({
     })
 
     @focusCommandCenterEditor = () -> commandCenterEditor.focus()
+    @focus = @focusCommandCenterEditor
 
     commandCenterEditor.on('beforeChange', (_, change) ->
       oneLineText = change.text.join('').replace(/\n/g, '')

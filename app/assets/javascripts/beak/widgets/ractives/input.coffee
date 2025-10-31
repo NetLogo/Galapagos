@@ -183,6 +183,13 @@ RactiveInput = RactiveValueWidget.extend({
 
   }
 
+  computed: {
+    localEditorConfig: ->
+      {
+        tabindex: if @get('isEditing') then -1 else @get('tabindex')
+      }
+  }
+
   # (String) => Unit
   scrollToBottom: (newValue) ->
     elem = @find('.netlogo-multiline-input')
@@ -263,7 +270,9 @@ RactiveInput = RactiveValueWidget.extend({
             data-type="number"
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            on-copy='copy-current-value'
             {{# isEditing }}disabled{{/}}
+            {{attrs}}
             />
         {{/}}
         {{# widget.boxedValue.type === 'String'}}
@@ -273,6 +282,8 @@ RactiveInput = RactiveValueWidget.extend({
             on-keypress="handle-keypress"
             lazy="true"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            on-copy='copy-current-value'
+            {{attrs}}
             {{# isEditing }}disabled{{/}} >
           </textarea>
         {{/}}
@@ -286,6 +297,8 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
+              localConfig="{{localEditorConfig}}"
+              aria-label="Code input for {{widget.variable}}"
               />
           {{else}}
             <singleLineEditor
@@ -296,6 +309,8 @@ RactiveInput = RactiveValueWidget.extend({
               initialCode="{{internalValue}}"
               isDisabled="{{isEditing}}"
               on-change="['widget-value-change', widget.boxedValue.type]"
+              localConfig="{{localEditorConfig}}"
+              aria-label="Code input for {{widget.variable}}"
               />
           {{/}}
         {{/}}
@@ -306,6 +321,8 @@ RactiveInput = RactiveValueWidget.extend({
             value="{{internalValue}}"
             isEnabled="{{!isEditing}}"
             on-change="['widget-value-change', widget.boxedValue.type]"
+            tabindex="{{tabindex}}"
+            aria-label="Color input for {{widget.variable}}"
             />
         {{/}}
       </label>

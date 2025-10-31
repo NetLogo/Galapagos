@@ -6,12 +6,15 @@ RactiveCodeContainerBase = Ractive.extend({
     code:           undefined # String
   , extraClasses:   undefined # Array[String]
   , extraConfig:    undefined # Object
+  , localConfig:    undefined # Object
   , id:             undefined # String
   , initialCode:    undefined # String
   , isDisabled:     false
   , injectedConfig: undefined # Object
   , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
+  , tabindex:       undefined # String
+  , 'aria-label':   undefined # String
   }
 
   # An astute observer will ask what the purpose of `initialCode` is--why wouldn't we just make it
@@ -32,7 +35,12 @@ RactiveCodeContainerBase = Ractive.extend({
   _setupCodeMirror: ->
 
     baseConfig = { mode: 'netlogo', theme: 'netlogo-default', value: @get('code').toString(), viewportMargin: Infinity }
-    config     = Object.assign({}, baseConfig, @get('extraConfig') ? {}, @get('injectedConfig') ? {})
+    config     = Object.assign(
+      {}, baseConfig,
+      @get('extraConfig') ? {},
+      @get('injectedConfig') ? {},
+      @get('localConfig') ? {}
+    )
     @_editor   = new CodeMirror(@find("##{@get('id')}"), config)
 
     @_editor.on('change', =>
@@ -70,6 +78,11 @@ RactiveCodeContainerBase = Ractive.extend({
       @_editor.setValue(str)
     return
 
+  # () => Unit
+  focus: ->
+    @_editor.focus()
+    return
+
   template:
     """
     <div
@@ -77,6 +90,7 @@ RactiveCodeContainerBase = Ractive.extend({
       class="netlogo-code {{(extraClasses || []).join(' ')}}"
       style="{{style}}"
       translate="no"
+      aria-label="{{aria-label}}"
     />
     """
 
