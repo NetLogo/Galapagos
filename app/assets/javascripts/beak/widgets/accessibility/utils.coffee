@@ -50,7 +50,8 @@ offsetFocus = (container, element, offset, visible = false) ->
   focusables = getAllFocusableElements(container)
   index = focusables.indexOf(element)
   if index isnt -1
-    newIndex = (index + offset + focusables.length) % focusables.length
+    newIndex = (index + offset) % focusables.length
+    newIndex = if newIndex < 0 then focusables.length + newIndex else newIndex
     if visible
       focusElementVisible(focusables[newIndex])
     else
