@@ -161,6 +161,11 @@ RactiveModelCodeComponent = Ractive.extend({
     return
 
   # () => Unit
+  refocus: ->
+    @findComponent('codeEditor').focus()
+    return
+
+  # () => Unit
   jumpToCode: ->
     location = @get('jumpToCode')
     if location?
@@ -180,6 +185,7 @@ RactiveModelCodeComponent = Ractive.extend({
 
     'recompile': (_) ->
       @setupAutoComplete(@autoCompleteWords())
+      @refocus()
       return
 
     'jump-to-usage': (context, usagePos) ->
@@ -207,7 +213,7 @@ RactiveModelCodeComponent = Ractive.extend({
       grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
-          <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="2">
+          <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="0">
             {{#each procedureNames:name}}
               <option value="{{name}}">{{name}}</option>
             {{/each}}
