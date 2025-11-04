@@ -1,5 +1,5 @@
 import { newCustomModel } from "/new-model.js"
-import generateHNWConfig from './hnw-config-file-generator.js'
+import { generateHNWConfig, updateAlphaToBeta } from './hnw-config-file-generator.js'
 
 import { nlogoXMLToDoc, docToNlogoXML, stripXMLCdata, convertNlogoToXML } from "./tortoise-utils.js"
 
@@ -138,8 +138,9 @@ document.getElementById("config-nlogo-button").onclick = ->
         catch err
           alert(err)
 
-        config = JSON.parse(configText)
-        initialize(modelText, config)
+        alphaConfig = JSON.parse(configText)
+        betaConfig  = updateAlphaToBeta(alphaConfig)
+        initialize(modelText, betaConfig)
     )
 
     baseInput  .value = ""
@@ -179,13 +180,14 @@ document.getElementById("config-bundle-button").onclick = ->
             [bundleText, config]
 
         else
-          bundle = JSON.parse(bundleText)
+          alphaConfig = JSON.parse(bundleText)
 
-          if bundle.hnwNlogo?
-            nlogo     = bundle.hnwNlogo
-            delete bundle.hnwNlogo
-            modelText = convertNlogoToXML(nlogo)
-            [modelText, bundle]
+          if alphaConfig.hnwNlogo?
+            nlogo      = alphaConfig.hnwNlogo
+            delete alphaConfig.hnwNlogo
+            modelText  = convertNlogoToXML(nlogo)
+            betaConfig = updateAlphaToBeta(alphaConfig)
+            [modelText, betaConfig]
 
         initialize(nlogox, config)
         bundleInput.value = ""
@@ -483,7 +485,7 @@ genConfigP = ->
       , targetFrameRate: codeFrameConfig.targetFrameRate
       , roles
       , type:            "hubnet-web"
-      , version:         "hnw-alpha-1"
+      , version:         "hnw-beta-1"
       }
   )
 
