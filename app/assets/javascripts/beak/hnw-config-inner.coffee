@@ -48,28 +48,28 @@ scrapeWidgets = ->
   session.widgetController.widgets().map(
     (w) ->
 
-      commons = { x: w.x, y: w.y, width: w.width, height: w.height, type: w.type }
+      commons = { x: w.x, y: w.y, width: w.width, height: w.height, type: w.type, oldSize: w.oldSize }
 
       notCommons =
         (switch w.type
-          when 'hnwTextBox'  then pluck( "color", "display", "fontSize"
-                                       , "transparent")
-          when 'hnwView'     then pluck( "height", "width")
+          when 'hnwTextBox'  then pluck( "display", "fontSize", "markdown", "backgroundLight"
+                                       , "textColorLight", "backgroundDark", "textColorDark")
           when 'hnwSwitch'   then pluck( "display", "on", "variable")
           when 'hnwButton'   then pluck( "actionKey", "buttonKind"
                                        , "disableUntilTicksStart", "display"
                                        , "forever", "hnwProcName", "source")
           when 'hnwSlider'   then pluck( "default", "direction", "display", "max"
-                                       , "min", "step", "variable")
+                                       , "min", "step", "variable", "units")
           when 'hnwChooser'  then pluck( "choices", "currentChoice", "display"
                                        , "variable")
           when 'hnwMonitor'  then pluck( "display", "fontSize", "precision"
-                                       , "reporterStyle", "source")
+                                       , "reporterStyle", "source", "units")
           when 'hnwInputBox' then pluck( "boxedValue", "variable")
-          when 'hnwPlot'     then pluck( "autoPlotOn", "display", "legendOn", "pens"
+          when 'hnwPlot'     then pluck( "autoPlotX", "autoPlotY", "display", "legendOn", "pens"
                                        , "setupCode", "updateCode", "xAxis", "xmax"
                                        , "xmin", "yAxis", "ymax", "ymin")
           when 'hnwOutput'   then pluck("fontSize")
+          when 'hnwView'     then pluck()
           else
             console.warn("Impossible widget type: #{w.type}")
             {}
