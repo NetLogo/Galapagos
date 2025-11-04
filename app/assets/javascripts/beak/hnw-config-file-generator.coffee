@@ -1,4 +1,5 @@
 import { nlogoXMLToDoc } from "./tortoise-utils.js"
+import { netlogoColorToRGB, rgbaArrayToARGBInt } from "/colors.js"
 
 phonyDims = { patchSize: 1
             , minPxcor: -10
@@ -322,4 +323,43 @@ generateHNWConfig = (nlogox) ->
 
   outConfig
 
-export default generateHNWConfig
+# (Object[Any]) => Object[Any]
+updateAlphaWidget = (alphaWidget) ->
+  betaWidget         = Object.assign({}, alphaWidget)
+  betaWidget.x       = alphaWidget.left
+  betaWidget.width   = alphaWidget.right - alphaWidget.left
+  betaWidget.y       = alphaWidget.top
+  betaWidget.height  = alphaWidget.bottom - alphaWidget.top
+  betaWidget.oldSize = true
+  ['left', 'right', 'top', 'bottom'].forEach( (p) -> delete betaWidget[p] )
+  switch alphaWidget.type
+    when 'hnwTextBox'
+      textColorRGBA              = netlogoColorToRGB(alphaWidget.color)
+      textColorRGBA.push(255)
+      betaWidget.textColorLight  = rgbaArrayToARGBInt(textColorRGBA)
+      backgroundRGBA             = if alphaWidget.transparent then [255, 255, 255, 0] else [255, 255, 255, 255]
+      betaWidget.backgroundLight = rgbaArrayToARGBInt(backgroundRGBA)
+      ['color', 'transparent'].forEach( (p) -> delete betaWidget[p] )
+
+    when 'hnwPlot'
+      betaWidget.autoPlotX = alphaWidget.autoPlotOn
+      betaWidget.autoPlotY = alphaWidget.autoPlotOn
+      betaWidget.pens      = alphaWidget.pens.map( (pen) -> Object.assign({}, pen) )
+      delete betaWidget.autoPlotOn
+
+  betaWidget
+
+# (Object[Any]) => Object[Any]
+updateAlphaRole = (role) ->
+  betaRole = Object.assign({}, role)
+  betaRole.widgets = role.widgets.map(updateAlphaWidget)
+  betaRole
+
+# (Object[Any]) => Object[Any]
+updateAlphaToBeta = (config) ->
+  betaConfig = Object.assign({}, config)
+  betaConfig.version = "hnw-beta-1"
+  betaConfig.roles = config.roles.map(updateAlphaRole)
+  betaConfig
+
+export { generateHNWConfig, updateAlphaToBeta }
