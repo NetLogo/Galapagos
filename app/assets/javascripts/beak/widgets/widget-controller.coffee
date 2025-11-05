@@ -422,6 +422,7 @@ class WidgetController
                 pen = { name: update.penName, isFake: true }
                 ops.addPoint(pen)(update.x, update.y)
               when "update-pen-mode"
+                console.log("update-pen-mode", update)
                 pen         = { name: update.penName, isFake: true }
                 mode        = displayModeFromString(update.mode)
                 getInterval = (-> update.interval)

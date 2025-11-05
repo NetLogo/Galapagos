@@ -48,6 +48,7 @@ class PlotRecorder
     event = { type: "update-pen-mode", penName: pen.name
             , mode: displayModeToString(mode), interval: pen.getInterval()
             }
+    console.log("recordUpdatePenMode()", event)
     @_events.push(event)
     return
 
