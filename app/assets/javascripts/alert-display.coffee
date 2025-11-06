@@ -262,7 +262,8 @@ class AlertDisplay
 
     return
 
-  # (CommonEventArgs, { source: String, modelSourceType: String, modelCode: String, errors: Array[CompilerError] }) => Unit
+  # (CommonEventArgs, { source: String, modelSourceType: String,
+  #    modelCode: String, errors: Array[CompilerError] }) => Unit
   'compiler-error': (_, { source, modelSourceType, modelCode, errors }) ->
 
     stuffIntoTextBox = (msg) ->
