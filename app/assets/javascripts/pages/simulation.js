@@ -114,7 +114,7 @@ try {
         activeContainer = alertDialog;
         loadingOverlay.style.display = 'none';
       }
-      notifyListeners('compiler-error', result.source, result.errors);
+      notifyListeners('compiler-error', result.source, result.modelSourceType, result.modelCode, result.errors);
     }
   }
 

@@ -257,9 +257,11 @@ listenerEvents = Object.freeze([
   {
     'name': 'compiler-error',
     'args': [
-      'source', # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
-                # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
-      'errors'  # Array[Exception]
+      'source',          # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
+                         # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
+      'modelSourceType', # 'url' | 'disk' | 'new' | 'script-element'
+      'modelCode',       # String
+      'errors'           # Array[Exception]
     ]
   },
   {

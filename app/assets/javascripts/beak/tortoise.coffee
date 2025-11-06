@@ -174,9 +174,11 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     else
       notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'failure', 'compile-fatal')
       callback({
-        type:   'failure'
-      , source: 'compile-fatal'
-      , errors: result.model.result
+        type:            'failure'
+      , source:          'compile-fatal'
+      , modelSourceType: nlogoxSource.type
+      , modelCode:       nlogoxSource.nlogo
+      , errors:          result.model.result
       })
 
   return
@@ -286,9 +288,11 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     else
       notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-fatal')
       callback({
-        type:   'failure'
-      , source: 'compile-fatal'
-      , errors: result.model.result
+        type:            'failure'
+      , source:          'compile-fatal'
+      , modelSourceType: nlogoSource.type
+      , modelCode:       nlogoSource.nlogo
+      , errors:          result.model.result
       })
 
   return
