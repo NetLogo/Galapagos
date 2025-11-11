@@ -384,6 +384,10 @@ world.ticker._onTick     = function() {};
 world.ticker._updateFunc = function() {};
 var workspace = {};
 workspace.i18nBundle = { supports: function() { return true; }, 'switch': function() {} };
+var miniDump = (x) => {
+  return Array.isArray(x) ? x.map(miniDump) : x.toString();
+};
+workspace.dump = miniDump;
 """
 
   getDefault = (w) ->
