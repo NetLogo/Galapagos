@@ -305,6 +305,8 @@ initStudentFrame = ( session, flexbox, role, baseView, bm
 
   return
 
+globalEval = eval
+
 # ( () => BM, () => Session, (Session) => Unit, (Object[Role]) => Unit
 # , (String, Client) => Unit, () => Array[UUID], (String, Widget, Array[P13N]) => Unit) =>
 # (MessageEvent) => Unit
@@ -317,13 +319,15 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   compiler       = new BrowserCompiler()
   preCompilation = compiler.fromNlogoXML(e.data.nlogox)
 
-  procedures =
-    if preCompilation.model.success
-      compiler.listProcedures()
+  [procedures, wiggies] =
+    (if preCompilation.model.success
+      [compiler.listProcedures(), globalEval(preCompilation.widgets)]
     else
       msg = preCompilation.model.result.map((x) -> x.message).join('\n')
       alert(new Error("Base HNW model did not compile:\n\n#{msg}"))
-      []
+      [[], []])
+
+  fakePlots = wiggies.filter( (w) -> w.type is 'output' )
 
   procEntries = Object.values(procedures).map((p) -> [p.name.toLowerCase(), p])
   procs       = Object.fromEntries(procEntries)
