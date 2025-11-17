@@ -81,9 +81,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         t.node.addEventListener(event, listener(listener))
       t.node.classList.add(klass)
 
-  Ractive.transitions.grow   = animateWithClass('growing')
-  Ractive.transitions.shrink = animateWithClass('shrinking')
-
   new Ractive({
 
     el:       container,

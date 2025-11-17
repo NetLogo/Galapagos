@@ -106,28 +106,6 @@
   -moz-user-select: none;
 }
 
-.growing {
-  animation-name: grow;
-  animation-duration: 0.4s;
-  animation-timing-function: ease-out;
-}
-
-.shrinking {
-  animation-name: grow;
-  animation-direction: reverse;
-  animation-duration: 0.4s;
-  animation-timing-function: ease-in;
-}
-
-@keyframes grow {
-  0% {
-    max-height: 0;
-  }
-  100% {
-    max-height: 100%;
-  }
-}
-
 .netlogo-model-container {
   width: min-content;
   position: relative;
