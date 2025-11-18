@@ -1,0 +1,68 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "turtle"
+    , "namePlural": "turtles"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwButton",   "left":  76, "right": 203, "top": 127, "bottom": 160, "display": "Choose", "source": "execute-choose", "hnwProcName": "execute-choose", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwSlider",   "left":  53, "right": 343, "top":  89, "bottom": 122, "display": "Choice", "variable": "slider-value", "min": 0.0, "max": 9.0, "default": 0.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwMonitor",  "left":   4, "right": 389, "top":  35, "bottom":  84, "display": "Current Question", "source": "current-question-value", "reporterStyle": "procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 209, "right": 318, "top": 127, "bottom": 176, "display": "Current Choice", "source": "current-choice-value", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwView",     "left":   1, "right":   2, "top": 500, "bottom": 501, "height": 1, "width": 1 }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "execute-create"
+    , "onDisconnect": "handle-quit"
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 461, "right": 742, "top":  98, "bottom": 380, "height": 282, "width": 281 }
+      , { "type": "hnwPlot",     "left": 155, "right": 455, "top": 129, "bottom": 396, "display": "Data", "xAxis": "choice", "yAxis": "count", "xmin": 0.0, "xmax": 10.0, "ymin": 0.0, "ymax": 5.0, "autoPlotOn": true, "legendOn": true, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "data", "interval": 1, "mode": 1, "color": -16777216, "inLegend": true, "setupCode": "", "updateCode": "" }, { "type": "pen", "display": "mean", "interval": 1, "mode": 0, "color": -10899396, "inLegend": true, "setupCode": "", "updateCode": "" }, { "type": "pen", "display": "median", "interval": 1, "mode": 0, "color": -13345367, "inLegend": true, "setupCode": "", "updateCode": "" }, { "type": "pen", "display": "mode", "interval": 1, "mode": 1, "color": -2674135, "inLegend": true, "setupCode": "", "updateCode": "" }] }
+      , { "type": "hnwSwitch",   "left":   1, "right": 149, "top": 224, "bottom": 257, "display": "allow-change?", "variable": "allow-change?", "on": true }
+      , { "type": "hnwButton",   "left":   1, "right": 149, "top": 129, "bottom": 164, "display": "Clear Current Data", "source": "clear-current-data", "hnwProcName": "clear-current-data", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwMonitor",  "left":   1, "right": 455, "top": 401, "bottom": 446, "display": "Current Question", "source": "current-question-value", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwButton",   "left":   1, "right": 149, "top": 450, "bottom": 483, "display": "New Question", "source": "add-question", "hnwProcName": "add-question", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left":   1, "right": 149, "top": 363, "bottom": 396, "display": "Clear Questions", "source": "clear-all-data-and-questions", "hnwProcName": "clear-all-data-and-questions", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 155, "right": 304, "top": 450, "bottom": 483, "display": "<<<Prev Question", "source": "prev-question", "hnwProcName": "prev-question", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 304, "right": 455, "top": 450, "bottom": 483, "display": "Next Question>>>", "source": "next-question", "hnwProcName": "next-question", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwSwitch",   "left":   1, "right": 149, "top": 262, "bottom": 295, "display": "show-plot?", "variable": "show-plot?", "on": true }
+      , { "type": "hnwMonitor",  "left":   1, "right":  72, "top": 170, "bottom": 215, "display": "mean", "source": "mean-of-choices", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwMonitor",  "left":  78, "right": 149, "top": 170, "bottom": 215, "display": "median", "source": "median-of-choices", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwButton",   "left": 157, "right": 300, "top":  59, "bottom":  92, "display": "Reset Instructions", "source": "setup-quick-start", "hnwProcName": "setup-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 584, "right": 736, "top":  59, "bottom":  92, "display": "Next Instruction>>>", "source": "view-next-quick-start", "hnwProcName": "view-next-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 432, "right": 584, "top":  59, "bottom":  92, "display": "<<<Prev Instruction", "source": "view-prev-quick-start", "hnwProcName": "view-prev-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwMonitor",  "left": 157, "right": 736, "top":  10, "bottom":  55, "display": "Quick Start Instructions - More in Info Window", "source": "quick-start", "reporterStyle": "global-var", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwButton",   "left":   1, "right": 149, "top":  81, "bottom": 114, "display": "Clear Clients", "source": "clear-clients", "hnwProcName": "clear-clients", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 20
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

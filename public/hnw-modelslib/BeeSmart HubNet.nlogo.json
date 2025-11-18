@@ -1,0 +1,119 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "student"
+    , "namePlural": "students"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",    "left": 300, "right": 729, "top":  25, "bottom": 454, "height": 429, "width": 429 }
+      , { "type": "hnwButton",  "left": 104, "right": 187, "top":  82, "bottom": 115, "display": "up",                 "source": "command-move-up", "hnwProcName": "command-move-up", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "W" }
+      , { "type": "hnwButton",  "left": 104, "right": 188, "top": 129, "bottom": 162, "display": "down",               "source": "command-move-down", "hnwProcName": "command-move-down", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "S" }
+      , { "type": "hnwButton",  "left":   9, "right":  87, "top": 129, "bottom": 162, "display": "left",               "source": "command-move-left", "hnwProcName": "command-move-left", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "A" }
+      , { "type": "hnwButton",  "left": 205, "right": 284, "top": 129, "bottom": 162, "display": "right",              "source": "command-move-right", "hnwProcName": "command-move-right", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "D" }
+      , { "type": "hnwButton",  "left":   9, "right":  88, "top": 185, "bottom": 218, "display": "dance",              "source": "command-dance", "hnwProcName": "command-dance", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "Q" }
+      , { "type": "hnwButton",  "left": 205, "right": 284, "top": 185, "bottom": 218, "display": "revisit",            "source": "command-revisit", "hnwProcName": "command-revisit", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "R" }
+      , { "type": "hnwMonitor", "left":  11, "right": 142, "top": 339, "bottom": 388, "display": "dances-made",        "source": "dances-made", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  11, "right": 142, "top": 291, "bottom": 340, "display": "dance-length",       "source": "dance-length", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  11, "right": 142, "top": 243, "bottom": 292, "display": "target-quality",     "source": "target-quality", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":   8, "right": 283, "top":  26, "bottom":  75, "display": "Message",            "source": "message-content", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left": 156, "right": 285, "top": 243, "bottom": 292, "display": "interest-in-target", "source": "interest-in-target", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  11, "right": 285, "top": 387, "bottom": 436, "display": "summary",            "source": "summary", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwTextBox", "left":  14, "right": 266, "top": 441, "bottom": 469, "display": "[T    Q    R] : ticks, target-quality, recruited", "color": 0, "fontSize": 11, "transparent": true }
+      , { "type": "hnwMonitor", "left": 156, "right": 285, "top": 339, "bottom": 388, "display": "ticks",              "source": "the-ticks", "reporterStyle": "procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left": 156, "right": 285, "top": 291, "bottom": 340, "display": "bees-recruited",     "source": "recruited", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwButton",  "left": 104, "right": 188, "top": 185, "bottom": 218, "display": "give-up",            "source": "command-give-up", "hnwProcName": "command-give-up", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "G" }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "onConnect": "create-new-student"
+    , "onDisconnect": "remove-student"
+    , "afterDisconnect": null
+    , "onCursorClick": "command-click"
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    , "perspectiveVar": "perspective"
+    , "viewOverrideVar": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 210, "right":  699, "top":  10, "bottom": 500, "height": 490, "width": 489 }
+      , { "type": "hnwSlider",   "left":  10, "right":  195, "top": 177, "bottom": 210, "display": "student-vision-radius", "variable": "student-vision-radius", "min": 1, "max": 10, "default": 10.0, "units": "", "direction": "horizontal", "step": 1 }
+      , { "type": "hnwSlider",   "left":  10, "right":  195, "top":  95, "bottom": 128, "display": "number-of-sites", "variable": "number-of-sites", "min": 2, "max": 9, "default": 9.0, "units": "", "direction": "horizontal", "step": 1 }
+      , { "type": "hnwMonitor",  "left":  12, "right":  195, "top": 265, "bottom": 310, "display": "Best site discovered?", "source": "best-site-discovered", "reporterStyle": "procedure", "precision": 17, "fontSize": 11 }
+      , {
+            "bottom": 263,
+            "display": "Current Sites Support",
+            "yAxis": "Bee Count",
+            "xmin": 0,
+            "ymax": 10,
+            "legendOn": false,
+            "left": 707,
+            "xAxis": "Sites",
+            "autoPlotOn": true,
+            "xmax": 10,
+            "setupCode": "",
+            "pens": [
+                {
+                    "updateCode": "update-current-pen",
+                    "display": "pen-0",
+                    "color": -16777216,
+                    "mode": 1,
+                    "interval": 1,
+                    "setupCode": "setup-current-pen",
+                    "type": "pen",
+                    "inLegend": true
+                }
+            ],
+            "right": 1014,
+            "type": "hnwPlot",
+            "ymin": 0,
+            "top": 10,
+            "updateCode": ""
+        },
+        {
+            "bottom": 521,
+            "display": "Sites Support Over Time",
+            "yAxis": "Bee Count",
+            "xmin": 0,
+            "ymax": 10,
+            "legendOn": false,
+            "left": 708,
+            "xAxis": "Ticks",
+            "autoPlotOn": true,
+            "xmax": 10,
+            "setupCode": "setup-overall-plot",
+            "pens": [],
+            "right": 1015,
+            "type": "hnwPlot",
+            "ymin": 0,
+            "top": 268,
+            "updateCode": "update-overall-plot"
+        }
+      , { "type": "hnwInputBox", "left":  14, "right":  193, "top": 407, "bottom": 467, "variable": "filename", "boxedValue": { "type": "String", "multiline": true, "value": "history.csv" } }
+      , { "type": "hnwButton",   "left":  14, "right":  193, "top": 473, "bottom": 519, "display": "save history", "source": "save-history", "hnwProcName": "save-history", "forever": false, "disableUntilTicksStart": false, "buttonKind": "observer" }
+      , { "type": "hnwSlider",   "left":  10, "right":  195, "top": 136, "bottom": 169, "display": "number-of-robots", "variable": "number-of-robots", "min": 0, "max": 100, "default": 100.0, "units": "", "direction": "horizontal", "step": 10 }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    }
+  ]
+, "targetFrameRate": 18
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

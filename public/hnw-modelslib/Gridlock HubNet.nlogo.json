@@ -1,0 +1,68 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "player"
+    , "namePlural": "players"
+    , "limit": -1
+    , "highlightMainColor": "#00800000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 292, "right": 662, "top":  10, "bottom": 380, "height": 365, "width": 365 }
+      , { "type": "hnwButton",   "left": 162, "right": 286, "top":  68, "bottom": 101, "display": "Change Light", "source": "manual", "hnwProcName": "manual", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwSlider",   "left": 162, "right": 286, "top": 101, "bottom": 134, "display": "Phase", "variable": "my-phase", "min": 0.0, "max": 99.0, "default": 0.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwTextBox",  "left":  12, "right": 154, "top":  10, "bottom": 175, "display": "Affect the state of your light by pressing the Change Light button, or changing the value of the Phase slider. The Phase slider controls the point in the cycle at which your light with change, and represents a percentage of the total cycle time.", "color": 0.0, "fontSize": 11, "transparent": false }
+      , { "type": "hnwMonitor",  "left": 173, "right": 286, "top":  10, "bottom":  59, "display": "Located At:", "source": "location", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "onConnect": "handle-join"
+    , "onDisconnect": "abandon-intersection"
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 283, "right": 661, "top":  96, "bottom": 475, "height": 374, "width": 373 }
+      , { "type": "hnwTextBox",  "left":   7, "right": 185, "top": 411, "bottom": 453, "display": "This chooser determines\nwhich plot is drawn.", "color": 0.0, "fontSize": 11, "transparent": false }
+      , { "type": "hnwPlot",     "left": 565, "right": 844, "top": 500, "bottom": 689, "display": "Average Wait Time of Cars", "xAxis": "Time", "yAxis": "Average Wait", "xmin": 0.0, "xmax": 100.0, "ymin": 0.0, "ymax": 5.0, "autoPlotOn": true, "legendOn": false, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 0, "color": -1893860, "inLegend": true, "setupCode": "", "updateCode": "update-avg-wait-pen" }] }
+      , { "type": "hnwPlot",     "left": 283, "right": 562, "top": 500, "bottom": 689, "display": "Average Speed of Cars", "xAxis": "Time", "yAxis": "Average Speed", "xmin": 0.0, "xmax": 100.0, "ymin": 0.0, "ymax": 1.0, "autoPlotOn": true, "legendOn": false, "setupCode": "setup-speed-plot", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 0, "color": -1893860, "inLegend": true, "setupCode": "", "updateCode": "update-avg-speed-pen" }] }
+      , { "type": "hnwButton",   "left": 288, "right": 406, "top":  60, "bottom":  93, "display": "Reset Instructions", "source": "setup-quick-start", "hnwProcName": "setup-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 574, "right": 658, "top":  60, "bottom":  93, "display": "NEXT >>>", "source": "view-next", "hnwProcName": "view-next", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 497, "right": 575, "top":  60, "bottom":  93, "display": "<<< PREV", "source": "view-prev", "hnwProcName": "view-prev", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwMonitor",  "left": 288, "right": 658, "top":  10, "bottom":  55, "display": "Quick Start Instructions- More in Info Window", "source": "quick-start", "reporterStyle": "global-var", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwSlider",   "left": 142, "right": 281, "top":  41, "bottom":  74, "display": "grid-size-y", "variable": "grid-size-y", "min": 1.0, "max": 9.0, "default": 5.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwSlider",   "left":   1, "right": 139, "top":  41, "bottom":  74, "display": "grid-size-x", "variable": "grid-size-x", "min": 1.0, "max": 9.0, "default": 5.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwSwitch",   "left":  98, "right": 188, "top": 113, "bottom": 146, "display": "auto?", "variable": "auto?", "on": false }
+      , { "type": "hnwSwitch",   "left": 190, "right": 280, "top": 113, "bottom": 146, "display": "crash?", "variable": "crash?", "on": false }
+      , { "type": "hnwSwitch",   "left":   1, "right":  96, "top": 113, "bottom": 146, "display": "power?", "variable": "power?", "on": true }
+      , { "type": "hnwSlider",   "left":   1, "right": 280, "top":  77, "bottom": 110, "display": "number", "variable": "number", "min": 0.0, "max": 400.0, "default": 200.0, "units": "cars", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwPlot",     "left":   1, "right": 280, "top": 500, "bottom": 689, "display": "Stopped Cars", "xAxis": "Time", "yAxis": "Stopped Cars", "xmin": 0.0, "xmax": 100.0, "ymin": 0.0, "ymax": 100.0, "autoPlotOn": true, "legendOn": false, "setupCode": "setup-stopped-cars-plot", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 0, "color": -1893860, "inLegend": true, "setupCode": "", "updateCode": "update-stopped-cars-pen" }] }
+      , { "type": "hnwSlider",   "left":   1, "right": 153, "top": 149, "bottom": 182, "display": "simulation-speed", "variable": "simulation-speed", "min": 0.0, "max": 10.0, "default": 7.5, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwSlider",   "left": 155, "right": 280, "top": 149, "bottom": 182, "display": "speed-limit", "variable": "speed-limit", "min": 0.1, "max": 1.0, "default": 1.0, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwMonitor",  "left": 175, "right": 280, "top": 185, "bottom": 230, "display": "Current Phase", "source": "phase", "reporterStyle": "global-var", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwSlider",   "left":   1, "right": 173, "top": 201, "bottom": 234, "display": "ticks-per-cycle", "variable": "ticks-per-cycle", "min": 1.0, "max": 100.0, "default": 20.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwChooser",  "left":   6, "right": 176, "top": 450, "bottom": 495, "display": "plots-to-display", "variable": "plots-to-display", "choices": ["No plots", "Stopped Cars", "Average Speed of Cars", "Average Wait Time of Cars", "All three plots"], "currentChoice": 4 }
+      , { "type": "hnwButton",   "left": 182, "right": 274, "top": 458, "bottom": 491, "display": "Refresh Plots", "source": "update-plots", "hnwProcName": "update-plots", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 20
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

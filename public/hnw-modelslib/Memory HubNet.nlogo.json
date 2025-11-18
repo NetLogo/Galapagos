@@ -1,0 +1,64 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "player"
+    , "namePlural": "players"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwMonitor",  "left": 133, "right": 240, "top":  15, "bottom":  64, "display": "Cards remaining", "source": "cards-remaining", "reporterStyle": "procedure", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  35, "right": 142, "top": 124, "bottom": 173, "display": "Your matches", "source": "matches", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 143, "right": 249, "top": 149, "bottom": 198, "display": "Success %", "source": "success-percentage", "reporterStyle": "turtle-procedure", "precision": 1, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  25, "right": 132, "top":  15, "bottom":  64, "display": "Whose turn?", "source": "whose-turn", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  15, "right": 140, "top": 241, "bottom": 290, "display": "Leader", "source": "leader", "reporterStyle": "procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 141, "right": 266, "top": 241, "bottom": 290, "display": "Leader's matches", "source": "leaders-matches", "reporterStyle": "procedure", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  82, "right": 189, "top":  74, "bottom": 123, "display": "Your name", "source": "user-id", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  35, "right": 142, "top": 174, "bottom": 223, "display": "Your turns", "source": "attempts", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwView",     "left": 269, "right": 867, "top":  13, "bottom": 381, "height": 368, "width": 598 }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "add-player"
+    , "onDisconnect": "remove-player"
+    , "afterDisconnect": null
+    , "onCursorClick": "select-card"
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 320, "right": 926, "top":  10, "bottom": 387, "height": 377, "width": 606 }
+      , { "type": "hnwButton",   "left":  38, "right": 145, "top": 120, "bottom": 153, "source": "deal", "hnwProcName": "deal", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwSlider",   "left":  77, "right": 234, "top":  84, "bottom": 117, "display": "pairs-in-deck", "variable": "pairs-in-deck", "min": 2.0, "max": 52, "default": 26.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwMonitor",  "left":  28, "right": 144, "top": 215, "bottom": 260, "display": "Cards remaining", "source": "card-count", "reporterStyle": "procedure", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwButton",   "left": 155, "right": 282, "top": 203, "bottom": 236, "display": "show all cards", "source": "show-all", "hnwProcName": "show-all", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 155, "right": 282, "top": 240, "bottom": 273, "display": "hide all cards", "source": "hide-all", "hnwProcName": "hide-all", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwSlider",   "left":  73, "right": 230, "top": 156, "bottom": 189, "display": "pair-up-delay", "variable": "pair-up-delay", "min": 0.0, "max": 60, "default": 20.0, "units": "frames", "direction": "horizontal", "step": 5.0 }
+      , { "type": "hnwMonitor",  "left": 163, "right": 281, "top": 279, "bottom": 324, "display": "number of players", "source": "player-count", "reporterStyle": "procedure", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwMonitor",  "left":  26, "right": 160, "top": 279, "bottom": 324, "display": "current-player", "source": "current-player-name", "reporterStyle": "procedure", "precision": 0, "fontSize": 11 }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 10
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

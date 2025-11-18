@@ -1,0 +1,72 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "player"
+    , "namePlural": "players"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 328, "right": 706, "top":  10, "bottom": 388, "height": 378, "width": 378 }
+      , { "type": "hnwButton",   "left":  74, "right": 155, "top": 234, "bottom": 267, "display": "0", "source": "choose-0", "hnwProcName": "choose-0", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwMonitor",  "left":  38, "right": 276, "top":  22, "bottom":  71, "display": "You are a:", "source": "identity", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 117, "right": 304, "top": 179, "bottom": 228, "display": "chosen-sides?", "source": "chosen-sides?", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 117, "right": 305, "top": 127, "bottom": 176, "display": "history", "source": "full-player-history", "reporterStyle": "procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":  52, "right": 151, "top":  74, "bottom": 123, "display": "score", "source": "score", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 154, "right": 254, "top":  74, "bottom": 123, "display": "success rate", "source": "success-rate", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   7, "right": 114, "top": 127, "bottom": 176, "display": "last choice", "source": "last-choice", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   7, "right": 114, "top": 179, "bottom": 228, "display": "current choice", "source": "choice", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwButton",   "left": 158, "right": 239, "top": 234, "bottom": 267, "display": "1", "source": "choose-1", "hnwProcName": "choose-1", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "execute-create"
+    , "onDisconnect": "handle-quit"
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 429, "right": 962, "top":  96, "bottom": 630, "height": 534, "width": 533 }
+      , { "type": "hnwSlider",   "left": 116, "right": 295, "top":  10, "bottom":  43, "display": "number-of-participants", "variable": "number-of-participants", "min": 3.0, "max": 501.0, "default": 229.0, "units": "", "direction": "horizontal", "step": 2.0 }
+      , { "type": "hnwSlider",   "left": 215, "right": 393, "top":  44, "bottom":  77, "display": "player-memory", "variable": "player-memory", "min": 1.0, "max": 12.0, "default": 5.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwSlider",   "left":  36, "right": 214, "top":  44, "bottom":  77, "display": "android-memory", "variable": "android-memory", "min": 1.0, "max": 12.0, "default": 3.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwPlot",     "left": 220, "right": 426, "top": 411, "bottom": 561, "display": "Success rate", "xAxis": "time", "yAxis": "success rate", "xmin": 0.0, "xmax": 1.0, "ymin": 0.0, "ymax": 0.05, "autoPlotOn": true, "legendOn": true, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "max", "interval": 1, "mode": 0, "color": -2674135, "inLegend": true, "setupCode": "", "updateCode": "update-max-success-pen" },{ "type": "pen", "display": "min", "interval": 1, "mode": 0, "color": -13345367, "inLegend": true, "setupCode": "", "updateCode": "update-min-success-pen" },{ "type": "pen", "display": "avg", "interval": 1, "mode": 0, "color": -10899396, "inLegend": true, "setupCode": "", "updateCode": "update-avg-success-pen" }] }
+      , { "type": "hnwPlot",     "left":  12, "right": 218, "top": 411, "bottom": 561, "display": "Number Picking Zero", "xAxis": "time", "yAxis": "number", "xmin": 0.0, "xmax": 1.0, "ymin": 0.0, "ymax": 25.0, "autoPlotOn": true, "legendOn": false, "setupCode": "setup-num-zeroes-plot", "updateCode": "", "pens": [{ "type": "pen", "display": "number", "interval": 1, "mode": 0, "color": -10899396, "inLegend": true, "setupCode": "", "updateCode": "update-num-zeroes-pen" }] }
+      , { "type": "hnwMonitor",  "left": 130, "right": 303, "top": 157, "bottom": 202, "display": "history", "source": "full-player-history", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwPlot",     "left":  12, "right": 218, "top": 259, "bottom": 409, "display": "Scores", "xAxis": "time", "yAxis": "score", "xmin": 0.0, "xmax": 1.0, "ymin": 0.0, "ymax": 1.0, "autoPlotOn": true, "legendOn": true, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "max", "interval": 1, "mode": 0, "color": -2674135, "inLegend": true, "setupCode": "", "updateCode": "update-max-score-pen" }, { "type": "pen", "display": "min", "interval": 1, "mode": 0, "color": -13345367, "inLegend": true, "setupCode": "", "updateCode": "update-min-score-pen" }, { "type": "pen", "display": "avg", "interval": 1, "mode": 0, "color": -10899396, "inLegend": true, "setupCode": "", "updateCode": "update-avg-score-pen" }] }
+      , { "type": "hnwPlot",     "left": 220, "right": 426, "top": 259, "bottom": 409, "display": "Success Rates", "xAxis": "score", "yAxis": "number", "xmin": 0.0, "xmax": 1.0, "ymin": 0.0, "ymax": 10.0, "autoPlotOn": true, "legendOn": true, "setupCode": "setup-success-rates-plot", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 0.02, "mode": 1, "color": -16777216, "inLegend": false, "setupCode": "", "updateCode": "update-success-pen" }] }
+      , { "type": "hnwSlider",   "left":  36, "right": 214, "top":  78, "bottom": 111, "display": "strategies-per-android", "variable": "strategies-per-android", "min": 1.0, "max": 15.0, "default": 5.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwMonitor",  "left": 429, "right": 817, "top":  10, "bottom":  55, "display": "Quick Start Instructions-More in Info Window", "source": "quick-start", "reporterStyle": "global-var", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwButton",   "left": 429, "right": 577, "top":  61, "bottom":  94, "display": "Reset Instructions", "source": "setup-quick-start", "hnwProcName": "setup-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 734, "right": 817, "top":  61, "bottom":  94, "display": "NEXT>>>", "source": "view-next", "hnwProcName": "view-next", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 649, "right": 733, "top":  61, "bottom":  94, "display": "<<<PREV", "source": "view-previous", "hnwProcName": "view-previous", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwMonitor",  "left":  47, "right": 218, "top": 211, "bottom": 256, "display": "high score", "source": "high-score", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwMonitor",  "left": 220, "right": 391, "top": 211, "bottom": 256, "display": "low score", "source": "low-score", "reporterStyle": "procedure", "precision": 3, "fontSize": 11 }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 5
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

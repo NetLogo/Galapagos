@@ -510,6 +510,25 @@ class HubNetWebConfigElement extends HTMLElement
 
 customElements.define("hubnet-web-config", HubNetWebConfigElement)
 
+mergeNlogoxAndConfig = (nlogox, json) ->
+  nlogoDoc     = nlogoXMLToDoc(nlogox)
+  modelElement = nlogoDoc.querySelector("model")
+
+  existingConfig = modelElement.querySelector("hubnet-web-config")
+  if existingConfig? then modelElement.removeChild(existingConfig)
+
+  hnwConfigElement           = new HubNetWebConfigElement()
+  hnwReplaceString           = "{{{HUBNET-WEB-CONFIG-REPLACEMENT}}}"
+  hnwConfigElement.innerHTML = hnwReplaceString
+  modelElement.appendChild(hnwConfigElement)
+
+  hnwNlogoxUnfixed = docToNlogoXML(nlogoDoc)
+
+  # Web browsers don't like CDATA in their HTML documents, so they turn them into HTML comments.  This is enough
+  # to get them back into a proper form for the NetLogo Web parser.  -Jeremy B Octover 2025
+  hnwNlogox = hnwNlogoxUnfixed.replace(hnwReplaceString, "<![CDATA[#{json}]]>")
+  hnwNlogox
+
 # () => Unit
 document.getElementById("download-nlogox-button").onclick = ->
 
@@ -521,22 +540,7 @@ document.getElementById("download-nlogox-button").onclick = ->
 
     requestNlogoxAndJSON().then(
       ([nlogox, json]) ->
-        nlogoDoc     = nlogoXMLToDoc(nlogox)
-        modelElement = nlogoDoc.querySelector("model")
-
-        existingConfig = modelElement.querySelector("hubnet-web-config")
-        if existingConfig? then modelElement.removeChild(existingConfig)
-
-        hnwConfigElement           = new HubNetWebConfigElement()
-        hnwReplaceString           = "{{{HUBNET-WEB-CONFIG-REPLACEMENT}}}"
-        hnwConfigElement.innerHTML = hnwReplaceString
-        modelElement.appendChild(hnwConfigElement)
-
-        hnwNlogoxUnfixed = docToNlogoXML(nlogoDoc)
-
-        # Web browsers don't like CDATA in their HTML documents, so they turn them into HTML comments.  This is enough
-        # to get them back into a proper form for the NetLogo Web parser.  -Jeremy B Octover 2025
-        hnwNlogox = hnwNlogoxUnfixed.replace(hnwReplaceString, "<![CDATA[#{json}]]>")
+        hnwNlogox = mergeNlogoxAndConfig(nlogox, json)
         download(nlogoxName)(hnwNlogox)
     )
 
@@ -673,6 +677,107 @@ cancelInterval = ->
     clearInterval(intervalID)
   queue      = []
   intervalID = undefined
+  return
+
+hnwModels = [
+  "BeeSmart",
+  "Bird Breeders",
+  "Bug Hunters Adaptations",
+  "Bug Hunters Camouflage",
+  "Bug Hunters Competition",
+  "Client Overrides Example",
+  "Client Perspective Example",
+  "Critter Designers",
+  "Current in a Wire",
+  "Dice Stalagmite",
+  "Disease",
+  "Disease Doctors",
+  "Disease With Android Avoidance",
+  "Example",
+  "Fish Spotters",
+  "Function",
+  "Gridlock",
+  "Gridlock Alternate",
+  "Guppy Spots",
+  "Investments",
+  "Memory",
+  "Minority Game",
+  "MTG 1 Equal Opportunities",
+  "MTG 2 Random Assignment",
+  "MTG 3 Feedback Loop",
+  "Oil Cartel",
+  "Oil Cartel Alternate",
+  "PANDA BEAR",
+  "Polling",
+  "Polling Advanced",
+  "Predator Prey Game",
+  "Prisoners Dilemma",
+  "Public Good",
+  "Restaurants",
+  "Root Beer Game",
+  "Sampler",
+  "Template",
+  "Tragedy of the Commons",
+  "Walking",
+]
+
+window.hnwAutoConvertState = {
+  downloadIndex: 0
+, files:         []
+}
+
+window.hnwAutoConvert = () ->
+  # result  = await fetch("/iframe-test")
+  # docText = await result.text()
+  # parser  = new DOMParser()
+  # doc     = parser.parseFromString(docText, "text/html")
+
+  # librarySelect   = doc.querySelector("#library-model")
+  # libraryOptions  = Array.from(librarySelect.childNodes)
+  modelNames      = hnwModels
+  hubNetFileNames = modelNames.map( (n) ->
+    nlogo = "#{n} HubNet.nlogo"
+    json  = "#{nlogo}.json"
+    { name: n, nlogo, json }
+  )
+
+  hubNetFetchPromises = hubNetFileNames.map( (hnf) ->
+    nlogoP  = fetch("http://localhost:9000/assets/hnw-modelslib/#{hnf.nlogo}").then( (res) -> res.text() )
+    jsonP   = fetch("http://localhost:9000/assets/hnw-modelslib/#{hnf.json}" ).then( (res) -> res.json() )
+    [nlogo, config] = await Promise.all([nlogoP, jsonP])
+    { name: hnf.name, nlogo, config }
+  )
+
+  hubNetFiles = await Promise.all(hubNetFetchPromises)
+
+  compiler = new BrowserCompiler()
+
+  nl7Files = hubNetFiles.map( (hn) ->
+    convertResult = compiler.convertNlogoToXML(hn.nlogo)
+    if not convertResult.success
+      console.log(convertResult)
+      { name: hn.name, success: false }
+    else
+      nlogox = convertResult.result
+      config = updateAlphaToBeta(hn.config)
+      { name: hn.name, success: true, nlogox, config }
+  )
+
+  mergedNl7Files = nl7Files.filter( (nl7) -> nl7.success ).map( (nl7) ->
+    nlogox = mergeNlogoxAndConfig(nl7.nlogox, nl7.config)
+    { name: "#{nl7.name} HubNet.nlogox", nlogox }
+  )
+
+  window.hnwAutoConvertState.files = mergedNl7Files
+  console.log(mergedNl7Files)
+  return
+
+window.hnwAutoConvertDownload = () ->
+  index = window.hnwAutoConvertState.downloadIndex
+  files = window.hnwAutoConvertState.files.slice(index, index + 10)
+  console.log(files)
+  files.forEach( ({ name, nlogox}) -> download(name)(nlogox))
+  window.hnwAutoConvertState.downloadIndex = index + 10
   return
 
 cancelInterval()

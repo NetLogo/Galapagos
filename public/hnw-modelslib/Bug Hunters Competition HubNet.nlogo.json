@@ -1,0 +1,381 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": "orient-my-turtle",
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 500,
+                    "bottom": 510,
+                    "left": 355,
+                    "width": 500,
+                    "right": 855,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 59,
+                    "display": "Your Place in the Competition",
+                    "left": 115,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "place-msg",
+                    "right": 345,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 360,
+                    "display": "Energy Levels of Bugs",
+                    "yAxis": "bugs",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": false,
+                    "left": 10,
+                    "xAxis": "energy level",
+                    "autoPlotOn": true,
+                    "xmax": 500,
+                    "setupCode": "update-energy-plot",
+                    "pens": [
+                        {
+                            "updateCode": "",
+                            "display": "bugs",
+                            "color": -16777216,
+                            "mode": 1,
+                            "interval": 20,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 345,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 210,
+                    "updateCode": "update-energy-plot"
+                },
+                {
+                    "bottom": 59,
+                    "display": "time remaining",
+                    "left": 10,
+                    "precision": 0,
+                    "reporterStyle": "global-var",
+                    "fontSize": 10,
+                    "source": "time-remaining",
+                    "right": 112,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 210,
+                    "display": "Population Size",
+                    "yAxis": "bugs",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": false,
+                    "left": 10,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 1000,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-population-pen",
+                            "display": "bugs",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 345,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 60,
+                    "updateCode": ""
+                }
+            ],
+            "name": "player",
+            "namePlural": "players",
+            "onConnect": "create-new-player",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": "perspective",
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 508,
+                    "bottom": 519,
+                    "left": 405,
+                    "width": 509,
+                    "right": 913,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 540,
+                    "display": "Population Size",
+                    "yAxis": "bugs",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": false,
+                    "left": 0,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 1000,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-population-pen",
+                            "display": "bugs",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 400,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 420,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 420,
+                    "display": "# bugs",
+                    "left": 0,
+                    "precision": 3,
+                    "reporterStyle": "procedure",
+                    "fontSize": 11,
+                    "source": "count-bugs",
+                    "right": 75,
+                    "type": "hnwMonitor",
+                    "top": 375
+                },
+                {
+                    "max": "100",
+                    "bottom": 78,
+                    "display": "initial-#-automated-bugs",
+                    "direction": "horizontal",
+                    "default": 0,
+                    "left": 0,
+                    "variable": "initial-#-automated-bugs",
+                    "step": 1,
+                    "min": "0",
+                    "right": 220,
+                    "type": "hnwSlider",
+                    "top": 45
+                },
+                {
+                    "max": "100",
+                    "bottom": 78,
+                    "display": "amount-grassland",
+                    "direction": "horizontal",
+                    "default": 100,
+                    "left": 225,
+                    "variable": "amount-grassland",
+                    "step": 1,
+                    "min": "0",
+                    "units": "%",
+                    "right": 400,
+                    "type": "hnwSlider",
+                    "top": 45
+                },
+                {
+                    "max": "3000",
+                    "bottom": 43,
+                    "display": "length-competition",
+                    "direction": "horizontal",
+                    "default": 500,
+                    "left": 225,
+                    "variable": "length-competition",
+                    "step": 100,
+                    "min": "0",
+                    "right": 400,
+                    "type": "hnwSlider",
+                    "top": 10
+                },
+                {
+                    "bottom": 198,
+                    "display": "automated-bugs-lose-energy?",
+                    "left": 0,
+                    "variable": "automated-bugs-lose-energy?",
+                    "right": 235,
+                    "type": "hnwSwitch",
+                    "top": 165,
+                    "on": false
+                },
+                {
+                    "bottom": 233,
+                    "display": "automated-bugs-reproduce?",
+                    "left": 0,
+                    "variable": "automated-bugs-reproduce?",
+                    "right": 235,
+                    "type": "hnwSwitch",
+                    "top": 200,
+                    "on": false
+                },
+                {
+                    "bottom": 360,
+                    "display": "Energy Levels of Bugs",
+                    "yAxis": "bugs",
+                    "xmin": 0,
+                    "ymax": 40,
+                    "legendOn": false,
+                    "left": 0,
+                    "xAxis": "energy level",
+                    "autoPlotOn": true,
+                    "xmax": 500,
+                    "setupCode": "update-energy-plot",
+                    "pens": [
+                        {
+                            "updateCode": "",
+                            "display": "bugs",
+                            "color": -16777216,
+                            "mode": 1,
+                            "interval": 20,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 400,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 240,
+                    "updateCode": "update-energy-plot"
+                },
+                {
+                    "bottom": 125,
+                    "display": "show-labels-as",
+                    "left": 260,
+                    "variable": "show-labels-as",
+                    "currentChoice": 4,
+                    "right": 400,
+                    "choices": [
+                        "none", "player name", "player energy", "energy ranges", "player energy:name"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 80
+                },
+                {
+                    "max": "10",
+                    "bottom": 198,
+                    "display": "player-vision",
+                    "direction": "horizontal",
+                    "default": 4,
+                    "left": 240,
+                    "variable": "player-vision",
+                    "step": 1,
+                    "min": "1",
+                    "right": 400,
+                    "type": "hnwSlider",
+                    "top": 165
+                },
+                {
+                    "bottom": 420,
+                    "display": "bugs that died",
+                    "left": 77,
+                    "precision": 17,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "dead-bugs",
+                    "right": 174,
+                    "type": "hnwMonitor",
+                    "top": 375
+                },
+                {
+                    "bottom": 420,
+                    "display": "# offspring",
+                    "left": 176,
+                    "precision": 17,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "offspring-bugs",
+                    "right": 273,
+                    "type": "hnwMonitor",
+                    "top": 375
+                },
+                {
+                    "bottom": 125,
+                    "display": "time remaining",
+                    "left": 153,
+                    "precision": 0,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "time-remaining",
+                    "right": 246,
+                    "type": "hnwMonitor",
+                    "top": 80
+                },
+                {
+                    "bottom": 405,
+                    "display": "x-interval",
+                    "left": 320,
+                    "precision": 17,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "x-interval-histogram",
+                    "right": 400,
+                    "type": "hnwMonitor",
+                    "top": 360
+                },
+                {
+                    "bottom": 163,
+                    "display": "automated-bugs-wander?",
+                    "left": 0,
+                    "variable": "automated-bugs-wander?",
+                    "right": 235,
+                    "type": "hnwSwitch",
+                    "top": 130,
+                    "on": true
+                },
+                {
+                    "max": "200",
+                    "bottom": 163,
+                    "display": "sprout-delay-time",
+                    "direction": "horizontal",
+                    "default": 50,
+                    "left": 240,
+                    "variable": "sprout-delay-time",
+                    "step": 50,
+                    "min": "0",
+                    "right": 400,
+                    "type": "hnwSlider",
+                    "top": 130
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 20,
+    "onIterate": "go",
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}

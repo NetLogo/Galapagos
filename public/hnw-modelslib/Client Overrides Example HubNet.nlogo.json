@@ -1,0 +1,74 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": "set-true-colors",
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 430,
+                    "bottom": 440,
+                    "left": 12,
+                    "width": 430,
+                    "right": 442,
+                    "type": "hnwView",
+                    "top": 10
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "create-new-student",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": null,
+            "viewOverrideVar": "overrides"
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 428,
+                    "bottom": 439,
+                    "left": 231,
+                    "width": 429,
+                    "right": 659,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 137,
+                    "display": "Users click on their client view\nto reveal the color of patches\nat that location.",
+                    "color": 0,
+                    "left": 15,
+                    "fontSize": 12,
+                    "right": 227,
+                    "type": "hnwTextBox",
+                    "top": 92,
+                    "transparent": true
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 10,
+    "onIterate": "go",
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}

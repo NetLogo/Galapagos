@@ -1,0 +1,78 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "student"
+    , "namePlural": "students"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 252, "right": 672, "top":  10, "bottom": 430, "height": 420, "width": 420 }
+      , { "type": "hnwButton",   "left":  91, "right": 153, "top": 133, "bottom": 166, "display": "Up", "source": "move-up", "hnwProcName": "move-up", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "I" }
+      , { "type": "hnwButton",   "left":  91, "right": 153, "top": 199, "bottom": 232, "display": "Down", "source": "move-down", "hnwProcName": "move-down", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "K" }
+      , { "type": "hnwButton",   "left": 153, "right": 215, "top": 166, "bottom": 199, "display": "Right", "source": "move-right", "hnwProcName": "move-right", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "L" }
+      , { "type": "hnwButton",   "left":  29, "right":  91, "top": 166, "bottom": 199, "display": "Left", "source": "move-left", "hnwProcName": "move-left", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle", "actionKey": "J" }
+      , { "type": "hnwSlider",   "left":   3, "right": 153, "top":  95, "bottom": 128, "display": "step-size", "variable": "step-size", "min": 1.0, "max": 5.0, "default": 1.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwMonitor",  "left": 156, "right": 243, "top":  10, "bottom":  59, "display": "Located at:", "source": "my-location", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   3, "right": 153, "top":  10, "bottom":  59, "display": "You are a:", "source": "my-description", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left": 156, "right": 243, "top":  79, "bottom": 128, "display": "Sick?", "source": "infected?", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwButton",   "left":   3, "right": 153, "top":  57, "bottom":  90, "display": "Change Appearance", "source": "execute-change-turtle", "hnwProcName": "execute-change-turtle", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwPlot",     "left":   3, "right": 243, "top": 252, "bottom": 431, "display": "Number Sick", "xAxis": "time", "yAxis": "sick", "xmin": 0, "xmax": 25, "ymin": 0, "ymax": 6, "autoPlotOn": true, "legendOn": false, "setupCode": "setup-plot", "updateCode": "update-student-plot", "pens": [] }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "create-new-student"
+    , "onDisconnect": "remove-student"
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 362, "right": 790, "top": 112, "bottom": 541, "height": 429, "width": 428 }
+      , { "type": "hnwSlider",   "left": 157, "right": 304, "top": 133, "bottom": 166, "display": "infection-chance", "variable": "infection-chance", "min": 0.0, "max": 100.0, "default": 100.0, "units": "%", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwButton",   "left":  97, "right": 180, "top":  50, "bottom":  83, "display": "infect", "source": "infect-turtles", "hnwProcName": "infect-turtles", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left":  29, "right": 155, "top": 170, "bottom": 203, "source": "make-androids", "hnwProcName": "make-androids", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwPlot",     "left":  68, "right": 312, "top": 368, "bottom": 565, "display": "Number Sick", "xAxis": "time", "yAxis": "sick", "xmin": 0, "xmax": 25, "ymin": 0, "ymax": 6, "autoPlotOn": true, "legendOn": false, "setupCode": "setup-plot", "updateCode": "update-supervisor-plot", "pens": [] }
+      , { "type": "hnwSlider",   "left": 158, "right": 306, "top": 242, "bottom": 275, "display": "android-delay", "variable": "android-delay", "min": 0.0, "max": 10.0, "default": 0.6, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwSlider",   "left": 158, "right": 305, "top": 170, "bottom": 203, "display": "num-androids", "variable": "num-androids", "min": 1.0, "max": 200.0, "default": 6.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwSwitch",   "left":  43, "right": 155, "top": 115, "bottom": 148, "display": "show-sick?", "variable": "show-sick?", "on": true }
+      , { "type": "hnwSwitch",   "left":  43, "right": 155, "top": 259, "bottom": 292, "display": "wander?", "variable": "wander?", "on": true }
+      , { "type": "hnwMonitor",  "left":  68, "right": 199, "top": 563, "bottom": 608, "display": "Infectable Turtles", "source": "infectable-turtle-count", "reporterStyle": "procedure", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwMonitor",  "left": 197, "right": 312, "top": 563, "bottom": 608, "display": "Number Sick", "source": "num-sick", "reporterStyle": "procedure", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwSlider",   "left": 157, "right": 304, "top":  98, "bottom": 131, "display": "initial-number-sick", "variable": "initial-number-sick", "min": 1.0, "max": 20.0, "default": 1.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwButton",   "left": 356, "right": 474, "top":  70, "bottom": 103, "display": "Reset Instructions", "source": "setup-quick-start", "hnwProcName": "setup-quick-start", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 718, "right": 802, "top":  70, "bottom": 103, "display": "NEXT >>>", "source": "view-next", "hnwProcName": "view-next", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 639, "right": 717, "top":  70, "bottom": 103, "display": "<<< PREV", "source": "view-prev", "hnwProcName": "view-prev", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwMonitor",  "left": 356, "right": 802, "top":  20, "bottom":  65, "display": "Quick Start Instructions- More in Info Window", "source": "quick-start", "reporterStyle": "global-var", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwSlider",   "left": 158, "right": 305, "top": 205, "bottom": 238, "display": "num-doctors", "variable": "num-doctors", "min": 0.0, "max": 100.0, "default": 2.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwSlider",   "left": 158, "right": 306, "top": 277, "bottom": 310, "display": "doctor-delay", "variable": "doctor-delay", "min": 0.0, "max": 10.0, "default": 0.6, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwButton",   "left":  29, "right": 155, "top": 205, "bottom": 238, "source": "make-doctors", "hnwProcName": "make-doctors", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 145, "right": 238, "top": 332, "bottom": 365, "display": "clear-plot", "source": "clear-model-plot", "hnwProcName": "clear-model-plot", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 182, "right": 265, "top":  50, "bottom":  83, "source": "cure-all", "hnwProcName": "cure-all", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 7
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

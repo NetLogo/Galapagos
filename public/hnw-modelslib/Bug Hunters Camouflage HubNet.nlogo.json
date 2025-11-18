@@ -1,0 +1,71 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "student"
+    , "namePlural": "students"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",    "left": 175, "right": 585, "top":  10, "bottom": 420, "height": 410, "width": 410 }
+      , { "type": "hnwMonitor", "left": 600, "right": 725, "top":  10, "bottom":  60, "display": "# Hunters", "source": "num-hunters", "reporterStyle": "procedure", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left": 600, "right": 725, "top":  70, "bottom": 120, "display": "# Living Prey", "source": "num-bugs", "reporterStyle": "procedure", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  10, "right": 135, "top":  10, "bottom":  59, "display": "Your name", "source": "user-id", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwTextBox", "left":  15, "right": 143, "top":  65, "bottom": 128, "display": "Try to catch bugs by clicking on them in the view to the right.", "color": 0, "fontSize": 11, "transparent": false }
+      , { "type": "hnwMonitor", "left":  10, "right": 135, "top": 120, "bottom": 169, "display": "You have caught", "source": "caught", "reporterStyle": "turtle-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  10, "right": 135, "top": 175, "bottom": 224, "display": "# Attempts", "source": "attempts", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  10, "right": 135, "top": 240, "bottom": 289, "display": "Top hunter", "source": "leader", "reporterStyle": "global-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  10, "right": 135, "top": 290, "bottom": 339, "display": "Top hunter's catches", "source": "leader-caught", "reporterStyle": "global-var", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor", "left":  10, "right": 133, "top": 400, "bottom": 449, "display": "Relative %", "source": "percent", "reporterStyle": "turtle-var", "precision": 1, "fontSize": 10 }
+      , { "type": "hnwTextBox", "left":  15, "right": 160, "top": 350, "bottom": 392, "display": "Relative % = 100 * \n(your catches) / \n(top hunter's catches)", "color": 0, "fontSize": 11, "transparent": false }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "add-player"
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": "eat-bugs"
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwMonitor", "left": 173, "right": 423, "top": 210, "bottom": 255, "display": "Top hunter's catches", "source": "leader-caught", "reporterStyle": "global-var", "precision": 0, "fontSize": 11 }
+      , { "type": "hnwSlider",  "left":   5, "right": 170, "top":  10, "bottom":  43, "display": "carrying-capacity", "variable": "carrying-capacity", "min": 0, "max": 100, "default": 20, "units": "", "direction": "horizontal", "step": 1 }
+      , { "type": "hnwSlider",  "left": 175, "right": 425, "top": 170, "bottom": 203, "display": "offspring-distance", "variable": "offspring-distance", "min": 0, "max": 20, "default": 5, "units": "", "direction": "horizontal", "step": 1 }
+      , { "type": "hnwChooser", "left":   5, "right": 137, "top":  50, "bottom":  95, "display": "environment", "variable": "environment", "choices": ["seashore.jpg", "glacier.jpg", "poppyfield.jpg"], "currentChoice": 2 }
+      , { "type": "hnwButton",  "left": 140, "right": 285, "top":  50, "bottom":  95, "display": "change background", "source": "change-environment", "hnwProcName": "change-environment", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwButton",  "left": 175, "right": 425, "top": 100, "bottom": 133, "display": "flash", "source": "flash-bugs", "hnwProcName": "flash-bugs", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwSwitch",  "left":   6, "right": 171, "top": 172, "bottom": 205, "display": "show-genotype?", "variable": "show-genotype?", "on": false }
+      , { "type": "hnwSlider",  "left":   5, "right": 170, "top": 100, "bottom": 133, "display": "bug-size", "variable": "bug-size", "min": 0.1, "max": 10, "default": 1.5, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwButton",  "left": 175, "right": 425, "top": 135, "bottom": 168, "display": "make a generation", "source": "make-gen", "hnwProcName": "make-gen", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwPlot",    "left":   5, "right": 425, "top": 260, "bottom": 444, "display": "Bugs Caught by All Hunters vs. Time", "xAxis": "days", "yAxis": "bugs", "xmin": 0, "xmax": 100, "ymin": 0, "ymax": 50, "autoPlotOn": true, "legendOn": false, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 0, "color": -16777216, "inLegend": true, "setupCode": "", "updateCode": "update-caught-pen" }] }
+      , { "type": "hnwButton",  "left": 290, "right": 425, "top":  50, "bottom":  95, "display": "clear background", "source": "clear-background", "hnwProcName": "clear-background", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      , { "type": "hnwSlider",  "left":   6, "right": 171, "top": 137, "bottom": 170, "display": "max-mutation-step", "variable": "max-mutation-step", "min": 0, "max": 100, "default": 25, "units": "", "direction": "horizontal", "step": 1 }
+      , { "type": "hnwMonitor", "left":   5, "right": 170, "top": 210, "bottom": 255, "display": "Top hunter", "source": "leader", "reporterStyle": "global-var", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwView",    "left": 502, "right": 920, "top":  10, "bottom": 429, "height": 419, "width": 418 }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 15
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

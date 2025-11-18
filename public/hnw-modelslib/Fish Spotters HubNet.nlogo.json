@@ -1,0 +1,539 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": "check-caught-fish",
+            "onCursorRelease": null,
+            "onDisconnect": "remove-player",
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "bottom": 59,
+                    "display": "Your name",
+                    "left": 6,
+                    "precision": 0,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "user-name",
+                    "right": 131,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 107,
+                    "display": "You have found",
+                    "left": 156,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "caught",
+                    "right": 281,
+                    "type": "hnwMonitor",
+                    "top": 58
+                },
+                {
+                    "bottom": 59,
+                    "display": "# Attempts",
+                    "left": 159,
+                    "precision": 0,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "attempts",
+                    "right": 284,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 251,
+                    "display": "Top predator",
+                    "left": 5,
+                    "precision": 0,
+                    "reporterStyle": "global-var",
+                    "fontSize": 10,
+                    "source": "predator-leader",
+                    "right": 151,
+                    "type": "hnwMonitor",
+                    "top": 202
+                },
+                {
+                    "bottom": 301,
+                    "display": "Top predator's catches",
+                    "left": 4,
+                    "precision": 3,
+                    "reporterStyle": "global-var",
+                    "fontSize": 10,
+                    "source": "predator-leader-caught",
+                    "right": 151,
+                    "type": "hnwMonitor",
+                    "top": 252
+                },
+                {
+                    "bottom": 249,
+                    "display": "Top mate",
+                    "left": 163,
+                    "precision": 3,
+                    "reporterStyle": "global-var",
+                    "fontSize": 10,
+                    "source": "mate-leader",
+                    "right": 284,
+                    "type": "hnwMonitor",
+                    "top": 200
+                },
+                {
+                    "bottom": 299,
+                    "display": "Top mate's matings",
+                    "left": 163,
+                    "precision": 3,
+                    "reporterStyle": "global-var",
+                    "fontSize": 10,
+                    "source": "mate-leader-caught",
+                    "right": 284,
+                    "type": "hnwMonitor",
+                    "top": 250
+                },
+                {
+                    "bottom": 107,
+                    "display": "Your role",
+                    "left": 8,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "role",
+                    "right": 132,
+                    "type": "hnwMonitor",
+                    "top": 58
+                },
+                {
+                    "bottom": 199,
+                    "display": "# of predators",
+                    "left": 21,
+                    "precision": 3,
+                    "reporterStyle": "procedure",
+                    "fontSize": 10,
+                    "source": "predator-count",
+                    "right": 123,
+                    "type": "hnwMonitor",
+                    "top": 150
+                },
+                {
+                    "bottom": 200,
+                    "display": "# of mates",
+                    "left": 182,
+                    "precision": 3,
+                    "reporterStyle": "procedure",
+                    "fontSize": 10,
+                    "source": "mate-count",
+                    "right": 260,
+                    "type": "hnwMonitor",
+                    "top": 151
+                },
+                {
+                    "height": 540,
+                    "bottom": 550,
+                    "left": 297,
+                    "width": 540,
+                    "right": 837,
+                    "type": "hnwView",
+                    "top": 10
+                }
+            ],
+            "name": "player",
+            "namePlural": "players",
+            "onConnect": "add-player",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 548,
+                    "bottom": 559,
+                    "left": 463,
+                    "width": 549,
+                    "right": 1011,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "max": "30",
+                    "bottom": 83,
+                    "display": "tank-capacity",
+                    "direction": "horizontal",
+                    "default": 15,
+                    "left": 10,
+                    "variable": "tank-capacity",
+                    "step": 1,
+                    "min": "2",
+                    "units": "fish",
+                    "right": 150,
+                    "type": "hnwSlider",
+                    "top": 50
+                },
+                {
+                    "forever": false,
+                    "bottom": 43,
+                    "display": "flash fish",
+                    "left": 365,
+                    "buttonKind": "observer",
+                    "source": "flash-fish",
+                    "hnwProcName": "flash-fish",
+                    "right": 455,
+                    "type": "hnwButton",
+                    "top": 10,
+                    "disableUntilTicksStarts": true
+                },
+                {
+                    "bottom": 95,
+                    "display": "client-roles",
+                    "left": 153,
+                    "variable": "client-roles",
+                    "currentChoice": 0,
+                    "right": 328,
+                    "choices": [
+                        "all mates", "all predators", "mix of mates & predators"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 50
+                },
+                {
+                    "max": "100",
+                    "bottom": 238,
+                    "display": "amount-of-debris",
+                    "direction": "horizontal",
+                    "default": 100,
+                    "left": 160,
+                    "variable": "amount-of-debris",
+                    "step": 5,
+                    "min": "0",
+                    "units": "%",
+                    "right": 460,
+                    "type": "hnwSlider",
+                    "top": 205
+                },
+                {
+                    "bottom": 618,
+                    "display": "spot-mutations?",
+                    "left": 10,
+                    "variable": "spot-mutations?",
+                    "right": 160,
+                    "type": "hnwSwitch",
+                    "top": 585,
+                    "on": true
+                },
+                {
+                    "bottom": 363,
+                    "display": "swim-mutations?",
+                    "left": 10,
+                    "variable": "swim-mutations?",
+                    "right": 160,
+                    "type": "hnwSwitch",
+                    "top": 330,
+                    "on": false
+                },
+                {
+                    "bottom": 238,
+                    "display": "color-mutations?",
+                    "left": 10,
+                    "variable": "color-mutations?",
+                    "right": 155,
+                    "type": "hnwSwitch",
+                    "top": 205,
+                    "on": true
+                },
+                {
+                    "bottom": 495,
+                    "display": "Avg. Fish Size",
+                    "yAxis": "size",
+                    "xmin": 0,
+                    "ymax": 3,
+                    "legendOn": true,
+                    "left": 160,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 3,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-tank-1-size-pen",
+                            "display": "top tank",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        },
+                        {
+                            "updateCode": "update-tank-2-size-pen",
+                            "display": "bottom tank",
+                            "color": -7500403,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 460,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 365,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 365,
+                    "display": "Avg. Fish Motion",
+                    "yAxis": "motion",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": true,
+                    "left": 160,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 10,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-tank-1-motion-pen",
+                            "display": "top tank",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        },
+                        {
+                            "updateCode": "update-tank-2-motion-pen",
+                            "display": "bottom tank",
+                            "color": -7500403,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 460,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 245,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 150,
+                    "display": "top-water",
+                    "left": 130,
+                    "variable": "top-water",
+                    "currentChoice": 1,
+                    "right": 228,
+                    "choices": [
+                        "clear", "ripples", "debris"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 105
+                },
+                {
+                    "bottom": 95,
+                    "display": "matings",
+                    "left": 400,
+                    "precision": 0,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "mate-total-found",
+                    "right": 460,
+                    "type": "hnwMonitor",
+                    "top": 50
+                },
+                {
+                    "bottom": 95,
+                    "display": "predations",
+                    "left": 329,
+                    "precision": 0,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "predator-total-found",
+                    "right": 399,
+                    "type": "hnwMonitor",
+                    "top": 50
+                },
+                {
+                    "bottom": 195,
+                    "display": "bottom-ground",
+                    "left": 230,
+                    "variable": "bottom-ground",
+                    "currentChoice": 2,
+                    "right": 340,
+                    "choices": [
+                        "sand", "rock", "plants", "nothing"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 150
+                },
+                {
+                    "bottom": 150,
+                    "display": "top-ground",
+                    "left": 230,
+                    "variable": "top-ground",
+                    "currentChoice": 0,
+                    "right": 341,
+                    "choices": [
+                        "sand", "rock", "plants", "nothing"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 105
+                },
+                {
+                    "bottom": 195,
+                    "display": "bottom-water",
+                    "left": 130,
+                    "variable": "bottom-water",
+                    "currentChoice": 2,
+                    "right": 228,
+                    "choices": [
+                        "clear", "ripples", "debris"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 150
+                },
+                {
+                    "max": ".25",
+                    "bottom": 138,
+                    "display": "top-flow",
+                    "direction": "horizontal",
+                    "default": 0.16,
+                    "left": 11,
+                    "variable": "top-flow",
+                    "step": 0,
+                    "min": "0",
+                    "right": 131,
+                    "type": "hnwSlider",
+                    "top": 105
+                },
+                {
+                    "max": ".25",
+                    "bottom": 183,
+                    "display": "bottom-flow",
+                    "direction": "horizontal",
+                    "default": 0.06,
+                    "left": 11,
+                    "variable": "bottom-flow",
+                    "step": 0,
+                    "min": "0",
+                    "right": 131,
+                    "type": "hnwSlider",
+                    "top": 150
+                },
+                {
+                    "bottom": 620,
+                    "display": "Avg. Fish Spotting",
+                    "yAxis": "spotting",
+                    "xmin": 0,
+                    "ymax": 100,
+                    "legendOn": true,
+                    "left": 160,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 10,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-tank-1-spotting-pen",
+                            "display": "top tank",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        },
+                        {
+                            "updateCode": "update-tank-2-spotting-pen",
+                            "display": "bottom tank",
+                            "color": -7500403,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 460,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 495,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 493,
+                    "display": "size-mutations?",
+                    "left": 10,
+                    "variable": "size-mutations?",
+                    "right": 160,
+                    "type": "hnwSwitch",
+                    "top": 460,
+                    "on": true
+                },
+                {
+                    "bottom": 195,
+                    "display": "bottom-initial-fish",
+                    "left": 340,
+                    "variable": "bottom-initial-fish",
+                    "currentChoice": 0,
+                    "right": 460,
+                    "choices": [
+                        "multi-colored", "all gray", "black or white"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 150
+                },
+                {
+                    "bottom": 150,
+                    "display": "top-initial-fish",
+                    "left": 340,
+                    "variable": "top-initial-fish",
+                    "currentChoice": 0,
+                    "right": 460,
+                    "choices": [
+                        "multi-colored", "all gray", "black or white"
+                    ],
+                    "type": "hnwChooser",
+                    "top": 105
+                },
+                {
+                    "bottom": 43,
+                    "display": "listening?",
+                    "left": 245,
+                    "variable": "listening?",
+                    "right": 361,
+                    "type": "hnwSwitch",
+                    "top": 10,
+                    "on": true
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 20,
+    "onIterate": "go",
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}

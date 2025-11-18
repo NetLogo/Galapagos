@@ -1,0 +1,69 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "student"
+    , "namePlural": "students"
+    , "limit": -1
+    , "highlightMainColor": "#00000000"
+    , "widgets": [
+        { "type": "hnwMonitor",  "left":   5, "right": 130, "top":  10, "bottom":  59, "display": "Your name", "source": "user-id", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   5, "right": 130, "top": 120, "bottom": 169, "display": "You have found", "source": "student-found", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   5, "right": 130, "top": 175, "bottom": 224, "display": "# Attempts", "source": "student-attempts", "reporterStyle": "turtle-procedure", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwMonitor",  "left":   5, "right": 130, "top":  65, "bottom": 114, "display": "Your role", "source": "student-role", "reporterStyle": "turtle-procedure", "precision": 3, "fontSize": 10 }
+      , { "type": "hnwView",     "left": 140, "right": 950, "top":  10, "bottom": 420, "height": 410, "width": 810 }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "initialize-student"
+    , "onDisconnect": "remove-student"
+    , "afterDisconnect": null
+    , "onCursorClick": "check-found-bugs-student"
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwView",     "left": 190, "right": 1008, "top":  95, "bottom": 514, "height": 419, "width": 818 }
+      , { "type": "hnwSlider",   "left": 215, "right":  510, "top":  10, "bottom":  43, "display": "carrying-capacity-environment-left", "variable": "carrying-capacity-environment-left", "min": 0.0, "max": 100, "default": 2.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwChooser",  "left": 375, "right":  510, "top":  45, "bottom":  90, "display": "left-environment", "variable": "left-environment", "choices": ["seashore", "glacier", "poppyfield", "image1", "image2", "none"], "currentChoice": 5 }
+      , { "type": "hnwButton",   "left": 525, "right":  670, "top":  10, "bottom":  46, "display": "change environments", "source": "change-environment", "hnwProcName": "change-environment", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left": 525, "right":  670, "top":  50, "bottom":  86, "display": "confirm environments", "source": "confirm-environment", "hnwProcName": "confirm-environment", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left":  15, "right":  175, "top": 445, "bottom": 478, "display": "flash bugs", "source": "flash-bugs", "hnwProcName": "flash-bugs", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwSlider",   "left":  15, "right":  175, "top": 190, "bottom": 223, "display": "adult-bug-size", "variable": "adult-bug-size", "min": 0.1, "max": 2, "default": 1.5, "units": "", "direction": "horizontal", "step": 0.1 }
+      , { "type": "hnwButton",   "left":  15, "right":  175, "top": 410, "bottom": 443, "display": "clear both backgrounds", "source": "clear-environment", "hnwProcName": "clear-environment", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwSlider",   "left":  15, "right":  175, "top": 225, "bottom": 258, "display": "max-color-mutation", "variable": "max-color-mutation", "min": 0.0, "max": 50, "default": 20.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwChooser",  "left": 215, "right":  370, "top":  45, "bottom":  90, "display": "initial-colors-bugs-left", "variable": "initial-colors-bugs-left", "choices": ["random variation", "all gray", "all black or white"], "currentChoice": 0 }
+      , { "type": "hnwButton",   "left":  15, "right":  175, "top": 110, "bottom": 143, "display": "upload custom image 1", "source": "upload-image1", "hnwProcName": "upload-image1", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwButton",   "left":  15, "right":  175, "top": 145, "bottom": 178, "display": "upload custom image 2", "source": "upload-image2", "hnwProcName": "upload-image2", "forever": false, "disableUntilTicksStart": true, "buttonKind": "observer" }
+      , { "type": "hnwChooser",  "left": 850, "right":  985, "top":  45, "bottom":  90, "display": "environment-right", "variable": "environment-right", "choices": ["seashore", "glacier", "poppyfield", "image1", "image2", "none"], "currentChoice": 5 }
+      , { "type": "hnwChooser",  "left":  15, "right":  175, "top":  50, "bottom":  95, "display": "players-roles", "variable": "players-roles", "choices": ["all mates", "all predators", "mix of mates & predators"], "currentChoice": 1 }
+      , { "type": "hnwSlider",   "left": 685, "right":  985, "top":  10, "bottom":  43, "display": "carrying-capacity-environment-right", "variable": "carrying-capacity-environment-right", "min": 0.0, "max": 100, "default": 0.0, "units": "", "direction": "horizontal", "step": 1.0 }
+      , { "type": "hnwChooser",  "left": 685, "right":  845, "top":  45, "bottom":  90, "display": "initial-colors-bugs-right", "variable": "initial-colors-bugs-right", "choices": ["random variation", "all gray", "all black or white"], "currentChoice": 0 }
+      , { "type": "hnwSlider",   "left":  15, "right":  175, "top": 260, "bottom": 293, "display": "offspring-distance", "variable": "offspring-distance", "min": 2.0, "max": 40, "default": 40.0, "units": "", "direction": "horizontal", "step": 2.0 }
+      , { "type": "hnwSwitch",   "left":  15, "right":  175, "top": 480, "bottom": 513, "display": "show-genes?", "variable": "show-genes?", "on": false }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 20
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

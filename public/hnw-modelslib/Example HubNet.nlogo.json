@@ -1,0 +1,101 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": "on-click",
+            "onCursorRelease": null,
+            "onDisconnect": "on-exit",
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 429,
+                    "bottom": 472,
+                    "left": 162,
+                    "width": 429,
+                    "right": 591,
+                    "type": "hnwView",
+                    "top": 43
+                },
+                {
+                    "forever": false,
+                    "bottom": 145,
+                    "display": "forward",
+                    "disableUntilTicksStart": false,
+                    "left": 70,
+                    "buttonKind": "procedure",
+                    "source": "on-forward",
+                    "hnwProcName": "on-forward",
+                    "right": 150,
+                    "type": "hnwButton",
+                    "top": 112
+                },
+                {
+                    "bottom": 248,
+                    "display": "location",
+                    "left": 76,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "coords",
+                    "right": 139,
+                    "type": "hnwMonitor",
+                    "top": 199
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "on-join",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": "perspective",
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 437,
+                    "bottom": 448,
+                    "left": 159,
+                    "width": 438,
+                    "right": 596,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "forever": false,
+                    "bottom": 218,
+                    "display": "color patches",
+                    "left": 20,
+                    "buttonKind": "observer",
+                    "source": "color-me",
+                    "hnwProcName": "color-me",
+                    "right": 140,
+                    "type": "hnwButton",
+                    "top": 185,
+                    "disableUntilTicksStarts": true
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 20,
+    "onIterate": null,
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}

@@ -1,0 +1,230 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": "remove-student",
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 396,
+                    "bottom": 406,
+                    "left": 270,
+                    "width": 396,
+                    "right": 666,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 61,
+                    "display": "You are:",
+                    "left": 39,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "user-id",
+                    "right": 228,
+                    "type": "hnwMonitor",
+                    "top": 12
+                },
+                {
+                    "max": "1.0",
+                    "bottom": 162,
+                    "display": "fraction-put-in",
+                    "direction": "horizontal",
+                    "default": 0.5,
+                    "left": 43,
+                    "variable": "fraction-put-in",
+                    "step": 0.01,
+                    "min": "0.0",
+                    "right": 215,
+                    "type": "hnwSlider",
+                    "top": 129
+                },
+                {
+                    "bottom": 120,
+                    "display": "my-money",
+                    "left": 90,
+                    "precision": 2,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "my-money",
+                    "right": 170,
+                    "type": "hnwMonitor",
+                    "top": 71
+                },
+                {
+                    "bottom": 220,
+                    "display": "Money Put In",
+                    "left": 85,
+                    "precision": 3,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "investment",
+                    "right": 177,
+                    "type": "hnwMonitor",
+                    "top": 171
+                },
+                {
+                    "forever": false,
+                    "bottom": 262,
+                    "display": "pay-1-dollar-to-punish-the-rich",
+                    "disableUntilTicksStart": true,
+                    "left": 17,
+                    "buttonKind": "turtle",
+                    "hnwProcName": "punish-the-rich",
+                    "right": 255,
+                    "type": "hnwButton",
+                    "top": 229
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "create-new-student",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 404,
+                    "bottom": 415,
+                    "left": 226,
+                    "width": 405,
+                    "right": 630,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 185,
+                    "display": "Turn",
+                    "left": 148,
+                    "precision": 3,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "turn",
+                    "right": 205,
+                    "type": "hnwMonitor",
+                    "top": 140
+                },
+                {
+                    "bottom": 308,
+                    "display": "bank",
+                    "left": 14,
+                    "precision": 3,
+                    "reporterStyle": "global-var",
+                    "fontSize": 11,
+                    "source": "bank",
+                    "right": 214,
+                    "type": "hnwMonitor",
+                    "top": 263
+                },
+                {
+                    "bottom": 471,
+                    "display": "labels-on?",
+                    "left": 507,
+                    "variable": "labels-on?",
+                    "right": 628,
+                    "type": "hnwSwitch",
+                    "top": 438,
+                    "on": true
+                },
+                {
+                    "max": "30",
+                    "bottom": 181,
+                    "display": "total-turn-time",
+                    "direction": "horizontal",
+                    "default": 30,
+                    "left": 18,
+                    "variable": "total-turn-time",
+                    "step": 5,
+                    "min": "5",
+                    "right": 144,
+                    "type": "hnwSlider",
+                    "top": 148
+                },
+                {
+                    "bottom": 462,
+                    "display": "bank",
+                    "yAxis": "money",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": false,
+                    "left": 14,
+                    "xAxis": "time",
+                    "autoPlotOn": true,
+                    "xmax": 10,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "",
+                            "display": "default",
+                            "color": -16777216,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 214,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 312,
+                    "updateCode": ""
+                },
+                {
+                    "forever": false,
+                    "bottom": 223,
+                    "display": "Take Money",
+                    "left": 24,
+                    "buttonKind": "observer",
+                    "source": "take-money",
+                    "hnwProcName": "take-money",
+                    "right": 204,
+                    "type": "hnwButton",
+                    "top": 190,
+                    "disableUntilTicksStarts": true
+                },
+                {
+                    "forever": false,
+                    "bottom": 256,
+                    "display": "Give Money",
+                    "left": 24,
+                    "buttonKind": "observer",
+                    "source": "give-money",
+                    "hnwProcName": "give-money",
+                    "right": 204,
+                    "type": "hnwButton",
+                    "top": 223,
+                    "disableUntilTicksStarts": true
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "onIterate": "wrap-go",
+    "onStart": "wrap-setup",
+    "targetFrameRate": 2,
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}
+

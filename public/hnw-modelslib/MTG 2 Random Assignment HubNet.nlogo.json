@@ -1,0 +1,296 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "forever": false,
+                    "bottom": 245,
+                    "display": "up",
+                    "disableUntilTicksStart": true,
+                    "left": 77,
+                    "buttonKind": "turtle",
+                    "actionKey": "W",
+                    "source": "handle-up",
+                    "hnwProcName": "handle-up",
+                    "right": 146,
+                    "type": "hnwButton",
+                    "top": 212
+                },
+                {
+                    "forever": false,
+                    "bottom": 289,
+                    "display": "down",
+                    "disableUntilTicksStart": true,
+                    "left": 77,
+                    "buttonKind": "turtle",
+                    "actionKey": "S",
+                    "source": "handle-down",
+                    "hnwProcName": "handle-down",
+                    "right": 146,
+                    "type": "hnwButton",
+                    "top": 256
+                },
+                {
+                    "forever": false,
+                    "bottom": 289,
+                    "display": "left",
+                    "disableUntilTicksStart": true,
+                    "left": 8,
+                    "buttonKind": "turtle",
+                    "actionKey": "A",
+                    "source": "handle-left",
+                    "hnwProcName": "handle-left",
+                    "right": 77,
+                    "type": "hnwButton",
+                    "top": 256
+                },
+                {
+                    "forever": false,
+                    "bottom": 289,
+                    "display": "right",
+                    "disableUntilTicksStart": true,
+                    "left": 146,
+                    "buttonKind": "turtle",
+                    "actionKey": "D",
+                    "source": "handle-right",
+                    "hnwProcName": "handle-right",
+                    "right": 215,
+                    "type": "hnwButton",
+                    "top": 256
+                },
+                {
+                    "height": 440,
+                    "bottom": 505,
+                    "left": 226,
+                    "width": 438,
+                    "right": 666,
+                    "type": "hnwView",
+                    "top": 67
+                },
+                {
+                    "bottom": 59,
+                    "display": "message",
+                    "left": 6,
+                    "precision": 0,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "message",
+                    "right": 666,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 160,
+                    "display": "sugar",
+                    "left": 8,
+                    "precision": 2,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "sugar",
+                    "right": 218,
+                    "type": "hnwMonitor",
+                    "top": 111
+                },
+                {
+                    "forever": false,
+                    "bottom": 340,
+                    "display": "harvest",
+                    "disableUntilTicksStart": true,
+                    "left": 9,
+                    "buttonKind": "turtle",
+                    "actionKey": "H",
+                    "source": "handle-harvest",
+                    "hnwProcName": "handle-harvest",
+                    "right": 216,
+                    "type": "hnwButton",
+                    "top": 307
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "create-new-student",
+            "limit": -1,
+            "highlightMainColor": "#00800000",
+            "isSpectator": false,
+            "perspectiveVar": "perspective",
+            "viewOverrideVar": "overrides"
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 508,
+                    "bottom": 519,
+                    "left": 214,
+                    "width": 509,
+                    "right": 722,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "forever": false,
+                    "bottom": 558,
+                    "display": "show-world",
+                    "left": 370,
+                    "buttonKind": "observer",
+                    "source": "show-world",
+                    "hnwProcName": "show-world",
+                    "right": 475,
+                    "type": "hnwButton",
+                    "top": 525,
+                    "disableUntilTicksStarts": false
+                },
+                {
+                    "forever": false,
+                    "bottom": 558,
+                    "display": "hide-world",
+                    "left": 481,
+                    "buttonKind": "observer",
+                    "source": "hide-world",
+                    "hnwProcName": "hide-world",
+                    "right": 581,
+                    "type": "hnwButton",
+                    "top": 525,
+                    "disableUntilTicksStarts": false
+                },
+                {
+                    "bottom": 348,
+                    "display": "Lorenz curve",
+                    "yAxis": "Wealth %",
+                    "xmin": 0,
+                    "ymax": 100,
+                    "legendOn": false,
+                    "left": 725,
+                    "xAxis": "Pop %",
+                    "autoPlotOn": false,
+                    "xmax": 100,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "",
+                            "display": "equal",
+                            "color": -7500403,
+                            "mode": 0,
+                            "interval": 100,
+                            "setupCode": "setup-equal-pen",
+                            "type": "pen",
+                            "inLegend": true
+                        },
+                        {
+                            "updateCode": "update-lorenz-pen",
+                            "display": "lorenz",
+                            "color": -2674135,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 921,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 175,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 520,
+                    "display": "Gini index vs. time",
+                    "yAxis": "Gini",
+                    "xmin": 0,
+                    "ymax": 1,
+                    "legendOn": false,
+                    "left": 725,
+                    "xAxis": "Time",
+                    "autoPlotOn": true,
+                    "xmax": 100,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "update-gini-pen",
+                            "display": "default",
+                            "color": -13345367,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 921,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 355,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 169,
+                    "display": "Wealth distribution",
+                    "yAxis": "Wealth",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": false,
+                    "left": 724,
+                    "xAxis": "People",
+                    "autoPlotOn": true,
+                    "xmax": 10,
+                    "setupCode": "setup-wealth-distro-plot",
+                    "pens": [
+                        {
+                            "updateCode": "",
+                            "display": "default",
+                            "color": -16777216,
+                            "mode": 1,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 921,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 10,
+                    "updateCode": "update-wealth-distro-plot"
+                },
+                {
+                    "bottom": 106,
+                    "display": "sugar-mean",
+                    "left": 2,
+                    "precision": 2,
+                    "reporterStyle": "procedure",
+                    "fontSize": 11,
+                    "source": "sugar-mean",
+                    "right": 212,
+                    "type": "hnwMonitor",
+                    "top": 61
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "onIterate": "go",
+    "onStart": "setup",
+    "targetFrameRate": 15,
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}
+

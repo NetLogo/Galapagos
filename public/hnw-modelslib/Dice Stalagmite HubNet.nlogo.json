@@ -1,0 +1,57 @@
+{
+  "onStart": "setup"
+, "onIterate": "go"
+, "roles":
+  [
+    {
+      "name": "client"
+    , "namePlural": "clients"
+    , "limit": -1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwMonitor", "left":   0, "right": 263, "top":  10, "bottom":  50, "display": "Message:", "source": "message", "reporterStyle": "turtle-var", "precision": 0, "fontSize": 10 }
+      , { "type": "hnwChooser", "left":   0, "right": 117, "top":  62, "bottom": 107, "display": "Die_A", "variable": "die1", "choices": ["--", 1, 2, 3, 4, 5, 6], "currentChoice": 0 }
+      , { "type": "hnwChooser", "left": 145, "right": 263, "top":  62, "bottom": 107, "display": "Die_B", "variable": "die2", "choices": ["--", 1, 2, 3, 4, 5, 6], "currentChoice": 0 }
+      , { "type": "hnwButton",  "left":  95, "right": 164, "top": 113, "bottom": 146, "display": "Submit", "hnwProcName": "client-submit", "forever": false, "disableUntilTicksStart": true, "buttonKind": "turtle" }
+      ]
+    , "canJoinMidRun": false
+    , "isSpectator": false
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": "create-client"
+    , "onDisconnect": "kill-client"
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+    , {
+      "name": "supervisor"
+    , "namePlural": "supervisors"
+    , "limit": 1
+    , "highlightMainColor": "#008000"
+    , "widgets": [
+        { "type": "hnwButton",  "left": 239, "right": 334, "top":  15, "bottom":  48, "display": "random-roll", "source": "", "hnwProcName": "random-roll-full", "forever": false, "disableUntilTicksStart": false, "buttonKind": "turtle" }
+      , { "type": "hnwButton",  "left": 335, "right": 444, "top":  15, "bottom":  48, "display": "auto-fill", "source": "", "hnwProcName": "auto-fill", "forever": true, "disableUntilTicksStart": false, "buttonKind": "turtle" }
+      , { "type": "hnwMonitor", "left": 554, "right": 611, "top":  10, "bottom":  55, "display": "rolls", "source": "rolls", "reporterStyle": "global-var", "precision": 3, "fontSize": 11 }
+      , { "type": "hnwSwitch",  "left": 624, "right": 752, "top":  16, "bottom":  49, "display": "colored-dice?", "variable": "colored-dice?", "on": false }
+      , { "type": "hnwPlot",    "left":   5, "right": 165, "top":  60, "bottom": 565, "display": "Single Dice", "xAxis": "Dice Value", "yAxis": "Count", "xmin": 1, "xmax": 7, "ymin": 0, "ymax": 51, "autoPlotOn": true, "legendOn": false, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 1, "color": -16777216, "inLegend": true, "setupCode": "", "updateCode": "plot-singles" }] }
+      , { "type": "hnwPlot",    "left": 620, "right": 806, "top":  60, "bottom": 565, "display": "Pair Sums", "xAxis": "Dice Total", "yAxis": "Count", "xmin": 2, "xmax": 13, "ymin": 0, "ymax": 51, "autoPlotOn": true, "legendOn": false, "setupCode": "", "updateCode": "", "pens": [{ "type": "pen", "display": "default", "interval": 1, "mode": 1, "color": -16777216, "inLegend": true, "setupCode": "", "updateCode": "plot-pairs" }] }
+      , { "type": "hnwView",    "left": 170, "right": 612, "top":  60, "bottom": 503, "height": 443, "width": 442 }
+      ]
+    , "canJoinMidRun": true
+    , "isSpectator": true
+    , "perspectiveVar": null
+    , "viewOverrideVar": null
+    , "onConnect": null
+    , "onDisconnect": null
+    , "afterDisconnect": null
+    , "onCursorClick": null
+    , "onCursorRelease": null
+    , "onCursorMove": null
+    }
+  ]
+, "targetFrameRate": 20
+, "type": "hubnet-web"
+, "version": "hnw-alpha-1"
+}

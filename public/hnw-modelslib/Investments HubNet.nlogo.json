@@ -1,0 +1,214 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": "remove-student",
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 520,
+                    "bottom": 530,
+                    "left": 276,
+                    "width": 520,
+                    "right": 796,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "forever": false,
+                    "bottom": 209,
+                    "display": "invest",
+                    "disableUntilTicksStart": false,
+                    "left": 96,
+                    "buttonKind": "turtle",
+                    "hnwProcName": "invest",
+                    "right": 171,
+                    "type": "hnwButton",
+                    "top": 176
+                },
+                {
+                    "bottom": 59,
+                    "display": "I am:",
+                    "left": 25,
+                    "precision": 3,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "user-id",
+                    "right": 141,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "bottom": 117,
+                    "display": "My Money",
+                    "left": 72,
+                    "precision": 2,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "my-money-rounded",
+                    "right": 187,
+                    "type": "hnwMonitor",
+                    "top": 68
+                },
+                {
+                    "max": "1.0",
+                    "bottom": 164,
+                    "display": "fraction-to-invest",
+                    "direction": "horizontal",
+                    "default": 0,
+                    "left": 43,
+                    "variable": "gui-fraction",
+                    "step": 0.01,
+                    "min": "0.0",
+                    "right": 215,
+                    "type": "hnwSlider",
+                    "top": 131
+                },
+                {
+                    "bottom": 272,
+                    "display": "investment-return",
+                    "left": 139,
+                    "precision": 2,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "return-investment-rounded",
+                    "right": 257,
+                    "type": "hnwMonitor",
+                    "top": 223
+                },
+                {
+                    "bottom": 272,
+                    "display": "investment",
+                    "left": 17,
+                    "precision": 2,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "investment-rounded",
+                    "right": 119,
+                    "type": "hnwMonitor",
+                    "top": 223
+                },
+                {
+                    "bottom": 391,
+                    "display": "cars",
+                    "left": 97,
+                    "precision": 0,
+                    "reporterStyle": "turtle-var",
+                    "fontSize": 10,
+                    "source": "cars",
+                    "right": 178,
+                    "type": "hnwMonitor",
+                    "top": 342
+                },
+                {
+                    "bottom": 59,
+                    "display": "Round",
+                    "left": 183,
+                    "precision": 0,
+                    "reporterStyle": "procedure",
+                    "fontSize": 10,
+                    "source": "tick-count",
+                    "right": 241,
+                    "type": "hnwMonitor",
+                    "top": 10
+                },
+                {
+                    "forever": false,
+                    "bottom": 328,
+                    "display": "buy-car",
+                    "disableUntilTicksStart": false,
+                    "left": 96,
+                    "buttonKind": "turtle",
+                    "hnwProcName": "buy-car",
+                    "right": 177,
+                    "type": "hnwButton",
+                    "top": 295
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "create-new-student",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 528,
+                    "bottom": 539,
+                    "left": 265,
+                    "width": 529,
+                    "right": 793,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "max": "1",
+                    "bottom": 246,
+                    "display": "interest-rate",
+                    "direction": "horizontal",
+                    "default": 0.15,
+                    "left": 40,
+                    "variable": "interest-rate",
+                    "step": 0.01,
+                    "min": "0",
+                    "right": 208,
+                    "type": "hnwSlider",
+                    "top": 213
+                },
+                {
+                    "forever": false,
+                    "bottom": 164,
+                    "left": 76,
+                    "buttonKind": "observer",
+                    "source": "next-round",
+                    "hnwProcName": "next-round",
+                    "right": 180,
+                    "type": "hnwButton",
+                    "top": 131,
+                    "disableUntilTicksStarts": false
+                },
+                {
+                    "max": "100",
+                    "bottom": 204,
+                    "display": "car-cost",
+                    "direction": "horizontal",
+                    "default": 50,
+                    "left": 41,
+                    "variable": "car-cost",
+                    "step": 1,
+                    "min": "0",
+                    "right": 208,
+                    "type": "hnwSlider",
+                    "top": 171
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 20,
+    "onIterate": "go",
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}
+

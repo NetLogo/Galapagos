@@ -1,0 +1,315 @@
+{
+    "roles": [
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": "remove-student",
+            "afterDisconnect": "cleanup-student",
+            "widgets": [
+                {
+                    "height": 550,
+                    "bottom": 560,
+                    "left": 222,
+                    "width": 550,
+                    "right": 772,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "bottom": 166,
+                    "display": "Located at:",
+                    "left": 33,
+                    "precision": 3,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "location",
+                    "right": 120,
+                    "type": "hnwMonitor",
+                    "top": 117
+                },
+                {
+                    "bottom": 69,
+                    "display": "You are a:",
+                    "left": 31,
+                    "precision": 3,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "descriptor",
+                    "right": 181,
+                    "type": "hnwMonitor",
+                    "top": 20
+                },
+                {
+                    "forever": false,
+                    "bottom": 100,
+                    "display": "Change Appearance",
+                    "disableUntilTicksStart": true,
+                    "left": 31,
+                    "buttonKind": "turtle-procedure",
+                    "hnwProcName": "change-turtle",
+                    "right": 181,
+                    "type": "hnwButton",
+                    "top": 67
+                },
+                {
+                    "forever": false,
+                    "bottom": 259,
+                    "display": "Fd",
+                    "disableUntilTicksStart": true,
+                    "left": 81,
+                    "buttonKind": "turtle-procedure",
+                    "actionKey": "W",
+                    "hnwProcName": "move-forwards",
+                    "right": 144,
+                    "type": "hnwButton",
+                    "top": 226
+                },
+                {
+                    "forever": false,
+                    "bottom": 292,
+                    "display": "Lt",
+                    "disableUntilTicksStart": true,
+                    "left": 18,
+                    "buttonKind": "turtle-procedure",
+                    "actionKey": "A",
+                    "hnwProcName": "turn-left",
+                    "right": 81,
+                    "type": "hnwButton",
+                    "top": 259
+                },
+                {
+                    "forever": false,
+                    "bottom": 292,
+                    "display": "Rt",
+                    "disableUntilTicksStart": true,
+                    "left": 144,
+                    "buttonKind": "turtle-procedure",
+                    "actionKey": "D",
+                    "hnwProcName": "turn-right",
+                    "right": 207,
+                    "type": "hnwButton",
+                    "top": 259
+                },
+                {
+                    "forever": false,
+                    "bottom": 292,
+                    "display": "Bk",
+                    "disableUntilTicksStart": true,
+                    "left": 81,
+                    "buttonKind": "turtle-procedure",
+                    "actionKey": "S",
+                    "hnwProcName": "move-back",
+                    "right": 144,
+                    "type": "hnwButton",
+                    "top": 259
+                },
+                {
+                    "bottom": 166,
+                    "display": "Heading:",
+                    "left": 121,
+                    "precision": 3,
+                    "reporterStyle": "turtle-procedure",
+                    "fontSize": 10,
+                    "source": "my-heading",
+                    "right": 181,
+                    "type": "hnwMonitor",
+                    "top": 117
+                },
+                {
+                    "bottom": 216,
+                    "display": "Perimeter:",
+                    "left": 34,
+                    "precision": 1,
+                    "reporterStyle": "procedure",
+                    "fontSize": 10,
+                    "source": "gui-perimeter",
+                    "right": 108,
+                    "type": "hnwMonitor",
+                    "top": 167
+                },
+                {
+                    "bottom": 216,
+                    "display": "Area:",
+                    "left": 109,
+                    "precision": 1,
+                    "reporterStyle": "procedure",
+                    "fontSize": 10,
+                    "source": "gui-area",
+                    "right": 181,
+                    "type": "hnwMonitor",
+                    "top": 167
+                },
+                {
+                    "bottom": 361,
+                    "left": 113,
+                    "variable": "turn-amount",
+                    "boxedValue": {
+                        "value": 90,
+                        "multiline": true,
+                        "type": "Number"
+                    },
+                    "right": 194,
+                    "type": "hnwInputBox",
+                    "top": 301
+                },
+                {
+                    "bottom": 361,
+                    "left": 31,
+                    "variable": "step-size",
+                    "boxedValue": {
+                        "value": 1,
+                        "multiline": true,
+                        "type": "Number"
+                    },
+                    "right": 112,
+                    "type": "hnwInputBox",
+                    "top": 301
+                },
+                {
+                    "forever": false,
+                    "bottom": 404,
+                    "display": "Get Centered",
+                    "disableUntilTicksStart": true,
+                    "left": 61,
+                    "buttonKind": "turtle-procedure",
+                    "hnwProcName": "get-centered",
+                    "right": 167,
+                    "type": "hnwButton",
+                    "top": 371
+                }
+            ],
+            "name": "student",
+            "namePlural": "students",
+            "onConnect": "create-new-student",
+            "limit": -1,
+            "highlightMainColor": "#008000",
+            "isSpectator": false,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        },
+        {
+            "canJoinMidRun": true,
+            "onCursorMove": null,
+            "onCursorClick": null,
+            "onCursorRelease": null,
+            "onDisconnect": null,
+            "afterDisconnect": null,
+            "widgets": [
+                {
+                    "height": 558,
+                    "bottom": 569,
+                    "left": 330,
+                    "width": 559,
+                    "right": 888,
+                    "type": "hnwView",
+                    "top": 10
+                },
+                {
+                    "forever": false,
+                    "bottom": 48,
+                    "display": "edgify",
+                    "left": 204,
+                    "buttonKind": "observer",
+                    "source": "true-edgify",
+                    "hnwProcName": "true-edgify",
+                    "right": 299,
+                    "type": "hnwButton",
+                    "top": 15,
+                    "disableUntilTicksStarts": true
+                },
+                {
+                    "bottom": 385,
+                    "display": "PANDA",
+                    "yAxis": "",
+                    "xmin": 0,
+                    "ymax": 10,
+                    "legendOn": true,
+                    "left": 10,
+                    "xAxis": "",
+                    "autoPlotOn": true,
+                    "xmax": 10,
+                    "setupCode": "",
+                    "pens": [
+                        {
+                            "updateCode": "plot-perimeter",
+                            "display": "perimeter",
+                            "color": -2064490,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        },
+                        {
+                            "updateCode": "plot-area",
+                            "display": "area",
+                            "color": -8630108,
+                            "mode": 0,
+                            "interval": 1,
+                            "setupCode": "",
+                            "type": "pen",
+                            "inLegend": true
+                        }
+                    ],
+                    "right": 315,
+                    "type": "hnwPlot",
+                    "ymin": 0,
+                    "top": 130,
+                    "updateCode": ""
+                },
+                {
+                    "bottom": 110,
+                    "display": "perimeter",
+                    "left": 111,
+                    "precision": 3,
+                    "reporterStyle": "procedure",
+                    "fontSize": 11,
+                    "source": "perimeter-lp",
+                    "right": 206,
+                    "type": "hnwMonitor",
+                    "top": 65
+                },
+                {
+                    "bottom": 110,
+                    "display": "area",
+                    "left": 208,
+                    "precision": 3,
+                    "reporterStyle": "procedure",
+                    "fontSize": 11,
+                    "source": "area-lp",
+                    "right": 303,
+                    "type": "hnwMonitor",
+                    "top": 65
+                },
+                {
+                    "forever": false,
+                    "bottom": 102,
+                    "left": 11,
+                    "buttonKind": "observer",
+                    "source": "setup-plot",
+                    "hnwProcName": "setup-plot",
+                    "right": 106,
+                    "type": "hnwButton",
+                    "top": 69,
+                    "disableUntilTicksStarts": true
+                }
+            ],
+            "name": "supervisor",
+            "namePlural": "supervisors",
+            "onConnect": null,
+            "limit": 1,
+            "highlightMainColor": "#008000",
+            "isSpectator": true,
+            "perspectiveVar": null,
+            "viewOverrideVar": null
+        }
+    ],
+    "targetFrameRate": 20,
+    "onIterate": "go",
+    "onStart": "setup",
+    "version": "hnw-alpha-1",
+    "type": "hubnet-web"
+}
+
