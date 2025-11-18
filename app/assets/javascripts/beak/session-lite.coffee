@@ -10,6 +10,8 @@ import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
 import { cloneWidget }          from "./widgets/widget-properties.js"
 import { serializeResources }   from "./external-resources.js"
+import attributions             from "../attributions/index.js"
+
 
 MAX_UPDATE_DELAY     = 1000
 FAST_UPDATE_EXP      = 0.5
@@ -364,6 +366,10 @@ class SessionLite
         dom = parser.parseFromString(htmlString, 'text/html')
 
         await @widgetController.onBeforeExportHTMLDocument(dom)
+
+        for _, value of attributions
+          attributionComment = dom.createComment(value)
+          dom.documentElement.prepend(attributionComment)
 
         nlogo = @getNlogo()
         if nlogo.success
