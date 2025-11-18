@@ -308,6 +308,11 @@ try {
         globalThis.session.recompileProcedures(e.data.proceduresCode, e.data.procedureNames, rerun)
         break;
       }
+      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-run-code', code: 'setup' }, '*')
+      case 'nlw-run-code': {
+        globalThis.session.run('console', e.data.code)
+        break;
+      }
       case 'nlw-update-model-state': {
         globalThis.session.widgetController.setCode(e.data.codeTabContents);
         break;
