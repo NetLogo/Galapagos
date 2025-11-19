@@ -261,6 +261,7 @@ RactiveSlider = RactiveValueWidget.extend({
           <span class="netlogo-label" on-click="['show-widget-errors', widget]">{{widget.display}}</span>
           <span class="netlogo-slider-value">
             <input
+              class="netlogo-slider-value-input"
               type="number"
               on-change="reset-if-invalid"
               style="width: {{textWidth}}ch"

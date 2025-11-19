@@ -468,6 +468,7 @@
   color:   black;
   display: flex;
   justify-content: space-around;
+  font-family: var(--font-widget);
   align-items: center;
   padding: 0px;
 }
@@ -720,6 +721,10 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   flex: 0 0 auto;
 }
 
+.netlogo-slider-value-input {
+  font-family: var(--font-widget);
+}
+
 .netlogo-slider-label input[type=number] {
   margin: 0px;
 
@@ -814,6 +819,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   border: 1px solid var(--color-widget-select-border);
   border-radius: 4px;
   padding: 0.1rem 0.2rem;
+  font-family: var(--font-widget);
 }
 
 .netlogo-plot {
