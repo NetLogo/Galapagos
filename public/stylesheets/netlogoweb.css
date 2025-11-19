@@ -1,147 +1,147 @@
 :root {
-	--color-light-blue: #cae6ff;
-	--color-dark-blue: #0072f5;
-	--color-widget-button: var(--color-dark-blue);
-	--color-widget-button-active: #003473;
-	--color-widget-button-text: #ffffff;
-	--color-widget-button-disabled: #d5d5d5;
-	--color-widget-button-disabled-text: #737373;
+  --color-light-blue: #cae6ff;
+  --color-dark-blue: #0072f5;
+  --color-widget-button: var(--color-dark-blue);
+  --color-widget-button-active: #003473;
+  --color-widget-button-text: #ffffff;
+  --color-widget-button-disabled: #d5d5d5;
+  --color-widget-button-disabled-text: #737373;
 
-	--color-widget-accessories: var(--color-dark-blue);
-	--color-widget-accessories-neutral: #afafaf;
+  --color-widget-accessories: var(--color-dark-blue);
+  --color-widget-accessories-neutral: #afafaf;
 
-	--color-widget-background: var(--color-light-blue);
+  --color-widget-background: var(--color-light-blue);
 
-	--color-widget-plot-background: #eeeeee;
-	--color-widget-plot-border: #bcbcbc;
+  --color-widget-plot-background: #eeeeee;
+  --color-widget-plot-border: #bcbcbc;
 
-	--color-widget-select-border: #459ef9;
-	--color-widget-input-border: #0070f6;
+  --color-widget-select-border: #459ef9;
+  --color-widget-input-border: #0070f6;
 
-	--color-widget-switch-primary: var(--color-dark-blue);
-	--color-widget-switch-off: #d5d5d5;
+  --color-widget-switch-primary: var(--color-dark-blue);
+  --color-widget-switch-off: #d5d5d5;
 
-	--color-widget-switch-primary-hover: #00aaff;
-	--color-widget-switch-off-hover: #e5e5e5;
+  --color-widget-switch-primary-hover: #00aaff;
+  --color-widget-switch-off-hover: #e5e5e5;
 
-	--color-tab-background: #eff5fc;
-	--color-tab-hover: var(--color-light-blue);
-	--color-tab-active-background: var(--color-light-blue);
-	--color-tab-active-hover: #98cbf8;
-	--color-tab-border: #999999;
+  --color-tab-background: #eff5fc;
+  --color-tab-hover: var(--color-light-blue);
+  --color-tab-active-background: var(--color-light-blue);
+  --color-tab-active-hover: #98cbf8;
+  --color-tab-border: #999999;
 
-	--widget-padding-x: 0.5rem;
-	--widget-padding-y: 0.3rem;
+  --widget-padding-x: 0.5rem;
+  --widget-padding-y: 0.3rem;
 
-	--font-widget: 'Open Sans', sans-serif;
+  --font-widget: 'Open Sans', sans-serif;
 
-	--checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=);
+  --checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=);
 }
 
 .netlogo-command {
-	background-color: var(--color-widget-button);
-	color: var(--color-widget-button-text);
+  background-color: var(--color-widget-button);
+  color: var(--color-widget-button-text);
 }
 .netlogo-command.netlogo-active,
 .netlogo-command:active {
-	background-color: var(--color-widget-button-active);
+  background-color: var(--color-widget-button-active);
 }
 .netlogo-button.netlogo-disabled:active,
 .netlogo-forever-button.netlogo-disabled.netlogo-active {
-	background-color: var(--color-widget-button-disabled);
-	color: var(--color-widget-button-disabled-text);
+  background-color: var(--color-widget-button-disabled);
+  color: var(--color-widget-button-disabled-text);
 }
 .netlogo-input {
-	background-color: var(--color-widget-background);
+  background-color: var(--color-widget-background);
 }
 .netlogo-output {
-	background-color: #e8e8e8;
+  background-color: #e8e8e8;
 }
 
 .netlogo-slider-label .netlogo-label {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .netlogo-slider-label .netlogo-slider-value input {
-	background-color: white;
+  background-color: white;
 }
 
 .netlogo-tab-area {
-	border-color: var(--color-tab-border);
+  border-color: var(--color-tab-border);
 }
 
 .netlogo-tab {
-	background-color: var(--color-tab-background);
-	border-color: var(--color-tab-border);
-	font-size: 16px;
+  background-color: var(--color-tab-background);
+  border-color: var(--color-tab-border);
+  font-size: 16px;
 }
 
 .netlogo-tab.netlogo-active {
-	background-color: var(--color-tab-active-background);
+  background-color: var(--color-tab-active-background);
 }
 
 .netlogo-tab:active {
-	background-color: var(--color-tab-active-background);
+  background-color: var(--color-tab-active-background);
 }
 
 .netlogo-tab:hover {
-	background-color: var(--color-tab-hover);
+  background-color: var(--color-tab-hover);
 }
 
 .netlogo-tab.netlogo-active:hover {
-	background-color: var(--color-tab-active-hover);
+  background-color: var(--color-tab-active-hover);
 }
 
 .netlogo-view-container {
-	background-color: #f4f4f4;
+  background-color: #f4f4f4;
 }
 
 .netlogo-canvas {
-	border-radius: 3px;
+  border-radius: 3px;
 }
 
 /* Color input */
 .netlogo-color-input {
-	padding: 0.2rem;
-	margin: 0.1rem;
-	box-sizing: border-box;
+  padding: 0.2rem;
+  margin: 0.1rem;
+  box-sizing: border-box;
 
-	aspect-ratio: 1 / 1;
-	width: 2rem;
+  aspect-ratio: 1 / 1;
+  width: 2rem;
 
-	border-radius: 0.2rem;
+  border-radius: 0.2rem;
 
-	background-color: #eee;
-	height: 100%;
+  background-color: #eee;
+  height: 100%;
 }
 
 .netlogo-color-input:hover {
-	cursor: pointer;
-	background-color: #ccc;
+  cursor: pointer;
+  background-color: #ccc;
 }
 
 .netlogo-color-input > * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .netlogo-swatches {
-	display: grid;
-	grid-template-columns: auto auto;
+  display: grid;
+  grid-template-columns: auto auto;
 
-	width: 100%;
-	aspect-ratio: 1 / 1;
+  width: 100%;
+  aspect-ratio: 1 / 1;
 
-	gap: 0;
+  gap: 0;
 
-	background-image: var(--checkerboard);
-	background-position-x: left;
-	background-position-y: center;
-	inset: 0;
+  background-image: var(--checkerboard);
+  background-position-x: left;
+  background-position-y: center;
+  inset: 0;
 
-	border-radius: 0.1rem;
-	overflow: hidden;
+  border-radius: 0.1rem;
+  overflow: hidden;
 }
 
 .no-alpha .netlogo-swatches {
-	grid-template-columns: auto;
+  grid-template-columns: auto;
 }
