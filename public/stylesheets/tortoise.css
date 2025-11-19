@@ -6,104 +6,107 @@
  * It *does not* include code related to
  * - widgets, which lives in widgets.css
  * - widget theming,         netlogoweb.css
+ * - fonts,                  netlogo-fonts.css
  * - loading spinner,        spinner.css
  * - code tab syntax,        netlogo-syntax.css
  */
 
 .tortoise {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	overflow: hidden;
 }
 
 .model-selection-bar {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex: 1;
-  padding: 5px;
-  margin: 0 0 10px 0;
-  background-color: transparent;
-  font-size: medium;
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	flex: 1;
+	padding: 5px;
+	margin: 0 0 10px 0;
+	background-color: transparent;
+	font-size: medium;
 }
 
 .model-selection-bar > div {
-  padding: 0 15px;
+	padding: 0 15px;
 }
 
 iframe {
-  flex: 0 3 auto;
+	flex: 0 3 auto;
 }
 
 .model-list {
-  width: 300px;
-  display: inline-block;
+	width: 300px;
+	display: inline-block;
 }
 
 .model-list-disabled-message {
-  text-align: left;
-  padding: 10px 10px;
-  font-size: smaller;
+	text-align: left;
+	padding: 10px 10px;
+	font-size: smaller;
 }
 
 .model-box {
-  max-width: 100%;
-  min-height: 300px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  /* I have unkind things to say about Safari/iOS -- Jason B. (5/1/16) */
+	max-width: 100%;
+	min-height: 300px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	/* I have unkind things to say about Safari/iOS -- Jason B. (5/1/16) */
 }
 
 .model-container {
-  min-width: 600px;
-  min-height: 600px;
-  border: 2px solid black;
-  background-color: white;
-  border-radius: 20px;
-  display: inline-block;
-  overflow: hidden;
-  /* In chrome, border-radius lets content bleed through on the corners
+	min-width: 600px;
+	min-height: 600px;
+	border: 2px solid black;
+	background-color: white;
+	border-radius: 20px;
+	display: inline-block;
+	overflow: hidden;
+	/* In chrome, border-radius lets content bleed through on the corners
    * despite overflow: hidden, which looks awful with the loading animation.
    * This mask fixes that.
    * Found here: http://stackoverflow.com/a/10296258/145080
    * Bryan H. (7/25/15)
    **/
-  -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+	-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
 }
 
 .chosen-container .chosen-results li {
-  padding-bottom: 7px;
-  padding-top:    7px;
+	padding-bottom: 7px;
+	padding-top: 7px;
 }
 
-.chosen-container .chosen-results li.not_compiling.dev, .chosen-container .chosen-results li.compiling.dev, .chosen-container .chosen-results li.unknown.dev {
-  background-repeat: no-repeat;
-  background-size: 25px 25px;
-  background-position: 3px 2px;
-  padding-left:   35px;
+.chosen-container .chosen-results li.not_compiling.dev,
+.chosen-container .chosen-results li.compiling.dev,
+.chosen-container .chosen-results li.unknown.dev {
+	background-repeat: no-repeat;
+	background-size: 25px 25px;
+	background-position: 3px 2px;
+	padding-left: 35px;
 }
 
 .chosen-container-single .chosen-single span {
-  direction: rtl;
-  /* Due to a bug in Chrome, we can't clip left and use ellipses:
+	direction: rtl;
+	/* Due to a bug in Chrome, we can't clip left and use ellipses:
      https://code.google.com/p/chromium/issues/detail?id=171659
      BCH 8/6/2015 */
-  text-overflow: clip;
-  text-align: left;
+	text-overflow: clip;
+	text-align: left;
 }
 
 li.not_compiling.dev {
-  background-image: url('/assets/images/x.png') !important;
+	background-image: url('/assets/images/x.png') !important;
 }
 
 li.compiling.dev {
-  background-image: url('/assets/images/check.png') !important;
+	background-image: url('/assets/images/check.png') !important;
 }
 
 li.unknown.dev {
-  background-image: url('/assets/images/caution.png') !important;
+	background-image: url('/assets/images/caution.png') !important;
 }
