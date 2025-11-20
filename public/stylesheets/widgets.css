@@ -822,6 +822,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   border-radius: 4px;
   padding: 0.1rem 0.2rem;
   font-family: var(--font-widget);
+  font-size: 12px;
   background-color: #ffffff;
 }
 
@@ -1099,7 +1100,6 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 
 .netlogo-chooser.old-size > .netlogo-chooser-select {
   padding: 2px 4px;
-  font-size: 12px;
 }
 
 .netlogo-switcher.old-size {
