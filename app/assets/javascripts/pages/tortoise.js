@@ -113,7 +113,8 @@ window.addEventListener("message", function(e) {
 // enough to parse out the actual model source and name, and we can assume it's probably what the user intended.
 // -Jeremy B September 2025
 function checkHTMLUpload(nlogoContents, originalPath) {
-  if (nlogoContents.trim().startsWith("<html>")) {
+  if (nlogoContents.trim().startsWith("<html>") ||
+    nlogoContents.trim().startsWith("<!DOCTYPE html>")) {
     const parser           = new DOMParser();
     const doc              = parser.parseFromString(nlogoContents, "text/html");
     const nlogoCodeElement = doc.getElementById("nlogo-code");

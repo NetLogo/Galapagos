@@ -378,7 +378,7 @@ class SessionLite
           nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogox')
           wrapper = document.createElement('div')
           wrapper.appendChild(dom.documentElement)
-          exportBlob = new Blob([wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
+          exportBlob = new Blob(["<!DOCTYPE html>\n\n" + wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
           saveAs(exportBlob, exportName)
           @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
 
