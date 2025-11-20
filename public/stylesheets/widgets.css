@@ -469,6 +469,7 @@
   display: flex;
   justify-content: space-around;
   font-family: var(--font-widget);
+  font-size: 12px;
   align-items: center;
   padding: 0px;
 }
@@ -723,6 +724,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 
 .netlogo-slider-value-input {
   font-family: var(--font-widget);
+  font-size:   14px;
 }
 
 .netlogo-slider-label input[type=number] {
@@ -754,13 +756,9 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   flex-shrink: 0;
   flex-grow: 1;
 
-  max-width: calc(100% - 2 * var(--widget-padding-x));
+  max-width: calc(100% - 1 * var(--widget-padding-x));
   text-overflow: ellipsis;
-  overflow-x: auto;
-}
-
-.netlogo-value {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .netlogo-code {
@@ -788,10 +786,14 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   box-shadow:     0 1px 3px rgba(0,0,0,0.12);
   border-radius:  4px;
   padding-inline: 0.2rem;
+  font-family: var(--font-widget);
+  font-size:   12px;
 }
 
 .netlogo-multiline-input[data-type=number] {
   color: #a42f00;
+  font-family: monospace;
+  font-size:   14px;
 }
 
 .netlogo-input-box > .netlogo-label {
@@ -820,6 +822,7 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   border-radius: 4px;
   padding: 0.1rem 0.2rem;
   font-family: var(--font-widget);
+  background-color: #ffffff;
 }
 
 .netlogo-plot {
@@ -827,6 +830,10 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
   padding: 0;
   border: 1px solid #eeeeee;
+}
+
+.highcharts-root {
+  font-family: var(--font-widget) !important;
 }
 
 .highcharts-container {
