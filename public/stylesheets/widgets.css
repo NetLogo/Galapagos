@@ -1128,6 +1128,10 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 .netlogo-widget-error {
   color: red;
 }
+.netlogo-widget-error.netlogo-button {
+  color: white;
+  background: red;
+}
 
 .netlogo-widget-error:hover {
   cursor: pointer !important;
