@@ -38,34 +38,6 @@
   --checkerboard: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=);
 }
 
-.netlogo-command {
-  background-color: var(--color-widget-button);
-  color: var(--color-widget-button-text);
-}
-.netlogo-command.netlogo-active,
-.netlogo-command:active {
-  background-color: var(--color-widget-button-active);
-}
-.netlogo-button.netlogo-disabled:active,
-.netlogo-forever-button.netlogo-disabled.netlogo-active {
-  background-color: var(--color-widget-button-disabled);
-  color: var(--color-widget-button-disabled-text);
-}
-.netlogo-input {
-  background-color: var(--color-widget-background);
-}
-.netlogo-output {
-  background-color: #e8e8e8;
-}
-
-.netlogo-slider-label .netlogo-label {
-  background-color: transparent;
-}
-
-.netlogo-slider-label .netlogo-slider-value input {
-  background-color: white;
-}
-
 .netlogo-tab-area {
   border-color: var(--color-tab-border);
 }
@@ -90,58 +62,4 @@
 
 .netlogo-tab.netlogo-active:hover {
   background-color: var(--color-tab-active-hover);
-}
-
-.netlogo-view-container {
-  background-color: #f4f4f4;
-}
-
-.netlogo-canvas {
-  border-radius: 3px;
-}
-
-/* Color input */
-.netlogo-color-input {
-  padding: 0.2rem;
-  margin: 0.1rem;
-  box-sizing: border-box;
-
-  aspect-ratio: 1 / 1;
-  width: 2rem;
-
-  border-radius: 0.2rem;
-
-  background-color: #eee;
-  height: 100%;
-}
-
-.netlogo-color-input:hover {
-  cursor: pointer;
-  background-color: #ccc;
-}
-
-.netlogo-color-input > * {
-  box-sizing: border-box;
-}
-
-.netlogo-swatches {
-  display: grid;
-  grid-template-columns: auto auto;
-
-  width: 100%;
-  aspect-ratio: 1 / 1;
-
-  gap: 0;
-
-  background-image: var(--checkerboard);
-  background-position-x: left;
-  background-position-y: center;
-  inset: 0;
-
-  border-radius: 0.1rem;
-  overflow: hidden;
-}
-
-.no-alpha .netlogo-swatches {
-  grid-template-columns: auto;
 }

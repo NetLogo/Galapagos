@@ -537,6 +537,29 @@
   color: #808080;
 }
 
+.netlogo-button.netlogo-disabled:active,
+.netlogo-forever-button.netlogo-disabled.netlogo-active {
+  background-color: var(--color-widget-button-disabled);
+  color: var(--color-widget-button-disabled-text);
+}
+
+.netlogo-command {
+  background-color: var(--color-widget-button);
+  color: var(--color-widget-button-text);
+}
+.netlogo-command.netlogo-active,
+.netlogo-command:active {
+  background-color: var(--color-widget-button-active);
+}
+
+.netlogo-input {
+  background-color: var(--color-widget-background);
+}
+
+.netlogo-output {
+  background-color: #e8e8e8;
+}
+
 .netlogo-text-box {
   background-color: white;
   border: none;
@@ -639,7 +662,6 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   width: 100%;
 }
 
-
 .netlogo-slider-bar {
   position: relative;
 
@@ -696,9 +718,6 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   transform: translateX(-50%);
 }
 
-
-
-
 .netlogo-label {
   margin: 0 auto;
   overflow: hidden;
@@ -734,6 +753,14 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   border-radius: 6px;
   text-align: right;
   padding: 2px;
+}
+
+.netlogo-slider-label .netlogo-label {
+  background-color: transparent;
+}
+
+.netlogo-slider-label .netlogo-slider-value input {
+  background-color: white;
 }
 
 .netlogo-monitor {
@@ -873,14 +900,6 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
   justify-content: center;
   margin: 5px 0 -5px 0;
   font-weight: bold;
-}
-
-.netlogo-widget-error {
-  color: red;
-}
-
-.netlogo-widget-error:hover {
-  cursor: pointer;
 }
 
 .CodeMirror {
@@ -1104,4 +1123,66 @@ input[type=checkbox]:not(checked) ~ .netlogo-switcher-element > .netlogo-switche
 
 .netlogo-switcher.old-size {
   padding: 2px 4px;
+}
+
+.netlogo-widget-error {
+  color: red;
+}
+
+.netlogo-widget-error:hover {
+  cursor: pointer !important;
+}
+
+.netlogo-view-container {
+  background-color: #f4f4f4;
+}
+
+.netlogo-canvas {
+  border-radius: 3px;
+}
+
+/* Color input */
+.netlogo-color-input {
+  padding: 0.2rem;
+  margin: 0.1rem;
+  box-sizing: border-box;
+
+  aspect-ratio: 1 / 1;
+  width: 2rem;
+
+  border-radius: 0.2rem;
+
+  background-color: #eee;
+  height: 100%;
+}
+
+.netlogo-color-input:hover {
+  cursor: pointer;
+  background-color: #ccc;
+}
+
+.netlogo-color-input > * {
+  box-sizing: border-box;
+}
+
+.netlogo-swatches {
+  display: grid;
+  grid-template-columns: auto auto;
+
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  gap: 0;
+
+  background-image: var(--checkerboard);
+  background-position-x: left;
+  background-position-y: center;
+  inset: 0;
+
+  border-radius: 0.1rem;
+  overflow: hidden;
+}
+
+.no-alpha .netlogo-swatches {
+  grid-template-columns: auto;
 }
