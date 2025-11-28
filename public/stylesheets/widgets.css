@@ -560,7 +560,7 @@
   background-color: #e8e8e8;
 }
 
-.netlogo-text-box {
+.netlogo-note {
   background-color: white;
   border: none;
   margin: 0;
@@ -571,11 +571,11 @@
 
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
 June 2025 */
-.netlogo-text-box > h1, h2, h3, h4, h5, h6, div, p, ul {
+.netlogo-note > h1, h2, h3, h4, h5, h6, div, p, ul {
   margin: 0;
 }
 
-.netlogo-text-box > ul {
+.netlogo-note > ul {
   padding-inline-start: 1.5em;
 }
 

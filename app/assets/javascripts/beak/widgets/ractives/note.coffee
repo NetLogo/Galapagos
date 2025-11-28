@@ -156,7 +156,7 @@ RactiveNote = RactiveWidget.extend({
       {{# widget.markdown }}
         <div
           id="{{id}}"
-          class="netlogo-widget netlogo-text-box {{classes}}"
+          class="netlogo-widget netlogo-note {{classes}}"
           style="{{style}}"
           >
           {{{display}}}
@@ -164,7 +164,7 @@ RactiveNote = RactiveWidget.extend({
       {{else}}
         <pre
           id="{{id}}"
-          class="netlogo-widget netlogo-text-box {{classes}}"
+          class="netlogo-widget netlogo-note {{classes}}"
           style="{{style}}"
           >{{display}}</pre>
       {{/ widget.markdown}}
