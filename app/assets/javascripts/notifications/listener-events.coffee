@@ -282,25 +282,24 @@ listenerEvents = Object.freeze([
   }
 ])
 
-getArgName = (argSetting, args) ->
+getArgNames = (argSetting, namedArgs) ->
   if (typeof argSetting) is 'string'
-    argSetting
+    [argSetting]
   else
-    dependentValue = args[argSetting.sourceArg]
-    maybeCase = argSetting.cases.find( (argCase) ->
+    dependentValue = namedArgs[argSetting.sourceArg]
+    cases = argSetting.cases.filter( (argCase) ->
       argCase.sourceArgValues.includes(dependentValue)
     )
-    maybeCase?.argToAdd
+    cases.map( (c) => c.argToAdd )
 
 # (Array[String | DependentArg], Array[Any]) => EventTypeArgs
 createNamedArgs = (argSettings, argValues) ->
   namedArgs = {}
-  if (argSettings.length < argValues.length)
-    throw new Error("not enough arg settings for the values given")
   argSettings.forEach( (argSetting, i) ->
-    argName = getArgName(argSetting, namedArgs)
-    if argName?
-      namedArgs[argName] = argValues[i]
+    argNames = getArgNames(argSetting, namedArgs)
+    argNames.forEach( (argName, j) ->
+      namedArgs[argName] = argValues[i + j]
+    )
   )
   namedArgs
 
