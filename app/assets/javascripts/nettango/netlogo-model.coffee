@@ -93,7 +93,7 @@ RactiveNetLogoModel = Ractive.extend({
       else
         if result.source is 'compile-recoverable'
           @openSession(result.session)
-        @notifyListeners('compiler-error', result.source, result.modelSourceType, result.modelCode, result.errors)
+        @notifyListeners('compiler-error', result.source, result.errors)
 
       return
 

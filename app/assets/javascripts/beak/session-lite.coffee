@@ -500,7 +500,7 @@ class SessionLite
 
     { result, success } = commandResult
     if not success
-      @widgetController.reportError('compiler', source, 'console', code, result)
+      @widgetController.reportError('compiler', source, result)
       return
 
     command = new Function(result)

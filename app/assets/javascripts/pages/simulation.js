@@ -110,11 +110,14 @@ try {
     } else {
       if (result.source === 'compile-recoverable') {
         openSession(result.session);
+        // Just to note it here, this is for displaying recoverable compile-time errors to the user.  If a non-recoverable
+        // error occured that should be handled in the `compile-complete` event with a `status: failure`.  -Jeremy B
+        // December 2025
+        notifyListeners('compiler-error', result.source, result.errors);
       } else {
         activeContainer = alertDialog;
         loadingOverlay.style.display = 'none';
       }
-      notifyListeners('compiler-error', result.source, result.modelSourceType, result.modelCode, result.errors);
     }
   }
 

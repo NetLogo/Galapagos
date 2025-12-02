@@ -164,8 +164,8 @@ class WidgetController
   # ("runtime" | "compiler", String, Exception | Array[String])
   reportError: (time, source, details, ...args) =>
     switch time
-      when "compiler" then @ractive.fire("compiler-error", {}, source, "", "", details, ...args)
-      when "runtime"  then @ractive.fire( "runtime-error", {}, source        , details, ...args)
+      when "compiler" then @ractive.fire("compiler-error", {}, source, details, ...args)
+      when "runtime"  then @ractive.fire( "runtime-error", {}, source, details, ...args)
       else                 throw new Error('Only valid values for `time` are "runtime" or "compiler"')
 
   # (Array[Widget], Array[Widget]) => Unit

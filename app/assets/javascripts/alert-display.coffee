@@ -262,58 +262,19 @@ class AlertDisplay
 
     return
 
-  # (CommonEventArgs, { source: String, modelSourceType: String,
-  #    modelCode: String, errors: Array[CompilerError] }) => Unit
-  'compiler-error': (_, { source, modelSourceType, modelCode, errors }) ->
+  # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
+  'compiler-error': (_, { source, errors }) ->
 
     stuffIntoTextBox = (msg) ->
       """<textarea readonly style="width: 100%; height: 400px;">#{msg}</textarea>"""
 
     switch source
-
-      when 'load-from-url'
-        message = AlertDisplay.makeRemoteLoadErrorMessage(errors[0])
-        @_ractive.set('isDismissable', false)
-        @reportError(message)
-
       when 'console'
         message = AlertDisplay.makeCompilerErrorMessage(errors).join('\n')
         @reportConsoleError(message)
 
-      when 'compile-fatal'
-        @_ractive.set('isDismissable', false)
-        rawMessage = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
-        messageBits =
-          if contains(rawMessage, "Models must have 12 sections, this had 1")
-            [
-              """There was an error compiling the model's code.  The given model was not a
-              NetLogo 7 <code>.nlogox</code> file or a NetLogo 6.4 <code>.nlogo</code> file.""",
-              (switch modelSourceType
-                when 'url'
-                  """The linked model was fetched without error, but the contents are incorrect.
-                  Check your link to make sure it is to the correct model."""
-                when 'disk'
-                  """Check that you selected the correct file to upload."""
-                when 'script-element'
-                  """If you made manual changes to the embedded model, make sure they are valid
-                  or try re-exporting your model as an HTML file."""
-                else
-                  "Unrecognized model source type, something odd is going on."),
-              "The model contents that failed to compile are given below.",
-              stuffIntoTextBox(modelCode)
-            ]
-          else
-            [
-              """There was an error compiling the model's code. If you uploaded a model, make
-              sure it is a working NetLogo 7 <code>.nlogox</code> file or NetLogo 6.4
-              <code>.nlogo</code> file.""",
-              rawMessage,
-              "The model contents that failed to compile are given below.",
-              stuffIntoTextBox(modelCode)
-            ]
-        @reportError(messageBits.join("<br/><br/>"))
-
       else
+        console.log(source, errors)
         rawMessage = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
         message = if not @_ractive.get('isActive') then rawMessage else
           """There was an error compiling the model's code:<br/><br/>
