@@ -143,6 +143,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
+    notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'success')
 
   else
     secondChanceResult = fromNlogoXMLWithoutCode(startingNlogoXML, compiler)
@@ -250,6 +251,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
+    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
 
   else
     secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)

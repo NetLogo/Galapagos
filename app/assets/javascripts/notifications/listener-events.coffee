@@ -61,7 +61,7 @@ listenerEvents = Object.freeze([
     'args': [
       'nlogo',         # String, possibly rewritten nlogo code for the compile
       'originalNlogo', # String, original nlogo code from the model load
-      'status',        # Boolean
+      'status',        # 'success' | 'failure'
       {
         sourceArg: 'status'
         cases: [
