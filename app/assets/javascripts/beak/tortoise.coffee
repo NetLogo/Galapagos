@@ -71,7 +71,11 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
   startLoading(() ->
     await fetch(url).then( (response) ->
       if not response.ok
-        callback({ type: 'model-load-failed', source: 'url', location: url, errors: ["Server returned status code #{response.status}"] })
+        callback({
+          type:     'model-load-failed'
+        , source:   'url'
+        , location: url
+        , errors:   ["Server returned status code #{response.status}"] })
 
       else
         nlogo = await response.text()
@@ -147,7 +151,15 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   else
     secondChanceResult = fromNlogoXMLWithoutCode(startingNlogoXML, compiler)
     if secondChanceResult?
-      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, nlogoxSource.type, 'failure', 'compile-recoverable', result.model.result)
+      notifyListeners(
+        'compile-complete'
+      , rewrittenNlogoXML
+      , startingNlogoXML
+      , nlogoxSource.type
+      , 'failure'
+      , 'compile-recoverable'
+      , result.model.result
+      )
 
       session = newSession(
         container
@@ -172,7 +184,15 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, nlogoxSource.type, 'failure', 'compile-fatal', result.model.result)
+      notifyListeners(
+        'compile-complete'
+      , rewrittenNlogoXML
+      , startingNlogoXML
+      , nlogoxSource.type
+      , 'failure'
+      , 'compile-fatal'
+      , result.model.result
+      )
 
   return
 
@@ -255,7 +275,15 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
   else
     secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)
     if secondChanceResult?
-      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, nlogoSource.type, 'failure', 'compile-recoverable', result.model.result)
+      notifyListeners(
+        'compile-complete'
+      , rewrittenNlogo
+      , startingNlogo
+      , nlogoSource.type
+      , 'failure'
+      , 'compile-recoverable'
+      , result.model.result
+      )
 
       session = newSession(
         container
@@ -280,7 +308,15 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, nlogoSource.type, 'failure', 'compile-fatal', result.model.result)
+      notifyListeners(
+        'compile-complete'
+      , rewrittenNlogo
+      , startingNlogo
+      , nlogoSource.type
+      , 'failure'
+      , 'compile-fatal'
+      , result.model.result
+      )
 
   return
 
