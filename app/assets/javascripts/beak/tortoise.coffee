@@ -69,24 +69,23 @@ fromNlogo = (nlogoSource, container, locale, isUndoReversion,
 # (String, Element, String, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
 fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
-    req = new XMLHttpRequest()
-    req.open('GET', url)
-    req.onreadystatechange = () ->
-      if req.readyState is req.DONE
-        if (req.status is 0 or req.status >= 400)
-          callback({ type: 'failure', source: 'load-from-url', errors: [url] })
+    await fetch(url).then( (response) ->
+      if not response.ok
+        callback({ type: 'model-load-failed', source: 'url', location: url, errors: ["Server returned status code #{response.status}"] })
+
+      else
+        nlogo = await response.text()
+        urlSource = new UrlSource(url, nlogo)
+        if urlSource.isOldFormat()
+          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
         else
-          nlogo = req.responseText
-          urlSource = new UrlSource(url, nlogo)
-          if urlSource.isOldFormat()
-            fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
-          else
-            fromNlogoXMLSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+          fromNlogoXMLSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
 
-        finishLoading()
-      return
+    ).catch( (ex) ->
+      callback({ type: 'model-load-failed', source: 'url', location: url, errors: [ex.toString()] })
+    )
 
-    req.send("")
+    finishLoading()
     return
   )
   return

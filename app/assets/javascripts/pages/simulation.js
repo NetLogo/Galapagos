@@ -105,19 +105,25 @@ try {
   listeners.push(alerter);
 
   function handleCompileResult(result) {
-    if (result.type === 'success') {
-      openSession(result.session);
-    } else {
-      if (result.source === 'compile-recoverable') {
+    switch (result.type) {
+      case 'success':
         openSession(result.session);
-        // Just to note it here, this is for displaying recoverable compile-time errors to the user.  If a non-recoverable
-        // error occured that should be handled in the `compile-complete` event with a `status: failure`.  -Jeremy B
-        // December 2025
-        notifyListeners('compiler-error', result.source, result.errors);
-      } else {
-        activeContainer = alertDialog;
-        loadingOverlay.style.display = 'none';
-      }
+        break;
+
+      case 'model-load-failed':
+        notifyListeners('model-load-failed', result.source, result.location, result.errors)
+
+      default:
+        if (result.source === 'compile-recoverable') {
+          openSession(result.session);
+          // Just to note it here, this is for displaying recoverable compile-time errors to the user.  If a non-recoverable
+          // error occured that should be handled in the `compile-complete` event with a `status: failure`.  -Jeremy B
+          // December 2025
+          notifyListeners('compiler-error', result.source, result.errors);
+        } else {
+          activeContainer = alertDialog;
+          loadingOverlay.style.display = 'none';
+        }
     }
   }
 

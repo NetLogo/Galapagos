@@ -276,10 +276,11 @@
 &lt;/html&gt;
 </code></pre>
 
-  <h3>Cross-Origin Resource Sharing (CORS)</h3>
+  <h3 id="cors">Cross-Origin Resource Sharing (CORS)</h3>
 
-  <p>One common issue in hotlinking models is making sure that your website host allows cross-origin resource sharing
-    (CORS) with NetLogo Web. Essentially this is a way for your website host to tell web browser that's it's okay for
+  <p>One common issue in hotlinking models is making sure that your website host allows
+    <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS">cross-origin resource sharing
+    (CORS)</a> with NetLogo Web. Essentially this is a way for your website host to tell web browser that's it's okay for
     NetLogo Web to load resources, even though they are different websites. Some website hosts, such as GitHub Pages, are
     permissive by default and you won't have to make any changes to get them to work. If your website host is not
     permissive by default, you might need to have your host set the <code>Access-Control-Allow-Origin</code> header in the

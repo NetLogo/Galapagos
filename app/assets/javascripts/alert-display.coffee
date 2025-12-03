@@ -262,6 +262,28 @@ class AlertDisplay
 
     return
 
+  # (CommonEventArgs, ModelLoadFailedArgs) => Unit
+  'model-load-failed': (_, { source, location, errors }) ->
+    @_ractive.set('isDismissable', false)
+    if source is 'url'
+      messageBits = [
+        "Unable to load a NetLogo model from <a href=#{location}>#{location}</a>",
+        if contains(errors[0], "Server returned status code")
+          errors[0]
+
+        else
+          """The model file host denied the fetch request, make sure CORS access is properly configured
+          for the model file and that you can access it outside of NetLogo Web."""
+      ]
+
+      @reportError(messageBits.join("<br/><br/>"))
+
+    else
+      # There really aren't many reasons load from disk, new, or script element would fail, but just in case.
+      @reportError("Loading the NetLogo model failed.")
+
+    return
+
   # (CommonEventArgs, CompileCompleteArgs) => Unit
   'compile-complete': (_, { status, modelSourceType, originalNlogo: modelCode, failureLevel, errors }) ->
     # This is just for unrecoverable failure reporting, if the model compiled and is recoverable,

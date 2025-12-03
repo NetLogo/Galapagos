@@ -50,6 +50,14 @@ listenerEvents = Object.freeze([
     ]
   },
   {
+    'name': 'model-load-failed',
+    'args': [
+      'source',   # 'url' | 'disk' | 'new' | 'script-element'
+      'location', # String
+      'errors',   # Array[String | Exception]
+    ]
+  },
+  {
     'name': 'compile-start',
     'args': [
       'nlogo',        # String, possibly rewritten nlogo code for the compile
