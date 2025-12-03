@@ -262,11 +262,50 @@ class AlertDisplay
 
     return
 
+  # (CommonEventArgs, CompileCompleteArgs) => Unit
+  'compile-complete': (_, { status, modelSourceType, originalNlogo: modelCode, failureLevel, errors }) ->
+    # This is just for unrecoverable failure reporting, if the model compiled and is recoverable,
+    # those issues will be reported as `compiler-error` events.  -Jeremy B December 2025
+    if status isnt 'success' and failureLevel is 'compile-fatal'
+      stuffIntoTextBox = (msg) ->
+        """<textarea readonly style="width: 100%; height: 400px;">#{msg}</textarea>"""
+
+      @_ractive.set('isDismissable', false)
+      rawMessage = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+      messageBits = if contains(rawMessage, "Models must have 12 sections, this had 1 (")
+        [
+          """There was an error compiling the model's code.  The given model was not a
+          NetLogo 7 <code>.nlogox</code> file or a NetLogo 6.4 <code>.nlogo</code> file.""",
+          (switch modelSourceType
+            when 'url'
+              """The linked file was fetched without error, but the contents are not a valid
+              NetLogo model.  Check your link to make sure it is to the correct model."""
+            when 'disk'
+              """Check that you selected the correct file to upload."""
+            when 'script-element'
+              """If you made manual changes to the embedded model, make sure they are valid
+              or try re-exporting your model as an HTML file."""
+            else
+              "Unrecognized model source type, something odd is going on."),
+          "The model contents that failed to compile are given below.",
+          stuffIntoTextBox(modelCode)
+        ]
+      else
+        [
+          """There was an error compiling the model's code. If you uploaded a model, make
+          sure it is a working NetLogo 7 <code>.nlogox</code> file or NetLogo 6.4
+          <code>.nlogo</code> file.""",
+          rawMessage,
+          "The model contents that failed to compile are given below.",
+          stuffIntoTextBox(modelCode)
+        ]
+
+      @reportError(messageBits.join("<br/><br/>"))
+
+    return
+
   # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
   'compiler-error': (_, { source, errors }) ->
-
-    stuffIntoTextBox = (msg) ->
-      """<textarea readonly style="width: 100%; height: 400px;">#{msg}</textarea>"""
 
     switch source
       when 'console'
@@ -274,7 +313,6 @@ class AlertDisplay
         @reportConsoleError(message)
 
       else
-        console.log(source, errors)
         rawMessage = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
         message = if not @_ractive.get('isActive') then rawMessage else
           """There was an error compiling the model's code:<br/><br/>

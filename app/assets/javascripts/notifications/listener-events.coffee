@@ -59,13 +59,15 @@ listenerEvents = Object.freeze([
   {
     'name': 'compile-complete',
     'args': [
-      'nlogo',         # String, possibly rewritten nlogo code for the compile
-      'originalNlogo', # String, original nlogo code from the model load
-      'status',        # 'success' | 'failure'
+      'nlogo',           # String, possibly rewritten nlogo code for the compile
+      'originalNlogo',   # String, original nlogo code from the model load
+      'modelSourceType', # 'url' | 'disk' | 'new' | 'script-element'
+      'status',          # 'success' | 'failure'
       {
         sourceArg: 'status'
         cases: [
-          { sourceArgValues: ['failure'], argToAdd: 'failure-level' }
+          { sourceArgValues: ['failure'], argToAdd: 'failureLevel' } # 'compile-recoverable' | 'compile-fatal'
+        , { sourceArgValues: ['failure'], argToAdd: 'errors' }       # Array[String | Exception]
         ]
       }
     ]

@@ -143,12 +143,12 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
-    notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'success')
+    notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, nlogoxSource.type, 'success')
 
   else
     secondChanceResult = fromNlogoXMLWithoutCode(startingNlogoXML, compiler)
     if secondChanceResult?
-      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'failure', 'compile-recoverable')
+      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, nlogoxSource.type, 'failure', 'compile-recoverable', result.model.result)
 
       session = newSession(
         container
@@ -173,7 +173,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, 'failure', 'compile-fatal')
+      notifyListeners('compile-complete', rewrittenNlogoXML, startingNlogoXML, nlogoxSource.type, 'failure', 'compile-fatal', result.model.result)
 
   return
 
@@ -251,12 +251,12 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     })
     result.commands.forEach( (c) -> if c.success then (new Function(c.result))() )
     rewriters.forEach( (rw) -> rw.compileComplete?() )
-    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'success')
+    notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, nlogoSource.type, 'success')
 
   else
     secondChanceResult = fromNlogoWithoutCode(startingNlogo, compiler)
     if secondChanceResult?
-      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-recoverable')
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, nlogoSource.type, 'failure', 'compile-recoverable', result.model.result)
 
       session = newSession(
         container
@@ -281,7 +281,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       rewriters.forEach( (rw) -> rw.compileComplete?() )
 
     else
-      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, 'failure', 'compile-fatal')
+      notifyListeners('compile-complete', rewrittenNlogo, startingNlogo, nlogoSource.type, 'failure', 'compile-fatal', result.model.result)
 
   return
 
