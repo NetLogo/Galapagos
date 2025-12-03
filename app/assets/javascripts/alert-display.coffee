@@ -125,6 +125,27 @@ class AlertDisplay
         if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
     )
 
+  @makeLinkedCompilerErrorMessage: (errors) ->
+    errors.map( (error) ->
+      if typeof(error) is 'string'
+        error
+      else if error.message? and
+        (contains(error.message, "Couldn't find corresponding reader") or
+          contains(error.message, "Models must have 12 sections"))
+        errorLink = 'https://netlogoweb.org/docs/faq#model-format-error'
+        "#{error.message} (see <a href='#{errorLink}'>here</a> for more information)"
+      else
+        if error.start? and error.end?
+          s = error.start
+          e = error.end
+          lineNumber = if error.lineNumber? then error.lineNumber else "Here"
+          onclickCode =
+            "this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{s}, #{e}); return false;"
+          "<a href='/ignore' onclick='#{onclickCode}'>(Line #{lineNumber})</a> #{error.message}"
+        else
+          if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
+    )
+
   @makeBareFrameError: (frame) ->
     switch frame.type
       when 'command'  then "called by command #{frame.name.toUpperCase()}"
@@ -335,7 +356,7 @@ class AlertDisplay
         @reportConsoleError(message)
 
       else
-        rawMessage = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
+        rawMessage = AlertDisplay.makeLinkedCompilerErrorMessage(errors).join('<br/>')
         message = if not @_ractive.get('isActive') then rawMessage else
           """There was an error compiling the model's code:<br/><br/>
           #{rawMessage}<br/><br/>
