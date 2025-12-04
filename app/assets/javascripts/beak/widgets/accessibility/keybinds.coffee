@@ -1,4 +1,4 @@
-import { offsetFocus } from "./utils.js"
+import { offsetFocus, sortAsIsolatedTabRegions, noWrapAround } from "./utils.js"
 import { isMac } from "./utils.js"
 import { Keybind, KeybindGroup } from "./keybind.js"
 
@@ -119,6 +119,36 @@ keybinds = [
         ["#{modKey}+;"],
         { description: "Comment/Uncomment the current line." },
         { bind: false }
+      ),
+      new Keybind(
+        "focus:previous:override",
+        (_, event) ->
+          if not ["TEXTAREA", "INPUT"].includes(document.activeElement.tagName) and offsetFocus(
+            document.body, document.activeElement,
+            -1, false, sortAsIsolatedTabRegions, noWrapAround
+          )
+            event?.preventDefault()
+            event?.stopPropagation()
+        ["shift+tab"],
+        {
+          hidden: true,
+          description: "Override Tab key to move focus with a custom behavior. "
+        },
+      ),
+      new Keybind(
+        "focus:next:override",
+        (_, event) ->
+          if not ["TEXTAREA", "INPUT"].includes(document.activeElement.tagName) and offsetFocus(
+            document.body, document.activeElement,
+            1, false, sortAsIsolatedTabRegions, noWrapAround
+          )
+            event?.preventDefault()
+            event?.stopPropagation()
+        ["tab"],
+        {
+          hidden: true,
+          description: "Override Tab key to move focus with a custom behavior. "
+        },
       ),
       new Keybind(
         "focus:next",
