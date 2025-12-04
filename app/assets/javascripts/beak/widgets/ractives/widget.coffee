@@ -225,9 +225,18 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       currentValue = widget.currentValue?.toString() or ""
       try
         await navigator.clipboard.writeText(currentValue)
-        alert("Copied to clipboard: " + currentValue)
+        NetLogoToaster.addToast({
+          id: "copy-widget-value-#{Date.now()}",
+          message: "Copied to clipboard: #{currentValue}",
+          timeout: 3000
+        })
       catch error
-        alert("Failed to copy to clipboard: " + error)
+        NetLogoToaster.addToast({
+          id: "copy-widget-value-failure-#{Date.now()}",
+          variant: "error",
+          message: "Failed to copy to clipboard.",
+          timeout: 5000
+        })
       return
 
     "*.add-breed-var": ({ component: sender }) ->
