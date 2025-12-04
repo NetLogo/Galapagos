@@ -302,7 +302,7 @@ template =
 
         <div style="display: flex; align-items: center; user-select: none; gap: 8px; flex: 1 1 auto; white-space: nowrap;"
              class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}">
-          <kbd>?</kbd> for Help
+          <kbd>?</kbd> for shortcuts
         </div>
       </div>
 
