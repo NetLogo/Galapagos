@@ -16,7 +16,9 @@ RactiveHelpDialog = Ractive.extend({
       return
 
     groups = groups.map((g) =>
-      keybinds = (g.keybinds or []).map((kb) ->
+      keybinds = (g.keybinds or []).filter((kb) ->
+        not kb.metadata?.hidden
+      ).map((kb) ->
         description = kb.metadata?.description or 'No description available'
         combos = (kb.combos or []).map((combo) -> { keys: combo.getKeys() })
         { description: description, combos: combos }
