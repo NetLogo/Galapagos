@@ -220,9 +220,11 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       @findComponent('editForm').fire("prove-your-worth")
       false
 
-    'copy-current-value': ->
+    # (, String | Undefined) => Unit
+    'copy-current-value': (_, currentValue) ->
       widget = @get('widget')
-      currentValue = widget.currentValue?.toString() or ""
+      console.log(currentValue)
+      currentValue = currentValue or widget.currentValue?.toString() or ""
       try
         await navigator.clipboard.writeText(currentValue)
         NetLogoToaster.addToast({
