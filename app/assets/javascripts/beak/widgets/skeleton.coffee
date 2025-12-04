@@ -5,6 +5,7 @@ import { RactiveView, RactiveHNWView } from "./ractives/view.js"
 import { RactiveSlider, RactiveHNWSlider } from "./ractives/slider.js"
 import { RactiveChooser, RactiveHNWChooser } from "./ractives/chooser.js"
 import { RactiveMonitor, RactiveHNWMonitor } from "./ractives/monitor.js"
+import RactiveToaster from "./ractives/toaster.js"
 import RactiveModelCodeComponent from "./ractives/code-editor.js"
 import { RactiveSwitch, RactiveHNWSwitch } from "./ractives/switch.js"
 import RactiveHelpDialog from "./ractives/help-dialog.js"
@@ -138,6 +139,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , spacer:           RactiveEditFormSpacer
     , customSlider:     RactiveCustomSlider
     , tab:              RactiveTabWidget
+    , toaster:          RactiveToaster
     },
 
     computed: {
@@ -192,6 +194,8 @@ template =
     isSessionLoopRunning={{isSessionLoopRunning}}
     sourceType={{source.type}}
     />
+
+  <toaster />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
        tabindex="0" on-keydown="@this.fire('check-action-keys', @event)"
