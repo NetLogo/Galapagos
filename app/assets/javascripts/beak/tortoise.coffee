@@ -184,6 +184,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       )
 
     else
+      callback({ type: 'failure', source: 'compile-fatal', errors: result.model.result })
       notifyListeners(
         'compile-complete'
       , rewrittenNlogoXML
@@ -308,6 +309,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       )
 
     else
+      callback({ type: 'failure', source: 'compile-fatal', errors: result.model.result })
       notifyListeners(
         'compile-complete'
       , rewrittenNlogo
