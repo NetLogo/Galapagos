@@ -8,7 +8,7 @@ export class Keybind
   id: undefined     # String
   cb: undefined     # (ractive, KeyboardEvent, combo) => Boolean | Unit
   combos: undefined # Array[KeyCombo]
-  metadata: {}      # { description: String, docs: String }
+  metadata: {}      # { description: String, docs: String, hidden?: Boolean }
   options: {}       # { type: "keydown" | "keyup" | "keypress", bind: Boolean, preventDefault: Boolean }
 
   # parameters:
