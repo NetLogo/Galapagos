@@ -276,7 +276,10 @@ class NetTangoController
     reader.onload = (e) =>
       nlogo = e.target.result
       nlogo = NetTangoRewriter.removeOldNetTangoCode(nlogo)
-      @netLogoModel.loadModel(nlogo, 'disk', file.name)
+      if nlogo.trim().startsWith("<?xml")
+        @netLogoModel.loadXMLModel(nlogo, 'disk', file.name)
+      else
+        @netLogoModel.loadOldFormatModel(nlogo, 'disk', file.name)
       @handleProjectChange()
       return
     reader.readAsText(file)
