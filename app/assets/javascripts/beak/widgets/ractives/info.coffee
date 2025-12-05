@@ -58,7 +58,7 @@ RactiveInfoTabWidget = Ractive.extend({
   }
 
   components: {
-    infoeditor: RactiveInfoTabEditor
+    infoEditor: RactiveInfoTabEditor
   },
 
   computed: {
@@ -73,7 +73,7 @@ RactiveInfoTabWidget = Ractive.extend({
       {{# !isEditing }}
         <div class='netlogo-info-markdown'>{{{sanitizedText}}}</div>
       {{ else }}
-        <infoeditor rawText='{{rawText}}' />
+        <infoEditor rawText='{{rawText}}' />
       {{ / }}
     </div>
     """
