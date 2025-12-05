@@ -106,8 +106,8 @@ RactiveBuilderMenu = Ractive.extend({
 
     {{ else }}
 
-      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" hidden>
-      <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" hidden>
+      <input id="ntb-import-json"    class="ntb-file-button" type="file" on-change="ntb-import-project" accept=".ntjson"        hidden>
+      <input id="ntb-import-netlogo" class="ntb-file-button" type="file" on-change="ntb-import-netlogo" accept=".nlogo,.nlogox" hidden>
 
       <div class="ntb-menu-controls ntb-block-defs-controls">
         <div class="ntb-title">NetTango Web Builder</div>
