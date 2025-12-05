@@ -59,14 +59,20 @@ class NetTangoAlertDisplay extends AlertDisplay
     else
       false
 
+  'model-load-error': (commonArgs, eventArgs) ->
+    super['model-load-error'](commonArgs, eventArgs)
+    @_ractive.set('isDismissable', true)
+    return
+
+  'compile-complete': (commonArgs, eventArgs) ->
+    super['compile-complete'](commonArgs, eventArgs)
+    @_ractive.set('isDismissable', true)
+    return
+
   # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
   'compiler-error': (commonArgs, eventArgs) ->
     { source, errors } = eventArgs
     switch source
-      when 'compile-fatal'
-        message = AlertDisplay.makeCompilerErrorMessage(errors).join('<br/>')
-        @reportError(message)
-
       when 'compile-recoverable'
         netLogoCode = @netTango.getNetLogoCode()
         if @isNetTangoError(netLogoCode, errors[0])
