@@ -294,14 +294,13 @@ controlEventTraffic = (controller, performUpdate) ->
 
     validTabs = ['Console', 'Code', 'Info']
     if not tabCanonicalName in validTabs
-      console.error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
-      return
+      throw new Error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
 
     showPropertyName = "show#{tabCanonicalName}"
 
     if options.active is 'toggle'
       showPropertyValue = not ractive.get(showPropertyName)
-    else if typeof options.active isnt 'undefined'
+    else if options.active?
       showPropertyValue = options.active
     else
       return
@@ -311,7 +310,7 @@ controlEventTraffic = (controller, performUpdate) ->
     if showPropertyValue
       componentToFocus = {
         "Code": "codeEditor",
-        "Info": "infoeditor",
+        "Info": "infoEditor",
         "Console": "console"
       }[tabCanonicalName]
 

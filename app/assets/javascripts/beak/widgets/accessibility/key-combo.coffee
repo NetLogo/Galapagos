@@ -24,10 +24,11 @@ class KeyCombo
   # () => Array[String]
   getKeys: ->
     modifierKeys = Object.entries(@modifiers).filter(([_, v]) => v).map(([mod, _]) =>
-      if      mod is 'ctrl'  then (if isMac then 'Control' else 'Ctrl')
-      else if mod is 'alt'   then (if isMac then '⌥'  else 'Alt')
-      else if mod is 'shift' then '⇧'
-      else if mod is 'meta'  then (if isMac then '⌘'  else 'Meta')
+      switch mod
+        when 'ctrl'  then if isMac then 'Control' else 'Ctrl'
+        when 'alt'   then if isMac then '⌥'  else 'Alt'
+        when 'shift' then '⇧'
+        when 'meta'  then if isMac then '⌘'  else 'Meta'
     )
 
     mainKey = if Object.prototype.hasOwnProperty.call(@keyStringTable, @key)

@@ -207,10 +207,13 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       return
 
     'on-editor-overlay-keydown': (event, trueEvent) ->
-      if trueEvent.target isnt @find('.editor-overlay')
-        return
+      isTargetEditorOverlay =
+        trueEvent.target is @find('.editor-overlay')
 
-      if trueEvent.key is 'Enter' and @get('isSelected')
+      isKeyEnter =
+        trueEvent.key is 'Enter'
+
+      if isTargetEditorOverlay and isKeyEnter and @get('isSelected')
         trueEvent.preventDefault()
         @fire('edit-widget')
 

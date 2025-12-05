@@ -2,12 +2,11 @@
 
 RactiveTabWidget = Ractive.extend({
 
-  data: () -> {
+  data: -> {
       name:             undefined  # String
     , title:            undefined  # String
     , show:             false      # Boolean
     , 'focus-target':   undefined  # String (Selector)
-    # https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView
     , 'scroll-target':   undefined # String (Selector) defaults to focus-target
     , 'scroll-behavior': 'auto'    # String ('auto' | 'smooth')
     , 'scroll-block':    'nearest' # String ('start' | 'center' | 'end' | 'nearest')
@@ -51,8 +50,9 @@ RactiveTabWidget = Ractive.extend({
         @set('show', not @get('show'))
         event.preventDefault()
         event.stopPropagation()
-        return false
-      return true
+        false
+      else
+        true
   }
 
   template:

@@ -35,11 +35,11 @@ RactiveCustomSlider = Ractive.extend({
       step = @get("step") or 1
       stepString = String(step)
       if stepString.includes('e-')
-        return parseInt(stepString.split('e-')[1])
+        parseInt(stepString.split('e-')[1])
       else if stepString.includes('.')
-        return stepString.split('.')[1].length
+        stepString.split('.')[1].length
       else
-        return 2
+        2
   }
 
   updateValue: (newValue) ->
