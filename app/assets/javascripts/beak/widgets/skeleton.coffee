@@ -5,6 +5,7 @@ import { RactiveView, RactiveHNWView } from "./ractives/view.js"
 import { RactiveSlider, RactiveHNWSlider } from "./ractives/slider.js"
 import { RactiveChooser, RactiveHNWChooser } from "./ractives/chooser.js"
 import { RactiveMonitor, RactiveHNWMonitor } from "./ractives/monitor.js"
+import RactiveToaster from "./ractives/toaster.js"
 import RactiveModelCodeComponent from "./ractives/code-editor.js"
 import { RactiveSwitch, RactiveHNWSwitch } from "./ractives/switch.js"
 import RactiveHelpDialog from "./ractives/help-dialog.js"
@@ -20,6 +21,10 @@ import RactiveContextMenu from "./ractives/context-menu.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
+import RactiveTabWidget from "./ractives/tab.js"
+import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
+import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
 
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
@@ -29,40 +34,41 @@ generateRactiveSkeleton = (container, widgets, code, info,
   model = {
     checkIsReporter
   , code
-  , consoleOutput:        ''
-  , exportForm:           false
-  , hasFocus:             false
+  , consoleOutput:         ''
+  , exportForm:            false
+  , hasFocus:              false
   , workInProgressState
-  , height:               0
-  , hnwClients:           {}
-  , hnwRoles:             {}
+  , height:                0
+  , hnwClients:            {}
+  , hnwRoles:              {}
   , info
-  , isEditing:            false
-  , isHelpVisible:        false
-  , isHNW:                false
-  , isHNWHost:            false
-  , isHNWTicking:         false
-  , isOverlayUp:          false
+  , isEditing:             false
+  , isHelpVisible:         false
+  , isHNW:                 false
+  , isHNWHost:             false
+  , isHNWTicking:          false
+  , isOverlayUp:           false
   , isReadOnly
-  , isResizerVisible:     true
-  , isStale:              false
-  , isVertical:           true
-  , lastCompiledCode:     code
-  , lastCompileFailed:    false
-  , lastDragX:            undefined
-  , lastDragY:            undefined
-  , metadata:             { globalVars: [], myVars: [], procedures: [] }
-  , modelTitle:           source.getModelTitle()
-  , outputWidgetOutput:   ''
-  , primaryView:          undefined
-  , someDialogIsOpen:     false
-  , someEditFormIsOpen:   false
+  , isResizerVisible:      true
+  , isStale:               false
+  , isVertical:            true
+  , lastCompiledCode:      code
+  , lastCompileFailed:     false
+  , lastDragX:             undefined
+  , lastDragY:             undefined
+  , metadata:              { globalVars: [], myVars: [], procedures: [] }
+  , modelTitle:            source.getModelTitle()
+  , outputWidgetOutput:    ''
+  , primaryView:           undefined
+  , someDialogIsOpen:      false
+  , someEditFormIsOpen:    false
   , source
-  , speed:                0.0
-  , ticks:                "" # Remember, ticks initialize to nothing, not 0
-  , ticksStarted:         false
-  , widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-  , width:                0
+  , speed:                 0.0
+  , ticks:                 "" # Remember, ticks initialize to nothing, not 0
+  , ticksStarted:          false
+  , widgetObj:             setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
+  , width:                 0
+  , keybinds:              keybinds
   }
 
   animateWithClass = (klass) ->
@@ -80,6 +86,13 @@ generateRactiveSkeleton = (container, widgets, code, info,
       for event in eventNames
         t.node.addEventListener(event, listener(listener))
       t.node.classList.add(klass)
+
+  Ractive.events.activateClick   = ractiveAccessibleClickEvent
+  Ractive.events.copy            = ractiveCopyEvent
+  Ractive.events.paste           = ractivePasteEvent
+
+  Ractive.transitions.grow       = animateWithClass('growing')
+  Ractive.transitions.shrink     = animateWithClass('shrinking')
 
   new Ractive({
 
@@ -123,9 +136,10 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , hnwPlotWidget:    RactiveHNWPlot
     , hnwViewWidget:    RactiveHNWView
 
-    , spacer:        RactiveEditFormSpacer
-    , customSlider:  RactiveCustomSlider
-
+    , spacer:           RactiveEditFormSpacer
+    , customSlider:     RactiveCustomSlider
+    , tab:              RactiveTabWidget
+    , toaster:          RactiveToaster
     },
 
     computed: {
@@ -170,7 +184,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
     }
-
   })
 
 # coffeelint: disable=max_line_length
@@ -182,19 +195,21 @@ template =
     sourceType={{source.type}}
     />
 
+  <toaster />
+
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
-       tabindex="1" on-keydown="@this.fire('check-action-keys', @event)"
+       tabindex="0" on-keydown="@this.fire('check-action-keys', @event)"
        on-focus="@this.fire('track-focus', @node)"
        on-blur="@this.fire('track-focus', @node)">
     <div id="modal-overlay" class="modal-overlay" style="{{# !isOverlayUp }}display: none;{{/}}" on-click="drop-overlay"></div>
 
-    <div class="netlogo-display-vertical">
+    <div class="netlogo-display-vertical" aria-label="NetLogo Model Application">
 
       <div class="netlogo-header">
         <div class="netlogo-subheader">
           <div class="netlogo-powered-by">
             <a href="https://netlogo.org">
-              <svg class="netlogo-powered-by-image" viewBox="0 0 32 32" fill="none" role="img">
+              <svg class="netlogo-powered-by-image" viewBox="0 0 32 32" fill="none" role="img" alt="NetLogo Logo">
                 <g clip-path="url(#clip0_6761_1992)">
                 <rect x="32" y="32" width="32" height="32" transform="rotate(-180 32 32)" fill="#43B8FF"/>
                 <mask id="mask0_6761_1992" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1" y="0" width="30" height="30">
@@ -222,7 +237,7 @@ template =
           />
         {{# !isReadOnly }}
           <div class="flex-column" style="align-items: flex-end; user-select: none;">
-            <div class="netlogo-export-wrapper">
+            <div class="netlogo-export-wrapper" aria-label="File Options" role="group">
               <span style="margin-right: 4px;">File:</span>
               <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
@@ -233,7 +248,7 @@ template =
                 {{/}}
               {{/}}
             </div>
-            <div class="netlogo-export-wrapper">
+            <div class="netlogo-export-wrapper" aria-label="Export Options" role="group">
               <span style="margin-right: 4px;">Export:</span>
               <button class="netlogo-ugly-button" on-click="export-nlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
               <button class="netlogo-ugly-button" on-click="export-html"{{#isEditing}} disabled{{/}}>HTML</button>
@@ -244,26 +259,31 @@ template =
 
       <div class="netlogo-display-horizontal">
 
-        <div id="authoring-lock" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-interface-lock">
+        <div id="authoring-lock" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}"
+             on-activateClick="toggle-interface-lock" tabindex="0" role="button" aria-pressed="{{isEditing}}">
           <div class="netlogo-interface-unlocker {{#isEditing}}interface-unlocked{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Mode: {{#isEditing}}Authoring{{else}}Interactive{{/}}</span>
         </div>
 
-        <div id="tabs-position" class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}" on-click="toggle-orientation">
+        <div id="tabs-position" tabindex="0" on-activateClick="toggle-orientation" role="button"
+             aria-label="Toggle Tabs Position" aria-pressed="{{isVertical}}"
+             aria-value="{{#isVertical}}Bottom{{else}}Right Side{{/}}"
+             class="netlogo-toggle-container{{#!someDialogIsOpen}} enabled{{/}}">
           <div class="netlogo-model-orientation {{#isVertical}}vertical-display{{/}}"></div>
           <spacer width="5px" />
           <span class="netlogo-toggle-text">Commands and Code: {{#isVertical}}Bottom{{else}}Right Side{{/}}</span>
         </div>
 
-        <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}">
+        <label class="netlogo-speed-slider{{#isEditing}} interface-unlocked{{/}}" aria-label="Model Speed Slider"
+               role="slider" aria-valuemin="-1" aria-valuemax="1" aria-valuenow="{{speed}}">
           <div class="netlogo-speed-slider-layout">
             <span class="netlogo-label">Model Speed</span>
             <div class="model-speed-input">
               <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"
                 {{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
               <button class="netlogo-beautiful-button" on-click="['onSpeedChange', -0.1]"
-                {{#isEditing}} disabled{{/}}>-</button>
+                {{#isEditing}} disabled{{/}} aria-label="Decrease Model Speed">-</button>
               <customSlider
                 id="speed-slider-input-interface"
                 min="{{-1}}"
@@ -277,23 +297,28 @@ template =
                 class="model-speed-slider-interface"
               />
               <button class="netlogo-beautiful-button" on-click="['onSpeedChange', 0.1]"
-                {{#isEditing}} disabled{{/}}>+</button>
+                {{#isEditing}} disabled{{/}} aria-label="Increase Model Speed">+</button>
             </div>
             <tickCounter isVisible="{{primaryView.showTickCounter}}"
               label="{{primaryView.tickCounterLabel}}" value="{{ticks}}" />
           </div>
         </label>
 
+        <div style="display: flex; align-items: center; user-select: none; gap: 8px; flex: 1 1 auto; white-space: nowrap;"
+             class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}">
+          <kbd>?</kbd> for shortcuts
+        </div>
       </div>
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
-      <helpDialog isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" stateName="{{stateName}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
+      <helpDialog keybindGroups="{{keybinds}}" isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
-           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer">
+           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer"
+           aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#widgetObj:key}}
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
@@ -323,28 +348,20 @@ template =
 
     <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
       {{# !isReadOnly }}
-      <label class="netlogo-tab{{#showConsole}} netlogo-active{{/}}">
-        <input id="console-toggle" type="checkbox" checked="{{ showConsole }}" on-change="['command-center-toggled', showConsole]"/>
-        <span class="netlogo-tab-text">Command Center</span>
-      </label>
-      {{#showConsole}}
+      <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
+            on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
         <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
+      </tab>
       {{/}}
-      {{/}}
-      <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
-        <input id="code-tab-toggle" type="checkbox" checked="{{ showCode }}" on-change="['model-code-toggled', showCode]" />
-        <span class="netlogo-tab-text{{#lastCompileFailed}} netlogo-widget-error{{/}}">NetLogo Code</span>
-      </label>
-      {{#showCode}}
-        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
-      {{/}}
-      <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
-        <input id="info-toggle" type="checkbox" checked="{{ showInfo }}" on-change="['model-info-toggled', showInfo]" />
-        <span class="netlogo-tab-text">Model Info</span>
-      </label>
-      {{#showInfo}}
+      <tab name="code" title="NetLogo Code" show="{{showCode}}"
+            on-toggle="['model-code-toggled', show]" focus-target=".netlogo-code-tab">
+        <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' scroll-block="center"
+                  lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+      </tab>
+      <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
+            on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
-      {{/}}
+      </tab>
     </div>
 
     <input id="general-file-input" type="file" name="general-file" style="display: none;" />

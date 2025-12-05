@@ -1,3 +1,7 @@
+import { keybinds } from "./accessibility/keybinds.js"
+import { setSortingKeys } from "./accessibility/widgets.js"
+import { focusElementVisible, isMac } from "./accessibility/utils.js"
+
 # (WidgetController, () => Unit) => Unit
 controlEventTraffic = (controller, performUpdate) ->
 
@@ -68,7 +72,8 @@ controlEventTraffic = (controller, performUpdate) ->
 
     focusedElement = undefined
 
-    ({ target }) ->
+    (event) ->
+      target = event?.target or document.activeElement
 
       isProbablyEditingText =
         (target.tagName.toLowerCase() in ["input", "textarea"] and not target.readOnly) or
@@ -97,6 +102,52 @@ controlEventTraffic = (controller, performUpdate) ->
   onOpenEditForm = (editForm) ->
     ractive.set('someEditFormIsOpen', true)
     onOpenDialog(editForm)
+    return
+
+  # (RactiveHTML(Keyboard|Mouse)Event) => Unit
+  onContextMenu = (event) ->
+    activeElement = document.activeElement
+    rect          = activeElement.getBoundingClientRect()
+    clientX       = rect.left + rect.width  / 2
+    clientY       = rect.top  + rect.height / 2
+
+    rightClickEvent = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+      button: 2,
+      buttons: 2,
+      clientX,
+      clientY,
+    })
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    activeElement.dispatchEvent(rightClickEvent)
+
+    setTimeout( ->
+      firstMenuItem = ractive.find('.context-menu-item')
+      if firstMenuItem?
+        focusElementVisible(firstMenuItem)
+    , 10)
+
+    return
+
+  showAddWidgetMenu = (event) ->
+    event.preventDefault()
+    event.stopPropagation()
+
+    activeElement = document.activeElement
+    defaultRect   = { left: window.scrollX, top: window.scrollY, width: 100, height: 100 }
+    smallOffset   = 10
+    rect          = activeElement.getBoundingClientRect() ? defaultRect
+    pageX         = rect.left + rect.width  / 2 + smallOffset
+    pageY         = rect.top  + rect.height / 2 + smallOffset
+
+    customEvent   = { ...event, pageX, pageY }
+    ractive.fire('show-context-menu', { component: ractive }, customEvent)
+
     return
 
   # () => Unit
@@ -161,6 +212,11 @@ controlEventTraffic = (controller, performUpdate) ->
   refreshDims = ->
     onWidgetXChange()
     onWidgetYChange()
+    return
+
+  # () => Unit
+  refreshSortingKeys = ->
+    setSortingKeys(ractive.get('widgetObj'))
     return
 
   # (String) => Unit
@@ -233,27 +289,97 @@ controlEventTraffic = (controller, performUpdate) ->
     world.changeTopology(wrapX, wrapY)
     return
 
-  mousetrap = Mousetrap(ractive.find('.netlogo-model'))
-  mousetrap.bind(['up', 'down', 'left', 'right']            , (_, name) -> ractive.fire('nudge-widget', name))
-  mousetrap.bind(['ctrl+shift+l', 'command+shift+l']        ,           -> ractive.fire('toggle-interface-lock'))
-  mousetrap.bind(['ctrl+shift+h', 'command+shift+h']        ,           -> ractive.fire('hide-resizer'))
-  mousetrap.bind('del'                                      ,           -> ractive.fire('delete-selected'))
-  mousetrap.bind('escape'                                   ,           -> ractive.fire('deselect-widgets'))
+  setTab = (tabName, options = {}) ->
+    tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
 
-  mousetrap.bind('?', onQMark)
+    validTabs = ['Console', 'Code', 'Info']
+    if not tabCanonicalName in validTabs
+      throw new Error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
 
+    showPropertyName = "show#{tabCanonicalName}"
+
+    if options.active is 'toggle'
+      showPropertyValue = not ractive.get(showPropertyName)
+    else if options.active?
+      showPropertyValue = options.active
+    else
+      return
+
+    ractive.set(showPropertyName, showPropertyValue)
+
+    if showPropertyValue
+      componentToFocus = {
+        "Code": "codeEditor",
+        "Info": "infoEditor",
+        "Console": "console"
+      }[tabCanonicalName]
+
+      setTimeout(=>
+        ractive.findComponent(componentToFocus)?.focus()
+      , 200)
+    else
+      ractive.find('.netlogo-model').focus()
+
+    if options.focus and showPropertyValue
+      componentTabName = tabName.toLowerCase()
+      tab = ractive.findAllComponents("tab")
+            .find((c) -> c.get('name') is componentTabName)
+      tab?.focus()
+      tab?.scrollIntoView()
+
+    return
+
+  focusFirstWidget = (ractive) ->
+    widgetContainer = ractive.find('.netlogo-widget-container')
+    widgets         = widgetContainer.querySelectorAll('[tabindex]:not([tabindex="-1"])')
+
+    firstWidget     = Array.from(widgets).sort((a, b) ->
+      aTabIndex = parseInt(a.getAttribute('tabindex'), 10)
+      bTabIndex = parseInt(b.getAttribute('tabindex'), 10)
+      aTabIndex - bTabIndex
+    )[0]
+
+    if firstWidget?
+      firstWidget.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      focusElementVisible(firstWidget)
+    else
+      ractive.find('.netlogo-model').focus()
+
+    return
+
+  modelContainer = ractive.find('.netlogo-model')
+  mousetrap = Mousetrap(modelContainer)
+  keybinds.forEach((keybindGroup) -> keybindGroup.bind(mousetrap, ractive))
   ractive.on("unbind-keys", (->
-    mousetrap.unbind([ 'up', 'down', 'left', 'right', 'del', 'escape', '?'
-                     , 'ctrl+shift+l', 'command+shift+l'
-                     , 'ctrl+shift+h', 'command+shift+h'
-                     ])
+    keybinds.forEach((keybindGroup) -> keybindGroup.unbind(mousetrap))
   ))
+
+  window.addEventListener('message', (event) ->
+    if event.data?.type is "nlw-forward-key-event"
+      keyboardEvent = event.data.eventData
+
+      combo = [
+        if keyboardEvent.ctrlKey then "ctrl" else null,
+        if keyboardEvent.metaKey and not isMac then "meta" else null,
+        if keyboardEvent.metaKey and isMac then "command" else null,
+        if keyboardEvent.altKey then "alt" else null,
+        if keyboardEvent.shiftKey then "shift" else null,
+        if keyboardEvent.key.length is 1 then keyboardEvent.key.toLowerCase() else keyboardEvent.key
+      ].filter((part) -> part isnt null).join("+")
+      console.log("Forwarding key event: #{combo} (#{keyboardEvent.type})")
+      mousetrap.trigger(combo, keyboardEvent.type)
+  )
+
+
+  window.addEventListener('keyup', refreshSortingKeys)
+  window.addEventListener('dragend', refreshSortingKeys)
 
   ractive.observe('widgetObj.*.currentValue', onWidgetValueChange)
   ractive.observe('widgetObj.*.x'           , onWidgetXChange)
   ractive.observe('widgetObj.*.width'       , onWidgetXChange)
   ractive.observe('widgetObj.*.y'           , onWidgetYChange)
   ractive.observe('widgetObj.*.height'      , onWidgetYChange)
+  ractive.observe('isEditing'               , refreshSortingKeys)
 
   ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))
@@ -278,6 +404,13 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('*.dialog-opened'   , (_, dialog) ->  onOpenDialog(dialog))
   ractive.on('*.edit-form-closed', (_, editForm) -> onCloseEditForm(editForm))
   ractive.on('*.edit-form-opened', (_, editForm) ->  onOpenEditForm(editForm))
+
+  ractive.on('set-tab', (_, name, options) => setTab(name, options))
+  ractive.on('refresh-sorting-keys', -> refreshSortingKeys())
+  ractive.on('focus-first-widget', -> focusFirstWidget(ractive))
+  ractive.on('toggle-help', (_, event) -> onQMark(event))
+  ractive.on('trigger-context-menu', (_, event) -> onContextMenu(event))
+  ractive.on('show-add-widget-menu', (_, event) -> showAddWidgetMenu(event))
 
   return
 

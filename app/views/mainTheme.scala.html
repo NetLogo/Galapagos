@@ -41,8 +41,8 @@
           Html(Seq(LaunchLink, UpdatesLink, DocsLabel, NetLogoLink, Settings).map {
 
             case TopLabel(id, text) =>
-              val baseClasses = "topbar-quick-link topbar-text topbar-label topbar-link brand"
-              s"""<span id="$id-label" class="$baseClasses">$text</span>"""
+              val baseClasses = "topbar-quick-link topbar-text topbar-label topbar-link brand activate-click"
+              s"""<span id="$id-label" class="$baseClasses" tabindex="0">$text</span>"""
 
             case TopLink(id, url, text) =>
               val baseClasses  = "topbar-quick-link topbar-text topbar-link brand"
@@ -71,5 +71,19 @@
     </div>
 
     @extraBody
+
+    <script>
+      function onActivateClick(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          event.target.click();
+        }
+      }
+
+      const activateClickElements = document.querySelectorAll('.activate-click');
+      activateClickElements.forEach(function(element) {
+        element.addEventListener('keydown', onActivateClick);
+      });
+    </script>
   </body>
 </html>

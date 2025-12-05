@@ -1,6 +1,7 @@
 RactiveCustomSlider = Ractive.extend({
 
   data: -> {
+    id:            null            # String
     value:         0               # Number
     min:           0               # Number
     max:           100             # Number
@@ -11,9 +12,9 @@ RactiveCustomSlider = Ractive.extend({
     class:         null            # String
     onValueChange: null            # Function
     inputFor:      null            # String (id of an input element to update on change)
-    maxDecimal:    2               # Number
     ariaLabel:     "Custom Slider" # String
     orientation:   "horizontal"    # String ("horizontal" or "vertical" (rotated 270 degrees))
+    tabindex:      0               # Number
   }
 
   computed: {
@@ -30,8 +31,15 @@ RactiveCustomSlider = Ractive.extend({
         classes.push("disabled")
       return classes.filter(Boolean).join(" ")
 
-    tabIndex: ->
-      if @get("isEnabled") then 0 else -1
+    maxDecimal: ->
+      step = @get("step") or 1
+      stepString = String(step)
+      if stepString.includes('e-')
+        parseInt(stepString.split('e-')[1])
+      else if stepString.includes('.')
+        stepString.split('.')[1].length
+      else
+        2
   }
 
   updateValue: (newValue) ->
@@ -164,7 +172,8 @@ RactiveCustomSlider = Ractive.extend({
   }
 
   template: """
-    <div class="{{className}}"
+    <div {{#id}}id="{{id}}"{{/}}
+         class="{{className}}"
          on-mousedown="['start-drag']"
          on-touchstart="['start-drag']"
          on-keydown="['keydown']"
@@ -172,8 +181,10 @@ RactiveCustomSlider = Ractive.extend({
          aria-valuemin="{{min}}"
          aria-valuemax="{{max}}"
          aria-valuenow="{{value}}"
-         tabindex="{{tabIndex}}"
-         aria-label="{{ariaLabel}}">
+         aria-label="{{ariaLabel}}"
+         aria-disabled="{{!isEnabled}}"
+         tabindex="{{#if isEnabled}}{{tabindex}}{{else}}-1{{/if}}"
+         >
       <div class="netlogo-slider-bar-fill" style="width: {{percentFilled}}%;"></div>
       <div class="netlogo-slider-bar-handle" style="left: {{percentFilled}}%;"></div>
     </div>

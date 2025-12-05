@@ -1,5 +1,14 @@
 {
     "files.watcherExclude": {
         "**/target": true
-    }
+    },
+
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.rulers": [80, 100, 120],
+    "editor.trimAutoWhitespace": true,
+    "editor.renderFinalNewline": "on",
+    "editor.renderWhitespace": "all",
 }

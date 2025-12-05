@@ -36,6 +36,7 @@ RactiveColorInput = Ractive.extend({
   , value:      undefined # String
 
   , isModalOpen: false    # Boolean
+  , tabindex:    undefined # String
   }
 
   components: {
@@ -88,7 +89,7 @@ RactiveColorInput = Ractive.extend({
     """
     <input id="{{id}}" class="{{class}}" name="{{name}}" style="{{style}}" type="color"
            {{# !isEnabled }}disabled{{/}} value="{{hexColor}}" twoway="false"
-           on-click="['click']" />
+           on-click="['click']" tabindex="{{tabindex}}" />
     {{#isModalOpen}}
     <colorPicker id="{{id}}-color-picker"
                  on-pick="['color-picked']"
