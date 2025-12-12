@@ -226,7 +226,6 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     # (, String | Undefined) => Unit
     'copy-current-value': (_, currentValue) ->
       widget = @get('widget')
-      console.log(currentValue)
       currentValue = currentValue or widget.currentValue?.toString() or ""
       try
         await navigator.clipboard.writeText(currentValue)
