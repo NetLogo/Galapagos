@@ -42,7 +42,15 @@
 
             case TopLabel(id, text) =>
               val baseClasses = "topbar-quick-link topbar-text topbar-label topbar-link brand activate-click"
-              s"""<span id="$id-label" class="$baseClasses" tabindex="0">$text</span>"""
+              val hintBox = s"""
+              <div class="topbar-hint-box">
+                <ul class="topbar-hint-list"></ul>
+                <template id="hint-list-entry">
+                  <li><a class="topbar-hint-link"></a></li>
+                </template>
+              </div>
+              """
+              s"""<span id="$id-label" class="$baseClasses" tabindex="0">$text</span>$hintBox"""
 
             case TopLink(id, url, text) =>
               val baseClasses  = "topbar-quick-link topbar-text topbar-link brand"
@@ -53,13 +61,6 @@
 
         }
       </div>
-    </div>
-
-    <div class="topbar-hint-box">
-      <ul class="topbar-hint-list"></ul>
-      <template id="hint-list-entry">
-        <li><a class="topbar-hint-link"></a></li>
-      </template>
     </div>
 
     <div class="outer-content not_full_height">

@@ -27,11 +27,22 @@ setHintBox = (topbarElem, links) ->
 
   return
 
+
 window.addEventListener('click', ({ target }) ->
-  hintBox = document.querySelector('.topbar-hint-box')
-  if not (target.classList.contains('topbar-label') or hintBox.contains(target))
-    hintBox.style.display = 'none'
+  $hintBox = document.querySelector('.topbar-hint-box')
+  if not (target.classList.contains('topbar-label') or $hintBox.contains(target))
+    $hintBox.style.display = 'none'
   return
+)
+
+document.body.addEventListener('keydown', (e) ->
+  setTimeout(() ->
+    if e.key is 'Tab'
+      $hintBox = document.querySelector('.topbar-hint-box')
+      children = Array.from($hintBox.querySelectorAll('a.topbar-hint-link'))
+      if not [$hintBox, ...children].some((elem) => elem is document.activeElement)
+          $hintBox.style.display = 'none'
+  , 100) # Focus must change before we check -- Omar Ibrahim, Dec 12 25
 )
 
 window.addEventListener('load', ->
