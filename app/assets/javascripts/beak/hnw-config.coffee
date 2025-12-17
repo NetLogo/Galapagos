@@ -510,6 +510,25 @@ class HubNetWebConfigElement extends HTMLElement
 
 customElements.define("hubnet-web-config", HubNetWebConfigElement)
 
+mergeNlogoxAndConfig = (nlogox, json) ->
+  nlogoDoc     = nlogoXMLToDoc(nlogox)
+  modelElement = nlogoDoc.querySelector("model")
+
+  existingConfig = modelElement.querySelector("hubnet-web-config")
+  if existingConfig? then modelElement.removeChild(existingConfig)
+
+  hnwConfigElement           = new HubNetWebConfigElement()
+  hnwReplaceString           = "{{{HUBNET-WEB-CONFIG-REPLACEMENT}}}"
+  hnwConfigElement.innerHTML = hnwReplaceString
+  modelElement.appendChild(hnwConfigElement)
+
+  hnwNlogoxUnfixed = docToNlogoXML(nlogoDoc)
+
+  # Web browsers don't like CDATA in their HTML documents, so they turn them into HTML comments.  This is enough
+  # to get them back into a proper form for the NetLogo Web parser.  -Jeremy B Octover 2025
+  hnwNlogox = hnwNlogoxUnfixed.replace(hnwReplaceString, "<![CDATA[#{json}]]>")
+  hnwNlogox
+
 # () => Unit
 document.getElementById("download-nlogox-button").onclick = ->
 
@@ -521,22 +540,7 @@ document.getElementById("download-nlogox-button").onclick = ->
 
     requestNlogoxAndJSON().then(
       ([nlogox, json]) ->
-        nlogoDoc     = nlogoXMLToDoc(nlogox)
-        modelElement = nlogoDoc.querySelector("model")
-
-        existingConfig = modelElement.querySelector("hubnet-web-config")
-        if existingConfig? then modelElement.removeChild(existingConfig)
-
-        hnwConfigElement           = new HubNetWebConfigElement()
-        hnwReplaceString           = "{{{HUBNET-WEB-CONFIG-REPLACEMENT}}}"
-        hnwConfigElement.innerHTML = hnwReplaceString
-        modelElement.appendChild(hnwConfigElement)
-
-        hnwNlogoxUnfixed = docToNlogoXML(nlogoDoc)
-
-        # Web browsers don't like CDATA in their HTML documents, so they turn them into HTML comments.  This is enough
-        # to get them back into a proper form for the NetLogo Web parser.  -Jeremy B Octover 2025
-        hnwNlogox = hnwNlogoxUnfixed.replace(hnwReplaceString, "<![CDATA[#{json}]]>")
+        hnwNlogox = mergeNlogoxAndConfig(nlogox, json)
         download(nlogoxName)(hnwNlogox)
     )
 
