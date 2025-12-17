@@ -619,11 +619,13 @@ recompile = ->
 
 window.addEventListener('message', (e) ->
   switch e.data.type
-    when "hnw-author-bundle"
-      { hnwNlogo, ...bundle } = e.data.bundle
-      initialize(hnwNlogo, bundle)
-    when "hnw-author-pair"
-      initialize(e.data.nlogo, e.data.config)
+    when "hnw-author"
+      nlogox        = e.data.nlogox
+      nlogoDoc      = nlogoXMLToDoc(nlogox)
+      modelElement  = nlogoDoc.querySelector("model")
+      configElement = modelElement.querySelector("hubnet-web-config")
+      configJson    = if configElement? then stripXMLCdata(configElement.innerHTML) else "{}"
+      initialize(nlogox, JSON.parse(configJson))
     when "new-breed-var"
       addNewBreedVar(e.data.breed, e.data.var)
       recompile()
