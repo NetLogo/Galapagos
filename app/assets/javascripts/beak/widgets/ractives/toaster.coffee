@@ -9,6 +9,15 @@ RactiveToast = Ractive.extend({
   }
 
   onrender: ->
+    message = @get('message')
+    content = if typeof message is 'string'
+        message
+      else if message instanceof HTMLElement
+        message.outerHTML
+      else
+        'Message not set?'
+    @resetPartial('content', content)
+
     timeout = @get('timeout')
     if timeout > 0
       startTime = Date.now()
@@ -36,22 +45,15 @@ RactiveToast = Ractive.extend({
       cancelAnimationFrame(@animationFrame)
     return
 
-  computed: {
-    content: () ->
-      message = @get('message')
-      if typeof message is 'string'
-        return message
-      else if message instanceof HTMLElement
-        return message.outerHTML
-      else
-        return ''
+  partials: {
+    content: "Message not registered."
   }
 
   template:
     """
     <div class='toast toast-{{variant}}'>
       <div class='toast-message'>
-        {{content}}
+        {{> content}}
       </div>
       <div class='toast-close' on-click='@this.fire("toast-expired", @this.get("id"))'>×</div>
       <div class='toast-progress-bar'>

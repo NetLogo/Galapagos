@@ -13,7 +13,7 @@ import RactiveConsoleWidget from "./ractives/console.js"
 import { RactiveOutputArea, RactiveHNWOutputArea } from "./ractives/output.js"
 import RactiveInfoTabWidget from "./ractives/info.js"
 import RactiveModelTitle from "./ractives/title.js"
-import RactiveStatusPopup from "./ractives/status-popup.js"
+import createWorkInProgressAlert from "./ractives/work-in-progress-alert.js"
 import { RactivePlot, RactiveHNWPlot } from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
@@ -109,7 +109,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , codePane:      RactiveModelCodeComponent
     , helpDialog:    RactiveHelpDialog
     , infotab:       RactiveInfoTabWidget
-    , statusPopup:   RactiveStatusPopup
     , resizer:       RactiveResizer
 
     , tickCounter:   RactiveTickCounter
@@ -174,6 +173,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     oncomplete: ->
       @fire('track-focus', document.activeElement)
+      if @get('hasWorkInProgress')
+        wipToast = createWorkInProgressAlert(@get('source.type'))
+        NetLogoToaster.addToast(wipToast)
       return
 
     on: {
@@ -189,12 +191,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
 # coffeelint: disable=max_line_length
 template =
   """
-  <statusPopup
-    hasWorkInProgress={{hasWorkInProgress}}
-    isSessionLoopRunning={{isSessionLoopRunning}}
-    sourceType={{source.type}}
-    />
-
   <toaster />
 
   <div class="netlogo-model netlogo-display-{{# isVertical }}vertical{{ else }}horizontal{{/}}" style="min-width: {{width}}px;"
