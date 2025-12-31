@@ -34,7 +34,11 @@ RactiveCodeContainerBase = Ractive.extend({
 
   _setupCodeMirror: ->
 
-    baseConfig = { mode: 'netlogo', theme: 'netlogo-default', value: @get('code').toString(), viewportMargin: Infinity }
+    baseConfig = {
+      mode: 'netlogo'
+    , theme: 'netlogo-default'
+    , value: @get('code').toString()
+    }
     config     = Object.assign(
       {}, baseConfig,
       @get('extraConfig') ? {},

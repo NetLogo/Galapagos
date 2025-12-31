@@ -342,7 +342,7 @@ template =
 
     </div>
 
-    <div class="netlogo-tab-area" style="min-width: {{Math.min(width, 500)}}px; max-width: {{Math.max(width, 500)}}px">
+    <div class="netlogo-tab-area">
       {{# !isReadOnly }}
       <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
             on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
