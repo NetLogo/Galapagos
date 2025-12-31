@@ -228,7 +228,7 @@ RactiveModelCodeComponent = Ractive.extend({
         <li class="netlogo-codetab-widget-listitem">
           <input type='checkbox' class="netlogo-autocomplete-checkbox" checked='{{autoCompleteStatus}}'>
           <label class="netlogo-autocomplete-label">
-            Auto Complete {{# autoCompleteStatus}}Enabled{{else}}Disabled{{/}}
+            Auto-Complete
           </label>
         </li>
       </ul>
