@@ -985,6 +985,10 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   cursor: pointer;
 }
 
+.netlogo-code-tab {
+  min-height: 240px;
+}
+
 .CodeMirror {
   /* `height: auto` tells CodeMirror 5 "resize to fit contents" but it doesn't respect `max-height` when resizing, that
     has to be set on `CodeMirror-scroll` below. */
