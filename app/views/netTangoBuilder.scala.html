@@ -19,6 +19,7 @@
   @tagBuilder.pathToHTML("stylesheets/alert.css")
   @tagBuilder.pathToHTML("@netlogo/nettango/nettango.css")
   @tagBuilder.pathToHTML("stylesheets/nettango-builder.css")
+  <link rel="shortcut icon" href="@routes.Assets.versioned("nt-images/favicon.ico").relative" type="image/x-icon">
 }
 
 @content = {
@@ -84,6 +85,10 @@
     const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
     window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
   </script>
+
+  <!-- This is here so the web app can grab it and we get to keep the versioning support from the web server.  -Jeremy B
+  January 2026 -->
+  <img id="nettango-web-icon-source" style="display: none;" src="@routes.Assets.versioned("nt-images/nettango-web-icon.svg").relative" />
 
   @if(standalone) {
     @tagBuilder.pathToHTML("javascripts/pages/netTangoBuilder.bundle.js", "type" -> "module")

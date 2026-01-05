@@ -37,6 +37,12 @@ body#ntp-body, html#ntp-body {
   user-select: none;
 }
 
+.ntb-title-icon {
+  display: inline;
+  vertical-align: sub;
+  max-width: 32px;
+}
+
 .ntb-menu-controls {
   padding: 10px 30px 10px 30px;
   position: sticky;
