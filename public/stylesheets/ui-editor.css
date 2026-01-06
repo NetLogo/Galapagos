@@ -201,6 +201,10 @@
   width: 100%;
 }
 
+.widget-edit-color-pick {
+  width: 2rem;
+}
+
 .widget-edit-input[type="number"] {
   text-align: right;
 }
