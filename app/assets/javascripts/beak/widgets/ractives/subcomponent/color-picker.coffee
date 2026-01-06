@@ -122,7 +122,7 @@ RactiveColorPicker = Ractive.extend({
 
   template: """
   <modal id="{{modalId}}" title="Color Picker">
-    <asyncLoader loading="{{!iframeLoaded}}">
+    <asyncLoader loading="{{!iframeLoaded}}" class="netlogo-color-input-loader">
         <iframe id="{{id}}" style="width: 100%; height: 100%;"
                 {{#if !srcDoc}} src="{{url}}" {{/if}}
                 {{#if srcDoc}} srcDoc="{{srcDoc}}" {{/if}}

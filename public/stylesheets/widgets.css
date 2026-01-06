@@ -1306,6 +1306,10 @@ kbd {
 }
 
 /* Color input */
+.netlogo-color-input-loader {
+  height: 100%;
+}
+
 .netlogo-color-input {
   padding: 0.2rem;
   margin: 0.1rem;
