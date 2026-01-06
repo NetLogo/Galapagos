@@ -615,15 +615,6 @@
   font-family: var(--font-widget);
 }
 
-.netlogo-text-box {
-  background-color: white;
-  border: none;
-  margin: 0;
-  padding: 2px;
-  white-space: pre-wrap;
-  font-family: var(--font-widget);
-}
-
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
 June 2025 */
 .netlogo-note > h1,
@@ -639,22 +630,6 @@ ul {
 }
 
 .netlogo-note > ul {
-  padding-inline-start: 1.5em;
-}
-
-.netlogo-text-box > h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-div,
-p,
-ul {
-  margin: 0;
-}
-
-.netlogo-text-box > ul {
   padding-inline-start: 1.5em;
 }
 
