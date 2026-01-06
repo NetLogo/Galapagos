@@ -617,20 +617,27 @@
 
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
 June 2025 */
-.netlogo-note > h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-div,
-p,
-ul {
-  margin: 0;
+.netlogo-note {
+  display: flex;
+  flex-direction: column;
 }
 
+.netlogo-note > h1,
+.netlogo-note > h2,
+.netlogo-note > h3,
+.netlogo-note > h4,
+.netlogo-note > h5,
+.netlogo-note > h6,
+.netlogo-note > div,
+.netlogo-note > p,
 .netlogo-note > ul {
+  margin: 0 0 0.5rem;
+}
+
+.netlogo-note > ul,
+.netlogo-note > ol {
   padding-inline-start: 1.5em;
+  margin: 0 0 0.5rem;
 }
 
 .netlogo-switcher {
