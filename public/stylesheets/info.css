@@ -109,7 +109,7 @@ elements.  Font sizes are also hard-coded here instead of calculated.  -Jeremy B
   font-size: var(--body-font-size);
 }
 .netlogo-info blockquote {
-  background: var(--block-bar);
+  border-left: 4px solid var(--block-bar);
   margin-left: 15px;
   margin-top: 7px;
   margin-bottom: 1px;
@@ -122,6 +122,8 @@ elements.  Font sizes are also hard-coded here instead of calculated.  -Jeremy B
 .netlogo-info blockquote p
 {
   color: var(--p-color);
+  margin: 0;
+  padding: 15px;
 }
 .netlogo-info ol {
   margin-bottom: 1px;
