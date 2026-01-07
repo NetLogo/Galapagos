@@ -589,7 +589,6 @@
   border: none;
   margin: 0;
   padding: 2px;
-  white-space: pre-wrap;
   font-family: var(--font-widget);
 }
 

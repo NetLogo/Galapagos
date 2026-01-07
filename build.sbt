@@ -56,10 +56,6 @@ libraryDependencies ++= Seq(
 , "org.scala-lang.modules" %% "scala-parallel-collections" % "1.2.0"
 , "org.nlogo" % "compilerjvm"  % tortoiseVersion
 , "org.nlogo" % "netlogowebjs" % tortoiseVersion
-// ideally these would be moved to `package.json`, but they aren't on npm at these exact versions, so here they stay.
-// -Jeremy B September 2022
-, "org.webjars"       % "markdown-js" % "0.5.0-1"
-, "org.webjars.bower" % "google-caja" % "6005.0.0"
 // akka-testkit must match the akka version used by Play -Jeremy B September 2022
 , "com.typesafe.akka"      %% "akka-testkit"       % play.core.PlayVersion.akkaVersion % Test
 , "org.scalatestplus.play" %% "scalatestplus-play" % "6.0.1" % Test

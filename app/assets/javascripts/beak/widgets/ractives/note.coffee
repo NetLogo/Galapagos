@@ -165,7 +165,7 @@ RactiveNote = RactiveWidget.extend({
         <pre
           id="{{id}}"
           class="netlogo-widget netlogo-note {{classes}}"
-          style="{{style}}"
+          style="{{style}} white-space: pre-wrap;"
           >{{display}}</pre>
       {{/ widget.markdown}}
       """

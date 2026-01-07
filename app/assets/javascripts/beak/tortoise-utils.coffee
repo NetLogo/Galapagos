@@ -1,18 +1,18 @@
-markdownToHtml = (md) ->
-  getBase64IfResource = (url) ->
-    name = url.getPath()
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
+
+getBase64IfResource = (node, data) ->
+  if data.tagName is 'img'
+    name = node.getAttribute('src')
+
     if workspace.resources.hasOwnProperty(name)
       resource = workspace.resources[name]
-      "data:image/#{resource.extension};base64,#{resource.data}"
-    else
-      null
+      node.setAttribute('src', "data:image/#{resource.extension};base64,#{resource.data}")
 
-  # html_sanitize is provided by Google Caja - see https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
-  # RG 8/18/15
-  window.html_sanitize(
-    window.markdown.toHTML(md),
-    (url) -> if /^https?:\/\//.test(url) then url else getBase64IfResource(url), # URL Sanitizer
-    (id) -> id)                                                                  # ID Sanitizer
+DOMPurify.addHook('uponSanitizeElement', getBase64IfResource)
+
+markdownToHtml = (md) ->
+  DOMPurify.sanitize(marked.parse(md))
 
 # (String) => String
 toNetLogoWebMarkdown = (md) ->

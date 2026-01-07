@@ -1,8 +1,5 @@
 @(tagBuilder: TagBuilder)(implicit request: Request[?], environment: play.api.Environment)
 
-@tagBuilder.pathToHTML("lib/google-caja/html-sanitizer-minified.js")
-@tagBuilder.pathToHTML("lib/markdown-js/markdown.js")
-
 <style>
   .inner-content {
     text-align: left;
