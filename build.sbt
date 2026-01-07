@@ -191,7 +191,7 @@ mochaTest := Def.task {
   runNpm(
     log,
     baseDirectory.value,
-    Seq("exec", "--", "mocha", "--recursive", s"${testOutputDirectory.value.toString}/**/*.js")
+    Seq("exec", "mocha", "--", s"${testOutputDirectory.value.toString}/**/*.js")
   )
 }.dependsOn(coffee).value
 
