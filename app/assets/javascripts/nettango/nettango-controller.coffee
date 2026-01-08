@@ -410,15 +410,17 @@ class NetTangoController
 
     # Else target is 'standalone' - JMB August 2018
     parser      = new DOMParser()
-    ntPlayer    = new Request('./nettango-player-standalone')
-    playerFetch = fetch(ntPlayer).then( (ntResp) ->
-      if (not ntResp.ok)
+    cpReq       = new Request('./assets/pages/color-picker/inlined/index.html')
+    ntPlayerReq = new Request('./nettango-player-standalone')
+    playerFetch = Promise.all([fetch(ntPlayerReq), fetch(cpReq)]).then( ([ntResp, cpResp]) ->
+      if not ntResp.ok
         throw Error(ntResp)
-      ntResp.text()
-    ).then( (text) ->
-      parser.parseFromString(text, 'text/html')
-    ).then( (exportDom) =>
-      @exportStandalone(project.title, exportDom, project)
+      if not cpResp.ok
+        throw Error(cpResp)
+      Promise.all([ntResp.text(), cpResp.text()])
+    ).then( ([ntText, cpText]) =>
+      exportDoc = parser.parseFromString(ntText, 'text/html')
+      @exportStandalone(project.title, exportDoc, cpText, project)
     ).catch( (error) =>
       @ractive.fire('nettango-error', {}, 'export-html', error)
       return
@@ -429,15 +431,23 @@ class NetTangoController
   @generateStorageId: () ->
     "ntb-#{Math.random().toString().slice(2).slice(0, 10)}"
 
-  # (String, Document, NetTangoProject) => Unit
-  exportStandalone: (title, exportDom, project) ->
+  # (String, Document, String, NetTangoProject) => Unit
+  exportStandalone: (title, exportDoc, colorPickerHtmlString, project) ->
     project.storageId = NetTangoController.generateStorageId()
 
-    netTangoCodeElement = exportDom.getElementById('nettango-code')
+    # This code is copied from `color-picker` and the call to `code-utils`.  I could try to finagle NetTango to use
+    # these same mechanisms, but they seemed tightly bound to the NetLogo Web HTML export through the widget controller.
+    # This should be fine for NetTango Web's needs.  -Jeremy B January 2026
+    dataTag                 = exportDoc.createElement('data')
+    dataTag.dataset['name'] = 'colorPickerIframe'
+    dataTag.value           = colorPickerHtmlString
+    exportDoc.body.appendChild(dataTag)
+
+    netTangoCodeElement = exportDoc.getElementById('nettango-code')
     netTangoCodeElement.textContent = JSON.stringify(project)
 
     exportWrapper = document.createElement('div')
-    exportWrapper.appendChild(exportDom.documentElement)
+    exportWrapper.appendChild(exportDoc.documentElement)
     exportBlob = new Blob([exportWrapper.innerHTML], { type: 'text/html:charset=utf-8' })
     window.saveAs(exportBlob, "#{title}.html")
     return
