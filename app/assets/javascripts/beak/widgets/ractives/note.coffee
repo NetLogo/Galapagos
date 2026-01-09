@@ -109,8 +109,11 @@ RactiveNote = RactiveWidget.extend({
     'dims': ->
       @updateStyleAndDisplay()
 
-    'widget.*': ->
-      @updateStyleAndDisplay()
+    'widget.*': (_1, _2, _3, propName) ->
+      # The 'compilation' prop shows changed every time through the event loop even though it has not; it's not part of
+      # the style and display updates so we'll ignore it -Jeremy B January 2026
+      if propName isnt 'compilation'
+        @updateStyleAndDisplay()
   }
 
   updateStyleAndDisplay: ->
