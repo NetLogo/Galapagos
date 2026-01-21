@@ -227,7 +227,7 @@ class HNWSession
       role              = ractive.get('hnwRoles')[roleName]
 
       widgetToPair =
-        (isChooser) -> (widget) ->
+        (widget) ->
 
           varName = widget.variable
 
@@ -237,35 +237,39 @@ class HNWSession
             else
               world.turtleManager.getTurtle(who).getVariable(varName)
 
-          trueValue =
-            if isChooser
-              widget.choices.findIndex((x) -> x is value)
-            else
-              value
-
-          [varName, trueValue]
+          [varName, value]
 
       pairs =
         switch type
           when "chooser"
-            role.widgets.filter((w) -> w.type is "hnwChooser").map(widgetToPair(true))
+            chooserToPair = (c) ->
+              [vn, v] = widgetToPair(c)
+              tv = c.choices.findIndex((x) -> x is v)
+              [vn, tv]
+            role.widgets.filter((w) -> w.type is "hnwChooser").map(chooserToPair)
+
           when "input-num"
             boxTypes = ["Color", "Number"]
             role.widgets.filter(
               (w) -> w.type is "hnwInputBox" and w.boxedValue.type in boxTypes
-            ).map(widgetToPair(false))
+            ).map(widgetToPair)
+
           when "input-str"
             boxTypes = ["String", "String (reporter)", "String (commands)"]
             role.widgets.filter(
               (w) -> w.type is "hnwInputBox" and w.boxedValue.type in boxTypes
-            ).map(widgetToPair(false))
+            ).map(widgetToPair)
+
           when "monitor"
             for key, func of @_monitorFuncs[roleName]
               [key, if who? then func(who) else func()]
+
           when "slider"
-            role.widgets.filter((w) -> w.type is "hnwSlider").map(widgetToPair(false))
+            role.widgets.filter((w) -> w.type is "hnwSlider").map(widgetToPair)
+
           when "switch"
-            role.widgets.filter((w) -> w.type is "hnwSwitch").map(widgetToPair(false))
+            role.widgets.filter((w) -> w.type is "hnwSwitch").map(widgetToPair)
+
           else
             console.warn("Unknown widget sync type", type)
 
