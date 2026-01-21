@@ -93,6 +93,7 @@ RactiveSwitch = RactiveValueWidget.extend({
   widgetType: "switch"
 
   on: {
+
     'widget-keydown': ({ original: event }) ->
       if event.key in [' ', 'Enter']
         @set('internalValue', not @get('internalValue'))
@@ -101,20 +102,22 @@ RactiveSwitch = RactiveValueWidget.extend({
         false
       else
         true
+
   }
 
-  # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we
-  # update `on`, because that's what the widget reader looks at at compilation time in
-  # order to determine the value of the Switch. --Jason B. (3/31/16)
   observe: {
-    'widget.on': (isOn, wasOn) ->
-      if (isOn isnt wasOn)
-        @set('internalValue', isOn)
-        @fire('widget-value-change')
-      return
-
-    'widget.currentValue': (isOn) ->
-      @set('widget.on', isOn)
+    # `on` and `currentValue` should be synonymous for Switches.  It is necessary that we update `on`, because that's
+    # what the widget reader looks at at compilation time in order to determine the value of the Switch. --Jason B.
+    # (3/31/16)
+    'widget.currentValue': (newValue) ->
+      if newValue isnt undefined
+        # Oh hey.  You might wonder, "Why not just run `@set('widget.on', newValue)`?"  And that's a good thing to
+        # wonder. Setting the value that way causes a strange bug where the `widget.currentValue` event is not picked up
+        # by *other* observers, notably, `event-traffic-control.onWidgetValueChange()`.  This causes very odd,
+        # hard-to-trace behavior as the state is out-of-sync.  I suspect the root cause is the `on` field being special
+        # in Ractive.js, and it's doing something funky when you use the `@set()` method.  -Jeremy B January 2026.
+        widget = @get('widget')
+        widget.on = newValue
       return
   }
 
