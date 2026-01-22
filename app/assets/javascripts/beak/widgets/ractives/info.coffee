@@ -68,8 +68,7 @@ RactiveInfoTabWidget = Ractive.extend({
 
   template:
     """
-    <div class='netlogo-tab-content netlogo-info'
-         grow-in='{disable:"info-toggle"}' shrink-out='{disable:"info-toggle"}'>
+    <div class='netlogo-tab-content netlogo-info'>
       {{# !isEditing }}
         <div class='netlogo-info-markdown'>{{{sanitizedText}}}</div>
       {{ else }}

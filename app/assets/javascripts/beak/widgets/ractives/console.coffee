@@ -119,8 +119,7 @@ RactiveConsoleWidget = Ractive.extend({
 
   template:
     """
-    <div class='netlogo-tab-content netlogo-command-center'
-         grow-in='{disable:"console-toggle"}' shrink-out='{disable:"console-toggle"}'>
+    <div class='netlogo-tab-content netlogo-command-center'>
       <printArea id='command-center-print-area' output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>

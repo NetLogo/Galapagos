@@ -209,8 +209,7 @@ RactiveModelCodeComponent = Ractive.extend({
   # coffeelint: disable=max_line_length
   template:
     """
-    <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container"
-      grow-in='{disable:"code-tab-toggle"}' shrink-out='{disable:"code-tab-toggle"}'>
+    <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container">
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
           <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="0">
