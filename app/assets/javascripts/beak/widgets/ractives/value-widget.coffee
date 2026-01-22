@@ -5,26 +5,29 @@ RactiveValueWidget = RactiveWidget.extend({
     oldValue:      undefined # Any
     internalValue: undefined # Any
   }
-  # coffeelint: enable=max_line_length
 
   widgetType: undefined # String
 
-  on: {
-    'init': () ->
-      resetValuesToCurrent = () =>
-        currentValue = @get('widget.currentValue')
-        @set('internalValue', currentValue)
-        @set('oldValue',      currentValue)
-        return
+  observe: {
+    'widget.currentValue': (newValue, oldValue) ->
+      if oldValue isnt newValue
+        @set('internalValue', newValue)
+        @set(     'oldValue', newValue)
+      return
+  }
 
-      @observe('widget.currentValue', resetValuesToCurrent)
-      resetValuesToCurrent()
+  on: {
+
+    'init': () ->
+      currentValue = @get('widget.currentValue')
+      @set('internalValue', currentValue)
+      @set(     'oldValue', currentValue)
       return
 
     'widget-value-change': (_, args...) ->
       newValue = @get('internalValue')
       oldValue = @get('oldValue')
-      if (oldValue isnt newValue)
+      if oldValue isnt newValue
         @set('widget.currentValue', newValue)
         widget = @get('widget')
         @fire("#{@widgetType}-widget-changed", widget.id, widget.variable, newValue, oldValue, args...)
