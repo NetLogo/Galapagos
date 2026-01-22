@@ -440,7 +440,7 @@ class WidgetController
 updateWidget = (widget, isHNWClient) ->
 
   if widget.currentValue?
-    widget.currentValue =
+    newValue =
       if widget.variable?
         world.observer.getGlobal(widget.variable)
       else if widget.reporter?
@@ -475,6 +475,9 @@ updateWidget = (widget, isHNWClient) ->
           'N/A'
       else
         widget.currentValue
+
+    if newValue isnt widget.currentValue
+      widget.currentValue = newValue
 
   switch widget.type
 
