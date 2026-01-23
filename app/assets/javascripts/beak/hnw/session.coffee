@@ -82,6 +82,7 @@ class HNWSession
 
   # () => Unit
   init: ->
+    @_setSpectatorGlobals()
     @_initPlotCache()
     return
 
@@ -775,6 +776,42 @@ class HNWSession
 
     { chooserUpdates, inputNumUpdates, inputStrUpdates, monitorUpdates
     , plotUpdates, sliderUpdates, switchUpdates }
+
+  # () => Unit
+  _setSpectatorGlobals: () ->
+    ractive = @_getWC().ractive
+
+    spectators       = Object.values(ractive.get('hnwRoles')).filter( (r) -> r.isSpectator )
+    roleValueWidgets = spectators.map( (r) ->
+      valueWidgetTypes = ["hnwSlider", "hnwSwitch", "hnwChooser", "hnwInputBox"]
+      valueWidgets     = r.widgets.filter( (w) -> valueWidgetTypes.includes(w.type) )
+      { roleName: r.name, valueWidgets }
+    )
+
+    varValuePairs = roleValueWidgets.flatMap( ({roleName, valueWidgets}) ->
+      valueWidgets.map( (w) ->
+        varName       = w.variable
+        globalVarName = "__hnw_#{roleName}_#{varName}"
+        value = switch w.type
+          when "hnwChooser"
+            w.choices[w.currentChoice]
+          when "hnwInputBox"
+            w.boxedValue.value
+          when "hnwSlider"
+            w.default
+          when "hnwSwitch"
+            w.on
+          else
+            throw new Error("Unknown widget type when we just filtered our widget types?")
+        { globalVarName, value }
+      )
+    )
+
+    varValuePairs.forEach( ({ globalVarName, value }) ->
+      world.observer.setGlobal(globalVarName, value)
+    )
+
+    return
 
   # () => Unit
   _initPlotCache: ->
