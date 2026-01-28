@@ -30,9 +30,14 @@ SwitchEditForm = EditForm.extend({
 
     title: "Switch"
 
-    widgetFields:
+    variableForm:
       """
       <formVariable id="{{id}}-varname" name="variable" label="Global variable" value="{{display}}"/>
+      """
+
+    widgetFields:
+      """
+      {{>variableForm}}
       <spacer height="15px" />
       <div class="flex-row"
            style="align-items: center; justify-content: space-between; margin-left: 4px; margin-right: 4px;">
@@ -70,7 +75,7 @@ HNWSwitchEditForm = SwitchEditForm.extend({
 
   partials: {
 
-    widgetFields:
+    variableForm:
       """
       <div class="flex-column">
         <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
