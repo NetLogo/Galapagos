@@ -337,7 +337,7 @@ try {
           function(results) {
             e.source.postMessage({ type: 'baby-behaviorspace-results', id: e.data.id, data: results }, '*')
           };
-          globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
+        globalThis.session.asyncRunBabyBehaviorSpace(e.data.config, reaction);
         break;
       }
       case "nlw-request-model-state": {
