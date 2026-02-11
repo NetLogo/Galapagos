@@ -22,25 +22,40 @@ class WidgetController
       Object.values(@configs.plotOps).forEach((pops) -> pops.setBGColor(color))
     )
 
-  # (String, Number, Number) => Unit
-  createWidget: (widgetType, x, y) ->
+  # (Array[Widget], String, Number, Number, Object[Any]) => { id: Int, widget: Widget }
+  _createWidgetEx: (widgetObj, widgetType, x, y, properties = {}) ->
+    base   = { x, y, type: widgetType, oldSize: false }
+    mixin  = defaultWidgetMixinFor(widgetType, x, y, @_countByType)
+    widget = Object.assign(base, mixin, properties)
+    id     = Math.max(Object.keys(widgetObj).map(parseFloat)...) + 1
 
-    rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
-    adjustedX = Math.round(x - (rect.left + window.scrollX ) )
-    adjustedY = Math.round(y - (rect.top + window.scrollY) )
-    base      = { x: adjustedX, y: adjustedY, type: widgetType, oldSize: false }
-    mixin     = defaultWidgetMixinFor(widgetType, adjustedX, adjustedY, @_countByType)
-    widget    = Object.assign(base, mixin)
-
-    id = Math.max(Object.keys(@ractive.get('widgetObj')).map(parseFloat)...) + 1
-    @ractive.get('widgetObj')[id] = widget
-    @ractive.update('widgetObj')
+    widgetObj[id] = widget
 
     callback = (=> @_performUpdate(); @updateWidgets())
     setUpWidget(@reportError, widget, id, callback, @plotSetupHelper())
 
     if widget.variable? and widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
+
+    { id, widget }
+
+  # The main `createWidget()` method is meant to be used by the authoring tools.  This gives a way for embedding
+  # applications and APIs to create widgets without the authoring expectations.  -Jeremy B January 2026
+  # (String, Number, Number, Object[Any]) => Int
+  createWidgetExternal: (widgetType, x, y, properties) ->
+    widgetObj = @ractive.get('widgetObj')
+    { id } = @_createWidgetEx(widgetObj, widgetType, x, y, properties)
+    @ractive.fire('recompile', 'system')
+    id
+
+  # (String, Number, Number) => Int
+  createWidget: (widgetType, x, y) ->
+    rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
+    adjustedX = Math.round(x - (rect.left + window.scrollX ) )
+    adjustedY = Math.round(y - (rect.top + window.scrollY) )
+
+    { id, widget } = @_createWidgetEx(@ractive.get('widgetObj'), widgetType, adjustedX, adjustedY)
+    @ractive.update('widgetObj')
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
     @ractive.fire('new-widget-initialized', id, widgetType)

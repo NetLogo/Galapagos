@@ -328,6 +328,19 @@ try {
         globalThis.session.run('console', e.data.code)
         break;
       }
+      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-create-widget', widgetType: 'switch', x: 0, y: 10, properties: { variable: 'show-labels?', display: 'show-labels?', on: true, width: 120 } })
+      // For a list of widget properties, see `widget-properties.coffee`.  Defaults for unset values are found in the
+      // `defaultWidgetMixinFor()` function in `widget-controller.coffee`.  Posts back a message with the new widget ID.
+      case 'nlw-create-widget': {
+        const { widgetType, x, y, properties } = e.data;
+        try {
+          const id = globalThis.session.widgetController.createWidgetExternal(widgetType, x, y, properties);
+          e.source.postMessage({ type: 'nlw-create-widget-response', succcess: true, 'newWidgetId': id }, "*");
+        } catch(e) {
+          e.source.postMessage({ type: 'nlw-create-widget-response', success: false, error: e }, "*");
+        }
+        break;
+      }
       case 'nlw-update-model-state': {
         globalThis.session.widgetController.setCode(e.data.codeTabContents);
         break;
