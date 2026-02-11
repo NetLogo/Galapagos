@@ -10,7 +10,7 @@ import { locationProperties, typedWidgetProperties } from "./widget-properties.j
 import { prepareColorPickerForInline } from "./ractives/subcomponent/color-picker.js"
 import CodeUtils from "./code-utils.js"
 
-import { WidgetEventsMap } from "./ractives/widget.js"
+import { WidgetEventsMap, calculateTriggeredEvents } from "./ractives/widget.js"
 
 PenBundle = tortoise_require('engine/plot/pen')
 { DisplayMode: { displayModeFromString } } = PenBundle
@@ -45,9 +45,11 @@ class WidgetController
   # applications and APIs to create widgets without the authoring expectations.  -Jeremy B January 2026
   # (String, Number, Number, Object[Any]) => Int
   createWidgetExternal: (widgetType, x, y, properties) ->
-    widgetObj = @ractive.get('widgetObj')
-    { id } = @_createWidgetEx(widgetObj, widgetType, x, y, properties)
-    @ractive.fire('recompile', 'system')
+    widgetObj      = @ractive.get('widgetObj')
+    { id, widget } = @_createWidgetEx(widgetObj, widgetType, x, y, properties)
+    eventTriggers  = WidgetEventsMap[widgetType]
+    events         = calculateTriggeredEvents(widgetObj, widget, properties, eventTriggers, true, [])
+    events.forEach( (e) => e.run(@ractive, widget) )
     id
 
   # (String, Number, Number) => Int

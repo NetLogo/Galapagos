@@ -110,7 +110,7 @@ WidgetEventsMap = {
     variable: [weg.recompile, weg.rename]
   }
   view: {
-    fontSize:                        [                      weg.redrawView]
+    fontSize:                        [                    weg.redrawView]
   , 'dimensions.maxPxcor':           [    weg.resizeView, weg.redrawView]
   , 'dimensions.maxPycor':           [    weg.resizeView, weg.redrawView]
   , 'dimensions.minPxcor':           [    weg.resizeView, weg.redrawView]
@@ -440,4 +440,4 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 })
 
 export default RactiveWidget
-export { WidgetEventsMap }
+export { WidgetEventsMap, calculateTriggeredEvents }
