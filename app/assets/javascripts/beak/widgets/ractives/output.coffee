@@ -40,13 +40,12 @@ RactiveOutputArea = RactiveWidget.extend({
   , text:               undefined # String
   }
 
+  widgetType: 'output'
+
   components: {
     editForm:  OutputEditForm
   , printArea: RactivePrintArea
   }
-
-  eventTriggers: ->
-    {}
 
   # String -> Unit
   appendText: (str) ->

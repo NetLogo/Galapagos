@@ -63,9 +63,70 @@ WidgetEventGenerators = {
 
 }
 
+weg = WidgetEventGenerators
+
+WidgetEventsMap = {
+  button: {
+    buttonKind: [weg.recompile]
+  ,    forever: [weg.recompile]
+  ,     source: [weg.recompile]
+  },
+  chooser: {
+     choices: [weg.refreshChooser]
+  , variable: [weg.recompile, weg.rename]
+  }
+  input: {
+    currentValue: [weg.updateEngineValue]
+  ,     variable: [weg.recompile, weg.rename]
+  },
+  monitor: {
+    source: [weg.recompile]
+  },
+  note: {},
+  output: {},
+  plot: {
+     autoPlotX: [weg.recompileForPlot]
+  ,  autoPlotY: [weg.recompileForPlot]
+  ,    display: [weg.recompileForPlot]
+  ,   legendOn: [weg.recompileForPlot]
+  ,       pens: [weg.recompileForPlot]
+  ,  setupCode: [weg.recompileForPlot]
+  , updateCode: [weg.recompileForPlot]
+  ,      xAxis: [weg.recompileForPlot]
+  ,       xmax: [weg.recompileForPlot]
+  ,       xmin: [weg.recompileForPlot]
+  ,      yAxis: [weg.recompileForPlot]
+  ,       ymax: [weg.recompileForPlot]
+  ,       ymin: [weg.recompileForPlot]
+  }
+  slider: {
+    currentValue: [weg.updateEngineValue]
+  ,          max: [weg.recompile]
+  ,          min: [weg.recompile]
+  ,         step: [weg.recompile]
+  ,     variable: [weg.recompile, weg.rename]
+  }
+  switch: {
+    variable: [weg.recompile, weg.rename]
+  }
+  view: {
+    fontSize:                        [                      weg.redrawView]
+  , 'dimensions.maxPxcor':           [    weg.resizeView, weg.redrawView]
+  , 'dimensions.maxPycor':           [    weg.resizeView, weg.redrawView]
+  , 'dimensions.minPxcor':           [    weg.resizeView, weg.redrawView]
+  , 'dimensions.minPycor':           [    weg.resizeView, weg.redrawView]
+  , 'dimensions.patchSize':          [ weg.resizePatches, weg.redrawView]
+  , 'dimensions.wrappingAllowedInX': [weg.updateTopology, weg.redrawView]
+  , 'dimensions.wrappingAllowedInY': [weg.updateTopology, weg.redrawView]
+  }
+}
+
 RactiveWidget = RactiveDraggableAndContextable.extend({
 
   _weg: WidgetEventGenerators
+
+  eventTriggers: () ->
+    WidgetEventsMap[@widgetType]
 
   data: -> {
     id:         undefined # String

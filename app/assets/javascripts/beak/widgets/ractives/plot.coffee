@@ -596,22 +596,7 @@ RactivePlot = RactiveWidget.extend({
     editForm: PlotEditForm
   }
 
-  eventTriggers: ->
-    {
-       autoPlotX: [@_weg.recompileForPlot]
-    ,  autoPlotY: [@_weg.recompileForPlot]
-    ,    display: [@_weg.recompileForPlot]
-    ,   legendOn: [@_weg.recompileForPlot]
-    ,       pens: [@_weg.recompileForPlot]
-    ,  setupCode: [@_weg.recompileForPlot]
-    , updateCode: [@_weg.recompileForPlot]
-    ,      xAxis: [@_weg.recompileForPlot]
-    ,       xmax: [@_weg.recompileForPlot]
-    ,       xmin: [@_weg.recompileForPlot]
-    ,      yAxis: [@_weg.recompileForPlot]
-    ,       ymax: [@_weg.recompileForPlot]
-    ,       ymin: [@_weg.recompileForPlot]
-    }
+  widgetType: 'plot'
 
   observe: {
     'width height': ->

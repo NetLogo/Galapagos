@@ -184,8 +184,7 @@ RactiveMonitor = RactiveWidget.extend({
     editForm: MonitorEditForm
   }
 
-  eventTriggers: ->
-    { source: [@_weg.recompile] }
+  widgetType: 'monitor'
 
   # (Widget) => Array[Any]
   getExtraNotificationArgs: () ->

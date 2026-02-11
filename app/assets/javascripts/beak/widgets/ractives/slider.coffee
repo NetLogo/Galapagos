@@ -183,7 +183,7 @@ RactiveSlider = RactiveValueWidget.extend({
       @fire("widget-value-change")
   }
 
-  widgetType: "slider"
+  widgetType: 'slider'
 
   sliderElem: null # HTMLElement
   inputElem:  null # HTMLElement
@@ -270,14 +270,7 @@ RactiveSlider = RactiveValueWidget.extend({
     customSlider: RactiveCustomSlider
   }
 
-  eventTriggers: ->
-    {
-      currentValue: [@_weg.updateEngineValue]
-    ,          max: [@_weg.recompile]
-    ,          min: [@_weg.recompile]
-    ,         step: [@_weg.recompile]
-    ,     variable: [@_weg.recompile, @_weg.rename]
-    }
+  widgetType: 'slider'
 
   minWidth:  60
   minHeight: 33

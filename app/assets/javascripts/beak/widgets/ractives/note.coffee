@@ -129,8 +129,7 @@ RactiveNote = RactiveWidget.extend({
     editForm: NoteEditForm
   }
 
-  eventTriggers: ->
-    {}
+  widgetType: 'note'
 
   # (Widget) => Array[Any]
   getExtraNotificationArgs: () ->

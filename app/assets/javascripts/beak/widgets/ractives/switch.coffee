@@ -90,7 +90,7 @@ RactiveSwitch = RactiveValueWidget.extend({
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   }
 
-  widgetType: "switch"
+  widgetType: 'switch'
 
   on: {
 
@@ -124,9 +124,6 @@ RactiveSwitch = RactiveValueWidget.extend({
   components: {
     editForm: SwitchEditForm
   }
-
-  eventTriggers: ->
-    { variable: [@_weg.recompile, @_weg.rename] }
 
   minWidth:  35
   minHeight: 33

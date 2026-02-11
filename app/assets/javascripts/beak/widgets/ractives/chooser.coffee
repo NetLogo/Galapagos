@@ -155,7 +155,7 @@ RactiveChooser = RactiveValueWidget.extend({
     internalChoice:     0
   }
 
-  widgetType: "chooser"
+  widgetType: 'chooser'
 
   on: {
     'init': () ->
@@ -187,12 +187,6 @@ RactiveChooser = RactiveValueWidget.extend({
   components: {
     editForm: ChooserEditForm
   }
-
-  eventTriggers: ->
-    {
-       choices: [@_weg.refreshChooser]
-    , variable: [@_weg.recompile, @_weg.rename]
-    }
 
   minWidth:  55
   minHeight: 45

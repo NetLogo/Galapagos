@@ -262,12 +262,7 @@ RactiveButton = RactiveWidget.extend({
     editForm: ButtonEditForm
   }
 
-  eventTriggers: ->
-    {
-      buttonKind: [@_weg.recompile]
-    ,    forever: [@_weg.recompile]
-    ,     source: [@_weg.recompile]
-    }
+  widgetType: 'button'
 
   # (Widget) => Array[Any]
   getExtraNotificationArgs: () ->

@@ -131,7 +131,7 @@ RactiveInput = RactiveValueWidget.extend({
     contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
   }
 
-  widgetType: "input"
+  widgetType: 'input'
 
   components: {
     colorInput:       RactiveColorInput
@@ -139,12 +139,6 @@ RactiveInput = RactiveValueWidget.extend({
   , multiLineEditor:  RactiveCodeContainerMultiline
   , singleLineEditor: RactiveCodeContainerOneLine
   }
-
-  eventTriggers: ->
-    {
-      currentValue: [@_weg.updateEngineValue]
-    ,     variable: [@_weg.recompile, @_weg.rename]
-    }
 
   on: {
 
