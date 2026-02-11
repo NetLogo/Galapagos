@@ -270,8 +270,6 @@ RactiveSlider = RactiveValueWidget.extend({
     customSlider: RactiveCustomSlider
   }
 
-  widgetType: 'slider'
-
   minWidth:  60
   minHeight: 33
 

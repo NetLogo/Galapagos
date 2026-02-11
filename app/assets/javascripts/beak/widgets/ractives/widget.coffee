@@ -394,8 +394,12 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
       try
 
-        widget = @get('widget')
-        events = calculateTriggeredEvents(@parent.get('widgetObj'), widget, values, @eventTriggers(), isNewWidget, @getExtraNotificationArgs())
+        widgetObj             = @parent.get('widgetObj')
+        widget                = @get('widget')
+        eventTriggers         = @eventTriggers()
+        notificationEventArgs = @getExtraNotificationArgs()
+
+        events = calculateTriggeredEvents(widgetObj, widget, values, eventTriggers, isNewWidget, notificationEventArgs)
         events.forEach( (e) => e.run(this, widget) )
 
       catch ex
