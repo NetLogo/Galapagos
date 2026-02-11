@@ -121,9 +121,88 @@ WidgetEventsMap = {
   }
 }
 
-RactiveWidget = RactiveDraggableAndContextable.extend({
+calculateTriggeredEvents = (widgetObj, widget, values, eventTriggers, isNewWidget, notifyEventArgs) ->
+  getByPath = (obj) -> (path) ->
+    path.split('.').reduce(((acc, x) -> acc[x]), obj)
 
-  _weg: WidgetEventGenerators
+  setByPath = (obj) -> (path) -> (value) ->
+    [parents..., key] = path.split('.')
+    lastParent = parents.reduce(((acc, x) -> acc[x]), obj)
+    lastParent[key] = value
+
+  extras = values.__extras
+  delete values.__extras
+
+  widgets       = Object.values(widgetObj)
+  isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
+
+  if values.variable? and widgets.some(isTroublesome)
+    [{
+      run:  (ractive, widget) -> ractive.fire('reject-duplicate-var', values.variable)
+      type: "rejectDuplicateVariable"
+    }]
+
+  else
+
+    scrapeWidget =
+      (widget, triggerNames) ->
+        triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
+
+    triggerNames = Object.keys(eventTriggers)
+
+    oldies = scrapeWidget(widget, triggerNames)
+
+    for k, v of values
+      setByPath(widget)(k)(v)
+
+    newies = scrapeWidget(widget, triggerNames)
+
+    eventArraysArray =
+      for name in triggerNames when newies[name] isnt oldies[name]
+        eventTriggers[name].map((constructEvent) -> constructEvent(oldies[name], newies[name]))
+
+    extraEvents =
+      if extras?.recompileForPlot
+        [WidgetEventGenerators.recompileForPlot()]
+      else
+        []
+
+    events = [].concat(extraEvents, eventArraysArray...)
+
+    uniqueEvents =
+      events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
+
+    # Special casing this feels a bit silly, but it works, and given the special casing for plots, I guess it's
+    # par for the course.  Necessary because if the redraw happens before all changes are applied (topology and
+    # world coordinates) then the unapplied stuff is lost.  -Jeremy B December 2023
+    uniqueEvents.sort( (event1, event2) ->
+      if (event1.type is 'redrawView') then 1 else if (event2.type is 'redrawView') then -1 else 0
+    )
+
+    # events = uniqueEvents.map( (e) ->
+      #   if event.type is "recompile-for-plot"
+      #     editForm  = @findComponent('editForm')
+      #     oldName   = editForm.getOldName()
+      #     newName   = widget.display
+      #     renamings = editForm.getRenamings()
+      #     WidgetEventGenerators.recompileForPlot(oldName, newName, renamings)
+      #   else
+      #     event
+
+    uniqueEvents.push({
+      run: (ractive, widget) ->
+        notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
+        ractive.fire(notifyEventName, widget.id, widget.type, notifyEventArgs...)
+      type: 'notifyEvent'
+    },
+    {
+      run: (ractive, widget) -> ractive.fire('update-widgets')
+      type: 'updateWidgetsEvent'
+    })
+
+    uniqueEvents
+
+RactiveWidget = RactiveDraggableAndContextable.extend({
 
   eventTriggers: () ->
     WidgetEventsMap[@widgetType]
@@ -313,83 +392,15 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
     "*.update-widget-value": (_, values, isNewWidget) ->
 
-      getByPath = (obj) -> (path) ->
-        path.split('.').reduce(((acc, x) -> acc[x]), obj)
-
-      setByPath = (obj) -> (path) -> (value) ->
-        [parents..., key] = path.split('.')
-        lastParent = parents.reduce(((acc, x) -> acc[x]), obj)
-        lastParent[key] = value
-
       try
 
-        extras = values.__extras
-        delete values.__extras
-
         widget = @get('widget')
-
-        widgets       = Object.values(@parent.get('widgetObj'))
-        isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
-
-        if values.variable? and widgets.some(isTroublesome)
-          @fire('reject-duplicate-var', values.variable)
-        else
-
-          scrapeWidget =
-            (widget, triggerNames) ->
-              triggerNames.reduce(((acc, x) -> acc[x] = getByPath(widget)(x); acc), {})
-
-          triggers     = @eventTriggers()
-          triggerNames = Object.keys(triggers)
-
-          oldies = scrapeWidget(widget, triggerNames)
-
-          for k, v of values
-            setByPath(widget)(k)(v)
-
-          newies = scrapeWidget(widget, triggerNames)
-
-          eventArraysArray =
-            for name in triggerNames when newies[name] isnt oldies[name]
-              triggers[name].map((constructEvent) -> constructEvent(oldies[name], newies[name]))
-
-          extraEvents =
-            if extras?.recompileForPlot
-              [WidgetEventGenerators.recompileForPlot()]
-            else
-              []
-
-          events = [].concat(extraEvents, eventArraysArray...)
-
-          uniqueEvents =
-            events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
-
-          # Special casing this feels a bit silly, but it works, and given the special casing for plots, I guess it's
-          # par for the course.  Necessary because if the redraw happens before all changes are applied (topology and
-          # world coordinates) then the unapplied stuff is lost.  -Jeremy B December 2023
-          uniqueEvents.sort( (event1, event2) ->
-            if (event1.type is 'redrawView') then 1 else if (event2.type is 'redrawView') then -1 else 0
-          )
-
-          for event in uniqueEvents
-            realEvent =
-              if event.type is "recompile-for-plot"
-                editForm  = @findComponent('editForm')
-                oldName   = editForm.getOldName()
-                newName   = widget.display
-                renamings = editForm.getRenamings()
-                WidgetEventGenerators.recompileForPlot(oldName, newName, renamings)
-              else
-                event
-            realEvent.run(this, widget)
-
-          notifyEventName = if isNewWidget then 'new-widget-finalized' else 'widget-updated'
-          @fire(notifyEventName, widget.id, widget.type, @getExtraNotificationArgs()...)
-
-          @fire('update-widgets')
+        events = calculateTriggeredEvents(@parent.get('widgetObj'), widget, values, @eventTriggers(), isNewWidget, @getExtraNotificationArgs())
+        events.forEach( (e) => e.run(this, widget) )
 
       catch ex
         console.error(ex)
+
       finally
         return false
 
@@ -429,3 +440,4 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 })
 
 export default RactiveWidget
+export { WidgetEventsMap }

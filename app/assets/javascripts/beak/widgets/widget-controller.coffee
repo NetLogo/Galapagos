@@ -10,6 +10,8 @@ import { locationProperties, typedWidgetProperties } from "./widget-properties.j
 import { prepareColorPickerForInline } from "./ractives/subcomponent/color-picker.js"
 import CodeUtils from "./code-utils.js"
 
+import { WidgetEventsMap } from "./ractives/widget.js"
+
 PenBundle = tortoise_require('engine/plot/pen')
 { DisplayMode: { displayModeFromString } } = PenBundle
 
