@@ -85,19 +85,6 @@ WidgetEventsMap = {
   note: {},
   output: {},
   plot: {
-     autoPlotX: [weg.recompileForPlot]
-  ,  autoPlotY: [weg.recompileForPlot]
-  ,    display: [weg.recompileForPlot]
-  ,   legendOn: [weg.recompileForPlot]
-  ,       pens: [weg.recompileForPlot]
-  ,  setupCode: [weg.recompileForPlot]
-  , updateCode: [weg.recompileForPlot]
-  ,      xAxis: [weg.recompileForPlot]
-  ,       xmax: [weg.recompileForPlot]
-  ,       xmin: [weg.recompileForPlot]
-  ,      yAxis: [weg.recompileForPlot]
-  ,       ymax: [weg.recompileForPlot]
-  ,       ymin: [weg.recompileForPlot]
   }
   slider: {
     currentValue: [weg.updateEngineValue]
@@ -130,9 +117,6 @@ calculateTriggeredEvents = (widgetObj, widget, values, eventTriggers, isNewWidge
     lastParent = parents.reduce(((acc, x) -> acc[x]), obj)
     lastParent[key] = value
 
-  extras = values.__extras
-  delete values.__extras
-
   widgets       = Object.values(widgetObj)
   isTroublesome = (w) -> w.variable is values.variable and w.type isnt widget.type
 
@@ -158,16 +142,10 @@ calculateTriggeredEvents = (widgetObj, widget, values, eventTriggers, isNewWidge
     newies = scrapeWidget(widget, triggerNames)
 
     eventArraysArray =
-      for name in triggerNames when newies[name] isnt oldies[name]
+      for name in triggerNames when (newies[name] isnt oldies[name]) or (name is '*')
         eventTriggers[name].map((constructEvent) -> constructEvent(oldies[name], newies[name]))
 
-    extraEvents =
-      if extras?.recompileForPlot
-        [WidgetEventGenerators.recompileForPlot()]
-      else
-        []
-
-    events = [].concat(extraEvents, eventArraysArray...)
+    events = [].concat(eventArraysArray...)
 
     uniqueEvents =
       events.reduce(((acc, x) -> if not acc.find((y) -> y.type is x.type)? then acc.concat([x]) else acc), [])
@@ -178,16 +156,6 @@ calculateTriggeredEvents = (widgetObj, widget, values, eventTriggers, isNewWidge
     uniqueEvents.sort( (event1, event2) ->
       if (event1.type is 'redrawView') then 1 else if (event2.type is 'redrawView') then -1 else 0
     )
-
-    # events = uniqueEvents.map( (e) ->
-      #   if event.type is "recompile-for-plot"
-      #     editForm  = @findComponent('editForm')
-      #     oldName   = editForm.getOldName()
-      #     newName   = widget.display
-      #     renamings = editForm.getRenamings()
-      #     WidgetEventGenerators.recompileForPlot(oldName, newName, renamings)
-      #   else
-      #     event
 
     uniqueEvents.push({
       run: (ractive, widget) ->
@@ -444,4 +412,4 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 })
 
 export default RactiveWidget
-export { WidgetEventsMap, calculateTriggeredEvents }
+export { WidgetEventGenerators, WidgetEventsMap, calculateTriggeredEvents }

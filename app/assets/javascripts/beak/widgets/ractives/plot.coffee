@@ -8,7 +8,9 @@ import RactiveColorInput                from "./subcomponent/color-input.js"
 import { RactiveEditFormDropdown }      from "./subcomponent/dropdown.js"
 import { RactiveEditFormLabeledInput }  from "./subcomponent/labeled-input.js"
 import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
-import RactiveWidget                    from "./widget.js"
+
+import RactiveWidget             from "./widget.js"
+import { WidgetEventGenerators } from "./widget.js"
 
 PlotEditForm = {}
 
@@ -272,8 +274,6 @@ PlotEditForm = EditForm.extend({
 
     name = if form.name.length? then form.name[0].value else form.name.value
 
-    extras = { recompileForPlot: @get('amProvingMyself') }
-
     guiPens = @get('guiPens')
 
     pens = @_clonePens(guiPens)
@@ -297,7 +297,6 @@ PlotEditForm = EditForm.extend({
     ,       ymax: form.yMax.valueAsNumber
     ,       ymin: form.yMin.valueAsNumber
     ,      oldSize: form.oldSize.checked
-    ,   __extras: extras
     }
 
   on: {
@@ -597,6 +596,34 @@ RactivePlot = RactiveWidget.extend({
   }
 
   widgetType: 'plot'
+
+  eventTriggers: () ->
+    widget            = @get('widget')
+    editForm          = @findComponent('editForm')
+    oldName           = editForm.getOldName()
+    newName           = widget.display
+    renamings         = editForm.getRenamings()
+    recompileThisPlot = WidgetEventGenerators.recompileForPlot(oldName, newName, renamings)
+    rtpConstructor    = () -> recompileThisPlot
+    triggers = {
+       autoPlotX: [rtpConstructor]
+    ,  autoPlotY: [rtpConstructor]
+    ,    display: [rtpConstructor]
+    ,   legendOn: [rtpConstructor]
+    ,       pens: [rtpConstructor]
+    ,  setupCode: [rtpConstructor]
+    , updateCode: [rtpConstructor]
+    ,      xAxis: [rtpConstructor]
+    ,       xmax: [rtpConstructor]
+    ,       xmin: [rtpConstructor]
+    ,      yAxis: [rtpConstructor]
+    ,       ymax: [rtpConstructor]
+    ,       ymin: [rtpConstructor]
+    }
+    if @get('amProvingMyself')
+      triggers['*'] = rtpConstructor
+
+    triggers
 
   observe: {
     'width height': ->
