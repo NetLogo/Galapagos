@@ -336,8 +336,19 @@ try {
         try {
           const id = globalThis.session.widgetController.createWidgetExternal(widgetType, x, y, properties);
           e.source.postMessage({ type: 'nlw-create-widget-response', succcess: true, 'newWidgetId': id }, "*");
-        } catch(e) {
-          e.source.postMessage({ type: 'nlw-create-widget-response', success: false, error: e }, "*");
+        } catch(err) {
+          e.source.postMessage({ type: 'nlw-create-widget-response', success: false, error: err }, "*");
+        }
+        break;
+      }
+      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-update-widget', id: 4, properties: { display: 'Setup Sphere Demo' }})
+      case 'nlw-update-widget': {
+        const { id, properties } = e.data;
+        try {
+          globalThis.session.widgetController.updateWidgetExternal(id, properties);
+          e.source.postMessage({ type: 'nlw-update-widget-response', succcess: true }, "*");
+        } catch(err) {
+          e.source.postMessage({ type: 'nlw-update-widget-response', success: false, error: err }, "*");
         }
         break;
       }

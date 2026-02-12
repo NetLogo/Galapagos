@@ -56,6 +56,14 @@ class WidgetController
     events.forEach( (e) => e.run(@ractive, widget) )
     id
 
+  updateWidgetExternal: (id, properties) ->
+    widgetObj     = @ractive.get('widgetObj')
+    widget        = widgetObj[id]
+    eventTriggers = WidgetEventsMap[widget.type]
+    events        = calculateTriggeredEvents(widgetObj, widget, properties, eventTriggers, true, [])
+    events.forEach( (e) => e.run(@ractive, widget) )
+    return
+
   # (String, Number, Number) => Int
   createWidget: (widgetType, x, y) ->
     rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()
