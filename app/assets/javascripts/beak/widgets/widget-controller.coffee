@@ -33,13 +33,16 @@ class WidgetController
 
     widgetObj[id] = widget
 
+    { id, widget }
+
+  _finalizeWidgetEx: (id, widget) ->
     callback = (=> @_performUpdate(); @updateWidgets())
     setUpWidget(@reportError, widget, id, callback, @plotSetupHelper())
 
     if widget.variable? and widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
 
-    { id, widget }
+    return
 
   # The main `createWidget()` method is meant to be used by the authoring tools.  This gives a way for embedding
   # applications and APIs to create widgets without the authoring expectations.  -Jeremy B January 2026
@@ -47,8 +50,9 @@ class WidgetController
   createWidgetExternal: (widgetType, x, y, properties) ->
     widgetObj      = @ractive.get('widgetObj')
     { id, widget } = @_createWidgetEx(widgetObj, widgetType, x, y, properties)
+    @_finalizeWidgetEx(id, widget)
     eventTriggers  = WidgetEventsMap[widgetType]
-    events         = calculateTriggeredEvents(widgetObj, widget, properties, eventTriggers, true, [])
+    events         = calculateTriggeredEvents(widgetObj, { type: widgetType }, properties, eventTriggers, true, [])
     events.forEach( (e) => e.run(@ractive, widget) )
     id
 
@@ -60,6 +64,7 @@ class WidgetController
 
     { id, widget } = @_createWidgetEx(@ractive.get('widgetObj'), widgetType, adjustedX, adjustedY)
     @ractive.update('widgetObj')
+    @_finalizeWidgetEx(id, widget)
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is widget).fire('initialize-widget')
     @ractive.fire('new-widget-initialized', id, widgetType)
