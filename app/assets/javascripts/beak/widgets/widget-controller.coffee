@@ -64,6 +64,10 @@ class WidgetController
     events.forEach( (e) => e.run(@ractive, widget) )
     return
 
+  deleteWidgetExternal: (id) ->
+    @removeWidgetById(id, false, [])
+    return
+
   # (String, Number, Number) => Int
   createWidget: (widgetType, x, y) ->
     rect      = document.querySelector('.netlogo-widget-container').getBoundingClientRect()

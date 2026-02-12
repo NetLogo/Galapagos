@@ -352,6 +352,16 @@ try {
         }
         break;
       }
+      case 'nlw-delete-widget': {
+        const { id } = e.data;
+        try {
+          globalThis.session.widgetController.deleteWidgetExternal(id);
+          e.source.postMessage({ type: 'nlw-delete-widget-response', succcess: true }, "*");
+        } catch(err) {
+          e.source.postMessage({ type: 'nlw-delete-widget-response', success: false, error: err }, "*");
+        }
+        break;
+      }
       case 'nlw-update-model-state': {
         globalThis.session.widgetController.setCode(e.data.codeTabContents);
         break;
