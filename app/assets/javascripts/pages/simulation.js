@@ -255,6 +255,10 @@ try {
       return;
     }
 
+    // If you're running through an iframe you can post a message to the simulation environment like so:
+    // `document.getElementById('model-container').contentWindow.postMessage(message, '*')` That assumes your iframe element
+    // has an `id="model-container"`.
+    // Examples of message structures are given for some of the commands.
     switch (e.data.type) {
       case 'nlw-load-model': {
         notifyListeners('model-load', 'file', e.data.path);
@@ -292,28 +296,29 @@ try {
         );
         break;
       }
-      // EXAMPLE:
-      // document.getElementById('model-container').contentWindow.postMessage({
+      // nlw-set-model-code EXAMPLE:
+      // {
       //   type: 'nlw-set-model-code',
       //   codeTabContents: 'globals [ var-1 var-2 ]\nto setup\n  show "setup"\nend\nto go\n  show "go"\nend',
       //   autoRecompile: false
-      // }, '*')
+      // }
       case 'nlw-set-model-code': {
         globalThis.session.widgetController.setCode(e.data.codeTabContents, e.data.autoRecompile);
         break;
       }
-      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-recompile' }, '*')
+      // nlw-recompile EXAMPLE:
+      // { type: 'nlw-recompile' }
       case 'nlw-recompile': {
         globalThis.session.recompile('system');
         break;
       }
-      // EXAMPLE:
-      // document.getElementById('model-container').contentWindow.postMessage({
+      // nlw-recompile-procedures EXAMPLE:
+      // {
       //   type: 'nlw-recompile-procedures',
       //   proceduresCode: 'to go show "go has been replaced!" end to setup show "setup has been replaced!" end',
       //   procedureNames: ['GO', 'SETUP'],
       //   autoRerunForevers: true
-      // }, '*')
+      // }
       // NOTE: This does not update the code tab contents in the UI.  If you want that updated, too, you'll need to use
       // `nlw-set-model-code` with `autoRecompile: false`.
       case 'nlw-recompile-procedures': {
@@ -323,14 +328,37 @@ try {
         globalThis.session.recompileProcedures(e.data.proceduresCode, e.data.procedureNames, rerun)
         break;
       }
-      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-run-code', code: 'setup' }, '*')
+      // nlw-run-code EXAMPLE:
+      // { type: 'nlw-run-code', code: 'setup' }
       case 'nlw-run-code': {
         globalThis.session.run('console', e.data.code)
         break;
       }
-      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-create-widget', widgetType: 'switch', x: 0, y: 10, properties: { variable: 'show-labels?', display: 'show-labels?', on: true, width: 120 } })
-      // For a list of widget properties, see `widget-properties.coffee`.  Defaults for unset values are found in the
-      // `defaultWidgetMixinFor()` function in `widget-controller.coffee`.  Posts back a message with the new widget ID.
+      // nlw-create-widget EXAMPLES:
+      // {
+      //   type: 'nlw-create-widget'
+      // , widgetType: 'switch'
+      // , x: 0, y: 10
+      // , properties: { variable: 'show-labels?', display: 'show-labels?', on: true, width: 120 }
+      // }
+      // {
+      //   type: 'nlw-create-widget'
+      // , widgetType: 'slider'
+      // , x: 0, y: 0
+      // , properties: { 'default': 50, 'direction': "horizontal", 'display': 'slider-var1', 'max': "100", 'min': "0", 'step': "1", 'units': null, 'variable': 'slider-var1' }
+      // }
+      // {
+      //   type: 'nlw-create-widget'
+      // , widgetType: 'monitor'
+      // , x: 0, y: 0
+      // , properties: { display: 'blue car avg', source: 'mean [speed] of (turtles with [color = blue])'  }
+      // }
+      // NOTE: For a list of properties for each widget type, see `widget-properties.coffee`.  You might also want to
+      // check the `genProps()` methods on the widget Ractives to see how NLW expects the values presented.  For
+      // example, the `variable` property is expected to be lowercase for widgets that have it, and the `min`, `max`,
+      // and `step` for sliders take string values instead of numbers because they can be NetLogo code (reporters).
+      // Defaults for unset values are found in the `defaultWidgetMixinFor()` function in `widget-controller.coffee` and
+      // they'll be used if you don't provide a value. Posts back a message with the new widget ID.
       case 'nlw-create-widget': {
         const { widgetType, x, y, properties } = e.data;
         try {
@@ -341,7 +369,8 @@ try {
         }
         break;
       }
-      // EXAMPLE: document.getElementById('model-container').contentWindow.postMessage({ type: 'nlw-update-widget', id: 4, properties: { display: 'Setup Sphere Demo' }})
+      // nlw-update-widget EXAMPLE:
+      // { type: 'nlw-update-widget', id: 4, properties: { display: 'Setup Sphere Demo' }}
       case 'nlw-update-widget': {
         const { id, properties } = e.data;
         try {
@@ -352,6 +381,8 @@ try {
         }
         break;
       }
+      // nlw-delete-widget EXAMPLE:
+      // { type: 'nlw-delete-widget', id: 14 }
       case 'nlw-delete-widget': {
         const { id } = e.data;
         try {
