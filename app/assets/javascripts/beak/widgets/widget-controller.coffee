@@ -24,7 +24,7 @@ class WidgetController
       Object.values(@configs.plotOps).forEach((pops) -> pops.setBGColor(color))
     )
 
-  # (Array[Widget], String, Number, Number, Object[Any]) => { id: Int, widget: Widget }
+  # (Object[Widget], String, Number, Number, Object[Any]) => { id: Int, widget: Widget }
   _createWidgetEx: (widgetObj, widgetType, x, y, properties = {}) ->
     base   = { x, y, type: widgetType, oldSize: false }
     mixin  = defaultWidgetMixinFor(widgetType, x, y, @_countByType)
