@@ -74,7 +74,7 @@ WidgetEventsMap = {
   chooser: {
      choices: [weg.refreshChooser]
   , variable: [weg.recompile, weg.rename]
-  }
+  },
   input: {
     currentValue: [weg.updateEngineValue]
   ,     variable: [weg.recompile, weg.rename]
@@ -84,7 +84,10 @@ WidgetEventsMap = {
   },
   note: {},
   output: {},
+  # Plots have "dynamic" triggers generated in the Plot widget code.  The wildcard here is used in cases where the plot
+  # updates are coming through the API.  -Jeremy B February 2026
   plot: {
+    '*': [weg.recompile]
   }
   slider: {
     currentValue: [weg.updateEngineValue]
