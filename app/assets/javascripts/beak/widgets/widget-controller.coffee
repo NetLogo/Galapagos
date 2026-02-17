@@ -60,7 +60,7 @@ class WidgetController
     widgetObj     = @ractive.get('widgetObj')
     widget        = widgetObj[id]
     eventTriggers = WidgetEventsMap[widget.type]
-    events        = calculateTriggeredEvents(widgetObj, widget, properties, eventTriggers, true, [])
+    events        = calculateTriggeredEvents(widgetObj, widget, properties, eventTriggers, false, [])
     events.forEach( (e) => e.run(@ractive, widget) )
     return
 
