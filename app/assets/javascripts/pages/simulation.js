@@ -363,7 +363,7 @@ try {
         const { widgetType, x, y, properties } = e.data;
         try {
           const id = globalThis.session.widgetController.createWidgetExternal(widgetType, x, y, properties);
-          e.source.postMessage({ type: 'nlw-create-widget-response', succcess: true, 'newWidgetId': id }, "*");
+          e.source.postMessage({ type: 'nlw-create-widget-response', success: true, 'newWidgetId': id }, "*");
         } catch(err) {
           e.source.postMessage({ type: 'nlw-create-widget-response', success: false, error: err }, "*");
         }
@@ -375,7 +375,7 @@ try {
         const { id, properties } = e.data;
         try {
           globalThis.session.widgetController.updateWidgetExternal(id, properties);
-          e.source.postMessage({ type: 'nlw-update-widget-response', succcess: true }, "*");
+          e.source.postMessage({ type: 'nlw-update-widget-response', success: true }, "*");
         } catch(err) {
           e.source.postMessage({ type: 'nlw-update-widget-response', success: false, error: err }, "*");
         }
@@ -387,7 +387,7 @@ try {
         const { id } = e.data;
         try {
           globalThis.session.widgetController.deleteWidgetExternal(id);
-          e.source.postMessage({ type: 'nlw-delete-widget-response', succcess: true }, "*");
+          e.source.postMessage({ type: 'nlw-delete-widget-response', success: true }, "*");
         } catch(err) {
           e.source.postMessage({ type: 'nlw-delete-widget-response', success: false, error: err }, "*");
         }
