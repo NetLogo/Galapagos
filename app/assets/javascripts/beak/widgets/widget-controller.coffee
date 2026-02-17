@@ -50,6 +50,7 @@ class WidgetController
   createWidgetExternal: (widgetType, x, y, properties) ->
     widgetObj      = @ractive.get('widgetObj')
     { id, widget } = @_createWidgetEx(widgetObj, widgetType, x, y, properties)
+    @ractive.update('widgetObj')
     @_finalizeWidgetEx(id, widget)
     eventTriggers  = WidgetEventsMap[widgetType]
     events         = calculateTriggeredEvents(widgetObj, { type: widgetType }, properties, eventTriggers, true, [])
