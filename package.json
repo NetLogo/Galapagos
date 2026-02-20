@@ -1,4 +1,5 @@
 {
+  "name": "galapagos",
   "type": "module",
   "mocha": {},
   "dependencies": {
