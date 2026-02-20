@@ -1,4 +1,5 @@
 {
+  "name": "galapagos",
   "type": "module",
   "scripts": {
     "postinstall": "node scripts/minify-codemirror.js"
