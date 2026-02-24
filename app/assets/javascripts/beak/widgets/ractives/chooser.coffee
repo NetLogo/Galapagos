@@ -6,6 +6,7 @@ import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import { dumpValue as dump } from "../../tortoise-utils.js"
+import RactiveHNWEditFormVariable from "./subcomponent/hnw-variable.js"
 
 ChooserEditForm = EditForm.extend({
 
@@ -94,6 +95,11 @@ HNWChooserEditForm = ChooserEditForm.extend({
     formDropdown: RactiveEditFormDropdown
   }
 
+  components: {
+    formDropdown: RactiveEditFormDropdown
+  , hnwNewVar:    RactiveHNWEditFormVariable
+  }
+
   computed: {
     sortedBreedVars: {
       get: -> @get('breedVars').slice(0).sort()
@@ -126,10 +132,9 @@ HNWChooserEditForm = ChooserEditForm.extend({
     variableForm:
       """
       <div class="flex-column">
-        <formDropdown id="{{id}}-varname" name="varName" label="Turtle variable"
-                      choices="{{sortedBreedVars}}" selected="{{display}}" />
-        <button on-click="@this.fire('add-breed-var', @this)"
-                type="button" style="height: 30px;">Define New Variable</button>
+        <formDropdown id="{{id}}-varname" name="varName" label="Variable"
+                      choices="{{sortedBreedVars}}" selected="{{variable}}" />
+        <hnwNewVar />
       </div>
       """
 
@@ -203,7 +208,7 @@ RactiveChooser = RactiveValueWidget.extend({
         {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" variable="{{widget.variable}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
     """
 
   partials: {

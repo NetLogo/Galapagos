@@ -280,9 +280,19 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
   # (String, Ractive) => Unit
   _defineNewBreedVar: (varName, sender) ->
-    @set('breedVars', [varName].concat(@get('breedVars')))
-    sender.fire('use-new-var', varName)
-    @fire('new-breed-var', varName)
+    lowered = varName.toLowerCase()
+    @set('breedVars', [lowered].concat(@get('breedVars')))
+    sender.fire('use-new-var', lowered)
+    @fire('new-breed-var', lowered)
+
+  # (String, Ractive) => Unit
+  _defineNewSpectatorGlobalVar: (varName, sender) ->
+    lowered = varName.toLowerCase()
+    @set('breedVars', [lowered].concat(@get('breedVars')))
+    sender.fire('use-new-var', lowered)
+    roleName = @parent.get('metadata').roleName
+    globalVarName = "__hnw_#{roleName}_#{lowered}"
+    @fire('new-spectator-global-var', globalVarName)
 
   # (String) => Boolean
   _isValidIdentifier: (ident) ->
@@ -355,7 +365,32 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       return
 
     "*.add-breed-var": ({ component: sender }) ->
-      @_addNewTerm(sender, (v, s) => @_defineNewBreedVar(v, s))
+      isSpectator = @parent.get("metadata").isSpectator
+      finalizer = if isSpectator
+        (v, s) => @_defineNewSpectatorGlobalVar(v, s)
+      else
+        (v, s) => @_defineNewBreedVar(v, s)
+      @_addNewTerm(sender, finalizer)
+      return
+
+    "*.add-named-breed-var": ({ component: sender }, varName) ->
+      if @_isValidIdentifier(varName)
+        { globalVars, myVars, procedures } = @parent.get('metadata')
+        globalNames      = globalVars.map( (g) -> g.name )
+        procNames        = procedures.map( (p) -> p.name )
+        takenIdentifiers = keywords.all.concat(globalNames, myVars, procNames)
+        loweredTakens    = takenIdentifiers.map( (ident) -> ident.toLowerCase() )
+        if not loweredTakens.includes(varName.toLowerCase())
+          isSpectator = @parent.get("metadata").isSpectator
+          if isSpectator
+            @_defineNewSpectatorGlobalVar(varName, sender)
+          else
+            @_defineNewBreedVar(varName, sender)
+        else
+          sender.fire('nlw-notify', "Name already in use!")
+      else
+        sender.fire('nlw-notify', "Not a valid NetLogo identifier!")
+      return
 
     "*.has-been-proven-unworthy": ->
       # Original event name: "cutMyLifeIntoPieces" --Jason B. (11/8/17)

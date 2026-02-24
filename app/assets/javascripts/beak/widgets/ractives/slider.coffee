@@ -8,6 +8,7 @@ import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
 import RactiveCustomSlider from "./subcomponent/custom-slider.js"
 import { isMac } from "../accessibility/utils.js"
+import RactiveHNWEditFormVariable from "./subcomponent/hnw-variable.js"
 
 # coffeelint: disable=max_line_length
 FlexColumn = Ractive.extend({
@@ -137,6 +138,7 @@ HNWSliderEditForm = SliderEditForm.extend({
 
   components: {
     formDropdown: RactiveEditFormDropdown
+  , hnwNewVar:    RactiveHNWEditFormVariable
   }
 
   computed: {
@@ -152,7 +154,8 @@ HNWSliderEditForm = SliderEditForm.extend({
 
   on: {
     'use-new-var': (_, varName) ->
-      @set('variable', varName)
+      @set('display',  varName)
+      @set('variable', varName.toLowerCase())
       return
   }
 
@@ -161,9 +164,9 @@ HNWSliderEditForm = SliderEditForm.extend({
     variableForm:
       """
       <div class="flex-column">
-        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
+        <formDropdown id="{{id}}-varname" name="variable" label="Variable"
                       choices="{{sortedBreedVars}}" selected="{{variable}}" />
-        <button on-click="@this.fire('add-breed-var', @this)" type="button" style="height: 30px;">Define New Variable</button>
+        <hnwNewVar />
       </div>
       """
 

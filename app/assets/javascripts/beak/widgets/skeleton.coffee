@@ -65,7 +65,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , lastCompileFailed:     false
   , lastDragX:             undefined
   , lastDragY:             undefined
-  , metadata:              { globalVars: [], myVars: [], procedures: [] }
+  , metadata:              { globalVars: [], myVars: [], procedures: [], isSpectator: false, roleName: "unset" }
   , modelTitle:            source.getModelTitle()
   , outputWidgetOutput:    ''
   , primaryView:           undefined
