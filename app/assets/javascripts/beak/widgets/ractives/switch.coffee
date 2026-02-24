@@ -139,7 +139,10 @@ RactiveSwitch = RactiveValueWidget.extend({
     """
     {{>editorOverlay}}
     {{>switch}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" variable="{{widget.variable}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
+    <editForm idBasis="{{id}}"
+      display="{{widget.display}}" variable="{{widget.variable}}"
+      breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}"
+      />
     """
 
   # coffeelint: disable=max_line_length

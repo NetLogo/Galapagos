@@ -102,10 +102,6 @@ HNWChooserEditForm = ChooserEditForm.extend({
 
   components: {
     formDropdown: RactiveEditFormDropdown
-  }
-
-  components: {
-    formDropdown: RactiveEditFormDropdown
   , hnwNewVar:    RactiveHNWEditFormVariable
   }
 
