@@ -107,7 +107,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
     reporterChoices: {
       get: ->
 
-        { globalVars, myVars, procedures } = @get('metadata')
+        { globalVars, myVars, procedures, isSpectator } = @get('metadata')
 
         globalsNames = globalVars.map((g) -> g.name)
 
@@ -116,7 +116,10 @@ HNWMonitorEditForm = MonitorEditForm.extend({
             (p) ->
               p.isReporter and
               p.argCount is 0 and
-              (p.isUseableByObserver or p.isUseableByTurtles)
+              (if isSpectator
+                p.isUseableByObserver
+              else
+                p.isUseableByObserver or p.isUseableByTurtles)
           ).map(
             (p) -> p.name
           )
@@ -135,7 +138,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
       if source is ""
         "procedure"
       else
-        { globalVars, myVars, procedures } = @get('metadata')
+        { globalVars, myVars, procedures, isSpectator } = @get('metadata')
         proc = procedures.find((p) -> p.name is source)
         if proc?
           if proc.isUseableByObserver
@@ -143,7 +146,7 @@ HNWMonitorEditForm = MonitorEditForm.extend({
           else
             "turtle-procedure"
         else if myVars.includes(source)
-          "turtle-var"
+          if isSpectator then "spectator-var" else "turtle-var"
         else if globalVars.map((g) -> g.name).includes(source)
           "global-var"
         else

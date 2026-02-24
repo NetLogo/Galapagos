@@ -159,6 +159,11 @@ registerMonitor = (monitor, roleName, session) ->
       when "global-var"
         do (monitor) -> safely(-> world.observer.getGlobal(monitor.source))
 
+      when "spectator-var"
+        do (monitor) ->
+          prefixed = "__hnw_#{roleName}_#{monitor.source}"
+          safely(-> world.observer.getGlobal(prefixed))
+
       when "procedure"
         do (monitor) -> safely(-> runReporter(monitor.source))
 
