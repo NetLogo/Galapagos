@@ -590,14 +590,14 @@ document.getElementById("test-model-button").onclick = ->
 
   return
 
-addNewBreedVar = (breedName, varName) ->
+addNewVar = (sectionName, varName) ->
 
   oldCode = lastWrangler.getCode()
 
-  regex = new RegExp("(#{breedName}-own\\s+\\[.*?)( *)\\]", "ms")
+  regex = new RegExp("(#{sectionName}\\s+\\[.*?)( *)\\]", "ms")
   newCode =
+    # Regex paths commented by Jason B. (5/21/21)
     if regex.test(oldCode)
-      # Regex paths commented by Jason B. (5/21/21)
       # Path 1: There is already a `breed-owns` declaration for this breed, so append to it
       oldCode.replace(regex, "$1 #{varName}$2]")
     else
@@ -605,10 +605,11 @@ addNewBreedVar = (breedName, varName) ->
       if regex2.test(oldCode)
         # Path 2: There's no declaration for this breed, so make a new one.
         # Place it just before the declaration (and any comments) for the first procedure.
-        oldCode.replace(regex2, "$1#{breedName}-own [ #{varName} ]\n\n$2")
+        oldCode.replace(regex2, "$1#{sectionName} [ #{varName} ]\n\n$2")
       else
         # Path 3: There are no procedures; simply append the new declaration to the code
-        "#{oldCode}\n\n#{breedName}-own [ #{varName} ]"
+        "#{oldCode}\n\n#{sectionName} [ #{varName} ]"
+
   lastWrangler = lastWrangler.withCode(newCode)
 
   return
@@ -626,9 +627,15 @@ window.addEventListener('message', (e) ->
       configElement = modelElement.querySelector("hubnet-web-config")
       configJson    = if configElement? then stripXMLCdata(configElement.innerHTML) else "{}"
       initialize(nlogox, JSON.parse(configJson))
+
     when "new-breed-var"
-      addNewBreedVar(e.data.breed, e.data.var)
+      addNewVar("#{e.data.breed}-own", e.data.var)
       recompile()
+
+    when "new-spectator-global-var"
+      addNewVar("globals", e.data.var)
+      recompile()
+
     when "delete-me"
       iframe        = e.source.frameElement
       roleName      = iframe.dataset.roleName
@@ -638,11 +645,14 @@ window.addEventListener('message', (e) ->
       iframe.remove()
       button.remove()
       recompile()
+
     when "compile-with"
       wrangler = lastWrangler.withCode(e.data.code)
       genConfigP().then((config) -> reinitialize(wrangler, config))
+
     when "recompile"
       recompile()
+
     when "resize-me"
       { height, width, hnwID } = e.data.data
       f = (c) -> c.contentWindow is e.source or c.contentWindow.hnwID is hnwID
@@ -650,7 +660,9 @@ window.addEventListener('message', (e) ->
       container  = containers.find(f)
       container.height = height
       container.width  = width
+
     when "code-save-response", "role-save-response"
+
     else
       console.warn("Unknown event type", e.data)
 )

@@ -137,6 +137,19 @@ window.onmessage = (e) ->
       { globalVars, myVars, procedures } = e.data
       cachedConfig                       = e.data.role
 
+      # If an edit form is open, avoid a full session teardown that would forcibly
+      # close it.  Just refresh the metadata so breed-var dropdowns stay current,
+      # and let the user finish editing before the next full reload arrives.
+      if session? and modelContainer.querySelector('.widget-edit-form-overlay')?
+        session.widgetController.ractive.set(
+          'metadata'
+        , { globalVars, myVars, procedures
+          , isSpectator: cachedConfig.isSpectator
+          , roleName:    cachedConfig.name
+          }
+        )
+        return
+
       possibleMetaProcedures = (argsNum) ->
         procedures.filter(
           ({ argCount, isReporter, isUseableByObserver, isUseableByTurtles }) ->
@@ -199,6 +212,9 @@ window.onmessage = (e) ->
 
       view = Object.assign({}, hnwView, viewShim)
 
+      isSpectator = cachedConfig.isSpectator
+      roleName    = cachedConfig.name
+
       session?.teardown()
       activeContainer = loadingOverlay
       Tortoise.loadHubNetWeb(modelContainer, cachedConfig, view, openSession, listeners)
@@ -207,10 +223,15 @@ window.onmessage = (e) ->
       ractive.set("isEditing", true )
       ractive.set("isHNW"    , true )
       ractive.set("isHNWHost", false)
-      ractive.set("metadata" , { globalVars, myVars, procedures })
+      ractive.set("metadata" , { globalVars, myVars, procedures, isSpectator, roleName })
 
       ractive.on("*.new-breed-var", (_, varName) ->
         msg = { type: "new-breed-var", breed: cachedConfig.namePlural, var: varName }
+        parent.postMessage(msg, "*")
+        return
+      )
+      ractive.on("*.new-spectator-global-var", (_, globalVarName) ->
+        msg = { type: "new-spectator-global-var", var: globalVarName }
         parent.postMessage(msg, "*")
         return
       )
@@ -264,6 +285,7 @@ window.onmessage = (e) ->
 
     when "update-metadata"
       session.widgetController.ractive.set("metadata", e.data.metadata)
+
     else
       console.warn("Unknown config event type: #{e.data.type}")
 

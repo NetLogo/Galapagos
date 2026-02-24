@@ -3,6 +3,7 @@ import EditForm from "./edit-form.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
+import RactiveHNWEditFormVariable from "./subcomponent/hnw-variable.js"
 
 SwitchEditForm = EditForm.extend({
 
@@ -53,7 +54,8 @@ SwitchEditForm = EditForm.extend({
 HNWSwitchEditForm = SwitchEditForm.extend({
 
   components: {
-    formDropdown: RactiveEditFormDropdown
+    formDropdown:  RactiveEditFormDropdown
+  , hnwNewVar:     RactiveHNWEditFormVariable
   }
 
   computed: {
@@ -69,7 +71,8 @@ HNWSwitchEditForm = SwitchEditForm.extend({
 
   on: {
     'use-new-var': (_, varName) ->
-      @set('display', varName)
+      @set('display',  varName)
+      @set('variable', varName.toLowerCase())
       return
   }
 
@@ -78,10 +81,9 @@ HNWSwitchEditForm = SwitchEditForm.extend({
     variableForm:
       """
       <div class="flex-column">
-        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
-                      choices="{{sortedBreedVars}}" selected="{{display}}" />
-        <button on-click="@this.fire('add-breed-var', @this)"
-                type="button" style="height: 30px;">Define New Variable</button>
+        <formDropdown id="{{id}}-varname" name="variable" label="Variable"
+                      choices="{{sortedBreedVars}}" selected="{{variable}}" />
+        <hnwNewVar />
       </div>
       """
 
@@ -137,7 +139,7 @@ RactiveSwitch = RactiveValueWidget.extend({
     """
     {{>editorOverlay}}
     {{>switch}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
+    <editForm idBasis="{{id}}" display="{{widget.display}}" variable="{{widget.variable}}" breedVars="{{breedVars}}" oldSize="{{widget.oldSize}}" />
     """
 
   # coffeelint: disable=max_line_length

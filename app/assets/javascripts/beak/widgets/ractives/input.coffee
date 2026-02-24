@@ -6,6 +6,7 @@ import { RactiveCodeContainerMultiline, RactiveCodeContainerOneLine } from "./su
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
+import RactiveHNWEditFormVariable from "./subcomponent/hnw-variable.js"
 
 InputEditForm = EditForm.extend({
 
@@ -90,6 +91,7 @@ HNWInputEditForm = InputEditForm.extend({
 
   components: {
     formDropdown: RactiveEditFormDropdown
+  , hnwNewVar:    RactiveHNWEditFormVariable
   }
 
   computed: {
@@ -105,7 +107,8 @@ HNWInputEditForm = InputEditForm.extend({
 
   on: {
     'use-new-var': (_, varName) ->
-      @set('display', varName)
+      @set('display',  varName)
+      @set('variable', varName.toLowerCase())
       return
   }
 
@@ -114,10 +117,9 @@ HNWInputEditForm = InputEditForm.extend({
     variableForm:
       """
       <div class="flex-column">
-        <formDropdown id="{{id}}-varname" name="variable" label="Turtle variable"
-                      choices="{{sortedBreedVars}}" selected="{{display}}" />
-        <button on-click="@this.fire('add-breed-var', @this)"
-                type="button" style="height: 30px;">Define New Variable</button>
+        <formDropdown id="{{id}}-varname" name="variable" label="Variable"
+                      choices="{{sortedBreedVars}}" selected="{{variable}}" />
+        <hnwNewVar />
       </div>
       """
 
@@ -244,6 +246,7 @@ RactiveInput = RactiveValueWidget.extend({
     {{>editorOverlay}}
     {{>input}}
     <editForm idBasis="{{id}}" boxtype="{{widget.boxedValue.type}}" display="{{widget.display}}"
+              variable="{{widget.variable}}"
               {{# widget.boxedValue.type !== 'Color' && widget.boxedValue.type !== 'Number' }}
                 isMultiline="{{widget.boxedValue.multiline}}"
               {{/}} value="{{widget.currentValue}}"
