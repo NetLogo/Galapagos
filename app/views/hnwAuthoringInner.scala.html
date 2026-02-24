@@ -92,6 +92,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.min.js")
     @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.min.js")
 
+    @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
     @tagBuilder.callToHTML(routes.Local.engine, "tortoise-engine.js")
 
     @helper.javascriptRouter("jsRoutes")(

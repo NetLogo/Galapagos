@@ -114,9 +114,6 @@ HNWChooserEditForm = ChooserEditForm.extend({
       return
   }
 
-  _reify: (choices) ->
-    window.parent.Converter.stringToJSValue("[#{choices}]")
-
   partials: {
 
     codeInput:
