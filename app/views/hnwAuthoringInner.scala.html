@@ -90,6 +90,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
 
+    @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
     @tagBuilder.callToHTML(routes.Local.engine, "tortoise-engine.js")
 
     @helper.javascriptRouter("jsRoutes")(
