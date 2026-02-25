@@ -596,8 +596,8 @@ addNewVar = (sectionName, varName) ->
 
   regex = new RegExp("(#{sectionName}\\s+\\[.*?)( *)\\]", "ms")
   newCode =
-    # Regex paths commented by Jason B. (5/21/21)
     if regex.test(oldCode)
+      # Regex paths commented by Jason B. (5/21/21)
       # Path 1: There is already a `breed-owns` declaration for this breed, so append to it
       oldCode.replace(regex, "$1 #{varName}$2]")
     else
