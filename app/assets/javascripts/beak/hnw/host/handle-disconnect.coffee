@@ -27,8 +27,11 @@ handleDisconnect = (getClient, unregisterClient, getRole, getSession) -> (e) ->
       if not turtle.isDead()
         turtle.ask((-> SelfManager.self().die()), false)
 
-    if afterDC?
-      runAmbiguous(afterDC, who)
+      if afterDC?
+        runAmbiguous(afterDC, who)
+
+    else
+      runAmbiguous(afterDC)
 
     session.updateWithoutRendering()
 
