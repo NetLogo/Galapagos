@@ -11,19 +11,21 @@ handleDisconnect = (getClient, unregisterClient, getRole, getSession) -> (e) ->
   if client?
 
     { roleName, who } = client
-    onDC              = getRole(roleName).onDisconnect
-    afterDC           = getRole(roleName).afterDisconnect
+    role              = getRole(roleName)
+    onDC              = role.onDisconnect
+    afterDC           = role.afterDisconnect
 
     unregisterClient(id)
     session.hnw.unsubscribe(id)
 
-    turtle = world.turtleManager.getTurtle(who)
+    if not role.isSpectator
+      turtle = world.turtleManager.getTurtle(who)
 
-    if onDC?
-      turtle.ask((-> runAmbiguous(onDC)), false)
+      if onDC?
+        turtle.ask((-> runAmbiguous(onDC)), false)
 
-    if not turtle.isDead()
-      turtle.ask((-> SelfManager.self().die()), false)
+      if not turtle.isDead()
+        turtle.ask((-> SelfManager.self().die()), false)
 
     if afterDC?
       runAmbiguous(afterDC, who)
