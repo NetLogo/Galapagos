@@ -254,30 +254,6 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
   getExtraNotificationArgs: (widget) ->
     []
 
-  # (Ractive, (String, Ractive) => Unit) => Boolean
-  _addNewTerm: (sender, finalizer) ->
-    varName = prompt("New name:", "")
-    if varName?
-      if @_isValidIdentifier(varName)
-
-        { globalVars, myVars, procedures } = @parent.get('metadata')
-        globalNames      = globalVars.map((g) -> g.name)
-        procNames        = procedures.map((p) -> p.name)
-        takenIdentifiers = keywords.all.concat(globalNames, myVars, procNames)
-        loweredTakens    = takenIdentifiers.map((ident) -> ident.toLowerCase())
-
-        loweredName = varName.toLowerCase()
-
-        if not loweredTakens.includes(loweredName)
-          finalizer(varName, sender)
-        else
-          sender.fire('nlw-notify', "Name already in use!")
-
-      else
-        sender.fire('nlw-notify', "Not a valid NetLogo identifier!")
-
-    false
-
   # (String, Ractive) => Unit
   _defineNewBreedVar: (varName, sender) ->
     lowered = varName.toLowerCase()
@@ -364,15 +340,6 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
           message: "Failed to copy to clipboard.",
           timeout: 5000
         })
-      return
-
-    "*.add-breed-var": ({ component: sender }) ->
-      isSpectator = @parent.get("metadata").isSpectator
-      finalizer = if isSpectator
-        (v, s) => @_defineNewSpectatorGlobalVar(v, s)
-      else
-        (v, s) => @_defineNewBreedVar(v, s)
-      @_addNewTerm(sender, finalizer)
       return
 
     "*.add-named-breed-var": ({ component: sender }, varName) ->
