@@ -155,6 +155,7 @@ window.onmessage = (e) ->
       # If an edit form is open, avoid a full session teardown that would forcibly
       # close it.  Just refresh the metadata so breed-var dropdowns stay current,
       # and let the user finish editing before the next full reload arrives.
+      # -Jeremy B February 2026
       if session? and modelContainer.querySelector('.widget-edit-form-overlay')?
         session.widgetController.ractive.set(
           'metadata'

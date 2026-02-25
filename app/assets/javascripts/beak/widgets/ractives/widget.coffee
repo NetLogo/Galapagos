@@ -290,6 +290,8 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     lowered = varName.toLowerCase()
     @set('breedVars', [lowered].concat(@get('breedVars')))
     sender.fire('use-new-var', lowered)
+    # Note that if `roleName` is `"unset"` that means it never was correctly read from the config; something got fouled
+    # up.  -Jeremy B February 2026
     roleName = @parent.get('metadata').roleName
     globalVarName = "__hnw_#{roleName}_#{lowered}"
     @fire('new-spectator-global-var', globalVarName)
