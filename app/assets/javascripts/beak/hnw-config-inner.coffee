@@ -85,6 +85,21 @@ document.getElementById("delete-role-button").onclick = ->
     parent.postMessage({ type: "delete-me" }, "*")
   return
 
+# (Event) => Unit
+document.getElementById('is-spectator-role-checkbox').onchange = (event) ->
+  checkbox = event.target
+  msg = if checkbox.checked
+    "This will not remove the breed declaration for this role. You will need to do that manually.\n\nProceed?"
+  else
+    "This will not add a breed declaration for this role. You will need to do that manually.\n\nProceed?"
+  if not confirm(msg)
+    checkbox.checked = not checkbox.checked
+    return
+  document.getElementById('view-override-dropdown').parentElement.style.display =
+    if checkbox.checked then 'none' else ''
+  parent.postMessage({ type: "recompile" }, "*")
+  return
+
 # (Event) => String
 document.getElementById("max-count-picker").oninput = (event) ->
   s = event.target.value
