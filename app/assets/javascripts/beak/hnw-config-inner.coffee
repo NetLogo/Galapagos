@@ -154,7 +154,7 @@ window.onmessage = (e) ->
         procedures.filter(
           ({ argCount, isReporter, isUseableByObserver, isUseableByTurtles }) ->
             argCount is argsNum and (not isReporter) and
-              (isUseableByObserver or isUseableByTurtles)
+              (isUseableByObserver or (isUseableByTurtles and not cachedConfig.isSpectator))
         )
 
       afterDisconnectChoices =
@@ -188,6 +188,9 @@ window.onmessage = (e) ->
       populateOptions('on-move-dropdown'         , toNames(possibleMetaProcedures(2)), onCursorMove   )
       populateOptions('perspective-dropdown'     , myVars                            , perspectiveVar )
       populateOptions('view-override-dropdown'   , myVars                            , viewOverrideVar)
+
+      document.getElementById('view-override-dropdown').parentElement.style.display =
+        if cachedConfig.isSpectator then 'none' else ''
 
       document.getElementById('can-join-midrun-checkbox'  ).checked = cachedConfig.canJoinMidRun
       document.getElementById('is-spectator-role-checkbox').checked = cachedConfig.isSpectator
@@ -257,8 +260,8 @@ window.onmessage = (e) ->
       onCursorRelease =   orNull(document.getElementById('on-cursor-up-dropdown'     ).value)
       onDisconnect    =   orNull(document.getElementById('on-disconnect-dropdown'    ).value)
       perspectiveVar  =   orNull(document.getElementById('perspective-dropdown'      ).value)
-      viewOverrideVar =   orNull(document.getElementById('view-override-dropdown'    ).value)
       hlColor         =   orNull(document.getElementById('highlight-main-color'      ).value)
+      viewOverrideVar = if isSpectator then null else orNull(document.getElementById('view-override-dropdown').value)
 
       e.source.postMessage(
         {
@@ -282,9 +285,6 @@ window.onmessage = (e) ->
         , type:       "role-save-response"
         }
       , e.origin)
-
-    when "update-metadata"
-      session.widgetController.ractive.set("metadata", e.data.metadata)
 
     else
       console.warn("Unknown config event type: #{e.data.type}")
