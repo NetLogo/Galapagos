@@ -27,49 +27,30 @@
           </div>
 
           <div>
-            <input id="without-config-button" type="button" class="authoring-mode"
-                   value="Convert a desktop NetLogo model" />
-            <form id="without-config-form" class="authoring-form"
-                  action="javascript:void(0);">
-              <div class="flex-column" style="margin-right: 25px;">
-                <label>Start Without Config:
-                  <input id="without-config-model-input" type="file" name="model-without-config" accept=".nlogo,.nlogox" />
-                </label>
-              </div>
-            </form>
+            <input id="existing-model-button" type="button" class="authoring-mode"
+                   value="Edit a NetLogo model (.nlogox)" />
+            <input id="existing-model-input" type="file" style="display:none"
+                   accept=".nlogo,.nlogox" />
           </div>
 
         </div>
+
+        <div>The below options are for HubNet Web models made with the alpha version before the addition of NetLogo 7 support.</div>
 
         <div class="mode-controls-row">
 
           <div>
             <input id="config-bundle-button" type="button" class="authoring-mode"
-                   value="Edit an existing HubNet Web model (NLogox or bundle)" />
-            <form id="bundle-form" class="authoring-form"
-                  action="javascript:void(0);">
-              <div class="flex-column">
-                <label>JSON:
-                  <input id="config-bundle-input" type="file" name="bundle" accept=".nlogox,.hnw.json" />
-                </label>
-              </div>
-            </form>
+                   value="Edit a HubNet Web bundle (.hnw.json)" />
+            <input id="config-bundle-input" type="file" style="display:none"
+                   accept=".hnw.json" />
           </div>
 
           <div>
             <input id="config-nlogo-button" type="button" class="authoring-mode"
-                   value="Edit an existing HubNet Web model (NLogo & JSON)" />
-            <form id="config-form" class="authoring-form"
-                  action="javascript:void(0);">
-              <div class="flex-column">
-                <label>Base Model:
-                  <input id="base-model-input" type="file" name="base-model" accept=".nlogo" />
-                </label>
-                <label>Config File:
-                  <input id="config-input" type="file" name="config" accept=".nlogo.json" />
-                </label>
-              </div>
-            </form>
+                   value="Edit a HubNet Web model and config (.nlogo and .json)" />
+            <input id="base-model-input" type="file" style="display:none" accept=".nlogo" />
+            <input id="config-input"     type="file" style="display:none" accept=".nlogo.json" />
           </div>
 
         </div>
