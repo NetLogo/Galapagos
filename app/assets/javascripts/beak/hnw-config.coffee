@@ -89,33 +89,59 @@ document.getElementById("from-scratch-button").onclick = ->
 
   return
 
-# () => Unit
-document.getElementById("without-config-button").onclick = ->
+# (HTMLInputElement, File) => Unit
+loadModelFile = (input, file) ->
+  readFile(file).then(
+    (fileText) ->
 
-  input = document.getElementById("without-config-model-input")
-
-  input.onchange = ->
-    form     = document.getElementById("without-config-form")
-    formData = new FormData(form)
-    model    = formData.get('model-without-config')
-    readFile(model).then(
-      (modelText) ->
-        finalText = if modelText.trim().startsWith("<?xml")
-          modelText
+      if fileText.trim().startsWith("<?xml")
+        # NetLogo 7 model (.nlogox): use existing HNW config if present, otherwise generate one
+        nlogoDoc         = nlogoXMLToDoc(fileText)
+        hnwConfigElement = nlogoDoc.querySelector("hubnet-web-config")
+        config = if hnwConfigElement?
+          JSON.parse(stripXMLCdata(hnwConfigElement.innerHTML))
         else
-          try
-            convertNlogoToXML(modelText)
+          # coffeelint: disable=max_line_length
+          alert("The selected NetLogo model did not have a HubNet Web configuration section.  A new configuration will be generated, but this may mean the wrong file was selected.")
+          # coffeelint: enable=max_line_length
+          generateHNWConfig(fileText)
+        initialize(fileText, config)
 
+      else
+        parsed = try JSON.parse(fileText) catch then null
+
+        if parsed?.hnwNlogo?
+          # HubNet Web bundle (.hnw.json): extract embedded model and update config
+          nlogo      = parsed.hnwNlogo
+          delete parsed.hnwNlogo
+          modelText  = convertNlogoToXML(nlogo)
+          betaConfig = updateAlphaToBeta(parsed)
+          initialize(modelText, betaConfig)
+
+        else
+          # Desktop model: auto-convert to NL7 format and generate a fresh config
+          try
+            modelText = convertNlogoToXML(fileText)
+            initialize(modelText, generateHNWConfig(modelText))
           catch err
             alert(err)
 
-        config = generateHNWConfig(finalText)
-        initialize(finalText, config)
-    )
-    input.value = ""
+      input.value = ""
 
+  )
+
+# () => Unit
+document.getElementById("existing-model-button").onclick = ->
+  input = document.getElementById("existing-model-input")
+  input.onchange = -> loadModelFile(input, input.files[0])
   input.click()
+  return
 
+# () => Unit
+document.getElementById("config-bundle-button").onclick = ->
+  input = document.getElementById("config-bundle-input")
+  input.onchange = -> loadModelFile(input, input.files[0])
+  input.click()
   return
 
 # () => Unit
@@ -126,12 +152,7 @@ document.getElementById("config-nlogo-button").onclick = ->
 
   configInput.onchange = ->
 
-    form          = document.getElementById("config-form")
-    formData      = new FormData(form)
-    baseModelFile = formData.get('base-model')
-    configFile    = formData.get('config')
-
-    Promise.all([baseModelFile, configFile].map(readFile)).then(
+    Promise.all([baseInput.files[0], configInput.files[0]].map(readFile)).then(
       ([baseModelText, configText]) ->
         modelText = try
           convertNlogoToXML(baseModelText)
@@ -148,53 +169,6 @@ document.getElementById("config-nlogo-button").onclick = ->
 
   baseInput.click()
   configInput.click()
-
-  return
-
-# () => Unit
-document.getElementById("config-bundle-button").onclick = ->
-
-  bundleInput = document.getElementById("config-bundle-input")
-
-  bundleInput.onchange = ->
-
-    form       = document.getElementById("bundle-form")
-    formData   = new FormData(form)
-    bundleFile = formData.get('bundle')
-
-    readFile(bundleFile).then(
-      (bundleText) ->
-
-        [nlogox, config] = if bundleText.trim().startsWith("<?xml")
-          nlogoDoc         = nlogoXMLToDoc(bundleText)
-          hnwConfigElement = nlogoDoc.querySelector("hubnet-web-config")
-          if hnwConfigElement?
-            configJson = stripXMLCdata(hnwConfigElement.innerHTML)
-            [bundleText, JSON.parse(configJson)]
-
-          else
-            # coffeelint: disable=max_line_length
-            alert(new Error("The selected NetLogo model did not have a HubNet Web configuration section.  We will generate a new configuration, but this may mean the wrong file was selected."))
-            # coffeelint: enable=max_line_length
-            config = generateHNWConfig(bundleText)
-            [bundleText, config]
-
-        else
-          alphaConfig = JSON.parse(bundleText)
-
-          if alphaConfig.hnwNlogo?
-            nlogo      = alphaConfig.hnwNlogo
-            delete alphaConfig.hnwNlogo
-            modelText  = convertNlogoToXML(nlogo)
-            betaConfig = updateAlphaToBeta(alphaConfig)
-            [modelText, betaConfig]
-
-        initialize(nlogox, config)
-        bundleInput.value = ""
-
-    )
-
-  bundleInput.click()
 
   return
 
