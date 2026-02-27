@@ -8,6 +8,12 @@ window.addEventListener("message", (event) ->
         (e) ->
           switch e.data.type
             when "hnw-model-info"
+              console.log(e)
+              if e.data.resources?
+                resourceMap = {}
+                for r in e.data.resources
+                  resourceMap[r.name] = { extension: r.extension, data: r.data }
+                window.workspace = { resources: resourceMap }
               ractive.set("info", e.data.info)
       document.getElementById("loading-overlay").style.display = "none"
     else

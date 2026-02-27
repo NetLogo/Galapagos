@@ -6,6 +6,7 @@ import { loadModel                             } from "./load-model.js"
 import { runAmbiguous, runCommand, runReporter } from "./run.js"
 
 import { ScriptSource } from "/beak/nlogo-source.js"
+import { serializeResources } from "/beak/external-resources.js"
 
 protocolObj = { protocolVersion: "0.0.1" }
 
@@ -484,7 +485,7 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   setTimeout(
     ->
       babyPost({ type: "nlw-model-code"        , code:  ractive.get('code') })
-      babyPost({ type: "nlw-model-info"        , info:  ractive.get('info') })
+      babyPost({ type: "nlw-model-info"        , info:  ractive.get('info'), resources: serializeResources() })
       babyPost({ type: "hnw-role-config"       , roles: roleInfoArr         })
       babyPost({ type: "hnw-persistent-clients", pops:  rolePops            })
   , 1000)
