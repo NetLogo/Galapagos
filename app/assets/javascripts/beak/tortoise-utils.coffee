@@ -5,7 +5,7 @@ getBase64IfResource = (node, data) ->
   if data.tagName is 'img'
     name = node.getAttribute('src')
 
-    if workspace.resources.hasOwnProperty(name)
+    if typeof workspace isnt 'undefined' and workspace.resources.hasOwnProperty(name)
       resource = workspace.resources[name]
       node.setAttribute('src', "data:image/#{resource.extension};base64,#{resource.data}")
 
