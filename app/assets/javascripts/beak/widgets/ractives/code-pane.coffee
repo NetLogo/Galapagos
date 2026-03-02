@@ -1,67 +1,70 @@
+import keywords from "/keywords.js"
 import CodeUtils from "/beak/widgets/code-utils.js"
-import { RactiveParentCodeContainer } from "./subcomponent/code-container.js"
+import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
 
 RactiveCodePane = Ractive.extend({
   components: {
-    codeContainer: RactiveParentCodeContainer
+    codeContainer: RactiveCodeContainerMultiline
   }
 
   data: -> {
     # Props
-    isReadOnly: undefined # boolean
-    initialCode: "initial code goes here" # string
-    setAsParent: null # (GalapagosEditor) -> Unit | null
-    # (see 'code-container.coffee' for a description of `setAsParent`)
-    lastCompiledCode: undefined
-    lastCompileFailed: undefined
-
-    # State (but others can set it ig)
-    widgetVarNames: [] # Array[String]
-    compilerErrors: [] # Array[RuntimeError]
-    runtimeErrors: [] # Array[RuntimeError]
+    isReadOnly:        undefined # Boolean
+    initialCode:       ""        # String
+    lastCompiledCode:  undefined # String
+    lastCompileFailed: undefined # Boolean
 
     # Internal State
-    procedureNames: {} # Object<string, number>
-    autoCompleteStatus: false # boolean
-
-    # keybindings for the code container
-    keyBindings: [{
-      key: 'Ctrl-s',
-      run: =>
-        if @get('isStale')
-          @fire('recompile', 'user')
-        @findComponent('codeContainer').focus() # prevent the recompilation from losing focus
-        true
-    }]
+    procedureNames:      {} # Object<String, Number>
+    autoCompleteStatus:  false # Boolean
   }
 
   computed: {
-    # string
+    # String
     code: {
       get: -> @findComponent('codeContainer').get('code')
-      set: (code) -> @findComponent('codeContainer').set('code', code)
+      set: (code) -> @findComponent('codeContainer').setCode(code)
     }
-
-    # boolean
+    # Boolean
     isStale: "(code !== lastCompiledCode) || lastCompileFailed"
   }
 
   on: {
-    render: ->
+    complete: ->
       @_setupProceduresDropdown()
+      @_setupCtrlS()
+      CodeMirror.registerHelper('hint', 'fromList', @_netlogoHintHelper)
+      @_setupAutoComplete(@_autoCompleteWords())
+      return
+
+    recompile: ->
+      @_setupAutoComplete(@_autoCompleteWords())
+      @findComponent('codeContainer').focus()
+      return
   }
+
+  _setupCtrlS: ->
+    editor = @findComponent('codeContainer').getEditor()
+    if editor?
+      editor.addKeyMap({
+        'Ctrl-S': =>
+          if @get('isStale')
+            @fire('recompile', 'user')
+          @findComponent('codeContainer').focus()
+      })
+    return
 
   _setupProceduresDropdown: ->
     dropdownElement = $(@find('.netlogo-procedurenames-dropdown'))
     dropdownElement.chosen({
       search_contains: true,
       width: getComputedStyle(dropdownElement[0]).getPropertyValue('width')
-      # The width needs to be manually specified to match, otherwise the menu will show up with 0 width.
+      # The width needs to be manually specified to match, otherwise chosen menu shows 0 width.
     })
     dropdownElement.on('change', =>
-      procedureNames = @get('procedureNames')
+      procedureNames   = @get('procedureNames')
       selectedProcedure = dropdownElement.val()
-      index = procedureNames[selectedProcedure]
+      index            = procedureNames[selectedProcedure]
       @findComponent('codeContainer').highlightProcedure(selectedProcedure, index)
     )
     dropdownElement.on('chosen:showing_dropdown', =>
@@ -69,6 +72,37 @@ RactiveCodePane = Ractive.extend({
       @set('procedureNames', procedureNames)
       dropdownElement.trigger('chosen:updated')
     )
+    return
+
+  _netlogoHintHelper: (cm, options) ->
+    cur   = cm.getCursor()
+    token = cm.getTokenAt(cur)
+    to    = CodeMirror.Pos(cur.line, token.end)
+    if token.string and /\S/.test(token.string[token.string.length - 1])
+      term = token.string
+      from = CodeMirror.Pos(cur.line, token.start)
+    else
+      term = ''
+      from = to
+    found = options.words.filter((word) -> word.slice(0, term.length) is term)
+    if found.length > 0
+      return { list: found, from: from, to: to }
+
+  _autoCompleteWords: ->
+    allKeywords       = new Set(keywords.all)
+    supportedKeywords = Array.from(allKeywords)
+      .filter((kw) -> not keywords.unsupported.includes(kw))
+      .map(   (kw) -> kw.replace("\\", ""))
+    Object.keys(CodeUtils.findProcedureNames(@get('code'), 'lower')).concat(supportedKeywords)
+
+  _setupAutoComplete: (hintList) ->
+    CodeMirror.registerHelper('hintWords', 'netlogo', hintList)
+    editor = @findComponent('codeContainer').getEditor()
+    if editor?
+      editor.on('keyup', (cm, event) =>
+        if not cm.state.completionActive and event.keyCode > 64 and event.keyCode < 91 and @get('autoCompleteStatus')
+          cm.showHint({completeSingle: false})
+      )
     return
 
   template: """
@@ -97,18 +131,10 @@ RactiveCodePane = Ractive.extend({
           </label>
         </li>
       </ul>
-      <div class="netlogo-code-tab">
-        <codeContainer
-          codeContainerType="full_model"
-          initialCode={{initialCode}}
-          keyBindings={{keyBindings}}
-          isDisabled={{isReadOnly}}
-          setAsParent={{setAsParent}}
-          widgetVarNames={{widgetVarNames}}
-          compilerErrors={{compilerErrors}}
-          runtimeErrors={{runtimeErrors}}
-        />
-      </div>
+      <codeContainer id="netlogo-code-tab-editor"
+                     initialCode={{initialCode}}
+                     injectedConfig="{ lineNumbers: true, readOnly: {{isReadOnly}} }"
+                     extraClasses="['netlogo-code-tab']" />
     </div>
   """
 })

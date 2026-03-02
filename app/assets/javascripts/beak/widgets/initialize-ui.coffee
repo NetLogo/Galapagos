@@ -30,7 +30,6 @@ initializeUI = (containerArg, widgets, code, info,
   reportError = (time, source, exception, ...args) ->
     controller.reportError(time, source, exception, ...args)
 
-  window.EditorDictionary.Initialize({}) # required for codemirror-netlogo's dictionary tooltips
   viewController = new ViewController()
   ractive = generateRactiveSkeleton(
     container,

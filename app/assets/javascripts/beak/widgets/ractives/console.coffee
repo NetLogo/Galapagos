@@ -13,7 +13,6 @@ RactiveConsoleWidget = Ractive.extend({
     # Props
     isEditing: undefined # boolean (for widget editing)
     checkIsReporter: undefined # (String) => Boolean
-    parentEditor: null # GalapagosEditor | null
 
     # Shared State
     output: ''
@@ -92,7 +91,6 @@ RactiveConsoleWidget = Ractive.extend({
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
           placeholderText={{placeholderText}}
-          parentEditor={{parentEditor}}
         />
         <button on-click='clear-output'>Clear</button>
       </div>

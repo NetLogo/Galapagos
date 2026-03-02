@@ -23,11 +23,11 @@
 }
 
 .normal_font {
-  font-family: "Lucida Grande", sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .monospace_font {
-  font-family: Consolas, "Courier New", Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .invisible {

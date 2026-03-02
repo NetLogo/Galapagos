@@ -1,6 +1,6 @@
 import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
-import RactiveEditFormCode from "./subcomponent/edit-form-code-input.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 
 ChooserEditForm = EditForm.extend({
@@ -20,13 +20,12 @@ ChooserEditForm = EditForm.extend({
             "Invalid format: Must be a space-separated list of NetLogo literal values"
         elem.setCustomValidity(validityStr)
     )
-  , parentEditor: null # GalapagosEditor | null
   }
 
   twoway: false
 
   components: {
-    formCode:     RactiveEditFormCode
+    formCode:     RactiveEditFormMultilineCode
   , formVariable: RactiveEditFormVariable
   }
 
@@ -54,9 +53,7 @@ ChooserEditForm = EditForm.extend({
       """
       <formVariable id="{{id}}-varname" value="{{display}}"        name="varName" />
       <formCode     id="{{id}}-choices" value="{{chooserChoices}}" name="codeChoices"
-                    codeContainerType="multi_line_reporter"
-                    label="Choices" onchange="{{setHiddenInput}}"
-                    parentEditor={{parentEditor}}/>
+                    label="Choices" onchange="{{setHiddenInput}}" />
       <input id="{{id}}-choices-hidden" name="trueCodeChoices" class="all-but-hidden"
              style="margin: -5px 0 0 7px;" type="text" />
       <div class="widget-edit-hint-text">Example: "a" "b" "c" 1 2 3</div>
@@ -70,7 +67,6 @@ RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
     resizeDirs:         ['left', 'right']
-    parentEditor:       null # GalapagosEditor | null
   }
 
   widgetType: "chooser"
@@ -112,7 +108,7 @@ RactiveChooser = RactiveValueWidget.extend({
         {{/}}
       </select>
     </label>
-    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" parentEditor={{parentEditor}}/>
+    <editForm idBasis="{{id}}" choices="{{widget.choices}}" display="{{widget.display}}" />
     """
 
   partials: {

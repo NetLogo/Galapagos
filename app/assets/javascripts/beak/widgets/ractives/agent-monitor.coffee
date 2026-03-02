@@ -19,7 +19,6 @@ RactiveAgentMonitor = Ractive.extend({
     agent: undefined, # Agent; a reference to the actual agent from the engine
     isEditing: undefined, # boolean
     checkIsReporter: undefined, # (string) -> boolean
-    parentEditor: null, # GalapagosEditor | null
     setInspect: undefined, # (SetInspectAction) -> Unit
     viewController: undefined, # ViewController; from which this agent monitor is taking its ViewWindow
 
@@ -218,7 +217,6 @@ RactiveAgentMonitor = Ractive.extend({
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
           placeholderText="ask {{agent.getName()}}"
-          parentEditor={{parentEditor}}
         />
       </div>
     """

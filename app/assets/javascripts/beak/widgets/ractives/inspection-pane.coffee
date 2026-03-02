@@ -164,7 +164,6 @@ RactiveInspectionPane = Ractive.extend({
     isEditing: undefined # boolean
     viewController: undefined # ViewController; from which the agent monitors take their ViewWindows
     checkIsReporter: undefined # (string) -> boolean
-    parentEditor: null # GalapagosEditor | null
 
     # State
 
@@ -662,7 +661,6 @@ RactiveInspectionPane = Ractive.extend({
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
           placeholderText={{commandPlaceholderText}}
-          parentEditor={{parentEditor}}
         />
       </div>
     """
@@ -688,7 +686,6 @@ RactiveInspectionPane = Ractive.extend({
               agent={{agent}}
               isEditing={{isEditing}}
               checkIsReporter={{checkIsReporter}}
-              parentEditor={{parentEditor}}
               setInspect="{{@this.setInspect.bind(@this)}}"
             />
           {{else}}

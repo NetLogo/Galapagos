@@ -69,15 +69,15 @@
 }
 
 .netlogo-widget-container.interface-unlocked {
-  background-color: #f5f5f5;
+  background-color: rgb(234, 255, 225);
 }
 
 .context-menu-item {
   border-bottom: solid 1px #dfdfdf;
-  color:         rgb(51, 51, 51);
+  color:         #0066aa;
   cursor:        pointer;
-  font-size:     13px;
-  padding:       0.5em 1em;
+  font-size:     18px;
+  padding:       5px;
   user-select:   none;
   -moz-user-select: none;
 }
@@ -88,7 +88,7 @@
 }
 
 .context-menu-item:hover:not(.disabled) {
-  background-color: rgb(51, 92, 173);
+  background-color: #0066aa;
   color:            white;
 }
 
@@ -104,10 +104,10 @@
 
 .widget-context-menu {
   background-color: white;
-  border:           1px solid rgb(153, 153, 153);
-  box-shadow:       rgb(136 136 136) 3px 3px 10px;
+  border:           solid 1px #dfdfdf;
+  box-shadow:       1px 1px 2px #cfcfcf;
   margin:           0;
-  padding:          5px 0;
+  padding:          8px 10px;
   position:         absolute;
   width:            200px;
   z-index:          80;
@@ -115,8 +115,8 @@
 
 .widget-edit-popup {
   background-color: white;
-  border:           1px solid #666;
-  border-radius:    10px;
+  border:           1px solid black;
+  border-radius:    5px;
   box-shadow:       0 0 10px rgba(0,0,0,0.5);
   padding:          10px 10px 0 10px;
   position:         absolute;
@@ -146,9 +146,8 @@
 .widget-edit-form-title {
   color:         #111111;
   cursor:        default;
-  font-size:     16px;
   font-weight:   bold;
-  margin-bottom: 1em;
+  margin-bottom: 10px;
   text-align:    center;
   user-select:   none;
   -moz-user-select: none;
@@ -175,7 +174,7 @@
 }
 
 .widget-edit-text {
-  font-size: 13px;
+  font-size: 20px;
 }
 
 .widget-edit-checkbox-wrapper {
@@ -201,13 +200,14 @@
 
 .widget-edit-hint-text {
   color:       #4a4a4a;
-  font-size:   12px;
+  font-size:   15px;
   margin:      2px 0 8px 0;
   user-select: none;
 }
 
 .widget-edit-dropdown {
-  height:    24px;
+  font-size: 14px;
+  height:    30px;
   margin:    0 10px;
 }
 
@@ -223,10 +223,6 @@
   height:    115px;
   max-width: 100%;
   min-width: 100%;
-}
-
-.widget-edit-code-container {
-  border: 1px solid gray;
 }
 
 .widget-edit-fieldset {

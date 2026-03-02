@@ -2,7 +2,7 @@ import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import RactiveColorInput from "./subcomponent/color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
-import RactiveCodeContainer from "./subcomponent/code-container.js"
+import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
@@ -77,16 +77,12 @@ InputEditForm = EditForm.extend({
 
 RactiveInput = RactiveValueWidget.extend({
 
-  data: -> {
-    parentEditor: null # GalapagosEditor | null
-  }
-
   widgetType: "input"
 
   components: {
     colorInput: RactiveColorInput
   , editForm:   InputEditForm
-  , editor:     RactiveCodeContainer
+  , editor:     RactiveCodeContainerMultiline
   }
 
   eventTriggers: ->
@@ -109,13 +105,9 @@ RactiveInput = RactiveValueWidget.extend({
     # The proper fix is really to get rid of the editor before stuffing the new value into it,
     # but that sounds fidgetty.  This fix is also fidgetty, but it's only fidgetty here, for Inputs;
     # other widget types are left unbothered by this. --Jason B. (4/16/18)
-    'editor.change': ({ component }) ->
-      newValue = component.get('code')
+    'code-changed': (_, newValue) ->
       if @get('widget').boxedValue.type.includes("String ")
         @set('internalValue', newValue)
-      # manually fire the 'widget-value-changed' event so that the "superclass" widget component
-      # knows. This is a special case for the code inputs because it
-      @fire('widget-value-change', @get('widget.boxedValue.type'))
       false
 
     'handle-keypress': ({ original: { keyCode, target } }) ->
@@ -141,7 +133,7 @@ RactiveInput = RactiveValueWidget.extend({
       scrollToBottom = -> elem.scrollTop = elem.scrollHeight
       setTimeout(scrollToBottom, 0)
 
-    @findComponent('editor')?.set('code', newValue)
+    @findComponent('editor')?.setCode(newValue)
     return
 
   # (String, String|Number, String|Number) => Unit
@@ -166,11 +158,9 @@ RactiveInput = RactiveValueWidget.extend({
     inputType = @get("widget.boxedValue.type")
     valueType = typeof(newValue)
 
-    if (inputType == "Number" and valueType isnt "number")
+    if ([ "Color", "Number" ].includes(inputType) and valueType isnt "number")
       @resetValue("number", oldValue, 0)
       return
-
-    # removed type checking for color variables - Andre C 2024-05-03
 
     if (inputType.startsWith("String") and valueType isnt "string")
       @resetValue("string", oldValue, "")
@@ -219,27 +209,16 @@ RactiveInput = RactiveValueWidget.extend({
             {{# isEditing }}disabled{{/}} >
           </textarea>
         {{/}}
-        {{# widget.boxedValue.type === 'String (reporter)'}}
-          <div class="netlogo-multiline-input">
-            <editor
-              id="{{id}}-code"
-              codeContainerType="multi_line_reporter"
-              initialCode="{{internalValue}}"
-              isDisabled="{{isEditing}}"
-              parentEditor={{parentEditor}}
+        {{# widget.boxedValue.type === 'String (reporter)' || widget.boxedValue.type === 'String (commands)' }}
+          <editor
+            extraClasses="['netlogo-multiline-input']"
+            id="{{id}}-code"
+            injectedConfig="{ scrollbarStyle: 'null' }"
+            style="height: 50%;"
+            initialCode="{{internalValue}}"
+            isDisabled="{{isEditing}}"
+            on-change="['widget-value-change', widget.boxedValue.type]"
             />
-          </div>
-        {{/}}
-        {{# widget.boxedValue.type === 'String (commands)' }}
-          <div class="netlogo-multiline-input">
-            <editor
-              id="{{id}}-code"
-              codeContainerType="embedded"
-              initialCode="{{internalValue}}"
-              isDisabled="{{isEditing}}"
-              parentEditor={{parentEditor}}
-            />
-          </div>
         {{/}}
         {{# widget.boxedValue.type === 'Color'}}
           <colorInput

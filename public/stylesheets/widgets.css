@@ -3,17 +3,13 @@
  */
 
 .netlogo-model {
-  display: flex;
-  padding: 20px;
-  flex-flow: column;
-  font-size: 12px;
-  font-family: "Lucida Grande", sans-serif;
-  outline: none;
+    display: flex;
+    padding: 20px;
+    flex-flow: column;
+    font-size: 12px;
+    font-family: "Lucida Grande", sans-serif;
+    outline: none;
 }
-
-/* .netlogo-model.netlogo-display-horizontal {
-  width: calc(100vw - 60px);
-} */
 
 .netlogo-display-vertical {
   display: flex;
@@ -37,52 +33,36 @@
 .netlogo-widget {
   box-sizing: border-box;
   background-color: #CCC;
-  border-radius: 5px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.netlogo-command,
-.netlogo-input {
-  user-select: none;
+.netlogo-command,.netlogo-input {
+  user-select:      none;
   -moz-user-select: none;
 }
 
-.netlogo-command:hover,
-.netlogo-input:hover {
-  box-shadow: 0 0 5px 2px #ccc;
-  cursor: pointer;
-  z-index: 3;
+.netlogo-command:hover,.netlogo-input:hover {
+  box-shadow: 0 0 6px 3px rgba(15, 15, 15, .40);
+  cursor:     pointer;
+  z-index:    3;
 }
 
 .netlogo-command.netlogo-disabled:hover {
   box-shadow: none;
-  cursor: default;
+  cursor:     default;
 }
 
 .netlogo-tab-area {
   margin: 25px 10px;
-  border-style: solid;
-  border-width: 1px;
+  border: 2px solid;
   border-radius: 10px;
-  -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
-}
-
-.netlogo-display-horizontal .netlogo-tab-area {
-  margin: 0 0 0 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: calc(100vh - 45px);
-  flex-grow: 1;
-  /* display: flex; */
-}
-
-.netlogo-display-horizontal .netlogo-display-vertical {
-  max-height: calc(100vh - 45px);
+  overflow: hidden;
 }
 
 .netlogo-tab {
   display: block;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYigyNTUsMjU1LDI1NSkiLz4gPC9zdmc+");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+");
   background-position: 97% 50%;
   background-repeat: no-repeat;
   background-size: 20px 20px;
@@ -92,11 +72,12 @@
 }
 
 .netlogo-tab.netlogo-active {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwxIDIsMSAxLDAiIGZpbGw9InJnYigyNTUsMjU1LDI1NSkiLz4gPC9zdmc+");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwxIDIsMSAxLDAiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+");
 }
 
 .netlogo-tab:not(:last-child) {
   border-bottom: 1px solid;
+  border-bottom-color: inherit;
 }
 
 .netlogo-tab input[type=checkbox] {
@@ -117,7 +98,7 @@
 }
 
 .unselectable {
-  user-select: none;
+  user-select:      none;
   -moz-user-select: none;
 }
 
@@ -138,7 +119,6 @@
   0% {
     max-height: 0;
   }
-
   100% {
     max-height: 100%;
   }
@@ -159,7 +139,7 @@
   width: 350px;
 }
 
-.netlogo-model-masthead>form {
+.netlogo-model-masthead > form {
   margin: 0 auto;
 }
 
@@ -240,7 +220,7 @@
 }
 
 .netlogo-ugly-button {
-  color: black;
+  color:      black;
   text-align: center;
   background-color: rgb(240, 240, 240);
   border-color: rgb(238, 238, 238);
@@ -287,21 +267,21 @@
 }
 
 .netlogo-codeusage-popup {
-  position: absolute;
+  position:absolute;
   z-index: 10;
-  border: 1px solid #B2B2B2;
+  border:1px solid #B2B2B2;
   background: white;
   box-shadow: 3px 3px 2px #E9E9E9;
-  border-radius: 4px;
+  border-radius:4px;
   max-height: 15em;
   overflow-y: auto;
 }
 
 .netlogo-codeusage-list {
-  list-style: none;
-  margin-top: 1px;
+  list-style:none;
+  margin-top:1px;
   padding: 1px;
-  font-size: 90%;
+  font-size:90%;
   font-family: monospace;
 }
 
@@ -311,8 +291,8 @@
 
 .netlogo-codeusage-item:hover {
   color: white;
-  background: #284570;
-  border-radius: 2px;
+  background:#284570;
+  border-radius:2px;
 }
 
 .netlogo-info-editor {
@@ -322,17 +302,9 @@
 
 .netlogo-info {
   flex: 1;
-  overflow: hidden;
   margin-top: 0;
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 10px 15px;
-}
-
-.netlogo-info h2,
-.netlogo-info h3,
-.netlogo-info h4 {
-  margin-top: 0;
+  padding-top: 10px;
+  padding: 15px;
 }
 
 .netlogo-command-center {
@@ -345,56 +317,23 @@
   border-bottom-color: inherit;
 }
 
-.netlogo-command-center-input {
-  display: flex;
-  flex-shrink: 0;
-  align-items: stretch;
-}
-
-.netlogo-command-center-input select,
-.netlogo-command-center-input button,
-.netlogo-command-center-input .netlogo-command-center-editor {
-  border: 1px solid #666;
-  line-height: 18px;
-}
-
-.CodeMirror {
-  font-family: Consolas, "Courier New", Courier, monospace;
-}
-
+/* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
+ * Center with text, instead of becoming horizontally scrollable, the input grows in width, even if it means becoming
+ * larger than the input's container.  So the input (rather than the text) just flows off the side of the screen.
+ * If I go down a level in the CSS and set the width on the CodeMirror instance directly, that kind of fixes the
+ * problem, but only if I know the expect width that I want (which I don't).  However, if I come here and set the
+ * width to *any* numeric value, the input always fits exactly the amount of space it's supposed to use.  Fricken weird.
+ * --Jason B. (10/12/17)
+ */
 .netlogo-command-center-editor {
-  line-height: 17px;
+  height: 1.25em;
   flex-grow: 1;
+  width: 42px; /* Arbitrary as hell; see comment above. --Jason B. (10/12/17) */
 }
 
-.netlogo-command-center-editor .cm-editor {
-	flex: 1 1 auto;
-	height: auto;
-	font-size: 1em;
-	max-height: 2rem;
-	box-sizing: border-box;
-}
-
-.netlogo-command-center-editor .cm-editor .cm-gutters {
-	display: none;
-}
-
-.netlogo-command-center-editor .cm-editor .cm-scroller {
-	line-height: 1.5;
-	overflow-x: scroll;
-	overflow-y: hidden;
-}
-
-.netlogo-command-center-editor .cm-editor span.cm-placeholder .active {
-	color: #cc2200;
-}
-
-.netlogo-command-center-editor .cm-editor .cm-scroller::-webkit-scrollbar {
-	display: none;
-}
-
-.netlogo-command-center-editor .cm-editor .cm-activeLine {
-	background: transparent;
+.netlogo-command-center-editor .CodeMirror {
+  border: 1px solid #111;
+  height: auto;
 }
 
 .netlogo-output-widget {
@@ -408,6 +347,11 @@
   background-color: white;
   margin: 0px;
   overflow: auto;
+}
+
+.netlogo-command-center-input {
+  display: flex;
+  flex-shrink: 0;
 }
 
 .netlogo-speed-slider {
@@ -429,91 +373,77 @@
 }
 
 .netlogo-model input[type=range] {
-  cursor: pointer;
-  cursor: grab;
+    cursor: pointer;
+    cursor: grab;
 }
 
 .netlogo-model input[type=range]:active {
-  cursor: pointer;
-  cursor: grabbing;
+    cursor: pointer;
+    cursor: grabbing;
 }
 
 .netlogo-tick-counter {
-  background-color: #F4F4F4;
-  font-size: 13px;
-  margin: 3px;
-  border: none;
-  height: 15px;
-}
-
-.netlogo-color-display {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-}
-
-.netlogo-color-display span {
-  color: white;
-  text-shadow: 0px 0px 5px black;
+    background-color: #F4F4F4;
+    font-size: 13px;
+    margin: 3px;
+    border: none;
+    height: 15px;
 }
 
 .netlogo-button {
-  border: inherit;
-  color: black;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0px;
+    border:  inherit;
+    color:   black;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0px;
 }
 
 .netlogo-button:disabled {
   color: rgb(150, 150, 150);
 }
 
-.netlogo-disabled,
-.interface-unlocked {
+.netlogo-disabled, .interface-unlocked {
   color: #707070;
 }
 
 .netlogo-button.clear-button {
-  padding: 5px;
+    padding: 5px;
 }
 
 .netlogo-button .netlogo-label {
-  /* For some reason, Safari doesn't like justify-content in buttons,
+    /* For some reason, Safari doesn't like justify-content in buttons,
        we have to resort to putting a span in the button that can then be
        centered.
        BCH 11/14/2014 */
-  margin: auto;
+    margin: auto;
 }
 
 .netlogo-action-key {
-  color: grey;
+  color:    grey;
   position: absolute;
-  right: 6px;
-  top: 5px;
+  right:    6px;
+  top:      5px;
 }
 
 .netlogo-action-key.netlogo-focus {
   color: black;
 }
 
-.netlogo-button:active,
-.netlogo-forever-button.netlogo-active {
-  background-color: gray;
-  color: white;
+.netlogo-button:active, .netlogo-forever-button.netlogo-active {
+    background-color: gray;
+    color: white;
 }
 
 .netlogo-forever-button .netlogo-forever-icon {
-  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+  background-image:  url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
   background-repeat: no-repeat;
-  background-size: 10px 10px;
-  bottom: 5px;
-  height: 10px;
-  position: absolute;
-  right: 5px;
-  width: 10px;
+  background-size:   10px 10px;
+  bottom:            5px;
+  height:            10px;
+  position:          absolute;
+  right:             5px;
+  width:             10px;
 }
 
 .netlogo-disabled .netlogo-forever-icon {
@@ -522,9 +452,9 @@
 
 .netlogo-button-agent-context {
   font-size: 11px;
-  left: 8px;
-  position: absolute;
-  top: 5px;
+  left:      8px;
+  position:  absolute;
+  top:       5px;
 }
 
 .netlogo-disabled .netlogo-button-agent-content {
@@ -532,25 +462,25 @@
 }
 
 .netlogo-text-box {
-  background-color: white;
-  border: none;
-  margin: 0;
-  white-space: pre-wrap;
-  font-family: "Lucida Grande", sans-serif;
+    background-color: white;
+    border: none;
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: "Lucida Grande", sans-serif;
 }
 
 .netlogo-switcher {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .netlogo-slider {
-  padding-left: 5px;
-  padding-right: 5px;
+    padding-left: 3px;
+    padding-right: 3px;
 }
 
 .netlogo-slider:hover {
-  cursor: default;
+    cursor: default;
 }
 
 .netlogo-slider input[type=range] {
@@ -570,10 +500,6 @@
   white-space: nowrap;
 }
 
-body {
-  margin: 25 0 0 10;
-}
-
 .netlogo-slider-label {
   display: flex;
   justify-content: space-between;
@@ -589,76 +515,70 @@ body {
 }
 
 .netlogo-slider-label input[type=number] {
-  margin: 0px;
-  border: 1px;
-  padding: 0px;
+    margin: 0px;
+    border: 1px;
+    padding: 0px;
 }
 
 .netlogo-monitor {
-  padding: 2px 4px;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+    padding: 2px 4px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
 }
 
-.netlogo-monitor>.netlogo-value {
+.netlogo-monitor > .netlogo-value {
   background-color: white;
   min-height: 11px;
   padding: 2px 2px;
 }
 
 .netlogo-value {
-  overflow: hidden;
+    overflow: hidden;
 }
 
-.netlogo-code .cm-editor .cm-scroller {
-  font-family: Consolas, "Courier New", Courier, monospace;
+.netlogo-code {
+  border: 1px solid black;
 }
 
 .netlogo-code-tab {
-  height: calc(100vh - 160px);
+  height: 500px;
 }
 
 .netlogo-input-box {
-  padding: 2px 4px;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+    padding: 2px 4px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
 }
 
 .netlogo-multiline-input {
   flex-grow: 1;
-  height: 0;
-  /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
-  width: auto;
-  /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
-  margin: 4px;
-  resize: none;
+  height:    0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
+  width:     auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
+  margin:    4px;
+  resize:    none;
 }
 
 .netlogo-chooser {
-  padding: 2px 4px;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+    padding: 2px 4px;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
 }
 
 .netlogo-plot {
-  box-sizing: content-box;
-  /* otherwise border gets cut off -- BCH 11/9/2014 */
-  border: 1px solid #333;
-  border-radius: 5px;
-  overflow: visible;
-  /* must come after the .netlogo-widget declaration - JMB November 2017 */
+    box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
+    border: 1px solid black;
+    overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
 }
 
 .highcharts-container {
-  overflow: visible !important;
-  /* Let our context-menus be free - JMB November 2017 */
+  overflow: visible !important; /* Let our context-menus be free - JMB November 2017 */
 }
 
-.netlogo-forever-button>input {
-  display: none;
+.netlogo-forever-button > input {
+    display: none;
 }
 
 .netlogo-subheader {
@@ -694,14 +614,14 @@ body {
 
 .help-popup {
   background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  font-size: 20px;
-  padding: 30px 15px;
-  position: absolute;
-  outline: none;
-  z-index: 200;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  font-size:        20px;
+  padding:          30px 15px;
+  position:         absolute;
+  outline:          none;
+  z-index:          200;
 }
 
 /* Credit for this keyboard table CSS goes to the fine folks at GitHub
@@ -711,63 +631,63 @@ body {
  */
 .help-key-table .help-keys {
   padding-right: 10px;
-  text-align: right;
-  white-space: nowrap;
+  text-align:    right;
+  white-space:   nowrap;
 }
 
 .help-key-table td {
   font-size: 16px;
-  padding: 3px 0;
+  padding:   3px 0;
 }
 
 .help-key-table kbd {
-  background-color: #fafbfc;
+  background-color:    #fafbfc;
   border-bottom-color: #c6cbd1;
-  border-radius: 3px;
-  border: solid 1px #d1d5da;
-  box-shadow: inset 0 -1px 0 #c6cbd1;
-  color: #3b793a;
-  display: inline-block;
-  font: 16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  line-height: 15px;
-  padding: 3px 5px;
-  vertical-align: middle;
+  border-radius:       3px;
+  border:              solid 1px #d1d5da;
+  box-shadow:          inset 0 -1px 0 #c6cbd1;
+  color:               #3b793a;
+  display:             inline-block;
+  font:                16px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height:         15px;
+  padding:             3px 5px;
+  vertical-align:      middle;
 }
 
 .modal-overlay {
-  background-color: rgba(200, 200, 200, 0.7);
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 99;
+  background-color: rgba(200,200,200,0.7);
+  bottom:           0;
+  left:             0;
+  position:         absolute;
+  right:            0;
+  top:              0;
+  z-index:          99;
 }
 
 .async-popup {
   background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  min-width: 120px;
-  padding: 10px 10px 0 14px;
-  position: absolute;
-  outline: none;
-  z-index: 90;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0,0,0,0.5);
+  min-width:        120px;
+  padding:          10px 10px 0 14px;
+  position:         absolute;
+  outline:          none;
+  z-index:          90;
 }
 
 .async-dialog-message {
-  font-size: 16px;
+  font-size:  16px;
   margin-top: 20px;
   word-break: break-word;
 }
 
 .async-dialog-button-row {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
   justify-content: flex-end;
-  margin: 10px 0;
+  margin:          10px 0;
 }
 
 .async-dialog-controls {
@@ -779,12 +699,8 @@ body {
 }
 
 .h-center-flexbox {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
   justify-content: center;
-}
-
-.netlogo-powered-by a {
-  text-decoration: none;
 }

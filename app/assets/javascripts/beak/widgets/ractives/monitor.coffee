@@ -1,6 +1,6 @@
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
-import RactiveEditFormCode from "./subcomponent/edit-form-code-input.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
@@ -12,12 +12,10 @@ MonitorEditForm = EditForm.extend({
   , fontSize:  undefined # Number
   , precision: undefined # Number
   , source:    undefined # String
-  , parentEditor: null # GalapagosEditor | null
-  , compilerErrors: [] # Array[RuntimeError]
   }
 
   components: {
-    formCode:     RactiveEditFormCode
+    formCode:     RactiveEditFormMultilineCode
   , formFontSize: RactiveEditFormFontSize
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
@@ -43,22 +41,6 @@ MonitorEditForm = EditForm.extend({
     ,    source: @findComponent('formCode').get('code')
     }
 
-  on: {
-    'new-compilation-result': (_, widgetObj) ->
-      sourceLength = @get('source').length
-      regex = RegExp("^monitor '#{@get('display')}' - monitor.reporter:(?: (.*))$")
-      newData = { compilerErrors: [] }
-      for message in widgetObj.compilation.messages
-        match = message.match(regex)
-        if not match?
-          console.error("Failed to interpret Tortoise error message: %s", message)
-          continue
-        messageContent = match[1]
-        newData.compilerErrors.push({ message: messageContent, start: 0, end: sourceLength })
-      @set(newData)
-      false
-  }
-
   partials: {
 
     title: "Monitor"
@@ -66,15 +48,7 @@ MonitorEditForm = EditForm.extend({
     # coffeelint: disable=max_line_length
     widgetFields:
       """
-      <formCode
-        id="{{id}}-source"
-        codeContainerType="multi_line_reporter"
-        name="source"
-        value="{{source}}"
-        label="Reporter"
-        parentEditor={{parentEditor}}
-        compilerErrors={{compilerErrors}}
-      />
+      <formCode id="{{id}}-source" name="source" value="{{source}}" label="Reporter" />
 
       <spacer height="15px" />
 
@@ -106,7 +80,6 @@ RactiveMonitor = RactiveWidget.extend({
   data: -> {
     errorClass:         undefined # String
   , resizeDirs:         ['left', 'right']
-  , parentEditor:       null # GalapagosEditor | null
   }
 
   components: {
@@ -129,7 +102,7 @@ RactiveMonitor = RactiveWidget.extend({
     {{>editorOverlay}}
     {{>monitor}}
     <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
-              precision="{{widget.precision}}" source="{{widget.source}}" parentEditor={{parentEditor}}/>
+              precision="{{widget.precision}}" source="{{widget.source}}" />
     """
 
   # coffeelint: disable=max_line_length

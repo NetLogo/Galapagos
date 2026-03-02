@@ -1,4 +1,4 @@
-import RactiveCodeContainer from "./subcomponent/code-container.js"
+import { RactiveCodeContainerOneLine } from "./subcomponent/code-container.js"
 
 # The following "get agent set reporter" functions return a string of interpretable NetLogo code referring to each
 # the agents passed in.
@@ -58,7 +58,7 @@ compareEntries = (a, b) ->
 
 RactiveCommandInput = Ractive.extend({
   components: {
-    codeContainer: RactiveCodeContainer
+    codeContainer: RactiveCodeContainerOneLine
   }
 
   # AgentType = 'observer' | 'turtles' | 'patches' | 'links'
@@ -66,11 +66,10 @@ RactiveCommandInput = Ractive.extend({
   data: -> {
     # Props
 
-    source: undefined # string; where the command came from, e.g. 'console'
+    source:          undefined # string; where the command came from, e.g. 'console'
     checkIsReporter: undefined # (string) -> boolean
-    isReadOnly: undefined # boolean
+    isReadOnly:      undefined # boolean
     placeholderText: undefined # string
-    parentEditor: null # GalapagosEditor | null
 
     # Shared State (both this component and the enclosing root component can read/write)
 
@@ -85,53 +84,41 @@ RactiveCommandInput = Ractive.extend({
     # type TargetedAgentObj = { agentType: AgentType, agents?: Array[Agent] }
     targetedAgentObj: { agentType: 'observer' }
 
-    history: [] # Array[Entry]; highest index is most recent
-    historyIndex: 0 # keyof typeof @get('history') | @get('history').length
+    history:      [] # Array[Entry]; highest index is most recent
+    historyIndex: 0  # keyof typeof @get('history') | @get('history').length
     workingEntry: {} # stores Entry when the user up-arrows
-
-    # Consts
-
-    keyBindings: [
-      {
-        key: 'Enter',
-        run: =>
-          @run()
-          true
-        preventDefault: true,
-      },
-      {
-        key: 'Tab',
-        run: =>
-          if @get('input').length == 0
-            @fire('command-input-tabbed')
-            true
-          else
-            false
-        preventDefault: true,
-      },
-      {
-        key: 'ArrowUp',
-        run: =>
-          @moveInHistory(-1)
-          true
-        preventDefault: true,
-      },
-      {
-        key: 'ArrowDown'
-        run: =>
-          @moveInHistory(1)
-          true
-        preventDefault: true
-      },
-    ]
   }
 
   computed: {
     # string
     input: {
       get: -> @findComponent('codeContainer').get('code')
-      set: (newValue) -> @findComponent('codeContainer').set('code', newValue)
+      set: (newValue) -> @findComponent('codeContainer').setCode(newValue)
     }
+  }
+
+  on: {
+    complete: ->
+      editor = @findComponent('codeContainer').getEditor()
+      if editor?
+        editor.addKeyMap({
+          'Enter': =>
+            @run()
+            false
+          'Tab': =>
+            if @get('input').length is 0
+              @fire('command-input-tabbed')
+              false
+            else
+              CodeMirror.Pass
+          'Up': =>
+            @moveInHistory(-1)
+            false
+          'Down': =>
+            @moveInHistory(1)
+            false
+        })
+      return
   }
 
   run: ->
@@ -178,12 +165,9 @@ RactiveCommandInput = Ractive.extend({
   template: """
     <div class="netlogo-command-center-editor">
       <codeContainer
-        codeContainerType="command"
-        keyBindings={{keyBindings}}
+        initialCode=""
         isDisabled={{isReadOnly}}
-        placeholder={{placeholderText}}
-        parentEditor={{parentEditor}}
-        editorContext={{targetedAgentObj.agentType}}
+        aria-label="{{placeholderText}}"
       />
     </div>
   """

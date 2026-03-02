@@ -1,63 +1,58 @@
-input[type="range"] {
-  accent-color: #5B75B9;
-}
-
 .netlogo-command {
   background-color: #BACFF3;
 }
-
 .netlogo-command.netlogo-active, .netlogo-command:active {
   background-color: #1F6A99;
   color: #BACFF3;
 }
-
 .netlogo-button.netlogo-disabled:active, .netlogo-forever-button.netlogo-disabled.netlogo-active {
   background-color: #BCBCE5;
   color: #888888;
 }
-
 .netlogo-button.interface-unlocked:active {
   background-color: #BACFF3;
   color: #707070
 }
-
 .netlogo-input {
-  background-color: #BCE4DD;
+  background-color: #8FE585;
+}
+.netlogo-output {
+  background-color: #FFFF9A;
+  border: 1px solid #E7E741;
 }
 
-.netlogo-output {
-  background-color: #F9EE93;
+.netlogo-slider-label .netlogo-label {
+  background-color: #8FE585;
+}
+
+.netlogo-slider-label .netlogo-slider-value {
+  background-color: #8FE585;
 }
 
 .netlogo-tab-area {
-  border-color: #3A405A;
+  border-color: #242479;
 }
 
 .netlogo-tab {
-  color: #FFF;
+  background-color: #BCBCE5;
+  border-color: #242479;
   font-size: 16px;
-  border-color: #7885BD;
-  background-color: #3A405A;
 }
 
 .netlogo-tab.netlogo-active {
-  background-color: #5A648D;
+  background-color: #7C76fD;
 }
 
 .netlogo-tab:active {
-  background-color: #5A648D;
+  background-color: #7C76fD;
 }
 
 .netlogo-tab:hover  {
-  background-color: #5A648D;
+  background-color: #D3D3EE;
 }
 
 .netlogo-tab.netlogo-active:hover  {
-  background-color: #7885BD;
-}
-
-.netlogo-tab:not(:last-child) {
-  border-color: #7885BD;
+  background-color: #9E99FD;
 }
 
 .netlogo-view-container {
@@ -68,12 +63,4 @@ input[type="range"] {
 
 .netlogo-canvas {
   border-radius: 3px;
-}
-
-.netlogo-powered-by a {
-  color: #5B75B9;
-}
-
-.netlogo-powered-by a:hover {
-  color: #5A648D;
 }

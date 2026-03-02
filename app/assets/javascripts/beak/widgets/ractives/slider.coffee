@@ -1,7 +1,7 @@
 import RactiveValueWidget from "./value-widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
-import RactiveEditFormCode from "./subcomponent/edit-form-code-input.js"
+import { RactiveEditFormOneLineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
@@ -30,10 +30,6 @@ SliderEditForm = EditForm.extend({
   , units:     undefined # String
   , value:     undefined # Number
   , variable:  undefined # String
-  , parentEditor: null # GalapagosEditor | null
-  , maxCodeErrors: [] # Array[RuntimeError]
-  , minCodeErrors: [] # Array[RuntimeError]
-  , stepCodeErrors: [] # Array[RuntimeError]
   }
 
   twoway: false
@@ -41,30 +37,12 @@ SliderEditForm = EditForm.extend({
   components: {
     column:       FlexColumn
   , formCheckbox: RactiveEditFormCheckbox
-  , formMaxCode:  RactiveEditFormCode
-  , formMinCode:  RactiveEditFormCode
-  , formStepCode: RactiveEditFormCode
+  , formMaxCode:  RactiveEditFormOneLineCode
+  , formMinCode:  RactiveEditFormOneLineCode
+  , formStepCode: RactiveEditFormOneLineCode
   , formVariable: RactiveEditFormVariable
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
-  }
-
-  on: {
-    'new-compilation-result': (_, widgetObj) ->
-      newData = { maxCodeErrors: [], minCodeErrors: [], stepCodeErrors: [] }
-      regex = RegExp("^slider '#{@get('variable')}' - slider.(\\w+):(?: (.*))?$")
-      for message in widgetObj.compilation.messages
-        [_, fieldName, messageContent] = message.match(regex) ? []
-        [errorArray, source] = switch fieldName
-          when "max" then [newData.maxCodeErrors, @get('maxCode')]
-          when "min" then [newData.minCodeErrors, @get('minCode')]
-          when "step" then [newData.stepCodeErrors, @get('stepCode')]
-          else
-            console.error("Failed to interpret Tortoise error message: %s", message)
-            [[], ""] # return dummy values that won't affect anything
-        errorArray.push({ message: messageContent, start: 0, end: source.length })
-      @set(newData)
-      false
   }
 
   genProps: (form) ->
@@ -109,25 +87,16 @@ SliderEditForm = EditForm.extend({
 
       <div class="flex-row" style="align-items: stretch; justify-content: space-around">
         <column>
-          <formMinCode id="{{id}}-min-code" label="Minimum" name="minCode" {{! config="{ scrollbarStyle: 'null' }" }}
-                       codeContainerType="one_line_reporter"
-                       value="{{minCode}}"
-                       parentEditor={{parentEditor}}
-                       compilerErrors={{minCodeErrors}}/>
+          <formMinCode id="{{id}}-min-code" label="Minimum" name="minCode"
+                     value="{{minCode}}" />
         </column>
         <column>
-          <formStepCode id="{{id}}-step-code" label="Increment" name="stepCode" {{! config="{ scrollbarStyle: 'null' }" }}
-                        codeContainerType="one_line_reporter"
-                        value="{{stepCode}}"
-                        parentEditor={{parentEditor}}
-                        compilerErrors={{stepCodeErrors}}/>
+          <formStepCode id="{{id}}-step-code" label="Increment" name="stepCode"
+                        value="{{stepCode}}" />
         </column>
         <column>
-          <formMaxCode id="{{id}}-max-code" label="Maximum" name="maxCode" {{! config="{ scrollbarStyle: 'null' }" }}
-                       codeContainerType="one_line_reporter"
-                       value="{{maxCode}}"
-                       parentEditor={{parentEditor}}
-                       compilerErrors={{maxCodeErrors}}/>
+          <formMaxCode id="{{id}}-max-code" label="Maximum" name="maxCode"
+                       value="{{maxCode}}" />
         </column>
       </div>
 
@@ -155,7 +124,6 @@ RactiveSlider = RactiveValueWidget.extend({
   data: -> {
     errorClass:         undefined # String
   , internalValue:      0         # Number
-  , parentEditor:       null      # GalapagosEditor | null
   }
 
   widgetType: "slider"
@@ -208,8 +176,7 @@ RactiveSlider = RactiveValueWidget.extend({
     <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               top="{{widget.top}}" right="{{widget.right}}" bottom="{{widget.bottom}}"
-              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}"
-              parentEditor={{parentEditor}}/>
+              left="{{widget.left}}" value="{{widget.default}}" variable="{{widget.variable}}" />
     """
 
   partials: {

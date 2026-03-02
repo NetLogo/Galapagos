@@ -4,7 +4,6 @@
 
 body {
   color: rgb(64, 64, 64);
-  font-family: Lato, sans-serif;
 }
 
 code {
@@ -33,7 +32,7 @@ kbd {
 
 .topbar {
   align-items: center;
-  background-color: #212433;
+  background-color: #222222;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
@@ -49,7 +48,6 @@ kbd {
 
 .topbar-root-link {
   font-size: x-large;
-  font-family: Dosis, "Lucida Grande", sans-serif;
   margin-left: 95px;
   white-space: nowrap;
 }
@@ -94,6 +92,7 @@ kbd {
 
 .topbar-text {
   color: #f3f3f3;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .topbar-text:active {
@@ -107,6 +106,7 @@ kbd {
   box-shadow:       0 2px 10px rgba(0, 0, 0, .2);
   color:            #f3f3f3;
   display:          none;
+  font-family:      'Helvetica Neue', Helvetica, Arial, sans-serif;
   overflow:         hidden;
   position:         fixed;
   top:              41px;
@@ -138,14 +138,13 @@ kbd {
 }
 
 .not_full_height {
-  /*height: 95%;
-  min-height: 95%;*/
+  height: 95%;
+  min-height: 95%;
 }
 
 body.not_full_height {
   margin-left: 0;
   margin-right: 0;
-  overflow-y: hidden;
 }
 
 .outer-content {
@@ -155,15 +154,19 @@ body.not_full_height {
 }
 
 .content {
-  padding: 25px;
-  /* margin: 0 -35px; /* negative indent the amount of the padding to maintain the grid system */
+  padding: 35px;
+  margin: 0 -35px; /* negative indent the amount of the padding to maintain the grid system */
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15) inset;
   min-height: 100%;
+  background-color: #347999;
 }
 
 .inner-content {
-  padding: 15px 30px 30px;
+  background-color: #CDE4EB;
   border-radius: 10px;
-  background-color: #F4F6FB;
+  padding: 30px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .bold-link {

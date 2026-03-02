@@ -14,12 +14,13 @@
 
 .alert-overlay {
   display: flex;
-  font-family: "Lucida Grande", sans-serif;
+  align-items: center;
   align-items: center;
   justify-content: center;
 }
 
 .alert-dialog {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: whitesmoke;
   border: 2px black solid;
   border-radius: 20px;

@@ -59,15 +59,8 @@ generateRactiveSkeleton = (container, widgets, code, info,
     ticks:                "" # Remember, ticks initialize to nothing, not 0
     ticksStarted:         false
     widgetObj:            widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {})
-    widgetVarNames:       undefined # Array[String]
     viewController:       viewController # ViewController
     width:                0
-    parentEditor:         null
-    receiveParentEditor:  (editor) ->
-      # `this` is intended to bind to the skeleton Ractive, not the Ractive
-      # that happens to run this function. I'm not sure why this works since
-      # we never bind this function but it does.
-      @set('parentEditor', editor)
   }
 
   animateWithClass = (klass) ->
@@ -172,10 +165,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
       @set('showInspectionPane', true)
       @findComponent('inspection').setInspect(action)
 
-    # (Unit) -> Unit
-    recalculateWidgetVarNames: ->
-      @set('widgetVarNames', convertWidgetsToVarNames(@get('widgetObj')))
-
     on: {
       'world-might-change': (context) ->
         @findAllComponents().forEach((component) -> component.fire(context.name, context))
@@ -206,8 +195,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         if source isnt 'console'
           @findComponent('codePane').set('runtimeErrors', codePaneErrors)
         false
-      render: ->
-        @recalculateWidgetVarNames()
     }
 
     observe: {
@@ -316,12 +303,12 @@ template =
           {{# type === 'view'     }} <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} ticks="{{ticks}}" viewController="{{viewController}}" setInspect="{{@this.setInspect.bind(@this)}}" /> {{/}}
           {{# type === 'textBox'  }} <labelWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}
           {{# type === 'switch'   }} <switchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}
-          {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
-          {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}} errorClass="{{>errorClass}}" /> {{/}}
-          {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}}/> {{/}}
-          {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}} errorClass="{{>errorClass}}" /> {{/}}
-          {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}}/> {{/}}
-          {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} parentEditor={{parentEditor}}/> {{/}}
+          {{# type === 'button'   }} <buttonWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} errorClass="{{>errorClass}}" ticksStarted="{{ticksStarted}}"/> {{/}}
+          {{# type === 'slider'   }} <sliderWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+          {{# type === 'chooser'  }} <chooserWidget id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}
+          {{# type === 'monitor'  }} <monitorWidget id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} errorClass="{{>errorClass}}" /> {{/}}
+          {{# type === 'inputBox' }} <inputWidget   id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}
+          {{# type === 'plot'     }} <plotWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} /> {{/}}
           {{# type === 'output'   }} <outputWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" left="{{left}}" right="{{right}}" top="{{top}}" bottom="{{bottom}}" widget={{this}} text="{{outputWidgetOutput}}" /> {{/}}
         {{/}}
       </div>
@@ -338,7 +325,6 @@ template =
           isEditing={{isEditing}}
           viewController={{viewController}}
           checkIsReporter={{checkIsReporter}}
-          parentEditor={{parentEditor}}
         />
       </div>
       {{# !isReadOnly }}
@@ -347,7 +333,7 @@ template =
         <span class="netlogo-tab-text">Command Center</span>
       </label>
       {{#showConsole}}
-        <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" parentEditor={{parentEditor}}/>
+        <console output="{{consoleOutput}}" isEditing="{{isEditing}}" checkIsReporter="{{checkIsReporter}}" />
       {{/}}
       {{/}}
       <label class="netlogo-tab{{#showCode}} netlogo-active{{/}}">
@@ -360,8 +346,6 @@ template =
           lastCompiledCode={{lastCompiledCode}}
           lastCompileFailed={{lastCompileFailed}}
           isReadOnly={{isReadOnly}}
-          setAsParent={{receiveParentEditor}}
-          widgetVarNames={{widgetVarNames}}
         />
       </div>
       <label class="netlogo-tab{{#showInfo}} netlogo-active{{/}}">
@@ -415,9 +399,5 @@ widgetCreationOptions = [
   ["Slider",  "slider"],
   ["Switch",  "switch"],
 ].map((args) -> genWidgetCreator(args...))
-
-# `widgetObj` is just the type of the skeleton's 'widgetObj' data.
-convertWidgetsToVarNames = (widgetObj) ->
-  Object.values(widgetObj).map((widget) -> widget.variable).filter((x) -> x?)
 
 export default generateRactiveSkeleton

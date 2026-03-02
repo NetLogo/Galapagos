@@ -7,6 +7,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-container-unthemed {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .ntb-container {
@@ -14,7 +15,7 @@ body#ntp-body, html#ntp-body {
   border: 2px solid black;
   background-color: white;
   border-radius: 20px;
-  font-family: "Lucida Grande", sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .ntb-container label, .ntb-container-unthemed label {
@@ -73,6 +74,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-netlogo-model {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: min-content;
   height: min-content;
   display: grid;
@@ -435,6 +437,7 @@ body#ntp-body, html#ntp-body {
   text-align: center;
   flex-grow: 1;
   font-size: large;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
 }
 
@@ -443,6 +446,7 @@ body#ntp-body, html#ntp-body {
   text-align: center;
   user-select: none;
   font-size: large;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   margin: 4px 0;
 }

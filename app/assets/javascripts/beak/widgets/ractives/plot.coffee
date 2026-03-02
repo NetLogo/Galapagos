@@ -3,13 +3,11 @@ import { hexStringToNetlogoColor, netlogoColorToRGB } from "/colors.js"
 import EditForm                         from "./edit-form.js"
 import { RactiveEditFormCheckbox }      from "./subcomponent/checkbox.js"
 import { RactiveTwoWayCheckbox }        from "./subcomponent/checkbox.js"
-import RactiveEditFormCode              from "./subcomponent/edit-form-code-input.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveColorInput                from "./subcomponent/color-input.js"
 import { RactiveEditFormLabeledInput }  from "./subcomponent/labeled-input.js"
 import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
 import RactiveWidget                    from "./widget.js"
-{ all } = tortoise_require('brazier/array')
-
 PlotEditForm = {}
 
 # (Number|(Number, Number, Number)|(Number, Number, Number, Number)) => Number
@@ -29,23 +27,12 @@ PenForm = Ractive.extend({
   , setupCode:          undefined # String
   , shouldShowInLegend: undefined # Boolean
   , updateCode:         undefined # String
-  , parentEditor:       null # GalapagosEditor | null
-  , setupCodeErrors: [] # Array[RuntimeError]
-  , updateCodeErrors: [] # Array[RuntimeError]
-
-    # (string) -> Unit
-  , syncSetupCode: (code) ->
-      @set('setupCode', code)
-
-    # (string) -> Unit
-  , syncUpdateCode: (code) ->
-      @set('updateCode', code)
   }
 
   components: {
     colorInput:   RactiveColorInput
   , formCheckbox: RactiveTwoWayCheckbox
-  , formCode:     RactiveEditFormCode
+  , formCode:     RactiveEditFormMultilineCode
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
   }
@@ -86,6 +73,17 @@ PenForm = Ractive.extend({
   }
 
   on: {
+
+    '*.code-changed': ({ component }, newValue) ->
+      cid = component.get('id')
+      if cid.endsWith('setup-code')
+        @set('setupCode', newValue)
+      else if cid.endsWith('update-code')
+        @set('updateCode', newValue)
+      else
+        console.warn('Unknown plot pen code container!', component)
+      false
+
     'remove-pen': ->
       @parent.fire('remove-child-pen', @get('index'))
       false
@@ -107,21 +105,6 @@ PenForm = Ractive.extend({
 
       node.setCustomValidity(validityStr)
 
-      false
-
-    'new-compilation-result': (_, result) ->
-      newData = { setupCodeErrors: [], updateCodeErrors: [] }
-      regex = RegExp("^pen '#{@get('display')}' - pen.(\\w+):(?: (.*))?$")
-      for message in result.messages
-        [_, fieldName, messageContent] = message.match(regex) ? []
-        [errorArray, source] = switch fieldName
-          when "setup" then [newData.setupCodeErrors, @get('setupCode')]
-          when "update" then [newData.updateCodeErrors, @get('updateCode')]
-          else
-            console.error("Failed to interpret Tortoise error message: %s", message)
-            [[], ""] # return dummy values that won't affect anything
-        errorArray.push({ message: messageContent, start: 0, end: source.length })
-      @set(newData)
       false
 
   }
@@ -164,27 +147,11 @@ PenForm = Ractive.extend({
           <formCheckbox id="{{id}}-in-legend?" isChecked={{shouldShowInLegend}} labelText="In legend?" name="legend" />
         </div>
         <spacer height="10px" />
-        <formCode
-          id="{{id}}-setup-code"
-          name="setupCode"
-          codeContainerType="embedded"
-          onchange={{syncSetupCode}}
-          value="{{setupCode}}"
-          label="Pen setup commands"
-          parentEditor={{parentEditor}}
-          compilerErrors={{setupCodeErrors}}
-        />
+        <formCode id="{{id}}-setup-code" name="setupCode" value="{{setupCode}}"
+                  label="Pen setup commands" style="width: 100%;" />
         <spacer height="10px" />
-        <formCode
-          id="{{id}}-update-code"
-          name="updateCode"
-          codeContainerType="embedded"
-          onchange={{syncUpdateCode}}
-          value="{{updateCode}}"
-          label="Pen update commands"
-          parentEditor={{parentEditor}}
-          compilerErrors={{updateCodeErrors}}
-        />
+        <formCode id="{{id}}-update-code" name="updateCode" value="{{updateCode}}"
+                  label="Pen update commands" style="width: 100%;" />
         <spacer height="10px" />
       {{/}}
     </div>
@@ -209,14 +176,11 @@ PlotEditForm = EditForm.extend({
   , yLabel:     undefined # String
   , yMax:       undefined # Number
   , yMin:       undefined # Number
-  , parentEditor: null # GalapagosEditor | null
-  , setupCodeErrors: [] # Array[RuntimeError]
-  , updateCodeErrors: [] # Array[RuntimeError]
   }
 
   components: {
     formCheckbox: RactiveEditFormCheckbox
-  , formCode:     RactiveEditFormCode
+  , formCode:     RactiveEditFormMultilineCode
   , formPen:      PenForm
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
@@ -334,26 +298,6 @@ PlotEditForm = EditForm.extend({
       @set('guiPens', cloned)
       true
 
-    'new-compilation-result': (_, widgetObj) ->
-      newData = { setupCodeErrors: [], updateCodeErrors: [] }
-      regex = RegExp("^plot '#{@get('display')}' - plot.(\\w+):(?: (.*))?$")
-      for message in widgetObj.compilation.messages
-        [_, fieldName, messageContent] = message.match(regex) ? []
-        [errorArray, source] = switch fieldName
-          when "setup" then [newData.setupCodeErrors, @get('setupCode')]
-          when "update" then [newData.updateCodeErrors, @get('updateCode')]
-          else
-            console.error("Failed to interpret Tortoise error message: %s", message)
-            [[], ""] # return dummy values that won't affect anything
-        errorArray.push({ message: messageContent, start: 0, end: source.length })
-      @set(newData)
-
-      if widgetObj.compiledPens
-        for penForm, index in @findAllComponents('formPen')
-          penForm.fire("new-compilation-result", {}, widgetObj.compiledPens[index].compilation)
-
-      false
-
   }
 
   # (Context) => Boolean
@@ -434,20 +378,14 @@ PlotEditForm = EditForm.extend({
         <spacer height="10px" />
         <div class="flex-column" style="justify-content: left; width: 100%;">
           <formCode id="{{id}}-setup-code" isCollapsible="true" isExpanded="false"
-                    codeContainerType="embedded"
                     value="{{setupCode}}" label="Plot setup commands"
-                    style="width: 100%;"
-                    parentEditor={{parentEditor}}
-                    compilerErrors={{setupCodeErrors}}/>
+                    style="width: 100%;" />
         </div>
         <spacer height="10px" />
         <div class="flex-column" style="justify-content: left; width: 100%;">
           <formCode id="{{id}}-update-code" isCollapsible="true" isExpanded="false"
-                    codeContainerType="embedded"
                     value="{{updateCode}}" label="Plot update commands"
-                    style="width: 100%;"
-                    parentEditor={{parentEditor}}
-                    compilerErrors={{updateCodeErrors}}/>
+                    style="width: 100%;" />
         </div>
         <spacer height="10px" />
         <div class="flex-column" style="justify-content: left; margin-left: 18px; width: 100%;">Plot pens</div>
@@ -455,8 +393,7 @@ PlotEditForm = EditForm.extend({
           {{#each guiPens: index}}
             <formPen color="{{color}}" display="{{display}}" index="{{index}}"
                      interval="{{interval}}" modeIndex="{{mode}}" setupCode="{{setupCode}}"
-                     shouldShowInLegend="{{inLegend}}" updateCode="{{updateCode}}"
-                     parentEditor={{parentEditor}}/>
+                     shouldShowInLegend="{{inLegend}}" updateCode="{{updateCode}}" />
           {{/each}}
           <input type="button" on-click="@this.fire('add-new')" style="height: 26px; margin: 8px 0 8px 6px;" value="Add Pen" />
         </div>
@@ -474,7 +411,6 @@ RactivePlot = RactiveWidget.extend({
   data: -> {
     menuIsOpen:     false
   , resizeCallback: ((x, y) ->)
-  , parentEditor:   null # GalapagosEditor | null
   }
 
   components: {
@@ -537,11 +473,6 @@ RactivePlot = RactiveWidget.extend({
     widget = @get('widget')
     [widget.display]
 
-   # () => boolean
-  getCompilationSuccess: ->
-    widgetObj = @get('widget')
-    widgetObj.compilation.success and all((pen) -> pen.compilation.success)(widgetObj.compiledPens)
-
   minWidth:  100
   minHeight: 85
 
@@ -555,8 +486,7 @@ RactivePlot = RactiveWidget.extend({
               legendOn={{widget.legendOn}} pens="{{widget.pens}}"
               setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
               xLabel="{{widget.xAxis}}" xMin="{{widget.xmin}}" xMax="{{widget.xmax}}"
-              yLabel="{{widget.yAxis}}" yMin="{{widget.ymin}}" yMax="{{widget.ymax}}"
-              parentEditor={{parentEditor}}/>
+              yLabel="{{widget.yAxis}}" yMin="{{widget.ymin}}" yMax="{{widget.ymax}}" />
     """
   # coffeelint: enable=max_line_length
 

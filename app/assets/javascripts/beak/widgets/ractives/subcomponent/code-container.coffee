@@ -1,165 +1,266 @@
-# TODO actually import the enum and use the constants instead of the equivalent literals
+RactiveCodeContainerBase = Ractive.extend({
 
-codeContainerMapping = {
-  'full_model': { parseMode: 'Normal', oneLine: false },
-  'command': { parseMode: 'Oneline', oneLine: true },
-  'one_line_reporter': { parseMode: 'Reporter', oneLine: true },
-  'multi_line_reporter': { parseMode: 'Reporter', oneLine: false },
-  'embedded': { parseMode: 'Embedded', oneLine: false },
-  'generative': { parseMode: 'Generative', oneLine: false }
-}
-# type CodeContainerType = keyof typeof codeContainerMapping
+  _editor: undefined # CodeMirror
 
-RactiveCodeContainer = Ractive.extend({
   data: -> {
-    # Props
-    codeContainerType: undefined # CodeContainerType
-    initialCode: "" # string
-    keyBindings: [] # Array[KeyBinding]
-    isDisabled: false # boolean
-    placeholder: "" # string
-    parentEditor: null # GalapagosEditor | null
-
-    # State (which parents can update)
-    editorContext: null # string | null
-    # if null, the context will be decided by GalapagosEditor
-    compilerErrors: [] # Array[RuntimeError]
-    runtimeErrors: [] # Array[RuntimeError]
-
-    # State
-    editor: undefined # GalapagosEditor
-    placeholderElement: document.createElement('span')
+    code:           undefined # String
+  , extraClasses:   undefined # Array[String]
+  , extraConfig:    undefined # Object
+  , localConfig:    undefined # Object
+  , id:             undefined # String
+  , initialCode:    undefined # String
+  , isDisabled:     false
+  , injectedConfig: undefined # Object
+  , onchange:       (->)      # (String) => Unit
+  , style:          undefined # String
+  , tabindex:       undefined # String
+  , 'aria-label':   undefined # String
   }
 
-  computed: {
-    # Shouldn't be overridden by parent component mapping data
-    # string
-    code: {
-      get: ->
-        editor = @get('editor')
-        if editor?
-          editor.GetCode()
-        else
-          ""
-      set: (code) -> @get('editor').SetCode(code)
+  # An astute observer will ask what the purpose of `initialCode` is--why wouldn't we just make it
+  # equivalent to `code`?  It's a good (albeit maddening) question.  Ractive does some funny stuff
+  # if the code that comes in is the same as what is getting hit by `set` in the editor's on-change
+  # event.  Basically, even though we explicitly say all over the place that we don't want to be
+  # doing two-way binding, that `set` call will change the value here and everywhere up the chain.
+  # So, to avoid that, `initialCode` is a dummy variable, and we dump it into `code` as soon as
+  # reasonably possible.  --Jason B. (5/2/16)
+  oncomplete: ->
+    initialCode = @get('initialCode')
+    @set('code', initialCode ? @get('code') ? "")
+    @_setupCodeMirror()
+    return
+
+  twoway: false
+
+  _setupCodeMirror: ->
+
+    id        = @get('id')
+    editorDiv = if id? then @find("##{id}") else @find('.netlogo-code')
+    baseConfig = {
+      mode: 'netlogo'
+    , theme: 'netlogo-default'
+    , value: @get('code').toString()
     }
+    config     = Object.assign(
+      {}, baseConfig,
+      @get('extraConfig') ? {},
+      @get('injectedConfig') ? {},
+      @get('localConfig') ? {}
+    )
+    @_editor   = new CodeMirror(editorDiv, config)
+
+    @_editor.on('change', =>
+      code = @_editor.getValue()
+      @set('code', code)
+      @parent.fire('code-changed', code)
+      @get('onchange')(code)
+    )
+
+    @_editor.on('blur', =>
+      @fire('change')
+    )
+
+    @observe('isDisabled', (isDisabled) ->
+      @_editor.setOption('readOnly', if isDisabled then 'nocursor' else false)
+      classes = this.find('.netlogo-code').querySelector('.CodeMirror-scroll').classList
+      if isDisabled
+        classes.add('cm-disabled')
+      else
+        classes.remove('cm-disabled')
+      return
+    )
+
+    return
+
+  # () => Unit
+  refresh: ->
+    @_editor.refresh()
+    return
+
+  # (String) => Unit
+  setCode: (code) ->
+    str = code.toString()
+    if @_editor? and @_editor.getValue() isnt str
+      @_editor.setValue(str)
+    return
+
+  # () => Unit
+  focus: ->
+    @_editor.focus()
+    return
+
+  # () => CodeMirror
+  getEditor: ->
+    @_editor
+
+  template:
+    """
+    <div
+      id="{{id}}"
+      class="netlogo-code {{(extraClasses || []).join(' ')}}"
+      style="{{style}}"
+      translate="no"
+      aria-label="{{aria-label}}"
+    />
+    """
+
+})
+
+RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
+
+  data: -> {
+    extraConfig: {
+      tabSize: 2
+      extraKeys: {
+        "Ctrl-F": "findPersistent"
+        "Cmd-F":  "findPersistent"
+      }
+    }
+    , jumpToProcedure: undefined # { procName: String, index: Int }
+    , jumpToCode:      undefined # { start: Int, end: Int }
   }
 
-  on: {
-    render: ->
-      { parseMode, oneLine } = codeContainerMapping[@get('codeContainerType')]
-      editor = new GalapagosEditor(@find(".netlogo-code"), {
-        ReadOnly: @get('isDisabled'),
-        Language: 0,
-        Placeholder: @get('placeholderElement'),
-        ParseMode: parseMode,
-        OneLine: oneLine,
-        Wrapping: not oneLine,
-        OnUpdate: (_documentChanged, _viewUpdate) =>
-          @update('code')
-          return
-        OnBlurred: (_view) =>
-          @fire('change')
-          return
-        KeyBindings: @get('keyBindings')
-        OnColorPickerCreate: (cpDiv) =>
-          # Check if the ColorPicker is already open
-          if document.querySelector('#colorPickerDiv')
-            return
-
-          @fire('popup-window', {}, cpDiv)
-          return
-      })
-      @set('editor', editor)
-
-      # We create the observer here instead of as an initialization option
-      # because if this code container was rendered with a `parentEditor`
-      # prop already specified, we should wait for this editor to actually be
-      # created before we try to add it as a child to the parent editor.
-      @observe('parentEditor', ((newParentEditor, oldParentEditor) ->
-        if oldParentEditor?
-          oldParentEditor.RemoveChild(@get('editor'))
-        if newParentEditor?
-          newParentEditor.AddChild(@get('editor'))
-      ))
-      @observe('editorContext', (editorContext) ->
-        @get('editor').SetContext(editorContext)
-      )
-      @observe('compilerErrors', (compilerErrors) ->
-        @get('editor').SetCompilerErrors(compilerErrors)
-      )
-      @observe('runtimeErrors', (runtimeErrors) ->
-        @get('editor').SetRuntimeErrors(runtimeErrors)
-      )
-      @on('unrender', ->
-        editor = @get('editor')
-        if editor.ParentEditor?
-          editor.Detach()
-      )
-
-      editor.SetCode(@get('initialCode'))
-  }
+  oncomplete: ->
+    @_super()
+    @jumpToProcedure()
+    @jumpToCode()
 
   observe: {
-    isDisabled: {
-      handler: (isDisabled) -> @get('editor').SetReadOnly(isDisabled)
-      init: false # the editor is already initialized to have the correct setting
-    }
+    'jumpToProcedure': ->
+      @jumpToProcedure()
 
-    placeholder: (text) -> @get('placeholderElement').textContent = text
+    'jumpToCode': ->
+      @jumpToCode()
   }
 
-  # (Unit) -> Unit
-  focus: ->
-    @get('editor').Focus()
-    return
-
-  # (string, number) -> Unit
+  # (String, Int) => Unit
   highlightProcedure: (procedureName, index) ->
-    @get('editor').Selection.Select(index - procedureName.length, index)
+    end   = @_editor.posFromIndex(index)
+    start = CodeMirror.Pos(end.line, end.ch - procedureName.length)
+    @_editor.setSelection(start, end)
     return
 
-  template: """
-    <div class="netlogo-code"></div>
-  """
+  # ({ start: Int, end: Int }) => Unit
+  highlightLocation: (location) ->
+    start = @_editor.posFromIndex(location.start)
+    end   = @_editor.posFromIndex(location.end)
+    @_editor.setSelection(start, end)
+    return
+
+  # () => Unit
+  jumpToProcedure: () ->
+    procInfo = @get('jumpToProcedure')
+    if procInfo? and @_editor?
+      @highlightProcedure(procInfo.procName, procInfo.index)
+    return
+
+  # () => Unit
+  jumpToCode: () ->
+    location = @get('jumpToCode')
+    if location? and @_editor?
+      @highlightLocation(location)
+    return
+
 })
 
-# Does it make sense for the `RactiveCodeContainer` to have a parent, but also
-# have the `RactiveParentCodeContainer` extend it? This would imply that parents
-# themselves can also have parents, which would result in a runtime error if
-# attempted. I'm going to leave it like this because the nature of a "parent"
-# relationship implies that it is possible, and also because I don't want to
-# change all the code that already uses `RactiveCodeContainer`. -Andre C.
+RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
 
-RactiveParentCodeContainer = RactiveCodeContainer.extend({
-  data: -> {
-    # Props
+  oncomplete: ->
+    @._super()
+    forceOneLine =
+      (_, change) ->
+        lines = if change.text[change.text.length - 1] is ''
+          change.text.slice(0, change.text.length - 1)
+        else
+          change.text
+        oneLineText = lines.join(' ')
+        change.update(change.from, change.to, [oneLineText])
+        true
+    @_editor.on('beforeChange', forceOneLine)
+    return
 
-    setAsParent: null # (GalapagosEditor) -> Unit | null
-    # 'setAsParent', if not null, will be called when the editor is rendered.
-    # The intention of this function is so that the parent of this Ractive has
-    # a way to get a handle on the editor so that it can be set as the parent
-    # of other editors. Thus, it wouldn't make sense to have both `parentEditor`
-    # and `setAsParent` set at the same time for a component.
-
-    # State
-
-    widgetVarNames: [] # Array[String]
-  }
-
-  on: {
-    render: ->
-      if (setAsParent = @get('setAsParent'))?
-        setAsParent(@get('editor'))
-
-      # add observer here because we want to make sure the editor exists before
-      # the observer fires.
-      @observe('widgetVarNames', (widgetVarNames) ->
-        @get('editor').SetWidgetVariables(widgetVarNames)
-      )
-  }
 })
 
+# (Ractive) => Ractive
+editFormCodeContainerFactory =
+  (container) ->
+    Ractive.extend({
 
-export default RactiveCodeContainer
-export { RactiveParentCodeContainer }
+      data: -> {
+        config:        undefined # Object
+      , id:            undefined # String
+      , isCollapsible: false     # Boolean
+      , isDisabled:    false     # Boolean
+      , isExpanded:    undefined # Boolean
+      , label:         undefined # String
+      , onchange:      (->)      # (String) => Unit
+      , style:         undefined # String
+      , value:         undefined # String
+      }
+
+      twoway: false
+
+      computed: {
+        code: -> @findComponent('codeContainer').get('code')
+      }
+
+      components: {
+        codeContainer: container
+      }
+
+      on: {
+
+        init: ->
+
+          isExpanded = @get('isExpanded') ? not @get('isCollapsible')
+          @set('isExpanded', isExpanded)
+
+          # If a CodeMirror instance is rendered invisibly, it displays and interacts
+          # kinda funkily, once made visible, until you click it a couple of times.
+          # In order to get it set up properly, we need to call its `refresh`
+          # method, but we need to wait until Ractive has actually updated the GUI
+          # to render the CodeMirror instance, first.
+          #
+          # Thus: This nonsense. --Jason B. (6/16/22)
+          @observe('isExpanded', (newValue, oldValue) ->
+            if newValue is true and oldValue is false
+              setTimeout((=> @findComponent('codeContainer').refresh()), 0)
+          )
+
+          return
+
+        "toggle-expansion": ->
+          if @get("isCollapsible")
+            @set("isExpanded", not @get("isExpanded"))
+          false
+
+      }
+
+      template:
+        """
+        <div class="flex-row code-container-label{{#isExpanded}} open{{/}}"
+             on-click="toggle-expansion">
+          {{# isCollapsible }}
+            <div for="{{id}}-is-expanded" class="expander widget-edit-checkbox-wrapper">
+              <span id="{{id}}-is-expanded" class="widget-edit-input-label expander-label">&#9654;</span>
+            </div>
+          {{/}}
+          <label for="{{id}}" class="expander-text">{{label}}</label>
+        </div>
+        <div class="{{# isCollapsible && !isExpanded }}hidden{{/}}" style="{{style}}">
+          <codeContainer id="{{id}}" initialCode="{{value}}" injectedConfig="{{config}}"
+                         isDisabled="{{isDisabled}}" onchange="{{onchange}}" />
+        </div>
+        """
+
+    })
+
+RactiveEditFormOneLineCode   = editFormCodeContainerFactory(RactiveCodeContainerOneLine)
+RactiveEditFormMultilineCode = editFormCodeContainerFactory(RactiveCodeContainerMultiline)
+
+export {
+  RactiveCodeContainerMultiline,
+  RactiveCodeContainerOneLine,
+  RactiveEditFormOneLineCode,
+  RactiveEditFormMultilineCode,
+}

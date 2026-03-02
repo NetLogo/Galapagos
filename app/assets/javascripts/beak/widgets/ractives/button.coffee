@@ -1,7 +1,7 @@
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
-import RactiveEditFormCode from "./subcomponent/edit-form-code-input.js"
+import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
@@ -15,8 +15,6 @@ ButtonEditForm = EditForm.extend({
   , source:         undefined # String
   , startsDisabled: undefined # Boolean
   , type:           undefined # String
-  , parentEditor:   null # GalapagosEditor | null
-  , compilerErrors: [] # Array[RuntimeError]
   }
 
   computed: { displayedType: { get: -> @_typeToDisplay(@get('type')) } }
@@ -25,26 +23,13 @@ ButtonEditForm = EditForm.extend({
     'handle-action-key-press': ({ event: { key }, node }) ->
       if key isnt "Enter"
         node.value = ""
-    'new-compilation-result': (_, widgetObj) ->
-      # Tortoise doesn't yet give us a start and end to where the error was; instead it just
-      # gives us a message so use that instead.
-      sourceLength = @get('source').length
-      regex = RegExp("^button '#{@get('source')}' - button.(\\w+):(?: (.*))?$")
-      compilerErrors = for message in widgetObj.compilation.messages
-        [_, fieldName, messageContent] = message.match(regex) ? []
-        if fieldName isnt 'source'
-          console.error("Failed to interpret Tortoise error message: %s", message)
-          continue
-        { message: messageContent, start: 0, end: sourceLength }
-      @set('compilerErrors', compilerErrors)
-      false
   }
 
   twoway: false
 
   components: {
     formCheckbox: RactiveEditFormCheckbox
-  , formCode:     RactiveEditFormCode
+  , formCode:     RactiveEditFormMultilineCode
   , formDropdown: RactiveEditFormDropdown
   , labeledInput: RactiveEditFormLabeledInput
   , spacer:       RactiveEditFormSpacer
@@ -80,15 +65,7 @@ ButtonEditForm = EditForm.extend({
 
       <spacer height="15px" />
 
-      <formCode
-        id="{{id}}-source"
-        name="source"
-        value="{{source}}"
-        label="Commands"
-        codeContainerType="embedded"
-        parentEditor={{parentEditor}}
-        compilerErrors={{compilerErrors}}
-      />
+      <formCode id="{{id}}-source" name="source" value="{{source}}" label="Commands" />
 
       <spacer height="15px" />
 
@@ -123,7 +100,6 @@ RactiveButton = RactiveWidget.extend({
     errorClass:         undefined # String
   , ticksStarted:       undefined # Boolean
   , isRunning:          false     # Boolean
-  , parentEditor:       null      # GalapagosEditor | null
   }
 
   computed: {
@@ -194,8 +170,7 @@ RactiveButton = RactiveWidget.extend({
     {{>button}}
     <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
               idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
-              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}"
-              parentEditor={{parentEditor}}/>
+              startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" />
     """
 
   partials: {
