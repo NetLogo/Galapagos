@@ -704,3 +704,8 @@
   flex-direction:  row;
   justify-content: center;
 }
+
+.netlogo-display-horizontal .netlogo-tab-area {
+  margin: 0 0 0 20px;
+  flex-grow: 1;
+}

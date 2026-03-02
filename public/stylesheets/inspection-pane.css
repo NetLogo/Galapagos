@@ -1,7 +1,5 @@
 .inspection__pane {
-  height: calc(100vh - 160px);
   padding: 1em;
-  overflow: scroll;
   min-width: 600px;
 }
 
