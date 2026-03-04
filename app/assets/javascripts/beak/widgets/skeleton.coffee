@@ -198,6 +198,12 @@ generateRactiveSkeleton = (container, widgets, code, info,
     }
 
     observe: {
+      'showCode': {
+        handler: (newValue) ->
+          if newValue
+            setTimeout((=> @findComponent('codePane').refresh()), 0)
+        init: false
+      },
       'showInspectionPane': {
         handler: (newValue) ->
           @fire('inspection-pane-toggled', {}, newValue)

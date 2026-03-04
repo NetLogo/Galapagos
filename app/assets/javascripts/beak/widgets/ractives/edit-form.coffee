@@ -44,6 +44,7 @@ EditForm = Ractive.extend({
         console.warn("Widget form submission error: ", ex)
       finally
         @set('amProvingMyself', false)
+        @fire('activate-cloaking-device')
         return false
 
     'show-yourself': ->

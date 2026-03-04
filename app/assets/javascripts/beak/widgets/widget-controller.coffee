@@ -140,7 +140,6 @@ class WidgetController
           world.observer.setGlobal(newWidget.variable, realWidget.currentValue)
 
     @updateWidgets()
-    @ractive.recalculateWidgetVarNames()
 
     return
 

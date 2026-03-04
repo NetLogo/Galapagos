@@ -43,6 +43,11 @@ RactiveCodePane = Ractive.extend({
       return
   }
 
+  # () => Unit
+  refresh: ->
+    @findComponent('codeContainer').refresh()
+    return
+
   _setupCtrlS: ->
     editor = @findComponent('codeContainer').getEditor()
     if editor?
