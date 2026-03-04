@@ -12,6 +12,7 @@ RactiveAgentVarField = Ractive.extend({
 
     # State
     currentInput: undefined
+    hasFocus: false
   }
 
   computed: {
@@ -41,7 +42,9 @@ RactiveAgentVarField = Ractive.extend({
   }
 
   observe: {
-    'varValueAsStr': (value) -> @set('currentInput', value)
+    'varValueAsStr': (value) ->
+      if not @get('hasFocus')
+        @set('currentInput', value)
   }
 
   on: {
@@ -62,7 +65,10 @@ RactiveAgentVarField = Ractive.extend({
 
   template: """
     <div class="inspection__agent-var-name" title="{{varName}}">{{varName}}</div>
-    <input class="inspection__input-container" value={{currentInput}} on-change="['submit-input', currentInput]"/>
+    <input class="inspection__input-container" value={{currentInput}}
+           on-focus="@this.set('hasFocus', true)"
+           on-blur="@this.set('hasFocus', false)"
+           on-change="['submit-input', currentInput]"/>
   """
 })
 
