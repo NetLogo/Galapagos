@@ -134,6 +134,7 @@ RactiveAgentMonitor = Ractive.extend({
     'agent': {
       handler: (newValue, oldValue) ->
         if oldValue is newValue then return # we only care about when the identity changes (see Ractive API)
+        if not newValue? then return        # guard against undefined agent during component teardown
         @_syncAgentData(newValue)
         @get('replaceView')()
       init: false # see `onrender`
