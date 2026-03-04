@@ -170,7 +170,7 @@ RactiveInspectionPane = Ractive.extend({
     dragToSelectEnabled: false # boolean
     unsubscribeDragSelector: -> # (Unit) -> Unit
 
-    updateTargetedAgentsInHistory: true # boolean; whether scrolling through history will also change what
+    updateTargetedAgentsInHistory: false # boolean; whether scrolling through history will also change what
     # agents are selected
 
     # type StagedAgents = {
