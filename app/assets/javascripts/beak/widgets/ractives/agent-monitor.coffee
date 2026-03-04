@@ -35,6 +35,8 @@ RactiveAgentMonitor = Ractive.extend({
 
     # (Unit) -> Unit
     replaceView: ->
+      if not @get('viewModelAgent')?
+        return
       if @get('viewWindow')?
         @get('viewWindow').destructor()
       viewController = @get('viewController')
@@ -92,6 +94,11 @@ RactiveAgentMonitor = Ractive.extend({
   on: {
     'world-might-change': ->
       @update('agent')
+      # If the view was not set up on onrender (because the agent wasn't in the view model yet mid-tick),
+      # retry now that the model has settled.
+      if not @get('viewWindow')?
+        @_syncAgentData(@get('agent'))
+        @get('replaceView')()
     'watch-button-clicked': ->
       observer = world.observer
       persp = observer.getPerspective()
