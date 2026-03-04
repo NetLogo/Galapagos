@@ -552,7 +552,7 @@ RactiveInspectionPane = Ractive.extend({
             >
               <img
                 width=25
-                src="https://cdn0.iconfinder.com/data/icons/controls-and-navigation-arrows-1/24/27-512.png"
+                src="/assets/images/inspect/cursor.png"
               />
             </div>
             <div
@@ -562,7 +562,7 @@ RactiveInspectionPane = Ractive.extend({
             >
               <img
                 width=25
-                src="https://static.thenounproject.com/png/2506-200.png"
+                src="/assets/images/inspect/magnifying-glass.png"
               />
             </div>
             <div
@@ -570,12 +570,12 @@ RactiveInspectionPane = Ractive.extend({
               title="Unstage all agents"
               on-click="@.setInspect({ type: 'unstage-all' })"
             >
-              <img width=25 src="https://static.thenounproject.com/png/6447-200.png"/>
+              <img width=25 src="/assets/images/inspect/close.png"/>
             </div>
             <div class="inspection__button" title="Help" on-click="clicked-staging-help">
               <img
                 width=25
-                src="https://static.thenounproject.com/png/61692-200.png"
+                src="/assets/images/inspect/help.png"
               />
             </div>
           </div>
@@ -641,7 +641,7 @@ RactiveInspectionPane = Ractive.extend({
         >
           <img
             width=25
-            src="https://static.thenounproject.com/png/84467-200.png"
+            src="/assets/images/inspect/history.png"
           />
         </div>
         <div
@@ -652,7 +652,7 @@ RactiveInspectionPane = Ractive.extend({
           <img
             width=25
             style="{{#if agentTargetChoice === 'inspected'}}transform: scaleY(-1);{{/if}}"
-            src="https://static.thenounproject.com/png/1098841-200.png"
+            src="/assets/images/inspect/arrow-up.png"
           />
         </div>
         <commandInput
@@ -675,7 +675,7 @@ RactiveInspectionPane = Ractive.extend({
               title="Remove all agent monitors"
               on-click="@.set('inspectedAgents', [])"
             >
-              <img width=25 src="https://static.thenounproject.com/png/6447-200.png"/>
+              <img width=25 src="/assets/images/inspect/close.png"/>
             </div>
           </div>
         {{/if}}

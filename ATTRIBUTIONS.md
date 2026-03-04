@@ -5,3 +5,12 @@
 "Open lock" and "closed lock" icons made by [Freepik](http://www.freepik.com) from [Flaticon](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
 
 "Copy" icon made by [Linh Pham](https://linhpham.me/miu/) from [Flaticon](http://www.flaticon.com) is licensed by [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
+
+The following icons (in `public/images/inspect/`) are used in the agent inspection pane and are licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/):
+
+- "Magnifying Glass" (`magnifying-glass.png`) by AR Design from [the Noun Project](https://thenounproject.com/icon/magnifying-glass-2506/)
+- "Close" (`close.png`) by Javier Cabezas from [the Noun Project](https://thenounproject.com/icon/close-6447/)
+- "Help" (`help.png`) by Icons8 from [the Noun Project](https://thenounproject.com/icon/help-61692/)
+- "History" (`history.png`) by José Campos from [the Noun Project](https://thenounproject.com/icon/history-84467/)
+- "Arrow Up" (`arrow-up.png`) by Nanda Ririz from [the Noun Project](https://thenounproject.com/icon/arrow-up-1098841/)
+- "Cursor" (`cursor.png`) by Creative Stall from [Iconfinder](https://www.iconfinder.com/iconsets/controls-and-navigation-arrows-1)
