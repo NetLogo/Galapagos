@@ -218,7 +218,7 @@ RactiveAgentMonitor = Ractive.extend({
     """
 
     "commandCenter": """
-      <div class="inspection__input-container">
+      <div class="inspection__cmd-container" style="margin: 0;">
         <commandInput
           isReadOnly={{isEditing}}
           source="agent-monitor"

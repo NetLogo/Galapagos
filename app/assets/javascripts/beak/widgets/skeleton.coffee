@@ -175,7 +175,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
         switch source
           when 'recompile', 'compile-recoverable'
             @findComponent('codePane').set('compilerErrors', errors)
-          when 'console', 'inspection-pane'
+          when 'console', 'inspection-pane', 'agent-monitor'
             ; # do nothing
           else
             console.error("received compiler error from unknown source: %s", source)
@@ -192,7 +192,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
               }
             else
               continue # don't display
-        if source isnt 'console'
+        if source isnt 'console' and source isnt 'agent-monitor'
           @findComponent('codePane').set('runtimeErrors', codePaneErrors)
         false
     }
