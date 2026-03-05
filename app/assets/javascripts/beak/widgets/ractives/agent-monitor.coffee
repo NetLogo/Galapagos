@@ -190,7 +190,7 @@ RactiveAgentMonitor = Ractive.extend({
           class="inspection__button"
           on-click=["closed-agent-monitor", agent]
         >
-          <img width=15 src="https://static.thenounproject.com/png/6447-200.png"/>
+          <img width=15 src="/assets/images/inspect/close.png"/>
         </div>
       </div>
     """
