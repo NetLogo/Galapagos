@@ -73,7 +73,7 @@ try {
     }
   })();
 
-  var pageTitle = function(modelTitle) {
+var pageTitle = function(modelTitle) {
     if (modelTitle != null && modelTitle != '') {
       return 'NetLogo Web: ' + modelTitle;
     } else {
@@ -93,6 +93,7 @@ try {
     }
     globalThis.session.widgetController.ractive.set('speed', settings.speed);
     globalThis.session.widgetController.ractive.set('isVertical', settings.useVerticalLayout);
+    globalThis.session.widgetController.ractive.set('viewQuality', settings.viewQuality);
     document.title = pageTitle(globalThis.session.modelTitle());
     activeContainer = modelContainer;
     globalThis.session.startLoop();

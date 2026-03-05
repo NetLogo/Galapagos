@@ -151,8 +151,8 @@ HNWChooserEditForm = ChooserEditForm.extend({
 RactiveChooser = RactiveValueWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-    internalChoice:     0
+    internalChoice: 0
+    resizeDirs:     ['left', 'right']
   }
 
   widgetType: 'chooser'
@@ -176,7 +176,8 @@ RactiveChooser = RactiveValueWidget.extend({
 
   observe: {
     'widget.currentValue': () ->
-      widget        = @get('widget')
+      widget = @get('widget')
+      return unless widget?
       currentChoice = widget.choices.findIndex(eq(widget.currentValue))
       if currentChoice is @get('internalChoice')
         return

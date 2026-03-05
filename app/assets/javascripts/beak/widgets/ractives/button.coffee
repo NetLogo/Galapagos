@@ -38,7 +38,7 @@ ButtonEditForm = EditForm.extend({
 
   genProps: (form) ->
     key    = form.actionKey.value
-    source = @findComponent('formCode').findComponent('codeContainer').get('code')
+    source = @findComponent('formCode').get('code')
     {
                    actionKey: (if key.length is 1 then key.toUpperCase() else null)
     ,             buttonKind: @_displayToType(form.type.value)
@@ -197,8 +197,7 @@ HNWButtonEditForm = ButtonEditForm.extend({
 RactiveButton = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , errorClass:         undefined # String
+    errorClass:         undefined # String
   , ticksStarted:       undefined # Boolean
   , isRunning:          false     # Boolean
   }

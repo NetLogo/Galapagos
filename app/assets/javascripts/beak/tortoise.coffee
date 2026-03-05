@@ -12,9 +12,13 @@ import { createNotifier, listenerEvents } from "../notifications/listener-events
 
 # (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
 #  Boolean, String, String, NlogoSource, Boolean) => SessionLite
-newSession = (container, compiler, rewriters, listeners, modelResult,
+newSession = (container, compiler, rewriters, listeners, modelResult, origModelResult
   isReadOnly, locale, workInProgressState, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
+  compilerErrors = if not origModelResult.model.success
+    origModelResult.model.result
+  else
+    []
   widgets = globalEval(wiggies)
   info    = toNetLogoWebMarkdown(info)
   session = new SessionLite(
@@ -32,6 +36,7 @@ newSession = (container, compiler, rewriters, listeners, modelResult,
   , nlogoSource
   , result
   , lastCompileFailed
+  , compilerErrors
   )
   session
 
@@ -86,6 +91,7 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
           fromNlogoXMLSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
 
     ).catch( (ex) ->
+      console.error('fromURL caught exception:', ex)
       callback({ type: 'model-load-failed', source: 'url', location: url, errors: [ex.toString()] })
     )
 
@@ -133,6 +139,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     , rewriters
     , listeners
     , result
+    , result
     , false
     , locale
     , workInProgressState
@@ -157,6 +164,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       , rewriters
       , listeners
       , secondChanceResult
+      , result
       , false
       , locale
       , workInProgressState
@@ -258,6 +266,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     , rewriters
     , listeners
     , result
+    , result
     , false
     , locale
     , workInProgressState
@@ -282,6 +291,7 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       , rewriters
       , listeners
       , secondChanceResult
+      , result
       , false
       , locale
       , workInProgressState
@@ -428,7 +438,7 @@ workspace.dump = miniDump;
     , isReporter    : (-> throw new Error("isReporter: This compiler is a stub."))
     }
 
-  session = newSession( container, compiler, [], listeners, model, false, "en_us"
+  session = newSession( container, compiler, [], listeners, model, model, false, "en_us"
                       , null, new NewSource(""), false)
   callback(session)
 

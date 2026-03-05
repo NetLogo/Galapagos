@@ -28,6 +28,20 @@ toNetLogoMarkdown = (md) ->
     (match, commentText) ->
       "<!-- #{commentText} -->")
 
+# Given a string, returns how that string would look if represented in the NetLogo language.
+# For example, the string "Hello \"world!\"\n" would be replaced with "\"Hello \\\"world!\\\"\\n".
+# (string) -> string
+toNetLogoString = (input) ->
+  sanitized = input.replace(/[\n\t\"\\]/g, (match) ->
+    switch match
+      when "\n" then "\\n"
+      when "\t" then "\\t"
+      when "\"" then "\\\""
+      when "\\" then "\\\\"
+      else match
+  )
+  "\"#{sanitized}\""
+
 # (String) => String
 normalizedFileName = (path) ->
 # We separate on both / and \ because we get URLs and Windows-esque filepaths
@@ -76,6 +90,7 @@ export {
   markdownToHtml,
   toNetLogoWebMarkdown,
   toNetLogoMarkdown,
+  toNetLogoString
   normalizedFileName,
   nlogoToSections,
   sectionsToNlogo,

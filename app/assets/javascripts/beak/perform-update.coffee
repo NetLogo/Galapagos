@@ -97,9 +97,9 @@ performUpdate = (widgetController, hnw, isFullUpdate, shouldRepaint) ->
   if drawingUpdates.length > 0
     mergedUpdate.drawingEvents = drawingUpdates
 
-  naiveDiff = objectDiff(mergedUpdate, widgetController.viewController.model)
+  naiveDiff = objectDiff(mergedUpdate, widgetController.viewController.getModel())
 
-  diffedUpdate = cleanupInstadeaths(naiveDiff, widgetController.viewController.model)
+  diffedUpdate = cleanupInstadeaths(naiveDiff, widgetController.viewController.getModel())
 
   if Object.keys(diffedUpdate).length > 0
     widgetController.redraw([diffedUpdate])

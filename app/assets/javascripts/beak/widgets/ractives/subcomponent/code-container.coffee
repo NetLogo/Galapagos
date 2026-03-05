@@ -13,6 +13,7 @@ RactiveCodeContainerBase = Ractive.extend({
   , injectedConfig: undefined # Object
   , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
+
   , tabindex:       undefined # String
   , 'aria-label':   undefined # String
   }
@@ -34,6 +35,8 @@ RactiveCodeContainerBase = Ractive.extend({
 
   _setupCodeMirror: ->
 
+    id        = @get('id')
+    editorDiv = if id? then @find("##{id}") else @find('.netlogo-code')
     baseConfig = {
       mode: 'netlogo'
     , theme: 'netlogo-default'
@@ -45,7 +48,7 @@ RactiveCodeContainerBase = Ractive.extend({
       @get('injectedConfig') ? {},
       @get('localConfig') ? {}
     )
-    @_editor   = new CodeMirror(@find("##{@get('id')}"), config)
+    @_editor   = new CodeMirror(editorDiv, config)
 
     @_editor.on('change', =>
       code = @_editor.getValue()
@@ -86,6 +89,10 @@ RactiveCodeContainerBase = Ractive.extend({
   focus: ->
     @_editor.focus()
     return
+
+  # () => CodeMirror
+  getEditor: ->
+    @_editor
 
   template:
     """
@@ -139,6 +146,7 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     start = @_editor.posFromIndex(location.start)
     end   = @_editor.posFromIndex(location.end)
     @_editor.setSelection(start, end)
+    @_editor.focus()
     return
 
   # () => Unit
@@ -154,10 +162,6 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     if location? and @_editor?
       @highlightLocation(location)
     return
-
-  # () => CodeMirror
-  getEditor: ->
-    @_editor
 
 })
 
@@ -197,6 +201,10 @@ editFormCodeContainerFactory =
       }
 
       twoway: false
+
+      computed: {
+        code: -> @findComponent('codeContainer').get('code')
+      }
 
       components: {
         codeContainer: container

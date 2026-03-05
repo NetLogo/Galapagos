@@ -251,7 +251,7 @@ controlEventTraffic = (controller, performUpdate) ->
 
   # () => Unit
   resizeView = ->
-    { minpxcor, maxpxcor, minpycor, maxpycor, patchsize } = viewController.model.world
+    { minpxcor, maxpxcor, minpycor, maxpycor, patchsize } = viewController.getModel().world
     setPatchSize(patchsize)
     world.resize(minpxcor, maxpxcor, minpycor, maxpycor)
     refreshDims()
@@ -285,7 +285,7 @@ controlEventTraffic = (controller, performUpdate) ->
 
   # () => Unit
   updateTopology = ->
-    { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.model.world
+    { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.getModel().world
     world.changeTopology(wrapX, wrapY)
     return
 
@@ -309,8 +309,8 @@ controlEventTraffic = (controller, performUpdate) ->
 
     if showPropertyValue
       componentToFocus = {
-        "Code": "codeEditor",
-        "Info": "infoEditor",
+        "Code": "codePane",
+        "Info": "infotab",
         "Console": "console"
       }[tabCanonicalName]
 

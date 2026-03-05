@@ -1,67 +1,30 @@
-import { netlogoColorToOpaqueCSS } from "/colors.js"
+import { netlogoColorToOpaqueCSS, netlogoColorToCSS } from "/colors.js"
+import { setTransparency, useWrapping } from "./draw-utils.js"
 
 IMAGE_SIZE = 300 # Images are 300x300, in line with netlogo shapes.
 
-class ShapeDrawer
-  constructor: (@shapes, @onePixel) ->
+# Modifies canvas state.
+drawShape = (ctx, onePixel, color, shape = defaultShape, thickness = 1) ->
+  ctx.translate(.5, -.5)
+  ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
+  setTransparency(ctx, color)
 
-  setTransparency: (ctx, color) ->
-    ctx.globalAlpha = if color.length > 3 then color[3] / 255 else 1
+  ctx.save()
+  ctx.beginPath()
+  ctx.rect(0,0,IMAGE_SIZE,IMAGE_SIZE)
+  ctx.clip()
+  drawRawShape(ctx, onePixel, color, shape, thickness)
+  ctx.restore()
+  return
 
-  drawShape: (ctx, color, shapeName, thickness = 1) ->
-    ctx.translate(.5, -.5)
-    ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
-    @setTransparency(ctx, color)
-
-    ctx.save()
-    ctx.beginPath()
-    ctx.rect(0,0,IMAGE_SIZE,IMAGE_SIZE)
-    ctx.clip()
-    @drawRawShape(ctx, color, shapeName, thickness)
-    ctx.restore()
-    return
-
-  # Does not clip. Clipping should be handled by the `drawShape` method that
-  # calls this. How clipping is performed depends on whether images are being
-  # cached or not. BCH 7/13/2015
-  drawRawShape: (ctx, color, shapeName, thickness = 1) ->
-    ctx.lineWidth = IMAGE_SIZE * @onePixel * thickness
-    shape = @shapes[shapeName] or defaultShape
-    for elem in shape.elements
-      draw[elem.type](ctx, color, elem)
-    return
-
-class CachingShapeDrawer extends ShapeDrawer
-  constructor: (shapes, onePixel) ->
-    # Maps (shape name, color) -> canvas
-    # Shape/color combinations are pre-rendered to these canvases so they can be
-    # quickly rendered to display.
-    #
-    # If memory is a problem, this can be turned into FIFO, LRU, or LFU cache.
-    # Alternatively, each turtle could have it's own personal image pre-rendered.
-    # This should be overall better, though, since it will perform well even if
-    # turtles are constantly changing shape or color.
-    super(shapes, onePixel)
-    @shapeCache = {}
-
-  drawShape: (ctx, color, shapeName, thickness = 1) ->
-    shapeName = shapeName.toLowerCase()
-    shapeKey = @shapeKey(shapeName, color)
-    shapeCanvas = @shapeCache[shapeKey]
-    if not shapeCanvas?
-      shapeCanvas = document.createElement('canvas')
-      shapeCanvas.width = shapeCanvas.height = IMAGE_SIZE
-      shapeCtx = shapeCanvas.getContext('2d')
-      @drawRawShape(shapeCtx, color, shapeName)
-      @shapeCache[shapeKey] = shapeCanvas
-    ctx.translate(.5, -.5)
-    ctx.scale(-1/IMAGE_SIZE, 1/IMAGE_SIZE)
-    @setTransparency(ctx, color)
-    ctx.drawImage(shapeCanvas, 0, 0)
-    return
-
-  shapeKey: (shapeName, color) ->
-    [shapeName, netlogoColorToOpaqueCSS(color)]
+# Does not clip. Clipping should be handled by the `drawShape` method that
+# calls this. How clipping is performed depends on whether images are being
+# cached or not. BCH 7/13/2015
+# Modifies canvas state.
+drawRawShape = (ctx, onePixel, color, shape = defaultShape, thickness = 1) ->
+  ctx.lineWidth = IMAGE_SIZE * onePixel * thickness
+  for elem in shape.elements
+    draw[elem.type](ctx, color, elem)
 
 setColoring = (ctx, color, element) ->
 # Since a turtle's color's transparency applies to its whole shape,  and not
@@ -150,9 +113,72 @@ defaultShape = {
   ]
 }
 
+drawTurtle = (worldShape, shapelist, ctx, turtle, isStamp, fontSize, font) ->
+  if not turtle['hidden?']
+    { xcor, ycor, size } = turtle
+    useWrapping(
+      worldShape, ctx, xcor, ycor, size,
+      ((ctx, x, y) => drawTurtleAt(shapelist, ctx, worldShape.onePixel, turtle, x, y))
+    )
+    if not isStamp
+      drawLabel(
+        worldShape,
+        ctx,
+        xcor + turtle.size / 2,
+        ycor - turtle.size / 2,
+        turtle.label,
+        turtle['label-color'],
+        fontSize,
+        font
+      )
+
+drawTurtleAt = (shapelist, ctx, onePixel, turtle, xcor, ycor) ->
+  heading = turtle.heading
+  scale = turtle.size
+  angle = (180-heading)/360 * 2*Math.PI
+  shapeName = turtle.shape
+  shape = shapelist[shapeName] or defaultShape
+  ctx.save()
+  ctx.translate(xcor, ycor)
+  if shape.rotate
+    ctx.rotate(angle)
+  else
+    ctx.rotate(Math.PI)
+  ctx.scale(scale, scale)
+  drawShape(ctx, onePixel, turtle.color, shape, 1 / scale)
+  ctx.restore()
+
+drawLabel = (worldShape, ctx, xcor, ycor, label, color, fontSize, font = '"Lucida Grande", sans-serif') ->
+  label = if label? then label.toString() else ''
+  if label.length > 0
+    useWrapping(worldShape, ctx, xcor, ycor, label.length * fontSize / worldShape.onePixel, (ctx, x, y) =>
+      ctx.save()
+      ctx.translate(x, y)
+      ctx.scale(worldShape.onePixel, -worldShape.onePixel)
+      ctx.font = "#{fontSize}px #{font}"
+      ctx.textAlign = 'left'
+      ctx.fillStyle = netlogoColorToCSS(color)
+      # This magic 1.2 value is a pretty good guess for width/height ratio for most fonts. The 2D context does not
+      # give a way to get height directly, so this quick and dirty method works fine.  -Jeremy B April 2023
+      lineHeight   = ctx.measureText("M").width * 1.2
+      lines        = label.split("\n")
+      lineWidths   = lines.map( (line) -> ctx.measureText(line).width )
+      maxLineWidth = Math.max(lineWidths...)
+      # This magic 1.5 value is to get the alignment to mirror what happens in desktop relatively closely.  Without
+      # it, labels are too far out to the "right" of the agent since the origin of the text drawing is calculated
+      # differently there.  -Jeremy B April 2023
+      xOffset      = -1 * (maxLineWidth + 1) / 1.5
+      lines.forEach( (line, i) ->
+        yOffset = i * lineHeight
+        ctx.fillText(line, xOffset, yOffset)
+      )
+      ctx.restore()
+    )
+
 export {
-  ShapeDrawer,
-  CachingShapeDrawer,
+  drawShape,
   draw,
-  defaultShape
+  drawTurtle,
+  defaultShape,
+  drawLabel
 }

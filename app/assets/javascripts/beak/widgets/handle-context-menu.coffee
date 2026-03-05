@@ -1,3 +1,5 @@
+import RactiveWidget from "./ractives/widget.js"
+
 # (Ractive) => Unit
 handleContextMenu =
   (ractive) ->
@@ -6,9 +8,10 @@ handleContextMenu =
       (event) ->
         if event?.button isnt 2 # Thanks, Firefox, you freaking moron. --Jason B. (12/6/17)
                                 # See this ticket: https://bugzilla.mozilla.org/show_bug.cgi?id=184051
+          ractive.fire('unlock-selection')
           contextMenu = ractive.findComponent('contextMenu')
           if contextMenu.get('visible')
-            contextMenu.fire('cover-thineself')
+            contextMenu.unreveal()
         return
 
     window.addEventListener('keyup'
@@ -40,29 +43,16 @@ handleContextMenu =
 
     )
 
-    handleContextMenu =
-      (a, b, c) ->
+    handleContextMenu = (context) ->
+      component = context.component ? this
+      { pageX, pageY, clientX, clientY } = context.event
 
-        editForms         = [].concat(@findAllComponents('editForm'), @findAllComponents('hnwEditForm'))
-        theEditFormIsntUp = @get("isEditing") and not editForms.some((form) -> form.get('visible'))
+      @fire('deselect-widgets')
+      if @get('isEditing') and component instanceof RactiveWidget
+        @fire('lock-selection', component)
+      menuOpened = @findComponent('contextMenu').reveal(component, pageX, pageY, clientX, clientY)
+      not menuOpened # keep propagating the event if the menu didn't open
 
-        if theEditFormIsntUp
-
-          [{ component }, { pageX, pageY }] =
-            if not c?
-              [a, b]
-            else
-              [b, c]
-
-          ractive.fire('deselect-widgets')
-          @findComponent('contextMenu').fire('reveal-thineself', component, pageX, pageY)
-
-          false
-
-        else
-          true
-
-    ractive.on(  'show-context-menu', handleContextMenu)
     ractive.on('*.show-context-menu', handleContextMenu)
     ractive.on('*.hide-context-menu', hideContextMenu)
 

@@ -69,6 +69,15 @@ netlogoColorToRGB = (netlogoColor) ->
     when "string" then netlogoBaseColors[netlogoColorNamesIndices[netlogoColor]]
     else console.error("Unrecognized color: #{netlogoColor}")
 
+netlogoColorToRGBA = (netlogoColor) ->
+  color = netlogoColorToRGB(netlogoColor)
+  if color.length < 4
+    # add an alpha value
+    [color..., 255]
+  else
+    # just clone
+    [color...]
+
 netlogoColorNamesIndices = {}
 for color,i in ['gray',
                 'red',
@@ -133,5 +142,6 @@ export {
   hexStringToNetlogoColor,
   netlogoColorToRGB,
   rgbaArrayToARGBInt,
-  rgbaArrayToHex
+  rgbaArrayToHex,
+  netlogoColorToRGBA,
 }

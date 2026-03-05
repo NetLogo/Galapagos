@@ -38,6 +38,8 @@ class Settings
     storageTag: ''
   }
 
+  viewQuality: Math.max(window.devicePixelRatio ? 2, 2)
+
   events: {
     enableDebug:          false
     enableIframeRelay:    false
@@ -60,6 +62,9 @@ class Settings
     if storage.hasKey('workInProgress.enabled')
       @workInProgress.enabled = storage.get('workInProgress.enabled')
 
+    if storage.hasKey('viewQuality')
+      @viewQuality = storage.get('viewQuality')
+
     return
 
   # (URLSearchParams) => Unit
@@ -80,6 +85,10 @@ class Settings
     @workInProgress.enabled = not params.has('disableWorkInProgress') and @workInProgress.enabled
     if params.has('storageTag')
       @workInProgress.storageTag = params.get('storageTag')
+
+    if params.has('viewQuality')
+      viewQualityStr = params.get('viewQuality')
+      @viewQuality = Math.max(Math.floor(parseFloatOrElse(viewQualityStr, 1)))
 
     @events.enableDebug       = params.has('debugEvents') or @events.enableDebug
     @events.enableIframeRelay = params.has('relayIframeEvents') or @events.enableIframeRelay

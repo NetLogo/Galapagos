@@ -1,0 +1,208 @@
+.inspection__pane {
+  padding: 1em;
+  min-width: 600px;
+}
+
+.inspection__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 1em;
+}
+
+.inspection__button-tray {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.inspection__button {
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+  background-color: white;
+}
+.inspection__button:hover {
+  background-color: rgba(211, 211, 211, 0.5);
+}
+.inspection__button.selected {
+  background-color: lightblue;
+}
+
+.inspection__tab-selector-group {
+  display: flex;
+  align-items: end;
+  flex-direction: row;
+}
+
+.inspection__card-selector-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  gap: 1em;
+  padding-bottom: 1em;
+  border-bottom: 2px solid lightgray;
+  margin-bottom: 1em;
+  flex-direction: row;
+}
+
+.inspection__option {
+  display: grid;
+  grid: auto / auto auto;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em;
+  border: 2px solid lightgray;
+  cursor: pointer;
+  user-select: none;
+  max-width: 10em;
+}
+
+.inspection__tab-selector-group .inspection__option {
+  border-radius: 5px 5px 0 0;
+  border-bottom: 0;
+}
+
+.inspection__card-selector-group .inspection__option {
+  border-radius: 5px;
+}
+
+.inspection__option .category {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspection__option .count {
+  background: lightgray;
+  border-radius: 1em;
+  padding: 2px 6px;
+  text-align: center;
+}
+
+.inspection__option.selected {
+  background-color: lightblue;
+}
+
+.inspection__option.selected-partial {
+  background-color: lightgray;
+}
+
+.inspection__tab-content {
+  min-height: 2em;
+  border: 2px solid lightgray;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.inspection__agents-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.inspection__mini-agent-card {
+  display: grid;
+  grid: auto / auto auto;
+  gap: 0.5em;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid lightgray;
+  border-radius: 5px;
+  padding: 0.5em;
+  min-width: 8em;
+  background-color: lightgray;
+  cursor: pointer;
+  user-select: none;
+}
+
+.inspection__mini-agent-card.selected {
+  background-color: lightblue;
+}
+
+.inspection__mini-agent-card.opened {
+  border-color: black;
+}
+
+.inspection__cmd-container {
+  margin: 1em 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+  border: 2px solid lightgray;
+  border-radius: 5px;
+}
+
+.inspection__agent-monitor-container {
+  padding: 0.5em;
+  border-radius: 5px;
+  min-height: 2em;
+  box-shadow: inset 0 0 0.5em gray;
+}
+
+.inspection__agent-monitor-container__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.inspection__agent-monitor {
+  border: 2px solid lightgray;
+  border-radius: 5px;
+  width: 170px;
+  padding: 0.5em;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.inspection__agent-monitor__title-bar {
+  display: grid;
+  grid: auto / auto auto;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.inspection__agent-monitor__title-bar .title {
+  font-weight: 700;
+}
+
+.inspection__agent-monitor__view-controls {
+  display: grid;
+  grid: auto / auto auto;
+  align-items: center;
+}
+
+.inspection__agent-monitor__view-controls > input {
+  min-width: 0;
+}
+
+.inspection__agent-monitor__watch-button {
+  width: min-content;
+  padding: 0.5em;
+  border: 1px solid gray;
+}
+
+.inspection__agent-monitor__property-grid {
+  display: grid;
+  grid: auto-flow / 1fr 2fr;
+  gap: 0 0.5em;
+}
+
+.inspection__agent-monitor__property-grid .inspection__agent-var-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inspection__agent-monitor__property-grid > input {
+  min-width: 0;
+}
+
+.inspection__input-container {
+  background-color: white;
+  border: 1px solid gray;
+}

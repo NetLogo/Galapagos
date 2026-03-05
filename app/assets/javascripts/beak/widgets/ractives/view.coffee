@@ -4,17 +4,20 @@ import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
+import { followObserver } from "../draw/window-generators.js"
+import { getClickedAgents, agentToContextMenuOption } from "../view-context-menu-utils.js"
 
 RactiveEditFormCoordBoundInput = Ractive.extend({
 
   data: -> {
-    id:    undefined # String
-  , hint:  undefined # String
-  , label: undefined # String
-  , max:   undefined # Number
-  , min:   undefined # Number
-  , name:  undefined # String
-  , value: undefined # Number
+    id:         undefined, # String
+    hint:       undefined, # String
+    label:      undefined, # String
+    max:        undefined, # Number
+    min:        undefined, # Number
+    name:       undefined, # String
+    value:      undefined, # Number
+    viewWindow: undefined, # View
   }
 
   isolated: true
@@ -199,9 +202,10 @@ ViewEditForm = EditForm.extend({
 RactiveView = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit]
-  , resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
-  , ticks:              undefined # String
+    setInspect:       undefined # (SetInspectAction) -> Unit
+    viewController:     undefined # ViewController
+    resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
+    ticks:              undefined # String
   }
 
   computed: {
@@ -210,11 +214,43 @@ RactiveView = RactiveWidget.extend({
       "padding: #{top}px #{right}px #{bottom}px #{left}px;"
   }
 
+  getContextMenuOptions: (clientX, clientY) ->
+    if @get('isEditing')
+      [@getStandardOptions().edit]
+    else
+      viewWindow = @get('viewWindow')
+      { left, top, bottom, right } = viewWindow.getBoundingClientRect()
+      if left <= clientX <= right and top <= clientY <= bottom
+        getClickedAgents(@get('viewController').getModel())(world, viewWindow, clientX, clientY)
+          .map(agentToContextMenuOption(@get('setInspect')))
+      else
+        # The cursor is not actually inside the bounding box of the canvas (probably on the border)
+        []
+
   components: {
     editForm: ViewEditForm
   }
 
   widgetType: 'view'
+
+  on: {
+    render: ->
+      viewController = @get('viewController')
+      viewWindow = viewController.getNewView(
+        @find('.netlogo-view-container'),
+        'all',
+        followObserver(viewController.getModel, viewController.getWorldShape)
+      )
+      viewWindow.setQuality(Math.max(window.devicePixelRatio ? 2, 2))
+      @set({ viewWindow })
+      viewController.setFont(undefined, @get('widget').fontSize, true)
+      return
+
+    '*.update-widget-value': (_, newValues, __) ->
+      if newValues.fontSize?
+        @get('viewController').setFont(undefined, newValues.fontSize)
+      return
+  }
 
   # (Object[Number]) => Unit
   handleResize: ({ x: newX, width: newWidth, y: newY, height: newHeight }) ->
@@ -303,7 +339,7 @@ RactiveView = RactiveWidget.extend({
     view:
       """
       <div id="{{id}}" {{>ariaLabel}} {{>ariaRole}} {{>ariaDesc}} {{>ariaTicks}}
-          class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}{{viewDims}}"></div>
+          class="netlogo-widget netlogo-view-container {{classes}}" style="{{dims}}{{viewDims}}" on-contextmenu="show-context-menu"></div>
       """
 
   }

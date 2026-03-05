@@ -11,6 +11,8 @@ import { RactiveSwitch, RactiveHNWSwitch } from "./ractives/switch.js"
 import RactiveHelpDialog from "./ractives/help-dialog.js"
 import RactiveConsoleWidget from "./ractives/console.js"
 import { RactiveOutputArea, RactiveHNWOutputArea } from "./ractives/output.js"
+import RactiveCodePane from "./ractives/code-pane.js"
+import RactiveInspectionPane from "./ractives/inspection-pane.js"
 import RactiveInfoTabWidget from "./ractives/info.js"
 import RactiveModelTitle from "./ractives/title.js"
 import createWorkInProgressAlert from "./ractives/work-in-progress-alert.js"
@@ -18,6 +20,7 @@ import { RactivePlot, RactiveHNWPlot } from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
 import RactiveContextMenu from "./ractives/context-menu.js"
+import RactiveDragSelectionBox from "./ractives/drag-selection-box.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
@@ -27,9 +30,9 @@ import { setSortingKeys } from "./accessibility/widgets.js"
 import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
 
 # (Element, Array[Widget], String, String,
-#   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean) => Ractive
+#   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean, ViewController) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
-  isReadOnly, source, workInProgressState, checkIsReporter) ->
+  isReadOnly, source, workInProgressState, checkIsReporter, viewController) ->
 
   model = {
     checkIsReporter
@@ -60,12 +63,15 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , modelTitle:            source.getModelTitle()
   , outputWidgetOutput:    ''
   , primaryView:           undefined
+  , showInspectionPane:    false
   , someDialogIsOpen:      false
   , someEditFormIsOpen:    false
   , source
   , speed:                 0.0
   , ticks:                 "" # Remember, ticks initialize to nothing, not 0
   , ticksStarted:          false
+  , viewController:        viewController
+  , viewQuality:           undefined
   , widgetObj:             setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
   , width:                 0
   , keybinds:              keybinds
@@ -97,13 +103,20 @@ generateRactiveSkeleton = (container, widgets, code, info,
     template: template,
     partials: partials,
 
+    # Required so that event propagation is properly stopped when events come from iterative sections. In particular,
+    # the `contextmenu` event should sometimes be caught and handled by the widgets, instead of bubbling up to this
+    # ractive instance.
+    delegate: false,
+
     components: {
 
       asyncDialog:   RactiveAsyncUserDialog
     , console:       RactiveConsoleWidget
+    , inspection:    RactiveInspectionPane
     , contextMenu:   RactiveContextMenu
+    , dragSelectionBox: RactiveDragSelectionBox
     , editableTitle: RactiveModelTitle
-    , codePane:      RactiveModelCodeComponent
+    , codePane:      RactiveCodePane
     , helpDialog:    RactiveHelpDialog
     , infotab:       RactiveInfoTabWidget
     , resizer:       RactiveResizer
@@ -166,6 +179,75 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     },
 
+    getContextMenuOptions: (clientX, clientY) ->
+      if @get('isEditing')
+        widgetCreationOptions
+      else
+        []
+
+    # (SetInspectAction) -> Unit
+    setInspect: (action) ->
+      @set('showInspectionPane', true)
+      @findComponent('inspection').setInspect(action)
+
+    on: {
+      'world-might-change': (context) ->
+        @findAllComponents().forEach((component) -> component.fire(context.name, context))
+      '*.popup-window': (_, windowElement) ->
+        @find(".netlogo-widget-container").appendChild(windowElement)
+        false
+      'compiler-error': (_, source, errors) ->
+        switch source
+          when 'recompile', 'compile-recoverable'
+            @findComponent('codePane')?.set('compilerErrors', errors)
+          when 'console', 'inspection-pane', 'agent-monitor'
+            ; # do nothing
+          else
+            console.error("received compiler error from unknown source: %s", source)
+        false
+      'runtime-error': (_, source, exception, code) ->
+        message = exception.stackTraceMessage
+        codePaneErrors = for stackTraceItem in exception.stackTrace
+          switch stackTraceItem.type
+            when 'command', 'reporter'
+              {
+                message
+                start: stackTraceItem.location.start,
+                end: stackTraceItem.location.end
+              }
+            else
+              continue # don't display
+        if source isnt 'console' and source isnt 'agent-monitor'
+          @findComponent('codePane')?.set('runtimeErrors', codePaneErrors)
+        false
+
+      onSpeedChange: (context, delta) ->
+        speed = @get('speed')
+        newSpeed = Math.max(-1, Math.min(1, speed + delta))
+        newSpeed = parseFloat(newSpeed.toFixed(2))
+        @set('speed', newSpeed)
+        @fire('speed-slider-changed', newSpeed)
+    }
+
+    observe: {
+      'showCode': {
+        handler: (newValue) ->
+          if newValue
+            setTimeout((=> @findComponent('codePane').refresh()), 0)
+        init: false
+      },
+      'showInspectionPane': {
+        handler: (newValue) ->
+          @fire('inspection-pane-toggled', {}, newValue)
+        init: false
+      },
+      'viewQuality': {
+        handler: (newQuality) ->
+          @get('viewController').setQuality(newQuality)
+        init: false
+      }
+    }
+
     data: -> model
 
     oncomplete: ->
@@ -174,15 +256,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         wipToast = createWorkInProgressAlert(@get('source.type'))
         NetLogoToaster.addToast(wipToast)
       return
-
-    on: {
-      onSpeedChange: (context, delta) ->
-        speed = @get('speed')
-        newSpeed = Math.max(-1, Math.min(1, speed + delta))
-        newSpeed = parseFloat(newSpeed.toFixed(2))
-        @set('speed', newSpeed)
-        @fire('speed-slider-changed', newSpeed)
-    }
   })
 
 # coffeelint: disable=max_line_length
@@ -306,17 +379,18 @@ template =
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog keybindGroups="{{keybinds}}" isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
+      <dragSelectionBox/>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
-           on-contextmenu="@this.fire('show-context-menu', { component: @this }, @event)"
+           on-contextmenu="show-context-menu"
            on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer"
            aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#widgetObj:key}}
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
           {{# type === 'hnwTextBox'  }} <hnwNoteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
-          {{# type ===    'view'     }}    <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" /> {{/}}
+          {{# type ===    'view'     }}    <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" viewController="{{viewController}}" setInspect="{{@this.setInspect.bind(@this)}}" /> {{/}}
           {{# type === 'hnwView'     }} <hnwViewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" /> {{/}}
           {{# type ===    'switch'   }}    <switchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" breedVars="{{metadata.myVars}}" /> {{/}}
           {{# type === 'hnwSwitch'   }} <hnwSwitchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" breedVars="{{metadata.myVars}}" /> {{/}}
@@ -340,6 +414,13 @@ template =
     </div>
 
     <div class="netlogo-tab-area">
+      <tab name="inspection" title="Agent Inspection" show="{{showInspectionPane}}" scroll-block="center">
+        <inspection
+          isEditing={{isEditing}}
+          viewController={{viewController}}
+          checkIsReporter={{checkIsReporter}}
+        />
+      </tab>
       {{# !isReadOnly }}
       <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
             on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
@@ -376,5 +457,28 @@ partials = {
 
 }
 # coffeelint: enable=max_line_length
+
+genWidgetCreator = (name, widgetType, isEnabled = true, enabler = (-> false)) ->
+  { text: "Create #{name}", enabler, isEnabled
+  , action: (context, mouseX, mouseY) -> context.fire('create-widget', widgetType, mouseX, mouseY)
+  }
+
+alreadyHasA = (componentName) -> (ractive) ->
+  if ractive.parent?
+    alreadyHasA(componentName)(ractive.parent)
+  else
+    not ractive.findComponent(componentName)?
+
+widgetCreationOptions = [
+  ["Button",  "button"],
+  ["Chooser", "chooser"],
+  ["Input",   "inputBox"],
+  ["Note",    "textBox"],
+  ["Monitor", "monitor"],
+  ["Output",  "output", false, alreadyHasA('outputWidget')],
+  ["Plot",    "plot"],
+  ["Slider",  "slider"],
+  ["Switch",  "switch"],
+].map((args) -> genWidgetCreator(args...))
 
 export default generateRactiveSkeleton

@@ -101,8 +101,7 @@ HNWNoteEditForm = NoteEditForm
 RactiveNote = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-    style:              ""
+    style: ""
   }
 
   observe: {

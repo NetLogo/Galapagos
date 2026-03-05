@@ -13,7 +13,7 @@ import { isMac } from "../accessibility/utils.js"
 FlexColumn = Ractive.extend({
   template:
     """
-    <div class="flex-column" style="align-items: center; flex-grow: 1; max-width: 140px;">
+    <div class="flex-column" style="align-items: stretch; flex-grow: 1; max-width: 140px;">
       {{ yield }}
     </div>
     """
@@ -97,16 +97,16 @@ SliderEditForm = EditForm.extend({
 
       <div class="flex-row" style="align-items: stretch; justify-content: space-around">
         <column>
-          <formMinCode id="{{id}}-min-code" label="Minimum" name="minCode" config="{ scrollbarStyle: 'null' }"
-                       style="width: 100%;" value="{{minCode}}" />
+          <formMinCode id="{{id}}-min-code" label="Minimum" name="minCode"
+                     value="{{minCode}}" />
         </column>
         <column>
-          <formStepCode id="{{id}}-step-code" label="Increment" name="stepCode" config="{ scrollbarStyle: 'null' }"
-                        style="width: 100%;" value="{{stepCode}}" />
+          <formStepCode id="{{id}}-step-code" label="Increment" name="stepCode"
+                        value="{{stepCode}}" />
         </column>
         <column>
-          <formMaxCode id="{{id}}-max-code" label="Maximum" name="maxCode" config="{ scrollbarStyle: 'null' }"
-                       style="width: 100%;" value="{{maxCode}}" />
+          <formMaxCode id="{{id}}-max-code" label="Maximum" name="maxCode"
+                       value="{{maxCode}}" />
         </column>
       </div>
 
@@ -116,7 +116,7 @@ SliderEditForm = EditForm.extend({
         <labeledInput id="{{id}}-value" labelStr="Default value:" name="value" type="number" value="{{value}}" attrs="required step='any'"
                       style="flex-grow: 1; text-align: right;" />
         <labeledInput id="{{id}}-units" labelStr="Units:" labelStyle="margin-left: 10px;" name="units" type="text" value="{{units}}"
-                      style="flex-grow: 1; padding: 4px;" />
+                      style="flex-grow: 1; " />
       </div>
 
       <spacer height="15px" />
@@ -125,7 +125,7 @@ SliderEditForm = EditForm.extend({
         <formCheckbox id="{{id}}-vertical" isChecked="{{ direction === 'vertical' }}" labelText="Vertical?"
                     name="vertical" />
         <formCheckbox id="{{id}}-old-size" isChecked="{{ oldSize }}" labelText="Use old widget sizing"
-                    name="oldSize" name="oldSize" />
+                    name="oldSize" />
       </div>
       """
 
@@ -174,8 +174,7 @@ HNWSliderEditForm = SliderEditForm.extend({
 RactiveSlider = RactiveValueWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , breedVars:          undefined # Array[String]
+    breedVars:     undefined # Array[String]
   , errorClass:         undefined # String
   , internalValue:      0         # Number
   , onValueChange: (val) ->

@@ -36,8 +36,7 @@ HNWOutputEditForm = OutputEditForm
 RactiveOutputArea = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , text:               undefined # String
+    text:               undefined # String
   }
 
   widgetType: 'output'

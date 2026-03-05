@@ -1,120 +1,81 @@
 import RactivePrintArea from "./subcomponent/print-area.js"
+import RactiveCommandInput from "./command-input.js"
 
 RactiveConsoleWidget = Ractive.extend({
+  components: {
+    printArea: RactivePrintArea
+    commandInput: RactiveCommandInput
+  }
+
+  # types AgentType and TargetedAgentObj is defined in "./command-input.coffee"
+
   data: -> {
-    input: '',
-    isEditing: undefined # Boolean (for widget editing)
-    agentTypes: ['observer', 'turtles', 'patches', 'links'],
-    agentTypeIndex: 0,
+    # Props
+    isEditing: undefined # boolean (for widget editing)
     checkIsReporter: undefined # (String) => Boolean
-    history: [], # Array of {agentType, input} objects
-    historyIndex: 0,
-    workingEntry: {}, # Stores {agentType, input} when user up arrows
+
+    # Shared State
     output: ''
+
+    # Private State
+    agentTypeIndex: 0 # keyof typeof @get('agentTypes')
+
+    # Consts
+    agentTypes: ['observer', 'turtles', 'patches', 'links'] # Array[AgentType]
   }
 
   computed: {
+    # AgentType
     agentType: {
       get: -> @get('agentTypes')[@get('agentTypeIndex')]
       set: (val) ->
         index = @get('agentTypes').indexOf(val)
         if index >= 0
           @set('agentTypeIndex', index)
-          @focusCommandCenterEditor()
     }
+
+    # TargetedAgentObj
+    targetedAgentObj: {
+      get: -> { agentType: @get('agentType') }
+      set: ({ agentType }) ->
+        # intentionally ignore the `agents` property of the input
+        @set('agentType', agentType)
+    }
+
+    # string
+    placeholderText: ->
+      "Input command for " + switch @get('agentType')
+        when 'observer' then "the observer"
+        when 'turtles' then "all turtles"
+        when 'patches' then "all patches"
+        when 'links' then "all links"
   }
-
-  components: {
-    printArea: RactivePrintArea
-  }
-
-  onrender: ->
-    changeAgentType = =>
-      @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
-
-    moveInHistory = (index) =>
-      newIndex = @get('historyIndex') + index
-      if newIndex < 0
-        newIndex = 0
-      else if newIndex > @get('history').length
-        newIndex = @get('history').length
-      if @get('historyIndex') is @get('history').length
-        @set('workingEntry', {agentType: @get('agentType'), input: @get('input')})
-      if newIndex is @get('history').length
-        @set(@get('workingEntry'))
-      else
-        entry = @get('history')[newIndex]
-        @set(entry)
-      @set('historyIndex', newIndex)
-
-    run = =>
-      input = @get('input')
-      if input.trim().length > 0
-        agentType = @get('agentType')
-        if @get('checkIsReporter')(input)
-          input = "show #{input}"
-        @set('output', "#{@get('output')}#{agentType}> #{input}\n")
-        history = @get('history')
-        lastEntry = if history.length > 0 then history[history.length - 1] else {agentType: '', input: ''}
-        if lastEntry.input isnt input or lastEntry.agentType isnt agentType
-          history.push({agentType, input})
-        @set('historyIndex', history.length)
-        if agentType isnt 'observer'
-          input = "ask #{agentType} [ #{input} ]"
-        @fire('run', {}, 'console', input)
-        @fire('command-center-run', input)
-        @set('input', '')
-        @set('workingEntry', {})
-
-    @on('clear-history', ->
-      @set('output', '')
-    )
-
-    commandCenterEditor = CodeMirror(@find('.netlogo-command-center-editor'), {
-      value: @get('input'),
-      mode:  'netlogo',
-      theme: 'netlogo-default',
-      scrollbarStyle: 'null',
-      extraKeys: {
-        Enter: run
-        Up:    => moveInHistory(-1)
-        Down:  => moveInHistory(1)
-        Tab:   => changeAgentType()
-      }
-    })
-
-    @focusCommandCenterEditor = () -> commandCenterEditor.focus()
-    @focus = @focusCommandCenterEditor
-
-    commandCenterEditor.on('beforeChange', (_, change) ->
-      oneLineText = change.text.join('').replace(/\n/g, '')
-      change.update(change.from, change.to, [oneLineText])
-      true
-    )
-
-    commandCenterEditor.on('change', =>
-      @set('input', commandCenterEditor.getValue())
-    )
-
-    @observe('input', (newValue) ->
-      if newValue isnt commandCenterEditor.getValue()
-        commandCenterEditor.setValue(newValue)
-        commandCenterEditor.execCommand('goLineEnd')
-    )
-
-    @observe('isEditing', (isEditing) ->
-      commandCenterEditor.setOption('readOnly', if isEditing then 'nocursor' else false)
-      classes = this.find('.netlogo-command-center-editor').querySelector('.CodeMirror-scroll').classList
-      if isEditing
-        classes.add('cm-disabled')
-      else
-        classes.remove('cm-disabled')
-      return
-    )
 
   # String -> Unit
   appendText: (str) ->
     @set('output', @get('output') + str)
+    return
+
+  on: {
+    'clear-output': ->
+      @set('output', "")
+    'commandInput.run': (_, _source, _cmd, { targetedAgentObj, input }) ->
+      # Use `targetedAgentObj` from the event instead of `@get('targetedAgentObj')` because we don't know if the
+      # component modified the shared state before firing this event. (It doesn't, but the point is that it could).
+      { agentType } = targetedAgentObj # ignore the `agents` property of the object
+      @appendText("#{agentType}> #{input}\n")
+      true # propagate event
+    'commandInput.command-input-tabbed': ->
+      @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
+      false
+    'focus-command-input': ->
+      @findComponent('commandInput').focus()
+      false
+  }
+
+  # () => Unit
+  focus: ->
+    @fire('focus-command-input')
     return
 
   template:
@@ -123,15 +84,19 @@ RactiveConsoleWidget = Ractive.extend({
       <printArea id='command-center-print-area' output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>
-        <label>
-          <select value="{{agentType}}" class='netlogo-command-center-select'>
-          {{#agentTypes}}
-            <option value="{{.}}">{{.}}</option>
-          {{/}}
-          </select>
-        </label>
-        <div class="netlogo-command-center-editor"></div>
-        <button class='netlogo-command-center-button' on-click='clear-history'>Clear</button>
+        <select value="{{agentType}}" on-change="focus-command-input">
+        {{#agentTypes}}
+          <option value="{{.}}">{{.}}</option>
+        {{/}}
+        </select>
+        <commandInput
+          isReadOnly={{isEditing}}
+          source="console"
+          checkIsReporter={{checkIsReporter}}
+          targetedAgentObj={{targetedAgentObj}}
+          placeholderText={{placeholderText}}
+        />
+        <button on-click='clear-output'>Clear</button>
       </div>
     </div>
     """

@@ -42,7 +42,8 @@ class SessionLite
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
   #   String, String, Boolean, String, String, NlogoSource, String, Boolean)
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS, lastCompileFailed) ->
+    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS,
+    lastCompileFailed, compilerErrors) ->
 
     @hnw = new HNWSession( (() => @widgetController)
                          , ((ps) => @compiler.compilePlots(ps)))
@@ -74,7 +75,7 @@ class SessionLite
     ractive.on('open-new-file'   , (_)                 => @openNewFile())
     ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
     ractive.on('*.undo-revert'   , (_)                 => @undoRevert())
-    ractive.on('*.run'           , (_, source, code)   => @run(source, code))
+    ractive.on('*.run'           , (_, source, code, __) => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
     listenerEvents.forEach( (event) ->
@@ -96,6 +97,11 @@ class SessionLite
     # coffeelint: enable=max_line_length
 
     ractive.set('lastCompileFailed', lastCompileFailed)
+
+    if compilerErrors.length > 0
+      # Given that the session was started, any errors that we have must have been recoverable ones
+      # that's why we pass "compile-recoverable" as the source of the errors.
+      @widgetController.reportError("compiler", "compile-recoverable", compilerErrors)
 
     # The global 'modelConfig' variable is used by the Tortoise runtime - David D. 7/2021
     window.modelConfig         = Object.assign(window.modelConfig ? {}, @widgetController.configs)

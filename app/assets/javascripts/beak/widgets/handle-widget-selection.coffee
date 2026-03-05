@@ -48,6 +48,7 @@ handleWidgetSelection =
 
     ractive.observe("isEditing"
     , (isEditing) ->
+        unlockSelection()
         deselectThoseWidgets()
         return
     )

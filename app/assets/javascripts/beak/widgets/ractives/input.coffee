@@ -69,7 +69,7 @@ InputEditForm = EditForm.extend({
       {{>variableForm}}
       <spacer height="15px" />
       <div class="flex-row" style="align-items: center;">
-        <formDropdown id="{{id}}-boxtype" name="boxtype" label="Type" selected="{{boxtype}}"
+        <formDropdown id="{{id}}-boxtype" name="boxtype" label="Type:" selected="{{boxtype}}"
                       choices="['String', 'Number', 'Color', 'String (reporter)', 'String (commands)']" />
         <formCheckbox id="{{id}}-multiline-checkbox" isChecked={{isMultiline}} labelText="Multiline"
                       name="multiline" disabled="typeof({{isMultiline}}) === 'undefined'" />
@@ -126,10 +126,6 @@ HNWInputEditForm = InputEditForm.extend({
 })
 
 RactiveInput = RactiveValueWidget.extend({
-
-  data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  }
 
   widgetType: 'input'
 

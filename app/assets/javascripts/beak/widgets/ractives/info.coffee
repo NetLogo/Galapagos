@@ -59,7 +59,12 @@ RactiveInfoTabWidget = Ractive.extend({
 
   components: {
     infoEditor: RactiveInfoTabEditor
-  },
+  }
+
+  # () => Unit
+  focus: ->
+    @findComponent('infoEditor')?.focus()
+    return
 
   computed: {
     sanitizedText: ->

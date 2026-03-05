@@ -25,10 +25,11 @@ defaultOptions = (ractive) ->
   , ["Switch",  "switch"]
   ].map((args) -> genWidgetCreator(ractive, args...))
 
+
 RactiveContextMenu = Ractive.extend({
 
   data: -> {
-    options: undefined # ContextMenuOptions
+    options: undefined # [ContextMenuOption]
   , mouseX:          0 # Number
   , mouseY:          0 # Number
   , target:  undefined # Ractive
@@ -37,7 +38,6 @@ RactiveContextMenu = Ractive.extend({
   }
 
   on: {
-
     'ignore-click': ->
       false
 
@@ -92,6 +92,37 @@ RactiveContextMenu = Ractive.extend({
 
       return
   }
+
+  unreveal: ->
+    @set('visible', false)
+    return
+
+  # Returns whether the context menu actually revealed itself, which will not happen if there are no options to display.
+  # (Ractive, number, number) -> boolean
+  reveal: (component, pageX, pageY, clientX, clientY) ->
+    options = component?.getContextMenuOptions(clientX, clientY) ? []
+    visible = options.length > 0
+    @set({
+      target: component,
+      options,
+      visible,
+      mouseX: pageX,
+      mouseY: pageY
+    })
+
+    if visible
+      # while we want the context menu to be positioned relative to the page, its
+      # closest positioned ancestor is out of the Ractive's control and does not
+      # have a bounding box that coincides with the page, so do some math to
+      # convert to absolute position (i.e. relative to nearest positioned
+      # ancestor)
+      offsetParent = @find('#netlogo-widget-context-menu').offsetParent
+      @set({
+        mouseX: pageX - offsetParent.offsetLeft,
+        mouseY: pageY - offsetParent.offsetTop
+      })
+
+    visible
 
   template:
     """

@@ -3,10 +3,15 @@ import RactiveContextable from "./contextable.js"
 RactiveModelTitle = RactiveContextable.extend({
 
   data: -> {
-    contextMenuOptions: [{ text: "Edit", isEnabled: true, action: => @fire('edit-title') }]
     isEditing:          undefined # Boolean
     title:              undefined # String
   }
+
+  getContextMenuOptions: (clientX, clientY) ->
+    if @get('isEditing')
+      [{ text: "Edit", isEnabled: true, action: => @fire('edit-title') }]
+    else
+      []
 
   on: {
 

@@ -12,6 +12,7 @@ import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
 import RactiveWidget             from "./widget.js"
 import { WidgetEventGenerators } from "./widget.js"
 
+
 PlotEditForm = {}
 
 # (Number|(Number, Number, Number)|(Number, Number, Number, Number)) => Number
@@ -269,7 +270,6 @@ PlotEditForm = EditForm.extend({
       (ractive) -> (elemID) ->
         ractive.findAllComponents('formCode').
           find((x) -> x.get('id') is elemID).
-          findComponent('codeContainer').
           get('code')
 
     name = if form.name.length? then form.name[0].value else form.name.value
@@ -277,8 +277,6 @@ PlotEditForm = EditForm.extend({
     guiPens = @get('guiPens')
 
     pens = @_clonePens(guiPens)
-
-    @set('guiPens', [])
 
     replaceIfEmpty = (str, replace) -> if str is '' then replace else str
 
@@ -586,8 +584,7 @@ HNWPlotEditForm = PlotEditForm.extend({
 RactivePlot = RactiveWidget.extend({
 
   data: -> {
-    contextMenuOptions: [@standardOptions(this).edit, @standardOptions(this).delete]
-  , menuIsOpen:     false
+    menuIsOpen:     false
   , resizeCallback: ((x, y) ->)
   }
 

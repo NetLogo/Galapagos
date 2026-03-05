@@ -28,6 +28,12 @@ settings.set('useVerticalLayout', {
 , in:  ((useVerticalLayout) -> if useVerticalLayout then 'below' else 'right')
 , out: ((value)             -> value is 'below')
 })
+settings.set('viewQuality', {
+  def: Math.max(window.devicePixelRatio ? 2, 2),
+  ractiveName: 'viewQualitySetting',
+  in: (viewQuality) -> viewQuality,
+  out: (value) -> value
+})
 
 settingNames = Array.from(settings.keys())
 
@@ -66,6 +72,14 @@ template = """
       {{/}}
     </select>
   </div>
+
+  <label class="setting-label">
+    View quality (number of actual pixels calculated per model pixel):
+  </label>
+  <div class="setting-control">
+    <input type="number" min=1 step=1 value="{{viewQualitySetting}}" on-change="setting-changed" />
+  </div>
+
 </div>
 
 

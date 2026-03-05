@@ -48,15 +48,17 @@ initializeUI = (containerArg, widgets, code, info,
   reportError = (time, source, exception, ...args) ->
     controller.reportError(time, source, exception, ...args)
 
+  viewController = new ViewController()
   ractive = generateRactiveSkeleton(
-      container
-    , widgets
-    , code
-    , info
-    , isReadOnly
-    , source
-    , workInProgressState
-    , (code) -> compiler.isReporter(code)
+    container,
+    widgets,
+    code,
+    info,
+    isReadOnly,
+    source,
+    workInProgressState,
+    (code) -> compiler.isReporter(code),
+    viewController
   )
 
   container.querySelector('.netlogo-model').focus({
@@ -67,7 +69,6 @@ initializeUI = (containerArg, widgets, code, info,
     widgets.find(({ type }) -> type is 'view' or type is 'hnwView') ? defaultView
 
   ractive.set('primaryView', viewWidget)
-  viewController = new ViewController(container.querySelector('.netlogo-view-container'), viewWidget)
 
   configs    = genConfigs(ractive, viewController, container, compiler)
   controller = new WidgetController(ractive, viewController, configs, performUpdate)
