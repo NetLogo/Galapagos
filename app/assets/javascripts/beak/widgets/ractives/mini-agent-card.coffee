@@ -25,7 +25,7 @@ RactiveMiniAgentCard = Ractive.extend({
         class="inspection__button"
         on-click="['closed-agent-card', agent]"
       >
-        <img width=15 src="/assets/images/inspect/close.png"/>
+        <img width=15 src="assets/images/inspect/close.png"/>
       </div>
     </div>
   """
