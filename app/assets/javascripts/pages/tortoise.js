@@ -181,14 +181,14 @@ function forwardKeyboardEventsToModel() {
         altKey: e.altKey,
         metaKey: e.metaKey,
       };
-      
+
       try {
         const modelWindow = modelContainer.contentWindow;
         modelWindow.postMessage({ type: "nlw-forward-key-event", eventData: forwardedEvent }, "*");
       } catch (error) {
         console.warn("Error forwarding key event to model iframe:", error);
       }
-    } 
+    }
   };
 
   events.forEach((evt) => window.addEventListener(evt, handler, true));
