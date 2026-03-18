@@ -1,7 +1,5 @@
-import RactiveMiniAgentCard from "./mini-agent-card.js"
 import RactiveAgentMonitor from "./agent-monitor.js"
 import RactiveCommandInput from "./command-input.js"
-import { attachDragSelector } from "../drag-selector.js"
 
 { arrayEquals } = tortoise_require('brazier/equals')
 { unique } = tortoise_require('brazier/array')
@@ -10,13 +8,6 @@ Patch = tortoise_require('engine/core/patch')
 Link = tortoise_require('engine/core/link')
 
 # CategoryPath: Array[string] e.g. ["turtles"], ["turtles", "TURTLEBREEDNAME"], ["patches"]
-
-# Returns all the "partial paths" leading up to the given path. For example, `['foo', 'bar', 'baz']` will return
-# `[[], ['foo'], ['foo', 'bar'], ['foo', 'bar', 'baz']]`.
-# (CategoryPath) -> Array[CategoryPath]
-calcPartialPaths = (categoryPath) ->
-  for i in [0..categoryPath.length]
-    categoryPath[0...i]
 
 # (CategoryPath) -> { path: CategoryPath, display: string }
 calcCategoryPathDetails = (categoryPath) -> {
@@ -35,53 +26,6 @@ calcCategoryPathDetails = (categoryPath) -> {
     else # 3-deep category paths should theoretically never happen; there is no classification deeper than breed.
       categoryPath.at(-1)
 }
-
-# Given an object, returns an array of all the leaves in the object (viewing the object as a rooted tree). A value is
-# considered a leaf it is the direct child of an object for which `isPenultimateLayer` returns true.
-# (any, (any) -> boolean) -> Array
-flattenObject = (obj, isPenultimateLayer) ->
-  if isPenultimateLayer(obj)
-    obj
-  else
-    Object.values(obj).flatMap((obj) -> flattenObject(obj, isPenultimateLayer))
-
-# Returns "how selected" a specified test category path with respect to an exactly-selected path.
-# The given test path can have one of the following states:
-# * is 'exact'-ly selected (if the path matches exactly)
-# * is 'partial'-ly selected (if one of is descendents is exactly selected)
-# * 'inherit's selection from one of its ancestors
-# * 'none' of the above
-# (CategoryPath, CategoryPath) -> 'exact' | 'partial' | 'inherit' | 'none'
-calcPathMatch = (selectedPath, testPath) ->
-  for i in [0...selectedPath.length]
-    if i is testPath.length
-      # The test path matched perfectly so far but didn't go deep enough.
-      return 'partial'
-    if selectedPath[i] isnt testPath[i]
-      return 'none'
-  if selectedPath.length < testPath.length
-    # The test path matched perfectly to the whole selected path and went even deeper.
-    return 'inherit'
-  else
-    # The test path matched perfectly and went the same depth as the selected path.
-    return 'exact'
-
-# Returns "how selected" a specified test category path given an array of exactly-selected paths.
-# Return values are explained in `calcPathMatch`.
-# If multiple apply, the first applicable state in this order ('exact', 'partial', 'inherit', 'none') is returned.
-# (CategoryPath) -> 'exact' | 'partial' | 'inherit' | 'none'
-calcPathMatchMultiple = (selectedPaths, testPath) ->
-  highestState = 'none' # the highest priority state encountered so far
-  for selectedPath in selectedPaths
-    switch calcPathMatch(selectedPath, testPath)
-      when 'exact'
-        return 'exact'
-      when 'partial'
-        highestState = 'partial'
-      when 'inherit'
-        if highestState isnt 'partial' then highestState = 'inherit'
-      # when 'none', do nothing
-  highestState
 
 # Toggles whether a test item is present in an array. If it is, returns an array with all instances of the item removed;
 # otherwise returns an array with the test item appended. Also returns whether a match was found.
@@ -167,11 +111,12 @@ RactiveInspectionPane = Ractive.extend({
 
     # State
 
-    dragToSelectEnabled: false # boolean
-    unsubscribeDragSelector: -> # (Unit) -> Unit
-
     updateTargetedAgentsInHistory: false # boolean; whether scrolling through history will also change what
     # agents are selected
+
+    # NOTE: The stagedAgents structure and setInspect actions ('add', 'remove', 'unstage-all', 'clear-dead')
+    # are intentionally retained for future reintroduction of the drag-to-select feature.
+    # See the backup branch for the full drag-to-select implementation.
 
     # type StagedAgents = {
     #   turtles: Object<string, Array[Turtle]>,
@@ -187,10 +132,7 @@ RactiveInspectionPane = Ractive.extend({
       selectedAgents: Array[Agent] | null # null means to consider the categories as the main selections, not the agents
     }
     ###
-    # represent everything in the staging area that are selected
     selections: { selectedPaths: [[]], selectedAgents: null }
-
-    hoveredAgents: [] # Array[Agent]
 
     commandPlaceholderText: "" # string
 
@@ -198,61 +140,8 @@ RactiveInspectionPane = Ractive.extend({
     # can be shared with agent monitor components
 
     # 'staged' | 'inspected'
-    agentTargetChoice: 'staged'
+    agentTargetChoice: 'inspected'
 
-    # Consts
-
-    # (Agent) -> boolean
-    getAgentSelectionState: (agent) ->
-      selectedAgents = @get('selections.selectedAgents')
-      selectedAgents? and selectedAgents.includes(agent)
-
-    # (Array[string]) -> Array[Agent]
-    getAgentsInPath: (path) ->
-      flattenObject(@get(['stagedAgents'].concat(path).join('.')), Array.isArray)
-
-    # (Unit) -> Array[Agent]
-    getAgentsInSelectedPaths: ->
-      unique(@get("selections.selectedPaths")?.flatMap(@get('getAgentsInPath')) ? [])
-
-    # Returns a 2D array where each row represents the children of the
-    # (most-recently) selected category of the previous row; if nothing is
-    # selected then the major categories ('turtles', 'patches', 'links') are
-    # shown. Doesn't show leaves (i.e. `Agent`s) in the 'stagedAgents' tree.
-    # `combineTopLevels` describes whether to put the root category at the
-    # same level as the level-1 categories.
-    # (boolean) -> Array[Array[CategoryPath]]
-    getCategoryRows: (combineTopLevels) ->
-      # First get the paths that will make up the backbone of the grid.
-      paths = calcPartialPaths(@get('selections.selectedPaths').at(-1) ? [])
-
-      # Each category path will correspond to a row
-      rootPath = [] # the root path
-      nonRootLevels = for path in paths
-        # Get this category's contents.
-        contents = @get(['stagedAgents'].concat(path).join('.'))
-        # Don't display leaves or deeper
-        if Array.isArray(contents)
-          # This is the penultimate layer; `contents` must only have leaves.
-          break
-        # Get this category's direct children's keys.
-        childrenKeys = Object.keys(contents)
-        # Return the path to these children.
-        childrenKeys.map((key) -> path.concat([key]))
-      if combineTopLevels
-        [
-          [rootPath, nonRootLevels[0]...],
-          nonRootLevels[1..]...
-        ]
-      else
-        [
-          [rootPath],
-          nonRootLevels...
-        ]
-
-    calcPathMatchType: calcPathMatchMultiple
-
-    calcCategoryPathDetails
   }
 
   computed: {
@@ -269,7 +158,7 @@ RactiveInspectionPane = Ractive.extend({
           [targetedAgents, quantifierText] = if selectedAgents?
             [selectedAgents, "selected"]
           else
-            [@get('getAgentsInSelectedPaths')(), "all staged"]
+            [[], "all staged"] # staging area removed; will be cleaned up in Step 2
           targetingText = "staged agents \u2191"
 
 
@@ -309,77 +198,16 @@ RactiveInspectionPane = Ractive.extend({
   }
 
   observe: {
-    'targetedAgentObj.agents hoveredAgents': (newValue, _, path) ->
-      if path is 'hoveredAgents'
-        if newValue.length > 0
-          # highlight all hovered agents
-          @get('viewController').setHighlightedAgents(newValue)
-        else
-          # highlight all targeted agents
-          @get('viewController').setHighlightedAgents(@get('targetedAgentObj.agents'))
-      else if path is 'targetedAgentObj.agents' and @get('hoveredAgents').length is 0
-        # highlight all targeted agents
-        @get('viewController').setHighlightedAgents(newValue)
-    'stagedAgents selections inspectedAgents': ->
-      # this observer is intended to make sure that, if a mini agent card or
-      # agent monitor disappears, it is removed from the hovered agents. it's
-      # not easy to do this with an event listener on the mini agent card itself
-      @set('hoveredAgents', [])
-    dragToSelectEnabled: (enabled) ->
-      if enabled
-        @set('unsubscribeDragSelector', attachDragSelector(
-          @get('viewController'),
-          @root.findComponent('dragSelectionBox'),
-          ((isShiftOrCtrlDrag) => if not isShiftOrCtrlDrag then @setInspect({ type: 'unstage-all' })),
-          (agents) =>
-            @setInspect({ type: 'add', agents, monitor: false })
-            return
-        ))
-      else
-        @get('unsubscribeDragSelector')()
+    'targetedAgentObj.agents': (newValue) ->
+      @get('viewController').setHighlightedAgents(newValue)
   }
 
   components: {
-    miniAgentCard: RactiveMiniAgentCard,
     agentMonitor: RactiveAgentMonitor,
     commandInput: RactiveCommandInput
   }
 
   on: {
-    'clicked-category-tab': (context, categoryPath) ->
-      multi = context.event.ctrlKey or context.event.shiftKey
-      @selectCategory({ mode: (if multi then 'toggle' else 'replace'), categoryPath })
-      false
-    'clicked-staging-help': (_) ->
-      alert("To monitor change, inspect properties, and execute commands to one or multiple agents " +
-            "during simulation, turn on drag select to activate inspection mode. " +
-            "Then, click or drag in the view to select agents.")
-      false
-    '*.hover-agent-card': (context, agent) ->
-      hoveredAgents = @get('hoveredAgents')
-      if not hoveredAgents.includes(agent)
-        hoveredAgents.push(agent)
-      @update('hoveredAgents')
-      false
-    '*.unhover-agent-card': (context, agent) ->
-      hoveredAgents = @get('hoveredAgents')
-      index = hoveredAgents.indexOf(agent)
-      if index isnt -1
-        hoveredAgents.splice(index, 1)
-      @update('hoveredAgents')
-      false
-    'miniAgentCard.clicked-agent-card': (context, agent) ->
-      multi = context.event.ctrlKey or context.event.shiftKey
-      @selectAgents(if multi then { mode: 'toggle', agent } else { mode: 'replace', agents: [agent] })
-      false
-    'miniAgentCard.dblclicked-agent-card': (context, agent) ->
-      # The conditional is so that when the user clicks and then ctrl-clicks the category card, it does not open.
-      if not (context.event.ctrlKey or context.event.shiftKey)
-        @toggleAgentMonitor(agent)
-      false
-    'miniAgentCard.closed-agent-card': (_, agent) ->
-      @setInspect({ type: 'remove', agents: [agent], monitor: false })
-      false
     'agentMonitor.closed-agent-monitor': (_, agent) ->
       @set(
         'inspectedAgents',
@@ -451,11 +279,6 @@ RactiveInspectionPane = Ractive.extend({
         for agent in [@get('inspectedAgents')...]
           if agent.isDead()
             @toggleAgentMonitor(agent)
-
-  stageOnlyInspectedAgents: ->
-    inspectedAgents = @get('inspectedAgents')
-    @setInspect({ type: 'unstage-all' })
-    @setInspect({ type: 'add', agents: inspectedAgents, monitor: false })
 
   # Selects the specified category. 'replace' mode removes all other selected
   # categories (single-clicking an item), while 'toggle' mode toggles whether
@@ -537,104 +360,12 @@ RactiveInspectionPane = Ractive.extend({
 
   template: """
     <div class='netlogo-tab-content inspection__pane'>
-      {{>stagingArea}}
       {{>commandCenter}}
       {{>agentMonitorsScreen}}
     </div>
   """
 
   partials: {
-    'stagingArea': """
-      {{#with getCategoryRows(true) as categoryRows}}
-        <div class="inspection__header-row">
-          <div class="inspection__button-tray">
-            <div
-              class="inspection__button {{#if dragToSelectEnabled}}selected{{/if}}"
-              title="Toggle drag-to-select"
-              on-click="@.toggle('dragToSelectEnabled')"
-            >
-              <img
-                width=25
-                src="assets/images/inspect/cursor.png"
-              />
-            </div>
-            <div
-              class="inspection__button"
-              title="Stage and target only agents with an agent monitor"
-              on-click="@.stageOnlyInspectedAgents(), @.set('dragToSelectEnabled', false)"
-            >
-              <img
-                width=25
-                src="assets/images/inspect/magnifying-glass.png"
-              />
-            </div>
-            <div
-              class="inspection__button"
-              title="Unstage all agents"
-              on-click="@.setInspect({ type: 'unstage-all' })"
-            >
-              <img width=25 src="assets/images/inspect/close.png"/>
-            </div>
-            <div class="inspection__button" title="Help" on-click="clicked-staging-help">
-              <img
-                width=25
-                src="assets/images/inspect/help.png"
-              />
-            </div>
-          </div>
-          <div class="inspection__tab-selector-group">
-            {{#each categoryRows[0] as categoryPath}}
-              {{>categoryTab}}
-            {{/each}}
-          </div>
-        </div>
-        <div class="inspection__tab-content">
-          {{#each categoryRows.slice(1) as categoryRow}}
-            {{#if categoryRow.length > 1}}
-              <div class="inspection__card-selector-group">
-                {{#each categoryRow as categoryPath}}
-                  {{>categoryTab}}
-                {{/each}}
-              </div>
-            {{/if}}
-          {{/each}}
-          <div class="inspection__agents-area">
-            {{#each getAgentsInSelectedPaths() as agent}}
-              <miniAgentCard
-                agent={{agent}}
-                selected={{getAgentSelectionState(agent)}}
-                opened={{inspectedAgents.includes(agent)}}
-              />
-            {{else}}
-              <b>Staging Area</b>
-              To add an agent to the staging area, use the drag-to-select
-              function, or use the inspect option in an agent's context menu,
-              or use the `inspect` command on the agent.
-            {{/each}}
-          </div>
-        </div>
-      {{/with}}
-    """
-
-    'categoryTab': """
-      {{#with calcCategoryPathDetails(this) }}
-      <div
-        class="inspection__option {{#with calcPathMatchType(selections.selectedPaths, path) as matchType}}
-          {{#if matchType === 'exact'}}
-            selected
-          {{elseif matchType === 'partial' && path.length > 0}}
-            selected-partial
-          {{/if}}
-        {{/with}}"
-        on-click="['clicked-category-tab', path]"
-        title="{{display}} ({{getAgentsInPath(path).length}})"
-      >
-        <span class="category">{{display}}</span>
-        <span class="count">{{getAgentsInPath(path).length}}</span>
-      </div>
-      {{/with}}
-    """
-
     # coffeelint: disable=max_line_length
     'commandCenter': """
       <div class="inspection__cmd-container" style="{{#if agentTargetChoice === 'inspected'}}margin-bottom: 0;{{else}}margin-top: 0;{{/if}}">
@@ -696,9 +427,8 @@ RactiveInspectionPane = Ractive.extend({
           {{else}}
             <b>Agent Monitors</b>
 
-            To open an agent monitor, double-click an agent in the staging area,
-            or use the inspect option in an agent's context menu, or use the
-            `inspect` command on the agent.
+            To open an agent monitor, use the inspect option in an agent's
+            context menu, or use the `inspect` command on the agent.
           {{/each}}
         </div>
       </div>

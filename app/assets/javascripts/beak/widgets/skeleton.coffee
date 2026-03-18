@@ -20,7 +20,6 @@ import { RactivePlot, RactiveHNWPlot } from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
 import RactiveContextMenu from "./ractives/context-menu.js"
-import RactiveDragSelectionBox from "./ractives/drag-selection-box.js"
 import RactiveEditFormSpacer from "./ractives/subcomponent/spacer.js"
 import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
@@ -114,7 +113,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , console:       RactiveConsoleWidget
     , inspection:    RactiveInspectionPane
     , contextMenu:   RactiveContextMenu
-    , dragSelectionBox: RactiveDragSelectionBox
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveCodePane
     , helpDialog:    RactiveHelpDialog
@@ -379,7 +377,6 @@ template =
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>
       <helpDialog keybindGroups="{{keybinds}}" isOverlayUp="{{isOverlayUp}}" isVisible="{{isHelpVisible}}" wareaHeight="{{height}}" wareaWidth="{{width}}"></helpDialog>
       <contextMenu></contextMenu>
-      <dragSelectionBox/>
 
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
