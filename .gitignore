@@ -20,6 +20,8 @@ tmp/
 .metals/
 .bloop/
 
+.claude/
+
 /public/pages/iframe-test.html
 
 /public/modelslib/src/test/resources/modelwords.txt
