@@ -42,13 +42,13 @@ RactiveAgentMonitor = Ractive.extend({
       viewController = @get('viewController')
       { worldWidth, worldHeight } = viewController.getWorldShape()
       windowGenerator = followAgentWithZoom(
-        @find('.inspection__agent-monitor__view-container').offsetWidth,
+        @find('.inspection-agent-monitor-view-container').offsetWidth,
         @get('viewModelAgent'),
         @get('zoomLevel'),
         Math.min(worldWidth, worldHeight) / 2
       )
       viewWindow = viewController.getNewView(
-        @find('.inspection__agent-monitor__view-container'),
+        @find('.inspection-agent-monitor-view-container'),
         'world',
         windowGenerator
       )
@@ -172,7 +172,7 @@ RactiveAgentMonitor = Ractive.extend({
   template:
     """
     <div
-      class="inspection__agent-monitor"
+      class="inspection-agent-monitor"
       on-mouseenter="['hover-agent-card', agent]"
       on-mouseleave="['unhover-agent-card', agent]"
     >
@@ -185,10 +185,10 @@ RactiveAgentMonitor = Ractive.extend({
 
   partials: {
     "titleBar": """
-      <div class="inspection__agent-monitor__title-bar">
+      <div class="inspection-agent-monitor-title-bar">
         <span class="title">{{agent.getName()}}</span>
         <div
-          class="inspection__button"
+          class="inspection-button"
           on-click=["closed-agent-monitor", agent]
         >
           <img width=15 src="assets/images/inspect/close.png"/>
@@ -198,12 +198,12 @@ RactiveAgentMonitor = Ractive.extend({
 
     "viewSection": """
       <div
-        class="inspection__agent-monitor__view-container"
+        class="inspection-agent-monitor-view-container"
         on-contextmenu="show-context-menu"
       ></div>
-      <div class="inspection__agent-monitor__view-controls">
+      <div class="inspection-agent-monitor-view-controls">
         <div
-          class="inspection__button inspection__agent-monitor__watch-button"
+          class="inspection-button inspection-agent-monitor-watch-button"
           on-click="watch-button-clicked"
         >Watch</div>
         <input type="range" min=0 max=1 step=0.01 value="{{zoomLevel}}"/>
@@ -211,7 +211,7 @@ RactiveAgentMonitor = Ractive.extend({
     """
 
     "propertyGrid": """
-      <div class="inspection__agent-monitor__property-grid">
+      <div class="inspection-agent-monitor-property-grid">
         {{#each varNames as varName}}
           <agentVarField agent={{agent}} varName={{varName}}/>
         {{/each}}
@@ -219,7 +219,7 @@ RactiveAgentMonitor = Ractive.extend({
     """
 
     "commandCenter": """
-      <div class="inspection__cmd-container" style="margin: 0;">
+      <div class="inspection-cmd-container" style="margin: 0;">
         <commandInput
           isReadOnly={{isEditing}}
           source="agent-monitor"

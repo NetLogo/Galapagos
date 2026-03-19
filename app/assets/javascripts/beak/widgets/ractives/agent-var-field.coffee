@@ -66,8 +66,8 @@ RactiveAgentVarField = Ractive.extend({
   }
 
   template: """
-    <div class="inspection__agent-var-name" title="{{varName}}">{{varName}}</div>
-    <input class="inspection__input-container" value={{currentInput}}
+    <div class="inspection-agent-var-name" title="{{varName}}">{{varName}}</div>
+    <input class="inspection-input-container" value={{currentInput}}
            on-focus="@this.set('hasFocus', true)"
            on-blur="@this.set('hasFocus', false)"
            on-change="['submit-input', currentInput]"/>

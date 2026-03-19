@@ -304,7 +304,7 @@ RactiveInspectionPane = Ractive.extend({
     @set('selections.selectedAgents', filtered)
 
   template: """
-    <div class='netlogo-tab-content inspection__pane'>
+    <div class='netlogo-tab-content inspection-pane'>
       {{>commandCenter}}
       {{>agentMonitorsScreen}}
     </div>
@@ -313,9 +313,9 @@ RactiveInspectionPane = Ractive.extend({
   # coffeelint: disable=max_line_length
   partials: {
     'commandCenter': """
-      <div class="inspection__cmd-container">
+      <div class="inspection-cmd-container">
         <div
-          class="inspection__button {{#if pointToSelectEnabled}}selected{{/if}}"
+          class="inspection-button {{#if pointToSelectEnabled}}selected{{/if}}"
           on-click="@.toggle('pointToSelectEnabled')"
           title="Point to select: click an agent in the view to inspect it ({{#if pointToSelectEnabled}}on{{else}}off{{/if}})"
         >
@@ -325,7 +325,7 @@ RactiveInspectionPane = Ractive.extend({
           />
         </div>
         <div
-          class="inspection__button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
+          class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           on-click="@.toggle('updateTargetedAgentsInHistory')"
           title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
         >
@@ -345,12 +345,12 @@ RactiveInspectionPane = Ractive.extend({
     """
 
     'agentMonitorsScreen': """
-      <div class="inspection__agent-monitor-container">
+      <div class="inspection-agent-monitor-container">
         {{#if inspectedAgents.length > 0}}
-          <div class="inspection__button-tray" style="margin-bottom: 0.5em; justify-content: space-between;">
+          <div class="inspection-button-tray" style="margin-bottom: 0.5em; justify-content: space-between;">
             <b>Agent Monitors</b>
             <div
-              class="inspection__button"
+              class="inspection-button"
               title="Remove all agent monitors"
               on-click="@.set('inspectedAgents', [])"
             >
@@ -358,7 +358,7 @@ RactiveInspectionPane = Ractive.extend({
             </div>
           </div>
         {{/if}}
-        <div class="inspection__agent-monitor-container__inner">
+        <div class="inspection-agent-monitor-container-inner">
           {{#each inspectedAgents as agent}}
             <agentMonitor
               viewController={{viewController}}

@@ -1,28 +1,28 @@
-.inspection__pane {
+.inspection-pane {
   padding: 1em;
   min-width: 600px;
 }
 
-.inspection__button-tray {
+.inspection-button-tray {
   display: flex;
   align-items: center;
   gap: 1em;
 }
 
-.inspection__button {
+.inspection-button {
   cursor: pointer;
   user-select: none;
   border-radius: 5px;
   background-color: white;
 }
-.inspection__button:hover {
+.inspection-button:hover {
   background-color: rgba(211, 211, 211, 0.5);
 }
-.inspection__button.selected {
+.inspection-button.selected {
   background-color: lightblue;
 }
 
-.inspection__cmd-container {
+.inspection-cmd-container {
   margin: 1em 0;
   display: flex;
   flex-direction: row;
@@ -32,20 +32,20 @@
   border-radius: 5px;
 }
 
-.inspection__agent-monitor-container {
+.inspection-agent-monitor-container {
   padding: 0.5em;
   border-radius: 5px;
   min-height: 2em;
   box-shadow: inset 0 0 0.5em gray;
 }
 
-.inspection__agent-monitor-container__inner {
+.inspection-agent-monitor-container-inner {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
 }
 
-.inspection__agent-monitor {
+.inspection-agent-monitor {
   border: 2px solid lightgray;
   border-radius: 5px;
   width: 170px;
@@ -56,50 +56,50 @@
   gap: 0.5em;
 }
 
-.inspection__agent-monitor__title-bar {
+.inspection-agent-monitor-title-bar {
   display: grid;
   grid: auto / auto auto;
   justify-content: space-between;
   align-items: start;
 }
 
-.inspection__agent-monitor__title-bar .title {
+.inspection-agent-monitor-title-bar .title {
   font-weight: 700;
 }
 
-.inspection__agent-monitor__view-controls {
+.inspection-agent-monitor-view-controls {
   display: grid;
   grid: auto / auto auto;
   align-items: center;
 }
 
-.inspection__agent-monitor__view-controls > input {
+.inspection-agent-monitor-view-controls > input {
   min-width: 0;
 }
 
-.inspection__agent-monitor__watch-button {
+.inspection-agent-monitor-watch-button {
   width: min-content;
   padding: 0.5em;
   border: 1px solid gray;
 }
 
-.inspection__agent-monitor__property-grid {
+.inspection-agent-monitor-property-grid {
   display: grid;
   grid: auto-flow / 1fr 2fr;
   gap: 0 0.5em;
 }
 
-.inspection__agent-monitor__property-grid .inspection__agent-var-name {
+.inspection-agent-monitor-property-grid .inspection-agent-var-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.inspection__agent-monitor__property-grid > input {
+.inspection-agent-monitor-property-grid > input {
   min-width: 0;
 }
 
-.inspection__input-container {
+.inspection-input-container {
   background-color: white;
   border: 1px solid gray;
 }
