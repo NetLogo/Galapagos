@@ -29,7 +29,7 @@ RactiveAgentMonitor = Ractive.extend({
     agentType: undefined # 'turtle' | 'patch' | 'link'; This should be kept in sync with the `agent` data.
     viewWindow: undefined # View; a reference to the View associated with the current agent
     windowGenerator: undefined # result of `followAgentWithZoom`; see "window-generators.coffee"
-    zoomLevel: 0.7 # number; represents how much of the screen the agent takes up
+    zoomLevel: 0.35 # number; represents how much of the screen the agent takes up
 
     # Consts
 
