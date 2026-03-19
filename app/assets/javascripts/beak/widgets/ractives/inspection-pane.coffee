@@ -325,6 +325,13 @@ RactiveInspectionPane = Ractive.extend({
           />
         </div>
         <div
+          class="inspection-button"
+          title="Remove all agent monitors"
+          on-click="@.set('inspectedAgents', [])"
+        >
+          <img width=25 src="assets/images/inspect/close.png"/>
+        </div>
+        <div
           class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           on-click="@.toggle('updateTargetedAgentsInHistory')"
           title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
@@ -346,18 +353,6 @@ RactiveInspectionPane = Ractive.extend({
 
     'agentMonitorsScreen': """
       <div class="inspection-agent-monitor-container">
-        {{#if inspectedAgents.length > 0}}
-          <div class="inspection-button-tray" style="margin-bottom: 0.5em; justify-content: space-between;">
-            <b>Agent Monitors</b>
-            <div
-              class="inspection-button"
-              title="Remove all agent monitors"
-              on-click="@.set('inspectedAgents', [])"
-            >
-              <img width=25 src="assets/images/inspect/close.png"/>
-            </div>
-          </div>
-        {{/if}}
         <div class="inspection-agent-monitor-container-inner">
           {{#each inspectedAgents as agent}}
             <agentMonitor
@@ -368,10 +363,8 @@ RactiveInspectionPane = Ractive.extend({
               setInspect="{{@this.setInspect.bind(@this)}}"
             />
           {{else}}
-            <b>Agent Monitors</b>
-
-            To open an agent monitor, use the inspect option in an agent's
-            context menu, or use the `inspect` command on the agent.
+            To open an agent monitor, right-click on the agent in the world view to open the inspection context menu, or use the `inspect` command on the agent through the
+            Command Center.
           {{/each}}
         </div>
       </div>
