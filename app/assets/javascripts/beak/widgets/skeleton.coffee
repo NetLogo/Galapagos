@@ -411,13 +411,6 @@ template =
     </div>
 
     <div class="netlogo-tab-area">
-      <tab name="inspection" title="Agent Inspection" show="{{showInspectionPane}}" scroll-block="center">
-        <inspection
-          isEditing={{isEditing}}
-          viewController={{viewController}}
-          checkIsReporter={{checkIsReporter}}
-        />
-      </tab>
       {{# !isReadOnly }}
       <tab name="console" title="Command Center" show="{{showConsole}}" scroll-block="center"
             on-toggle="['command-center-toggled', show]" focus-target=".netlogo-output-area">
@@ -432,6 +425,13 @@ template =
       <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
+      </tab>
+      <tab name="inspection" title="Agent Inspection" show="{{showInspectionPane}}" scroll-block="center">
+        <inspection
+          isEditing={{isEditing}}
+          viewController={{viewController}}
+          checkIsReporter={{checkIsReporter}}
+        />
       </tab>
     </div>
 
