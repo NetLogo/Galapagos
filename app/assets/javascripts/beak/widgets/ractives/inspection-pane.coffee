@@ -91,6 +91,9 @@ RactiveInspectionPane = Ractive.extend({
 
     # State
 
+    pointToSelectEnabled: false # boolean
+    unsubscribePointToSelect: -> # (Unit) -> Unit
+
     updateTargetedAgentsInHistory: false # boolean; whether scrolling through history will also change what
     # agents are selected
 
@@ -152,6 +155,22 @@ RactiveInspectionPane = Ractive.extend({
   observe: {
     'targetedAgentObj.agents': (newValue) ->
       @get('viewController').setHighlightedAgents(newValue)
+    pointToSelectEnabled: (enabled) ->
+      if enabled
+        @set('unsubscribePointToSelect', @get('viewController').registerMouseListeners(
+          ({ clientX, clientY, event }) =>
+            return if event?.button isnt 0 # only handle left-clicks
+            # Suppress the document click handler (in handle-context-menu.coffee) from
+            # hiding the context menu we're about to open.
+            suppressClick = (e) -> e.stopImmediatePropagation()
+            document.addEventListener('click', suppressClick, { capture: true, once: true })
+            { pageX, pageY } = event
+            @root.findComponent('contextMenu').reveal(@root.findComponent('viewWidget'), pageX, pageY, clientX, clientY)
+          (->)  # no-op moveHandler
+          (->)  # no-op upHandler
+        ))
+      else
+        @get('unsubscribePointToSelect')()
   }
 
   components: {
@@ -294,6 +313,16 @@ RactiveInspectionPane = Ractive.extend({
   partials: {
     'commandCenter': """
       <div class="inspection__cmd-container">
+        <div
+          class="inspection__button {{#if pointToSelectEnabled}}selected{{/if}}"
+          on-click="@.toggle('pointToSelectEnabled')"
+          title="Point to select: click an agent in the view to inspect it ({{#if pointToSelectEnabled}}on{{else}}off{{/if}})"
+        >
+          <img
+            width=25
+            src="assets/images/inspect/cursor.png"
+          />
+        </div>
         <div
           class="inspection__button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           on-click="@.toggle('updateTargetedAgentsInHistory')"
