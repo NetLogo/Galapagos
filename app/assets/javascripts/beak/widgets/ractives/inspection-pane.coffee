@@ -92,7 +92,6 @@ RactiveInspectionPane = Ractive.extend({
     # State
 
     pointToSelectEnabled: false # boolean
-    unsubscribePointToSelect: -> # (Unit) -> Unit
 
     updateTargetedAgentsInHistory: false # boolean; whether scrolling through history will also change what
     # agents are selected
@@ -157,7 +156,7 @@ RactiveInspectionPane = Ractive.extend({
       @get('viewController').setHighlightedAgents(newValue)
     pointToSelectEnabled: (enabled) ->
       if enabled
-        @set('unsubscribePointToSelect', @get('viewController').registerMouseListeners(
+        @_unsubscribePointToSelect = @get('viewController').registerMouseListeners(
           ({ clientX, clientY, event }) =>
             return if event?.button isnt 0 # only handle left-clicks
             # Suppress the document click handler (in handle-context-menu.coffee) from
@@ -168,9 +167,9 @@ RactiveInspectionPane = Ractive.extend({
             @root.findComponent('contextMenu').reveal(@root.findComponent('viewWidget'), pageX, pageY, clientX, clientY)
           (->)  # no-op moveHandler
           (->)  # no-op upHandler
-        ))
+        )
       else
-        @get('unsubscribePointToSelect')()
+        @_unsubscribePointToSelect()
   }
 
   components: {
@@ -314,16 +313,16 @@ RactiveInspectionPane = Ractive.extend({
   partials: {
     'commandCenter': """
       <div class="inspection-cmd-container">
-        <div
+        <label
           class="inspection-button {{#if pointToSelectEnabled}}selected{{/if}}"
-          on-click="@.toggle('pointToSelectEnabled')"
           title="Point to select: click an agent in the view to inspect it ({{#if pointToSelectEnabled}}on{{else}}off{{/if}})"
         >
+          <input type="checkbox" checked="{{pointToSelectEnabled}}" style="display:none" />
           <img
             width=25
             src="assets/images/inspect/cursor.png"
           />
-        </div>
+        </label>
         <div
           class="inspection-button"
           title="Remove all agent monitors"
@@ -331,16 +330,16 @@ RactiveInspectionPane = Ractive.extend({
         >
           <img width=25 src="assets/images/inspect/close.png"/>
         </div>
-        <div
+        <label
           class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
-          on-click="@.toggle('updateTargetedAgentsInHistory')"
           title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
         >
+          <input type="checkbox" checked="{{updateTargetedAgentsInHistory}}" style="display:none" />
           <img
             width=25
             src="assets/images/inspect/history.png"
           />
-        </div>
+        </label>
         <commandInput
           isReadOnly={{isEditing}}
           source="inspection-pane"
