@@ -7,26 +7,6 @@ Turtle = tortoise_require('engine/core/turtle')
 Patch = tortoise_require('engine/core/patch')
 Link = tortoise_require('engine/core/link')
 
-# CategoryPath: Array[string] e.g. ["turtles"], ["turtles", "TURTLEBREEDNAME"], ["patches"]
-
-# (CategoryPath) -> { path: CategoryPath, display: string }
-calcCategoryPathDetails = (categoryPath) -> {
-  path: categoryPath,
-  display: switch categoryPath.length
-    when 0 # We're at the root category.
-      'Agents'
-    when 1 # We're at one of the major agent types.
-      switch categoryPath[0]
-        when 'turtles' then 'Turtles'
-        when 'patches' then 'Patches'
-        when 'links' then 'Links'
-        else categoryPath[0] # This theoretically should never happen.
-    when 2 # We're at some agent breed.
-      world.breedManager.get(categoryPath[1]).name
-    else # 3-deep category paths should theoretically never happen; there is no classification deeper than breed.
-      categoryPath.at(-1)
-}
-
 # Toggles whether a test item is present in an array. If it is, returns an array with all instances of the item removed;
 # otherwise returns an array with the test item appended. Also returns whether a match was found.
 # (Array[T], T, (T) -> (T) -> boolean) -> [Array[T], boolean]
@@ -139,45 +119,24 @@ RactiveInspectionPane = Ractive.extend({
     inspectedAgents: [] # Array[Agent]; agents for which there is an opened agent monitor
     # can be shared with agent monitor components
 
-    # 'staged' | 'inspected'
-    agentTargetChoice: 'inspected'
-
   }
 
   computed: {
     # computing this value also sets the command placeholder text
     targetedAgentObj: {
       get: ->
-        agentTargetChoice = @get('agentTargetChoice')
-        if agentTargetChoice is 'inspected'
-          targetedAgents = @get('inspectedAgents')
-          quantifierText = "inspected"
-          targetingText = "inspected agents \u2193"
-        else
-          { selectedPaths, selectedAgents } = @get('selections')
-          [targetedAgents, quantifierText] = if selectedAgents?
-            [selectedAgents, "selected"]
-          else
-            [[], "all staged"] # staging area removed; will be cleaned up in Step 2
-          targetingText = "staged agents \u2191"
-
+        targetedAgents = @get('inspectedAgents')
 
         # check whether the selected agents are all of the same type
         # (i.e. turtles, patches, or links).
         selectedAgentTypes = unique(targetedAgents.map((agent) -> getKeypathFor(agent)[0]))
         if selectedAgentTypes.length is 1
-          if agentTargetChoice is 'inspected'
-            categoriesText = selectedAgentTypes[0]
-          else
-            categoriesText = selectedPaths.map((path) -> calcCategoryPathDetails(path).display).join(", ")
-          placeholderText = "(Targeting #{targetingText}) Input command for #{quantifierText} #{categoriesText}"
-          @set('commandPlaceholderText', placeholderText)
+          @set('commandPlaceholderText', "Input command for inspected #{selectedAgentTypes[0]}")
           { agentType: selectedAgentTypes[0], agents: targetedAgents }
         else
           # there are either no agents or the agents are not of the same type
-          # (mix of turtles, patches, links) so just send the commands to the
-          # observer
-          @set('commandPlaceholderText', "(Targeting #{targetingText}) Input command for OBSERVER")
+          # (mix of turtles, patches, links) so just send the commands to the observer
+          @set('commandPlaceholderText', "Input command for OBSERVER")
           { agentType: 'observer', agents: targetedAgents }
       set: (targetedAgentObj) ->
         if not @get('updateTargetedAgentsInHistory')
@@ -186,14 +145,7 @@ RactiveInspectionPane = Ractive.extend({
 
         # While we can't set the targetedAgentObj directly, we can attempt to put the inspection pane into a state such
         # that the getter would return something equivalent to the value passed to this setter.
-
-        { agentType, agents } = targetedAgentObj
-
-        if @get('agentTargetChoice') is 'inspected'
-          @set('inspectedAgents', agents)
-        else
-          @setInspect({ type: 'add', agents, monitor: false })
-          @selectAgents({ mode: 'replace', agents })
+        @set('inspectedAgents', targetedAgentObj.agents)
     }
   }
 
@@ -314,28 +266,6 @@ RactiveInspectionPane = Ractive.extend({
     @update('selections')
     # end kludgy bandaid
 
-  # Selects the specified agents. 'replace' mode removes all other selected
-  # agents (single-clicking an item), while 'toggle' mode toggles whether the
-  # item is selected (ctrl-clicking an item).
-  # ({ mode: 'replace', agents: Array[Agent] } | { mode: 'toggle', agent: Agent}) -> Unit
-  selectAgents: (arg) ->
-    { selectedAgents: oldSelectedAgents } = @get('selections')
-
-    newSelectedAgents = switch arg.mode
-      when 'replace'
-        arg.agents
-      when 'toggle'
-        if oldSelectedAgents?
-          togglePresence(oldSelectedAgents, arg.agent, (a) -> (b) -> a is b)[0]
-        else
-          [arg.agent]
-
-    # keep the selected paths the same. if this method is called by the user
-    # clicking a mini agent card, then that means that the currently selected
-    # categories must have included the agents in this call
-
-    @set('selections.selectedAgents', newSelectedAgents)
-
   # Opens or closes an agent monitor showing detailed information and a mini
   # view of the specified agent.
   # (Agent) -> Unit
@@ -354,10 +284,6 @@ RactiveInspectionPane = Ractive.extend({
     filtered = @get('selections.selectedAgents')?.filter((selected) -> not agentsToUnselect.includes(selected))
     @set('selections.selectedAgents', filtered)
 
-  # (Unit) -> Unit
-  toggleAgentTargetChoice: ->
-    @set('agentTargetChoice', if @get('agentTargetChoice') is 'inspected' then 'staged' else 'inspected')
-
   template: """
     <div class='netlogo-tab-content inspection__pane'>
       {{>commandCenter}}
@@ -366,9 +292,8 @@ RactiveInspectionPane = Ractive.extend({
   """
 
   partials: {
-    # coffeelint: disable=max_line_length
     'commandCenter': """
-      <div class="inspection__cmd-container" style="{{#if agentTargetChoice === 'inspected'}}margin-bottom: 0;{{else}}margin-top: 0;{{/if}}">
+      <div class="inspection__cmd-container">
         <div
           class="inspection__button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           on-click="@.toggle('updateTargetedAgentsInHistory')"
@@ -377,17 +302,6 @@ RactiveInspectionPane = Ractive.extend({
           <img
             width=25
             src="assets/images/inspect/history.png"
-          />
-        </div>
-        <div
-          class="inspection__button"
-          title="Toggle which agents to target (staged agents \u2191 or inspected agents \u2193)"
-          on-click="@.toggleAgentTargetChoice()"
-        >
-          <img
-            width=25
-            style="{{#if agentTargetChoice === 'inspected'}}transform: scaleY(-1);{{/if}}"
-            src="assets/images/inspect/arrow-up.png"
           />
         </div>
         <commandInput
@@ -399,7 +313,6 @@ RactiveInspectionPane = Ractive.extend({
         />
       </div>
     """
-    # coffeelint: enable=max_line_length
 
     'agentMonitorsScreen': """
       <div class="inspection__agent-monitor-container">
