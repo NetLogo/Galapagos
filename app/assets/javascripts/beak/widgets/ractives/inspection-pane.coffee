@@ -310,6 +310,7 @@ RactiveInspectionPane = Ractive.extend({
     </div>
   """
 
+  # coffeelint: disable=max_line_length
   partials: {
     'commandCenter': """
       <div class="inspection__cmd-container">
@@ -376,6 +377,8 @@ RactiveInspectionPane = Ractive.extend({
       </div>
     """
   }
+  # coffeelint: enable=max_line_length
+
 })
 
 export default RactiveInspectionPane
