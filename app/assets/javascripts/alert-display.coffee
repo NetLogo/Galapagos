@@ -375,6 +375,10 @@ class AlertDisplay
         message = AlertDisplay.makeCompilerErrorMessage(errors).join('\n')
         @reportConsoleError(message)
 
+      when 'inspection-pane', 'agent-monitor'
+        message = AlertDisplay.makeCompilerErrorMessage(errors).join('\n')
+        @reportError(message)
+
       else
         rawMessage = AlertDisplay.makeLinkedCompilerErrorMessage(errors).join('<br/>')
         message = if not @_ractive.get('isActive') then rawMessage else
