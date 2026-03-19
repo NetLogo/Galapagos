@@ -215,7 +215,8 @@ generateRactiveSkeleton = (container, widgets, code, info,
               }
             else
               continue # don't display
-        if source isnt 'console' and source isnt 'agent-monitor'
+        commandInputSources = ['console', 'inspection-pane', 'agent-monitor']
+        if source not in commandInputSources
           @findComponent('codePane')?.set('runtimeErrors', codePaneErrors)
         false
 

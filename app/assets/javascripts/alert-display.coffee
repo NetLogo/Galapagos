@@ -260,6 +260,26 @@ class AlertDisplay
 
       @reportConsoleError(message)
 
+    else if source in ['inspection-pane', 'agent-monitor']
+      message = if exception instanceof Exception.RuntimeException
+        start = AlertDisplay.makeBareRuntimeErrorMessage(
+          exception.message
+        , exception.primitive
+        , exception.sourceStart
+        , exception.sourceEnd
+        , code
+        )
+        stack = exception.stackTrace.map(AlertDisplay.makeBareFrameError).join('\n')
+        if stack is '' then start else "#{start}\n#{stack}"
+
+      else if exception instanceof TypeError
+        AlertDisplay.makeTypeErrorMessage(exception.message)
+
+      else
+        exception.message
+
+      @reportError(message, exception.stackTrace ? [])
+
     else
       message = if exception instanceof Exception.RuntimeException
         if source is 'button' and exception.stackTrace.length is 0
