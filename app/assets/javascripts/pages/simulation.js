@@ -73,7 +73,7 @@ try {
     }
   })();
 
-var pageTitle = function(modelTitle) {
+  var pageTitle = function(modelTitle) {
     if (modelTitle != null && modelTitle != '') {
       return 'NetLogo Web: ' + modelTitle;
     } else {
