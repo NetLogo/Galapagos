@@ -62,7 +62,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , modelTitle:            source.getModelTitle()
   , outputWidgetOutput:    ''
   , primaryView:           undefined
-  , showInspectionPane:    false
+  , showInspection:        false
   , someDialogIsOpen:      false
   , someEditFormIsOpen:    false
   , source
@@ -185,7 +185,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     # (SetInspectAction) -> Unit
     setInspect: (action) ->
-      @set('showInspectionPane', true)
+      @set('showInspection', true)
       @findComponent('inspection').setInspect(action)
 
     on: {
@@ -234,7 +234,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
             setTimeout((=> @findComponent('codePane').refresh()), 0)
         init: false
       },
-      'showInspectionPane': {
+      'showInspection': {
         handler: (newValue) ->
           @fire('inspection-pane-toggled', {}, newValue)
         init: false
@@ -426,7 +426,7 @@ template =
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
       </tab>
-      <tab name="inspection" title="Agent Inspection" show="{{showInspectionPane}}" scroll-block="center">
+      <tab name="inspection" title="Agent Inspection" show="{{showInspection}}" scroll-block="center">
         <inspection
           isEditing={{isEditing}}
           viewController={{viewController}}

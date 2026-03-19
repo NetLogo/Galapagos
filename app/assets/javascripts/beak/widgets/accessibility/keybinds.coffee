@@ -58,6 +58,13 @@ keybinds = [
         { preventDefault: true }
       ),
       new Keybind(
+        "focus-tab:inspection",
+        (ractive, event) -> ractive.fire('set-tab', 'inspection', { active: true, focus: true })
+        ["#{modKey}+4"],
+        { description: "Focus the Agent Inspection tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
         "toggle-tab:console",
         (ractive, event) -> ractive.fire('set-tab', 'console', { active: 'toggle', focus: true })
         ["#{modKey}+shift+1"],
@@ -76,6 +83,13 @@ keybinds = [
         (ractive, event) -> ractive.fire('set-tab', 'info', { active: 'toggle', focus: true })
         ["#{modKey}+shift+3"],
         { description: "Toggle the Info tab." },
+        { preventDefault: true }
+      ),
+      new Keybind(
+        "toggle-tab:inspection",
+        (ractive, event) -> ractive.fire('set-tab', 'inspection', { active: 'toggle', focus: true })
+        ["#{modKey}+shift+4"],
+        { description: "Toggle the Agent Inspection tab." },
         { preventDefault: true }
       ),
       new Keybind(

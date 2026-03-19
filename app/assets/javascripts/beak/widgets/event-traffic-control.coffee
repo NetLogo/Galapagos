@@ -292,8 +292,8 @@ controlEventTraffic = (controller, performUpdate) ->
   setTab = (tabName, options = {}) ->
     tabCanonicalName = tabName.charAt(0).toUpperCase() + tabName.slice(1).toLowerCase()
 
-    validTabs = ['Console', 'Code', 'Info']
-    if not tabCanonicalName in validTabs
+    validTabs = ['Console', 'Code', 'Info', 'Inspection']
+    if tabCanonicalName not in validTabs
       throw new Error("Invalid tab name: #{tabName}. Valid tabs are: #{validTabs.join(', ')}")
 
     showPropertyName = "show#{tabCanonicalName}"
@@ -314,9 +314,10 @@ controlEventTraffic = (controller, performUpdate) ->
         "Console": "console"
       }[tabCanonicalName]
 
-      setTimeout(=>
-        ractive.findComponent(componentToFocus)?.focus()
-      , 200)
+      if componentToFocus?
+        setTimeout(=>
+          ractive.findComponent(componentToFocus)?.focus()
+        , 200)
     else
       ractive.find('.netlogo-model').focus()
 
