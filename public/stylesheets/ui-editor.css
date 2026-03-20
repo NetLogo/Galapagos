@@ -253,16 +253,6 @@
   z-index:          60;
 }
 
-.drag-selection-box {
-  background-color: white;
-  opacity:          0.2;
-  border:           solid 1px #dfdfdf;
-  margin:           0;
-  position:         absolute;
-  pointer-events:   none;
-  z-index:          80;
-}
-
 .initial-color {
   color: initial;
 }
