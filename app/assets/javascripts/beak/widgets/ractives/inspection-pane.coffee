@@ -152,8 +152,12 @@ RactiveInspectionPane = Ractive.extend({
   }
 
   observe: {
+    'inspectedAgents': (agents) ->
+      @fire('inspection-agents-changed', agents)
+
     'targetedAgentObj.agents': (newValue) ->
       @get('viewController').setHighlightedAgents(newValue)
+
     pointToSelectEnabled: (enabled) ->
       if enabled
         @_unsubscribePointToSelect = @get('viewController').registerMouseListeners(

@@ -74,10 +74,10 @@ template = """
   </div>
 
   <label class="setting-label">
-    View quality (number of actual pixels calculated per model pixel):
+    View quality ({{viewQualitySetting}}× pixels per model pixel):
   </label>
   <div class="setting-control">
-    <input type="number" min=1 step=1 value="{{viewQualitySetting}}" on-change="setting-changed" />
+    <input type="range" min=1 max=6 step=1 value="{{viewQualitySetting}}" on-input="setting-changed" />
   </div>
 
 </div>
@@ -155,4 +155,4 @@ createSettingsRactive = (container, storage, wipStorage) ->
   })
   ractive
 
-export { createSettingsRactive , locales }
+export { createSettingsRactive, locales }

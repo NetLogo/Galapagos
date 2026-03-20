@@ -28,6 +28,9 @@ import { keybinds } from "./accessibility/keybinds.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
 import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
 
+MONITOR_QUALITY_INCREASE = 5
+MAX_VIEW_QUALITY         = 14
+
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean, ViewController) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
@@ -71,6 +74,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , ticksStarted:          false
   , viewController:        viewController
   , viewQuality:           undefined
+  , hasOpenMonitors:       false
   , widgetObj:             setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
   , width:                 0
   , keybinds:              keybinds
@@ -226,6 +230,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
         newSpeed = parseFloat(newSpeed.toFixed(2))
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
+
+      '*.inspection-agents-changed': (_, agents) ->
+        @set('hasOpenMonitors', agents.length > 0)
     }
 
     observe: {
@@ -234,18 +241,29 @@ generateRactiveSkeleton = (container, widgets, code, info,
           if newValue
             setTimeout((=> @findComponent('codePane').refresh()), 0)
         init: false
-      },
-      'showInspection': {
+      }
+
+    , 'showInspection': {
         handler: (newValue) ->
           @fire('inspection-pane-toggled', {}, newValue)
         init: false
-      },
-      'viewQuality': {
-        handler: (newQuality) ->
-          @get('viewController').setQuality(newQuality)
-        init: false
       }
+
+    , 'viewQuality': (newQuality) ->
+        @updateViewQuality(@get('hasOpenMonitors'), newQuality)
+        return
+
+    , 'hasOpenMonitors': (hasOpen) ->
+        @updateViewQuality(hasOpen, @get('viewQuality'))
+        return
+
     }
+
+    updateViewQuality: (hasOpen, newQuality = 2) ->
+      monitorViewQuality   = if hasOpen then newQuality + MONITOR_QUALITY_INCREASE else newQuality
+      effectiveViewQuality = Math.min(MAX_VIEW_QUALITY, monitorViewQuality)
+      @get('viewController').setQuality(effectiveViewQuality)
+      return
 
     data: -> model
 
@@ -432,6 +450,7 @@ template =
           isEditing={{isEditing}}
           viewController={{viewController}}
           checkIsReporter={{checkIsReporter}}
+          hasOpenMonitors={{hasOpenMonitors}}
         />
       </tab>
     </div>
