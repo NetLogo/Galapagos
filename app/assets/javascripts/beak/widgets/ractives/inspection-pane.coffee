@@ -173,7 +173,7 @@ RactiveInspectionPane = Ractive.extend({
           (->)  # no-op upHandler
         )
       else
-        @_unsubscribePointToSelect()
+        @_unsubscribePointToSelect?()
   }
 
   components: {
