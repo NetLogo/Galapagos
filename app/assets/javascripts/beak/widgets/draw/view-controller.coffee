@@ -797,7 +797,7 @@ class PatchDrawer
     @scratchCanvas.width = width
     @scratchCanvas.height = height
     imageData = @scratchCtx.createImageData(width,height)
-    numPatches = ((maxY - minY)*width + (maxX - minX)) * 4
+    numPatches = ((maxY - minY)*width + (maxX - minX))
     for i in [0...numPatches]
       patch = patches[i]
       if patch?
