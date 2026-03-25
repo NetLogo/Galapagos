@@ -186,7 +186,7 @@ RactiveAgentMonitor = Ractive.extend({
   partials: {
     "titleBar": """
       <div class="inspection-agent-monitor-title-bar">
-        <span class="title">{{agent.getName()}}</span>
+        <span class="title">{{agent.getName()}}{{#if agent.isDead()}} (dead){{/if}}</span>
         <div
           class="inspection-button"
           on-click=["closed-agent-monitor", agent]
