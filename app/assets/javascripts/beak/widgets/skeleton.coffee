@@ -66,6 +66,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , outputWidgetOutput:    ''
   , primaryView:           undefined
   , showInspection:        false
+  , inspectedAgents:       []
   , someDialogIsOpen:      false
   , someEditFormIsOpen:    false
   , source
@@ -189,8 +190,21 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     # (SetInspectAction) -> Unit
     setInspect: (action) ->
-      @set('showInspection', true)
-      @findComponent('inspection').setInspect(action)
+      if action.type is 'add'
+        @set('showInspection', true)
+      inspection = @findComponent('inspection')
+      if inspection?
+        inspection.setInspect(action)
+      else
+        switch action.type
+          when 'remove'
+            if action.monitor
+              for agent in action.agents
+                index = @get('inspectedAgents').indexOf(agent)
+                if index isnt -1
+                  @splice('inspectedAgents', index, 1)
+          when 'clear-dead'
+            @set('inspectedAgents', @get('inspectedAgents').filter((a) -> not a.isDead()))
 
     on: {
       'world-might-change': (context) ->
@@ -231,8 +245,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
 
-      '*.inspection-agents-changed': (_, agents) ->
-        @set('hasOpenMonitors', agents.length > 0)
     }
 
     observe: {
@@ -248,6 +260,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
           @fire('inspection-pane-toggled', {}, newValue)
         init: false
       }
+
+    , 'inspectedAgents': (agents) ->
+        @set('hasOpenMonitors', agents.length > 0)
 
     , 'viewQuality': (newQuality) ->
         @updateViewQuality(@get('hasOpenMonitors'), newQuality)
@@ -451,6 +466,7 @@ template =
           viewController={{viewController}}
           checkIsReporter={{checkIsReporter}}
           hasOpenMonitors={{hasOpenMonitors}}
+          inspectedAgents={{inspectedAgents}}
         />
       </tab>
     </div>

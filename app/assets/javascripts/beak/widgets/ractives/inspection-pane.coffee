@@ -118,8 +118,8 @@ RactiveInspectionPane = Ractive.extend({
 
     commandPlaceholderText: "" # string
 
-    inspectedAgents: [] # Array[Agent]; agents for which there is an opened agent monitor
-    # can be shared with agent monitor components
+    # inspectedAgents is passed as a prop from the parent skeleton so it persists when this tab is closed/reopened.
+    # Array[Agent]; agents for which there is an opened agent monitor
 
   }
 
