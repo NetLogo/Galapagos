@@ -5,7 +5,7 @@ import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormFontSize from "./subcomponent/font-size.js"
 import { RactiveEditFormLabeledInput } from "./subcomponent/labeled-input.js"
 import { followObserver } from "../draw/window-generators.js"
-import { getClickedAgents, agentToContextMenuOption } from "../view-context-menu-utils.js"
+import { getClickedAgents, agentsToContextMenuOptions } from "../view-context-menu-utils.js"
 
 RactiveEditFormCoordBoundInput = Ractive.extend({
 
@@ -227,8 +227,9 @@ RactiveView = RactiveWidget.extend({
         ycor = viewWindow.yPixToPcor(clientY - top)
         radius = 12 / agentModel.world.patchsize
         viewController.setSelectionCircle(xcor, ycor, radius)
-        getClickedAgents(agentModel)(world, viewWindow, clientX, clientY)
-          .map(agentToContextMenuOption(@get('setInspect')))
+        agentsToContextMenuOptions(@get('setInspect'))(
+          getClickedAgents(agentModel)(world, viewWindow, clientX, clientY)
+        )
       else
         # The cursor is not actually inside the bounding box of the canvas (probably on the border)
         []

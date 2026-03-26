@@ -1,5 +1,9 @@
 import { getEquivalentAgent } from "./draw/agent-conversion.js"
 
+Turtle = tortoise_require('engine/core/turtle')
+Patch  = tortoise_require('engine/core/patch')
+Link   = tortoise_require('engine/core/link')
+
 # Given a world and a view into that world, returns a list of all the agents around the specified point. The point is
 # specified in DOM coordinates relative to the given view.
 # (AgentModel) -> (World, View, number, number) -> [Agent]
@@ -49,7 +53,56 @@ agentToContextMenuOption = (setInspect) -> (agent) -> {
   action: -> setInspect({ type: 'add', agents: [agent], monitor: true })
 }
 
+# Groups same-type agents (all turtles or all links) by breed, returning submenu entries for breeds
+# with 2+ agents when multipleBreeds is true. Unbreeded agents use breed name 'turtles' or 'links'.
+# ((SetInspectAction) -> Unit, Array[Agent], boolean) -> Array[ContextMenuOption]
+groupedAgentOptions = (setInspect, agents, multipleBreeds) ->
+  return [] if agents.length is 0
+  byBreed = {}
+  for agent in agents
+    breed = agent.getBreedName()
+    byBreed[breed] ?= []
+    byBreed[breed].push(agent)
+  # Base breed ("turtles"/"links") first, then remaining breeds alphabetically
+  breeds = Object.keys(byBreed).sort((a, b) ->
+    aLower = a.toLowerCase()
+    bLower = b.toLowerCase()
+    if aLower is 'turtles' or aLower is 'links' then -1
+    else if bLower is 'turtles' or bLower is 'links' then 1
+    else aLower.localeCompare(bLower)
+  )
+  result = []
+  for breed in breeds
+    breedAgents = byBreed[breed]
+    if multipleBreeds and breedAgents.length >= 2
+      result.push({
+        text:      "inspect #{breed.toLowerCase()}...",
+        isEnabled: true,
+        isSubmenu: true,
+        submenu:   breedAgents.map(agentToContextMenuOption(setInspect))
+      })
+    else
+      for agent in breedAgents
+        result.push(agentToContextMenuOption(setInspect)(agent))
+  result
+
+# Converts a list of agents near a click point into context menu options.
+# The patch (if any) is always first. Turtles and links are grouped by breed, with submenus used
+# for any breed with 2+ agents when there are multiple breed groups across turtles and links combined.
+# ((SetInspectAction) -> Unit) -> Array[Agent] -> Array[ContextMenuOption]
+agentsToContextMenuOptions = (setInspect) -> (agents) ->
+  patches = agents.filter((a) -> a instanceof Patch)
+  turtles = agents.filter((a) -> a instanceof Turtle)
+  links   = agents.filter((a) -> a instanceof Link)
+  turtleBreedCount = new Set(turtles.map((a) -> a.getBreedName())).size
+  linkBreedCount   = new Set(links.map((a) -> a.getBreedName())).size
+  multipleBreeds   = turtleBreedCount + linkBreedCount > 1
+  patches.map(agentToContextMenuOption(setInspect))
+    .concat(groupedAgentOptions(setInspect, turtles, multipleBreeds))
+    .concat(groupedAgentOptions(setInspect, links, multipleBreeds))
+
 export {
   getClickedAgents,
-  agentToContextMenuOption
+  agentToContextMenuOption,
+  agentsToContextMenuOptions
 }

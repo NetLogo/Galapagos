@@ -133,15 +133,31 @@ RactiveContextMenu = Ractive.extend({
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           {{# options }}
-            {{# (..enabler !== undefined && ..enabler(target)) || ..isEnabled }}
-              <li class="context-menu-item"
+            {{# isSubmenu }}
+              <li class="context-menu-item has-submenu"
                   tabindex="{{tabindex}}" role="button" aria-disabled="false"
-                  on-keydown="keydown"
-                  on-activateClick="..action(target, mouseX, mouseY)">{{..text}}</li>
+                  on-keydown="keydown">
+                {{text}} &#9658;
+                <ul class="context-submenu context-menu-list">
+                  {{# submenu }}
+                    <li class="context-menu-item"
+                        tabindex="{{tabindex}}" role="button" aria-disabled="false"
+                        on-keydown="keydown"
+                        on-activateClick="action()">{{text}}</li>
+                  {{/}}
+                </ul>
+              </li>
             {{ else }}
-              <li class="context-menu-item disabled"
-                  tabindex="-1" role="button" aria-disabled="true"
-                  on-activateClick="ignore-click">{{..text}}</li>
+              {{# (..enabler !== undefined && ..enabler(target)) || ..isEnabled }}
+                <li class="context-menu-item"
+                    tabindex="{{tabindex}}" role="button" aria-disabled="false"
+                    on-keydown="keydown"
+                    on-activateClick="..action(target, mouseX, mouseY)">{{..text}}</li>
+              {{ else }}
+                <li class="context-menu-item disabled"
+                    tabindex="-1" role="button" aria-disabled="true"
+                    on-activateClick="ignore-click">{{..text}}</li>
+              {{/}}
             {{/}}
           {{/}}
         </ul>

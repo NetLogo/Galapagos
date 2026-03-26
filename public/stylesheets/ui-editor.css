@@ -102,6 +102,28 @@
   border-bottom: none;
 }
 
+.context-menu-item.has-submenu {
+  position: relative;
+}
+
+.context-submenu {
+  display:          none;
+  position:         absolute;
+  left:             100%;
+  top:              -8px; /* offset the parent menu's padding */
+  background-color: white;
+  border:           solid 1px #dfdfdf;
+  box-shadow:       1px 1px 2px #cfcfcf;
+  padding:          8px 10px;
+  width:            200px;
+  z-index:          81;
+}
+
+.context-menu-item.has-submenu:hover .context-submenu,
+.context-menu-item.has-submenu:focus-within .context-submenu {
+  display: block;
+}
+
 .context-menu-list {
   list-style: none;
   margin:     0;
