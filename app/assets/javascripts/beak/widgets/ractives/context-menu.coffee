@@ -29,12 +29,14 @@ defaultOptions = (ractive) ->
 RactiveContextMenu = Ractive.extend({
 
   data: -> {
-    options: undefined # [ContextMenuOption]
-  , mouseX:          0 # Number
-  , mouseY:          0 # Number
-  , target:  undefined # Ractive
-  , visible:     false # Boolean
-  , tabindex:        0 # Number
+    options:     undefined # [ContextMenuOption]
+  , mouseX:               0 # Number
+  , mouseY:               0 # Number
+  , target:       undefined # Ractive
+  , visible:          false # Boolean
+  , tabindex:             0 # Number
+  , flipSubmenuX:     false # Boolean — true when submenus should open left instead of right
+  , flipSubmenuY:     false # Boolean — true when submenus should open upward instead of downward
   }
 
   on: {
@@ -117,14 +119,31 @@ RactiveContextMenu = Ractive.extend({
       # have a bounding box that coincides with the page, so do some math to
       # convert to absolute position (i.e. relative to nearest positioned
       # ancestor)
-      offsetParent = @find('#netlogo-widget-context-menu').offsetParent
+      menuEl       = @find('#netlogo-widget-context-menu')
+      offsetParent = menuEl.offsetParent
+      menuWidth    = menuEl.offsetWidth
+      menuHeight   = menuEl.offsetHeight
+
+      # Flip horizontal/vertical if the menu would overflow the viewport (iframe boundary)
+      flippedX = clientX + menuWidth  > window.innerWidth
+      flippedY = clientY + menuHeight > window.innerHeight
+
+      # The worst-case submenu starts at the bottom of the main menu. Use menuHeight as a
+      # proxy for submenu height since both share the same item styling.
+      menuBottomClientY = if flippedY then clientY else clientY + menuHeight
+
       @set({
-        mouseX: pageX - offsetParent.offsetLeft,
-        mouseY: pageY - offsetParent.offsetTop
+        mouseX:       pageX - offsetParent.offsetLeft - (if flippedX then menuWidth  else 0)
+        mouseY:       pageY - offsetParent.offsetTop  - (if flippedY then menuHeight else 0)
+        # Submenus flip left when the main menu is near the right edge
+        flipSubmenuX: clientX + menuWidth + menuWidth > window.innerWidth
+        # Submenus flip up when the bottom of the main menu is near the bottom edge
+        flipSubmenuY: menuBottomClientY + menuHeight > window.innerHeight
       })
 
     visible
 
+  # coffeelint: disable=max_line_length
   template:
     """
     {{# visible }}
@@ -138,7 +157,7 @@ RactiveContextMenu = Ractive.extend({
                   tabindex="{{tabindex}}" role="button" aria-disabled="false"
                   on-keydown="keydown">
                 {{text}} &#9658;
-                <ul class="context-submenu context-menu-list">
+                <ul class="context-submenu context-menu-list {{# flipSubmenuX }}flip-left{{/}} {{# flipSubmenuY }}flip-up{{/}}">
                   {{# submenu }}
                     <li class="context-menu-item"
                         tabindex="{{tabindex}}" role="button" aria-disabled="false"
@@ -165,6 +184,7 @@ RactiveContextMenu = Ractive.extend({
     </div>
     {{/}}
     """
+  # coffeelint: enable=max_line_length
 
 })
 

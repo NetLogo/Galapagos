@@ -124,6 +124,16 @@
   display: block;
 }
 
+.context-submenu.flip-left {
+  left:  auto;
+  right: 100%;
+}
+
+.context-submenu.flip-up {
+  top:    auto;
+  bottom: -8px; /* mirror of the default top: -8px offset for the parent menu's padding */
+}
+
 .context-menu-list {
   list-style: none;
   margin:     0;
