@@ -221,11 +221,21 @@ RactiveView = RactiveWidget.extend({
       viewWindow = @get('viewWindow')
       { left, top, bottom, right } = viewWindow.getBoundingClientRect()
       if left <= clientX <= right and top <= clientY <= bottom
-        getClickedAgents(@get('viewController').getModel())(world, viewWindow, clientX, clientY)
+        viewController = @get('viewController')
+        agentModel = viewController.getModel()
+        xcor = viewWindow.xPixToPcor(clientX - left)
+        ycor = viewWindow.yPixToPcor(clientY - top)
+        radius = 12 / agentModel.world.patchsize
+        viewController.setSelectionCircle(xcor, ycor, radius)
+        getClickedAgents(agentModel)(world, viewWindow, clientX, clientY)
           .map(agentToContextMenuOption(@get('setInspect')))
       else
         # The cursor is not actually inside the bounding box of the canvas (probably on the border)
         []
+
+  clearSelectionCircle: ->
+    @get('viewController').clearSelectionCircle()
+    return
 
   components: {
     editForm: ViewEditForm

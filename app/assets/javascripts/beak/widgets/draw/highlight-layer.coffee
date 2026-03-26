@@ -60,7 +60,7 @@ class HighlightLayer extends Layer
   getWorldShape: -> @_latestDepInfo.model.worldShape
 
   blindlyDrawTo: (ctx) ->
-    { highlight: { highlightedAgents }, model: { model, worldShape } } = @_latestDepInfo
+    { highlight: { highlightedAgents, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
     toModelAgent = getEquivalentAgent(model) # function that converts from actual agent object to AgentModel analogue
     usePatchCoords(worldShape, ctx, (ctx) =>
       for agent in highlightedAgents
@@ -80,6 +80,10 @@ class HighlightLayer extends Layer
             { xcor: x1, ycor: y1 } = model.turtles[end1]
             { xcor: x2, ycor: y2 } = model.turtles[end2]
             glowLine(ctx, x1, y1, x2, y2, Math.max(2 * thickness, 5 * worldShape.onePixel), netlogoColorToCSS(color))
+      if selectionCircle?
+        { xcor, ycor, radius } = selectionCircle
+        thickness = 2 * worldShape.onePixel
+        drawInspectCircles(ctx, xcor, ycor, radius, thickness)
       return
     )
 

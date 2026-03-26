@@ -32,7 +32,8 @@ class ViewController
         worldShape: undefined # will be set by `@resetModel`
       },
       highlight: {
-        highlightedAgents: []
+        highlightedAgents: [],
+        selectionCircle: null  # { xcor, ycor, radius } in patch coords, or null
       },
       quality: { quality: Math.max(window.devicePixelRatio ? 2, 2) },
       font: {
@@ -148,6 +149,18 @@ class ViewController
     # It's important that we create a new object instead of simply setting the property on the old `@_layerDeps.model`
     # object.
     @_layerDeps.highlight = { @_layerDeps.highlight..., highlightedAgents }
+    @repaint()
+    return
+
+  # (number, number, number) -> Unit
+  setSelectionCircle: (xcor, ycor, radius) ->
+    @_layerDeps.highlight = { @_layerDeps.highlight..., selectionCircle: { xcor, ycor, radius } }
+    @repaint()
+    return
+
+  # (Unit) -> Unit
+  clearSelectionCircle: ->
+    @_layerDeps.highlight = { @_layerDeps.highlight..., selectionCircle: null }
     @repaint()
     return
 

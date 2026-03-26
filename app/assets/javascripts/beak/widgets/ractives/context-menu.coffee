@@ -95,6 +95,7 @@ RactiveContextMenu = Ractive.extend({
 
   unreveal: ->
     @set('visible', false)
+    @get('target')?.clearSelectionCircle?()
     return
 
   # Returns whether the context menu actually revealed itself, which will not happen if there are no options to display.
