@@ -32,9 +32,8 @@ getClickedAgents = (agentModel) -> (world, view, clientX, clientY) ->
       # don't add hidden turtles
       return
 
-    offset = modelTurtle.size * 0.5
-    if offset * agentModel.world.patchsize < 3
-      offset += 3 / agentModel.world.patchsize
+    minClickPixels = 12
+    offset = Math.max(modelTurtle.size * 0.5, minClickPixels / agentModel.world.patchsize)
 
     if world.topology.distance(mouseX, mouseY, turtle) <= offset
       agentList.push(turtle)
