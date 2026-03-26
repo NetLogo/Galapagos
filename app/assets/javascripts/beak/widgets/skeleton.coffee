@@ -238,7 +238,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
           @findComponent('codePane')?.set('runtimeErrors', codePaneErrors)
         false
 
-      onSpeedChange: (context, delta) ->
+      'speed-change': (context, delta) ->
         speed = @get('speed')
         newSpeed = Math.max(-1, Math.min(1, speed + delta))
         newSpeed = parseFloat(newSpeed.toFixed(2))
@@ -380,7 +380,7 @@ template =
             <div class="model-speed-input">
               <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"
                 {{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
-              <button class="netlogo-beautiful-button" on-click="['onSpeedChange', -0.1]"
+              <button class="netlogo-beautiful-button" on-click="['speed-change', -0.1]"
                 {{#isEditing}} disabled{{/}} aria-label="Decrease Model Speed">-</button>
               <customSlider
                 id="speed-slider-input-interface"
@@ -394,7 +394,7 @@ template =
                 isEnabled="{{!isEditing}}"
                 class="model-speed-slider-interface"
               />
-              <button class="netlogo-beautiful-button" on-click="['onSpeedChange', 0.1]"
+              <button class="netlogo-beautiful-button" on-click="['speed-change', 0.1]"
                 {{#isEditing}} disabled{{/}} aria-label="Increase Model Speed">+</button>
             </div>
             <tickCounter isVisible="{{primaryView.showTickCounter}}"
