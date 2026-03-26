@@ -1,6 +1,7 @@
 import { mergeInfo, Layer } from "./layer.js"
 import { usePatchCoords } from "./draw-utils.js"
 import { netlogoColorToCSS } from "/colors.js"
+import { drawTurtle } from "./draw-shape.js"
 import { getEquivalentAgent } from "./agent-conversion.js"
 import { useWrapping } from "./draw-utils.js"
 
@@ -18,15 +19,18 @@ setTransparency = do ->
     { r, g, b } = match.groups
     "rgb(#{r}, #{g}, #{b}, #{newAlpha})"
 
-# Modifies canvas state.
-glowPoint = (ctx, x, y, r, color) ->
-  grad = ctx.createRadialGradient(x, y, 0, x, y, r)
-  grad.addColorStop(0, color)
-  grad.addColorStop(1, setTransparency(color, 0) ? 'transparent')
-  ctx.fillStyle = grad
+# Modifies canvas state. Draws two concentric circles around (x, y): a light inner ring and a dark outer ring.
+# (ctx, number, number, number, number) -> Unit
+drawInspectCircles = (ctx, x, y, radius, thickness) ->
+  ctx.lineWidth = thickness
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'
   ctx.beginPath()
-  ctx.arc(x, y, r, 0, 2 * Math.PI)
-  ctx.fill()
+  ctx.arc(x, y, radius, 0, 2 * Math.PI)
+  ctx.stroke()
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)'
+  ctx.beginPath()
+  ctx.arc(x, y, radius + thickness, 0, 2 * Math.PI)
+  ctx.stroke()
 
 # Modifies canvas state
 highlightUnitSquare = (ctx, x, y, onePixel) ->
@@ -63,10 +67,12 @@ class HighlightLayer extends Layer
         [agent, type] = toModelAgent(agent)
         switch type
           when 'turtle'
-            radius = agent.size
-            useWrapping(worldShape, ctx, agent.xcor, agent.ycor, 2 * radius, (ctx, x, y) ->
-              glowPoint(ctx, x, y, radius, netlogoColorToCSS(agent.color))
+            radius    = 0.55 * agent.size
+            thickness = 2 * worldShape.onePixel
+            useWrapping(worldShape, ctx, agent.xcor, agent.ycor, 2 * (radius + 2 * thickness), (ctx, x, y) ->
+              drawInspectCircles(ctx, x, y, radius, thickness)
             )
+            drawTurtle(worldShape, model.world.turtleshapelist, ctx, agent, true, undefined, undefined)
           when 'patch'
             highlightUnitSquare(ctx, agent.pxcor, agent.pycor, worldShape.onePixel)
           when 'link'
