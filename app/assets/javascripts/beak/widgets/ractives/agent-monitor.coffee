@@ -99,6 +99,7 @@ RactiveAgentMonitor = Ractive.extend({
       if not @get('viewWindow')?
         @_syncAgentData(@get('agent'))
         @get('replaceView')()
+
     'watch-button-clicked': ->
       observer = world.observer
       persp = observer.getPerspective()
@@ -107,6 +108,7 @@ RactiveAgentMonitor = Ractive.extend({
         observer.resetPerspective()
       else
         inspectedAgent.watchMe()
+
     'agentVarField.agent-id-var-changed': (_, varName, newValue) ->
       currentAgent = @get('agent')
       newAgent = switch @get('agentType')

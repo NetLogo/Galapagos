@@ -209,9 +209,11 @@ generateRactiveSkeleton = (container, widgets, code, info,
     on: {
       'world-might-change': (context) ->
         @findAllComponents().forEach((component) -> component.fire(context.name, context))
+
       '*.popup-window': (_, windowElement) ->
         @find(".netlogo-widget-container").appendChild(windowElement)
         false
+
       'compiler-error': (_, source, errors) ->
         switch source
           when 'recompile', 'compile-recoverable'
@@ -221,6 +223,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
           else
             console.error("received compiler error from unknown source: %s", source)
         false
+
       'runtime-error': (_, source, exception, code) ->
         message = exception.stackTraceMessage
         codePaneErrors = for stackTraceItem in exception.stackTrace

@@ -140,6 +140,7 @@ RactiveInspectionPane = Ractive.extend({
           # (mix of turtles, patches, links) so just send the commands to the observer
           @set('commandPlaceholderText', "Input command for OBSERVER")
           { agentType: 'observer', agents: targetedAgents }
+
       set: (targetedAgentObj) ->
         if not @get('updateTargetedAgentsInHistory')
           # ignore the set operation and force the targeted agent obj to remain the same
@@ -187,7 +188,9 @@ RactiveInspectionPane = Ractive.extend({
       if index >= 0
         @splice('inspectedAgents', index, 1)
       false
+
     'commandInput.command-input-tabbed': -> false # ignore and block event
+
     unrender: ->
       @get('viewController').setHighlightedAgents([])
   }

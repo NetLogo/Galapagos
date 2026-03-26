@@ -59,15 +59,18 @@ RactiveConsoleWidget = Ractive.extend({
   on: {
     'clear-output': ->
       @set('output', "")
+
     'commandInput.run': (_, _source, _cmd, { targetedAgentObj, input }) ->
       # Use `targetedAgentObj` from the event instead of `@get('targetedAgentObj')` because we don't know if the
       # component modified the shared state before firing this event. (It doesn't, but the point is that it could).
       { agentType } = targetedAgentObj # ignore the `agents` property of the object
       @appendText("#{agentType}> #{input}\n")
       true # propagate event
+
     'commandInput.command-input-tabbed': ->
       @set('agentTypeIndex', (@get('agentTypeIndex') + 1) % @get('agentTypes').length)
       false
+
     'focus-command-input': ->
       @findComponent('commandInput').focus()
       false

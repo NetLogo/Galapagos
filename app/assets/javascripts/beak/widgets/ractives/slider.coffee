@@ -175,8 +175,8 @@ RactiveSlider = RactiveValueWidget.extend({
 
   data: -> {
     breedVars:     undefined # Array[String]
-  , errorClass:         undefined # String
-  , internalValue:      0         # Number
+  , errorClass:    undefined # String
+  , internalValue: 0         # Number
   , onValueChange: (val) ->
       @set("internalValue", val)
       @fire("widget-value-change")
