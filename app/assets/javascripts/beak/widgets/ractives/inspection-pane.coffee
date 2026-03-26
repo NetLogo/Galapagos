@@ -183,11 +183,9 @@ RactiveInspectionPane = Ractive.extend({
 
   on: {
     'agentMonitor.closed-agent-monitor': (_, agent) ->
-      @set(
-        'inspectedAgents',
-        @get('inspectedAgents').filter((a) -> a isnt agent),
-        { shuffle: true }
-      )
+      index = @get('inspectedAgents').indexOf(agent)
+      if index >= 0
+        @splice('inspectedAgents', index, 1)
       false
     'commandInput.command-input-tabbed': -> false # ignore and block event
     unrender: ->
