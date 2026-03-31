@@ -21,6 +21,7 @@ tmp/
 .bloop/
 
 .claude/
+CLAUDE.md
 
 /public/pages/iframe-test.html
 
