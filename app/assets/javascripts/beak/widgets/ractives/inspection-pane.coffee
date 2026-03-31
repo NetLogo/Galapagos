@@ -335,6 +335,13 @@ RactiveInspectionPane = Ractive.extend({
         >
           <img width=25 src="assets/images/inspect/close.png"/>
         </div>
+        <div
+          class="inspection-button"
+          title="Close monitors for dead agents"
+          on-click="@.setInspect({type: 'clear-dead'})"
+        >
+          <img width=25 src="assets/images/inspect/close.png"/>
+        </div>
         <label
           class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
