@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'liberica'
-          java-version: '17.0'
+          java-version: '25.0'
           java-package: jdk+fx
 
       - uses: actions/setup-node@v3
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'liberica'
-          java-version: '17.0'
+          java-version: '25.0'
           java-package: jdk+fx
 
       - uses: actions/setup-node@v3

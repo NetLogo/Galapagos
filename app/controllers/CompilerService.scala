@@ -124,7 +124,7 @@ private[controllers] object CompilerService {
 private[controllers] object CompilationRequestHandler {
 
   import
-    java.net.{ MalformedURLException, URL }
+    java.net.{ MalformedURLException, URI }
 
   import
     play.api.libs.json.Json
@@ -181,7 +181,7 @@ private[controllers] object CompilationRequestHandler {
       (url match {
         case LocalHostRegex(file) => environment.resource(assetsFinder.findAssetPath("/public", file))
         case _                    => None
-      }).getOrElse(new URL(url))
+      }).getOrElse((new URI(url).toURL()))
     } map {
       wellFormedURL => usingSource(_.fromURL(wellFormedURL))(_.mkString).successNel[String]
     } recover {
