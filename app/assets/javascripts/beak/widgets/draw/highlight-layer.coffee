@@ -4,6 +4,7 @@ import { netlogoColorToCSS } from "/colors.js"
 import { drawTurtle } from "./draw-shape.js"
 import { getEquivalentAgent } from "./agent-conversion.js"
 import { useWrapping } from "./draw-utils.js"
+import { getSpotlightAgent } from "./perspective-utils.js"
 
 # Turns a string representing a valid CSS color into the same color, but with 0 alpha. If the string is not an
 # `RGBColorString`, then null is returned.
@@ -62,9 +63,11 @@ class HighlightLayer extends Layer
   blindlyDrawTo: (ctx) ->
     { highlight: { highlightedAgents, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
     toModelAgent = getEquivalentAgent(model) # function that converts from actual agent object to AgentModel analogue
+    watchTarget = getSpotlightAgent(model)
     usePatchCoords(worldShape, ctx, (ctx) =>
       for agent in highlightedAgents
         [agent, type] = toModelAgent(agent)
+        continue if agent is watchTarget
         switch type
           when 'turtle'
             radius    = 0.55 * agent.size
