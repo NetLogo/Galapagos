@@ -106,3 +106,55 @@
   background-color: white;
   border: 1px solid gray;
 }
+
+.inspection-split-button {
+  position: relative;
+  display: flex;
+}
+
+.inspection-split-button-main {
+  border-radius: 5px 0 0 5px;
+  display: flex;
+  align-items: center;
+}
+
+.inspection-split-button-arrow {
+  border-radius: 0 5px 5px 0;
+
+  padding: 0 4px;
+  font-size: 0.65em;
+  display: flex;
+  align-items: center;
+}
+
+.inspection-split-button-label {
+  margin-left: 4px;
+}
+
+.inspection-split-button-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.inspection-split-button-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  z-index: 100;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.inspection-split-button-dropdown-item {
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.inspection-split-button-dropdown-item:hover {
+  background-color: rgba(211, 211, 211, 0.5);
+}

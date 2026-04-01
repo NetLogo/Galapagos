@@ -118,6 +118,9 @@ RactiveInspectionPane = Ractive.extend({
 
     commandPlaceholderText: "" # string
 
+    showCloseDropdown: false  # boolean; whether the close-button dropdown is open
+    closeTargetIsDead: false  # boolean; false = close all monitors, true = close dead monitors only
+
     # inspectedAgents is passed as a prop from the parent skeleton so it persists when this tab is closed/reopened.
     # Array[Agent]; agents for which there is an opened agent monitor
 
@@ -175,6 +178,16 @@ RactiveInspectionPane = Ractive.extend({
         )
       else
         @_unsubscribePointToSelect?()
+
+    showCloseDropdown: (isOpen) ->
+      if isOpen
+        @_escHandler = (e) =>
+          if e.key is 'Escape'
+            @set('showCloseDropdown', false)
+        document.addEventListener('keydown', @_escHandler)
+      else if @_escHandler?
+        document.removeEventListener('keydown', @_escHandler)
+        @_escHandler = null
   }
 
   components: {
@@ -193,6 +206,9 @@ RactiveInspectionPane = Ractive.extend({
 
     unrender: ->
       @get('viewController').setHighlightedAgents([])
+      if @_escHandler?
+        document.removeEventListener('keydown', @_escHandler)
+        @_escHandler = null
   }
 
   ### type SetInspectAction =
@@ -302,6 +318,17 @@ RactiveInspectionPane = Ractive.extend({
     else
       @splice('inspectedAgents', index, 1)
 
+  closeMonitors: ->
+    if @get('closeTargetIsDead')
+      @setInspect({type: 'clear-dead'})
+    else
+      @set('inspectedAgents', [])
+
+  toggleCloseTarget: ->
+    @toggle('closeTargetIsDead')
+    @set('showCloseDropdown', false)
+    @closeMonitors()
+
   # (Array[Agent]) -> Unit
   unselectAgents: (agentsToUnselect) ->
     filtered = @get('selections.selectedAgents')?.filter((selected) -> not agentsToUnselect.includes(selected))
@@ -328,19 +355,27 @@ RactiveInspectionPane = Ractive.extend({
             src="assets/images/inspect/cursor.png"
           />
         </label>
-        <div
-          class="inspection-button"
-          title="Remove all agent monitors"
-          on-click="@.set('inspectedAgents', [])"
-        >
-          <img width=25 src="assets/images/inspect/close.png"/>
-        </div>
-        <div
-          class="inspection-button"
-          title="Close monitors for dead agents"
-          on-click="@.setInspect({type: 'clear-dead'})"
-        >
-          <img width=25 src="assets/images/inspect/close.png"/>
+        <div class="inspection-split-button">
+          <div
+            class="inspection-button inspection-split-button-main"
+            title="{{#if closeTargetIsDead}}Close dead agent monitors{{else}}Remove all agent monitors{{/if}}"
+            on-click="@.closeMonitors()"
+          >
+            <img width=25 src="assets/images/inspect/close.png"/><span class="inspection-split-button-label">{{#if closeTargetIsDead}}close dead{{else}}close all{{/if}}</span>
+          </div><div
+            class="inspection-button inspection-split-button-arrow"
+            title="More close options"
+            on-click="@.toggle('showCloseDropdown')"
+          >&#9660;</div>
+          {{#if showCloseDropdown}}
+          <div class="inspection-split-button-overlay" on-click="@.set('showCloseDropdown', false)"></div>
+          <div class="inspection-split-button-dropdown">
+            <div
+              class="inspection-split-button-dropdown-item"
+              on-click="@.toggleCloseTarget()"
+            >{{#if closeTargetIsDead}}close all{{else}}close dead{{/if}}</div>
+          </div>
+          {{/if}}
         </div>
         <label
           class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
