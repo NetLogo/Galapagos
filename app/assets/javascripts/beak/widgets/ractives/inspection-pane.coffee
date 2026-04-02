@@ -352,7 +352,7 @@ RactiveInspectionPane = Ractive.extend({
           <input type="checkbox" checked="{{pointToSelectEnabled}}" style="display:none" />
           <img
             width=25
-            src="assets/images/inspect/cursor.png"
+            src="{{@global.NLWIcons.pointToSelect}}"
           />
         </label>
         <div class="inspection-split-button">
@@ -361,7 +361,7 @@ RactiveInspectionPane = Ractive.extend({
             title="{{#if closeTargetIsDead}}Close dead agent monitors{{else}}Remove all agent monitors{{/if}}"
             on-click="@.closeMonitors()"
           >
-            <img width=25 src="assets/images/inspect/close.png"/><span class="inspection-split-button-label">{{#if closeTargetIsDead}}close dead{{else}}close all{{/if}}</span>
+            <img width=25 src="{{@global.NLWIcons.close}}"/><span class="inspection-split-button-label">{{#if closeTargetIsDead}}close dead{{else}}close all{{/if}}</span>
           </div><div
             class="inspection-button inspection-split-button-arrow"
             title="More close options"
@@ -384,7 +384,7 @@ RactiveInspectionPane = Ractive.extend({
           <input type="checkbox" checked="{{updateTargetedAgentsInHistory}}" style="display:none" />
           <img
             width=25
-            src="assets/images/inspect/history.png"
+            src="{{@global.NLWIcons.recallHistory}}"
           />
         </label>
         <commandInput

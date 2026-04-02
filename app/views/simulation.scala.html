@@ -79,6 +79,7 @@
       const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
       window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
     </script>
+    @views.html.icons()
 
     @if(isStandalone) {
       @tagBuilder.pathToHTML("javascripts/pages/simulation.bundle.js", "type" -> "module")

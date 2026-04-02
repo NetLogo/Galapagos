@@ -193,7 +193,7 @@ RactiveAgentMonitor = Ractive.extend({
           class="inspection-button"
           on-click=["closed-agent-monitor", agent]
         >
-          <img width=15 src="assets/images/inspect/close.png"/>
+          <img width=15 src="{{@global.NLWIcons.close}}"/>
         </div>
       </div>
     """

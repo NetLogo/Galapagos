@@ -1,0 +1,16 @@
+@()(implicit environment: play.api.Environment)
+
+@svgDataUri(path: String) = @{
+  val url    = environment.resource(s"public/icons/$path").get
+  val stream = url.openStream()
+  val bytes  = try stream.readAllBytes() finally stream.close()
+  s"data:image/svg+xml;base64,${java.util.Base64.getEncoder.encodeToString(bytes)}"
+}
+
+<script>
+  window.NLWIcons = {
+    close:         "@svgDataUri("close-plain-1.svg")",
+    pointToSelect: "@svgDataUri("point-to-select-plain-1.svg")",
+    recallHistory: "@svgDataUri("recall-agent-history-plain-1.svg")"
+  };
+</script>
