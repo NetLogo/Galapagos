@@ -343,7 +343,7 @@
  * --Jason B. (10/12/17)
  */
 .netlogo-command-center-editor {
-  height: 1.25em;
+  height: auto;
   margin: 0 10px;
   flex-grow: 1;
   width: 42px;
