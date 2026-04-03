@@ -107,7 +107,6 @@ class HighchartsOps extends PlotOps
     recorder = new PlotRecorder
 
     resize = (xMin, xMax, yMin, yMax) ->
-      console.log("HighchartsOps.resize()", arguments)
       @_chart.xAxis[0].setExtremes(xMin, xMax, false)
       @_chart.yAxis[0].setExtremes(yMin, yMax, false)
       @_needsRedraw = true
