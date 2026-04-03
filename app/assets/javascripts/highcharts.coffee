@@ -63,6 +63,14 @@ basicConfig = (elemID, plot) -> {
     }
   },
   yAxis: {
+    endOnTick: false,
+    startOnTick: false,
+    tickPositioner: ->
+      positions = @tickPositions.slice()
+      if positions.length > 0
+        positions[0]                    = @min
+        positions[positions.length - 1] = @max
+      positions
     title: {
       text:  plot.yLabel,
       x:     -7,
@@ -99,6 +107,7 @@ class HighchartsOps extends PlotOps
     recorder = new PlotRecorder
 
     resize = (xMin, xMax, yMin, yMax) ->
+      console.log("HighchartsOps.resize()", arguments)
       @_chart.xAxis[0].setExtremes(xMin, xMax, false)
       @_chart.yAxis[0].setExtremes(yMin, yMax, false)
       @_needsRedraw = true
