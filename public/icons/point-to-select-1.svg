@@ -7,8 +7,8 @@
    viewBox="0 0 12.7 12.7"
    version="1.1"
    id="svg1"
-   sodipodi:docname="point-to-select-1.svg"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="point-to-select-2.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="7.9925287"
-     inkscape:cx="29.902927"
-     inkscape:cy="45.22974"
+     inkscape:zoom="11.681993"
+     inkscape:cx="12.069858"
+     inkscape:cy="17.505574"
      inkscape:window-width="1920"
      inkscape:window-height="1043"
      inkscape:window-x="0"
@@ -33,40 +33,40 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
-     id="defs1">
-    <inkscape:path-effect
-       effect="spiro"
-       id="path-effect3"
-       is_visible="true"
-       lpeversion="1" />
-    <inkscape:path-effect
-       effect="bspline"
-       id="path-effect2"
-       is_visible="true"
-       lpeversion="1.3"
-       weight="33.333333"
-       steps="2"
-       helper_size="0"
-       apply_no_weight="true"
-       apply_with_weight="true"
-       only_selected="false"
-       uniform="false" />
-  </defs>
+     id="defs1" />
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.81;stroke-dasharray:none;stroke-opacity:1"
-       id="path3"
-       cx="3.4924543"
-       cy="3.6579731"
-       r="2.4612637" />
     <path
-       id="path1"
-       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.234;stroke-dasharray:none;stroke-opacity:1"
-       inkscape:transform-center-x="-0.55640312"
-       inkscape:transform-center-y="0.5564029"
-       d="M 2.9441299,3.0767308 4.8716609,10.27009 6.882391,8.2593602 11.023223,12.40071 12.185944,11.238507 8.0445939,7.0971573 10.137489,5.0042617 Z" />
+       id="path5"
+       style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+       d="M 5.1531738 0.45061849 C 2.8615388 0.45061849 0.99528809 2.3168693 0.99528809 4.6085042 C 0.99528809 6.5690497 2.3612351 8.2185649 4.1909587 8.6542521 L 4.1671875 7.8196777 C 2.7912072 7.4001144 1.7942057 6.1243898 1.7942057 4.6085042 C 1.7942057 2.7492214 3.2938909 1.2510864 5.1531738 1.2510864 C 7.0124566 1.2510864 8.5105916 2.7492214 8.5105916 4.6085042 C 8.5105916 4.7982268 8.4951065 4.9840656 8.4651164 5.1650594 L 9.1994385 5.5614176 C 9.2715118 5.2552771 9.3095093 4.9362505 9.3095093 4.6085042 C 9.3095093 2.3168693 7.4448087 0.45061849 5.1531738 0.45061849 z " />
+    <path
+       sodipodi:type="star"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="path6"
+       inkscape:flatsided="true"
+       sodipodi:sides="3"
+       sodipodi:cx="5.6622043"
+       sodipodi:cy="4.6883054"
+       sodipodi:r1="2.4200344"
+       sodipodi:r2="1.2100172"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.5707963"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 7.7580155,5.8983226 -4.1916225,0 2.0958113,-3.6300516 z"
+       inkscape:transform-center-y="0.052155186"
+       transform="matrix(1.2793054,-0.78837876,0.78837876,1.2793054,-3.9146138,5.911524)"
+       inkscape:transform-center-x="-0.86361496" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6"
+       width="1.4268755"
+       height="3.8729477"
+       x="1.2559783"
+       y="10.90765"
+       transform="rotate(-31.900158)" />
   </g>
 </svg>

@@ -13,28 +13,27 @@
      id="defs1" />
   <g
      id="layer1">
-    <ellipse
-       style="fill:none;stroke:#000000;stroke-width:0.817158"
+    <circle
+       style="fill:none;stroke:#000000;stroke-width:0.8;stroke-dasharray:none;stroke-opacity:1"
        id="path1"
-       cx="6.3318486"
-       cy="6.378665"
-       rx="4.9472017"
-       ry="4.9237938" />
+       cx="6.4020476"
+       cy="6.3552818"
+       r="5.4640536" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.675796"
-       id="rect2"
-       width="7.1627669"
-       height="1.0466495"
-       x="5.4559627"
-       y="-0.39090943"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1"
+       width="7.8768339"
+       height="1.3867493"
+       x="5.0906544"
+       y="-0.73475409"
        transform="rotate(45)" />
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.675796"
-       id="rect2-5"
-       width="7.1627669"
-       height="1.0466495"
-       x="-3.4509878"
-       y="8.5079193"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1-2"
+       width="7.8768339"
+       height="1.3867493"
+       x="-4.0001268"
+       y="8.3307333"
        transform="matrix(-0.70710678,0.70710678,0.70710678,0.70710678,0,0)" />
   </g>
 </svg>

@@ -14,6 +14,8 @@
   user-select: none;
   border-radius: 5px;
   background-color: white;
+  display: flex;
+  align-items: center;
 }
 .inspection-button:hover {
   background-color: rgba(211, 211, 211, 0.5);

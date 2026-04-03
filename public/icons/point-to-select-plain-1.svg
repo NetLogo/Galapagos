@@ -13,15 +13,22 @@
      id="defs1" />
   <g
      id="layer1">
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.81;stroke-dasharray:none;stroke-opacity:1"
-       id="path3"
-       cx="3.4924543"
-       cy="3.6579731"
-       r="2.4612637" />
     <path
-       id="path1"
-       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.234;stroke-dasharray:none;stroke-opacity:1"
-       d="M 2.9441299,3.0767308 4.8716609,10.27009 6.882391,8.2593602 11.023223,12.40071 12.185944,11.238507 8.0445939,7.0971573 10.137489,5.0042617 Z" />
+       id="path5"
+       style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+       d="M 5.1531738 0.45061849 C 2.8615388 0.45061849 0.99528809 2.3168693 0.99528809 4.6085042 C 0.99528809 6.5690497 2.3612351 8.2185649 4.1909587 8.6542521 L 4.1671875 7.8196777 C 2.7912072 7.4001144 1.7942057 6.1243898 1.7942057 4.6085042 C 1.7942057 2.7492214 3.2938909 1.2510864 5.1531738 1.2510864 C 7.0124566 1.2510864 8.5105916 2.7492214 8.5105916 4.6085042 C 8.5105916 4.7982268 8.4951065 4.9840656 8.4651164 5.1650594 L 9.1994385 5.5614176 C 9.2715118 5.2552771 9.3095093 4.9362505 9.3095093 4.6085042 C 9.3095093 2.3168693 7.4448087 0.45061849 5.1531738 0.45061849 z " />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="path6"
+       d="m 7.7580155,5.8983226 -4.1916225,0 2.0958113,-3.6300516 z"
+       transform="matrix(1.2793054,-0.78837876,0.78837876,1.2793054,-3.9146138,5.911524)" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-dasharray:none;stroke-opacity:1"
+       id="rect6"
+       width="1.4268755"
+       height="3.8729477"
+       x="1.2559783"
+       y="10.90765"
+       transform="rotate(-31.900158)" />
   </g>
 </svg>
