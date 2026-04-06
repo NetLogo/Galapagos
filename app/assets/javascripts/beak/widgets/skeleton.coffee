@@ -406,10 +406,10 @@ template =
           </div>
         </label>
 
-        <div style="display: flex; align-items: center; user-select: none; gap: 8px; flex: 1 1 auto; white-space: nowrap;"
-             class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}">
+        <button class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
+                on-click="@.fire('toggle-help')">
           <kbd>?</kbd> for shortcuts
-        </div>
+        </button>
       </div>
 
       <asyncDialog wareaHeight="{{height}}" wareaWidth="{{width}}"></asyncDialog>

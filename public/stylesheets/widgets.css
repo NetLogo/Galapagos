@@ -966,6 +966,21 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   background-color: #ebebe4;
 }
 
+.netlogo-help-keybind-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
 .help-popup {
   background-color: white;
   border: 1px solid black;
