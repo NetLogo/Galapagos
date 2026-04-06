@@ -4,6 +4,7 @@ import { getClickedAgents, agentToContextMenuOption } from "../view-context-menu
 import { getEquivalentAgent } from "../draw/agent-conversion.js"
 import RactiveAgentVarField from './agent-var-field.js'
 import RactiveCommandInput from "./command-input.js"
+import { isToggleKeydownEvent } from '../accessibility/utils.js'
 
 { Perspective: { Ride, Follow, Watch } } = tortoise_require('engine/core/observer')
 
@@ -109,6 +110,33 @@ RactiveAgentMonitor = Ractive.extend({
       else
         inspectedAgent.watchMe()
 
+    'watch-button-keydown': ({ original: event }) ->
+      if isToggleKeydownEvent(event)
+        @fire('watch-button-clicked')
+        event.preventDefault()
+        false
+
+    'close-button-keydown': ({ original: event }) ->
+      if isToggleKeydownEvent(event)
+        @fire('closed-agent-monitor', {}, @get('agent'))
+        event.preventDefault()
+        false
+
+    'monitor-keydown': ({ original: event }) ->
+      if event.ctrlKey and event.key in ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']
+        direction = if event.key in ['ArrowLeft', 'ArrowUp'] then -1 else 1
+        @fire('switch-monitor', {}, direction)
+        event.preventDefault()
+        false
+      else if event.ctrlKey and event.key is 'Home'
+        @fire('switch-monitor', {}, 'first')
+        event.preventDefault()
+        false
+      else if event.ctrlKey and event.key is 'End'
+        @fire('switch-monitor', {}, 'last')
+        event.preventDefault()
+        false
+
     'agentVarField.agent-id-var-changed': (_, varName, newValue) ->
       currentAgent = @get('agent')
       newAgent = switch @get('agentType')
@@ -165,6 +193,13 @@ RactiveAgentMonitor = Ractive.extend({
       # The cursor is not actually inside the bounding box of the canvas (probably on the border)
       []
 
+  # Focuses the first property control in the property grid, or the Watch button as a fallback.
+  # (Unit) -> Unit
+  focusFirstPropertyControl: ->
+    target = @find('.inspection-agent-monitor-property-grid .inspection-input-container') ?
+             @find('.inspection-agent-monitor-watch-button')
+    target?.focus()
+
   # Updates the 'viewModelAgent' and 'agentType' data to reflect the specified 'agent' data
   # (Unit) -> Unit
   _syncAgentData: (agent) ->
@@ -177,6 +212,7 @@ RactiveAgentMonitor = Ractive.extend({
       class="inspection-agent-monitor"
       on-mouseenter="['hover-agent-card', agent]"
       on-mouseleave="['unhover-agent-card', agent]"
+      on-keydown="monitor-keydown"
     >
       {{>titleBar}}
       {{>viewSection}}
@@ -191,7 +227,10 @@ RactiveAgentMonitor = Ractive.extend({
         <span class="title">{{agent.getName()}}{{#if agent.isDead()}} (dead){{/if}}</span>
         <div
           class="inspection-button"
+          role="button"
+          tabindex="0"
           on-click=["closed-agent-monitor", agent]
+          on-keydown="close-button-keydown"
         >
           <img width=15 src="{{@global.NLWIcons.close}}"/>
         </div>
@@ -206,7 +245,10 @@ RactiveAgentMonitor = Ractive.extend({
       <div class="inspection-agent-monitor-view-controls">
         <div
           class="inspection-button inspection-agent-monitor-watch-button"
+          role="button"
+          tabindex="0"
           on-click="watch-button-clicked"
+          on-keydown="watch-button-keydown"
         >Watch</div>
         <input type="range" min=0 max=1 step=0.01 value="{{zoomLevel}}"/>
       </div>

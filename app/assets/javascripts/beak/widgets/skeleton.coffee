@@ -25,6 +25,7 @@ import RactiveTickCounter from "./ractives/subcomponent/tick-counter.js"
 import RactiveCustomSlider from "./ractives/subcomponent/custom-slider.js"
 import RactiveTabWidget from "./ractives/tab.js"
 import { keybinds } from "./accessibility/keybinds.js"
+import { inspectionKeybindGroup } from "./ractives/inspection-pane.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
 import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
 
@@ -78,7 +79,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , hasOpenMonitors:       false
   , widgetObj:             setSortingKeys(widgets.reduce(((acc, widget, index) -> acc[index] = widget; acc), {}))
   , width:                 0
-  , keybinds:              keybinds
+  , keybinds:              [...keybinds, inspectionKeybindGroup]
   }
 
   animateWithClass = (klass) ->
@@ -463,7 +464,7 @@ template =
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
         <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
       </tab>
-      <tab name="inspection" title="Agent Inspection" show="{{showInspection}}" scroll-block="center">
+      <tab name="inspection" title="Agent Inspection" show="{{showInspection}}" scroll-block="center" focus-target=".inspection-point-to-select">
         <inspection
           isEditing={{isEditing}}
           viewController={{viewController}}

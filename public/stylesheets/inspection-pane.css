@@ -17,6 +17,14 @@
   display: flex;
   align-items: center;
 }
+
+button.inspection-button,
+button.inspection-split-button-dropdown-item {
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
 .inspection-button:hover {
   background-color: rgba(211, 211, 211, 0.5);
 }

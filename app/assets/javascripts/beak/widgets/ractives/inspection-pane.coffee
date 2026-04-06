@@ -1,5 +1,6 @@
 import RactiveAgentMonitor from "./agent-monitor.js"
 import RactiveCommandInput from "./command-input.js"
+import { Keybind, KeybindGroup } from '../accessibility/keybind.js'
 
 { arrayEquals } = tortoise_require('brazier/equals')
 { unique } = tortoise_require('brazier/array')
@@ -202,7 +203,26 @@ RactiveInspectionPane = Ractive.extend({
         @splice('inspectedAgents', index, 1)
       false
 
+    'close-arrow-clicked': ->
+      willOpen = not @get('showCloseDropdown')
+      @toggle('showCloseDropdown')
+      if willOpen
+        setTimeout((=> @find('.inspection-split-button-dropdown-item')?.focus()), 0)
+
     'commandInput.command-input-tabbed': -> false # ignore and block event
+
+    'agentMonitor.switch-monitor': (context, direction) ->
+      agents = @get('inspectedAgents')
+      agent = context.component.get('agent')
+      currentIndex = agents.indexOf(agent)
+      targetIndex = switch direction
+        when 'first' then 0
+        when 'last'  then agents.length - 1
+        else currentIndex + direction
+      if 0 <= targetIndex < agents.length
+        monitors = @findAllComponents('agentMonitor')
+        monitors[targetIndex]?.focusFirstPropertyControl()
+      false
 
     unrender: ->
       @get('viewController').setHighlightedAgents([])
@@ -345,48 +365,48 @@ RactiveInspectionPane = Ractive.extend({
   partials: {
     'commandCenter': """
       <div class="inspection-cmd-container">
-        <label
-          class="inspection-button {{#if pointToSelectEnabled}}selected{{/if}}"
+        <button
+          class="inspection-button inspection-point-to-select {{#if pointToSelectEnabled}}selected{{/if}}"
           title="Point to select: click an agent in the view to inspect it ({{#if pointToSelectEnabled}}on{{else}}off{{/if}})"
+          on-click="@.toggle('pointToSelectEnabled')"
         >
-          <input type="checkbox" checked="{{pointToSelectEnabled}}" style="display:none" />
           <img
             width=32
             src="{{@global.NLWIcons.pointToSelect}}"
           />
-        </label>
+        </button>
         <div class="inspection-split-button">
-          <div
+          <button
             class="inspection-button inspection-split-button-main"
             title="{{#if closeTargetIsDead}}Close dead agent monitors{{else}}Remove all agent monitors{{/if}}"
             on-click="@.closeMonitors()"
           >
             <img width=32 src="{{@global.NLWIcons.close}}"/><span class="inspection-split-button-label">{{#if closeTargetIsDead}}close dead{{else}}close all{{/if}}</span>
-          </div><div
+          </button><button
             class="inspection-button inspection-split-button-arrow"
             title="More close options"
-            on-click="@.toggle('showCloseDropdown')"
-          >&#9660;</div>
+            on-click="close-arrow-clicked"
+          >&#9660;</button>
           {{#if showCloseDropdown}}
           <div class="inspection-split-button-overlay" on-click="@.set('showCloseDropdown', false)"></div>
           <div class="inspection-split-button-dropdown">
-            <div
+            <button
               class="inspection-split-button-dropdown-item"
               on-click="@.toggleCloseTarget()"
-            >{{#if closeTargetIsDead}}close all{{else}}close dead{{/if}}</div>
+            >{{#if closeTargetIsDead}}close all{{else}}close dead{{/if}}</button>
           </div>
           {{/if}}
         </div>
-        <label
+        <button
           class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
           title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
+          on-click="@.toggle('updateTargetedAgentsInHistory')"
         >
-          <input type="checkbox" checked="{{updateTargetedAgentsInHistory}}" style="display:none" />
           <img
             width=32
             src="{{@global.NLWIcons.recallHistory}}"
           />
-        </label>
+        </button>
         <commandInput
           isReadOnly={{isEditing}}
           source="inspection-pane"
@@ -420,4 +440,41 @@ RactiveInspectionPane = Ractive.extend({
 
 })
 
+inspectionKeybindGroup = new KeybindGroup(
+  "Agent Inspection Shortcuts",
+  "Available when focus is inside an Agent Monitor.",
+  [],
+  [
+    new Keybind(
+      "monitor:navigate-previous",
+      () -> {},
+      ["ctrl+left", "ctrl+up"],
+      { description: "Move focus to the previous agent monitor." },
+      { bind: false }
+    ),
+    new Keybind(
+      "monitor:navigate-next",
+      () -> {},
+      ["ctrl+right", "ctrl+down"],
+      { description: "Move focus to the next agent monitor." },
+      { bind: false }
+    ),
+    new Keybind(
+      "monitor:navigate-first",
+      () -> {},
+      ["ctrl+home"],
+      { description: "Move focus to the first agent monitor." },
+      { bind: false }
+    ),
+    new Keybind(
+      "monitor:navigate-last",
+      () -> {},
+      ["ctrl+end"],
+      { description: "Move focus to the last agent monitor." },
+      { bind: false }
+    )
+  ]
+)
+
+export { inspectionKeybindGroup }
 export default RactiveInspectionPane
