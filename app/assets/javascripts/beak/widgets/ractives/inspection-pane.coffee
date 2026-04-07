@@ -335,6 +335,10 @@ RactiveInspectionPane = Ractive.extend({
     index = @get('inspectedAgents').indexOf(agent)
     if index is -1
       @unshift('inspectedAgents', agent)
+      setTimeout(=>
+        newMonitor = @find('.inspection-agent-monitor-container-inner > :first-child')
+        newMonitor?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+      , 200)
     else
       @splice('inspectedAgents', index, 1)
 
