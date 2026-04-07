@@ -270,6 +270,7 @@ RactiveAgentMonitor = Ractive.extend({
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
           placeholderText="ask {{agent.getName()}}"
+          visiblePlaceholder="enter agent commands"
         />
       </div>
     """

@@ -66,10 +66,11 @@ RactiveCommandInput = Ractive.extend({
   data: -> {
     # Props
 
-    source:          undefined # string; where the command came from, e.g. 'console'
-    checkIsReporter: undefined # (string) -> boolean
-    isReadOnly:      undefined # boolean
-    placeholderText: undefined # string
+    source:             undefined # string; where the command came from, e.g. 'console'
+    checkIsReporter:    undefined # (string) -> boolean
+    isReadOnly:         undefined # boolean
+    placeholderText:    undefined # string
+    visiblePlaceholder: undefined # string; placeholder text shown in the editor when empty
 
     # Shared State (both this component and the enclosing root component can read/write)
 
@@ -118,7 +119,16 @@ RactiveCommandInput = Ractive.extend({
             @moveInHistory(1)
             false
         })
+        visiblePlaceholder = @get('visiblePlaceholder')
+        if visiblePlaceholder?
+          editor.setOption('placeholder', visiblePlaceholder)
       return
+  }
+
+  observe: {
+    visiblePlaceholder: (newText) ->
+      editor = @findComponent('codeContainer').getEditor()
+      editor?.setOption('placeholder', newText ? '')
   }
 
   run: ->

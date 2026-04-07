@@ -116,6 +116,10 @@ button.inspection-split-button-dropdown-item {
   border: 1px solid gray;
 }
 
+.inspection-cmd-container .CodeMirror .CodeMirror-placeholder {
+  color: #aaa;
+}
+
 .inspection-split-button {
   position: relative;
   display: flex;
