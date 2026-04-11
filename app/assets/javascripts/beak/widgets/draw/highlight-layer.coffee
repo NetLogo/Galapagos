@@ -64,31 +64,13 @@ class HighlightLayer extends Layer
     { highlight: { highlightedAgents, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
     toModelAgent = getEquivalentAgent(model) # function that converts from actual agent object to AgentModel analogue
     watchTarget = getSpotlightAgent(model)
-    usePatchCoords(worldShape, ctx, (ctx) =>
-      for agent in highlightedAgents
-        [agent, type] = toModelAgent(agent)
-        continue if agent is watchTarget
-        switch type
-          when 'turtle'
-            radius    = 0.55 * agent.size
-            thickness = 2 * worldShape.onePixel
-            useWrapping(worldShape, ctx, agent.xcor, agent.ycor, 2 * (radius + 2 * thickness), (ctx, x, y) ->
-              drawInspectCircles(ctx, x, y, radius, thickness)
-            )
-            drawTurtle(worldShape, model.world.turtleshapelist, ctx, agent, true, undefined, undefined)
-          when 'patch'
-            highlightUnitSquare(ctx, agent.pxcor, agent.pycor, worldShape.onePixel)
-          when 'link'
-            { end1, end2, color, thickness } = agent
-            { xcor: x1, ycor: y1 } = model.turtles[end1]
-            { xcor: x2, ycor: y2 } = model.turtles[end2]
-            glowLine(ctx, x1, y1, x2, y2, Math.max(2 * thickness, 5 * worldShape.onePixel), netlogoColorToCSS(color))
-      if selectionCircle?
+    if selectionCircle?
+      drawSelect = (ctx) ->
         { xcor, ycor, radius } = selectionCircle
         thickness = 2 * worldShape.onePixel
         drawInspectCircles(ctx, xcor, ycor, radius, thickness)
-      return
-    )
+        return
+      usePatchCoords(worldShape, ctx, drawSelect)
 
   repaint: ->
     mergeInfo(@_latestDepInfo, @_getDepInfo())
