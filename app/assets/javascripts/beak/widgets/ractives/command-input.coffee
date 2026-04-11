@@ -21,11 +21,16 @@ getLinkSetReporter = getAgentSetReporterCreator(
 )
 
 # (TargetedAgentObj, string) -> string
+# type TargetedAgentObj = { agentType: AgentType, agents?: Array[Agent] }
+#                       | { agentType: 'mixed', agentGroups: Array[TargetedAgentObj] }
 getCommand = (targetedAgentObj, input) ->
   { agentType, agents } = targetedAgentObj
   if agentType is 'observer'
     # Just send the command as-is.
     input
+  else if agentType is 'mixed'
+    # Run the command once per agent-type group, joined into a single command string.
+    (getCommand(group, input) for group in targetedAgentObj.agentGroups).join(' ')
   else if agents?
     # Construct a specific agentset to send the command to.
 
@@ -48,10 +53,22 @@ getCommand = (targetedAgentObj, input) ->
 # Returns whether the two entries have the same agent targeting and the same input
 # (Entry, Entry) -> boolean
 compareEntries = (a, b) ->
-  { input: aInput, targetedAgentObj: { agentType: aAgentType, agents: aAgents } } = a
-  { input: bInput, targetedAgentObj: { agentType: bAgentType, agents: bAgents } } = b
+  { input: aInput, targetedAgentObj: aObj } = a
+  { input: bInput, targetedAgentObj: bObj } = b
   if aInput isnt bInput then return false
-  if aAgentType isnt bAgentType then return false
+  if aObj.agentType isnt bObj.agentType then return false
+  if aObj.agentType is 'mixed'
+    aGroups = aObj.agentGroups
+    bGroups = bObj.agentGroups
+    if aGroups.length isnt bGroups.length then return false
+    return aGroups.every(({ agentType, agents: aAgents }, i) ->
+      { agentType: bType, agents: bAgents } = bGroups[i]
+      agentType is bType and
+        aAgents.every((el) -> bAgents.includes(el)) and
+        bAgents.every((el) -> aAgents.includes(el))
+    )
+  { agents: aAgents } = aObj
+  { agents: bAgents } = bObj
   if aAgents? isnt bAgents? then return false
   if not aAgents? then return true
   aAgents.every((el) -> bAgents.includes(el)) and bAgents.every((el) -> aAgents.includes(el))

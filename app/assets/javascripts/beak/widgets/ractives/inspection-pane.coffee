@@ -143,9 +143,16 @@ RactiveInspectionPane = Ractive.extend({
         if selectedAgentTypes.length is 1
           @set('commandPlaceholderText', "Input command for inspected #{selectedAgentTypes[0]}")
           { agentType: selectedAgentTypes[0], agents: allInspected }
+        else if selectedAgentTypes.length > 1
+          # Mixed types: group by type so each group gets its own ask command.
+          agentGroups = selectedAgentTypes.map((type) -> {
+            agentType: type,
+            agents: allInspected.filter((agent) -> getKeypathFor(agent)[0] is type)
+          })
+          @set('commandPlaceholderText', "Input command for inspected agents")
+          { agentType: 'mixed', agentGroups }
         else
-          # there are either no agents or the agents are not of the same type
-          # (mix of turtles, patches, links) so just send the commands to the observer
+          # No agents monitored; fall back to observer.
           @set('commandPlaceholderText', "Input command for OBSERVER")
           { agentType: 'observer', agents: allInspected }
 
