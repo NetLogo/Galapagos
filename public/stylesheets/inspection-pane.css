@@ -41,7 +41,7 @@ button.inspection-button {
 
 .inspection-cmd-container > .netlogo-command-center-editor {
   width: auto;
-  margin: 0 0.5em;
+  margin: 0 0.5em 0 0;
 }
 
 .inspection-agent-monitor-container {
@@ -160,4 +160,5 @@ button.inspection-close-dropdown-item:hover {
 .inspection-agent-type-select {
   height: 27px;
   min-width: 70px;
+  margin-left: 1em;
 }
