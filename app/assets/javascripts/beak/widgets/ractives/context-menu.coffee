@@ -1,6 +1,8 @@
 import RactiveWidget from "./widget.js"
 import { focusElementVisible } from "../accessibility/utils.js"
 
+SUBMENU_PAGE_SIZE = 15
+
 genWidgetCreator = (ractive, name, widgetType, isEnabled = true, enabler = (-> false)) ->
   type = if ractive.get('isHNW') then "hnw" + widgetType.charAt(0).toUpperCase() + widgetType.slice(1) else widgetType
   { text: "Create #{name}", enabler, isEnabled
@@ -51,10 +53,20 @@ RactiveContextMenu = Ractive.extend({
       , 0)
       return
 
+    'scroll-submenu': ({ original: event }, optionIndex, delta) ->
+      event.stopPropagation()
+      opt       = @get("options.#{optionIndex}")
+      newOffset = Math.max(0, Math.min(opt.scrollOffset + delta, opt.submenu.length - SUBMENU_PAGE_SIZE))
+      @set("options.#{optionIndex}.scrollOffset",    newOffset)
+      @set("options.#{optionIndex}.visibleSubmenu",  opt.submenu.slice(newOffset, newOffset + SUBMENU_PAGE_SIZE))
+      @set("options.#{optionIndex}.hasScrollUp",     newOffset > 0)
+      @set("options.#{optionIndex}.hasScrollDown",   newOffset + SUBMENU_PAGE_SIZE < opt.submenu.length)
+      false
+
     'reveal-thineself': (_, component, x, y) ->
 
       @set('target' , component)
-      @set('options', component?.get('contextMenuOptions') ? defaultOptions(@parent))
+      @set('options', @_processOptions(component?.get('contextMenuOptions') ? defaultOptions(@parent)))
       @set('visible', @get('options').length > 0)
       @set('mouseX' , x)
       @set('mouseY' , y)
@@ -103,7 +115,7 @@ RactiveContextMenu = Ractive.extend({
   # Returns whether the context menu actually revealed itself, which will not happen if there are no options to display.
   # (Ractive, number, number) -> boolean
   reveal: (component, pageX, pageY, clientX, clientY) ->
-    options = component?.getContextMenuOptions(clientX, clientY) ? []
+    options = @_processOptions(component?.getContextMenuOptions(clientX, clientY) ? [])
     visible = options.length > 0
     @set({
       target: component,
@@ -128,9 +140,14 @@ RactiveContextMenu = Ractive.extend({
       flippedX = clientX + menuWidth  > window.innerWidth
       flippedY = clientY + menuHeight > window.innerHeight
 
-      # The worst-case submenu starts at the bottom of the main menu. Use menuHeight as a
-      # proxy for submenu height since both share the same item styling.
+      # The worst-case submenu starts at the bottom of the main menu. For scrollable submenus,
+      # use a proportional height estimate based on page size; otherwise proxy with menuHeight.
       menuBottomClientY = if flippedY then clientY else clientY + menuHeight
+      avgItemHeight     = menuHeight / Math.max(options.length, 1)
+      submenuHeightEst  = if options.some((o) -> o.isScrollable)
+        (SUBMENU_PAGE_SIZE + 2) * avgItemHeight
+      else
+        menuHeight
 
       @set({
         mouseX:       pageX - offsetParent.offsetLeft - (if flippedX then menuWidth  else 0)
@@ -138,10 +155,36 @@ RactiveContextMenu = Ractive.extend({
         # Submenus flip left when the main menu is near the right edge
         flipSubmenuX: clientX + menuWidth + menuWidth > window.innerWidth
         # Submenus flip up when the bottom of the main menu is near the bottom edge
-        flipSubmenuY: menuBottomClientY + menuHeight > window.innerHeight
+        flipSubmenuY: menuBottomClientY + submenuHeightEst > window.innerHeight
       })
 
     visible
+
+  # Annotates submenu options with scroll state. Scrollable submenus (> SUBMENU_PAGE_SIZE items) get
+  # scroll metadata so the template can show up/down arrow buttons and a paged view of items.
+  # (Array[ContextMenuOption]) -> Array[ContextMenuOption]
+  _processOptions: (options) ->
+    options.map((opt, i) ->
+      if not opt.isSubmenu
+        opt
+      else if opt.submenu.length > SUBMENU_PAGE_SIZE
+        Object.assign({}, opt, {
+          optionIndex:  i,
+          scrollOffset: 0,
+          isScrollable: true,
+          visibleSubmenu: opt.submenu.slice(0, SUBMENU_PAGE_SIZE),
+          hasScrollUp:    false,
+          hasScrollDown:  true
+        })
+      else
+        Object.assign({}, opt, {
+          optionIndex:    i,
+          isScrollable:   false,
+          visibleSubmenu: opt.submenu,
+          hasScrollUp:    false,
+          hasScrollDown:  false
+        })
+    )
 
   # coffeelint: disable=max_line_length
   template:
@@ -158,11 +201,17 @@ RactiveContextMenu = Ractive.extend({
                   on-keydown="keydown">
                 {{text}} &#9658;
                 <ul class="context-submenu context-menu-list {{# flipSubmenuX }}flip-left{{/}} {{# flipSubmenuY }}flip-up{{/}}">
-                  {{# submenu }}
+                  {{# isScrollable }}
+                    <li class="context-submenu-scroll-arrow {{^ hasScrollUp }}disabled{{/}}" on-click="['scroll-submenu', optionIndex, -1]">&#9650;</li>
+                  {{/}}
+                  {{# visibleSubmenu }}
                     <li class="context-menu-item"
                         tabindex="{{tabindex}}" role="button" aria-disabled="false"
                         on-keydown="keydown"
                         on-activateClick="action()">{{text}}</li>
+                  {{/}}
+                  {{# isScrollable }}
+                    <li class="context-submenu-scroll-arrow {{^ hasScrollDown }}disabled{{/}}" on-click="['scroll-submenu', optionIndex, 1]">&#9660;</li>
                   {{/}}
                 </ul>
               </li>

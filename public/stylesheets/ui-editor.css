@@ -124,6 +124,26 @@
   display: block;
 }
 
+.context-submenu-scroll-arrow {
+  list-style:  none;
+  text-align:  center;
+  cursor:      pointer;
+  padding:     2px 0;
+  color:       #0066aa;
+  user-select: none;
+  line-height: 1;
+}
+
+.context-submenu-scroll-arrow:hover:not(.disabled) {
+  background-color: #0066aa;
+  color:            white;
+}
+
+.context-submenu-scroll-arrow.disabled {
+  color:  #ccc;
+  cursor: default;
+}
+
 .context-submenu.flip-left {
   left:  auto;
   right: 100%;

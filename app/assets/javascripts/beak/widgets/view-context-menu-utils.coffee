@@ -54,8 +54,11 @@ agentToContextMenuOption = (setInspect) -> (agent) -> {
 }
 
 # Groups same-type agents (all turtles or all links) by breed, returning submenu entries for breeds
-# with 2+ agents when multipleBreeds is true. Unbreeded agents use breed name 'turtles' or 'links'.
+# with 2+ agents when multipleBreeds is true, or for any breed with more than SUBMENU_THRESHOLD agents.
+# Unbreeded agents use breed name 'turtles' or 'links'.
 # ((SetInspectAction) -> Unit, Array[Agent], boolean) -> Array[ContextMenuOption]
+SUBMENU_THRESHOLD = 15
+
 groupedAgentOptions = (setInspect, agents, multipleBreeds) ->
   return [] if agents.length is 0
   byBreed = {}
@@ -74,7 +77,7 @@ groupedAgentOptions = (setInspect, agents, multipleBreeds) ->
   result = []
   for breed in breeds
     breedAgents = byBreed[breed]
-    if multipleBreeds and breedAgents.length >= 2
+    if breedAgents.length > SUBMENU_THRESHOLD or (multipleBreeds and breedAgents.length >= 2)
       result.push({
         text:      "inspect #{breed.toLowerCase()}...",
         isEnabled: true,
