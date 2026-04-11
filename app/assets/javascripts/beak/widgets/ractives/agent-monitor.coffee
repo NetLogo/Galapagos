@@ -83,6 +83,12 @@ RactiveAgentMonitor = Ractive.extend({
         when 'link' then 'links'
       agent = @get('agent')
       { agentType, agents: [agent] }
+
+    isWatching: ->
+      agent    = @get('agent')
+      observer = world.observer
+      persp    = observer.getPerspective()
+      (persp is Ride or persp is Follow or persp is Watch) and observer.subject() is agent
   }
 
   onrender: ->
@@ -109,6 +115,7 @@ RactiveAgentMonitor = Ractive.extend({
         observer.resetPerspective()
       else
         inspectedAgent.watchMe()
+      @update('agent') # force `isWatching` to recompute since observer perspective is external state
 
     'watch-button-keydown': ({ original: event }) ->
       if isToggleKeydownEvent(event)
@@ -244,7 +251,7 @@ RactiveAgentMonitor = Ractive.extend({
       ></div>
       <div class="inspection-agent-monitor-view-controls">
         <div
-          class="inspection-button inspection-agent-monitor-watch-button"
+          class="inspection-button inspection-agent-monitor-watch-button {{#if isWatching}}selected{{/if}}"
           role="button"
           tabindex="0"
           on-click="watch-button-clicked"
