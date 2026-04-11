@@ -155,19 +155,14 @@ RactiveCommandInput = Ractive.extend({
     newIndex = Math.max(Math.min(currentIndex + delta, history.length), 0)
     if currentIndex is history.length
       # The current entry is not in history; save it before moving to history
-      @set('workingEntry', { targetedAgentObj: @get('targetedAgentObj'), input: @get('input') })
-    { targetedAgentObj, input } = if newIndex is history.length
+      @set('workingEntry', { input: @get('input') })
+    { input } = if newIndex is history.length
       # Moving out of history to the working entry
       @get('workingEntry')
     else
       # Moving to some point in history
       history[newIndex]
     @set({ input, historyIndex: newIndex })
-    # targetedAgentObj may be bound to a read-only computed in the parent (e.g. agent-monitor),
-    # in which case attempting to set it will throw. Attempt it separately so that the
-    # input and historyIndex updates above always succeed.
-    try
-      @set('targetedAgentObj', targetedAgentObj)
 
   # (Unit) -> Unit
   focus: ->

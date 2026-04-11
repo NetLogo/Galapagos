@@ -94,9 +94,6 @@ RactiveInspectionPane = Ractive.extend({
 
     pointToSelectEnabled: false # boolean
 
-    updateTargetedAgentsInHistory: false # boolean; whether scrolling through history will also change what
-    # agents are selected
-
     # NOTE: The stagedAgents structure and setInspect actions ('add', 'remove', 'unstage-all', 'clear-dead')
     # are intentionally retained for future reintroduction of the drag-to-select feature.
     # See the backup branch for the full drag-to-select implementation.
@@ -145,14 +142,6 @@ RactiveInspectionPane = Ractive.extend({
           @set('commandPlaceholderText', "Input command for OBSERVER")
           { agentType: 'observer', agents: targetedAgents }
 
-      set: (targetedAgentObj) ->
-        if not @get('updateTargetedAgentsInHistory')
-          # ignore the set operation and force the targeted agent obj to remain the same
-          return
-
-        # While we can't set the targetedAgentObj directly, we can attempt to put the inspection pane into a state such
-        # that the getter would return something equivalent to the value passed to this setter.
-        @set('inspectedAgents', targetedAgentObj.agents)
     }
   }
 
@@ -401,16 +390,6 @@ RactiveInspectionPane = Ractive.extend({
           </div>
           {{/if}}
         </div>
-        <button
-          class="inspection-button {{#if updateTargetedAgentsInHistory}}selected{{/if}}"
-          title="Update targeted agents in history: ({{#if updateTargetedAgentsInHistory}}on{{else}}off{{/if}})"
-          on-click="@.toggle('updateTargetedAgentsInHistory')"
-        >
-          <img
-            width=24
-            src="{{@global.NLWIcons.recallHistory}}"
-          />
-        </button>
         <commandInput
           isReadOnly={{isEditing}}
           source="inspection-pane"
