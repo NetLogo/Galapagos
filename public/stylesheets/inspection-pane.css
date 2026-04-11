@@ -18,8 +18,7 @@
   align-items: center;
 }
 
-button.inspection-button,
-button.inspection-split-button-dropdown-item {
+button.inspection-button {
   border: none;
   padding: 0;
   font: inherit;
@@ -120,37 +119,17 @@ button.inspection-split-button-dropdown-item {
   color: #aaa;
 }
 
-.inspection-split-button {
+.inspection-close-button {
   position: relative;
-  display: flex;
 }
 
-.inspection-split-button-main {
-  border-radius: 5px 0 0 5px;
-  display: flex;
-  align-items: center;
-}
-
-.inspection-split-button-arrow {
-  border-radius: 0 5px 5px 0;
-
-  padding: 0 4px;
-  font-size: 0.65em;
-  display: flex;
-  align-items: center;
-}
-
-.inspection-split-button-label {
-  margin-left: 4px;
-}
-
-.inspection-split-button-overlay {
+.inspection-close-dropdown-overlay {
   position: fixed;
   inset: 0;
   z-index: 99;
 }
 
-.inspection-split-button-dropdown {
+.inspection-close-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -160,15 +139,21 @@ button.inspection-split-button-dropdown-item {
   z-index: 100;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
-.inspection-split-button-dropdown-item {
+button.inspection-close-dropdown-item {
+  border: none;
+  font: inherit;
+  color: inherit;
   padding: 0.4em 0.8em;
+  text-align: left;
   cursor: pointer;
   border-radius: 5px;
 }
 
-.inspection-split-button-dropdown-item:hover {
+button.inspection-close-dropdown-item:hover {
   background-color: rgba(211, 211, 211, 0.5);
 }
 
