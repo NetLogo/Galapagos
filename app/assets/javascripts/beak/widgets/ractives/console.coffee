@@ -87,18 +87,20 @@ RactiveConsoleWidget = Ractive.extend({
       <printArea id='command-center-print-area' output='{{output}}'/>
 
       <div class='netlogo-command-center-input'>
-        <select value="{{agentType}}" on-change="focus-command-input">
-        {{#agentTypes}}
-          <option value="{{.}}">{{.}}</option>
-        {{/}}
-        </select>
-        <commandInput
-          isReadOnly={{isEditing}}
-          source="console"
-          checkIsReporter={{checkIsReporter}}
-          targetedAgentObj={{targetedAgentObj}}
-          placeholderText={{placeholderText}}
-        />
+        <div class="netlogo-input-group">
+          <select value="{{agentType}}" on-change="focus-command-input">
+          {{#agentTypes}}
+            <option value="{{.}}">{{.}}</option>
+          {{/}}
+          </select>
+          <commandInput
+            isReadOnly={{isEditing}}
+            source="console"
+            checkIsReporter={{checkIsReporter}}
+            targetedAgentObj={{targetedAgentObj}}
+            placeholderText={{placeholderText}}
+          />
+        </div>
         <button on-click='clear-output'>Clear</button>
       </div>
     </div>

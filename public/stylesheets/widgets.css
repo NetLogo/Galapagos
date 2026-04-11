@@ -342,6 +342,38 @@
  * width to *any* numeric value, the input always fits exactly the amount of space it's supposed to use.  Fricken weird.
  * --Jason B. (10/12/17)
  */
+.netlogo-input-group {
+  display: flex;
+  align-items: stretch;
+  flex-grow: 1;
+  border: 2px solid #999;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.netlogo-input-group > select {
+  border: none;
+  border-right: 1px solid #ccc;
+  border-radius: 0;
+  background: #f0f0f0;
+  padding: 0 0.4em;
+  margin: 0;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.netlogo-input-group .netlogo-command-center-editor {
+  margin: 0;
+}
+
+.netlogo-input-group .netlogo-command-center-editor .netlogo-code {
+  border: none;
+}
+
+.netlogo-input-group .netlogo-command-center-editor .CodeMirror {
+  border: none;
+}
+
 .netlogo-command-center-editor {
   height: auto;
   margin: 0 10px;
@@ -364,6 +396,7 @@
 .netlogo-command-center-input {
   display: flex;
   align-items: center;
+  gap: 0.5em;
   flex-shrink: 0;
 }
 

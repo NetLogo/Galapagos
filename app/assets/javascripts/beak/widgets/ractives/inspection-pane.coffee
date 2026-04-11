@@ -394,20 +394,22 @@ RactiveInspectionPane = Ractive.extend({
           </div>
           {{/if}}
         </div>
-        <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
-          <option value="all">all</option>
-          <option value="turtles">turtles</option>
-          <option value="patches">patches</option>
-          <option value="links">links</option>
-        </select>
-        <commandInput
-          isReadOnly={{isEditing}}
-          source="inspection-pane"
-          checkIsReporter={{checkIsReporter}}
-          targetedAgentObj={{targetedAgentObj}}
-          placeholderText={{commandPlaceholderText}}
-          visiblePlaceholder="enter commands for inspected agents"
-        />
+        <div class="netlogo-input-group">
+          <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
+            <option value="all">all</option>
+            <option value="turtles">turtles</option>
+            <option value="patches">patches</option>
+            <option value="links">links</option>
+          </select>
+          <commandInput
+            isReadOnly={{isEditing}}
+            source="inspection-pane"
+            checkIsReporter={{checkIsReporter}}
+            targetedAgentObj={{targetedAgentObj}}
+            placeholderText={{commandPlaceholderText}}
+            visiblePlaceholder="enter commands for inspected agents"
+          />
+        </div>
       </div>
     """
 
