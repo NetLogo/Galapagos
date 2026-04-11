@@ -59,7 +59,19 @@ class DrawingLayer extends Layer
     if not mergeInfo(@_latestDepInfo, @_getDepInfo()) then return false
 
     { model: { model, worldShape }, quality: { quality } } = @_latestDepInfo
-    resizeCanvas(@_canvas, worldShape, quality)
+    { worldWidth, worldHeight, patchsize } = worldShape
+    newWidth  = worldWidth  * patchsize * quality
+    newHeight = worldHeight * patchsize * quality
+    if @_canvas.width isnt newWidth or @_canvas.height isnt newHeight
+      # Save drawing content before resize (setting canvas dimensions always clears the canvas)
+      prevCanvas = document.createElement('canvas')
+      prevCanvas.width  = @_canvas.width
+      prevCanvas.height = @_canvas.height
+      prevCanvas.getContext('2d').drawImage(@_canvas, 0, 0)
+      @_canvas.width  = newWidth
+      @_canvas.height = newHeight
+      if prevCanvas.width > 0 and prevCanvas.height > 0
+        @_ctx.drawImage(prevCanvas, 0, 0, newWidth, newHeight)
     for event in model.drawingEvents
       switch event.type
         when 'clear-drawing' then @_clearDrawing()

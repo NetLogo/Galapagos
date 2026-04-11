@@ -98,6 +98,10 @@ RactiveAgentMonitor = Ractive.extend({
     @_syncAgentData(@get('agent'))
     @get('replaceView')()
 
+  onteardown: ->
+    @get('viewWindow')?.destructor()
+    return
+
   on: {
     'world-might-change': ->
       @update('agent')
