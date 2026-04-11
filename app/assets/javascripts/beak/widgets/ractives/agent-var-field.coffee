@@ -1,10 +1,15 @@
 import { toNetLogoString } from "../../tortoise-utils.js"
+import { RactiveCodeContainerOneLine } from "./subcomponent/code-container.js"
 
 Turtle = tortoise_require('engine/core/turtle')
 Patch = tortoise_require('engine/core/patch')
 Link = tortoise_require('engine/core/link')
 
 RactiveAgentVarField = Ractive.extend({
+  components: {
+    codeContainer: RactiveCodeContainerOneLine
+  }
+
   data: -> {
     # Props
     agent: undefined # Agent; (from the actual agent)
@@ -13,6 +18,7 @@ RactiveAgentVarField = Ractive.extend({
     # State
     currentInput: undefined
     hasFocus: false
+    varFieldConfig: { scrollbarStyle: 'null' }
   }
 
   computed: {
@@ -47,9 +53,25 @@ RactiveAgentVarField = Ractive.extend({
     'varValueAsStr': (value) ->
       if not @get('hasFocus')
         @set('currentInput', value)
+        @findComponent('codeContainer')?.setCode(value)
   }
 
   on: {
+    complete: ->
+      editor = @findComponent('codeContainer').getEditor()
+      if editor?
+        editor.on('focus', => @set('hasFocus', true))
+        editor.on('blur', =>
+          @set('hasFocus', false)
+          @fire('submit-input', {}, editor.getValue())
+        )
+        editor.addKeyMap({
+          'Enter': =>
+            @fire('submit-input', {}, editor.getValue())
+            false
+        })
+      return
+
     'submit-input': (_, input) ->
       if input.trim().length > 0
         varName = @get('varName')
@@ -61,16 +83,17 @@ RactiveAgentVarField = Ractive.extend({
             @update('varValueAsStr')
           when 'AGENT_SWITCH'
             @fire('agent-id-var-changed', {}, varName, input)
-      @set('currentInput', @get('varValueAsStr'))
+      val = @get('varValueAsStr')
+      @set('currentInput', val)
+      @findComponent('codeContainer')?.setCode(val)
       return
   }
 
   template: """
     <div class="inspection-agent-var-name" title="{{varName}}">{{varName}}</div>
-    <input class="inspection-input-container" value={{currentInput}}
-           on-focus="@this.set('hasFocus', true)"
-           on-blur="@this.set('hasFocus', false)"
-           on-change="['submit-input', currentInput]"/>
+    <div class="inspection-input-container">
+      <codeContainer initialCode="{{currentInput}}" localConfig="{{varFieldConfig}}" />
+    </div>
   """
 })
 

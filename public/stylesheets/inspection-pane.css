@@ -106,13 +106,17 @@ button.inspection-button {
   white-space: nowrap;
 }
 
-.inspection-agent-monitor-property-grid > input {
+.inspection-agent-monitor-property-grid > .inspection-input-container {
   min-width: 0;
 }
 
 .inspection-input-container {
   background-color: white;
   border: 1px solid gray;
+}
+
+.inspection-input-container .netlogo-code {
+  border: none;
 }
 
 .inspection-cmd-container .CodeMirror .CodeMirror-placeholder {
