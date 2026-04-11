@@ -57,11 +57,11 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor {
-  border: 2px solid lightgray;
+  border: 2px solid #eeeeee;
   border-radius: 5px;
   width: 210px;
   padding: 0.5em;
-  background-color: lightgray;
+  background-color: #eeeeee;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
