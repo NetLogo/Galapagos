@@ -59,7 +59,7 @@ button.inspection-button {
 .inspection-agent-monitor {
   border: 2px solid lightgray;
   border-radius: 5px;
-  width: 170px;
+  width: 210px;
   padding: 0.5em;
   background-color: lightgray;
   display: flex;
@@ -96,7 +96,7 @@ button.inspection-button {
 
 .inspection-agent-monitor-property-grid {
   display: grid;
-  grid: auto-flow / 1fr 2fr;
+  grid: auto-flow / 2fr 3fr;
   gap: 0 0.5em;
 }
 
