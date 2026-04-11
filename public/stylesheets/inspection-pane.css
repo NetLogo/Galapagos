@@ -97,7 +97,8 @@ button.inspection-button {
 .inspection-agent-monitor-property-grid {
   display: grid;
   grid: auto-flow / 2fr 3fr;
-  gap: 0 0.5em;
+  gap: 0.2em 0.5em;
+  align-items: center;
 }
 
 .inspection-agent-monitor-property-grid .inspection-agent-var-name {
@@ -113,6 +114,8 @@ button.inspection-button {
 .inspection-input-container {
   background-color: white;
   border: 1px solid gray;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .inspection-input-container .netlogo-code {
