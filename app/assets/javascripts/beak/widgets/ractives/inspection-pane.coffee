@@ -114,6 +114,8 @@ RactiveInspectionPane = Ractive.extend({
     ###
     selections: { selectedPaths: [[]], selectedAgents: null }
 
+    agentTypeFilter: 'all' # 'all' | 'turtles' | 'patches' | 'links'; filters which inspected agents receive commands
+
     commandPlaceholderText: "" # string
 
     showCloseDropdown: false  # boolean; whether the close-button dropdown is open
@@ -128,19 +130,25 @@ RactiveInspectionPane = Ractive.extend({
     # computing this value also sets the command placeholder text
     targetedAgentObj: {
       get: ->
-        targetedAgents = @get('inspectedAgents')
+        filter       = @get('agentTypeFilter')
+        allInspected = @get('inspectedAgents')
 
-        # check whether the selected agents are all of the same type
+        if filter isnt 'all'
+          filteredAgents = allInspected.filter((agent) -> getKeypathFor(agent)[0] is filter)
+          @set('commandPlaceholderText', "Input command for inspected #{filter}")
+          return { agentType: filter, agents: filteredAgents }
+
+        # 'all': check whether the inspected agents are all of the same type
         # (i.e. turtles, patches, or links).
-        selectedAgentTypes = unique(targetedAgents.map((agent) -> getKeypathFor(agent)[0]))
+        selectedAgentTypes = unique(allInspected.map((agent) -> getKeypathFor(agent)[0]))
         if selectedAgentTypes.length is 1
           @set('commandPlaceholderText', "Input command for inspected #{selectedAgentTypes[0]}")
-          { agentType: selectedAgentTypes[0], agents: targetedAgents }
+          { agentType: selectedAgentTypes[0], agents: allInspected }
         else
           # there are either no agents or the agents are not of the same type
           # (mix of turtles, patches, links) so just send the commands to the observer
           @set('commandPlaceholderText', "Input command for OBSERVER")
-          { agentType: 'observer', agents: targetedAgents }
+          { agentType: 'observer', agents: allInspected }
 
     }
   }
@@ -390,6 +398,12 @@ RactiveInspectionPane = Ractive.extend({
           </div>
           {{/if}}
         </div>
+        <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
+          <option value="all">all</option>
+          <option value="turtles">turtles</option>
+          <option value="patches">patches</option>
+          <option value="links">links</option>
+        </select>
         <commandInput
           isReadOnly={{isEditing}}
           source="inspection-pane"

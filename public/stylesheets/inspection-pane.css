@@ -171,3 +171,8 @@ button.inspection-split-button-dropdown-item {
 .inspection-split-button-dropdown-item:hover {
   background-color: rgba(211, 211, 211, 0.5);
 }
+
+.inspection-agent-type-select {
+  height: 27px;
+  min-width: 70px;
+}
