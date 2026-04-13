@@ -179,6 +179,39 @@ RactiveCodeContainerOneLine = RactiveCodeContainerBase.extend({
         change.update(change.from, change.to, [oneLineText])
         true
     @_editor.on('beforeChange', forceOneLine)
+
+    # Single-line inputs should navigate focus with Tab/Shift-Tab like a
+    # regular <input> element, not insert a tab character.
+    focusableSelector = [
+      'a[href]'
+      'button:not([disabled])'
+      'input:not([disabled])'
+      'select:not([disabled])'
+      'textarea:not([disabled])'
+      '[tabindex]:not([tabindex="-1"])'
+      '.CodeMirror'
+    ].join(', ')
+
+    navigateFocus = (direction) =>
+      wrapper    = @_editor.getWrapperElement()
+      # Exclude elements nested inside a .CodeMirror wrapper (e.g. CodeMirror's
+      # hidden textarea, which has tabindex="0" and would otherwise appear as
+      # the very next focusable element after the wrapper itself).
+      focusables = Array.from(document.querySelectorAll(focusableSelector))
+        .filter((el) -> el.closest('.CodeMirror') is null or el.classList.contains('CodeMirror'))
+      idx        = focusables.indexOf(wrapper)
+      target     = focusables[idx + direction]
+      if target?
+        if target.CodeMirror?
+          target.CodeMirror.focus()
+        else
+          target.focus()
+
+    @_editor.addKeyMap({
+      'Tab':       => navigateFocus(1)
+      'Shift-Tab': => navigateFocus(-1)
+    })
+
     return
 
 })
