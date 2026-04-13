@@ -5,16 +5,7 @@ import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
 import RactiveEditFormVariable from "./subcomponent/variable.js"
-
-dump = (x, y) ->
-  if Array.isArray(x)
-    "[#{x.map(dump).join(' ')}]"
-  else if typeof(x) is "string"
-    "\"#{x}\""
-  else if typeof(x) in ["boolean", "number"]
-    x
-  else
-    workspace.dump(x, y)
+import { dumpValue as dump } from "../../tortoise-utils.js"
 
 ChooserEditForm = EditForm.extend({
 

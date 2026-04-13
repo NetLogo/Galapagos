@@ -28,6 +28,21 @@ toNetLogoMarkdown = (md) ->
     (match, commentText) ->
       "<!-- #{commentText} -->")
 
+# Converts a NetLogo runtime value to a NetLogo-readable display string.
+# Handles nested lists (JS arrays) so they render as `[item1 item2 ...]` rather
+# than the JS default `item1,item2,...`. Falls back to `workspace.dump` for
+# engine objects (agents, agent sets, etc.).
+# (Any, Any) -> String
+dumpValue = (x, y) ->
+  if Array.isArray(x)
+    "[#{x.map(dumpValue).join(' ')}]"
+  else if typeof(x) is "string"
+    "\"#{x}\""
+  else if typeof(x) in ["boolean", "number"]
+    x
+  else
+    workspace.dump(x, y)
+
 # Given a string, returns how that string would look if represented in the NetLogo language.
 # For example, the string "Hello \"world!\"\n" would be replaced with "\"Hello \\\"world!\\\"\\n".
 # (string) -> string
@@ -87,6 +102,7 @@ convertNlogoToXML = (nlogo) ->
   oldFormatResult.result
 
 export {
+  dumpValue,
   markdownToHtml,
   toNetLogoWebMarkdown,
   toNetLogoMarkdown,

@@ -1,4 +1,4 @@
-import { toNetLogoString } from "../../tortoise-utils.js"
+import { dumpValue, toNetLogoString } from "../../tortoise-utils.js"
 import { RactiveCodeContainerOneLine } from "./subcomponent/code-container.js"
 
 Turtle = tortoise_require('engine/core/turtle')
@@ -26,11 +26,7 @@ RactiveAgentVarField = Ractive.extend({
       agent = @get('agent')
       return '' unless agent?
       val = agent.getVariable(@get('varName'))
-      if typeof val is 'string'
-        "\"#{val}\""
-      else
-        # assume that the value is convertible to a string
-        "#{val}"
+      dumpValue(val)
 
     # Whether this variable being tracked is a special case variable. If not, then this value is 'NORMAL' and
     # editing the value just asks the agent to set the variable. However, if it is the coordinate of a patch, or the
