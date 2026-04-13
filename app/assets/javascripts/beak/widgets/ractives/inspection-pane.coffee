@@ -404,8 +404,7 @@ RactiveInspectionPane = Ractive.extend({
               setInspect="{{@this.setInspect.bind(@this)}}"
             />
           {{else}}
-            To open an agent monitor, right-click on the agent in the world view to open the inspection context menu, or use the `inspect` command on the agent through the
-            Command Center.
+            <span>To open an agent monitor, right-click or long-press on the agent in the world view to open the inspection context menu, or use the <code>inspect</code> command on the agent through the Command Center.</span>
           {{/each}}
         </div>
       </div>
