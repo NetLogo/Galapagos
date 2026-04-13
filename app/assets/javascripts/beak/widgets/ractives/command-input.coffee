@@ -3,10 +3,10 @@ import { RactiveCodeContainerOneLine } from "./subcomponent/code-container.js"
 # The following "get agent set reporter" functions return a string of interpretable NetLogo code referring to each
 # the agents passed in.
 
-# (string, (Agent) -> string) -> (Array[Agent]) -> string
+# (String, (Agent) => String) => (Array[Agent]) -> String
 getAgentSetReporterCreator = (setName, getAgentReporter) -> (agents) ->
   "(#{setName} #{(for agent in agents then getAgentReporter(agent)).join(' ')})"
-# (Array[Agent]) -> string
+# (Array[Agent]) -> String
 getTurtleSetReporter = getAgentSetReporterCreator(
   'turtle-set',
   (turtle) -> "turtle #{turtle.id}"
@@ -51,7 +51,7 @@ getCommand = (targetedAgentObj, input) ->
 # type Entry = { targetedAgentObj: TargetedAgentObj, input: string }
 
 # Returns whether the two entries have the same agent targeting and the same input
-# (Entry, Entry) -> boolean
+# (Entry, Entry) -> Boolean
 compareEntries = (a, b) ->
   { input: aInput, targetedAgentObj: aObj } = a
   { input: bInput, targetedAgentObj: bObj } = b
@@ -83,11 +83,11 @@ RactiveCommandInput = Ractive.extend({
   data: -> {
     # Props
 
-    source:             undefined # string; where the command came from, e.g. 'console'
-    checkIsReporter:    undefined # (string) -> boolean
-    isReadOnly:         undefined # boolean
-    placeholderText:    undefined # string
-    visiblePlaceholder: undefined # string; placeholder text shown in the editor when empty
+    source:             undefined # String; where the command came from, e.g. 'console'
+    checkIsReporter:    undefined # (String) => Boolean
+    isReadOnly:         undefined # Boolean
+    placeholderText:    undefined # String
+    visiblePlaceholder: undefined # String; placeholder text shown in the editor when empty
 
     # Shared State (both this component and the enclosing root component can read/write)
 
@@ -103,12 +103,12 @@ RactiveCommandInput = Ractive.extend({
     targetedAgentObj: { agentType: 'observer' }
 
     history:      [] # Array[Entry]; highest index is most recent
-    historyIndex: 0  # keyof typeof @get('history') | @get('history').length
-    workingEntry: {} # stores Entry when the user up-arrows
+    historyIndex: 0  # Number; keyof typeof @get('history') | @get('history').length
+    workingEntry: {} # Entry; stores Entry when the user up-arrows
   }
 
   computed: {
-    # string
+    # String
     input: {
       get: -> @findComponent('codeContainer').get('code')
       set: (newValue) -> @findComponent('codeContainer').setCode(newValue)
@@ -146,8 +146,10 @@ RactiveCommandInput = Ractive.extend({
     visiblePlaceholder: (newText) ->
       editor = @findComponent('codeContainer').getEditor()
       editor?.setOption('placeholder', newText ? '')
+      return
   }
 
+  # () -> Unit
   run: ->
     input = @get('input')
     if input.trim().length > 0
@@ -165,7 +167,9 @@ RactiveCommandInput = Ractive.extend({
       @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input })
       @fire('command-center-run', cmd)
     @set({ input: "", workingEntry: {} })
+    return
 
+  # (Number) -> Unit
   moveInHistory: (delta) ->
     history = @get('history')
     currentIndex = @get('historyIndex')
@@ -180,6 +184,7 @@ RactiveCommandInput = Ractive.extend({
       # Moving to some point in history
       history[newIndex]
     @set({ input, historyIndex: newIndex })
+    return
 
   # (Unit) -> Unit
   focus: ->

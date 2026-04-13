@@ -12,16 +12,17 @@ RactiveAgentVarField = Ractive.extend({
 
   data: -> {
     # Props
-    agent: undefined # Agent; (from the actual agent)
-    varName: undefined # string; as in `agent.hasVariable(varName)`
+    agent:          undefined # Agent
+  , varName:        undefined # String
 
     # State
-    currentInput: undefined
-    hasFocus: false
-    varFieldConfig: { scrollbarStyle: 'null' }
+  , currentInput:   undefined                    # String
+  , hasFocus:       false                        # Boolean
+  , varFieldConfig: { scrollbarStyle: 'null' }   # Object
   }
 
   computed: {
+    # () -> String
     varValueAsStr: ->
       agent = @get('agent')
       return '' unless agent?
@@ -31,7 +32,7 @@ RactiveAgentVarField = Ractive.extend({
     # Whether this variable being tracked is a special case variable. If not, then this value is 'NORMAL' and
     # editing the value just asks the agent to set the variable. However, if it is the coordinate of a patch, or the
     # who number of a turtle or link, then editing the value will cause the inspection window to switch agents.
-    # 'NORMAL' | 'AGENT_SWITCH'
+    # () -> 'NORMAL' | 'AGENT_SWITCH'
     editEffect: ->
       agent = @get('agent')
       varName = @get('varName')
@@ -50,6 +51,7 @@ RactiveAgentVarField = Ractive.extend({
       if not @get('hasFocus')
         @set('currentInput', value)
         @findComponent('codeContainer')?.setCode(value)
+      return
   }
 
   on: {

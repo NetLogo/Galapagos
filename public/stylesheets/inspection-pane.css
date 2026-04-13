@@ -1,73 +1,74 @@
 .inspection-pane {
-  padding: 1em;
+  padding:   1em;
   min-width: 600px;
 }
 
 .inspection-button-tray {
-  display: flex;
+  display:     flex;
   align-items: center;
-  gap: 1em;
+  gap:         1em;
 }
 
 .inspection-button {
-  cursor: pointer;
-  user-select: none;
-  border-radius: 5px;
+  cursor:           pointer;
+  user-select:      none;
+  border-radius:    5px;
   background-color: white;
-  display: flex;
-  align-items: center;
+  display:          flex;
+  align-items:      center;
 }
 
 button.inspection-button {
-  border: none;
+  border:  none;
   padding: 0;
-  font: inherit;
-  color: inherit;
+  font:    inherit;
+  color:   inherit;
 }
+
 .inspection-button:hover {
   background-color: rgba(211, 211, 211, 0.5);
 }
+
 .inspection-button.selected {
   background-color: lightblue;
 }
 
 .inspection-cmd-container {
-  margin: 0;
-  display: flex;
+  margin:         0;
+  display:        flex;
   flex-direction: row;
-  align-items: center;
-  gap: 1em;
+  align-items:    center;
+  gap:            1em;
 }
 
-
 .inspection-agent-monitor-container {
-  padding: 0.5em;
+  padding:       0.5em;
   border-radius: 5px;
-  min-height: 2em;
+  min-height:    2em;
 }
 
 .inspection-agent-monitor-container-inner {
-  display: flex;
+  display:   flex;
   flex-wrap: wrap;
-  gap: 0.5em;
+  gap:       0.5em;
 }
 
 .inspection-agent-monitor {
-  border: 2px solid #eeeeee;
-  border-radius: 5px;
-  width: 210px;
-  padding: 0.5em;
+  border:           2px solid #eeeeee;
+  border-radius:    5px;
+  width:            210px;
+  padding:          0.5em;
   background-color: #eeeeee;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
+  display:          flex;
+  flex-direction:   column;
+  gap:              0.5em;
 }
 
 .inspection-agent-monitor-title-bar {
-  display: grid;
-  grid: auto / auto auto;
+  display:         grid;
+  grid:            auto / auto auto;
   justify-content: space-between;
-  align-items: start;
+  align-items:     start;
 }
 
 .inspection-agent-monitor-title-bar .title {
@@ -75,8 +76,8 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-view-controls {
-  display: grid;
-  grid: auto / auto auto;
+  display:     grid;
+  grid:        auto / auto auto;
   align-items: center;
 }
 
@@ -85,22 +86,22 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-watch-button {
-  width: min-content;
+  width:   min-content;
   padding: 0.5em;
-  border: 1px solid gray;
+  border:  1px solid gray;
 }
 
 .inspection-agent-monitor-property-grid {
-  display: grid;
-  grid: auto-flow / 2fr 3fr;
-  gap: 0.2em 0.5em;
+  display:     grid;
+  grid:        auto-flow / 2fr 3fr;
+  gap:         0.2em 0.5em;
   align-items: center;
 }
 
 .inspection-agent-monitor-property-grid .inspection-agent-var-name {
-  overflow: hidden;
+  overflow:      hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space:   nowrap;
 }
 
 .inspection-agent-monitor-property-grid > .inspection-input-container {
@@ -109,9 +110,9 @@ button.inspection-button {
 
 .inspection-input-container {
   background-color: white;
-  border: 1px solid gray;
-  border-radius: 4px;
-  overflow: hidden;
+  border:           1px solid gray;
+  border-radius:    4px;
+  overflow:         hidden;
 }
 
 .inspection-input-container .netlogo-code {
@@ -119,9 +120,9 @@ button.inspection-button {
 }
 
 .inspection-cmd-container .netlogo-code {
-  border: 2px solid #999;
+  border:        2px solid #999;
   border-radius: 6px;
-  overflow: hidden;
+  overflow:      hidden;
 }
 
 .inspection-cmd-container .netlogo-command-center-editor .CodeMirror {
@@ -138,31 +139,31 @@ button.inspection-button {
 
 .inspection-close-dropdown-overlay {
   position: fixed;
-  inset: 0;
-  z-index: 99;
+  inset:    0;
+  z-index:  99;
 }
 
 .inspection-close-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  z-index: 100;
-  white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  display: flex;
+  position:       absolute;
+  top:            100%;
+  left:           0;
+  background:     white;
+  border:         1px solid lightgray;
+  border-radius:  5px;
+  z-index:        100;
+  white-space:    nowrap;
+  box-shadow:     0 2px 4px rgba(0, 0, 0, 0.2);
+  display:        flex;
   flex-direction: column;
 }
 
 button.inspection-close-dropdown-item {
-  border: none;
-  font: inherit;
-  color: inherit;
-  padding: 0.4em 0.8em;
-  text-align: left;
-  cursor: pointer;
+  border:        none;
+  font:          inherit;
+  color:         inherit;
+  padding:       0.4em 0.8em;
+  text-align:    left;
+  cursor:        pointer;
   border-radius: 5px;
 }
 

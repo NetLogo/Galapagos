@@ -106,7 +106,7 @@ export {
   markdownToHtml,
   toNetLogoWebMarkdown,
   toNetLogoMarkdown,
-  toNetLogoString
+  toNetLogoString,
   normalizedFileName,
   nlogoToSections,
   sectionsToNlogo,

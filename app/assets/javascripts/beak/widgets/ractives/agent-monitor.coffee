@@ -10,32 +10,33 @@ import { isToggleKeydownEvent } from '../accessibility/utils.js'
 
 RactiveAgentMonitor = Ractive.extend({
   components: {
-    agentVarField: RactiveAgentVarField,
-    commandInput: RactiveCommandInput
+    agentVarField: RactiveAgentVarField
+  , commandInput:  RactiveCommandInput
   }
 
   data: -> {
     # Props
 
-    agent: undefined, # Agent; a reference to the actual agent from the engine
-    isEditing: undefined, # boolean
-    checkIsReporter: undefined, # (string) -> boolean
-    setInspect: undefined, # (SetInspectAction) -> Unit
-    viewController: undefined, # ViewController; from which this agent monitor is taking its ViewWindow
+    agent:           undefined # Agent; a reference to the actual agent from the engine
+  , isEditing:       undefined # Boolean
+  , checkIsReporter: undefined # (String) => Boolean
+  , setInspect:      undefined # (SetInspectAction) -> Unit
+  , viewController:  undefined # ViewController; from which this agent monitor is taking its ViewWindow
 
     # State
 
-    viewModelAgent: undefined, # Agent; but not the same type as `agent`; this is a reference to the equivalent agent
-    # from the ViewController's AgentModel. This should be kept in sync with the `agent` data.
-    agentType: undefined # 'turtle' | 'patch' | 'link'; This should be kept in sync with the `agent` data.
-    viewWindow: undefined # View; a reference to the View associated with the current agent
-    windowGenerator: undefined # result of `followAgentWithZoom`; see "window-generators.coffee"
-    zoomLevel: 0.35 # number; represents how much of the screen the agent takes up
+    # viewModelAgent is the equivalent agent from the ViewController's AgentModel.
+    # It should be kept in sync with the `agent` data.
+  , viewModelAgent:  undefined # Agent
+  , agentType:       undefined # 'turtle' | 'patch' | 'link'; should be kept in sync with the `agent` data
+  , viewWindow:      undefined # View; a reference to the View associated with the current agent
+  , windowGenerator: undefined # result of `followAgentWithZoom`; see "window-generators.coffee"
+  , zoomLevel:       0.35      # Number; represents how much of the screen the agent takes up
 
     # Consts
 
-    # (Unit) -> Unit
-    replaceView: ->
+    # () -> Unit
+  , replaceView: ->
       if not @get('viewModelAgent')?
         return
       if @get('viewWindow')?
@@ -58,24 +59,24 @@ RactiveAgentMonitor = Ractive.extend({
       @get('zoomView')(@get('zoomLevel'))
       return
 
-    # (number) -> Unit
-    zoomView: (zoomLevel) ->
+    # (Number) -> Unit
+  , zoomView: (zoomLevel) ->
       @get('windowGenerator').zoomLevel = zoomLevel
       @get('viewWindow').repaint()
       return
 
     # (Turtle|Patch|Link|Observer) -> String
-    printProperties: (agent) ->
+  , printProperties: (agent) ->
       pairList = for varName in agent.varNames()
         "#{varName}: #{agent.getVariable(varName)}"
       pairList.join("<br/>")
   }
 
   computed: {
-    # Array[string]
+    # () -> Array[String]
     varNames: -> @get('agent').varNames()
 
-    # { agentType: AgentType, agents?: Array[Agent] }
+    # () -> { agentType: AgentType, agents: Array[Agent] }
     targetedAgentObj: ->
       agentType = switch @get('agentType')
         when 'turtle' then 'turtles'
@@ -84,6 +85,7 @@ RactiveAgentMonitor = Ractive.extend({
       agent = @get('agent')
       { agentType, agents: [agent] }
 
+    # () -> Boolean
     isWatching: ->
       agent    = @get('agent')
       observer = world.observer
@@ -91,13 +93,16 @@ RactiveAgentMonitor = Ractive.extend({
       (persp is Ride or persp is Follow or persp is Watch) and observer.subject() is agent
   }
 
+  # () -> Unit
   onrender: ->
     # We want to run `updateView` and `zoomView` only after the instance has been rendered to the DOM, but Ractive
     # observers initialize before rendering. And for some reason, using the `defer` option does not work
     # (see Ractive API).
     @_syncAgentData(@get('agent'))
     @get('replaceView')()
+    return
 
+  # () -> Unit
   onteardown: ->
     @get('viewWindow')?.destructor()
     return
@@ -110,6 +115,7 @@ RactiveAgentMonitor = Ractive.extend({
       if not @get('viewWindow')?
         @_syncAgentData(@get('agent'))
         @get('replaceView')()
+      return
 
     'watch-button-clicked': ->
       observer = world.observer
@@ -120,6 +126,7 @@ RactiveAgentMonitor = Ractive.extend({
       else
         inspectedAgent.watchMe()
       @update('agent') # force `isWatching` to recompute since observer perspective is external state
+      return
 
     'watch-button-keydown': ({ original: event }) ->
       if isToggleKeydownEvent(event)
@@ -185,15 +192,18 @@ RactiveAgentMonitor = Ractive.extend({
         if not newValue? then return        # guard against undefined agent during component teardown
         @_syncAgentData(newValue)
         @get('replaceView')()
+        return
       init: false # see `onrender`
     }
     'zoomLevel': {
       handler: (newZoomLevel) ->
         @get('zoomView')(newZoomLevel)
+        return
       init: false # see `onrender`
     }
   }
 
+  # (Number, Number) -> Array[Object]
   getContextMenuOptions: (clientX, clientY) ->
     viewWindow = @get('viewWindow')
     { left, top, bottom, right } = viewWindow.getBoundingClientRect()
@@ -205,17 +215,19 @@ RactiveAgentMonitor = Ractive.extend({
       []
 
   # Focuses the first property control in the property grid, or the Watch button as a fallback.
-  # (Unit) -> Unit
+  # () -> Unit
   focusFirstPropertyControl: ->
     target = @find('.inspection-agent-monitor-property-grid .inspection-input-container') ?
              @find('.inspection-agent-monitor-watch-button')
     target?.focus()
+    return
 
   # Updates the 'viewModelAgent' and 'agentType' data to reflect the specified 'agent' data
-  # (Unit) -> Unit
+  # (Agent) -> Unit
   _syncAgentData: (agent) ->
     [viewModelAgent, agentType] = getEquivalentAgent(@get('viewController').getModel())(agent)
     @set({ viewModelAgent, agentType })
+    return
 
   template:
     """

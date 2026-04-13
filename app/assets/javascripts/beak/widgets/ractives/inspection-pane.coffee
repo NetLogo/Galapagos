@@ -36,7 +36,7 @@ getKeypathFor = (agent) ->
 # Given an object and a array of keys, recursively accesses the object using those keys and returns the result.
 # Consumes the array of keys up until continuing traversal is impossible. If a value along the path is undefined, and
 # the default value is set, the value there will be set to the default value and then immediately returned.
-# (any) -> any
+# (Any, Array[String], Any) -> Any
 traverseKeypath = (obj, keypath, defaultValue = undefined) ->
   x = obj
   while key = keypath.shift()
@@ -46,7 +46,7 @@ traverseKeypath = (obj, keypath, defaultValue = undefined) ->
     x = x[key]
   x
 
-# (any) -> boolean
+# (Any) -> Boolean
 isAgent = (obj) -> obj instanceof Turtle or obj instanceof Patch or obj instanceof Link
 
 # Treating an object as the root of a tree, prunes certain nodes of the tree
@@ -59,7 +59,7 @@ isAgent = (obj) -> obj instanceof Turtle or obj instanceof Patch or obj instance
 # value (i.e. a primitive) causes it to be deleted. After a node is recursively
 # pruned, it is then tested again to see if it itself should be pruned.
 #
-# (any, (Array[string], any) -> boolean | null) -> Unit
+# (Any, (Array[String], Any) => Boolean|null) -> Unit
 pruneTree = (obj, tester, currentKeypath = []) ->
   for key, value of obj
     keypath = currentKeypath.concat([key])
@@ -86,9 +86,9 @@ RactiveInspectionPane = Ractive.extend({
   data: -> {
     # Props
 
-    isEditing: undefined # boolean
-    viewController: undefined # ViewController; from which the agent monitors take their ViewWindows
-    checkIsReporter: undefined # (string) -> boolean
+    isEditing:       undefined # Boolean
+  , viewController:  undefined # ViewController; from which the agent monitors take their ViewWindows
+  , checkIsReporter: undefined # (String) => Boolean
 
     # State
 
@@ -102,7 +102,7 @@ RactiveInspectionPane = Ractive.extend({
     #   links: Object<string, Array[Link]>,
     # }
     # The `turtles` and `links` properties map breed names to lists of agents.
-    stagedAgents: { 'turtles': {}, 'patches': [], 'links': {} } # StagedAgents
+  , stagedAgents: { 'turtles': {}, 'patches': [], 'links': {} } # StagedAgents
 
     ###
     type Selections = {
@@ -110,13 +110,11 @@ RactiveInspectionPane = Ractive.extend({
       selectedAgents: Array[Agent] | null # null means to consider the categories as the main selections, not the agents
     }
     ###
-    selections: { selectedPaths: [[]], selectedAgents: null }
+  , selections: { selectedPaths: [[]], selectedAgents: null }
 
-    agentTypeFilter: 'all' # 'all' | 'turtles' | 'patches' | 'links'; filters which inspected agents receive commands
-
-    commandPlaceholderText: "" # string
-
-    showCloseDropdown: false  # boolean; whether the close-button dropdown is open
+  , agentTypeFilter:        'all' # 'all' | 'turtles' | 'patches' | 'links' - which inspected agents receive commands
+  , commandPlaceholderText: ""    # String
+  , showCloseDropdown:      false # Boolean; whether the close-button dropdown is open
 
     # inspectedAgents is passed as a prop from the parent skeleton so it persists when this tab is closed/reopened.
     # Array[Agent]; agents for which there is an opened agent monitor
@@ -125,6 +123,7 @@ RactiveInspectionPane = Ractive.extend({
 
   computed: {
     # computing this value also sets the command placeholder text
+    # () -> TargetedAgentObj
     targetedAgentObj: {
       get: ->
         filter       = @get('agentTypeFilter')
@@ -160,9 +159,11 @@ RactiveInspectionPane = Ractive.extend({
   observe: {
     'inspectedAgents': (agents) ->
       @fire('inspection-agents-changed', agents)
+      return
 
     'targetedAgentObj.agents': (newValue) ->
       @get('viewController').setHighlightedAgents(newValue)
+      return
 
     showCloseDropdown: (isOpen) ->
       if isOpen
@@ -173,11 +174,12 @@ RactiveInspectionPane = Ractive.extend({
       else if @_escHandler?
         document.removeEventListener('keydown', @_escHandler)
         @_escHandler = null
+      return
   }
 
   components: {
-    agentMonitor: RactiveAgentMonitor,
-    commandInput: RactiveCommandInput
+    agentMonitor: RactiveAgentMonitor
+  , commandInput: RactiveCommandInput
   }
 
   on: {
@@ -192,6 +194,7 @@ RactiveInspectionPane = Ractive.extend({
       @toggle('showCloseDropdown')
       if willOpen
         setTimeout((=> @find('.inspection-close-dropdown-item')?.focus()), 0)
+      return
 
     'commandInput.command-input-tabbed': -> false # ignore and block event
 
@@ -213,6 +216,7 @@ RactiveInspectionPane = Ractive.extend({
       if @_escHandler?
         document.removeEventListener('keydown', @_escHandler)
         @_escHandler = null
+      return
   }
 
   ### type SetInspectAction =
@@ -326,12 +330,16 @@ RactiveInspectionPane = Ractive.extend({
     else
       @splice('inspectedAgents', index, 1)
 
+  # () -> Unit
   closeAll: ->
     @set({ inspectedAgents: [], showCloseDropdown: false })
+    return
 
+  # () -> Unit
   closeDead: ->
     @setInspect({type: 'clear-dead'})
     @set('showCloseDropdown', false)
+    return
 
   # (Array[Agent]) -> Unit
   unselectAgents: (agentsToUnselect) ->

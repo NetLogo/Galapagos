@@ -125,13 +125,16 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     @_super()
     @jumpToProcedure()
     @jumpToCode()
+    return
 
   observe: {
     'jumpToProcedure': ->
       @jumpToProcedure()
+      return
 
     'jumpToCode': ->
       @jumpToCode()
+      return
   }
 
   # (String, Int) => Unit
