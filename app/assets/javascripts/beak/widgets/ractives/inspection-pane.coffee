@@ -92,8 +92,6 @@ RactiveInspectionPane = Ractive.extend({
 
     # State
 
-    pointToSelectEnabled: false # boolean
-
     # NOTE: The stagedAgents structure and setInspect actions ('add', 'remove', 'unstage-all', 'clear-dead')
     # are intentionally retained for future reintroduction of the drag-to-select feature.
     # See the backup branch for the full drag-to-select implementation.
@@ -165,23 +163,6 @@ RactiveInspectionPane = Ractive.extend({
 
     'targetedAgentObj.agents': (newValue) ->
       @get('viewController').setHighlightedAgents(newValue)
-
-    pointToSelectEnabled: (enabled) ->
-      if enabled
-        @_unsubscribePointToSelect = @get('viewController').registerMouseListeners(
-          ({ clientX, clientY, event }) =>
-            return if event?.button isnt 0 # only handle left-clicks
-            # Suppress the document click handler (in handle-context-menu.coffee) from
-            # hiding the context menu we're about to open.
-            suppressClick = (e) -> e.stopImmediatePropagation()
-            document.addEventListener('click', suppressClick, { capture: true, once: true })
-            { pageX, pageY } = event
-            @root.findComponent('contextMenu').reveal(@root.findComponent('viewWidget'), pageX, pageY, clientX, clientY)
-          (->)  # no-op moveHandler
-          (->)  # no-op upHandler
-        )
-      else
-        @_unsubscribePointToSelect?()
 
     showCloseDropdown: (isOpen) ->
       if isOpen
@@ -368,16 +349,6 @@ RactiveInspectionPane = Ractive.extend({
   partials: {
     'commandCenter': """
       <div class="inspection-cmd-container">
-        <button
-          class="inspection-button inspection-point-to-select {{#if pointToSelectEnabled}}selected{{/if}}"
-          title="Point to select: click an agent in the view to inspect it ({{#if pointToSelectEnabled}}on{{else}}off{{/if}})"
-          on-click="@.toggle('pointToSelectEnabled')"
-        >
-          <img
-            width=24
-            src="{{@global.NLWIcons.pointToSelect}}"
-          />
-        </button>
         <div class="inspection-close-button">
           <button
             class="inspection-button"
