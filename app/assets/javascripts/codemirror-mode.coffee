@@ -28,7 +28,7 @@ CodeMirror.defineSimpleMode('netlogo', {
     {token: 'command',  regex: memberRegEx(commands.reverse())},
     {token: 'reporter', regex: memberRegEx(allReporters)},
     {token: 'string',   regex: /"(?:[^\\]|\\.)*?"/},
-    {token: 'number',   regex: /0x[a-f\d]+|[-+]?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i},
+    {token: 'number',   regex: /0x[a-f\d]+|-?(?:\.\d+|\d+\.?\d*)(?:e[-+]?\d+)?/i},
     constantRule,
     commentRule,
     openBracket,
