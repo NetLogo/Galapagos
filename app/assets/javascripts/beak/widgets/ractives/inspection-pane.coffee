@@ -112,9 +112,9 @@ RactiveInspectionPane = Ractive.extend({
     ###
   , selections: { selectedPaths: [[]], selectedAgents: null }
 
-  , agentTypeFilter:        'all' # 'all' | 'turtles' | 'patches' | 'links' - which inspected agents receive commands
-  , commandPlaceholderText: ""    # String
-  , showCloseDropdown:      false # Boolean; whether the close-button dropdown is open
+  , agentTypeFilter:        'turtles' # 'all' | 'turtles' | 'patches' | 'links' - which inspected agents get commands
+  , commandPlaceholderText: ""        # String
+  , showCloseDropdown:      false     # Boolean; whether the close-button dropdown is open
 
     # inspectedAgents is passed as a prop from the parent skeleton so it persists when this tab is closed/reopened.
     # Array[Agent]; agents for which there is an opened agent monitor
@@ -364,10 +364,10 @@ RactiveInspectionPane = Ractive.extend({
       <div class="inspection-cmd-container">
         <div class="netlogo-input-group">
           <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
-            <option value="all">all</option>
             <option value="turtles">turtles</option>
             <option value="patches">patches</option>
             <option value="links">links</option>
+            <option value="all">all</option>
           </select>
           <commandInput
             isReadOnly={{isEditing}}
