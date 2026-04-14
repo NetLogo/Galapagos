@@ -227,7 +227,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
       'runtime-error': (_, source, exception, code) ->
         message = exception.stackTraceMessage
-        codePaneErrors = for stackTraceItem in exception.stackTrace
+        codePaneErrors = for stackTraceItem in (exception.stackTrace ? [])
           switch stackTraceItem.type
             when 'command', 'reporter'
               {
