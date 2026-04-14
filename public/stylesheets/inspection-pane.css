@@ -48,9 +48,15 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-container-inner {
-  display:   flex;
-  flex-wrap: wrap;
-  gap:       0.5em;
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, 210px);
+  justify-content:       center;
+  row-gap:               1em;
+  column-gap:            2.5em;
+}
+
+.inspection-agent-monitor-container-inner > span {
+  grid-column: 1 / -1;
 }
 
 .inspection-agent-monitor {
