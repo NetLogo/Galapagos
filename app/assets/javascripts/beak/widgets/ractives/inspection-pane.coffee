@@ -362,22 +362,6 @@ RactiveInspectionPane = Ractive.extend({
   partials: {
     'commandCenter': """
       <div class="inspection-cmd-container">
-        <div class="inspection-close-button">
-          <button
-            class="inspection-button"
-            title="Close agent monitors"
-            on-click="close-button-clicked"
-          >
-            <img width=24 src="{{@global.NLWIcons.close}}"/>
-          </button>
-          {{#if showCloseDropdown}}
-          <div class="inspection-close-dropdown-overlay" on-click="@.set('showCloseDropdown', false)"></div>
-          <div class="inspection-close-dropdown">
-            <button class="inspection-close-dropdown-item" on-click="@.closeAll()">close all</button>
-            <button class="inspection-close-dropdown-item" on-click="@.closeDead()">close dead</button>
-          </div>
-          {{/if}}
-        </div>
         <div class="netlogo-input-group">
           <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
             <option value="all">all</option>
@@ -393,6 +377,22 @@ RactiveInspectionPane = Ractive.extend({
             placeholderText={{commandPlaceholderText}}
             visiblePlaceholder="enter commands for inspected {{agentTypeFilter === 'all' ? 'agents' : agentTypeFilter}}"
           />
+        </div>
+        <div class="inspection-close-button">
+          <button
+            class="inspection-button"
+            title="Close agent monitors"
+            on-click="close-button-clicked"
+          >
+            <img width=24 src="{{@global.NLWIcons.close}}"/>
+          </button>
+          {{#if showCloseDropdown}}
+          <div class="inspection-close-dropdown-overlay" on-click="@.set('showCloseDropdown', false)"></div>
+          <div class="inspection-close-dropdown">
+            <button class="inspection-close-dropdown-item" on-click="@.closeAll()">close all</button>
+            <button class="inspection-close-dropdown-item" on-click="@.closeDead()">close dead</button>
+          </div>
+          {{/if}}
         </div>
       </div>
     """
