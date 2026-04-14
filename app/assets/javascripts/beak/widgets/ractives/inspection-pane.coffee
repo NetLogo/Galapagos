@@ -161,6 +161,11 @@ RactiveInspectionPane = Ractive.extend({
       @fire('inspection-agents-changed', agents)
       return
 
+    'inspectedAgents.length': (newLength) ->
+      if newLength is 1
+        @set('agentTypeFilter', getKeypathFor(@get('inspectedAgents.0'))[0])
+      return
+
     'targetedAgentObj.agents': (newValue) ->
       @get('viewController').setHighlightedAgents(newValue)
       return
