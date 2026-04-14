@@ -239,8 +239,8 @@ RactiveAgentMonitor = Ractive.extend({
     >
       {{>titleBar}}
       {{>viewSection}}
-      {{>propertyGrid}}
       {{>commandCenter}}
+      {{>propertyGrid}}
     </div>
     """
 
@@ -293,7 +293,7 @@ RactiveAgentMonitor = Ractive.extend({
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
           placeholderText="ask {{agent.getName()}}"
-          visiblePlaceholder="enter agent commands"
+          visiblePlaceholder="enter {{agentType}} commands"
         />
       </div>
     """
