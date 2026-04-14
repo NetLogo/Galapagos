@@ -391,7 +391,7 @@ RactiveInspectionPane = Ractive.extend({
             checkIsReporter={{checkIsReporter}}
             targetedAgentObj={{targetedAgentObj}}
             placeholderText={{commandPlaceholderText}}
-            visiblePlaceholder="enter commands for inspected agents"
+            visiblePlaceholder="enter commands for inspected {{agentTypeFilter === 'all' ? 'agents' : agentTypeFilter}}"
           />
         </div>
       </div>
