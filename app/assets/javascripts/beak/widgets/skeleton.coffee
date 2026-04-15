@@ -408,7 +408,7 @@ template =
 
         <button class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
                 on-click="@.fire('toggle-help')">
-          <kbd>?</kbd> for shortcuts
+          <kbd>?</kbd><span> for shortcuts</span>
         </button>
       </div>
 

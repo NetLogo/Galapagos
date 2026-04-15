@@ -446,14 +446,13 @@
   background-color: transparent;
   border: none;
   padding: 0.4rem;
-  margin: 0 auto;
-  width: 75%;
+  flex: 1 1 auto;
 }
 
 .netlogo-speed-slider-layout {
   display: flex;
   flex-direction: column;
-  width: min-content;
+  width: 100%;
 }
 
 .netlogo-speed-slider input {
@@ -471,7 +470,7 @@
 
 .netlogo-slider-bar.model-speed-slider-interface {
   height: 2px;
-  min-width: 200px;
+  min-width: 150px;
   margin-top: unset;
 }
 
@@ -1004,7 +1003,7 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   display: flex;
   align-items: center;
   gap: 8px;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
   white-space: nowrap;
   user-select: none;
   cursor: pointer;
