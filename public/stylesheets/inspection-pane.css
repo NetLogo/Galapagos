@@ -104,9 +104,14 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-watch-button {
-  width:   min-content;
-  padding: 0.5em;
-  border:  1px solid gray;
+  width:      min-content;
+  padding:    0.5em;
+  border:     1px solid gray;
+  background: white
+}
+
+.inspection-agent-monitor-watch-button:hover {
+  background: #eee;
 }
 
 .inspection-agent-monitor-property-grid {
