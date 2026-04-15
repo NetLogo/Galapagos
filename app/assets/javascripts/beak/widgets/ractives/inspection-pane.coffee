@@ -385,6 +385,7 @@ RactiveInspectionPane = Ractive.extend({
             on-click="close-button-clicked"
           >
             <img width=24 src="{{@global.NLWIcons.close}}"/>
+            <span class="inspection-dropdown-caret">&#9662;</span>
           </button>
           {{#if showCloseDropdown}}
           <div class="inspection-close-dropdown-overlay" on-click="@.set('showCloseDropdown', false)"></div>
