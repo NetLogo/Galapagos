@@ -33,7 +33,8 @@
 }
 
 .netlogo-display-horizontal > .netlogo-tab-area {
-  margin: 0 10px;
+  margin:     0 10px;
+  align-self: flex-start;
 }
 
 .netlogo-header {
