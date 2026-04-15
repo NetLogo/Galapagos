@@ -157,14 +157,15 @@ RactiveCommandInput = Ractive.extend({
       if @get('checkIsReporter')(input)
         input = "show #{input}"
 
+      cmd = getCommand(targetedAgentObj, input)
+      return if @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input }) is false
+
       history = @get('history')
       newEntry = { targetedAgentObj, input }
       if history.length is 0 or not compareEntries(history.at(-1), newEntry)
         history.push(newEntry)
       @set('historyIndex', history.length)
 
-      cmd = getCommand(targetedAgentObj, input)
-      @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input })
       @fire('command-center-run', cmd)
     @set({ input: "", workingEntry: {} })
     return

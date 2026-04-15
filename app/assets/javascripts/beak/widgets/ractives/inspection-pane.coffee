@@ -211,6 +211,18 @@ RactiveInspectionPane = Ractive.extend({
         setTimeout((=> @find('.inspection-close-dropdown-item')?.focus()), 0)
       return
 
+    'commandInput.run': (_, _source, _cmd, { targetedAgentObj }) ->
+      { agentType, agents } = targetedAgentObj
+      if agentType not in ['observer', 'mixed'] and not agents.length
+        window.NetLogoToaster?.addToast({
+          id:      'inspection-no-agents'
+          variant: 'warning'
+          message: "No #{agentType} are currently being monitored."
+          timeout: 3000
+        })
+        return false
+      return
+
     'commandInput.command-input-tabbed': -> false # ignore and block event
 
     'agentMonitor.switch-monitor': (context, direction) ->
