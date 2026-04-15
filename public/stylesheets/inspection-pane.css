@@ -137,6 +137,10 @@ button.inspection-button {
   border: none;
 }
 
+.inspection-cmd-container .netlogo-command-center-editor {
+  margin: 0;
+}
+
 .inspection-cmd-container .netlogo-code {
   border:        2px solid #999;
   border-radius: 6px;
