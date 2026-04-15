@@ -122,6 +122,16 @@ RactiveInspectionPane = Ractive.extend({
   }
 
   computed: {
+    # () -> { turtles: Number, patches: Number, links: Number, all: Number }
+    agentTypeCounts: ->
+      agents = @get('inspectedAgents') ? []
+      {
+        turtles: agents.filter((a) -> a instanceof Turtle).length
+        patches: agents.filter((a) -> a instanceof Patch).length
+        links:   agents.filter((a) -> a instanceof Link).length
+        all:     agents.length
+      }
+
     # computing this value also sets the command placeholder text
     # () -> TargetedAgentObj
     targetedAgentObj: {
@@ -364,10 +374,10 @@ RactiveInspectionPane = Ractive.extend({
       <div class="inspection-cmd-container">
         <div class="netlogo-input-group">
           <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
-            <option value="turtles">turtles</option>
-            <option value="patches">patches</option>
-            <option value="links">links</option>
-            <option value="all">all</option>
+            <option value="turtles">turtles ({{agentTypeCounts.turtles}})</option>
+            <option value="patches">patches ({{agentTypeCounts.patches}})</option>
+            <option value="links">links ({{agentTypeCounts.links}})</option>
+            <option value="all">all ({{agentTypeCounts.all}})</option>
           </select>
           <commandInput
             isReadOnly={{isEditing}}
