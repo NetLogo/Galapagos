@@ -57,6 +57,7 @@ button.inspection-button {
 
 .inspection-agent-monitor-container-inner > span {
   grid-column: 1 / -1;
+  font-size:   15px;
 }
 
 .inspection-agent-monitor {
