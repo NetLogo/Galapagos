@@ -3,7 +3,8 @@ RactiveContextable = Ractive.extend({
   # type ContextMenuOption = { text: String, isEnabled: Boolean, action: () => Unit }
 
   getStandardOptions: -> {
-    delete: {
+    edit: { text: "Edit", isEnabled: true, action: => @fire('edit-widget') }
+  , delete: {
       text: "Delete"
     , isEnabled: true
     , action: =>
@@ -11,7 +12,6 @@ RactiveContextable = Ractive.extend({
         widget = @get('widget')
         @fire('unregister-widget', widget.id, false, @getExtraNotificationArgs())
     }
-  , edit: { text: "Edit", isEnabled: true, action: => @fire('edit-widget') }
   }
 
   # (number, number) -> [ContextMenuOption]
