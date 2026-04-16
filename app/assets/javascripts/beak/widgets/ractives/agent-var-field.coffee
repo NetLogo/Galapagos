@@ -14,6 +14,7 @@ RactiveAgentVarField = Ractive.extend({
     # Props
     agent:          undefined # Agent
   , varName:        undefined # String
+  , isReadOnly:     false     # Boolean
 
     # State
   , currentInput:   undefined                    # String
@@ -90,7 +91,7 @@ RactiveAgentVarField = Ractive.extend({
   template: """
     <div class="inspection-agent-var-name" title="{{varName}}">{{varName}}</div>
     <div class="inspection-input-container">
-      <codeContainer initialCode="{{currentInput}}" localConfig="{{varFieldConfig}}" />
+      <codeContainer initialCode="{{currentInput}}" localConfig="{{varFieldConfig}}" isDisabled="{{isReadOnly}}" />
     </div>
   """
 })

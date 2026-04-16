@@ -92,6 +92,7 @@ RactiveAgentMonitor = Ractive.extend({
     # We want to run `updateView` and `zoomView` only after the instance has been rendered to the DOM, but Ractive
     # observers initialize before rendering. And for some reason, using the `defer` option does not work
     # (see Ractive API).
+    @_wasEverDead = false
     @_syncAgentData(@get('agent'))
     @get('replaceView')()
     return
@@ -103,7 +104,24 @@ RactiveAgentMonitor = Ractive.extend({
 
   on: {
     'world-might-change': ->
+      # Once an agent has died, stop updating entirely. The engine reuses turtle objects — a new turtle
+      # with the same `who` number would otherwise hijack this monitor and start being tracked here.
+      if @_wasEverDead
+        return
       @update('agent')
+      if @get('agent').isDead()
+        @_wasEverDead = true
+        # Switch the view to follow the patch at the turtle's last location so it stays put
+        # and remains zoomable, rather than tracking a new turtle with the same `who` number.
+        viewModelAgent = @get('viewModelAgent')
+        if viewModelAgent?.xcor?
+          deathPatch = world.getPatchAt(Math.round(viewModelAgent.xcor), Math.round(viewModelAgent.ycor))
+          if deathPatch?
+            patchViewModel = @get('viewController').getModel().patches[deathPatch.id]
+            if patchViewModel?
+              @set('viewModelAgent', patchViewModel)
+              @get('replaceView')()
+        return
       # If the view was not set up on onrender (because the agent wasn't in the view model yet mid-tick),
       # retry now that the model has settled.
       if not @get('viewWindow')?
@@ -184,6 +202,7 @@ RactiveAgentMonitor = Ractive.extend({
       handler: (newValue, oldValue) ->
         if oldValue is newValue then return # we only care about when the identity changes (see Ractive API)
         if not newValue? then return        # guard against undefined agent during component teardown
+        @_wasEverDead = false               # user explicitly navigated to a new agent; resume tracking
         @_syncAgentData(newValue)
         @get('replaceView')()
         return
@@ -263,7 +282,8 @@ RactiveAgentMonitor = Ractive.extend({
         <div
           class="inspection-button inspection-agent-monitor-watch-button {{#if isWatching}}selected{{/if}}"
           role="button"
-          tabindex="0"
+          tabindex="{{agent.isDead() ? '-1' : '0'}}"
+          aria-disabled="{{agent.isDead()}}"
           on-click="watch-button-clicked"
           on-keydown="watch-button-keydown"
         >Watch</div>
@@ -274,7 +294,7 @@ RactiveAgentMonitor = Ractive.extend({
     "propertyGrid": """
       <div class="inspection-agent-monitor-property-grid">
         {{#each varNames as varName}}
-          <agentVarField agent={{agent}} varName={{varName}}/>
+          <agentVarField agent={{agent}} varName={{varName}} isReadOnly={{agent.isDead()}}/>
         {{/each}}
       </div>
     """
@@ -282,7 +302,7 @@ RactiveAgentMonitor = Ractive.extend({
     "commandCenter": """
       <div class="inspection-cmd-container" style="margin: 0;">
         <commandInput
-          isReadOnly={{isEditing}}
+          isReadOnly={{isEditing || agent.isDead()}}
           source="agent-monitor"
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
