@@ -125,6 +125,18 @@
   border: 0 solid #242479;
 }
 
+#console-panel {
+  border-bottom: 1px solid var(--color-tab-border);
+}
+
+#code-panel {
+  border-bottom: 1px solid var(--color-tab-border);
+}
+
+#info-panel {
+  border-bottom: 1px solid var(--color-tab-border);
+}
+
 .unselectable {
   user-select: none;
   -moz-user-select: none;
@@ -331,8 +343,6 @@
   flex-direction: column;
   height: 175px;
   padding: 6px 8px;
-  border-bottom: 1px solid;
-  border-bottom-color: inherit;
 }
 
 /* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
@@ -861,7 +871,7 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-code {
-  border: 1px solid black;
+  border-top: 1px solid var(--color-tab-border);
 }
 
 .netlogo-input-box {
