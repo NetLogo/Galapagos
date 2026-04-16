@@ -44,7 +44,7 @@ MonitorEditForm = EditForm.extend({
     ,  fontSize
     ,    height: (2 * fontSize) + 38
     , precision: parseInt(form.precision.value)
-    ,    source: @findComponent('formCode').findComponent('codeContainer').get('code')
+    ,    source: @findComponent('formCode').get('code')
     ,     units: (if form.units.value isnt "" then form.units.value else undefined)
     ,   oldSize: form.oldSize.checked
     }

@@ -44,7 +44,7 @@ ChooserEditForm = EditForm.extend({
 
   genProps: (form) ->
     varName    = form.varName.value
-    choices    = @findComponent('formCode').findComponent('codeContainer').get('code')
+    choices    = @findComponent('formCode').get('code')
     choicesArr = @_reify(choices)
     {
        choices: choicesArr
