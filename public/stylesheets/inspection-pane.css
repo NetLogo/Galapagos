@@ -53,7 +53,7 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-container {
-  padding:       0.5em;
+  padding:       1em 0.5em 0 0.5em;
   border-radius: 5px;
   min-height:    2em;
 }

@@ -385,6 +385,10 @@
   border: none;
 }
 
+.netlogo-input-group .netlogo-command-center-editor .CodeMirror-lines {
+  padding: 0.4em;
+}
+
 .netlogo-command-center-editor {
   height: auto;
   margin: 0 10px;
