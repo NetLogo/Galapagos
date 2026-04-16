@@ -63,6 +63,7 @@ RactiveTabWidget = Ractive.extend({
       <input id="{{ name }}-toggle" type="checkbox" checked="{{ show }}"
               on-change="toggle" style="display: none;" tabindex="-1"/>
       <span class="netlogo-tab-text">{{ title }}</span>
+      <img class="netlogo-tab-caret" width=20 src="{{@global.NLWIcons.tabCaretDown}}"/>
     </label>
     {{#show}}
     <div id="{{ name }}-panel" role="tabpanel" aria-labelledby="tab-{{ name }}">

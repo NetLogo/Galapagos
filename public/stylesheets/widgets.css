@@ -90,17 +90,22 @@
 
 .netlogo-tab {
   display: block;
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDIsMCAxLDEiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+');
-  background-position: 97% 50%;
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  padding: 7px;
+  position: relative;
+  padding: 7px 30px 7px 7px;
   text-align: center;
   cursor: pointer;
 }
 
-.netlogo-tab.netlogo-active {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyIDEiPjxwb2x5Z29uIHBvaW50cz0iMCwxIDIsMSAxLDAiIGZpbGw9InJnYig4Myw4Myw4MykiLz4gPC9zdmc+');
+.netlogo-tab-caret {
+  position: absolute;
+  right: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+}
+
+.netlogo-tab.netlogo-active .netlogo-tab-caret {
+  transform: translateY(-50%) scaleY(-1);
 }
 
 .netlogo-tab:not(:last-child) {
