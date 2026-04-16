@@ -87,7 +87,8 @@ HNWSwitchEditForm = SwitchEditForm.extend({
 RactiveSwitch = RactiveValueWidget.extend({
 
   data: -> {
-    resizeDirs: ['left', 'right']
+    # Switch gets to resize in 4 directions (no I don't understand why, either).  -Jeremy B April 2026
+    # resizeDirs: ['left', 'right']
   }
 
   widgetType: 'switch'
