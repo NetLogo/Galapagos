@@ -75,7 +75,7 @@ class SessionLite
     ractive.on('open-new-file'   , (_)                 => @openNewFile())
     ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
     ractive.on('*.undo-revert'   , (_)                 => @undoRevert())
-    ractive.on('*.run'           , (_, source, code, __) => @run(source, code))
+    ractive.on('*.run'           , (_, source, code)   => @run(source, code))
     ractive.on('*.set-global'    , (_, varName, value) => @setGlobal(varName, value))
 
     listenerEvents.forEach( (event) ->
