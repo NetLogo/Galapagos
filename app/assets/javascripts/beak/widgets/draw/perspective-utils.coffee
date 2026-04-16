@@ -2,8 +2,8 @@
 
 # Agent type enum
 turtleType = 1
-patchType = 2
-linkType = 3
+patchType  = 2
+linkType   = 3
 
 # Perspective enum:
 OBSERVE = 0
@@ -19,8 +19,8 @@ getSpotlightAgent = (model) ->
     [type, id] = targetagent
     switch type
       when turtleType then turtles[id]
-      when patchType then patches[id]
-      when linkType then links[id]
+      when patchType  then patches[id]
+      when linkType   then links[id]
   else
     null
 
@@ -32,8 +32,8 @@ getCenteredAgent = (model) ->
     [type, id] = targetagent
     switch type
       when turtleType then turtles[id]
-      when patchType then patches[id]
-      when linkType then links[id]
+      when patchType  then patches[id]
+      when linkType   then links[id]
   else
     null
 

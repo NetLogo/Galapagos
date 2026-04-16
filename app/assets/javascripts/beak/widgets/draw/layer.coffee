@@ -4,7 +4,7 @@ import { drawRectTo, drawFullTo } from "./draw-utils.js"
 convertLayerToCanvas = (layer, quality) ->
   { worldWidth, worldHeight, patchsize } = layer.getWorldShape()
   canvas = document.createElement('canvas')
-  canvas.width = worldWidth * patchsize * quality
+  canvas.width  = worldWidth  * patchsize * quality
   canvas.height = worldHeight * patchsize * quality
   layer.drawTo(canvas.getContext('2d'))
   canvas
@@ -29,11 +29,11 @@ Some object types currently in use:
 }
   highlightedAgents: Array[Agent] # the actual agent objs
 - QualityObj: {
-  quality: number
+  quality: Number
 }
 - FontObj: {
   fontFamily: string,
-  fontSize: number
+  fontSize: Number
 }
 ###
 class Layer

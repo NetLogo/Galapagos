@@ -10,10 +10,10 @@ middleRadius = (patchsize) -> 8 / patchsize
 innerRadius = (patchsize) -> 4 / patchsize
 
 # Names and values taken from org.nlogo.render.SpotlightDrawer
-dimmed = "rgba(0, 0, 50, #{ 100 / 255 })"
+dimmed               = "rgba(0, 0, 50, #{ 100 / 255 })"
 spotlightInnerBorder = "rgba(200, 255, 255, #{ 100 / 255 })"
-spotlightOuterBorder = "rgba(200, 255, 255, #{ 50 / 255 })"
-clear = 'white' # for clearing with 'destination-out' compositing
+spotlightOuterBorder = "rgba(200, 255, 255, #{ 50  / 255 })"
+clear                = 'white' # for clearing with 'destination-out' compositing
 
 drawCircle = (ctx, x, y, innerDiam, outerDiam, color) ->
   ctx.save()
@@ -27,9 +27,9 @@ drawCircle = (ctx, x, y, innerDiam, outerDiam, color) ->
 
 drawSpotlight = (ctx, worldShape, xcor, ycor, size, dimOther) ->
   { patchsize, actualMinX, actualMinY, worldWidth, worldHeight } = worldShape
-  outer = outerRadius(patchsize)
+  outer  = outerRadius(patchsize)
   middle = middleRadius(patchsize)
-  inner = innerRadius(patchsize)
+  inner  = innerRadius(patchsize)
 
   ctx.save()
 
@@ -47,9 +47,9 @@ drawSpotlight = (ctx, worldShape, xcor, ycor, size, dimOther) ->
     ctx.fill()
 
   useWrapping(worldShape, ctx, xcor, ycor, size + outer, (ctx, x, y) =>
-    drawCircle(ctx, x, y, size, size + outer, dimmed)
+    drawCircle(ctx, x, y, size, size + outer , dimmed)
     drawCircle(ctx, x, y, size, size + middle, spotlightOuterBorder)
-    drawCircle(ctx, x, y, size, size + inner, spotlightInnerBorder)
+    drawCircle(ctx, x, y, size, size + inner , spotlightInnerBorder)
   )
 
   ctx.restore()

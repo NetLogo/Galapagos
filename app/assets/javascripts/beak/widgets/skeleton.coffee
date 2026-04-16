@@ -122,7 +122,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
     , editableTitle: RactiveModelTitle
     , codePane:      RactiveCodePane
     , helpDialog:    RactiveHelpDialog
-    , infotab:       RactiveInfoTabWidget
+    , infoTab:       RactiveInfoTabWidget
     , resizer:       RactiveResizer
 
     , tickCounter:   RactiveTickCounter
@@ -462,7 +462,7 @@ template =
       </tab>
       <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">
-        <infotab rawText='{{info}}' isEditing='{{isEditing}}' />
+        <infoTab rawText='{{info}}' isEditing='{{isEditing}}' />
       </tab>
       <tab name="inspection" title="Agent Inspection" show="{{showInspection}}" scroll-block="center" focus-target=".inspection-point-to-select">
         <inspection

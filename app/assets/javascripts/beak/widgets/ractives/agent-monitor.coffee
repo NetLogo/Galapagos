@@ -15,15 +15,11 @@ RactiveAgentMonitor = Ractive.extend({
   }
 
   data: -> {
-    # Props
-
     agent:           undefined # Agent; a reference to the actual agent from the engine
   , isEditing:       undefined # Boolean
   , checkIsReporter: undefined # (String) => Boolean
   , setInspect:      undefined # (SetInspectAction) -> Unit
   , viewController:  undefined # ViewController; from which this agent monitor is taking its ViewWindow
-
-    # State
 
     # viewModelAgent is the equivalent agent from the ViewController's AgentModel.
     # It should be kept in sync with the `agent` data.
@@ -32,8 +28,6 @@ RactiveAgentMonitor = Ractive.extend({
   , viewWindow:      undefined # View; a reference to the View associated with the current agent
   , windowGenerator: undefined # result of `followAgentWithZoom`; see "window-generators.coffee"
   , zoomLevel:       0.35      # Number; represents how much of the screen the agent takes up
-
-    # Consts
 
     # () -> Unit
   , replaceView: ->

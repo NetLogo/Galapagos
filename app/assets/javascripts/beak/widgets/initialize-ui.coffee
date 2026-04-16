@@ -48,17 +48,18 @@ initializeUI = (containerArg, widgets, code, info,
   reportError = (time, source, exception, ...args) ->
     controller.reportError(time, source, exception, ...args)
 
-  viewController = new ViewController()
+  viewController  = new ViewController()
+  isReporterCheck = (code) -> compiler.isReporter(code)
   ractive = generateRactiveSkeleton(
-    container,
-    widgets,
-    code,
-    info,
-    isReadOnly,
-    source,
-    workInProgressState,
-    (code) -> compiler.isReporter(code),
-    viewController
+    container
+  , widgets
+  , code
+  , info
+  , isReadOnly
+  , source
+  , workInProgressState
+  , isReporterCheck
+  , viewController
   )
 
   container.querySelector('.netlogo-model').focus({

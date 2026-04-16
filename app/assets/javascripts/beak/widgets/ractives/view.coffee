@@ -10,14 +10,14 @@ import { getClickedAgents, agentsToContextMenuOptions } from "../view-context-me
 RactiveEditFormCoordBoundInput = Ractive.extend({
 
   data: -> {
-    id:         undefined, # String
-    hint:       undefined, # String
-    label:      undefined, # String
-    max:        undefined, # Number
-    min:        undefined, # Number
-    name:       undefined, # String
-    value:      undefined, # Number
-    viewWindow: undefined, # View
+    id:         undefined # String
+  , hint:       undefined # String
+  , label:      undefined # String
+  , max:        undefined # Number
+  , min:        undefined # Number
+  , name:       undefined # String
+  , value:      undefined # Number
+  , viewWindow: undefined # View
   }
 
   isolated: true
@@ -202,10 +202,10 @@ ViewEditForm = EditForm.extend({
 RactiveView = RactiveWidget.extend({
 
   data: -> {
-    setInspect:       undefined # (SetInspectAction) -> Unit
-    viewController:     undefined # ViewController
-    resizeDirs:         ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
-    ticks:              undefined # String
+    setInspect:     undefined # (SetInspectAction) -> Unit
+  , viewController: undefined # ViewController
+  , resizeDirs:     ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
+  , ticks:          undefined # String
   }
 
   computed: {

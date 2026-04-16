@@ -1,7 +1,7 @@
 import { toNetLogoMarkdown }              from "/beak/tortoise-utils.js"
 import { synchroDecoder, synchroEncoder } from "@netlogo/synchrodecoder/synchrodecoder.mjs"
 import { serializeResources }             from "/beak/external-resources.js"
-import { MouseTracker } from "./mouse-tracker.js"
+import { MouseTracker }                   from "./mouse-tracker.js"
 
 # (Ractive) => OutputWidget?
 getOutputWidget = (ractive) ->
@@ -219,10 +219,10 @@ genIOConfig = (ractive) ->
 # (MouseTracker) => MouseConfig
 genMouseConfig = (mouseTracker) ->
   {
-    peekIsDown:      -> mouseTracker.down
-    peekIsInside:    -> mouseTracker.inside
-    peekX:           -> mouseTracker.x
-    peekY:           -> mouseTracker.y
+    peekIsDown:   -> mouseTracker.down
+    peekIsInside: -> mouseTracker.inside
+    peekX:        -> mouseTracker.x
+    peekY:        -> mouseTracker.y
   }
 
 # (Ractive, (String) => Unit) => OutputConfig

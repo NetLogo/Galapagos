@@ -309,8 +309,8 @@ controlEventTraffic = (controller, performUpdate) ->
 
     if showPropertyValue
       componentToFocus = {
-        "Code": "codePane",
-        "Info": "infotab",
+        "Code":    "codePane",
+        "Info":    "infoTab",
         "Console": "console"
       }[tabCanonicalName]
 

@@ -11,23 +11,23 @@ extractWorldShape = (world) ->
     actualMaxX: (world.maxpxcor ? 25) + 0.5,
     actualMinY: (world.minpycor ? -25) - 0.5,
     actualMaxY: (world.maxpycor ? 25) + 0.5,
-    patchsize: world.patchsize ? 9,
-    wrapX: world.wrappingallowedinx,
-    wrapY: world.wrappingallowediny,
+    patchsize:  world.patchsize ? 9,
+    wrapX:      world.wrappingallowedinx,
+    wrapY:      world.wrappingallowediny,
   }
-  worldShape.onePixel = 1 / worldShape.patchsize
-  worldShape.worldWidth = worldShape.actualMaxX - worldShape.actualMinX
-  worldShape.worldHeight = worldShape.actualMaxY - worldShape.actualMinY
+  worldShape.onePixel     = 1 / worldShape.patchsize
+  worldShape.worldWidth   = worldShape.actualMaxX - worldShape.actualMinX
+  worldShape.worldHeight  = worldShape.actualMaxY - worldShape.actualMinY
   worldShape.worldCenterX = (worldShape.actualMaxX + worldShape.actualMinX) / 2
   worldShape.worldCenterY = (worldShape.actualMaxY + worldShape.actualMinY) / 2
   worldShape
 
 setImageSmoothing = (ctx, imageSmoothing) ->
-  ctx.imageSmoothingEnabled = imageSmoothing
+  ctx.imageSmoothingEnabled       = imageSmoothing
   ctx.webkitImageSmoothingEnabled = imageSmoothing
-  ctx.mozImageSmoothingEnabled = imageSmoothing
-  ctx.oImageSmoothingEnabled = imageSmoothing
-  ctx.msImageSmoothingEnabled = imageSmoothing
+  ctx.mozImageSmoothingEnabled    = imageSmoothing
+  ctx.oImageSmoothingEnabled      = imageSmoothing
+  ctx.msImageSmoothingEnabled     = imageSmoothing
   return
 
 # (Context, Array[Number]) -> Unit
@@ -77,7 +77,7 @@ drawRectTo = (srcCanvas, dstCtx, xPcor, yPcor, wPcor, hPcor, worldShape, srcQual
   wPix = wPcor * scale
   hPix = hPcor * scale
 
-  xPixs = if wrapX then [centerXPix - canvasWidth, centerXPix, centerXPix + canvasWidth] else [centerXPix]
+  xPixs = if wrapX then [centerXPix - canvasWidth,  centerXPix, centerXPix + canvasWidth ] else [centerXPix]
   yPixs = if wrapY then [centerYPix - canvasHeight, centerYPix, centerYPix + canvasHeight] else [centerYPix]
   for xPix in xPixs
     for yPix in yPixs
