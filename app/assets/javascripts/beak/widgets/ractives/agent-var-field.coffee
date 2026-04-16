@@ -71,7 +71,7 @@ RactiveAgentVarField = Ractive.extend({
       return
 
     'submit-input': (_, input) ->
-      if input.trim().length > 0
+      if input.trim().length > 0 and input isnt @get('varValueAsStr')
         varName = @get('varName')
         switch @get('editEffect')
           when 'NORMAL'
