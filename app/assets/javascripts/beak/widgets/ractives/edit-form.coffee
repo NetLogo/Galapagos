@@ -3,10 +3,11 @@ import { getAllFocusableElements } from "../accessibility/utils.js"
 
 EditForm = Ractive.extend({
 
-  lastUpdateMs: undefined # Number
-  startX:       undefined # Number
-  startY:       undefined # Number
-  view:         undefined # Element
+  lastUpdateMs:   undefined # Number
+  startX:         undefined # Number
+  startY:         undefined # Number
+  view:           undefined # Element
+  _formModelElem: undefined # Element
 
   data: -> {
     parentClass:     'netlogo-widget-container' # String
@@ -75,6 +76,7 @@ EditForm = Ractive.extend({
       @fire('edit-form-opened', this)
 
       container     = findParentByClass(@get('parentClass'))(elem)
+      modelElem     = findParentByClass('netlogo-model')(elem)
 
       containerMidX = container.offsetWidth  / 2
       containerMidY = container.offsetHeight / 2
@@ -82,8 +84,19 @@ EditForm = Ractive.extend({
       dialogHalfWidth  = elem.offsetWidth  / 2
       dialogHalfHeight = elem.offsetHeight / 2
 
+      minYLoc = if modelElem?
+        modelElem.getBoundingClientRect().top - elem.parentElement.getBoundingClientRect().top
+      else
+        0
+
+      finalYLoc = Math.max(minYLoc, @get('verticalOffset') ? (containerMidY - dialogHalfHeight))
+
       @set('xLoc', @get('horizontalOffset') ? (containerMidX - dialogHalfWidth))
-      @set('yLoc', @get('verticalOffset')   ? (containerMidY - dialogHalfHeight))
+      @set('yLoc', finalYLoc)
+
+      if modelElem?
+        @_formModelElem = modelElem
+        modelElem.style.minHeight = "#{finalYLoc - minYLoc + elem.offsetHeight}px"
 
       @resetPartial('widgetFields', @partials.widgetFields)
 
@@ -99,6 +112,9 @@ EditForm = Ractive.extend({
       false
 
     'activate-cloaking-device': ->
+      if @_formModelElem?
+        @_formModelElem.style.minHeight = ''
+        @_formModelElem = undefined
       @set('visible', false)
       @fire('unlock-selection')
       @fire('edit-form-closed', this)
