@@ -110,7 +110,7 @@ button.inspection-button {
   width:      min-content;
   padding:    0.5em;
   border:     1px solid gray;
-  background: white
+  background: white;
 }
 
 .inspection-agent-monitor-watch-button:hover {

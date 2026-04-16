@@ -1,36 +1,36 @@
 #nlw-settings {
-  display: flex;
-  flex-direction: column;
+  display:         flex;
+  flex-direction:  column;
   justify-content: center;
 }
 
 .settings-panel {
-  display: grid;
+  display:               grid;
   grid-template-columns: 20em min-content;
 }
 
 .settings-header {
-  font-size: 1.4rem;
-  margin: 0 0 1em 0;
-  text-align: center;
+  font-size:   1.4rem;
+  margin:      0 0 1em 0;
+  text-align:  center;
   grid-column: span 2;
 }
 
 .settings-subheader {
-  font-size: 1.4rem;
-  margin: 1em 0 0.5em 0;
-  text-align: center;
+  font-size:   1.4rem;
+  margin:      1em 0 0.5em 0;
+  text-align:  center;
   grid-column: span 2;
 }
 
 .setting-label {
   grid-column: span 1;
-  margin: 0 0 0.8em 0;
+  margin:      0 0 0.8em 0;
 }
 
 .setting-control {
   grid-column: span 1;
-  margin: 0 0 0.8em 0;
+  margin:      0 0 0.8em 0;
 }
 
 li {
@@ -38,5 +38,5 @@ li {
 }
 
 .description {
-text-align: center;
+  text-align: center;
 }

@@ -8,16 +8,16 @@
 }
 
 .netlogo-model {
-  display: flex;
-  padding: 20px;
-  flex-flow: column;
-  font-size: 12px;
+  display:     flex;
+  padding:     20px;
+  flex-flow:   column;
+  font-size:   12px;
   font-family: var(--font-widget);
-  outline: none;
+  outline:     none;
 }
 
 .netlogo-display-vertical {
-  display: flex;
+  display:   flex;
   flex-flow: column;
 }
 
@@ -26,10 +26,10 @@
 }
 
 .netlogo-display-horizontal {
-  display: flex;
-  flex-flow: row;
+  display:        flex;
+  flex-flow:      row;
   flex-direction: row;
-  align-items: unset;
+  align-items:    unset;
 }
 
 .netlogo-display-horizontal > .netlogo-tab-area {
@@ -38,17 +38,17 @@
 }
 
 .netlogo-header {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
+  display:         flex;
+  flex-flow:       row;
+  align-items:     center;
   justify-content: space-between;
 }
 
 .netlogo-widget {
-  box-sizing: border-box;
+  box-sizing:       border-box;
   background-color: #eeeeee;
-  border-radius: var(--widget-outer-radius);
-  overflow: hidden;
+  border-radius:    var(--widget-outer-radius);
+  overflow:         hidden;
 }
 
 .netlogo-widget:focus-visible,
@@ -63,7 +63,7 @@
 
 .netlogo-command,
 .netlogo-input {
-  user-select: none;
+  user-select:      none;
   -moz-user-select: none;
 }
 
@@ -74,34 +74,34 @@
 
 .netlogo-command.netlogo-disabled:hover {
   box-shadow: none;
-  cursor: default;
+  cursor:     default;
 }
 
 .netlogo-tab-area {
-  border: 2px solid;
+  border:        2px solid;
   border-radius: 10px;
   /* In a prior version this was set dynamically to between 400-ish and 800-ish pixels.  It really only affected the
     code tab, and the effect it gave was more jankiness than user accomodation.  I decided just sticking to a static
     value works fine for now.  Eventually we should give users more direct control over size and placement of the tabs,
     but that's for future work.  */
-  width: 760px;
-  overflow: hidden;
+  width:         760px;
+  overflow:      hidden;
 }
 
 .netlogo-tab {
-  display: block;
-  position: relative;
-  padding: 7px 30px 7px 7px;
+  display:    block;
+  position:   relative;
+  padding:    7px 30px 7px 7px;
   text-align: center;
-  cursor: pointer;
+  cursor:     pointer;
 }
 
 .netlogo-tab-caret {
-  position: absolute;
-  right: 1em;
-  top: 50%;
+  position:  absolute;
+  right:     1em;
+  top:       50%;
   transform: translateY(-50%);
-  height: 20px;
+  height:    20px;
 }
 
 .netlogo-tab.netlogo-active .netlogo-tab-caret {
@@ -109,7 +109,7 @@
 }
 
 .netlogo-tab:not(:last-child) {
-  border-bottom: 1px solid;
+  border-bottom:       1px solid;
   border-bottom-color: inherit;
 }
 
@@ -118,16 +118,16 @@
 }
 
 .netlogo-tab-text {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  user-select: none;
+  font-size:        20px;
+  font-weight:      bold;
+  text-align:       center;
+  user-select:      none;
   -moz-user-select: none;
 }
 
 .netlogo-tab-content {
   margin-top: 0;
-  border: 0 solid #242479;
+  border:     0 solid #242479;
 }
 
 #console-panel {
@@ -143,12 +143,12 @@
 }
 
 .unselectable {
-  user-select: none;
+  user-select:      none;
   -moz-user-select: none;
 }
 
 .netlogo-model-container {
-  width: min-content;
+  width:    min-content;
   position: relative;
 }
 
@@ -158,8 +158,8 @@
 
 .netlogo-model-masthead {
   flex-grow: 1;
-  margin: 0 10px 0 0;
-  width: 350px;
+  margin:    0 10px 0 0;
+  width:     350px;
 }
 
 .netlogo-model-masthead > form {
@@ -167,25 +167,25 @@
 }
 
 .netlogo-model-status {
-  position: absolute;
-  width: auto;
-  margin: 0 15%;
-  padding: 0 20px;
-  background: #bcbce5;
-  border-color: #242479;
-  border: 1px solid;
-  border-top: 0;
+  position:      absolute;
+  width:         auto;
+  margin:        0 15%;
+  padding:       0 20px;
+  background:    #bcbce5;
+  border-color:  #242479;
+  border:        1px solid;
+  border-top:    0;
   border-radius: 0 0 8px 8px;
-  font-family: var(--font-widget);
-  font-size: smaller;
+  font-family:   var(--font-widget);
+  font-size:     smaller;
 }
 
 .netlogo-model-status-closer {
-  margin: auto 0 auto 10px;
-  width: min-content;
-  height: min-content;
-  cursor: pointer;
-  color: #7f7f7f;
+  margin:      auto 0 auto 10px;
+  width:       min-content;
+  height:      min-content;
+  cursor:      pointer;
+  color:       #7f7f7f;
   font-weight: bold;
   user-select: none;
 }
@@ -195,7 +195,7 @@
 }
 
 .netlogo-model-status-link {
-  color: blue;
+  color:  blue;
   cursor: pointer;
 }
 
@@ -209,19 +209,19 @@
 
 .netlogo-model-title {
   background-color: initial;
-  margin: 0;
-  overflow: hidden;
-  padding: 0 10px;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  margin:           0;
+  overflow:         hidden;
+  padding:          0 10px;
+  text-align:       center;
+  text-overflow:    ellipsis;
+  white-space:      nowrap;
 }
 
 .netlogo-model-modified {
-  display: flex;
+  display:         flex;
   justify-content: center;
-  margin: 0;
-  padding: 0 10px;
+  margin:          0;
+  padding:         0 10px;
 }
 
 .hidden {
@@ -229,24 +229,24 @@
 }
 
 .netlogo-title-input {
-  font-size: 1.5em;
-  font-weight: bold;
+  font-size:      1.5em;
+  font-weight:    bold;
   letter-spacing: normal;
-  margin: 0 5%;
-  text-align: center;
-  width: 350px;
+  margin:         0 5%;
+  text-align:     center;
+  width:          350px;
 }
 
 .netlogo-code-container {
   background-color: white;
-  margin-top: 0;
+  margin-top:       0;
 }
 
 .netlogo-ugly-button {
-  color: black;
-  text-align: center;
+  color:            black;
+  text-align:       center;
   background-color: rgb(240, 240, 240);
-  border-color: rgb(238, 238, 238);
+  border-color:     rgb(238, 238, 238);
 }
 
 .netlogo-ugly-button:disabled {
@@ -254,24 +254,24 @@
 }
 
 .netlogo-recompilation-button {
-  width: 30%;
-  margin: 12px auto;
-  font-size: 16px;
+  width:       30%;
+  margin:      12px auto;
+  font-size:   16px;
   font-weight: bold;
-  cursor: pointer;
+  cursor:      pointer;
 }
 
 .netlogo-procedurenames-dropdown {
-  width: 30%;
-  margin: 12px auto;
-  font-size: 16px;
+  width:       30%;
+  margin:      12px auto;
+  font-size:   16px;
   font-weight: bold;
-  cursor: pointer;
+  cursor:      pointer;
 }
 
 .netlogo-codetab-widget-list {
   padding: 0;
-  margin: 12px 12px;
+  margin:  12px 12px;
   display: inline;
 }
 
@@ -285,7 +285,7 @@
 }
 
 .netlogo-autocomplete-checkbox {
-  width: 14px;
+  width:  14px;
   height: 14px;
 }
 
@@ -294,21 +294,21 @@
 }
 
 .netlogo-codeusage-popup {
-  position: absolute;
-  z-index: 10;
-  border: 1px solid #b2b2b2;
-  background: white;
-  box-shadow: 3px 3px 2px #e9e9e9;
+  position:      absolute;
+  z-index:       10;
+  border:        1px solid #b2b2b2;
+  background:    white;
+  box-shadow:    3px 3px 2px #e9e9e9;
   border-radius: 4px;
-  max-height: 15em;
-  overflow-y: auto;
+  max-height:    15em;
+  overflow-y:    auto;
 }
 
 .netlogo-codeusage-list {
-  list-style: none;
-  margin-top: 1px;
-  padding: 1px;
-  font-size: 90%;
+  list-style:  none;
+  margin-top:  1px;
+  padding:     1px;
+  font-size:   90%;
   font-family: monospace;
 }
 
@@ -317,8 +317,8 @@
 }
 
 .netlogo-codeusage-item:hover {
-  color: white;
-  background: #284570;
+  color:         white;
+  background:    #284570;
   border-radius: 2px;
 }
 
@@ -328,26 +328,26 @@
 }
 
 .netlogo-info {
-  flex: 1;
-  margin-top: 0;
+  flex:        1;
+  margin-top:  0;
   padding-top: 10px;
-  padding: 15px;
+  padding:     15px;
 }
 
 .netlogo-command-center-container {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  margin: 0;
+  width:          100%;
+  height:         100%;
+  margin:         0;
 }
 
 .netlogo-command-center {
-  flex: 1;
-  display: flex;
+  flex:           1;
+  display:        flex;
   flex-direction: column;
-  height: 175px;
-  padding: 6px 8px;
+  height:         175px;
+  padding:        6px 8px;
 }
 
 /* I don't actually understand why setting `width` here does what it does.  Without it, if you fill up the Command
@@ -358,24 +358,25 @@
  * width to *any* numeric value, the input always fits exactly the amount of space it's supposed to use.  Fricken weird.
  * --Jason B. (10/12/17)
  */
+
 .netlogo-input-group {
-  display: flex;
-  align-items: stretch;
-  flex-grow: 1;
-  border: 2px solid var(--color-tab-border);
+  display:       flex;
+  align-items:   stretch;
+  flex-grow:     1;
+  border:        2px solid var(--color-tab-border);
   border-radius: 6px;
-  overflow: hidden;
+  overflow:      hidden;
 }
 
 .netlogo-input-group > select {
-  border: none;
-  border-right: 1px solid #ccc;
+  border:        none;
+  border-right:  1px solid #ccc;
   border-radius: 0;
-  background: #f0f0f0;
-  padding: 0 0.4em;
-  margin: 0;
-  flex-shrink: 0;
-  outline: none;
+  background:    #f0f0f0;
+  padding:       0 0.4em;
+  margin:        0;
+  flex-shrink:   0;
+  outline:       none;
 }
 
 .netlogo-input-group .netlogo-command-center-editor {
@@ -395,28 +396,28 @@
 }
 
 .netlogo-command-center-editor {
-  height: auto;
-  margin: 0 10px;
+  height:    auto;
+  margin:    0 10px;
   flex-grow: 1;
-  width: 42px;
+  width:     42px;
 }
 
 .netlogo-command-center-select {
-  height: 27px;
+  height:    27px;
   min-width: 75px;
-  width: 10vw;
+  width:     10vw;
 }
 
 .netlogo-command-center-editor .CodeMirror {
-  border: 1px solid #111;
-  height: auto;
+  border:     1px solid #111;
+  height:     auto;
   box-sizing: border-box;
 }
 
 .netlogo-command-center-input {
-  display: flex;
+  display:     flex;
   align-items: center;
-  gap: 0.5em;
+  gap:         0.5em;
   flex-shrink: 0;
 }
 
@@ -426,10 +427,10 @@
 }
 
 .netlogo-command-center-button {
-  height: 30px;
-  min-width: 50px;
-  width: 10vw;
-  border-radius: 8px;
+  height:           30px;
+  min-width:        50px;
+  width:            10vw;
+  border-radius:    8px;
   background-color: var(--medium-blue);
 }
 
@@ -446,11 +447,11 @@
 }
 
 .netlogo-model-container-join {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  min-width: 900px;
-  margin: 0 auto;
+  display:          flex;
+  flex-direction:   row;
+  justify-content:  center;
+  min-width:        900px;
+  margin:           0 auto;
   background-color: var(--light-gray);
 }
 
@@ -460,58 +461,58 @@
 }
 
 .netlogo-output-area {
-  flex-grow: 1;
-  flex-direction: column;
+  flex-grow:        1;
+  flex-direction:   column;
   background-color: white;
-  margin: 0px;
-  overflow: auto;
+  margin:           0px;
+  overflow:         auto;
 }
 
 .netlogo-speed-slider {
   background-color: transparent;
-  border: none;
-  padding: 0.4rem;
-  flex: 1 1 auto;
+  border:           none;
+  padding:          0.4rem;
+  flex:             1 1 auto;
 }
 
 .netlogo-speed-slider-layout {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  width: 100%;
+  width:          100%;
 }
 
 .netlogo-speed-slider input {
   border: none;
-  width: 100%;
+  width:  100%;
 }
 
 .model-speed-input {
-  display: flex;
-  gap: 0.5rem;
+  display:         flex;
+  gap:             0.5rem;
   justify-content: center;
-  align-items: center;
-  margin: 0.1rem;
+  align-items:     center;
+  margin:          0.1rem;
 }
 
 .netlogo-slider-bar.model-speed-slider-interface {
-  height: 2px;
-  min-width: 150px;
+  height:     2px;
+  min-width:  150px;
   margin-top: unset;
 }
 
 .netlogo-slider-bar.model-speed-slider-interface > .netlogo-slider-bar-handle {
   background-color: var(--color-widget-accessories);
-  top: calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
+  top:              calc(-1 * (var(--circle-radius))); /* 1px is to account for the border width */
 }
 
 .netlogo-beautiful-button {
   background-color: white;
-  border: 1px solid #afafaf;
-  border-radius: 4px;
-  padding: 0.15lh 0.35lh;
-  font-size: 14px;
-  font-family: monospace;
-  cursor: pointer;
+  border:           1px solid #afafaf;
+  border-radius:    4px;
+  padding:          0.15lh 0.35lh;
+  font-size:        14px;
+  font-family:      monospace;
+  cursor:           pointer;
 }
 
 .netlogo-beautiful-button:hover {
@@ -538,27 +539,27 @@
 
 .netlogo-tick-counter {
   background-color: #f4f4f4;
-  font-size: 13px;
-  margin: 3px;
-  border: none;
-  height: 15px;
+  font-size:        13px;
+  margin:           3px;
+  border:           none;
+  height:           15px;
 }
 
 .netlogo-button {
-  font-family: var(--font-widget);
-  font-size: 12px;
-  border: inherit;
-  color: black;
-  display: flex;
+  font-family:     var(--font-widget);
+  font-size:       12px;
+  border:          inherit;
+  color:           black;
+  display:         flex;
   justify-content: space-around;
-  align-items: center;
-  padding: 0px;
+  align-items:     center;
+  padding:         0px;
 }
 
 .netlogo-button:disabled,
 .netlogo-button.netlogo-disabled {
   background-color: var(--color-widget-button-disabled);
-  color: var(--color-widget-button-disabled-text);
+  color:            var(--color-widget-button-disabled-text);
 }
 
 .netlogo-button.clear-button {
@@ -567,17 +568,16 @@
 
 .netlogo-button .netlogo-label {
   /* For some reason, Safari doesn't like justify-content in buttons,
-      we have to resort to putting a span in the button that can then be
-      centered.
-      BCH 11/14/2014 */
+    we have to resort to putting a span in the button that can then be
+    centered. BCH 11/14/2014 */
   margin: auto;
 }
 
 .netlogo-action-key {
-  color: grey;
+  color:    grey;
   position: absolute;
-  right: 6px;
-  top: 5px;
+  right:    6px;
+  top:      5px;
 }
 
 .netlogo-action-key.netlogo-focus {
@@ -587,32 +587,31 @@
 .netlogo-button:active,
 .netlogo-forever-button.netlogo-active {
   background-color: gray;
-  color: white;
+  color:            white;
 }
 
 .netlogo-forever-button .netlogo-forever-icon {
-  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+  background-image:  url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjMDAwMDAwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
   background-repeat: no-repeat;
-  background-size: 10px 10px;
-  bottom: 5px;
-  height: 10px;
-  position: absolute;
-  right: 5px;
-  width: 10px;
-
-  filter: invert(1);
+  background-size:   10px 10px;
+  bottom:            5px;
+  height:            10px;
+  position:          absolute;
+  right:             5px;
+  width:             10px;
+  filter:            invert(1);
 }
 
 .netlogo-disabled .netlogo-forever-icon {
   background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjE2cHgiIGhlaWdodD0iMTZweCIgdmlld0JveD0iMCAwIDQzOC41NDIgNDM4LjU0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDM4LjU0MiA0MzguNTQyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTQyNy40MDgsMTkuNjk3Yy03LjgwMy0zLjIzLTE0LjQ2My0xLjkwMi0xOS45ODYsMy45OTlsLTM3LjExNiwzNi44MzRDMzQ5Ljk0LDQxLjMwNSwzMjYuNjcyLDI2LjQxMiwzMDAuNSwxNS44NDggICBDMjc0LjMyOCw1LjI4NSwyNDcuMjUxLDAuMDAzLDIxOS4yNzEsMC4wMDNjLTI5LjY5MiwwLTU4LjA1Miw1LjgwOC04NS4wOCwxNy40MTdjLTI3LjAzLDExLjYxLTUwLjM0NywyNy4yMTUtNjkuOTUxLDQ2LjgyICAgYy0xOS42MDUsMTkuNjA3LTM1LjIxNCw0Mi45MjEtNDYuODI0LDY5Ljk0OUM1LjgwNywxNjEuMjE5LDAsMTg5LjU3NSwwLDIxOS4yNzFjMCwyOS42ODcsNS44MDcsNTguMDUsMTcuNDE3LDg1LjA3OSAgIGMxMS42MTMsMjcuMDMxLDI3LjIxOCw1MC4zNDcsNDYuODI0LDY5Ljk1MmMxOS42MDQsMTkuNTk5LDQyLjkyMSwzNS4yMDcsNjkuOTUxLDQ2LjgxOGMyNy4wMjgsMTEuNjExLDU1LjM4OCwxNy40MTksODUuMDgsMTcuNDE5ICAgYzMyLjczNiwwLDYzLjg2NS02Ljg5OSw5My4zNjMtMjAuN2MyOS41LTEzLjc5NSw1NC42MjUtMzMuMjYsNzUuMzc3LTU4LjM4NmMxLjUyLTEuOTAzLDIuMjM0LTQuMDQ1LDIuMTM2LTYuNDI0ICAgYy0wLjA4OS0yLjM3OC0wLjk5OS00LjMyOS0yLjcxMS01Ljg1MmwtMzkuMTA4LTM5LjM5OWMtMi4xMDEtMS43MTEtNC40NzMtMi41NjYtNy4xMzktMi41NjZjLTMuMDQ1LDAuMzgtNS4yMzIsMS41MjYtNi41NjYsMy40MjkgICBjLTEzLjg5NSwxOC4wODYtMzAuOTMsMzIuMDcyLTUxLjEwNyw0MS45NzdjLTIwLjE3Myw5Ljg5NC00MS41ODYsMTQuODM5LTY0LjIzNywxNC44MzljLTE5Ljc5MiwwLTM4LjY4NC0zLjg1NC01Ni42NzEtMTEuNTY0ICAgYy0xNy45ODktNy43MDYtMzMuNTUxLTE4LjEyNy00Ni42ODItMzEuMjYxYy0xMy4xMy0xMy4xMzUtMjMuNTUxLTI4LjY5MS0zMS4yNjEtNDYuNjgyYy03LjcwOC0xNy45ODctMTEuNTYzLTM2Ljg3NC0xMS41NjMtNTYuNjcxICAgYzAtMTkuNzk1LDMuODU4LTM4LjY5MSwxMS41NjMtNTYuNjc0YzcuNzA3LTE3Ljk4NSwxOC4xMjctMzMuNTQ3LDMxLjI2MS00Ni42NzhjMTMuMTM1LTEzLjEzNCwyOC42OTMtMjMuNTU1LDQ2LjY4Mi0zMS4yNjUgICBjMTcuOTgzLTcuNzA3LDM2Ljg3OS0xMS41NjMsNTYuNjcxLTExLjU2M2MzOC4yNTksMCw3MS40NzUsMTMuMDM5LDk5LjY0NiwzOS4xMTZsLTM5LjQwOSwzOS4zOTQgICBjLTUuOTAzLDUuNzExLTcuMjMxLDEyLjI3OS00LjAwMSwxOS43MDFjMy4yNDEsNy42MTQsOC44NTYsMTEuNDIsMTYuODU0LDExLjQyaDEyNy45MDZjNC45NDksMCw5LjIzLTEuODA3LDEyLjg0OC01LjQyNCAgIGMzLjYxMy0zLjYxNiw1LjQyLTcuODk4LDUuNDItMTIuODQ3VjM2LjU1QzQzOC41NDIsMjguNTU4LDQzNC44NCwyMi45NDMsNDI3LjQwOCwxOS42OTd6IiBmaWxsPSIjODA4MDgwIi8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
-  filter: unset;
+  filter:           unset;
 }
 
 .netlogo-button-agent-context {
   font-size: 11px;
-  left: 8px;
-  position: absolute;
-  top: 5px;
+  left:      8px;
+  position:  absolute;
+  top:       5px;
 }
 
 .netlogo-disabled .netlogo-button-agent-content {
@@ -622,13 +621,14 @@
 .netlogo-button.netlogo-disabled:active,
 .netlogo-forever-button.netlogo-disabled.netlogo-active {
   background-color: var(--color-widget-button-disabled);
-  color: var(--color-widget-button-disabled-text);
+  color:            var(--color-widget-button-disabled-text);
 }
 
 .netlogo-command {
   background-color: var(--color-widget-button);
-  color: var(--color-widget-button-text);
+  color:            var(--color-widget-button-text);
 }
+
 .netlogo-command.netlogo-active,
 .netlogo-command:active {
   background-color: var(--color-widget-button-active);
@@ -644,16 +644,17 @@
 
 .netlogo-note {
   background-color: white;
-  border: none;
-  margin: 0;
-  padding: 2px;
-  font-family: var(--font-widget);
+  border:           none;
+  margin:           0;
+  padding:          2px;
+  font-family:      var(--font-widget);
 }
 
 /* These are for the new Markdown display capabilities, values chosen to appear somewhat similar to desktop. -Jeremy B
 June 2025 */
+
 .netlogo-note {
-  display: flex;
+  display:        flex;
   flex-direction: column;
 }
 
@@ -672,14 +673,14 @@ June 2025 */
 .netlogo-note > ul,
 .netlogo-note > ol {
   padding-inline-start: 1.5em;
-  margin: 0 0 0.5rem;
+  margin:               0 0 0.5rem;
 }
 
 .netlogo-switcher {
-  display: flex;
+  display:     flex;
   align-items: center;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  cursor: pointer;
+  padding:     var(--widget-padding-y) var(--widget-padding-x);
+  cursor:      pointer;
 }
 
 .netlogo-switcher > .netlogo-label {
@@ -687,15 +688,13 @@ June 2025 */
 }
 
 .netlogo-switcher-element {
-  display: flex;
-  height: 100%;
+  display:       flex;
+  height:        100%;
   border-radius: 8px;
-
-  --knob-size: 12px;
-  width: var(--knob-size);
-  min-width: var(--knob-size);
-
-  position: relative;
+  --knob-size:   12px;
+  width:         var(--knob-size);
+  min-width:     var(--knob-size);
+  position:      relative;
 }
 
 input[type='checkbox']:checked ~ .netlogo-switcher-element {
@@ -715,33 +714,33 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
 }
 
 .netlogo-switcher-element > .netlogo-switcher-element-knob {
-  height: var(--knob-size);
-  width: var(--knob-size);
-
-  border-radius: 50%;
-  position: absolute;
-  left: 0;
-  scale: 1.05;
+  height:           var(--knob-size);
+  width:            var(--knob-size);
+  border-radius:    50%;
+  position:         absolute;
+  left:             0;
+  scale:            1.05;
   background-color: white;
-  box-shadow: inset 0 0 0 1px var(--color-widget-switch-primary);
-  transition: top 0.1s ease-in-out;
-
-  cursor: pointer;
+  box-shadow:       inset 0 0 0 1px var(--color-widget-switch-primary);
+  transition:       top 0.1s ease-in-out;
+  cursor:           pointer;
 }
+
 input[type='checkbox']:checked ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
   top: 0;
 }
+
 input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switcher-element-knob {
   top: calc(100% - var(--knob-size));
 }
 
 .netlogo-slider {
-  margin-top: 2px;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
+  margin-top:       2px;
+  padding:          var(--widget-padding-y) var(--widget-padding-x);
   background-color: var(--color-widget-background);
-  display: flex;
-  flex-flow: column;
-  justify-content: space-around;
+  display:          flex;
+  flex-flow:        column;
+  justify-content:  space-around;
 }
 
 .netlogo-slider:hover {
@@ -750,88 +749,75 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .netlogo-slider input[type='range'] {
   background-color: transparent;
-  height: 22px;
-  margin: 0px;
-  margin-bottom: -3px;
-  margin-top: -1px;
-  padding: 0px;
-  width: 100%;
+  height:           22px;
+  margin:           0px;
+  margin-bottom:    -3px;
+  margin-top:       -1px;
+  padding:          0px;
+  width:            100%;
 }
 
 .netlogo-slider-bar {
-  position: relative;
-
-  width: 100%;
-  height: 6px;
-
-  margin-top: 6px;
-
-  border-radius: 0.5rem;
-
+  position:         relative;
+  width:            100%;
+  height:           6px;
+  margin-top:       6px;
+  border-radius:    0.5rem;
   background-color: var(--color-widget-accessories-neutral);
 }
 
 .netlogo-slider-bar::after {
-  content: '';
-  display: block;
-
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-
-  width: 100%;
+  content:          '';
+  display:          block;
+  position:         absolute;
+  top:              50%;
+  transform:        translateY(-50%);
+  width:            100%;
   /* Increases hit-box without altering layout */
-  height: calc(100% + 0.8rem);
-
+  height:           calc(100% + 0.8rem);
   background-color: transparent;
-
-  cursor: pointer;
+  cursor:           pointer;
 }
 
 .netlogo-slider-bar > .netlogo-slider-bar-fill {
-  width: 0%;
-  height: 100%;
-
-  border-radius: 0.5rem;
-
+  width:            0%;
+  height:           100%;
+  border-radius:    0.5rem;
   background-color: var(--color-widget-accessories);
 }
 
 .netlogo-slider-bar > .netlogo-slider-bar-handle {
-  --circle-size: 10px;
-  --circle-radius: calc(var(--circle-size) / 2);
-  position: absolute;
-
-  width: var(--circle-size);
-  height: var(--circle-size);
-
-  border-radius: 50%;
-  border: 2px solid var(--color-widget-accessories);
+  --circle-size:    10px;
+  --circle-radius:  calc(var(--circle-size) / 2);
+  position:         absolute;
+  width:            var(--circle-size);
+  height:           var(--circle-size);
+  border-radius:    50%;
+  border:           2px solid var(--color-widget-accessories);
   background-color: white;
-
-  cursor: pointer;
-  top: calc(-1 * (var(--circle-radius) - 1px)); /* 1px is to account for the border width */
-  transform: translateX(-50%);
+  cursor:           pointer;
+  top:              calc(-1 * (var(--circle-radius) - 1px)); /* 1px is to account for the border width */
+  transform:        translateX(-50%);
 }
 
 .netlogo-label {
-  margin: 0 auto;
-  overflow: hidden;
+  margin:        0 auto;
+  overflow:      hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  user-select: none;
+  white-space:   nowrap;
+  user-select:   none;
 }
 
 .netlogo-slider-label {
-  display: flex;
+  display:         flex;
   justify-content: space-between;
-  align-items: center;
+  align-items:     center;
 }
 
 .netlogo-slider-label .netlogo-label {
   background-color: transparent;
-  flex: 1 1 auto;
-  min-width: 0;
+  flex:             1 1 auto;
+  min-width:        0;
 }
 
 .netlogo-slider-label .netlogo-slider-value {
@@ -840,15 +826,15 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .netlogo-slider-value-input {
   font-family: var(--font-widget);
-  font-size: 14px;
+  font-size:   14px;
 }
 
 .netlogo-slider-label input[type='number'] {
-  margin: 0px;
-  border: 1px solid var(--color-widget-input-border);
+  margin:        0px;
+  border:        1px solid var(--color-widget-input-border);
   border-radius: 6px;
-  text-align: right;
-  padding: 2px;
+  text-align:    right;
+  padding:       2px;
 }
 
 .netlogo-slider-label .netlogo-slider-value input {
@@ -856,9 +842,9 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-monitor {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
+  padding:         var(--widget-padding-y) var(--widget-padding-x);
+  display:         flex;
+  flex-flow:       column;
   justify-content: space-around;
 }
 
@@ -868,16 +854,15 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .netlogo-monitor .netlogo-value {
   background-color: white;
-  min-height: 11px;
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  border: 1px solid #b2b2b2;
-  border-radius: 6px;
-  flex-shrink: 0;
-  flex-grow: 1;
-
-  max-width: calc(100% - 1 * var(--widget-padding-x));
-  text-overflow: ellipsis;
-  overflow-x: hidden;
+  min-height:       11px;
+  padding:          var(--widget-padding-y) var(--widget-padding-x);
+  border:           1px solid #b2b2b2;
+  border-radius:    6px;
+  flex-shrink:      0;
+  flex-grow:        1;
+  max-width:        calc(100% - 1 * var(--widget-padding-x));
+  text-overflow:    ellipsis;
+  overflow-x:       hidden;
 }
 
 .netlogo-value {
@@ -889,30 +874,30 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-input-box {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
+  padding:         var(--widget-padding-y) var(--widget-padding-x);
+  display:         flex;
+  flex-flow:       column;
   justify-content: space-around;
 }
 
 .netlogo-multiline-input {
-  flex-grow: 1;
-  height: 0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
-  width: auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
-  margin: 4px;
-  resize: none;
-  border: 1.5px solid var(--color-widget-input-border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
+  flex-grow:      1;
+  height:         0; /* This is a hack to get Input widget labels the right heights in Firefox --Jason B. (11/23/17) */
+  width:          auto; /* This is a hack to get input type="number" widgets sized correctly in Firefox -Jeremy B. Jan 2018 */
+  margin:         4px;
+  resize:         none;
+  border:         1.5px solid var(--color-widget-input-border);
+  box-shadow:     0 1px 3px rgba(0, 0, 0, 0.12);
+  border-radius:  4px;
   padding-inline: 0.2rem;
-  font-family: var(--font-widget);
-  font-size: 12px;
+  font-family:    var(--font-widget);
+  font-size:      12px;
 }
 
 .netlogo-multiline-input[data-type='number'] {
-  color: #a42f00;
+  color:       #a42f00;
   font-family: monospace;
-  font-size: 14px;
+  font-size:   14px;
 }
 
 .netlogo-input-box > .netlogo-label {
@@ -921,14 +906,14 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .netlogo-singleline-input {
   flex-grow: 1;
-  margin: 4px;
-  resize: none;
+  margin:    4px;
+  resize:    none;
 }
 
 .netlogo-chooser {
-  padding: var(--widget-padding-y) var(--widget-padding-x);
-  display: flex;
-  flex-flow: column;
+  padding:         var(--widget-padding-y) var(--widget-padding-x);
+  display:         flex;
+  flex-flow:       column;
   justify-content: space-around;
 }
 
@@ -937,19 +922,19 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-chooser-select {
-  border: 1px solid var(--color-widget-select-border);
-  border-radius: 4px;
-  padding: 0.1rem 0.2rem;
-  font-family: var(--font-widget);
-  font-size: 12px;
+  border:           1px solid var(--color-widget-select-border);
+  border-radius:    4px;
+  padding:          0.1rem 0.2rem;
+  font-family:      var(--font-widget);
+  font-size:        12px;
   background-color: #ffffff;
 }
 
 .netlogo-plot {
   box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
-  overflow: visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
-  padding: 0;
-  border: 1px solid #eeeeee;
+  overflow:   visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+  padding:    0;
+  border:     1px solid #eeeeee;
 }
 
 .highcharts-root {
@@ -966,32 +951,32 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .netlogo-subheader {
   align-items: center;
-  display: flex;
-  flex-flow: column;
-  flex-grow: 0;
+  display:     flex;
+  flex-flow:   column;
+  flex-grow:   0;
   white-space: nowrap;
 }
 
 .netlogo-powered-by-image {
   vertical-align: middle;
-  width: 24px;
-  height: 24px;
+  width:          24px;
+  height:         24px;
 }
 
 .netlogo-export-wrapper {
   align-items: center;
-  display: flex;
-  flex-grow: 0;
+  display:     flex;
+  flex-grow:   0;
   white-space: nowrap;
 }
 
 .netlogo-code-compile-error {
-  color: red;
-  display: flex;
-  flex-direction: row;
+  color:           red;
+  display:         flex;
+  flex-direction:  row;
   justify-content: center;
-  margin: 5px 0 -5px 0;
-  font-weight: bold;
+  margin:          5px 0 -5px 0;
+  font-weight:     bold;
 }
 
 .netlogo-widget-error {
@@ -1025,63 +1010,61 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-help-keybind-hint {
-  display: flex;
+  display:     flex;
   align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
+  gap:         8px;
+  flex:        0 0 auto;
   white-space: nowrap;
   user-select: none;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  color: inherit;
+  cursor:      pointer;
+  background:  none;
+  border:      none;
+  padding:     0;
+  font:        inherit;
+  color:       inherit;
 }
 
 .help-popup {
   background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  font-size: 20px;
-  position: absolute;
-  outline: none;
-  z-index: 200;
-  overflow-y: auto;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0, 0, 0, 0.5);
+  font-size:        20px;
+  position:         absolute;
+  outline:          none;
+  z-index:          200;
+  overflow-y:       auto;
 }
 
 .keyboard-help-content {
-  flex: 1;
+  flex:       1;
   overflow-y: visible;
 }
 
 .keyboard-help-table {
-  width: 100%;
+  width:           100%;
   border-collapse: collapse;
-  font-size: 16px;
+  font-size:       16px;
 }
 
 .keyboard-help-table thead {
-  position: sticky;
-  top: 0;
-
+  position:      sticky;
+  top:           0;
   border-bottom: 2px solid #dee2e6;
 }
 
 .keyboard-help-group-header {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.3rem;
-
-  padding: 0.5rem;
+  display:          flex;
+  flex-direction:   column;
+  align-items:      flex-start;
+  gap:              0.3rem;
+  padding:          0.5rem;
   background-color: #f8f9fa;
 }
 
 .keyboard-help-group-title {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size:   1.2rem;
 }
 
 .keyboard-help-group-description {
@@ -1090,94 +1073,94 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 
 .keyboard-help-table th {
   background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
-  font-weight: 600;
-  padding: 12px 8px;
-  text-align: left;
+  border-bottom:    2px solid #dee2e6;
+  font-weight:      600;
+  padding:          12px 8px;
+  text-align:       left;
 }
 
 .keyboard-help-table td {
-  border-bottom: 1px solid #dee2e6;
-  padding: 10px 8px;
+  border-bottom:  1px solid #dee2e6;
+  padding:        10px 8px;
   vertical-align: top;
 }
 
 .keyboard-help-multiple {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  gap: 4px;
+  gap:            4px;
 }
 
 .keyboard-help-key {
-  white-space: nowrap;
-  width: 200px;
+  white-space:   nowrap;
+  width:         200px;
   padding-right: 15px;
 }
 
 kbd {
-  background-color: #fafbfc;
+  background-color:    #fafbfc;
   border-bottom-color: #c6cbd1;
-  border-radius: 3px;
-  border: solid 1px #d1d5da;
-  box-shadow: inset 0 -1px 0 #c6cbd1;
-  color: #3b793a;
-  display: inline-block;
-  font: 14px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  line-height: 1.2;
-  padding: 4px 6px;
-  margin: 0 2px;
-  vertical-align: middle;
-  user-select: none;
+  border-radius:       3px;
+  border:              solid 1px #d1d5da;
+  box-shadow:          inset 0 -1px 0 #c6cbd1;
+  color:               #3b793a;
+  display:             inline-block;
+  font:                14px 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  line-height:         1.2;
+  padding:             4px 6px;
+  margin:              0 2px;
+  vertical-align:      middle;
+  user-select:         none;
 }
 
 .keyboard-help-description {
-  color: #555;
+  color:       #555;
   line-height: 1.4;
 }
 
 .keyboard-help-empty {
-  color: #666;
+  color:      #666;
   font-style: italic;
   text-align: center;
-  padding: 40px 20px;
-  font-size: 18px;
+  padding:    40px 20px;
+  font-size:  18px;
 }
 
 .modal-overlay {
   background-color: rgba(200, 200, 200, 0.7);
-  bottom: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 99;
+  bottom:           0;
+  left:             0;
+  position:         absolute;
+  right:            0;
+  top:              0;
+  z-index:          99;
 }
 
 .async-popup {
   background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  min-width: 120px;
-  padding: 10px 10px 0 14px;
-  position: absolute;
-  outline: none;
-  z-index: 90;
+  border:           1px solid black;
+  border-radius:    5px;
+  box-shadow:       0 0 10px rgba(0, 0, 0, 0.5);
+  min-width:        120px;
+  padding:          10px 10px 0 14px;
+  position:         absolute;
+  outline:          none;
+  z-index:          90;
 }
 
 .async-dialog-message {
-  font-size: 16px;
-  margin-top: 20px;
+  font-size:   16px;
+  margin-top:  20px;
   white-space: break-spaces;
-  word-break: break-word;
+  word-break:  break-word;
 }
 
 .async-dialog-button-row {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
   justify-content: flex-end;
-  margin: 10px 0;
+  margin:          10px 0;
 }
 
 .async-dialog-controls {
@@ -1189,68 +1172,55 @@ kbd {
 }
 
 .h-center-flexbox {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
   justify-content: center;
 }
 
 /* Modals */
+
 .netlogo-modal-container {
-  --z-basis: 100;
-  --border-width: 1px;
-  --title-padding: 0.2rem;
-  --title-height: 1rem;
-
-  box-sizing: border-box;
-  position: fixed;
-  z-index: var(--z-basis);
-
-  display: flex;
-  flex-direction: column;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 0.5rem;
-  box-shadow: 0px 1px 2px #00000080;
-
-  overflow: hidden;
-
-  border: solid 1px #e8e8e8;
-
-  transition: opacity 0.2s ease-in-out;
-
+  --z-basis:        100;
+  --border-width:   1px;
+  --title-padding:  0.2rem;
+  --title-height:   1rem;
+  box-sizing:       border-box;
+  position:         fixed;
+  z-index:          var(--z-basis);
+  display:          flex;
+  flex-direction:   column;
+  transform:        translate(-50%, -50%);
+  border-radius:    0.5rem;
+  box-shadow:       0px 1px 2px #00000080;
+  overflow:         hidden;
+  border:           solid 1px #e8e8e8;
+  transition:       opacity 0.2s ease-in-out;
   background-color: #eee;
 }
 
 .netlogo-modal-container.is-hidden {
-  opacity: 0;
+  opacity:        0;
   pointer-events: none !important;
 }
 
 .netlogo-modal-title {
-  position: sticky;
-  top: 0;
-
-  min-height: var(--title-height);
-
-  text-align: center;
-  padding: var(--title-padding);
-
-  cursor: grab;
-  user-select: none;
-
+  position:         sticky;
+  top:              0;
+  min-height:       var(--title-height);
+  text-align:       center;
+  padding:          var(--title-padding);
+  cursor:           grab;
+  user-select:      none;
   background-color: white;
-  border-bottom: solid var(--border-width) #111;
-
-  z-index: calc(var(--z-basis) + 1);
-
-  font-size: small;
+  border-bottom:    solid var(--border-width) #111;
+  z-index:          calc(var(--z-basis) + 1);
+  font-size:        small;
 }
 
 .netlogo-modal-top-bar-container {
   position: relative;
-  width: 100%;
+  width:    100%;
 }
 
 .netlogo-modal-title-text {
@@ -1259,24 +1229,26 @@ kbd {
 
 .netlogo-modal-content {
   overflow: auto;
-  flex: 1 1 auto; /* take remaining space */
+  flex:     1 1 auto;
 }
 
 /* Old-size */
+
 .old-size {
   border-radius: 4px;
 }
+
 .netlogo-slider.old-size {
-  padding-top: 2px;
-  padding-left: 3px;
+  padding-top:   2px;
+  padding-left:  3px;
   padding-right: 3px;
-  font-size: 12px;
+  font-size:     12px;
 }
 
 .old-size .netlogo-slider-label input[type='number'] {
-  margin: 0px;
-  border: 1px;
-  padding: 0px;
+  margin:    0px;
+  border:    1px;
+  padding:   0px;
   font-size: 12px;
 }
 
@@ -1309,7 +1281,7 @@ kbd {
 }
 
 .netlogo-chooser.old-size > .netlogo-chooser-select {
-  padding: 2px 4px;
+  padding:   2px 4px;
   font-size: 12px;
 }
 
@@ -1320,8 +1292,9 @@ kbd {
 .netlogo-widget-error {
   color: red;
 }
+
 .netlogo-widget-error.netlogo-button {
-  color: white;
+  color:      white;
   background: red;
 }
 
@@ -1338,26 +1311,24 @@ kbd {
 }
 
 /* Color input */
+
 .netlogo-color-input-loader {
   height: 100%;
 }
 
 .netlogo-color-input {
-  padding: 0.2rem;
-  margin: 0.1rem;
-  box-sizing: border-box;
-
-  aspect-ratio: 1 / 1;
-  width: 2rem;
-
-  border-radius: 0.2rem;
-
+  padding:          0.2rem;
+  margin:           0.1rem;
+  box-sizing:       border-box;
+  aspect-ratio:     1 / 1;
+  width:            2rem;
+  border-radius:    0.2rem;
   background-color: #eee;
-  height: 100%;
+  height:           100%;
 }
 
 .netlogo-color-input:hover {
-  cursor: pointer;
+  cursor:           pointer;
   background-color: #ccc;
 }
 
@@ -1366,21 +1337,17 @@ kbd {
 }
 
 .netlogo-swatches {
-  display: grid;
+  display:               grid;
   grid-template-columns: auto auto;
-
-  width: 100%;
-  aspect-ratio: 1 / 1;
-
-  gap: 0;
-
-  background-image: var(--checkerboard);
+  width:                 100%;
+  aspect-ratio:          1 / 1;
+  gap:                   0;
+  background-image:      var(--checkerboard);
   background-position-x: left;
   background-position-y: center;
-  inset: 0;
-
-  border-radius: 0.1rem;
-  overflow: hidden;
+  inset:                 0;
+  border-radius:         0.1rem;
+  overflow:              hidden;
 }
 
 .no-alpha .netlogo-swatches {

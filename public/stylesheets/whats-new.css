@@ -1,11 +1,11 @@
 table {
-  border: solid thin;
+  border:          solid thin;
   border-collapse: collapse;
 }
 
 th {
   text-align: center;
-  padding: 6px;
+  padding:    6px;
 }
 
 table tr {
@@ -14,5 +14,5 @@ table tr {
 
 table td {
   text-align: left;
-  padding: 6px;
+  padding:    6px;
 }

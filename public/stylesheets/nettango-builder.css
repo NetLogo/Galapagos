@@ -3,7 +3,7 @@ body#ntp-body, html#ntp-body {
 }
 
 #builder-body {
-  margin: 0px;
+  margin: 0;
 }
 
 .ntb-container-unthemed {
@@ -11,11 +11,11 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-container {
-  min-width: 800px;
-  border: 2px solid black;
+  min-width:        800px;
+  border:           2px solid black;
   background-color: white;
-  border-radius: 20px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-radius:    20px;
+  font-family:      "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .ntb-container label, .ntb-container-unthemed label {
@@ -23,32 +23,32 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-components {
-  display: flex;
+  display:        flex;
   flex-direction: column;
 }
 
 .ntb-title {
-  margin: 0 25px 0 0;
-  text-align: center;
+  margin:        0 25px 0 0;
+  text-align:    center;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: large;
-  font-weight: bold;
-  user-select: none;
+  white-space:   nowrap;
+  font-size:     large;
+  font-weight:   bold;
+  user-select:   none;
 }
 
 .ntb-title-icon {
-  display: inline;
+  display:        inline;
   vertical-align: sub;
-  max-width: 32px;
+  max-width:      32px;
 }
 
 .ntb-menu-controls {
-  padding: 10px 30px 10px 30px;
-  position: sticky;
-  top: 40px;
-  z-index: 90;
-  background: #FFF;
+  padding:       10px 30px;
+  position:      sticky;
+  top:           40px;
+  z-index:       90;
+  background:    #FFF;
   border-radius: 20px;
 }
 
@@ -58,33 +58,33 @@ body#ntp-body, html#ntp-body {
 
 .ntb-builder {
   position: relative;
-  margin: 0 0 10px 0;
+  margin:   0 0 10px 0;
 }
 
 .ntb-models {
-  margin-left: auto;
+  margin-left:  auto;
   margin-right: auto;
 }
 
 .ntb-models-vertical {
-  display: flex;
-  flex-flow: column;
+  display:     flex;
+  flex-flow:   column;
   align-items: center;
 }
 
 .ntb-models-horizontal {
-  display: flex;
-  flex-flow: row;
+  display:        flex;
+  flex-flow:      row;
   flex-direction: row;
-  align-items: unset;
+  align-items:    unset;
 }
 
 .ntb-netlogo-model {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  width: min-content;
-  height: min-content;
-  display: grid;
-  margin: 0 5px 10px 10px;
+  width:       min-content;
+  height:      min-content;
+  display:     grid;
+  margin:      0 5px 10px 10px;
 }
 
 .ntb-netlogo-model .netlogo-widget input[type=range] {
@@ -100,43 +100,43 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-block-def {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  background: #fff;
-  margin: 0 5px 4px 5px;
+  background:     #fff;
+  margin:         0 5px 4px 5px;
 }
 
 .ntb-json {
-  margin: 0.5em;
-  background: #fcfcfc;
+  margin:        0.5em;
+  background:    #fcfcfc;
   border-radius: 6px;
-  border: 1px solid #bbb;
-  width: fit-content;
+  border:        1px solid #bbb;
+  width:         fit-content;
 }
 
 .ntb-json > .CodeMirror {
   max-width: 600px;
-  height: 16em;
-  width: 600px;
+  height:    16em;
+  width:     600px;
 }
 
 .ntb-block-defs-list {
-  display: flex;
+  display:        flex;
   flex-direction: row;
-  margin-left: auto;
-  margin-right: auto;
-  align-content: top;
-  align-items: top;
+  margin-left:    auto;
+  margin-right:   auto;
+  align-content:  top;
+  align-items:    top;
 }
 
 .ntb-dialog-overlay {
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  position: absolute;
+  height:     100%;
+  width:      100%;
+  top:        0;
+  left:       0;
+  position:   absolute;
   background: rgba(0, 0, 0, 0.0);
-  z-index: 96;
+  z-index:    96;
 }
 
 .ntb-confirm-overlay {
@@ -144,24 +144,24 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-dialog {
-  display: grid;
+  display:               grid;
   grid-template-columns: 1fr 1fr;
-  width: max-content;
-  min-width: 500px;
-  background-color: white;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 1);
-  padding: 10px 10px 0 10px;
-  outline: none;
-  margin: 0 auto;
-  position: relative;
+  width:                 max-content;
+  min-width:             500px;
+  background-color:      white;
+  border:                1px solid black;
+  border-radius:         5px;
+  box-shadow:            0 0 30px rgba(0, 0, 0, 1);
+  padding:               10px 10px 0 10px;
+  outline:               none;
+  margin:                0 auto;
+  position:              relative;
 }
 
 .ntb-dialog-header {
   grid-column: 1 / 3;
-  margin: 0 auto;
-  font-size: 20px;
+  margin:      0 auto;
+  font-size:   20px;
   font-weight: 600;
   user-select: none;
 }
@@ -171,16 +171,16 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-dialog-text {
-  margin: 30px 15px;
+  margin:    30px 15px;
   max-width: 800px;
 }
 
 .ntb-dialog-buttons {
-  grid-column: 1 / 3;
+  grid-column:     1 / 3;
   justify-content: center;
-  align-items: center;
-  display: flex;
-  flex-direction: row;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
 }
 
 .ntb-dialog-button {
@@ -188,8 +188,8 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-netlogo-model-chooser {
-  margin: 10px;
-  margin-bottom: 0px;
+  margin:        10px;
+  margin-bottom: 0;
 }
 
 .ntb-netlogo-model-chooser > span.model-list {
@@ -197,13 +197,13 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-block-defs-controls {
-  display: flex;
+  display:        flex;
   flex-direction: row;
-  margin-left: auto;
-  margin-right: auto;
-  align-content: center;
-  align-items: center;
-  width: min-content;
+  margin-left:    auto;
+  margin-right:   auto;
+  align-content:  center;
+  align-items:    center;
+  width:          min-content;
 }
 
 .ntb-block-defs-controls > label {
@@ -211,40 +211,40 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-block-defs-controls > div > label {
-  display: block;
-  width: 100%;
-  font-size: 13px;
+  display:    block;
+  width:      100%;
+  font-size:  13px;
   text-align: center;
 }
 
 .ntb-block-defs-controls input[type="number"] {
-  font-size: 13px;
-  height: auto;
-  margin: 0.1em;
-  padding: 0.1em;
+  font-size:  13px;
+  height:     auto;
+  margin:     0.1em;
+  padding:    0.1em;
   text-align: right;
 }
 
 .ntb-form-row input[readonly] {
- background-color: #f6f6f6;
+  background-color: #f6f6f6;
 }
 
 .ntb-button, .ntb-file-label {
-  margin: 4px;
-  font-size: 13px;
-  padding: 8px;
-  padding-top: 2px;
-  padding-bottom: 3px;
-  border-color: #999;
-  border-width: 1px;
-  border-style: solid;
-  align-items: flex-start;
-  text-align: center;
-  border-radius: 4px;
+  margin:           4px;
+  font-size:        13px;
+  padding:          8px;
+  padding-top:      2px;
+  padding-bottom:   3px;
+  border-color:     #999;
+  border-width:     1px;
+  border-style:     solid;
+  align-items:      flex-start;
+  text-align:       center;
+  border-radius:    4px;
   background-color: #fff;
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
+  cursor:           pointer;
+  user-select:      none;
+  white-space:      nowrap;
 }
 
 .ntb-file-button {
@@ -253,55 +253,61 @@ body#ntp-body, html#ntp-body {
 
 .ntb-list-menu {
   list-style-image: none;
-  list-style-type: none;
-  margin: 10px;
-  padding: 0px;
+  list-style-type:  none;
+  margin:           10px;
+  padding:          0;
 }
 
 .ntb-list-menu > li {
-  color: #666;
-  margin: 4px;
+  color:     #666;
+  margin:    4px;
   font-size: 13px;
 }
+
 .ntb-list-menu > li > a, .ntb-list-menu > li > a:visited {
   text-decoration: none;
-  color: #06a;
+  color:           #06a;
 }
+
 .ntb-list-menu > li.ntb-list-menu-item, .ntb-list-menu > li.ntb-list-submenu {
   color: #06a;
 }
+
 .ntb-list-menu > li.ntb-list-menu-item {
   cursor: pointer;
 }
+
 .ntb-list-menu > li.ntb-list-menu-title {
   border-bottom: 1px solid #666;
 }
+
 .ntb-list-menu > li.ntb-list-menu-item:hover, .ntb-list-menu > li.ntb-list-submenu:hover, .ntb-list-menu > li > a:hover {
   background: #06a;
-  color: #fff;
+  color:      #fff;
 }
+
 .ntb-list-menu > li.ntb-list-spacer {
-  color: #666;
-  text-align: center;
+  color:       #666;
+  text-align:  center;
   line-height: 0.5em;
 }
 
 .ntb-list-submenu {
-  padding: 8px;
-  padding-top: 2px;
+  padding:        8px;
+  padding-top:    2px;
   padding-bottom: 3px;
 }
 
 .ntb-menu-text {
-  display: block;
-  padding: 8px;
-  padding-top: 2px;
+  display:        block;
+  padding:        8px;
+  padding-top:    2px;
   padding-bottom: 3px;
 }
 
 #ntb-block-edit-window {
   box-shadow: 0 0 30px rgba(0, 0, 0, 1);
-  width: unset;
+  width:      unset;
 }
 
 .ntb-block-form {
@@ -309,58 +315,58 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-block-form-fields {
-  width: min-content;
-  min-width: 550px;
+  width:      min-content;
+  min-width:  550px;
   max-height: 800px;
   overflow-y: scroll;
 }
 
 .ntb-block-preview {
-  display: flex;
+  display:        flex;
   flex-direction: column;
-  align-items: center;
-  margin: 8px;
+  align-items:    center;
+  margin:         8px;
 }
 
 .ntb-popup {
-  position: absolute;
-  background: #fff;
-  border: 1px solid #000;
+  position:    absolute;
+  background:  #fff;
+  border:      1px solid #000;
   user-select: none;
-  display: none;
-  z-index: 1000;
-  min-width: fit-content;
+  display:     none;
+  z-index:     1000;
+  min-width:   fit-content;
 }
 
 .ntb-block-array {
   border-width: 1px;
-  margin: 8px;
+  margin:       8px;
 }
 
 .ntb-attribute {
-  border: 1px solid #ddd;
+  border:        1px solid #ddd;
   border-radius: 4px;
-  background: #f6f6f6;
-  margin: 4px 0px;
-  font-size: 16px;
+  background:    #f6f6f6;
+  margin:        4px 0;
+  font-size:     16px;
 }
 
 .ntb-attribute-copy-format {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjCRESKjYGwr+oAAAA60lEQVRIx2NgQAW7GP4TDcUZGBgYmBgoBCxo/PcMr4jQJYShj0RwEeEFiElcDHOINvMEQx+moDgJQbcT1QUUByJVY+ELwwm8ankYLPAbcJfBFa8B+gwX8BugxnAGrwGchLzAyWBMehhQNRCvMNjhVavDcAi/AcIMaXgNkCTkAkmGjgEOg+cMEwl4IR+/AW8ZZuE1QIeQAToM7wY4DL4zXMOrlpNBC78BtxhM8BpAMDMpM+zGawAPIS/wMLiQHgZUDcTbDJFYVJwh3gA2BiUird3CcImBgeE7QoDUYp2aYUAlA/4w/CNax09ULgDup2Xw7D3VDQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxOS0wOS0xN1QxODo0Mjo1NCswMDowML+BCDcAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTktMDktMTdUMTg6NDI6NTQrMDA6MDDO3LCLAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==');
-  background-size: auto;
-  background-repeat: no-repeat;
+  background-image:    url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjCRESKjYGwr+oAAAA60lEQVRIx2NgQAW7GP4TDcUZGBgYmBgoBCxo/PcMr4jQJYShj0RwEeEFiElcDHOINvMEQx+moDgJQbcT1QUUByJVY+ELwwm8ankYLPAbcJfBFa8B+gwX8BugxnAGrwGchLzAyWBMehhQNRCvMNjhVavDcAi/AcIMaXgNkCTkAkmGjgEOg+cMEwl4IR+/AW8ZZuE1QIeQAToM7wY4DL4zXMOrlpNBC78BtxhM8BpAMDMpM+zGawAPIS/wMLiQHgZUDcTbDJFYVJwh3gA2BiUird3CcImBgeE7QoDUYp2aYUAlA/4w/CNax09ULgDup2Xw7D3VDQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxOS0wOS0xN1QxODo0Mjo1NCswMDowML+BCDcAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTktMDktMTdUMTg6NDI6NTQrMDA6MDDO3LCLAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==');
+  background-size:     auto;
+  background-repeat:   no-repeat;
   background-position: center;
-  height: 32px;
-  width: 32px;
-  max-width: 32px;
-  min-width: 32px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin: 8px 0 0 0;
-  border: 1px solid #777;
-  border-radius: 4px;
-  padding: 2px;
+  height:              32px;
+  width:               32px;
+  max-width:           32px;
+  min-width:           32px;
+  display:             flex;
+  flex-direction:      column;
+  flex:                1;
+  margin:              8px 0 0 0;
+  border:              1px solid #777;
+  border-radius:       4px;
+  padding:             2px;
 }
 
 .ntb-attribute-copy-format:active {
@@ -368,16 +374,15 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-options {
-  border: 1px solid #ddd;
+  border:        1px solid #ddd;
   border-radius: 4px;
-  background: #fff;
-  margin: 4px 8px;
-  font-size: 16px;
+  background:    #fff;
+  margin:        4px 8px;
+  font-size:     16px;
 }
 
-
 .ntb-options-wrapper {
-  display: grid;
+  display:               grid;
   grid-template-columns: 2fr 2fr 1fr;
 }
 
@@ -390,7 +395,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-array-view-hidden {
-  border: 0px;
+  border:     0;
   background: unset;
 }
 
@@ -399,7 +404,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-controls {
-  display: flex;
+  display:        flex;
   flex-direction: column;
 }
 
@@ -409,14 +414,14 @@ body#ntp-body, html#ntp-body {
 
 .ntb-code {
   border-radius: 6px;
-  background: #fcfcfc;
-  border: 1px solid #bbb;
-  min-height: 8em;
-  width: 90%;
-  margin: 0 auto;
-  display: block;
-  resize: vertical;
-  overflow: hidden;
+  background:    #fcfcfc;
+  border:        1px solid #bbb;
+  min-height:    8em;
+  width:         90%;
+  margin:        0 auto;
+  display:       block;
+  resize:        vertical;
+  overflow:      hidden;
 }
 
 .ntb-code > .CodeMirror {
@@ -425,7 +430,7 @@ body#ntp-body, html#ntp-body {
 
 .ntb-code-large {
   min-height: 16em;
-  width: 98%;
+  width:      98%;
 }
 
 .ntb-code-readonly,
@@ -434,62 +439,62 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-space-title-bar {
-  display: flex;
+  display:        flex;
   flex-direction: row;
-  align-content: stretch;
-  align-items: center;
+  align-content:  stretch;
+  align-items:    center;
 }
 
 .ntb-space-title {
-  border: 0px;
+  border:        0;
   border-radius: 3px;
-  background: #eee;
-  text-align: center;
-  flex-grow: 1;
-  font-size: large;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: bold;
+  background:    #eee;
+  text-align:    center;
+  flex-grow:     1;
+  font-size:     large;
+  font-family:   "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight:   bold;
 }
 
 .ntb-space-title-play {
-  flex-grow: 1;
-  text-align: center;
+  flex-grow:   1;
+  text-align:  center;
   user-select: none;
-  font-size: large;
+  font-size:   large;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
-  margin: 4px 0;
+  margin:      4px 0;
 }
 
 .ntb-flex-column {
-  margin: 8px;
-  display: flex;
+  margin:         8px;
+  display:        flex;
   flex-direction: column;
-  padding: 0px;
-  align-items: stretch;
-  flex: 1;
+  padding:        0;
+  align-items:    stretch;
+  flex:           1;
 }
 
 .ntb-code-mirror {
-  border: 1px solid black;
+  border:        1px solid black;
   border-radius: 3px;
-  overflow: hidden;
+  overflow:      hidden;
 }
 
 .ntb-code-mirror > .CodeMirror {
-  height: auto;
-  resize: vertical;
+  height:     auto;
+  resize:     vertical;
   min-height: 1.5em;
-  max-width: 600px;
-  font-size: 16px;
+  max-width:  600px;
+  font-size:  16px;
 }
 
 .ntb-input {
-  width: 100%;
-  min-width: 30px;
-  font-size: 16px;
-  height: 28px;
-  padding: 4px 8px;
+  width:      100%;
+  min-width:  30px;
+  font-size:  16px;
+  height:     28px;
+  padding:    4px 8px;
   box-sizing: border-box;
 }
 
@@ -504,22 +509,22 @@ body#ntp-body, html#ntp-body {
 .ntb-flex-column > label,
 .ntb-flex-column .widget-edit-input-label {
   align-items: flex-start;
-  text-align: left;
+  text-align:  left;
   margin-left: 12px;
-  font-size: 12px;
+  font-size:   12px;
   white-space: nowrap;
 }
 
 .ntb-flex-column > .widget-edit-dropdown {
-  margin: 0px;
+  margin: 0;
 }
 
 .ntb-canvas {
-  border: 1px solid #bbb;
+  border:        1px solid #bbb;
   border-radius: 10px;
-  width: min-content;
-  margin-left: auto;
-  margin-right: auto;
+  width:         min-content;
+  margin-left:   auto;
+  margin-right:  auto;
 }
 
 .nt-workspace,
@@ -529,11 +534,11 @@ body#ntp-body, html#ntp-body {
   /* it fixes some small visual glitches with rounded borders to set this to `hidden`, but that causes
     param/property pop-ups to be cut off at the bottom of the workspace.  So leave it visible until a
     proper fix for the glitches can be done.  -Jeremy B June 2021 */
-  overflow: visible;
+  overflow:      visible;
 }
 
 .ntb-form-row {
-  align-items: center;
+  align-items:   center;
   align-content: stretch;
 }
 
@@ -542,7 +547,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-toggle-block {
-  display: inline;
+  display:     inline;
   white-space: nowrap;
 }
 
@@ -552,8 +557,8 @@ body#ntp-body, html#ntp-body {
 
 .ntb-toggle-block > div {
   user-select: none;
-  margin: 6px;
-  padding: 2px;
+  margin:      6px;
+  padding:     2px;
 }
 
 .ntb-toggle-text {
@@ -561,49 +566,49 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-error-overlay {
-  position: absolute;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
+  position:         absolute;
+  align-items:      center;
+  align-content:    center;
+  justify-content:  center;
   background-color: rgba(0, 0, 0, 0.5);
-  left: 0;
-  top:  0;
-  width: 100%;
-  height: 100%;
-  z-index: 1000;
+  left:             0;
+  top:              0;
+  width:            100%;
+  height:           100%;
+  z-index:          1000;
 }
 
 .ntb-error-content {
   text-align: center;
-  width: 30em;
-  top: 10px;
-  margin: 0 auto;
-  padding: 10px;
-  position: relative;
+  width:      30em;
+  top:        10px;
+  margin:     0 auto;
+  padding:    10px;
+  position:   relative;
 }
 
 .ntb-error-message {
-  text-align: left;
+  text-align:  left;
   white-space: pre-wrap;
 }
 
 .ntb-error-stack-label {
-  margin: 10px 0 2px 0;
+  margin:     10px 0 2px 0;
   text-align: left;
-  font-size: small;
+  font-size:  small;
 }
 
 .ntb-error-stack {
-  width: 100%;
-  min-height: 16em;
-  padding: 0.7em;
-  background: #eee;
-  resize: vertical;
+  width:         100%;
+  min-height:    16em;
+  padding:       0.7em;
+  background:    #eee;
+  resize:        vertical;
   margin-bottom: 10px;
 }
 
 .ntb-explanatory {
-  font-size: small;
+  font-size:     small;
   margin-bottom: 4px;
 }
 
@@ -613,15 +618,15 @@ body#ntp-body, html#ntp-body {
 
 .ntb-tag-cloud-empty {
   font-size: small;
-  color: rgb(153 153 153);
+  color:     rgb(153 153 153);
 }
 
 .ntb-tag {
-  padding: 2px 6px;
-  margin: 4px;
-  border: 1px solid #999;
+  padding:       2px 6px;
+  margin:        4px;
+  border:        1px solid #999;
   border-radius: 4px;
-  font-size: small;
+  font-size:     small;
 }
 
 .ntb-tag > .ntb-button {
@@ -630,8 +635,8 @@ body#ntp-body, html#ntp-body {
 
 .ntb-tag-filter {
   min-height: 1.5em;
-  width: 100%;
-  margin: 6px 0;
+  width:      100%;
+  margin:     6px 0;
 }
 
 .ntb-tag-button {
@@ -639,7 +644,7 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-tag-options {
-  width: 100%;
+  width:      100%;
   overflow-y: auto;
 }
 
@@ -653,6 +658,7 @@ body#ntp-body, html#ntp-body {
 
 /* this "override" is to deal with the NetLogo Web navigation bar
   used on the builder pages */
+
 .nt-menu-wrapper {
   top: 40px;
 }
@@ -665,7 +671,7 @@ body#ntp-body, html#ntp-body {
   to give more space for the NetTango Web spaces when side-by-side. */
 
 .netlogo-model-title {
-  margin: 4px 10px !important;
+  margin:      4px 10px !important;
   user-select: none;
 }
 
@@ -674,6 +680,6 @@ body#ntp-body, html#ntp-body {
 }
 
 .netlogo-model-title-wrapper {
-  height: unset !important;
+  height:      unset !important;
   line-height: unset !important;
 }

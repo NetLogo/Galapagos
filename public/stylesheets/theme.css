@@ -8,7 +8,7 @@ body {
 
 code {
   white-space: pre;
-  color: #C9228E;
+  color:       #C9228E;
 }
 
 /* Credit for the `kbd` CSS goes to the fine folks at GitHub.
@@ -16,6 +16,7 @@ code {
  * https://assets-cdn.github.com/assets/github-ef9e6df593c3136722bd837c0437786d.css
  * Jason B. (5/7/18)
  */
+
 kbd {
   background-color:    #fafbfc;
   border-bottom-color: #c6cbd1;
@@ -31,23 +32,23 @@ kbd {
 }
 
 .topbar {
-  align-items: center;
+  align-items:      center;
   background-color: #222222;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: row;
-  height: 40px;
-  justify-content: space-between;
-  overflow-x: visible;
-  overflow-y: visible;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100000;
+  box-shadow:       0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  display:          flex;
+  flex-direction:   row;
+  height:           40px;
+  justify-content:  space-between;
+  overflow-x:       visible;
+  overflow-y:       visible;
+  position:         fixed;
+  top:              0;
+  width:            100%;
+  z-index:          100000;
 }
 
 .topbar-root-link {
-  font-size: x-large;
+  font-size:   x-large;
   margin-left: 95px;
   white-space: nowrap;
 }
@@ -57,23 +58,23 @@ kbd {
 }
 
 .topbar-link-box {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  height: 40px;
-  margin-right: 40px;
+  align-items:     center;
+  display:         flex;
+  flex-direction:  row;
+  height:          40px;
+  margin-right:    40px;
   justify-content: flex-end;
-  width: 60%;
+  width:           60%;
 }
 
 .topbar-quick-link {
-  font-size: medium;
-  height: 100%;
-  line-height: 40px;
-  margin-left: 4%;
+  font-size:     medium;
+  height:        100%;
+  line-height:   40px;
+  margin-left:   4%;
   text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  overflow:      hidden;
+  white-space:   nowrap;
 }
 
 .topbar-quick-link:hover {
@@ -86,12 +87,12 @@ kbd {
 
 .topbar-link.selected {
   border-bottom: 2px solid #cde4eb;
-  font-weight: bold;
-  line-height: 42px;
+  font-weight:   bold;
+  line-height:   42px;
 }
 
 .topbar-text {
-  color: #f3f3f3;
+  color:       #f3f3f3;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -121,7 +122,7 @@ kbd {
 }
 
 .topbar-hint-list > li {
-  margin:       10px 0px;
+  margin: 10px 0;
 }
 
 .topbar-hint-link {
@@ -138,40 +139,40 @@ kbd {
 }
 
 .not_full_height {
-  height: 95%;
+  height:     95%;
   min-height: 95%;
 }
 
 body.not_full_height {
-  margin-left: 0;
+  margin-left:  0;
   margin-right: 0;
 }
 
 .outer-content {
-  width: fit-content;
-  margin-left: auto;
+  width:        fit-content;
+  margin-left:  auto;
   margin-right: auto;
 }
 
 .content {
-  padding: 35px;
-  margin: 0 -35px; /* negative indent the amount of the padding to maintain the grid system */
-  border-radius: 0 0 6px 6px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.15) inset;
-  min-height: 100%;
+  padding:          35px;
+  margin:           0 -35px; /* negative indent the amount of the padding to maintain the grid system */
+  border-radius:    0 0 6px 6px;
+  box-shadow:       0 1px 2px rgba(0, 0, 0, .15) inset;
+  min-height:       100%;
   background-color: #347999;
 }
 
 .inner-content {
   background-color: #CDE4EB;
-  border-radius: 10px;
-  padding: 30px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-radius:    10px;
+  padding:          30px;
+  font-family:      "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .bold-link {
-  color: #404040;
-  font-weight: 600;
+  color:           #404040;
+  font-weight:     600;
   text-decoration: none;
 }
 

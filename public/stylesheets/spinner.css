@@ -3,45 +3,45 @@
  */
 
 #loading-overlay {
-  display: flex;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: center;
 }
 
 .spinner-img {
-  height: auto;
-  width: 10px;
-  z-index: 11;
+  height:   auto;
+  width:    10px;
+  z-index:  11;
   position: absolute;
 }
 
 .spinner {
-  height: 50px;
-  width:  50px;
-  transform-origin: 60% 60%;
-  animation-name: spin;
-  animation-duration: 1.75s;
+  height:                    50px;
+  width:                     50px;
+  transform-origin:          60% 60%;
+  animation-name:            spin;
+  animation-duration:        1.75s;
   animation-iteration-count: infinite;
-  animation-direction: normal;
+  animation-direction:       normal;
   animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  animation-delay: 0s;
-  animation-play-state: running;
-  z-index: 11;
+  animation-fill-mode:       forwards;
+  animation-delay:           0s;
+  animation-play-state:      running;
+  z-index:                   11;
 }
 
 .turtle1 {
-  top: 29%;
+  top:  29%;
   left: 29%;
 }
 
 .turtle2 {
-  top: 20%;
+  top:  20%;
   left: 50%;
 }
 
 .turtle3 {
-  top: 29%;
+  top:  29%;
   left: 71%;
 }
 
@@ -66,15 +66,15 @@
 }
 
 .turtle8 {
-  top: 50%;
+  top:  50%;
   left: 20%;
 }
 
 @keyframes spin {
   from {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }

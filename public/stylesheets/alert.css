@@ -4,68 +4,67 @@
 
 .dark-overlay {
   background-color: rgba(0, 0, 0, 0.7);
-  width: 100%;
-  height: 100%;
-  z-index: 3500;
-  top: 0;
-  left: 0;
-  position: fixed;
+  width:            100%;
+  height:           100%;
+  z-index:          3500;
+  top:              0;
+  left:             0;
+  position:         fixed;
 }
 
 .alert-overlay {
-  display: flex;
-  align-items: center;
-  align-items: center;
+  display:         flex;
+  align-items:     center;
   justify-content: center;
 }
 
 .alert-dialog {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family:      'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: whitesmoke;
-  border: 2px black solid;
-  border-radius: 20px;
-  opacity: 1;
-  overflow: hidden;
-  width: fit-content;
-  min-width: 450px;
-  max-width: 1000px;
+  border:           2px solid black;
+  border-radius:    20px;
+  opacity:          1;
+  overflow:         hidden;
+  width:            fit-content;
+  min-width:        450px;
+  max-width:        1000px;
 }
 
 #alert-title {
-  text-align: center;
+  text-align:    center;
   margin-bottom: 5px;
 }
 
 .alert-text {
   text-align: left;
-  padding: 10px;
-  font-size: 16px;
-  overflow: auto;
+  padding:    10px;
+  font-size:  16px;
+  overflow:   auto;
 }
 
 .standalone-text {
-  color: #555555;
-  display: none;
+  color:      #555555;
+  display:    none;
   text-align: center;
 }
 
 #alert-dismiss-container {
-  border-top: 1px solid lightgray;
-  width: 100%;
-  text-align: center;
-  padding: 10px 0;
-  display: flex;
+  border-top:      1px solid lightgray;
+  width:           100%;
+  text-align:      center;
+  padding:         10px 0;
+  display:         flex;
   justify-content: center;
 }
 
 .alert-button {
-  font-size: 14px;
-  height: 25px;
-  border-radius: 3px;
-  border: 1px solid lightgray;
+  font-size:        14px;
+  height:           25px;
+  border-radius:    3px;
+  border:           1px solid lightgray;
   background-color: #e6e6e6;
-  white-space: nowrap;
-  margin: 0 10px;
+  white-space:      nowrap;
+  margin:           0 10px;
 }
 
 .alert-button:active {

@@ -63,10 +63,10 @@
 }
 
 .authoring.hnw-button {
-  border-radius:    10px;
-  font-size:        22px;
-  height:           65px;
-  width:            190px;
+  border-radius: 10px;
+  font-size:     22px;
+  height:        65px;
+  width:         190px;
 }
 
 .download-button {
@@ -84,9 +84,6 @@
 
 .full-height:not(.invis) {
   height: 100%;
-}
-
-.grid-item {
 }
 
 .hnw-button {
@@ -111,16 +108,16 @@
 }
 
 .mode-controls {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  flex: 1;
-  gap: 20px;
-  padding: 5px;
-  margin: 0 0 10px 0;
+  align-items:      center;
+  display:          flex;
+  justify-content:  space-between;
+  flex-direction:   column;
+  flex:             1;
+  gap:              20px;
+  padding:          5px;
+  margin:           0 0 10px 0;
   background-color: #CDE4EB;
-  font-size: medium;
+  font-size:        medium;
 }
 
 .mode-controls > div {
@@ -137,6 +134,7 @@
 }
 
 /* These are overrides! */
+
 .model-container {
   border-bottom-left-radius: 0;
   min-height:                unset;
