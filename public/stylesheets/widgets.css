@@ -357,7 +357,7 @@
   display: flex;
   align-items: stretch;
   flex-grow: 1;
-  border: 2px solid #999;
+  border: 2px solid var(--color-tab-border);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -413,6 +413,11 @@
   align-items: center;
   gap: 0.5em;
   flex-shrink: 0;
+}
+
+.command-center-context-select {
+  font-family: 'Open Sans', sans-serif;
+  font-size:   12px;
 }
 
 .netlogo-command-center-button {

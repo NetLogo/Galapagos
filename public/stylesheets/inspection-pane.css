@@ -53,26 +53,29 @@ button.inspection-button {
 }
 
 .inspection-agent-monitor-container {
-  padding:       1em 0.5em 0 0.5em;
+  padding:       1em 0 0 0;
   border-radius: 5px;
   min-height:    2em;
 }
 
 .inspection-agent-monitor-container-inner {
   display:               grid;
-  grid-template-columns: repeat(auto-fill, 210px);
-  justify-content:       center;
+  /* NOTE:  To keep PIXEL-PERFECT placement of the agent monitors, you'll need to make sure the number used here
+    is the sum of the width, borders, and padding of each agent monitor */
+  grid-template-columns: repeat(auto-fill, 226px);
+  justify-content:       space-between;
   row-gap:               1em;
-  column-gap:            2.5em;
 }
 
 .inspection-agent-monitor-container-inner > span {
   grid-column: 1 / -1;
   font-size:   15px;
+  padding:     0 1em;
 }
 
+/* If you tweak sizes here, make sure to update the inner container's `grid-template-columns` as well */
 .inspection-agent-monitor {
-  border:           2px solid #c2c2c2;
+  border:           2px solid var(--color-tab-border);
   border-radius:    5px;
   width:            210px;
   padding:          0.5em;
@@ -133,7 +136,7 @@ button.inspection-button {
 
 .inspection-input-container {
   background-color: white;
-  border:           1px solid gray;
+  border:           1px solid var(--color-tab-border);
   border-radius:    4px;
   overflow:         hidden;
 }
@@ -147,7 +150,7 @@ button.inspection-button {
 }
 
 .inspection-cmd-container .netlogo-code {
-  border:        2px solid #999;
+  border:        2px solid var(--color-tab-border);
   border-radius: 6px;
   overflow:      hidden;
 }
@@ -199,5 +202,7 @@ button.inspection-close-dropdown-item:hover {
 }
 
 .inspection-agent-type-select {
-  min-width: 70px;
+  min-width:   70px;
+  font-family: 'Open Sans', sans-serif;
+  font-size:   12px;
 }
