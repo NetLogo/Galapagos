@@ -50,7 +50,7 @@ RactiveEditFormLabeledInput = Ractive.extend({
 
   template:
     """
-    <div class="{{ divClass }}">
+    <div class="{{ divClass }}" style="align-items: center;">
       <label for="{{ id }}" class="widget-edit-input-label" style="{{ labelStyle }}">{{ labelStr }}</label>
       <div style="flex-grow: 1;">
         <input class="widget-edit-text widget-edit-input {{ class }}"
