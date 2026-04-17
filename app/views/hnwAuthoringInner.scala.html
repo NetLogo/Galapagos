@@ -11,6 +11,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
     @tagBuilder.pathToHTML("stylesheets/netlogo-fonts.css")
     @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/inspection-pane.css")
     @tagBuilder.pathToHTML("stylesheets/widgets.css")
     @tagBuilder.pathToHTML("stylesheets/info.css")
     @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
@@ -89,6 +90,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
     @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+    @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.js")
 
     @tagBuilder.callToHTML(routes.Local.engine, "tortoise-engine.js")
 
@@ -102,6 +104,8 @@
     <script>
       Ractive.DEBUG = @{environment.mode != play.api.Mode.Prod};
     </script>
+
+    @views.html.icons()
 
     @tagBuilder.pathToHTML("javascripts/pages/hnw-config-inner.js", "type" -> "module")
 

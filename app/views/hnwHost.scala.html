@@ -11,6 +11,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.css")
     @tagBuilder.pathToHTML("stylesheets/netlogo-fonts.css")
     @tagBuilder.pathToHTML("stylesheets/classes.css")
+    @tagBuilder.pathToHTML("stylesheets/inspection-pane.css")
     @tagBuilder.pathToHTML("stylesheets/widgets.css")
     @tagBuilder.pathToHTML("stylesheets/info.css")
     @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
@@ -40,6 +41,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
     @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
     @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+    @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.js")
 
     @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
     @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
@@ -71,6 +73,8 @@
       // simple enough, although it will require a manual update if the `standalone` ever changes.  -Jeremy B July 2025
       window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
     </script>
+
+    @views.html.icons()
 
     @tagBuilder.pathToHTML("javascripts/pages/init-host.js", "type" -> "module")
 

@@ -9,6 +9,7 @@
   @tagBuilder.pathToHTML("chosen-js/chosen.css")
   @tagBuilder.pathToHTML("stylesheets/netlogo-fonts.css")
   @tagBuilder.pathToHTML("stylesheets/classes.css")
+  @tagBuilder.pathToHTML("stylesheets/inspection-pane.css")
   @tagBuilder.pathToHTML("stylesheets/widgets.css")
   @tagBuilder.pathToHTML("stylesheets/info.css")
   @tagBuilder.pathToHTML("stylesheets/ui-editor.css")
@@ -51,6 +52,7 @@
   @tagBuilder.pathToHTML("codemirror/addon/search/searchcursor.js")
   @tagBuilder.pathToHTML("codemirror/addon/search/search.js")
   @tagBuilder.pathToHTML("codemirror/addon/hint/show-hint.js")
+  @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.js")
   @tagBuilder.pathToHTML("codemirror/mode/css/css.js")
   @tagBuilder.pathToHTML("codemirror/mode/javascript/javascript.js")
 
@@ -87,6 +89,8 @@
   <!-- This is here so the web app can grab it and we get to keep the versioning support from the web server.  -Jeremy B
   January 2026 -->
   <img id="nettango-web-icon-source" style="display: none;" src="@routes.Assets.versioned("nt-images/nettango-web-icon.svg").relative" />
+
+  @views.html.icons()
 
   @if(standalone) {
     @tagBuilder.pathToHTML("javascripts/pages/netTangoBuilder.bundle.js", "type" -> "module")
