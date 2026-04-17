@@ -28,19 +28,19 @@ body#ntp-body, html#ntp-body {
 }
 
 .ntb-title {
-  margin:        0 25px 0 0;
-  text-align:    center;
-  text-overflow: ellipsis;
-  white-space:   nowrap;
-  font-size:     large;
-  font-weight:   bold;
-  user-select:   none;
+  display:        flex;
+  align-items:    center;
+  gap:            8px;
+  margin:         0 25px 0 0;
+  text-overflow:  ellipsis;
+  white-space:    nowrap;
+  font-size:      large;
+  font-weight:    bold;
+  user-select:    none;
 }
 
 .ntb-title-icon {
-  display:        inline;
-  vertical-align: sub;
-  max-width:      32px;
+  max-width: 32px;
 }
 
 .ntb-menu-controls {
