@@ -6,6 +6,7 @@ import { NamespaceStorage } from "../namespace-storage.js"
 import NetTangoRewriter from "./rewriter.js"
 import newModelNetTango from "./new-model-nettango.js"
 import { NETTANGO_PROJECT_VERSION, createNewProject } from "./nettango-data.js"
+import { netLogoOptionDefaults } from "./options.js"
 import NetTangoSkeleton from "./nettango-skeleton.js"
 import UndoRedo from "./undo-redo.js"
 
@@ -133,6 +134,9 @@ class NetTangoController
     @builder.load(project)
     if project.netLogoSettings?.isVertical?
       @netLogoModel.widgetController.ractive.set("isVertical", project.netLogoSettings.isVertical)
+    if @playMode
+      inspectionTabHidden = project.netLogoOptions?.inspectionTab ? netLogoOptionDefaults.inspectionTab
+      @netLogoModel.widgetController.setAgentContextMenuEnabled(not inspectionTabHidden)
     @resetUndoStack()
     @actionSource = "user"
     return

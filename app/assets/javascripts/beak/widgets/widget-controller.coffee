@@ -284,6 +284,11 @@ class WidgetController
   speed: ->
     @ractive.get('speed')
 
+  # (Boolean) => Unit
+  setAgentContextMenuEnabled: (enabled) ->
+    @ractive.set('showAgentContextMenu', enabled)
+    return
+
   # (String, Boolean) => Unit
   setCode: (code, recompile = true) =>
     @ractive.set('code', code)

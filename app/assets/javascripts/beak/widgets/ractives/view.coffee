@@ -217,6 +217,8 @@ RactiveView = RactiveWidget.extend({
   getContextMenuOptions: (clientX, clientY) ->
     if @get('isEditing')
       [@getStandardOptions().edit]
+    else if not @get('showAgentContextMenu')
+      []
     else
       viewWindow = @get('viewWindow')
       { left, top, bottom, right } = viewWindow.getBoundingClientRect()
