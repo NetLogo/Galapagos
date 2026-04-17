@@ -14,6 +14,11 @@ netLogoOptionInfo = {
     checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(3) { background: #eee; }'
     checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(3) { display: none; }'
   }
+  inspectionTab: {
+    label: "Hide agent inspection tab"
+    checkedCssBuild:  'div.netlogo-tab-area > label:nth-of-type(4) { background: #eee; }'
+    checkedCssExport: 'div.netlogo-tab-area > label:nth-of-type(4) { display: none; }'
+  }
   speedBar: {
     label: "Hide model speed bar"
     checkedCssBuild:  '.netlogo-speed-slider { background: #eee; }'
@@ -60,6 +65,7 @@ netLogoOptionDefaults = {
   commandCenterTab: true
   codeTab:          true
   infoTab:          true
+  inspectionTab:    true
   speedBar:         true
   fileButtons:      true
   authoring:        true

@@ -169,25 +169,31 @@ RactiveBuilder = Ractive.extend({
     # to a pure JS solution to hide tabs directly in code, but that would require model
     # updates.  -Jeremy B July 2020
     tabAreaCss = if not forExport then [] else
-      allHidden = netLogoOptions.commandCenterTab and netLogoOptions.codeTab and netLogoOptions.infoTab
+      allHidden = netLogoOptions.commandCenterTab and netLogoOptions.codeTab and netLogoOptions.infoTab and netLogoOptions.inspectionTab
       tabAreaBorder = if allHidden
         'div.netlogo-tab-area { border: 0px; }'
       else
         ''
 
-      commandPlus = not netLogoOptions.commandCenterTab and (not netLogoOptions.codeTab or not netLogoOptions.infoTab)
+      commandPlus = not netLogoOptions.commandCenterTab and (not netLogoOptions.codeTab or not netLogoOptions.infoTab or not netLogoOptions.inspectionTab)
       commandBorder = if commandPlus
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(1) { border-bottom: 0px; }'
 
-      codePlus = not netLogoOptions.codeTab and not netLogoOptions.infoTab
+      codePlus = not netLogoOptions.codeTab and (not netLogoOptions.infoTab or not netLogoOptions.inspectionTab)
       codeBorder = if codePlus
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 1px solid; }'
       else
         'div.netlogo-tab-area > label:nth-of-type(2) { border-bottom: 0px; }'
 
-      [tabAreaBorder, commandBorder, codeBorder]
+      infoPlus = not netLogoOptions.infoTab and not netLogoOptions.inspectionTab
+      infoBorder = if infoPlus
+        'div.netlogo-tab-area > label:nth-of-type(3) { border-bottom: 1px solid; }'
+      else
+        'div.netlogo-tab-area > label:nth-of-type(3) { border-bottom: 0px; }'
+
+      [tabAreaBorder, commandBorder, codeBorder, infoBorder]
 
     newCss = newCss.concat([extraCss, '.netlogo-tab-area { margin: 0px; }'], tabAreaCss)
 
