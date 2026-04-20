@@ -85,6 +85,35 @@ RactiveToaster = Ractive.extend({
     @set('toasts', toasts)
     return
 
+  onrender: ->
+    toasterEl = @find('.toaster')
+
+    updatePosition = ->
+      if window.frameElement?
+        # Embedded in iframe: track parent scroll. getBoundingClientRect().top is the iframe's
+        # top edge relative to the parent viewport — negative when the user has scrolled past it.
+        offset = Math.max(0, -window.frameElement.getBoundingClientRect().top)
+        toasterEl.style.top = (offset + 20) + 'px'
+      else
+        toasterEl.style.top = (window.scrollY + 20) + 'px'
+
+    @_scrollHandler = updatePosition
+    window.addEventListener('scroll', @_scrollHandler)
+    try
+      window.parent.addEventListener('scroll', @_scrollHandler) if window.frameElement?
+    catch
+      # cross-origin parent; standalone scroll listener is sufficient
+
+    updatePosition()
+    return
+
+  onteardown: ->
+    window.removeEventListener('scroll', @_scrollHandler)
+    try
+      window.parent.removeEventListener('scroll', @_scrollHandler) if window.frameElement?
+    catch
+    return
+
   oninit: ->
     @on('*.toast-expired', (context, toastId) =>
       @removeToast(toastId)
