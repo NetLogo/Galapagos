@@ -125,11 +125,12 @@ RactiveInspectionPane = Ractive.extend({
     # () -> { turtles: Number, patches: Number, links: Number, all: Number }
     agentTypeCounts: ->
       agents = @get('inspectedAgents') ? []
+      liveAgents = agents.filter((a) -> not a.isDead())
       {
-        turtles: agents.filter((a) -> a instanceof Turtle).length
-        patches: agents.filter((a) -> a instanceof Patch).length
-        links:   agents.filter((a) -> a instanceof Link).length
-        all:     agents.length
+        turtles: liveAgents.filter((a) -> a instanceof Turtle).length
+        patches: liveAgents.filter((a) -> a instanceof Patch).length
+        links:   liveAgents.filter((a) -> a instanceof Link).length
+        all:     liveAgents.length
       }
 
     # computing this value also sets the command placeholder text
