@@ -138,7 +138,7 @@ RactiveInspectionPane = Ractive.extend({
     targetedAgentObj: {
       get: ->
         filter       = @get('agentTypeFilter')
-        allInspected = @get('inspectedAgents')
+        allInspected = @get('inspectedAgents').filter((a) -> not a.isDead())
 
         if filter isnt 'all'
           filteredAgents = allInspected.filter((agent) -> getKeypathFor(agent)[0] is filter)
@@ -199,6 +199,10 @@ RactiveInspectionPane = Ractive.extend({
   }
 
   on: {
+    'world-might-change': ->
+      @update('inspectedAgents')
+      return
+
     'agentMonitor.closed-agent-monitor': (_, agent) ->
       index = @get('inspectedAgents').indexOf(agent)
       if index >= 0
@@ -214,11 +218,11 @@ RactiveInspectionPane = Ractive.extend({
 
     'commandInput.run': (_, _source, _cmd, { targetedAgentObj }) ->
       { agentType, agents } = targetedAgentObj
-      if agentType not in ['observer', 'mixed'] and not agents.length
+      if agentType not in ['observer', 'mixed'] and agents.length is 0
         window.NetLogoToaster?.addToast({
           id:      'inspection-no-agents'
           variant: 'warning'
-          message: "No #{agentType} are currently being monitored."
+          message: "No living #{agentType} are currently being monitored."
           timeout: 3000
         })
         return false
