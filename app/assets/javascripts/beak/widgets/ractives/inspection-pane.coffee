@@ -199,8 +199,9 @@ RactiveInspectionPane = Ractive.extend({
   }
 
   on: {
-    'world-might-change': ->
-      @update('inspectedAgents')
+    'world-might-change': ({ modelChanged }) ->
+      if modelChanged
+        @update('inspectedAgents')
       return
 
     'agentMonitor.closed-agent-monitor': (_, agent) ->

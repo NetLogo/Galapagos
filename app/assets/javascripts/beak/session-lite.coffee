@@ -186,7 +186,8 @@ class SessionLite
             if now() >= updatesDeadline
               break
 
-      if Updater.hasUpdates() or @hnw.shouldUpdate()
+      hadUpdates = Updater.hasUpdates() or @hnw.shouldUpdate()
+      if hadUpdates
         # First conditional checks if we're on time with updates. If so, we may as
         # well redraw. This keeps animations smooth for fast models. BCH 11/4/2014
         if i > maxNumUpdates or now() - @_lastRedraw > @redrawDelay() or @drawEveryFrame
@@ -200,7 +201,7 @@ class SessionLite
       # Widgets must always be updated, because global variables and plots can be
       # altered without triggering an "update".  That is to say that `Updater`
       # only concerns itself with View updates. --Jason B. (9/2/15)
-      @widgetController.updateWidgets()
+      @widgetController.updateWidgets(hadUpdates)
 
   teardown: ->
     @widgetController.teardown()

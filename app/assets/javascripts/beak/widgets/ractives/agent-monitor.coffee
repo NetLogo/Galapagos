@@ -103,10 +103,10 @@ RactiveAgentMonitor = Ractive.extend({
     return
 
   on: {
-    'world-might-change': ->
+    'world-might-change': ({ modelChanged }) ->
       # Once an agent has died, stop updating entirely. The engine reuses turtle objects — a new turtle
       # with the same `who` number would otherwise hijack this monitor and start being tracked here.
-      if @_wasEverDead
+      if @_wasEverDead or not modelChanged
         return
       @update('agent')
       if @get('agent').isDead()
