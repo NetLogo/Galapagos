@@ -48,7 +48,10 @@ kbd {
 }
 
 .topbar-root-link {
+  align-items: center;
+  display:     inline-flex;
   font-size:   x-large;
+  gap:         6px;
   margin-left: 95px;
   white-space: nowrap;
 }
