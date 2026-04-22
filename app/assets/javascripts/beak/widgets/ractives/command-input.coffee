@@ -154,13 +154,19 @@ RactiveCommandInput = Ractive.extend({
     input = @get('input')
     if input.trim().length > 0
       targetedAgentObj = @get('targetedAgentObj')
+      syntaxResult     = ProcedurePrims.checkSyntax(input)
+      if syntaxResult isnt ''
+        @fire('compiler-error', {}, @get('source'), [syntaxResult])
+        return
+
       if @get('checkIsReporter')(input)
         input = "show #{input}"
 
       cmd = getCommand(targetedAgentObj, input)
-      return if @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input }) is false
+      if @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input }) is false
+        return
 
-      history = @get('history')
+      history  = @get('history')
       newEntry = { targetedAgentObj, input }
       if history.length is 0 or not compareEntries(history.at(-1), newEntry)
         history.push(newEntry)
