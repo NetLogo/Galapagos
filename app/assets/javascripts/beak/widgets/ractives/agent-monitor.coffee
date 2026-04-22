@@ -68,7 +68,13 @@ RactiveAgentMonitor = Ractive.extend({
 
   computed: {
     # () -> Array[String]
-    varNames: -> @get('agent').varNames()
+    varNames: -> @get('agent')?.varNames() ? []
+
+    # () -> Boolean
+    agentIsDead: -> @get('agent')?.isDead() ? false
+
+    # () -> String
+    agentName: -> @get('agent')?.getName() ? ''
 
     # () -> { agentType: AgentType, agents: Array[Agent] }
     targetedAgentObj: ->
@@ -260,7 +266,7 @@ RactiveAgentMonitor = Ractive.extend({
   partials: {
     "titleBar": """
       <div class="inspection-agent-monitor-title-bar">
-        <span class="title">{{agent.getName()}}{{#if agent.isDead()}} (dead){{/if}}</span>
+        <span class="title">{{agentName}}{{#if agentIsDead}} (dead){{/if}}</span>
         <div
           class="inspection-button"
           role="button"
@@ -282,8 +288,8 @@ RactiveAgentMonitor = Ractive.extend({
         <div
           class="inspection-button inspection-agent-monitor-watch-button {{#if isWatching}}selected{{/if}}"
           role="button"
-          tabindex="{{agent.isDead() ? '-1' : '0'}}"
-          aria-disabled="{{agent.isDead()}}"
+          tabindex="{{agentIsDead ? '-1' : '0'}}"
+          aria-disabled="{{agentIsDead}}"
           on-click="watch-button-clicked"
           on-keydown="watch-button-keydown"
         >Watch</div>
@@ -294,7 +300,7 @@ RactiveAgentMonitor = Ractive.extend({
     "propertyGrid": """
       <div class="inspection-agent-monitor-property-grid">
         {{#each varNames as varName}}
-          <agentVarField agent={{agent}} varName={{varName}} isReadOnly={{agent.isDead()}}/>
+          <agentVarField agent={{agent}} varName={{varName}} isReadOnly={{agentIsDead}}/>
         {{/each}}
       </div>
     """
@@ -302,11 +308,11 @@ RactiveAgentMonitor = Ractive.extend({
     "commandCenter": """
       <div class="inspection-cmd-container" style="margin: 0;">
         <commandInput
-          isReadOnly={{isEditing || agent.isDead()}}
+          isReadOnly={{isEditing || agentIsDead}}
           source="agent-monitor"
           checkIsReporter={{checkIsReporter}}
           targetedAgentObj={{targetedAgentObj}}
-          placeholderText="ask {{agent.getName()}}"
+          placeholderText="ask {{agentName}}"
           visiblePlaceholder="enter {{agentType}} commands"
         />
       </div>
