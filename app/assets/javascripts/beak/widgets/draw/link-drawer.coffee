@@ -169,9 +169,9 @@ drawLinkLine = (
 
           if isMiddleLine
             if isDirected and size > (.25 * worldShape.onePixel)
-              drawLinkShape(
-                x2, y2, controlX, controlY, heading, color, thickness, shape, shape, ctx, worldShape.onePixel
-              )
+              dirIndicator = shape['direction-indicator']
+              oneP         = worldShape.onePixel
+              drawLinkShape(x2, y2, controlX, controlY, heading, color, thickness, shape, dirIndicator, ctx, oneP)
 
             hasLabel = label?
             if hasLabel and not isStamp
