@@ -113,16 +113,6 @@ button.inspection-button {
   background: white;
 }
 
-.inspection-agent-monitor-watch-button:hover {
-  background: #eee;
-}
-
-.inspection-agent-monitor-watch-button[aria-disabled="true"] {
-  opacity:        0.4;
-  cursor:         default;
-  pointer-events: none;
-}
-
 .inspection-agent-monitor-property-grid {
   display:     grid;
   grid:        auto-flow / 2fr 3fr;

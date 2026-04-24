@@ -5,6 +5,8 @@
 @extraHead = {
   <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-fonts.css").relative' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogoweb.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/js-error.css").relative' />
 }
@@ -18,9 +20,8 @@
         </label>
       </div>
       <div>
-        <label>Upload a Model:
-            <input id="model-file-input" type="file" name="model" accept=".nlogo,.nlogox" />
-        </label>
+        <label class="nlw-ui-button" for="model-file-input">Upload a Model</label>
+        <input id="model-file-input" type="file" name="model" accept=".nlogo,.nlogox" hidden />
       </div>
     </div>
     <div class="model-box">

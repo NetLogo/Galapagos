@@ -162,7 +162,7 @@ RactiveCodePane = Ractive.extend({
         <li class="netlogo-codetab-widget-listitem">
           {{# !isReadOnly }}
             <button
-              class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button"
+              class="netlogo-widget nlw-ui-button netlogo-recompilation-button"
               {{# !isStale}}disabled{{/}}
               on-click="['recompile', 'user']"
             >Recompile Code</button>

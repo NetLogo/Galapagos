@@ -286,7 +286,7 @@ RactiveAgentMonitor = Ractive.extend({
       ></div>
       <div class="inspection-agent-monitor-view-controls">
         <div
-          class="inspection-button inspection-agent-monitor-watch-button {{#if isWatching}}selected{{/if}}"
+          class="nlw-ui-button inspection-button inspection-agent-monitor-watch-button {{#if isWatching}}selected{{/if}}"
           role="button"
           tabindex="{{agentIsDead ? '-1' : '0'}}"
           aria-disabled="{{agentIsDead}}"

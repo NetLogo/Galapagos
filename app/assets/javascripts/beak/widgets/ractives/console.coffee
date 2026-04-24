@@ -101,7 +101,7 @@ RactiveConsoleWidget = Ractive.extend({
             placeholderText={{placeholderText}}
           />
         </div>
-        <button on-click='clear-output'>Clear</button>
+        <button class="nlw-ui-button" on-click='clear-output'>Clear</button>
       </div>
     </div>
     """

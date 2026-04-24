@@ -342,19 +342,19 @@ template =
           <div class="flex-column" style="align-items: flex-end; user-select: none;">
             <div class="netlogo-export-wrapper" aria-label="File Options" role="group">
               <span style="margin-right: 4px;">File:</span>
-              <button class="netlogo-ugly-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
+              <button class="nlw-ui-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
                 {{#!hasRevertedWork}}
-                  <button class="netlogo-ugly-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+                  <button class="nlw-ui-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
                 {{else}}
-                  <button class="netlogo-ugly-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
+                  <button class="nlw-ui-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
                 {{/}}
               {{/}}
             </div>
             <div class="netlogo-export-wrapper" aria-label="Export Options" role="group">
               <span style="margin-right: 4px;">Export:</span>
-              <button class="netlogo-ugly-button" on-click="export-nlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
-              <button class="netlogo-ugly-button" on-click="export-html"{{#isEditing}} disabled{{/}}>HTML</button>
+              <button class="nlw-ui-button" on-click="export-nlogo"{{#isEditing}} disabled{{/}}>NetLogo</button>
+              <button class="nlw-ui-button" on-click="export-html"{{#isEditing}} disabled{{/}}>HTML</button>
             </div>
           </div>
         {{/}}
@@ -385,7 +385,7 @@ template =
             <div class="model-speed-input">
               <input type="range" min=-1 max=1 step=0.01 value="{{speed}}"
                 {{#isEditing}} disabled{{/}} on-change="['speed-slider-changed', speed]" id="speed-slider-input" hidden />
-              <button class="netlogo-beautiful-button" on-click="['speed-change', -0.1]"
+              <button class="nlw-ui-button" on-click="['speed-change', -0.1]"
                 {{#isEditing}} disabled{{/}} aria-label="Decrease Model Speed">-</button>
               <customSlider
                 id="speed-slider-input-interface"
@@ -399,7 +399,7 @@ template =
                 isEnabled="{{!isEditing}}"
                 class="model-speed-slider-interface"
               />
-              <button class="netlogo-beautiful-button" on-click="['speed-change', 0.1]"
+              <button class="nlw-ui-button" on-click="['speed-change', 0.1]"
                 {{#isEditing}} disabled{{/}} aria-label="Increase Model Speed">+</button>
             </div>
             <tickCounter isVisible="{{primaryView.showTickCounter}}"
@@ -407,7 +407,7 @@ template =
           </div>
         </label>
 
-        <button class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
+        <button class="nlw-ui-button netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
                 on-click="@.fire('toggle-help')">
           <kbd>?</kbd><span> for shortcuts</span>
         </button>

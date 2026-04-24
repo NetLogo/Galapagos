@@ -26,6 +26,43 @@
   --widget-padding-y:                  0.3rem;
   --font-widget:                       'Open Sans', sans-serif;
   --checkerboard:                      url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAADFJREFUOE9jZGBgEGHAD97gk2YcNYBhmIQBgWSAP52AwoAQwJvQRg1gACckQoC2gQgAIF8IscwEtKYAAAAASUVORK5CYII=);
+
+  --color-ui-button-bg:                white;
+  --color-ui-button-border:            gray;
+  --color-ui-button-hover-bg:          #eee;
+  --color-ui-button-active-bg:         #d5d5d5;
+  --color-ui-button-selected-bg:       lightblue;
+  --color-ui-button-disabled-opacity:  0.4;
+}
+
+/* ── NLW UI Buttons (toolbar, menus, command center — not model widgets) ── */
+.nlw-ui-button {
+  display:       inline-block;
+  padding:       0.5em;
+  border:        1px solid var(--color-ui-button-border);
+  border-radius: 4px;
+  background:    var(--color-ui-button-bg);
+  color:         inherit;
+  cursor:        pointer;
+  font:          inherit;
+  font-family:   var(--font-widget);
+  line-height:   1;
+}
+.nlw-ui-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-ui-button-hover-bg);
+}
+.nlw-ui-button:active:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-ui-button-active-bg);
+}
+.nlw-ui-button:disabled,
+.nlw-ui-button[disabled],
+.nlw-ui-button[aria-disabled="true"] {
+  opacity:        var(--color-ui-button-disabled-opacity);
+  cursor:         default;
+  pointer-events: none;
+}
+.nlw-ui-button.selected {
+  background: var(--color-ui-button-selected-bg);
 }
 
 .netlogo-tab-area {
