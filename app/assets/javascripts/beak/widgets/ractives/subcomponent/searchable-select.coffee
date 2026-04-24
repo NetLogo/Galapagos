@@ -58,7 +58,7 @@ RactiveSearchableSelect = Ractive.extend({
           if @get('isOpen') then @fire('close-dropdown') else @fire('open-dropdown')
         when 'ArrowDown'
           event.preventDefault()
-          @fire('open-dropdown') unless @get('isOpen')
+          if not @get('isOpen') then @fire('open-dropdown')
         when 'Escape'
           if @get('isOpen')
             event.stopPropagation()
@@ -116,28 +116,28 @@ RactiveSearchableSelect = Ractive.extend({
     return
 
   _syncNativeSelect: ->
-    return unless @_nativeSel?
-    sel      = @_nativeSel
-    opts     = @get('options')
-    selected = @get('selected')
-    pholder  = @get('placeholder')
+    if @_nativeSel?
+      sel      = @_nativeSel
+      opts     = @get('options')
+      selected = @get('selected')
+      pholder  = @get('placeholder')
 
-    sel.innerHTML = ''
+      sel.innerHTML = ''
 
-    ph = document.createElement('option')
-    ph.value = ''
-    ph.textContent = pholder
-    sel.appendChild(ph)
+      ph = document.createElement('option')
+      ph.value = ''
+      ph.textContent = pholder
+      sel.appendChild(ph)
 
-    opts.forEach((opt) ->
-      o = document.createElement('option')
-      o.value    = opt.value
-      o.textContent = opt.label
-      o.disabled = !!opt.disabled
-      sel.appendChild(o)
-    )
+      opts.forEach((opt) ->
+        o = document.createElement('option')
+        o.value    = opt.value
+        o.textContent = opt.label
+        o.disabled = !!opt.disabled
+        sel.appendChild(o)
+      )
 
-    sel.value = selected ? ''
+      sel.value = selected ? ''
     return
 
   _scrollIntoView: (idx) ->

@@ -45,24 +45,26 @@ createSearchableSelect = (container, options, placeholder, onChange) ->
   listEl     = null
 
   renderList = ->
-    return unless listEl?
-    listEl.innerHTML = ''
-    visible = filteredOpts()
-    visible.forEach((opt, i) ->
-      li = document.createElement('li')
-      li.className = 'ss-option'
-      li.setAttribute('role', 'option')
-      li.setAttribute('aria-selected', String(opt.value is selected))
-      if opt.disabled then li.classList.add('ss-disabled')
-      opt.extraClasses.forEach((c) -> li.classList.add(c))
-      if i is highlightIdx then li.classList.add('ss-highlighted')
-      li.textContent = opt.label
-      li.addEventListener('click', (e) ->
-        e.stopPropagation()
-        unless opt.disabled then pickOption(opt.value)
+    if listEl?
+      listEl.innerHTML = ''
+      visible = filteredOpts()
+      visible.forEach((opt, i) ->
+        li = document.createElement('li')
+        li.className = 'ss-option'
+        li.setAttribute('role', 'option')
+        li.setAttribute('aria-selected', String(opt.value is selected))
+        if opt.disabled then li.classList.add('ss-disabled')
+        opt.extraClasses.forEach((c) -> li.classList.add(c))
+        if i is highlightIdx then li.classList.add('ss-highlighted')
+        li.textContent = opt.label
+        li.addEventListener('click', (e) ->
+          e.stopPropagation()
+          if not opt.disabled
+            pickOption(opt.value)
+        )
+        listEl.appendChild(li)
       )
-      listEl.appendChild(li)
-    )
+    return
 
   openDropdown = ->
     isOpen       = true
@@ -119,17 +121,19 @@ createSearchableSelect = (container, options, placeholder, onChange) ->
     setTimeout((-> trigger.focus()), 0)
 
   scrollIntoView = (idx) ->
-    return unless listEl?
-    listEl.querySelectorAll('.ss-option')[idx]?.scrollIntoView({ block: 'nearest' })
+    if listEl?
+      listEl.querySelectorAll('.ss-option')[idx]?.scrollIntoView({ block: 'nearest' })
+    return
 
   pickOption = (value) ->
     opt = opts.find((o) -> o.value is value)
-    return unless opt? and not opt.disabled
-    selected = value
-    triggerLabel.textContent = opt.label
-    nativeSel.value = value
-    closeDropdown()
-    onChange(value)
+    if opt? and not opt.disabled
+      selected = value
+      triggerLabel.textContent = opt.label
+      nativeSel.value = value
+      closeDropdown()
+      onChange(value)
+    return
 
   onSearchKeydown = (e) ->
     visible = filteredOpts()
@@ -186,7 +190,8 @@ createSearchableSelect = (container, options, placeholder, onChange) ->
         if isOpen then closeDropdown() else openDropdown()
       when 'ArrowDown'
         e.preventDefault()
-        openDropdown() unless isOpen
+        if not isOpen
+          openDropdown()
       when 'Escape'
         if isOpen
           e.stopPropagation()
