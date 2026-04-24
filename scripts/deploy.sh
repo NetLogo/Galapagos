@@ -19,7 +19,6 @@
 sbt "set scrapeAbsoluteURL := Some(\"$3\")" clean bundle scrapePlay
 cp -Rv public/modelslib/ target/play-scrape/assets/
 cp -Rv public/nt-modelslib/ target/play-scrape/assets/
-cp node_modules/chosen-js/chosen-sprite*.png target/play-scrape/assets/chosen-js/
 aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*.*" --exclude "*.html"
 aws s3 sync ./target/play-scrape s3://$1 --delete --acl public-read --exclude "*" --include "*[!.]*" --include "*.html" --content-type "text/html; charset=utf-8"
 aws cloudfront create-invalidation --distribution-id $2 --paths "/*"
