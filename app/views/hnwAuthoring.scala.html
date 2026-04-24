@@ -3,7 +3,6 @@
 @(tagBuilder: TagBuilder)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 @extraHead = {
-  <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/hubnetweb-authoring.css").relative' />

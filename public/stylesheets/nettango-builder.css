@@ -192,8 +192,9 @@ body#ntp-body, html#ntp-body {
   margin-bottom: 0;
 }
 
-.ntb-netlogo-model-chooser > span.model-list {
-  width: 100%;
+.ntb-netlogo-model-chooser .searchable-select {
+  display: block;
+  width:   100%;
 }
 
 .ntb-block-defs-controls {

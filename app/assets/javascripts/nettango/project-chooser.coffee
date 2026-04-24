@@ -1,20 +1,24 @@
 import RactiveModalDialog from "./modal-dialog.js"
+import RactiveSearchableSelect from "/beak/widgets/ractives/subcomponent/searchable-select.js"
 
 hostPrefix = "assets/nt-modelslib/"
 
 RactiveProjectChooser = RactiveModalDialog.extend({
 
+  components: {
+    searchableSelect: RactiveSearchableSelect
+  }
+
   data: () -> {
-    preRenderContent: true # Boolean
-  , approve:          { text: "Load the project", event: "ntb-load-remote-project", argsMaker: () => @getProjectInfo() }
-  , deny:             { text: "Cancel" }
+    preRenderContent:  true # Boolean
+  , approve:           { text: "Load the project", event: "ntb-load-remote-project", argsMaker: () => @getProjectInfo() }
+  , deny:              { text: "Cancel" }
+  , projectOptions:    [] # Array[{value: String, label: String}]
+  , selectedProject:   null # String | null
   }
 
   getProjectInfo: () ->
-    # We can't use normal Ractive data binding for the `value` of the select, as Chosen doesn't
-    # cause updates when it sets it. -Jeremy B May 2021
-    select     = @find("#ntb-ntjson-chooser")
-    projectUrl = hostPrefix + select.value
+    projectUrl = hostPrefix + @get('selectedProject')
     [projectUrl]
 
   loadLibrary: (libraryJson) ->
@@ -23,7 +27,7 @@ RactiveProjectChooser = RactiveModalDialog.extend({
         -1
       else if m1.folder > m2.folder
         1
-      else # same folder
+      else
         if m1.name < m2.name
           -1
         else if m1.name > m2.name
@@ -31,8 +35,8 @@ RactiveProjectChooser = RactiveModalDialog.extend({
         else
           0
     )
-    @set('projects', projects)
-    $('#ntb-ntjson-chooser').chosen({ search_contains: true, width: "95%" })
+    options = projects.map((p) -> { value: p.path, label: "#{p.folder} / #{p.name}" })
+    @set('projectOptions', options)
     return
 
   on: {
@@ -63,11 +67,10 @@ RactiveProjectChooser = RactiveModalDialog.extend({
       <div class="ntb-dialog-text">
         <span>Pick a NetTango project from the NetTango project library.  Note that the NetTango project library is still a work in progress, so you may encounter issues with some projects.</span>
         <div class="ntb-netlogo-model-chooser">
-          <select id="ntb-ntjson-chooser">
-            {{# projects }}
-              <option value="{{path}}">{{folder}} / {{name}}</option>
-            {{/projects}}
-          </select>
+          <searchableSelect
+            options="{{projectOptions}}"
+            selected="{{selectedProject}}"
+            placeholder="Choose a project" />
         </div>
       </div>
       """

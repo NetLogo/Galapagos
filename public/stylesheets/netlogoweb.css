@@ -65,6 +65,138 @@
   background: var(--color-ui-button-selected-bg);
 }
 
+/* ── Searchable Select ── */
+.searchable-select {
+  position: relative;
+  display:  inline-block;
+  width:    100%;
+}
+
+.ss-overlay {
+  position: fixed;
+  inset:    0;
+  z-index:  99;
+}
+
+.ss-trigger {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           0.4em;
+  padding:       0.5em;
+  background:    var(--color-ui-button-bg);
+  border:        1px solid var(--color-ui-button-border);
+  border-radius: 4px;
+  font-family:   var(--font-widget);
+  font-size:     12px;
+  line-height:   1;
+  cursor:        pointer;
+  white-space:   nowrap;
+  width:         100%;
+  min-width:     4em;
+  text-align:    left;
+  box-sizing:    border-box;
+}
+
+.ss-trigger:hover {
+  background: var(--color-ui-button-hover-bg);
+}
+
+.ss-trigger-label {
+  flex:          1;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+.ss-caret {
+  font-size:   0.7em;
+  opacity:     0.6;
+  flex-shrink: 0;
+}
+
+.ss-native {
+  position:       absolute;
+  top:            0;
+  left:           0;
+  width:          100%;
+  height:         100%;
+  opacity:        0;
+  pointer-events: none;
+  z-index:        1;
+  cursor:         pointer;
+}
+
+@media (pointer: coarse) {
+  .ss-native {
+    pointer-events: auto;
+  }
+  .ss-trigger {
+    pointer-events: none;
+  }
+}
+
+.ss-dropdown {
+  position:       absolute;
+  top:            100%;
+  left:           0;
+  min-width:      100%;
+  background:     white;
+  border:         1px solid #ccc;
+  border-radius:  8px;
+  box-shadow:     0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index:        100;
+  display:        flex;
+  flex-direction: column;
+  padding:        4px;
+}
+
+.ss-search {
+  padding:       0.4em 0.5em;
+  border:        none;
+  border-bottom: 1px solid #e8e8e8;
+  font-family:   var(--font-widget);
+  font-size:     12px;
+  outline:       none;
+  flex-shrink:   0;
+  box-sizing:    border-box;
+  width:         100%;
+}
+
+.ss-list {
+  list-style: none;
+  margin:     0;
+  padding:    0;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.ss-option {
+  padding:     0.35em 0.6em;
+  cursor:      pointer;
+  font-family: var(--font-widget);
+  font-size:   12px;
+  white-space: nowrap;
+}
+
+.ss-option:hover:not(.ss-disabled) {
+  background: #e8f0fe;
+}
+
+.ss-option.ss-highlighted {
+  background: #d0e4fd;
+}
+
+.ss-option.ss-disabled {
+  color:          #aaa;
+  cursor:         default;
+  pointer-events: none;
+}
+
+.ss-option[aria-selected="true"] {
+  background:  #f0f5ff;
+  font-weight: 500;
+}
+
 .netlogo-tab-area {
   border-color: var(--color-tab-border);
 }

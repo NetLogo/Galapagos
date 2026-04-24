@@ -1,4 +1,218 @@
-modelSelect = null
+modelWidget = null
+
+# Pure-DOM searchable-select factory, shares CSS classes with the Ractive component.
+# Returns { setValue, addOptionClass, setOptionDisabled, setFooterContent, getOptions }
+createSearchableSelect = (container, options, placeholder, onChange) ->
+
+  isOpen        = false
+  filter        = ''
+  highlightIdx  = -1
+  selected      = null
+  footerContent = null
+
+  opts = options.map((o) -> { value: o.value, label: o.label, disabled: false, extraClasses: [] })
+
+  filteredOpts = ->
+    f = filter.toLowerCase().trim()
+    if f then opts.filter((o) -> o.label.toLowerCase().includes(f)) else opts
+
+  root = document.createElement('div')
+  root.className = 'searchable-select model-list-select'
+
+  trigger = document.createElement('button')
+  trigger.type = 'button'
+  trigger.className = 'ss-trigger'
+  trigger.setAttribute('aria-haspopup', 'listbox')
+  trigger.setAttribute('aria-expanded', 'false')
+
+  triggerLabel = document.createElement('span')
+  triggerLabel.className = 'ss-trigger-label'
+  triggerLabel.textContent = placeholder
+
+  caret = document.createElement('span')
+  caret.className = 'ss-caret'
+  caret.setAttribute('aria-hidden', 'true')
+  caret.innerHTML = '&#9660;'
+
+  trigger.appendChild(triggerLabel)
+  trigger.appendChild(caret)
+  root.appendChild(trigger)
+  container.appendChild(root)
+
+  overlayEl  = null
+  dropdownEl = null
+  searchEl   = null
+  listEl     = null
+
+  renderList = ->
+    return unless listEl?
+    listEl.innerHTML = ''
+    visible = filteredOpts()
+    visible.forEach((opt, i) ->
+      li = document.createElement('li')
+      li.className = 'ss-option'
+      li.setAttribute('role', 'option')
+      li.setAttribute('aria-selected', String(opt.value is selected))
+      if opt.disabled then li.classList.add('ss-disabled')
+      opt.extraClasses.forEach((c) -> li.classList.add(c))
+      if i is highlightIdx then li.classList.add('ss-highlighted')
+      li.textContent = opt.label
+      li.addEventListener('click', (e) ->
+        e.stopPropagation()
+        unless opt.disabled then pickOption(opt.value)
+      )
+      listEl.appendChild(li)
+    )
+
+  openDropdown = ->
+    isOpen       = true
+    filter       = ''
+    highlightIdx = -1
+    trigger.setAttribute('aria-expanded', 'true')
+
+    overlayEl = document.createElement('div')
+    overlayEl.className = 'ss-overlay'
+    overlayEl.addEventListener('click', closeDropdown)
+    document.body.appendChild(overlayEl)
+
+    dropdownEl = document.createElement('div')
+    dropdownEl.className = 'ss-dropdown'
+
+    searchEl = document.createElement('input')
+    searchEl.className = 'ss-search'
+    searchEl.type = 'text'
+    searchEl.placeholder = 'Search...'
+    searchEl.autocomplete = 'off'
+    searchEl.spellcheck = false
+    searchEl.addEventListener('input', (e) ->
+      filter = e.target.value
+      highlightIdx = -1
+      renderList()
+    )
+    searchEl.addEventListener('keydown', onSearchKeydown)
+
+    listEl = document.createElement('ul')
+    listEl.className = 'ss-list'
+    listEl.setAttribute('role', 'listbox')
+
+    dropdownEl.appendChild(searchEl)
+    dropdownEl.appendChild(listEl)
+    if footerContent?
+      dropdownEl.appendChild(footerContent)
+
+    root.appendChild(dropdownEl)
+    renderList()
+    setTimeout((-> searchEl.focus()), 0)
+
+  closeDropdown = ->
+    isOpen = false
+    trigger.setAttribute('aria-expanded', 'false')
+    if overlayEl?
+      overlayEl.removeEventListener('click', closeDropdown)
+      overlayEl.remove()
+      overlayEl = null
+    if dropdownEl?
+      dropdownEl.remove()
+      dropdownEl = null
+    searchEl = null
+    listEl   = null
+    setTimeout((-> trigger.focus()), 0)
+
+  scrollIntoView = (idx) ->
+    return unless listEl?
+    listEl.querySelectorAll('.ss-option')[idx]?.scrollIntoView({ block: 'nearest' })
+
+  pickOption = (value) ->
+    opt = opts.find((o) -> o.value is value)
+    return unless opt? and not opt.disabled
+    selected = value
+    triggerLabel.textContent = opt.label
+    nativeSel.value = value
+    closeDropdown()
+    onChange(value)
+
+  onSearchKeydown = (e) ->
+    visible = filteredOpts()
+    switch e.key
+      when 'ArrowDown'
+        e.preventDefault()
+        highlightIdx = Math.min(highlightIdx + 1, visible.length - 1)
+        renderList()
+        scrollIntoView(highlightIdx)
+      when 'ArrowUp'
+        e.preventDefault()
+        highlightIdx = Math.max(highlightIdx - 1, -1)
+        renderList()
+        if highlightIdx >= 0 then scrollIntoView(highlightIdx)
+      when 'Enter'
+        e.preventDefault()
+        opt = visible[highlightIdx]
+        if opt? and not opt.disabled then pickOption(opt.value)
+      when 'Escape'
+        e.stopPropagation()
+        closeDropdown()
+      when 'Tab'
+        closeDropdown()
+
+  nativeSel = document.createElement('select')
+  nativeSel.className = 'ss-native'
+  nativeSel.setAttribute('aria-hidden', 'true')
+  nativeSel.setAttribute('tabindex', '-1')
+  placeholderOpt = document.createElement('option')
+  placeholderOpt.value = ''
+  placeholderOpt.disabled = true
+  placeholderOpt.selected = true
+  placeholderOpt.textContent = placeholder
+  nativeSel.appendChild(placeholderOpt)
+  opts.forEach((opt) ->
+    o = document.createElement('option')
+    o.value = opt.value
+    o.textContent = opt.label
+    o.disabled = opt.disabled
+    nativeSel.appendChild(o)
+  )
+  nativeSel.addEventListener('change', (e) ->
+    pickOption(e.target.value)
+  )
+  root.appendChild(nativeSel)
+
+  trigger.addEventListener('click', ->
+    if isOpen then closeDropdown() else openDropdown()
+  )
+  trigger.addEventListener('keydown', (e) ->
+    switch e.key
+      when 'Enter', ' '
+        e.preventDefault()
+        if isOpen then closeDropdown() else openDropdown()
+      when 'ArrowDown'
+        e.preventDefault()
+        openDropdown() unless isOpen
+      when 'Escape'
+        if isOpen
+          e.stopPropagation()
+          closeDropdown()
+  )
+
+  {
+    setValue: (value) ->
+      opt = opts.find((o) -> o.value is value)
+      selected = if opt? then value else null
+      triggerLabel.textContent = if opt? then opt.label else placeholder
+      nativeSel.value = if opt? then value else ''
+
+    addOptionClass: (value, className) ->
+      opt = opts.find((o) -> o.value is value)
+      if opt? then opt.extraClasses.push(className)
+
+    setOptionDisabled: (value, disabled) ->
+      opt = opts.find((o) -> o.value is value)
+      if opt? then opt.disabled = disabled
+      nativeOpt = nativeSel.querySelector("option[value=\"#{value}\"]")
+      if nativeOpt? then nativeOpt.disabled = disabled
+
+    setFooterContent: (el) ->
+      footerContent = el
+  }
 
 bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
 
@@ -17,106 +231,53 @@ bindModelChooser = (container, onComplete, selectionChanged, currentMode) ->
     stripPrefix("modelslib/", adjustModelPath(modelName))
 
   setModelCompilationStatus = (modelName, status) ->
+    adjustedPath = adjustModelPath(modelName)
     if status is "not_compiling" and currentMode isnt "dev"
-      $("option[value=\"#{adjustModelPath(modelName)}\"]").attr("disabled", true)
+      modelWidget.setOptionDisabled(adjustedPath, true)
     else
-      $("option[value=\"#{adjustModelPath(modelName)}\"]")
-        .addClass(currentMode)
-        .addClass(status)
+      modelWidget.addOptionClass(adjustedPath, currentMode)
+      modelWidget.addOptionClass(adjustedPath, status)
 
-  populateModelChoices = (select, modelNames) ->
-    unselected = $('<option>').text('Select a model')
-    select.append(unselected)
-    for modelName in modelNames
-      option = $('<option>').attr('value', adjustModelPath(modelName))
-        .text(modelDisplayName(modelName))
-      select.append(option)
+  fetch('./model/list.json')
+  .then((response) -> response.json())
+  .then((allModelNames) ->
+    options = allModelNames.map((name) -> {
+      value: adjustModelPath(name)
+      label: modelDisplayName(name)
+    })
 
-  createModelSelection = (container, modelNames) ->
-    select = $('<select>').attr('name', 'models')
-      .css('width', '100%')
-      .addClass('chzn-select')
-    select.on('change', (e) ->
-      if modelSelect.get(0).selectedIndex > 0
-        modelPath   = modelSelect.get(0).value
-        modelURL    = "#{modelPath}.nlogox"
-        modelSplits = modelPath.split("/")
-        modelName   = modelSplits[modelSplits.length - 1]
-        selectionChanged(modelURL, modelName)
-    )
-    # This is a hack to get a message to appear at the bottom of the chosen dropdown.  It relies on knowing about the
-    # `chosen-drop` div in order to add the message.  Not too bad overall, but changes to chosen can easily break this,
-    # too.  -Jeremy B January 2023
-    select.on('chosen:ready', (e) ->
-      chosenDrop = $('.chosen-drop')
-      disabledMessage = $('<a>')
-        .text("Grayed out models don't yet run in NetLogo Web.")
-        .attr('href', '/docs/faq#library-models')
-        .click( (me) ->
-          # Chosen prevents default ops on its contents somehow, so we don't let the event get that far.
-          me.stopPropagation()
+    footerEl = document.createElement('div')
+    footerEl.className = 'model-list-disabled-message'
+    link = document.createElement('a')
+    link.textContent = "Grayed out models don't yet run in NetLogo Web."
+    link.href = '/docs/faq#library-models'
+    link.addEventListener('click', (e) -> e.stopPropagation())
+    footerEl.appendChild(link)
+
+    onChange = (value) ->
+      modelSplits = value.split("/")
+      modelName   = modelSplits[modelSplits.length - 1]
+      modelURL    = "#{value}.nlogox"
+      selectionChanged(modelURL, modelName)
+
+    modelWidget = createSearchableSelect(container, options, 'Search the Models Library', onChange)
+    modelWidget.setFooterContent(footerEl)
+
+    if container.classList.contains('tortoise-model-list')
+      fetch('./model/statuses.json')
+      .then((response) -> response.json())
+      .then((allModelStatuses) ->
+        allModelNames.forEach((modelName) ->
+          modelStatus = allModelStatuses[modelName]?.status ? 'unknown'
+          setModelCompilationStatus(modelName, modelStatus)
         )
-      disabledDiv = $('<div>')
-        .addClass('model-list-disabled-message')
-        .append(disabledMessage)
-      chosenDrop.append(disabledDiv)
-    )
-    populateModelChoices(select, modelNames)
-    select.appendTo(container)
-    select.chosen({ search_contains: true, width: "inherit"  })
-    select
+      )
 
-  $.ajax('./model/list.json', {
-    complete: (req, status) ->
-      allModelNames = JSON.parse(req.responseText)
-      modelSelect = createModelSelection(container, allModelNames)
-
-      if container.classList.contains('tortoise-model-list')
-        $.ajax('./model/statuses.json', {
-          complete: (req, status) ->
-            allModelStatuses = JSON.parse(req.responseText)
-            for modelName in allModelNames
-              modelStatus = allModelStatuses[modelName]?.status ? 'unknown'
-              setModelCompilationStatus(modelName, modelStatus)
-            modelSelect.trigger('chosen:updated')
-        })
-      onComplete()
-    }
+    onComplete()
   )
-
-selectModel = (model) ->
-  modelSelect.val(model)
-  modelSelect.trigger("chosen:updated")
-
-# (String) => Unit
-selectModelByURL = (modelURL) ->
-
-  extractNMatches =
-    (regex) -> (n) -> (str) ->
-      result = (new RegExp(regex)).exec(str)
-      [1..n].map((matchNumber) -> result[matchNumber])
-
-  urlIsInternal =
-    (url) ->
-      extractDomain = (str) -> extractNMatches(".*?//?([^/]+)|()")(1)(str)[0]
-      extractDomain(window.location.href) is extractDomain(url)
-
-  if urlIsInternal(modelURL) and modelURL.trim().endsWith("nlogox")
-
-    regexStr            = ".*/(modelslib/|test/|demomodels/)(.+).nlogox"
-    [prefix, modelName] = extractNMatches(regexStr)(2)(modelURL)
-    truePrefix          = if prefix is "modelslib/" then "" else prefix
-
-    modelPath    =     "#{prefix}#{modelName}".replace(/%20/g, " ")
-    truePath     = "#{truePrefix}#{modelName}".replace(/%20/g, " ")
-    choiceElems  = document.getElementsByName('models')[0].children
-    choicesArray = [].slice.call(choiceElems)
-    choiceElem   = choicesArray.reduce(((acc, x) -> if x.innerText is truePath then x else acc), null)
-
-    if choiceElem?
-      selectModel(modelPath)
-
-  return
+  .catch((error) ->
+    console.error('Failed to load model list:', error)
+  )
 
 handPickedModels = [
   "Curricular Models/BEAGLE Evolution/DNA Replication Fork",
@@ -154,7 +315,5 @@ handPickedModels = [
 
 export {
   bindModelChooser,
-  selectModel,
-  selectModelByURL,
   handPickedModels,
 }

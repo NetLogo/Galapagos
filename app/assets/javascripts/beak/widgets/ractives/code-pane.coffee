@@ -1,10 +1,12 @@
 import keywords from "/keywords.js"
 import CodeUtils from "/beak/widgets/code-utils.js"
 import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
+import RactiveSearchableSelect from "./subcomponent/searchable-select.js"
 
 RactiveCodePane = Ractive.extend({
   components: {
-    codeContainer: RactiveCodeContainerMultiline
+    codeContainer:    RactiveCodeContainerMultiline
+    searchableSelect: RactiveSearchableSelect
   }
 
   data: -> {
@@ -17,8 +19,10 @@ RactiveCodePane = Ractive.extend({
     jumpToProcedure:   undefined # String
 
     # Internal State
-    procedureNames:      {} # Object<String, Number>
-    autoCompleteStatus:  false # Boolean
+    procedureNames:          {} # Object<String, Number>
+    procedureNamesAsOptions: [] # Array[{value: String, label: String}]
+    selectedProcedure:       null # String | null
+    autoCompleteStatus:      false # Boolean
   }
 
   computed: {
@@ -32,6 +36,10 @@ RactiveCodePane = Ractive.extend({
         @findComponent('codeContainer').setCode(code)
       init: false
     }
+    lastCompiledCode: {
+      handler: -> @_computeProcedureOptions()
+      init: false
+    }
     jumpToCode: ->
       @_jumpToCode()
     jumpToProcedure: ->
@@ -40,12 +48,12 @@ RactiveCodePane = Ractive.extend({
 
   on: {
     complete: ->
-      @_setupProceduresDropdown()
       @_setupCtrlS()
       CodeMirror.registerHelper('hint', 'fromList', @_netlogoHintHelper)
       @_setupAutoComplete(@_autoCompleteWords())
       @_jumpToCode()
       @_jumpToProcedure()
+      @_computeProcedureOptions()
       return
 
     recompile: ->
@@ -56,7 +64,24 @@ RactiveCodePane = Ractive.extend({
     'code-changed': (_, code) ->
       @set('code', code)
       return
+
+    'searchableSelect.open': ->
+      @_computeProcedureOptions()
+      return
+
+    'searchableSelect.change': (_, value) ->
+      procedureNames = @get('procedureNames')
+      index = procedureNames[value]
+      @findComponent('codeContainer').highlightProcedure(value, index)
+      return
   }
+
+  # () => Unit
+  _computeProcedureOptions: ->
+    names = CodeUtils.findProcedureNames(@get('code'), 'as-written')
+    opts  = Object.keys(names).sort().map((n) -> { value: n, label: n })
+    @set({ procedureNames: names, procedureNamesAsOptions: opts })
+    return
 
   # () => Unit
   focus: ->
@@ -98,26 +123,6 @@ RactiveCodePane = Ractive.extend({
       })
     return
 
-  _setupProceduresDropdown: ->
-    dropdownElement = $(@find('.netlogo-procedurenames-dropdown'))
-    dropdownElement.chosen({
-      search_contains: true,
-      width: getComputedStyle(dropdownElement[0]).getPropertyValue('width')
-      # The width needs to be manually specified to match, otherwise chosen menu shows 0 width.
-    })
-    dropdownElement.on('change', =>
-      procedureNames   = @get('procedureNames')
-      selectedProcedure = dropdownElement.val()
-      index            = procedureNames[selectedProcedure]
-      @findComponent('codeContainer').highlightProcedure(selectedProcedure, index)
-    )
-    dropdownElement.on('chosen:showing_dropdown', =>
-      procedureNames = CodeUtils.findProcedureNames(@get('code'), 'as-written')
-      @set('procedureNames', procedureNames)
-      dropdownElement.trigger('chosen:updated')
-    )
-    return
-
   _netlogoHintHelper: (cm, options) ->
     cur   = cm.getCursor()
     token = cm.getTokenAt(cur)
@@ -153,11 +158,12 @@ RactiveCodePane = Ractive.extend({
     <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container">
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
-          <select class="netlogo-procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="2">
-            {{#each procedureNames:name}}
-              <option value="{{name}}">{{name}}</option>
-            {{/each}}
-          </select>
+          <div class="netlogo-procedurenames-dropdown">
+            <searchableSelect
+              options="{{procedureNamesAsOptions}}"
+              selected="{{selectedProcedure}}"
+              placeholder="Jump to Procedure" />
+          </div>
         </li>
         <li class="netlogo-codetab-widget-listitem">
           {{# !isReadOnly }}

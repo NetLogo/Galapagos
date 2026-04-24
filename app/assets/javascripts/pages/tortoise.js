@@ -1,5 +1,5 @@
 import { listenForQueryResponses, createQueryMaker } from "/queries/debug-query-maker.js";
-import { bindModelChooser, selectModel, selectModelByURL, handPickedModels } from "/models.js";
+import { bindModelChooser, handPickedModels } from "/models.js";
 import Settings from "/settings.js"
 
 var modelContainer = document.querySelector('#model-container');
@@ -32,7 +32,6 @@ function pickModel(url) {
 
 function pickRandom() {
   var model = handPickedModels[Math.floor(Math.random() * handPickedModels.length)];
-  selectModel(model);
   pickModel(model + ".nlogox");
 }
 
@@ -41,20 +40,17 @@ function openModelFromUrl(url) {
     url = encodeURI(url);
   }
   if (url === "Load") {
-    selectModel("Select a model");
     if (modelContainer.contentWindow.location == "about:blank") {
       modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
       modelFileInput.value = "";
     }
 
   } else if (url === "NewModel") {
-    selectModel("Select a model");
     params.delete("url");
     modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";
 
   } else {
-    selectModelByURL(url);
     params.set("url", url);
     modelContainer.contentWindow.location.replace(`./web?${params.toString()}`);
     modelFileInput.value = "";

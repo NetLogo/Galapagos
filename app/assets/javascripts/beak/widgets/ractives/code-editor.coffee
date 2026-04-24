@@ -1,6 +1,7 @@
 import keywords from "/keywords.js"
 import CodeUtils from "/beak/widgets/code-utils.js"
 import { RactiveCodeContainerMultiline } from "./subcomponent/code-container.js"
+import RactiveSearchableSelect from "./subcomponent/searchable-select.js"
 
 RactiveModelCodeComponent = Ractive.extend({
 
@@ -12,6 +13,7 @@ RactiveModelCodeComponent = Ractive.extend({
   , lastCompiledCode:  undefined # String
   , lastCompileFailed:     false # Boolean
   , procedureNames:           {} # Object[String, Number]
+  , selectedProcedure:      null # String | null
   , autoCompleteStatus:    false # Boolean
   , codeUsage:                [] # Array[{pos: CodeMirror.Pos, lineNumber: Number, line: String }]
   , usageVisibility:       false # Boolean
@@ -21,36 +23,21 @@ RactiveModelCodeComponent = Ractive.extend({
   }
 
   components: {
-    codeEditor: RactiveCodeContainerMultiline
+    codeEditor:       RactiveCodeContainerMultiline
+    searchableSelect: RactiveSearchableSelect
   }
 
   computed: {
     isStale: '(code !== lastCompiledCode) || lastCompileFailed'
+
+    # Array[{value: String, label: String}]
+    procedureNamesAsOptions: ->
+      Object.keys(@get('procedureNames')).sort().map((n) -> { value: n, label: n })
   }
 
   # (String) => Unit
   setCode: (code) ->
     @findComponent('codeEditor').setCode(code)
-    return
-
-  setupProceduresDropdown: ->
-    $('#procedurenames-dropdown').chosen({ search_contains: true, width: "296px" })
-    $('#procedurenames-dropdown').on('change', =>
-      procedureNames = @get('procedureNames')
-      selectedProcedure = $('#procedurenames-dropdown').val()
-      index = procedureNames[selectedProcedure]
-      @findComponent('codeEditor').highlightProcedure(selectedProcedure, index)
-    )
-
-    $('#procedurenames-dropdown').on('chosen:showing_dropdown', =>
-      @setProcedureNames()
-    )
-    return
-
-  setProcedureNames: ->
-    procedureNames = CodeUtils.findProcedureNames(@get('code'), 'as-written')
-    @set('procedureNames', procedureNames)
-    $('#procedurenames-dropdown').trigger('chosen:updated')
     return
 
   setupAutoComplete: (hintList) ->
@@ -175,12 +162,22 @@ RactiveModelCodeComponent = Ractive.extend({
 
   on: {
     'complete': (_) ->
-      @setupProceduresDropdown()
       CodeMirror.registerHelper('hint', 'fromList', @netLogoHintHelper)
       @setupAutoComplete(@autoCompleteWords())
       @setupCodeUsagePopup()
       @jumpToProcedure()
       @jumpToCode()
+      return
+
+    'searchableSelect.open': ->
+      procedureNames = CodeUtils.findProcedureNames(@get('code'), 'as-written')
+      @set('procedureNames', procedureNames)
+      return
+
+    'searchableSelect.change': (_, value) ->
+      procedureNames = @get('procedureNames')
+      index = procedureNames[value]
+      @findComponent('codeEditor').highlightProcedure(value, index)
       return
 
     'recompile': (_) ->
@@ -212,15 +209,16 @@ RactiveModelCodeComponent = Ractive.extend({
     <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container">
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
-          <select class="netlogo-procedurenames-dropdown" id="procedurenames-dropdown" data-placeholder="Jump to Procedure" tabindex="0">
-            {{#each procedureNames:name}}
-              <option value="{{name}}">{{name}}</option>
-            {{/each}}
-          </select>
+          <div class="netlogo-procedurenames-dropdown">
+            <searchableSelect
+              options="{{procedureNamesAsOptions}}"
+              selected="{{selectedProcedure}}"
+              placeholder="Jump to Procedure" />
+          </div>
         </li>
         <li class="netlogo-codetab-widget-listitem">
           {{# !isReadOnly }}
-            <button class="netlogo-widget netlogo-ugly-button netlogo-recompilation-button{{#isEditing}} interface-unlocked{{/}}"
+            <button class="nlw-ui-button netlogo-recompilation-button{{#isEditing}} interface-unlocked{{/}}"
                 on-click="['recompile', 'user']" {{# !isStale }}disabled{{/}} >Recompile Code</button>
           {{/}}
         </li>

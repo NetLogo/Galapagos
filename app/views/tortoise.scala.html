@@ -3,7 +3,6 @@
 @()(implicit mode: Mode, request: Request[?])
 
 @extraHead = {
-  <link rel="stylesheet" href='@routes.Assets.versioned("chosen-js/chosen.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-fonts.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogoweb.css").relative' />
@@ -14,11 +13,7 @@
 @content = {
   <div id="tortoise-content" class="tortoise inner-content" style="display: none;">
     <div class="model-selection-bar">
-      <div>
-        <label>Search the Models Library:
-            <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
-        </label>
-      </div>
+      <span id="tortoise-model-list" class="model-list tortoise-model-list"></span>
       <div>
         <label class="nlw-ui-button" for="model-file-input">Upload a Model</label>
         <input id="model-file-input" type="file" name="model" accept=".nlogo,.nlogox" hidden />
@@ -32,8 +27,6 @@
 }
 
 @extraBody = {
-  <script src='@routes.Assets.versioned("jquery/dist/jquery.min.js").relative' type="text/javascript"></script>
-  <script src='@routes.Assets.versioned("chosen-js/chosen.jquery.js").relative' type="text/javascript"></script>
   <script src='@routes.Assets.versioned("file-saver/dist/FileSaver.min.js").relative' type="text/javascript"></script>
 
   <script>
