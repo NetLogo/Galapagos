@@ -407,7 +407,7 @@ template =
           </div>
         </label>
 
-        <button class="nlw-ui-button netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
+        <button class="netlogo-help-keybind-hint{{#isEditing}} interface-unlocked{{/}}"
                 on-click="@.fire('toggle-help')">
           <kbd>?</kbd><span> for shortcuts</span>
         </button>
