@@ -168,7 +168,7 @@ RactiveAsyncUserDialog = Ractive.extend({
 
       {{ elseif state.type === 'chooser' }}
         <div class="h-center-flexbox">
-          <select id="async-dialog-chooser" class="async-dialog-chooser" style="max-width: {{wareaWidth * .3}}px">
+          <select id="async-dialog-chooser" class="async-dialog-chooser nlw-ui-select" style="max-width: {{wareaWidth * .3}}px">
           {{#state.choices:i}}
             <option {{# i === 0}} selected{{/}}>{{state.choices[i]}}</option>
           {{/}}

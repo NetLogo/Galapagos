@@ -356,14 +356,20 @@
 }
 
 .netlogo-input-group > select {
-  border:        none;
-  border-right:  1px solid #ccc;
-  border-radius: 0;
-  background:    #f0f0f0;
-  padding:       0 0.4em;
-  margin:        0;
-  flex-shrink:   0;
-  outline:       none;
+  appearance:          none;
+  -webkit-appearance:  none;
+  border:              none;
+  border-right:        1px solid #ccc;
+  border-radius:       0;
+  background-color:    #f0f0f0;
+  background-image:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0 L10 0 L5 6 Z' fill='rgba(0%2C0%2C0%2C0.55)'/%3E%3C/svg%3E");
+  background-repeat:   no-repeat;
+  background-position: right 0.4em center;
+  background-size:     0.55em;
+  padding:             0 1.3em 0 0.4em;
+  margin:              0;
+  flex-shrink:         0;
+  outline:             none;
 }
 
 .netlogo-input-group .netlogo-command-center-editor {
@@ -406,11 +412,6 @@
   align-items: center;
   gap:         0.5em;
   flex-shrink: 0;
-}
-
-.command-center-context-select {
-  font-family: 'Open Sans', sans-serif;
-  font-size:   12px;
 }
 
 .netlogo-command-center-button {
@@ -902,12 +903,18 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-chooser-select {
-  border:           1px solid var(--color-widget-select-border);
-  border-radius:    4px;
-  padding:          0.1rem 0.2rem;
-  font-family:      var(--font-widget);
-  font-size:        12px;
-  background-color: #ffffff;
+  appearance:          none;
+  -webkit-appearance:  none;
+  border:              1px solid var(--color-widget-select-border);
+  border-radius:       4px;
+  padding:             0.1rem 1.2rem 0.1rem 0.2rem;
+  font-family:         var(--font-widget);
+  font-size:           12px;
+  background-color:    #ffffff;
+  background-image:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0 L10 0 L5 6 Z' fill='rgba(0%2C0%2C0%2C0.55)'/%3E%3C/svg%3E");
+  background-repeat:   no-repeat;
+  background-position: right 0.3em center;
+  background-size:     0.55em;
 }
 
 .netlogo-plot {

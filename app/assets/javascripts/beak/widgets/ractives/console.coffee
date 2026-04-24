@@ -88,7 +88,7 @@ RactiveConsoleWidget = Ractive.extend({
 
       <div class='netlogo-command-center-input'>
         <div class="netlogo-input-group">
-          <select class="command-center-context-select" value="{{agentType}}" on-change="focus-command-input">
+          <select class="command-center-context-select nlw-ui-select" value="{{agentType}}" on-change="focus-command-input">
           {{#agentTypes}}
             <option value="{{.}}">{{.}}</option>
           {{/}}

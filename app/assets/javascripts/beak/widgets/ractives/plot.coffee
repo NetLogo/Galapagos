@@ -156,7 +156,7 @@ PenForm = Ractive.extend({
       {{# isExpanded }}
         <spacer height="10px" />
         <div class="flex-row" style="justify-content: space-between;">
-          <select id="{{id}}-mode" name="mode" class="widget-edit-dropdown" style="margin-left: 0; width: 80px;" value="{{mode}}">
+          <select id="{{id}}-mode" name="mode" class="widget-edit-dropdown nlw-ui-select" style="margin-left: 0; width: 80px;" value="{{mode}}">
             <option value="Line" >Line </option>
             <option value="Bar"  >Bar  </option>
             <option value="Point">Point</option>

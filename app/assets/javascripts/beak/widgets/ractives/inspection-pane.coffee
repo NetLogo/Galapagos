@@ -391,7 +391,7 @@ RactiveInspectionPane = Ractive.extend({
     'commandCenter': """
       <div class="inspection-cmd-container">
         <div class="netlogo-input-group">
-          <select class="inspection-agent-type-select" value="{{agentTypeFilter}}">
+          <select class="inspection-agent-type-select nlw-ui-select" value="{{agentTypeFilter}}">
             <option value="turtles">turtles ({{agentTypeCounts.turtles}})</option>
             <option value="patches">patches ({{agentTypeCounts.patches}})</option>
             <option value="links">links ({{agentTypeCounts.links}})</option>
