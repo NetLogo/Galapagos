@@ -81,6 +81,7 @@ RactiveConsoleWidget = Ractive.extend({
     @fire('focus-command-input')
     return
 
+  # coffeelint: disable=max_line_length
   template:
     """
     <div class='netlogo-tab-content netlogo-command-center'>
@@ -105,6 +106,7 @@ RactiveConsoleWidget = Ractive.extend({
       </div>
     </div>
     """
+  # coffeelint: enable=max_line_length
 })
 
 export default RactiveConsoleWidget

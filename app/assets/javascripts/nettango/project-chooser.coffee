@@ -10,11 +10,17 @@ RactiveProjectChooser = RactiveModalDialog.extend({
   }
 
   data: () -> {
-    preRenderContent:  true # Boolean
-  , approve:           { text: "Load the project", event: "ntb-load-remote-project", argsMaker: () => @getProjectInfo() }
-  , deny:              { text: "Cancel" }
-  , projectOptions:    [] # Array[{value: String, label: String}]
-  , selectedProject:   null # String | null
+    preRenderContent: true # Boolean
+  , approve: {
+    text:  "Load the project"
+  , event: "ntb-load-remote-project"
+  , argsMaker: () => @getProjectInfo()
+  }
+  , deny: {
+    text: "Cancel"
+  }
+  , projectOptions:  [] # Array[{value: String, label: String}]
+  , selectedProject: null # String | null
   }
 
   getProjectInfo: () ->

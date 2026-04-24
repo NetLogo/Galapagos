@@ -34,6 +34,7 @@ RactiveEditFormDropdown = Ractive.extend({
 
   twoway: false
 
+  # coffeelint: disable=max_line_length
   template:
     """
     <div class="{{ divClass }}">
@@ -45,6 +46,7 @@ RactiveEditFormDropdown = Ractive.extend({
       </select>
     </div>
     """
+  # coffeelint: enable=max_line_length
 
 })
 

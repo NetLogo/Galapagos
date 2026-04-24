@@ -279,6 +279,7 @@ RactiveAgentMonitor = Ractive.extend({
       </div>
     """
 
+    # coffeelint: disable=max_line_length
     "viewSection": """
       <div
         class="inspection-agent-monitor-view-container"
@@ -296,6 +297,7 @@ RactiveAgentMonitor = Ractive.extend({
         <input type="range" min=0 max=1 step=0.01 value="{{zoomLevel}}"/>
       </div>
     """
+    # coffeelint: enable=max_line_length
 
     "propertyGrid": """
       <div class="inspection-agent-monitor-property-grid">
