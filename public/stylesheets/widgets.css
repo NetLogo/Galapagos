@@ -311,7 +311,10 @@
 
 .netlogo-info-editor {
   border: 1px solid black;
-  height: 500px;
+}
+
+.netlogo-info-editor .CodeMirror-scroll {
+  max-height: 500px;
 }
 
 .netlogo-info {
