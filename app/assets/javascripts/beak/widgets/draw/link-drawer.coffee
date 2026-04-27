@@ -135,49 +135,45 @@ drawLinkLine = (
   shape = shapelist[shapeName]
   { curviness, lines } = shape
 
-  lines.forEach(
-    (line) =>
+  # Draw the middle line last so the arrow shape will always be on top
+  [0, 2, 1].forEach(
+    (i) =>
 
-      # Draw the middle line last so the arrow shape will always be on top
-      [0, 2, 1].forEach(
-        (i) =>
+      { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': isVisible } = lines[i]
 
-          { 'x-offset': centerOffset, 'dash-pattern': dashPattern, 'is-visible': visible } = lines[i]
+      isMiddleLine = i is 1
 
-          isMiddleLine = i is 1
+      [xcomp, ycomp] = calculateComps(x1, y1, x2, y2, size)
+      [xOff,  yOff]  = calculateSublineOffset(worldShape.onePixel, centerOffset, thickness, xcomp, ycomp)
+      offsetSubline  = getOffsetSubline(x1, y1, x2, y2, xOff, yOff)
 
-          [xcomp, ycomp] = calculateComps(x1, y1, x2, y2, size)
-          [xOff, yOff]   = calculateSublineOffset(worldShape.onePixel, centerOffset, thickness, xcomp, ycomp)
-          offsetSubline  = getOffsetSubline(x1, y1, x2, y2, xOff, yOff)
+      [midpointX, midpointY] = offsetSubline.midpoint()
+      [controlX,  controlY]  = calculateControlPoint(midpointX, midpointY, curviness, xcomp, ycomp)
 
-          [midpointX, midpointY] = offsetSubline.midpoint()
-          [controlX,  controlY]  = calculateControlPoint(midpointX, midpointY, curviness, xcomp, ycomp)
+      if isVisible
+        isCurved = curviness > 0
+        drawSubline(
+          offsetSubline,
+          dashPattern,
+          thickness,
+          color,
+          isCurved,
+          controlX,
+          controlY,
+          ctx,
+          worldShape.onePixel
+        )
 
-          if visible
-            isCurved = curviness > 0
-            drawSubline(
-              offsetSubline,
-              dashPattern,
-              thickness,
-              color,
-              isCurved,
-              controlX,
-              controlY,
-              ctx,
-              worldShape.onePixel
-            )
+      if isMiddleLine
+        if isDirected and size > (.25 * worldShape.onePixel)
+          dirIndicator = shape['direction-indicator']
+          oneP         = worldShape.onePixel
+          drawLinkShape(x2, y2, controlX, controlY, heading, color, thickness, shape, dirIndicator, ctx, oneP)
 
-          if isMiddleLine
-            if isDirected and size > (.25 * worldShape.onePixel)
-              dirIndicator = shape['direction-indicator']
-              oneP         = worldShape.onePixel
-              drawLinkShape(x2, y2, controlX, controlY, heading, color, thickness, shape, dirIndicator, ctx, oneP)
+        hasLabel = label?
+        if hasLabel and not isStamp
+          drawLinkLabel(worldShape, controlX, controlY, label, labelColor, ctx, fontSize, font)
 
-            hasLabel = label?
-            if hasLabel and not isStamp
-              drawLinkLabel(worldShape, controlX, controlY, label, labelColor, ctx, fontSize, font)
-
-      )
   )
 
 getWrappedLines = (x1, y1, x2, y2, worldShape, lineWrapsX, lineWrapsY) ->
