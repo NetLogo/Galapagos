@@ -3,6 +3,9 @@
 package controllers
 
 import
+  java.io.File
+
+import
   javax.inject.{ Inject }
 
 import
@@ -35,6 +38,7 @@ class Application @Inject() (
   def settings     = themedPage((req) => views.html.settings(OutsourceTagBuilder)(using req, environment), "NetLogo Web Settings")
   def serverError  = themedPage((_)   => views.html.serverError(),         "NetLogo Web - Error")
   def whatsNew     = themedPage((req) => views.html.whatsNew()(using req), "What's New in NetLogo Web"   , ""   , Option("updates"))
+  def modelLinker  = themedPage((_)   => views.html.modelLinker(scanVersions()), "NetLogo Web - Model Link Creator")
   // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {
@@ -55,6 +59,30 @@ class Application @Inject() (
 
   def favicon: Action[AnyContent] =
     assets.versioned(path = "/public/images", file = "favicon.ico")
+
+  private object VersionOrdering extends Ordering[String] {
+    def compare(a: String, b: String): Int = {
+      val aParts = a.split("\\.").map(_.toIntOption.getOrElse(0))
+      val bParts = b.split("\\.").map(_.toIntOption.getOrElse(0))
+      val len    = math.max(aParts.length, bParts.length)
+      (0 until len)
+        .map(i => aParts.lift(i).getOrElse(0).compareTo(bParts.lift(i).getOrElse(0)))
+        .find(_ != 0)
+        .getOrElse(0)
+    }
+  }
+
+  private def scanVersions(): Seq[String] = {
+    val dir = new File("public/versions/")
+    if (dir.exists() && dir.isDirectory)
+      dir.listFiles()
+        .filter(f => f.isFile && f.getName.endsWith(".html"))
+        .map(_.getName.stripSuffix(".html"))
+        .sorted(using VersionOrdering.reverse)
+        .toSeq
+    else
+      Seq.empty
+  }
 
   private def themedPage( html: (Request[?]) => Html, title: String, relativizer: String = "", selectedTopLink: Option[String] = None
                         , extraHead: Html = Html("")): Action[AnyContent] =

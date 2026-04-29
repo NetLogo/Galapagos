@@ -1,0 +1,116 @@
+@(versions: Seq[String])
+
+<style>
+  .outer-content {
+    max-width: 1100px;
+  }
+  .linker-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5em;
+  }
+  .linker-version-label {
+    flex-shrink: 0;
+    font-weight: bold;
+    min-width: 4.5em;
+    text-align: right;
+  }
+  .linker-link {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .copy-btn {
+    flex-shrink: 0;
+  }
+</style>
+
+<div class="inner-content" style="margin: 0 10%;">
+
+  <h1>NetLogo Web Model Link Creator</h1>
+
+  <p>
+    You can hotlink your NetLogo model to NetLogo Web in order to share a runnable version with others, or to embed it
+    into your website with an iframe. Linking this way always runs models using the latest version of NetLogo Web by
+    default.  This means your models automatically receive new features, performance improvements, and bug fixes over time
+    as we continue to work on NetLogo Web.
+  </p>
+  <p>
+    If you need a model to run against a specific version of NetLogo Web, you can use one of the version-pinned
+    links below instead.  You may wish to do this to for research reproducibility, to work around a bug, or to avoid
+    potential breaking changes.
+  </p>
+
+  <h2>Create Link</h2>
+
+  <p>Paste your model URL below to generate shareable links.</p>
+
+  <input type="url" id="model-url-input"
+         placeholder="https://example.com/my-model.nlogox"
+         style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-size: 1em; margin-bottom: 1.25em;" />
+
+  <h2>Latest</h2>
+
+  <p>This link will always point to the current NetLogo Web release.</p>
+
+  <ul style="list-style: none; padding: 0;">
+    <li class="linker-row">
+      <span class="linker-version-label">latest</span>
+      <a class="linker-link version-link" data-path="/standalone" href="/standalone">/standalone</a>
+      <button class="copy-btn">Copy</button>
+    </li>
+  </ul>
+
+  <h2>Pinned Versions</h2>
+
+  <p>These links go to specific versions of NetLogo Web.  They won't change under normal circumstances.</p>
+
+  @if(versions.isEmpty) {
+    <p><em>No versioned bundles are available yet.</em></p>
+  } else {
+    <ul style="list-style: none; padding: 0;">
+      @for(version <- versions) {
+        <li class="linker-row">
+          <span class="linker-version-label"><a href="whats-new#v@version">@version</a></span>
+          <a class="linker-link version-link" data-path="/versions/@version" href="/versions/@version">/versions/@version</a>
+          <button class="copy-btn">Copy</button>
+        </li>
+      }
+    </ul>
+  }
+
+</div>
+
+<script>
+  (function() {
+    const input = document.getElementById('model-url-input');
+    const links = document.querySelectorAll('.version-link');
+    const origin = window.location.origin;
+
+    function updateLinks() {
+      const modelUrl = input.value.trim();
+      links.forEach(function(link) {
+        const base = origin + link.dataset.path;
+        const href = modelUrl ? base + '?url=' + encodeURIComponent(modelUrl) : base;
+        link.href = href;
+        link.textContent = href;
+      });
+    }
+
+    input.addEventListener('input', updateLinks);
+    updateLinks();
+
+    document.querySelectorAll('.copy-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const link = btn.parentElement.querySelector('.version-link');
+        navigator.clipboard.writeText(link.href).then(function() {
+          btn.textContent = 'Copied!';
+          setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+        });
+      });
+    });
+  })();
+</script>

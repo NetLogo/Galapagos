@@ -401,7 +401,8 @@ class SessionLite
             if req.status is 200
               exportHtmlEx(req.responseText)
             else
-              alert("Couldn't get standalone page")
+              quine = window.document.children.item(0).outerHTML
+              exportHtmlEx(quine)
 
         req.send("")
 

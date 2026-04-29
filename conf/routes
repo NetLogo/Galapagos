@@ -22,6 +22,8 @@ GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /jumpto                             controllers.Local.jumpto
 GET         /iframe-test                        controllers.Local.iframeTest
+GET         /versions/:version                  controllers.Local.versionedStandalone(version)
+GET         /model-linker                       controllers.Application.modelLinker
 
 # NetTango
 GET         /nettango-builder                   controllers.NetTango.builder(themed: Boolean = true,  standalone: Boolean = false)

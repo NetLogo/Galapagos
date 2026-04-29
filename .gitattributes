@@ -1,0 +1,1 @@
+public/versions/*.html filter=lfs diff=lfs merge=lfs -text

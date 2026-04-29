@@ -84,6 +84,14 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.hnwJoin(OutsourceTagBuilder))
   }
 
+  def versionedStandalone(version: String): Action[AnyContent] = Action {
+    implicit request =>
+      if (version.matches("[a-zA-Z0-9._-]+"))
+        replyWithResource(environment)(s"public/versions/$version.html")("text/html; charset=utf-8")
+      else
+        BadRequest
+  }
+
   def engine: Action[AnyContent] = Action {
     implicit request => replyWithResource(environment)(enginePath)("text/javascript")
   }
