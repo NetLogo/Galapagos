@@ -154,13 +154,13 @@ RactiveCommandInput = Ractive.extend({
     input = @get('input')
     if input.trim().length > 0
       targetedAgentObj = @get('targetedAgentObj')
+      if @get('checkIsReporter')(input)
+        input = "show #{input}"
+
       syntaxResult     = ProcedurePrims.checkSyntax(input)
       if syntaxResult isnt ''
         @fire('compiler-error', {}, @get('source'), [syntaxResult])
         return
-
-      if @get('checkIsReporter')(input)
-        input = "show #{input}"
 
       cmd = getCommand(targetedAgentObj, input)
       if @fire('run', {}, @get('source'), cmd, { targetedAgentObj, input }) is false
