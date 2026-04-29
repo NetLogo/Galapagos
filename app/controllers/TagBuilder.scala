@@ -59,9 +59,15 @@ object InlineTagBuilder extends TagBuilder {
   private def genTag(source: String, url: URL, attributes: Seq[(String, String)] = Seq.empty): Html = {
     val FileExtensionRegex      = ".*\\.(.*)$".r
     val FileExtensionRegex(ext) = url.toString: @unchecked
+    val urlPath                 = url.getPath
+    val id                      = urlPath.lastIndexOf("public/") match {
+      case -1  => urlPath.split("/").last
+      case idx => urlPath.substring(idx + "public/".length)
+    }
+    val attrsWithId             = (attributes :+ ("id" -> id)).toMap
     ext match {
-      case "js"  => TagBuilder.makeTag("script", source, attributes.toMap)
-      case "css" => TagBuilder.makeTag("style",  source, attributes.toMap)
+      case "js"  => TagBuilder.makeTag("script", source, attrsWithId)
+      case "css" => TagBuilder.makeTag("style",  source, attrsWithId)
       case x     => throw new Exception(s"We don't know how to build a tag for '.$x' files")
     }
   }
