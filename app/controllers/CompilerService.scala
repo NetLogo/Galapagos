@@ -271,7 +271,6 @@ private[controllers] trait RequestResultGenerator {
 
     val stylesheets =
       Set(
-        "/public/stylesheets/netlogo-fonts.css",
         "/public/stylesheets/classes.css",
         "/public/stylesheets/widgets.css",
         "/public/stylesheets/info.css",
@@ -282,7 +281,11 @@ private[controllers] trait RequestResultGenerator {
         "/public/codemirror/addon/dialog/dialog.css"
       )
 
-    stylesheets map slurpURL mkString "\n"
+    // @import must appear before all other rules, so the font import is prepended explicitly
+    // rather than concatenated from the set, which has no guaranteed ordering.
+    val fontImport = "@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..125,300..800;1,75..125,300..800&display=swap');"
+
+    fontImport + "\n" + (stylesheets map slurpURL mkString "\n")
 
   }
 
