@@ -18,8 +18,8 @@
 
   <h1>Hosting and Sharing NetLogo Web Models</h1>
 
-  <p>This page covers how to host your NetLogo model files on the web, how to create shareable and embeddable links
-    to them using NetLogo Web, and how to use version-pinned links for reproducibility.</p>
+  <p>This page covers how to host your NetLogo model files on the web, how to create shareable links and embeddable links
+    using NetLogo Web, and how to use version-pinned embeddable links for reproducibility.</p>
 
   @linkableHeader("hosting-nlw-files", "What are my options for hosting and sharing NetLogo Web files?")
 
@@ -78,46 +78,53 @@
 
   @linkableHeader("hotlinking", "How do I create a runnable link to share or embed on my website (hotlinking)?")
 
-  <p>To generate a runnable link (URL) of your <code>.nlogox</code> model file to share, follow the below steps. You
-    will need your model posted on a website host accessible to the Internet to use this technique, see <a
-    href="#hosting-nlw-files">the hosting options section above</a> for more information. The examples given
-    reference GitHub Pages, but any website host should be similar.</p>
+  <p>There are two kinds of hotlinks you can create for your model, depending on how you want it to be used.  Both
+    require your model to be posted on a website host accessible to the Internet.  See <a
+    href="#hosting-nlw-files">the hosting options section above</a> for more information.  You can use the
+    <a href="/model-linker">NetLogo Web Model Link Creator</a> to generate either type of link automatically.</p>
+
+  <h3 id="shareable-links">Shareable Links</h3>
+
+  <p>A shareable link opens the full NetLogo Web interface with menus, toolbar, and all.  It is the best choice when you want
+    someone to be able to run, explore, or modify the model, and is well-suited to sharing via email, social media, or a
+    course page.</p>
 
   <ul>
     <li>Get the URL of your model as posted on your website host.
       <ul><li>For example: <code>https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
       </li>
-    <li>Create a URL by using <code>https://netlogoweb.org/launch#myModelURL</code>.
+    <li>Create a shareable link using <code>https://netlogoweb.org/launch#myModelURL</code>.
       <ul><li>For example: <code>https://netlogoweb.org/launch#https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
       </li>
-    <li>Open the link in a web browser to test it out, you should see your model load in NetLogo Web and be ready to
-      go.</li>
+    <li>Open the link in a web browser to confirm your model loads and runs correctly.</li>
   </ul>
 
-  <p>To embed your runnable model in an HTML page on your site, use an <code>iframe</code> element:</p>
+  <h3 id="embeddable-links">Embeddable Links</h3>
+
+  <p>An embeddable link loads a borderless view of your model.  It will have no NetLogo Web menus or toolbar, which is
+    appropriate for placing in an <code>iframe</code> on your own website.  Embeddable links also support
+    <a href="#version-pinning">version pinning</a>.</p>
 
   <ul>
     <li>Get the URL of your model as posted on your website host.
       <ul><li>For example: <code>https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
       </li>
-    <li>Create a URL by using <code>https://netlogoweb.org/web?url=myModelURL</code>. Note the use of
-      <code>web?url=myModelURL</code> instead of <code>launch#myModelURL</code>. The <code>/web</code> page loads without
-      the NetLogo Web menus and borders, which is more appropriate for embedding in another site.
+    <li>Create an embeddable link using <code>https://netlogoweb.org/web?url=myModelURL</code>.
       <ul><li>For example: <code>https://netlogoweb.org/web?url=https://octocat.github.io/MyNetLogoModel.nlogox</code></li></ul>
       </li>
-    <li>Open the link in a web browser to test it out, you should see your model load in NetLogo Web and be ready to
-      go.</li>
-    <li>On the website page you want to embed your model, add an <code>iframe</code> element with a <code>src=</code> to your model URL.</li>
+    <li>Open the link in a web browser to confirm your model loads and runs correctly.</li>
+    <li>On the page where you want to display the model, add an <code>iframe</code> element whose <code>src</code>
+      is your embeddable link.</li>
   </ul>
 
   <p>For example, here is what a basic HTML page that embeds the model might look like:</p>
 
 <pre><code>&lt;html&gt;
   &lt;head&gt;
-    &lt;title&gt;NetLogo Model Hotlinking Example&lt;/title&gt;
+    &lt;title&gt;NetLogo Model Embedding Example&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;p&gt;NetLogo Model Hotlinking Example&lt;/p&gt;
+    &lt;p&gt;NetLogo Model Embedding Example&lt;/p&gt;
     &lt;iframe
       src=&quot;https://netlogoweb.org/web?url=https://octocat.github.io/MyNetLogoModel.nlogox&quot;
       width=&quot;600&quot; height=&quot;600&quot;&gt;
@@ -126,9 +133,8 @@
 &lt;/html&gt;
 </code></pre>
 
-  <p>By default, hotlinks always run your model using the latest version of NetLogo Web, so your models automatically
-    receive new features, performance improvements, and bug fixes over time.  If you need more control over which version
-    of NetLogo Web runs your model, see <a href="#version-pinning">the version-pinned links section below</a>.</p>
+  <p>By default, both link types always run your model using the latest version of NetLogo Web.  If you need embeddable links
+    that stay fixed to a specific version, see <a href="#version-pinning">the version-pinned links section below</a>.</p>
 
   <h3 id="cors">Cross-Origin Resource Sharing (CORS)</h3>
 
@@ -142,19 +148,19 @@
     <code>https://netlogoweb.org</code> or <code>https://netlogo-web.org</code>. This is a common setting for website
     hosts, and they should include some way to update it for your website's files.</p>
 
-  @linkableHeader("version-pinning", "Version-Pinned Links")
+  @linkableHeader("version-pinning", "Version-Pinned Embeddable Links")
 
-  <p>Hotlinks to your model use the latest version of NetLogo Web by default.  This means your models automatically
+  <p>Embeddable links use the latest version of NetLogo Web by default.  This means your models automatically
     receive new features, performance improvements, and bug fixes over time as we continue to work on NetLogo Web.
-    However, there are situations where you may want a link to run your model against a specific, fixed version of
+    However, there are situations where you may want an embeddable link to run your model against a specific, fixed version of
     NetLogo Web instead:</p>
 
   <ul>
-    <li><strong>Research reproducibility</strong> — ensure that others running your model get the exact same NetLogo Web
+    <li><strong>Research reproducibility</strong> - ensure that others running your model get the exact same NetLogo Web
       behavior you used when collecting results.</li>
-    <li><strong>Bug workarounds</strong> — if a newer version of NetLogo Web introduced a regression that affects your
+    <li><strong>Bug workarounds</strong> - if a newer version of NetLogo Web introduced a regression that affects your
       model, you can pin to an older version while waiting for a fix.</li>
-    <li><strong>Avoiding breaking changes</strong> — new versions of NetLogo Web occasionally change behavior in ways
+    <li><strong>Avoiding breaking changes</strong> - new versions of NetLogo Web occasionally change behavior in ways
       that may affect your model.</li>
   </ul>
 
@@ -166,8 +172,8 @@
     <li>Pinned to a version: <code>https://netlogoweb.org/versions/2.14.2?url=myModelURL</code></li>
   </ul>
 
-  <p>To generate both latest and version-pinned links for your model easily, use the
+  <p>To generate shareable links, latest embeddable links, and version-pinned embeddable links all at once, use the
     <a href="/model-linker">NetLogo Web Model Link Creator</a>.  Paste your model's URL into the tool and it will
-    generate ready-to-use links for the latest version and for each available pinned version of NetLogo Web.</p>
+    generate ready-to-use links for every available option.</p>
 
 </div>
