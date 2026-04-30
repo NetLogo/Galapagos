@@ -8,6 +8,7 @@ GET         /docs/authoring                     controllers.Application.authorin
 GET         /docs/differences                   controllers.Application.differences
 GET         /docs/faq                           controllers.Application.faq
 GET         /docs/attributions                  controllers.Application.attributions
+GET         /docs/hosting-sharing               controllers.Application.hostingSharing
 GET         /whats-new                          controllers.Application.whatsNew
 GET         /model/list.json                    controllers.Application.modelList
 GET         /model/$modelPath<.*\.nlogo>        controllers.Application.model(modelPath)

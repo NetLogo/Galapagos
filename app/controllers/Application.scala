@@ -30,15 +30,16 @@ class Application @Inject() (
   private val logger = Logger("application")
 
   // scalastyle:off public.methods.have.type
-  def authoring    = themedPage((_)   => views.html.authoring(),           "NetLogo Web Docs - Authoring", "../")
-  def differences  = themedPage((_)   => views.html.differences(),         "NetLogo Web vs. NetLogo"     , "../", None            , differencesExtraHead)
-  def faq          = themedPage((req) => views.html.faq()(using req),      "NetLogo Web FAQ"             , "../")
-  def attributions = themedPage((_)   => views.html.attributions(),        "NetLogo Web Attributions"    , "../")
-  def index        = themedPage((req) => views.html.index()(using req),    "NetLogo Web")
-  def settings     = themedPage((req) => views.html.settings(OutsourceTagBuilder)(using req, environment), "NetLogo Web Settings")
-  def serverError  = themedPage((_)   => views.html.serverError(),         "NetLogo Web - Error")
-  def whatsNew     = themedPage((req) => views.html.whatsNew()(using req), "What's New in NetLogo Web"   , ""   , Option("updates"))
-  def modelLinker  = themedPage((_)   => views.html.modelLinker(scanVersions()), "NetLogo Web - Model Link Creator")
+  def authoring      = themedPage((_)   => views.html.authoring(),                 "NetLogo Web Docs - Authoring"          , "../")
+  def differences    = themedPage((_)   => views.html.differences(),               "NetLogo Web vs. NetLogo"               , "../", None             , differencesExtraHead)
+  def faq            = themedPage((req) => views.html.faq()(using req),            "NetLogo Web Docs - FAQ"                , "../")
+  def attributions   = themedPage((_)   => views.html.attributions(),              "NetLogo Web - Attributions"            , "../")
+  def hostingSharing = themedPage((req) => views.html.hostingSharing()(using req), "NetLogo Web Docs - Hosting and Sharing", "../")
+  def index          = themedPage((req) => views.html.index()(using req),          "NetLogo Web")
+  def serverError    = themedPage((_)   => views.html.serverError(),               "NetLogo Web - Error")
+  def whatsNew       = themedPage((req) => views.html.whatsNew()(using req),       "What's New in NetLogo Web"             , ""   , Option("updates"))
+  def modelLinker    = themedPage((_)   => views.html.modelLinker(scanVersions()), "NetLogo Web Model Link Creator")
+  def settings       = themedPage((req) => views.html.settings(OutsourceTagBuilder)(using req, environment), "NetLogo Web Settings")
   // scalastyle:on public.methods.have.type
 
   def model(modelName: String): Action[AnyContent] = {

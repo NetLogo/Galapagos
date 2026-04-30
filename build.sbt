@@ -310,6 +310,7 @@ scrapeRoutes ++= Seq(
   "/ntango-play",
   "/ntango-play-standalone",
   "/model-linker",
+  "/docs/hosting-sharing",
   "/versions/2.14.2",
   "/versions/2.13.0"
   )

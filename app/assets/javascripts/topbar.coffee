@@ -47,13 +47,14 @@ document.body.addEventListener('keydown', (e) ->
 
 window.addEventListener('load', ->
 
-  relativizer      = if window.location.pathname.includes('/docs/') then "." else "./docs"
+  relativizer = if window.location.pathname.includes('/docs/') then "." else "./docs"
 
-  authoringLink    = { text: "Authoring"        , url: "#{relativizer}/authoring"    }
-  differencesLink  = { text: "What's Different?", url: "#{relativizer}/differences"  }
-  faqLink          = { text: "FAQ"              , url: "#{relativizer}/faq"          }
-  attributionsLink = { text: "Attributions"     , url: "#{relativizer}/attributions" }
-  docHintInfo      = { elemID: 'docs-label', links: [authoringLink, differencesLink, faqLink, attributionsLink] }
+  authoringLink      = { text: "Authoring"           , url: "#{relativizer}/authoring"       }
+  differencesLink    = { text: "What's Different?"   , url: "#{relativizer}/differences"     }
+  faqLink            = { text: "FAQ"                 , url: "#{relativizer}/faq"             }
+  hostingSharingLink = { text: "Hosting and Sharing" , url: "#{relativizer}/hosting-sharing" }
+  attributionsLink   = { text: "Attributions"        , url: "#{relativizer}/attributions"    }
+  docHintInfo        = { elemID: 'docs-label', links: [authoringLink, differencesLink, faqLink, hostingSharingLink, attributionsLink] }
 
   [docHintInfo].forEach(({ elemID, links }) ->
     elem = document.getElementById(elemID)
