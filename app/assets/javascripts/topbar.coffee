@@ -54,7 +54,10 @@ window.addEventListener('load', ->
   faqLink            = { text: "FAQ"                 , url: "#{relativizer}/faq"             }
   hostingSharingLink = { text: "Hosting and Sharing" , url: "#{relativizer}/hosting-sharing" }
   attributionsLink   = { text: "Attributions"        , url: "#{relativizer}/attributions"    }
-  docHintInfo        = { elemID: 'docs-label', links: [authoringLink, differencesLink, faqLink, hostingSharingLink, attributionsLink] }
+  docHintInfo        = {
+    elemID: 'docs-label'
+  , links: [authoringLink, differencesLink, faqLink, hostingSharingLink, attributionsLink]
+  }
 
   [docHintInfo].forEach(({ elemID, links }) ->
     elem = document.getElementById(elemID)
