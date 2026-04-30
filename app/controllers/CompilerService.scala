@@ -261,34 +261,6 @@ private[controllers] trait RequestResultGenerator {
 
   }
 
-  private def genCSS: String = {
-
-    val slurpURL =
-      (url: String) =>
-        environment.resource(url)
-          .map(assetUrl => usingSource(_.fromURL(assetUrl))(_.mkString))
-          .getOrElse(throw new Exception(s"Missing stylesheet $url"))
-
-    val stylesheets =
-      Set(
-        "/public/stylesheets/classes.css",
-        "/public/stylesheets/widgets.css",
-        "/public/stylesheets/info.css",
-        "/public/stylesheets/ui-editor.css",
-        "/public/stylesheets/netlogoweb.css",
-        "/public/stylesheets/netlogo-syntax.css",
-        "/public/codemirror/lib/codemirror.css",
-        "/public/codemirror/addon/dialog/dialog.css"
-      )
-
-    // @import must appear before all other rules, so the font import is prepended explicitly
-    // rather than concatenated from the set, which has no guaranteed ordering.
-    val fontImport = "@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..125,300..800;1,75..125,300..800&display=swap');"
-
-    fontImport + "\n" + (stylesheets map slurpURL mkString "\n")
-
-  }
-
   private def getIDedStmtsV(argMap: ArgMap, field: String): ValidationNel[String, IDedValues[String]] = {
     val malformedStmtsError = s"`$field` must be a JSON array of strings or JSON object with string values.".failureNel
     Try(Json.parse(argMap.getOrElse(field, "[]")).successNel[String]).recover {
