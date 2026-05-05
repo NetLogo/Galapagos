@@ -1,5 +1,8 @@
 {
   "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/minify-codemirror.js"
+  },
   "mocha": {},
   "dependencies": {
     "@netlogo/nettango": "^0.16.6",
