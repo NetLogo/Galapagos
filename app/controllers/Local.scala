@@ -103,6 +103,6 @@ class Local @Inject() ( components: ControllerComponents
 }
 
 object Local {
-  val enginePath     = "/tortoise-engine.js"
+  val enginePath     = "/tortoise-engine.min.js"
   val agentModelPath = "/js/tortoise/agentmodel.js"
 }

@@ -51,7 +51,7 @@
     @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.js")
 
     @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
-    @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.js")
+    @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.min.js")
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
