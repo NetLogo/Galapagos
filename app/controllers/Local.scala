@@ -96,6 +96,14 @@ class Local @Inject() ( components: ControllerComponents
     implicit request => replyWithResource(environment)(enginePath)("text/javascript")
   }
 
+  def engineMap: Action[AnyContent] = Action {
+    implicit request => replyWithResource(environment)(engineMapPath)("application/octet-stream")
+  }
+
+  def engineSource: Action[AnyContent] = Action {
+    implicit request => replyWithResource(environment)(engineSourcePath)("text/javascript")
+  }
+
   def agentModel: Action[AnyContent] = Action {
     implicit request => replyWithResource(environment)(agentModelPath)("text/javascript")
   }
@@ -103,6 +111,8 @@ class Local @Inject() ( components: ControllerComponents
 }
 
 object Local {
-  val enginePath     = "/tortoise-engine.min.js"
-  val agentModelPath = "/js/tortoise/agentmodel.js"
+  val enginePath       = "/tortoise-engine.min.js"
+  val engineMapPath    = "/tortoise-engine.min.js.map"
+  val engineSourcePath = "/tortoise-engine.js"
+  val agentModelPath   = "/js/tortoise/agentmodel.js"
 }

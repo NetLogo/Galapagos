@@ -77,7 +77,7 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
       input: `${inputDir}/${path}${extension}`,
       output: {
         file: `${outputDir}/${path}.bundle${extension}`,
-        sourcemap: isDevelopment,
+        sourcemap: true,
       },
       plugins,
       context: "this",

@@ -257,7 +257,8 @@ val substringFilterMaker = (filter: String) => new FileFilter {
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
-digest / excludeFilter := "*.chunk.js" || "*.png" || "*.html" || "*.ttf" || substringFilterMaker("public/pages/color-picker")
+digest / excludeFilter := "*.chunk.js" || "*.png" || "*.html" || "*.ttf" ||
+  substringFilterMaker("public/pages/color-picker") || "simulation.bundle.js.map" || "netTangoBuilder.bundle.js.map"
 
 // We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
 // provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to
@@ -290,11 +291,15 @@ scrapeRoutes ++= Seq(
   "/whats-new",
   "/model/list.json",
   "/model/statuses.json",
-  "/netlogo-engine.js",
+  "/tortoise-engine.min.js",
+  "/tortoise-engine.min.js.map",
+  "/target/classes/js/tortoise-engine.js",
   "/netlogo-agentmodel.js",
   "/settings",
   "/tortoise-compiler.js",
   "/tortoise-compiler.js.map",
+  "/assets/javascripts/pages/simulation.bundle.js.map",
+  "/assets/javascripts/pages/netTangoBuilder.bundle.js.map",
   "/server-error",
   "/not-found",
   "/robots.txt",
