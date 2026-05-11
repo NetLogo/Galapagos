@@ -50,12 +50,12 @@ class Local @Inject() ( components: ControllerComponents
 
   def standalone: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true))
+      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true, nlwCommit = getGitVersion))
   }
 
   def web: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(OutsourceTagBuilder))
+      Ok(views.html.simulation(OutsourceTagBuilder, nlwCommit = getGitVersion))
   }
 
   def jumpto: Action[AnyContent] = Action {

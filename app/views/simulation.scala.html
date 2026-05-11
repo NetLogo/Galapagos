@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(tagBuilder: TagBuilder, isStandalone: Boolean = false)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
+@(tagBuilder: TagBuilder, isStandalone: Boolean = false, nlwCommit: String = "unknown")(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 <!DOCTYPE html>
 
@@ -72,6 +72,7 @@
     *@
     <script>
       window.debugMode = @{environment.mode != play.api.Mode.Prod};
+      window.nlwCommit = "@nlwCommit";
       Ractive.DEBUG = window.debugMode;
       const l = window.location;
       const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
