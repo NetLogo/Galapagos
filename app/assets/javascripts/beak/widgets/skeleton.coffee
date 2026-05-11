@@ -39,6 +39,9 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
   model = {
     checkIsReporter
+  , fallbackVersionEntry: undefined
+  , fallbackHref:         undefined
+  , fallbackMenuOpen:     false
   , code
   , consoleOutput:         ''
   , exportForm:            false
@@ -250,6 +253,11 @@ generateRactiveSkeleton = (container, widgets, code, info,
         @set('speed', newSpeed)
         @fire('speed-slider-changed', newSpeed)
 
+      'toggle-version-menu': (event) ->
+        event.original.stopPropagation()
+        @toggle('fallbackMenuOpen')
+        false
+
     }
 
     observe: {
@@ -292,6 +300,28 @@ generateRactiveSkeleton = (container, widgets, code, info,
       if @get('hasWorkInProgress')
         wipToast = createWorkInProgressAlert(@get('source.type'))
         NetLogoToaster.addToast(wipToast)
+      @_initVersionFallback()
+      document.addEventListener('click', => @set('fallbackMenuOpen', false))
+      return
+
+    _initVersionFallback: ->
+      searchParams = new URLSearchParams(window.location.search)
+      vParam       = searchParams.get('v')
+      if vParam?
+        modelUrl = searchParams.get('url')
+        fetch('/versions.json')
+          .then((r) -> r.json())
+          .then((data) =>
+            entries = data.releases ? []
+            match = entries.find((e) -> e.version is vParam and e.link?)
+            if match?
+              href = "/#{match.link}"
+              if modelUrl?
+                href += "?url=#{encodeURIComponent(modelUrl)}"
+              @set('fallbackVersionEntry', match)
+              @set('fallbackHref', href)
+          )
+          .catch(->)
       return
   })
 
@@ -331,6 +361,16 @@ template =
               </svg>
               <span style="font-size: 16px;">powered by NetLogo</span>
             </a>
+            {{#fallbackVersionEntry}}
+            <div style="position: relative; display: inline-block;">
+              <button on-click="toggle-version-menu" style="background: none; border: none; cursor: pointer; padding: 0 3px; color: #aaa; font-size: 11px; line-height: 1;" aria-label="Version fallback options" aria-haspopup="true" aria-expanded="{{fallbackMenuOpen}}">▾</button>
+              {{#fallbackMenuOpen}}
+              <div style="position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; border-radius: 3px; padding: 6px 10px; white-space: nowrap; z-index: 200; box-shadow: 0 2px 6px rgba(0,0,0,0.15); font-size: 13px;">
+                <a href="{{fallbackHref}}">Use NetLogo Web {{fallbackVersionEntry.version}}</a>
+              </div>
+              {{/fallbackMenuOpen}}
+            </div>
+            {{/fallbackVersionEntry}}
           </div>
         </div>
         <editableTitle

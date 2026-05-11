@@ -1,4 +1,4 @@
-@(versions: Seq[String])
+@(versions: Seq[String], currentVersion: String)
 
 <style>
   .outer-content {
@@ -73,7 +73,7 @@
   <ul style="list-style: none; padding: 0;">
     <li class="linker-row">
       <span class="linker-version-label">latest</span>
-      <a class="linker-link" data-link-format="embeddable" data-path="/standalone" href="/standalone">/standalone</a>
+      <a class="linker-link" data-link-format="embeddable" data-version="@currentVersion" data-path="/standalone" href="/standalone">/standalone</a>
       <button class="copy-btn">Copy</button>
     </li>
   </ul>
@@ -105,8 +105,14 @@
         let href;
         if (link.dataset.linkFormat === 'shareable') {
           href = modelUrl ? base + '#' + modelUrl : base;
+        } else if (modelUrl) {
+          let params = '?url=' + encodeURIComponent(modelUrl);
+          if (link.dataset.version) {
+            params += '&v=' + encodeURIComponent(link.dataset.version);
+          }
+          href = base + params;
         } else {
-          href = modelUrl ? base + '?url=' + encodeURIComponent(modelUrl) : base;
+          href = base;
         }
         link.href = href;
         link.textContent = href;
