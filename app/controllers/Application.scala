@@ -38,7 +38,7 @@ class Application @Inject() (
   def index          = themedPage((req) => views.html.index()(using req),          "NetLogo Web")
   def serverError    = themedPage((_)   => views.html.serverError(),               "NetLogo Web - Error")
   def whatsNew       = themedPage((req) => views.html.whatsNew()(using req),       "What's New in NetLogo Web"             , ""   , Option("updates"))
-  def modelLinker    = themedPage((_)   => views.html.modelLinker(scanVersions(), getReleaseVersion), "NetLogo Web Model Link Creator")
+  def modelLinker    = themedPage((_)   => views.html.modelLinker(scanVersions(), GitVersion.releaseVersion), "NetLogo Web Model Link Creator")
   def settings       = themedPage((req) => views.html.settings(OutsourceTagBuilder)(using req, environment), "NetLogo Web Settings")
   // scalastyle:on public.methods.have.type
 
@@ -70,17 +70,6 @@ class Application @Inject() (
         .map(i => aParts.lift(i).getOrElse(0).compareTo(bParts.lift(i).getOrElse(0)))
         .find(_ != 0)
         .getOrElse(0)
-    }
-  }
-
-  private def getReleaseVersion: String = {
-    try {
-      val proc = new ProcessBuilder("git", "tag", "-l", "v*.*.*", "--sort=-v:refname").start()
-      scala.io.Source.fromInputStream(proc.getInputStream).getLines().nextOption()
-        .map(_.stripPrefix("v"))
-        .getOrElse("unknown")
-    } catch {
-      case _: Exception => "unknown"
     }
   }
 

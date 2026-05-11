@@ -29,20 +29,6 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.tortoise())
   }
 
-  private def getGitVersion: String = {
-    try {
-      val commitProcess = new ProcessBuilder("git", "rev-parse", "--short", "HEAD").start()
-      val commit = scala.io.Source.fromInputStream(commitProcess.getInputStream).getLines().mkString.trim
-
-      val dirtyProcess = new ProcessBuilder("git", "diff", "--quiet").start()
-      val isDirty = dirtyProcess.waitFor() != 0
-
-      if (isDirty) s"$commit-dirty" else commit
-    } catch {
-      case _: Exception => "unknown"
-    }
-  }
-
   def iframeTest: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.iframeTest())
@@ -50,12 +36,12 @@ class Local @Inject() ( components: ControllerComponents
 
   def standalone: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true, nlwCommit = getGitVersion))
+      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true, nlwCommit = GitVersion.commitVersion))
   }
 
   def web: Action[AnyContent] = Action {
     implicit request =>
-      Ok(views.html.simulation(OutsourceTagBuilder, nlwCommit = getGitVersion))
+      Ok(views.html.simulation(OutsourceTagBuilder, nlwCommit = GitVersion.commitVersion))
   }
 
   def jumpto: Action[AnyContent] = Action {
@@ -105,30 +91,16 @@ class Local @Inject() ( components: ControllerComponents
 
   def versionList: Action[AnyContent] = Action {
     implicit request => {
-      val currentCommit = getGitVersion
+      val currentCommit = GitVersion.commitVersion
+      val versionNumber = GitVersion.releaseVersion
 
-      // Resolve the latest version tag (vX.X.X)
-      val latestTag = try {
-        val proc = new ProcessBuilder("git", "tag", "-l", "v*.*.*", "--sort=-v:refname").start()
-        scala.io.Source.fromInputStream(proc.getInputStream).getLines().nextOption().getOrElse("unknown")
-      } catch { case _: Exception => "unknown" }
-
-      val versionNumber = latestTag.stripPrefix("v")
-
-      // Fetch a list of version tags and their commit hashes
-      val versionEntries = try {
-        val tagProcs = new ProcessBuilder("git", "tag", "-l", "v*.*.*", "--sort=-v:refname").start()
-        val tags = scala.io.Source.fromInputStream(tagProcs.getInputStream).getLines().toList
-
-        tags.map { tag =>
-          val versionNumber = tag.stripPrefix("v")
-          val commitProc = new ProcessBuilder("git", "rev-parse", "--short", tag).start()
-          val commit = scala.io.Source.fromInputStream(commitProc.getInputStream).getLines().mkString.trim
-          val fileExists = environment.getFile(s"public/versions/$versionNumber.html").exists()
-          val link = if (fileExists) Some(s"versions/$versionNumber") else None
-          VersionEntry(versionNumber, commit, link)
-        }
-      } catch { case _: Exception => List.empty[VersionEntry] }
+      val versionEntries = GitVersion.allReleaseTags.map { tag =>
+        val ver        = tag.stripPrefix("v")
+        val commit     = GitVersion.commitForRef(tag)
+        val fileExists = environment.getFile(s"public/versions/$ver.html").exists()
+        val link       = if (fileExists) Some(s"versions/$ver") else None
+        VersionEntry(ver, commit, link)
+      }
 
       Ok(Json.obj(
         "current"  -> versionNumber,
