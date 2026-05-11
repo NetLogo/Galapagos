@@ -5,7 +5,7 @@ import HNWSession from "./hnw/session.js"
 import runBabyBehaviorSpace     from "./babybehaviorspace.js"
 import mangleExportedPlots      from "./mangle-exported-plots.js"
 import performUpdate            from "./perform-update.js"
-import { toNetLogoMarkdown }    from "./tortoise-utils.js"
+import { toNetLogoMarkdown, stampNlwVersion } from "./tortoise-utils.js"
 import initializeUI             from "./widgets/initialize-ui.js"
 import { runWithErrorHandling } from "./widgets/set-up-widgets.js"
 import { cloneWidget }          from "./widgets/widget-properties.js"
@@ -340,7 +340,7 @@ class SessionLite
     code      = @rewriteExport(@widgetController.code())
     widgets   = @widgetController.widgets().map(cloneWidget)
     resources = serializeResources()
-    @compiler.exportNlogoXML({
+    result    = @compiler.exportNlogoXML({
       info:         info,
       code:         code,
       widgets:      widgets,
@@ -348,6 +348,10 @@ class SessionLite
       linkShapes:   linkShapes,
       resources:    resources
     })
+    if result.success
+      { success: true, result: stampNlwVersion(result.result, NETLOGO_VERSION) }
+    else
+      result
 
   exportNlogoXML: ->
     exportName = @promptFilename('.nlogox')

@@ -88,6 +88,12 @@ stripXMLCdata = (xml) ->
   else
     xml
 
+# (String, String) => String
+stampNlwVersion = (xmlString, version) ->
+  doc = nlogoXMLToDoc(xmlString)
+  doc.documentElement.setAttribute('nlw-version', version)
+  docToNlogoXML(doc)
+
 # (String) => String
 convertNlogoToXML = (nlogo) ->
   compiler = new BrowserCompiler()
@@ -113,5 +119,6 @@ export {
   nlogoXMLToDoc,
   docToNlogoXML,
   stripXMLCdata,
-  convertNlogoToXML
+  convertNlogoToXML,
+  stampNlwVersion
 }
