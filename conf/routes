@@ -23,6 +23,7 @@ GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
 GET         /jumpto                             controllers.Local.jumpto
 GET         /iframe-test                        controllers.Local.iframeTest
+GET         /versions.json                      controllers.Local.versionList
 GET         /versions/:version                  controllers.Local.versionedStandalone(version)
 GET         /model-linker                       controllers.Application.modelLinker
 

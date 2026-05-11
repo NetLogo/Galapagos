@@ -2,12 +2,17 @@
 
 package controllers
 
-import
-  javax.inject.Inject
+import javax.inject.Inject
 
-import
-  play.api.{ Configuration, Environment, Mode, mvc },
-    mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
+import play.api.{ Configuration, Environment, Mode }
+import play.api.libs.json.{ Format, Json }
+import play.api.mvc.{ AbstractController, Action, AnyContent, ControllerComponents, Request }
+
+case class VersionEntry(version: String, commit: String, link: Option[String])
+
+object VersionEntry {
+  implicit val format: Format[VersionEntry] = Json.format[VersionEntry]
+}
 
 class Local @Inject() ( components: ControllerComponents
                       , configuration: Configuration
@@ -22,6 +27,20 @@ class Local @Inject() ( components: ControllerComponents
   def launch: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.tortoise())
+  }
+
+  private def getGitVersion: String = {
+    try {
+      val commitProcess = new ProcessBuilder("git", "rev-parse", "--short", "HEAD").start()
+      val commit = scala.io.Source.fromInputStream(commitProcess.getInputStream).getLines().mkString.trim
+
+      val dirtyProcess = new ProcessBuilder("git", "diff", "--quiet").start()
+      val isDirty = dirtyProcess.waitFor() != 0
+
+      if (isDirty) s"$commit-dirty" else commit
+    } catch {
+      case _: Exception => "unknown"
+    }
   }
 
   def iframeTest: Action[AnyContent] = Action {
@@ -82,6 +101,41 @@ class Local @Inject() ( components: ControllerComponents
   def hnwJoin: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.hnwJoin(OutsourceTagBuilder))
+  }
+
+  def versionList: Action[AnyContent] = Action {
+    implicit request => {
+      val currentCommit = getGitVersion
+
+      // Resolve the latest version tag (vX.X.X)
+      val latestTag = try {
+        val proc = new ProcessBuilder("git", "tag", "-l", "v*.*.*", "--sort=-v:refname").start()
+        scala.io.Source.fromInputStream(proc.getInputStream).getLines().nextOption().getOrElse("unknown")
+      } catch { case _: Exception => "unknown" }
+
+      val versionNumber = latestTag.stripPrefix("v")
+
+      // Fetch a list of version tags and their commit hashes
+      val versionEntries = try {
+        val tagProcs = new ProcessBuilder("git", "tag", "-l", "v*.*.*", "--sort=-v:refname").start()
+        val tags = scala.io.Source.fromInputStream(tagProcs.getInputStream).getLines().toList
+
+        tags.map { tag =>
+          val versionNumber = tag.stripPrefix("v")
+          val commitProc = new ProcessBuilder("git", "rev-parse", "--short", tag).start()
+          val commit = scala.io.Source.fromInputStream(commitProc.getInputStream).getLines().mkString.trim
+          val fileExists = environment.getFile(s"public/versions/$versionNumber.html").exists()
+          val link = if (fileExists) Some(s"versions/$versionNumber") else None
+          VersionEntry(versionNumber, commit, link)
+        }
+      } catch { case _: Exception => List.empty[VersionEntry] }
+
+      Ok(Json.obj(
+        "current"  -> versionNumber,
+        "commit"   -> currentCommit,
+        "releases" -> Json.toJson(versionEntries)
+      ))
+    }
   }
 
   def versionedStandalone(version: String): Action[AnyContent] = Action {
