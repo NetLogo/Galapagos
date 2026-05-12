@@ -7,6 +7,9 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    @defining(java.util.Base64.getEncoder.encodeToString(java.nio.file.Files.readAllBytes(environment.getFile("public/images/favicon.ico").toPath))) { faviconB64 =>
+      <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,@faviconB64">
+    }
     <base target="_parent" />
     @tagBuilder.pathToHTML("codemirror/lib/codemirror.css")
     @tagBuilder.pathToHTML("codemirror/addon/dialog/dialog.css")
