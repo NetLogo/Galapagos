@@ -22,7 +22,9 @@ DEFAULT_REDRAW_DELAY = 1000 / 30
 MAX_REDRAW_DELAY     = 1000
 REDRAW_EXP           = 2
 
-NETLOGO_VERSION      = '2.14.2' + (if window.nlwCommit? and window.nlwCommit isnt 'unknown' then "+#{window.nlwCommit}" else '')
+isUsableCommit       = window.nlwCommit? and window.nlwCommit isnt 'unknown'
+commitSuffix         = if isUsableCommit then " (#{window.nlwCommit})" else ''
+NETLOGO_VERSION      = '2.14.2' + commitSuffix
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari
