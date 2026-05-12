@@ -39,6 +39,11 @@ class Local @Inject() ( components: ControllerComponents
       Ok(views.html.simulation(InlineTagBuilder, isStandalone = true, nlwCommit = GitVersion.commitVersion))
   }
 
+  def standaloneDebug: Action[AnyContent] = Action {
+    implicit request =>
+      Ok(views.html.simulation(InlineTagBuilder, isStandalone = true, nlwCommit = GitVersion.commitVersion, useDebugBundle = true))
+  }
+
   def web: Action[AnyContent] = Action {
     implicit request =>
       Ok(views.html.simulation(OutsourceTagBuilder, nlwCommit = GitVersion.commitVersion))

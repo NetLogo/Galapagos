@@ -21,6 +21,7 @@ GET         /humans.txt                         controllers.Application.humans
 GET         /launch                             controllers.Local.launch
 GET         /web                                controllers.Local.web
 GET         /standalone                         controllers.Local.standalone
+GET         /standalone-debug                   controllers.Local.standaloneDebug
 GET         /jumpto                             controllers.Local.jumpto
 GET         /iframe-test                        controllers.Local.iframeTest
 GET         /versions.json                      controllers.Local.versionList

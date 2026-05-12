@@ -1,6 +1,6 @@
 @import play.api.Mode
 
-@(tagBuilder: TagBuilder, isStandalone: Boolean = false, nlwCommit: String = "unknown")(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
+@(tagBuilder: TagBuilder, isStandalone: Boolean = false, nlwCommit: String = "unknown", useDebugBundle: Boolean = false)(implicit mode: Mode, request: Request[?], environment: play.api.Environment)
 
 <!DOCTYPE html>
 
@@ -51,7 +51,11 @@
     @tagBuilder.pathToHTML("codemirror/addon/display/placeholder.min.js")
 
     @tagBuilder.callToHTML(routes.CompilerService.tortoiseCompilerJs, "tortoise-compiler.js")
-    @tagBuilder.callToHTML(routes.Local.engine,                       "tortoise-engine.min.js")
+    @if(useDebugBundle) {
+      @tagBuilder.callToHTML(routes.Local.engineSource, "tortoise-engine.js")
+    } else {
+      @tagBuilder.callToHTML(routes.Local.engine,       "tortoise-engine.min.js")
+    }
 
     @helper.javascriptRouter("jsRoutes")(
       routes.javascript.Local.standalone
@@ -76,12 +80,17 @@
       Ractive.DEBUG = window.debugMode;
       const l = window.location;
       const dirPath = l.pathname.split("\/").slice(0, -1).join("\/");
-      window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/standalone`;
+      const standalonePath = l.pathname.endsWith("/standalone-debug") ? "standalone-debug" : "standalone";
+      window.standaloneURL = `${l.protocol}//${l.host}${dirPath}/${standalonePath}`;
     </script>
     @views.html.icons()
 
     @if(isStandalone) {
-      @tagBuilder.pathToHTML("javascripts/pages/simulation.bundle.js", "type" -> "module")
+      @if(useDebugBundle) {
+        @tagBuilder.pathToHTML("javascripts/pages/simulation.bundle.debug.js", "type" -> "module")
+      } else {
+        @tagBuilder.pathToHTML("javascripts/pages/simulation.bundle.js", "type" -> "module")
+      }
     } else {
       @tagBuilder.pathToHTML("javascripts/pages/simulation.js", "type" -> "module")
     }

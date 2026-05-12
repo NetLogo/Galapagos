@@ -208,7 +208,7 @@ bundle := Def.task {
   val exclude         = (bundle / excludeFilter).value
   val coffeeOutputDir = coffeeOutputDirectory.value
   val bundleDir       = bundleDirectory.value.relativeTo(baseDir).get
-  val nodeEnv         = if (PlayDevMode.isDevMode) "development" else "production"
+  val rollupDev       = sys.env.getOrElse("ROLLUP_DEV", "0")
 
   (inputMappings: Seq[PathMapping]) => {
 
@@ -234,7 +234,7 @@ bundle := Def.task {
           // - David D. 7/2021
           "--silent"
         ),
-        "NODE_ENV" -> nodeEnv
+        "ROLLUP_DEV" -> rollupDev
       )
       (bundleDir ** ("*.js" || "*.js.map")).get.toSet
     }
@@ -258,7 +258,8 @@ val substringFilterMaker = (filter: String) => new FileFilter {
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
 digest / excludeFilter := "*.chunk.js" || "*.png" || "*.html" || "*.ttf" ||
-  substringFilterMaker("public/pages/color-picker") || "simulation.bundle.js.map" || "netTangoBuilder.bundle.js.map"
+  substringFilterMaker("public/pages/color-picker") || "simulation.bundle.js.map" || "netTangoBuilder.bundle.js.map" ||
+  "simulation.bundle.debug.js.map"
 
 // We want to run the bundler in different modes in production and development. Unfortunately pipelineStages don't
 // provide a way to run hooks only in development (`pipelineStages in Assets` are run in prod *and* dev). So we need to
@@ -304,6 +305,7 @@ scrapeRoutes ++= Seq(
   "/not-found",
   "/robots.txt",
   "/standalone",
+  "/standalone-debug",
   "/launch",
   "/web",
   "/jumpto",

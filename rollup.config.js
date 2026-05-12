@@ -8,30 +8,32 @@ import { fileURLToPath } from 'url';
 
 export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }) => {
 
-  const isDevelopment = process.env.NODE_ENV === "development"
+  // Dev-mode Rollup behavior (sourcemaps, preserveModules) is disabled by default.
+  // Set ROLLUP_DEV=1 to re-enable it for debugging. The /standalone-debug route provides
+  // an unminified bundle without needing dev-mode Rollup. - Jeremy B 5/2026
+  const isDevelopment = process.env.ROLLUP_DEV === "1"
   const inputDir = sourceDir;
   const outputDir = `${targetDir}/javascripts`;
 
   const runtimeDir = path.dirname(fileURLToPath(import.meta.url));
 
-  // In development the `sourcemaps` plugin allows Rollup to read sourcemaps produced by sbt-coffeescript.
-  // In production, we use `terser` to minify the bundle. - David D. 7/2021
+  // In development the `sourcemaps` plugin allows Rollup to read sourcemaps produced by sbt-coffeescript.  In
+  // production, we use `terser` to minify the bundle. - David D. 7/2021
   const devOnlyPlugins = [sourcemaps()];
   const prodOnlyPlugins = [terser()];
 
-  const plugins = [
-
+  const basePlugins = [
     nodeResolve({ browser: true }),
-
     commonjs(),
-
     // We want to use absolute paths in `import` statements, but don't want to use needlessly long paths from the
     // project root. This custom Rollup resolver allows setting a base directory for absolute imports. - David D. 7/2021
     absoluteImportBasePlugin(runtimeDir, inputDir),
-
-    ...(isDevelopment ? devOnlyPlugins : prodOnlyPlugins),
-
   ];
+
+  const plugins = [...basePlugins, ...(isDevelopment ? devOnlyPlugins : prodOnlyPlugins)];
+
+  // Always unminified; used for the /standalone-debug scrape target.
+  const debugPlugins = [...basePlugins, sourcemaps()];
 
   return [
     // All files in the '/pages' directory are considered bundle entry points. We list the files using the 'fs' API, so
@@ -43,6 +45,7 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
     // - David D. 7/2021
     standaloneBundleConfig("pages/simulation.js"),
     standaloneBundleConfig("pages/netTangoBuilder.js"),
+    standaloneBundleDebugConfig("pages/simulation.js"),
   ];
 
   // Generates a bundle configuration for a list of page entries.
@@ -80,6 +83,20 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
         sourcemap: true,
       },
       plugins,
+      context: "this",
+    };
+  }
+
+  // Like standaloneBundleConfig but always unminified, for the /standalone-debug scrape target.
+  function standaloneBundleDebugConfig(entryFile) {
+    const [path, extension] = splitExtension(entryFile)
+    return {
+      input: `${inputDir}/${path}${extension}`,
+      output: {
+        file: `${outputDir}/${path}.bundle.debug${extension}`,
+        sourcemap: true,
+      },
+      plugins: debugPlugins,
       context: "this",
     };
   }
