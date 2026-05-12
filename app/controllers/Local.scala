@@ -95,7 +95,7 @@ class Local @Inject() ( components: ControllerComponents
   }
 
   def versionList: Action[AnyContent] = Action {
-    implicit request => {
+    implicit request =>
       val currentCommit = GitVersion.commitVersion
       val versionNumber = GitVersion.releaseVersion
 
@@ -112,7 +112,6 @@ class Local @Inject() ( components: ControllerComponents
         "commit"   -> currentCommit,
         "releases" -> Json.toJson(versionEntries)
       ))
-    }
   }
 
   def versionedStandalone(version: String): Action[AnyContent] = Action {
