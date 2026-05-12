@@ -6,14 +6,18 @@ object GitVersion {
 
   private def runGit(args: String*): Option[String] =
     try {
-      val proc = new ProcessBuilder(("git" :: args.toList)*)  .start()
-      scala.io.Source.fromInputStream(proc.getInputStream).getLines().nextOption().map(_.trim)
+      val proc   = new ProcessBuilder(("git" :: args.toList)*).start()
+      val source = scala.io.Source.fromInputStream(proc.getInputStream)
+      try     source.getLines().nextOption().map(_.trim)
+      finally { source.close(); proc.waitFor() }
     } catch { case _: Exception => None }
 
   private def runGitLines(args: String*): List[String] =
     try {
-      val proc = new ProcessBuilder(("git" :: args.toList)*).start()
-      scala.io.Source.fromInputStream(proc.getInputStream).getLines().toList
+      val proc   = new ProcessBuilder(("git" :: args.toList)*).start()
+      val source = scala.io.Source.fromInputStream(proc.getInputStream)
+      try     source.getLines().toList
+      finally { source.close(); proc.waitFor() }
     } catch { case _: Exception => Nil }
 
   private def runGitExitCode(args: String*): Int =
