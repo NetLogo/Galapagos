@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="false">
+<model version="NetLogo 7.0.4" snapToGrid="false">
   <code><![CDATA[turtles-own [
   ; "appetite" will reflect the behavior of the three types of agents: '2' for modest,
   ; '3' for fair, and '4' for greedy.  Note that the ratio between these three numbers
@@ -143,6 +143,7 @@ Agents randomly wander the map.
 When there are only two agents on a patch of grass, each of the agents tries to eat a certain amount of the grass.
 
 There are three types of agents:
+
 - Modest agents (brown) who try to eat one-third of the grass on a patch
 - Fair agents (red) who try to eat one-half of the grass on a patch
 - Greed agents (blue) who try to eat two-thirds of the grass on a patch

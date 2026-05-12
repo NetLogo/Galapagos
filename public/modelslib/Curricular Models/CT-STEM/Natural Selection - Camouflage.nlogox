@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[globals [
   light-fur-color ; variable to hold the color for light fur
   dark-fur-color ; variable to hold the color for dark fur
@@ -382,6 +382,7 @@ Think about how you could study other life-history traits such as the number of 
 ## RELATED MODELS
 
 Check out these other models in the Models Library:
+
 - GenEvo 2 Genetic Drift
 - GenEvo 3 Genetic Drift and Natural Selection
 - Mendelian Inheritance

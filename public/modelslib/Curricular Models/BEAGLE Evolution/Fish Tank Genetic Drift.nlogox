@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[breed [fish a-fish]
 
 ;; fish parts include fins, tails, and spots - all of
@@ -2055,5 +2055,5 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <previewCommands>set auto-replace? false setup repeat 75 [ go ]</previewCommands>
 </model>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="false">
+<model version="NetLogo 7.0.4" snapToGrid="false">
   <code><![CDATA[turtles-own [
   mass
   velocity-x             ; particle velocity in the x axis
@@ -112,6 +112,7 @@ end
 This particle system models a particle fountain emitting particles from the bottom of the world.
 
 In this model each particle has two main behaviors:
+
 - If there is room ahead it continues its trajectory.
 - If it's about to touch the edge of the world, it dies.
 Forces such as gravity, wind, and viscosity act on the particles as well.

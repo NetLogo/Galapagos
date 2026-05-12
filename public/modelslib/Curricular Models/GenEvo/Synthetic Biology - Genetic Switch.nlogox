@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[globals [
   promoter-color-list       ; color list to set promoter colors based on their strengths
   rbs-color-list            ; color list to set rbs colors based on their strengths
@@ -457,7 +457,8 @@ You can use the RUN EXPERIMENT button to run experiments for a specified time du
 
 ## THINGS TO NOTICE
 
-Run the model with 'ONPG?' switch OFF. Notice the molecular interactions inside the cell
+Run the model with 'ONPG?' switch OFF. Notice the molecular interactions inside the cell:
+
 - interaction of the LacI protein with the operator
 - RNAPs binding to promoter
 - RNAPs moving along the DNA

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[turtles-own [start-patch] ;; original position of ball on kick line
 patches-own [score        ;; score for this position along the kick line
              left-angle   ;; angle towards left goal-post
@@ -195,6 +195,7 @@ Note that this approach is quite different from the analytic approach. In the st
 ## HOW TO USE IT
 
 We use three sliders to initialize the model:
+
 - GOAL-SIZE determines the size of the goal.
 - GOAL-POS is the x-coordinate of the left goal-post. It is placed GOAL-POS units away from the leftmost edge of the world.
 - KICK-LINE determines the x-coordinate of the kick-line. The kick line is KICK-LINE units away from the leftmost edge of the world.

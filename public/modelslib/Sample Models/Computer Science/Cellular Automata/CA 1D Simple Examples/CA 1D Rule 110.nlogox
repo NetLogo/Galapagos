@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="false">
+<model version="NetLogo 7.0.4" snapToGrid="false">
   <code>globals [row]  ;; this variable is the current row processed by the CA
 
 ;; the following patch variables refer to the colors of the 3 focal patches in a neighborhood
@@ -89,6 +89,7 @@ For example, if we have a Rule 110 CA, and the current cell is yellow and its le
 ## HOW TO USE IT
 
 Initialization & Running:
+
 - SETUP initializes the model with a single cell on in the center.
 - SETUP-CONTINUE copies the last row of the previous run to the top so that you can continue running the model when you click GO.
 - GO begins running the model with the currently set rule. It continues until the end of the view.

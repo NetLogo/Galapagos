@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="false">
+<model version="NetLogo 7.0.4" snapToGrid="false">
   <code><![CDATA[;; Linear Regression example of R-extension
 ;;
 ;;
@@ -68,7 +68,7 @@ to go
     let forecast b + x * 11
     if forecast < 0
     [ set forecast 0 ]
-    output-show precision forecast 11
+    output-show precision forecast 10
 
     let items-found 0
     ; move steps, depending on forecast, i.e. motivation and nutritional condition

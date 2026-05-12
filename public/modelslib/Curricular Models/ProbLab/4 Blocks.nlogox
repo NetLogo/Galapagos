@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[breed [ frames frame ]
 ;; frames are black frames around each patch; they help count the colored patches
 
@@ -207,6 +207,7 @@ Stratification: The partitioning of the histogram columns by unique elemental ev
 ## EXTENDING THE MODEL
 
 You may want to monitor different aspects of the probabilistic experiment, to answer such questions as:
+
 - how often do we get the same combinations twice one after the other?
 - is there particular permutations you like?  You could add code to see how long it takes the model to find this permutation.
 - what is the dynamic ratio between the number of one-green and three-green outcomes?

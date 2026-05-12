@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.0.0" snapToGrid="true">
+<model version="NetLogo 7.0.4" snapToGrid="true">
   <code><![CDATA[globals
 [
   tick-delta                      ;; how much we advance the tick counter this time through
@@ -314,7 +314,7 @@ end
     </chooser>
     <button x="245" y="190" height="44" disableUntilTicks="false" forever="false" kind="Observer" width="85">setup</button>
     <button x="335" y="190" height="45" disableUntilTicks="true" forever="true" kind="Observer" width="82" display="go">go-mode</button>
-    <switch x="545" y="395" height="37" on="false" variable="show-center-of-mass?" width="183" display="show-center-of-mass?"></switch>
+    <switch x="545" y="395" height="40" on="false" variable="show-center-of-mass?" width="183" display="show-center-of-mass?"></switch>
   </widgets>
   <info><![CDATA[## WHAT IS IT?
 
@@ -339,26 +339,31 @@ Particles behave according to the following rules:
 ## HOW TO USE IT
 
 Initial settings:
+
 - COLLISION-ANGLE: Sets the angle that separates the pink and blue particles before the collision.
 - REFLECTION-ANGLE: Sets the angle of the axis connecting the particles' centers when they collide with respect to the vertical axis. To calculate the outcome of the collision, the speeds of the two particles are projected onto this new axis and the new speeds and headings are computed. Other GasLab models use random values for "REFLECTION-ANGLE", but this model allows you to experiment with them one by one. This angle is called THETA in the code of the model.
 - INIT-PINK-SPEED (or BLUE): Sets the initial speed of the pink (or blue) particle.
 - PINK-MASS (or BLUE): Sets the mass of the pink (or blue) particle.
 
 Other settings:
+
 - SHOW-CENTER-OF-MASS?: If ON, the center of mass of the system will be shown in gray.
 
 Buttons for running the model:
+
 - SETUP
 - RUN-MODE: Chooses between ONE COLLISION (just one run), ALL-COLLISION-ANGLES (loops through all the collision angles with 15-degrees steps) and ALL-REFLECTION-ANGLES(loops through all the reflection angles with 15-degrees steps).
 - GO
 
 Monitors:
+
 - ENERGY OF PINK (or -BLUE): Shows the current energy of the pink (or blue) particle.
 - SPEED OF PINK (or -BLUE): Shows the current speed of the pink (or blue) particle.
 - AVERAGE SPEED: Shows the average of the speeds of the two particles.
 - TOTAL ENERGY: Shows the sum of the energies of the two particles.
 
 Plots:
+
 - SPEEDS: speed of each of the particles over time.
 
 ## THINGS TO NOTICE
