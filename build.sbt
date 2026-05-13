@@ -321,7 +321,8 @@ scrapeRoutes ++= Seq(
   "/model-linker",
   "/docs/hosting-sharing",
   "/versions/2.14.2",
-  "/versions/2.13.0"
+  "/versions/2.13.0",
+  "/versions.json"
   )
 
 scrapeDelay := 120
