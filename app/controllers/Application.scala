@@ -38,7 +38,7 @@ class Application @Inject() (
   def index          = themedPage((req) => views.html.index()(using req),          "NetLogo Web")
   def serverError    = themedPage((_)   => views.html.serverError(),               "NetLogo Web - Error")
   def whatsNew       = themedPage((req) => views.html.whatsNew()(using req),       "What's New in NetLogo Web"             , ""   , Option("updates"))
-  def modelLinker    = themedPage((_)   => views.html.modelLinker(scanVersions(), GitVersion.releaseVersion), "NetLogo Web Model Link Creator")
+  def modelLinker    = themedPage((_)   => { val vs = scanVersions(); views.html.modelLinker(vs, vs.headOption.getOrElse("unknown")) }, "NetLogo Web Model Link Creator")
   def settings       = themedPage((req) => views.html.settings(OutsourceTagBuilder)(using req, environment), "NetLogo Web Settings")
   // scalastyle:on public.methods.have.type
 
