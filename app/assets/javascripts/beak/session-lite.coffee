@@ -374,6 +374,7 @@ class SessionLite
   exportHtml: ->
     exportName = @promptFilename('.html')
     if exportName?
+      isEmptyExport = new URLSearchParams(window.location.search).has('empty')
       exportHtmlEx = (htmlString) =>
         parser = new DOMParser()
         dom = parser.parseFromString(htmlString, 'text/html')
@@ -384,19 +385,26 @@ class SessionLite
           attributionComment = dom.createComment(value)
           dom.documentElement.prepend(attributionComment)
 
-        nlogo = @getNlogo()
-        if nlogo.success
-          nlogoScript = dom.querySelector('#nlogo-code')
-          nlogoScript.textContent = nlogo.result
-          nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogox')
+        if isEmptyExport
           wrapper = document.createElement('div')
           wrapper.appendChild(dom.documentElement)
           exportBlob = new Blob(["<!DOCTYPE html>\n\n" + wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
           saveAs(exportBlob, exportName)
-          @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
 
         else
-          @widgetController.reportError('compiler', 'export-html', nlogo.result)
+          nlogo = @getNlogo()
+          if nlogo.success
+            nlogoScript = dom.querySelector('#nlogo-code')
+            nlogoScript.textContent = nlogo.result
+            nlogoScript.dataset.filename = exportName.replace(/\.html$/, '.nlogox')
+            wrapper = document.createElement('div')
+            wrapper.appendChild(dom.documentElement)
+            exportBlob = new Blob(["<!DOCTYPE html>\n\n" + wrapper.innerHTML], {type: 'text/html:charset=utf-8'})
+            saveAs(exportBlob, exportName)
+            @widgetController.ractive.fire('html-exported', exportName, nlogo.result)
+
+          else
+            @widgetController.reportError('compiler', 'export-html', nlogo.result)
 
       await @widgetController.onBeforeExportHTMLFetch()
       if ['https:', 'http:'].includes(window.location.protocol)
