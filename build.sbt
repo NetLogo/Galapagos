@@ -66,7 +66,7 @@ evictionErrorLevel := Level.Warn
 Assets / unmanagedResourceDirectories += baseDirectory.value / "node_modules"
 
 // This is definitely not meant to be universal, just to get the info without the typical color codes -Jeremy B February
-// 2023
+// 202
 def unAnsi(str: String): String =
   str.replaceAll("\\u001B\\[\\d+m", "")
 
@@ -93,7 +93,9 @@ def runNpm(log: Logger, runDir: File, args: Seq[String], env: (String, String)*)
   ()
 }
 
-lazy val npmInstall = taskKey[Unit]("runs `npm install` if necessary based on current repo status")
+// Using `ci` instead of `install` means deploys will follow exactly what's in the `package.json`, which is what we
+// want. -Jeremy B May 2026
+lazy val npmInstall = taskKey[Unit]("runs `npm ci` if necessary based on current repo status")
 npmInstall := {
   val log           = streams.value.log
   val nodeDir       = baseDirectory.value / "node_modules"
@@ -101,7 +103,7 @@ npmInstall := {
   val integrityFile = nodeDir / ".package-lock.json"
   val packageJson   = baseDirectory.value / "package.json"
   if (!nodeExists || !integrityFile.exists || integrityFile.olderThan(packageJson)) {
-    runNpm(log, baseDirectory.value, Seq("install", "--ignore-optional"))
+    runNpm(log, baseDirectory.value, Seq("ci", "--ignore-optional"))
   }
 }
 
