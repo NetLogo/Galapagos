@@ -103,7 +103,7 @@ class Local @Inject() ( components: ControllerComponents
         val ver        = tag.stripPrefix("v")
         val commit     = GitVersion.commitForRef(tag)
         val fileExists = environment.getFile(s"public/versions/$ver.html").exists()
-        val link       = if (fileExists) Some(s"versions/$ver") else None
+        val link       = if (fileExists) Some(s"versions/$ver.html") else None
         VersionEntry(ver, commit, link)
       }
 
@@ -116,8 +116,9 @@ class Local @Inject() ( components: ControllerComponents
 
   def versionedStandalone(version: String): Action[AnyContent] = Action {
     implicit request =>
-      if (version.matches("[a-zA-Z0-9._-]+"))
-        replyWithResource(environment)(s"public/versions/$version.html")("text/html; charset=utf-8")
+      val ver = version.stripSuffix(".html")
+      if (ver.matches("[a-zA-Z0-9._-]+"))
+        replyWithResource(environment)(s"public/versions/$ver.html")("text/html; charset=utf-8")
       else
         BadRequest
   }

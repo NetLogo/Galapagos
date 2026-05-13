@@ -97,6 +97,7 @@ jobs:
           sbt scrapePlay
           cp -Rv public/modelslib/ target/play-scrape/assets/
           cp -Rv public/nt-modelslib/ target/play-scrape/assets/
+          cp -Rv public/versions/ target/play-scrape/
 
       - name: Upload
         env:
