@@ -12,7 +12,7 @@ getBase64IfResource = (node, data) ->
 DOMPurify.addHook('uponSanitizeElement', getBase64IfResource)
 
 markdownToHtml = (md) ->
-  DOMPurify.sanitize(marked.parse(md))
+  DOMPurify.sanitize(marked.parse(md, { breaks: true }))
 
 # (String) => String
 toNetLogoWebMarkdown = (md) ->
