@@ -24,7 +24,7 @@ REDRAW_EXP           = 2
 
 isUsableCommit       = window.nlwCommit? and window.nlwCommit isnt 'unknown'
 commitSuffix         = if isUsableCommit then " (#{window.nlwCommit})" else ''
-NETLOGO_VERSION      = '2.14.2' + commitSuffix
+NETLOGO_VERSION      = '2.15.0' + commitSuffix
 
 # performance.now gives submillisecond timing, which improves the event loop
 # for models with submillisecond go procedures. Unfortunately, iOS Safari

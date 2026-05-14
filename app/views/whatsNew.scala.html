@@ -4,6 +4,24 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+    <h2 id="v2.15.0">May 14th 2026 - v2.15.0</h2>
+
+    <p>This release includes <a href="/docs/hosting-sharing">improvements to our documentation around hosting and sharing models</a> along with a <a href="/model-linker">model-linker page</a> to assist in generating links for sharing and embedding your own NetLogo models.</p>
+
+    <ul>
+      <li>Updates to the models library to match the NetLogo 7.0.4 release.</li>
+      <li>The <code>beep</code> primitive is now supported.</li>
+      <li>We have added bundles of prior version code in the form of HTML files that can be used to run NetLogo models with older versions of NetLogo Web.  This is useful if you want to get some of the benefits of hot-linking a model to NetLogo Web, but you want to pin to a specific version to avoid changes as we make updates to NetLogo Web.  You can easily generate a version-pinned link with the new <a href="/model-linker">model-linker page</a>.</li>
+      <li>The size of the code for model simulation pages has been reduced by almost 40%.  This will reduce network usage for all NetLogo Web users, but will most greatly help users who make use downloaded HTML bundles in their sites and pages.</li>
+    </ul>
+
+    <p>The below additions are mostly of interest to developers of websites or apps making use of NetLogo Web, or for people who enjoy digging into NetLogo Web code.</p>
+
+    <ul>
+      <li>We have added a <a href="/versions.json">versions JSON file</a> to our deployments that gives a list of the NetLogo Web releases along with their HTML bundle links, if they exist.</li>
+      <li>We have added a <a href="/standalone-debug">debugging version of the model simulation page</a> that will load unminified versions of the engine and simulation code for easier inspection in browser web development tools and hand-modification.  Using the Export: HTML feature from this page will export an unminified HTML bundle with the model's code embedded.</li>
+    </ul>
+
     <h2 id="v2.14.2">April 28th 2026 - v2.14.2</h2>
 
     <p>This release includes some small UI improvements and bugfixes.  The first three bugfixes had been implemented previously but were overwritten by the agent inspection changes.</p>
