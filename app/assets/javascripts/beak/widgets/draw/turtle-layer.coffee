@@ -3,15 +3,14 @@ import { drawTurtle } from "./draw-shape.js"
 import { usePatchCoords } from "./draw-utils.js"
 import { drawLink } from "./link-drawer.js"
 
-# Yields each name in `breedNames`, except that `unbreededName` comes last if it exists.
+# Yields each name in `breedNames` (skipping `unbreededName` if present), then always yields
+# `unbreededName` last so unbreeded agents render on top and are always included regardless of
+# whether the engine omits them from the breeds list.
 breedNameGen = (unbreededName, breedNames) ->
-  seenUnbreededName = false
   for breedName in breedNames
-    if breedName is unbreededName
-      seenUnbreededName = true
-    else
+    if breedName isnt unbreededName
       yield breedName
-  if seenUnbreededName then yield unbreededName
+  yield unbreededName
 
 filteredByBreed = (unbreededName, agents, breeds) ->
   breededAgents = {}
