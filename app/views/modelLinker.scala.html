@@ -26,6 +26,30 @@
   .copy-btn {
     flex-shrink: 0;
   }
+  .linker-options {
+    margin-bottom: 1.25em;
+  }
+  .linker-options-title-row {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5em 1em;
+    align-items: center;
+    margin-bottom: 0.5em;
+  }
+  .linker-options-title-row label {
+    white-space: nowrap;
+  }
+  .linker-options-two-col {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5em 0.8em;
+  }
+  .linker-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: nowrap;
+  }
 </style>
 
 <div class="inner-content" style="margin: 0 10%;">
@@ -46,11 +70,37 @@
 
   <h2>Your Model URL</h2>
 
-  <p>Paste your model's URL below and all links will update automatically.</p>
+  <p>Paste your model's URL below and all links will update automatically.  You can also configure the extra options
+    for your link.</p>
 
   <input type="url" id="model-url-input"
          placeholder="https://example.com/my-model.nlogox"
          style="width: 100%; box-sizing: border-box; padding: 6px 8px; font-size: 1em; margin-bottom: 1.25em;" />
+
+  <div class="linker-options">
+    <div class="linker-options-title-row">
+      <label for="opt-title">Model title</label>
+      <input type="text" id="opt-title" placeholder="(defaults to model file name)" style="padding: 4px 6px;" />
+    </div>
+    <div class="linker-options-two-col">
+      <div class="linker-option">
+        <label for="opt-tabs">Commands and code position</label>
+        <select id="opt-tabs" style="padding: 4px 6px;">
+          <option value="bottom">Bottom (default)</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+      <div class="linker-option">
+        <label for="opt-speed">Speed slider (-1 to 1)</label>
+        <input type="number" id="opt-speed" min="-1" max="1" step="0.1" placeholder="0 (default)"
+               style="padding: 4px 6px; width: 8em;" />
+      </div>
+      <div class="linker-option">
+        <label for="opt-analytics">Disable analytics</label>
+        <input type="checkbox" id="opt-analytics" />
+      </div>
+    </div>
+  </div>
 
   <h2>Shareable Link</h2>
 
@@ -94,32 +144,75 @@
 
 <script>
   (function() {
-    const input    = document.getElementById('model-url-input');
-    const allLinks = document.querySelectorAll('[data-link-format]');
-    const origin   = window.location.origin;
+    const input          = document.getElementById('model-url-input');
+    const allLinks       = document.querySelectorAll('[data-link-format]');
+    const origin         = window.location.origin;
+    const analyticsCheck = document.getElementById('opt-analytics');
+    const titleInput     = document.getElementById('opt-title');
+    const tabsSelect     = document.getElementById('opt-tabs');
+    const speedInput     = document.getElementById('opt-speed');
+
+    function getExtraParams() {
+      const parts = [];
+
+      if (analyticsCheck.checked) {
+        parts.push('disableAnalytics');
+      }
+
+      const title = titleInput.value.trim();
+      if (title !== '') {
+        parts.push('title=' + encodeURIComponent(title));
+      }
+
+      if (tabsSelect.value === 'right') {
+        parts.push('tabs=right');
+      }
+
+      const rawSpeed = speedInput.value;
+      if (rawSpeed !== '') {
+        const speed = parseFloat(rawSpeed);
+        if (!isNaN(speed) && speed >= -1 && speed <= 1 && speed !== 0) {
+          parts.push('speed=' + speed);
+        }
+      }
+
+      return parts;
+    }
 
     function updateLinks() {
-      const modelUrl = input.value.trim();
+      const modelUrl   = input.value.trim();
+      const extraParts = getExtraParams();
+      const extraQuery = extraParts.join('&');
+
       allLinks.forEach(function(link) {
         const base = origin + link.dataset.path;
         let href;
+
         if (link.dataset.linkFormat === 'shareable') {
-          href = modelUrl ? base + '#' + modelUrl : base;
-        } else if (modelUrl) {
-          let params = '?url=' + encodeURIComponent(modelUrl);
-          if (link.dataset.version) {
-            params += '&v=' + encodeURIComponent(link.dataset.version);
-          }
-          href = base + params;
+          const queryStr = extraQuery ? '?' + extraQuery : '';
+          const hashStr  = modelUrl  ? '#' + modelUrl   : '';
+          href = base + queryStr + hashStr;
+
         } else {
-          href = base;
+          // embeddable
+          const paramParts = [];
+          if (extraQuery)           { paramParts.push(extraQuery); }
+          if (modelUrl)             { paramParts.push('url=' + encodeURIComponent(modelUrl)); }
+          if (link.dataset.version) { paramParts.push('v=' + encodeURIComponent(link.dataset.version)); }
+          href = paramParts.length > 0 ? base + '?' + paramParts.join('&') : base;
         }
-        link.href = href;
+
+        link.href        = href;
         link.textContent = href;
       });
     }
 
     input.addEventListener('input', updateLinks);
+    analyticsCheck.addEventListener('change', updateLinks);
+    titleInput.addEventListener('input', updateLinks);
+    tabsSelect.addEventListener('change', updateLinks);
+    speedInput.addEventListener('input', updateLinks);
+
     updateLinks();
 
     document.querySelectorAll('.copy-btn').forEach(function(btn) {
