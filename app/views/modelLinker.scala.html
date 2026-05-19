@@ -109,7 +109,7 @@
   <ul style="list-style: none; padding: 0;">
     <li class="linker-row">
       <span class="linker-version-label">latest</span>
-      <a class="linker-link" data-link-format="shareable" data-path="/launch" href="/launch">/launch</a>
+      <a class="linker-link" data-link-format="shareable" data-version="@currentVersion" data-path="/launch" href="/launch">/launch</a>
       <button class="copy-btn">Copy</button>
     </li>
   </ul>
@@ -189,8 +189,11 @@
         let href;
 
         if (link.dataset.linkFormat === 'shareable') {
-          const queryStr = extraQuery ? '?' + extraQuery : '';
-          const hashStr  = modelUrl  ? '#' + modelUrl   : '';
+          const queryParts = [];
+          if (extraQuery)           { queryParts.push(extraQuery); }
+          if (link.dataset.version) { queryParts.push('v=' + encodeURIComponent(link.dataset.version)); }
+          const queryStr = queryParts.length > 0 ? '?' + queryParts.join('&') : '';
+          const hashStr  = modelUrl ? '#' + modelUrl : '';
           href = base + queryStr + hashStr;
 
         } else {
