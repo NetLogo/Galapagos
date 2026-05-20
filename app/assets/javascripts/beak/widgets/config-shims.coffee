@@ -270,7 +270,8 @@ genConfigs = (ractive, viewController, container, compiler) ->
   base64ToImageData = (base64) ->
     { array, height, width, didSucceed } = synchroDecoder(base64)
     if not didSucceed
-      throw new Error("Extension exception: Could not decode the image. Only GIF, JPEG, and PNG formats are supported in NetLogo Web.")
+      msg = "Could not decode the image. Only GIF, JPEG, and PNG formats are supported in NetLogo Web."
+      throw new Error("Extension exception: #{msg}")
     new ImageData(array, width, height)
 
   { asyncDialog:       genAsyncDialogConfig(ractive, clearMouse)
