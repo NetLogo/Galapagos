@@ -36,15 +36,16 @@ Possible drawing events:
 ###
 
 class DrawingLayer extends Layer
-  # (-> { model: ModelObj, quality: QualityObj, font: FontObj }) -> Unit
+  # (-> { model: ModelObj, quality: QualityObj, font: FontObj }, (Unit) -> Unit) -> Unit
   # see "./layer.coffee" for type info
-  constructor: (@_getDepInfo) ->
+  constructor: (@_getDepInfo, @_repaintCallback = ->) ->
     super()
     @_latestDepInfo = {
       model: undefined,
       quality: undefined,
       font: undefined
     }
+    @_dirty = false
     @_canvas = document.createElement('canvas')
     @_ctx = @_canvas.getContext('2d')
     return
@@ -56,33 +57,38 @@ class DrawingLayer extends Layer
     return
 
   repaint: ->
-    if not mergeInfo(@_latestDepInfo, @_getDepInfo()) then return false
+    depsChanged = mergeInfo(@_latestDepInfo, @_getDepInfo())
+    wasDrawnAsync = @_dirty
+    @_dirty = false
+    if not depsChanged and not wasDrawnAsync then return false
 
-    { model: { model, worldShape }, quality: { quality } } = @_latestDepInfo
-    { worldWidth, worldHeight, patchsize } = worldShape
-    newWidth  = worldWidth  * patchsize * quality
-    newHeight = worldHeight * patchsize * quality
-    if @_canvas.width isnt newWidth or @_canvas.height isnt newHeight
-      # Save drawing content before resize (setting canvas dimensions always clears the canvas)
-      prevCanvas = document.createElement('canvas')
-      prevCanvas.width  = @_canvas.width
-      prevCanvas.height = @_canvas.height
-      prevCanvas.getContext('2d').drawImage(@_canvas, 0, 0)
-      @_canvas.width  = newWidth
-      @_canvas.height = newHeight
-      if prevCanvas.width > 0 and prevCanvas.height > 0
-        @_ctx.drawImage(prevCanvas, 0, 0, newWidth, newHeight)
-    for event in model.drawingEvents
-      switch event.type
-        when 'clear-drawing' then @_clearDrawing()
-        when 'line' then @_drawLine(event)
-        when 'stamp-image'
-          switch event.agentType
-            when 'turtle' then @_drawTurtleStamp(event.stamp)
-            when 'link' then @_drawLinkStamp(event.stamp)
-        when 'import-drawing' then @_importDrawing(event.imageBase64)
-    # For those who still remember, `model.drawingEvents` is now reset by the ViewController after
-    # every layer has finished repainting.
+    if depsChanged
+      { model: { model, worldShape }, quality: { quality } } = @_latestDepInfo
+      { worldWidth, worldHeight, patchsize } = worldShape
+      newWidth  = worldWidth  * patchsize * quality
+      newHeight = worldHeight * patchsize * quality
+      if @_canvas.width isnt newWidth or @_canvas.height isnt newHeight
+        # Save drawing content before resize (setting canvas dimensions always clears the canvas)
+        prevCanvas = document.createElement('canvas')
+        prevCanvas.width  = @_canvas.width
+        prevCanvas.height = @_canvas.height
+        prevCanvas.getContext('2d').drawImage(@_canvas, 0, 0)
+        @_canvas.width  = newWidth
+        @_canvas.height = newHeight
+        if prevCanvas.width > 0 and prevCanvas.height > 0
+          @_ctx.drawImage(prevCanvas, 0, 0, newWidth, newHeight)
+      for event in model.drawingEvents
+        switch event.type
+          when 'clear-drawing' then @_clearDrawing()
+          when 'line' then @_drawLine(event)
+          when 'stamp-image'
+            switch event.agentType
+              when 'turtle' then @_drawTurtleStamp(event.stamp)
+              when 'link' then @_drawLinkStamp(event.stamp)
+          when 'import-drawing' then @_importDrawing(event.imageBase64)
+      # For those who still remember, `model.drawingEvents` is now reset by the ViewController after
+      # every layer has finished repainting.
+
     true
 
   _clearDrawing: ->
@@ -148,7 +154,17 @@ class DrawingLayer extends Layer
     return
 
   _importDrawing: (base64) ->
-    _clearDrawing()
+    @_clearDrawing()
+    src =
+      if base64.startsWith('data:')
+        base64
+      else
+        # Raw base64 from workspace resources; detect type by magic bytes
+        mimeType =
+          if      base64.startsWith('R0lG') then 'image/gif'
+          else if base64.startsWith('/9j/') then 'image/jpeg'
+          else                                   'image/png'
+        "data:#{mimeType};base64,#{base64}"
     image = new Image()
     image.onload = () =>
       canvasRatio = @_canvas.width / @_canvas.height
@@ -163,7 +179,9 @@ class DrawingLayer extends Layer
         height = (canvasRatio / imageRatio) * @_canvas.height
 
       @_ctx.drawImage(image, (@_canvas.width - width) / 2, (@_canvas.height - height) / 2, width, height)
-    image.src = base64
+      @_dirty = true
+      @_repaintCallback()
+    image.src = src
     return
 
   # x and y coordinates are given in CSS pixels not accounting for quality.

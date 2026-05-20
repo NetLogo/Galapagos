@@ -6,7 +6,7 @@
   "mocha": {},
   "dependencies": {
     "@netlogo/nettango": "0.16.6",
-    "@netlogo/synchrodecoder": "3.0.0",
+    "@netlogo/synchrodecoder": "3.1.0",
     "codemirror": "5.62.3",
     "dompurify": "3.4.5",
     "file-saver": "2.0.5",

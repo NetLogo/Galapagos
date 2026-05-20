@@ -10,12 +10,12 @@ import { setImageSmoothing, clearCtx, extractWorldShape } from "./draw-utils.js"
 AgentModel = tortoise_require('agentmodel')
 
 # TODO type signature
-initLayers = (layerDeps) ->
+initLayers = (layerDeps, repaintCallback) ->
   # Tis important that we don't access the properties of `layerDeps` except within the client code using `layerDeps`,
   # because the identities of the objects will change (see "./layers.coffee"'s comment on layer dependencies' for why).
   turtles = new TurtleLayer(-> layerDeps)
   patches = new PatchLayer(-> layerDeps)
-  drawing = new DrawingLayer(-> layerDeps)
+  drawing = new DrawingLayer((-> layerDeps), repaintCallback)
   world = new CompositeLayer([patches, drawing, turtles], -> layerDeps)
   spotlight = new SpotlightLayer(-> layerDeps)
   highlight = new HighlightLayer(-> layerDeps)
@@ -42,7 +42,7 @@ class ViewController
       }
     }
     @resetModel() # defines `@_model`
-    @_layers = initLayers(@_layerDeps)
+    @_layers = initLayers(@_layerDeps, => @repaint())
 
     repaint = => @repaint()
     drawingLayer = @_layers.drawing
