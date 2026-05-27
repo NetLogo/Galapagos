@@ -259,7 +259,7 @@ val substringFilterMaker = (filter: String) => new FileFilter {
 // Don't digest chunks, because they are `import`ed by filename in other script files. Besides, they already contain
 // a digest in their filename anyway, so there is no need to do it twice.
 // - David D. 7/2021
-digest / excludeFilter := "*.chunk.js" || "*.png" || "*.html" || "*.ttf" ||
+digest / excludeFilter := "*.chunk.js" || "*.chunk.js.map" || "*.png" || "*.html" || "*.ttf" ||
   substringFilterMaker("public/pages/color-picker") || "simulation.bundle.js.map" || "netTangoBuilder.bundle.js.map" ||
   "simulation.bundle.debug.js.map"
 

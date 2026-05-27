@@ -17,9 +17,11 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
 
   const runtimeDir = path.dirname(fileURLToPath(import.meta.url));
 
-  // In development the `sourcemaps` plugin allows Rollup to read sourcemaps produced by sbt-coffeescript.  In
-  // production, we use `terser` to minify the bundle. - David D. 7/2021
-  const devOnlyPlugins = [sourcemaps()];
+  // formerly used to hold sourcemaps used in development, but now we use the prod bundles with sourcemaps everywhere.
+  // Leaving here if ever something needs to be added back in.  -Jeremy B May 2026
+  const devOnlyPlugins  = [];
+  // `sourcemaps()` chains the .js→.coffee maps produced by sbt-coffeescript into the final bundle map so stack
+  // traces resolve back to the original .coffee source.  `terser` is production-only for minification.
   const prodOnlyPlugins = [terser()];
 
   const basePlugins = [
@@ -28,6 +30,8 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
     // We want to use absolute paths in `import` statements, but don't want to use needlessly long paths from the
     // project root. This custom Rollup resolver allows setting a base directory for absolute imports. - David D. 7/2021
     absoluteImportBasePlugin(runtimeDir, inputDir),
+    // Read the .js.map files emitted by sbt-coffeescript so Rollup can chain them into the bundle's source map.
+    sourcemaps(),
   ];
 
   const plugins = [...basePlugins, ...(isDevelopment ? devOnlyPlugins : prodOnlyPlugins)];
@@ -61,7 +65,7 @@ export default ({ "config-sourceDir": sourceDir, "config-targetDir": targetDir }
       output: {
         dir: outputDir,
         format: "esm",
-        sourcemap: isDevelopment,
+        sourcemap: true,
         // In development, we keep the individual script files instead of bundling everything, so quickly finding code
         // from a specific file is easier. - David D. 7/2021
         preserveModules: isDevelopment,
