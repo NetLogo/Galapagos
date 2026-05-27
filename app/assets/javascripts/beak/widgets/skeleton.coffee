@@ -189,7 +189,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     getContextMenuOptions: (clientX, clientY) ->
       if @get('isEditing')
-        widgetCreationOptions
+        if @get('isHNW') then hnwWidgetCreationOptions else widgetCreationOptions
       else
         []
 
@@ -467,7 +467,7 @@ template =
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
           {{# type === 'hnwTextBox'  }} <hnwNoteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
           {{# type ===    'view'     }}    <viewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" viewController="{{viewController}}" setInspect="{{@this.setInspect.bind(@this)}}" showAgentContextMenu="{{showAgentContextMenu}}" /> {{/}}
-          {{# type === 'hnwView'     }} <hnwViewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" /> {{/}}
+          {{# type === 'hnwView'     }} <hnwViewWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticks="{{ticks}}" viewController="{{viewController}}" setInspect="{{@this.setInspect.bind(@this)}}" /> {{/}}
           {{# type ===    'switch'   }}    <switchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" breedVars="{{metadata.myVars}}" /> {{/}}
           {{# type === 'hnwSwitch'   }} <hnwSwitchWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" breedVars="{{metadata.myVars}}" /> {{/}}
           {{# type ===    'button'   }}    <buttonWidget  id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" ticksStarted="{{ticksStarted}}" procedures="{{metadata.procedures}}" errorClass="{{>errorClass}}" /> {{/}}
@@ -557,6 +557,18 @@ widgetCreationOptions = [
   ["Plot",    "plot"],
   ["Slider",  "slider"],
   ["Switch",  "switch"],
+].map((args) -> genWidgetCreator(args...))
+
+hnwWidgetCreationOptions = [
+  ["Button",  "hnwButton"],
+  ["Chooser", "hnwChooser"],
+  ["Input",   "hnwInputBox"],
+  ["Note",    "hnwTextBox"],
+  ["Monitor", "hnwMonitor"],
+  ["Output",  "hnwOutput", false, alreadyHasA('hnwOutputWidget')],
+  ["Plot",    "hnwPlot"],
+  ["Slider",  "hnwSlider"],
+  ["Switch",  "hnwSwitch"],
 ].map((args) -> genWidgetCreator(args...))
 
 export default generateRactiveSkeleton

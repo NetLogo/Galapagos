@@ -61,7 +61,7 @@ class HighlightLayer extends Layer
   getWorldShape: -> @_latestDepInfo.model.worldShape
 
   blindlyDrawTo: (ctx) ->
-    { highlight: { highlightedAgents, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
+    { highlight: { highlightedAgents, highlightColor, highlightedTurtleID, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
     toModelAgent = getEquivalentAgent(model) # function that converts from actual agent object to AgentModel analogue
     watchTarget = getSpotlightAgent(model)
     if selectionCircle?
@@ -71,6 +71,19 @@ class HighlightLayer extends Layer
         drawInspectCircles(ctx, xcor, ycor, radius, thickness)
         return
       usePatchCoords(worldShape, ctx, drawSelect)
+
+    if highlightColor? and highlightedTurtleID?
+      modelTurtle = model.turtles[highlightedTurtleID]
+      if modelTurtle?
+        { xcor, ycor, size } = modelTurtle
+        usePatchCoords(worldShape, ctx, (ctx) ->
+          ctx.strokeStyle = highlightColor
+          ctx.lineWidth   = worldShape.onePixel
+          ctx.beginPath()
+          ctx.arc(xcor, ycor, size * 1.5, 0, 2 * Math.PI)
+          ctx.stroke()
+          return
+        )
 
   repaint: ->
     mergeInfo(@_latestDepInfo, @_getDepInfo())

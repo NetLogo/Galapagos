@@ -45,7 +45,7 @@ applyViewUpdate = (viewController, postToBM, sendPayload) -> (viewUpdate) ->
 
   { turtles = {}, patches = {}, links = {}, drawingEvents = [] } = viewUpdate
 
-  baddie = findBaddie(turtles, patches, links, viewController.model)
+  baddie = findBaddie(turtles, patches, links, viewController.getModel())
 
   if not baddie?
     trueDrawings = preprocessDrawingEvents(sendPayload)(drawingEvents)

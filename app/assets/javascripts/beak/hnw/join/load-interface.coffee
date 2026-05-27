@@ -80,9 +80,9 @@ loadInterface = ( getSession, setSession, setToken, setRole
           obj = { subtype: "mouse-move", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
           sendWidget('view', obj)
 
-  vc.view.visibleCanvas.addEventListener('mousedown', onMouseDown)
-  vc.view.visibleCanvas.addEventListener('mouseup'  , onMouseUp  )
-  vc.view.visibleCanvas.addEventListener('mousemove', onMouseMove)
+  vc.getMainView().getVisibleCanvas().addEventListener('mousedown', onMouseDown)
+  vc.getMainView().getVisibleCanvas().addEventListener('mouseup'  , onMouseUp  )
+  vc.getMainView().getVisibleCanvas().addEventListener('mousemove', onMouseMove)
 
   if data.token isnt "invalid token"
     data.port.postMessage(true)

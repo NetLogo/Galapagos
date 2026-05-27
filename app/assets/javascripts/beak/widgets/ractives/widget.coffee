@@ -297,7 +297,8 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         # closes *after* this callback runs, so we need to defer the focus call.
         # - Omar I. (Oct 14 2025)
         setTimeout((=>
-          @find('.editor-overlay')?.focus({ preventScroll: true })
+          if @rendered
+            @find('.editor-overlay')?.focus({ preventScroll: true })
         ), 0)
       return
 

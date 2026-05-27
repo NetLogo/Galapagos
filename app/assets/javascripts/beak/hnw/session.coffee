@@ -188,7 +188,7 @@ class HNWSession
     widgetController = @_getWC()
 
     { drawingEvents, links, observer, patches, turtles, world: w } =
-      widgetController.viewController.model
+      widgetController.viewController.getModel()
 
     trueObserver = Object.assign({}, observer)
 
@@ -348,7 +348,7 @@ class HNWSession
   _genOverrideUpdate: (baseUpdate = {}, uuid) ->
 
     widgetController = @_getWC()
-    vcAgentModel     = widgetController.viewController.model
+    vcAgentModel     = widgetController.viewController.getModel()
 
     convertKey = (k) ->
       switch k

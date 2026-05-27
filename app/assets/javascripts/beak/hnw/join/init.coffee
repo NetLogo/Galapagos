@@ -46,7 +46,7 @@ window.addEventListener("message", (e) ->
       vc = session.widgetController.viewController
       vc.repaint()
 
-      base64 = vc.view.visibleCanvas.toDataURL("image/png")
+      base64 = vc.getMainView().getVisibleCanvas().toDataURL("image/png")
       e.source.postMessage({ base64, type: "nlw-view" }, "*")
 
     when "nlw-subscribe-to-updates"

@@ -50,7 +50,7 @@ RactiveNetLogoModel = Ractive.extend({
             e.source.postMessage({ update, type: "nlw-state-update" }, "*")
 
           when "nlw-request-view"
-            base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png")
+            base64 = session.widgetController.viewController.getMainView().getVisibleCanvas().toDataURL("image/png")
             e.source.postMessage({ base64, type: "nlw-view" }, "*")
 
           when "nlw-subscribe-to-updates"

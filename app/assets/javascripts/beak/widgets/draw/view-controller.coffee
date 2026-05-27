@@ -32,8 +32,10 @@ class ViewController
         worldShape: undefined # will be set by `@resetModel`
       },
       highlight: {
-        highlightedAgents: [],
-        selectionCircle: null  # { xcor, ycor, radius } in patch coords, or null
+        highlightedAgents:  [],
+        highlightColor:     null,  # CSS color string for agent highlights, or null
+        highlightedTurtleID: null, # Number (who), or null
+        selectionCircle:    null   # { xcor, ycor, radius } in patch coords, or null
       },
       quality: { quality: Math.max(window.devicePixelRatio ? 2, 2) },
       font: {
@@ -105,6 +107,9 @@ class ViewController
   # (Unit) -> AgentModel
   getModel: => @_model
 
+  # (Unit) -> View
+  getMainView: -> @_views[0]
+
   # (Unit) -> WorldShaspe
   getWorldShape: => @_layerDeps.model.worldShape
 
@@ -120,18 +125,18 @@ class ViewController
     return
 
   # (Update|Array[Update]) => Unit
-  _applyUpdateToModel: (modelUpdate) ->
+  applyUpdate: (modelUpdate) ->
     updates = if Array.isArray(modelUpdate) then modelUpdate else [modelUpdate]
     @_model.update(u) for u in updates
-    return
-
-  # (Update|Array[Update]) => Unit
-  update: (modelUpdate) ->
-    @_applyUpdateToModel(modelUpdate)
     @_layerDeps.model = {
       @_layerDeps.model...,
       worldShape: extractWorldShape(@_model.world)
     }
+    return
+
+  # (Update|Array[Update]) => Unit
+  update: (modelUpdate) ->
+    @applyUpdate(modelUpdate)
     @repaint()
     @_model.drawingEvents = []
     return
@@ -149,6 +154,12 @@ class ViewController
     # It's important that we create a new object instead of simply setting the property on the old `@_layerDeps.model`
     # object.
     @_layerDeps.highlight = { @_layerDeps.highlight..., highlightedAgents }
+    @repaint()
+    return
+
+  # (Number, String) -> Unit
+  highlightTurtle: (turtleID, color) ->
+    @_layerDeps.highlight = { @_layerDeps.highlight..., highlightedTurtleID: turtleID, highlightColor: color }
     @repaint()
     return
 
@@ -256,6 +267,9 @@ class View
     @_initMouseTracking()
     @_initTouchTracking()
     return
+
+  # (Unit) -> HTMLCanvasElement
+  getVisibleCanvas: -> @_visibleCanvas
 
   # (Unit) -> DOMRect
   getBoundingClientRect: -> @_visibleCanvas.getBoundingClientRect()

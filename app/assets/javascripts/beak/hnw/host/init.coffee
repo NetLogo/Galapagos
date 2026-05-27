@@ -122,7 +122,7 @@ onBabyMonitorMessage = (e) ->
       respondWithView =
         ->
           respondent = e.ports?[0] ? babyMonitor
-          session.widgetController.viewController.view.visibleCanvas.toBlob(
+          session.widgetController.viewController.getMainView().getVisibleCanvas().toBlob(
             (blob) -> respondent.postMessage({ blob, type: "nlw-view" })
           )
 
