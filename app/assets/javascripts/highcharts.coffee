@@ -26,7 +26,9 @@ basicConfig = (elemID, plot) -> {
     pixelRatio: 0,
     useGPUTranslations: true
   },
-  credits: { enabled: false },
+  # TODO: we should enabled this with its module once we get a chance to do so properly -Jeremy B May 2026
+  accessibility: { enabled: false },
+  credits:       { enabled: false },
   legend:  {
     enabled: plot.isLegendEnabled,
     margin: 5,
