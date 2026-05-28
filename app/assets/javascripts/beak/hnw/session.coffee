@@ -2,7 +2,8 @@ import genUUID from "/uuid.js"
 
 import IDManager from "./common/id-manager.js"
 
-AgentModel = tortoise_require('agentmodel')
+AgentModel                    = tortoise_require('agentmodel')
+{ isTurtle, isPatch, isLink } = tortoise_require('engine/core/typechecker').checks
 
 # coffeelint: disable=max_line_length
 # type HNWUpdate       = { chooserUpdates :: Object[Int], inputNumUpdates :: Object[Number], inputStrUpdates :: Object[String], monitorUpdates :: Object[String], plotUpdates :: PlotsUpdate, sliderUpdates :: Object[Number], switchUpdates Object[Boolean], viewUpdate :: ViewUpdate })
@@ -389,15 +390,6 @@ class HNWSession
         x[0].shufflerator? and
         (typeof x[1] is "string") and
         (typeof x[2] is "function")
-
-    isLink = (x) ->
-      x.constructor.name is "Link"
-
-    isPatch = (x) ->
-      x.constructor.name is "Patch"
-
-    isTurtle = (x) ->
-      x.constructor.name is "Turtle"
 
     performSimpleReset = (agents, key) =>
 
