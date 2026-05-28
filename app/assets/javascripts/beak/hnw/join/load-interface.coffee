@@ -59,30 +59,28 @@ loadInterface = ( getSession, setSession, setToken, setRole
   vc = session.widgetController.viewController
 
   onMouseDown =
-    ->
-      obj = { subtype: "mouse-down", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+    ({ xPcor, yPcor }) ->
+      obj = { subtype: "mouse-down", xcor: xPcor, ycor: yPcor }
       sendWidget('view', obj)
 
   onMouseUp =
-    ->
-      obj = { subtype: "mouse-up", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+    ({ xPcor, yPcor }) ->
+      obj = { subtype: "mouse-up", xcor: xPcor, ycor: yPcor }
       sendWidget('view', obj)
 
   previousMouseMoveTime = 0
 
   onMouseMove =
-    ->
+    ({ xPcor, yPcor }) ->
       if data.role.onCursorMove?
         millisBetween = (1 / data.tickRate) * 1000
         now           = performance.now()
         if (now - previousMouseMoveTime) >= millisBetween
           previousMouseMoveTime = now
-          obj = { subtype: "mouse-move", xcor: vc.mouseXcor(), ycor: vc.mouseYcor() }
+          obj = { subtype: "mouse-move", xcor: xPcor, ycor: yPcor }
           sendWidget('view', obj)
 
-  vc.getMainView().getVisibleCanvas().addEventListener('mousedown', onMouseDown)
-  vc.getMainView().getVisibleCanvas().addEventListener('mouseup'  , onMouseUp  )
-  vc.getMainView().getVisibleCanvas().addEventListener('mousemove', onMouseMove)
+  vc.registerMouseListeners(onMouseDown, onMouseMove, onMouseUp)
 
   if data.token isnt "invalid token"
     data.port.postMessage(true)
