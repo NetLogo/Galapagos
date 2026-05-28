@@ -385,6 +385,13 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   loadModel(setSession)(new ScriptSource("HubNet Web", e.data.nlogox), fakePlots)
 
   roles = e.data.roles.reduce(((acc, role) -> acc[role.name] = role; acc), {})
+
+  missingOnConnect = Object.values(roles).filter((r) -> not r.isSpectator and not r.onConnect?)
+  if missingOnConnect.length > 0
+    names = missingOnConnect.map((r) -> r.name).join(', ')
+    alert(new Error("Non-spectator role(s) must have an 'On Connect' reporter procedure set. Missing for: #{names}"))
+    return
+
   setRoles(roles)
 
   babyMonitor = getBabyMonitor()

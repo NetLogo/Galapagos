@@ -10,8 +10,11 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
 
   if client?
 
-    role = getRole(client.roleName)
-    who  = client.who
+    role   = getRole(client.roleName)
+    who    = client.who
+    plural = if not role.isSpectator then world.breedManager.getSingular(client.roleName).name
+
+    getTurtleForClient = -> world.turtleManager.getTurtleOfBreed(plural, who)
 
     switch e.data.data.type
 
@@ -23,7 +26,7 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
             if not (ex instanceof Exception.HaltInterrupt)
               throw ex
         else
-          world.turtleManager.getTurtle(who).ask(procedure, false)
+          getTurtleForClient().ask(procedure, false)
 
       when "slider", "switch", "chooser", "inputBox"
 
@@ -50,7 +53,7 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
           world.observer.setGlobal(mangledName, trueValue)
         else
           f = (-> SelfManager.self().setVariable(varName, trueValue))
-          world.turtleManager.getTurtle(who).ask(f, false)
+          getTurtleForClient().ask(f, false)
 
         updateWidgetCache(varName, trueValue)
 
@@ -65,7 +68,7 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
               if role.isSpectator
                 thunk()
               else
-                world.turtleManager.getTurtle(who).ask(thunk, false)
+                getTurtleForClient().ask(thunk, false)
 
           when "mouse-up"
             if role.onCursorRelease?
@@ -73,7 +76,7 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
               if role.isSpectator
                 thunk()
               else
-                world.turtleManager.getTurtle(who).ask(thunk, false)
+                getTurtleForClient().ask(thunk, false)
 
           when "mouse-move"
             if role.onCursorMove?
@@ -81,7 +84,7 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
               if role.isSpectator
                 thunk()
               else
-                world.turtleManager.getTurtle(who).ask(thunk, false)
+                getTurtleForClient().ask(thunk, false)
 
           else
             console.warn("Unknown HNW View event subtype")

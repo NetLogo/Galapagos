@@ -235,8 +235,14 @@ class HNWSession
           value =
             if role.isSpectator
               world.observer.getGlobal("__hnw_#{role.name}_#{varName}")
+            else if who?
+              plural = world.breedManager.getSingular(roleName).name
+              turtle = world.turtleManager.getTurtleOfBreed(plural, who)
+              unless turtle.getVariable?
+                console.warn("HNW: getTurtleOfBreed returned Nobody for who=#{who}, uuid=#{uuid}, var=#{varName}")
+              turtle.getVariable?(varName)
             else
-              world.turtleManager.getTurtle(who).getVariable(varName)
+              console.warn("HNW: who is null/undefined for uuid=#{uuid}, var=#{varName}")
 
           [varName, value]
 

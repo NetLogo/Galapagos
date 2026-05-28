@@ -181,8 +181,8 @@ window.onmessage = (e) ->
 
       onConnectChoices =
         procedures.filter(
-          ({ argCount, isUseableByObserver }) ->
-            argCount <= 1 and isUseableByObserver
+          ({ argCount, isReporter, isUseableByObserver }) ->
+            argCount <= 1 and isReporter and isUseableByObserver
         )
 
       toNames = (arr) -> arr.map((x) -> x.name)
