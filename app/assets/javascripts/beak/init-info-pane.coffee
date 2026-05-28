@@ -8,7 +8,7 @@ window.addEventListener("message", (event) ->
         (e) ->
           switch e.data.type
             when "hnw-model-info"
-              console.log(e)
+              # console.log(e)
               if e.data.resources?
                 resourceMap = {}
                 for r in e.data.resources
