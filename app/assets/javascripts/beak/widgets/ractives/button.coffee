@@ -1,5 +1,6 @@
 import RactiveWidget from "./widget.js"
 import EditForm from "./edit-form.js"
+import isValidButtonProc from "/beak/hnw/common/valid-button-proc.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
 import { RactiveEditFormMultilineCode } from "./subcomponent/code-container.js"
 import RactiveEditFormSpacer from "./subcomponent/spacer.js"
@@ -366,6 +367,23 @@ RactiveHNWButton = RactiveButton.extend({
               (not @get('isEditing'))
     }
   }
+
+  oninit: ->
+    @_super()
+    # The authoring (role-config) view has the `procedures` metadata and validates live; the client/supervisor views
+    # don't, so they fall back to the `hnwBadProc` flag the host stamps on the widget in `become-oracle`.
+    # -Jeremy B June 2026
+    refreshErrorClass = =>
+      procedures = @get('procedures') ? []
+      isBad      =
+        if procedures.length > 0
+          not isValidButtonProc(@get('widget.hnwProcName'), procedures, false)
+        else
+          @get('widget.hnwBadProc') is true
+      @set('errorClass', if isBad then 'netlogo-widget-error' else '')
+      return
+    @observe('widget.hnwProcName widget.hnwBadProc procedures', refreshErrorClass)
+    return
 
   clickHandler: (_, ractive) ->
     if ractive.get('isEnabled')

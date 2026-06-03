@@ -1,11 +1,12 @@
 import genUUID from "/uuid.js"
 
-import IDManager from "../common/id-manager.js"
+import IDManager         from "../common/id-manager.js"
+import isValidButtonProc from "../common/valid-button-proc.js"
 
 import { loadModel                             } from "./load-model.js"
 import { runAmbiguous, runCommand, runReporter } from "./run.js"
 
-import { ScriptSource } from "/beak/nlogo-source.js"
+import { ScriptSource       } from "/beak/nlogo-source.js"
 import { serializeResources } from "/beak/external-resources.js"
 
 protocolObj = { protocolVersion: "0.0.1" }
@@ -385,6 +386,17 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   loadModel(setSession)(new ScriptSource("HubNet Web", e.data.nlogox), fakePlots)
 
   roles = e.data.roles.reduce(((acc, role) -> acc[role.name] = role; acc), {})
+
+  # Flag buttons that won't run because their procedure is blank or doesn't
+  # resolve to a runnable command for the role.  Stamping `hnwBadProc` on the
+  # widget lets the client/supervisor views highlight it (those views have no
+  # `procedures` metadata to validate against themselves); clicking such a
+  # button is also handled gracefully at runtime with a descriptive error.
+  # -Jeremy B June 2026
+  procList = Object.values(procs)
+  for role in Object.values(roles)
+    for w in role.widgets when w.type is "hnwButton"
+      w.hnwBadProc = not isValidButtonProc(w.hnwProcName, procList, role.isSpectator)
 
   missingOnConnect = Object.values(roles).filter((r) -> not r.isSpectator and not r.onConnect?)
   if missingOnConnect.length > 0

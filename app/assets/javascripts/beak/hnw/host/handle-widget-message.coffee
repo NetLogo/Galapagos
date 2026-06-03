@@ -19,12 +19,17 @@ handleWidgetMessage = (getClient, getRole, getSession) -> (e) ->
     switch e.data.data.type
 
       when "button"
-        procedure = (-> runCommand(e.data.data.message))
-        if role.isSpectator
-          try procedure()
+        reportError = getSession().widgetController.reportError
+        procedure = (->
+          try
+            runCommand(e.data.data.message)
           catch ex
             if not (ex instanceof Exception.HaltInterrupt)
-              throw ex
+              reportError("runtime", "button", ex)
+          return
+        )
+        if role.isSpectator
+          procedure()
         else
           getTurtleForClient().ask(procedure, false)
 

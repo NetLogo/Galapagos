@@ -10,8 +10,14 @@ runAmbiguous = (name, args...) ->
 
 # (String, Any*) => Boolean
 runCommand = (name, args...) ->
-  res = workspace.procedurePrims.callCommand(name.toLowerCase(), args...)
-  res is StopInterrupt
+  pp = workspace.procedurePrims
+  n  = name?.toLowerCase()
+  if n? and pp.hasCommand(n)
+    res = pp.callCommand(n, args...)
+    res is StopInterrupt
+  else
+    throw new Error("This HubNet button is not set up correctly: '#{name}' is not a " +
+                    "0-input command procedure in this model.")
 
 # (String, Any*) => Any
 runReporter = (name, args...) ->
