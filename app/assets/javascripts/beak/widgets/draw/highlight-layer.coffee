@@ -61,7 +61,10 @@ class HighlightLayer extends Layer
   getWorldShape: -> @_latestDepInfo.model.worldShape
 
   blindlyDrawTo: (ctx) ->
-    { highlight: { highlightedAgents, highlightColor, highlightedTurtleID, selectionCircle }, model: { model, worldShape } } = @_latestDepInfo
+    {
+      highlight: { highlightedAgents, highlightColor, highlightedTurtleID, selectionCircle }
+    , model: { model, worldShape }
+    } = @_latestDepInfo
     toModelAgent = getEquivalentAgent(model) # function that converts from actual agent object to AgentModel analogue
     watchTarget = getSpotlightAgent(model)
     if selectionCircle?
