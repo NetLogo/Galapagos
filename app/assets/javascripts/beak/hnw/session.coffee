@@ -199,7 +199,13 @@ class HNWSession
     trueObserver.followRadius = observer.followradius
     delete trueObserver.followradius
 
-    devs       = @_handleImageCache(drawingEvents)
+    snapshot   = widgetController.viewController.getDrawingSnapshot()
+    seeded     =
+      if snapshot?
+        [{ type: "import-drawing", imageBase64: snapshot }].concat(drawingEvents)
+      else
+        drawingEvents
+    devs       = @_handleImageCache(seeded)
     viewUpdate = { drawingEvents: devs, links, observer: { 0: trueObserver }
                  , patches, turtles, world: { 0: w } }
 

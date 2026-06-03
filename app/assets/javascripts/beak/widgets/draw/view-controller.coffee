@@ -110,6 +110,10 @@ class ViewController
   # (Unit) -> View
   getMainView: -> @_views[0]
 
+  # (Unit) -> String | null
+  getDrawingSnapshot: =>
+    if @_layers.drawing.hasContent() then @_layers.drawing.getSnapshotURL() else null
+
   # (Unit) -> WorldShaspe
   getWorldShape: => @_layerDeps.model.worldShape
 

@@ -46,11 +46,21 @@ class DrawingLayer extends Layer
       font: undefined
     }
     @_dirty = false
+    # Tracks whether anything is currently drawn to `@_canvas` (since the last `clear-drawing`).  At the moment this is
+    # only used to snapshot the layer for HubNet Web clients that join after the drawing was created.
+    # -Jeremy B June 2026
+    @_hasContent = false
     @_canvas = document.createElement('canvas')
     @_ctx = @_canvas.getContext('2d')
     return
 
   getWorldShape: -> @_latestDepInfo.model.worldShape
+
+  # () => Boolean
+  hasContent: -> @_hasContent
+
+  # () => String - a `data:` URL PNG snapshot of the current drawing layer
+  getSnapshotURL: -> @_canvas.toDataURL("image/png")
 
   blindlyDrawTo: (ctx) ->
     ctx.drawImage(@_canvas, 0, 0)
@@ -93,10 +103,12 @@ class DrawingLayer extends Layer
 
   _clearDrawing: ->
     @_ctx.clearRect(0, 0, @_canvas.width, @_canvas.height)
+    @_hasContent = false
     return
 
   _drawLine: ({ rgb, size, penMode, fromX, fromY, toX, toY }) ->
     if penMode is 'up' then return
+    @_hasContent = true
 
     { model: { worldShape } } = @_latestDepInfo
     usePatchCoords(worldShape, @_ctx, (ctx) =>
@@ -118,6 +130,7 @@ class DrawingLayer extends Layer
     return
 
   _drawTurtleStamp: (turtleStamp) ->
+    @_hasContent = true
     { model: { model, worldShape }, font: { fontFamily, fontSize } } = @_latestDepInfo
     mockTurtleObject = makeMockTurtleObject(turtleStamp)
     usePatchCoords(worldShape, @_ctx, (ctx) =>
@@ -136,6 +149,7 @@ class DrawingLayer extends Layer
     return
 
   _drawLinkStamp: (linkStamp) ->
+    @_hasContent = true
     { model: { model, worldShape }, font: { fontFamily, fontSize } } = @_latestDepInfo
     mockLinkObject = makeMockLinkObject(linkStamp)
     usePatchCoords(worldShape, @_ctx, (ctx) =>
@@ -179,6 +193,7 @@ class DrawingLayer extends Layer
         height = (canvasRatio / imageRatio) * @_canvas.height
 
       @_ctx.drawImage(image, (@_canvas.width - width) / 2, (@_canvas.height - height) / 2, width, height)
+      @_hasContent = true
       @_dirty = true
       @_repaintCallback()
     image.src = src
