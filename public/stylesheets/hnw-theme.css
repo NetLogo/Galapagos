@@ -1,26 +1,67 @@
+/* HubNet Web design tokens.
+ *
+ * The `/hnw/host` and `/hnw/join` pages load `netlogoweb.css`, so they already
+ * have NLW's IDE tokens in scope.  The `/hnw/authoring` landing page, however,
+ * uses the marketing theme (`mainTheme` -> `theme.css`) and does NOT.  To keep
+ * a single source of truth across all five HubNet Web views, the base NLW
+ * tokens we rely on are re-declared here (kept in sync with `netlogoweb.css`)
+ * alongside the HubNet-Web-specific semantic accents.  Re-declaring identical
+ * values is harmless where `netlogoweb.css` also loads.
+ *
+ * Open Sans (`--font-widget`) is pulled in globally via `fontsHead`, so no
+ * font import is needed here.
+ */
 :root {
-  --super-light-gray: #f9f9f9;
-  --light-gray:       #e5e5e5;
-  --light2-gray:      #c7c7c7;
-  --light3-gray:      #bfbfbf;
-  --medium-gray:      #7c7c7c;
-  --dark-gray:        #504c4c;
-  --modal-background: rgba(0, 0, 0, 0.3);
-  --light-green:      #36a36b;
-  --medium-green:     #2bc273;
-  --dark-green:       #288454;
-  --green-gray:       #65ae88;
-  --super-light-blue: #d1ddf0;
-  --light-blue:       #b4c4dc;
-  --light-baby-blue:  #aed8f2;
-  --medium-blue:      #61a3ee;
-  --strong-blue:      #3087ea;
-  --dark-blue:        #387ccc;
-  --blue-gray:        #7992b3;
-  --salmon:           #ec575d;
-  --light-orange:     #fadeaf;
-  --medium-orange:    #f2c476;
-  --orange:           #fca512;
-  --yellow:           #f0e40a;
-  --red:              #e04141;
+
+  /* NLW base tokens (kept in sync with netlogoweb.css) */
+  --color-light-blue:                 #cae6ff;
+  --color-dark-blue:                  #0072f5;
+  --color-dark-blue-active:           #003473;
+
+  --color-ui-button-bg:               white;
+  --color-ui-button-border:           gray;
+  --color-ui-button-hover-bg:         #eee;
+  --color-ui-button-active-bg:        #d5d5d5;
+  --color-ui-button-disabled-opacity: 0.4;
+
+  --color-control-border:             #999999;
+  --color-text:                       rgb(64, 64, 64);
+
+  --font-widget:                      'Open Sans', sans-serif;
+
+  /* HubNet Web semantic accents (flat-styled to match NLW) */
+  --color-primary:                    var(--color-dark-blue);
+  --color-primary-hover:              #0063d6;
+  --color-primary-active:             var(--color-dark-blue-active);
+  --color-primary-text:               #ffffff;
+
+  --color-destructive:                #e04141;
+  --color-destructive-hover:          #cc3838;
+  --color-destructive-active:         #b53232;
+  --color-destructive-text:           #ffffff;
+
+  --color-selected:                   var(--color-light-blue);
+  --color-selected-hover:             #98cbf8;
+
+  --color-accent-green:               #cfe9d6;
+  --color-accent-green-border:        #9fcdaf;
+  --color-accent-green-hover:         #bfe0c8;
+  --color-accent-green-active:        #a9d4b6;
+
+  --color-accent-orange:              #ffe3c2;
+  --color-accent-orange-border:       #e6b877;
+  --color-accent-orange-hover:        #ffd8a8;
+  --color-accent-orange-active:       #f5c98e;
+
+  --color-accent-red:                 #f5c6c6;
+  --color-accent-red-border:          #dd9b9b;
+  --color-accent-red-hover:           #efb3b3;
+  --color-accent-red-active:          #e8a5a5;
+
+  /* Control radius is in `em` so a control's rounding scales with its own font
+   * size (a 16px control lands near NLW's ~4px; larger buttons stay
+   * proportionally rounded). */
+  --radius-control:                   0.3em;
+  --radius-container:                 8px;
+
 }

@@ -8,13 +8,16 @@
 }
 
 .student-frame {
-  border:  3px solid black;
-  margin:  10px 20px 0 0;
-  padding: 10px;
+  border:        1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  margin:        10px 20px 0 0;
+  padding:       10px;
 }
 
 .student-title {
-  font: 24px, sans-serif;
+  color:       var(--color-text);
+  font-family: var(--font-widget);
+  font-size:   24px;
 }
 
 .supervisor-flex {
@@ -22,11 +25,14 @@
 }
 
 .supervisor-frame {
-  border:  3px solid black;
-  margin:  10px 10px 0 0;
-  padding: 10px;
+  border:        1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  margin:        10px 10px 0 0;
+  padding:       10px;
 }
 
 .supervisor-title {
-  font: 24px, sans-serif;
+  color:       var(--color-text);
+  font-family: var(--font-widget);
+  font-size:   24px;
 }

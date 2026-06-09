@@ -7,39 +7,51 @@
 
 .controls-column-button {
   align-items:     center;
-  border:          2px solid black;
-  border-radius:   15px;
+  border:          1px solid var(--color-control-border);
+  border-radius:   var(--radius-control);
   cursor:          pointer;
   display:         flex;
+  font-family:     var(--font-widget);
   font-size:       18px;
   font-weight:     bold;
   height:          40px;
   justify-content: center;
+  transition:      background-color 0.1s;
   user-select:     none;
   width:           175px;
 }
 
-.controls-column-button:hover {
-  filter: brightness(0.9);
-}
-
-.controls-column-button:active {
-  box-shadow: 3px 3px rgba(0, 0, 0, 0.8);
-  filter:     brightness(0.7);
+/* Setup and an idle Go button match NLW's flat blue widget buttons. */
+.setup-button,
+.go-button-standard {
+  background-color: var(--color-primary);
+  color:            var(--color-primary-text);
 }
 
 .setup-button {
-  background-color: #61a3ee;
-  margin-right:     50px;
+  margin-right: 50px;
 }
 
-.go-button-standard {
-  background-color: #61a3ee;
+.setup-button:hover,
+.go-button-standard:hover {
+  background-color: var(--color-primary-hover);
 }
 
+.setup-button:active,
+.go-button-standard:active {
+  background-color: var(--color-primary-active);
+}
+
+/* An engaged forever (Go) button reads as "selected", matching how NLW
+ * renders a running forever button. */
 .go-button-active {
-  background-color: #7992b3;
+  background-color: var(--color-selected);
+  color:            var(--color-text);
   font-weight:      bold;
+}
+
+.go-button-active:hover {
+  background-color: var(--color-selected-hover);
 }
 
 .netlogo-speed-slider {
