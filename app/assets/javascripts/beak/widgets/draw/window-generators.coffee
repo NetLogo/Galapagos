@@ -20,13 +20,25 @@ followObserver = (getModel, getWorldShape) ->
   loop
     { actualMinX: x, actualMaxY: y, worldWidth: w, worldHeight: h, patchsize } = getWorldShape()
 
+    canvasHeight = h * patchsize
+    model        = getModel()
+
     # Account for the possibility of having to center on an agent
-    if (centeredAgent = getCenteredAgent(getModel()))?
+    if (centeredAgent = getCenteredAgent(model))?
+
+      # `hubnet-send-follow` supplies a radius; zoom the window to a
+      # (2r + 1)-patch square around the followed agent
+      radius = model.observer.followradius
+      if Number.isInteger(radius)
+        clamped = Math.min(Math.max(0, radius), Math.floor(w / 2), Math.floor(h / 2))
+        w       = (2 * clamped) + 1
+        h       = (2 * clamped) + 1
+
       [agentX, agentY, _] = getDimensions(centeredAgent)
       x = agentX - w / 2
       y = agentY + h / 2
 
-    yield { x, y, w, h, canvasHeight: h * patchsize }
+    yield { x, y, w, h, canvasHeight }
 
 # Returns an iterator that generates windows following the specified agent.
 # `zoomLevel` is a number representing how much of the screen the agent takes up
