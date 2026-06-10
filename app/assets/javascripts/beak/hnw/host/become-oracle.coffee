@@ -486,6 +486,13 @@ becomeOracle = ( getBabyMonitor, getSession, setSession, setRoles
   initStudentFrame( session, flexbox, studentRole, baseView, babyMonitor
                   , registerClient, nextID, tickRate, templatePairs[studentRole.name])
 
+  sizeObserver = new ResizeObserver(->
+    height = document.documentElement.scrollHeight
+    width  = document.documentElement.scrollWidth
+    babyPost({ type: "hnw-oracle-content-height", height, width })
+  )
+  sizeObserver.observe(document.body)
+
   roleInfoArr =
     Object.values(roles).map(
       (r) ->
