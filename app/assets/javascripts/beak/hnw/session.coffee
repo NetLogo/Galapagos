@@ -474,15 +474,26 @@ class HNWSession
 
       p = path.slice(0)
 
-      lens = agentModel
+      lens  = agentModel
+      trail = []
 
       while p.length > 1
         key  = p.shift()
         if lens[key]?
+          trail.push([lens, key])
           lens = lens[key]
 
       if p.length is 1 and lens[p[0]]?
         delete lens[p[0]]
+
+      # Prune emptied branches so that "has any key" remains an accurate (and
+      # cheap) test for "holds any cached value"
+      while trail.length > 0
+        [parent, key] = trail.pop()
+        if Object.keys(parent[key]).length is 0
+          delete parent[key]
+        else
+          break
 
       return
 
@@ -519,6 +530,51 @@ class HNWSession
 
       out
 
+    # The cache holds the values that will be restored on the client when an
+    # override is reset.  If the engine has since changed an overridden
+    # variable, the new value must go into the cache (so resets restore the
+    # latest true value) *instead of* out to the client, where it would
+    # clobber the active override.  `outModel` entries have already been
+    # lowercased by `copy`, except for death markers, which keep raw keys.
+    # -Jeremy B June 2026
+    # (Object[Any], AgentModel) => Unit
+    reconcileCacheWithUpdate = (cache, outModel) ->
+      for agentTypeKey in ["turtles", "patches", "links"]
+        typeCache = cache[agentTypeKey] ? {}
+        for id, varCache of typeCache
+          entry = outModel[agentTypeKey][id]
+          if entry?
+            if entry.WHO is -1 or entry.who is -1
+              delete typeCache[id]
+            else
+              for key of varCache
+                if Object.hasOwn(entry, key)
+                  varCache[key] = entry[key]
+                  delete entry[key]
+        if cache[agentTypeKey]? and Object.keys(typeCache).length is 0
+          delete cache[agentTypeKey]
+      return
+
+    # `deletePath` and `reconcileCacheWithUpdate` prune emptied branches, so
+    # an empty cache reliably means "no override is active" and the
+    # intersection scan can be skipped outright.
+    # -Jeremy B June 2026
+    # (Object[Any], Object[Any]) => Boolean
+    cacheIntersectsUpdate = (cache, update) ->
+      if Object.keys(cache).length is 0
+        return false
+      for agentTypeKey in ["turtles", "patches", "links"]
+        typeCache = cache[agentTypeKey] ? {}
+        for id, varCache of typeCache
+          entry = update[agentTypeKey]?[id]
+          if entry?
+            if entry.WHO is -1 or entry.who is -1
+              return true
+            for key of entry
+              if Object.hasOwn(varCache, key.toLowerCase())
+                return true
+      false
+
     { overrideVar, roleName, who } = widgetController.ractive.get('hnwClients')[uuid]
 
     if overrideVar?
@@ -528,9 +584,13 @@ class HNWSession
       turtle     = world.turtleManager.getTurtleOfBreed(plural, who)
       overrides_ = turtle.projectionBy(projection)
 
+      cache = @_overrideObj[uuid] ? {}
+
       if overrides_.length > 0
 
         outAgentModel = copy(baseUpdate)
+
+        reconcileCacheWithUpdate(cache, outAgentModel)
 
         overrides = []
 
@@ -562,6 +622,20 @@ class HNWSession
 
           else
             console.error("Invalid view override", override)
+
+        if outAgentModel.observer?
+          outAgentModel.observer = { 0: outAgentModel.observer }
+
+        if outAgentModel.world?
+          outAgentModel.world = { 0: outAgentModel.world }
+
+        outAgentModel
+
+      else if cacheIntersectsUpdate(cache, baseUpdate)
+
+        outAgentModel = copy(baseUpdate)
+
+        reconcileCacheWithUpdate(cache, outAgentModel)
 
         if outAgentModel.observer?
           outAgentModel.observer = { 0: outAgentModel.observer }
