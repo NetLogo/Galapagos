@@ -81,10 +81,15 @@
     <template id="hnw-controls-container-template">
       <div id="hnw-controls-container" class="flex-row">
         <div class="flex-column controls-column">
-          <input type="button" value="Setup"
-                 class="hnw-setup-button button-base controls-column-button setup-button">
-          <input type="button" value="Go"
-                 class="hnw-go-button button-base controls-column-button go-button-standard">
+          <button type="button"
+                  class="hnw-setup-button button-base controls-column-button setup-button">
+            <span>Setup</span>
+          </button>
+          <button type="button"
+                  class="hnw-go-button button-base controls-column-button go-button-standard netlogo-forever-button">
+            <span class="hnw-go-label">Go</span>
+            <div class="netlogo-forever-icon"></div>
+          </button>
         </div>
       </div>
     </template>

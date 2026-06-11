@@ -16,6 +16,7 @@
   font-weight:     bold;
   height:          40px;
   justify-content: center;
+  position:        relative;
   transition:      background-color 0.1s;
   user-select:     none;
   width:           175px;
@@ -42,16 +43,15 @@
   background-color: var(--color-primary-active);
 }
 
-/* An engaged forever (Go) button reads as "selected", matching how NLW
+/* A running forever (Go) button holds the pressed dark blue, matching how NLW
  * renders a running forever button. */
 .go-button-active {
-  background-color: var(--color-selected);
-  color:            var(--color-text);
-  font-weight:      bold;
+  background-color: var(--color-primary-active);
+  color:            var(--color-primary-text);
 }
 
 .go-button-active:hover {
-  background-color: var(--color-selected-hover);
+  filter: brightness(1.1);
 }
 
 .netlogo-speed-slider {

@@ -130,7 +130,7 @@ initGoButton = (session, onIterate, goButton) ->
 
         goButton.classList.remove(remove)
         goButton.classList.add(      add)
-        goButton.innerText = text
+        goButton.querySelector(".hnw-go-label").innerText = text
 
         r = session.widgetController.ractive
         r.set("isHNWTicking", not r.get("isHNWTicking"))
