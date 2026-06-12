@@ -50,8 +50,7 @@ applyViewUpdate = (viewController, postToBM, sendPayload) -> (viewUpdate) ->
   if not baddie?
     trueDrawings = preprocessDrawingEvents(sendPayload)(drawingEvents)
     trueUpdate   = Object.assign(viewUpdate, { drawingEvents: trueDrawings })
-    viewController.applyUpdate(trueUpdate)
-    viewController.repaint()
+    viewController.update(trueUpdate)
   else
     msg = { type:      "hnw-fatal-error"
           , subtype:   "unknown-agent"

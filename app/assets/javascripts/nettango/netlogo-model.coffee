@@ -64,8 +64,7 @@ RactiveNetLogoModel = Ractive.extend({
             world.ticker.importTicks(ticks)
 
             vc = @session.widgetController.viewController
-            vc.applyUpdate(viewUpdate)
-            vc.repaint()
+            vc.update(viewUpdate)
 
         return
       )

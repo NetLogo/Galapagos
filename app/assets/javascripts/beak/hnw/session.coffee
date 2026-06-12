@@ -199,6 +199,10 @@ class HNWSession
     trueObserver.followRadius = observer.followradius
     delete trueObserver.followradius
 
+    # The model's drawing events are flushed every update cycle, so a late joiner's background depends entirely on this
+    # snapshot, and the snapshot is empty until an `import-drawing` image finishes its async load.  A full-state request
+    # landing in that window gets no background until the next import/clear.  Not yet seen in practice, just noting here
+    # in case anyone sees that issue and comes digging. -Jeremy B June 2026
     snapshot   = widgetController.viewController.getDrawingSnapshot()
     seeded     =
       if snapshot?

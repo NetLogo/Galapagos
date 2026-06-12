@@ -435,8 +435,7 @@ try {
         }
 
         const vc = session.widgetController.viewController;
-        vc.applyUpdate(viewUpdate);
-        vc.repaint();
+        vc.update(viewUpdate);
 
         break;
 
