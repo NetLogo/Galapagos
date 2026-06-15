@@ -26,7 +26,8 @@ basicConfig = (elemID, plot) -> {
     pixelRatio: 0,
     useGPUTranslations: true
   },
-  # TODO: we should enabled this with its module once we get a chance to do so properly -Jeremy B May 2026
+  # TODO: we should enable this with its module once we get a chance to do so properly.  Explicitly disabled to avoid
+  # extra web dev console noise.  -Jeremy B May 2026
   accessibility: { enabled: false },
   credits:       { enabled: false },
   legend:  {

@@ -32,10 +32,10 @@ class ViewController
         worldShape: undefined # will be set by `@resetModel`
       },
       highlight: {
-        highlightedAgents:  [],
-        highlightColor:     null,  # CSS color string for agent highlights, or null
+        highlightedAgents:   [],
+        highlightColor:      null, # CSS color string for agent highlights, or null
         highlightedTurtleID: null, # Number (who), or null
-        selectionCircle:    null   # { xcor, ycor, radius } in patch coords, or null
+        selectionCircle:     null  # { xcor, ycor, radius } in patch coords, or null
       },
       quality: { quality: Math.max(window.devicePixelRatio ? 2, 2) },
       font: {
