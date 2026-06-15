@@ -66,10 +66,13 @@ handleWindowMessage = ( onWidgetMessage, onRainCheckMessage, getSession
       { height, width, hnwID } = e.data.data
       f = (c) -> c.contentWindow is e.source or c.contentWindow.hnwID is hnwID
 
-      joiners          = document.querySelectorAll("iframe.hnw-join-frame")
-      container        = Array.from(joiners).find(f)
-      container.height = height
-      container.width  = width
+      joiners   = document.querySelectorAll("iframe.hnw-join-frame")
+      container = Array.from(joiners).find(f)
+
+      # Setting the container to the same size as the content can still cause Chromium to create a scroll bar at certain
+      # zoom levels.  To avoid that altogether we just add a small +2 buffer.  -Jeremy B June 2026
+      container.height   = height + 2
+      container.width    = width  + 2
 
     else
       console.warn("Unknown init-host postMessage:", e.data)

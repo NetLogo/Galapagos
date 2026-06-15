@@ -61,7 +61,9 @@ window.addEventListener("message", (e) ->
 # the same as its `Message.target` (somehow) --Jason B. (4/29/24)
 window.hnwID = Math.random()
 
-resizer = new ResizeObserver(([{ contentRect: { height, width } }]) ->
+resizer = new ResizeObserver(([{ target }]) ->
+  height = target.scrollHeight
+  width  = target.scrollWidth
   parent.postMessage({ type: "resize-joiner", data: { height, width, hnwID } }, "*")
 )
 
