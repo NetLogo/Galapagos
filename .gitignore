@@ -27,3 +27,5 @@ CLAUDE.md
 
 /public/modelslib/src/test/resources/modelwords.txt
 /public/modelslib/test/stats/usage_of_primitives.svg
+
+*.env
