@@ -94,6 +94,10 @@ jobs:
 
       - name: Scrape
         run: |
+          # scrapePlay boots the app in prod mode, where Play refuses to start
+          # with the default "changeme" secret. The pre-rendered static output
+          # doesn't depend on the secret's value, so a per-run throwaway is fine.
+          export GALAPAGOS_HTTP_SECRET_KEY="$(head -c 32 /dev/urandom | base64)"
           sbt scrapePlay
           cp -Rv public/modelslib/ target/play-scrape/assets/
           cp -Rv public/nt-modelslib/ target/play-scrape/assets/
