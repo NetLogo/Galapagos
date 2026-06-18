@@ -35,6 +35,12 @@ compiler.fromModel(phonyModel)
 
 parseBool = (x) -> x.toLowerCase() is "true"
 
+# Tortoise's widget JSON readers expect an `oldSize` boolean, so derive it here for the generated role widgets using the
+# same rule as the XML reader: `oldSize` is true only when `sizeVersion` is 0.  -Jeremy B June 2026
+# (Element) => Boolean
+isOldSize = (widgetElement) ->
+  parseInt(widgetElement.getAttribute("sizeVersion") ? "1", 10) is 0
+
 convertMainButton = (x, y, width, height, widgetElement) ->
   display           = widgetElement.getAttribute("display")
   source            = widgetElement.innerHTML
@@ -178,18 +184,20 @@ convertMainView = (x, y, width, height, widgetElement) ->
 convertMainWidget = (widgetElement) ->
   header                = widgetElement.nodeName.toUpperCase()
   [x, y, width, height] = ["x", "y", "width", "height"].map( (attr) -> parseInt(widgetElement.getAttribute(attr)) )
-  switch header
-    when "BUTTON"  then convertMainButton( x, y, width, height, widgetElement)
-    when "CHOOSER" then convertMainChooser(x, y, width, height, widgetElement)
-    when "INPUT"   then convertMainInput(  x, y, width, height, widgetElement)
-    when "MONITOR" then convertMainMonitor(x, y, width, height, widgetElement)
-    when "OUTPUT"  then convertMainOutput( x, y, width, height, widgetElement)
-    when "PLOT"    then convertMainPlot(   x, y, width, height, widgetElement)
-    when "SLIDER"  then convertMainSlider( x, y, width, height, widgetElement)
-    when "SWITCH"  then convertMainSwitch( x, y, width, height, widgetElement)
-    when "NOTE"    then convertMainLabel(  x, y, width, height, widgetElement)
-    when "VIEW"    then convertMainView(   x, y, width, height, widgetElement)
-    else throw Error("Invalid main widget node name: #{header}")
+  widget =
+    switch header
+      when "BUTTON"  then convertMainButton( x, y, width, height, widgetElement)
+      when "CHOOSER" then convertMainChooser(x, y, width, height, widgetElement)
+      when "INPUT"   then convertMainInput(  x, y, width, height, widgetElement)
+      when "MONITOR" then convertMainMonitor(x, y, width, height, widgetElement)
+      when "OUTPUT"  then convertMainOutput( x, y, width, height, widgetElement)
+      when "PLOT"    then convertMainPlot(   x, y, width, height, widgetElement)
+      when "SLIDER"  then convertMainSlider( x, y, width, height, widgetElement)
+      when "SWITCH"  then convertMainSwitch( x, y, width, height, widgetElement)
+      when "NOTE"    then convertMainLabel(  x, y, width, height, widgetElement)
+      when "VIEW"    then convertMainView(   x, y, width, height, widgetElement)
+      else throw Error("Invalid main widget node name: #{header}")
+  Object.assign(widget, { oldSize: isOldSize(widgetElement) })
 
 convertClientButton = (x, y, width, height, widgetElement) ->
   display   = getAttribute("display")
@@ -238,18 +246,20 @@ convertClientView = convertMainView
 convertClientWidget = (widgetElement) ->
   header                = widgetElement.nodeName.toUpperCase()
   [x, y, width, height] = ["x", "y", "width", "height"].map( (attr) -> parseInt(widgetElement.getAttribute(attr)) )
-  switch header
-    when "BUTTON"   then convertClientButton( x, y, width, height, widgetElement)
-    when "CHOOSER"  then convertClientChooser(x, y, width, height, widgetElement)
-    when "INPUT"    then convertClientInput(  x, y, width, height, widgetElement)
-    when "MONITOR"  then convertClientMonitor(x, y, width, height, widgetElement)
-    when "OUTPUT"   then convertClientOutput( x, y, width, height, widgetElement)
-    when "PLOT"     then convertClientPlot(   x, y, width, height, widgetElement)
-    when "SLIDER"   then convertClientSlider( x, y, width, height, widgetElement)
-    when "SWITCH"   then convertClientSwitch( x, y, width, height, widgetElement)
-    when "NOTE"     then convertClientLabel(  x, y, width, height, widgetElement)
-    when "VIEW"     then convertClientView(   x, y, width, height, widgetElement)
-    else throw Error("Invalid client widget node name: #{header}")
+  widget =
+    switch header
+      when "BUTTON"   then convertClientButton( x, y, width, height, widgetElement)
+      when "CHOOSER"  then convertClientChooser(x, y, width, height, widgetElement)
+      when "INPUT"    then convertClientInput(  x, y, width, height, widgetElement)
+      when "MONITOR"  then convertClientMonitor(x, y, width, height, widgetElement)
+      when "OUTPUT"   then convertClientOutput( x, y, width, height, widgetElement)
+      when "PLOT"     then convertClientPlot(   x, y, width, height, widgetElement)
+      when "SLIDER"   then convertClientSlider( x, y, width, height, widgetElement)
+      when "SWITCH"   then convertClientSwitch( x, y, width, height, widgetElement)
+      when "NOTE"     then convertClientLabel(  x, y, width, height, widgetElement)
+      when "VIEW"     then convertClientView(   x, y, width, height, widgetElement)
+      else throw Error("Invalid client widget node name: #{header}")
+  Object.assign(widget, { oldSize: isOldSize(widgetElement) })
 
 # (Element) => Object[Any]
 genMainRole = (widgetsElement) ->
