@@ -30,7 +30,7 @@ handleDisconnect = (getClient, unregisterClient, getRole, getSession) -> (e) ->
       if afterDC?
         runAmbiguous(afterDC, who)
 
-    else
+    else if afterDC?
       runAmbiguous(afterDC)
 
     session.updateWithoutRendering()
