@@ -427,7 +427,7 @@
   justify-content:  center;
   min-width:        900px;
   margin:           0 auto;
-  background-color: var(--light-gray);
+  background-color: white;
 }
 
 .netlogo-output-widget {

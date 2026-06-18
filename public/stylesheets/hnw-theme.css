@@ -1,19 +1,25 @@
 /* HubNet Web design tokens.
  *
- * The `/hnw/host` and `/hnw/join` pages load `netlogoweb.css`, so they already
- * have NLW's IDE tokens in scope.  The `/hnw/authoring` landing page, however,
- * uses the marketing theme (`mainTheme` -> `theme.css`) and does NOT.  To keep
- * a single source of truth across all five HubNet Web views, the base NLW
- * tokens we rely on are re-declared here (kept in sync with `netlogoweb.css`)
- * alongside the HubNet-Web-specific semantic accents.  Re-declaring identical
- * values is harmless where `netlogoweb.css` also loads.
+ * The HubNet-Web-specific semantic accents below have no home in NLW, so they
+ * live here.  The handful of NLW *base* tokens they build on are also declared
+ * here, but only as FALLBACKS for the `/hnw/authoring` landing page, which uses
+ * the marketing theme (`mainTheme` -> `theme.css`) and does NOT load
+ * `netlogoweb.css`.
+ *
+ * IMPORTANT: on every view that *does* load `netlogoweb.css` (host, join,
+ * authoring-inner) this file MUST be linked BEFORE `netlogoweb.css` so that
+ * NLW's own declarations win the cascade.  That keeps `netlogoweb.css` the
+ * single source of truth for the model's widget styling.  HubNet Web can never
+ * silently override the running model's appearance, even if a base token here
+ * drifts out of sync.
  *
  * Open Sans (`--font-widget`) is pulled in globally via `fontsHead`, so no
  * font import is needed here.
  */
 :root {
 
-  /* NLW base tokens (kept in sync with netlogoweb.css) */
+  /* NLW base tokens — fallbacks for the authoring landing page only; overridden
+   * by netlogoweb.css everywhere it loads (see note above). */
   --color-light-blue:                 #cae6ff;
   --color-dark-blue:                  #0072f5;
   --color-dark-blue-active:           #003473;
