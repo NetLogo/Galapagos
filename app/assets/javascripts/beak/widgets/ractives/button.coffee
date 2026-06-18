@@ -377,12 +377,12 @@ RactiveHNWButton = RactiveButton.extend({
       procedures = @get('procedures') ? []
       isBad      =
         if procedures.length > 0
-          not isValidButtonProc(@get('widget.hnwProcName'), procedures, false)
+          not isValidButtonProc(@get('widget.hnwProcName'), procedures, @get('isSpectator') is true)
         else
           @get('widget.hnwBadProc') is true
       @set('errorClass', if isBad then 'netlogo-widget-error' else '')
       return
-    @observe('widget.hnwProcName widget.hnwBadProc procedures', refreshErrorClass)
+    @observe('widget.hnwProcName widget.hnwBadProc procedures isSpectator', refreshErrorClass)
     return
 
   clickHandler: (_, ractive) ->
