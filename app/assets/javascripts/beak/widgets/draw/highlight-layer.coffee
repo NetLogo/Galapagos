@@ -77,7 +77,7 @@ class HighlightLayer extends Layer
 
     if highlightColor? and highlightedTurtleID?
       modelTurtle = model.turtles[highlightedTurtleID]
-      if modelTurtle?
+      if modelTurtle? and not modelTurtle['hidden?']
         { xcor, ycor, size } = modelTurtle
         usePatchCoords(worldShape, ctx, (ctx) ->
           ctx.strokeStyle = highlightColor
