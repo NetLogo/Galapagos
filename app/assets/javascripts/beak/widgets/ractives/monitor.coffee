@@ -195,7 +195,9 @@ RactiveMonitor = RactiveWidget.extend({
     [widget.display, widget.source]
 
   minWidth:  20
-  minHeight: 45
+  # Monitors don't resize vertically, so their minimum height must match the default height from `defaultWidgetMixinFor`
+  # -Jeremy B June 2026
+  minHeight: 60
 
   template:
     """

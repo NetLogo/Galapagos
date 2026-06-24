@@ -375,6 +375,16 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         eventTriggers         = @eventTriggers()
         notificationEventArgs = @getExtraNotificationArgs()
 
+        # Turning off "old size" (NetLogo 6 margins) adopts the larger NetLogo 7 margins.  Resizable widgets can be
+        # grown by hand to suit, but some (e.g. monitors) can't be resized in every dimension, so a size that fit under
+        # the old margins can be left too small to show its contents.  Bump any now-below-minimum dimension up to the
+        # widget's minimum so the new margins always have room.  -Jeremy B June 2026
+        if values.oldSize is false
+          width  = values.width  ? widget.width
+          height = values.height ? widget.height
+          if @minWidth?  and width  < @minWidth  then values.width  = @minWidth
+          if @minHeight? and height < @minHeight then values.height = @minHeight
+
         events = calculateTriggeredEvents(widgetObj, widget, values, eventTriggers, isNewWidget, notificationEventArgs)
         events.forEach( (e) => e.run(this, widget) )
 

@@ -179,7 +179,9 @@ RactiveChooser = RactiveValueWidget.extend({
   }
 
   minWidth:  55
-  minHeight: 45
+  # Choosers don't resize vertically, so their minimum height must match the default height from `defaultWidgetMixinFor`
+  # -Jeremy B June 2026
+  minHeight: 60
 
   # coffeelint: disable=max_line_length
   template:
