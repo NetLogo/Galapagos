@@ -48,6 +48,7 @@
   box-sizing:       border-box;
   background-color: #eeeeee;
   border-radius:    var(--widget-outer-radius);
+  border-width:     0;
   overflow:         hidden;
 }
 

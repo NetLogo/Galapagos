@@ -7,7 +7,7 @@
 
 .controls-column-button {
   align-items:     center;
-  border:          1px solid var(--color-control-border);
+  border-width:    0;
   border-radius:   var(--radius-control);
   cursor:          pointer;
   display:         flex;
