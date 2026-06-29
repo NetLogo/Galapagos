@@ -81,26 +81,25 @@ RactiveCustomSlider = Ractive.extend({
 
     return
 
-  getClientPosition: (event) ->
+  getClientPosition: (event) -> # document-space coordinates
     switch @get('orientation')
-      when 'horizontal' then event.clientX or event.touches?[0]?.clientX
-      when 'vertical' then event.clientY or event.touches?[0]?.clientY
-      else event.clientX or event.touches?[0]?.clientX
+      when 'vertical' then (event.clientY or event.touches?[0]?.clientY) + window.scrollY
+      else (event.clientX or event.touches?[0]?.clientX) + window.scrollX
 
-  getSliderLength: (node) ->
+  getSliderLength: (node) -> # document-space coordinates
     rect = node.getBoundingClientRect()
     switch @get('orientation')
       when 'horizontal' then rect.width
       when 'vertical' then rect.height
       else throw new Error("Invalid orientation: #{@get('orientation')}")
 
-  getSliderLengthFromNode: (node) ->
+  getSliderLengthFromNode: (node) -> # object-space coordinates
     # Might look like a typo, but since rotation happens using
     # CSS, the bounding box changes but the node's offsetWidth/Height
     # do not. -Omar I. Aug 14, 2025
     return node.offsetWidth
 
-  getSliderStart: (node) ->
+  getSliderStart: (node) -> # document-space coordinates
     rect = node.getBoundingClientRect()
     switch @get('orientation')
       when 'horizontal' then rect.left + window.scrollX
