@@ -83,15 +83,9 @@ RactiveCustomSlider = Ractive.extend({
 
   getClientPosition: (event) -> # document-space coordinates
     switch @get('orientation')
-      when 'vertical' then (event.clientY or event.touches?[0]?.clientY) + window.scrollY
-      else (event.clientX or event.touches?[0]?.clientX) + window.scrollX
-
-  getSliderLength: (node) -> # document-space coordinates
-    rect = node.getBoundingClientRect()
-    switch @get('orientation')
-      when 'horizontal' then rect.width
-      when 'vertical' then rect.height
-      else throw new Error("Invalid orientation: #{@get('orientation')}")
+      when 'horizontal' then (event.clientX ? event.touches?[0]?.clientX) + window.scrollX
+      when 'vertical'   then (event.clientY ? event.touches?[0]?.clientY) + window.scrollY
+      else                   (event.clientX ? event.touches?[0]?.clientX) + window.scrollX
 
   getSliderLengthFromNode: (node) -> # object-space coordinates
     # Might look like a typo, but since rotation happens using
@@ -103,7 +97,7 @@ RactiveCustomSlider = Ractive.extend({
     rect = node.getBoundingClientRect()
     switch @get('orientation')
       when 'horizontal' then rect.left + window.scrollX
-      when 'vertical' then rect.top + window.scrollY
+      when 'vertical'   then rect.top  + window.scrollY
       else throw new Error("Invalid orientation: #{@get('orientation')}")
 
   on: {
