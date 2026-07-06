@@ -75,8 +75,12 @@ class DrawingLayer extends Layer
     if depsChanged
       { model: { model, worldShape }, quality: { quality } } = @_latestDepInfo
       { worldWidth, worldHeight, patchsize } = worldShape
-      newWidth  = worldWidth  * patchsize * quality
-      newHeight = worldHeight * patchsize * quality
+      # Round to whole pixels: canvas dimensions are always integers, so comparing against a
+      # fractional target (possible when `quality`/devicePixelRatio is fractional) would report a
+      # size change on every repaint, re-running the copy-and-rescale below and progressively
+      # blurring the drawing. -JB July 2026
+      newWidth  = Math.round(worldWidth  * patchsize * quality)
+      newHeight = Math.round(worldHeight * patchsize * quality)
       if @_canvas.width isnt newWidth or @_canvas.height isnt newHeight
         # Save drawing content before resize (setting canvas dimensions always clears the canvas)
         prevCanvas = document.createElement('canvas')

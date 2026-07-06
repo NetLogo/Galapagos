@@ -46,8 +46,11 @@ clearCtx = (ctx) ->
 # operation. (https://stackoverflow.com/a/6722031). Returns whether the canvas dimensions changed.
 resizeCanvas = (canvas, worldShape, quality) ->
   { worldWidth, worldHeight, patchsize } = worldShape
-  newWidth = worldWidth * patchsize * quality
-  newHeight = worldHeight * patchsize * quality
+  # Round to whole pixels; canvas dimensions are always integers, so a fractional target (from a
+  # fractional `quality`/devicePixelRatio) would otherwise report a change on every call and force a
+  # needless (expensive) resize each frame. -JB July 2026
+  newWidth  = Math.round(worldWidth  * patchsize * quality)
+  newHeight = Math.round(worldHeight * patchsize * quality)
   changed = false
   if canvas.width isnt newWidth
     canvas.width = newWidth
