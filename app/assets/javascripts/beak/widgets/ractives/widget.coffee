@@ -45,7 +45,9 @@ WidgetEventGenerators = {
 
   resizeView: ->
     {
-      run:  (ractive, widget) -> ractive.fire('resize-view')
+      run:  (ractive, widget) ->
+        { minPxcor, maxPxcor, minPycor, maxPycor, patchSize } = widget.dimensions
+        ractive.fire('resize-view', minPxcor, maxPxcor, minPycor, maxPycor, patchSize)
       type: "resizeView"
     }
 
@@ -57,7 +59,9 @@ WidgetEventGenerators = {
 
   updateTopology: ->
     {
-      run:  (ractive, widget) -> ractive.fire('update-topology')
+      run:  (ractive, widget) ->
+        { wrappingAllowedInX, wrappingAllowedInY } = widget.dimensions
+        ractive.fire('update-topology', wrappingAllowedInX, wrappingAllowedInY)
       type: "updateTopology"
     }
 
