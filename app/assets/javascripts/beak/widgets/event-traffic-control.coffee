@@ -286,7 +286,7 @@ controlEventTraffic = (controller, performUpdate) ->
   # () => Unit
   updateTopology = ->
     { wrappingallowedinx: wrapX, wrappingallowediny: wrapY } = viewController.getModel().world
-    world.changeTopology(wrapX, wrapY)
+    world.setTopology(wrapX, wrapY)
     return
 
   setTab = (tabName, options = {}) ->
