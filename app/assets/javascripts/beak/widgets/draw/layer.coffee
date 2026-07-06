@@ -4,8 +4,8 @@ import { drawRectTo, drawFullTo } from "./draw-utils.js"
 convertLayerToCanvas = (layer, quality) ->
   { worldWidth, worldHeight, patchsize } = layer.getWorldShape()
   canvas = document.createElement('canvas')
-  canvas.width  = worldWidth  * patchsize * quality
-  canvas.height = worldHeight * patchsize * quality
+  canvas.width  = Math.round(worldWidth  * patchsize * quality)
+  canvas.height = Math.round(worldHeight * patchsize * quality)
   layer.drawTo(canvas.getContext('2d'))
   canvas
 
