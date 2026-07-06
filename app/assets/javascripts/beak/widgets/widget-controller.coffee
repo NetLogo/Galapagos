@@ -142,8 +142,9 @@ class WidgetController
         color = if @ractive.get('isEditing') then '#efefef' else '#ffffff'
         chartOps.setBGColor(color)
 
+    isEditing = @ractive.get('isEditing')
     for widget in @widgets()
-      updateWidget(widget, isHNWClient, @viewController.getModel().world)
+      updateWidget(widget, isHNWClient, @viewController.getModel().world, isEditing)
 
     if world.ticker.ticksAreStarted()
       @ractive.set('ticks'       , Math.floor(world.ticker.tickCount()))
@@ -483,8 +484,8 @@ class WidgetController
   _countByType: (type) =>
     @widgets().filter((w) -> w.type is type).length
 
-# (Widget, Boolean, RenderWorld?) => Unit
-updateWidget = (widget, isHNWClient, renderWorld) ->
+# (Widget, Boolean, RenderWorld?, Boolean) => Unit
+updateWidget = (widget, isHNWClient, renderWorld, isEditing) ->
 
   if widget.currentValue?
     newValue =
@@ -554,6 +555,8 @@ updateWidget = (widget, isHNWClient, renderWorld) ->
         widget.dimensions.maxPxcor = renderWorld.maxpxcor
         widget.dimensions.minPycor = renderWorld.minpycor
         widget.dimensions.maxPycor = renderWorld.maxpycor
+        if not isEditing and renderWorld.patchsize?
+          widget.dimensions.patchSize = renderWorld.patchsize
       { maxPxcor, maxPycor, minPxcor, minPycor, patchSize } = widget.dimensions
       canvasWidth   = Math.round(patchSize * (maxPxcor - minPxcor + 1))
       canvasHeight  = Math.round(patchSize * (maxPycor - minPycor + 1))
