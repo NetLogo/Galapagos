@@ -414,10 +414,12 @@ class View
       @_visibleCanvas.width = @_visibleCanvas.height * @_windowWidth / @_windowHeight
       @_visibleCanvas.style.height = "#{canvasHeight}px"
       @_visibleCanvas.style.width = "#{@_visibleCanvas.width / @_quality}px"
+      setImageSmoothing(@_visibleCtx, false)
     else if changedAspRatio
       # The canvas height did not change but the aspect ratio did.
       @_visibleCanvas.width = @_visibleCanvas.height * @_windowWidth / @_windowHeight
       @_visibleCanvas.style.width = "#{@_visibleCanvas.width / @_quality}px"
+      setImageSmoothing(@_visibleCtx, false)
     else
       # Neither the canvas height not the aspect ratio changed; just clear the canvas and be done with it.
       clearCtx(@_visibleCtx)
