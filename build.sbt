@@ -177,6 +177,29 @@ coffeelint := Def.task {
   )
 }.dependsOn(npmInstall).value
 
+// Local release automation. Three tasks bracket the two required manual pauses (edit release notes,
+// generate the standalone bundle). See project/ReleaseTasks.scala. -Jeremy B July 2026
+lazy val tortoiseDirectory = settingKey[File]("location of the sibling Tortoise repo, used to gather release-note commits and sync the models library")
+tortoiseDirectory := baseDirectory.value / ".." / "Tortoise"
+
+lazy val startRelease = inputKey[Unit]("begin a release: branch, sync models library, bump version, and draft release notes")
+startRelease := {
+  val args = Def.spaceDelimited("<version>").parsed
+  ReleaseTasks.start(streams.value.log, baseDirectory.value, tortoiseDirectory.value, args)
+}
+
+lazy val finalizeRelease = inputKey[Unit]("commit the prepared release changes (run after editing the drafted release notes)")
+finalizeRelease := {
+  val args = Def.spaceDelimited("<version>").parsed
+  ReleaseTasks.finalizeRelease(streams.value.log, baseDirectory.value, args)
+}
+
+lazy val tagRelease = inputKey[Unit]("commit the standalone HTML bundle and create the release tag (run after generating the bundle)")
+tagRelease := {
+  val args = Def.spaceDelimited("<version>").parsed
+  ReleaseTasks.tagRelease(streams.value.log, baseDirectory.value, args)
+}
+
 lazy val setupHTTPS = taskKey[Unit]("configure HTTPS")
 setupHTTPS := {
   val keyStorePath = sys.env.getOrElse("GALAPAGOS_KEYSTORE_PATH",
