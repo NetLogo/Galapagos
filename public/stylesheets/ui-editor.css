@@ -71,6 +71,11 @@
   opacity: 1;
 }
 
+.netlogo-widget.netlogo-model-title.interface-unlocked {
+  pointer-events: auto;
+  cursor:         pointer;
+}
+
 .netlogo-widget.selected {
   z-index: 53;
 }
