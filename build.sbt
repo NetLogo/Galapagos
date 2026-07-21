@@ -13,7 +13,7 @@ import scala.sys.process.{ Process, ProcessLogger }
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
-val tortoiseVersion = "1.0-29e0d70"
+val tortoiseVersion = "1.0-83eb316"
 
 resolvers ++= Seq(
   "tortoise"                at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"
@@ -181,6 +181,11 @@ coffeelint := Def.task {
 // generate the standalone bundle). See project/ReleaseTasks.scala. -Jeremy B July 2026
 lazy val tortoiseDirectory = settingKey[File]("location of the sibling Tortoise repo, used to gather release-note commits and sync the models library")
 tortoiseDirectory := baseDirectory.value / ".." / "Tortoise"
+
+lazy val syncModels = taskKey[Unit]("sync the models library from the sibling Tortoise repo (also done as part of startRelease)")
+syncModels := {
+  ReleaseTasks.syncModels(streams.value.log, baseDirectory.value, tortoiseDirectory.value)
+}
 
 lazy val startRelease = inputKey[Unit]("begin a release: branch, sync models library, bump version, and draft release notes")
 startRelease := {

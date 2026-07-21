@@ -124,6 +124,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
 
   notifyListeners('compile-start', rewrittenNlogoXML, startingNlogoXML)
   result = compiler.fromNlogoXML(rewrittenNlogoXML, extraCommands, { code: "", widgets: extraWidgets })
+  nlogoxSource.setModelTitleFromModel(result.title)
 
   if result.model.success
 
@@ -158,6 +159,7 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
   else
     secondChanceResult = fromNlogoXMLWithoutCode(startingNlogoXML, compiler)
     if secondChanceResult?
+      nlogoxSource.setModelTitleFromModel(secondChanceResult.title)
       session = newSession(
         container
       , compiler

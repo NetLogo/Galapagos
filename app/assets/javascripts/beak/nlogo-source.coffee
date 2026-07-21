@@ -11,10 +11,25 @@ dropNlogoExtension = (s) ->
 
 class NlogoSource
   constructor: (@type, @fileName, @nlogo) ->
-    @_title = null
+    @_title           = null
+    @_titleIsExplicit = false
 
   setModelTitle: (title) ->
     @_title = title
+
+  # A model file only carries a `title` when the user set one explicitly, so the compiled model having
+  # one is what tells us the title is the user's rather than one we derived from the file name.
+  # -Jeremy B July 2026
+  # (String | undefined) => Unit
+  setModelTitleFromModel: (title) ->
+    if title?
+      @_title           = title
+      @_titleIsExplicit = true
+    return
+
+  # () => Boolean
+  hasExplicitModelTitle: () ->
+    @_titleIsExplicit
 
   # () => String
   getModelTitle: () ->
