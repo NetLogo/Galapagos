@@ -87,15 +87,19 @@ genImportExportConfig = (ractive, viewController, compiler) ->
 
     getNlogo: ->
 
-      { result, success } =
-        compiler.exportNlogoXML({
-          info:         toNetLogoMarkdown(ractive.get('info')),
-          code:         ractive.get('code'),
-          widgets:      (v for _, v of ractive.get('widgetObj')),
-          turtleShapes: turtleShapes,
-          linkShapes:   linkShapes,
-          resources:    serializeResources()
-        })
+      exportRequest = {
+        info:         toNetLogoMarkdown(ractive.get('info')),
+        code:         ractive.get('code'),
+        widgets:      (v for _, v of ractive.get('widgetObj')),
+        turtleShapes: turtleShapes,
+        linkShapes:   linkShapes,
+        resources:    serializeResources()
+      }
+      # See `SessionLite.getNlogo()` for why the title is conditional.  -Jeremy B July 2026
+      if ractive.get('modelTitleIsExplicit')
+        exportRequest.title = ractive.get('modelTitle')
+
+      { result, success } = compiler.exportNlogoXML(exportRequest)
 
       if success
         result

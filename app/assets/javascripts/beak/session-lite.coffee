@@ -258,6 +258,8 @@ class SessionLite
       , linkShapes:   linkShapes ? []
       , resources:    resources
       }
+      if @widgetController.ractive.get('modelTitleIsExplicit')
+        compileParams.title = @modelTitle()
 
       @widgetController.ractive.fire('recompile-start', source, rewritten, code)
 
@@ -346,14 +348,19 @@ class SessionLite
     code      = @rewriteExport(@widgetController.code())
     widgets   = @widgetController.widgets().map(cloneWidget)
     resources = serializeResources()
-    result    = @compiler.exportNlogoXML({
+    exportRequest = {
       info:         info,
       code:         code,
       widgets:      widgets,
       turtleShapes: turtleShapes,
       linkShapes:   linkShapes,
       resources:    resources
-    })
+    }
+    # Only a title the user set themselves gets written out, matching NetLogo desktop, so a title we
+    # merely derived from the file name never gets baked into an exported model.  -Jeremy B July 2026
+    if @widgetController.ractive.get('modelTitleIsExplicit')
+      exportRequest.title = @modelTitle()
+    result = @compiler.exportNlogoXML(exportRequest)
     if result.success
       { success: true, result: stampNlwVersion(result.result, NETLOGO_VERSION) }
     else

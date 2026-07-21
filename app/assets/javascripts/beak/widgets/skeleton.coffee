@@ -76,6 +76,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , lastDragY:             undefined
   , metadata:              { globalVars: [], myVars: [], procedures: [], isSpectator: false, roleName: "unset" }
   , modelTitle:            source.getModelTitle()
+  , modelTitleIsExplicit:  source.hasExplicitModelTitle()
   , outputWidgetOutput:    ''
   , primaryView:           undefined
   , selectionBox:          null
@@ -234,6 +235,13 @@ generateRactiveSkeleton = (container, widgets, code, info,
     on: {
       'world-might-change': (context) ->
         @findAllComponents().forEach((component) -> component.fire(context.name, context))
+
+      # Once the user has named the model themselves we always write the title on export, matching
+      # NetLogo desktop.  Deliberately not returning false, as this event still has to reach the
+      # work-in-progress listener.  -Jeremy B July 2026
+      '*.title-changed': ->
+        @set('modelTitleIsExplicit', true)
+        return
 
       '*.popup-window': (_, windowElement) ->
         @find(".netlogo-widget-container").appendChild(windowElement)

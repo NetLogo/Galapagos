@@ -17,6 +17,9 @@ import java.time.format.DateTimeFormatter
 //      which is required before generating the standalone HTML bundle (a dirty repo bakes a
 //      `-dirty` suffix into the bundle's embedded version). Then you generate the bundle by hand.
 //   3. `tagRelease <version>` - commit the generated bundle and create the `v<version>` tag.
+//
+// `syncModels` exposes step 1's models-library sync on its own, for prepping the library outside a
+// release.
 object ReleaseTasks {
 
   private val versionRegex   = """\d+\.\d+\.\d+""".r
@@ -160,6 +163,21 @@ object ReleaseTasks {
     log.info("  2. Edit the DRAFT section in app/views/whatsNew.scala.html: trim internal-only items,")
     log.info("     tighten wording, and remove the DRAFT markers.")
     log.info(s"""  3. Run `finalizeRelease $version` to make the release commit.""")
+  }
+
+  // --- standalone task: syncModels -------------------------------------------------------------
+
+  // The models-library sync on its own, for prepping the library ahead of (or outside) a release.
+  // `startRelease` runs the same sync as part of its sequence.
+  def syncModels(log: sbt.util.Logger, baseDir: File, tortoiseDir: File): Unit = reporting(log) {
+    val syncedDirs = syncModelsLibrary(log, baseDir, tortoiseDir)
+
+    log.info("")
+    if (syncedDirs.isEmpty)
+      log.warn("No directories were shared between public/modelslib and Tortoise's models; nothing synced.")
+    else
+      log.info(s"Models synced: ${syncedDirs.mkString(", ")}")
+    log.info("Review the changes with `git status` / `git diff public/modelslib`.")
   }
 
   // Sync each model-category directory that exists in BOTH public/modelslib and Tortoise's models

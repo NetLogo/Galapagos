@@ -167,7 +167,7 @@ private[controllers] object CompilationRequestHandler {
       linkShapes   <- extractShapes[LinkShape](  "linkShapes",   readLinkShapes,   Model.defaultLinkShapes  )(argMap)
       code         <- (argMap get CodeKey).fold(codeMissingMsg.failureNel[String])(_.successNel[String])
       model        <- Validation.fromTryCatchThrowable[Model, RuntimeException](
-        Model(code, widgets, info = info, turtleShapes = turtleShapes, linkShapes = linkShapes))
+        Model(argMap.get("title"), code, widgets, info = info, turtleShapes = turtleShapes, linkShapes = linkShapes))
         .leftMap(e => NonEmptyList(e.getMessage))
     } yield ModelObject(model)
   }
