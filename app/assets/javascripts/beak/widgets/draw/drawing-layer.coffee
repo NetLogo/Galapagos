@@ -22,7 +22,8 @@ makeMockLinkObject = ({ x1, y1, x2, y2, shapeName, color, heading, size, 'direct
   [mockLink, end1, end2]
 
 ###
-type DrawingEvent = { type: "clear-drawing" | "line" | "stamp-image" | "import-drawing" }
+type DrawingEvent = { type: "clear-drawing" | "line" | "stamp-image" | "import-drawing"
+                             | "fill-polygon" | "draw-raster" }
 
 Possible drawing events:
 { type: "clear-drawing" }
@@ -33,6 +34,8 @@ Possible drawing events:
   }
 }
 { type: "import-drawing", imageBase64 }
+{ type: "fill-polygon", rings: [[[x, y], ...], ...], rgb: [r, g, b] }
+{ type: "draw-raster", raster: { width, height, xMin, yMin, xMax, yMax, base64 } }
 ###
 
 class DrawingLayer extends Layer
@@ -100,6 +103,8 @@ class DrawingLayer extends Layer
               when 'turtle' then @_drawTurtleStamp(event.stamp)
               when 'link' then @_drawLinkStamp(event.stamp)
           when 'import-drawing' then @_importDrawing(event.imageBase64)
+          when 'fill-polygon' then @_fillPolygon(event)
+          when 'draw-raster' then @_drawRaster(event.raster)
       # For those who still remember, `model.drawingEvents` is now reset by the ViewController after
       # every layer has finished repainting.
 
@@ -167,6 +172,49 @@ class DrawingLayer extends Layer
           fontFamily,
           true
         )
+      )
+    )
+    return
+
+  # Fills the given rings (each a list of [x, y] NetLogo coordinates) as one even-odd
+  # path, so interior rings read as holes.  Used by the GIS extension's gis:fill.
+  _fillPolygon: ({ rings, rgb }) ->
+    @_hasContent = true
+    { model: { worldShape } } = @_latestDepInfo
+    usePatchCoords(worldShape, @_ctx, (ctx) =>
+      ctx.save()
+      ctx.fillStyle = rgbToCss(rgb)
+      ctx.beginPath()
+      for ring in rings when ring.length > 0
+        ctx.moveTo(ring[0][0], ring[0][1])
+        ctx.lineTo(point[0], point[1]) for point in ring[1..]
+        ctx.closePath()
+      ctx.fill('evenodd')
+      ctx.restore()
+    )
+    return
+
+  # Draws a base64 RGBA raster image (row 0 at top) into the NetLogo-coordinate rectangle
+  # [xMin, xMax] x [yMin, yMax].  Used by the GIS extension's gis:paint.
+  _drawRaster: ({ width, height, xMin, yMin, xMax, yMax, base64 }) ->
+    @_hasContent = true
+    binary = atob(base64)
+    pixels = new Uint8ClampedArray(binary.length)
+    pixels[i] = binary.charCodeAt(i) for i in [0...binary.length]
+    source = document.createElement('canvas')
+    source.width  = width
+    source.height = height
+    source.getContext('2d').putImageData(new ImageData(pixels, width, height), 0, 0)
+    { model: { worldShape } } = @_latestDepInfo
+    usePatchCoords(worldShape, @_ctx, (ctx) =>
+      useImageSmoothing(false, ctx, (ctx) =>
+        ctx.save()
+        # map the image's pixel space (origin top-left, y down) onto the envelope rect,
+        # flipping y so image row 0 lands at yMax (the top)
+        ctx.translate(xMin, yMax)
+        ctx.scale((xMax - xMin) / width, -(yMax - yMin) / height)
+        ctx.drawImage(source, 0, 0)
+        ctx.restore()
       )
     )
     return
