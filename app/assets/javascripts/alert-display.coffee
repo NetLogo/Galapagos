@@ -240,6 +240,10 @@ class AlertDisplay
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
+    # Log the raw exception (with its JS stack) to the console; the dialog only shows the NetLogo-level message, which
+    # makes engine/extension errors hard to trace.  -Jeremy B July 2026
+    console.error(exception)
+
     if source is 'console'
       message = if exception instanceof Exception.RuntimeException
         start = AlertDisplay.makeBareRuntimeErrorMessage(

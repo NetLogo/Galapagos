@@ -303,6 +303,8 @@ class SessionLite
           @widgetController.reportError('compiler', 'recompile', errors)
 
       catch ex
+        # The dialog only gets the stringified message, so log the exception for its stack.  -Jeremy B July 2026
+        console.error(ex)
         @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
   # ("user" | "system", String, String, Object[String]) => Unit
@@ -324,6 +326,8 @@ class SessionLite
         @widgetController.reportError('compiler', 'recompile-procedures', res.result)
 
     catch ex
+      # The dialog only gets the stringified message, so log the exception for its stack.  -Jeremy B July 2026
+      console.error(ex)
       @widgetController.reportError('compiler', 'recompile-procedures', [ex.toString()])
 
     finally
