@@ -4,6 +4,28 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+    <h2 id="v2.16.0">July 27th 2026 - v2.16.0</h2>
+
+    <p>This release brings support for three new extensions to NetLogo Web: <a href="https://github.com/NetLogo/NW-Extension/blob/main/README.md"><b>the Network (NW) Extension</b></a>, <a href="https://github.com/NetLogo/GIS-Extension/blob/main/README.md"><b>the GIS Extension</b></a>, and <a href="https://github.com/NetLogo/Rnd-Extension/blob/main/README.md"><b>the Rnd Extension</b></a>.  These extensions include almost all of the same primitives as their desktop counterparts and work almost identically, as verified by our test suites.  A key difference is that primitives related to loading and saving files are not supported.  NetLogo Web doesn't have access to a file system, so instead we've added string-based data loading and saving primitives.  You can either embed data files as resources in your NetLogo model and access them with <a href="https://github.com/NetLogo/Resource-Extension/blob/main/README.md">the Resource Extension</a>, or snag files from the web with <a href="https://github.com/NetLogo/Fetch-Extension/blob/main/README.md">the Fetch Extension</a>.  See <a href="https://github.com/NetLogo/NW-Extension/blob/main/README.md#nwload-from-string">the docs for <code>nw:load-from-string</code></a> and <a href="https://github.com/NetLogo/GIS-Extension/blob/main/README.md#gisload-dataset-from-string">the docs for <code>gis:load-dataset-from-string</code></a> for more info.</p>
+
+    <p>Try them out and see how to load data from embedded resources:</p>
+
+    <ul>
+      <!-- Note: The GIS and NW models are only placed in demomodels as the updated versions of these models haven't
+      been merged into the models library yet (PR #452 in the models library).  If/when that happens these links can be
+      changed and the models removed. -Jeremy B July 2026 -->
+      <li><a href="launch#/assets/demomodels/extension-examples/GIS%20General%20Examples.nlogox">GIS General Examples</a></li>
+      <li><a href="launch#/assets/demomodels/extension-examples/NW%20General%20Examples.nlogox">NW General Examples</a></li>
+      <li><a href="launch#/assets/modelslib/Code%20Examples/Extensions%20Examples/rnd/Rnd%20Example.nlogox">Rnd Example</a></li>
+    </ul>
+
+    <p>A few improvements and bug fixes are also included:</p>
+
+    <ul>
+      <li>Setting turtle and link variables to values that are not allowed will throw more descriptive error messages instead of JavaScript exceptions.</li>
+      <li>The model title can be edited in authoring mode.</li>
+    </ul>
+
     <h2 id="v2.15.3">July 7th 2026 - v2.15.3</h2>
 
     <p>This small bugfix release corrects an issue where the NetLogo version of an imported NetLogo 6 model could be set incorrectly.</p>
