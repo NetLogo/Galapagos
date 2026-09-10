@@ -8,6 +8,8 @@ EditForm = Ractive.extend({
   startY:         undefined # Number
   view:           undefined # Element
   _formModelElem: undefined # Element
+  _formMinYLoc:   undefined # Number
+  _formResizeObserver: undefined # ResizeObserver
 
   data: -> {
     parentClass:     'netlogo-widget-container' # String
@@ -78,8 +80,13 @@ EditForm = Ractive.extend({
       @fire(  'lock-selection', @parent)
       @fire('edit-form-opened', this)
 
-      container     = findParentByClass(@get('parentClass'))(elem)
-      modelElem     = findParentByClass('netlogo-model')(elem)
+      container = findParentByClass(@get('parentClass'))(elem)
+      modelElem = findParentByClass('netlogo-model')(elem)
+
+      # Render the fields before measuring.  This used to come last, so a tall form (a plot's, especially) was measured
+      # at whatever height it had before its fields existed, and the model below was grown by too little -- leaving the
+      # OK button off the bottom of the frame.  -Jeremy B September 2026
+      @resetPartial('widgetFields', @partials.widgetFields)
 
       containerMidX = container.offsetWidth  / 2
       containerMidY = container.offsetHeight / 2
@@ -99,9 +106,13 @@ EditForm = Ractive.extend({
 
       if modelElem?
         @_formModelElem = modelElem
-        modelElem.style.minHeight = "#{finalYLoc - minYLoc + elem.offsetHeight}px"
-
-      @resetPartial('widgetFields', @partials.widgetFields)
+        @_formMinYLoc   = minYLoc
+        @fitModelToForm()
+        # Collapsed code fields and CodeMirror instances settle their height after this tick, and expanding a plot pen
+        # changes it again later, so re-fit whenever the form's size changes.
+        if window.ResizeObserver?
+          @_formResizeObserver = new ResizeObserver( () => @fitModelToForm(); return )
+          @_formResizeObserver.observe(elem)
 
       # This is awful, but it's the least invasive way I have come up with to workaround a 3 year old Firefox bug.
       # https://bugzilla.mozilla.org/show_bug.cgi?id=1189486
@@ -115,6 +126,8 @@ EditForm = Ractive.extend({
       false
 
     'activate-cloaking-device': ->
+      @_formResizeObserver?.disconnect()
+      @_formResizeObserver = undefined
       if @_formModelElem?
         @_formModelElem.style.minHeight = ''
         @_formModelElem = undefined
@@ -150,6 +163,8 @@ EditForm = Ractive.extend({
 
     'stop-edit-drag': ->
       CommonDrag.dragend(this, (->))
+      # Dragging changes `yLoc`, so the model has to grow (or shrink) to match the form's new bottom edge.
+      @fitModelToForm()
 
     'cancel-edit': ->
       @fire('activate-cloaking-device')
@@ -165,6 +180,15 @@ EditForm = Ractive.extend({
 
   getElem: ->
     @find("##{@get('id')}")
+
+  # Grow the model area so the whole form fits inside it.  The frame sizes itself from the model's height, so a form
+  # taller than the model would otherwise run off the bottom with its buttons out of reach.  -Jeremy B September 2026
+  # () => Unit
+  fitModelToForm: ->
+    elem = @getElem()
+    if @_formModelElem? and elem?
+      @_formModelElem.style.minHeight = "#{(@get('yLoc') ? 0) - (@_formMinYLoc ? 0) + elem.offsetHeight}px"
+    return
 
   template:
     """
