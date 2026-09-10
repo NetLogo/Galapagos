@@ -295,7 +295,8 @@ listenerEvents = Object.freeze([
       # to change anything for now, just noting it for others. -Jeremy B March 2023
       'source',    # 'button' | 'console' | 'startup'
       'exception', # Exception
-      'code'       # String | undefined - only provided for command console errors or errors within button code
+      'code',      # String | undefined - only provided for command console errors or errors within button code
+      'widgetId'   # Int | undefined - only for errors in a widget's own code, so the error can link to that widget
     ]
   },
   {

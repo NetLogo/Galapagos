@@ -365,6 +365,12 @@ class WidgetController
     if not fieldId?
       return false
 
+    # A pen row keeps its code fields behind `isExpanded`, so they don't exist to be found until it is opened.
+    # -Jeremy B September 2026
+    if penIndex?
+      penForm = editForm.findAllComponents('formPen').find( (p) -> p.get('index') is penIndex )
+      penForm?.set('isExpanded', true)
+
     codeField = editForm.findAllComponents("").find( (c) -> c.jumpToLocation? and c.get('id') is fieldId )
     if not codeField?
       return false

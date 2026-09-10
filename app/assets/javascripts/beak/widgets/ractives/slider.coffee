@@ -279,7 +279,7 @@ RactiveSlider = RactiveValueWidget.extend({
     """
     {{>editorOverlay}}
     {{>slider}}
-    <editForm direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
+    <editForm compileErrors="{{widget.compilation.messages}}" direction="{{widget.direction}}" idBasis="{{id}}" maxCode="{{widget.max}}"
               minCode="{{widget.min}}" stepCode="{{widget.step}}" units="{{widget.units}}"
               y="{{widget.y}}" width="{{widget.width}}" height="{{widget.height}}"
               x="{{widget.x}}" value="{{widget.default}}" variable="{{widget.variable}}"

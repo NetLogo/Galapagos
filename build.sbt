@@ -13,7 +13,7 @@ import scala.sys.process.{ Process, ProcessLogger }
 name    := "Galapagos"
 version := "1.0-SNAPSHOT"
 
-val tortoiseVersion = "1.0-9b78b67"
+val tortoiseVersion = "1.0-901b0c1"
 
 resolvers ++= Seq(
   "tortoise"                at "https://dl.cloudsmith.io/public/netlogo/tortoise/maven/"

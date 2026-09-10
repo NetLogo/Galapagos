@@ -1283,6 +1283,16 @@ kbd {
   cursor: pointer !important;
 }
 
+/* A plot's body is a Highcharts canvas, so there is no text of its own to turn red the way the other widgets do. */
+.netlogo-plot-error {
+  outline:        2px solid red;
+  outline-offset: -2px;
+}
+
+.netlogo-plot-error:hover {
+  cursor: pointer !important;
+}
+
 .netlogo-view-container {
   background-color: #f4f4f4;
 }

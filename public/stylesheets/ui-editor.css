@@ -270,6 +270,22 @@
   user-select: none;
 }
 
+.widget-edit-errors {
+  display:          flex;
+  flex-direction:   column;
+  gap:              4px;
+  margin:           2px 0 8px 0;
+  padding:          6px 8px;
+  border-left:      3px solid red;
+  background-color: #fdeeeb;
+}
+
+.widget-edit-error {
+  color:      #a8331f;
+  font-size:  13px;
+  word-break: break-word;
+}
+
 .widget-edit-dropdown {
   font-size: 14px;
   height:    30px;

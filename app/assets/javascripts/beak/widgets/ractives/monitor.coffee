@@ -203,7 +203,8 @@ RactiveMonitor = RactiveWidget.extend({
     """
     {{>editorOverlay}}
     {{>monitor}}
-    <editForm idBasis="{{id}}" display="{{widget.display}}" fontSize="{{widget.fontSize}}"
+    <editForm idBasis="{{id}}" compileErrors="{{widget.compilation.messages}}"
+              display="{{widget.display}}" fontSize="{{widget.fontSize}}"
               precision="{{widget.precision}}" source="{{widget.source}}" metadata="{{metadata}}"
               units={{widget.units}} oldSize="{{widget.oldSize}}" />
     """
@@ -219,7 +220,7 @@ RactiveMonitor = RactiveWidget.extend({
           {{widget.display || widget.source}}
         </label>
         <div class="flex-row" style="align-items: baseline; justify-content: center; gap: 0.25rem;">
-          <output class="netlogo-value">{{widget.currentValue}}</output>
+          <output class="netlogo-value {{errorClass}}">{{widget.currentValue}}</output>
           {{#widget.units}}
             <span class="netlogo-units">{{widget.units}}</span>
           {{/}}

@@ -223,7 +223,10 @@ generateRactiveSkeleton = (container, widgets, code, info,
         switch source
           when 'recompile', 'compile-recoverable'
             @findComponent('codePane')?.set('compilerErrors', errors)
-          when 'button', 'console', 'inspection-pane', 'agent-monitor'
+          # A widget's own code failing to compile says nothing about the model's code, so there is nothing to mark in
+          # the code pane for these.  -Jeremy B September 2026
+          when 'button', 'chooser', 'console', 'inspection-pane', 'agent-monitor'
+             , 'inputBox', 'monitor', 'plot', 'slider', 'switch'
             ; # do nothing
           else
             console.error("received compiler error from unknown source: %s", source)
