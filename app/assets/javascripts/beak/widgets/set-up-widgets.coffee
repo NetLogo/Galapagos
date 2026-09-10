@@ -118,8 +118,8 @@ setUpChooser = (source, destination) ->
   return
 
 # Returns `true` when a stop interrupt was returned or an error/halt was thrown.
-# ((String, String, Exception) => Unit, () => Any, String | undefined) => Boolean
-runWithErrorHandling = (source, reportError, f, code) ->
+# ((String, String, Exception) => Unit, () => Any, String | undefined, Int | undefined) => Boolean
+runWithErrorHandling = (source, reportError, f, code, widgetId) ->
   try
     f() is StopInterrupt
   catch ex
@@ -137,21 +137,21 @@ runWithErrorHandling = (source, reportError, f, code) ->
       if isPlotError(source, ex)
         return false
 
-      reportError("runtime", source, ex, code)
+      reportError("runtime", source, ex, code, widgetId)
 
     true
 
 # ((String, String, Exception) => Unit, () => Unit, Button, () => Any) => () => Unit
 makeRunForeverTask = (reportError, updateUI, button, f, code) -> () ->
-  mustStop = runWithErrorHandling("button", reportError, f, code)
+  mustStop = runWithErrorHandling("button", reportError, f, code, button.id)
   if mustStop
     button.running = false
     updateUI()
   return
 
-# ((String, String, Exception) => Unit, () => Unit, () => Any) => () => Unit
-makeRunOnceTask = (reportError, updateUI, f, code) -> () ->
-  runWithErrorHandling("button", reportError, f, code)
+# ((String, String, Exception) => Unit, () => Unit, Button, () => Any) => () => Unit
+makeRunOnceTask = (reportError, updateUI, button, f, code) -> () ->
+  runWithErrorHandling("button", reportError, f, code, button.id)
   updateUI()
   return
 
@@ -173,7 +173,7 @@ setUpButton = (reportError, updateUI) -> (source, destination) ->
     destination.run = if source.forever
       makeRunForeverTask(reportError, updateUI, destination, f, code)
     else
-      makeRunOnceTask(reportError, updateUI, f, code)
+      makeRunOnceTask(reportError, updateUI, destination, f, code)
 
   else
     destination.run = makeCompilerErrorTask(reportError, destination, source.compilation?.messages ? [])

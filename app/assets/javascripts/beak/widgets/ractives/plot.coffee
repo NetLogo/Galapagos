@@ -24,6 +24,7 @@ PenForm = Ractive.extend({
 
   data: -> {
     color:              undefined # Number
+  , compileErrors:      undefined # Array[{ message: String } | String]
   , display:            undefined # String
   , index:              undefined # Number
   , interval:           undefined # Number
@@ -153,6 +154,13 @@ PenForm = Ractive.extend({
                on-input="validate-name" required />
         <input class="plot-pen-delete" type="button" on-click="remove-pen" value="Delete" />
       </div>
+      {{# compileErrors.length > 0 }}
+        <div class="widget-edit-errors">
+          {{#each compileErrors}}
+            <div class="widget-edit-error">{{ .message || . }}</div>
+          {{/each}}
+        </div>
+      {{/}}
       {{# isExpanded }}
         <spacer height="10px" />
         <div class="flex-row" style="justify-content: space-between;">
@@ -217,6 +225,8 @@ PlotEditForm = EditForm.extend({
   data: -> {
     autoPlotX:  undefined # Boolean
   , autoPlotY:  undefined # Boolean
+    # Only for reading each pen's compile errors; the editable pen data is `guiPens`.  -Jeremy B September 2026
+  , compiledPens: undefined # Array[{ compilation: { messages: Array[Any] } }]
   , display:    undefined # String
   , guiPens:    undefined # Array[Pen]
   , legendOn:   undefined # Boolean
@@ -383,6 +393,7 @@ PlotEditForm = EditForm.extend({
     pen:
       """
       <formPen color="{{color}}" display="{{display}}" index="{{index}}"
+               compileErrors="{{~/compiledPens[index].compilation.messages}}"
                interval="{{interval}}" modeIndex="{{mode}}" setupCode="{{setupCode}}"
                shouldShowInLegend="{{inLegend}}" updateCode="{{updateCode}}" />
       """
@@ -494,6 +505,8 @@ HNWPlotEditForm = PlotEditForm.extend({
   data: -> {
     autoPlotX:  undefined # Boolean
   , autoPlotY:  undefined # Boolean
+    # Only for reading each pen's compile errors; the editable pen data is `guiPens`.  -Jeremy B September 2026
+  , compiledPens: undefined # Array[{ compilation: { messages: Array[Any] } }]
   , display:    undefined # String
   , guiPens:    undefined # Array[Pen]
   , legendOn:   undefined # Boolean
@@ -594,6 +607,22 @@ RactivePlot = RactiveWidget.extend({
 
   widgetType: 'plot'
 
+  computed: {
+
+    # A plot has more than one place to fail: its own setup and update code, and each pen's.  A pen's failure lives on
+    # that pen rather than on the plot, so the generic `errorClass` partial the other widgets use can't see it.
+    # -Jeremy B September 2026
+    # () => Boolean
+    hasCompileError: ->
+      widget = @get('widget')
+      if not widget?
+        false
+      else
+        failed = (compilation) -> compilation? and not compilation.success
+        failed(widget.compilation) or (widget.compiledPens ? []).some( (pen) -> failed(pen.compilation) )
+
+  }
+
   eventTriggers: () ->
     widget            = @get('widget')
     editForm          = @findComponent('editForm')
@@ -672,8 +701,11 @@ RactivePlot = RactiveWidget.extend({
   template:
     """
     {{>editorOverlay}}
-    <div id="{{id}}" class="netlogo-widget netlogo-plot {{#widget.oldSize}}old-size{{/}} {{classes}}"
-         style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"></div>
+    <div id="{{id}}"
+         class="netlogo-widget netlogo-plot {{#widget.oldSize}}old-size{{/}}
+                {{classes}}{{#hasCompileError}} netlogo-plot-error{{/}}"
+         style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"
+         on-click="['show-widget-errors', widget]"></div>
     {{>editForm}}
     """
 
@@ -683,6 +715,8 @@ RactivePlot = RactiveWidget.extend({
       """
       <editForm
         autoPlotX={{widget.autoPlotX}} autoPlotY={{widget.autoPlotY}}
+        compileErrors="{{widget.compilation.messages}}"
+        compiledPens="{{widget.compiledPens}}"
         display="{{widget.display}}" idBasis="{{id}}"
         legendOn={{widget.legendOn}} pens="{{widget.pens}}"
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
@@ -706,6 +740,8 @@ RactiveHNWPlot = RactivePlot.extend({
       """
       <editForm
         autoPlotX={{widget.autoPlotX}} autoPlotY={{widget.autoPlotY}}
+        compileErrors="{{widget.compilation.messages}}"
+        compiledPens="{{widget.compiledPens}}"
         display="{{widget.display}}" idBasis="{{id}}"
         legendOn={{widget.legendOn}} pens="{{widget.pens}}"
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"

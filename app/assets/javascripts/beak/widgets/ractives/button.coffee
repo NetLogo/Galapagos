@@ -293,7 +293,8 @@ RactiveButton = RactiveWidget.extend({
 
     editForm:
       """
-      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+      <editForm actionKey="{{widget.actionKey}}" compileErrors="{{widget.compilation.messages}}"
+                display="{{widget.display}}"
                 idBasis="{{id}}" isForever="{{widget.forever}}" source="{{widget.source}}"
                 startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}" oldSize="{{widget.oldSize}}" />
       """
@@ -394,7 +395,8 @@ RactiveHNWButton = RactiveButton.extend({
   partials: {
     editForm:
       """
-      <editForm actionKey="{{widget.actionKey}}" display="{{widget.display}}"
+      <editForm actionKey="{{widget.actionKey}}" compileErrors="{{widget.compilation.messages}}"
+                display="{{widget.display}}"
                 idBasis="{{id}}" isForever="{{widget.forever}}" procName="{{widget.hnwProcName}}"
                 startsDisabled="{{widget.disableUntilTicksStart}}" type="{{widget.buttonKind}}"
                 procedures="{{procedures}}" oldSize="{{widget.oldSize}}" />

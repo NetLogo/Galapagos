@@ -17,6 +17,9 @@ EditForm = Ractive.extend({
   , verticalOffset:   undefined # Number
   , amProvingMyself:  false     # Boolean
   , idBasis:          undefined # String
+    # Entries are `{ message, start, end, field }` from the compiler, but older/non-compiler failures are bare strings.
+    # -Jeremy B September 2026
+  , compileErrors:    undefined # Array[{ message: String } | String]
   , style:            undefined # String
   , visible:          undefined # Boolean
   , xLoc:             undefined # Number
@@ -177,6 +180,13 @@ EditForm = Ractive.extend({
         <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancel-edit">X</div>
         <form class="widget-edit-form" on-submit="submit">
           <div class="widget-edit-form-title">{{>title}}</div>
+          {{# compileErrors.length > 0 }}
+            <div class="widget-edit-errors">
+              {{#each compileErrors}}
+                <div class="widget-edit-error">{{ .message || . }}</div>
+              {{/each}}
+            </div>
+          {{/}}
           {{>widgetFields}}
           <div class="widget-edit-form-button-container">
             <input class="widget-edit-text" type="submit" value="{{ submitLabel }}" />

@@ -141,16 +141,12 @@ class AlertDisplay
           e = error.end
           # A widget's code is compiled on its own, so its offsets only mean something inside that widget's editor.
           # Anything else is an offset into the model's code.  -Jeremy B September 2026
-          fire = (args) -> "this.parentElement._ractive.proxy.ractive.fire(#{args}); return false;"
           [label, onclickCode] =
             if widgetId? and error.field?
-              p = penIndex ? 'null'
-              [ "Show me"
-              , fire("\"jump-to-widget-code\", \"#{widgetId}\", \"#{error.field}\", #{s}, #{e}, #{p}")
-              ]
+              [ "Show me", AlertDisplay.makeWidgetCodeOnclick(widgetId, error.field, s, e, penIndex) ]
             else
               lineNumber = if error.lineNumber? then error.lineNumber else "Here"
-              [ "Line #{lineNumber}", fire("\"jump-to-code\", #{s}, #{e}") ]
+              [ "Line #{lineNumber}", AlertDisplay.makeModelCodeOnclick(s, e) ]
           "<a href='/ignore' onclick='#{onclickCode}'>(#{label})</a> #{error.message}"
         else
           if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
@@ -163,6 +159,23 @@ class AlertDisplay
       when 'plot'     then "called by plot #{frame.name}"
       else                 'called by unknown'
 
+  # The alert's message is raw HTML, so a link back into the code has to carry its handler as an inline `onclick` that
+  # fires on the enclosing ractive.  -Jeremy B September 2026
+  # (String) => String
+  @makeFireOnclick: (args) ->
+    "this.parentElement._ractive.proxy.ractive.fire(#{args}); return false;"
+
+  # (Int, Int) => String
+  @makeModelCodeOnclick: (start, end) ->
+    AlertDisplay.makeFireOnclick("\"jump-to-code\", #{start}, #{end}")
+
+  # Widget ids are numbers in some code paths and string keys in others, so quote it -- `jumpToWidgetCode` compares as
+  # strings.  -Jeremy B September 2026
+  # (Int, String, Int, Int, Int) => String
+  @makeWidgetCodeOnclick: (widgetId, field, start, end, penIndex = null) ->
+    args = "\"jump-to-widget-code\", \"#{widgetId}\", \"#{field}\", #{start}, #{end}, #{penIndex ? 'null'}"
+    AlertDisplay.makeFireOnclick(args)
+
   # (String, String, Maybe[Int], Maybe[Int], String) => String
   @makeBareRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd, code) ->
     prim     = if primitive is '' then 'a primitive' else primitive.toUpperCase()
@@ -172,10 +185,20 @@ class AlertDisplay
       " on line #{line}"
     "#{message}\nerror while running #{prim}#{location}"
 
-  # (String, String, String) => String
-  @makeButtonRuntimeErrorMessage: (message, primitive, code) ->
-    prim = if primitive is '' then 'a primitive' else primitive.toUpperCase()
-    "#{message}\nerror while running #{prim} in button \"#{code}\""
+  # The error happened directly in the button's own code, so the location points into that button's source rather than
+  # into the model's code.  -Jeremy B September 2026
+  # (String, String, Maybe[Int], Maybe[Int], String, Int) => String
+  @makeButtonRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd, code, widgetId) ->
+    prim     = if primitive is '' then 'a primitive' else primitive.toUpperCase()
+    inButton =
+      if not (widgetId? and isSomething(sourceStart) and isSomething(sourceEnd))
+        "in button \"#{code}\""
+      else
+        start       = toArray(sourceStart)[0]
+        end         = toArray(sourceEnd)[0]
+        onclickCode = AlertDisplay.makeWidgetCodeOnclick(widgetId, 'source', start, end)
+        "in button \"#{code}\" (<a href='/ignore' onclick='#{onclickCode}'>Show me</a>)"
+    "#{message}\nerror while running #{prim} #{inButton}"
 
   # (String, String, Maybe[Int], Maybe[Int]) => String
   @makeLinkedRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd) ->
@@ -183,7 +206,7 @@ class AlertDisplay
     linkedPrim = if not (isSomething(sourceStart) and isSomething(sourceEnd)) then "running #{prim}" else
       start       = toArray(sourceStart)[0]
       end         = toArray(sourceEnd)[0]
-      onclickCode = "this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{start}, #{end}); return false;"
+      onclickCode = AlertDisplay.makeModelCodeOnclick(start, end)
       "<a href='/ignore' onclick='#{onclickCode}'>running #{prim}</a>"
     "#{message}\nerror while #{linkedPrim}"
 
@@ -252,7 +275,7 @@ class AlertDisplay
     return
 
   # (CommonEventArgs, { source: String, exception: Exception, code: String | undefined }) => Unit
-  'runtime-error': (_, {source, exception, code}) ->
+  'runtime-error': (_, {source, exception, code, widgetId}) ->
     if exception instanceof Exception.HaltInterrupt
       throw new Error('`HaltInterrupt` should be handled and should not be reported to users.')
 
@@ -303,7 +326,16 @@ class AlertDisplay
     else
       message = if exception instanceof Exception.RuntimeException
         if source is 'button' and exception.stackTrace.length is 0
-          AlertDisplay.makeButtonRuntimeErrorMessage(exception.message, exception.primitive, code)
+          # An empty stack trace means the error came straight from the button's own code, not from a procedure it
+          # called, so the location is an offset into that button's source.  -Jeremy B September 2026
+          AlertDisplay.makeButtonRuntimeErrorMessage(
+            exception.message
+          , exception.primitive
+          , exception.sourceStart
+          , exception.sourceEnd
+          , code
+          , widgetId
+          )
 
         else
           AlertDisplay.makeLinkedRuntimeErrorMessage(
