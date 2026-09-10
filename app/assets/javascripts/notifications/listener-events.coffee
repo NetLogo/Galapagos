@@ -279,9 +279,11 @@ listenerEvents = Object.freeze([
   {
     'name': 'compiler-error',
     'args': [
-      'source', # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
-                # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
-      'errors'  # Array[Exception]
+      'source',   # 'recompile' | 'recompile-procedures' | 'export-nlogo' | 'export-html' | 'button' | 'chooser'
+                  # | 'slider' | 'plot' | 'input' | 'switch' | 'console'
+      'errors',   # Array[Exception]
+      'widgetId', # Int | undefined - only for errors in a widget's own code, so the error can link to that widget
+      'penIndex'  # Int | undefined - only for errors in a plot pen's own code
     ]
   },
   {
