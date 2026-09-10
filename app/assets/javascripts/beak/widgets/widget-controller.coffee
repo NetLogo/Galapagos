@@ -15,6 +15,23 @@ import { WidgetEventsMap, calculateTriggeredEvents } from "./ractives/widget.js"
 PenBundle = tortoise_require('engine/plot/pen')
 { DisplayMode: { displayModeFromString } } = PenBundle
 
+# The compiler names the field an error came from; the edit forms name their code editors by id.  This maps one to the
+# other, per widget type.  Pens are separate, since their id carries the pen's index.  -Jeremy B September 2026
+codeFieldSuffixes = new Map([
+  ['button' , new Map([['source'  , '-source'    ]])                                                          ]
+, ['monitor', new Map([['reporter', '-source'    ]])                                                          ]
+, ['plot'   , new Map([['setup'   , '-setup-code'], ['update', '-update-code']])                              ]
+, ['slider' , new Map([['min'     , '-min-code'  ], ['step'  , '-step-code'  ], ['max', '-max-code']])        ]
+])
+
+# (String, String, String, Int) => String | undefined
+codeFieldId = (formId, widgetType, field, penIndex) ->
+  if penIndex?
+    "#{formId}-pen-#{penIndex}-#{if field is 'setup' then 'setup' else 'update'}-code"
+  else
+    suffix = codeFieldSuffixes.get(widgetType)?.get(field)
+    if suffix? then "#{formId}#{suffix}" else undefined
+
 class WidgetController
 
   # (Ractive, ViewController, Configs, () => Unit)
@@ -320,6 +337,40 @@ class WidgetController
       scrollMe = () -> codeTab.scrollIntoView()
       window.setTimeout(scrollMe, 50)
     return
+
+  # A widget's code is compiled on its own, so an error's location means nothing in the Code tab -- we have to open that
+  # widget's edit form and select the code there instead.  `penIndex` is only for a plot pen's own code.
+  # -Jeremy B September 2026
+  # (Int, String, { start: Int, end: Int }, Int) => Boolean
+  jumpToWidgetCode: (widgetId, field, location, penIndex = null) ->
+    if @ractive.get('isReadOnly')
+      return false
+
+    # Widget ids are numbers in some code paths and string keys in others, and this one has been through the alert's
+    # generated `onclick`, so compare them as strings.  -Jeremy B September 2026
+    sameId = (id) -> id? and "#{id}" is "#{widgetId}"
+    widgetComponent = @ractive.findAllComponents("").find( (c) -> sameId(c.get('widget')?.id) )
+    if not widgetComponent? or widgetComponent.get('isNotEditable') is true
+      return false
+
+    # The edit forms only exist while authoring, so the link has to turn that on before it can open one.
+    @ractive.set('isEditing', true)
+    widgetComponent.fire('edit-widget')
+
+    editForm = widgetComponent.findComponent('editForm')
+    if not editForm?
+      return false
+
+    fieldId = codeFieldId(editForm.get('id'), widgetComponent.get('widget').type, field, penIndex)
+    if not fieldId?
+      return false
+
+    codeField = editForm.findAllComponents("").find( (c) -> c.jumpToLocation? and c.get('id') is fieldId )
+    if not codeField?
+      return false
+
+    codeField.jumpToLocation(location)
+    true
 
   # (Array[Update]) => Unit
   redraw: (updates) ->

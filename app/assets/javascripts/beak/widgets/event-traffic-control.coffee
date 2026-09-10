@@ -231,7 +231,7 @@ controlEventTraffic = (controller, performUpdate) ->
   showWidgetErrors = (widget) ->
     isHNWJoiner = ractive.get('isHNW') and not ractive.get('isHNWHost')
     if not isHNWJoiner and not widget.compilation.success
-      controller.reportError('compiler', widget.type, widget.compilation.messages)
+      controller.reportError('compiler', widget.type, widget.compilation.messages, widget.id)
 
   # (String, String, Any) => Boolean
   renameGlobal = (oldName, newName, value) ->

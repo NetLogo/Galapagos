@@ -14,6 +14,10 @@ RactiveCodeContainerBase = Ractive.extend({
   , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
 
+    # Widget edit forms jump to an error's location the same way the code pane does, and sliders use the one-line
+    # editor, so this lives on the base rather than on the multiline one.  -Jeremy B September 2026
+  , jumpToCode:     undefined # { start: Int, end: Int }
+
   , tabindex:       undefined # String
   , 'aria-label':   undefined # String
   }
@@ -32,6 +36,21 @@ RactiveCodeContainerBase = Ractive.extend({
     return
 
   twoway: false
+
+  # ({ start: Int, end: Int }) => Unit
+  highlightLocation: (location) ->
+    start = @_editor.posFromIndex(location.start)
+    end   = @_editor.posFromIndex(location.end)
+    @_editor.setSelection(start, end)
+    @_editor.focus()
+    return
+
+  # () => Unit
+  jumpToCode: () ->
+    location = @get('jumpToCode')
+    if location? and @_editor?
+      @highlightLocation(location)
+    return
 
   _setupCodeMirror: ->
 
@@ -70,6 +89,10 @@ RactiveCodeContainerBase = Ractive.extend({
         classes.remove('cm-disabled')
       return
     )
+
+    # Registered here rather than in an `observe` block so the subclasses' own blocks don't shadow it.
+    # -Jeremy B September 2026
+    @observe('jumpToCode', (-> @jumpToCode(); return))
 
     return
 
@@ -118,22 +141,16 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
       }
     }
     , jumpToProcedure: undefined # { procName: String, index: Int }
-    , jumpToCode:      undefined # { start: Int, end: Int }
   }
 
   oncomplete: ->
     @_super()
     @jumpToProcedure()
-    @jumpToCode()
     return
 
   observe: {
     'jumpToProcedure': ->
       @jumpToProcedure()
-      return
-
-    'jumpToCode': ->
-      @jumpToCode()
       return
   }
 
@@ -144,26 +161,11 @@ RactiveCodeContainerMultiline = RactiveCodeContainerBase.extend({
     @_editor.setSelection(start, end)
     return
 
-  # ({ start: Int, end: Int }) => Unit
-  highlightLocation: (location) ->
-    start = @_editor.posFromIndex(location.start)
-    end   = @_editor.posFromIndex(location.end)
-    @_editor.setSelection(start, end)
-    @_editor.focus()
-    return
-
   # () => Unit
   jumpToProcedure: () ->
     procInfo = @get('jumpToProcedure')
     if procInfo? and @_editor?
       @highlightProcedure(procInfo.procName, procInfo.index)
-    return
-
-  # () => Unit
-  jumpToCode: () ->
-    location = @get('jumpToCode')
-    if location? and @_editor?
-      @highlightLocation(location)
     return
 
 })
@@ -273,6 +275,21 @@ editFormCodeContainerFactory =
           false
 
       }
+
+      # Select the code an error came from.  A collapsed field has to be opened first, and CodeMirror can't paint a
+      # selection until the `isExpanded` observer above has refreshed it, so this queues behind that.
+      # -Jeremy B September 2026
+      # ({ start: Int, end: Int }) => Unit
+      jumpToLocation: (location) ->
+        if @get('isCollapsible') and not @get('isExpanded')
+          @set('isExpanded', true)
+        setTimeout(( =>
+          codeContainer = @findComponent('codeContainer')
+          codeContainer.set('jumpToCode', null)
+          codeContainer.set('jumpToCode', location)
+          return
+        ), 0)
+        return
 
       template:
         """

@@ -125,7 +125,8 @@ class AlertDisplay
         if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
     )
 
-  @makeLinkedCompilerErrorMessage: (errors) ->
+  # (Array[Error | String], Int, Int) => Array[String]
+  @makeLinkedCompilerErrorMessage: (errors, widgetId, penIndex) ->
     errors.map( (error) ->
       if typeof(error) is 'string'
         error
@@ -138,10 +139,19 @@ class AlertDisplay
         if error.start? and error.end?
           s = error.start
           e = error.end
-          lineNumber = if error.lineNumber? then error.lineNumber else "Here"
-          onclickCode =
-            "this.parentElement._ractive.proxy.ractive.fire(\"jump-to-code\", #{s}, #{e}); return false;"
-          "<a href='/ignore' onclick='#{onclickCode}'>(Line #{lineNumber})</a> #{error.message}"
+          # A widget's code is compiled on its own, so its offsets only mean something inside that widget's editor.
+          # Anything else is an offset into the model's code.  -Jeremy B September 2026
+          fire = (args) -> "this.parentElement._ractive.proxy.ractive.fire(#{args}); return false;"
+          [label, onclickCode] =
+            if widgetId? and error.field?
+              p = penIndex ? 'null'
+              [ "Show me"
+              , fire("\"jump-to-widget-code\", \"#{widgetId}\", \"#{error.field}\", #{s}, #{e}, #{p}")
+              ]
+            else
+              lineNumber = if error.lineNumber? then error.lineNumber else "Here"
+              [ "Line #{lineNumber}", fire("\"jump-to-code\", #{s}, #{e}") ]
+          "<a href='/ignore' onclick='#{onclickCode}'>(#{label})</a> #{error.message}"
         else
           if error.lineNumber? then "(Line #{error.lineNumber}) #{error.message}" else error.message
     )
@@ -225,6 +235,12 @@ class AlertDisplay
     @_ractive.on('jump-to-code', (_, sourceStart, sourceEnd) ->
       @fire('hide')
       widgetController.jumpToCode(sourceStart, sourceEnd)
+      false
+    )
+    @_ractive.off('jump-to-widget-code')
+    @_ractive.on('jump-to-widget-code', (_, widgetId, field, sourceStart, sourceEnd, penIndex) ->
+      @fire('hide')
+      widgetController.jumpToWidgetCode(widgetId, field, { start: sourceStart, end: sourceEnd }, penIndex)
       false
     )
 
@@ -372,7 +388,7 @@ class AlertDisplay
     return
 
   # (CommonEventArgs, { source: String, errors: Array[CompilerError] }) => Unit
-  'compiler-error': (_, { source, errors }) ->
+  'compiler-error': (_, { source, errors, widgetId, penIndex }) ->
 
     switch source
       when 'console'
@@ -384,7 +400,7 @@ class AlertDisplay
         @reportError(message)
 
       else
-        rawMessage = AlertDisplay.makeLinkedCompilerErrorMessage(errors).join('<br/>')
+        rawMessage = AlertDisplay.makeLinkedCompilerErrorMessage(errors, widgetId, penIndex).join('<br/>')
         message = if not @_ractive.get('isActive') then rawMessage else
           """There was an error compiling the model's code:<br/><br/>
           #{rawMessage}<br/><br/>
