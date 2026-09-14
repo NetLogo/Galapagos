@@ -17,8 +17,10 @@ class NlogoSource
   constructor: (@type, @fileName, @nlogo) ->
     @_title = null
 
+  # (String | null) => Unit
   setModelTitle: (title) ->
     @_title = title
+    return
 
   # () => String
   getModelTitle: () ->

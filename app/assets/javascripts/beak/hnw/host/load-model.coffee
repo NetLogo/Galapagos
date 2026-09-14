@@ -65,7 +65,6 @@ loadInitialModel = (setSession) ->
     Tortoise.fromNlogoXMLSync( source
                              , modelContainer
                              , "en_us"
-                             , false
                              , null
                              , openSession(setSession)
                              , []
@@ -87,7 +86,6 @@ loadModel = (setSession) -> (source, widgets = []) ->
     source
   , modelContainer
   , "en_us"
-  , false
   , null
   , handleCR
   , []
