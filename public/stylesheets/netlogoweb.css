@@ -279,6 +279,12 @@
   flex:          1;
 }
 
+.toast-message a {
+  color:           inherit;
+  font-weight:     bold;
+  text-decoration: underline;
+}
+
 .toast-close {
   cursor:         pointer;
   font-weight:    bold;
