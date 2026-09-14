@@ -16,11 +16,11 @@ settings.set('locale', {
 , out: ((l) -> l)
 })
 
-settings.set('workInProgress.enabled', {
-  def: 'Enabled'
-, ractiveName: 'workInProgressSetting'
-, in:  ((wipEnabled) -> if wipEnabled then 'Enabled' else 'Disabled')
-, out: ((value)      -> value is 'Enabled')
+settings.set('workInProgress.promptToLoad', {
+  def: 'Shown'
+, ractiveName: 'loadChangesPromptSetting'
+, in:  ((promptToLoad) -> if promptToLoad then 'Shown' else 'Hidden')
+, out: ((value)        -> value is 'Shown')
 })
 settings.set('useVerticalLayout', {
   def: 'below'
@@ -52,12 +52,12 @@ template = """
   </div>
 
   <label class="setting-label">
-    Automatically save changes made to models and reuse them when reloading:
+    Notice offering to load previously saved changes when a model opens:
   </label>
   <div class="setting-control">
-    <select value={{workInProgressSetting}} on-change="setting-changed">
-      <option>Enabled</option>
-      <option>Disabled</option>
+    <select value={{loadChangesPromptSetting}} on-change="setting-changed">
+      <option>Shown</option>
+      <option>Hidden</option>
     </select>
   </div>
 
