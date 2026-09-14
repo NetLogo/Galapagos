@@ -42,9 +42,9 @@ class SessionLite
   widgetController: undefined # WidgetController
 
   # (Tortoise, Element|String, BrowserCompiler, Array[Rewriter], Array[Listener], Array[Widget],
-  #   String, String, Boolean, String, String, NlogoSource, String, Boolean)
+  #   String, String, Boolean, String, NlogoSource, String, Boolean, Array[CompilerError])
   constructor: (@tortoise, container, @compiler, @rewriters, listeners, widgets,
-    code, info, isReadOnly, @locale, workInProgressState, @nlogoSource, modelJS,
+    code, info, isReadOnly, @locale, @nlogoSource, modelJS,
     lastCompileFailed, compilerErrors) ->
 
     @hnw = new HNWSession( (() => @widgetController)
@@ -62,7 +62,6 @@ class SessionLite
     , info
     , isReadOnly
     , @nlogoSource
-    , workInProgressState
     , @compiler
     , (=> @_performUpdate())
     )
@@ -75,6 +74,7 @@ class SessionLite
     ractive.on('export-nlogo'    , (_, event)          => @exportNlogoXML(event))
     ractive.on('export-html'     , (_, event)          => @exportHtml(event))
     ractive.on('open-new-file'   , (_)                 => @openNewFile())
+    ractive.on('*.load-wip'      , (_)                 => @loadWorkInProgress())
     ractive.on('*.revert-wip'    , (_)                 => @revertWorkInProgress())
     ractive.on('*.undo-revert'   , (_)                 => @undoRevert())
     ractive.on('*.run'           , (_, source, code)   => @run(source, code))
@@ -446,6 +446,14 @@ class SessionLite
         window.postMessage({
           type: 'nlw-open-new'
         }, "*")
+
+    return
+
+  # () => Unit
+  loadWorkInProgress: () ->
+    window.postMessage({
+      type: 'nlw-load-wip'
+    }, "*")
 
     return
 

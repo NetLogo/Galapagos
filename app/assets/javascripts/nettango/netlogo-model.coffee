@@ -105,7 +105,6 @@ RactiveNetLogoModel = Ractive.extend({
       nlogoSource
     , @modelContainer
     , @get('locale')
-    , false
     , null
     , @makeCompileResultHandler(callback)
     , @rewriters
@@ -122,7 +121,6 @@ RactiveNetLogoModel = Ractive.extend({
       nlogoSource
     , @modelContainer
     , @get('locale')
-    , false
     , null
     , @makeCompileResultHandler(callback)
     , @rewriters
@@ -138,7 +136,6 @@ RactiveNetLogoModel = Ractive.extend({
       url
     , @modelContainer
     , @get('locale')
-    , ((s) -> s.nlogo)
     , @makeCompileResultHandler(callback)
     , @rewriters
     , @listeners

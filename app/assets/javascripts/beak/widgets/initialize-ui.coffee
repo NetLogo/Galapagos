@@ -26,9 +26,9 @@ defaultView =
   }
 
 # (Element|String, Array[Widget], String, String,
-#   Boolean, NlogoSource, String, String, BrowserCompiler, () => Unit) => WidgetController
+#   Boolean, NlogoSource, BrowserCompiler, () => Unit) => WidgetController
 initializeUI = (containerArg, widgets, code, info,
-  isReadOnly, source, workInProgressState, compiler, performUpdate) ->
+  isReadOnly, source, compiler, performUpdate) ->
 
   container = if typeof(containerArg) is 'string' then document.querySelector(containerArg) else containerArg
 
@@ -57,7 +57,6 @@ initializeUI = (containerArg, widgets, code, info,
   , info
   , isReadOnly
   , source
-  , workInProgressState
   , isReporterCheck
   , viewController
   )

@@ -34,8 +34,9 @@ class Settings
   speed: 0.0
 
   workInProgress: {
-    enabled:    true
-    storageTag: ''
+    enabled:      true
+    promptToLoad: true
+    storageTag:   ''
   }
 
   viewQuality: Math.max(window.devicePixelRatio ? 2, 2)
@@ -59,8 +60,8 @@ class Settings
     if storage.hasKey('useVerticalLayout')
       @useVerticalLayout = storage.get('useVerticalLayout')
 
-    if storage.hasKey('workInProgress.enabled')
-      @workInProgress.enabled = storage.get('workInProgress.enabled')
+    if storage.hasKey('workInProgress.promptToLoad')
+      @workInProgress.promptToLoad = storage.get('workInProgress.promptToLoad')
 
     if storage.hasKey('viewQuality')
       @viewQuality = storage.get('viewQuality')
