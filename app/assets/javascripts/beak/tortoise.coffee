@@ -1,5 +1,5 @@
 import SessionLite from "./session-lite.js"
-import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
+import { DiskSource, NewSource, UrlSource, ScriptSource, isOldFormatNlogo } from "./nlogo-source.js"
 import {
   toNetLogoWebMarkdown,
   nlogoToSections,
@@ -60,7 +60,10 @@ finishLoading = ->
 fromNlogo = (nlogoSource, container, locale, isUndoReversion,
   getWorkInProgress, callback, rewriters = [], listeners = []) ->
   startLoading(->
-    if nlogoSource.isOldFormat()
+    # Saved changes are always exported as nlogox XML, so choose the parser by what is actually compiled rather than
+    # by the format of the original.  --Omar Ibrahim, Sep 14 26
+    startingNlogo = if getWorkInProgress isnt null then getWorkInProgress(nlogoSource) else nlogoSource.nlogo
+    if isOldFormatNlogo(startingNlogo)
       fromNlogoSync(nlogoSource, container, locale, isUndoReversion,
         getWorkInProgress, callback, rewriters, listeners)
     else
