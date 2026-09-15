@@ -9,6 +9,10 @@ dropNlogoExtension = (s) ->
   else
     s
 
+# (String) => Boolean
+isOldFormatNlogo = (nlogo) ->
+  not nlogo.trim().startsWith("<?xml")
+
 class NlogoSource
   constructor: (@type, @fileName, @nlogo) ->
     @_title = null
@@ -22,7 +26,7 @@ class NlogoSource
 
   # () => Boolean
   isOldFormat: () ->
-    not @nlogo.trim().startsWith("<?xml")
+    isOldFormatNlogo(@nlogo)
 
   # () => String
   getWipKey: () ->
@@ -72,6 +76,7 @@ class ScriptSource extends NlogoSource
     "script-element://#{@fileName}"
 
 export {
+  isOldFormatNlogo,
   UrlSource
 , DiskSource
 , NewSource
