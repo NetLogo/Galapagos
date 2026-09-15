@@ -69,6 +69,10 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , isVertical:            true
   , lastCompiledCode:      code
   , lastCompileFailed:     false
+    # The code pane only exists while its tab is open, so these are held here and mapped down; setting them on the
+    # component would drop them whenever the tab happened to be closed.  -Jeremy B September 2026
+  , codeCompilerErrors:    []
+  , codeRuntimeErrors:     []
   , lastDragX:             undefined
   , lastDragY:             undefined
   , metadata:              { globalVars: [], myVars: [], procedures: [], isSpectator: false, roleName: "unset" }
@@ -237,7 +241,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
       'compiler-error': (_, source, errors) ->
         switch source
           when 'recompile', 'compile-recoverable'
-            @findComponent('codePane')?.set('compilerErrors', errors)
+            @set('codeCompilerErrors', errors)
           # A widget's own code failing to compile says nothing about the model's code, so there is nothing to mark in
           # the code pane for these.  -Jeremy B September 2026
           when 'button', 'chooser', 'console', 'inspection-pane', 'agent-monitor'
@@ -247,21 +251,27 @@ generateRactiveSkeleton = (container, widgets, code, info,
             console.error("received compiler error from unknown source: %s", source)
         false
 
+      'recompile-complete': ->
+        @set({ codeCompilerErrors: [], codeRuntimeErrors: [] })
+        return
+
       'runtime-error': (_, source, exception, code) ->
-        message = exception.stackTraceMessage
-        codePaneErrors = for stackTraceItem in (exception.stackTrace ? [])
-          switch stackTraceItem.type
-            when 'command', 'reporter'
-              {
-                message
-                start: stackTraceItem.location.start,
-                end: stackTraceItem.location.end
-              }
-            else
-              continue # don't display
+        { isSomething, toArray } = tortoise_require('brazier/maybe')
         commandInputSources = ['console', 'inspection-pane', 'agent-monitor']
+        hasLocation =
+          exception.sourceStart? and exception.sourceEnd? and
+            isSomething(exception.sourceStart) and isSomething(exception.sourceEnd)
+        codePaneErrors =
+          if hasLocation and (exception.stackTrace ? []).length > 0
+            [{
+              message: "#{exception.message}\n#{exception.stackTraceMessage}"
+              start:   toArray(exception.sourceStart)[0]
+              end:     toArray(exception.sourceEnd)[0]
+            }]
+          else
+            []
         if source not in commandInputSources
-          @findComponent('codePane')?.set('runtimeErrors', codePaneErrors)
+          @set('codeRuntimeErrors', codePaneErrors)
         false
 
       'speed-change': (context, delta) ->
@@ -518,7 +528,8 @@ template =
       <tab name="code" title="NetLogo Code" show="{{showCode}}"
             on-toggle="['model-code-toggled', show]" focus-target=".netlogo-code-tab">
         <codePane code='{{code}}' lastCompiledCode='{{lastCompiledCode}}' scroll-block="center"
-                  lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}' />
+                  lastCompileFailed='{{lastCompileFailed}}' isReadOnly='{{isReadOnly}}'
+                  compilerErrors='{{codeCompilerErrors}}' runtimeErrors='{{codeRuntimeErrors}}' />
       </tab>
       <tab name="info" title="Model Info" show="{{showInfo}}" scroll-target="#tab-info" scroll-block="center"
             on-toggle="['model-info-toggled', show]" focus-target=":is(.netlogo-info-markdown, .netlogo-info-editor)">

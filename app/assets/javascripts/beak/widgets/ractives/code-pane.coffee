@@ -17,6 +17,8 @@ RactiveCodePane = Ractive.extend({
     lastCompileFailed: undefined # Boolean
     jumpToCode:        undefined # { start: Int, end: Int }
     jumpToProcedure:   undefined # String
+    compilerErrors:    []        # Array[CompilerError | String]
+    runtimeErrors:     []        # Array[{ message: String, start: Int, end: Int }]
 
     # Internal State
     procedureNames:          {} # Object<String, Number>
@@ -44,6 +46,10 @@ RactiveCodePane = Ractive.extend({
       @_jumpToCode()
     jumpToProcedure: ->
       @_jumpToProcedure()
+    compilerErrors: ->
+      @_markErrors()
+    runtimeErrors: ->
+      @_markErrors()
   }
 
   on: {
@@ -54,14 +60,17 @@ RactiveCodePane = Ractive.extend({
       @_jumpToCode()
       @_jumpToProcedure()
       @_computeProcedureOptions()
+      @_markErrors()
       return
 
     recompile: ->
+      @clearErrors()
       @_setupAutoComplete(@_autoCompleteWords())
       @findComponent('codeContainer').focus()
       return
 
     'code-changed': (_, code) ->
+      @clearErrors()
       @set('code', code)
       return
 
@@ -91,6 +100,22 @@ RactiveCodePane = Ractive.extend({
   # () => Unit
   refresh: ->
     @findComponent('codeContainer').refresh()
+    return
+
+  # () => Unit
+  clearErrors: ->
+    if @get('compilerErrors').length > 0 or @get('runtimeErrors').length > 0
+      @set({ compilerErrors: [], runtimeErrors: [] })
+    return
+
+  # () => Unit
+  _markErrors: ->
+    toMarker = (className) -> (error) ->
+      { start: error.start, end: error.end, message: error.message, className }
+    markers =
+      @get('compilerErrors').map(toMarker('netlogo-code-error-marker'))
+        .concat(@get('runtimeErrors').map(toMarker('netlogo-code-runtime-error-marker')))
+    @findComponent('codeContainer')?.set('errorMarkers', markers)
     return
 
   # () => Unit

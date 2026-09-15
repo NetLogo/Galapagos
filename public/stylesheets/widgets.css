@@ -959,6 +959,18 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   font-weight:     bold;
 }
 
+.netlogo-code-error-marker {
+  text-decoration:            underline wavy red;
+  text-decoration-skip-ink:   none;
+  text-underline-offset:      3px;
+}
+
+.netlogo-code-runtime-error-marker {
+  text-decoration:            underline wavy #c46a00;
+  text-decoration-skip-ink:   none;
+  text-underline-offset:      3px;
+}
+
 .netlogo-widget-error {
   color: red;
 }
