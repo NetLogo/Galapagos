@@ -2,6 +2,8 @@ RactiveCodeContainerBase = Ractive.extend({
 
   _editor: undefined # CodeMirror
 
+  _errorMarks: undefined # Array[CodeMirror.TextMarker]
+
   data: -> {
     code:           undefined # String
   , extraClasses:   undefined # Array[String]
@@ -17,6 +19,8 @@ RactiveCodeContainerBase = Ractive.extend({
     # Widget edit forms jump to an error's location the same way the code pane does, and sliders use the one-line
     # editor, so this lives on the base rather than on the multiline one.  -Jeremy B September 2026
   , jumpToCode:     undefined # { start: Int, end: Int }
+
+  , errorMarkers:   undefined # Array[{ start: Int, end: Int, message: String, className: String }]
 
   , tabindex:       undefined # String
   , 'aria-label':   undefined # String
@@ -52,6 +56,33 @@ RactiveCodeContainerBase = Ractive.extend({
       @highlightLocation(location)
     return
 
+  # () => Unit
+  clearErrorMarkers: () ->
+    (@_errorMarks ? []).forEach( (mark) -> mark.clear() )
+    @_errorMarks = []
+    return
+
+  # () => Unit
+  markErrors: () ->
+    if not @_editor?
+      return
+    @clearErrorMarkers()
+    markers  = @get('errorMarkers') ? []
+    lastChar = @_editor.getValue().length
+    marks    = []
+    for marker in markers when marker.start? and marker.end?
+      startIndex = Math.max(0, Math.min(marker.start, lastChar))
+      endIndex   = Math.max(startIndex + 1, Math.min(marker.end, lastChar))
+      if startIndex < lastChar
+        options = { className: (marker.className ? 'netlogo-code-error-marker') }
+        if marker.message?
+          options.title = marker.message
+        from = @_editor.posFromIndex(startIndex)
+        to   = @_editor.posFromIndex(endIndex)
+        marks.push(@_editor.markText(from, to, options))
+    @_errorMarks = marks
+    return
+
   _setupCodeMirror: ->
 
     id        = @get('id')
@@ -71,6 +102,7 @@ RactiveCodeContainerBase = Ractive.extend({
 
     @_editor.on('change', =>
       code = @_editor.getValue()
+      @clearErrorMarkers()
       @set('code', code)
       @parent.fire('code-changed', code)
       @get('onchange')(code)
@@ -93,6 +125,7 @@ RactiveCodeContainerBase = Ractive.extend({
     # Registered here rather than in an `observe` block so the subclasses' own blocks don't shadow it.
     # -Jeremy B September 2026
     @observe('jumpToCode', (-> @jumpToCode(); return))
+    @observe('errorMarkers', (-> @markErrors(); return))
 
     return
 
