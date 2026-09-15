@@ -28,6 +28,7 @@ import { keybinds } from "./accessibility/keybinds.js"
 import { inspectionKeybindGroup } from "./ractives/inspection-pane.js"
 import { setSortingKeys } from "./accessibility/widgets.js"
 import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from "./accessibility/events.js"
+import { isModelCodeError } from "/runtime-error-utils.js"
 
 MONITOR_QUALITY_INCREASE = 5
 MAX_VIEW_QUALITY         = 14
@@ -247,7 +248,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
           exception.sourceStart? and exception.sourceEnd? and
             isSomething(exception.sourceStart) and isSomething(exception.sourceEnd)
         codePaneErrors =
-          if hasLocation and (exception.stackTrace ? []).length > 0
+          if hasLocation and isModelCodeError(exception)
             [{
               message: "#{exception.message}\n#{exception.stackTraceMessage}"
               start:   toArray(exception.sourceStart)[0]

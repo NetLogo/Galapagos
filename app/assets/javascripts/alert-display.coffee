@@ -1,3 +1,5 @@
+import { isModelCodeError } from "/runtime-error-utils.js"
+
 { isSomething, toArray } = tortoise_require('brazier/maybe')
 
 contains = (s, x) -> s.indexOf(x) > -1
@@ -8,6 +10,7 @@ class AlertDisplay
 
     isLinkableProcedure = (type, name) => @isLinkableProcedure(type, name)
     isKnownProcedure    = (type, name) => @isKnownProcedure(type, name)
+    isStringRun         = (type)       => @isStringRun(type)
 
     @_ractive = new Ractive({
       el:       container
@@ -47,6 +50,7 @@ class AlertDisplay
 
       isLinkableProcedure: isLinkableProcedure
       isKnownProcedure:    isKnownProcedure
+      isStringRun:         isStringRun
 
     })
 
@@ -154,10 +158,11 @@ class AlertDisplay
 
   @makeBareFrameError: (frame) ->
     switch frame.type
-      when 'command'  then "called by command #{frame.name.toUpperCase()}"
-      when 'reporter' then "called by reporter #{frame.name.toUpperCase()}"
-      when 'plot'     then "called by plot #{frame.name}"
-      else                 'called by unknown'
+      when 'command'          then "called by command #{frame.name.toUpperCase()}"
+      when 'reporter'         then "called by reporter #{frame.name.toUpperCase()}"
+      when 'plot'             then "called by plot #{frame.name}"
+      when 'run', 'runresult' then 'called by running a string of code'
+      else                         'called by unknown'
 
   # The alert's message is raw HTML, so a link back into the code has to carry its handler as an inline `onclick` that
   # fires on the enclosing ractive.  -Jeremy B September 2026
@@ -325,9 +330,7 @@ class AlertDisplay
 
     else
       message = if exception instanceof Exception.RuntimeException
-        if source is 'button' and exception.stackTrace.length is 0
-          # An empty stack trace means the error came straight from the button's own code, not from a procedure it
-          # called, so the location is an offset into that button's source.  -Jeremy B September 2026
+        if source is 'button' and not isModelCodeError(exception)
           AlertDisplay.makeButtonRuntimeErrorMessage(
             exception.message
           , exception.primitive
@@ -485,6 +488,10 @@ class AlertDisplay
   isKnownProcedure: (type, name) ->
     ['command', 'reporter', 'plot'].includes(type)
 
+  # (String) => Boolean
+  isStringRun: (type) ->
+    ['run', 'runresult'].includes(type)
+
 # coffeelint: disable=max_line_length
 template = """
 <div class="dark-overlay alert-overlay"{{# !isActive}} style="display: none;"{{/}}>
@@ -503,6 +510,9 @@ template = """
 
         {{elseif @.isKnownProcedure(type, name) }}
           called by {{type}} {{name}}<br/>
+
+        {{elseif @.isStringRun(type) }}
+          called by running a string of code<br/>
 
         {{else}}
           called by unknown<br/>
