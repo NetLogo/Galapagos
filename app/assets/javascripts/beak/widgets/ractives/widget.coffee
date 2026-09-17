@@ -241,6 +241,11 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     @notifyWidgetMoved()
     return
 
+  # () => Unit
+  handleDragEnd: ->
+    @notifyWidgetMoved()
+    return
+
   # (Object[Number]) => Unit
   handleResize: ({ x, width, y, height }) ->
     @set('widget.x'     , x)
@@ -398,9 +403,6 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       finally
         return false
 
-    "*.stop-widget-drag": (_) ->
-      @notifyWidgetMoved()
-
   }
 
   # coffeelint: disable=max_line_length
@@ -409,16 +411,13 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       """
       {{ #isEditing }}
       <div
-        draggable="true"
         style="{{dims}}"
         class="editor-overlay{{#isSelected}} selected{{/}}{{#widget.type === 'plot' || widget.type === 'hnwPlot'}} plot-overlay{{/}}"
         on-click="@this.fire('hide-context-menu') && @this.fire('select-widget', @event)"
         on-keydown="@this.fire('on-editor-overlay-keydown', @event)"
         on-contextmenu="show-context-menu"
         on-dblclick="@this.fire('edit-widget')"
-        on-dragstart="start-widget-drag"
-        on-drag="drag-widget"
-        on-dragend="stop-widget-drag"
+        on-pointerdown="start-widget-drag"
         on-focus="@this.fire('select-widget', @event)"
         on-blur="@this.fire('deselect-widgets')"
         on-copy="@this.fire('copy-current-value')"

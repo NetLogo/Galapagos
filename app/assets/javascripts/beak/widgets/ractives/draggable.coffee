@@ -1,4 +1,5 @@
 import RactiveContextable from "./contextable.js"
+import startPointerDrag   from "../pointer-drag.js"
 
 # The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`.
 # --Jason B. (11/23/17), David D. 7/2021
@@ -107,13 +108,6 @@ CommonDrag = {
 # Ugh.  Single inheritance is a pox.  --Jason B. (10/29/17)
 RactiveDraggableAndContextable = RactiveContextable.extend({
 
-  lastUpdateMs: undefined # Number
-  startX:       undefined # Number
-  startY:       undefined # Number
-  lastX:        undefined # Number
-  lastY:        undefined # Number
-  view:         undefined # Element
-
   data: -> {
     x: undefined # Number
   , y: undefined # Number
@@ -127,63 +121,41 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
       when "right" then                       @set('x', @get('x') + 1)
       else              console.log("'#{direction}' is an impossible direction for nudging...")
 
+  # Subclasses that care when a drag finishes override this.
+  # () => Unit
+  handleDragEnd: ->
+    return
+
   on: {
 
-    'start-widget-drag': (event) ->
-      CommonDrag.dragstart(this, event, (-> true), (x, y) =>
-        @fire('select-component', event.component)
-        @lastX  = @get('x')
-        @lastY  = @get('y')
-        @startX = @lastX - x
-        @startY = @lastY - y
-      )
+    'start-widget-drag': ({ component, node, original }) ->
 
-    'drag-widget': (event) ->
+      startX = undefined
+      startY = undefined
 
-      isMac      = window.navigator.platform.startsWith('Mac')
-      isSnapping = ((not isMac and not event.original.ctrlKey) or (isMac and not event.original.metaKey))
+      startPointerDrag(node, original, {
 
-      CommonDrag.drag(this, event, (x, y) =>
+        onStart: =>
+          @fire('select-component', component)
+          startX = @get('x')
+          startY = @get('y')
+          return
 
-        fineAdjustment = (n) -> n - (Math.round(n / 5) * 5)
+        onMove: ({ dx, dy, ctrlKey, metaKey }) =>
+          isMac      = window.navigator.platform.startsWith('Mac')
+          isSnapping = ((not isMac and not ctrlKey) or (isMac and not metaKey))
+          snap       = (n) -> if isSnapping then Math.round(n / 5) * 5 else n
+          @set('x', Math.max(0, snap(startX + dx)))
+          @set('y', Math.max(0, snap(startY + dy)))
+          return
 
-        xAdjust = if isSnapping then fineAdjustment(@startX + x) else 0
-        yAdjust = if isSnapping then fineAdjustment(@startY + y) else 0
+        onEnd: =>
+          @handleDragEnd()
+          return
 
-        newX = @startX + x - xAdjust
-        newY = @startY + y - yAdjust
+      })
 
-        # In Chromium, the very last drag event when the mouse button is released inside an iframe *sometimes* produces
-        # garbage values when the screen is scrolled away from top+left.  Rather than updating with the recent drag
-        # event we just got, we store it for next time and use the last one stored, ensuring we always skip the very
-        # last drag event.  The drag events occur pretty frequently, so there is very little chance of dropping things
-        # in the wrong spot.  There was a prior fix for this, but it relied on the garbage values being negative, which
-        # it turns out isn't always the case.  -Jeremy B August 2025
-        updateX = @lastX
-        updateY = @lastY
-
-        @lastX = newX
-        @lastY = newY
-
-        if updateX < 0
-          @set('x', 0)
-        else
-          @set('x', updateX)
-
-        if updateY < 0
-          @set('y', 0)
-        else
-          @set('y', updateY)
-
-      )
-
-    'stop-widget-drag': ->
-      CommonDrag.dragend(this, =>
-        @startX = undefined
-        @startY = undefined
-        @lastX  = undefined
-        @lastY  = undefined
-      )
+      return
 
   }
 
