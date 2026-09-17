@@ -1,13 +1,12 @@
 import { DiskSource, NewSource } from  './nlogo-source.js'
 import { WipData } from './wip-data.js'
-import createLoadChangesAlert from './widgets/ractives/work-in-progress-alert.js'
 
 # type WorkInProgressState =
 #   'enabled-and-empty' | 'enabled-with-unloaded-wip' | 'enabled-with-wip' | 'enabled-with-reversion'
 
 class WipListener
-  # (NamespaceStorage, String | null, Boolean)
-  constructor: (@storage, storageTag, @promptToLoad) ->
+  # (NamespaceStorage, String | null)
+  constructor: (@storage, storageTag) ->
     @storagePrefix = if storageTag? and storageTag.trim() isnt '' then "#{storageTag}:" else ""
     @_nlogoSource  = null
     @_data         = new WipData(@storage, @storagePrefix)
@@ -33,10 +32,7 @@ class WipListener
   setSession: (session) ->
     @session = session
     @setNlogoSource(session.nlogoSource)
-    state = @_syncState()
-    if state is 'enabled-with-unloaded-wip' and @promptToLoad
-      NetLogoToaster.addToast(createLoadChangesAlert(@getNlogoSource().type))
-
+    @_syncState()
     return
 
   # () => WorkInProgressState
@@ -58,11 +54,10 @@ class WipListener
   getModelTitle: () ->
     @session.modelTitle()
 
-  # () => WorkInProgressState
+  # () => Unit
   _syncState: () ->
-    state = @getState()
-    @session.widgetController.ractive.set('workInProgressState', state)
-    state
+    @session.widgetController.ractive.set('workInProgressState', @getState())
+    return
 
   # () => WipInfo | null
   getWip: () ->

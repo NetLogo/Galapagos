@@ -16,12 +16,6 @@ settings.set('locale', {
 , out: ((l) -> l)
 })
 
-settings.set('workInProgress.promptToLoad', {
-  def: 'Shown'
-, ractiveName: 'loadChangesPromptSetting'
-, in:  ((promptToLoad) -> if promptToLoad then 'Shown' else 'Hidden')
-, out: ((value)        -> value is 'Shown')
-})
 settings.set('useVerticalLayout', {
   def: 'below'
 , ractiveName: 'verticalLayoutSetting'
@@ -48,16 +42,6 @@ template = """
     <select value={{verticalLayoutSetting}} on-change="setting-changed">
       <option value="below">Below the model</option>
       <option value="right">To the right of the model</option>
-    </select>
-  </div>
-
-  <label class="setting-label">
-    Notice offering to load previously saved changes when a model opens:
-  </label>
-  <div class="setting-control">
-    <select value={{loadChangesPromptSetting}} on-change="setting-changed">
-      <option>Shown</option>
-      <option>Hidden</option>
     </select>
   </div>
 
