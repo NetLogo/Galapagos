@@ -31,6 +31,13 @@ import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from
 MONITOR_QUALITY_INCREASE = 5
 MAX_VIEW_QUALITY         = 14
 
+sourceDescriptions = {
+  url:              'model from the link'
+, disk:             'model from the uploaded file'
+, new:              'new blank model'
+, 'script-element': 'model from the page'
+}
+
 # (Element, Array[Widget], String, String,
 #   Boolean, NlogoSource, (String) => Boolean, ViewController) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
@@ -186,6 +193,12 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
       hasUnloadedWorkInProgress: ->
         @get('workInProgressState') is 'enabled-with-unloaded-wip'
+
+      # () => String
+      loadChangesDescription: ->
+        sourceName = sourceDescriptions[@get('source.type')] ? 'model'
+        "Unsaved changes to the #{sourceName} were found in your browser's cache. " +
+          "Load them to replace the model as linked."
 
     },
 
@@ -384,7 +397,9 @@ template =
               <button class="nlw-ui-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
                 {{#if hasUnloadedWorkInProgress}}
-                  <button class="nlw-ui-button attention" on-click="load-wip"{{#isEditing}} disabled{{/}}>Load Changes</button>
+                  <button class="nlw-ui-button attention" on-click="load-wip"
+                    title="{{loadChangesDescription}}" aria-description="{{loadChangesDescription}}"
+                    {{#isEditing}} disabled{{/}}>Load Changes</button>
                 {{elseif hasRevertedWork}}
                   <button class="nlw-ui-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
                 {{else}}
