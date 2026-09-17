@@ -384,7 +384,7 @@ template =
               <button class="nlw-ui-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
                 {{#if hasUnloadedWorkInProgress}}
-                  <button class="nlw-ui-button" on-click="load-wip"{{#isEditing}} disabled{{/}}>Load Changes</button>
+                  <button class="nlw-ui-button attention" on-click="load-wip"{{#isEditing}} disabled{{/}}>Load Changes</button>
                 {{elseif hasRevertedWork}}
                   <button class="nlw-ui-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
                 {{else}}

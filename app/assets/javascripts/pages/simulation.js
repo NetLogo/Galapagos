@@ -56,7 +56,7 @@ try {
       // `wipListener` needs to `getNlogo()` from the `SessionLite`.  Since the tangle is event-based I'm not too worried
       // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
       // January 2023
-      const wl = new WipListener(storage, settings.workInProgress.storageTag, settings.workInProgress.promptToLoad);
+      const wl = new WipListener(storage, settings.workInProgress.storageTag);
       listeners.push(wl);
       return wl;
     } else {
