@@ -15,7 +15,6 @@ import RactiveCodePane from "./ractives/code-pane.js"
 import RactiveInspectionPane from "./ractives/inspection-pane.js"
 import RactiveInfoTabWidget from "./ractives/info.js"
 import RactiveModelTitle from "./ractives/title.js"
-import createWorkInProgressAlert from "./ractives/work-in-progress-alert.js"
 import { RactivePlot, RactiveHNWPlot } from "./ractives/plot.js"
 import RactiveResizer from "./ractives/resizer.js"
 import RactiveAsyncUserDialog from "./ractives/async-user-dialog.js"
@@ -32,10 +31,17 @@ import { ractiveAccessibleClickEvent, ractiveCopyEvent, ractivePasteEvent } from
 MONITOR_QUALITY_INCREASE = 5
 MAX_VIEW_QUALITY         = 14
 
+sourceDescriptions = {
+  url:              'model from the link'
+, disk:             'model from the uploaded file'
+, new:              'new blank model'
+, 'script-element': 'model from the page'
+}
+
 # (Element, Array[Widget], String, String,
-#   Boolean, NlogoSource, String, Boolean, String, (String) => Boolean, ViewController) => Ractive
+#   Boolean, NlogoSource, (String) => Boolean, ViewController) => Ractive
 generateRactiveSkeleton = (container, widgets, code, info,
-  isReadOnly, source, workInProgressState, checkIsReporter, viewController) ->
+  isReadOnly, source, checkIsReporter, viewController) ->
 
   model = {
     checkIsReporter
@@ -46,8 +52,8 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , consoleOutput:         ''
   , exportForm:            false
   , hasFocus:              false
-  , workInProgressState
   , height:                0
+  , workInProgressState:   'disabled' # owned by WipListener once the session opens
   , hnwClients:            {}
   , hnwRoles:              {}
   , info
@@ -185,6 +191,15 @@ generateRactiveSkeleton = (container, widgets, code, info,
       hasRevertedWork: ->
         @get('workInProgressState') is 'enabled-with-reversion'
 
+      hasUnloadedWorkInProgress: ->
+        @get('workInProgressState') is 'enabled-with-unloaded-wip'
+
+      # () => String
+      loadChangesDescription: ->
+        sourceName = sourceDescriptions[@get('source.type')] ? 'model'
+        "Unsaved changes to the #{sourceName} were found in your browser's cache. " +
+          "Load them to replace the model as linked."
+
     },
 
     getContextMenuOptions: (clientX, clientY) ->
@@ -297,9 +312,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     oncomplete: ->
       @fire('track-focus', document.activeElement)
-      if @get('hasWorkInProgress')
-        wipToast = createWorkInProgressAlert(@get('source.type'))
-        NetLogoToaster.addToast(wipToast)
       @_initVersionFallback()
       document.addEventListener('click', => @set('fallbackMenuOpen', false))
       return
@@ -384,11 +396,15 @@ template =
               <span style="margin-right: 4px;">File:</span>
               <button class="nlw-ui-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>
               {{#!disableWorkInProgress}}
-                {{#!hasRevertedWork}}
-                  <button class="nlw-ui-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
-                {{else}}
+                {{#if hasUnloadedWorkInProgress}}
+                  <button class="nlw-ui-button attention" on-click="load-wip"
+                    title="{{loadChangesDescription}}" aria-description="{{loadChangesDescription}}"
+                    {{#isEditing}} disabled{{/}}>Load Changes</button>
+                {{elseif hasRevertedWork}}
                   <button class="nlw-ui-button" on-click="undo-revert"{{#isEditing}} disabled{{/}}>Undo Revert</button>
-                {{/}}
+                {{else}}
+                  <button class="nlw-ui-button" on-click="revert-wip"{{#!isRevertable}} disabled{{/}}>Revert to Original</button>
+                {{/if}}
               {{/}}
             </div>
             <div class="netlogo-export-wrapper" aria-label="Export Options" role="group">

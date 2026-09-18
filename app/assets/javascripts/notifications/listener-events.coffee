@@ -81,6 +81,10 @@ listenerEvents = Object.freeze([
     ]
   },
   {
+    'name': 'load-work-in-progress',
+    'args': []
+  },
+  {
     'name': 'revert-work-in-progress',
     'args': []
   },

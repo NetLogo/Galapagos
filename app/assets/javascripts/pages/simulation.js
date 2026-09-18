@@ -49,7 +49,7 @@ try {
   settings.applyQueryParams(params);
   const listeners = [];
 
-  const [wipListener, getWorkInProgress] = (() => {
+  const wipListener = (() => {
     if (settings.workInProgress.enabled) {
       const storage = new NamespaceStorage('netLogoWebWip', ls);
       // There is a bit of a circular dep as the `wipListener` is one of the `listeners` fed to `SessionLite`, but the
@@ -57,19 +57,10 @@ try {
       // about it, but ideally the nlogo info maintainer could be separate from both and passed in to both.  -Jeremy B
       // January 2023
       const wl = new WipListener(storage, settings.workInProgress.storageTag);
-      const gwip = (nlogoSource) => {
-        wl.setNlogoSource(nlogoSource);
-        const wipInfo = wl.getWip();
-        if (wipInfo !== null) {
-          nlogoSource.setModelTitle(wipInfo.title);
-          return wipInfo.nlogo;
-        }
-        return nlogoSource.nlogo;
-      }
       listeners.push(wl);
-      return [wl, gwip];
+      return wl;
     } else {
-      return [null, null];
+      return null;
     }
   })();
 
@@ -150,23 +141,32 @@ try {
     attachQueryHandler(getSession);
   }
 
-  var loadModel = function(nlogo, sourceType, path, isUndoReversion) {
+  var loadSource = function(nlogoSource, workInProgressNlogo) {
     alerter.hide();
     if (globalThis.session) {
       globalThis.session.teardown();
     }
     activeContainer = loadingOverlay;
-    const nlogoSource = Tortoise.createSource(sourceType, path, nlogo);
     Tortoise.fromNlogo(
       nlogoSource
     , modelContainer
     , settings.locale
-    , isUndoReversion
-    , getWorkInProgress
+    , workInProgressNlogo
     , handleCompileResult
     , []
     , listeners
     );
+  }
+
+  var loadModel = function(nlogo, sourceType, path) {
+    loadSource(Tortoise.createSource(sourceType, path, nlogo), null);
+  }
+
+  var loadWorkInProgress = function() {
+    const wipInfo = wipListener !== null ? wipListener.loadWip() : null;
+    if (wipInfo !== null) {
+      loadSource(wipListener.getNlogoSource(), wipInfo.nlogo);
+    }
   }
 
   const redirectOnProtocolMismatch = function(url) {
@@ -223,8 +223,7 @@ try {
       nlogoSource
     , modelContainer
     , settings.locale
-    , false
-    , getWorkInProgress
+    , null
     , handleCompileResult
     , []
     , listeners
@@ -239,7 +238,6 @@ try {
         url
       , modelContainer
       , settings.locale
-      , getWorkInProgress
       , handleCompileResult
       , []
       , listeners
@@ -248,7 +246,7 @@ try {
 
   } else {
     notifyListeners('model-load', 'new-model');
-    loadModel(newModel, 'new', 'NewModel', false);
+    loadModel(newModel, 'new', 'NewModel');
   }
 
   window.addEventListener('message', function (e) {
@@ -263,38 +261,31 @@ try {
     switch (e.data.type) {
       case 'nlw-load-model': {
         notifyListeners('model-load', 'file', e.data.path);
-        loadModel(e.data.nlogo, 'disk', e.data.path, false);
+        loadModel(e.data.nlogo, 'disk', e.data.path);
         break;
       }
       case 'nlw-open-new': {
         notifyListeners('model-load', 'new-model');
         params.delete('url');
         window.location.search = params.toString();
-        loadModel(newModel, 'new', 'NewModel', false);
+        loadModel(newModel, 'new', 'NewModel');
+        break;
+      }
+      case 'nlw-load-wip': {
+        notifyListeners('load-work-in-progress');
+        loadWorkInProgress();
         break;
       }
       case 'nlw-revert-wip': {
         notifyListeners('revert-work-in-progress');
         wipListener.revertWip();
-        const nlogoSource = wipListener.getNlogoSource();
-        loadModel(
-          nlogoSource.nlogo
-        , nlogoSource.type
-        , nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName
-        , false
-        );
+        loadSource(wipListener.getNlogoSource(), null);
         break;
       }
       case 'nlw-undo-revert': {
         notifyListeners('undo-revert');
         wipListener.undoRevert();
-        const nlogoSource = wipListener.getNlogoSource();
-        loadModel(
-          nlogoSource.nlogo
-        , nlogoSource.type
-        , nlogoSource.type === "url" ? encodeURI(nlogoSource.url) : nlogoSource.fileName
-        , true
-        );
+        loadWorkInProgress();
         break;
       }
       // nlw-set-model-code EXAMPLE:

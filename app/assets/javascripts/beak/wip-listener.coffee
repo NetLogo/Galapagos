@@ -1,6 +1,9 @@
 import { DiskSource, NewSource } from  './nlogo-source.js'
 import { WipData } from './wip-data.js'
 
+# type WorkInProgressState =
+#   'enabled-and-empty' | 'enabled-with-unloaded-wip' | 'enabled-with-wip' | 'enabled-with-reversion'
+
 class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
@@ -9,30 +12,39 @@ class WipListener
     @_data         = new WipData(@storage, @storagePrefix)
     @session       = null
     @reverted      = null
+    @isLoaded      = false
 
+  # () => NlogoSource | null
   getNlogoSource: () ->
     @_nlogoSource
 
+  # (NlogoSource) => Unit
   setNlogoSource: (nlogoSource) ->
     @_data.update(nlogoSource)
     @_nlogoSource = nlogoSource
+    return
 
+  # () => String
   getWipKey: () ->
     "#{@storagePrefix}#{@getNlogoSource().getWipKey()}"
 
   # (SessionLite) => Unit
   setSession: (session) ->
     @session = session
-    # This is necessary in the case where we didn't tell the session there was WIP at initialization because we wanted
-    # to avoid the "loaded from cache" popup.  It's a bit icky, I know. -Jeremy B January 2023
-    if @reverted?
-      @session.widgetController.ractive.set('workInProgressState', 'enabled-with-reversion')
-
-    else
-      wipKey = @getWipKey()
-      @notifyOfWorkInProgress(@storage.hasKey(wipKey))
-
+    @setNlogoSource(session.nlogoSource)
+    @_syncState()
     return
+
+  # () => WorkInProgressState
+  getState: () ->
+    if @reverted?
+      'enabled-with-reversion'
+    else if not @storage.hasKey(@getWipKey())
+      'enabled-and-empty'
+    else if @isLoaded
+      'enabled-with-wip'
+    else
+      'enabled-with-unloaded-wip'
 
   # () => String
   getCurrentNlogo: () ->
@@ -43,22 +55,35 @@ class WipListener
     @session.modelTitle()
 
   # () => Unit
-  notifyOfWorkInProgress: (hasWip) ->
-    state = if hasWip then 'enabled-with-wip' else 'enabled-and-empty'
-    @session.widgetController.ractive.set('workInProgressState', state)
+  _syncState: () ->
+    @session.widgetController.ractive.set('workInProgressState', @getState())
     return
 
-  # (NamespaceStorage, NlogoSource, String) => WipInfo | null
+  # () => WipInfo | null
   getWip: () ->
     wipKey   = @getWipKey()
     maybeWip = @storage.get(wipKey)
     if maybeWip? then maybeWip else null
 
+  # Marks the stored changes as the ones the next session will run.  The caller reloads the model with the returned
+  # nlogo so the source keeps the original contents for reverting.
+  # () => WipInfo | null
+  loadWip: () ->
+    wipInfo = @getWip()
+    if wipInfo?
+      @isLoaded = true
+      @getNlogoSource().setModelTitle(wipInfo.title)
+    wipInfo
+
   # () => Unit
   revertWip: () ->
-    wipKey = @getWipKey()
+    wipKey    = @getWipKey()
     @reverted = @storage.get(wipKey)
+    @isLoaded = false
     @storage.remove(wipKey)
+    # Loading and storing changes both stamp the source with the saved title, so drop it here for the original to
+    # show its own title when reloaded.  --Omar Ibrahim, Sep 14 26
+    @getNlogoSource().setModelTitle(null)
     return
 
   # () => Unit
@@ -71,13 +96,14 @@ class WipListener
   # (String, String, String) => Unit
   _storeWipInfo: (wipKey, newNlogo, title) ->
     @_data.store(wipKey, newNlogo, title)
-    @notifyOfWorkInProgress(true)
+    @isLoaded = true
+    @_syncState()
     return
 
   # (String) => Unit
   _removeWipInfo: (wipKey) ->
     @storage.remove(wipKey)
-    @notifyOfWorkInProgress(false)
+    @_syncState()
     return
 
   # (String) => Unit

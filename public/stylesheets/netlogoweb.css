@@ -64,6 +64,14 @@
 .nlw-ui-button.selected {
   background: var(--color-ui-button-selected-bg);
 }
+.nlw-ui-button.attention {
+  background:   var(--color-widget-button);
+  border-color: var(--color-widget-button);
+  color:        var(--color-widget-button-text);
+}
+.nlw-ui-button.attention:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--color-widget-button-active);
+}
 
 /* ── NLW UI Select (native select with custom caret) ── */
 .nlw-ui-select {
@@ -277,6 +285,12 @@
   margin-right:  20px;
   margin-bottom: 3px;
   flex:          1;
+}
+
+.toast-message a {
+  color:           inherit;
+  font-weight:     bold;
+  text-decoration: underline;
 }
 
 .toast-close {

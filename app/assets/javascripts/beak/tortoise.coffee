@@ -1,5 +1,5 @@
 import SessionLite from "./session-lite.js"
-import { DiskSource, NewSource, UrlSource, ScriptSource } from "./nlogo-source.js"
+import { DiskSource, NewSource, UrlSource, ScriptSource, isOldFormatNlogo } from "./nlogo-source.js"
 import {
   toNetLogoWebMarkdown,
   nlogoToSections,
@@ -10,10 +10,10 @@ import {
 } from "./tortoise-utils.js"
 import { createNotifier, listenerEvents } from "../notifications/listener-events.js"
 
-# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult,
-#  Boolean, String, String, NlogoSource, Boolean) => SessionLite
+# (String|DomElement, BrowserCompiler, Array[Rewriter], Array[Listener], ModelResult, ModelResult,
+#  Boolean, String, NlogoSource, Boolean) => SessionLite
 newSession = (container, compiler, rewriters, listeners, modelResult, origModelResult
-  isReadOnly, locale, workInProgressState, nlogoSource, lastCompileFailed) ->
+  isReadOnly, locale, nlogoSource, lastCompileFailed) ->
   { code, info, model: { result }, widgets: wiggies } = modelResult
   compilerErrors = if not origModelResult.model.success
     origModelResult.model.result
@@ -32,7 +32,6 @@ newSession = (container, compiler, rewriters, listeners, modelResult, origModelR
   , info
   , isReadOnly
   , locale
-  , workInProgressState
   , nlogoSource
   , result
   , lastCompileFailed
@@ -55,24 +54,28 @@ finishLoading = ->
 
 # type CompileCallback = (Result[SessionLite, Array[CompilerError | String]]) => Unit
 
-# (NlogoSource, Element, String, Boolean,
-#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromNlogo = (nlogoSource, container, locale, isUndoReversion,
-  getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# `workInProgressNlogo`, when given, is compiled in place of the source's own contents while the source stays the
+# authoritative original for reverting and change tracking.
+# (NlogoSource, Element, String, String | null, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromNlogo = (nlogoSource, container, locale, workInProgressNlogo,
+  callback, rewriters = [], listeners = []) ->
   startLoading(->
-    if nlogoSource.isOldFormat()
-      fromNlogoSync(nlogoSource, container, locale, isUndoReversion,
-        getWorkInProgress, callback, rewriters, listeners)
+    # Saved changes are always exported as nlogox XML, so choose the parser by what is actually compiled rather than
+    # by the format of the original.  --Omar Ibrahim, Sep 14 26
+    startingNlogo = workInProgressNlogo ? nlogoSource.nlogo
+    if isOldFormatNlogo(startingNlogo)
+      fromNlogoSync(nlogoSource, container, locale, workInProgressNlogo,
+        callback, rewriters, listeners)
     else
-      fromNlogoXMLSync(nlogoSource, container, locale, isUndoReversion,
-        getWorkInProgress, callback, rewriters, listeners)
+      fromNlogoXMLSync(nlogoSource, container, locale, workInProgressNlogo,
+        callback, rewriters, listeners)
 
     finishLoading()
   )
   return
 
-# (String, Element, String, (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
-fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], listeners = []) ->
+# (String, Element, String, CompileCallback, Array[Rewriter], Array[Listener]) => Unit
+fromURL = (url, container, locale, callback, rewriters = [], listeners = []) ->
   startLoading(() ->
     await fetch(url).then( (response) ->
       if not response.ok
@@ -86,9 +89,9 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
         nlogo = await response.text()
         urlSource = new UrlSource(url, nlogo)
         if urlSource.isOldFormat()
-          fromNlogoSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+          fromNlogoSync(urlSource, container, locale, null, callback, rewriters, listeners, [])
         else
-          fromNlogoXMLSync(urlSource, container, locale, false, getWorkInProgress, callback, rewriters, listeners, [])
+          fromNlogoXMLSync(urlSource, container, locale, null, callback, rewriters, listeners, [])
 
     ).catch( (ex) ->
       console.error('fromURL caught exception:', ex)
@@ -100,21 +103,16 @@ fromURL = (url, container, locale, getWorkInProgress, callback, rewriters = [], 
   )
   return
 
-fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
-  getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
+# (NlogoSource, Element, String, String | null, CompileCallback, Array[Rewriter], Array[Listener],
+#   Array[Widget]) => Unit
+fromNlogoXMLSync = (nlogoxSource, container, locale, workInProgressNlogo,
+  callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
-  startingNlogoXML    = nlogoxSource.nlogo
-  workInProgressState = 'disabled'
-  if getWorkInProgress isnt null
-    startingNlogoXML    = getWorkInProgress(nlogoxSource)
-    workInProgressState = if isUndoReversion or startingNlogoXML is nlogoxSource.nlogo
-      'enabled-and-empty'
-    else
-      'enabled-with-wip'
+  startingNlogoXML = workInProgressNlogo ? nlogoxSource.nlogo
 
   rewriter          = (newCode, rw) -> if rw.injectNlogoXML? then rw.injectNlogoXML(newCode) else newCode
   rewrittenNlogoXML = rewriters.reduce(rewriter, startingNlogoXML)
@@ -142,7 +140,6 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
     , result
     , false
     , locale
-    , workInProgressState
     , nlogoxSource
     , false
     )
@@ -167,7 +164,6 @@ fromNlogoXMLSync = (nlogoxSource, container, locale, isUndoReversion,
       , result
       , false
       , locale
-      , workInProgressState
       , nlogoxSource
       , true
       )
@@ -225,24 +221,16 @@ fromNlogoXMLWithoutCode = (nlogox, compiler) ->
   result.code = oldCode
   return result
 
-# (NlogoSource, Element, String, Boolean,
-#   (NlogoSource) => String, CompileCallback, Array[Rewriter], Array[Listener],
+# (NlogoSource, Element, String, String | null, CompileCallback, Array[Rewriter], Array[Listener],
 #   Array[Widget]) => Unit
-fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
-  getWorkInProgress, callback, rewriters, listeners, extraWidgets = []) ->
+fromNlogoSync = (nlogoSource, container, locale, workInProgressNlogo,
+  callback, rewriters, listeners, extraWidgets = []) ->
 
   compiler = new BrowserCompiler()
 
   notifyListeners = createNotifier(listenerEvents, listeners)
 
-  startingNlogo       = nlogoSource.nlogo
-  workInProgressState = 'disabled'
-  if getWorkInProgress isnt null
-    startingNlogo       = getWorkInProgress(nlogoSource)
-    workInProgressState = if isUndoReversion or startingNlogo is nlogoSource.nlogo
-      'enabled-and-empty'
-    else
-      'enabled-with-wip'
+  startingNlogo = workInProgressNlogo ? nlogoSource.nlogo
 
   rewriter       = (newCode, rw) -> if rw.injectNlogo? then rw.injectNlogo(newCode) else newCode
   rewrittenNlogo = rewriters.reduce(rewriter, startingNlogo)
@@ -269,7 +257,6 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
     , result
     , false
     , locale
-    , workInProgressState
     , nlogoSource
     , false
     )
@@ -294,7 +281,6 @@ fromNlogoSync = (nlogoSource, container, locale, isUndoReversion,
       , result
       , false
       , locale
-      , workInProgressState
       , nlogoSource
       , true
       )
@@ -439,7 +425,7 @@ workspace.dump = miniDump;
     }
 
   session = newSession( container, compiler, [], listeners, model, model, false, "en_us"
-                      , null, new NewSource(""), false)
+                      , new NewSource(""), false)
   callback(session)
 
   return

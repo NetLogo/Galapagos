@@ -16,12 +16,6 @@ settings.set('locale', {
 , out: ((l) -> l)
 })
 
-settings.set('workInProgress.enabled', {
-  def: 'Enabled'
-, ractiveName: 'workInProgressSetting'
-, in:  ((wipEnabled) -> if wipEnabled then 'Enabled' else 'Disabled')
-, out: ((value)      -> value is 'Enabled')
-})
 settings.set('useVerticalLayout', {
   def: 'below'
 , ractiveName: 'verticalLayoutSetting'
@@ -48,16 +42,6 @@ template = """
     <select value={{verticalLayoutSetting}} on-change="setting-changed">
       <option value="below">Below the model</option>
       <option value="right">To the right of the model</option>
-    </select>
-  </div>
-
-  <label class="setting-label">
-    Automatically save changes made to models and reuse them when reloading:
-  </label>
-  <div class="setting-control">
-    <select value={{workInProgressSetting}} on-change="setting-changed">
-      <option>Enabled</option>
-      <option>Disabled</option>
     </select>
   </div>
 

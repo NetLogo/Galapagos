@@ -59,9 +59,6 @@ class Settings
     if storage.hasKey('useVerticalLayout')
       @useVerticalLayout = storage.get('useVerticalLayout')
 
-    if storage.hasKey('workInProgress.enabled')
-      @workInProgress.enabled = storage.get('workInProgress.enabled')
-
     if storage.hasKey('viewQuality')
       @viewQuality = storage.get('viewQuality')
 
