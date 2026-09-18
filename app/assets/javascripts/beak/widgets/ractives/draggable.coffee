@@ -1,5 +1,4 @@
 import RactiveContextable from "./contextable.js"
-import startPointerDrag   from "../pointer-drag.js"
 
 # The `ractive` argument should have the properties `view: Element` and `lastUpdateMs: Number`.
 # --Jason B. (11/23/17), David D. 7/2021
@@ -113,50 +112,22 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
   , y: undefined # Number
   }
 
-  nudge: (direction) ->
-    switch direction
-      when "up"    then if @get('y') > 0 then @set('y', @get('y') - 1)
-      when "down"  then                       @set('y', @get('y') + 1)
-      when "left"  then if @get('x') > 0 then @set('x', @get('x') - 1)
-      when "right" then                       @set('x', @get('x') + 1)
-      else              console.log("'#{direction}' is an impossible direction for nudging...")
+  # (Number, Number) => Unit
+  moveTo: (x, y) ->
+    @set('x', x)
+    @set('y', y)
+    return
 
-  # Subclasses that care when a drag finishes override this.
+  # Subclasses that care when a move finishes override this.
   # () => Unit
-  handleDragEnd: ->
+  handleMoveEnd: ->
     return
 
   on: {
 
-    'start-widget-drag': ({ component, node, original }) ->
-
-      startX = undefined
-      startY = undefined
-
+    'start-widget-drag': ({ node, original }) ->
       @fire('select-from-pointer', original)
-
-      startPointerDrag(node, original, {
-
-        onStart: =>
-          @fire('select-component', component)
-          startX = @get('x')
-          startY = @get('y')
-          return
-
-        onMove: ({ dx, dy, ctrlKey, metaKey }) =>
-          isMac      = window.navigator.platform.startsWith('Mac')
-          isSnapping = ((not isMac and not ctrlKey) or (isMac and not metaKey))
-          snap       = (n) -> if isSnapping then Math.round(n / 5) * 5 else n
-          @set('x', Math.max(0, snap(startX + dx)))
-          @set('y', Math.max(0, snap(startY + dy)))
-          return
-
-        onEnd: =>
-          @handleDragEnd()
-          return
-
-      })
-
+      @fire('begin-widget-drag', node, original)
       return
 
   }

@@ -1,9 +1,37 @@
-import WidgetSelection from "./widget-selection.js"
+import WidgetSelection  from "./widget-selection.js"
+import startPointerDrag from "./pointer-drag.js"
 
 isMac = window.navigator.platform.startsWith('Mac')
 
+GRID_SIZE = 5
+
 isTogglingSelection = (domEvent) ->
   domEvent? and (domEvent.shiftKey or (if isMac then domEvent.metaKey else domEvent.ctrlKey))
+
+isFreeMoving = (domEvent) ->
+  if isMac then domEvent.metaKey else domEvent.ctrlKey
+
+# (Array[Ractive]) => Array[{ component: Ractive, x0: Number, y0: Number }]
+snapshotPositions = (components) ->
+  components.map( (component) -> { component, x0: component.get('x'), y0: component.get('y') } )
+
+# (Array[{ x0: Number, y0: Number }], Number, Number) => [Number, Number]
+clampGroupOffset = (starts, dx, dy) ->
+  minX = Math.min(starts.map( ({ x0 }) -> x0 )...)
+  minY = Math.min(starts.map( ({ y0 }) -> y0 )...)
+  [Math.max(dx, -minX), Math.max(dy, -minY)]
+
+# (Array[{ component: Ractive, x0: Number, y0: Number }], Number, Number) => Unit
+moveGroupBy = (starts, dx, dy) ->
+  for { component, x0, y0 } in starts
+    component.moveTo(x0 + dx, y0 + dy)
+  return
+
+# (Array[{ component: Ractive, x0: Number, y0: Number }]) => Unit
+finishGroupMove = (starts) ->
+  for { component, x0, y0 } in starts when component.get('x') isnt x0 or component.get('y') isnt y0
+    component.handleMoveEnd()
+  return
 
 # (Ractive) => Unit
 handleWidgetSelection =
@@ -53,10 +81,37 @@ handleWidgetSelection =
                 ractive.fire('unregister-widget', widget.id, false, component.getExtraNotificationArgs())
         return
 
-    justSelectIt =
-      (event) ->
-        if not selection.has(event.component)
-          selection.set(event.component)
+    beginWidgetDrag =
+      (event, node, domEvent) ->
+        if ractive.get('isEditing')
+
+          component = event.component
+          starts    = []
+          grabbed   = undefined
+
+          startPointerDrag(node, domEvent, {
+
+            onStart: ->
+              if not selection.has(component)
+                selection.set(component)
+              starts  = snapshotPositions(selection.all())
+              grabbed = starts.find( (start) -> start.component is component )
+              return
+
+            onMove: (info) ->
+              if grabbed?
+                snap       = (n) -> if isFreeMoving(info) then n else Math.round(n / GRID_SIZE) * GRID_SIZE
+                [dx, dy]   = clampGroupOffset(starts
+                                             , snap(grabbed.x0 + info.dx) - grabbed.x0
+                                             , snap(grabbed.y0 + info.dy) - grabbed.y0)
+                moveGroupBy(starts, dx, dy)
+              return
+
+            onEnd: ->
+              finishGroupMove(starts)
+              return
+
+          })
         return
 
     isSelectingByPointer = false
@@ -114,15 +169,25 @@ handleWidgetSelection =
       (event, direction, nudgeFar) ->
         selected = selection.all()
         if selected.length > 0 and (not ractive.get('someDialogIsOpen'))
-          repeatCount = if nudgeFar then 10 else 1
-          for i in [1..repeatCount]
-            for component in selected
-              component.nudge(direction)
+          distance = if nudgeFar then 10 else 1
+          [wantX, wantY] =
+            switch direction
+              when "up"    then [        0, -distance]
+              when "down"  then [        0,  distance]
+              when "left"  then [-distance,         0]
+              when "right" then [ distance,         0]
+              else
+                console.log("'#{direction}' is an impossible direction for nudging...")
+                [0, 0]
+          starts   = snapshotPositions(selected)
+          [dx, dy] = clampGroupOffset(starts, wantX, wantY)
+          moveGroupBy(starts, dx, dy)
+          finishGroupMove(starts)
           false
         else
           true
 
-    ractive.on('*.select-component'   , justSelectIt)
+    ractive.on('*.begin-widget-drag'  , beginWidgetDrag)
     ractive.on('*.select-from-pointer', selectFromPointer)
     ractive.on('*.select-widget'      , selectThatWidget)
     ractive.on('deselect-widgets'     , deselectThoseWidgets)

@@ -236,13 +236,8 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     @fire('widget-moved', widget.id, widget.type, widget.y, widget.height, widget.x, widget.width)
     return
 
-  nudge: (direction) ->
-    @_super(direction)
-    @notifyWidgetMoved()
-    return
-
   # () => Unit
-  handleDragEnd: ->
+  handleMoveEnd: ->
     @notifyWidgetMoved()
     return
 

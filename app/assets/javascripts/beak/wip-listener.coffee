@@ -3,6 +3,7 @@ import { WipData } from './wip-data.js'
 
 # type WorkInProgressState =
 #   'enabled-and-empty' | 'enabled-with-unloaded-wip' | 'enabled-with-wip' | 'enabled-with-reversion'
+WIP_SAVE_INTERVAL_MS = 300
 
 class WipListener
   # (NamespaceStorage, String | null)
@@ -14,6 +15,14 @@ class WipListener
     @reverted       = null
     @revertedWipKey = null
     @loadedWipKey   = null
+    @_saveTimerId   = null
+
+    globalThis.addEventListener?('pagehide', ( => @flushWip() ))
+    globalThis.addEventListener?('visibilitychange', ( =>
+      if globalThis.document?.visibilityState is 'hidden'
+        @flushWip()
+      return
+    ))
 
   # () => NlogoSource | null
   getNlogoSource: () ->
@@ -79,6 +88,7 @@ class WipListener
 
   # () => Unit
   revertWip: () ->
+    @_cancelPendingSave()
     wipKey          = @getWipKey()
     @reverted       = @storage.get(wipKey)
     @revertedWipKey = wipKey
@@ -91,6 +101,7 @@ class WipListener
 
   # () => Unit
   undoRevert: () ->
+    @_cancelPendingSave()
     if @reverted? and @revertedWipKey is @getWipKey()
       @storage.set(@revertedWipKey, @reverted)
       @reverted       = null
@@ -133,6 +144,30 @@ class WipListener
     return
 
   # () => Unit
+  _scheduleSetWip: () ->
+    if not @_saveTimerId?
+      @_saveTimerId = globalThis.setTimeout(( =>
+        @_saveTimerId = null
+        @_maybeSetWip()
+        return
+      ), WIP_SAVE_INTERVAL_MS)
+    return
+
+  # () => Boolean
+  _cancelPendingSave: () ->
+    wasPending = @_saveTimerId?
+    if wasPending
+      globalThis.clearTimeout(@_saveTimerId)
+      @_saveTimerId = null
+    wasPending
+
+  # () => Unit
+  flushWip: () ->
+    if @_cancelPendingSave()
+      @_maybeSetWip()
+    return
+
+  # () => Unit
   _maybeSetWip: () ->
     try
       result = @getCurrentNlogo()
@@ -159,19 +194,19 @@ class WipListener
   _filterCompileErrors: (compilerErrorArgs) ->
     isUserChange = ['recompile'].includes(compilerErrorArgs.source)
     if isUserChange
-      @_maybeSetWip()
+      @_scheduleSetWip()
 
     return
 
   # These are the Listener events.
-  'recompile-complete':   () -> @_maybeSetWip()
+  'recompile-complete':   () -> @_scheduleSetWip()
   'compiler-error':       (_, e) -> @_filterCompileErrors(e)
-  'new-widget-finalized': () -> @_maybeSetWip()
-  'widget-updated':       () -> @_maybeSetWip()
-  'widget-deleted':       () -> @_maybeSetWip()
-  'widget-moved':         () -> @_maybeSetWip()
-  'info-updated':         () -> @_maybeSetWip()
-  'title-changed':        () -> @_maybeSetWip()
+  'new-widget-finalized': () -> @_scheduleSetWip()
+  'widget-updated':       () -> @_scheduleSetWip()
+  'widget-deleted':       () -> @_scheduleSetWip()
+  'widget-moved':         () -> @_scheduleSetWip()
+  'info-updated':         () -> @_scheduleSetWip()
+  'title-changed':        () -> @_scheduleSetWip()
   'nlogo-exported':       (_, { fileName, nlogo }) -> @_updateForFileExport(fileName, nlogo)
 
 export { WipListener }
