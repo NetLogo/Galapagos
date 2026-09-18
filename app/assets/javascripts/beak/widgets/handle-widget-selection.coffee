@@ -1,3 +1,10 @@
+import WidgetSelection from "./widget-selection.js"
+
+isMac = window.navigator.platform.startsWith('Mac')
+
+isTogglingSelection = (domEvent) ->
+  domEvent? and (domEvent.shiftKey or (if isMac then domEvent.metaKey else domEvent.ctrlKey))
+
 # (Ractive) => Unit
 handleWidgetSelection =
   (ractive) ->
@@ -6,31 +13,64 @@ handleWidgetSelection =
       ->
         ractive.findComponent('resizer')
 
+    # (Ractive) => Boolean
+    isDeletable =
+      (component) ->
+        widget = component.get('widget')
+        widget? and (widget.type isnt "view")
+
+    selection =
+      new WidgetSelection( (components) ->
+        ractive.set('selectedWidgetCount'   , components.length)
+        ractive.set('selectedDeletableCount', components.filter(isDeletable).length)
+        resizer()?.showFor(if components.length is 1 then components[0] else null)
+        return
+      )
+
     lockSelection =
       (_, component) ->
-        resizer().lockTarget(component)
+        if component? and not selection.has(component)
+          selection.set(component)
+        selection.lock()
         return
 
     unlockSelection =
       ->
-        resizer().unlockTarget()
+        selection.unlock()
         return
 
     deleteSelected =
       ->
-        selected = resizer().get('target')
-        if ractive.get('isEditing') and selected?
-          widget            = selected.get('widget')
+        if ractive.get('isEditing')
+          selection.unlock()
+          doomed            = selection.all().filter(isDeletable)
           hasNoEditWindowUp = not document.querySelector('.widget-edit-popup')?
-          if widget? and (widget.type isnt "view") and hasNoEditWindowUp
-            unlockSelection()
-            deselectThoseWidgets()
-            ractive.fire('unregister-widget', widget.id, false, selected.getExtraNotificationArgs())
+          if doomed.length > 0 and hasNoEditWindowUp
+            if doomed.length is 1 or window.confirm("Delete these #{doomed.length} widgets?")
+              selection.clear()
+              for component in doomed
+                widget = component.get('widget')
+                ractive.fire('unregister-widget', widget.id, false, component.getExtraNotificationArgs())
         return
 
     justSelectIt =
       (event) ->
-        resizer().setTarget(event.component)
+        if not selection.has(event.component)
+          selection.set(event.component)
+        return
+
+    isSelectingByPointer = false
+
+    selectFromPointer =
+      (event, domEvent) ->
+        if ractive.get("isEditing") and (domEvent.button is 0)
+          isSelectingByPointer = true
+          setTimeout((-> isSelectingByPointer = false), 0)
+          domEvent.stopPropagation()
+          if isTogglingSelection(domEvent)
+            selection.toggle(event.component)
+          else if not selection.has(event.component)
+            selection.set(event.component)
         return
 
     selectThatWidget =
@@ -38,12 +78,20 @@ handleWidgetSelection =
         if ractive.get("isEditing")
           trueEvent.preventDefault()
           trueEvent.stopPropagation()
-          justSelectIt(event)
+          component = event.component
+          if trueEvent.type is 'click'
+            # A drag eats its own click, so a click arriving here means the press stayed put.  As on the desktop, that
+            # narrows a multi-selection down to the widget that was clicked.
+            if (not isTogglingSelection(trueEvent)) and (selection.size() > 1 or not selection.has(component))
+              selection.set(component)
+          else if (not isSelectingByPointer) and (not selection.has(component))
+            selection.set(component)
         return
 
     deselectThoseWidgets =
-      ->
-        resizer().clearTarget()
+      (_, domEvent) ->
+        if not isTogglingSelection(domEvent)
+          selection.clear()
         return
 
     ractive.observe("isEditing"
@@ -64,23 +112,24 @@ handleWidgetSelection =
     # (KeyboardEvent, "up" | "down" | "left" | "right", Boolean) => Boolean
     nudgeWidget =
       (event, direction, nudgeFar) ->
-        selected = resizer().get('target')
-        if selected? and (not ractive.get('someDialogIsOpen'))
+        selected = selection.all()
+        if selected.length > 0 and (not ractive.get('someDialogIsOpen'))
           repeatCount = if nudgeFar then 10 else 1
-          direction   =
           for i in [1..repeatCount]
-            selected.nudge(direction)
+            for component in selected
+              component.nudge(direction)
           false
         else
           true
 
-    ractive.on('*.select-component', justSelectIt)
-    ractive.on('*.select-widget'   , selectThatWidget)
-    ractive.on('deselect-widgets'  , deselectThoseWidgets)
-    ractive.on('delete-selected'   , deleteSelected)
-    ractive.on('hide-resizer'      , hideResizer)
-    ractive.on('nudge-widget'      , nudgeWidget)
-    ractive.on('*.lock-selection'  , lockSelection)
-    ractive.on('*.unlock-selection', unlockSelection)
+    ractive.on('*.select-component'   , justSelectIt)
+    ractive.on('*.select-from-pointer', selectFromPointer)
+    ractive.on('*.select-widget'      , selectThatWidget)
+    ractive.on('deselect-widgets'     , deselectThoseWidgets)
+    ractive.on('*.delete-selected'    , deleteSelected)
+    ractive.on('hide-resizer'         , hideResizer)
+    ractive.on('nudge-widget'         , nudgeWidget)
+    ractive.on('*.lock-selection'     , lockSelection)
+    ractive.on('*.unlock-selection'   , unlockSelection)
 
 export default handleWidgetSelection

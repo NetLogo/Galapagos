@@ -47,9 +47,12 @@ handleContextMenu =
       component = context.component ? this
       { pageX, pageY, clientX, clientY } = context.event
 
-      @fire('deselect-widgets')
+      # Right-clicking a widget that is already part of a multi-selection keeps that selection, so the menu can act on
+      # all of it; anywhere else drops the selection as usual.
       if @get('isEditing') and component instanceof RactiveWidget
         @fire('lock-selection', component)
+      else
+        @fire('deselect-widgets')
       menuOpened = @findComponent('contextMenu').reveal(component, pageX, pageY, clientX, clientY)
       not menuOpened # keep propagating the event if the menu didn't open
 

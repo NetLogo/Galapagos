@@ -2,7 +2,6 @@ import startPointerDrag from "../pointer-drag.js"
 
 RactiveResizer = Ractive.extend({
 
-  _isLocked:    false     # Boolean
   _xAdjustment: undefined # Number
   _yAdjustment: undefined # Number
 
@@ -27,37 +26,9 @@ RactiveResizer = Ractive.extend({
     width:  -> @get('target').get('width' ) + 10
   }
 
-  # () => Unit
-  clearTarget: ->
-    target = @get('target')
-    if not @_isLocked and target?
-      if not target.destroyed
-        target.set('isSelected', false)
-      @set('target', null)
-    return
-
-  # (Ractive) => Unit
-  setTarget: (newTarget) ->
-    if not @_isLocked
-      # Use `setTimeout`, so any pending `clearTarget` resolves first
-      # --Jason B. (12/6/17)
-      setTimeout((=>
-        @clearTarget()
-        @set('target', newTarget)
-        newTarget.set('isSelected', true)
-      ), 0)
-    return
-
-  # (Ractive) => Unit
-  lockTarget: (newTarget) ->
-    if not @_isLocked and newTarget?
-      @setTarget(newTarget)
-      @_isLocked = true
-    return
-
-  # () => Unit
-  unlockTarget: ->
-    @_isLocked = false
+  # (Ractive | null) => Unit
+  showFor: (component) ->
+    @set('target', component ? null)
     return
 
   # (String, DragInfo) => Unit

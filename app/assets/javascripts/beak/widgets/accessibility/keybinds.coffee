@@ -197,20 +197,20 @@ keybinds = [
         "widget:close/deselect",
         (ractive) -> ractive.fire('deselect-widgets'),
         ["Escape"],
-        { description: "Close the context menu or deselect any selected widget." }
+        { description: "Close the context menu or deselect any selected widgets." }
       ),
       new Keybind(
         "widget:move-freely",
         (ractive, event) -> ractive.fire('move-widget-freely', event),
         ["#{modKey}"],
-        { description: "Move the selected widget freely." },
+        { description: "Move the selected widgets freely." },
         { bind: false }
       ),
       new Keybind(
         "widget:nudge",
         (ractive, _, combo) -> ractive.fire('nudge-widget', combo),
         ["up", "down", "left", "right"],
-        { description: "Nudge the selected widget in any direction." },
+        { description: "Nudge the selected widgets in any direction." },
         { options: { }}
       ),
       new Keybind(
@@ -218,14 +218,14 @@ keybinds = [
         (ractive, _, combo) ->
           ractive.fire('nudge-widget', combo.replace("shift+", ""), event.shiftKey)
         ["shift+up", "shift+down", "shift+left", "shift+right"],
-        { description: "Nudge the selected widget farther in any direction." },
+        { description: "Nudge the selected widgets farther in any direction." },
         { options: { }}
       ),
       new Keybind(
         "widget:delete",
         (ractive) -> ractive.fire('delete-selected'),
         ["del", "backspace"],
-        { description: "Delete the selected widget." }
+        { description: "Delete the selected widgets." }
       ),
       new Keybind(
         "*:context-menu",

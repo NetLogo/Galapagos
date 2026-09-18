@@ -216,7 +216,8 @@ RactiveView = RactiveWidget.extend({
 
   getContextMenuOptions: (clientX, clientY) ->
     if @get('isEditing')
-      [@getStandardOptions().edit]
+      # The view can't be deleted itself, but it can be part of a selection whose other widgets can.
+      if @_selectionSize() > 1 then [@getStandardOptions().delete] else [@getStandardOptions().edit]
     else if not @get('showAgentContextMenu')
       []
     else

@@ -133,6 +133,8 @@ RactiveDraggableAndContextable = RactiveContextable.extend({
       startX = undefined
       startY = undefined
 
+      @fire('select-from-pointer', original)
+
       startPointerDrag(node, original, {
 
         onStart: =>
