@@ -7,12 +7,13 @@ import { WipData } from './wip-data.js'
 class WipListener
   # (NamespaceStorage, String | null)
   constructor: (@storage, storageTag) ->
-    @storagePrefix = if storageTag? and storageTag.trim() isnt '' then "#{storageTag}:" else ""
-    @_nlogoSource  = null
-    @_data         = new WipData(@storage, @storagePrefix)
-    @session       = null
-    @reverted      = null
-    @isLoaded      = false
+    @storagePrefix  = if storageTag? and storageTag.trim() isnt '' then "#{storageTag}:" else ""
+    @_nlogoSource   = null
+    @_data          = new WipData(@storage, @storagePrefix)
+    @session        = null
+    @reverted       = null
+    @revertedWipKey = null
+    @loadedWipKey   = null
 
   # () => NlogoSource | null
   getNlogoSource: () ->
@@ -37,11 +38,12 @@ class WipListener
 
   # () => WorkInProgressState
   getState: () ->
-    if @reverted?
+    wipKey = @getWipKey()
+    if @reverted? and @revertedWipKey is wipKey
       'enabled-with-reversion'
-    else if not @storage.hasKey(@getWipKey())
+    else if not @storage.hasKey(wipKey)
       'enabled-and-empty'
-    else if @isLoaded
+    else if @loadedWipKey is wipKey
       'enabled-with-wip'
     else
       'enabled-with-unloaded-wip'
@@ -71,15 +73,16 @@ class WipListener
   loadWip: () ->
     wipInfo = @getWip()
     if wipInfo?
-      @isLoaded = true
+      @loadedWipKey = @getWipKey()
       @getNlogoSource().setModelTitle(wipInfo.title)
     wipInfo
 
   # () => Unit
   revertWip: () ->
-    wipKey    = @getWipKey()
-    @reverted = @storage.get(wipKey)
-    @isLoaded = false
+    wipKey          = @getWipKey()
+    @reverted       = @storage.get(wipKey)
+    @revertedWipKey = wipKey
+    @loadedWipKey   = null
     @storage.remove(wipKey)
     # Loading and storing changes both stamp the source with the saved title, so drop it here for the original to
     # show its own title when reloaded.  --Omar Ibrahim, Sep 14 26
@@ -88,29 +91,33 @@ class WipListener
 
   # () => Unit
   undoRevert: () ->
-    wipKey = @getWipKey()
-    @storage.set(wipKey, @reverted)
-    @reverted = null
+    if @reverted? and @revertedWipKey is @getWipKey()
+      @storage.set(@revertedWipKey, @reverted)
+      @reverted       = null
+      @revertedWipKey = null
+
     return
 
   # (String, String, String) => Unit
   _storeWipInfo: (wipKey, newNlogo, title) ->
     @_data.store(wipKey, newNlogo, title)
-    @isLoaded = true
+    @loadedWipKey = wipKey
     @_syncState()
     return
 
   # (String) => Unit
   _removeWipInfo: (wipKey) ->
     @storage.remove(wipKey)
+    @loadedWipKey = null
     @_syncState()
     return
 
   # (String) => Unit
   _setWip: (newNlogo) ->
-    @reverted = null
-    wipKey    = @getWipKey()
-    title     = @getModelTitle()
+    @reverted       = null
+    @revertedWipKey = null
+    wipKey          = @getWipKey()
+    title           = @getModelTitle()
 
     source = @getNlogoSource()
     if newNlogo is source.nlogo and "#{title}.nlogo" is source.fileName
