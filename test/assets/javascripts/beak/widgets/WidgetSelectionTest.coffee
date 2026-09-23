@@ -1,7 +1,6 @@
 import assert from 'assert'
 import WidgetSelection from '../../../main/beak/widgets/widget-selection.js'
 
-# Stands in for a widget Ractive; the selection only ever sets `isSelected` on it.
 fakeWidget = (name) -> {
   name:       name
   isSelected: false

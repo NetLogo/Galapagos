@@ -238,8 +238,6 @@ controlEventTraffic = (controller, performUpdate) ->
     if not widget.compilation.success
       controller.reportError('compiler', widget.type, widget.compilation.messages, widget.id)
     else
-      # A plot's pens compile on their own, so the plot can be fine while one of its pens is not.  Their errors need the
-      # pen's index, since that is what finds the right editor in the form.  -Jeremy B September 2026
       penIndex = (widget.compiledPens ? []).findIndex( (pen) -> not pen.compilation.success )
       if penIndex isnt -1
         messages = widget.compiledPens[penIndex].compilation.messages

@@ -9,9 +9,11 @@ isMac = window.navigator.platform.startsWith('Mac')
 
 GRID_SIZE = 5
 
+# (MouseEvent | DragInfo | undefined) => Boolean
 isTogglingSelection = (domEvent) ->
   domEvent? and (domEvent.shiftKey or (if isMac then domEvent.metaKey else domEvent.ctrlKey))
 
+# (DragInfo) => Boolean
 isFreeMoving = (domEvent) ->
   if isMac then domEvent.metaKey else domEvent.ctrlKey
 
@@ -41,6 +43,7 @@ finishGroupMove = (starts) ->
 handleWidgetSelection =
   (ractive) ->
 
+    # () => Ractive | null
     resizer =
       ->
         ractive.findComponent('resizer')
@@ -59,6 +62,7 @@ handleWidgetSelection =
         return
       )
 
+    # (Context, Ractive | undefined) => Unit
     lockSelection =
       (_, component) ->
         if component? and not selection.has(component)
@@ -66,11 +70,13 @@ handleWidgetSelection =
         selection.lock()
         return
 
+    # () => Unit
     unlockSelection =
       ->
         selection.unlock()
         return
 
+    # () => Unit
     deleteSelected =
       ->
         if ractive.get('isEditing')
@@ -85,6 +91,7 @@ handleWidgetSelection =
                 ractive.fire('unregister-widget', widget.id, false, component.getExtraNotificationArgs())
         return
 
+    # (Context, Element, PointerEvent) => Unit
     beginWidgetDrag =
       (event, node, domEvent) ->
         if ractive.get('isEditing')
@@ -97,6 +104,7 @@ handleWidgetSelection =
 
           startPointerDrag(node, domEvent, {
 
+            # () => Unit
             onStart: ->
               if not selection.has(component)
                 selection.set(component)
@@ -107,12 +115,14 @@ handleWidgetSelection =
               candidates = edgesOf(widgetComponents(ractive).filter( (c) -> not selection.has(c) ).map(boundsOf))
               return
 
+            # (DragInfo) => Unit
             onMove: (info) ->
               if grabbed?
                 if isFreeMoving(info)
                   [dx, dy] = clampGroupOffset(starts, info.dx, info.dy)
                   ractive.set('snapGuides', [])
                 else
+                  # (Number) => Number
                   gridSnap = (n) -> Math.round(n / GRID_SIZE) * GRID_SIZE
                   moved    = edgesOf([{ ...groupBox, x: groupBox.x + info.dx, y: groupBox.y + info.dy }])
                   snap     = findSnap(moved, candidates)
@@ -128,6 +138,7 @@ handleWidgetSelection =
                 moveGroupBy(starts, dx, dy)
               return
 
+            # () => Unit
             onEnd: ->
               ractive.set('snapGuides', [])
               finishGroupMove(starts)
@@ -136,12 +147,14 @@ handleWidgetSelection =
           })
         return
 
+    # (Context) => Unit
     beginBoxSelect =
       (event) ->
         domEvent  = event.original
         container = event.node
         if ractive.get('isEditing') and (domEvent.target is container)
 
+          # ({ clientX: Number, clientY: Number }) => [Number, Number]
           toLocal =
             ({ clientX, clientY }) ->
               { left, top } = container.getBoundingClientRect()
@@ -152,10 +165,12 @@ handleWidgetSelection =
 
           startPointerDrag(container, domEvent, {
 
+            # (DragInfo) => Unit
             onStart: (info) ->
               keptWidgets = if isTogglingSelection(info) then selection.all() else []
               return
 
+            # (DragInfo) => Unit
             onMove: (info) ->
               [x, y] = toLocal(info)
               box    = rectFromCorners(startX, startY, x, y)
@@ -164,6 +179,7 @@ handleWidgetSelection =
               selection.replace(keptWidgets.concat(touched))
               return
 
+            # () => Unit
             onEnd: ->
               ractive.set('selectionBox', null)
               return
@@ -171,6 +187,7 @@ handleWidgetSelection =
           })
         return
 
+    # () => Unit
     selectAllWidgets =
       ->
         if ractive.get('isEditing')
@@ -179,6 +196,7 @@ handleWidgetSelection =
 
     isSelectingByPointer = false
 
+    # (Context, PointerEvent) => Unit
     selectFromPointer =
       (event, domEvent) ->
         if ractive.get("isEditing") and (domEvent.button is 0)
@@ -191,6 +209,7 @@ handleWidgetSelection =
             selection.set(event.component)
         return
 
+    # (Context, MouseEvent | FocusEvent) => Unit
     selectThatWidget =
       (event, trueEvent) ->
         if ractive.get("isEditing")
@@ -206,6 +225,7 @@ handleWidgetSelection =
             selection.set(component)
         return
 
+    # (Context | undefined, MouseEvent | undefined) => Unit
     deselectThoseWidgets =
       (_, domEvent) ->
         if not isTogglingSelection(domEvent)
@@ -219,6 +239,7 @@ handleWidgetSelection =
         return
     )
 
+    # () => Boolean
     hideResizer =
       ->
         if ractive.get("isEditing")
@@ -227,7 +248,7 @@ handleWidgetSelection =
         else
           true
 
-    # (KeyboardEvent, "up" | "down" | "left" | "right", Boolean) => Boolean
+    # (Context, "up" | "down" | "left" | "right", Boolean | undefined) => Boolean
     nudgeWidget =
       (event, direction, nudgeFar) ->
         selected = selection.all()

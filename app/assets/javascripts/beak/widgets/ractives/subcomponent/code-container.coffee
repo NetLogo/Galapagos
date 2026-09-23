@@ -16,8 +16,6 @@ RactiveCodeContainerBase = Ractive.extend({
   , onchange:       (->)      # (String) => Unit
   , style:          undefined # String
 
-    # Widget edit forms jump to an error's location the same way the code pane does, and sliders use the one-line
-    # editor, so this lives on the base rather than on the multiline one.  -Jeremy B September 2026
   , jumpToCode:     undefined # { start: Int, end: Int }
 
   , errorMarkers:   undefined # Array[{ start: Int, end: Int, message: String, className: String }]
@@ -122,8 +120,6 @@ RactiveCodeContainerBase = Ractive.extend({
       return
     )
 
-    # Registered here rather than in an `observe` block so the subclasses' own blocks don't shadow it.
-    # -Jeremy B September 2026
     @observe('jumpToCode', (-> @jumpToCode(); return))
     @observe('errorMarkers', (-> @markErrors(); return))
 
@@ -309,9 +305,6 @@ editFormCodeContainerFactory =
 
       }
 
-      # Select the code an error came from.  A collapsed field has to be opened first, and CodeMirror can't paint a
-      # selection until the `isExpanded` observer above has refreshed it, so this queues behind that.
-      # -Jeremy B September 2026
       # ({ start: Int, end: Int }) => Unit
       jumpToLocation: (location) ->
         if @get('isCollapsible') and not @get('isExpanded')

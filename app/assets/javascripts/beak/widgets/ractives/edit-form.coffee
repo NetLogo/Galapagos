@@ -108,8 +108,6 @@ EditForm = Ractive.extend({
         @_formModelElem = modelElem
         @_formMinYLoc   = minYLoc
         @fitModelToForm()
-        # Collapsed code fields and CodeMirror instances settle their height after this tick, and expanding a plot pen
-        # changes it again later, so re-fit whenever the form's size changes.
         if window.ResizeObserver?
           @_formResizeObserver = new ResizeObserver( () => @fitModelToForm(); return )
           @_formResizeObserver.observe(elem)
@@ -181,8 +179,6 @@ EditForm = Ractive.extend({
   getElem: ->
     @find("##{@get('id')}")
 
-  # Grow the model area so the whole form fits inside it.  The frame sizes itself from the model's height, so a form
-  # taller than the model would otherwise run off the bottom with its buttons out of reach.  -Jeremy B September 2026
   # () => Unit
   fitModelToForm: ->
     elem = @getElem()

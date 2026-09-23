@@ -143,8 +143,6 @@ class AlertDisplay
         if error.start? and error.end?
           s = error.start
           e = error.end
-          # A widget's code is compiled on its own, so its offsets only mean something inside that widget's editor.
-          # Anything else is an offset into the model's code.  -Jeremy B September 2026
           [label, onclickCode] =
             if widgetId? and error.field?
               [ "Show me", AlertDisplay.makeWidgetCodeOnclick(widgetId, error.field, s, e, penIndex) ]
@@ -164,8 +162,6 @@ class AlertDisplay
       when 'run', 'runresult' then 'called by running a string of code'
       else                         'called by unknown'
 
-  # The alert's message is raw HTML, so a link back into the code has to carry its handler as an inline `onclick` that
-  # fires on the enclosing ractive.  -Jeremy B September 2026
   # (String) => String
   @makeFireOnclick: (args) ->
     "this.parentElement._ractive.proxy.ractive.fire(#{args}); return false;"
@@ -174,8 +170,6 @@ class AlertDisplay
   @makeModelCodeOnclick: (start, end) ->
     AlertDisplay.makeFireOnclick("\"jump-to-code\", #{start}, #{end}")
 
-  # Widget ids are numbers in some code paths and string keys in others, so quote it -- `jumpToWidgetCode` compares as
-  # strings.  -Jeremy B September 2026
   # (Int, String, Int, Int, Int) => String
   @makeWidgetCodeOnclick: (widgetId, field, start, end, penIndex = null) ->
     args = "\"jump-to-widget-code\", \"#{widgetId}\", \"#{field}\", #{start}, #{end}, #{penIndex ? 'null'}"
@@ -190,8 +184,6 @@ class AlertDisplay
       " on line #{line}"
     "#{message}\nerror while running #{prim}#{location}"
 
-  # The error happened directly in the button's own code, so the location points into that button's source rather than
-  # into the model's code.  -Jeremy B September 2026
   # (String, String, Maybe[Int], Maybe[Int], String, Int) => String
   @makeButtonRuntimeErrorMessage: (message, primitive, sourceStart, sourceEnd, code, widgetId) ->
     prim     = if primitive is '' then 'a primitive' else primitive.toUpperCase()

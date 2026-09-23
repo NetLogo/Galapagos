@@ -3,7 +3,6 @@ import {
   comparePositionsRowMajor, setSortingKeys, sortWidgetObjects
 } from '../../../../main/beak/widgets/accessibility/widgets.js'
 
-# Only the position and size of a widget matter to the sorting.
 box = (x, y, width = 10, height = 10) -> { x, y, width, height }
 
 describe('widget sorting', () ->

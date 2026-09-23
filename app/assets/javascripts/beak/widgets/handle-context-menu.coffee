@@ -47,8 +47,6 @@ handleContextMenu =
       component = context.component ? this
       { pageX, pageY, clientX, clientY } = context.event
 
-      # Right-clicking a widget that is already part of a multi-selection keeps that selection, so the menu can act on
-      # all of it; anywhere else drops the selection as usual.
       if @get('isEditing') and component instanceof RactiveWidget
         @fire('lock-selection', component)
       else

@@ -223,23 +223,22 @@ HNWPenForm = PenForm.extend({
 PlotEditForm = EditForm.extend({
 
   data: -> {
-    autoPlotX:  undefined # Boolean
-  , autoPlotY:  undefined # Boolean
-    # Only for reading each pen's compile errors; the editable pen data is `guiPens`.  -Jeremy B September 2026
-  , compiledPens: undefined # Array[{ compilation: { messages: Array[Any] } }]
-  , display:    undefined # String
-  , guiPens:    undefined # Array[Pen]
-  , legendOn:   undefined # Boolean
-  , pens:       undefined # Array[Pen]
-  , setupCode:  undefined # String
-  , updateCode: undefined # String
-  , xLabel:     undefined # String
-  , xMax:       undefined # Number
-  , xMin:       undefined # Number
-  , yLabel:     undefined # String
-  , yMax:       undefined # Number
-  , yMin:       undefined # Number
-  , oldSize:    undefined # Boolean
+    autoPlotX:         undefined # Boolean
+  , autoPlotY:         undefined # Boolean
+  , display:           undefined # String
+  , guiPens:           undefined # Array[Pen]
+  , legendOn:          undefined # Boolean
+  , penCompileResults: undefined # Array[{ compilation: { messages: Array[Any] } }]
+  , pens:              undefined # Array[Pen]
+  , setupCode:         undefined # String
+  , updateCode:        undefined # String
+  , xLabel:            undefined # String
+  , xMax:              undefined # Number
+  , xMin:              undefined # Number
+  , yLabel:            undefined # String
+  , yMax:              undefined # Number
+  , yMin:              undefined # Number
+  , oldSize:           undefined # Boolean
   }
 
   components: {
@@ -393,7 +392,7 @@ PlotEditForm = EditForm.extend({
     pen:
       """
       <formPen color="{{color}}" display="{{display}}" index="{{index}}"
-               compileErrors="{{~/compiledPens[index].compilation.messages}}"
+               compileErrors="{{~/penCompileResults[index].compilation.messages}}"
                interval="{{interval}}" modeIndex="{{mode}}" setupCode="{{setupCode}}"
                shouldShowInLegend="{{inLegend}}" updateCode="{{updateCode}}" />
       """
@@ -503,24 +502,23 @@ HNWPlotEditForm = PlotEditForm.extend({
   }
 
   data: -> {
-    autoPlotX:  undefined # Boolean
-  , autoPlotY:  undefined # Boolean
-    # Only for reading each pen's compile errors; the editable pen data is `guiPens`.  -Jeremy B September 2026
-  , compiledPens: undefined # Array[{ compilation: { messages: Array[Any] } }]
-  , display:    undefined # String
-  , guiPens:    undefined # Array[Pen]
-  , legendOn:   undefined # Boolean
-  , pens:       undefined # Array[Pen]
-  , procedures: undefined # Array[Procedure]
-  , setupCode:  undefined # String
-  , updateCode: undefined # String
-  , xLabel:     undefined # String
-  , xMax:       undefined # Number
-  , xMin:       undefined # Number
-  , yLabel:     undefined # String
-  , yMax:       undefined # Number
-  , yMin:       undefined # Number
-  , oldSize:    undefined # Boolean
+    autoPlotX:         undefined # Boolean
+  , autoPlotY:         undefined # Boolean
+  , display:           undefined # String
+  , guiPens:           undefined # Array[Pen]
+  , legendOn:          undefined # Boolean
+  , penCompileResults: undefined # Array[{ compilation: { messages: Array[Any] } }]
+  , pens:              undefined # Array[Pen]
+  , procedures:        undefined # Array[Procedure]
+  , setupCode:         undefined # String
+  , updateCode:        undefined # String
+  , xLabel:            undefined # String
+  , xMax:              undefined # Number
+  , xMin:              undefined # Number
+  , yLabel:            undefined # String
+  , yMax:              undefined # Number
+  , yMin:              undefined # Number
+  , oldSize:           undefined # Boolean
   }
 
   computed: {
@@ -609,9 +607,6 @@ RactivePlot = RactiveWidget.extend({
 
   computed: {
 
-    # A plot has more than one place to fail: its own setup and update code, and each pen's.  A pen's failure lives on
-    # that pen rather than on the plot, so the generic `errorClass` partial the other widgets use can't see it.
-    # -Jeremy B September 2026
     # () => Boolean
     hasCompileError: ->
       widget = @get('widget')
@@ -716,7 +711,7 @@ RactivePlot = RactiveWidget.extend({
       <editForm
         autoPlotX={{widget.autoPlotX}} autoPlotY={{widget.autoPlotY}}
         compileErrors="{{widget.compilation.messages}}"
-        compiledPens="{{widget.compiledPens}}"
+        penCompileResults="{{widget.compiledPens}}"
         display="{{widget.display}}" idBasis="{{id}}"
         legendOn={{widget.legendOn}} pens="{{widget.pens}}"
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
@@ -741,7 +736,7 @@ RactiveHNWPlot = RactivePlot.extend({
       <editForm
         autoPlotX={{widget.autoPlotX}} autoPlotY={{widget.autoPlotY}}
         compileErrors="{{widget.compilation.messages}}"
-        compiledPens="{{widget.compiledPens}}"
+        penCompileResults="{{widget.compiledPens}}"
         display="{{widget.display}}" idBasis="{{id}}"
         legendOn={{widget.legendOn}} pens="{{widget.pens}}"
         setupCode="{{widget.setupCode}}" updateCode="{{widget.updateCode}}"
