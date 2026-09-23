@@ -228,6 +228,13 @@ keybinds = [
         { description: "Delete the selected widgets." }
       ),
       new Keybind(
+        "widget:select-all",
+        (ractive) -> ractive.fire('select-all-widgets'),
+        ["#{modKey}+a"],
+        { description: "Select all widgets." },
+        { preventDefault: true }
+      ),
+      new Keybind(
         "*:context-menu",
         (ractive, event) -> ractive.fire('trigger-context-menu', event),
         ["#{modKey}+shift+f10", "menu", "#{modKey}+alt+x"],

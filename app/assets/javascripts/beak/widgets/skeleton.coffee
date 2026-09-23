@@ -80,6 +80,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , modelTitle:            source.getModelTitle()
   , outputWidgetOutput:    ''
   , primaryView:           undefined
+  , selectionBox:          null
   , showAgentContextMenu:  true
   , showInspection:        false
   , inspectedAgents:       []
@@ -490,9 +491,13 @@ template =
       <div style="position: relative; width: {{width}}px; height: {{height}}px"
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="show-context-menu"
+           on-pointerdown="begin-box-select"
            on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer"
            aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
+        {{#selectionBox}}
+          <div class="widget-selection-box" style="left: {{x}}px; top: {{y}}px; width: {{width}}px; height: {{height}}px;"></div>
+        {{/}}
         {{#widgetObj:key}}
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
           {{# type === 'hnwTextBox'  }} <hnwNoteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}

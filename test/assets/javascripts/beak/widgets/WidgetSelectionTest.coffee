@@ -94,6 +94,42 @@ describe('WidgetSelection', () ->
 
   )
 
+  describe('#replace()', () ->
+
+    it('selects exactly the given widgets', () ->
+      [selection, _] = makeSelection()
+      [a, b, c]      = [fakeWidget('a'), fakeWidget('b'), fakeWidget('c')]
+
+      selection.set(a)
+      selection.replace([b, c])
+
+      assert.deepEqual(selection.all(), [b, c])
+      assert.equal(a.isSelected, false)
+      assert.equal(b.isSelected, true)
+      assert.equal(c.isSelected, true)
+    )
+
+    it('drops duplicates', () ->
+      [selection, _] = makeSelection()
+      [a, b]         = [fakeWidget('a'), fakeWidget('b')]
+
+      selection.replace([a, b, a])
+
+      assert.deepEqual(selection.all(), [a, b])
+    )
+
+    it('does not report a change when the selection is the same', () ->
+      [selection, changes] = makeSelection()
+      [a, b]               = [fakeWidget('a'), fakeWidget('b')]
+
+      selection.replace([a, b])
+      selection.replace([a, b])
+
+      assert.equal(changes.length, 1)
+    )
+
+  )
+
   describe('#clear()', () ->
 
     it('deselects everything', () ->

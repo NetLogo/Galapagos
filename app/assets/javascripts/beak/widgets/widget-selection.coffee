@@ -23,6 +23,14 @@ class WidgetSelection
     return
 
   # (Array[Ractive]) => Unit
+  replace: (components) ->
+    unique = components.filter( (c, i) -> components.indexOf(c) is i )
+    isSame = (unique.length is @_components.length) and unique.every( (c, i) => c is @_components[i] )
+    if not isSame
+      @_replaceWith(unique)
+    return
+
+  # (Array[Ractive]) => Unit
   add: (components) ->
     newcomers = components.filter( (c) => not @has(c) )
     if newcomers.length > 0

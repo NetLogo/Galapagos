@@ -1,6 +1,8 @@
 import WidgetSelection  from "./widget-selection.js"
 import startPointerDrag from "./pointer-drag.js"
 
+import { rectFromCorners, rectsTouch } from "./rectangles.js"
+
 isMac = window.navigator.platform.startsWith('Mac')
 
 GRID_SIZE = 5
@@ -114,6 +116,57 @@ handleWidgetSelection =
           })
         return
 
+    # () => Array[Ractive]
+    allWidgets =
+      ->
+        ractive.findAllComponents().filter( (c) -> c.moveTo? and c.get('widget')? )
+
+    # (Ractive) => Rect
+    boundsOf =
+      (component) ->
+        { x: component.get('x'), y: component.get('y'), width: component.get('width'), height: component.get('height') }
+
+    beginBoxSelect =
+      (event) ->
+        domEvent  = event.original
+        container = event.node
+        if ractive.get('isEditing') and (domEvent.target is container)
+
+          toLocal =
+            ({ clientX, clientY }) ->
+              { left, top } = container.getBoundingClientRect()
+              [clientX - left, clientY - top]
+
+          [startX, startY] = toLocal(domEvent)
+          keptWidgets      = []
+
+          startPointerDrag(container, domEvent, {
+
+            onStart: (info) ->
+              keptWidgets = if isTogglingSelection(info) then selection.all() else []
+              return
+
+            onMove: (info) ->
+              [x, y] = toLocal(info)
+              box    = rectFromCorners(startX, startY, x, y)
+              ractive.set('selectionBox', box)
+              touched = allWidgets().filter( (c) -> rectsTouch(box, boundsOf(c)) )
+              selection.replace(keptWidgets.concat(touched))
+              return
+
+            onEnd: ->
+              ractive.set('selectionBox', null)
+              return
+
+          })
+        return
+
+    selectAllWidgets =
+      ->
+        if ractive.get('isEditing')
+          selection.replace(allWidgets())
+        return
+
     isSelectingByPointer = false
 
     selectFromPointer =
@@ -188,6 +241,8 @@ handleWidgetSelection =
           true
 
     ractive.on('*.begin-widget-drag'  , beginWidgetDrag)
+    ractive.on('begin-box-select'     , beginBoxSelect)
+    ractive.on('select-all-widgets'   , selectAllWidgets)
     ractive.on('*.select-from-pointer', selectFromPointer)
     ractive.on('*.select-widget'      , selectThatWidget)
     ractive.on('deselect-widgets'     , deselectThoseWidgets)

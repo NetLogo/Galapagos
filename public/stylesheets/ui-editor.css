@@ -12,6 +12,34 @@ body.nlw-pointer-dragging {
   user-select: none;
 }
 
+.widget-selection-box {
+  background-color: rgba(114, 114, 114, 0.15);
+  border:           1px dashed #727272;
+  box-sizing:       border-box;
+  pointer-events:   none;
+  position:         absolute;
+  z-index:          58;
+}
+
+.widget-snap-guide {
+  background-color: #d6336c;
+  pointer-events:   none;
+  position:         absolute;
+  z-index:          59;
+}
+
+.widget-snap-guide.x {
+  bottom: 0;
+  top:    0;
+  width:  1px;
+}
+
+.widget-snap-guide.y {
+  height: 1px;
+  left:   0;
+  right:  0;
+}
+
 .editor-overlay.selected {
   outline:        2px solid #727272;
   outline-offset: -1px;
