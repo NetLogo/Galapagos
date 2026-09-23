@@ -649,7 +649,7 @@ defaultWidgetMixinFor = (widgetType, x, y, countByType) ->
     when "switch"  , "hnwSwitch"   then { height:  40, width: 100, on: false, variable: "" }
     when "slider"  , "hnwSlider"   then { height:  50, width: 250, default: 50, direction: "horizontal", max: "100", min: "0", step: "1", }
     when "inputBox", "hnwInputBox" then { height:  60, width: 250, boxedValue: { multiline: false, type: "String", value: "" }, variable: "" }
-    when "button"  , "hnwButton"   then { height:  50, width: 120, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
+    when "button"  , "hnwButton"   then { height:  40, width: 120, buttonKind: "Observer", disableUntilTicksStart: false, forever: false, running: false }
     when "chooser" , "hnwChooser"  then { height:  60, width: 250, choices: [], currentChoice: -1, variable: "" }
     when "monitor" , "hnwMonitor"  then { height:  60, width: 100, fontSize: 11, precision: 17 }
     when "plot"    , "hnwPlot"     then { height: 175, width: 230, autoPlotX: true, autoPlotY: true, display: "Plot #{countByType(widgetType) + 1}", legendOn: false, pens: [], setupCode: "", updateCode: "", xAxis: "", xmax: 10, xmin: 0, yAxis: "", ymax: 10, ymin: 0, exists: false }

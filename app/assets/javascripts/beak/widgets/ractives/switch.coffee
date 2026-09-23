@@ -1,4 +1,5 @@
 import RactiveValueWidget from "./value-widget.js"
+import { measureNatural } from "../auto-size.js"
 import EditForm from "./edit-form.js"
 import { RactiveEditFormDropdown } from "./subcomponent/dropdown.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
@@ -91,6 +92,8 @@ HNWSwitchEditForm = SwitchEditForm.extend({
 
 })
 
+LABEL_GAP = 8
+
 RactiveSwitch = RactiveValueWidget.extend({
 
   data: -> {
@@ -135,6 +138,14 @@ RactiveSwitch = RactiveValueWidget.extend({
 
   minWidth:  35
   minHeight: 33
+
+  # () => PreferredSize | null
+  preferredSize: ->
+    switcher = @find('.netlogo-switcher')
+    if switcher?
+      { width: measureNatural(switcher, 'width') + LABEL_GAP, height: null }
+    else
+      null
 
   template:
     """

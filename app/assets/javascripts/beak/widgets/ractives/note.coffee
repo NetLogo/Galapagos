@@ -2,6 +2,7 @@ import { markdownToHtml } from "/beak/tortoise-utils.js"
 
 import { argbIntToCSS } from "/colors.js"
 import RactiveWidget from "./widget.js"
+import { measureNatural } from "../auto-size.js"
 import EditForm from "./edit-form.js"
 import RactiveIntColorInput from "./subcomponent/int-color-input.js"
 import { RactiveEditFormCheckbox } from "./subcomponent/checkbox.js"
@@ -137,6 +138,14 @@ RactiveNote = RactiveWidget.extend({
 
   minWidth:  13
   minHeight: 13
+
+  # () => PreferredSize | null
+  preferredSize: ->
+    note = @find('.netlogo-note')
+    if note?
+      { width: null, height: measureNatural(note, 'height') }
+    else
+      null
 
   template:
     """

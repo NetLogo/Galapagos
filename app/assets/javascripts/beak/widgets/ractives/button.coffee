@@ -195,6 +195,11 @@ HNWButtonEditForm = ButtonEditForm.extend({
 
 })
 
+MIN_PREFERRED_WIDTH = 55
+PREFERRED_HEIGHT    = 40
+LABEL_PADDING       = 6
+DECORATION_GAP      = 4
+
 RactiveButton = RactiveWidget.extend({
 
   data: -> {
@@ -271,6 +276,22 @@ RactiveButton = RactiveWidget.extend({
 
   minWidth:  35
   minHeight: 30
+
+  # () => PreferredSize | null
+  preferredSize: ->
+    button = @find('.netlogo-button')
+    label  = button?.querySelector('.netlogo-label')
+    if label?
+      context = button.querySelector('.netlogo-button-agent-context')
+      key     = button.querySelector('.netlogo-action-key')
+      sides   = [LABEL_PADDING]
+      if context? and context.textContent.trim() isnt ''
+        sides.push(context.offsetLeft + context.offsetWidth + DECORATION_GAP)
+      if key?
+        sides.push(button.clientWidth - key.offsetLeft + DECORATION_GAP)
+      { width: Math.max(MIN_PREFERRED_WIDTH, label.scrollWidth + (2 * Math.max(sides...))), height: PREFERRED_HEIGHT }
+    else
+      null
 
   # coffeelint: disable=max_line_length
   template:

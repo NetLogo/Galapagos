@@ -1,5 +1,6 @@
 import keywords                           from "/keywords.js"
 import { RactiveDraggableAndContextable } from "./draggable.js"
+import { autoSizedDims }                  from "../auto-size.js"
 
 WidgetEventGenerators = {
 
@@ -179,6 +180,8 @@ calculateTriggeredEvents = (widgetObj, widget, values, eventTriggers, isNewWidge
 
 RactiveWidget = RactiveDraggableAndContextable.extend({
 
+  _preferredAtEditStart: null # PreferredSize
+
   eventTriggers: () ->
     WidgetEventsMap[@widgetType]
 
@@ -258,6 +261,31 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
   getExtraNotificationArgs: (widget) ->
     []
 
+  # () => PreferredSize | null
+  preferredSize: ->
+    null
+
+  # (Boolean) => Unit
+  _autoSize: (isNewWidget) ->
+    preferred = @preferredSize()
+    if preferred?
+      widget = @get('widget')
+      dirs   = @get('resizeDirs')
+      size   = autoSizedDims({
+        current:         { width: widget.width, height: widget.height }
+      , preferred
+      , preferredBefore: @_preferredAtEditStart
+      , isNew:           isNewWidget
+      , canResize:       { width:  dirs.includes('left') or dirs.includes('right')
+                         , height: dirs.includes('top')  or dirs.includes('bottom') }
+      , minimums:        { width: @minWidth ? 0, height: @minHeight ? 0 }
+      })
+      if (size.width isnt widget.width) or (size.height isnt widget.height)
+        @handleResize({ x: widget.x, y: widget.y, width: size.width, height: size.height })
+        @notifyWidgetMoved()
+    @_preferredAtEditStart = null
+    return
+
   # (String, Ractive) => Unit
   _defineNewBreedVar: (varName, sender) ->
     lowered = varName.toLowerCase()
@@ -288,6 +316,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     'edit-widget': ->
       if @get('isNotEditable') isnt true
         @fire('hide-context-menu')
+        @_preferredAtEditStart = @preferredSize()
         @findComponent('editForm').fire("show-yourself")
         false
       return
@@ -391,6 +420,9 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
         events = calculateTriggeredEvents(widgetObj, widget, values, eventTriggers, isNewWidget, notificationEventArgs)
         events.forEach( (e) => e.run(this, widget) )
+
+        if not events.some( (e) -> e.type is 'rejectDuplicateVariable' )
+          @_autoSize(isNewWidget)
 
       catch ex
         console.error(ex)
