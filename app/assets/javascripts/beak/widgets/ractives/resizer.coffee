@@ -177,12 +177,12 @@ RactiveResizer = Ractive.extend({
     """
     {{# isEnabled && isVisible && target !== null }}
     <div class="widget-resizer" style="{{dims}}">
-      {{ #target.get("resizeDirs").includes("bottom")      }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Bottom"      style="cursor:  s-resize; bottom:          0; left:   {{midX}};"></div>{{/}}
+      {{ #target.get("resizeDirs").includes("bottom")      }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Bottom"      style="cursor:  s-resize; bottom:          0; left: {{midX}}px;"></div>{{/}}
       {{ #target.get("resizeDirs").includes("bottomLeft")  }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="BottomLeft"  style="cursor: sw-resize; bottom:          0; left:          0;"></div>{{/}}
       {{ #target.get("resizeDirs").includes("bottomRight") }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="BottomRight" style="cursor: se-resize; bottom:          0; right:         0;"></div>{{/}}
-      {{ #target.get("resizeDirs").includes("left")        }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Left"        style="cursor:  w-resize; bottom:   {{midY}}; left:          0;"></div>{{/}}
-      {{ #target.get("resizeDirs").includes("right")       }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Right"       style="cursor:  e-resize; bottom:   {{midY}}; right:         0;"></div>{{/}}
-      {{ #target.get("resizeDirs").includes("top")         }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Top"         style="cursor:  n-resize; top:             0; left:   {{midX}};"></div>{{/}}
+      {{ #target.get("resizeDirs").includes("left")        }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Left"        style="cursor:  w-resize; bottom: {{midY}}px; left:          0;"></div>{{/}}
+      {{ #target.get("resizeDirs").includes("right")       }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Right"       style="cursor:  e-resize; bottom: {{midY}}px; right:         0;"></div>{{/}}
+      {{ #target.get("resizeDirs").includes("top")         }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="Top"         style="cursor:  n-resize; top:             0; left: {{midX}}px;"></div>{{/}}
       {{ #target.get("resizeDirs").includes("topLeft")     }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="TopLeft"     style="cursor: nw-resize; top:             0; left:          0;"></div>{{/}}
       {{ #target.get("resizeDirs").includes("topRight")    }}<div on-pointerdown="start-handle-drag" class="widget-resize-handle" data-direction="TopRight"    style="cursor: ne-resize; top:             0; right:         0;"></div>{{/}}
     </div>
