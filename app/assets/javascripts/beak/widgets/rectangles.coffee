@@ -12,4 +12,12 @@ rectFromCorners = (x1, y1, x2, y2) ->
 rectsTouch = (a, b) ->
   (a.x <= b.x + b.width) and (b.x <= a.x + a.width) and (a.y <= b.y + b.height) and (b.y <= a.y + a.height)
 
-export { rectFromCorners, rectsTouch }
+# (Array[Rect]) => Rect
+boundingRect = (rects) ->
+  left   = Math.min(rects.map( (r) -> r.x            )...)
+  top    = Math.min(rects.map( (r) -> r.y            )...)
+  right  = Math.max(rects.map( (r) -> r.x + r.width  )...)
+  bottom = Math.max(rects.map( (r) -> r.y + r.height )...)
+  { x: left, y: top, width: right - left, height: bottom - top }
+
+export { rectFromCorners, rectsTouch, boundingRect }

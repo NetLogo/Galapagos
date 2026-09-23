@@ -1,9 +1,13 @@
 import startPointerDrag from "../pointer-drag.js"
 
+import { findSnap, edgesOf }            from "../edge-snapping.js"
+import { widgetComponents, boundsOf }  from "../widget-bounds.js"
+
 RactiveResizer = Ractive.extend({
 
   _xAdjustment: undefined # Number
   _yAdjustment: undefined # Number
+  _snapEdges:   undefined # Edges
 
   data: -> {
     isEnabled: false # Boolean
@@ -34,12 +38,10 @@ RactiveResizer = Ractive.extend({
   # (String, DragInfo) => Unit
   _resizeTo: (direction, { clientX, clientY, ctrlKey, metaKey }) ->
 
-    snapToGrid = (n) -> n - (n - (Math.round(n / 10) * 10))
     isMac      = window.navigator.platform.startsWith('Mac')
     isSnapping = ((not isMac and not ctrlKey) or (isMac and not metaKey))
-    [snappedX, snappedY] = if isSnapping then [clientX, clientY].map(snapToGrid) else [clientX, clientY]
-    xCoord               = snappedX - @_xAdjustment
-    yCoord               = snappedY - @_yAdjustment
+    xCoord     = clientX - @_xAdjustment
+    yCoord     = clientY - @_yAdjustment
 
     target    = @get('target')
     oldLeft   = target.get('x')
@@ -64,6 +66,29 @@ RactiveResizer = Ractive.extend({
         when "TopRight"   then [top, right]
         else throw new Error("What the heck resize direction is '#{direction}'?")
 
+    isXDir = (dir) -> (dir is 'left') or (dir is 'right')
+
+    snap =
+      if isSnapping
+        moving = {
+          xs: adjusters.filter(([dir]) ->     isXDir(dir)).map(([_, coord]) -> coord)
+        , ys: adjusters.filter(([dir]) -> not isXDir(dir)).map(([_, coord]) -> coord)
+        }
+        findSnap(moving, @_snapEdges)
+      else
+        { x: null, y: null }
+
+    axisSnap = (dir) -> if isXDir(dir) then snap.x else snap.y
+
+    snapCoord =
+      (dir, coord) ->
+        if not isSnapping
+          coord
+        else if axisSnap(dir)?
+          axisSnap(dir).at
+        else
+          Math.round(coord / 10) * 10
+
     oldCoords = { left: oldLeft, top: oldTop, bottom: oldBottom, right: oldRight }
 
     clamp = (dir, value) =>
@@ -87,7 +112,7 @@ RactiveResizer = Ractive.extend({
 
       Math.round(newValue)
 
-    dirCoordPairs = adjusters.map(([dir, currentCor]) -> [dir, clamp(dir, currentCor)])
+    dirCoordPairs = adjusters.map(([dir, currentCor]) -> [dir, clamp(dir, snapCoord(dir, currentCor))])
 
     newChanges =
       if dirCoordPairs.every(([dir, coord]) -> not (((dir is 'left') or (dir is 'top')) and (coord < 0)))
@@ -105,6 +130,11 @@ RactiveResizer = Ractive.extend({
     }
     target.handleResize(finalCoords)
 
+    guides =
+      adjusters.filter(([dir]) -> axisSnap(dir)? and (newCoords[dir] is axisSnap(dir).at))
+               .map(([dir]) -> { axis: (if isXDir(dir) then 'x' else 'y'), at: axisSnap(dir).at })
+    @root.set('snapGuides', guides)
+
     return
 
   on: {
@@ -119,6 +149,8 @@ RactiveResizer = Ractive.extend({
           { left, top } = @find('.widget-resizer').getBoundingClientRect()
           @_xAdjustment = left - @get('x')
           @_yAdjustment = top  - @get('y')
+          target        = @get('target')
+          @_snapEdges   = edgesOf(widgetComponents(@root).filter( (c) -> c isnt target ).map(boundsOf))
           return
 
         onMove: (info) =>
@@ -128,6 +160,8 @@ RactiveResizer = Ractive.extend({
         onEnd: =>
           @_xAdjustment = undefined
           @_yAdjustment = undefined
+          @_snapEdges   = undefined
+          @root.set('snapGuides', [])
           @get('target').handleResizeEnd()
           return
 

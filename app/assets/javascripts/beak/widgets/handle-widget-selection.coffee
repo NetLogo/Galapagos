@@ -1,7 +1,9 @@
 import WidgetSelection  from "./widget-selection.js"
 import startPointerDrag from "./pointer-drag.js"
 
-import { rectFromCorners, rectsTouch } from "./rectangles.js"
+import { findSnap, edgesOf }                        from "./edge-snapping.js"
+import { rectFromCorners, rectsTouch, boundingRect } from "./rectangles.js"
+import { widgetComponents, boundsOf }               from "./widget-bounds.js"
 
 isMac = window.navigator.platform.startsWith('Mac')
 
@@ -87,44 +89,52 @@ handleWidgetSelection =
       (event, node, domEvent) ->
         if ractive.get('isEditing')
 
-          component = event.component
-          starts    = []
-          grabbed   = undefined
+          component  = event.component
+          starts     = []
+          grabbed    = undefined
+          groupBox   = undefined
+          candidates = undefined
 
           startPointerDrag(node, domEvent, {
 
             onStart: ->
               if not selection.has(component)
                 selection.set(component)
-              starts  = snapshotPositions(selection.all())
-              grabbed = starts.find( (start) -> start.component is component )
+              selected   = selection.all()
+              starts     = snapshotPositions(selected)
+              grabbed    = starts.find( (start) -> start.component is component )
+              groupBox   = boundingRect(selected.map(boundsOf))
+              candidates = edgesOf(widgetComponents(ractive).filter( (c) -> not selection.has(c) ).map(boundsOf))
               return
 
             onMove: (info) ->
               if grabbed?
-                snap       = (n) -> if isFreeMoving(info) then n else Math.round(n / GRID_SIZE) * GRID_SIZE
-                [dx, dy]   = clampGroupOffset(starts
-                                             , snap(grabbed.x0 + info.dx) - grabbed.x0
-                                             , snap(grabbed.y0 + info.dy) - grabbed.y0)
+                if isFreeMoving(info)
+                  [dx, dy] = clampGroupOffset(starts, info.dx, info.dy)
+                  ractive.set('snapGuides', [])
+                else
+                  gridSnap = (n) -> Math.round(n / GRID_SIZE) * GRID_SIZE
+                  moved    = edgesOf([{ ...groupBox, x: groupBox.x + info.dx, y: groupBox.y + info.dy }])
+                  snap     = findSnap(moved, candidates)
+                  wantX    = if snap.x? then info.dx + snap.x.delta else gridSnap(grabbed.x0 + info.dx) - grabbed.x0
+                  wantY    = if snap.y? then info.dy + snap.y.delta else gridSnap(grabbed.y0 + info.dy) - grabbed.y0
+                  [dx, dy] = clampGroupOffset(starts, wantX, wantY)
+                  guides   = []
+                  if snap.x? and dx is wantX
+                    guides.push({ axis: 'x', at: snap.x.at })
+                  if snap.y? and dy is wantY
+                    guides.push({ axis: 'y', at: snap.y.at })
+                  ractive.set('snapGuides', guides)
                 moveGroupBy(starts, dx, dy)
               return
 
             onEnd: ->
+              ractive.set('snapGuides', [])
               finishGroupMove(starts)
               return
 
           })
         return
-
-    # () => Array[Ractive]
-    allWidgets =
-      ->
-        ractive.findAllComponents().filter( (c) -> c.moveTo? and c.get('widget')? )
-
-    # (Ractive) => Rect
-    boundsOf =
-      (component) ->
-        { x: component.get('x'), y: component.get('y'), width: component.get('width'), height: component.get('height') }
 
     beginBoxSelect =
       (event) ->
@@ -150,7 +160,7 @@ handleWidgetSelection =
               [x, y] = toLocal(info)
               box    = rectFromCorners(startX, startY, x, y)
               ractive.set('selectionBox', box)
-              touched = allWidgets().filter( (c) -> rectsTouch(box, boundsOf(c)) )
+              touched = widgetComponents(ractive).filter( (c) -> rectsTouch(box, boundsOf(c)) )
               selection.replace(keptWidgets.concat(touched))
               return
 
@@ -164,7 +174,7 @@ handleWidgetSelection =
     selectAllWidgets =
       ->
         if ractive.get('isEditing')
-          selection.replace(allWidgets())
+          selection.replace(widgetComponents(ractive))
         return
 
     isSelectingByPointer = false

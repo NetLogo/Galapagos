@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { rectFromCorners, rectsTouch } from '../../../main/beak/widgets/rectangles.js'
+import { rectFromCorners, rectsTouch, boundingRect } from '../../../main/beak/widgets/rectangles.js'
 
 describe('rectangles', () ->
 
@@ -43,6 +43,20 @@ describe('rectangles', () ->
       assert.equal(rectsTouch({ x: 100, y: 121, width: 10, height: 10 }, widget), false)
       assert.equal(rectsTouch({ x: 0, y: 0, width: 99, height: 500 }, widget), false)
       assert.equal(rectsTouch({ x: 0, y: 0, width: 500, height: 99 }, widget), false)
+    )
+
+  )
+
+  describe('boundingRect()', () ->
+
+    it('covers every rectangle', () ->
+      rects = [{ x: 10, y: 50, width: 20, height: 10 }, { x: 40, y: 5, width: 10, height: 100 }]
+      assert.deepEqual(boundingRect(rects), { x: 10, y: 5, width: 40, height: 100 })
+    )
+
+    it('is the rectangle itself when there is only one', () ->
+      rect = { x: 1, y: 2, width: 3, height: 4 }
+      assert.deepEqual(boundingRect([rect]), rect)
     )
 
   )

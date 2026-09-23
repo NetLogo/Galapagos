@@ -86,6 +86,7 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , inspectedAgents:       []
   , someDialogIsOpen:      false
   , someEditFormIsOpen:    false
+  , snapGuides:            []
   , source
   , speed:                 0.0
   , ticks:                 "" # Remember, ticks initialize to nothing, not 0
@@ -497,6 +498,9 @@ template =
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#selectionBox}}
           <div class="widget-selection-box" style="left: {{x}}px; top: {{y}}px; width: {{width}}px; height: {{height}}px;"></div>
+        {{/}}
+        {{#snapGuides}}
+          <div class="widget-snap-guide {{axis}}" style="{{#axis === 'x'}}left{{else}}top{{/}}: {{at}}px;"></div>
         {{/}}
         {{#widgetObj:key}}
           {{# type ===    'textBox'  }}    <noteWidget    id="{{>widgetID}}" isEditing="{{isEditing}}" x="{{x}}" width="{{width}}" y="{{y}}" height="{{height}}" widget={{this}} isHNW="{{isHNW}}" /> {{/}}
