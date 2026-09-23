@@ -1,5 +1,5 @@
 import { offsetFocus, sortAsIsolatedTabRegions, noWrapAround } from "./utils.js"
-import { isMac } from "./utils.js"
+import { isMac, isTextEntry } from "./utils.js"
 import { Keybind, KeybindGroup } from "./keybind.js"
 
 modKey = if isMac then "command" else "ctrl"
@@ -208,7 +208,9 @@ keybinds = [
       ),
       new Keybind(
         "widget:nudge",
-        (ractive, _, combo) -> ractive.fire('nudge-widget', combo),
+        (ractive, _, combo) ->
+          if not isTextEntry(document.activeElement)
+            ractive.fire('nudge-widget', combo)
         ["up", "down", "left", "right"],
         { description: "Nudge the selected widgets in any direction." },
         { options: { }}
@@ -216,23 +218,29 @@ keybinds = [
       new Keybind(
         "widget:nudge",
         (ractive, _, combo) ->
-          ractive.fire('nudge-widget', combo.replace("shift+", ""), event.shiftKey)
+          if not isTextEntry(document.activeElement)
+            ractive.fire('nudge-widget', combo.replace("shift+", ""), event.shiftKey)
         ["shift+up", "shift+down", "shift+left", "shift+right"],
         { description: "Nudge the selected widgets farther in any direction." },
         { options: { }}
       ),
       new Keybind(
         "widget:delete",
-        (ractive) -> ractive.fire('delete-selected'),
+        (ractive) ->
+          if not isTextEntry(document.activeElement)
+            ractive.fire('delete-selected')
         ["del", "backspace"],
         { description: "Delete the selected widgets." }
       ),
       new Keybind(
         "widget:select-all",
-        (ractive) -> ractive.fire('select-all-widgets'),
+        (ractive, event) ->
+          if not isTextEntry(document.activeElement)
+            ractive.fire('select-all-widgets')
+            event?.preventDefault()
+          return
         ["#{modKey}+a"],
-        { description: "Select all widgets." },
-        { preventDefault: true }
+        { description: "Select all widgets." }
       ),
       new Keybind(
         "*:context-menu",

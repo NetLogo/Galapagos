@@ -107,6 +107,10 @@ isMac = window.navigator.platform.startsWith('Mac')
 isToggleKeydownEvent = (event) ->
   return event.key in [' ', 'Enter', 'Spacebar']
 
+# (Element | null) => Boolean
+isTextEntry = (element) ->
+  element? and (["INPUT", "TEXTAREA", "SELECT"].includes(element.tagName) or element.isContentEditable)
+
 # (HTMLElement) => Void
 focusElementVisible = (element) ->
   if element and element.focus
@@ -127,5 +131,6 @@ export {
   offsetFocus,
   isMac,
   isToggleKeydownEvent,
+  isTextEntry,
   focusElementVisible
 }
