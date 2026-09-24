@@ -146,6 +146,7 @@ RactiveResizer = Ractive.extend({
       startPointerDrag(node, original, {
 
         onStart: =>
+          @fire('hide-context-menu')
           { left, top } = @find('.widget-resizer').getBoundingClientRect()
           @_xAdjustment = left - @get('x')
           @_yAdjustment = top  - @get('y')
