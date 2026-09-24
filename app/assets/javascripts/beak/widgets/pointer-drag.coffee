@@ -13,12 +13,17 @@
 #   onStart?:  (DragInfo) => Unit  # runs once, when the pointer first moves past `threshold`
 # , onMove?:   (DragInfo) => Unit
 # , onEnd?:    (DragInfo) => Unit  # runs on pointer-up and on pointer-cancel, but only if the drag ever started
-# , threshold: Number
+# , threshold?: Number  # defaults to `dragThresholdFor` the pointer's type
 # }
 
 # How far the pointer must travel before we call it a drag instead of a click.  Without this, a sloppy click that
-# wiggles a pixel would count as a move, and a double-click to edit would be nearly impossible to land.
-DRAG_THRESHOLD = 3
+# wiggles a pixel would count as a move, and a double-click to edit would be nearly impossible to land.  A fingertip
+# wanders much further than a mouse during a tap, so touch needs a far larger allowance.
+DRAG_THRESHOLDS = { mouse: 3, pen: 5, touch: 10 }
+
+# (String) => Number
+dragThresholdFor = (pointerType) ->
+  DRAG_THRESHOLDS[pointerType] ? DRAG_THRESHOLDS.mouse
 
 # Put on the body for the duration of a drag, so dragging over the page doesn't select text everywhere.
 DRAGGING_CLASS = 'nlw-pointer-dragging'
@@ -49,7 +54,7 @@ swallowNextClick = ->
 # Tracks one pointer from `pointerdown` to `pointerup`, reporting how far it has moved.  The element captures the
 # pointer, so the drag keeps working when the pointer leaves it, or leaves the window entirely.
 # (Element, PointerEvent, DragHandlers) => Boolean
-startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = DRAG_THRESHOLD }) ->
+startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThresholdFor(event.pointerType) }) ->
 
   if (event.button isnt 0) or (not event.isPrimary)
     return false
@@ -91,8 +96,9 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = DRAG_THRE
         frameId = window.requestAnimationFrame(flush)
       return
 
-  handleMove = undefined
-  handleUp   = undefined
+  handleMove        = undefined
+  handleUp          = undefined
+  handleContextMenu = undefined
 
   cleanUp =
     ->
@@ -103,6 +109,7 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = DRAG_THRE
       node.removeEventListener('pointermove'  , handleMove)
       node.removeEventListener('pointerup'    , handleUp)
       node.removeEventListener('pointercancel', handleUp)
+      window.removeEventListener('contextmenu', handleContextMenu, true)
       document.body.classList.remove(DRAGGING_CLASS)
       if node.hasPointerCapture?(pointerId)
         node.releasePointerCapture(pointerId)
@@ -134,12 +141,19 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = DRAG_THRE
           swallowNextClick()
       return
 
+  handleContextMenu =
+    ->
+      if not hasStarted
+        cleanUp()
+      return
+
   node.setPointerCapture(pointerId)
   node.addEventListener('pointermove'  , handleMove)
   node.addEventListener('pointerup'    , handleUp)
   node.addEventListener('pointercancel', handleUp)
+  window.addEventListener('contextmenu', handleContextMenu, true)
 
   true
 
 export default startPointerDrag
-export { DRAG_THRESHOLD }
+export { dragThresholdFor }
