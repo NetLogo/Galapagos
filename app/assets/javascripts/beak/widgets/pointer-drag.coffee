@@ -156,4 +156,4 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
   true
 
 export default startPointerDrag
-export { dragThresholdFor }
+export { dragThresholdFor, swallowNextClick }
