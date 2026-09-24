@@ -106,6 +106,7 @@ handleWidgetSelection =
 
             # () => Unit
             onStart: ->
+              ractive.fire('hide-context-menu')
               if not selection.has(component)
                 selection.set(component)
               selected   = selection.all()
@@ -167,6 +168,7 @@ handleWidgetSelection =
 
             # (DragInfo) => Unit
             onStart: (info) ->
+              ractive.fire('hide-context-menu')
               keptWidgets = if isTogglingSelection(info) then selection.all() else []
               return
 
