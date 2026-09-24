@@ -3,6 +3,7 @@ import { setUpWidgets } from "./set-up-widgets.js"
 import generateRactiveSkeleton from "./skeleton.js"
 import handleWidgetSelection from "./handle-widget-selection.js"
 import handleContextMenu from "./handle-context-menu.js"
+import installLongPress from "./long-press.js"
 import controlEventTraffic from "./event-traffic-control.js"
 import genConfigs from "./config-shims.js"
 import ViewController from "./draw/view-controller.js"
@@ -76,6 +77,7 @@ initializeUI = (containerArg, widgets, code, info,
   controlEventTraffic(controller, performUpdate)
   handleWidgetSelection(ractive)
   handleContextMenu(ractive)
+  installLongPress()
 
   controller
 

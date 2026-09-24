@@ -8,6 +8,10 @@
   z-index:      50;
 }
 
+.netlogo-widget-container, .netlogo-model-title, .inspection-agent-monitor-view-container {
+  -webkit-touch-callout: none;
+}
+
 body.nlw-pointer-dragging {
   user-select: none;
 }
