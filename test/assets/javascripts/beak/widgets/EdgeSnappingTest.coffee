@@ -5,9 +5,14 @@ describe('edge snapping', () ->
 
   describe('edgesOf()', () ->
 
-    it('lists the left and right edges as xs, and the top and bottom edges as ys', () ->
-      edges = edgesOf([{ x: 10, y: 20, width: 30, height: 40 }, { x: 100, y: 200, width: 5, height: 6 }])
-      assert.deepEqual(edges, { xs: [10, 40, 100, 105], ys: [20, 60, 200, 206] })
+    it('lists edges as xs and ys, and centerlines as cxs and cys', () ->
+      edges = edgesOf([{ x: 10, y: 20, width: 30, height: 40 }, { x: 100, y: 200, width: 6, height: 8 }])
+      assert.deepEqual(edges, { xs: [10, 40, 100, 106], ys: [20, 60, 200, 208], cxs: [25, 103], cys: [40, 204] })
+    )
+
+    it('rounds centerlines of odd-sized rects to whole pixels', () ->
+      edges = edgesOf([{ x: 10, y: 20, width: 5, height: 7 }])
+      assert.deepEqual([edges.cxs, edges.cys], [[13], [24]])
     )
 
   )
@@ -47,6 +52,19 @@ describe('edge snapping', () ->
     it('never snaps an axis with no moving edges', () ->
       snap = findSnap({ xs: [], ys: [] }, candidates, 5)
       assert.deepEqual(snap, { x: null, y: null })
+    )
+
+    it('snaps centerlines only to centerlines', () ->
+      withCenters = { xs: [100], ys: [], cxs: [150], cys: [] }
+      assert.equal(findSnap({ xs: [149], ys: [] }, withCenters, 5).x, null)
+      assert.equal(findSnap({ xs: [], ys: [], cxs: [101], cys: [] }, withCenters, 5).x, null)
+      assert.deepEqual(findSnap({ xs: [], ys: [], cxs: [148], cys: [] }, withCenters, 5).x, { delta: 2, at: 150 })
+    )
+
+    it('takes the closer of an edge snap and a centerline snap', () ->
+      withCenters = { xs: [100], ys: [], cxs: [150], cys: [] }
+      assert.deepEqual(findSnap({ xs: [97], ys: [], cxs: [149], cys: [] }, withCenters, 5).x, { delta: 1, at: 150 })
+      assert.deepEqual(findSnap({ xs: [99], ys: [], cxs: [147], cys: [] }, withCenters, 5).x, { delta: 1, at: 100 })
     )
 
     it('uses 5 as the threshold by default', () ->
