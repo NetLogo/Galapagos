@@ -166,6 +166,12 @@ body.nlw-pointer-dragging {
   display: block;
 }
 
+.context-submenu-scroll {
+  max-height:          50vh;
+  overflow-y:          auto;
+  overscroll-behavior: contain;
+}
+
 .context-submenu-scroll-arrow {
   list-style:  none;
   text-align:  center;
