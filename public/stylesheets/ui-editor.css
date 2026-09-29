@@ -364,6 +364,46 @@ body.nlw-pointer-dragging {
   z-index:          60;
 }
 
+@media (pointer: coarse) {
+  .widget-resize-handle::before {
+    content:  "";
+    inset:    -12px;
+    position: absolute;
+  }
+
+  .widget-resize-handle[data-direction^="Top"]::before {
+    bottom: -7px;
+    top:    -17px;
+  }
+
+  .widget-resize-handle[data-direction^="Bottom"]::before {
+    bottom: -17px;
+    top:    -7px;
+  }
+
+  .widget-resize-handle[data-direction$="Left"]::before {
+    left:  -17px;
+    right: -7px;
+  }
+
+  .widget-resize-handle[data-direction$="Right"]::before {
+    left:  -7px;
+    right: -17px;
+  }
+
+  .context-menu-item,
+  .context-submenu-scroll-arrow {
+    align-items: center;
+    box-sizing:  border-box;
+    display:     flex;
+    min-height:  44px;
+  }
+
+  .context-submenu-scroll-arrow {
+    justify-content: center;
+  }
+}
+
 .initial-color {
   color: initial;
 }
