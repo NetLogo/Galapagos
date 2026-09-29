@@ -53,6 +53,11 @@ RactiveContextMenu = Ractive.extend({
       , 0)
       return
 
+    'open-submenu': ({ node, original: event }) ->
+      if event.target.closest('.context-menu-item') is node
+        node.focus()
+        false
+
     'scroll-submenu': ({ original: event }, optionIndex, delta) ->
       event.stopPropagation()
       opt       = @get("options.#{optionIndex}")
@@ -198,7 +203,8 @@ RactiveContextMenu = Ractive.extend({
             {{# isSubmenu }}
               <li class="context-menu-item has-submenu"
                   tabindex="{{tabindex}}" role="button" aria-disabled="false"
-                  on-keydown="keydown">
+                  on-keydown="keydown"
+                  on-click="open-submenu">
                 {{text}} &#9658;
                 <ul class="context-submenu context-menu-list {{# flipSubmenuX }}flip-left{{/}} {{# flipSubmenuY }}flip-up{{/}}">
                   {{# isScrollable }}
