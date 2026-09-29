@@ -39,6 +39,7 @@ RactiveContextMenu = Ractive.extend({
   , tabindex:             0 # Number
   , flipSubmenuX:     false # Boolean — true when submenus should open left instead of right
   , flipSubmenuY:     false # Boolean — true when submenus should open upward instead of downward
+  , submenuMaxHeight: undefined # Number
   }
 
   on: {
@@ -58,15 +59,16 @@ RactiveContextMenu = Ractive.extend({
         node.focus()
         false
 
-    'scroll-submenu': ({ original: event }, optionIndex, delta) ->
-      event.stopPropagation()
-      opt       = @get("options.#{optionIndex}")
-      newOffset = Math.max(0, Math.min(opt.scrollOffset + delta, opt.submenu.length - SUBMENU_PAGE_SIZE))
-      @set("options.#{optionIndex}.scrollOffset",    newOffset)
-      @set("options.#{optionIndex}.visibleSubmenu",  opt.submenu.slice(newOffset, newOffset + SUBMENU_PAGE_SIZE))
-      @set("options.#{optionIndex}.hasScrollUp",     newOffset > 0)
-      @set("options.#{optionIndex}.hasScrollDown",   newOffset + SUBMENU_PAGE_SIZE < opt.submenu.length)
+    'scroll-submenu': ({ node }, delta) ->
+      list = node.parentElement.querySelector('.context-submenu-scroll')
+      step = list.clientHeight - list.querySelector('.context-menu-item').offsetHeight
+      list.scrollBy({ top: delta * step, behavior: 'smooth' })
       false
+
+    'submenu-scrolled': ({ node }, optionIndex) ->
+      @set("options.#{optionIndex}.hasScrollUp",   node.scrollTop > 0)
+      @set("options.#{optionIndex}.hasScrollDown", node.scrollTop + node.clientHeight < node.scrollHeight - 1)
+      return
 
     'reveal-thineself': (_, component, x, y) ->
 
@@ -101,6 +103,8 @@ RactiveContextMenu = Ractive.extend({
         newIndex      = Math.abs((targetIndex + delta)) % siblingsCount
         newTarget     = siblings[newIndex]
         focusElementVisible(newTarget)
+        if newTarget.closest('.context-submenu-scroll')?
+          newTarget.scrollIntoView({ block: 'nearest' })
 
       setTimeout(=>
         allBlurred = items.every((item) -> item isnt document.activeElement)
@@ -136,21 +140,22 @@ RactiveContextMenu = Ractive.extend({
       # have a bounding box that coincides with the page, so do some math to
       # convert to absolute position (i.e. relative to nearest positioned
       # ancestor)
-      menuEl       = @find('#netlogo-widget-context-menu')
-      offsetParent = menuEl.offsetParent
-      menuWidth    = menuEl.offsetWidth
-      menuHeight   = menuEl.offsetHeight
+      menuEl        = @find('#netlogo-widget-context-menu')
+      offsetParent  = menuEl.offsetParent
+      menuWidth     = menuEl.offsetWidth
+      menuHeight    = menuEl.offsetHeight
+      itemHeight    = menuEl.querySelector('.context-menu-item').offsetHeight
+      maxListHeight = Math.min(SUBMENU_PAGE_SIZE * itemHeight, window.innerHeight / 2)
 
       # Flip horizontal/vertical if the menu would overflow the viewport (iframe boundary)
       flippedX = clientX + menuWidth  > window.innerWidth
       flippedY = clientY + menuHeight > window.innerHeight
 
       # The worst-case submenu starts at the bottom of the main menu. For scrollable submenus,
-      # use a proportional height estimate based on page size; otherwise proxy with menuHeight.
+      # use the list's maximum height plus the two arrows; otherwise proxy with menuHeight.
       menuBottomClientY = if flippedY then clientY else clientY + menuHeight
-      avgItemHeight     = menuHeight / Math.max(options.length, 1)
       submenuHeightEst  = if options.some((o) -> o.isScrollable)
-        (SUBMENU_PAGE_SIZE + 2) * avgItemHeight
+        maxListHeight + 2 * itemHeight
       else
         menuHeight
 
@@ -161,35 +166,39 @@ RactiveContextMenu = Ractive.extend({
         flipSubmenuX: clientX + menuWidth + menuWidth > window.innerWidth
         # Submenus flip up when the bottom of the main menu is near the bottom edge
         flipSubmenuY: menuBottomClientY + submenuHeightEst > window.innerHeight
+        submenuMaxHeight: maxListHeight
       })
 
     visible
 
   # Annotates submenu options with scroll state. Scrollable submenus (> SUBMENU_PAGE_SIZE items) get
-  # scroll metadata so the template can show up/down arrow buttons and a paged view of items.
+  # scroll metadata so the template can show up/down arrow buttons around a scrolling list of items.
   # (Array[ContextMenuOption]) -> Array[ContextMenuOption]
   _processOptions: (options) ->
     options.map((opt, i) ->
       if not opt.isSubmenu
         opt
-      else if opt.submenu.length > SUBMENU_PAGE_SIZE
-        Object.assign({}, opt, {
-          optionIndex:  i,
-          scrollOffset: 0,
-          isScrollable: true,
-          visibleSubmenu: opt.submenu.slice(0, SUBMENU_PAGE_SIZE),
-          hasScrollUp:    false,
-          hasScrollDown:  true
-        })
       else
+        isScrollable = opt.submenu.length > SUBMENU_PAGE_SIZE
         Object.assign({}, opt, {
-          optionIndex:    i,
-          isScrollable:   false,
-          visibleSubmenu: opt.submenu,
-          hasScrollUp:    false,
-          hasScrollDown:  false
+          optionIndex:   i,
+          isScrollable,
+          hasScrollUp:   false,
+          hasScrollDown: isScrollable
         })
     )
+
+  partials: {
+    submenuItems:
+      """
+      {{# submenu }}
+        <li class="context-menu-item"
+            tabindex="{{tabindex}}" role="button" aria-disabled="false"
+            on-keydown="keydown"
+            on-activateClick="action()">{{text}}</li>
+      {{/}}
+      """
+  }
 
   # coffeelint: disable=max_line_length
   template:
@@ -208,16 +217,17 @@ RactiveContextMenu = Ractive.extend({
                 {{text}} &#9658;
                 <ul class="context-submenu context-menu-list {{# flipSubmenuX }}flip-left{{/}} {{# flipSubmenuY }}flip-up{{/}}">
                   {{# isScrollable }}
-                    <li class="context-submenu-scroll-arrow {{^ hasScrollUp }}disabled{{/}}" on-click="['scroll-submenu', optionIndex, -1]">&#9650;</li>
-                  {{/}}
-                  {{# visibleSubmenu }}
-                    <li class="context-menu-item"
-                        tabindex="{{tabindex}}" role="button" aria-disabled="false"
-                        on-keydown="keydown"
-                        on-activateClick="action()">{{text}}</li>
-                  {{/}}
-                  {{# isScrollable }}
-                    <li class="context-submenu-scroll-arrow {{^ hasScrollDown }}disabled{{/}}" on-click="['scroll-submenu', optionIndex, 1]">&#9660;</li>
+                    <li class="context-submenu-scroll-arrow {{^ hasScrollUp }}disabled{{/}}" on-click="['scroll-submenu', -1]">&#9650;</li>
+                    <li>
+                      <ul class="context-submenu-scroll context-menu-list"
+                          {{# submenuMaxHeight }}style="max-height: {{submenuMaxHeight}}px;"{{/}}
+                          on-scroll="['submenu-scrolled', optionIndex]">
+                        {{> submenuItems }}
+                      </ul>
+                    </li>
+                    <li class="context-submenu-scroll-arrow {{^ hasScrollDown }}disabled{{/}}" on-click="['scroll-submenu', 1]">&#9660;</li>
+                  {{ else }}
+                    {{> submenuItems }}
                   {{/}}
                 </ul>
               </li>
