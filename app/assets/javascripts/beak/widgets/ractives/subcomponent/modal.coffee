@@ -1,4 +1,6 @@
 
+import startPointerDrag from "../../pointer-drag.js"
+
 RactiveModal = Ractive.extend({
   data: {
     title: undefined      # String
@@ -7,8 +9,6 @@ RactiveModal = Ractive.extend({
     , posY: 0             # Number
     , isDragging: false   # Boolean
     , isMouseDown: false  # Boolean
-    , lastClientX: 0      # Number
-    , lastClientY: 0      # Number
     , containerWidth: "90vw"                         # String
     , containerHeight: "min(90vh, max(600px, 60vw))" # String
     , minHeight: "200px"                      # String
@@ -57,44 +57,27 @@ RactiveModal = Ractive.extend({
         @resizeObserver = undefined
       return
 
-    "start-drag": (event) ->
-      event.original.preventDefault()
+    "start-drag": ({ node, original }) ->
+      startX = undefined
+      startY = undefined
 
-      @set('isDragging', true)
-      @set('lastClientX', event.original.clientX)
-      @set('lastClientY', event.original.clientY)
+      startPointerDrag(node, original, {
 
-      modalCls = this
+        onStart: =>
+          startX = @get('posX')
+          startY = @get('posY')
+          @set('isDragging', true)
+          return
 
-      move = (event) ->
-        event.preventDefault()
-        if modalCls.get('isDragging')
-          dx = event.clientX - modalCls.get('lastClientX')
-          dy = event.clientY - modalCls.get('lastClientY')
+        onMove: ({ dx, dy }) =>
+          @set({ posX: startX + dx, posY: startY + dy })
+          return
 
-          modalCls.set('posX', modalCls.get('posX') + dx)
-          modalCls.set('posY', modalCls.get('posY') + dy)
+        onEnd: =>
+          @set('isDragging', false)
+          return
 
-          modalCls.set('lastClientX', event.clientX)
-          modalCls.set('lastClientY', event.clientY)
-
-      stop = () ->
-        modalCls.set('isDragging', false)
-        modalCls.set('lastClientX', 0)
-        modalCls.set('lastClientY', 0)
-
-        window.removeEventListener('mousemove', move)
-        window.removeEventListener('mouseup', stop)
-        window.removeEventListener('touchmove', move)
-        window.removeEventListener('touchend', stop)
-        window.removeEventListener('touchcancel', stop)
-
-      window.addEventListener('mousemove', move)
-      window.addEventListener('mouseup', stop)
-      window.addEventListener('touchmove', move)
-      window.addEventListener('touchend', stop)
-      window.addEventListener('touchcancel', stop)
-
+      })
 
       return
 
@@ -142,14 +125,11 @@ RactiveModal = Ractive.extend({
   <div id={{id}} class="netlogo-modal-container"
        role="dialog"
        style="{{containerStyle}}"
-       on-mousedown="['mouse-down']"
-       on-touchstart="['mouse-down']"
-       on-mouseup="['mouse-up']"
-       on-touchend="['mouse-up']"
+       on-pointerdown="['mouse-down']"
+       on-pointerup="['mouse-up']"
        >
      <div class="netlogo-modal-title"
-          on-mousedown="['start-drag']"
-          on-touchstart="['start-drag']"
+          on-pointerdown="['start-drag']"
           role="heading"
      >
       <div class="netlogo-modal-top-bar-container">
