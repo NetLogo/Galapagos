@@ -10,6 +10,8 @@ LONG_PRESS_SCOPE = '.netlogo-widget-container, .netlogo-model-title, .inspection
 
 EDITABLE = 'input, textarea, select, [contenteditable], .CodeMirror'
 
+DIALOG = '.widget-edit-form-overlay, .netlogo-modal-container'
+
 isInstalled = false
 
 # () => Unit
@@ -68,7 +70,7 @@ installLongPress = ->
         , clientY:   e.clientY
         , threshold: dragThresholdFor(e.pointerType)
         , hasFired:  false
-        , timerId:   window.setTimeout(fire, LONG_PRESS_DELAY)
+        , timerId:   if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
         }
       return
 

@@ -1177,7 +1177,7 @@ kbd {
   --z-basis:        100;
   --border-width:   1px;
   --title-padding:  0.2rem;
-  --title-height:   1rem;
+  --title-height:   2.25rem;
   box-sizing:       border-box;
   position:         fixed;
   z-index:          var(--z-basis);
@@ -1205,10 +1205,13 @@ kbd {
   padding:          var(--title-padding);
   cursor:           grab;
   user-select:      none;
+  touch-action:     none;
   background-color: white;
   border-bottom:    solid var(--border-width) #111;
   z-index:          calc(var(--z-basis) + 1);
   font-size:        small;
+  display:          flex;
+  align-items:      center;
 }
 
 .netlogo-modal-top-bar-container {
