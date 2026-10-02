@@ -402,6 +402,21 @@ try {
         e.source.postMessage({ update, type: "nlw-state-update", sequenceNum: -1 }, "*");
         break;
       }
+      case "nlw-export-world": {
+        const worldText = workspace.importExportPrims.exportWorldRaw();
+        e.source.postMessage({ type: "nlw-export-world-results", export: worldText });
+        break;
+      }
+      case "nlw-import-world": {
+        workspace.importExportPrims.importWorldRaw(e.data.world);
+        e.source.postMessage({ type: "nlw-world-imported" });
+        break;
+      }
+      case "nlw-export-code": {
+        const modelCode = globalThis.session.widgetController.code();
+        e.source.postMessage({ type: "nlw-export-code-results", export: modelCode });
+        break;
+      }
       case "nlw-export-model": {
         var model = globalThis.session.getNlogo();
         e.source.postMessage({ type: "nlw-export-model-results", id: e.data.id, export: model }, "*");
