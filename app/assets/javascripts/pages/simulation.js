@@ -485,6 +485,8 @@ try {
       }
     };
     window.setInterval(adjustSizeAndTitle, 200);
+
+    parent.postMessage({ type: "nlw-is-loaded" });
   }
 
 } catch (ex) {
