@@ -7,6 +7,7 @@ describe('installLongPress()', () ->
   overlay      = undefined
   input        = undefined
   outside      = undefined
+  dialogBar    = undefined
   timers       = []
   menus        = []
   originals    = {}
@@ -41,11 +42,13 @@ describe('installLongPress()', () ->
         <input type="text">
       </div>
       <div class="elsewhere"></div>
+      <div class="async-popup"><div class="async-dialog-title-bar"></div></div>
     """
     container = document.querySelector('.netlogo-widget-container')
     overlay   = document.querySelector('.editor-overlay')
     input     = document.querySelector('input')
     outside   = document.querySelector('.elsewhere')
+    dialogBar = document.querySelector('.async-dialog-title-bar')
 
     installLongPress()
     document.addEventListener('contextmenu', recordMenu)
@@ -156,6 +159,14 @@ describe('installLongPress()', () ->
     overlay.dispatchEvent(new window.MouseEvent('click', { bubbles: true }))
     container.removeEventListener('click', countClick)
     assert.equal(clicks, 0)
+  )
+
+  it("opens no menu in a dialog, but still blocks the browser's, so a slow drag of its title bar is not cancelled", () ->
+    pointer(dialogBar, 'pointerdown', 'touch')
+    runTimers()
+    nativeMenu(dialogBar)
+    pointer(dialogBar, 'pointerup', 'touch')
+    assert.equal(menus.length, 0)
   )
 
 )
