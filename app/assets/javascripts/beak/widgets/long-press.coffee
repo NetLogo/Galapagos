@@ -6,11 +6,13 @@ LONG_PRESS_DELAY = 500
 # browser's own long-press menu (Android sends one, sometimes only on release) is blocked, however it is timed.
 NATIVE_MENU_GRACE = 300
 
-LONG_PRESS_SCOPE = '.netlogo-widget-container, .netlogo-model-title, .inspection-agent-monitor-view-container'
+LONG_PRESS_SCOPE = [
+  '.netlogo-widget-container', '.netlogo-model-title', '.inspection-agent-monitor-view-container', '.async-popup'
+].join(', ')
 
 EDITABLE = 'input, textarea, select, [contenteditable], .CodeMirror'
 
-DIALOG = '.widget-edit-form-overlay, .netlogo-modal-container'
+DIALOG = '.widget-edit-form-overlay, .netlogo-modal-container, .async-popup'
 
 isInstalled = false
 
