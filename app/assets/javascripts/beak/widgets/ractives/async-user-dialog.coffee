@@ -1,6 +1,9 @@
-import { CommonDrag } from "./draggable.js"
+import startPointerDrag from "../pointer-drag.js"
 
 { maybe, None } = tortoise_require('brazier/maybe')
+
+# How much of a dragged dialog must stay inside the frame, in pixels.
+DRAG_KEEP_VISIBLE = 60
 
 haltably = (f) ->
   try f()
@@ -9,11 +12,6 @@ haltably = (f) ->
       throw ex
 
 RactiveAsyncUserDialog = Ractive.extend({
-
-  lastUpdateMs: undefined # Number
-  startX:       undefined # Number
-  startY:       undefined # Number
-  view:         undefined # Element
 
   data: -> {
     isVisible:   undefined # Boolean
@@ -113,28 +111,32 @@ RactiveAsyncUserDialog = Ractive.extend({
       @fire('show-state', {}, { type: 'message', message, callback })
       false
 
-    'start-drag': (event) ->
+    # Only the title bar drags the dialog, so the text input and the chooser below it work as usual.
+    'start-drag': ({ node, original }) ->
+      startX = undefined
+      startY = undefined
 
-      checkIsValid = (x, y) ->
-        elem = document.elementFromPoint(x, y)
-        switch elem.tagName.toLowerCase()
-          when "input"    then elem.type.toLowerCase() isnt "number" and elem.type.toLowerCase() isnt "text"
-          when "textarea" then false
-          else                 true
+      startPointerDrag(node, original, {
 
-      CommonDrag.dragstart(this, event, checkIsValid, (x, y) =>
-        @startX = @get('xLoc') - x
-        @startY = @get('yLoc') - y
-      )
+        onStart: =>
+          startX = @get('xLoc')
+          startY = @get('yLoc')
+          return
 
-    'drag-dialog': (event) ->
-      CommonDrag.drag(this, event, (x, y) =>
-        @set('xLoc', @startX + x)
-        @set('yLoc', @startY + y)
-      )
+        onMove: ({ dx, dy }) =>
+          # The pointer is captured, so it can leave the frame.  Keep the title bar where it can be grabbed again.
+          elem = @find('#async-user-dialog')
+          maxX = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE
+          minX = DRAG_KEEP_VISIBLE - elem.offsetWidth
+          @set({
+            xLoc: Math.min(maxX, Math.max(minX, startX + dx))
+          , yLoc: Math.max(0, startY + dy)
+          })
+          return
 
-    'stop-drag': ->
-      CommonDrag.dragend(this, (->))
+      })
+
+      return
 
   }
 
@@ -143,8 +145,8 @@ RactiveAsyncUserDialog = Ractive.extend({
     """
     <div id="async-user-dialog" class="async-popup"
          style="{{# !isVisible }}display: none;{{/}} top: {{yLoc}}px; left: {{xLoc}}px; max-width: {{wareaWidth * .4}}px; {{style}}"
-         draggable="true" on-drag="drag-dialog" on-dragstart="start-drag" on-dragend="stop-drag"
          on-keydown="handle-key" tabindex="0">
+      <div class="async-dialog-title-bar" on-pointerdown="start-drag"></div>
       <div id="{{id}}-closer" class="widget-edit-closer" on-click="perform-halt">X</div>
       <div class="async-dialog-message">{{state.message}}</div>
       <div id="async-dialog-controls" class="async-dialog-controls">{{>controls}}</div>

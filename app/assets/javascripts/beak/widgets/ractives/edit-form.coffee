@@ -1,12 +1,11 @@
-import { CommonDrag } from "./draggable.js"
+import startPointerDrag from "../pointer-drag.js"
 import { getAllFocusableElements } from "../accessibility/utils.js"
+
+# How much of a dragged form must stay inside the frame, in pixels.
+DRAG_KEEP_VISIBLE = 60
 
 EditForm = Ractive.extend({
 
-  lastUpdateMs:   undefined # Number
-  startX:         undefined # Number
-  startY:         undefined # Number
-  view:           undefined # Element
   _formModelElem: undefined # Element
   _formMinYLoc:   undefined # Number
   _formResizeObserver: undefined # ResizeObserver
@@ -26,7 +25,6 @@ EditForm = Ractive.extend({
   , visible:          undefined # Boolean
   , xLoc:             undefined # Number
   , yLoc:             undefined # Number
-  , draggable:        true      # Boolean
   }
 
   computed: {
@@ -112,15 +110,6 @@ EditForm = Ractive.extend({
           @_formResizeObserver = new ResizeObserver( () => @fitModelToForm(); return )
           @_formResizeObserver.observe(elem)
 
-      # This is awful, but it's the least invasive way I have come up with to workaround a 3 year old Firefox bug.
-      # https://bugzilla.mozilla.org/show_bug.cgi?id=1189486
-      # -JMB 10/18.
-      whatADrag = (el) =>
-        el.addEventListener('focus', (_) => @set('draggable', false); return)
-        el.addEventListener('blur',  (_) => @set('draggable', true); return)
-      @findAll('textarea').forEach( whatADrag )
-      @findAll('input').forEach( whatADrag )
-
       false
 
     'activate-cloaking-device': ->
@@ -141,28 +130,38 @@ EditForm = Ractive.extend({
       @set('amProvingMyself', true)
       false
 
-    'start-edit-drag': (event) ->
-      checkIsValid = (x, y) ->
-        elem = document.elementFromPoint(x, y)
-        switch elem.tagName.toLowerCase()
-          when "input"    then elem.type.toLowerCase() isnt "number" and elem.type.toLowerCase() isnt "text"
-          when "textarea" then false
-          else                 true
-      CommonDrag.dragstart(this, event, checkIsValid, (x, y) =>
-        @startX = @get('xLoc') - x
-        @startY = @get('yLoc') - y
-      )
+    # Only the title bar drags the form, so the fields below it can still be scrolled, selected, and typed in.
+    'start-edit-drag': ({ node, original }) ->
+      startX = undefined
+      startY = undefined
 
-    'drag-edit-dialog': (event) ->
-      CommonDrag.drag(this, event, (x, y) =>
-        @set('xLoc', @startX + x)
-        @set('yLoc', @startY + y)
-      )
+      startPointerDrag(node, original, {
 
-    'stop-edit-drag': ->
-      CommonDrag.dragend(this, (->))
-      # Dragging changes `yLoc`, so the model has to grow (or shrink) to match the form's new bottom edge.
-      @fitModelToForm()
+        onStart: =>
+          startX = @get('xLoc')
+          startY = @get('yLoc')
+          return
+
+        onMove: ({ dx, dy }) =>
+          # The pointer is captured, so it can leave the frame.  Keep the title bar where it can be grabbed again.
+          elem = @getElem()
+          maxX = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE
+          minX = DRAG_KEEP_VISIBLE - elem.offsetWidth
+          minY = @_formMinYLoc ? 0
+          @set({
+            xLoc: Math.min(maxX, Math.max(minX, startX + dx))
+          , yLoc: Math.max(minY, startY + dy)
+          })
+          return
+
+        onEnd: =>
+          # Dragging changes `yLoc`, so the model has to grow (or shrink) to match the form's new bottom edge.
+          @fitModelToForm()
+          return
+
+      })
+
+      return
 
     'cancel-edit': ->
       @fire('activate-cloaking-device')
@@ -194,12 +193,10 @@ EditForm = Ractive.extend({
            class="widget-edit-popup widget-edit-text"
            style="top: {{yLoc}}px; left: {{xLoc}}px; {{style}}"
            on-keydown="handle-key"
-           draggable="{{draggable}}" on-drag="drag-edit-dialog" on-dragstart="start-edit-drag"
-           on-dragend="stop-edit-drag"
            tabindex="0">
         <div id="{{id}}-closer" class="widget-edit-closer" on-click="cancel-edit">X</div>
         <form class="widget-edit-form" on-submit="submit">
-          <div class="widget-edit-form-title">{{>title}}</div>
+          <div class="widget-edit-form-title" on-pointerdown="start-edit-drag">{{>title}}</div>
           {{# compileErrors.length > 0 }}
             <div class="widget-edit-errors">
               {{#each compileErrors}}

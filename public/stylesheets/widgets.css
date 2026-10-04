@@ -1141,9 +1141,18 @@ kbd {
   z-index:          90;
 }
 
+/* The dialog has no title, so this empty bar under the closer is its drag handle. */
+.async-dialog-title-bar {
+  border-bottom: 1px solid #dfdfdf;
+  cursor:        grab;
+  height:        2.25rem;
+  margin:        -10px -10px 0 -14px;
+  touch-action:  none;
+}
+
 .async-dialog-message {
   font-size:   16px;
-  margin-top:  20px;
+  margin-top:  10px;
   white-space: break-spaces;
   word-break:  break-word;
 }
