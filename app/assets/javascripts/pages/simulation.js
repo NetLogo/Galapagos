@@ -423,7 +423,7 @@ try {
         break;
       }
       case "nlw-request-view": {
-        const base64 = session.widgetController.viewController.view.visibleCanvas.toDataURL("image/png");
+        const base64 = session.widgetController.viewController.configShims.getViewBase64();
         e.source.postMessage({ base64, type: "nlw-view" }, "*");
         break;
       }
