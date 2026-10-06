@@ -34,12 +34,20 @@ RactiveContextable = Ractive.extend({
       }
   }
 
+  # () => Array[ContextMenuOption]
+  getSelectionOptions: ->
+    if @_selectionSize() > 1
+      [{ text: "Remove from Selection", isEnabled: true, action: => @fire('remove-from-selection', this) }]
+    else
+      []
+
   # (number, number) -> [ContextMenuOption]
   getContextMenuOptions: (clientX, clientY) ->
     isEditing = @get('isEditing') ? false
     if isEditing
       options = @getStandardOptions()
-      if @_selectionSize() > 1 then [options.delete] else Object.values(options)
+      standard = if @_selectionSize() > 1 then [options.delete] else Object.values(options)
+      standard.concat(@getSelectionOptions())
     else
       []
 
