@@ -216,7 +216,8 @@ RactiveView = RactiveWidget.extend({
 
   getContextMenuOptions: (clientX, clientY) ->
     if @get('isEditing')
-      if @_selectionSize() > 1 then [@getStandardOptions().delete] else [@getStandardOptions().edit]
+      standard = if @_selectionSize() > 1 then [@getStandardOptions().delete] else [@getStandardOptions().edit]
+      standard.concat(@getSelectionOptions())
     else if not @get('showAgentContextMenu')
       []
     else
