@@ -44,14 +44,33 @@ handleContextMenu =
     )
 
     handleContextMenu = (context) ->
-      component = context.component ? this
-      { pageX, pageY, clientX, clientY } = context.event
+      component   = context.component ? this
+      contextMenu = @findComponent('contextMenu')
+      { pageX, pageY, clientX, clientY, isLongPress } = context.event
 
-      if @get('isEditing') and component instanceof RactiveWidget
+      # (Array[ContextMenuOption] | undefined) => Boolean
+      reveal = (options) -> contextMenu.reveal(component, pageX, pageY, clientX, clientY, options)
+
+      showWidgetOptions = =>
         @fire('lock-selection', component)
-      else
-        @fire('deselect-widgets')
-      menuOpened = @findComponent('contextMenu').reveal(component, pageX, pageY, clientX, clientY)
+        reveal()
+
+      isAddable = isLongPress and (not component.get('isSelected')) and (@get('selectedWidgetCount') > 0)
+
+      menuOpened =
+        if @get('isEditing') and component instanceof RactiveWidget
+          if isAddable
+            @fire('lock-selection')
+            reveal([
+              { text: "Add to Selection", isEnabled: true, action: => @fire('add-to-selection', component) }
+            , { text: "Widget Options…" , isEnabled: true, action: => showWidgetOptions(); false }
+            ])
+          else
+            showWidgetOptions()
+        else
+          @fire('deselect-widgets')
+          reveal()
+
       not menuOpened # keep propagating the event if the menu didn't open
 
     ractive.on('*.show-context-menu', handleContextMenu)
