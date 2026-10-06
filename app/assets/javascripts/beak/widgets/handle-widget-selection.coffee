@@ -65,9 +65,25 @@ handleWidgetSelection =
     # (Context, Ractive | undefined) => Unit
     lockSelection =
       (_, component) ->
+        selection.unlock()
         if component? and not selection.has(component)
           selection.set(component)
         selection.lock()
+        return
+
+    # (Context, Ractive) => Unit
+    addToSelection =
+      (_, component) ->
+        selection.unlock()
+        selection.add([component])
+        return
+
+    # (Context, Ractive) => Unit
+    removeFromSelection =
+      (_, component) ->
+        selection.unlock()
+        if selection.has(component)
+          selection.toggle(component)
         return
 
     # () => Unit
@@ -205,9 +221,10 @@ handleWidgetSelection =
           isSelectingByPointer = true
           setTimeout((-> isSelectingByPointer = false), 0)
           domEvent.stopPropagation()
+          isTouchLike = (domEvent.pointerType is 'touch') or (domEvent.pointerType is 'pen')
           if isTogglingSelection(domEvent)
             selection.toggle(event.component)
-          else if not selection.has(event.component)
+          else if (not isTouchLike) and (not selection.has(event.component))
             selection.set(event.component)
         return
 
@@ -232,6 +249,18 @@ handleWidgetSelection =
       (_, domEvent) ->
         if not isTogglingSelection(domEvent)
           selection.clear()
+        return
+
+    lastPressTarget = undefined
+    document.addEventListener('pointerdown', ((e) -> lastPressTarget = e.target; return), true)
+
+    # A click fires on the nearest common ancestor of its `mousedown` and `mouseup` targets.  When a tap selects a
+    # widget, its resize handles can appear under the finger before `mouseup`, so the click lands on the container.
+    # (Context) => Unit
+    clickOnContainer =
+      ({ node, event: domEvent }) ->
+        if lastPressTarget is node
+          deselectThoseWidgets(undefined, domEvent)
         return
 
     ractive.observe("isEditing"
@@ -273,16 +302,19 @@ handleWidgetSelection =
         else
           true
 
-    ractive.on('*.begin-widget-drag'  , beginWidgetDrag)
-    ractive.on('begin-box-select'     , beginBoxSelect)
-    ractive.on('select-all-widgets'   , selectAllWidgets)
-    ractive.on('*.select-from-pointer', selectFromPointer)
-    ractive.on('*.select-widget'      , selectThatWidget)
-    ractive.on('deselect-widgets'     , deselectThoseWidgets)
-    ractive.on('*.delete-selected'    , deleteSelected)
-    ractive.on('hide-resizer'         , hideResizer)
-    ractive.on('nudge-widget'         , nudgeWidget)
-    ractive.on('*.lock-selection'     , lockSelection)
-    ractive.on('*.unlock-selection'   , unlockSelection)
+    ractive.on('*.begin-widget-drag'    , beginWidgetDrag)
+    ractive.on('begin-box-select'       , beginBoxSelect)
+    ractive.on('select-all-widgets'     , selectAllWidgets)
+    ractive.on('*.select-from-pointer'  , selectFromPointer)
+    ractive.on('*.select-widget'        , selectThatWidget)
+    ractive.on('deselect-widgets'       , deselectThoseWidgets)
+    ractive.on('container-click'        , clickOnContainer)
+    ractive.on('*.delete-selected'      , deleteSelected)
+    ractive.on('hide-resizer'           , hideResizer)
+    ractive.on('nudge-widget'           , nudgeWidget)
+    ractive.on('*.lock-selection'       , lockSelection)
+    ractive.on('*.unlock-selection'     , unlockSelection)
+    ractive.on('*.add-to-selection'     , addToSelection)
+    ractive.on('*.remove-from-selection', removeFromSelection)
 
 export default handleWidgetSelection
