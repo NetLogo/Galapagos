@@ -51,6 +51,7 @@ installLongPress = ->
       , clientX
       , clientY
       })
+      ownEvent.isLongPress = true
       menuTarget?.dispatchEvent(ownEvent)
       ownEvent = undefined
       return

@@ -209,7 +209,8 @@ generateRactiveSkeleton = (container, widgets, code, info,
 
     getContextMenuOptions: (clientX, clientY) ->
       if @get('isEditing')
-        if @get('isHNW') then hnwWidgetCreationOptions else widgetCreationOptions
+        creationOptions = if @get('isHNW') then hnwWidgetCreationOptions else widgetCreationOptions
+        creationOptions.concat([selectAllOption])
       else
         []
 
@@ -489,7 +490,7 @@ template =
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="show-context-menu"
            on-pointerdown="begin-box-select"
-           on-click="@this.fire('deselect-widgets', @event)" on-dragover="mosaic-killer-killer"
+           on-click="container-click" on-dragover="mosaic-killer-killer"
            aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#selectionBox}}
@@ -582,6 +583,12 @@ alreadyHasA = (componentName) -> (ractive) ->
     alreadyHasA(componentName)(ractive.parent)
   else
     not ractive.findComponent(componentName)?
+
+selectAllOption = {
+  text:      "Select All Widgets"
+, isEnabled: true
+, action:    (context) -> context.fire('select-all-widgets')
+}
 
 widgetCreationOptions = [
   ["Button",  "button"],
