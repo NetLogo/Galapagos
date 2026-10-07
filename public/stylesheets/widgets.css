@@ -733,6 +733,7 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   margin-top:       6px;
   border-radius:    0.5rem;
   background-color: var(--color-widget-accessories-neutral);
+  touch-action:     none;
 }
 
 .netlogo-slider-bar::after {

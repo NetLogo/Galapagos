@@ -83,9 +83,9 @@ RactiveCustomSlider = Ractive.extend({
 
   getClientPosition: (event) -> # document-space coordinates
     switch @get('orientation')
-      when 'horizontal' then (event.clientX ? event.touches?[0]?.clientX) + window.scrollX
-      when 'vertical'   then (event.clientY ? event.touches?[0]?.clientY) + window.scrollY
-      else                   (event.clientX ? event.touches?[0]?.clientX) + window.scrollX
+      when 'horizontal' then event.clientX + window.scrollX
+      when 'vertical'   then event.clientY + window.scrollY
+      else                   event.clientX + window.scrollX
 
   getSliderLengthFromNode: (node) -> # object-space coordinates
     # Might look like a typo, but since rotation happens using
@@ -102,16 +102,23 @@ RactiveCustomSlider = Ractive.extend({
 
   on: {
     'start-drag': (event) ->
-      slider = this
+      slider    = this
+      node      = event.node
+      pointerId = event.original.pointerId
 
-      sliderLength = slider.getSliderLengthFromNode(event.node)
+      if (not slider.get("isEnabled")) or (event.original.button isnt 0) or (not event.original.isPrimary)
+        return
+
+      sliderLength = slider.getSliderLengthFromNode(node)
       min = slider.get("min")
       max = slider.get("max")
       step = slider.get("step")
 
-      sliderStart = slider.getSliderStart(event.node)
+      sliderStart = slider.getSliderStart(node)
 
       move = (e) ->
+        if e.pointerId isnt pointerId
+          return
         currentPos = slider.getClientPosition(e)
         percent = (currentPos - sliderStart) / sliderLength
         if slider.get('orientation') is 'vertical'
@@ -125,18 +132,19 @@ RactiveCustomSlider = Ractive.extend({
         slider.updateValue(val)
         return
 
-      stop = ->
-        window.removeEventListener("mousemove", move)
-        window.removeEventListener("mouseup", stop)
-        window.removeEventListener("touchmove", move)
-        window.removeEventListener("touchend", stop)
+      stop = (e) ->
+        if e.pointerId isnt pointerId
+          return
+        node.removeEventListener("pointermove"  , move)
+        node.removeEventListener("pointerup"    , stop)
+        node.removeEventListener("pointercancel", stop)
         slider.maybeSnapValue()
         return
 
-      window.addEventListener("mousemove", move)
-      window.addEventListener("mouseup", stop)
-      window.addEventListener("touchmove", move)
-      window.addEventListener("touchend", stop)
+      node.setPointerCapture(pointerId)
+      node.addEventListener("pointermove"  , move)
+      node.addEventListener("pointerup"    , stop)
+      node.addEventListener("pointercancel", stop)
       move(event.original)
       event.original.preventDefault()
 
@@ -167,8 +175,7 @@ RactiveCustomSlider = Ractive.extend({
   template: """
     <div {{#id}}id="{{id}}"{{/}}
          class="{{className}}"
-         on-mousedown="['start-drag']"
-         on-touchstart="['start-drag']"
+         on-pointerdown="['start-drag']"
          on-keydown="['keydown']"
          role="slider"
          aria-valuemin="{{min}}"
