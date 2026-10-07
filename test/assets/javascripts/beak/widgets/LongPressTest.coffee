@@ -161,6 +161,18 @@ describe('installLongPress()', () ->
     assert.equal(clicks, 0)
   )
 
+  it('stops a press from selecting text outside the pressed element', () ->
+    selectStart = (target) ->
+      e = new window.Event('selectstart', { bubbles: true, cancelable: true })
+      target.dispatchEvent(e)
+      e.defaultPrevented
+    pointer(overlay, 'pointerdown', 'touch')
+    assert.equal(selectStart(outside), true)
+    assert.equal(selectStart(overlay), false)
+    pointer(overlay, 'pointerup', 'touch')
+    assert.equal(selectStart(outside), false)
+  )
+
   it("opens no menu in a dialog, but still blocks the browser's, so a slow drag of its title bar is not cancelled", () ->
     pointer(dialogBar, 'pointerdown', 'touch')
     runTimers()
