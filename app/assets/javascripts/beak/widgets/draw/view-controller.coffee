@@ -6,6 +6,7 @@ import { DrawingLayer } from "./drawing-layer.js"
 import { SpotlightLayer } from "./spotlight-layer.js"
 import { HighlightLayer } from "./highlight-layer.js"
 import { setImageSmoothing, clearCtx, extractWorldShape } from "./draw-utils.js"
+import trackViewPointer from "./track-view-pointer.js"
 
 AgentModel = tortoise_require('agentmodel')
 
@@ -69,7 +70,7 @@ class ViewController
 
   # (MouseHandler, MouseHandler, MouseHandler) -> (Unit) -> Unit
   # where MouseHandler: ({
-  #   event: MouseEvent? | TouchEvent?,
+  #   event: PointerEvent?,
   #   view: View,
   #   clientX: number,
   #   clientY: number,
@@ -268,8 +269,7 @@ class View
     setImageSmoothing(@_visibleCtx, false)
     @_container.appendChild(@_visibleCanvas)
 
-    @_initMouseTracking()
-    @_initTouchTracking()
+    @_initPointerTracking()
     return
 
   # (Unit) -> HTMLCanvasElement
@@ -278,87 +278,19 @@ class View
   # (Unit) -> DOMRect
   getBoundingClientRect: -> @_visibleCanvas.getBoundingClientRect()
 
-  # Note: For proper mouse and touch tracking, the <canvas> element must have no padding or border. This is because the
-  # `offsetX` and `offsetY` properties plus the client bounding box, used in the mouse-tracking functions, account for
-  # padding and/or border, which we do not want.
+  # Note: For proper pointer tracking, the <canvas> element must have no padding or border, because the pointer's
+  # position is measured from the edge of the canvas's client bounding box.
 
   # Unit -> Unit
-  _initMouseTracking: ->
-    createMouseHandlerArg = (e) => {
-      event: e,
-      view: this,
-      clientX: e.clientX,
-      clientY: e.clientY,
-      xPcor: @xPixToPcor(e.offsetX),
-      yPcor: @yPixToPcor(e.offsetY)
-    }
-
-    mouseIsDown = false # Records whether the mouse was pressed down *while inside the view*; so dragging a cursor that
-    # is already held down doesn't trigger either the down handlers or up handlers.
-    @_visibleCanvas.addEventListener('mousedown', (e) =>
-      @_mouseHandlers.downHandler(createMouseHandlerArg(e))
-      mouseIsDown = true
-      return
-    )
-    @_visibleCanvas.addEventListener('mouseup', (e) =>
-      if mouseIsDown
-        @_mouseHandlers.upHandler(createMouseHandlerArg(e))
-        mouseIsDown = false
-      return
-    )
-    @_visibleCanvas.addEventListener('mousemove', (e) => @_mouseHandlers.moveHandler(createMouseHandlerArg(e)))
-    @_visibleCanvas.addEventListener('mouseleave', (e) =>
-      if mouseIsDown
-        @_mouseHandlers.upHandler(createMouseHandlerArg(e))
-        mouseIsDown = false
-      return
-    )
-    return
-
-  # Unit -> Unit
-  _initTouchTracking: ->
-    # Returns a valid argument for a MouseHandler, as well as a boolean for whether the touch is inside the canvas
-    # element.
-    createMouseHandlerArg = (e) =>
+  _initPointerTracking: ->
+    trackViewPointer(@_visibleCanvas, @_mouseHandlers, (e) =>
       { left, top, right, bottom } = @_visibleCanvas.getBoundingClientRect()
-      { clientX, clientY } = e.changedTouches[0]
+      { clientX, clientY } = e
       [
         { event: e, view: this, clientX, clientY,
           xPcor: @xPixToPcor(clientX - left), yPcor: @yPixToPcor(clientY - top) },
         (left <= clientX <= right) and (top <= clientY <= bottom)
       ]
-
-    movedOutside = false
-    endTouch = (e) =>
-      if movedOutside then return # ignore event if the current touch already moved out of the canvas
-      [mouseHandlerArg, inside] = createMouseHandlerArg(e)
-      if inside
-        @_mouseHandlers.upHandler(mouseHandlerArg)
-      return
-    @_visibleCanvas.addEventListener('touchend', endTouch)
-    @_visibleCanvas.addEventListener('touchcancel', endTouch)
-    @_visibleCanvas.addEventListener('touchmove', (e) =>
-      e.preventDefault()
-      if movedOutside then return # ignore event if the current touch already moved out of the canvas
-      [mouseHandlerArg, inside] = createMouseHandlerArg(e)
-      if inside
-        @_mouseHandlers.moveHandler(mouseHandlerArg)
-      else
-        # The current touch has moved out of the canvas, so ignore this and have future touchmove events be ignored too
-        # Also fire the up handler
-        movedOutside = true
-        @_mouseHandlers.upHandler(mouseHandlerArg)
-      return
-    )
-    @_visibleCanvas.addEventListener('touchstart', (e) =>
-      [mouseHandlerArg, inside] = createMouseHandlerArg(e)
-      # Since touches have size, and aren't just infinitesimal points, this event might falsely fire if the touch
-      # happens to ontact the canvas even if the center of the touch isn't in the canvas.
-      if not inside then return
-
-      movedOutside = false # Have future touchmove events *not* be ignored.
-      @_mouseHandlers.downHandler(mouseHandlerArg)
-      return
     )
     return
 
