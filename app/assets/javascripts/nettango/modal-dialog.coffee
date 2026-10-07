@@ -1,23 +1,13 @@
-import { CommonDrag } from "/beak/widgets/ractives/draggable.js"
+import startPointerDrag from "/beak/widgets/pointer-drag.js"
 
 id = -1
 nextId = () ->
   id = id + 1
   id
 
-checkIsValidDragElement = (x, y) ->
-  elem = document.elementFromPoint(x, y)
-  switch elem.tagName.toLowerCase()
-    when "input"    then elem.type.toLowerCase() isnt "number" and elem.type.toLowerCase() isnt "text"
-    when "textarea" then false
-    else                 true
+DRAG_KEEP_VISIBLE = 60
 
 RactiveModalDialog = Ractive.extend({
-
-  lastUpdateMs: undefined # Number - used only by CommonDrag
-  leftStart:    undefined # Int
-  topStart:     undefined # Int
-  view:         undefined # Element - used only by CommonDrag
 
   # type EventOptions = {
   #   text: String
@@ -66,22 +56,31 @@ RactiveModalDialog = Ractive.extend({
         target.fire(eventOptions.event, {}, ...args)
       return
 
-    'start-drag': (event) ->
-      CommonDrag.dragstart(this, event, checkIsValidDragElement, (x, y) =>
-        @leftStart = @get('left') - x
-        @topStart  = @get('top') - y
-      )
-      return
+    'start-drag': ({ node, original }) ->
+      startLeft = undefined
+      startTop  = undefined
 
-    'drag-dialog': (event) ->
-      CommonDrag.drag(this, event, (x, y) =>
-        @set('left', @leftStart + x)
-        @set('top',  @topStart + y)
-      )
-      return
+      startPointerDrag(node, original, {
 
-    'stop-drag': ->
-      CommonDrag.dragend(this, (->))
+        onStart: =>
+          startLeft = @get('left')
+          startTop  = @get('top')
+          return
+
+        onMove: ({ dx, dy }) =>
+          elem    = @find('.ntb-dialog')
+          homeX   = elem.offsetLeft - @get('left')
+          homeY   = elem.offsetTop  - @get('top')
+          minLeft = DRAG_KEEP_VISIBLE - elem.offsetWidth - homeX
+          maxLeft = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE - homeX
+          @set({
+            left: Math.min(maxLeft, Math.max(minLeft, startLeft + dx))
+          , top:  Math.max(-homeY, startTop + dy)
+          })
+          return
+
+      })
+
       return
 
   }
@@ -97,15 +96,11 @@ RactiveModalDialog = Ractive.extend({
       <div
         class="ntb-dialog"
         style="left: {{left}}px; top: {{top}}px;"
-        draggable="true"
-        on-drag="drag-dialog"
-        on-dragstart="start-drag"
-        on-dragend="stop-drag"
         >
 
         {{# active || preRenderContent }}
 
-        <div class="ntb-dialog-header" dir="auto">
+        <div class="ntb-dialog-header" dir="auto" on-pointerdown="start-drag">
           {{> headerContent }}
         </div>
 

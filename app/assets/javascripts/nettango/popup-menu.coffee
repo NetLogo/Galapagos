@@ -37,18 +37,28 @@ RactivePopupMenu = Ractive.extend({
 
     # (Context, Content, Integer, Integer) => Unit
     'popup-submenu': (_, item, level, itemNum) ->
-      @set("submenus[#{item.level}].item", item)
-
-      parentMenu = @find("#ntb-popup-#{ if level is 1 then 'root' else level - 1}")
-      left = parentMenu.offsetLeft + (parentMenu.offsetWidth / 2)
-
-      parentItem = @find("#ntb-popup-#{level}-#{itemNum}")
-      top = parentMenu.offsetTop + parentItem.offsetTop + (parentItem.offsetHeight / 3)
-
-      @_updatePosition(left, top, "submenus[#{item.level}].")
+      @_openSubmenu(item, level, itemNum)
       return
 
+    # (Context, Content, Integer, Integer) => Boolean
+    'tap-submenu': (_, item, level, itemNum) ->
+      @_openSubmenu(item, level, itemNum)
+      false
+
   }
+
+  # (Content, Integer, Integer) => Unit
+  _openSubmenu: (item, level, itemNum) ->
+    @set("submenus[#{item.level}].item", item)
+
+    parentMenu = @find("#ntb-popup-#{ if level is 1 then 'root' else level - 1}")
+    left = parentMenu.offsetLeft + (parentMenu.offsetWidth / 2)
+
+    parentItem = @find("#ntb-popup-#{level}-#{itemNum}")
+    top = parentMenu.offsetTop + parentItem.offsetTop + (parentItem.offsetHeight / 3)
+
+    @_updatePosition(left, top, "submenus[#{item.level}].")
+    return
 
   # (Ractive, Number, Number, Content, Any) => Unit
   popup: (target, left, top, content, menuData) ->
@@ -131,7 +141,8 @@ RactivePopupMenu = Ractive.extend({
 
     {{#partial group }}
       <li id="ntb-popup-{{level}}-{{itemNum}}" class="ntb-list-submenu"
-        on-mouseover="[ 'popup-submenu', this, level, itemNum ]">{{ name }} ▶</li>
+        on-mouseover="[ 'popup-submenu', this, level, itemNum ]"
+        on-click="[ 'tap-submenu', this, level, itemNum ]">{{ name }} ▶</li>
     {{/partial}}
     """
     # coffeelint: enable=max_line_length
