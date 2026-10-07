@@ -72,7 +72,7 @@ loadInterface = ( getSession, setSession, setToken, setRole
 
   onMouseMove =
     ({ xPcor, yPcor }) ->
-      if data.role.onCursorMove?
+      if data.role.onCursorMove? and xPcor? and yPcor?
         millisBetween = (1 / data.tickRate) * 1000
         now           = performance.now()
         if (now - previousMouseMoveTime) >= millisBetween
