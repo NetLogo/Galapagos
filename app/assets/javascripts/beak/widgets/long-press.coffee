@@ -106,11 +106,20 @@ installLongPress = ->
         e.stopImmediatePropagation()
       return
 
+  # A long press selects the nearest text, which for the view canvas is in whatever widget sits next to it.
+  # (Event) => Unit
+  handleSelectStart =
+    (e) ->
+      if press? and not press.target.contains(e.target)
+        e.preventDefault()
+      return
+
   document.addEventListener('pointerdown'  , handleDown, true)
   document.addEventListener('pointermove'  , handleMove, true)
   document.addEventListener('pointerup'    , handleUp  , true)
   document.addEventListener('pointercancel', handleUp  , true)
   window.addEventListener('contextmenu', handleContextMenu, true)
+  document.addEventListener('selectstart', handleSelectStart, true)
 
   return
 
