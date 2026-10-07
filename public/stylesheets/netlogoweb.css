@@ -144,27 +144,6 @@
   flex-shrink: 0;
 }
 
-.ss-native {
-  position:       absolute;
-  top:            0;
-  left:           0;
-  width:          100%;
-  height:         100%;
-  opacity:        0;
-  pointer-events: none;
-  z-index:        1;
-  cursor:         pointer;
-}
-
-@media (pointer: coarse) {
-  .ss-native {
-    pointer-events: auto;
-  }
-  .ss-trigger {
-    pointer-events: none;
-  }
-}
-
 .ss-dropdown {
   position:       absolute;
   top:            100%;
@@ -225,6 +204,26 @@
 .ss-option[aria-selected="true"] {
   background:  #f0f5ff;
   font-weight: 500;
+}
+
+@media (pointer: coarse) {
+  /* iOS Safari zooms the page in on a focused field whose font is smaller than 16px. */
+  .ss-search {
+    font-size: 16px;
+    padding:   0.6em 0.5em;
+  }
+
+  .ss-list {
+    max-height:          min(360px, 45vh);
+    overscroll-behavior: contain;
+  }
+
+  .ss-option {
+    display:     flex;
+    align-items: center;
+    box-sizing:  border-box;
+    min-height:  44px;
+  }
 }
 
 .netlogo-tab-area {

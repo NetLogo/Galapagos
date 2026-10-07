@@ -100,6 +100,14 @@ iframe {
   text-align:    left;
 }
 
+@media (pointer: coarse) {
+  .model-list-select .ss-option.not_compiling.dev,
+  .model-list-select .ss-option.compiling.dev,
+  .model-list-select .ss-option.unknown.dev {
+    background-position: 3px center;
+  }
+}
+
 .model-list-select .ss-option.not_compiling.dev {
   background-image: url('/assets/images/x.png');
 }
