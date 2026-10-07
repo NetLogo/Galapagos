@@ -252,8 +252,6 @@ RactiveAgentMonitor = Ractive.extend({
     """
     <div
       class="inspection-agent-monitor"
-      on-mouseenter="['hover-agent-card', agent]"
-      on-mouseleave="['unhover-agent-card', agent]"
       on-keydown="monitor-keydown"
     >
       {{>titleBar}}
