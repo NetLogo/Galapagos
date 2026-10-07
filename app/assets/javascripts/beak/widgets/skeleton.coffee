@@ -72,8 +72,6 @@ generateRactiveSkeleton = (container, widgets, code, info,
   , lastCompileFailed:     false
   , codeCompilerErrors:    []
   , codeRuntimeErrors:     []
-  , lastDragX:             undefined
-  , lastDragY:             undefined
   , metadata:              { globalVars: [], myVars: [], procedures: [], isSpectator: false, roleName: "unset" }
   , modelTitle:            source.getModelTitle()
   , outputWidgetOutput:    ''
@@ -490,7 +488,7 @@ template =
            class="netlogo-widget-container{{#isEditing}} interface-unlocked{{/}}"
            on-contextmenu="show-context-menu"
            on-pointerdown="begin-box-select"
-           on-click="container-click" on-dragover="mosaic-killer-killer"
+           on-click="container-click"
            aria-label="NetLogo Model Display Area" role="application">
         <resizer isEnabled="{{isEditing}}" isVisible="{{isResizerVisible}}" />
         {{#selectionBox}}

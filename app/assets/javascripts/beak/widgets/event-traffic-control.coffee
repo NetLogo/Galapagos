@@ -41,18 +41,6 @@ controlEventTraffic = (controller, performUpdate) ->
     ractive.set('isOverlayUp',   false)
     return
 
-  # Thanks, Firefox.  Maybe just put the proper values in the `drag` event, in the
-  # future, instead of sending us `0` for them every time? --Jason B. (11/23/17)
-  # For anyone interested in seeing how a major browser can avoid fixing a simple bug
-  # for over 12 years:  https://bugzilla.mozilla.org/show_bug.cgi?id=505521
-  # -Jeremy B March 2021
-  #
-  # (RactiveEvent) => Unit
-  mosaicKillerKiller = ({ event: { clientX, clientY } }) ->
-    ractive.set("lastDragX", clientX)
-    ractive.set("lastDragY", clientY)
-    return
-
   onCloseDialog = (dialog) ->
     openDialogs.delete(dialog)
     ractive.set('someDialogIsOpen', openDialogs.size > 0)
@@ -392,7 +380,6 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.observe('widgetObj.*.height'      , onWidgetYChange)
   ractive.observe('isEditing'               , refreshSortingKeys)
 
-  ractive.on('mosaic-killer-killer' , mosaicKillerKiller)
   ractive.on('toggle-interface-lock', () -> toggleBoolean('isEditing', 'authoring-mode-toggled'))
   ractive.on('toggle-orientation'   , () -> toggleBoolean('isVertical'))
   ractive.on('*.redraw-view'        , redrawView)
