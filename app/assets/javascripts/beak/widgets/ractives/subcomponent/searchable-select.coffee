@@ -26,15 +26,15 @@ RactiveSearchableSelect = Ractive.extend({
   }
 
   observe: {
-    filter:  -> @set('highlightIdx', -1)
-    options: -> @_syncNativeSelect() if @_nativeSel?
+    filter: -> @set('highlightIdx', -1)
   }
 
   on: {
-    'open-dropdown': ->
+    'open-dropdown': (_, focusSearch = true) ->
       @set({ isOpen: true, filter: '', highlightIdx: -1 })
       @fire('open')
-      setTimeout((=> @find('.ss-search')?.focus()), 0)
+      if focusSearch
+        setTimeout((=> @find('.ss-search')?.focus()), 0)
       return
 
     'close-dropdown': ->
@@ -48,7 +48,10 @@ RactiveSearchableSelect = Ractive.extend({
       return
 
     'trigger-click': ->
-      if @get('isOpen') then @fire('close-dropdown') else @fire('open-dropdown')
+      if @get('isOpen')
+        @fire('close-dropdown')
+      else
+        @fire('open-dropdown', {}, not window.matchMedia('(pointer: coarse)').matches)
       return
 
     'trigger-keydown': ({ event }) ->
@@ -96,49 +99,9 @@ RactiveSearchableSelect = Ractive.extend({
       opt  = opts.find((o) -> o.value is value)
       return if opt?.disabled
       @set({ selected: value, isOpen: false, filter: '' })
-      if @_nativeSel? then @_nativeSel.value = value
       @fire('change', {}, value)
       return
   }
-
-  onrender: ->
-    container = @find('.searchable-select')
-    nativeSel = document.createElement('select')
-    nativeSel.className = 'ss-native'
-    nativeSel.setAttribute('tabindex', '-1')
-    nativeSel.addEventListener('change', (e) =>
-      value = e.target.value
-      @fire('pick-option', {}, value)
-    )
-    container.appendChild(nativeSel)
-    @_nativeSel = nativeSel
-    @_syncNativeSelect()
-    return
-
-  _syncNativeSelect: ->
-    if @_nativeSel?
-      sel      = @_nativeSel
-      opts     = @get('options')
-      selected = @get('selected')
-      pholder  = @get('placeholder')
-
-      sel.innerHTML = ''
-
-      ph = document.createElement('option')
-      ph.value = ''
-      ph.textContent = pholder
-      sel.appendChild(ph)
-
-      opts.forEach((opt) ->
-        o = document.createElement('option')
-        o.value    = opt.value
-        o.textContent = opt.label
-        o.disabled = !!opt.disabled
-        sel.appendChild(o)
-      )
-
-      sel.value = selected ? ''
-    return
 
   _scrollIntoView: (idx) ->
     items = @findAll('.ss-option')
