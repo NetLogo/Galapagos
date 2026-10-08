@@ -68,14 +68,16 @@
   -moz-user-select: none;
 }
 
-.netlogo-command:hover {
-  filter: brightness(1.1);
-  cursor: pointer;
-}
+@media (hover: hover) {
+  .netlogo-command:hover {
+    filter: brightness(1.1);
+    cursor: pointer;
+  }
 
-.netlogo-command.netlogo-disabled:hover {
-  box-shadow: none;
-  cursor:     default;
+  .netlogo-command.netlogo-disabled:hover {
+    box-shadow: none;
+    cursor:     default;
+  }
 }
 
 .netlogo-tab-area {
@@ -191,8 +193,10 @@
   user-select: none;
 }
 
-.netlogo-model-status-closer:hover {
-  color: black;
+@media (hover: hover) {
+  .netlogo-model-status-closer:hover {
+    color: black;
+  }
 }
 
 .netlogo-model-status-link {
@@ -200,8 +204,10 @@
   cursor: pointer;
 }
 
-.netlogo-model-status-link:hover {
-  text-decoration: underline;
+@media (hover: hover) {
+  .netlogo-model-status-link:hover {
+    text-decoration: underline;
+  }
 }
 
 .netlogo-model-title-wrapper {
@@ -304,10 +310,12 @@
   padding: 1px;
 }
 
-.netlogo-codeusage-item:hover {
-  color:         white;
-  background:    #284570;
-  border-radius: 2px;
+@media (hover: hover) {
+  .netlogo-codeusage-item:hover {
+    color:         white;
+    background:    #284570;
+    border-radius: 2px;
+  }
 }
 
 .netlogo-info-editor {
@@ -674,12 +682,14 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
   background-color: var(--color-widget-switch-off);
 }
 
-.netlogo-switcher:hover > input[type='checkbox']:checked ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-primary-hover);
-}
+@media (hover: hover) {
+  .netlogo-switcher:hover > input[type='checkbox']:checked ~ .netlogo-switcher-element {
+    background-color: var(--color-widget-switch-primary-hover);
+  }
 
-.netlogo-switcher:hover > input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
-  background-color: var(--color-widget-switch-off-hover);
+  .netlogo-switcher:hover > input[type='checkbox']:not(checked) ~ .netlogo-switcher-element {
+    background-color: var(--color-widget-switch-off-hover);
+  }
 }
 
 .netlogo-switcher-element > .netlogo-switcher-element-knob {
@@ -1018,6 +1028,12 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
   cursor:           pointer;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .netlogo-help-keybind-hint {
+    display: none;
+  }
+}
+
 .help-popup {
   background-color: white;
   border:           1px solid black;
@@ -1343,9 +1359,11 @@ kbd {
   height:           100%;
 }
 
-.netlogo-color-input:hover {
-  cursor:           pointer;
-  background-color: #ccc;
+@media (hover: hover) {
+  .netlogo-color-input:hover {
+    cursor:           pointer;
+    background-color: #ccc;
+  }
 }
 
 .netlogo-color-input > * {
