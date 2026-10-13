@@ -1387,3 +1387,15 @@ kbd {
 .no-alpha .netlogo-swatches {
   grid-template-columns: auto;
 }
+
+/* `touch-action: none` above keeps one-finger drags from scrolling the page.  Where the browser supports it, let two
+   fingers pinch-zoom and pan.  Browsers without `pinch-zoom` keep `none`, since an unknown value would fall back to
+   `auto` and let the page scroll mid-drag. */
+@supports (touch-action: pinch-zoom) {
+  .netlogo-slider-bar,
+  .async-dialog-title-bar,
+  .netlogo-modal-title,
+  .netlogo-canvas {
+    touch-action: pinch-zoom;
+  }
+}

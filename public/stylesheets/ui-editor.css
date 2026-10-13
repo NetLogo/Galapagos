@@ -501,3 +501,14 @@ body.nlw-pointer-dragging {
   margin:   0;
   overflow: hidden;
 }
+
+/* `touch-action: none` above keeps one-finger drags from scrolling the page.  Where the browser supports it, let two
+   fingers pinch-zoom and pan.  Browsers without `pinch-zoom` keep `none`, since an unknown value would fall back to
+   `auto` and let the page scroll mid-drag. */
+@supports (touch-action: pinch-zoom) {
+  .editor-overlay,
+  .widget-edit-form-title,
+  .widget-resize-handle {
+    touch-action: pinch-zoom;
+  }
+}
