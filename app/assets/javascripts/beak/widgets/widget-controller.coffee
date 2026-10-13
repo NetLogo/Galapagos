@@ -53,6 +53,7 @@ class WidgetController
   _finalizeWidgetEx: (id, widget) ->
     callback = (=> @_performUpdate(); @updateWidgets())
     setUpWidget(@reportError, widget, id, callback, @plotSetupHelper())
+    @ractive.fire('refresh-dims')
 
     if widget.variable? and widget.currentValue?
       world.observer.setGlobal(widget.variable, widget.currentValue)
@@ -108,6 +109,7 @@ class WidgetController
 
     callback = (=> @_performUpdate(); @updateWidgets())
     setUpWidget(@reportError, plot, id, callback, @plotSetupHelper())
+    @ractive.fire('refresh-dims')
 
     @ractive.findAllComponents("").find((c) -> c.get('widget') is plot).fire('initialize-widget')
 
@@ -192,6 +194,7 @@ class WidgetController
       delete wobj[index]
 
       @ractive.update('widgetObj')
+      @ractive.fire('refresh-dims')
       @ractive.fire('deselect-widgets')
 
       if wasNew

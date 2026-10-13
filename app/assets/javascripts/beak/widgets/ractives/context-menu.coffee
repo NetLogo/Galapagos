@@ -34,6 +34,8 @@ RactiveContextMenu = Ractive.extend({
     options:     undefined # [ContextMenuOption]
   , mouseX:               0 # Number
   , mouseY:               0 # Number
+  , clickX:               0 # Number
+  , clickY:               0 # Number
   , target:       undefined # Ractive
   , visible:          false # Boolean
   , tabindex:             0 # Number
@@ -70,6 +72,8 @@ RactiveContextMenu = Ractive.extend({
       @set('visible', @get('options').length > 0)
       @set('mouseX' , x)
       @set('mouseY' , y)
+      @set('clickX' , x)
+      @set('clickY' , y)
       @find('.context-menu-item').focus()
 
       tabindex = component?.get('tabIndexEnabledValue') ?
@@ -122,7 +126,9 @@ RactiveContextMenu = Ractive.extend({
       options,
       visible,
       mouseX: pageX,
-      mouseY: pageY
+      mouseY: pageY,
+      clickX: pageX,
+      clickY: pageY
     })
 
     if visible
@@ -150,6 +156,8 @@ RactiveContextMenu = Ractive.extend({
         menuHeight
 
       @set({
+        clickX:       pageX - offsetParent.offsetLeft
+        clickY:       pageY - offsetParent.offsetTop
         mouseX:       pageX - offsetParent.offsetLeft - (if flippedX then menuWidth  else 0)
         mouseY:       pageY - offsetParent.offsetTop  - (if flippedY then menuHeight else 0)
         # Submenus flip left when the main menu is near the right edge
@@ -220,7 +228,7 @@ RactiveContextMenu = Ractive.extend({
                 <li class="context-menu-item"
                     tabindex="{{tabindex}}" role="button" aria-disabled="false"
                     on-keydown="keydown"
-                    on-activateClick="..action(target, mouseX, mouseY)">{{..text}}</li>
+                    on-activateClick="..action(target, clickX, clickY)">{{..text}}</li>
               {{ else }}
                 <li class="context-menu-item disabled"
                     tabindex="-1" role="button" aria-disabled="true"

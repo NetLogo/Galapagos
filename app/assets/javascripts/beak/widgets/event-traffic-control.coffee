@@ -291,7 +291,6 @@ controlEventTraffic = (controller, performUpdate) ->
   # (_, Number, Boolean, Array[Any]) => Unit
   unregisterWidget = (_, id, wasNew, extraNotificationArgs) ->
     controller.removeWidgetById(id, wasNew, extraNotificationArgs)
-    refreshDims()
     return
 
   # (_, Boolean, Boolean) => Unit
@@ -399,6 +398,7 @@ controlEventTraffic = (controller, performUpdate) ->
   ractive.on('*.resize-view'        , resizeView)
   ractive.on('*.unregister-widget'  , unregisterWidget)
   ractive.on('*.update-topology'    , updateTopology)
+  ractive.on('refresh-dims'         , refreshDims)
 
   ractive.on('check-action-keys'        , (_, event)         -> checkActionKeys(event))
   ractive.on('create-widget'            , (_, type, x, y)    -> createWidget(type, x, y))
