@@ -43,10 +43,28 @@ getCommand = (targetedAgentObj, input) ->
 
     agentSetReporter = getAgentSetReporter(agents)
 
-    "ask #{agentSetReporter} [ #{input} ]"
+    "ask #{agentSetReporter} [ #{input}\n]"
   else
     # Send the command to all agents of the specified types
-    "ask #{agentType} [ #{input} ]"
+    "ask #{agentType} [ #{input}\n]"
+
+# (TargetedAgentObj) -> Array[String]
+getAgentKinds = (targetedAgentObj) ->
+  switch targetedAgentObj.agentType
+    when 'observer' then ['observer']
+    when 'turtles'  then ['turtle']
+    when 'patches'  then ['patch']
+    when 'links'    then ['link']
+    when 'mixed'    then targetedAgentObj.agentGroups.flatMap(getAgentKinds)
+    else throw new Error("#{targetedAgentObj.agentType} is not a valid agent type")
+
+# (TargetedAgentObj, string) -> string
+checkSyntax = (targetedAgentObj, input) ->
+  for agentKind in getAgentKinds(targetedAgentObj)
+    result = ProcedurePrims.checkSyntax(input, agentKind)
+    if result isnt ''
+      return result
+  ''
 
 # type Entry = { targetedAgentObj: TargetedAgentObj, input: string }
 
@@ -157,7 +175,7 @@ RactiveCommandInput = Ractive.extend({
       if @get('checkIsReporter')(input)
         input = "show #{input}"
 
-      syntaxResult     = ProcedurePrims.checkSyntax(input)
+      syntaxResult = checkSyntax(targetedAgentObj, input)
       if syntaxResult isnt ''
         @fire('compiler-error', {}, @get('source'), [syntaxResult])
         return
