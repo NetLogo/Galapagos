@@ -689,3 +689,12 @@ body#ntp-body, html#ntp-body {
   height:      unset !important;
   line-height: unset !important;
 }
+
+/* `touch-action: none` above keeps one-finger drags from scrolling the page.  Where the browser supports it, let two
+   fingers pinch-zoom and pan.  Browsers without `pinch-zoom` keep `none`, since an unknown value would fall back to
+   `auto` and let the page scroll mid-drag. */
+@supports (touch-action: pinch-zoom) {
+  .ntb-dialog-header {
+    touch-action: pinch-zoom;
+  }
+}
