@@ -12,6 +12,7 @@ import { newModel } from "/new-model.js";
 import Settings from "/settings.js";
 import { initSettingsStorage } from "/settings-storage.js";
 import Tortoise from "/beak/tortoise.js";
+import { bodyMarginWidth, fitViewportToWidth } from "/viewport-fit.js";
 
 try {
 
@@ -487,6 +488,15 @@ try {
     window.setInterval(adjustSizeAndTitle, 200);
 
     parent.postMessage({ type: "nlw-is-loaded" });
+  }
+
+  if (!isInFrame) {
+    const fitWhenOpen = window.setInterval(() => {
+      if (loadingState === 'session-open') {
+        window.clearInterval(fitWhenOpen);
+        fitViewportToWidth(Math.ceil(modelContainer.getBoundingClientRect().width + bodyMarginWidth(document.body)));
+      }
+    }, 200);
   }
 
 } catch (ex) {
