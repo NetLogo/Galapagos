@@ -20,7 +20,8 @@ basicConfig = (elemID, plot) -> {
     spacingBottom: 10,
     spacingLeft: 15,
     spacingRight: 15,
-    zoomType:  "xy"
+    zoomType:  "xy",
+    pinchType: ""
   },
   boost: {
     pixelRatio: 0,
