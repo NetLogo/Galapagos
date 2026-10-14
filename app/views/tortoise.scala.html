@@ -3,6 +3,8 @@
 @()(implicit mode: Mode, request: Request[?])
 
 @extraHead = {
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  @views.html.phoneDetect()
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/tortoise.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogoweb.css").relative' />
   <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/netlogo-syntax.css").relative' />
