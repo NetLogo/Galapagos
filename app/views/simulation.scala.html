@@ -10,6 +10,8 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @views.html.phoneDetect()
     @defining(Try(Files.readAllBytes(environment.getFile("public/images/favicon.ico").toPath)).toOption.map(Base64.getEncoder.encodeToString)) { faviconB64Opt =>
       @faviconB64Opt.map { b64 =>
         <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,@b64">
