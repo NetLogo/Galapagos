@@ -1,0 +1,9 @@
+@()
+<script>
+  (function() {
+    var shortSide = Math.min(screen.width, screen.height);
+    if (shortSide < 500 && window.matchMedia("(pointer: coarse)").matches) {
+      document.documentElement.classList.add("nlw-phone");
+    }
+  })();
+</script>

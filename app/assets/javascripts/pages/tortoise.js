@@ -3,6 +3,8 @@ import { bindModelChooser, handPickedModels } from "/models.js";
 import Settings from "/settings.js"
 
 var modelContainer = document.querySelector('#model-container');
+var viewportMeta   = document.querySelector('meta[name="viewport"]');
+var fitPending     = true;
 var hostPrefix     = location.protocol + '//' + location.host;
 var pathSplits = location.pathname.split("/");
 if (pathSplits.length > 2) {
@@ -35,7 +37,30 @@ function pickRandom() {
   pickModel(model + ".nlogox");
 }
 
+function fitViewportToPage() {
+  if (!document.documentElement.classList.contains('nlw-phone')) {
+    return;
+  }
+  const bodyStyle = getComputedStyle(document.body);
+  const outer     = document.querySelector('.outer-content');
+  const modelBox  = document.querySelector('.model-box');
+  const pageWidth = Math.ceil(outer.getBoundingClientRect().width +
+    (modelBox.scrollWidth - modelBox.clientWidth) +
+    parseFloat(bodyStyle.marginLeft) + parseFloat(bodyStyle.marginRight));
+  const shortSide = Math.min(screen.width, screen.height);
+  const wideSide  = Math.max(screen.width, screen.height);
+  const visible   = window.matchMedia('(orientation: landscape)').matches ? wideSide : shortSide;
+  const fitScale  = Math.floor((visible / pageWidth) * 1000) / 1000;
+  const content   = (pageWidth > shortSide) ?
+    `width=${pageWidth}, initial-scale=${fitScale}` :
+    'width=device-width, initial-scale=1';
+  if (viewportMeta.content !== content) {
+    viewportMeta.content = content;
+  }
+}
+
 function openModelFromUrl(url) {
+  fitPending = true;
   if (decodeURI(url) === url) {
     url = encodeURI(url);
   }
@@ -91,6 +116,10 @@ window.addEventListener("message", function(e) {
         modelContainer.height              = height + 2;
         document.documentElement.scrollTop = document.documentElement.scrollTop + modelScrollTop;
         document.title                     = title;
+        if (fitPending) {
+          fitPending = false;
+          fitViewportToPage();
+        }
       }
 
       break;
@@ -126,6 +155,7 @@ function checkHTMLUpload(nlogoContents, originalPath) {
 }
 
 function openNlogo(nlogoContents) {
+  fitPending = true;
   window.location.hash = "Load";
   var filePath = document.getElementById("model-file-input").value;
   const [nlogo, path] = checkHTMLUpload(nlogoContents, filePath);
@@ -197,6 +227,8 @@ bindModelChooser(document.getElementById('tortoise-model-list')
                , initModel, pickModel, window.environmentMode);
 
 forwardKeyboardEventsToModel();
+
+fitViewportToPage();
 
 if (settings.queries.enableDebug) {
   window.makeQuery = createQueryMaker(modelContainer);
