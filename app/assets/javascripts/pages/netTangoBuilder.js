@@ -8,6 +8,7 @@ import Settings from "/settings.js"
 import NetTangoAlertDisplay from "/nettango/nettango-alert-display.js"
 import NetTangoController from "/nettango/nettango-controller.js"
 import { fakeStorage, NamespaceStorage } from "/namespace-storage.js"
+import { bodyMarginWidth, fitViewportToWidth } from "/viewport-fit.js"
 
 const builderContainer = document.getElementById("ntb-container")
 
@@ -28,8 +29,17 @@ function enableFrameSizeUpdates() {
   window.setInterval(update, 300)
 }
 
-if (parent !== window) {
-  enableFrameSizeUpdates()
+function enableViewportFit() {
+  var fitWidth = 0
+  const fit = () => {
+    const pageWidth = builderContainer.scrollWidth + bodyMarginWidth(document.body)
+    if (pageWidth !== fitWidth) {
+      fitWidth = pageWidth
+      fitViewportToWidth(pageWidth)
+    }
+  }
+  const timer = window.setInterval(fit, 300)
+  document.addEventListener("pointerdown", () => window.clearInterval(timer), { once: true, capture: true })
 }
 
 var storage
@@ -47,6 +57,12 @@ settings.applyQueryParams(params)
 const netTangoModelUrl = params.get("netTangoModel")
 const playModeParam    = params.get("playMode")
 const playMode         = (playModeParam && playModeParam === "true")
+
+if (parent !== window) {
+  enableFrameSizeUpdates()
+} else if (playMode || window.isStandaloneHTML) {
+  enableViewportFit()
+}
 
 const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
 const listeners = [alerter]
