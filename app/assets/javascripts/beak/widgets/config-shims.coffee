@@ -218,11 +218,14 @@ genIOConfig = (ractive) ->
 
 # (MouseTracker) => MouseConfig
 genMouseConfig = (mouseTracker) ->
+  peek = (key) -> ->
+    mouseTracker.readCount += 1
+    mouseTracker[key]
   {
-    peekIsDown:   -> mouseTracker.down
-    peekIsInside: -> mouseTracker.inside
-    peekX:        -> mouseTracker.x
-    peekY:        -> mouseTracker.y
+    peekIsDown:   peek('down')
+    peekIsInside: peek('inside')
+    peekX:        peek('x')
+    peekY:        peek('y')
   }
 
 # (Ractive, (String) => Unit) => OutputConfig
@@ -255,7 +258,18 @@ genWorldConfig = (ractive) ->
 # (Ractive, ViewController, Element, BrowserCompiler) => Configs
 genConfigs = (ractive, viewController, container, compiler) ->
 
-  mouseTracker = new MouseTracker(viewController)
+  isScrollHintShown = false
+  showScrollHint = ->
+    if not isScrollHintShown
+      isScrollHintShown = true
+      window.NetLogoToaster?.addToast({
+        id:      'two-finger-scroll-hint'
+        message: 'Use two fingers to scroll the page.'
+        timeout: 5000
+      })
+    return
+
+  mouseTracker = new MouseTracker(viewController, showScrollHint)
   clearMouse = -> mouseTracker.down = false
 
   notify = (message) ->
