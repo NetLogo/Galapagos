@@ -1,7 +1,9 @@
 import RactiveWidget from "./widget.js"
 import { focusElementVisible } from "../accessibility/utils.js"
+import { getVisibleArea, offsetParentOrigin } from "../visible-area.js"
 
 SUBMENU_PAGE_SIZE = 15
+MENU_PADDING_Y    = 8
 
 genWidgetCreator = (ractive, name, widgetType, isEnabled = true, enabler = (-> false)) ->
   type = if ractive.get('isHNW') then "hnw" + widgetType.charAt(0).toUpperCase() + widgetType.slice(1) else widgetType
@@ -42,6 +44,7 @@ RactiveContextMenu = Ractive.extend({
   , flipSubmenuX:     false # Boolean — true when submenus should open left instead of right
   , flipSubmenuY:     false # Boolean — true when submenus should open upward instead of downward
   , submenuMaxHeight: undefined # Number
+  , scale:            undefined # Number
   }
 
   on: {
@@ -153,6 +156,15 @@ RactiveContextMenu = Ractive.extend({
       itemHeight    = menuEl.querySelector('.context-menu-item').offsetHeight
       maxListHeight = Math.min(SUBMENU_PAGE_SIZE * itemHeight, window.innerHeight / 2)
 
+      area = getVisibleArea()
+      if area?
+        @_placeInVisibleArea(menuEl, area, pageX, pageY, itemHeight, options)
+        @set({
+          clickX: pageX - offsetParent.offsetLeft
+          clickY: pageY - offsetParent.offsetTop
+        })
+        return visible
+
       # Flip horizontal/vertical if the menu would overflow the viewport (iframe boundary)
       flippedX = clientX + menuWidth  > window.innerWidth
       flippedY = clientY + menuHeight > window.innerHeight
@@ -175,9 +187,41 @@ RactiveContextMenu = Ractive.extend({
         # Submenus flip up when the bottom of the main menu is near the bottom edge
         flipSubmenuY: menuBottomClientY + submenuHeightEst > window.innerHeight
         submenuMaxHeight: maxListHeight
+        scale:            undefined
       })
 
     visible
+
+  # (Element, VisibleArea, Number, Number, Number, Array[ContextMenuOption]) => Unit
+  _placeInVisibleArea: (menuEl, area, pageX, pageY, itemHeight, options) ->
+    scale      = area.scale
+    menuWidth  = menuEl.offsetWidth  * scale
+    menuHeight = menuEl.offsetHeight * scale
+
+    x = if pageX + menuWidth  > area.right  then pageX - menuWidth  else pageX
+    y = if pageY + menuHeight > area.bottom then pageY - menuHeight else pageY
+    x = Math.max(area.left, Math.min(x, area.right  - menuWidth ))
+    y = Math.max(area.top,  Math.min(y, area.bottom - menuHeight))
+
+    isScrollable  = options.some((o) -> o.isScrollable)
+    roomBelow     = (area.bottom - (y + menuHeight)) / scale
+    roomAbove     = (y - area.top) / scale + MENU_PADDING_Y + itemHeight + MENU_PADDING_Y
+    fullListSize  = SUBMENU_PAGE_SIZE * itemHeight
+    submenuHeight = 2 * MENU_PADDING_Y + (if isScrollable then fullListSize + 2 * itemHeight else menuEl.offsetHeight)
+    flipY         = submenuHeight > roomBelow and roomAbove > roomBelow
+    room          = if flipY then roomAbove else roomBelow
+    maxListHeight = Math.max(2 * itemHeight, Math.min(fullListSize, room - 2 * itemHeight - 2 * MENU_PADDING_Y))
+
+    origin = offsetParentOrigin(menuEl)
+    @set({
+      mouseX:           x - origin.x
+      mouseY:           y - origin.y
+      flipSubmenuX:     x + menuWidth + menuWidth > area.right
+      flipSubmenuY:     flipY
+      submenuMaxHeight: maxListHeight
+      scale
+    })
+    return
 
   # Annotates submenu options with scroll state. Scrollable submenus (> SUBMENU_PAGE_SIZE items) get
   # scroll metadata so the template can show up/down arrow buttons around a scrolling list of items.
@@ -213,7 +257,7 @@ RactiveContextMenu = Ractive.extend({
     """
     {{# visible }}
     <div id="netlogo-widget-context-menu"
-          class="widget-context-menu" style="top: {{mouseY}}px; left: {{mouseX}}px;">
+          class="widget-context-menu" style="top: {{mouseY}}px; left: {{mouseX}}px; {{# scale }}transform: scale({{scale}}); transform-origin: top left;{{/}}">
       <div id="{{id}}-context-menu" class="netlogo-widget-editor-menu-items">
         <ul class="context-menu-list">
           {{# options }}

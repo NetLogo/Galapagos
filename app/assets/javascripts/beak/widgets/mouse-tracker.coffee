@@ -1,8 +1,11 @@
+import { dragThresholdFor } from "./pointer-drag.js"
+
 class MouseTracker
   x: 0
   y: 0
   down: false
   inside: false
+  readCount: 0
 
   # (Unit) -> Unit
   unsubscribe: ->
@@ -21,14 +24,20 @@ class MouseTracker
     # Leave the `down` property untouched, since that doesn't care about whether the mouse is outside world
     # boundaries, in parity with NetLogo Desktop behavior. (This might change, and IMO should)
 
-  # (ViewController) -> Unit
-  constructor: (viewController) ->
-    downHandler = ({ xPcor, yPcor }) =>
+  # (ViewController, (Unit) -> Unit) -> Unit
+  constructor: (viewController, onUnreadTouchDrag = (->)) ->
+    touchPress = undefined
+    downHandler = ({ event, clientX, clientY, xPcor, yPcor }) =>
       @down = true
+      touchPress = if event?.pointerType is 'touch' then { clientX, clientY, readCount: @readCount } else undefined
       @updateMouseLocation(xPcor, yPcor)
     moveHandler = ({ xPcor, yPcor }) =>
       @updateMouseLocation(xPcor, yPcor)
-    upHandler = =>
+    upHandler = ({ event, clientX, clientY } = {}) =>
+      if touchPress? and event?.type is 'pointerup' and @readCount is touchPress.readCount and
+         Math.hypot(clientX - touchPress.clientX, clientY - touchPress.clientY) >= dragThresholdFor('touch')
+        onUnreadTouchDrag()
+      touchPress = undefined
       @inside = false
       @down = false
     @unsubscribe = viewController.registerMouseListeners(downHandler, moveHandler, upHandler)
