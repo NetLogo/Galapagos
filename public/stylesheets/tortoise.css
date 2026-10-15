@@ -58,6 +58,23 @@ iframe {
   /* I have unkind things to say about Safari/iOS -- Jason B. (5/1/16) */
 }
 
+html.nlw-phone .content {
+  padding-left:  0;
+  padding-right: 0;
+  margin-left:   0;
+  margin-right:  0;
+}
+
+html.nlw-phone .tortoise.inner-content {
+  padding:       4px;
+  border-radius: 0;
+}
+
+html.nlw-phone .model-container {
+  border:        none;
+  border-radius: 0;
+}
+
 .model-container {
   min-width:          600px;
   /* we have code to update the height for a tall edit form, but it's jarring when the model iframe height suddly changes.
