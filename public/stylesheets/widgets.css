@@ -16,6 +16,14 @@
   outline:     none;
 }
 
+html.nlw-phone body {
+  margin: 0;
+}
+
+html.nlw-phone .netlogo-model {
+  padding: 6px;
+}
+
 .netlogo-display-vertical {
   display:   flex;
   flex-flow: column;
