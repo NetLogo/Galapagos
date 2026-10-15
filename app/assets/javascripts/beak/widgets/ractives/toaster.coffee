@@ -1,3 +1,5 @@
+import { getVisibleArea, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
+
 RactiveToast = Ractive.extend({
   # @Type RactiveToastProps
   data: () -> {
@@ -77,6 +79,7 @@ RactiveToaster = Ractive.extend({
     toasts = @get('toasts')
     toasts[toast.id] = toast
     @set('toasts', toasts)
+    @_updatePosition?()
     return
 
   removeToast: (toastId) ->
@@ -89,6 +92,19 @@ RactiveToaster = Ractive.extend({
     toasterEl = @find('.toaster')
 
     updatePosition = ->
+      area = getVisibleArea()
+      if area?
+        origin      = offsetParentOrigin(toasterEl)
+        parentWidth = toasterEl.offsetParent?.clientWidth ? document.documentElement.clientWidth
+        margin      = 10 * area.scale
+        toasterEl.style.top             = "#{area.top - origin.y + margin}px"
+        toasterEl.style.right           = "#{origin.x + parentWidth - area.right + margin}px"
+        toasterEl.style.transform       = "scale(#{area.scale})"
+        toasterEl.style.transformOrigin = 'top right'
+        return
+
+      toasterEl.style.right     = ''
+      toasterEl.style.transform = ''
       if window.frameElement?
         # Embedded in iframe: track parent scroll. getBoundingClientRect().top is the iframe's
         # top edge relative to the parent viewport — negative when the user has scrolled past it.
@@ -97,7 +113,9 @@ RactiveToaster = Ractive.extend({
       else
         toasterEl.style.top = (window.scrollY + 20) + 'px'
 
-    @_scrollHandler = updatePosition
+    @_updatePosition = updatePosition
+    @_scrollHandler  = updatePosition
+    @_stopWatching   = watchVisibleArea(updatePosition)
     window.addEventListener('scroll', @_scrollHandler)
     try
       window.parent.addEventListener('scroll', @_scrollHandler) if window.frameElement?
@@ -108,6 +126,7 @@ RactiveToaster = Ractive.extend({
     return
 
   onteardown: ->
+    @_stopWatching?()
     window.removeEventListener('scroll', @_scrollHandler)
     try
       window.parent.removeEventListener('scroll', @_scrollHandler) if window.frameElement?

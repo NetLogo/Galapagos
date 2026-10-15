@@ -1,3 +1,9 @@
+# (Window) => Number
+deviceWidth = (win = window) ->
+  shortSide = Math.min(screen.width, screen.height)
+  wideSide  = Math.max(screen.width, screen.height)
+  if win.matchMedia('(orientation: landscape)').matches then wideSide else shortSide
+
 # (Number) => Unit
 fitViewportToWidth = (pageWidth) ->
   viewportMeta = document.querySelector('meta[name="viewport"]')
@@ -5,9 +11,7 @@ fitViewportToWidth = (pageWidth) ->
     return
 
   shortSide = Math.min(screen.width, screen.height)
-  wideSide  = Math.max(screen.width, screen.height)
-  visible   = if window.matchMedia('(orientation: landscape)').matches then wideSide else shortSide
-  fitScale  = Math.floor((visible / pageWidth) * 1000) / 1000
+  fitScale  = Math.floor((deviceWidth() / pageWidth) * 1000) / 1000
   content   =
     if pageWidth > shortSide
       "width=#{pageWidth}, initial-scale=#{fitScale}"
@@ -26,5 +30,6 @@ bodyMarginWidth = (body) ->
 
 export {
   bodyMarginWidth,
+  deviceWidth,
   fitViewportToWidth,
 }

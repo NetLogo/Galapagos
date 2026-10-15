@@ -1,4 +1,5 @@
 import startPointerDrag from "../pointer-drag.js"
+import { getVisibleArea, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
 
 { maybe, None } = tortoise_require('brazier/maybe')
 
@@ -20,13 +21,43 @@ RactiveAsyncUserDialog = Ractive.extend({
   , wareaWidth:  undefined # Number
   , xLoc:        0         # Number
   , yLoc:        0         # Number
+  , scale:       undefined # Number
+  , maxWidth:    undefined # Number
   }
+
+  _stopWatching: (->)
+
+  # () => Unit
+  _placeInVisibleArea: ->
+    area = getVisibleArea()
+    if not area?
+      @set('scale', undefined)
+      @set('xLoc',  @get('wareaWidth' ) * .1       )
+      @set('yLoc', (@get('wareaHeight') * .1) + 150)
+      return
+
+    @set({ scale: area.scale, maxWidth: (area.width / area.scale) * .9 })
+    elem   = @find('#async-user-dialog')
+    origin = offsetParentOrigin(elem)
+    width  = elem.offsetWidth * area.scale
+    @set({
+      xLoc: area.left + Math.max(0, (area.width - width) / 2) - origin.x
+    , yLoc: area.top + (area.height * .1) - origin.y
+    })
+    @_stopWatching = watchVisibleArea(=>
+      newArea = getVisibleArea()
+      if newArea?
+        @set('scale', newArea.scale)
+      return
+    )
+    return
 
   observe: {
     isVisible: (newValue, oldValue) ->
+      @_stopWatching()
+      @_stopWatching = (->)
       if newValue
-        @set('xLoc',  @get('wareaWidth' ) * .1       )
-        @set('yLoc', (@get('wareaHeight') * .1) + 150)
+        @_placeInVisibleArea()
         setTimeout((=> @find("#async-user-dialog").focus()), 0) # Can't focus dialog until visible --Jason B. (4/10/19)
         @fire('dialog-opened', this)
       else
@@ -144,7 +175,7 @@ RactiveAsyncUserDialog = Ractive.extend({
   template:
     """
     <div id="async-user-dialog" class="async-popup"
-         style="{{# !isVisible }}display: none;{{/}} top: {{yLoc}}px; left: {{xLoc}}px; max-width: {{wareaWidth * .4}}px; {{style}}"
+         style="{{# !isVisible }}display: none;{{/}} top: {{yLoc}}px; left: {{xLoc}}px; max-width: {{scale ? maxWidth : wareaWidth * .4}}px; {{# scale }}transform: scale({{scale}}); transform-origin: top left;{{/}} {{style}}"
          on-keydown="handle-key" tabindex="0">
       <div class="async-dialog-title-bar" on-pointerdown="start-drag"></div>
       <div id="{{id}}-closer" class="widget-edit-closer" on-click="perform-halt">X</div>
@@ -170,7 +201,7 @@ RactiveAsyncUserDialog = Ractive.extend({
 
       {{ elseif state.type === 'chooser' }}
         <div class="h-center-flexbox">
-          <select id="async-dialog-chooser" class="async-dialog-chooser nlw-ui-select" style="max-width: {{wareaWidth * .3}}px">
+          <select id="async-dialog-chooser" class="async-dialog-chooser nlw-ui-select" style="max-width: {{scale ? maxWidth * .75 : wareaWidth * .3}}px">
           {{#state.choices:i}}
             <option {{# i === 0}} selected{{/}}>{{state.choices[i]}}</option>
           {{/}}
