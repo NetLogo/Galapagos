@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 extensions [ view2.5d ]
 
@@ -78,7 +78,7 @@ The model opens a separate "patch view" window by calling:
 view2.5d:patch-view window-name [ [the-patch] -> [ pcolor ] of the-patch ]
 ```
 
-The anonymous reporter supplied to the `view2.5d:patch-view` primitive is used by the extension to set the height of each patch.
+The arrow reporter supplied to the `view2.5d:patch-view` primitive is used by the extension to set the height of each patch.
 
 At the end of the `setup` procedure, you'll see a few other customizations of this "patch view":
 
@@ -91,8 +91,6 @@ At the end of the `setup` procedure, you'll see a few other customizations of th
 In the `go` procedure, we use `view2.5d:update-patch-view` to refresh the patch view using the current state of the model.
 
 For more information, please refer to the `view2.5d` extension documentation and checkout the 2.5d Turtle View Example model.
-
-<!-- 2016 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -804,4 +802,5 @@ For more information, please refer to the `view2.5d` extension documentation and
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2016"></citation>
 </model>

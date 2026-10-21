@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 turtles-own [ value ]     ;; This is some phony turtle variable
 
@@ -80,8 +80,6 @@ The example creates 15 random turtles and opens a new text file of the user's ch
 ## RELATED MODELS
 
 File Input Example
-
-<!-- 2004 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -795,4 +793,5 @@ File Input Example
   <previewCommands>create-turtles 15 [
   setxy random-xcor random-ycor
 ]</previewCommands>
+  <citation year1="2004"></citation>
 </model>

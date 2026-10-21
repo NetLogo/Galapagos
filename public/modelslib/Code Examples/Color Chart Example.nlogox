@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 ;; The origin patch is (0,0) is located where the color 0 appears;
 ;; this helps keep the math relatively simple.  Unfortunately there's
@@ -73,8 +73,6 @@ This model was used to generate the color chart in the NetLogo User Manual.
 ## NETLOGO FEATURES
 
 Instead of the origin patch (0,0) being in the center of the world, it's near the upper left corner.  This makes the math simpler.
-
-<!-- 2004 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -786,4 +784,5 @@ Instead of the origin patch (0,0) being in the center of the world, it's near th
     </shape>
   </linkShapes>
   <previewCommands>setup</previewCommands>
+  <citation year1="2004"></citation>
 </model>

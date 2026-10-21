@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 patches-own [
   chemical             ;; amount of chemical on this patch
@@ -176,8 +176,6 @@ This is a version of the Ants model, modified to show off NetLogo's perspective 
 ## RELATED MODELS
 
 Ants
-
-<!-- 1998 2001 MIT specialCE -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -889,4 +887,8 @@ Ants
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="1998" year2="2001">
+    <keyword>MIT</keyword>
+    <keyword>specialCE</keyword>
+  </citation>
 </model>

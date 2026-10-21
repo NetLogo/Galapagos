@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 ;; There are no procedures in this model.
 ;; All of the code is in the buttons in
@@ -56,8 +56,6 @@ Images imported by `import-pcolors` and `import-pcolors-rgb` are scaled to fit t
 Try loading the different images into the patches to get an idea of the type of color distortion to expect.
 
 Try importing an image with `import-pcolors` and then import the same image with `import-drawing` and `import-pcolors-rgb`.  How does handling of the image differ?
-
-<!-- 2005 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -769,4 +767,5 @@ Try importing an image with `import-pcolors` and then import the same image with
     </shape>
   </linkShapes>
   <previewCommands>import-pcolors-rgb "earth.gif"</previewCommands>
+  <citation year1="2005"></citation>
 </model>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 globals [
   initial-trees   ;; how many trees (green patches) we started with
@@ -761,9 +761,6 @@ end
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>set density 60
-setup
-repeat 180 [ go ]</previewCommands>
   <experiments>
     <experiment name="test1" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="false" timeLimit="50">
       <setup>random-seed 473 setup</setup>
@@ -780,4 +777,7 @@ repeat 180 [ go ]</previewCommands>
       </metrics>
     </experiment>
   </experiments>
+  <previewCommands>set density 60
+setup
+repeat 180 [ go ]</previewCommands>
 </model>

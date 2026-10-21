@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 turtles-own [energy] ;; for keeping track of when the turtle is ready
                      ;; to reproduce and when it will die
@@ -104,8 +104,6 @@ end
 ## WHAT IS IT?
 
 The construction of this model is described in Tutorial 3 in the NetLogo User Manual.
-
-<!-- 2004 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -817,4 +815,5 @@ The construction of this model is described in Tutorial 3 in the NetLogo User Ma
     </shape>
   </linkShapes>
   <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2004"></citation>
 </model>

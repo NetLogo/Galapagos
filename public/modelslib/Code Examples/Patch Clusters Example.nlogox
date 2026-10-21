@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 patches-own
 [
@@ -86,8 +86,6 @@ This example shows how to identify contiguous "clusters" of patches.
 ## CREDITS AND REFERENCES
 
 This was inspired by an earlier model by Robert Jan Klomp.
-
-<!-- 2004 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -800,4 +798,5 @@ This was inspired by an earlier model by Robert Jan Klomp.
   </linkShapes>
   <previewCommands>setup
 find-clusters</previewCommands>
+  <citation year1="2004"></citation>
 </model>

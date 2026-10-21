@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 globals [
   tick-delta                        ; how much we advance the tick counter this time through
@@ -970,8 +970,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2018 PNoM Cite: Novak, M., Brady, C., Holbert, N., Soylu, F. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1827,7 +1825,6 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>setup repeat 75 [ go ]</previewCommands>
   <experiments>
     <experiment name="sample-experiment" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="true" timeLimit="10000">
       <setup>behavior-space-setup</setup>
@@ -1864,4 +1861,8 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </constants>
     </experiment>
   </experiments>
+  <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2018" cite="Novak, M., Brady, C., Holbert, N., Soylu, F.">
+    <keyword>PNoM</keyword>
+  </citation>
 </model>

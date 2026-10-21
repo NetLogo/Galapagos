@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 ;; the actual plotting code is in the plot
 
@@ -28,17 +28,17 @@ end
       </pen>
       <pen interval="1.0" mode="0" display="axis" color="-16777216" legend="true">
         <setup></setup>
-        <update>;; we don't want the "auto-plot" feature to cause the
+        <update>;; we don't want the "autoplot" feature to cause the
 ;; plot's x range to grow when we draw the axis.  so
-;; first we turn auto-plot off temporarily
-auto-plot-off
+;; first we turn autoplot off temporarily
+autoplot-off
 ;; now we draw an axis by drawing a line from the origin...
 plotxy 0 0
 ;; ...to a point that's way, way, way off to the right.
 plotxy 1000000000 0
 ;; now that we're done drawing the axis, we can turn
-;; auto-plot back on again
-auto-plot-on</update>
+;; autoplot back on again
+autoplot-on</update>
       </pen>
     </plot>
     <button x="50" y="37" height="40" disableUntilTicks="false" forever="false" kind="Observer" width="66">setup</button>
@@ -52,8 +52,6 @@ the X axis visible.</note>
 ## WHAT IS IT?
 
 This example shows how to draw an axis line on a plot.
-
-<!-- 2004 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -765,4 +763,5 @@ This example shows how to draw an axis line on a plot.
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2004"></citation>
 </model>

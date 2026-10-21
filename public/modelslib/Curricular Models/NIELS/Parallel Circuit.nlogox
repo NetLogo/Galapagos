@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 breed [top-electrons top-electron]
 breed [bottom-electrons bottom-electron]
@@ -287,8 +287,6 @@ NetLogo itself is free software for non-commercial use under the terms of the GN
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
 
 To use this model for academic or commercial research, please contact Pratim Sengupta at <pratim.sengupta@vanderbilt.edu> or Uri Wilensky at <uri@northwestern.edu> for a mutual agreement prior to usage.
-
-<!-- 2008 NIELS Cite: Sengupta, P. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -999,4 +997,7 @@ To use this model for academic or commercial research, please contact Pratim Sen
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2008" cite="Sengupta, P.">
+    <keyword>NIELS</keyword>
+  </citation>
 </model>

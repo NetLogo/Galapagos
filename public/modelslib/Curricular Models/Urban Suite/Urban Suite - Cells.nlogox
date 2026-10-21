@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 patches-own [ on? on-time seed-p ]
 
@@ -231,8 +231,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2007 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -943,11 +941,12 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>setup repeat 75 [ go ]</previewCommands>
   <experiments>
     <experiment name="Image Generator" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="false" timeLimit="100">
-      <setup>setup
-;repeat 4 [ create-random-seed]</setup>
+      <setup><![CDATA[
+setup
+;repeat 4 [ create-random-seed]
+]]></setup>
       <go>go</go>
       <postRun>export-view (word neighborhood "-" probability "-" n-count ".png")</postRun>
       <constants>
@@ -967,4 +966,6 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </constants>
     </experiment>
   </experiments>
+  <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2007"></citation>
 </model>

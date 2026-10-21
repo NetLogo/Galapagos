@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 breed [ frames frame ]
 ;; frames are black frames around each patch; they help count the colored patches
@@ -204,7 +204,7 @@ Set the Stratified? switch to On, the model speed to slow, and the probability v
 
 ## NETLOGO FEATURES
 
-Auto-Plot: Look at the histogram as it grows. What happens when it reaches the top? The simulation is generating more and more samples,  but there is no room to count them. Instead of leaping up out of the box, the number at the top-left corner of the plot -- the value of the y-axis - updates, and the histogram is redrawn to fit.
+Autoplot: Look at the histogram as it grows. What happens when it reaches the top? The simulation is generating more and more samples,  but there is no room to count them. Instead of leaping up out of the box, the number at the top-left corner of the plot -- the value of the y-axis - updates, and the histogram is redrawn to fit.
 Stratification: The partitioning of the histogram columns by unique elemental events was created especially for this model. See the procedures to learn how this was accomplished. Essentially, a nested structure was used to create within each column as many sub-columns as necessary. For example, the one-green columns (second from the left) is comprised of four stacked columns.
 
 ## EXTENDING THE MODEL
@@ -238,8 +238,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2006 Cite: Abrahamson, D. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -964,4 +962,5 @@ To inquire about commercial licenses for either NetLogo or specific models from 
     </shape>
   </linkShapes>
   <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2006" cite="Abrahamson, D."></citation>
 </model>

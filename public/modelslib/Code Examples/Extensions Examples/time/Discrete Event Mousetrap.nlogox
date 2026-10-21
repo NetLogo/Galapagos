@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 extensions [time csv]
-__includes ["time-series.nls"]
+import [ts-add-row ts-create ts-get-range] from time-series
 
 globals [
   start-time    ; the time at which the first trap is triggered
@@ -141,8 +141,6 @@ See the `time` extension documentation for more details on each of these primiti
 
 Prepared by Colin Sheppard and Steve Railsback, 7 Nov 2013.
 Updated by Steve Railsback, 11 Aug 2022.
-
-<!-- 2020 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -854,4 +852,5 @@ Updated by Steve Railsback, 11 Aug 2022.
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2020"></citation>
 </model>

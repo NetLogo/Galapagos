@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 extensions [ bitmap vid ]
 
@@ -40,8 +40,6 @@ carefully [
 ## WHAT IS IT?
 
 This example demonstrates how to use the `bitmap` and `vid` extensions to capture frames from a video camera into NetLogo.
-
-<!-- 2016 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -753,4 +751,5 @@ This example demonstrates how to use the `bitmap` and `vid` extensions to captur
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2016"></citation>
 </model>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 3D 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 3D 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 to setup
   clear-all
@@ -48,8 +48,6 @@ end
 ## WHAT IS IT?
 
 This code example shows all of the 3D shapes currently available in NetLogo 3D.
-
-<!-- 2005 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -768,4 +766,5 @@ This code example shows all of the 3D shapes currently available in NetLogo 3D.
     </shape>
   </linkShapes>
   <previewCommands>setup</previewCommands>
+  <citation year1="2005"></citation>
 </model>

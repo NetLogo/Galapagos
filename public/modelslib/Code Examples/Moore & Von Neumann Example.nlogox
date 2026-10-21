@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 globals [nearby]
 
@@ -77,8 +77,6 @@ This model shows how to make Moore (square) and Von Neumann (diamond) neighborho
 ## THINGS TO NOTICE
 
 World wrapping can be on or off; the same code works fine either way.
-
-<!-- 2006 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -790,4 +788,5 @@ World wrapping can be on or off; the same code works fine either way.
     </shape>
   </linkShapes>
   <previewCommands>setup</previewCommands>
+  <citation year1="2006"></citation>
 </model>

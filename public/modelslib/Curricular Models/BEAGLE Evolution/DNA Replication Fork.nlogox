@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
                                                         ;;;;;;;;;;;;; small molecules  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 breed [phosphates phosphate]                            ;; the free floating phosphates that are broken off a nucleoside-tri-phosphate when a nucleotide is formed
@@ -884,7 +884,7 @@ In this model nucleotides are molecules that when joined together make up the st
 
 A nucleoside is represented in this model as an unjoined nucleotide, a five-carbon sugar link and three phosphate groups  (the little yellow circles) attached to it (a nucleoside triphosphate).  A di-phosphate is released through a chemical reaction when a nucleoside (a reactant) bind to the template DNA nucleotides to form a new nucleotide sub-unit (a product) in the new DNA strand copy.
 
-The nitrogen bases for nucleotides and nucleotide come in four variations: ([A]dine, [G]uanine, [T]hymine, [C]ytosine) bound to a ribose or deoxyribose backbone
+The nitrogen bases for nucleotides and nucleotide come in four variations: ([A]denine, [G]uanine, [T]hymine, [C]ytosine) bound to a ribose or deoxyribose backbone
 
 Four enzymes are included in this model of the DNA replication fork process:
 
@@ -986,8 +986,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2012 Cite: Novak, M. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1513,4 +1511,5 @@ To inquire about commercial licenses for either NetLogo or specific models from 
     </shape>
   </linkShapes>
   <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2012" cite="Novak, M."></citation>
 </model>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 globals [
   gini-index-reserve  ; a place to store part of gini index calculation
@@ -451,7 +451,7 @@ This model initializes each patch's sugar and color by using the file-read primi
 
 This model uses `hubnet-view-override` and `hubnet-send-follow` to create the view seen on the clients' interface. `hubnet-send-override` allows the clients see a view that is different that the host. In this model, clients only see a small part of the virtual world. `hubnet-send-follow` keeps the user at the center of the client's view and puts a halo around it. The user is always centered even when it's moving.
 
-This model also makes use of *anonymous procedures*, which allow agents to change states (E.g. from "chilling" to "broke"), in which the agents follow different rules at each tick (E.g. when an agent is in the "chilling" state, at each tick, the user's button clicks are executed. However, if the agent is in the "broke" state, the user's button clicks are ignored). Users switch between states in two ways: when in the "chilling" state, if the agent runs out of sugar, it goes into the "broke" state. Meanwhile, a timer starts to count down. When to timer goes down to zero, the agent goes out of the "broke" state and enters the "chilling" state again.
+This model also makes use of *arrow procedures*, which allow agents to change states (E.g. from "chilling" to "broke"), in which the agents follow different rules at each tick (E.g. when an agent is in the "chilling" state, at each tick, the user's button clicks are executed. However, if the agent is in the "broke" state, the user's button clicks are ignored). Users switch between states in two ways: when in the "chilling" state, if the agent runs out of sugar, it goes into the "broke" state. Meanwhile, a timer starts to count down. When to timer goes down to zero, the agent goes out of the "broke" state and enters the "chilling" state again.
 
 ## RELATED MODELS
 
@@ -503,8 +503,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2018 MTG Cite: Guo, Y. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1494,4 +1492,7 @@ To inquire about commercial licenses for either NetLogo or specific models from 
     <button x="9" actionKey="H" y="307" height="33" disableUntilTicks="false" forever="false" kind="Observer" display="harvest" width="207" sizeVersion="0"></button>
   </hubNetClient>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2018" cite="Guo, Y.">
+    <keyword>MTG</keyword>
+  </citation>
 </model>

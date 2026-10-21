@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 3D 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 3D 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 globals
 [
@@ -715,8 +715,6 @@ NetLogo itself is free software for non-commercial use under the terms of the GN
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
 
 This is a 3D version of the 2D model GasLab Free Gas.
-
-<!-- 2006 3D -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1440,11 +1438,6 @@ This is a 3D version of the 2D model GasLab Free Gas.
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>set trace? false
-setup
-orbit-down 45
-orbit-right 45
-repeat 2000 [ go ]</previewCommands>
   <experiments>
     <experiment name="100 runs" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="true" timeLimit="150">
       <setup>setup</setup>
@@ -1473,4 +1466,12 @@ repeat 2000 [ go ]</previewCommands>
       </constants>
     </experiment>
   </experiments>
+  <previewCommands>set trace? false
+setup
+orbit-down 45
+orbit-right 45
+repeat 2000 [ go ]</previewCommands>
+  <citation year1="2006">
+    <keyword>3D</keyword>
+  </citation>
 </model>

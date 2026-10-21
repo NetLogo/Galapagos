@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 __includes [ "actions.nls" ]
 
@@ -82,7 +82,6 @@ to setup-random
   resize-world (- vision * 2) (vision * 2) (- vision * 2) (vision * 2)
   setup-reward-tracking
   setup
-  reset-ticks
 end
 
 ; Initialize reward tracking system for monitoring action outcomes
@@ -128,6 +127,7 @@ to setup
   if max-pxcor != vision * 2 [
     resize-world (- vision * 2) (vision * 2) (- vision * 2) (vision * 2)
   ]
+  reset-ticks
   clear-turtles
   ask patches [ set pcolor black ] ; this is faster than clear-patches
 
@@ -460,8 +460,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2024 Cite: Head, B. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1297,4 +1295,5 @@ To inquire about commercial licenses for either NetLogo or specific models from 
     </shape>
   </linkShapes>
   <previewCommands>setup repeat 30 [ run-micro-sim ]</previewCommands>
+  <citation year1="2024" cite="Head, B."></citation>
 </model>

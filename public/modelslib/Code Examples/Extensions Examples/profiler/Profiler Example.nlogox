@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 extensions [profiler]
 
@@ -44,8 +44,6 @@ end
 This code example demonstrates the functionality of the profiler extension, which records the number of times user-defined procedures are called, and how long they take to run.
 
 See the Interface tab for more information.  See also the Profiler section of the NetLogo User Manual.
-
-<!-- 2007 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -757,4 +755,5 @@ See the Interface tab for more information.  See also the Profiler section of th
     </shape>
   </linkShapes>
   <previewCommands>need-to-manually-make-preview-for-this-model</previewCommands>
+  <citation year1="2007"></citation>
 </model>

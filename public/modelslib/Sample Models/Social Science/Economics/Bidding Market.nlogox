@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="true">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="true">
   <code><![CDATA[
 globals [
   ; these are setup-only variables, used to make changing the model easier
@@ -70,7 +70,7 @@ to setup
     set items-for-sale get-random-amount supply-distribution supply-amount
     set starting-supply items-for-sale
     set asking-price get-starting-value starting-asking-price
-    ; we set the behavior using anonymous procedures to make the usage during the run simple
+    ; we set the behavior using arrow procedures to make the usage during the run simple
     ; the behavior depends on the settings of the model
     let mix-behavior ifelse-value seller-behavior = "mix of all" [random 3] [-1]
     ifelse seller-behavior = "normal" or mix-behavior = 0 [
@@ -96,7 +96,7 @@ to setup
     set starting-demand want-to-buy
     set money get-starting-value starting-money
     set willing-to-pay get-starting-value starting-willing-to-pay
-    ; we set the behavior using anonymous procedures to make the usage during the run simple
+    ; we set the behavior using arrow procedures to make the usage during the run simple
     ; again, the behavior depends on the settings of the model
     let mix-behavior ifelse-value buyer-behavior = "mix of all" [random 3] [-1]
     ifelse buyer-behavior = "normal" or mix-behavior = 0 [
@@ -341,6 +341,14 @@ to-report check-for-min-price [ value ]
   report precision ifelse-value value < min-price [min-price] [value] 2
 end
 
+to-report guarded-metric [ metric-op agents ]
+  report ifelse-value count agents > 0 [
+    (runresult metric-op agents)
+  ] [
+    "<no agents>"
+  ]
+end
+
 
 ; Copyright 2017 Uri Wilensky.
 ; See Info tab for full copyright and license.
@@ -508,7 +516,7 @@ It's fairly easy to add new behaviors to buyers and sellers, just adjust the cho
 
 In order to try to keep the Asking Price and Buying Price plots displaying relevant information, we set the `plot-y-range` manually using an update command based on the most recent average price.
 
-Behaviors for buyers and sellers are set during setup, and we use anonymous procedures stored in turtles-own variables. This allows us to very easily execute different behavior while the market is running by just using the `run` keyword with those behavior variables.
+Behaviors for buyers and sellers are set during setup, and we use arrow procedures stored in turtles-own variables. This allows us to very easily execute different behavior while the market is running by just using the `run` keyword with those behavior variables.
 
 ## RELATED MODELS
 
@@ -537,8 +545,6 @@ This model is licensed under the Creative Commons Attribution-NonCommercial-Shar
 NetLogo itself is free software for non-commercial use under the terms of the GNU General Public License ([see full license information here](https://ccl.northwestern.edu/netlogo/docs/copyright.html)).
 
 To inquire about commercial licenses for either NetLogo or specific models from the models library, please contact netlogo-commercial-admin@ccl.northwestern.edu.
-
-<!-- 2017 Cite: Baker, J. -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -1395,9 +1401,8 @@ To inquire about commercial licenses for either NetLogo or specific models from 
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>setup repeat 75 [ go ]</previewCommands>
   <experiments>
-    <experiment name="Sample Experiment" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="false">
+    <experiment name="Sample Experiment" repetitions="3" sequentialRunOrder="true" runMetricsEveryStep="false" timeLimit="3000">
       <setup>setup</setup>
       <go>go</go>
       <metrics>
@@ -1405,44 +1410,41 @@ To inquire about commercial licenses for either NetLogo or specific models from 
         <metric>average-price</metric>
         <metric>sum [money] of buyers</metric>
         <metric>sum [money] of sellers</metric>
-        <metric><![CDATA[mean [asking-price] of sellers with [items-for-sale > 0]]]></metric>
-        <metric><![CDATA[min [asking-price] of sellers with [items-for-sale > 0]]]></metric>
-        <metric><![CDATA[max [asking-price] of sellers with [items-for-sale > 0]]]></metric>
-        <metric><![CDATA[mean [willing-to-pay] of buyers with [want-to-buy > 0]]]></metric>
-        <metric><![CDATA[min [willing-to-pay] of buyers with [want-to-buy > 0]]]></metric>
-        <metric><![CDATA[max [willing-to-pay] of buyers with [want-to-buy > 0]]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> mean [asking-price] of ts] (sellers with [items-for-sale > 0])]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> min [asking-price] of ts] (sellers with [items-for-sale > 0])]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> max [asking-price] of ts] (sellers with [items-for-sale > 0])]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> mean [willing-to-pay] of ts] (buyers with [want-to-buy > 0])]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> min [willing-to-pay] of ts] (buyers with [want-to-buy > 0])]]></metric>
+        <metric><![CDATA[guarded-metric [[ts] -> max [willing-to-pay] of ts] (buyers with [want-to-buy > 0])]]></metric>
       </metrics>
       <constants>
-        <enumeratedValueSet variable="nosy-neighbor">
-          <value value="false"></value>
+        <enumeratedValueSet variable="supply-amount">
+          <value value="&quot;high&quot;"></value>
+          <value value="&quot;low&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="randomize-starting-demand">
-          <value value="true"></value>
+        <enumeratedValueSet variable="demand-amount">
+          <value value="&quot;high&quot;"></value>
+          <value value="&quot;low&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="starting-asking-price">
-          <value value="100"></value>
+        <enumeratedValueSet variable="supply-distribution">
+          <value value="&quot;concentrated&quot;"></value>
+          <value value="&quot;even&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="randomize-starting-supply">
-          <value value="true"></value>
+        <enumeratedValueSet variable="demand-distribution">
+          <value value="&quot;concentrated&quot;"></value>
+          <value value="&quot;even&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="starting-supply">
-          <value value="96"></value>
+        <enumeratedValueSet variable="seller-behavior">
+          <value value="&quot;normal&quot;"></value>
+          <value value="&quot;mix of all&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="starting-money">
-          <value value="500"></value>
+        <enumeratedValueSet variable="buyer-behavior">
+          <value value="&quot;normal&quot;"></value>
+          <value value="&quot;mix of all&quot;"></value>
         </enumeratedValueSet>
-        <enumeratedValueSet variable="starting-demand">
-          <value value="96"></value>
-        </enumeratedValueSet>
-        <enumeratedValueSet variable="starting-willing-to-pay">
-          <value value="3"></value>
-        </enumeratedValueSet>
-        <enumeratedValueSet variable="purchase-choice">
-          <value value="&quot;buyer&quot;"></value>
-        </enumeratedValueSet>
-        <steppedValueSet variable="buyer-sensitivity" first="5" step="5" last="25"></steppedValueSet>
-        <steppedValueSet variable="seller-sensitivity" first="5" step="5" last="25"></steppedValueSet>
       </constants>
     </experiment>
   </experiments>
+  <previewCommands>setup repeat 75 [ go ]</previewCommands>
+  <citation year1="2017" cite="Baker, J."></citation>
 </model>

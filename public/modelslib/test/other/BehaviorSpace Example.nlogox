@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 patches-own [
   living?         ;; indicates if the cell is living
@@ -785,7 +785,6 @@ end
       </indicator>
     </shape>
   </linkShapes>
-  <previewCommands>setup-random repeat 20 [ go ]</previewCommands>
   <experiments>
     <experiment name="experiment1" repetitions="5" sequentialRunOrder="true" runMetricsEveryStep="true" timeLimit="50">
       <setup>setup-random</setup>
@@ -865,8 +864,10 @@ end
     </experiment>
     <experiment name="goBoom" repetitions="1" sequentialRunOrder="true" runMetricsEveryStep="true">
       <setup>setup-random</setup>
-      <go>go
-__ignore __boom</go>
+      <go><![CDATA[
+go
+__ignore __boom
+]]></go>
       <metrics>
         <metric>count turtles</metric>
       </metrics>
@@ -902,4 +903,5 @@ __ignore __boom</go>
       </constants>
     </experiment>
   </experiments>
+  <previewCommands>setup-random repeat 20 [ go ]</previewCommands>
 </model>

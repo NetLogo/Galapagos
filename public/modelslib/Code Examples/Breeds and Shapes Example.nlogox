@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<model version="NetLogo 7.1.0-internal1" snapToGrid="false">
+<model version="NetLogo 7.1.0-alpha1" snapToGrid="false">
   <code><![CDATA[
 breed [monsters monster]
 breed [fish a-fish]       ;; the word "fish" is both singular and plural,
@@ -50,8 +50,6 @@ This code example shows how to create and control groups of turtles, i.e. breeds
 It also shows how to set the default shape of a breed, so all turtles with that breed will have that shape.
 
 To create your own shapes, use the Shapes Editor in the Tools menu.
-
-<!-- 2005 -->
 ]]></info>
   <turtleShapes>
     <shape name="default" rotatable="true" editableColorIndex="0">
@@ -830,4 +828,5 @@ To create your own shapes, use the Shapes Editor in the Tools menu.
   </linkShapes>
   <previewCommands>setup
 repeat 2 [ move-fish ]</previewCommands>
+  <citation year1="2005"></citation>
 </model>
