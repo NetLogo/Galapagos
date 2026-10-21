@@ -116,7 +116,7 @@ RactiveModelCodeComponent = Ractive.extend({
     selectedCode = editor.getSelection().trim()
     @set('selectedCode', selectedCode)
     codeString = @get('code')
-    check = new RegExp(selectedCode, "gm")
+    check = new RegExp(selectedCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), "gm")
     codeUsage = []
     while (match = check.exec(codeString))
       pos        = editor.posFromIndex(match.index)

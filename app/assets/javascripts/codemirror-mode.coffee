@@ -40,3 +40,5 @@ CodeMirror.defineSimpleMode('netlogo', {
     , lineComment:   ";"
   }
 })
+
+CodeMirror.registerHelper('wordChars', 'netlogo', /[\w.?=*!<>:#+\/%$^'&-]/)
