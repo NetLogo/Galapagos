@@ -90,10 +90,10 @@ RactiveModelCodeComponent = Ractive.extend({
     editor = @findComponent('codeEditor').getEditor()
     codeUsageMap = {
       'Ctrl-U': =>
-        if editor.somethingSelected()
+        if editor.getSelection().trim() isnt ''
           @setCodeUsage()
       ,'Cmd-U': =>
-        if editor.somethingSelected()
+        if editor.getSelection().trim() isnt ''
           @setCodeUsage()
       ,'Ctrl-;': =>
         @toggleLineComments(editor)
