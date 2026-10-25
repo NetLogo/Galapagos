@@ -4,6 +4,28 @@
 
 <div class="inner-content" style="margin: 0 10%; text-align: justify;">
 
+    <h2 id="v2.16.1">October 26th 2026 - v2.16.1</h2>
+
+    <p>
+      This release of NetLogo Web brings enhancements to authoring.  Multiple widgets can be selected at once to move or delete.
+      NetLogo Web will produce meaningful error messages when there are problems with agent context (using a link variable in a
+      turtle context, for example).  Compiler and runtime errors that occur inside widgets will be much easier to locate and
+      correct, with clickable links to them when possible.
+    </p>
+
+    <ul>
+      <li>
+        NetLogo Web continues to save your work-in-progress automatically to the browser cache as you author a model.  It will
+        present a highlighted <b>Load Changes</b> button to restore your changes when you return to that model.  Previously it loaded
+        changes automatically and allowed you to revert them.
+      </li>
+      <li>Widgets will resize to fit their contents on creation and update.</li>
+      <li>Widgets will now snap to other widget edges and centers on drag and resize for easy alignment.  You can hold the
+        Ctrl modifier key to disable this while dragging (Cmd on macOS).</li>
+      <li>The Matrix extension now supports the Eigen primitives from the desktop version.</li>
+      <li>The FP extension now supports the <code>outer</code> primitive.</li>
+    </ul>
+
     <h2 id="v2.16.0">July 27th 2026 - v2.16.0</h2>
 
     <p>This release brings support for three new extensions to NetLogo Web: <a href="https://github.com/NetLogo/NW-Extension/blob/main/README.md"><b>the Network (NW) Extension</b></a>, <a href="https://github.com/NetLogo/GIS-Extension/blob/main/README.md"><b>the GIS Extension</b></a>, and <a href="https://github.com/NetLogo/Rnd-Extension/blob/main/README.md"><b>the Rnd Extension</b></a>.  These extensions include almost all of the same primitives as their desktop counterparts and work almost identically, as verified by our test suites.  A key difference is that primitives related to loading and saving files are not supported.  NetLogo Web doesn't have access to a file system, so instead we've added string-based data loading and saving primitives.  You can either embed data files as resources in your NetLogo model and access them with <a href="https://github.com/NetLogo/Resource-Extension/blob/main/README.md">the Resource Extension</a>, or snag files from the web with <a href="https://github.com/NetLogo/Fetch-Extension/blob/main/README.md">the Fetch Extension</a>.  See <a href="https://github.com/NetLogo/NW-Extension/blob/main/README.md#nwload-from-string">the docs for <code>nw:load-from-string</code></a> and <a href="https://github.com/NetLogo/GIS-Extension/blob/main/README.md#gisload-dataset-from-string">the docs for <code>gis:load-dataset-from-string</code></a> for more info.</p>
