@@ -75,4 +75,37 @@ describe('trackViewPointer()', () ->
     assert.deepEqual(names(), ['move'])
   )
 
+  contextMenu = (isCancelled) ->
+    element.fire('contextmenu', { clientX: 50, clientY: 50, defaultPrevented: isCancelled })
+    new Promise((resolve) -> setTimeout(resolve, 0))
+
+  it('ends a mouse press when the browser opens its own menu, and reports the next press', () ->
+    fire('pointerdown', { pointerType: 'mouse' })
+    await contextMenu(false)
+    fire('pointerdown', { pointerType: 'mouse' })
+    fire('pointerup',   { pointerType: 'mouse' })
+    assert.deepEqual(names(), ['down', 'up', 'down', 'up'])
+  )
+
+  it('keeps a mouse press when our menu opens', () ->
+    fire('pointerdown', { pointerType: 'mouse' })
+    await contextMenu(true)
+    assert.deepEqual(names(), ['down'])
+    fire('pointerup', { pointerType: 'mouse' })
+    assert.deepEqual(names(), ['down', 'up'])
+  )
+
+  it('leaves a touch press to the long-press handling', () ->
+    fire('pointerdown')
+    await contextMenu(false)
+    assert.deepEqual(names(), ['down'])
+  )
+
+  it('ignores a menu that opens after the release', () ->
+    fire('pointerdown', { pointerType: 'mouse' })
+    fire('pointerup',   { pointerType: 'mouse' })
+    await contextMenu(false)
+    assert.deepEqual(names(), ['down', 'up'])
+  )
+
 )
