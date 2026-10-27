@@ -27,16 +27,26 @@ class MouseTracker
   # (ViewController, (Unit) -> Unit) -> Unit
   constructor: (viewController, onUnreadTouchDrag = (->)) ->
     touchPress = undefined
+    trackDistance = (clientX, clientY) ->
+      distance = Math.hypot(clientX - touchPress.clientX, clientY - touchPress.clientY)
+      touchPress.maxDistance = Math.max(touchPress.maxDistance, distance)
     downHandler = ({ event, clientX, clientY, xPcor, yPcor }) =>
       @down = true
-      touchPress = if event?.pointerType is 'touch' then { clientX, clientY, readCount: @readCount } else undefined
+      touchPress =
+        if event?.pointerType is 'touch'
+          { clientX, clientY, readCount: @readCount, maxDistance: 0 }
+        else
+          undefined
       @updateMouseLocation(xPcor, yPcor)
-    moveHandler = ({ xPcor, yPcor }) =>
+    moveHandler = ({ clientX, clientY, xPcor, yPcor }) =>
+      if touchPress?
+        trackDistance(clientX, clientY)
       @updateMouseLocation(xPcor, yPcor)
     upHandler = ({ event, clientX, clientY } = {}) =>
-      if touchPress? and event?.type is 'pointerup' and @readCount is touchPress.readCount and
-         Math.hypot(clientX - touchPress.clientX, clientY - touchPress.clientY) >= dragThresholdFor('touch')
-        onUnreadTouchDrag()
+      if touchPress? and event?.type is 'pointerup' and @readCount is touchPress.readCount
+        trackDistance(clientX, clientY)
+        if touchPress.maxDistance >= dragThresholdFor('touch')
+          onUnreadTouchDrag()
       touchPress = undefined
       @inside = false
       @down = false

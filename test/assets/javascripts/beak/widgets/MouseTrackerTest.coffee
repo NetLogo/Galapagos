@@ -11,6 +11,7 @@ describe('MouseTracker unread touch drag', () ->
     arg = { event: { type, pointerType }, clientX: x, clientY: y, xPcor: x, yPcor: y }
     switch type
       when 'pointerdown' then handlers.down(arg)
+      when 'pointermove' then handlers.move(arg)
       else                    handlers.up(arg)
     return
 
@@ -34,6 +35,28 @@ describe('MouseTracker unread touch drag', () ->
     press('pointerdown', 'touch', 50)
     tracker.readCount += 1
     press('pointerup',   'touch', 80)
+    assert.equal(hints, 0)
+  )
+
+  it('reports a touch drag that goes out and comes back near its start', () ->
+    press('pointerdown', 'touch', 50)
+    press('pointermove', 'touch', 90)
+    press('pointerup',   'touch', 52)
+    assert.equal(hints, 1)
+  )
+
+  it('does not report a touch press that wobbles under the threshold', () ->
+    press('pointerdown', 'touch', 50)
+    press('pointermove', 'touch', 53)
+    press('pointermove', 'touch', 47)
+    press('pointerup',   'touch', 50)
+    assert.equal(hints, 0)
+  )
+
+  it('does not let a hover before a press count toward a drag', () ->
+    press('pointermove', 'mouse', 10)
+    press('pointerdown', 'touch', 50)
+    press('pointerup',   'touch', 52)
     assert.equal(hints, 0)
   )
 
