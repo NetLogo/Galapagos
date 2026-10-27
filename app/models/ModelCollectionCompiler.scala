@@ -19,8 +19,6 @@ import
 
 class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) extends Actor {
 
-  val compiler = new Compiler()
-
   import models.ModelCollectionCompiler.{ CheckBuiltInModels, compileModel }
   import models.StatusCacher.AllBuiltInModels
 
@@ -33,7 +31,8 @@ class ModelCollectionCompiler(getModels: () => Seq[File], cacher: ActorRef) exte
       allModels.map {
         file => (file, usingSource(_.fromFile(file))(_.mkString))
       }.par.foreach {
-        case (file, contents) => cacher ! compileModel(compiler, file, contents)
+        // A `Compiler` keeps imported extension prims in mutable state, so parallel compiles can't share one.  -Jeremy B October 2026
+        case (file, contents) => cacher ! compileModel(new Compiler(), file, contents)
       }
   }
 

@@ -50,6 +50,39 @@ class ModelCollectionCompilerSpec extends AnyFlatSpec with AkkaTestHelper with T
 
 }
 
+class ModelCollectionCompilerExtensionsSpec
+  extends AnyFlatSpec with AkkaTestHelper with TestKitBase with OneInstancePerTest {
+
+  import ModelCollectionCompiler.CheckBuiltInModels
+
+  val extensionModels = Seq(
+    "Code Examples/Extensions Examples/gis/GIS General Examples"
+  , "Code Examples/Extensions Examples/gis/GIS Gradient Example"
+  , "Code Examples/Extensions Examples/matrix/Matrix Example"
+  , "Code Examples/Extensions Examples/nw/NW General Examples"
+  , "Code Examples/Extensions Examples/palette/Color Painting"
+  , "Code Examples/Extensions Examples/rnd/Rnd Example"
+  , "Code Examples/Extensions Examples/table/Table Example"
+  , "Sample Models/Biology/Evolution/Bug Hunt Camouflage"
+  ).map((path) => new File(s"public/modelslib/$path.nlogox"))
+
+  lazy val observer = genInbox
+  val collectionCompiler = TestActorRef(Props(classOf[ModelCollectionCompiler], () => extensionModels, observer.ref))
+
+  it should "compile models that use different extensions in parallel" in {
+    (1 to 5).foreach { _ =>
+      collectionCompiler ! CheckBuiltInModels
+      skipMessages(observer, 1)
+      val statuses = receiveMessagesCount(observer, extensionModels.length)
+      val failures = statuses.collect {
+        case CompilationFailure(file, errors) => s"${file.getName}: ${errors.mkString}"
+      }
+      assert(failures.isEmpty, failures.mkString("\n"))
+    }
+  }
+
+}
+
 trait AkkaTestHelper extends Assertions {
 
   self: TestKitBase =>
