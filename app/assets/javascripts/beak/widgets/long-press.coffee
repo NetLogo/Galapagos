@@ -1,10 +1,6 @@
-import { dragThresholdFor, swallowNextClick } from "./pointer-drag.js"
+import { dragThresholdFor } from "./pointer-drag.js"
 
 LONG_PRESS_DELAY = 500
-
-# While a finger is down, and for a moment after it lifts, the only `contextmenu` let through is the one we send.  The
-# browser's own long-press menu (Android sends one, sometimes only on release) is blocked, however it is timed.
-NATIVE_MENU_GRACE = 300
 
 LONG_PRESS_SCOPE = [
   '.netlogo-widget-container', '.netlogo-model-title', '.inspection-agent-monitor-view-container', '.async-popup'
@@ -25,8 +21,15 @@ installLongPress = ->
   isInstalled     = true
   press           = undefined
   ownEvent        = undefined
-  suppressUntil   = 0
   isMenuFromPress = false
+
+  # From a finger going down until the next press, the only `contextmenu` let through is the one we send.  The
+  # browser's own long-press menu (Android sends one, sometimes only on release) is blocked, however it is timed.
+  isBlockingNativeMenu = false
+
+  # Whether a `click` follows a held press is up to the browser: iOS Safari sends one, Android Chrome and Firefox do
+  # not.  So on lift we send our own, unless our menu opened, and eat the browser's if it comes before the next press.
+  isEatingClick = false
 
   # () => Unit
   stopTimer =
@@ -53,9 +56,10 @@ installLongPress = ->
       , clientY
       })
       ownEvent.isLongPress = true
-      isMenuFromPress      = menuTarget?.dispatchEvent(ownEvent) is false
+      press.hasOpenedMenu  = menuTarget?.dispatchEvent(ownEvent) is false
       ownEvent             = undefined
-      if isMenuFromPress
+      if press.hasOpenedMenu
+        isMenuFromPress = true
         window.getSelection()?.removeAllRanges()
       return
 
@@ -63,21 +67,23 @@ installLongPress = ->
   handleDown =
     (e) ->
       stopTimer()
-      press           = undefined
-      suppressUntil   = 0
-      isMenuFromPress = false
-      isTouchLike     = (e.pointerType is 'touch') or (e.pointerType is 'pen')
-      isInScope       = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(EDITABLE)?
+      press                = undefined
+      isBlockingNativeMenu = false
+      isMenuFromPress      = false
+      isEatingClick        = false
+      isTouchLike          = (e.pointerType is 'touch') or (e.pointerType is 'pen')
+      isInScope            = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(EDITABLE)?
       if e.isPrimary and (e.button is 0) and isTouchLike and isInScope
-        suppressUntil = Infinity
+        isBlockingNativeMenu = true
         press = {
-          pointerId: e.pointerId
-        , target:    e.target
-        , clientX:   e.clientX
-        , clientY:   e.clientY
-        , threshold: dragThresholdFor(e.pointerType)
-        , hasFired:  false
-        , timerId:   if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
+          pointerId:     e.pointerId
+        , target:        e.target
+        , clientX:       e.clientX
+        , clientY:       e.clientY
+        , threshold:     dragThresholdFor(e.pointerType)
+        , hasFired:      false
+        , hasOpenedMenu: false
+        , timerId:       if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
         }
       return
 
@@ -91,21 +97,46 @@ installLongPress = ->
           stopTimer()
       return
 
+  # () => Unit
+  sendClick =
+    ->
+      { target, clientX, clientY } = press
+      clickTarget = if target.isConnected then target else document.elementFromPoint(clientX, clientY)
+      clickTarget?.dispatchEvent(new MouseEvent('click', {
+        bubbles:    true
+      , cancelable: true
+      , view:       window
+      , detail:     1
+      , clientX
+      , clientY
+      }))
+      return
+
   # (PointerEvent) => Unit
   handleUp =
     (e) ->
       if press? and (e.pointerId is press.pointerId)
         stopTimer()
-        if press.hasFired
-          swallowNextClick()
-        suppressUntil = Date.now() + NATIVE_MENU_GRACE
-        press         = undefined
+        if press.hasFired and (e.type is 'pointerup')
+          if not press.hasOpenedMenu
+            sendClick()
+          isEatingClick = true
+        press = undefined
+      return
+
+  # (MouseEvent) => Unit
+  handleClick =
+    (e) ->
+      if isEatingClick and (e.detail > 0)
+        isEatingClick = false
+        e.preventDefault()
+        e.stopImmediatePropagation()
       return
 
   # (MouseEvent) => Unit
   handleContextMenu =
     (e) ->
-      if (e isnt ownEvent) and (Date.now() < suppressUntil)
+      if (e isnt ownEvent) and isBlockingNativeMenu
         e.preventDefault()
         e.stopImmediatePropagation()
       return
@@ -124,6 +155,7 @@ installLongPress = ->
   document.addEventListener('pointerup'    , handleUp  , true)
   document.addEventListener('pointercancel', handleUp  , true)
   window.addEventListener('contextmenu', handleContextMenu, true)
+  window.addEventListener('click', handleClick, true)
   document.addEventListener('selectstart', handleSelectStart, true)
 
   return
