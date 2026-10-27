@@ -149,16 +149,28 @@ describe('installLongPress()', () ->
     assert.equal(menus.length, 1)
   )
 
-  it('eats the click that follows the lifted finger', () ->
-    clicks = 0
+  clicksAfterLongPress = (isMenuOpened) ->
+    clicks     = 0
     countClick = () -> clicks += 1
+    openMenu   = (e) -> e.preventDefault()
     container.addEventListener('click', countClick)
+    if isMenuOpened
+      container.addEventListener('contextmenu', openMenu)
     pointer(overlay, 'pointerdown', 'touch')
     runTimers()
     pointer(overlay, 'pointerup', 'touch')
     overlay.dispatchEvent(new window.MouseEvent('click', { bubbles: true }))
     container.removeEventListener('click', countClick)
-    assert.equal(clicks, 0)
+    container.removeEventListener('contextmenu', openMenu)
+    runTimers()
+    clicks
+
+  it('eats the click that follows the lifted finger when a menu opened', () ->
+    assert.equal(clicksAfterLongPress(true), 0)
+  )
+
+  it('lets the click through when no menu opened, so a slow tap on a button still works', () ->
+    assert.equal(clicksAfterLongPress(false), 1)
   )
 
   it('stops a press from selecting text outside the pressed element', () ->

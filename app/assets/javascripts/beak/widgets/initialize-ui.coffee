@@ -4,6 +4,7 @@ import generateRactiveSkeleton from "./skeleton.js"
 import handleWidgetSelection from "./handle-widget-selection.js"
 import handleContextMenu from "./handle-context-menu.js"
 import installLongPress from "./long-press.js"
+import installTouchTrace from "./touch-trace.js"
 import controlEventTraffic from "./event-traffic-control.js"
 import genConfigs from "./config-shims.js"
 import ViewController from "./draw/view-controller.js"
@@ -78,6 +79,7 @@ initializeUI = (containerArg, widgets, code, info,
   handleWidgetSelection(ractive)
   handleContextMenu(ractive)
   installLongPress()
+  installTouchTrace()
 
   controller
 

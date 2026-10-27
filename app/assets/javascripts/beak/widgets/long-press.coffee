@@ -39,10 +39,9 @@ installLongPress = ->
   fire =
     ->
       { target, clientX, clientY } = press
-      press.timerId  = undefined
-      press.hasFired = true
-      menuTarget     = if target.isConnected then target else document.elementFromPoint(clientX, clientY)
-      ownEvent       = new MouseEvent('contextmenu', {
+      press.timerId = undefined
+      menuTarget    = if target.isConnected then target else document.elementFromPoint(clientX, clientY)
+      ownEvent      = new MouseEvent('contextmenu', {
         bubbles:    true
       , cancelable: true
       , view:       window
@@ -52,8 +51,8 @@ installLongPress = ->
       , clientY
       })
       ownEvent.isLongPress = true
-      menuTarget?.dispatchEvent(ownEvent)
-      ownEvent = undefined
+      press.hasOpenedMenu  = menuTarget?.dispatchEvent(ownEvent) is false
+      ownEvent             = undefined
       return
 
   # (PointerEvent) => Unit
@@ -67,13 +66,13 @@ installLongPress = ->
       if e.isPrimary and (e.button is 0) and isTouchLike and isInScope
         suppressUntil = Infinity
         press = {
-          pointerId: e.pointerId
-        , target:    e.target
-        , clientX:   e.clientX
-        , clientY:   e.clientY
-        , threshold: dragThresholdFor(e.pointerType)
-        , hasFired:  false
-        , timerId:   if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
+          pointerId:     e.pointerId
+        , target:        e.target
+        , clientX:       e.clientX
+        , clientY:       e.clientY
+        , threshold:     dragThresholdFor(e.pointerType)
+        , hasOpenedMenu: false
+        , timerId:       if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
         }
       return
 
@@ -92,7 +91,7 @@ installLongPress = ->
     (e) ->
       if press? and (e.pointerId is press.pointerId)
         stopTimer()
-        if press.hasFired
+        if press.hasOpenedMenu
           swallowNextClick()
         suppressUntil = Date.now() + NATIVE_MENU_GRACE
         press         = undefined
