@@ -53,16 +53,21 @@ RactiveAsyncUserDialog = Ractive.extend({
     return
 
   observe: {
-    isVisible: (newValue, oldValue) ->
-      @_stopWatching()
-      @_stopWatching = (->)
-      if newValue
-        @_placeInVisibleArea()
-        setTimeout((=> @find("#async-user-dialog").focus()), 0) # Can't focus dialog until visible --Jason B. (4/10/19)
-        @fire('dialog-opened', this)
-      else
-        @fire('dialog-closed', this)
-      return
+    # Deferred so the dialog is shown before `_placeInVisibleArea` measures it. -Jeremy Octover 2026
+    isVisible: {
+      defer: true
+      handler: (newValue, oldValue) ->
+        @_stopWatching()
+        @_stopWatching = (->)
+        if newValue
+          @_placeInVisibleArea()
+          # Can't focus dialog until visible --Jason B. (4/10/19)
+          setTimeout((=> @find("#async-user-dialog").focus()), 0)
+          @fire('dialog-opened', this)
+        else
+          @fire('dialog-closed', this)
+        return
+    }
   }
 
   on: {
