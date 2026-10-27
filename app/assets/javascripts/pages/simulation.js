@@ -492,8 +492,10 @@ try {
 
   if (!isInFrame) {
     const fitWhenOpen = window.setInterval(() => {
-      if (loadingState === 'session-open') {
+      if (loadingState !== 'in-progress') {
         window.clearInterval(fitWhenOpen);
+      }
+      if (loadingState === 'session-open') {
         fitViewportToWidth(Math.ceil(modelContainer.getBoundingClientRect().width + bodyMarginWidth(document.body)));
       }
     }, 200);
