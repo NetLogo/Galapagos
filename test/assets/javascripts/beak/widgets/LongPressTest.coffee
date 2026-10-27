@@ -149,16 +149,101 @@ describe('installLongPress()', () ->
     assert.equal(menus.length, 1)
   )
 
-  it('eats the click that follows the lifted finger', () ->
-    clicks = 0
-    countClick = () -> clicks += 1
+  browserClick = (target, detail = 1) ->
+    target.dispatchEvent(new window.MouseEvent('click', { bubbles: true, cancelable: true, detail }))
+    return
+
+  countClicks = (f) ->
+    clicks     = []
+    countClick = (e) -> clicks.push(e)
     container.addEventListener('click', countClick)
-    pointer(overlay, 'pointerdown', 'touch')
-    runTimers()
-    pointer(overlay, 'pointerup', 'touch')
-    overlay.dispatchEvent(new window.MouseEvent('click', { bubbles: true }))
+    f()
     container.removeEventListener('click', countClick)
-    assert.equal(clicks, 0)
+    clicks
+
+  withMenu = (f) ->
+    openMenu = (e) -> e.preventDefault()
+    container.addEventListener('contextmenu', openMenu)
+    f()
+    container.removeEventListener('contextmenu', openMenu)
+    return
+
+  holdAndLift = (target = overlay) ->
+    pointer(target, 'pointerdown', 'touch')
+    runTimers()
+    pointer(target, 'pointerup', 'touch')
+    return
+
+  it('eats the click that follows the lifted finger when a menu opened', () ->
+    clicks = countClicks(() -> withMenu(() ->
+      holdAndLift()
+      browserClick(overlay)
+    ))
+    assert.equal(clicks.length, 0)
+  )
+
+  it('sends its own click on lift when no menu opened, so a held button still works where the browser sends none', () ->
+    clicks = countClicks(() -> holdAndLift())
+    assert.equal(clicks.length, 1)
+    assert.equal(clicks[0].target, overlay)
+  )
+
+  it("eats the browser's click after sending its own, so a held button runs once where the browser sends one", () ->
+    clicks = countClicks(() ->
+      holdAndLift()
+      browserClick(overlay)
+    )
+    assert.equal(clicks.length, 1)
+  )
+
+  it('never eats a keyboard click', () ->
+    clicks = countClicks(() ->
+      holdAndLift()
+      browserClick(overlay, 0)
+    )
+    assert.equal(clicks.length, 2)
+  )
+
+  it('stops waiting for the browser\'s click at the next press', () ->
+    clicks = countClicks(() ->
+      holdAndLift()
+      pointer(overlay, 'pointerdown', 'touch')
+      pointer(overlay, 'pointerup', 'touch')
+      browserClick(overlay)
+    )
+    assert.equal(clicks.length, 2)
+  )
+
+  it('leaves a tap to its own click', () ->
+    clicks = countClicks(() ->
+      pointer(overlay, 'pointerdown', 'touch')
+      pointer(overlay, 'pointerup', 'touch')
+      browserClick(overlay)
+    )
+    assert.equal(clicks.length, 1)
+  )
+
+  it('sends no click for a drag or a cancelled press', () ->
+    clicks = countClicks(() ->
+      pointer(overlay, 'pointerdown', 'touch')
+      pointer(overlay, 'pointermove', 'touch', 150, 100)
+      runTimers()
+      pointer(overlay, 'pointerup', 'touch', 150, 100)
+      pointer(overlay, 'pointerdown', 'touch')
+      runTimers()
+      pointer(overlay, 'pointercancel', 'touch')
+    )
+    assert.equal(clicks.length, 0)
+  )
+
+  it("blocks the browser's late menu until the next press, and not after it", () ->
+    holdAndLift()
+    menus = []
+    nativeMenu(overlay)
+    assert.equal(menus.length, 0)
+    pointer(outside, 'pointerdown', 'touch')
+    nativeMenu(overlay)
+    assert.equal(menus.length, 1)
   )
 
   selectStart = (target) ->
