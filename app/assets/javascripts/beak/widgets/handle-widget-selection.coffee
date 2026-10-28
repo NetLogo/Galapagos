@@ -252,7 +252,9 @@ handleWidgetSelection =
         return
 
     lastPressTarget = undefined
-    document.addEventListener('pointerdown', ((e) -> lastPressTarget = e.target; return), true)
+    recordPress     = (e) -> lastPressTarget = e.target; return
+    document.addEventListener('pointerdown', recordPress, true)
+    ractive.on('teardown', -> document.removeEventListener('pointerdown', recordPress, true); return)
 
     # A click fires on the nearest common ancestor of its `mousedown` and `mouseup` targets.  When a tap selects a
     # widget, its resize handles can appear under the finger before `mouseup`, so the click lands on the container.
