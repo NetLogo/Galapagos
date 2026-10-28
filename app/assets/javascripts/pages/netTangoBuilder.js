@@ -64,7 +64,7 @@ if (parent !== window) {
   enableViewportFit()
 }
 
-const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHtml)
+const alerter = new NetTangoAlertDisplay(document.getElementById("alert-container"), window.isStandaloneHTML)
 const listeners = [alerter]
 
 const allEvents = listenerEvents.concat(netTangoEvents)
