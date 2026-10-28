@@ -263,6 +263,7 @@ handleWidgetSelection =
       ({ node, event: domEvent }) ->
         if lastPressTarget is node
           deselectThoseWidgets(undefined, domEvent)
+        lastPressTarget = undefined
         return
 
     ractive.observe("isEditing"
