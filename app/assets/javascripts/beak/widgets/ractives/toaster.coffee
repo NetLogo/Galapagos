@@ -1,4 +1,4 @@
-import { getVisibleArea, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
+import { getVisibleAreaOnAnyScreen, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
 
 RactiveToast = Ractive.extend({
   # @Type RactiveToastProps
@@ -92,7 +92,7 @@ RactiveToaster = Ractive.extend({
     toasterEl = @find('.toaster')
 
     updatePosition = ->
-      area = getVisibleArea()
+      area = getVisibleAreaOnAnyScreen()
       if area?
         origin      = offsetParentOrigin(toasterEl)
         parentWidth = toasterEl.offsetParent?.clientWidth ? document.documentElement.clientWidth
