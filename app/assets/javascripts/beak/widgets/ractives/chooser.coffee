@@ -187,7 +187,8 @@ RactiveChooser = RactiveValueWidget.extend({
   template:
     """
     {{>editorOverlay}}
-    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}">
+    <label id="{{id}}" class="netlogo-widget netlogo-chooser netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}"
+           on-contextmenu='long-press-copy'>
       <span class="netlogo-label">{{widget.display}}</span>
       <select
         name="chooser"
