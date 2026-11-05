@@ -22,10 +22,11 @@ installLongPress = ->
   if isInstalled
     return
 
-  isInstalled   = true
-  press         = undefined
-  ownEvent      = undefined
-  suppressUntil = 0
+  isInstalled     = true
+  press           = undefined
+  ownEvent        = undefined
+  suppressUntil   = 0
+  isMenuFromPress = false
 
   # () => Unit
   stopTimer =
@@ -52,18 +53,21 @@ installLongPress = ->
       , clientY
       })
       ownEvent.isLongPress = true
-      menuTarget?.dispatchEvent(ownEvent)
-      ownEvent = undefined
+      isMenuFromPress      = menuTarget?.dispatchEvent(ownEvent) is false
+      ownEvent             = undefined
+      if isMenuFromPress
+        window.getSelection()?.removeAllRanges()
       return
 
   # (PointerEvent) => Unit
   handleDown =
     (e) ->
       stopTimer()
-      press         = undefined
-      suppressUntil = 0
-      isTouchLike   = (e.pointerType is 'touch') or (e.pointerType is 'pen')
-      isInScope     = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(EDITABLE)?
+      press           = undefined
+      suppressUntil   = 0
+      isMenuFromPress = false
+      isTouchLike     = (e.pointerType is 'touch') or (e.pointerType is 'pen')
+      isInScope       = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(EDITABLE)?
       if e.isPrimary and (e.button is 0) and isTouchLike and isInScope
         suppressUntil = Infinity
         press = {
@@ -106,11 +110,12 @@ installLongPress = ->
         e.stopImmediatePropagation()
       return
 
-  # A long press selects the nearest text, which for the view canvas is in whatever widget sits next to it.
+  # A long press selects the nearest text, which for the view canvas is in whatever widget sits next to it.  Once our
+  # menu opens, nothing is selectable until the next press, since iOS may cancel the pointer as its own gesture starts.
   # (Event) => Unit
   handleSelectStart =
     (e) ->
-      if press? and not press.target.contains(e.target)
+      if isMenuFromPress or (press? and not press.target.contains(e.target))
         e.preventDefault()
       return
 

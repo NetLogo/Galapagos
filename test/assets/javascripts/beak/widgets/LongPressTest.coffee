@@ -161,15 +161,29 @@ describe('installLongPress()', () ->
     assert.equal(clicks, 0)
   )
 
+  selectStart = (target) ->
+    e = new window.Event('selectstart', { bubbles: true, cancelable: true })
+    target.dispatchEvent(e)
+    e.defaultPrevented
+
   it('stops a press from selecting text outside the pressed element', () ->
-    selectStart = (target) ->
-      e = new window.Event('selectstart', { bubbles: true, cancelable: true })
-      target.dispatchEvent(e)
-      e.defaultPrevented
     pointer(overlay, 'pointerdown', 'touch')
     assert.equal(selectStart(outside), true)
     assert.equal(selectStart(overlay), false)
     pointer(overlay, 'pointerup', 'touch')
+    assert.equal(selectStart(outside), false)
+  )
+
+  it('keeps blocking text selection after its menu opens, even if the browser cancels the touch', () ->
+    openMenu = (e) -> e.preventDefault()
+    container.addEventListener('contextmenu', openMenu)
+    pointer(overlay, 'pointerdown', 'touch')
+    runTimers()
+    container.removeEventListener('contextmenu', openMenu)
+    pointer(overlay, 'pointercancel', 'touch')
+    assert.equal(selectStart(outside), true)
+    assert.equal(selectStart(overlay), true)
+    pointer(outside, 'pointerdown', 'mouse')
     assert.equal(selectStart(outside), false)
   )
 
