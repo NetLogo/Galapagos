@@ -1388,6 +1388,27 @@ kbd {
   box-sizing: border-box;
 }
 
+/* The cover takes every tap and click on the native color input, which iOS opens on a tap even when the click is
+   cancelled. */
+.netlogo-color-input-frame {
+  display: inline-grid;
+}
+
+.netlogo-color-input-frame > * {
+  grid-area: 1 / 1;
+}
+
+.netlogo-color-input-frame > input {
+  width:  100%;
+  height: auto;
+  margin: 0;
+}
+
+.netlogo-input-box > .netlogo-color-input-frame {
+  flex-grow: 1;
+  height:    0;
+}
+
 .netlogo-swatches {
   display:               grid;
   grid-template-columns: auto auto;
