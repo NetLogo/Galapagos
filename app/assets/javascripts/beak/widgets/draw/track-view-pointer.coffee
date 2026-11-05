@@ -46,7 +46,8 @@ trackViewPointer = (element, { downHandler, moveHandler, upHandler }, toHandlerA
   element.addEventListener('pointercancel', endPress)
 
   # On macOS and Linux, the browser's own menu opens on mousedown and takes the release, so no `pointerup` comes.  Our
-  # menu cancels the event further up the page, so wait until it has finished to see whether the browser's will open.  -Jeremy B October 2026
+  # menu cancels the event further up the page, so wait until it has finished to see whether the browser's will open.
+  # -Jeremy B October 2026
   element.addEventListener('contextmenu', (e) ->
     if activePointerId? and activePointerType is 'mouse'
       setTimeout((->
