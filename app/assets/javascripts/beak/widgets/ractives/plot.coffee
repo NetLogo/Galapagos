@@ -654,6 +654,14 @@ RactivePlot = RactiveWidget.extend({
 
   on: {
 
+    'open-export-menu': ->
+      button = @find('.highcharts-contextbutton')
+      if @get('isEditing') or not button?
+        true
+      else
+        button.dispatchEvent(new MouseEvent('click'))
+        false
+
     render: ->
 
       ractive  = this
@@ -700,7 +708,8 @@ RactivePlot = RactiveWidget.extend({
          class="netlogo-widget netlogo-plot {{#widget.oldSize}}old-size{{/}}
                 {{classes}}{{#hasCompileError}} netlogo-plot-error{{/}}"
          style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"
-         on-click="['show-widget-errors', widget]"></div>
+         on-click="['show-widget-errors', widget]"
+         on-contextmenu="open-export-menu"></div>
     {{>editForm}}
     """
 
