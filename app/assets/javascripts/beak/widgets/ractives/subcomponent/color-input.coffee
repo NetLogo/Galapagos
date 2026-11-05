@@ -87,9 +87,12 @@ RactiveColorInput = Ractive.extend({
 
   template:
     """
-    <input id="{{id}}" class="{{class}}" name="{{name}}" style="{{style}}" type="color"
-           {{# !isEnabled }}disabled{{/}} value="{{hexColor}}" twoway="false"
-           on-click="['click']" tabindex="{{tabindex}}" />
+    <span class="netlogo-color-input-frame" style="{{style}}">
+      <input id="{{id}}" class="{{class}}" name="{{name}}" type="color"
+             {{# !isEnabled }}disabled{{/}} value="{{hexColor}}" twoway="false"
+             on-click="['click']" tabindex="{{tabindex}}" />
+      <span class="netlogo-color-input-cover" on-click="['click']"></span>
+    </span>
     {{#isModalOpen}}
     <colorPicker id="{{id}}-color-picker"
                  on-pick="['color-picked']"
