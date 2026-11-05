@@ -402,7 +402,7 @@ template =
           hasWorkInProgress="{{hasWorkInProgress}}"
           />
         {{# !isReadOnly }}
-          <div class="flex-column" style="align-items: flex-end; user-select: none;">
+          <div class="flex-column" style="align-items: flex-end; user-select: none; -webkit-user-select: none;">
             <div class="netlogo-export-wrapper" aria-label="File Options" role="group">
               <span style="margin-right: 4px;">File:</span>
               <button class="nlw-ui-button" on-click="open-new-file"{{#isEditing}} disabled{{/}}>New</button>

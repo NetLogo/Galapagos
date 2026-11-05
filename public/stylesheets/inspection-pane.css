@@ -10,12 +10,13 @@
 }
 
 .inspection-button {
-  cursor:           pointer;
-  user-select:      none;
-  border-radius:    5px;
-  background-color: inherit;
-  display:          flex;
-  align-items:      center;
+  cursor:              pointer;
+  user-select:         none;
+  -webkit-user-select: none;
+  border-radius:       5px;
+  background-color:    inherit;
+  display:             flex;
+  align-items:         center;
 }
 
 button.inspection-button {
