@@ -192,7 +192,12 @@ RactiveSlider = RactiveValueWidget.extend({
 
   # () => Unit
   focusSlider: () ->
-    if @sliderElem?
+    if not @sliderElem?
+      return
+    # iOS brings up the keyboard when an element is focused while it is `contentEditable`.
+    if window.matchMedia('(pointer: coarse)').matches
+      @sliderElem.focus()
+    else
       # This is a hack to get the browser to apply
       # :focus-visible instead of :focus to the slider.
       # -Omar I. Aug 11, 2025
