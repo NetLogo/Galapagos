@@ -72,8 +72,9 @@ html.nlw-phone .netlogo-model {
 
 .netlogo-command,
 .netlogo-input {
-  user-select:      none;
-  -moz-user-select: none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 @media (hover: hover) {
@@ -129,11 +130,12 @@ html.nlw-phone .netlogo-model {
 }
 
 .netlogo-tab-text {
-  font-size:        20px;
-  font-weight:      bold;
-  text-align:       center;
-  user-select:      none;
-  -moz-user-select: none;
+  font-size:           20px;
+  font-weight:         bold;
+  text-align:          center;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .netlogo-tab-content {
@@ -154,8 +156,9 @@ html.nlw-phone .netlogo-model {
 }
 
 .unselectable {
-  user-select:      none;
-  -moz-user-select: none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .netlogo-model-container {
@@ -192,13 +195,14 @@ html.nlw-phone .netlogo-model {
 }
 
 .netlogo-model-status-closer {
-  margin:      auto 0 auto 10px;
-  width:       min-content;
-  height:      min-content;
-  cursor:      pointer;
-  color:       #7f7f7f;
-  font-weight: bold;
-  user-select: none;
+  margin:              auto 0 auto 10px;
+  width:               min-content;
+  height:              min-content;
+  cursor:              pointer;
+  color:               #7f7f7f;
+  font-weight:         bold;
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 @media (hover: hover) {
@@ -789,11 +793,12 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-label {
-  margin:        0 auto;
-  overflow:      hidden;
-  text-overflow: ellipsis;
-  white-space:   nowrap;
-  user-select:   none;
+  margin:              0 auto;
+  overflow:            hidden;
+  text-overflow:       ellipsis;
+  white-space:         nowrap;
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 .netlogo-slider-label {
@@ -925,10 +930,12 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-plot {
-  box-sizing: content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
-  overflow:   visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
-  padding:    0;
-  border:     1px solid #eeeeee;
+  box-sizing:          content-box; /* otherwise border gets cut off -- BCH 11/9/2014 */
+  overflow:            visible; /* must come after the .netlogo-widget declaration - JMB November 2017 */
+  padding:             0;
+  border:              1px solid #eeeeee;
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 .highcharts-root {
@@ -1021,19 +1028,20 @@ input[type='checkbox']:not(checked) ~ .netlogo-switcher-element > .netlogo-switc
 }
 
 .netlogo-help-keybind-hint {
-  display:          flex;
-  align-items:      center;
-  align-self:       center;
-  gap:              8px;
-  flex:             0 0 auto;
-  white-space:      nowrap;
-  user-select:      none;
-  border:           none;
-  background:       none;
-  padding:          0;
-  font:             inherit;
-  color:            inherit;
-  cursor:           pointer;
+  display:             flex;
+  align-items:         center;
+  align-self:          center;
+  gap:                 8px;
+  flex:                0 0 auto;
+  white-space:         nowrap;
+  user-select:         none;
+  -webkit-user-select: none;
+  border:              none;
+  background:          none;
+  padding:             0;
+  font:                inherit;
+  color:               inherit;
+  cursor:              pointer;
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -1129,6 +1137,7 @@ kbd {
   margin:              0 2px;
   vertical-align:      middle;
   user-select:         none;
+  -webkit-user-select: none;
 }
 
 .keyboard-help-description {
@@ -1232,20 +1241,21 @@ kbd {
 }
 
 .netlogo-modal-title {
-  position:         sticky;
-  top:              0;
-  min-height:       var(--title-height);
-  text-align:       center;
-  padding:          var(--title-padding);
-  cursor:           grab;
-  user-select:      none;
-  touch-action:     none;
-  background-color: white;
-  border-bottom:    solid var(--border-width) #111;
-  z-index:          calc(var(--z-basis) + 1);
-  font-size:        small;
-  display:          flex;
-  align-items:      center;
+  position:            sticky;
+  top:                 0;
+  min-height:          var(--title-height);
+  text-align:          center;
+  padding:             var(--title-padding);
+  cursor:              grab;
+  user-select:         none;
+  -webkit-user-select: none;
+  touch-action:        none;
+  background-color:    white;
+  border-bottom:       solid var(--border-width) #111;
+  z-index:             calc(var(--z-basis) + 1);
+  font-size:           small;
+  display:             flex;
+  align-items:         center;
 }
 
 .netlogo-modal-top-bar-container {

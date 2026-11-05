@@ -3,9 +3,10 @@
  */
 
 .editor-overlay {
-  touch-action: none;
-  user-select:  none;
-  z-index:      50;
+  touch-action:        none;
+  user-select:         none;
+  -webkit-user-select: none;
+  z-index:             50;
 }
 
 .netlogo-widget-container, .netlogo-model-title, .inspection-agent-monitor-view-container {
@@ -13,7 +14,8 @@
 }
 
 body.nlw-pointer-dragging {
-  user-select: none;
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 .widget-selection-box {
@@ -51,10 +53,11 @@ body.nlw-pointer-dragging {
 }
 
 .netlogo-toggle-text {
-  font-size:        14px;
-  margin-top:       3px;
-  user-select:      none;
-  -moz-user-select: none;
+  font-size:           14px;
+  margin-top:          3px;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .netlogo-toggle-container {
@@ -84,7 +87,9 @@ body.nlw-pointer-dragging {
 }
 
 .netlogo-widget-container.interface-unlocked {
-  background-color: rgb(234, 255, 225);
+  background-color:    rgb(234, 255, 225);
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 @media (hover: hover) {
@@ -104,10 +109,11 @@ body.nlw-pointer-dragging {
 }
 
 .netlogo-widget.interface-unlocked {
-  user-select:      none;
-  -moz-user-select: none;
-  opacity:          0.7;
-  pointer-events:   none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
+  opacity:             0.7;
+  pointer-events:      none;
 }
 
 .editor-overlay.selected + .netlogo-widget.interface-unlocked {
@@ -133,13 +139,14 @@ body.nlw-pointer-dragging {
 }
 
 .context-menu-item {
-  border-bottom:    solid 1px #dfdfdf;
-  color:            #0066aa;
-  cursor:           pointer;
-  font-size:        15px;
-  padding:          5px;
-  user-select:      none;
-  -moz-user-select: none;
+  border-bottom:       solid 1px #dfdfdf;
+  color:               #0066aa;
+  cursor:              pointer;
+  font-size:           15px;
+  padding:             5px;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .context-menu-item.disabled {
@@ -187,13 +194,14 @@ body.nlw-pointer-dragging {
 }
 
 .context-submenu-scroll-arrow {
-  list-style:  none;
-  text-align:  center;
-  cursor:      pointer;
-  padding:     2px 0;
-  color:       #0066aa;
-  user-select: none;
-  line-height: 1;
+  list-style:          none;
+  text-align:          center;
+  cursor:              pointer;
+  padding:             2px 0;
+  color:               #0066aa;
+  user-select:         none;
+  -webkit-user-select: none;
+  line-height:         1;
 }
 
 @media (hover: hover) {
@@ -253,8 +261,9 @@ body.nlw-pointer-dragging {
 }
 
 .widget-edit-form label {
-  user-select:      none;
-  -moz-user-select: none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .widget-edit-form-overlay {
@@ -268,16 +277,17 @@ body.nlw-pointer-dragging {
 /* The title is the form's drag handle.  It spans the popup's full width, under the closer, and is tall enough for a
    finger. */
 .widget-edit-form-title {
-  border-bottom:    1px solid #dfdfdf;
-  color:            #111111;
-  cursor:           grab;
-  font-weight:      bold;
-  margin:           -10px -10px 10px -10px;
-  padding:          10px 30px;
-  text-align:       center;
-  touch-action:     none;
-  user-select:      none;
-  -moz-user-select: none;
+  border-bottom:       1px solid #dfdfdf;
+  color:               #111111;
+  cursor:              grab;
+  font-weight:         bold;
+  margin:              -10px -10px 10px -10px;
+  padding:             10px 30px;
+  text-align:          center;
+  touch-action:        none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .widget-edit-form-button-container {
@@ -286,15 +296,16 @@ body.nlw-pointer-dragging {
 }
 
 .widget-edit-closer {
-  color:            #7F7F7F;
-  cursor:           pointer;
-  font-weight:      bold;
-  position:         absolute;
-  right:            10px;
-  top:              10px;
-  user-select:      none;
-  -moz-user-select: none;
-  z-index:          10;
+  color:               #7F7F7F;
+  cursor:              pointer;
+  font-weight:         bold;
+  position:            absolute;
+  right:               10px;
+  top:                 10px;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
+  z-index:             10;
 }
 
 @media (hover: hover) {
@@ -333,10 +344,11 @@ body.nlw-pointer-dragging {
 }
 
 .widget-edit-hint-text {
-  color:       #4a4a4a;
-  font-size:   13px;
-  margin:      2px 0 8px 0;
-  user-select: none;
+  color:               #4a4a4a;
+  font-size:           13px;
+  margin:              2px 0 8px 0;
+  user-select:         none;
+  -webkit-user-select: none;
 }
 
 .widget-edit-errors {
@@ -380,8 +392,9 @@ body.nlw-pointer-dragging {
 }
 
 .widget-edit-legend {
-  user-select:      none;
-  -moz-user-select: none;
+  user-select:         none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
 }
 
 .widget-resize-handle {
@@ -447,15 +460,16 @@ body.nlw-pointer-dragging {
 }
 
 .expander {
-  border:        2px solid #909090;
-  border-radius: 26px;
-  height:        26px;
-  margin-right:  15px;
-  text-align:    center;
-  transform:     rotate(0deg);
-  transition:    transform 0.1s ease-in;
-  user-select:   none;
-  width:         26px;
+  border:              2px solid #909090;
+  border-radius:       26px;
+  height:              26px;
+  margin-right:        15px;
+  text-align:          center;
+  transform:           rotate(0deg);
+  transition:          transform 0.1s ease-in;
+  user-select:         none;
+  -webkit-user-select: none;
+  width:               26px;
 }
 
 @media (hover: hover) {
