@@ -20,9 +20,7 @@ findTopWindow = ->
   { win, x, y }
 
 # () => VisibleArea { left, top, right, bottom, width, height, scale: Number } | null
-getVisibleArea = ->
-  if not document.documentElement.classList.contains('nlw-phone')
-    return null
+getVisibleAreaOnAnyScreen = ->
   topWindow = findTopWindow()
   viewport  = topWindow?.win.visualViewport
   if not viewport?
@@ -40,6 +38,12 @@ getVisibleArea = ->
   , height: bottom - top
   , scale:  Math.max(1, viewport.width / deviceWidth(topWindow.win))
   }
+
+# () => VisibleArea | null
+getVisibleArea = ->
+  if not document.documentElement.classList.contains('nlw-phone')
+    return null
+  getVisibleAreaOnAnyScreen()
 
 # (() => Unit) => (() => Unit)
 watchVisibleArea = (callback) ->
@@ -66,6 +70,7 @@ offsetParentOrigin = (elem) ->
 
 export {
   getVisibleArea,
+  getVisibleAreaOnAnyScreen,
   offsetParentOrigin,
   watchVisibleArea,
 }
