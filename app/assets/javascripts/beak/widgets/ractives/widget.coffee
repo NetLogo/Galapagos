@@ -376,6 +376,27 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         })
       return
 
+    # Safari writes to the clipboard only during a user gesture, and a long press fires before the finger lifts, so the
+    # copy waits for the lift.  A new press means the lift was missed.
+    # (Context, String | Undefined) => Boolean | Undefined
+    'long-press-copy': (context, currentValue) ->
+      if (not @get('isEditing')) and context.original.isLongPress
+        stopWaiting =
+          ->
+            window.removeEventListener('pointerup'  , copy       , true)
+            window.removeEventListener('touchend'   , copy       , true)
+            window.removeEventListener('pointerdown', stopWaiting, true)
+            return
+        copy =
+          =>
+            stopWaiting()
+            @fire('copy-current-value', currentValue)
+            return
+        window.addEventListener('pointerup'  , copy       , true)
+        window.addEventListener('touchend'   , copy       , true)
+        window.addEventListener('pointerdown', stopWaiting, true)
+        false
+
     "*.add-named-breed-var": ({ component: sender }, varName) ->
       if @_isValidIdentifier(varName)
         { globalVars, myVars, procedures } = @parent.get('metadata')

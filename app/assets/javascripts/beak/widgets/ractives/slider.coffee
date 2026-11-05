@@ -308,7 +308,8 @@ RactiveSlider = RactiveValueWidget.extend({
       """
       <label id="{{id}}" class="{{>className}}" style="{{>style}}" {{>aria}}
              on-click="['focus-slider']" on-keydown="['handle-keydown']"
-             on-copy='copy-current-value' on-paste='paste-into-current-value'>
+             on-copy='copy-current-value' on-paste='paste-into-current-value'
+             on-contextmenu='long-press-copy'>
         <div class="netlogo-slider-label">
           <span class="netlogo-label" aria-label="Slider Variable Name"
                 on-click="['show-widget-errors', widget]">{{widget.display}}</span>

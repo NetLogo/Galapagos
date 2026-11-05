@@ -215,7 +215,8 @@ RactiveMonitor = RactiveWidget.extend({
     monitor:
       """
       <div id="{{id}}" class="netlogo-widget netlogo-monitor netlogo-output {{#widget.oldSize}}old-size{{/}} {{classes}}"
-           style="{{dims}} font-size: {{widget.fontSize}}px;" {{attrs}} on-copy='copy-current-value'>
+           style="{{dims}} font-size: {{widget.fontSize}}px;" {{attrs}} on-copy='copy-current-value'
+           on-contextmenu='long-press-copy'>
         <label class="netlogo-label {{errorClass}}" on-click="['show-widget-errors', widget]">
           {{widget.display || widget.source}}
         </label>
