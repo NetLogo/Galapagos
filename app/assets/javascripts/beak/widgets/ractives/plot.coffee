@@ -9,6 +9,8 @@ import { RactiveEditFormDropdown }      from "./subcomponent/dropdown.js"
 import { RactiveEditFormLabeledInput }  from "./subcomponent/labeled-input.js"
 import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
 
+import { swallowPressMouseEvents } from "../pointer-drag.js"
+
 import RactiveWidget             from "./widget.js"
 import { WidgetEventGenerators } from "./widget.js"
 
@@ -655,41 +657,13 @@ RactivePlot = RactiveWidget.extend({
   on: {
 
     'open-export-menu': ->
-      button = @find('.highcharts-contextbutton')
+      button = @find("##{@get('id')}")?.querySelector('.highcharts-contextbutton')
       if @get('isEditing') or not button?
         true
       else
         button.dispatchEvent(new MouseEvent('click'))
+        swallowPressMouseEvents()
         false
-
-    render: ->
-
-      ractive  = this
-      topLevel = document.querySelector("##{@get('id')}")
-
-      if topLevel?
-        topLevelObserver = new MutationObserver(
-          (mutations) -> mutations.forEach(
-            ({ addedNodes }) ->
-              container = Array.from(addedNodes).find((elem) -> elem.classList.contains("highcharts-container"))
-              if container?
-                topLevelObserver.disconnect()
-                containerObserver = new MutationObserver(
-                  (mutties) -> mutties.forEach(
-                    ({ addedNodes: addedNodies }) ->
-                      menu = Array.from(addedNodies).find((elem) -> elem.classList.contains("highcharts-contextmenu"))
-                      if menu?
-                        ractive.set('menuIsOpen', true)
-                        containerObserver.disconnect()
-                        toggleMenu   = -> ractive.set('menuIsOpen', menu.style.display isnt "none")
-                        menuObserver = new MutationObserver(toggleMenu)
-                        menuObserver.observe(menu, { attributes: true })
-                  )
-                )
-                containerObserver.observe(container, { childList: true })
-          )
-        )
-        topLevelObserver.observe(topLevel, { childList: true })
 
   }
 
@@ -709,7 +683,8 @@ RactivePlot = RactiveWidget.extend({
                 {{classes}}{{#hasCompileError}} netlogo-plot-error{{/}}"
          style="{{dims}}{{#menuIsOpen}}z-index: 10;{{/}}"
          on-click="['show-widget-errors', widget]"
-         on-contextmenu="open-export-menu"></div>
+         on-contextmenu="open-export-menu"
+         on-exportmenutoggle="@this.set('menuIsOpen', @event.detail)"></div>
     {{>editForm}}
     """
 

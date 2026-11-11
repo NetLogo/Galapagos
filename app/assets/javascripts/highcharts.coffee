@@ -12,8 +12,13 @@ pluck = (keys, obj) ->
     out[key] = obj[key]
   out
 
+# (Element, Boolean) => Unit
+notifyExportMenu = (elem, isOpen) ->
+  elem.dispatchEvent(new CustomEvent('exportmenutoggle', { detail: isOpen }))
+  return
+
 # (String, Plot) => Object[Any]
-basicConfig = (elemID, plot) -> {
+basicConfig =(elemID, plot) -> {
   chart: {
     animation: false,
     renderTo:  elemID,
@@ -21,7 +26,12 @@ basicConfig = (elemID, plot) -> {
     spacingLeft: 15,
     spacingRight: 15,
     zoomType:  "xy",
-    pinchType: ""
+    pinchType: "",
+    events: {
+      exportMenuShown:  -> notifyExportMenu(@renderTo, true)
+      exportMenuHidden: -> notifyExportMenu(@renderTo, false)
+      destroy:          -> notifyExportMenu(@renderTo, false)
+    }
   },
   boost: {
     pixelRatio: 0,

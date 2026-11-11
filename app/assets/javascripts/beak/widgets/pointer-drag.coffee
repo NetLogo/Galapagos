@@ -51,6 +51,27 @@ swallowNextClick = ->
   timerId = window.setTimeout(stopSwallowing, 0)
   return
 
+# A menu that opens during a press can get a `mouseup` from that same press afterwards: from a right-click on macOS and
+# Linux, which send `contextmenu` on the way down, and from iOS, which sends compatibility mouse events after a touch
+# lifts.  Menus that close on any `mouseup` outside themselves (Highcharts') would close at once.  Every press starts
+# with a `pointerdown`, so the press's mouse events are eaten until the next one.
+# () => Unit
+swallowPressMouseEvents = ->
+  swallow =
+    (e) ->
+      e.stopImmediatePropagation()
+      return
+  stopSwallowing =
+    ->
+      window.removeEventListener('mousedown'  , swallow       , true)
+      window.removeEventListener('mouseup'    , swallow       , true)
+      window.removeEventListener('pointerdown', stopSwallowing, true)
+      return
+  window.addEventListener('mousedown'  , swallow       , true)
+  window.addEventListener('mouseup'    , swallow       , true)
+  window.addEventListener('pointerdown', stopSwallowing, true)
+  return
+
 # Tracks one pointer from `pointerdown` to `pointerup`, reporting how far it has moved.  The element captures the
 # pointer, so the drag keeps working when the pointer leaves it, or leaves the window entirely.
 # (Element, PointerEvent, DragHandlers) => Boolean
@@ -156,4 +177,4 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
   true
 
 export default startPointerDrag
-export { dragThresholdFor, swallowNextClick }
+export { dragThresholdFor, swallowNextClick, swallowPressMouseEvents }

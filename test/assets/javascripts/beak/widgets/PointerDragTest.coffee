@@ -1,5 +1,5 @@
 import assert from 'assert'
-import startPointerDrag, { dragThresholdFor } from '../../../main/beak/widgets/pointer-drag.js'
+import startPointerDrag, { dragThresholdFor, swallowPressMouseEvents } from '../../../main/beak/widgets/pointer-drag.js'
 
 fakeNode = () ->
   listeners = {}
@@ -70,6 +70,34 @@ describe('startPointerDrag()', () ->
   it('gives up on the drag when a context menu opens first', () ->
     openMenu = () -> window.dispatchEvent(new window.Event('contextmenu'))
     assert.equal(startsAfter('touch', 20, {}, openMenu), false)
+  )
+
+)
+
+describe('swallowPressMouseEvents()', () ->
+
+  countMouse = (f) ->
+    seen  = []
+    count = (e) -> seen.push(e.type)
+    document.addEventListener('mousedown', count)
+    document.addEventListener('mouseup'  , count)
+    f()
+    document.removeEventListener('mousedown', count)
+    document.removeEventListener('mouseup'  , count)
+    seen
+
+  mouse = (type) -> document.body.dispatchEvent(new window.MouseEvent(type, { bubbles: true }))
+
+  it('eats the mouse events that follow the menu, until the next press', () ->
+    seen = countMouse(() ->
+      swallowPressMouseEvents()
+      mouse('mousedown')
+      mouse('mouseup')
+      document.body.dispatchEvent(new window.Event('pointerdown', { bubbles: true }))
+      mouse('mousedown')
+      mouse('mouseup')
+    )
+    assert.deepEqual(seen, ['mousedown', 'mouseup'])
   )
 
 )
