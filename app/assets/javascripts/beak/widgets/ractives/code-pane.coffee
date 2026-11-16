@@ -63,10 +63,21 @@ RactiveCodePane = Ractive.extend({
       @_markErrors()
       return
 
-    recompile: ->
+    # (Context, "user" | "system" | "blur") => Unit
+    recompile: (_, source) ->
       @clearErrors()
       @_setupAutoComplete(@_autoCompleteWords())
-      @findComponent('codeContainer').focus()
+      if source isnt 'blur'
+        @findComponent('codeContainer').focus()
+      return
+
+    # (Context) => Unit
+    'tab-blur': (context) ->
+      target   = context.event.relatedTarget
+      leftTab  = target? and not context.node.contains(target)
+      hasEdits = @get('code') isnt @get('lastCompiledCode')
+      if leftTab and hasEdits and not @get('isReadOnly')
+        @fire('recompile', 'blur')
       return
 
     'code-changed': (_, code) ->
@@ -180,7 +191,8 @@ RactiveCodePane = Ractive.extend({
     return
 
   template: """
-    <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container">
+    <div id="netlogo-code-tab" class="netlogo-tab-content netlogo-code-container"
+         on-focusout="tab-blur">
       <ul class="netlogo-codetab-widget-list">
         <li class="netlogo-codetab-widget-listitem">
           <div class="netlogo-procedurenames-dropdown">

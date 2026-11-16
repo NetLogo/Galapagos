@@ -237,7 +237,7 @@ class SessionLite
 
     @rewriters.reduce(rewriter, errors)
 
-  # ("user" | "system", String, String, Object[String]) => Unit
+  # ("user" | "system" | "blur", String, String, Object[String]) => Unit
   recompileSync: (source, oldPlotName, newPlotName, plotRenames) ->
     if @widgetController.ractive.get('isEditing') and @hnw.isHNW()
       parent.postMessage({ type: "recompile" }, "*")
@@ -307,7 +307,7 @@ class SessionLite
         console.error(ex)
         @widgetController.reportError('compiler', 'recompile', [ex.toString()])
 
-  # ("user" | "system", String, String, Object[String]) => Unit
+  # ("user" | "system" | "blur", String, String, Object[String]) => Unit
   recompile: (source, oldPlotName = "", newPlotName = "", plotRenames = {}) ->
     @tortoise.startLoading( () =>
       @recompileSync(source, oldPlotName, newPlotName, plotRenames)

@@ -117,7 +117,7 @@ listenerEvents = Object.freeze([
   {
     'name': 'recompile-start',
     'args': [
-      'source',      # 'user' | 'system', only 'user' if the user clicked Recompile
+      'source',      # 'user' | 'system' | 'blur'; 'blur' means focus left the Code tab
       'code',        # String, the NetLogo code contents, possibly rewritten
       'originalCode' # String, the original NetLogo code
     ]
@@ -125,7 +125,7 @@ listenerEvents = Object.freeze([
   {
     'name': 'recompile-complete',
     'args': [
-      'source',      # 'user' | 'system', only 'user' if the user clicked Recompile
+      'source',      # 'user' | 'system' | 'blur'; 'blur' means focus left the Code tab
       'code',        # String, the NetLogo code contents, possibly rewritten
       'originalCode' # String, the original NetLogo code
     ]
