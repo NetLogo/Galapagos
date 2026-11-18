@@ -213,6 +213,7 @@ handleWidgetSelection =
         return
 
     isSelectingByPointer = false
+    isTouchPressing      = false
 
     # (Context, PointerEvent) => Unit
     selectFromPointer =
@@ -240,14 +241,14 @@ handleWidgetSelection =
             # narrows a multi-selection down to the widget that was clicked.
             if (not isTogglingSelection(trueEvent)) and (selection.size() > 1 or not selection.has(component))
               selection.set(component)
-          else if (not isSelectingByPointer) and (not selection.has(component))
+          else if (not isSelectingByPointer) and (not isTouchPressing) and (not selection.has(component))
             selection.set(component)
         return
 
     # (Context | undefined, MouseEvent | undefined) => Unit
     deselectThoseWidgets =
       (_, domEvent) ->
-        if not isTogglingSelection(domEvent)
+        if not (isTogglingSelection(domEvent) or (isTouchPressing and (domEvent?.type is 'blur')))
           selection.clear()
         return
 
@@ -255,6 +256,20 @@ handleWidgetSelection =
     recordPress     = (e) -> lastPressTarget = e.target; return
     document.addEventListener('pointerdown', recordPress, true)
     ractive.on('teardown', -> document.removeEventListener('pointerdown', recordPress, true); return)
+
+    # Android Chrome moves focus to a long-pressed widget about half a second in, before the `contextmenu`.  Focus
+    # selects a widget and blur deselects, which would leave only the pressed widget selected and lose the "Add to
+    # Selection" menu, so focus changes during a touch press leave the selection alone.
+    trackTouchPress = (e) ->
+      isTouchPressing = (e.type is 'pointerdown') and e.isPrimary and (e.pointerType isnt 'mouse')
+      return
+    for type in ['pointerdown', 'pointerup', 'pointercancel']
+      document.addEventListener(type, trackTouchPress, true)
+    ractive.on('teardown', ->
+      for type in ['pointerdown', 'pointerup', 'pointercancel']
+        document.removeEventListener(type, trackTouchPress, true)
+      return
+    )
 
     # A click fires on the nearest common ancestor of its `mousedown` and `mouseup` targets.  When a tap selects a
     # widget, its resize handles can appear under the finger before `mouseup`, so the click lands on the container.
