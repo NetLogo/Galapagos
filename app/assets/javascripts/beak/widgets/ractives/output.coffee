@@ -74,7 +74,7 @@ RactiveOutputArea = RactiveWidget.extend({
       """
       <div id="{{id}}" class="netlogo-widget netlogo-output netlogo-output-widget {{classes}}"
           style="{{dims}}" {{attrs}} on-copy='@this.fire("copy-current-value", @this.get("text"))'
-          on-contextmenu="['long-press-copy', text]">
+          on-contextmenu="['show-value-menu', text]">
         <printArea id="{{id}}-print-area" fontSize="{{widget.fontSize}}" output="{{text}}"  />
       </div>
       """

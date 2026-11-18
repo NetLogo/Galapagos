@@ -256,7 +256,7 @@ RactiveInput = RactiveValueWidget.extend({
       """
       <label id="{{id}}" class="netlogo-widget netlogo-input-box netlogo-input {{#widget.oldSize}}old-size{{/}} {{classes}}" style="{{dims}}"
           on-copy='@this.fire("copy-current-value", @this.get("internalValue"))'
-          on-contextmenu="['long-press-copy', internalValue]">
+          on-contextmenu="['show-value-menu', internalValue]">
         <div class="netlogo-label">{{widget.variable}}</div>
         {{# widget.boxedValue.type === 'Number'}}
           <input

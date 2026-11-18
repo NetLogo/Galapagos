@@ -1,7 +1,7 @@
 import keywords                           from "/keywords.js"
 import { RactiveDraggableAndContextable } from "./draggable.js"
 import { autoSizedDims }                  from "../auto-size.js"
-import { activation, trace }              from "../trace-panel.js"
+import { trace }                          from "../trace-panel.js"
 
 WidgetEventGenerators = {
 
@@ -305,6 +305,14 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     globalVarName = "__hnw_#{roleName}_#{lowered}"
     @fire('new-spectator-global-var', globalVarName)
 
+  # () => Unit
+  _editInAuthoringMode: ->
+    if not @root.get('isEditing')
+      @root.fire('toggle-interface-lock')
+    if @root.get('isEditing')
+      @fire('edit-widget')
+    return
+
   # (String) => Boolean
   _isValidIdentifier: (ident) ->
     letters = "a-z"
@@ -379,29 +387,19 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         })
       return
 
-    # Safari writes to the clipboard only during a user gesture, and a long press fires before the finger lifts, so the
-    # copy waits for the lift.  A new press means the lift was missed.
+    # iOS never counts a long press as a user gesture, and Safari writes to the clipboard only during one, so a long
+    # press offers the copy in a menu instead of doing it, and the tap on the menu item makes the write.
     # (Context, String | Undefined) => Boolean | Undefined
-    'long-press-copy': (context, currentValue) ->
+    'show-value-menu': (context, currentValue) ->
       if (not @get('isEditing')) and context.original.isLongPress
-        stopWaiting =
-          (e) ->
-            if e?.type is 'pointerdown'
-              trace('copy', 'new press before lift, copy abandoned')
-            window.removeEventListener('pointerup'  , copy       , true)
-            window.removeEventListener('touchend'   , copy       , true)
-            window.removeEventListener('pointerdown', stopWaiting, true)
-            return
-        copy =
-          (e) =>
-            stopWaiting()
-            trace('copy', "lift (#{e.type}), copying, #{activation()}")
-            @fire('copy-current-value', currentValue)
-            return
-        window.addEventListener('pointerup'  , copy       , true)
-        window.addEventListener('touchend'   , copy       , true)
-        window.addEventListener('pointerdown', stopWaiting, true)
-        trace('copy', 'long-press copy waiting for lift')
+        { pageX, pageY, clientX, clientY } = context.original
+        value   = currentValue or @get('widget').currentValue?.toString() or ""
+        shown   = if value.length > 24 then "#{value.slice(0, 24)}…" else value
+        options = [{ text: "Copy \"#{shown}\"", isEnabled: true, action: => @fire('copy-current-value', value) }]
+        if (not @root.get('isReadOnly')) and (@get('isNotEditable') isnt true)
+          options.push({ text: "Edit in Authoring Mode", isEnabled: true, action: => @_editInAuthoringMode() })
+        isOpen = @root.findComponent('contextMenu').reveal(this, pageX, pageY, clientX, clientY, options)
+        trace('menu', "value menu #{if isOpen then 'opened' else 'not opened'}")
         false
 
     "*.add-named-breed-var": ({ component: sender }, varName) ->
