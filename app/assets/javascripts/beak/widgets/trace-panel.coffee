@@ -302,7 +302,8 @@ copyText = (text) ->
 
 STYLE =
   """
-  .nlw-trace { margin: 8px 0; font: 11px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #111;
+  .nlw-trace-wrap { padding: 8px 12px 16px; }
+  .nlw-trace { font: 11px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #111;
     background: #fffff0; border: 1px solid #888; border-radius: 4px; touch-action: manipulation; }
   .nlw-trace > button { display: block; font: inherit; padding: 4px 12px; margin: 3px; }
   .nlw-trace-list { max-height: 400px; overflow: auto; -webkit-user-select: text; user-select: text;
@@ -320,7 +321,9 @@ buildPanel = ->
   document.head.append(style)
 
   panel = document.createElement('div')
-  panel.className = 'nlw-trace'
+  panel.className = 'nlw-trace-wrap'
+  box   = document.createElement('div')
+  box.className = 'nlw-trace'
   list  = document.createElement('div')
   list.className = 'nlw-trace-list'
   copy  = document.createElement('button')
@@ -331,7 +334,8 @@ buildPanel = ->
     window.setTimeout((-> copy.textContent = 'Copy'; return), 2000)
     return
   )
-  panel.append(copy, list)
+  box.append(copy, list)
+  panel.append(box)
   for type in ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'contextmenu', 'touchstart', 'touchend']
     panel.addEventListener(type, (e) -> e.stopPropagation(); return)
 
@@ -387,11 +391,12 @@ installTracePanel = ->
   scheduleRender()
   return
 
-# The skeleton is rebuilt on every model load, so the panel is put back under the tabs each time.
+# The model is rebuilt on every load, so the panel is put back after it each time.  It goes outside the tab area,
+# whose last tab inserts its content at the end of that area when opened.
 # (Element) => Unit
 attachTracePanel = (container) ->
   if isOn
-    container.querySelector('.netlogo-tab-area')?.append(state.panel)
+    container.append(state.panel)
   return
 
 # (String, String) => Unit
