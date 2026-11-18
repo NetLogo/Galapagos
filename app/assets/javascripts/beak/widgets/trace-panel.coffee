@@ -1,9 +1,5 @@
-import { getVisibleAreaOnAnyScreen, offsetParentOrigin, watchVisibleArea } from "./visible-area.js"
-
 MAX_PRESSES  = 8
 MAX_TEXT     = 40
-PANEL_WIDTH  = 480
-MARGIN       = 8
 
 isOn  = false
 state = undefined
@@ -116,7 +112,6 @@ scheduleRender = ->
       state.renderId = undefined
       state.presses.forEach(renderPress)
       state.list.scrollTop = state.list.scrollHeight
-      reposition()
       return
     , 0)
   return
@@ -279,30 +274,6 @@ handleViewport = (e) ->
   scheduleRender()
   return
 
-# () => Unit
-reposition = ->
-  { panel, list } = state
-  area = getVisibleAreaOnAnyScreen()
-  if area?
-    scale  = area.scale
-    width  = Math.min(PANEL_WIDTH, (area.width / scale) - (2 * MARGIN))
-    list.style.maxHeight = "#{Math.max(80, (area.height / scale) * 0.4)}px"
-    panel.style.position        = 'absolute'
-    panel.style.width           = "#{width}px"
-    panel.style.transform       = "scale(#{scale})"
-    panel.style.transformOrigin = 'top left'
-    origin = offsetParentOrigin(panel)
-    top    = area.bottom - ((panel.offsetHeight + MARGIN) * scale)
-    panel.style.left = "#{area.left - origin.x + (MARGIN * scale)}px"
-    panel.style.top  = "#{top - origin.y}px"
-  else
-    list.style.maxHeight = '40vh'
-    panel.style.position = 'fixed'
-    panel.style.width    = "min(#{PANEL_WIDTH}px, calc(100vw - #{2 * MARGIN}px))"
-    panel.style.left     = "#{MARGIN}px"
-    panel.style.bottom   = "#{MARGIN}px"
-  return
-
 # () => String
 textForCopy = ->
   presses = state.presses.map((press) ->
@@ -331,11 +302,11 @@ copyText = (text) ->
 
 STYLE =
   """
-  .nlw-trace { z-index: 100000; font: 11px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #111;
-    background: rgba(255, 255, 240, 0.95); border: 1px solid #888; border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); touch-action: manipulation; box-sizing: border-box; }
+  .nlw-trace { margin: 8px 0; font: 11px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #111;
+    background: #fffff0; border: 1px solid #888; border-radius: 4px; touch-action: manipulation; }
   .nlw-trace > button { display: block; font: inherit; padding: 4px 12px; margin: 3px; }
-  .nlw-trace-list { overflow: auto; -webkit-user-select: text; user-select: text; border-top: 1px solid #ccc; }
+  .nlw-trace-list { max-height: 400px; overflow: auto; -webkit-user-select: text; user-select: text;
+    border-top: 1px solid #ccc; }
   .nlw-trace-press { padding: 2px 4px; background: #eee; border-top: 1px solid #ddd; font-weight: bold;
     white-space: pre-wrap; word-break: break-all; }
   .nlw-trace-line { padding: 0 4px; white-space: pre-wrap; word-break: break-all; }
@@ -363,7 +334,6 @@ buildPanel = ->
   panel.append(copy, list)
   for type in ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'contextmenu', 'touchstart', 'touchend']
     panel.addEventListener(type, (e) -> e.stopPropagation(); return)
-  document.body.append(panel)
 
   Object.assign(state, { panel, list })
   return
@@ -386,7 +356,6 @@ installListeners = ->
   listen(window, 'focusin', handleFocus)
   listen(window, 'focusout', handleFocus)
   listen(window, 'copy', handleCopy)
-  listen(window, 'scroll', reposition, { passive: true })
 
   viewport = window.visualViewport
   try
@@ -398,7 +367,6 @@ installListeners = ->
     listen(viewport, 'resize', handleViewport, undefined)
     listen(viewport, 'scroll', handleViewport, undefined)
 
-  watchVisibleArea(reposition)
   return
 
 # Installs only when asked for by `?trace`.  Its listeners go on `window` in the capture phase, so call this before
@@ -419,6 +387,13 @@ installTracePanel = ->
   scheduleRender()
   return
 
+# The skeleton is rebuilt on every model load, so the panel is put back under the tabs each time.
+# (Element) => Unit
+attachTracePanel = (container) ->
+  if isOn
+    container.querySelector('.netlogo-tab-area')?.append(state.panel)
+  return
+
 # (String, String) => Unit
 trace = (category, message) ->
   if isOn
@@ -426,4 +401,4 @@ trace = (category, message) ->
     addLine(-> "#{time} [#{category}] #{message}")
   return
 
-export { activation, installTracePanel, trace }
+export { activation, attachTracePanel, installTracePanel, trace }

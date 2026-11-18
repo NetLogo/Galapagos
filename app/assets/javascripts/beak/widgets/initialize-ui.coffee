@@ -4,7 +4,7 @@ import generateRactiveSkeleton from "./skeleton.js"
 import handleWidgetSelection from "./handle-widget-selection.js"
 import handleContextMenu from "./handle-context-menu.js"
 import installLongPress from "./long-press.js"
-import { installTracePanel } from "./trace-panel.js"
+import { attachTracePanel, installTracePanel } from "./trace-panel.js"
 import controlEventTraffic from "./event-traffic-control.js"
 import genConfigs from "./config-shims.js"
 import ViewController from "./draw/view-controller.js"
@@ -64,6 +64,8 @@ initializeUI = (containerArg, widgets, code, info,
   , isReporterCheck
   , viewController
   )
+
+  attachTracePanel(container)
 
   container.querySelector('.netlogo-model').focus({
     preventScroll: true
