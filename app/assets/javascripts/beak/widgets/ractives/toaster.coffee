@@ -1,4 +1,5 @@
 import { getVisibleAreaOnAnyScreen, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
+import { trace } from "../trace-panel.js"
 
 RactiveToast = Ractive.extend({
   # @Type RactiveToastProps
@@ -76,6 +77,7 @@ RactiveToaster = Ractive.extend({
   },
 
   addToast: (toast) ->
+    trace('toast', "#{toast.variant ? 'info'}: #{toast.message?.textContent ? toast.message}")
     toasts = @get('toasts')
     toasts[toast.id] = toast
     @set('toasts', toasts)

@@ -10,6 +10,7 @@ import { RactiveEditFormLabeledInput }  from "./subcomponent/labeled-input.js"
 import RactiveEditFormSpacer            from "./subcomponent/spacer.js"
 
 import { swallowPressMouseEvents } from "../pointer-drag.js"
+import { trace } from "../trace-panel.js"
 
 import RactiveWidget             from "./widget.js"
 import { WidgetEventGenerators } from "./widget.js"
@@ -662,6 +663,7 @@ RactivePlot = RactiveWidget.extend({
         true
       else
         button.dispatchEvent(new MouseEvent('click'))
+        trace('menu', 'plot export menu clicked')
         swallowPressMouseEvents()
         false
 

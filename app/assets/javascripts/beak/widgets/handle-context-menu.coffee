@@ -1,4 +1,5 @@
 import RactiveWidget from "./ractives/widget.js"
+import { trace } from "./trace-panel.js"
 
 # (Ractive) => Unit
 handleContextMenu =
@@ -71,6 +72,8 @@ handleContextMenu =
           @fire('deselect-widgets')
           reveal()
 
+      menuKind = if isAddable then 'add-to-selection menu' else 'menu'
+      trace('menu', "#{menuKind} #{if menuOpened then 'opened' else 'not opened'}")
       not menuOpened # keep propagating the event if the menu didn't open
 
     ractive.on('*.show-context-menu', handleContextMenu)

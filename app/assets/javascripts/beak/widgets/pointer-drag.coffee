@@ -1,3 +1,5 @@
+import { trace } from "./trace-panel.js"
+
 # type DragInfo = {
 #   clientX:  Number  # the pointer's current position
 # , clientY:  Number
@@ -41,6 +43,7 @@ swallowNextClick = ->
       e.stopPropagation()
       e.preventDefault()
       stopSwallowing()
+      trace('drag', 'ate click after drag')
       return
   stopSwallowing =
     ->
@@ -60,6 +63,7 @@ swallowPressMouseEvents = ->
   swallow =
     (e) ->
       e.stopImmediatePropagation()
+      trace('drag', "ate #{e.type} of the menu's press")
       return
   stopSwallowing =
     ->
@@ -70,6 +74,7 @@ swallowPressMouseEvents = ->
   window.addEventListener('mousedown'  , swallow       , true)
   window.addEventListener('mouseup'    , swallow       , true)
   window.addEventListener('pointerdown', stopSwallowing, true)
+  trace('drag', 'eating mouse events until next pointerdown')
   return
 
 # Tracks one pointer from `pointerdown` to `pointerup`, reporting how far it has moved.  The element captures the
@@ -144,6 +149,7 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
           if (Math.abs(info.dx) >= threshold) or (Math.abs(info.dy) >= threshold)
             hasStarted = true
             document.body.classList.add(DRAGGING_CLASS)
+            trace('drag', "start at #{Math.round(info.dx)},#{Math.round(info.dy)}")
             onStart?(info)
         if hasStarted
           schedule(info)
@@ -155,6 +161,7 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
         lastMove = pending
         wasDrag  = hasStarted
         cleanUp()
+        trace('drag', "#{e.type}: #{if wasDrag then 'drag end' else 'no drag'}")
         if wasDrag
           if lastMove?
             onMove?(lastMove)
@@ -166,9 +173,11 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
     ->
       if not hasStarted
         cleanUp()
+        trace('drag', 'released by contextmenu before a drag')
       return
 
   node.setPointerCapture(pointerId)
+  trace('drag', "tracking pointer #{pointerId} (threshold #{threshold}px)")
   node.addEventListener('pointermove'  , handleMove)
   node.addEventListener('pointerup'    , handleUp)
   node.addEventListener('pointercancel', handleUp)

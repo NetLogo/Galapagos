@@ -1,4 +1,4 @@
-import { deviceWidth } from "/viewport-fit.js"
+import { deviceWidth } from "../../viewport-fit.js"
 
 # Pinch-zoom belongs to the top window, so inside an iframe (the model on `/launch`) our own `visualViewport` does not
 # see it.  Walk up to the top window, adding up each frame's position, so its visual viewport can be mapped back into

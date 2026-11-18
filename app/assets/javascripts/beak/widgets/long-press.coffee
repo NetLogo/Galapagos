@@ -1,4 +1,5 @@
 import { dragThresholdFor } from "./pointer-drag.js"
+import { trace } from "./trace-panel.js"
 
 LONG_PRESS_DELAY = 500
 
@@ -58,6 +59,9 @@ installLongPress = ->
       ownEvent.isLongPress = true
       press.hasOpenedMenu  = menuTarget?.dispatchEvent(ownEvent) is false
       ownEvent             = undefined
+      detached             = if target.isConnected then '' else ' (target detached, used point)'
+      held                 = if press.hasOpenedMenu then 'HeldMenu' else 'HeldNoMenu'
+      trace('long-press', "delay ended, sent contextmenu#{detached} → #{held}")
       if press.hasOpenedMenu
         isMenuFromPress = true
         window.getSelection()?.removeAllRanges()
@@ -66,6 +70,10 @@ installLongPress = ->
   # (PointerEvent) => Unit
   handleDown =
     (e) ->
+      if press?
+        trace('long-press', "new pointerdown with press #{press.pointerId} unfinished (fired: #{press.hasFired})")
+      if isEatingClick
+        trace('long-press', 'EatClick ended by new press')
       stopTimer()
       press                = undefined
       isBlockingNativeMenu = false
@@ -85,6 +93,8 @@ installLongPress = ->
         , hasOpenedMenu: false
         , timerId:       if e.target.closest(DIALOG)? then undefined else window.setTimeout(fire, LONG_PRESS_DELAY)
         }
+        delay = if press.timerId? then '' else ', no delay (in dialog)'
+        trace('long-press', "Pressing, native menu blocked, threshold #{press.threshold}px#{delay}")
       return
 
   # (PointerEvent) => Unit
@@ -95,6 +105,7 @@ installLongPress = ->
         dy = e.clientY - press.clientY
         if (Math.abs(dx) >= press.threshold) or (Math.abs(dy) >= press.threshold)
           stopTimer()
+          trace('long-press', "moved #{Math.round(dx)},#{Math.round(dy)} past threshold, delay stopped")
       return
 
   # () => Unit
@@ -121,6 +132,9 @@ installLongPress = ->
           if not press.hasOpenedMenu
             sendClick()
           isEatingClick = true
+          trace('long-press', "#{if press.hasOpenedMenu then 'HeldMenu' else 'HeldNoMenu, sent click'} → EatClick")
+        else
+          trace('long-press', "#{e.type} → Idle (fired: #{press.hasFired})")
         press = undefined
       return
 
@@ -131,6 +145,7 @@ installLongPress = ->
         isEatingClick = false
         e.preventDefault()
         e.stopImmediatePropagation()
+        trace('long-press', 'ate browser click → Idle')
       return
 
   # (MouseEvent) => Unit
@@ -139,6 +154,7 @@ installLongPress = ->
       if (e isnt ownEvent) and isBlockingNativeMenu
         e.preventDefault()
         e.stopImmediatePropagation()
+        trace('long-press', 'blocked native contextmenu')
       return
 
   # A long press selects the nearest text, which for the view canvas is in whatever widget sits next to it.  Once our
@@ -148,6 +164,7 @@ installLongPress = ->
     (e) ->
       if isMenuFromPress or (press? and not press.target.contains(e.target))
         e.preventDefault()
+        trace('long-press', 'blocked selectstart')
       return
 
   document.addEventListener('pointerdown'  , handleDown, true)
