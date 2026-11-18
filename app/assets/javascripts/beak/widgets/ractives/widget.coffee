@@ -1,7 +1,7 @@
 import keywords                           from "/keywords.js"
 import { RactiveDraggableAndContextable } from "./draggable.js"
 import { autoSizedDims }                  from "../auto-size.js"
-import { trace }                          from "../trace-panel.js"
+import { activation, trace }              from "../trace-panel.js"
 
 WidgetEventGenerators = {
 
@@ -395,7 +395,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
         copy =
           (e) =>
             stopWaiting()
-            trace('copy', "lift (#{e.type}), copying")
+            trace('copy', "lift (#{e.type}), copying, #{activation()}")
             @fire('copy-current-value', currentValue)
             return
         window.addEventListener('pointerup'  , copy       , true)

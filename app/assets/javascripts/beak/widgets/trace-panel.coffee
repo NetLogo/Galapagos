@@ -172,13 +172,25 @@ pointerFields = (e) ->
     parts.push('ours')
   parts.join(' ')
 
+# () => String
+activation = ->
+  ua = navigator.userActivation
+  if not ua?
+    'act=n/a'
+  else if ua.isActive
+    'act=ACTIVE'
+  else if ua.hasBeenActive
+    'act=sticky'
+  else
+    'act=none'
+
 # (Event, String) => Unit
 logEvent = (e, fields) ->
   target = describeTarget(e.target)
   time   = elapsed()
   press  = state.presses[state.presses.length - 1]
   shown  = if target is press.target then '' else " → #{target}"
-  head   = if fields then "#{e.type} #{fields}" else e.type
+  head   = [e.type, fields, activation()].filter((part) -> part).join(' ')
   line   = addLine(-> "#{time} #{head}")
   window.setTimeout(->
     flags = []
@@ -414,4 +426,4 @@ trace = (category, message) ->
     addLine(-> "#{time} [#{category}] #{message}")
   return
 
-export { installTracePanel, trace }
+export { activation, installTracePanel, trace }
