@@ -1,6 +1,7 @@
 import keywords                           from "/keywords.js"
 import { RactiveDraggableAndContextable } from "./draggable.js"
 import { autoSizedDims }                  from "../auto-size.js"
+import { trace }                          from "../trace-panel.js"
 
 WidgetEventGenerators = {
 
@@ -362,12 +363,14 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
       currentValue = currentValue or widget.currentValue?.toString() or ""
       try
         await navigator.clipboard.writeText(currentValue)
+        trace('copy', "clipboard write ok: \"#{currentValue}\"")
         NetLogoToaster.addToast({
           id: "copy-widget-value-#{Date.now()}",
           message: "Copied to clipboard: #{currentValue}",
           timeout: 3000
         })
       catch error
+        trace('copy', "clipboard write failed: #{error?.name}: #{error?.message ? error}")
         NetLogoToaster.addToast({
           id: "copy-widget-value-failure-#{Date.now()}",
           variant: "error",
@@ -382,19 +385,23 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
     'long-press-copy': (context, currentValue) ->
       if (not @get('isEditing')) and context.original.isLongPress
         stopWaiting =
-          ->
+          (e) ->
+            if e?.type is 'pointerdown'
+              trace('copy', 'new press before lift, copy abandoned')
             window.removeEventListener('pointerup'  , copy       , true)
             window.removeEventListener('touchend'   , copy       , true)
             window.removeEventListener('pointerdown', stopWaiting, true)
             return
         copy =
-          =>
+          (e) =>
             stopWaiting()
+            trace('copy', "lift (#{e.type}), copying")
             @fire('copy-current-value', currentValue)
             return
         window.addEventListener('pointerup'  , copy       , true)
         window.addEventListener('touchend'   , copy       , true)
         window.addEventListener('pointerdown', stopWaiting, true)
+        trace('copy', 'long-press copy waiting for lift')
         false
 
     "*.add-named-breed-var": ({ component: sender }, varName) ->
