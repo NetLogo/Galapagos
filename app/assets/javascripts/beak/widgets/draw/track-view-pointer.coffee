@@ -20,8 +20,17 @@ trackViewPointer = (element, { downHandler, moveHandler, upHandler }, toHandlerA
         release(e)
       return
 
+  # () => Unit
+  abandonPress =
+    ->
+      activePointerId = undefined
+      upHandler(lastInside)
+      return
+
   element.addEventListener('pointerdown', (e) ->
-    if e.isPrimary and not activePointerId?
+    if e.isPrimary
+      if activePointerId?
+        abandonPress()
       activePointerId   = e.pointerId
       activePointerType = e.pointerType
       element.setPointerCapture(e.pointerId)
@@ -44,6 +53,11 @@ trackViewPointer = (element, { downHandler, moveHandler, upHandler }, toHandlerA
 
   element.addEventListener('pointerup'    , endPress)
   element.addEventListener('pointercancel', endPress)
+  element.addEventListener('lostpointercapture', (e) ->
+    if e.pointerId is activePointerId
+      abandonPress()
+    return
+  )
 
   # On macOS and Linux, the browser's own menu opens on mousedown and takes the release, so no `pointerup` comes.  Our
   # menu cancels the event further up the page, so wait until it has finished to see whether the browser's will open.
