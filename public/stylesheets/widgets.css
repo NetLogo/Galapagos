@@ -1175,7 +1175,6 @@ kbd {
   z-index:          90;
 }
 
-/* The dialog has no title, so this empty bar under the closer is its drag handle. */
 .async-dialog-title-bar {
   border-bottom: 1px solid #dfdfdf;
   cursor:        grab;
