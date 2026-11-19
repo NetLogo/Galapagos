@@ -53,7 +53,7 @@ RactiveAsyncUserDialog = Ractive.extend({
     return
 
   observe: {
-    # Deferred so the dialog is shown before `_placeInVisibleArea` measures it. -Jeremy Octover 2026
+    # Deferred so the dialog is shown before `_placeInVisibleArea` measures it. -Jeremy B November 2026
     isVisible: {
       defer: true
       handler: (newValue, oldValue) ->
