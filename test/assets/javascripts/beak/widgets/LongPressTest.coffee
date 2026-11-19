@@ -6,6 +6,7 @@ describe('installLongPress()', () ->
   container    = undefined
   overlay      = undefined
   input        = undefined
+  sliderBar    = undefined
   outside      = undefined
   dialogBar    = undefined
   timers       = []
@@ -40,6 +41,7 @@ describe('installLongPress()', () ->
       <div class="netlogo-widget-container">
         <div class="editor-overlay"></div>
         <input type="text">
+        <div class="netlogo-slider-bar"></div>
       </div>
       <div class="elsewhere"></div>
       <div class="async-popup"><div class="async-dialog-title-bar"></div></div>
@@ -47,6 +49,7 @@ describe('installLongPress()', () ->
     container = document.querySelector('.netlogo-widget-container')
     overlay   = document.querySelector('.editor-overlay')
     input     = document.querySelector('input')
+    sliderBar = document.querySelector('.netlogo-slider-bar')
     outside   = document.querySelector('.elsewhere')
     dialogBar = document.querySelector('.async-dialog-title-bar')
 
@@ -115,6 +118,12 @@ describe('installLongPress()', () ->
     pointer(outside, 'pointerdown', 'touch')
     runTimers()
     pointer(input, 'pointerdown', 'touch')
+    runTimers()
+    assert.equal(menus.length, 0)
+  )
+
+  it('opens no menu from a slider bar, so a finger can rest before dragging', () ->
+    pointer(sliderBar, 'pointerdown', 'touch')
     runTimers()
     assert.equal(menus.length, 0)
   )
