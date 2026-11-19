@@ -29,6 +29,16 @@ clampGroupOffset = (starts, dx, dy) ->
   minY = Math.min(starts.map( ({ y0 }) -> y0 )...)
   [Math.max(dx, -minX), Math.max(dy, -minY)]
 
+# Touch and zoomed pointers report fractional positions, but widget positions must be whole pixels.
+# (Rect, { x0: Number, y0: Number }, Edges, DragInfo) => { dx: Number, dy: Number, snap: { x: Snap?, y: Snap? } }
+snapDragOffset = (groupBox, grabbed, candidates, info) ->
+  gridSnap = (n) -> Math.round(n / GRID_SIZE) * GRID_SIZE
+  moved    = edgesOf([{ ...groupBox, x: groupBox.x + info.dx, y: groupBox.y + info.dy }])
+  snap     = findSnap(moved, candidates)
+  dx       = if snap.x? then Math.round(info.dx + snap.x.delta) else gridSnap(grabbed.x0 + info.dx) - grabbed.x0
+  dy       = if snap.y? then Math.round(info.dy + snap.y.delta) else gridSnap(grabbed.y0 + info.dy) - grabbed.y0
+  { dx, dy, snap }
+
 # (Array[{ component: Ractive, x0: Number, y0: Number }], Number, Number) => Unit
 moveGroupBy = (starts, dx, dy) ->
   for { component, x0, y0 } in starts
@@ -138,15 +148,10 @@ handleWidgetSelection =
             onMove: (info) ->
               if grabbed?
                 if isFreeMoving(info)
-                  [dx, dy] = clampGroupOffset(starts, info.dx, info.dy)
+                  [dx, dy] = clampGroupOffset(starts, Math.round(info.dx), Math.round(info.dy))
                   ractive.set('snapGuides', [])
                 else
-                  # (Number) => Number
-                  gridSnap = (n) -> Math.round(n / GRID_SIZE) * GRID_SIZE
-                  moved    = edgesOf([{ ...groupBox, x: groupBox.x + info.dx, y: groupBox.y + info.dy }])
-                  snap     = findSnap(moved, candidates)
-                  wantX    = if snap.x? then info.dx + snap.x.delta else gridSnap(grabbed.x0 + info.dx) - grabbed.x0
-                  wantY    = if snap.y? then info.dy + snap.y.delta else gridSnap(grabbed.y0 + info.dy) - grabbed.y0
+                  { dx: wantX, dy: wantY, snap } = snapDragOffset(groupBox, grabbed, candidates, info)
                   [dx, dy] = clampGroupOffset(starts, wantX, wantY)
                   guides   = []
                   if snap.x? and dx is wantX
@@ -339,3 +344,4 @@ handleWidgetSelection =
     ractive.on('*.remove-from-selection', removeFromSelection)
 
 export default handleWidgetSelection
+export { snapDragOffset }
