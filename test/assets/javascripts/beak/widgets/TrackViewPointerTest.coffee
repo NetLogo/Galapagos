@@ -69,6 +69,29 @@ describe('trackViewPointer()', () ->
     assert.deepEqual(names(), ['down', 'up'])
   )
 
+  it('ends a press whose release never came when the next press begins', () ->
+    fire('pointerdown')
+    fire('pointermove', { x: 70 })
+    fire('pointerdown', { pointerId: 2, x: 20 })
+    fire('pointerup',   { pointerId: 2, x: 20 })
+    assert.deepEqual(calls, [['down', 50, 50], ['move', 70, 50], ['up', 70, 50], ['down', 20, 50], ['up', 20, 50]])
+  )
+
+  it('ends the press when the view loses the pointer without a release', () ->
+    fire('pointerdown')
+    fire('lostpointercapture')
+    fire('pointerup')
+    fire('pointerdown', { pointerId: 2 })
+    assert.deepEqual(names(), ['down', 'up', 'down'])
+  )
+
+  it('ignores the capture loss that follows a release', () ->
+    fire('pointerdown')
+    fire('pointerup')
+    fire('lostpointercapture')
+    assert.deepEqual(names(), ['down', 'up'])
+  )
+
   it('reports a mouse hovering, but not a release that began outside the view', () ->
     fire('pointermove', { pointerType: 'mouse', x: 10 })
     fire('pointerup',   { pointerType: 'mouse', x: 10 })
