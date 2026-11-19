@@ -18,7 +18,7 @@ notifyExportMenu = (elem, isOpen) ->
   return
 
 # (String, Plot) => Object[Any]
-basicConfig =(elemID, plot) -> {
+basicConfig = (elemID, plot) -> {
   chart: {
     animation: false,
     renderTo:  elemID,

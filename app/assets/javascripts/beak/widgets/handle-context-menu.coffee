@@ -56,10 +56,12 @@ handleContextMenu =
         @fire('lock-selection', component)
         reveal()
 
-      isAddable = isLongPress and (not component.get('isSelected')) and (@get('selectedWidgetCount') > 0)
+      isEditingWidget = @get('isEditing') and component instanceof RactiveWidget
+      isAddable       = isEditingWidget and isLongPress and (not component.get('isSelected')) and
+                        (@get('selectedWidgetCount') > 0)
 
       menuOpened =
-        if @get('isEditing') and component instanceof RactiveWidget
+        if isEditingWidget
           if isAddable
             @fire('lock-selection')
             reveal([
