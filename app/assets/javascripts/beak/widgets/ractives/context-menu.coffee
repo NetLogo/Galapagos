@@ -156,13 +156,14 @@ RactiveContextMenu = Ractive.extend({
       itemHeight    = menuEl.querySelector('.context-menu-item').offsetHeight
       maxListHeight = Math.min(SUBMENU_PAGE_SIZE * itemHeight, window.innerHeight / 2)
 
+      @set({
+        clickX: pageX - offsetParent.offsetLeft
+        clickY: pageY - offsetParent.offsetTop
+      })
+
       area = getVisibleArea()
       if area?
         @_placeInVisibleArea(menuEl, area, pageX, pageY, itemHeight, options)
-        @set({
-          clickX: pageX - offsetParent.offsetLeft
-          clickY: pageY - offsetParent.offsetTop
-        })
         return visible
 
       # Flip horizontal/vertical if the menu would overflow the viewport (iframe boundary)
@@ -178,8 +179,6 @@ RactiveContextMenu = Ractive.extend({
         menuHeight
 
       @set({
-        clickX:       pageX - offsetParent.offsetLeft
-        clickY:       pageY - offsetParent.offsetTop
         mouseX:       pageX - offsetParent.offsetLeft - (if flippedX then menuWidth  else 0)
         mouseY:       pageY - offsetParent.offsetTop  - (if flippedY then menuHeight else 0)
         # Submenus flip left when the main menu is near the right edge
