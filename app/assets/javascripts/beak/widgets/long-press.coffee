@@ -1,4 +1,4 @@
-import { dragThresholdFor } from "./pointer-drag.js"
+import { dragThresholdFor, isTouchLike } from "./pointer-drag.js"
 import { trace } from "./trace-panel.js"
 
 LONG_PRESS_DELAY = 500
@@ -79,9 +79,8 @@ installLongPress = ->
       isBlockingNativeMenu = false
       isMenuFromPress      = false
       isEatingClick        = false
-      isTouchLike          = (e.pointerType is 'touch') or (e.pointerType is 'pen')
       isInScope            = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(NO_LONG_PRESS)?
-      if e.isPrimary and (e.button is 0) and isTouchLike and isInScope
+      if e.isPrimary and (e.button is 0) and isTouchLike(e) and isInScope
         isBlockingNativeMenu = true
         press = {
           pointerId:     e.pointerId

@@ -27,6 +27,10 @@ DRAG_THRESHOLDS = { mouse: 3, pen: 5, touch: 10 }
 dragThresholdFor = (pointerType) ->
   DRAG_THRESHOLDS[pointerType] ? DRAG_THRESHOLDS.mouse
 
+# (PointerEvent) => Boolean
+isTouchLike = (e) ->
+  (e.pointerType is 'touch') or (e.pointerType is 'pen')
+
 # Put on the body for the duration of a drag, so dragging over the page doesn't select text everywhere.
 DRAGGING_CLASS = 'nlw-pointer-dragging'
 
@@ -186,4 +190,4 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
   true
 
 export default startPointerDrag
-export { dragThresholdFor, swallowNextClick, swallowPressMouseEvents }
+export { dragThresholdFor, isTouchLike, swallowNextClick, swallowPressMouseEvents }
