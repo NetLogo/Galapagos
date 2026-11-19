@@ -490,7 +490,7 @@ try {
     parent.postMessage({ type: "nlw-is-loaded" });
   }
 
-  if (!isInFrame) {
+  if (!isInFrame && document.documentElement.classList.contains('nlw-phone')) {
     const fitWhenOpen = window.setInterval(() => {
       if (loadingState !== 'in-progress') {
         window.clearInterval(fitWhenOpen);

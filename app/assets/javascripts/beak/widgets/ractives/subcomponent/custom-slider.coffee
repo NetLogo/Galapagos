@@ -82,10 +82,7 @@ RactiveCustomSlider = Ractive.extend({
     return
 
   getClientPosition: (event) -> # document-space coordinates
-    switch @get('orientation')
-      when 'horizontal' then event.clientX + window.scrollX
-      when 'vertical'   then event.clientY + window.scrollY
-      else                   event.clientX + window.scrollX
+    if @get('orientation') is 'vertical' then event.clientY + window.scrollY else event.clientX + window.scrollX
 
   getSliderLengthFromNode: (node) -> # object-space coordinates
     # Might look like a typo, but since rotation happens using

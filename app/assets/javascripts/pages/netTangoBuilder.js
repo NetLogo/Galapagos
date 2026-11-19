@@ -30,6 +30,9 @@ function enableFrameSizeUpdates() {
 }
 
 function enableViewportFit() {
+  if (!document.documentElement.classList.contains("nlw-phone")) {
+    return
+  }
   var fitWidth = 0
   const fit = () => {
     const pageWidth = builderContainer.scrollWidth + bodyMarginWidth(document.body)
