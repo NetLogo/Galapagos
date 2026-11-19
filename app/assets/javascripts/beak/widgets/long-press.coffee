@@ -7,7 +7,7 @@ LONG_PRESS_SCOPE = [
   '.netlogo-widget-container', '.netlogo-model-title', '.inspection-agent-monitor-view-container', '.async-popup'
 ].join(', ')
 
-EDITABLE = 'input, textarea, select, [contenteditable], .CodeMirror'
+NO_LONG_PRESS = 'input, textarea, select, [contenteditable], .CodeMirror, .netlogo-slider-bar'
 
 DIALOG = '.widget-edit-form-overlay, .netlogo-modal-container, .async-popup'
 
@@ -80,7 +80,7 @@ installLongPress = ->
       isMenuFromPress      = false
       isEatingClick        = false
       isTouchLike          = (e.pointerType is 'touch') or (e.pointerType is 'pen')
-      isInScope            = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(EDITABLE)?
+      isInScope            = e.target.closest?(LONG_PRESS_SCOPE)? and not e.target.closest(NO_LONG_PRESS)?
       if e.isPrimary and (e.button is 0) and isTouchLike and isInScope
         isBlockingNativeMenu = true
         press = {
