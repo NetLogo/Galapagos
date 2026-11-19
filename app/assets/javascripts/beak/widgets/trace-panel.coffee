@@ -1,8 +1,9 @@
 MAX_PRESSES  = 8
 MAX_TEXT     = 40
 
-isOn  = false
-state = undefined
+isOn         = false
+state        = undefined
+openPointers = new Map()
 
 # (String) => String
 clip = (text) ->
@@ -198,8 +199,19 @@ logEvent = (e, fields) ->
   , 0)
   return
 
+# () => String
+describeOpenPointers = ->
+  now  = performance.now()
+  open = Array.from(openPointers, ([id, { type, time }]) -> "id#{id} #{type} #{Math.round(now - time)}ms")
+  "NON-PRIMARY, still down: #{if open.length > 0 then open.join(', ') else 'none seen'}"
+
 # (PointerEvent) => Unit
 handlePointer = (e) ->
+  if e.type is 'pointerdown'
+    nonPrimary = if e.isPrimary then '' else describeOpenPointers()
+    openPointers.set(e.pointerId, { type: e.pointerType, time: performance.now() })
+  else if ['pointerup', 'pointercancel'].includes(e.type)
+    openPointers.delete(e.pointerId)
   if isInPanel(e)
     return
   current = state.presses[state.presses.length - 1]
@@ -210,7 +222,7 @@ handlePointer = (e) ->
     press.isDown = true
   else if ['pointerup', 'pointercancel'].includes(e.type) and (e.pointerId is current.origin?.id)
     current.isDown = false
-  logEvent(e, pointerFields(e))
+  logEvent(e, [pointerFields(e), nonPrimary].filter((part) -> part).join(' '))
   return
 
 # (PointerEvent) => Unit
