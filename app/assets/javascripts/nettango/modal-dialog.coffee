@@ -1,11 +1,9 @@
-import startPointerDrag from "/beak/widgets/pointer-drag.js"
+import { startDialogDrag } from "/beak/widgets/pointer-drag.js"
 
 id = -1
 nextId = () ->
   id = id + 1
   id
-
-DRAG_KEEP_VISIBLE = 60
 
 RactiveModalDialog = Ractive.extend({
 
@@ -57,30 +55,13 @@ RactiveModalDialog = Ractive.extend({
       return
 
     'start-drag': ({ node, original }) ->
-      startLeft = undefined
-      startTop  = undefined
-
-      startPointerDrag(node, original, {
-
-        onStart: =>
-          startLeft = @get('left')
-          startTop  = @get('top')
-          return
-
-        onMove: ({ dx, dy }) =>
-          elem    = @find('.ntb-dialog')
-          homeX   = elem.offsetLeft - @get('left')
-          homeY   = elem.offsetTop  - @get('top')
-          minLeft = DRAG_KEEP_VISIBLE - elem.offsetWidth - homeX
-          maxLeft = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE - homeX
-          @set({
-            left: Math.min(maxLeft, Math.max(minLeft, startLeft + dx))
-          , top:  Math.max(-homeY, startTop + dy)
-          })
-          return
-
+      startDialogDrag(node, original, this, {
+        xKey:      'left'
+      , yKey:      'top'
+      , placement: =>
+          elem = @find('.ntb-dialog')
+          { elem, homeX: elem.offsetLeft - @get('left'), minY: @get('top') - elem.offsetTop }
       })
-
       return
 
   }

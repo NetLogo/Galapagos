@@ -1,5 +1,5 @@
 
-import startPointerDrag from "../../pointer-drag.js"
+import { startDialogDrag } from "../../pointer-drag.js"
 
 RactiveModal = Ractive.extend({
   data: {
@@ -58,27 +58,12 @@ RactiveModal = Ractive.extend({
       return
 
     "start-drag": ({ node, original }) ->
-      startX = undefined
-      startY = undefined
-
-      startPointerDrag(node, original, {
-
-        onStart: =>
-          startX = @get('posX')
-          startY = @get('posY')
-          @set('isDragging', true)
-          return
-
-        onMove: ({ dx, dy }) =>
-          @set({ posX: startX + dx, posY: startY + dy })
-          return
-
-        onEnd: =>
-          @set('isDragging', false)
-          return
-
+      startDialogDrag(node, original, this, {
+        xKey:    'posX'
+      , yKey:    'posY'
+      , onStart: (=> @set('isDragging', true); return)
+      , onEnd:   (=> @set('isDragging', false); return)
       })
-
       return
 
     "mouse-down": (event) ->

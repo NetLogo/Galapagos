@@ -1,8 +1,5 @@
-import startPointerDrag from "../pointer-drag.js"
+import { startDialogDrag } from "../pointer-drag.js"
 import { getAllFocusableElements } from "../accessibility/utils.js"
-
-# How much of a dragged form must stay inside the frame, in pixels.
-DRAG_KEEP_VISIBLE = 60
 
 EditForm = Ractive.extend({
 
@@ -130,37 +127,13 @@ EditForm = Ractive.extend({
       @set('amProvingMyself', true)
       false
 
-    # Only the title bar drags the form, so the fields below it can still be scrolled, selected, and typed in.
     'start-edit-drag': ({ node, original }) ->
-      startX = undefined
-      startY = undefined
-
-      startPointerDrag(node, original, {
-
-        onStart: =>
-          startX = @get('xLoc')
-          startY = @get('yLoc')
-          return
-
-        onMove: ({ dx, dy }) =>
-          # The pointer is captured, so it can leave the frame.  Keep the title bar where it can be grabbed again.
-          elem = @getElem()
-          maxX = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE
-          minX = DRAG_KEEP_VISIBLE - elem.offsetWidth
-          minY = @_formMinYLoc ? 0
-          @set({
-            xLoc: Math.min(maxX, Math.max(minX, startX + dx))
-          , yLoc: Math.max(minY, startY + dy)
-          })
-          return
-
-        onEnd: =>
-          # Dragging changes `yLoc`, so the model has to grow (or shrink) to match the form's new bottom edge.
-          @fitModelToForm()
-          return
-
+      startDialogDrag(node, original, this, {
+        xKey:      'xLoc'
+      , yKey:      'yLoc'
+      , placement: (=> { elem: @getElem(), minY: @_formMinYLoc ? 0 })
+      , onEnd:     (=> @fitModelToForm(); return)
       })
-
       return
 
     'cancel-edit': ->
