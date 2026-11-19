@@ -19,6 +19,10 @@ findTopWindow = ->
     win       = parentWin
   { win, x, y }
 
+# () => Boolean
+isCoarsePointer = ->
+  window.matchMedia?('(pointer: coarse)')?.matches is true
+
 # () => VisibleArea { left, top, right, bottom, width, height, scale: Number } | null
 getVisibleAreaOnAnyScreen = ->
   topWindow = findTopWindow()
@@ -36,7 +40,7 @@ getVisibleAreaOnAnyScreen = ->
   , bottom
   , width:  right  - left
   , height: bottom - top
-  , scale:  Math.max(1, viewport.width / deviceWidth(topWindow.win))
+  , scale:  if isCoarsePointer() then Math.max(1, viewport.width / deviceWidth(topWindow.win)) else 1
   }
 
 # () => VisibleArea | null
