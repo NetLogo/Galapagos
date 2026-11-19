@@ -1,10 +1,7 @@
-import startPointerDrag from "../pointer-drag.js"
+import { startDialogDrag } from "../pointer-drag.js"
 import { getVisibleArea, offsetParentOrigin, watchVisibleArea } from "../visible-area.js"
 
 { maybe, None } = tortoise_require('brazier/maybe')
-
-# How much of a dragged dialog must stay inside the frame, in pixels.
-DRAG_KEEP_VISIBLE = 60
 
 haltably = (f) ->
   try f()
@@ -147,31 +144,12 @@ RactiveAsyncUserDialog = Ractive.extend({
       @fire('show-state', {}, { type: 'message', message, callback })
       false
 
-    # Only the title bar drags the dialog, so the text input and the chooser below it work as usual.
     'start-drag': ({ node, original }) ->
-      startX = undefined
-      startY = undefined
-
-      startPointerDrag(node, original, {
-
-        onStart: =>
-          startX = @get('xLoc')
-          startY = @get('yLoc')
-          return
-
-        onMove: ({ dx, dy }) =>
-          # The pointer is captured, so it can leave the frame.  Keep the title bar where it can be grabbed again.
-          elem = @find('#async-user-dialog')
-          maxX = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE
-          minX = DRAG_KEEP_VISIBLE - elem.offsetWidth
-          @set({
-            xLoc: Math.min(maxX, Math.max(minX, startX + dx))
-          , yLoc: Math.max(0, startY + dy)
-          })
-          return
-
+      startDialogDrag(node, original, this, {
+        xKey:      'xLoc'
+      , yKey:      'yLoc'
+      , placement: (=> { elem: @find('#async-user-dialog') })
       })
-
       return
 
   }

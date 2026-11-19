@@ -189,5 +189,42 @@ startPointerDrag = (node, event, { onStart, onMove, onEnd, threshold = dragThres
 
   true
 
+DRAG_KEEP_VISIBLE = 60
+
+# type DialogPlacement = {
+#   elem:   Element
+# , homeX?: Number  # where the dialog sits in its offset parent when its x property is 0
+# , minY?:  Number
+# }
+
+# (Element, PointerEvent, Ractive, { xKey, yKey, placement?: () => DialogPlacement, onStart?, onEnd? }) => Boolean
+startDialogDrag = (node, event, ractive, { xKey, yKey, placement, onStart, onEnd }) ->
+  startX = undefined
+  startY = undefined
+
+  startPointerDrag(node, event, {
+
+    onStart: ->
+      startX = ractive.get(xKey)
+      startY = ractive.get(yKey)
+      onStart?()
+      return
+
+    onMove: ({ dx, dy }) ->
+      x = startX + dx
+      y = startY + dy
+      if placement?
+        { elem, homeX = 0, minY = 0 } = placement()
+        minX = DRAG_KEEP_VISIBLE - elem.offsetWidth - homeX
+        maxX = elem.offsetParent.clientWidth - DRAG_KEEP_VISIBLE - homeX
+        x    = Math.min(maxX, Math.max(minX, x))
+        y    = Math.max(minY, y)
+      ractive.set({ [xKey]: x, [yKey]: y })
+      return
+
+    onEnd
+
+  })
+
 export default startPointerDrag
-export { dragThresholdFor, isTouchLike, swallowNextClick, swallowPressMouseEvents }
+export { dragThresholdFor, isTouchLike, startDialogDrag, swallowNextClick, swallowPressMouseEvents }
