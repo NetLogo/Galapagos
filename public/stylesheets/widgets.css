@@ -1378,7 +1378,7 @@ kbd {
 }
 
 @media (hover: hover) {
-  .netlogo-color-input:hover {
+  .netlogo-color-input:hover, .netlogo-color-input-frame:hover > .netlogo-color-input {
     cursor:           pointer;
     background-color: #ccc;
   }
@@ -1402,6 +1402,10 @@ kbd {
   width:  100%;
   height: auto;
   margin: 0;
+}
+
+.netlogo-color-input-cover {
+  cursor: pointer;
 }
 
 .netlogo-input-box > .netlogo-color-input-frame {
