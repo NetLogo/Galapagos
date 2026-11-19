@@ -1,6 +1,8 @@
 import WidgetSelection  from "./widget-selection.js"
 import startPointerDrag from "./pointer-drag.js"
 
+import { isTouchLike } from "./pointer-drag.js"
+
 import { findSnap, edgesOf }                        from "./edge-snapping.js"
 import { rectFromCorners, rectsTouch, boundingRect } from "./rectangles.js"
 import { widgetComponents, boundsOf }               from "./widget-bounds.js"
@@ -222,10 +224,9 @@ handleWidgetSelection =
           isSelectingByPointer = true
           setTimeout((-> isSelectingByPointer = false), 0)
           domEvent.stopPropagation()
-          isTouchLike = (domEvent.pointerType is 'touch') or (domEvent.pointerType is 'pen')
           if isTogglingSelection(domEvent)
             selection.toggle(event.component)
-          else if (not isTouchLike) and (not selection.has(event.component))
+          else if (not isTouchLike(domEvent)) and (not selection.has(event.component))
             selection.set(event.component)
         return
 
@@ -253,21 +254,23 @@ handleWidgetSelection =
         return
 
     lastPressTarget = undefined
-    recordPress     = (e) -> lastPressTarget = e.target; return
-    document.addEventListener('pointerdown', recordPress, true)
-    ractive.on('teardown', -> document.removeEventListener('pointerdown', recordPress, true); return)
 
     # Android Chrome moves focus to a long-pressed widget about half a second in, before the `contextmenu`.  Focus
     # selects a widget and blur deselects, which would leave only the pressed widget selected and lose the "Add to
     # Selection" menu, so focus changes during a touch press leave the selection alone.
-    trackTouchPress = (e) ->
-      isTouchPressing = (e.type is 'pointerdown') and e.isPrimary and (e.pointerType isnt 'mouse')
+    # (PointerEvent) => Unit
+    trackPress = (e) ->
+      isTouchPressing = (e.type is 'pointerdown') and e.isPrimary and isTouchLike(e)
+      if e.type is 'pointerdown'
+        lastPressTarget = e.target
       return
-    for type in ['pointerdown', 'pointerup', 'pointercancel']
-      document.addEventListener(type, trackTouchPress, true)
+
+    pressEvents = ['pointerdown', 'pointerup', 'pointercancel']
+    for type in pressEvents
+      document.addEventListener(type, trackPress, true)
     ractive.on('teardown', ->
-      for type in ['pointerdown', 'pointerup', 'pointercancel']
-        document.removeEventListener(type, trackTouchPress, true)
+      for type in pressEvents
+        document.removeEventListener(type, trackPress, true)
       return
     )
 
