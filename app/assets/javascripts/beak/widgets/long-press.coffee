@@ -26,10 +26,12 @@ installLongPress = ->
 
   # From a finger going down until the next press, the only `contextmenu` let through is the one we send.  The
   # browser's own long-press menu (Android sends one, sometimes only on release) is blocked, however it is timed.
+  # -Jeremy B November 2026
   isBlockingNativeMenu = false
 
   # Whether a `click` follows a held press is up to the browser: iOS Safari sends one, Android Chrome and Firefox do
   # not.  So on lift we send our own, unless our menu opened, and eat the browser's if it comes before the next press.
+  # -Jeremy B November 2026
   isEatingClick = false
 
   # () => Unit
@@ -158,6 +160,7 @@ installLongPress = ->
 
   # A long press selects the nearest text, which for the view canvas is in whatever widget sits next to it.  Once our
   # menu opens, nothing is selectable until the next press, since iOS may cancel the pointer as its own gesture starts.
+  # -Jeremy B November 2026
   # (Event) => Unit
   handleSelectStart =
     (e) ->

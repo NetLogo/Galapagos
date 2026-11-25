@@ -207,7 +207,7 @@
 }
 
 @media (pointer: coarse) {
-  /* iOS Safari zooms the page in on a focused field whose font is smaller than 16px. */
+  /* iOS Safari zooms the page in on a focused field whose font is smaller than 16px. -Jeremy B November 2026 */
   .ss-search {
     font-size: 16px;
     padding:   0.6em 0.5em;

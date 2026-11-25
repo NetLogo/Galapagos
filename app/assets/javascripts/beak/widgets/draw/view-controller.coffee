@@ -279,7 +279,7 @@ class View
   getBoundingClientRect: -> @_visibleCanvas.getBoundingClientRect()
 
   # Note: For proper pointer tracking, the <canvas> element must have no padding or border, because the pointer's
-  # position is measured from the edge of the canvas's client bounding box.
+  # position is measured from the edge of the canvas's client bounding box. -Jeremy B November 2026
 
   # Unit -> Unit
   _initPointerTracking: ->

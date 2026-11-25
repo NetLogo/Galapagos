@@ -20,7 +20,7 @@ import { trace } from "./trace-panel.js"
 
 # How far the pointer must travel before we call it a drag instead of a click.  Without this, a sloppy click that
 # wiggles a pixel would count as a move, and a double-click to edit would be nearly impossible to land.  A fingertip
-# wanders much further than a mouse during a tap, so touch needs a far larger allowance.
+# wanders much further than a mouse during a tap, so touch needs a far larger allowance. -Jeremy B November 2026
 DRAG_THRESHOLDS = { mouse: 3, pen: 5, touch: 10 }
 
 # (String) => Number
@@ -61,7 +61,7 @@ swallowNextClick = ->
 # A menu that opens during a press can get a `mouseup` from that same press afterwards: from a right-click on macOS and
 # Linux, which send `contextmenu` on the way down, and from iOS, which sends compatibility mouse events after a touch
 # lifts.  Menus that close on any `mouseup` outside themselves (Highcharts') would close at once.  Every press starts
-# with a `pointerdown`, so the press's mouse events are eaten until the next one.
+# with a `pointerdown`, so the press's mouse events are eaten until the next one. -Jeremy B November 2026
 # () => Unit
 swallowPressMouseEvents = ->
   swallow =

@@ -389,6 +389,7 @@ RactiveWidget = RactiveDraggableAndContextable.extend({
 
     # iOS never counts a long press as a user gesture, and Safari writes to the clipboard only during one, so a long
     # press offers the copy in a menu instead of doing it, and the tap on the menu item makes the write.
+    # -Jeremy B November 2026
     # (Context, String | Undefined) => Boolean | Undefined
     'show-value-menu': (context, currentValue) ->
       if (not @get('isEditing')) and context.original.isLongPress

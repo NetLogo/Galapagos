@@ -40,6 +40,7 @@ trackViewPointer = (element, { downHandler, moveHandler, upHandler }, toHandlerA
   )
 
   # Outside the view, the patch coordinates would wrap around to the far side of a wrapping world, so report none.
+  # -Jeremy B November 2026
   element.addEventListener('pointermove', (e) ->
     if e.isPrimary
       [arg, isInside] = toHandlerArg(e)

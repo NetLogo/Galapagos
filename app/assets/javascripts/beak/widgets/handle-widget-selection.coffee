@@ -30,6 +30,7 @@ clampGroupOffset = (starts, dx, dy) ->
   [Math.max(dx, -minX), Math.max(dy, -minY)]
 
 # Touch and zoomed pointers report fractional positions, but widget positions must be whole pixels.
+# -Jeremy B November 2026
 # (Rect, { x0: Number, y0: Number }, Edges, DragInfo) => { dx: Number, dy: Number, snap: { x: Snap?, y: Snap? } }
 snapDragOffset = (groupBox, grabbed, candidates, info) ->
   gridSnap = (n) -> Math.round(n / GRID_SIZE) * GRID_SIZE
@@ -262,7 +263,7 @@ handleWidgetSelection =
 
     # Android Chrome moves focus to a long-pressed widget about half a second in, before the `contextmenu`.  Focus
     # selects a widget and blur deselects, which would leave only the pressed widget selected and lose the "Add to
-    # Selection" menu, so focus changes during a touch press leave the selection alone.
+    # Selection" menu, so focus changes during a touch press leave the selection alone. -Jeremy B November 2026
     # (PointerEvent) => Unit
     trackPress = (e) ->
       isTouchPressing = (e.type is 'pointerdown') and e.isPrimary and isTouchLike(e)
@@ -281,6 +282,7 @@ handleWidgetSelection =
 
     # A click fires on the nearest common ancestor of its `mousedown` and `mouseup` targets.  When a tap selects a
     # widget, its resize handles can appear under the finger before `mouseup`, so the click lands on the container.
+    # -Jeremy B November 2026
     # (Context) => Unit
     clickOnContainer =
       ({ node, event: domEvent }) ->

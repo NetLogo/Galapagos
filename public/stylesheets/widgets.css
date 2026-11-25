@@ -1388,7 +1388,7 @@ kbd {
 }
 
 /* The cover takes every tap and click on the native color input, which iOS opens on a tap even when the click is
-   cancelled. */
+   cancelled. -Jeremy B November 2026 */
 .netlogo-color-input-frame {
   display: inline-grid;
 }
@@ -1432,7 +1432,7 @@ kbd {
 
 /* `touch-action: none` above keeps one-finger drags from scrolling the page.  Where the browser supports it, let two
    fingers pinch-zoom and pan.  Browsers without `pinch-zoom` keep `none`, since an unknown value would fall back to
-   `auto` and let the page scroll mid-drag. */
+   `auto` and let the page scroll mid-drag. -Jeremy B November 2026 */
 @supports (touch-action: pinch-zoom) {
   .netlogo-slider-bar,
   .async-dialog-title-bar,

@@ -386,7 +386,7 @@ installListeners = ->
   return
 
 # Installs only when asked for by `?trace`.  Its listeners go on `window` in the capture phase, so call this before
-# anything else registers handlers that might stop events.
+# anything else registers handlers that might stop events. -Jeremy B November 2026
 # () => Unit
 installTracePanel = ->
   if isOn or not new URLSearchParams(window.location.search).has('trace')
@@ -404,7 +404,7 @@ installTracePanel = ->
   return
 
 # The model is rebuilt on every load, so the panel is put back after it each time.  It goes outside the tab area,
-# whose last tab inserts its content at the end of that area when opened.
+# whose last tab inserts its content at the end of that area when opened. -Jeremy B November 2026
 # (Element) => Unit
 attachTracePanel = (container) ->
   if isOn
